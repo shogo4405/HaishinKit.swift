@@ -1,6 +1,14 @@
 import Foundation
 
 public protocol IEventDispatcher {
+    func addEventListener(type:String, selector:Selector)
+    func addEventListener(type:String, selector:Selector, observer:AnyObject)
+    func addEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool)
+    func removeEventListener(type:String, selector:Selector)
+    func removeEventListener(type:String, selector:Selector, observer:AnyObject)
+    func removeEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool)
+    func dispatchEvent(e:Event)
+    func dispatchEventWith(type:String, bubbles:Bool, data:Any?)
 }
 
 public enum EventPhase:UInt8 {
