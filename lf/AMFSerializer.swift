@@ -73,11 +73,72 @@ protocol AMFSerializer {
     func deserialize(bytes:[UInt8], inout position:Int) -> Any?
 }
 
+class SynchronizedArray<T:Comparable>: Printable {
+    private var data:[T] = []
+
+    var description:String {
+        return data.description
+    }
+
+    func append(newElement:T) {
+        objc_sync_enter(self)
+        data.append(newElement)
+        objc_sync_exit(self)
+    }
+
+    func appendIfAbsent(newElement:T) {
+        var indexOf:Int = -1
+        objc_sync_enter(self)
+        for i in 0..<data.count {
+            if (data[i] == newElement) {
+                indexOf = i
+                break
+            }
+        }
+        if (indexOf == -1) {
+            data.append(newElement)
+        }
+        objc_sync_exit(self)
+    }
+
+    func indexOf(value:T) -> Int {
+        var indexOf:Int = -1
+        objc_sync_enter(self)
+        for i in 0..<data.count {
+            if (data[i] == value) {
+                indexOf = i
+                break
+            }
+        }
+        objc_sync_exit(self)
+        return indexOf
+    }
+
+    subscript(index: Int) -> T {
+        set {
+            objc_sync_enter(self)
+            data[index] = newValue
+            objc_sync_exit(self)
+        }
+        get {
+            var element:T!
+            objc_sync_enter(self)
+            element = data[index]
+            objc_sync_exit(self)
+            return element
+        }
+    }
+}
+
+class AMFReference: NSObject {
+    var strings:SynchronizedArray<String> = SynchronizedArray<String>()
+}
+
 /**
  * AMF0Serializer
  * @reference http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
  */
-struct AMF0Serializer:AMFSerializer {
+class AMF0Serializer:AMFSerializer {
     
     enum TYPE:UInt8 {
         case NUMBER      = 0x00
@@ -109,10 +170,12 @@ struct AMF0Serializer:AMFSerializer {
     
     func deserialize(bytes:[UInt8], inout position:Int) -> Double {
         if (invalidDeserialize(TYPE.NUMBER, bytes: bytes, position: &position)) {
+            assertionFailure()
             return 0
         }
-        position += 8
-        return Double(bytes: Array(bytes[position - 8..<position].reverse()))
+        let start:Int = position
+        position += sizeof(Double.self)
+        return Double(bytes: Array(bytes[start..<position].reverse()))
     }
     
     func serialize(value:Int) -> [UInt8] {
@@ -133,6 +196,7 @@ struct AMF0Serializer:AMFSerializer {
     
     func deserialize(bytes: [UInt8], inout position: Int) -> Bool {
         if (bytes.count < position || bytes[position] != TYPE.BOOL.rawValue) {
+            assertionFailure()
             return false
         }
         ++position
@@ -409,7 +473,7 @@ struct AMF0Serializer:AMFSerializer {
  * AMF3 Serializer
  * @reference http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
  */
-struct AMF3Serializer:AMFSerializer {
+class AMF3Serializer:AMFSerializer {
     enum TYPE:UInt8 {
         case UNDEFINED    = 0x00
         case NULL         = 0x01
@@ -429,6 +493,109 @@ struct AMF3Serializer:AMFSerializer {
         case VECTORNUMBER = 0x0F
         case VECTOROBJECT = 0x10
         case DICTIONARY   = 0x11
+    }
+
+    var reference:AMFReference
+
+    init () {
+        reference = AMFReference()
+    }
+
+    init (reference:AMFReference) {
+        self.reference = reference
+    }
+
+    func serialize(value:Any?) -> [UInt8] {
+        
+        if value == nil {
+            return [TYPE.NULL.rawValue]
+        }
+        
+        switch value {
+        case let value as Int:
+            return serialize(Double(value))
+        case let value as UInt:
+            return serialize(Double(value))
+        case let value as Int8:
+            return serialize(Double(value))
+        case let value as UInt8:
+            return serialize(Double(value))
+        case let value as Int16:
+            return serialize(Double(value))
+        case let value as UInt16:
+            return serialize(Double(value))
+        case let value as Int32:
+            return serialize(Double(value))
+        case let value as UInt32:
+            return serialize(Double(value))
+        case let value as Float:
+            return serialize(Double(value))
+        case let value as Float32:
+            return serialize(Double(value))
+        case let value as Double:
+            return serialize(Double(value))
+        case let value as NSDate:
+            return serialize(value)
+        case let value as String:
+            return serialize(value)
+        case let value as Bool:
+            return serialize(value)
+        case let value as ECMAArray:
+            return serialize(value)
+        case let value as ECMAObject:
+            return serialize(value)
+        default:
+            return [TYPE.UNDEFINED.rawValue]
+        }
+    }
+    
+    func deserialize(bytes:[UInt8], inout position:Int) -> Any? {
+        switch bytes[position] {
+        case TYPE.UNDEFINED.rawValue, TYPE.NULL.rawValue:
+            ++position
+            return nil
+        case TYPE.BOOL_FALSE.rawValue:
+            ++position
+            return false
+        case TYPE.BOOL_TRUE.rawValue:
+            ++position
+            return true
+        case TYPE.INTEGER.rawValue:
+            return deserialize(bytes, position: &position) as Int
+        case TYPE.NUMBER.rawValue:
+            return deserialize(bytes, position: &position) as Double
+        case TYPE.STRING.rawValue:
+            return deserialize(bytes, position: &position) as String
+        case TYPE.XML.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case TYPE.DATE.rawValue:
+            return deserialize(bytes, position: &position) as NSDate
+        case TYPE.ARRAY.rawValue:
+            return deserialize(bytes, position: &position) as ECMAArray
+        case TYPE.OBJECT.rawValue:
+            return deserialize(bytes, position: &position) as ECMAObject
+        case TYPE.XMLSTRING.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case TYPE.BYTEARRAY.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case TYPE.VECTORINT.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case TYPE.VECTORNUMBER.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case TYPE.VECTOROBJECT.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case TYPE.DICTIONARY.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        default:
+            return nil
+        }
     }
 
     /**
@@ -453,7 +620,7 @@ struct AMF3Serializer:AMFSerializer {
             ++position
             return false
         }
-        
+        assertionFailure()
         return false
     }
 
@@ -463,20 +630,31 @@ struct AMF3Serializer:AMFSerializer {
     func serialize(value:Int) -> [UInt8] {
         return [TYPE.INTEGER.rawValue] + serializeU29(value)
     }
-    
+
     func deserialize(bytes:[UInt8], inout position:Int) -> Int {
-        return 0
+        if (bytes[position] != TYPE.INTEGER.rawValue) {
+            assertionFailure()
+            return 0
+        }
+        ++position
+        return deserializeU29(bytes, position: &position)
     }
 
     /**
      * @see 3.7 double type
      */
     func serialize(value:Double) -> [UInt8] {
-        return [TYPE.NUMBER.rawValue] + value.bytes
+        return [TYPE.NUMBER.rawValue] + value.bytes.reverse()
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> Double {
-        return 0
+        if (bytes[position] != TYPE.NUMBER.rawValue) {
+            assertionFailure()
+            return 0
+        }
+        let start:Int = ++position
+        position += sizeof(Double.self)
+        return Double(bytes: Array(bytes[start..<position].reverse()))
     }
 
     /**
@@ -487,7 +665,12 @@ struct AMF3Serializer:AMFSerializer {
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> String {
-        return ""
+        if (bytes[position] != TYPE.STRING.rawValue) {
+            assertionFailure()
+            return ""
+        }
+        ++position
+        return deserializeUTF8(bytes, position: &position)
     }
 
     /**
@@ -551,15 +734,6 @@ struct AMF3Serializer:AMFSerializer {
         return result
     }
 
-    func serialize(value:Any?) -> [UInt8] {
-        return []
-    }
-
-    func deserialize(bytes:[UInt8], inout position:Int) -> Any? {
-        var result:Any? = Optional<Any>()
-        return result
-    }
-
     /**
      * @see 1.3.1 Variable Length Unsigned 29-bit Integer Encoding
      */
@@ -571,20 +745,20 @@ struct AMF3Serializer:AMFSerializer {
         
         let value:UInt32 = UInt32(value)
         
-        if ((value & 0xFFFFFF80) == 0) {
+        if (value & 0xFFFFFF80 == 0) {
             return [
                 UInt8(value & 0x7f)
             ]
         }
         
-        if ((value & 0xFFFFC000) == 0) {
+        if (value & 0xFFFFC000 == 0) {
             return [
                 UInt8(value >> 7 | 0x80),
                 UInt8(value & 0x7F)
             ]
         }
         
-        if ((value & 0xFFE00000) == 0) {
+        if (value & 0xFFE00000 == 0) {
             return [
                 UInt8(value >> 14 | 0x80),
                 UInt8(value >> 7 | 0x80),
@@ -600,12 +774,69 @@ struct AMF3Serializer:AMFSerializer {
         ]
     }
 
+    private func deserializeU29(bytes: [UInt8], inout position: Int) -> Int {
+
+        var count:Int = 1
+        var result:Int = 0
+        var byte:UInt8 = bytes[position++]
+
+        while (byte & 0x80 != 0 && count < 4) {
+            result <<= 7
+            result |= Int(byte & 0x7F)
+            byte = bytes[position++]
+            ++count
+        }
+
+        if (count < 4) {
+            result <<= 7
+            result |= Int(byte)
+        } else {
+            result <<= 8
+            result |= Int(byte)
+        }
+
+        return result
+    }
+
     /**
      * @see 1.3.2 Strings and UTF-8
      */
     private func serializeUTF8(value:String) -> [UInt8] {
+        if (value.isEmpty) {
+            return serializeU29(0x01)
+        }
+
+        let indexOf:Int = reference.strings.indexOf(value)
+        if (indexOf != -1) {
+            return serializeU29(indexOf << 1)
+        }
+
         let buffer:[UInt8] = [UInt8](value.utf8)
-        let strref:[UInt8] = serialize(buffer.count << 1 | 0x01)
-        return strref + buffer
+        let length:[UInt8] = serializeU29(buffer.count << 1 | 0x01)
+        reference.strings.append(value)
+
+        return length + buffer
+    }
+
+    private func deserializeUTF8(bytes: [UInt8], inout position: Int) -> String {
+        var strref:Int = deserializeU29(bytes, position: &position)
+
+        if (strref & 0x01 == 0) {
+            strref = strref >> 1
+            return reference.strings[strref]
+        }
+
+        let length:Int = strref >> 1
+        let offset:Int = position
+
+        if (length == 0) {
+            return ""
+        }
+
+        position += length
+        let string:String = String(bytes: Array(bytes[offset..<position]), encoding: NSUTF8StringEncoding)!
+        reference.strings.appendIfAbsent(string)
+
+        return string
     }
 }

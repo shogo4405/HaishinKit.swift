@@ -153,7 +153,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 break
             case .VIDEO:
                 break
-            case .AMF0_COMAND, .AMF3_COMMAND:
+            case .AMF0_COMMAND, .AMF3_COMMAND:
                 onCommandMessage(message as! RTMPCommandMessage)
                 break
             case .UNKNOW:

@@ -14,7 +14,7 @@ enum RTMPMessageType:UInt8 {
     case AMF3_COMMAND = 17
     case AMF0_DATA = 18
     case AMF0_SHARED = 19
-    case AMF0_COMAND = 20
+    case AMF0_COMMAND = 20
     case AGGREGATE = 22
     case UNKNOW = 255
 }
@@ -34,7 +34,7 @@ class RTMPMessage: NSObject {
             return RTMPSetPeerBandwidthMessage()
         case RTMPMessageType.AMF0_DATA.rawValue:
             return RTMPDataMessage()
-        case RTMPMessageType.AMF0_COMAND.rawValue:
+        case RTMPMessageType.AMF0_COMMAND.rawValue:
             let message:RTMPCommandMessage = RTMPCommandMessage()
             message.objectEncoding = 0x00
             return message
@@ -124,18 +124,14 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            
             super.payload = size.bytes.reverse();
-            
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-
             size = Int32(bytes: newValue.reverse())
-
             super.payload = newValue
         }
     }
@@ -173,13 +169,10 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            
             var payload:[UInt8] = []
             payload += Int32(size).bytes.reverse()
             payload += [limit.rawValue]
-            
             super.payload = payload
-            
             return super.payload
         }
         set {
@@ -207,9 +200,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-
             super.payload = sequence.bytes.reverse()
-
             return super.payload
         }
         set {
@@ -223,11 +214,15 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
 }
 
 final class RTMPCommandMessage: RTMPMessage {
-    
-    var objectEncoding:UInt8 = 0x00
-    
+
+    var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
+        didSet {
+            self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+        }
+    }
+
     override var type:RTMPMessageType {
-        return objectEncoding == 0x00 ? RTMPMessageType.AMF0_COMAND : RTMPMessageType.AMF3_COMMAND
+        return objectEncoding == 0x00 ? RTMPMessageType.AMF0_COMMAND : RTMPMessageType.AMF3_COMMAND
     }
     
     var commandName:String = "" {
@@ -259,32 +254,26 @@ final class RTMPCommandMessage: RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            
-            super.payload += amf.serialize(commandName)
-            super.payload += amf.serialize(transactionId)
-            super.payload += amf.serialize(commandObject)
-            
+            super.payload += serializer.serialize(commandName)
+            super.payload += serializer.serialize(transactionId)
+            super.payload += serializer.serialize(commandObject)
             for i in arguments {
-                super.payload += amf.serialize(i)
+                super.payload += serializer.serialize(i)
             }
-            
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-
             if (length == newValue.count) {
-                var pos:Int = 0
-                commandName = amf.deserialize(newValue, position: &pos)
-                transactionId = amf.deserialize(newValue, position: &pos)
-                commandObject = amf.deserialize(newValue, position: &pos)
-
+                var position:Int = 0
+                commandName = serializer.deserialize(newValue, position: &position)
+                transactionId = serializer.deserialize(newValue, position: &position)
+                commandObject = serializer.deserialize(newValue, position: &position)
                 arguments = []
-                arguments.append(amf.deserialize(newValue, position: &pos))
+                arguments.append(serializer.deserialize(newValue, position: &position))
             }
-
             super.payload = newValue
         }
     }
@@ -310,9 +299,9 @@ final class RTMPCommandMessage: RTMPMessage {
         
         return description
     }
-    
-    private var amf:AMFSerializer = AMF0Serializer()
-    
+
+    private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+
     override init () {
         super.init()
     }
@@ -325,6 +314,7 @@ final class RTMPCommandMessage: RTMPMessage {
         self.commandName = commandName
         self.commandObject = commandObject
         self.arguments = arguments
+        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 }
 
@@ -408,6 +398,7 @@ final class RTMPDataMessage:RTMPMessage {
     }
 }
 
+
 final class RTMPMediaMessage:RTMPMessage {
     var buffer:NSData? = nil {
         didSet {
@@ -428,11 +419,9 @@ final class RTMPMediaMessage:RTMPMessage {
             if (!super.payload.isEmpty || buffer == nil) {
                 return super.payload
             }
-
             var data:[UInt8] = [UInt8](count: buffer!.length, repeatedValue: 0x00)
             buffer!.getBytes(&data, length: data.count)
             super.payload = data
-
             return super.payload
         }
         set {
@@ -499,24 +488,18 @@ final class RTMPUserControlMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-
             var payload:[UInt8] = [UInt8](count:6, repeatedValue: 0)
             payload[1] = event.rawValue
-
             super.payload = payload
-            
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-
-            let event:RTMPUserControlEvent? = RTMPUserControlEvent(rawValue: newValue[1])
-            if (event != nil) {
-                self.event = event!
+            if let event:RTMPUserControlEvent = RTMPUserControlEvent(rawValue: newValue[1]) {
+                self.event = event
             }
-
             super.payload = newValue
         }
     }
@@ -545,7 +528,7 @@ final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
     override var type:RTMPMessageType {
         return RTMPMessageType.WINDOW_ACK
     }
-    
+
     var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
@@ -557,9 +540,7 @@ final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            
             super.payload = size.bytes.reverse()
-            
             return super.payload
         }
         set {
