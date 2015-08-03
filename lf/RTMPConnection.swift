@@ -31,10 +31,6 @@ enum RTMPConnectionVideoFunction:UInt8 {
     case CLIENT_SEEK = 1
 }
 
-public final class RTMPStatusEvent: Event {
-    static public let RTMP_STATUS:String = "rtmpStatus"
-}
-
 public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     static let defaultPort:UInt32 = 1935
     static let defaultObjectEncoding:UInt8 = 0x00
@@ -241,7 +237,11 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     private func createConnectionChunk() -> RTMPChunk {
         let url:NSURL = NSURL(string: _uri)!
         let path:String = url.path!
-        let app:String = path.substringFromIndex(advance(path.startIndex, 1))
+        var app:String = path.substringFromIndex(advance(path.startIndex, 1))
+        
+        if (url.query != nil) {
+            app += "?" + url.query!
+        }
         
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: 3,
@@ -251,7 +251,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             commandObject: [
                 "app": app,
                 "flashVer": "FME/3.0 (compatible; FMSc/1.0)",
-                "swfUrl": nil,
+                "swfUrl": _uri,
                 "tcUrl": _uri,
                 "fpad": false,
                 "capabilities": 0,

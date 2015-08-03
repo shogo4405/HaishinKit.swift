@@ -2,6 +2,8 @@ import Foundation
 import XCTest
 
 class AMF0SerializerTests: XCTestCase {
+    let amf0:AMF0Serializer = AMF0Serializer()
+
     override func setUp() {
         super.setUp()
     }
@@ -9,8 +11,8 @@ class AMF0SerializerTests: XCTestCase {
     override func tearDown() {
         super.tearDown()
     }
-    
-    func testMain() {
+
+    func testHoge() {
     }
 }
 

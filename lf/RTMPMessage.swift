@@ -21,6 +21,7 @@ enum RTMPMessageType:UInt8 {
 
 class RTMPMessage: NSObject {
     static func create(type:UInt8) -> RTMPMessage {
+        println(type)
         switch type {
         case RTMPMessageType.CHUNK_SIZE.rawValue:
             return RTMPSetChunkSizeMessage()

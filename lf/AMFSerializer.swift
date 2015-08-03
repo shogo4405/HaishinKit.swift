@@ -161,6 +161,115 @@ class AMF0Serializer:AMFSerializer {
         case AVMPLUSH    = 0x11
     }
 
+    func serialize(value:Any?) -> [UInt8] {
+        
+        if value == nil {
+            return [TYPE.NULL.rawValue]
+        }
+        
+        switch value {
+        case let value as Int:
+            return serialize(Double(value))
+        case let value as UInt:
+            return serialize(Double(value))
+        case let value as Int8:
+            return serialize(Double(value))
+        case let value as UInt8:
+            return serialize(Double(value))
+        case let value as Int16:
+            return serialize(Double(value))
+        case let value as UInt16:
+            return serialize(Double(value))
+        case let value as Int32:
+            return serialize(Double(value))
+        case let value as UInt32:
+            return serialize(Double(value))
+        case let value as Float:
+            return serialize(Double(value))
+        case let value as Float32:
+            return serialize(Double(value))
+        case let value as Double:
+            return serialize(Double(value))
+        case let value as NSDate:
+            return serialize(value)
+        case let value as String:
+            return serialize(value)
+        case let value as Bool:
+            return serialize(value)
+        case let value as ECMAArray:
+            return serialize(value)
+        case let value as ECMAObject:
+            return serialize(value)
+        default:
+            return [TYPE.UNDEFINED.rawValue]
+        }
+    }
+    
+    func deserialize(bytes: [UInt8], inout position: Int) -> Any? {
+        switch bytes[position] {
+        case TYPE.NUMBER.rawValue:
+            return deserialize(bytes, position: &position) as Double
+        case TYPE.BOOL.rawValue:
+            return deserialize(bytes, position: &position) as Bool
+        case TYPE.STRING.rawValue:
+            return deserialize(bytes, position: &position) as String
+        case TYPE.OBJECT.rawValue:
+            return deserialize(bytes, position: &position) as ECMAObject
+        case TYPE.NULL.rawValue:
+            ++position
+            return nil
+        case TYPE.UNDEFINED.rawValue:
+            ++position
+            return TYPE.UNDEFINED
+        case 0x07:
+            return nil
+        case TYPE.ECMAARRAY.rawValue:
+            return deserialize(bytes, position: &position) as ECMAArray
+        case 0x09:
+            return nil
+        case TYPE.STRICTARRAY.rawValue:
+            return deserialize(bytes, position: &position) as [Any?]
+        case 0x0b:
+            return nil
+        case 0x0c:
+            return nil
+        case 0x0d:
+            return nil
+        case 0x0b:
+            return deserialize(bytes, position: &position) as NSDate
+        case 0x0c:
+            return deserialize(bytes, position: &position) as String
+        case 0x0d:
+            return TYPE.UNSUPPORTED
+        default:
+            return nil
+        }
+    }
+    
+    private func invalidDeserialize(type:TYPE, bytes:[UInt8], inout position: Int) -> Bool {
+        if (bytes.count < position || bytes[position] != type.rawValue) {
+            return true
+        }
+        ++position
+        return false
+    }
+    
+    private func serialize(value:String, longString: Bool) -> [UInt8] {
+        var result:[UInt8] = []
+        var buffer:[UInt8] = [UInt8](value.utf8)
+        
+        if (longString) {
+            var len:Int32 = Int32(buffer.count)
+            result += [UInt8(len >> 24), UInt8(len >> 16), UInt8(len >> 8), UInt8(len)]
+        } else {
+            var len:Int16 = Int16(buffer.count)
+            result += [UInt8(len >> 8), UInt8(len)]
+        }
+        result += buffer
+        
+        return result
+    }
+
     /**
      * @see 2.2 Number Type
      */
@@ -306,23 +415,35 @@ class AMF0Serializer:AMFSerializer {
      * @see 2.12 Strict Array Type
      */
     func serialize(value:[Any?]) -> [UInt8] {
-        var bytes:[UInt8] = [TYPE.STRICTARRAY.rawValue]
         
-        if (value.count == 0) {
-            bytes += [0x00, 0x00, 0x00, 0x00]
-        } else {
-            var length:UInt32 = UInt32(value.count) + 1
-            bytes += [UInt8(length >> 24), UInt8(length >> 16), UInt8(length >> 8), UInt8(length)]
-            for v in value {
-                bytes += serialize(v)
-            }
+        if (value.isEmpty) {
+            return [TYPE.STRICTARRAY.rawValue, 0x00, 0x00, 0x00, 0x00]
         }
-        
+
+        var bytes:[UInt8] = [TYPE.STRICTARRAY.rawValue]
+        let length:UInt32 = UInt32(value.count) + 1
+        bytes += [UInt8(length >> 24), UInt8(length >> 16), UInt8(length >> 8), UInt8(length)]
+        for v in value {
+            bytes += serialize(v)
+        }
+
         return bytes
     }
     
     func deserialize(bytes: [UInt8], inout position: Int) -> [Any?] {
-        return []
+        if (bytes[position] != TYPE.STRICTARRAY.rawValue) {
+            assertionFailure()
+            return []
+        }
+        ++position
+        var result:[Any?] = []
+        let start:Int = position
+        position += sizeof(UInt32.self)
+        let count:Int = Int(UInt32(bytes: Array(bytes[start..<position]).reverse()))
+        for i in 0..<count {
+            result.append(deserialize(bytes, position: &position))
+        }
+        return result
     }
 
     /**
@@ -344,117 +465,7 @@ class AMF0Serializer:AMFSerializer {
         
         return date
     }
-    
-    func serialize(value:Any?) -> [UInt8] {
 
-        if value == nil {
-            return [TYPE.NULL.rawValue]
-        }
-    
-        switch value {
-        case let value as Int:
-            return serialize(Double(value))
-        case let value as UInt:
-            return serialize(Double(value))
-        case let value as Int8:
-            return serialize(Double(value))
-        case let value as UInt8:
-            return serialize(Double(value))
-        case let value as Int16:
-            return serialize(Double(value))
-        case let value as UInt16:
-            return serialize(Double(value))
-        case let value as Int32:
-            return serialize(Double(value))
-        case let value as UInt32:
-            return serialize(Double(value))
-        case let value as Float:
-            return serialize(Double(value))
-        case let value as Float32:
-            return serialize(Double(value))
-        case let value as Double:
-            return serialize(Double(value))
-        case let value as NSDate:
-            return serialize(value)
-        case let value as String:
-            return serialize(value)
-        case let value as Bool:
-            return serialize(value)
-        case let value as ECMAArray:
-            return serialize(value)
-        case let value as ECMAObject:
-            return serialize(value)
-        default:
-            return [TYPE.UNDEFINED.rawValue]
-        }
-    }
-    
-    func deserialize(bytes: [UInt8], inout position: Int) -> Any? {
-
-        switch bytes[position] {
-        case TYPE.NUMBER.rawValue:
-            return deserialize(bytes, position: &position) as Double
-        case TYPE.BOOL.rawValue:
-            return deserialize(bytes, position: &position) as Bool
-        case TYPE.STRING.rawValue:
-            return deserialize(bytes, position: &position) as String
-        case TYPE.OBJECT.rawValue:
-            return deserialize(bytes, position: &position) as ECMAObject
-        case TYPE.NULL.rawValue:
-            ++position
-            return nil
-        case TYPE.UNDEFINED.rawValue:
-            ++position
-            return TYPE.UNDEFINED
-        case 0x07:
-            return nil
-        case TYPE.ECMAARRAY.rawValue:
-            return deserialize(bytes, position: &position) as ECMAArray
-        case 0x09:
-            return nil
-        case 0x0a:
-            return nil
-        case 0x0b:
-            return nil
-        case 0x0c:
-            return nil
-        case 0x0d:
-            return nil
-        case 0x0b:
-            return deserialize(bytes, position: &position) as NSDate
-        case 0x0c:
-            return deserialize(bytes, position: &position) as String
-        case 0x0d:
-            return TYPE.UNSUPPORTED
-        default:
-            return nil
-        }
-    }
-    
-    private func invalidDeserialize(type:TYPE, bytes:[UInt8], inout position: Int) -> Bool {
-        if (bytes.count < position || bytes[position] != type.rawValue) {
-            return true
-        }
-        ++position
-        return false
-    }
-    
-    private func serialize(value:String, longString: Bool) -> [UInt8] {
-        var result:[UInt8] = []
-        var buffer:[UInt8] = [UInt8](value.utf8)
-        
-        if (longString) {
-            var len:Int32 = Int32(buffer.count)
-            result += [UInt8(len >> 24), UInt8(len >> 16), UInt8(len >> 8), UInt8(len)]
-        } else {
-            var len:Int16 = Int16(buffer.count)
-            result += [UInt8(len >> 8), UInt8(len)]
-        }
-        result += buffer
-        
-        return result
-    }
-    
     private func deserialize(bytes:[UInt8], inout position:Int, longString:Bool) -> String {
         
         var length:Int = (Int(bytes[position]) << 8) | Int(bytes[++position])
@@ -610,7 +621,6 @@ class AMF3Serializer:AMFSerializer {
         if (bytes.count < position) {
             return false
         }
-        
         let byte:UInt8 = bytes[position]
         if (byte == TYPE.BOOL_TRUE.rawValue) {
             ++position
@@ -648,7 +658,7 @@ class AMF3Serializer:AMFSerializer {
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> Double {
-        if (bytes[position] != TYPE.NUMBER.rawValue) {
+        if (bytes.count < position || bytes[position] != TYPE.NUMBER.rawValue) {
             assertionFailure()
             return 0
         }
