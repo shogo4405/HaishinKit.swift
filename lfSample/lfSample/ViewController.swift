@@ -10,6 +10,7 @@ class ViewController: UIViewController {
     var startButton, stopButton : UIButton!
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream?
+    var previewLayer:AVCaptureVideoPreviewLayer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,17 +33,27 @@ class ViewController: UIViewController {
         stopButton.layer.position = CGPoint(x: self.view.bounds.width / 2 + 70, y:self.view.bounds.height - 50)
         stopButton.addTarget(self, action: "stopButton_onClick:", forControlEvents: .TouchUpInside)
 
-        var previewLayer:AVCaptureVideoPreviewLayer = rtmpStream!.toPreviewLayer()
-        previewLayer.frame = view.bounds
-        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-        view.layer.addSublayer(previewLayer)
+        previewLayer = rtmpStream!.toPreviewLayer()
+        previewLayer!.frame = view.bounds
+        previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+        view.layer.addSublayer(previewLayer!)
 
         self.view.addSubview(self.startButton)
         self.view.addSubview(self.stopButton)
     }
 
+    override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        startButton.layer.position = CGPoint(x: view.bounds.width / 2 - 70, y: view.bounds.height - 50)
+        stopButton.layer.position = CGPoint(x: view.bounds.width / 2 + 70, y: view.bounds.height - 50)
+        previewLayer!.frame = view.bounds
+    }
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+
+    override func viewDidAppear(animated: Bool) {
+        super.viewDidAppear(animated)
     }
 
     func startButton_onClick(sender:UIButton) {

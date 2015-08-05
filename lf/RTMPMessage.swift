@@ -1,56 +1,55 @@
 import Foundation
 
-enum RTMPMessageType:UInt8 {
-    case CHUNK_SIZE = 1
-    case ABORT = 2
-    case ACK = 3
-    case USER = 4
-    case WINDOW_ACK = 5
-    case BANDWIDTH = 6
-    case AUDIO = 8
-    case VIDEO = 9
-    case AMF3_DATA = 15
-    case AMF3_SHARED = 16
-    case AMF3_COMMAND = 17
-    case AMF0_DATA = 18
-    case AMF0_SHARED = 19
-    case AMF0_COMMAND = 20
-    case AGGREGATE = 22
-    case UNKNOW = 255
-}
-
 class RTMPMessage: NSObject {
+
+    enum Type:UInt8 {
+        case ChunkSize = 1
+        case Abort = 2
+        case Ack = 3
+        case User = 4
+        case WindowAck = 5
+        case Bandwidth = 6
+        case Audio = 8
+        case Video = 9
+        case AMF3Data = 15
+        case AMF3Shared = 16
+        case AMF3Command = 17
+        case AMF0Data = 18
+        case AMF0Shared = 19
+        case AMF0Command = 20
+        case Aggregate = 22
+        case Unknown = 255
+    }
+
     static func create(type:UInt8) -> RTMPMessage {
-        println(type)
         switch type {
-        case RTMPMessageType.CHUNK_SIZE.rawValue:
+        case Type.ChunkSize.rawValue:
             return RTMPSetChunkSizeMessage()
-        case RTMPMessageType.ACK.rawValue:
+        case Type.Ack.rawValue:
             return RTMPAcknowledgementMessage();
-        case RTMPMessageType.USER.rawValue:
+        case Type.User.rawValue:
             return RTMPUserControlMessage()
-        case RTMPMessageType.WINDOW_ACK.rawValue:
+        case Type.WindowAck.rawValue:
             return RTMPWindowAcknowledgementSizeMessage()
-        case RTMPMessageType.BANDWIDTH.rawValue:
+        case Type.Bandwidth.rawValue:
             return RTMPSetPeerBandwidthMessage()
-        case RTMPMessageType.AMF0_DATA.rawValue:
+        case Type.AMF0Data.rawValue:
             return RTMPDataMessage()
-        case RTMPMessageType.AMF0_COMMAND.rawValue:
+        case Type.AMF0Command.rawValue:
             let message:RTMPCommandMessage = RTMPCommandMessage()
             message.objectEncoding = 0x00
             return message
-        case RTMPMessageType.AMF3_COMMAND.rawValue:
+        case Type.AMF3Command.rawValue:
             let message:RTMPCommandMessage = RTMPCommandMessage()
             message.objectEncoding = 0x03
             return message
         default:
-            return RTMPMessage(type: RTMPMessageType(rawValue: type)!)
+            return RTMPMessage(type: Type(rawValue: type)!)
         }
     }
 
-    private var _type:RTMPMessageType = RTMPMessageType.UNKNOW
-
-    var type:RTMPMessageType {
+    private var _type:Type = Type.Unknown
+    var type:Type {
         return _type
     }
 
@@ -79,7 +78,7 @@ class RTMPMessage: NSObject {
         super.init()
     }
 
-    init(type:RTMPMessageType) {
+    init(type:Type) {
         _type = type
     }
 
@@ -101,8 +100,8 @@ class RTMPMessage: NSObject {
 
 final class RTMPSetChunkSizeMessage:RTMPMessage {
     
-    override var type:RTMPMessageType {
-        return RTMPMessageType.CHUNK_SIZE
+    override var type:Type {
+        return .ChunkSize
     }
     
     var size:Int32 = 0 {
@@ -141,15 +140,15 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
 
 final class RTMPSetPeerBandwidthMessage:RTMPMessage {
     
-    enum LIMIT:UInt8 {
-        case HARD = 0x00
-        case SOFT = 0x01
-        case DYNAMIC = 0x10
+    enum Limit:UInt8 {
+        case Hard = 0x00
+        case Soft = 0x01
+        case Dynamic = 0x10
     }
     
-    override var type:RTMPMessageType {
+    override var type:Type {
         get {
-            return RTMPMessageType.BANDWIDTH
+            return .Bandwidth
         }
     }
 
@@ -159,7 +158,7 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
         }
     }
 
-    var limit:LIMIT = LIMIT.HARD {
+    var limit:Limit = Limit.Hard {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -186,8 +185,8 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
 }
 
 final class RTMPAcknowledgementMessage: RTMPMessage {
-    override var type:RTMPMessageType {
-        return RTMPMessageType.ACK
+    override var type:Type {
+        return .Ack
     }
 
     var sequence:UInt32 = 0 {
@@ -222,8 +221,8 @@ final class RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    override var type:RTMPMessageType {
-        return objectEncoding == 0x00 ? RTMPMessageType.AMF0_COMMAND : RTMPMessageType.AMF3_COMMAND
+    override var type:Type {
+        return objectEncoding == 0x00 ? .AMF0Command : .AMF3Command
     }
     
     var commandName:String = "" {
@@ -321,8 +320,8 @@ final class RTMPCommandMessage: RTMPMessage {
 
 final class RTMPDataMessage:RTMPMessage {
 
-    override var type:RTMPMessageType {
-        return RTMPMessageType.AMF0_DATA
+    override var type:Type {
+        return .AMF0Data
     }
 
     var handlerName:String = "" {
@@ -399,6 +398,21 @@ final class RTMPDataMessage:RTMPMessage {
     }
 }
 
+final class RTMPSharedObjectMessage:RTMPMessage {
+    enum Event:UInt8 {
+        case Use = 0
+        case Release = 1
+        case RequestChange = 2
+        case Change = 3
+        case Success = 5
+        case SendMessage = 6
+        case Status = 7
+        case Clear = 8
+        case Remove = 9
+        case RequestRemove = 10
+        case UseSuccess = 11
+    }
+}
 
 final class RTMPMediaMessage:RTMPMessage {
     var buffer:NSData? = nil {
@@ -411,7 +425,7 @@ final class RTMPMediaMessage:RTMPMessage {
         super.init()
         self.streamId = streamId
         self.timestamp = timestamp
-        _type = type == RTMPSampleType.VIDEO ? RTMPMessageType.VIDEO : RTMPMessageType.AUDIO
+        _type = type == RTMPSampleType.Audio ? Type.Audio : Type.Video
         self.buffer = buffer
     }
 
@@ -434,51 +448,51 @@ final class RTMPMediaMessage:RTMPMessage {
     }
 }
 
-enum RTMPUserControlEvent:UInt8 {
-    case STREAM_BEGIN = 0x00
-    case STREAM_EOF = 0x01
-    case STREAM_DRY = 0x02
-    case SET_BUFFER = 0x03
-    case RECORDED = 0x04
-    case PING = 0x06
-    case PONG = 0x07
-    case BUFFER_EMPTY = 0x1F
-    case BUFFER_FULL = 0x20
-    case UNKNOWN = 0xFF
-
-    var description:String {
-        switch self {
-        case .STREAM_BEGIN:
-            return "NetStream.Begin"
-        case .STREAM_DRY:
-            return "NetStream.Dry"
-        case .STREAM_EOF:
-            return "NetStream.EOF"
-        case .SET_BUFFER:
-            return "SetBuffer.Length"
-        case .RECORDED:
-            return "StreamId.Recorded"
-        case .PING:
-            return "Ping"
-        case .PONG:
-            return "Pong"
-        case .BUFFER_EMPTY:
-            return "NetStream.Buffer.Empty"
-        case .BUFFER_FULL:
-            return "NetStream.Buffer.Full"
-        default:
-            return "UNKNOW"
-        }
-    }
-}
-
 final class RTMPUserControlMessage:RTMPMessage {
 
-    override var type:RTMPMessageType {
-        return RTMPMessageType.USER
+    enum Event:UInt8 {
+        case StreamBegin = 0x00
+        case StreamEof = 0x01
+        case StreamDry = 0x02
+        case SetBuffer = 0x03
+        case Recorded = 0x04
+        case Ping = 0x06
+        case Pong = 0x07
+        case BufferEmpty = 0x1F
+        case BufferFull = 0x20
+        case Unknown = 0xFF
+        
+        var description:String {
+            switch self {
+            case .StreamBegin:
+                return "NetStream.Begin"
+            case .StreamEof:
+                return "NetStream.Dry"
+            case .StreamDry:
+                return "NetStream.EOF"
+            case .SetBuffer:
+                return "SetBuffer.Length"
+            case .Recorded:
+                return "StreamId.Recorded"
+            case .Ping:
+                return "Ping"
+            case .Pong:
+                return "Pong"
+            case .BufferEmpty:
+                return "NetStream.Buffer.Empty"
+            case .BufferFull:
+                return "NetStream.Buffer.Full"
+            default:
+                return "UNKNOW"
+            }
+        }
     }
 
-    var event:RTMPUserControlEvent = RTMPUserControlEvent.UNKNOWN {
+    override var type:Type {
+        return .User
+    }
+
+    var event:Event = Event.Unknown {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -498,7 +512,7 @@ final class RTMPUserControlMessage:RTMPMessage {
             if (super.payload == newValue) {
                 return
             }
-            if let event:RTMPUserControlEvent = RTMPUserControlEvent(rawValue: newValue[1]) {
+            if let event:Event = Event(rawValue: newValue[1]) {
                 self.event = event
             }
             super.payload = newValue
@@ -517,7 +531,7 @@ final class RTMPUserControlMessage:RTMPMessage {
         super.init()
     }
     
-    init(event:RTMPUserControlEvent) {
+    init(event:Event) {
         super.init()
         self.event = event
     }
@@ -526,8 +540,8 @@ final class RTMPUserControlMessage:RTMPMessage {
 
 final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
     
-    override var type:RTMPMessageType {
-        return RTMPMessageType.WINDOW_ACK
+    override var type:Type {
+        return .WindowAck
     }
 
     var size:UInt32 = 0 {

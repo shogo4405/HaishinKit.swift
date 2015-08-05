@@ -1,27 +1,5 @@
 import Foundation
 
-enum RTMPChunkType:UInt8 {
-    case ZERO  = 0
-    case ONE   = 1
-    case TWO   = 2
-    case THREE = 3
-
-    var headerSize:Int {
-        get {
-            switch self {
-            case .ZERO:
-                return 11
-            case .ONE:
-                return 7
-            case .TWO:
-                return 3
-            case .THREE:
-                return 0
-            }
-        }
-    }
-}
-
 enum RTMPChunkStreamId:UInt32 {
     case CONRTOL = 0x02
     case COMMAND = 0x03
@@ -30,11 +8,33 @@ enum RTMPChunkStreamId:UInt32 {
 }
 
 final class RTMPChunk: NSObject {
-    var type:RTMPChunkType = RTMPChunkType.ZERO
+
+    enum Type:UInt8 {
+        case Zero = 0
+        case One = 1
+        case Two = 2
+        case Three = 3
+        
+        var headerSize:Int {
+            get {
+                switch self {
+                case .Zero:
+                    return 11
+                case .One:
+                    return 7
+                case .Two:
+                    return 3
+                case .Three:
+                    return 0
+                }
+            }
+        }
+    }
+
+    var type:Type = Type.Zero
     var streamId:UInt32 = RTMPChunkStreamId.COMMAND.rawValue
 
     private var _message:RTMPMessage?
-
     var message:RTMPMessage? {
         return _message
     }
@@ -48,9 +48,8 @@ final class RTMPChunk: NSObject {
         }
         return 3 + type.headerSize
     }
-    
+
     private var _bytes:[UInt8] = []
-    
     var bytes:[UInt8] {
         get {
             if (!_bytes.isEmpty) {
@@ -70,7 +69,7 @@ final class RTMPChunk: NSObject {
             _bytes.append(length[0])
             _bytes.append(message!.type.rawValue)
 
-            if (type == RTMPChunkType.ONE) {
+            if (type == Type.One) {
                 return _bytes + message!.payload
             }
     
@@ -104,20 +103,20 @@ final class RTMPChunk: NSObject {
             }
 
             _bytes += Array(newValue[0..<headerSize])
-            if (self.type == RTMPChunkType.THREE) {
+            if (self.type == Type.Three) {
                 return
             }
 
             var message:RTMPMessage = RTMPMessage.create(newValue[pos + 6])
             message.timestamp = UInt32(bytes: ([0x00] + Array(newValue[pos..<pos + 3])).reverse())
 
-            if (self.type == RTMPChunkType.TWO) {
+            if (self.type == Type.Two) {
                 return
             }
 
             message.length = Int(Int32(bytes: ([0x00] + Array(newValue[pos + 3..<pos + 6])).reverse()))
 
-            if (self.type == RTMPChunkType.ZERO) {
+            if (self.type == Type.Zero) {
                 message.streamId = UInt32(bytes: Array(newValue[pos + 7...pos + headerSize - 1]))
             } else {
                 message.streamId = streamId
@@ -157,7 +156,7 @@ final class RTMPChunk: NSObject {
             return nil
         }
 
-        let type:RTMPChunkType? = RTMPChunkType(rawValue: (bytes[0] & 0b11000000) >> 6)
+        let type:Type? = Type(rawValue: (bytes[0] & 0b11000000) >> 6)
         if (type == nil) {
             return nil
         }
@@ -183,7 +182,7 @@ final class RTMPChunk: NSObject {
         self.bytes = bytes
     }
 
-    init(type:RTMPChunkType, streamId:UInt32, message:RTMPMessage) {
+    init(type:Type, streamId:UInt32, message:RTMPMessage) {
         self.type = type
         self.streamId = streamId
         _message = message
@@ -207,7 +206,7 @@ final class RTMPChunk: NSObject {
 
         var total:Int = chunkSize + headerSize
         var basicHeader:[UInt8] = []
-        basicHeader.append(RTMPChunkType.THREE.rawValue << 6 | UInt8(streamId))
+        basicHeader.append(Type.Three.rawValue << 6 | UInt8(streamId))
 
         var result:[[UInt8]] = []
         result.append(Array(bytes[0..<total]))

@@ -12,7 +12,11 @@ class AMF0SerializerTests: XCTestCase {
         super.tearDown()
     }
 
-    func testHoge() {
+    func testString() {
+        var position:Int = 0
+        var string:String = "Hello World!!"
+        let bytes:[UInt8] = amf0.serialize(string)
+        XCTAssertEqual(string, amf0.deserialize(bytes, position: &position))
     }
 }
 
@@ -34,7 +38,7 @@ class AMF3SerializerTests: XCTestCase {
         XCTAssertEqual(value, amf3.deserialize(bytes, position: &position))
     }
 
-    func testUTF8() {
+    func testString() {
         var position:Int = 0
         let value:String = "Hello World!!"
         let bytes:[UInt8] = amf3.serialize(value)

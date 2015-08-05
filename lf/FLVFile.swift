@@ -1,30 +1,30 @@
 import Foundation
 
-enum FLVTagType:UInt8, Printable {
-    case AUDIO = 8
-    case VIDEO = 9
-    case DATA  = 18
-    case UNKOWN = 0xFF
+struct FLVTag: Printable {
 
-    var description:String {
-        switch self {
-        case .AUDIO:
-            return "audio"
-        case .VIDEO:
-            return "video"
-        case .DATA:
-            return "data"
-        default:
-            return "unknown"
+    enum Type:UInt8, Printable {
+        case Audio = 8
+        case Video = 9
+        case Data  = 18
+        case Unkown = 0xFF
+        
+        var description:String {
+            switch self {
+            case .Audio:
+                return "audio"
+            case .Video:
+                return "video"
+            case .Data:
+                return "data"
+            default:
+                return "unknown"
+            }
         }
     }
-}
-
-struct FLVTag: Printable {
 
     static let headerSize = 11
 
-    var type:FLVTagType = FLVTagType.UNKOWN
+    var type:Type = Type.Unkown
     var dataSize:UInt32 = 0
     var timestamp:UInt32 = 0
     var timestampExtended:UInt8 = 0
@@ -42,8 +42,8 @@ struct FLVTag: Printable {
     }
 
     init(data:NSData) {
-        var buffer:ByteArray = ByteArray(data: data)
-        type = FLVTagType(rawValue: buffer.readUInt8())!
+        let buffer:ByteArray = ByteArray(data: data)
+        type = Type(rawValue: buffer.readUInt8())!
         dataSize = buffer.readUInt24()
         timestamp = buffer.readUInt24()
         timestampExtended = buffer.readUInt8()
@@ -52,17 +52,14 @@ struct FLVTag: Printable {
     }
 }
 
-public class FLVFile {
+class FLVFile {
     static let headerSize = 13
     static let signature:String = "FLV"
 
     var tags:[FLVTag] = []
     var version:UInt8 = 0
 
-    public init() {
-    }
-
-    public func loadFile(fileHandle:NSFileHandle) {
+    func loadFile(fileHandle:NSFileHandle) {
         var buffer:ByteArray = ByteArray(data:fileHandle.readDataOfLength(FLVFile.headerSize))
 
         let signature:String = buffer.read(3)

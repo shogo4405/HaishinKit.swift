@@ -26,6 +26,10 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         ]
     ]
 
+    private static func createTemporaryURL() -> NSURL {
+        return NSURL(fileURLWithPath: NSTemporaryDirectory().stringByAppendingPathComponent(NSUUID().UUIDString + ".mp4"))!
+    }
+
     var isEmpty:Bool {
         return files.isEmpty
     }
@@ -35,10 +39,10 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     var expectsMediaDataInRealTime:Bool = true
     var audioSettings:Dictionary<String, AnyObject> = MP4Encoder.defaultAudioSettings
     var videoSettings:Dictionary<String, AnyObject> = MP4Encoder.defaultVideoSettings
-    let captureQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.capture", DISPATCH_QUEUE_SERIAL)
+    let audioQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.audioQueue", DISPATCH_QUEUE_SERIAL)
+    let videoQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.videoQueue", DISPATCH_QUEUE_SERIAL)
 
     private var files:[NSURL] = []
-    private var time:CMTime = kCMTimeZero
     private var rotateTime:CMTime = CMTimeAdd(kCMTimeZero, CMTimeMake(MP4Encoder.defaultDuration, 1))
     private var writer:AVAssetWriter? = nil
     private var writers:Dictionary<NSURL, AVAssetWriter> = [:]
@@ -82,28 +86,21 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+
         if (!recording || CMSampleBufferDataIsReady(sampleBuffer) == 0) {
             return
         }
 
-        var mediaType:String = AVMediaTypeAudio
-        if (captureOutput is AVCaptureVideoDataOutput) {
-            mediaType = AVMediaTypeVideo
+        let mediaType:String = captureOutput is AVCaptureAudioDataOutput ? AVMediaTypeAudio : AVMediaTypeVideo
+        let timestamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+
+        if (rotateTime.value < timestamp.value) {
+            rotateAssetWriter(timestamp, mediaType: mediaType)
         }
 
-        time = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        dispatch_sync(lockQueue) {
-            if (self.rotateTime.value <= self.time.value) {
-                self.rotateAssetWriter(self.time)
-            }
-        }
-        
         for input in writer!.inputs {
             let input:AVAssetWriterInput = input as! AVAssetWriterInput
-            if (input.mediaType != mediaType) {
-                continue
-            }
-            if (input.readyForMoreMediaData) {
+            if (input.mediaType == mediaType && input.readyForMoreMediaData) {
                 input.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -112,53 +109,47 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
     }
 
-    private func rotateAssetWriter(time:CMTime) {
-        rotateTime = CMTimeAdd(time, CMTimeMake(duration, 1))
+    private func rotateAssetWriter(timestamp:CMTime, mediaType:String) {
+        dispatch_suspend(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
+        rotateTime = CMTimeAdd(timestamp, CMTimeMake(duration, 1))
+        let writer:AVAssetWriter? = self.writer
+        self.writer = createAssetWriter()
+        dispatch_resume(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
 
-        var currentWriter:AVAssetWriter? = self.writer
-
-        if (self.writer != nil) {
-            let outputURL:NSURL = self.writer!.outputURL
-            writers[outputURL] = self.writer
-            for input in self.writer!.inputs {
+        if (writer != nil) {
+            let outputURL:NSURL = writer!.outputURL
+            writers[outputURL] = writer
+            for input in writer!.inputs {
                 if let input:AVAssetWriterInput = input as? AVAssetWriterInput {
                     input.markAsFinished()
                 }
             }
-            self.writer!.finishWritingWithCompletionHandler {
+            writer!.finishWritingWithCompletionHandler {
                 self.onFinishWriting(outputURL)
             }
         }
+    }
 
+    private func createAssetWriter() -> AVAssetWriter {
+        var error:NSError?
         let writer:AVAssetWriter = AVAssetWriter(
-            URL: createTemporaryURL(),
+            URL: MP4Encoder.createTemporaryURL(),
             fileType: AVFileTypeMPEG4,
-            error: nil
+            error: &error
         )
-        // writer.movieFragmentInterval = CMTimeMake(2, 1)
-        writer.addInput(createAudioInput(audioSettings))
-        writer.addInput(createVideoInput(videoSettings))
+
+        let audio:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
+        audio.expectsMediaDataInRealTime = expectsMediaDataInRealTime
+        writer.addInput(audio)
+
+        let video:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
+        video.expectsMediaDataInRealTime = expectsMediaDataInRealTime
+        writer.addInput(video)
+
         writer.startWriting()
-        writer.startSessionAtSourceTime(time)
+        writer.startSessionAtSourceTime(kCMTimeZero)
 
-        self.writer = writer
-    }
-
-    private func createAudioInput(outputSetting:Dictionary<String, AnyObject>) -> AVAssetWriterInput {
-        let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: outputSetting)
-        input.expectsMediaDataInRealTime = expectsMediaDataInRealTime
-        return input
-    }
-
-    private func createVideoInput(outputSetting:Dictionary<String, AnyObject>) -> AVAssetWriterInput {
-        let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: outputSetting)
-        input.expectsMediaDataInRealTime = expectsMediaDataInRealTime
-        return input
-    }
-
-    private func createTemporaryURL() -> NSURL {
-        let path:String = NSTemporaryDirectory().stringByAppendingPathComponent(NSUUID().UUIDString)
-        return NSURL(fileURLWithPath: path)!
+        return writer
     }
 
     private func onFinishWriting(url:NSURL) {

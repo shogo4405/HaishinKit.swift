@@ -1,54 +1,54 @@
 import Foundation
 
 enum RTMPFrameType:UInt8 {
-    case KEY = 1
-    case INTER = 2
-    case DISPOSABLE = 3
-    case GENERATED = 4
-    case COMMAND = 5
+    case Key = 1
+    case Inter = 2
+    case Disposable = 3
+    case Generated = 4
+    case Command = 5
 }
 
 enum RTMPAVCPacketType:UInt8 {
-    case SEQ = 0
-    case NAL = 1
-    case EOS = 2
+    case Seq = 0
+    case Nal = 1
+    case Eos = 2
 }
 
 enum RTMPAACPacketType:UInt8 {
-    case SEQ = 0
-    case RAW = 1
+    case Seq = 0
+    case Raw = 1
 }
 
 enum RTMPAudioCodec:UInt8 {
     case PCM = 0
     case ADPCM = 1
     case MP3 = 2
-    case PCM_LE = 3
-    case NELLYMOSER_16K = 4
-    case NELLYMOSER_8K = 5
-    case NELLYMOSER = 6
+    case PCMLE = 3
+    case Nellymoser16K = 4
+    case Nellymoser8K = 5
+    case Nellymoser = 6
     case G711A = 7
     case G711MU = 8
     case AAC = 10
-    case SPEEX = 11
-    case MP3_8K = 14
+    case Speex = 11
+    case MP3_8k = 14
 }
 
 enum RTMPSoundRate:UInt8 {
-    case kHz5_5 = 0
-    case kHz11 = 1
-    case kHz22 = 2
-    case kHz44 = 3
+    case KHz5_5 = 0
+    case KHz11 = 1
+    case KHz22 = 2
+    case KHz44 = 3
 }
 
 enum RTMPSoundSize:UInt8 {
-    case snd8bit = 0
-    case snd16bit = 1
+    case Snd8bit = 0
+    case Snd16bit = 1
 }
 
 enum RTMPSoundType:UInt8 {
-    case sndMono = 0
-    case sndStereo = 1
+    case Mono = 0
+    case Stereo = 1
 }
 
 enum RTMPVideoCodec:UInt8 {
@@ -61,14 +61,14 @@ enum RTMPVideoCodec:UInt8 {
 }
 
 enum RTMPSampleType:UInt8 {
-    case VIDEO = 0
-    case AUDIO = 1
+    case Video = 0
+    case Audio = 1
 
     var headerSize:Int {
         switch self {
-        case .VIDEO:
+        case .Video:
             return 5
-        case .AUDIO:
+        case .Audio:
             return 2
         }
     }
@@ -98,24 +98,24 @@ final class RTMPMuxer: MP4Sampler {
             for i in 0..<sampleTables.count {
 
                 if let avcC:MP4Box = sampleTables[i].trak.getBoxesByName("avcC").first {
-                    sampleTypes[i] = RTMPSampleType.VIDEO
+                    sampleTypes[i] = RTMPSampleType.Video
                     let buffer:NSMutableData = NSMutableData()
-                    var data:[UInt8] = [0x00, RTMPAVCPacketType.SEQ.rawValue, 0x00, 0x00, 0x00]
-                    data[0] = RTMPFrameType.KEY.rawValue << 4 | RTMPVideoCodec.AVC.rawValue
+                    var data:[UInt8] = [0x00, RTMPAVCPacketType.Seq.rawValue, 0x00, 0x00, 0x00]
+                    data[0] = RTMPFrameType.Key.rawValue << 4 | RTMPVideoCodec.AVC.rawValue
                     buffer.appendBytes(&data, length: data.count)
                     buffer.appendData(currentFile.readDataOfBox(avcC))
-                    delegate?.sampleOutput(self, type: RTMPSampleType.VIDEO, timestamp: 0, buffer: buffer)
+                    delegate?.sampleOutput(self, type: RTMPSampleType.Video, timestamp: 0, buffer: buffer)
                     timestamps[i] = 0
                 }
                 
                 if let esds:MP4ElementaryStreamDescriptorBox = sampleTables[i].trak.getBoxesByName("esds").first as? MP4ElementaryStreamDescriptorBox {
-                    sampleTypes[i] = RTMPSampleType.AUDIO
+                    sampleTypes[i] = RTMPSampleType.Audio
                     let buffer:NSMutableData = NSMutableData()
-                    var data:[UInt8] = [0x00, RTMPAACPacketType.SEQ.rawValue]
-                    data[0] = RTMPAudioCodec.AAC.rawValue << 4 | RTMPSoundRate.kHz44.rawValue << 2 | RTMPSoundSize.snd16bit.rawValue << 1 | RTMPSoundType.sndStereo.rawValue
+                    var data:[UInt8] = [0x00, RTMPAACPacketType.Seq.rawValue]
+                    data[0] = RTMPAudioCodec.AAC.rawValue << 4 | RTMPSoundRate.KHz44.rawValue << 2 | RTMPSoundSize.Snd16bit.rawValue << 1 | RTMPSoundType.Stereo.rawValue
                     data += esds.audioDecorderSpecificConfig
                     buffer.appendBytes(&data, length: data.count)
-                    delegate?.sampleOutput(self, type: RTMPSampleType.AUDIO, timestamp: 0, buffer: buffer)
+                    delegate?.sampleOutput(self, type: RTMPSampleType.Audio, timestamp: 0, buffer: buffer)
                     timestamps[i] = 0
                 }
             }
@@ -130,7 +130,6 @@ final class RTMPMuxer: MP4Sampler {
 
     override func prepareForRunning() -> Bool{
         if (currentFile.url != nil) {
-            currentFile.closeFile()
             encoder!.remove(currentFile.url!)
         }
         currentFile.url = encoder!.shift()
@@ -148,14 +147,14 @@ final class RTMPMuxer: MP4Sampler {
         var data:[UInt8] = [UInt8](count: type!.headerSize, repeatedValue: 0x00)
 
         switch type! {
-        case RTMPSampleType.VIDEO:
-            data[0] = ((keyframe ? RTMPFrameType.KEY.rawValue : RTMPFrameType.INTER.rawValue) << 4) | RTMPVideoCodec.AVC.rawValue
-            data[1] = RTMPAVCPacketType.NAL.rawValue
+        case RTMPSampleType.Video:
+            data[0] = ((keyframe ? RTMPFrameType.Key.rawValue : RTMPFrameType.Inter.rawValue) << 4) | RTMPVideoCodec.AVC.rawValue
+            data[1] = RTMPAVCPacketType.Nal.rawValue
             break
-        case RTMPSampleType.AUDIO:
+        case RTMPSampleType.Audio:
             // XXX: 実際のデータの内容に関わらず固定です
-            data[0] = RTMPAudioCodec.AAC.rawValue << 4 | RTMPSoundRate.kHz44.rawValue << 2 | RTMPSoundSize.snd16bit.rawValue << 1 | RTMPSoundType.sndStereo.rawValue
-            data[1] = RTMPAACPacketType.RAW.rawValue
+            data[0] = RTMPAudioCodec.AAC.rawValue << 4 | RTMPSoundRate.KHz44.rawValue << 2 | RTMPSoundSize.Snd16bit.rawValue << 1 | RTMPSoundType.Stereo.rawValue
+            data[1] = RTMPAACPacketType.Raw.rawValue
             break
         }
 

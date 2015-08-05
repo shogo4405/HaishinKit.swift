@@ -44,7 +44,6 @@ public struct ECMAArray: ArrayLiteralConvertible, Printable {
 }
 
 protocol AMFSerializer {
-
     func serialize(value:Bool) -> [UInt8]
     func deserialize(bytes:[UInt8], inout position:Int) -> Bool
 
@@ -140,33 +139,31 @@ class AMFReference: NSObject {
  */
 class AMF0Serializer:AMFSerializer {
     
-    enum TYPE:UInt8 {
-        case NUMBER      = 0x00
-        case BOOL        = 0x01
-        case STRING      = 0x02
-        case OBJECT      = 0x03
-        //  case MOVIECLIP   = 0x04
-        case NULL        = 0x05
-        case UNDEFINED   = 0x06
-        case REFERENCE   = 0x07
-        case ECMAARRAY   = 0x08
-        case OBJECTTERM  = 0x09
-        case STRICTARRAY = 0x0a
-        case DATE        = 0x0b
-        case LONGSTRING  = 0x0c
-        case UNSUPPORTED = 0x0d
-        //  case RECORDSET   = 0x0e
-        case XML         = 0x0f
-        case TYPEDOBJECT = 0x10
-        case AVMPLUSH    = 0x11
+    enum Type:UInt8 {
+        case Number      = 0x00
+        case Bool        = 0x01
+        case String      = 0x02
+        case Object      = 0x03
+        // case MovieClip   = 0x04
+        case Null        = 0x05
+        case Undefined   = 0x06
+        case Reference   = 0x07
+        case ECMAArray   = 0x08
+        case ObjectEnd   = 0x09
+        case StrictArray = 0x0a
+        case Date        = 0x0b
+        case LongString  = 0x0c
+        case Unsupported = 0x0d
+        // case RecordSet   = 0x0e
+        case XmlDocument = 0x0f
+        case TypedObject = 0x10
+        case Avmplush    = 0x11
     }
 
     func serialize(value:Any?) -> [UInt8] {
-        
         if value == nil {
-            return [TYPE.NULL.rawValue]
+            return [Type.Null.rawValue]
         }
-        
         switch value {
         case let value as Int:
             return serialize(Double(value))
@@ -201,88 +198,71 @@ class AMF0Serializer:AMFSerializer {
         case let value as ECMAObject:
             return serialize(value)
         default:
-            return [TYPE.UNDEFINED.rawValue]
+            return [Type.Undefined.rawValue]
         }
     }
-    
+
     func deserialize(bytes: [UInt8], inout position: Int) -> Any? {
         switch bytes[position] {
-        case TYPE.NUMBER.rawValue:
+        case Type.Number.rawValue:
             return deserialize(bytes, position: &position) as Double
-        case TYPE.BOOL.rawValue:
+        case Type.Bool.rawValue:
             return deserialize(bytes, position: &position) as Bool
-        case TYPE.STRING.rawValue:
+        case Type.String.rawValue:
             return deserialize(bytes, position: &position) as String
-        case TYPE.OBJECT.rawValue:
+        case Type.Object.rawValue:
             return deserialize(bytes, position: &position) as ECMAObject
-        case TYPE.NULL.rawValue:
+        case Type.Null.rawValue:
             ++position
             return nil
-        case TYPE.UNDEFINED.rawValue:
+        case Type.Undefined.rawValue:
             ++position
-            return TYPE.UNDEFINED
-        case 0x07:
+            return Type.Undefined
+        case Type.Reference.rawValue:
+            assertionFailure("TODO")
             return nil
-        case TYPE.ECMAARRAY.rawValue:
+        case Type.ECMAArray.rawValue:
             return deserialize(bytes, position: &position) as ECMAArray
-        case 0x09:
+        case Type.ObjectEnd.rawValue:
+            assertionFailure()
             return nil
-        case TYPE.STRICTARRAY.rawValue:
+        case Type.StrictArray.rawValue:
             return deserialize(bytes, position: &position) as [Any?]
-        case 0x0b:
-            return nil
-        case 0x0c:
-            return nil
-        case 0x0d:
-            return nil
-        case 0x0b:
+        case Type.Date.rawValue:
             return deserialize(bytes, position: &position) as NSDate
-        case 0x0c:
+        case Type.LongString.rawValue:
             return deserialize(bytes, position: &position) as String
-        case 0x0d:
-            return TYPE.UNSUPPORTED
+        case Type.Unsupported.rawValue:
+            assertionFailure("Unsupported")
+            return nil
+        case Type.XmlDocument.rawValue:
+            assertionFailure("TODO")
+            return nil
+        case Type.TypedObject.rawValue:
+            assertionFailure("TODO")
+            return nil
+        case Type.Avmplush.rawValue:
+            assertionFailure("TODO")
+            return nil
         default:
+            assertionFailure("Unknown")
             return nil
         }
-    }
-    
-    private func invalidDeserialize(type:TYPE, bytes:[UInt8], inout position: Int) -> Bool {
-        if (bytes.count < position || bytes[position] != type.rawValue) {
-            return true
-        }
-        ++position
-        return false
-    }
-    
-    private func serialize(value:String, longString: Bool) -> [UInt8] {
-        var result:[UInt8] = []
-        var buffer:[UInt8] = [UInt8](value.utf8)
-        
-        if (longString) {
-            var len:Int32 = Int32(buffer.count)
-            result += [UInt8(len >> 24), UInt8(len >> 16), UInt8(len >> 8), UInt8(len)]
-        } else {
-            var len:Int16 = Int16(buffer.count)
-            result += [UInt8(len >> 8), UInt8(len)]
-        }
-        result += buffer
-        
-        return result
     }
 
     /**
      * @see 2.2 Number Type
      */
     func serialize(value:Double) -> [UInt8] {
-        return [TYPE.NUMBER.rawValue] + value.bytes.reverse()
+        return [Type.Number.rawValue] + value.bytes.reverse()
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> Double {
-        if (invalidDeserialize(TYPE.NUMBER, bytes: bytes, position: &position)) {
+        if (bytes.count < position || bytes[position] != Type.Number.rawValue) {
             assertionFailure()
             return 0
         }
-        let start:Int = position
+        let start:Int = ++position
         position += sizeof(Double.self)
         return Double(bytes: Array(bytes[start..<position].reverse()))
     }
@@ -290,21 +270,20 @@ class AMF0Serializer:AMFSerializer {
     func serialize(value:Int) -> [UInt8] {
         return serialize(Double(value))
     }
-    
+
     func deserialize(bytes:[UInt8], inout position:Int) -> Int {
-        let value:Double = deserialize(bytes, position: &position)
-        return Int(value)
+        return Int(deserialize(bytes, position: &position) as Double)
     }
 
     /**
      * @see 2.3 Boolean Type
      */
     func serialize(value:Bool) -> [UInt8] {
-        return [TYPE.BOOL.rawValue, value ? 0x01 : 0x00]
+        return [Type.Bool.rawValue, value ? 0x01 : 0x00]
     }
     
     func deserialize(bytes: [UInt8], inout position: Int) -> Bool {
-        if (bytes.count < position || bytes[position] != TYPE.BOOL.rawValue) {
+        if (bytes.count < position || bytes[position] != Type.Bool.rawValue) {
             assertionFailure()
             return false
         }
@@ -316,24 +295,24 @@ class AMF0Serializer:AMFSerializer {
      * @see 2.4 String Type
      */
     func serialize(value:String) -> [UInt8] {
-        let longString:Bool = Int32.max < Int32(count(value))
-        return [longString ? TYPE.STRING.rawValue : TYPE.STRING.rawValue] + serialize(value, longString: longString)
+        let isLong:Bool = UInt32(UInt16.max) < UInt32(count(value))
+        return [isLong ? Type.LongString.rawValue : Type.String.rawValue] + serializeUTF8(value, isLong: isLong)
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> String {
-        
         if (bytes.count < position) {
+            assertionFailure()
             return ""
         }
-        
         switch bytes[position] {
-        case TYPE.STRING.rawValue:
+        case Type.String.rawValue:
             ++position
-            return deserialize(bytes, position: &position, longString: false)
-        case TYPE.LONGSTRING.rawValue:
+            return deserializeUTF8(bytes, position: &position, isLong: false)
+        case Type.LongString.rawValue:
             ++position
-            return deserialize(bytes, position: &position, longString: true)
+            return deserializeUTF8(bytes, position: &position, isLong: true)
         default:
+            assertionFailure()
             return ""
         }
     }
@@ -343,40 +322,39 @@ class AMF0Serializer:AMFSerializer {
      * typealias ECMAObject = Dictionary<String, Any?>
      */
     func serialize(value:ECMAObject) -> [UInt8] {
-        
-        var bytes:[UInt8] = [TYPE.OBJECT.rawValue]
+        var bytes:[UInt8] = [Type.Object.rawValue]
         for (key, data) in value {
-            bytes += serialize(key, longString: false)
+            bytes += serializeUTF8(key, isLong: false)
             bytes += serialize(data)
         }
-        
-        bytes += serialize("", longString: false)
-        bytes.append(TYPE.OBJECTTERM.rawValue)
-        
+        bytes += serializeUTF8("", isLong: false)
+        bytes.append(Type.ObjectEnd.rawValue)
         return bytes
     }
-    
+
     func deserialize(bytes: [UInt8], inout position: Int) -> ECMAObject {
         var result:ECMAObject = ECMAObject()
-        
-        if (bytes[position] == TYPE.NULL.rawValue) {
+        if (bytes.count < position) {
+            assertionFailure()
+            return result
+        }
+        if (bytes[position] == Type.Null.rawValue) {
             ++position
             return result
         }
-        
-        if (invalidDeserialize(TYPE.OBJECT, bytes: bytes, position: &position)) {
+        if (bytes[position] != Type.Object.rawValue) {
+            assertionFailure()
             return result
         }
-        
+        ++position
         while (true) {
-            var key:String = deserialize(bytes, position: &position, longString: false)
+            var key:String = deserializeUTF8(bytes, position: &position, isLong: false)
             if (key == "") {
                 ++position
                 break
             }
             result[key] = deserialize(bytes, position: &position)
         }
-        
         return result
     }
 
@@ -390,24 +368,29 @@ class AMF0Serializer:AMFSerializer {
     func deserialize(bytes: [UInt8], inout position: Int) -> ECMAArray {
         var result:ECMAArray = ECMAArray()
         
-        if (bytes[position] == TYPE.NULL.rawValue) {
+        if (bytes.count < position) {
+            assertionFailure()
+            return result
+        }
+        
+        if (bytes[position] == Type.Null.rawValue) {
             ++position
             return result
         }
-        
-        if (invalidDeserialize(TYPE.ECMAARRAY, bytes: bytes, position: &position)) {
+        if (bytes[position] != Type.ECMAArray.rawValue) {
+            assertionFailure()
             return result
         }
-        
+
+        ++position
         while (true) {
-            var key:String = deserialize(bytes, position: &position, longString: false)
+            var key:String = deserializeUTF8(bytes, position: &position, isLong: false)
             if (key == "") {
                 ++position
                 break
             }
             result[key] = deserialize(bytes, position: &position)
         }
-        
         return result
     }
 
@@ -415,23 +398,20 @@ class AMF0Serializer:AMFSerializer {
      * @see 2.12 Strict Array Type
      */
     func serialize(value:[Any?]) -> [UInt8] {
-        
         if (value.isEmpty) {
-            return [TYPE.STRICTARRAY.rawValue, 0x00, 0x00, 0x00, 0x00]
+            return [Type.StrictArray.rawValue, 0x00, 0x00, 0x00, 0x00]
         }
-
-        var bytes:[UInt8] = [TYPE.STRICTARRAY.rawValue]
+        var bytes:[UInt8] = [Type.StrictArray.rawValue]
         let length:UInt32 = UInt32(value.count) + 1
         bytes += [UInt8(length >> 24), UInt8(length >> 16), UInt8(length >> 8), UInt8(length)]
         for v in value {
             bytes += serialize(v)
         }
-
         return bytes
     }
     
     func deserialize(bytes: [UInt8], inout position: Int) -> [Any?] {
-        if (bytes[position] != TYPE.STRICTARRAY.rawValue) {
+        if (bytes[position] != Type.StrictArray.rawValue) {
             assertionFailure()
             return []
         }
@@ -450,33 +430,41 @@ class AMF0Serializer:AMFSerializer {
      * @see 2.13 Date Type
      */
     func serialize(value:NSDate) -> [UInt8] {
-        var bytes:[UInt8] = value.timeIntervalSince1970.bytes
-        return [TYPE.DATE.rawValue] + bytes + [0x00, 0x00]
+        let bytes:[UInt8] = value.timeIntervalSince1970.bytes
+        return [Type.Date.rawValue] + bytes + [0x00, 0x00]
     }
     
     func deserialize(bytes: [UInt8], inout position: Int) -> NSDate {
-        if (invalidDeserialize(TYPE.DATE, bytes: bytes, position: &position)) {
+        if (bytes.count < position || bytes[position] != Type.Date.rawValue) {
+            assertionFailure()
             return NSDate()
         }
-        
-        var data:Double = Double(bytes: Array(bytes[position...position + 7]))
-        var date:NSDate = NSDate(timeIntervalSince1970: data)
-        position += 7 + 2
-        
+        let start:Int = ++position
+        position += sizeof(Double.self)
+        let date:NSDate = NSDate(timeIntervalSince1970: Double(bytes: Array(bytes[start..<position])))
+        position += 2 // timezone offset
         return date
     }
 
-    private func deserialize(bytes:[UInt8], inout position:Int, longString:Bool) -> String {
-        
-        var length:Int = (Int(bytes[position]) << 8) | Int(bytes[++position])
-        var start:Int = ++position
-        position += length
-        
-        if (length == 0) {
-            return ""
+    private func serializeUTF8(value:String, isLong: Bool) -> [UInt8] {
+        let buffer:[UInt8] = [UInt8](value.utf8)
+        if (isLong) {
+            let length:UInt32 = UInt32(buffer.count).bigEndian
+            return length.bytes + buffer
         }
-        
-        return String(bytes: Array(bytes[start...position - 1]), encoding: NSUTF8StringEncoding)!
+        let length:UInt16 = UInt16(buffer.count).bigEndian
+        return length.bytes + buffer
+    }
+
+    private func deserializeUTF8(bytes:[UInt8], inout position:Int, isLong:Bool) -> String {
+        var start:Int = position
+        position += isLong ? sizeof(UInt32.self) : sizeof(UInt16.self)
+        let length:Int = isLong ?
+            Int(UInt32(bytes: Array(bytes[start..<position])).bigEndian) :
+            Int(UInt16(bytes: Array(bytes[start..<position])).bigEndian)
+        start = position
+        position += length
+        return String(bytes: Array(bytes[start..<position]), encoding: NSUTF8StringEncoding)!
     }
 }
 

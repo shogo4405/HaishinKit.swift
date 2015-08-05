@@ -2,24 +2,25 @@ import Foundation
 
 protocol RTMPSocketDelegate: class {
     func listen(socket: RTMPSocket, bytes:[UInt8])
-    func didSetReadyState(socket: RTMPSocket, readyState:RTMPSocketReadyState)
-}
-
-enum RTMPSocketReadyState:UInt8 {
-    case INITIALIZED = 1
-    case VERSION_SENT = 2
-    case ACK_SENT = 3
-    case HANDSHAKE_DONE = 4
-    case CLOSING = 5
-    case CLOSED = 6
+    func didSetReadyState(socket: RTMPSocket, readyState:RTMPSocket.ReadyState)
 }
 
 final class RTMPSocket: NSObject, NSStreamDelegate {
+
+    enum ReadyState:UInt8 {
+        case Initialized = 1
+        case VersionSent = 2
+        case AckSent = 3
+        case HandshakeDone = 4
+        case Closing = 5
+        case Closed = 6
+    }
+    
     static let sigSize:Int = 1536
     static let defaultChunkSize:Int = 128
     static let defaultBufferSize:Int = 1024
 
-    var readyState:RTMPSocketReadyState = RTMPSocketReadyState.INITIALIZED {
+    var readyState:ReadyState = ReadyState.Initialized {
         didSet {
             delegate?.didSetReadyState(self, readyState: readyState)
         }
@@ -61,7 +62,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     func close() {
-        readyState = RTMPSocketReadyState.CLOSING
+        readyState = ReadyState.Closing
 
         inputStream!.delegate = nil
         inputStream!.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
@@ -75,7 +76,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         outputStream = nil
 
         running = false
-        readyState = RTMPSocketReadyState.CLOSED
+        readyState = ReadyState.Closed
     }
 
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
@@ -102,8 +103,8 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     private func initConnection(host:CFString, port:UInt32) {
-        var readStream:Unmanaged<CFReadStream>?
-        var writeStream:Unmanaged<CFWriteStream>?
+        var readStream:Unmanaged<CFReadStream>? = nil
+        var writeStream:Unmanaged<CFWriteStream>? = nil
 
         timestamp = 0
         chunkSizeS = RTMPSocket.defaultChunkSize
@@ -140,7 +141,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
 
     private func doOutputProcess(bytes:[UInt8]) {
         dispatch_async(outputQueue) {
-            if (RTMPSocketReadyState.HANDSHAKE_DONE.rawValue < self.readyState.rawValue) {
+            if (ReadyState.HandshakeDone.rawValue < self.readyState.rawValue) {
                 return
             }
             var total:Int = 0
@@ -158,7 +159,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
 
     private func handleEvent() {
         switch readyState {
-        case .INITIALIZED:
+        case .Initialized:
             timestamp = NSDate().timeIntervalSince1970
             let c1packet:ByteArray = ByteArray()
             c1packet.write(Int32(timestamp))
@@ -168,9 +169,9 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             }
             doWrite([objectEncoding])
             doWrite(c1packet.bytes)
-            readyState = RTMPSocketReadyState.VERSION_SENT
+            readyState = ReadyState.VersionSent
             break
-        case .VERSION_SENT:
+        case .VersionSent:
             if (inputBuffer.count < RTMPSocket.sigSize + 1) {
                 break
             }
@@ -180,17 +181,17 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             c2packet.write(Array(inputBuffer[9...RTMPSocket.sigSize]))
             doWrite(c2packet.bytes)
             inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
-            readyState = RTMPSocketReadyState.ACK_SENT
+            readyState = ReadyState.AckSent
             break
-        case .ACK_SENT:
+        case .AckSent:
             if (inputBuffer.count < RTMPSocket.sigSize) {
                 break
             }
             let s2packet:[UInt8] = Array(inputBuffer[0..<RTMPSocket.sigSize])
             inputBuffer.removeAll(keepCapacity: false)
-            readyState = RTMPSocketReadyState.HANDSHAKE_DONE
+            readyState = ReadyState.HandshakeDone
             break
-        case .HANDSHAKE_DONE:
+        case .HandshakeDone:
             if (inputBuffer.isEmpty){
                 break
             }

@@ -132,7 +132,7 @@ class MP4Sampler: NSObject {
     final func internalForStartRunning() {
         while (running) {
             if (prepareForRunning()) {
-                doSampling()
+                autoreleasepool(doSampling)
                 continue
             }
             NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.1))
@@ -150,6 +150,11 @@ class MP4Sampler: NSObject {
 
         currentFile.loadFile()
 
+        var videoDuration:Double = 0
+        if let mdhd:MP4MediaHeaderBox = currentFile.getBoxesByName("mdhd").first! as? MP4MediaHeaderBox {
+            videoDuration = Double(mdhd.duration) / Double(mdhd.timeScale) * 1000
+        }
+ 
         var sampleTables:[MP4SampleTable] = []
         var traks:[MP4Box] = currentFile.getBoxesByName("trak")
         for i in 0..<traks.count {
@@ -157,10 +162,9 @@ class MP4Sampler: NSObject {
         }
         self.sampleTables = sampleTables
 
-        var duration:Double = 0
+        var duration:Double = sampleTables.count == 1 ? videoDuration : 0
         do {
             for i in 0..<sampleTables.count {
-
                 if i == 0 {
                     if (duration < sampleTables[i].currentDuration) {
                         continue
@@ -168,11 +172,10 @@ class MP4Sampler: NSObject {
                 } else {
                     duration = sampleTables[i].currentDuration
                     if (!sampleTables[i].hasNext()) {
-                        duration = 5000
+                        duration = videoDuration
                         continue
                     }
                 }
-
                 autoreleasepool {
                     currentFile.seekToFileOffset(sampleTables[i].currentOffset)
                     sampleOutput(i,
@@ -186,6 +189,8 @@ class MP4Sampler: NSObject {
             }
         }
         while inLoop(sampleTables)
+    
+        currentFile.closeFile()
     }
 
     private func inLoop(sampleTables:[MP4SampleTable]) -> Bool{

@@ -51,9 +51,7 @@ final class ByteArray: NSObject, Printable {
     }
 
     func readUInt24() -> UInt32 {
-        var result:UInt32 = (UInt32(_bytes[position]) << 16) | (UInt32(_bytes[position + 1]) << 8) | UInt32(_bytes[position + 2])
-        position += 3
-        return result
+        return (UInt32(_bytes[position++]) << 16) | (UInt32(_bytes[position++]) << 8) | UInt32(_bytes[position++])
     }
 
     func readUInt32() -> UInt32 {

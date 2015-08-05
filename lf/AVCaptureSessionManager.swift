@@ -3,9 +3,10 @@ import Foundation
 import AVFoundation
 
 public class AVCaptureSessionManager: NSObject {
+
     static public let defaultFPS:Int32 = 30
     static public let defaultVideoSettings:Dictionary<NSObject, AnyObject> = [
-        kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+        kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
     ]
     static public let defaultSessionPreset:String = AVCaptureSessionPresetMedium
 
@@ -17,6 +18,17 @@ public class AVCaptureSessionManager: NSObject {
                 _session!.sessionPreset = AVCaptureSessionManager.defaultSessionPreset
             }
             return _session!
+        }
+    }
+
+    public var syncOrientation:Bool = false {
+        didSet {
+            let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
+            if (syncOrientation) {
+                center.addObserver(self, selector: "onOrientationChanged:", name: UIDeviceOrientationDidChangeNotification, object: nil)
+            } else {
+                center.removeObserver(self, name: UIDeviceOrientationDidChangeNotification, object: nil)
+            }
         }
     }
 
@@ -77,33 +89,43 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public var orientation:UIInterfaceOrientation = UIInterfaceOrientation.Unknown {
+    private var _previewLayer:AVCaptureVideoPreviewLayer? = nil
+    var previewLayer:AVCaptureVideoPreviewLayer! {
+        get {
+            if (_previewLayer == nil) {
+                _previewLayer = AVCaptureVideoPreviewLayer(session: session)
+            }
+            return _previewLayer
+        }
+    }
+
+    public var orientation:AVCaptureVideoOrientation = AVCaptureVideoOrientation.LandscapeLeft {
         didSet {
+            if let connection:AVCaptureConnection = _previewLayer?.connection {
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
+                } else {
+                    println("AVCaptureConnection.videoOrientation not supported")
+                }
+            }
             for output:AnyObject in session.outputs {
                 if let output:AVCaptureVideoDataOutput = output as? AVCaptureVideoDataOutput {
                     for connection in output.connections {
                         if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                            switch orientation {
-                            case .PortraitUpsideDown:
-                                connection.videoOrientation = AVCaptureVideoOrientation.PortraitUpsideDown
-                                break
-                            case .LandscapeRight:
-                                connection.videoOrientation = AVCaptureVideoOrientation.LandscapeRight
-                                break
-                            case .LandscapeLeft:
-                                connection.videoOrientation = AVCaptureVideoOrientation.LandscapeLeft
-                                break
-                            case .Portrait:
-                                connection.videoOrientation = AVCaptureVideoOrientation.Portrait
-                                break
-                            case .Unknown:
-                                break
+                            if (connection.supportsVideoOrientation) {
+                                connection.videoOrientation = orientation
+                            } else {
+                                println("AVCaptureConnection.videoOrientation not supported")
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    deinit {
+        syncOrientation = false
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
@@ -135,9 +157,22 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public func detectOrientation() {
-        let orientation:UIInterfaceOrientation = UIApplication.sharedApplication().statusBarOrientation
-        if (self.orientation != orientation) {
-            self.orientation = orientation
+    func onOrientationChanged(notification:NSNotification) {
+        switch UIApplication.sharedApplication().statusBarOrientation {
+        case .PortraitUpsideDown:
+            orientation = AVCaptureVideoOrientation.PortraitUpsideDown
+            break
+        case .LandscapeRight:
+            orientation = AVCaptureVideoOrientation.LandscapeRight
+            break
+        case .LandscapeLeft:
+            orientation = AVCaptureVideoOrientation.LandscapeLeft
+            break
+        case .Portrait:
+            orientation = AVCaptureVideoOrientation.Portrait
+            break
+        case .Unknown:
+            break
         }
-    }}
+    }
+}

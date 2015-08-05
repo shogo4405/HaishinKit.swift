@@ -1,40 +1,42 @@
 import Foundation
 
-enum RTMPConnectionSupportVideo:UInt16 {
-    case UNUSED = 0x001
-    case JPEG = 0x002
-    case SORENSON = 0x004
-    case VP6 = 0x008
-    case VP6ALPHA = 0x0010
-    case HOMEBREWV = 0x0040
-    case H264 = 0x0080
-    case ALL = 0x00FF
-}
-
-enum RTMPConnectionSupportSound:UInt16 {
-    case NONE = 0x001
-    case ADPCM = 0x002
-    case MP3 = 0x003
-    case INTEL = 0x0008
-    case UNSED = 0x0010
-    case NELLY8 = 0x0020
-    case NELLY = 0x0040
-    case G711A = 0x0080
-    case G711U = 0x0100
-    case NELLY16 = 0x0200
-    case AAC = 0x0400
-    case SPEEX = 0x0800
-    case ALL = 0x0FFF
-}
-
-enum RTMPConnectionVideoFunction:UInt8 {
-    case CLIENT_SEEK = 1
-}
-
 public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
+
+    enum SupportVideo:UInt16 {
+        case Unused = 0x001
+        case Jpeg = 0x002
+        case Sorenson = 0x004
+        case Vp6 = 0x008
+        case Vp6Alpha = 0x0010
+        case Homebrew = 0x0040
+        case H264 = 0x0080
+        case All = 0x00FF
+    }
+
+    enum SupportSound:UInt16 {
+        case None = 0x001
+        case ADPCM = 0x002
+        case MP3 = 0x003
+        case Intel = 0x0008
+        case Unused = 0x0010
+        case Nelly8 = 0x0020
+        case Nelly = 0x0040
+        case G711A = 0x0080
+        case G711U = 0x0100
+        case Nelly16 = 0x0200
+        case AAC = 0x0400
+        case Speex = 0x0800
+        case All = 0x0FFF
+    }
+
+    enum VideoFunction:UInt8 {
+        case ClientSeek = 1
+    }
+
     static let defaultPort:UInt32 = 1935
     static let defaultObjectEncoding:UInt8 = 0x00
     static let defaultChunkSizeS:Int = 1024 * 16
+    static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
 
     private var _uri:String = ""
     public var uri:String {
@@ -126,33 +128,33 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         if (message!.ready) {
             println(chunk)
             switch message!.type {
-            case .CHUNK_SIZE:
+            case .ChunkSize:
                 let message:RTMPSetChunkSizeMessage = message as! RTMPSetChunkSizeMessage
                 socket.chunkSizeC = Int(message.size)
                 break
-            case .ABORT:
+            case .Abort:
                 break
-            case .ACK:
+            case .Ack:
                 onAcknowledgement(message as! RTMPAcknowledgementMessage)
                 break
-            case .USER:
+            case .User:
                 onUserControl(message as! RTMPUserControlMessage)
                 break
-            case .WINDOW_ACK:
+            case .WindowAck:
                 onWindowAcknowledgementSize(message as! RTMPWindowAcknowledgementSizeMessage)
                 break
-            case .BANDWIDTH:
+            case .Bandwidth:
                 let message:RTMPSetPeerBandwidthMessage = message as! RTMPSetPeerBandwidthMessage
                 bandWidth = message.size
                 break
-            case .AUDIO:
+            case .Audio:
                 break
-            case .VIDEO:
+            case .Video:
                 break
-            case .AMF0_COMMAND, .AMF3_COMMAND:
+            case .AMF0Command, .AMF3Command:
                 onCommandMessage(message as! RTMPCommandMessage)
                 break
-            case .UNKNOW:
+            case .Unknown:
                 break
             default:
                 break
@@ -174,15 +176,15 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
     }
     
-    func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocketReadyState) {
+    func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
         switch socket.readyState {
-        case .INITIALIZED:
+        case .Initialized:
             break
-        case .VERSION_SENT:
+        case .VersionSent:
             break
-        case .ACK_SENT:
+        case .AckSent:
             break
-        case .HANDSHAKE_DONE:
+        case .HandshakeDone:
             socket.doWrite(createConnectionChunk())
             break
         default:
@@ -198,14 +200,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     private func onUserControl(message:RTMPUserControlMessage) {
         switch message.event {
-        case RTMPUserControlEvent.STREAM_BEGIN:
-            break;
-        case RTMPUserControlEvent.STREAM_EOF:
-            break;
-        case RTMPUserControlEvent.STREAM_DRY:
-            break;
-        case RTMPUserControlEvent.PING:
-            socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: RTMPUserControlEvent.PONG)))
+        case .Ping:
+            socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: RTMPUserControlMessage.Event.Pong)))
             break;
         default:
             break;
@@ -250,14 +246,14 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             commandName: "connect",
             commandObject: [
                 "app": app,
-                "flashVer": "FME/3.0 (compatible; FMSc/1.0)",
+                "flashVer": RTMPConnection.defaultFlashVer,
                 "swfUrl": _uri,
                 "tcUrl": _uri,
                 "fpad": false,
                 "capabilities": 0,
-                "audioCodecs": RTMPConnectionSupportSound.AAC.rawValue,
-                "videoCodecs": RTMPConnectionSupportVideo.H264.rawValue,
-                "videoFunction": RTMPConnectionVideoFunction.CLIENT_SEEK.rawValue,
+                "audioCodecs": SupportSound.AAC.rawValue,
+                "videoCodecs": SupportVideo.H264.rawValue,
+                "videoFunction": VideoFunction.ClientSeek.rawValue,
                 "pageUrl": nil,
                 "objectEncoding": objectEncoding
             ],

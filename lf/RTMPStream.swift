@@ -68,12 +68,13 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public func attachAudio(audio:AVCaptureDevice?) {
         sessionManager.attachAudio(audio)
-        sessionManager.audioDataOutput.setSampleBufferDelegate(encoder, queue: encoder.captureQueue)
+        sessionManager.audioDataOutput.setSampleBufferDelegate(encoder, queue: encoder.audioQueue)
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
+        sessionManager.syncOrientation = true
         sessionManager.attachCamera(camera)
-        sessionManager.videoDataOutput.setSampleBufferDelegate(encoder, queue: encoder.captureQueue)
+        sessionManager.videoDataOutput.setSampleBufferDelegate(encoder, queue: encoder.videoQueue)
     }
 
     public func play(arguments:Any?...) {
@@ -169,13 +170,13 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public func toPreviewLayer() -> AVCaptureVideoPreviewLayer {
         sessionManager.startRunning();
-        return AVCaptureVideoPreviewLayer(session: sessionManager.session)
+        return sessionManager.previewLayer
     }
 
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData) {
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? RTMPChunkType.ZERO : RTMPChunkType.ONE,
-            streamId: type == RTMPSampleType.AUDIO ? RTMPChunkStreamId.AUDIO.rawValue : RTMPChunkStreamId.VIDEO.rawValue,
+            streamId: type == RTMPSampleType.Audio ? RTMPChunkStreamId.AUDIO.rawValue : RTMPChunkStreamId.VIDEO.rawValue,
             message: RTMPMediaMessage(
                 streamId: id,
                 timestamp: UInt32(timestamp),

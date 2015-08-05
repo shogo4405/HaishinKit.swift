@@ -2,13 +2,11 @@ import Foundation
 
 class MP4Box:NSObject, Printable {
     static func create(data:NSData) -> MP4Box {
-        var buffer:ByteArray = ByteArray(data: data)
-
-        var size:UInt32 = buffer.readUInt32()
-        var type:String = buffer.read(4)
+        let buffer:ByteArray = ByteArray(data: data)
+        let size:UInt32 = buffer.readUInt32()
+        let type:String = buffer.read(4)
 
         buffer.clear()
-
         switch type {
         case "moov", "trak", "mdia", "minf", "stbl", "edts":
             return MP4ContainerBox(size: size, type: type)
@@ -40,25 +38,21 @@ class MP4Box:NSObject, Printable {
     }
 
     private var _type:String = "undf"
-
     var type:String {
         return _type
     }
     
     private var _size:UInt32 = 0
-
     var size:UInt32 {
         return _size
     }
 
     private var _offset:UInt64 = 0
-
     var offset:UInt64 {
         return _offset
     }
 
     private var _parent:MP4Box? = nil
-
     var parent:MP4Box? {
         return _parent
     }
@@ -472,7 +466,6 @@ final class MP4SampleDescriptionBox: MP4ContainerBox {
 
         var offset:UInt32 = 16
         var numberOfEntries:UInt32 = buffer.readUInt32()
-
         for i in 0..<numberOfEntries {
             var child:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
             offset += child.loadFile(fileHandle)
@@ -495,6 +488,12 @@ final class MP4SampleToChunkBox: MP4Box {
                 ", sampleDescriptionIndex=" + sampleDescriptionIndex.description +
             "}";
         }
+
+        init(firstChunk:UInt32, samplesPerChunk:UInt32, sampleDescriptionIndex:UInt32) {
+            self.firstChunk = firstChunk
+            self.samplesPerChunk = samplesPerChunk
+            self.sampleDescriptionIndex = sampleDescriptionIndex
+        }
     }
 
     var entries:[Entry] = []
@@ -503,15 +502,14 @@ final class MP4SampleToChunkBox: MP4Box {
         let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
         buffer.position += 4
 
-        var numberOfEntries:UInt32 = buffer.readUInt32()
+        let numberOfEntries:UInt32 = buffer.readUInt32()
         for i in 0..<numberOfEntries {
-            var entry:Entry = Entry()
-            entry.firstChunk = buffer.readUInt32()
-            entry.samplesPerChunk = buffer.readUInt32()
-            entry.sampleDescriptionIndex = buffer.readUInt32()
-            entries.append(entry)
+            entries.append(Entry(
+                firstChunk: buffer.readUInt32(),
+                samplesPerChunk: buffer.readUInt32(),
+                sampleDescriptionIndex: buffer.readUInt32()
+            ))
         }
-
         buffer.clear()
 
         return size
