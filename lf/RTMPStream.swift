@@ -20,7 +20,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     private var rtmpConnection:RTMPConnection
-    private var chunkTypes:Dictionary<RTMPSampleType, RTMPChunkType> = [:]
+    private var chunkTypes:Dictionary<RTMPSampleType, Bool> = [:]
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var encoder:MP4Encoder = MP4Encoder()
     private var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
@@ -121,7 +121,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             self.muxer.delegate = self
             self.muxer.encoder = self.encoder
             self.rtmpConnection.doWrite(RTMPChunk(
-                type: RTMPChunkType.ZERO,
+                type: .Zero,
                 streamId: RTMPChunkStreamId.AUDIO.rawValue,
                 message: RTMPCommandMessage(
                     streamId: self.id,
@@ -144,7 +144,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             self.encoder.recording = false
             self.muxer.stopRunnning()
             self.rtmpConnection.doWrite(RTMPChunk(
-                type: RTMPChunkType.ZERO,
+                type: .Zero,
                 streamId: RTMPChunkStreamId.AUDIO.rawValue,
                 message: RTMPCommandMessage(
                     streamId: self.id,
@@ -175,7 +175,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData) {
         rtmpConnection.doWrite(RTMPChunk(
-            type: chunkTypes[type] == nil ? RTMPChunkType.ZERO : RTMPChunkType.ONE,
+            type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type == RTMPSampleType.Audio ? RTMPChunkStreamId.AUDIO.rawValue : RTMPChunkStreamId.VIDEO.rawValue,
             message: RTMPMediaMessage(
                 streamId: id,
@@ -184,7 +184,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 buffer: buffer
             )
         ))
-        chunkTypes[type] = RTMPChunkType.ONE
+        chunkTypes[type] = true
     }
 
     func didSetSampleTables(muxer:RTMPMuxer, sampleTables:[MP4SampleTable]) {
