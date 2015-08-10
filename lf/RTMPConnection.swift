@@ -83,10 +83,11 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
     
     public func connect(command:String, arguments:NSObject...) {
-        var url:NSURL = NSURL(string: command)!
-        _uri = command
-        addEventListener("rtmpStatus", selector: "rtmpStatusHandler:")
-        socket.connect(url.host!, port: 1935)
+        if let url:NSURL = NSURL(string: command) {
+            _uri = command
+            addEventListener("rtmpStatus", selector: "rtmpStatusHandler:")
+            socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : UInt32(url.port!.intValue))
+        }
     }
     
     public func close() {
@@ -105,7 +106,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             if let id:Double = id as? Double {
                 rtmpStream.id = UInt32(id)
                 self.rtmpStreams[rtmpStream.id] = rtmpStream
-                rtmpStream.readyState = RTMPStreamReadyState.OPEN
+                rtmpStream.readyState = .Open
             }
         }
         call("createStream", responder: responder)

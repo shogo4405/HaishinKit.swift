@@ -103,15 +103,14 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     private func initConnection(host:CFString, port:UInt32) {
-        var readStream:Unmanaged<CFReadStream>? = nil
-        var writeStream:Unmanaged<CFWriteStream>? = nil
-
         timestamp = 0
         chunkSizeS = RTMPSocket.defaultChunkSize
         chunkSizeC = RTMPSocket.defaultChunkSize
         bufferSize = RTMPSocket.defaultBufferSize
         inputBuffer.removeAll(keepCapacity: false)
 
+        var readStream:Unmanaged<CFReadStream>? = nil
+        var writeStream:Unmanaged<CFWriteStream>? = nil
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, host, port, &readStream, &writeStream)
         inputStream = readStream!.takeRetainedValue()
         inputStream!.delegate = self

@@ -223,9 +223,7 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
     }
     
     override var type:Type {
-        get {
-            return .Bandwidth
-        }
+        return .Bandwidth
     }
     
     var size:Int32 = 0 {
@@ -373,8 +371,14 @@ final class RTMPCommandMessage: RTMPMessage {
  */
 final class RTMPDataMessage:RTMPMessage {
 
+    var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
+        didSet {
+            self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+        }
+    }
+
     override var type:Type {
-        return .AMF0Data
+        return objectEncoding == 0x00 ? .AMF0Data : .AMF3Data
     }
 
     var handlerName:String = "" {
@@ -388,6 +392,8 @@ final class RTMPDataMessage:RTMPMessage {
             payload.removeAll(keepCapacity: false)
         }
     }
+
+    private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
 
     override var description: String {
         var description:String = "RTMPDataMessage{"
@@ -407,14 +413,11 @@ final class RTMPDataMessage:RTMPMessage {
                 return super.payload
             }
 
-            var amf:AMF0Serializer = AMF0Serializer()
             var payload:[UInt8] = []
-
-            payload += amf.serialize(handlerName)
+            payload += serializer.serialize(handlerName)
             for arg in arguments {
-                payload += amf.serialize(arg)
+                payload += serializer.serialize(arg)
             }
-
             super.payload = payload
             
             return super.payload
@@ -425,10 +428,9 @@ final class RTMPDataMessage:RTMPMessage {
             }
 
             if (length == newValue.count) {
-                var amf:AMF0Serializer = AMF0Serializer()
                 var positon:Int = 0
-                handlerName = amf.deserialize(newValue, position: &positon)
-                arguments.append(amf.deserialize(newValue, position: &positon))
+                handlerName = serializer.deserialize(newValue, position: &positon)
+                arguments.append(serializer.deserialize(newValue, position: &positon))
             }
 
             super.payload = newValue
@@ -442,8 +444,10 @@ final class RTMPDataMessage:RTMPMessage {
     init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?]) {
         super.init()
         self.streamId = streamId
+        self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
+        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
     convenience init(streamId:UInt32, objectEncoding:UInt8, handlerName:String) {
