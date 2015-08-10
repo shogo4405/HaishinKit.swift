@@ -26,10 +26,10 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         }
     }
 
-    var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     var chunkSizeC:Int = RTMPSocket.defaultChunkSize
     var chunkSizeS:Int = RTMPSocket.defaultChunkSize
     var bufferSize:Int = RTMPSocket.defaultBufferSize
+    var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     weak var delegate:RTMPSocketDelegate? = nil
 
     private var running:Bool = false
@@ -62,7 +62,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     func close() {
-        readyState = ReadyState.Closing
+        readyState = .Closing
 
         inputStream!.delegate = nil
         inputStream!.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
@@ -76,7 +76,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         outputStream = nil
 
         running = false
-        readyState = ReadyState.Closed
+        readyState = .Closed
     }
 
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
@@ -169,19 +169,23 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             }
             doWrite([objectEncoding])
             doWrite(c1packet.bytes)
-            readyState = ReadyState.VersionSent
+            readyState = .VersionSent
             break
         case .VersionSent:
             if (inputBuffer.count < RTMPSocket.sigSize + 1) {
                 break
             }
+            let objectEncoding:UInt8 = inputBuffer[0]
+            if (objectEncoding != self.objectEncoding) {
+                close()
+            }
             let c2packet:ByteArray = ByteArray()
-            c2packet.write(Array(inputBuffer[1...4]))
+            c2packet.write(Array(inputBuffer[1..<5]))
             c2packet.write(Int32(NSDate().timeIntervalSince1970 - timestamp))
-            c2packet.write(Array(inputBuffer[9...RTMPSocket.sigSize]))
+            c2packet.write(Array(inputBuffer[9..<RTMPSocket.sigSize + 1]))
             doWrite(c2packet.bytes)
             inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
-            readyState = ReadyState.AckSent
+            readyState = .AckSent
             break
         case .AckSent:
             if (inputBuffer.count < RTMPSocket.sigSize) {
@@ -189,7 +193,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             }
             let s2packet:[UInt8] = Array(inputBuffer[0..<RTMPSocket.sigSize])
             inputBuffer.removeAll(keepCapacity: false)
-            readyState = ReadyState.HandshakeDone
+            readyState = .HandshakeDone
             break
         case .HandshakeDone:
             if (inputBuffer.isEmpty){

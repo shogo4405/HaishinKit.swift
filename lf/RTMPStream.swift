@@ -2,21 +2,22 @@ import UIKit
 import Foundation
 import AVFoundation
 
-enum RTMPStreamReadyState:UInt8 {
-    case INITLIZED = 0
-    case OPEN = 1
-    case PLAY = 2
-    case PLAYING = 3
-    case PUBLISH = 4
-    case PUBLISHING = 5
-    case CLOSED = 6
-}
-
 public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
+
+    enum ReadyState:UInt8 {
+        case Initilized = 0
+        case Open = 1
+        case Play = 2
+        case Playing = 3
+        case Publish = 4
+        case Publishing = 5
+        case Closed = 6
+    }
+
     static let defaultID:UInt32 = 0
 
     var id:UInt32 = RTMPStream.defaultID
-    var readyState:RTMPStreamReadyState = RTMPStreamReadyState.INITLIZED
+    var readyState:ReadyState = .Initilized
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     private var rtmpConnection:RTMPConnection
@@ -114,7 +115,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 return
             }
 
-            while (self.readyState == RTMPStreamReadyState.INITLIZED) {
+            while (self.readyState == .Initilized) {
                 usleep(100)
             }
 
@@ -134,7 +135,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             ))
 
             self.muxer.startRunning()
-            self.readyState = RTMPStreamReadyState.PUBLISH
+            self.readyState = .Publish
             self.encoder.recording = true
         }
     }
@@ -169,7 +170,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     public func toPreviewLayer() -> AVCaptureVideoPreviewLayer {
-        sessionManager.startRunning();
+        sessionManager.startRunning()
         return sessionManager.previewLayer
     }
 
@@ -185,6 +186,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             )
         ))
         chunkTypes[type] = true
+        
     }
 
     func didSetSampleTables(muxer:RTMPMuxer, sampleTables:[MP4SampleTable]) {

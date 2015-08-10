@@ -97,7 +97,9 @@ class RTMPMessage: NSObject {
     }
 }
 
-
+/**
+ * @see 5.4.1. Set Chunk Size (1)
+ */
 final class RTMPSetChunkSizeMessage:RTMPMessage {
     
     override var type:Type {
@@ -138,52 +140,15 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
     
 }
 
-final class RTMPSetPeerBandwidthMessage:RTMPMessage {
-    
-    enum Limit:UInt8 {
-        case Hard = 0x00
-        case Soft = 0x01
-        case Dynamic = 0x10
-    }
-    
-    override var type:Type {
-        get {
-            return .Bandwidth
-        }
-    }
-
-    var size:Int32 = 0 {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
-
-    var limit:Limit = Limit.Hard {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
-
-    override var payload:[UInt8] {
-        get {
-            if (!super.payload.isEmpty) {
-                return super.payload
-            }
-            var payload:[UInt8] = []
-            payload += Int32(size).bytes.reverse()
-            payload += [limit.rawValue]
-            super.payload = payload
-            return super.payload
-        }
-        set {
-            if (super.payload == newValue) {
-                return
-            }
-            super.payload = newValue
-        }
-    }
+/**
+ * 5.4.2. Abort Message (2)
+ */
+final class RTMPAbortMessge: RTMPMessage {
 }
 
+/**
+ * 5.4.3. Acknowledgement (3)
+ */
 final class RTMPAcknowledgementMessage: RTMPMessage {
     override var type:Type {
         return .Ack
@@ -213,6 +178,91 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
     }
 }
 
+/**
+ * 5.4.4. Window Acknowledgement Size (5)
+ */
+final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
+    
+    override var type:Type {
+        return .WindowAck
+    }
+    
+    var size:UInt32 = 0 {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+    
+    override var payload:[UInt8] {
+        get {
+            if (!super.payload.isEmpty) {
+                return super.payload
+            }
+            super.payload = size.bytes.reverse()
+            return super.payload
+        }
+        set {
+            if (super.payload == newValue) {
+                return
+            }
+            size = UInt32(bytes: newValue.reverse())
+            super.payload = newValue
+        }
+    }
+}
+
+/**
+ * @see 5.4.5. Set Peer Bandwidth (6)
+ */
+final class RTMPSetPeerBandwidthMessage:RTMPMessage {
+    
+    enum Limit:UInt8 {
+        case Hard = 0x00
+        case Soft = 0x01
+        case Dynamic = 0x10
+    }
+    
+    override var type:Type {
+        get {
+            return .Bandwidth
+        }
+    }
+    
+    var size:Int32 = 0 {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+    
+    var limit:Limit = Limit.Hard {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+    
+    override var payload:[UInt8] {
+        get {
+            if (!super.payload.isEmpty) {
+                return super.payload
+            }
+            var payload:[UInt8] = []
+            payload += Int32(size).bytes.reverse()
+            payload += [limit.rawValue]
+            super.payload = payload
+            return super.payload
+        }
+        set {
+            if (super.payload == newValue) {
+                return
+            }
+            super.payload = newValue
+        }
+    }
+}
+
+/**
+ * @see 7.1.1. Command Message (20, 17)
+ */
 final class RTMPCommandMessage: RTMPMessage {
 
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
@@ -318,6 +368,9 @@ final class RTMPCommandMessage: RTMPMessage {
     }
 }
 
+/**
+ * @see 7.1.2. Data Message (18, 15)
+ */
 final class RTMPDataMessage:RTMPMessage {
 
     override var type:Type {
@@ -398,6 +451,9 @@ final class RTMPDataMessage:RTMPMessage {
     }
 }
 
+/**
+ * @see 7.1.3. Shared Object Message (19, 16)
+ */
 final class RTMPSharedObjectMessage:RTMPMessage {
     enum Event:UInt8 {
         case Use = 0
@@ -414,6 +470,10 @@ final class RTMPSharedObjectMessage:RTMPMessage {
     }
 }
 
+/**
+ * @see 7.1.4. Audio Message (8)
+ * @see 7.1.5. Video Message (9)
+ */
 final class RTMPMediaMessage:RTMPMessage {
     var buffer:NSData? = nil {
         didSet {
@@ -448,6 +508,15 @@ final class RTMPMediaMessage:RTMPMessage {
     }
 }
 
+/**
+ * @see 7.1.6. Aggregate Message (22)
+ */
+final class RTMPAggregateMessage:RTMPMessage {
+}
+
+/**
+ * @see 7.1.7. User Control Message Events
+ */
 final class RTMPUserControlMessage:RTMPMessage {
 
     enum Event:UInt8 {
@@ -534,36 +603,5 @@ final class RTMPUserControlMessage:RTMPMessage {
     init(event:Event) {
         super.init()
         self.event = event
-    }
-}
-
-
-final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
-    
-    override var type:Type {
-        return .WindowAck
-    }
-
-    var size:UInt32 = 0 {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
-
-    override var payload:[UInt8] {
-        get {
-            if (!super.payload.isEmpty) {
-                return super.payload
-            }
-            super.payload = size.bytes.reverse()
-            return super.payload
-        }
-        set {
-            if (super.payload == newValue) {
-                return
-            }
-            size = UInt32(bytes: newValue.reverse())
-            super.payload = newValue
-        }
     }
 }
