@@ -54,13 +54,13 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         return _connected
     }
 
-    var currentTransactionId:Int = 0
-
+    private var currentTransactionId:Int = 0
     private var socket:RTMPSocket = RTMPSocket()
     private var bandWidth:Int32 = 0
     private var operations:Dictionary<Int, Responder> = [:]
     private var rtmpStreams:Dictionary<UInt32, RTMPStream> = [:]
     private var currentChunk:RTMPChunk? = nil
+    private var fragmentedChunks:Dictionary<UInt16, RTMPChunk> = [:]
 
     override public init() {
         super.init()
@@ -69,7 +69,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
         let message:RTMPCommandMessage = RTMPCommandMessage(
-            streamId: RTMPChunkStreamId.COMMAND.rawValue,
+            streamId: UInt32(RTMPChunk.command),
             transactionId: ++currentTransactionId,
             objectEncoding: objectEncoding,
             commandName: commandName,
@@ -114,21 +114,22 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     func listen(socket:RTMPSocket, bytes:[UInt8]) {
 
-        let chunk:RTMPChunk? = currentChunk == nil ? RTMPChunk(bytes: bytes) : currentChunk
+        let chunk:RTMPChunk? = currentChunk == nil ? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) : currentChunk
 
         if (chunk == nil) {
+            socket.inputBuffer += bytes
             return
         }
 
         var position:Int = chunk!.bytes.count
         if (currentChunk != nil) {
-            position = chunk!.message!.append(bytes, chunkSize: socket.chunkSizeC)
+            position = chunk!.append(bytes, size: socket.chunkSizeC)
         }
 
-        let message:RTMPMessage? = chunk!.message
-        if (message!.ready) {
-            println(chunk)
-            switch message!.type {
+        if (chunk!.ready) {
+            let message:RTMPMessage = chunk!.message!
+            println(message)
+            switch message.type {
             case .ChunkSize:
                 let message:RTMPSetChunkSizeMessage = message as! RTMPSetChunkSizeMessage
                 socket.chunkSizeC = Int(message.size)
@@ -162,7 +163,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             }
 
             if (currentChunk == nil) {
-                listen(socket, bytes: Array(bytes[chunk!.headerSize + message!.payload.count..<bytes.count]))
+                listen(socket, bytes: Array(bytes[chunk!.bytes.count..<bytes.count]))
             } else {
                 currentChunk = nil
                 listen(socket, bytes: Array(bytes[position..<bytes.count]))
@@ -171,7 +172,14 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             return
         }
 
-        currentChunk = chunk
+        if (chunk!.fragmented) {
+            fragmentedChunks[chunk!.streamId] = chunk
+            currentChunk = nil
+        } else {
+            currentChunk = chunk!.type == .Three ? fragmentedChunks[chunk!.streamId] : chunk
+            fragmentedChunks.removeValueForKey(chunk!.streamId)
+        }
+
         if (position < bytes.count) {
             listen(socket, bytes: Array(bytes[position..<bytes.count]))
         }

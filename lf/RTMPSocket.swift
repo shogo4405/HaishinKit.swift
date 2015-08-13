@@ -26,15 +26,25 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         }
     }
 
+    var inputBuffer:[UInt8] = []
     var chunkSizeC:Int = RTMPSocket.defaultChunkSize
     var chunkSizeS:Int = RTMPSocket.defaultChunkSize
     var bufferSize:Int = RTMPSocket.defaultBufferSize
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     weak var delegate:RTMPSocketDelegate? = nil
 
+    private var _totalBytesIn:Int = 0
+    var totalBytesIn:Int {
+        return _totalBytesIn
+    }
+
+    private var _totalBytesOut:Int = 0
+    var totalBytesOut:Int {
+        return _totalBytesOut
+    }
+
     private var running:Bool = false
     private var timestamp:NSTimeInterval = 0
-    private var inputBuffer:[UInt8] = []
     private var inputStream:NSInputStream? = nil
     private var outputStream:NSOutputStream? = nil
     private var outputQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPSocket.network", DISPATCH_QUEUE_SERIAL)
@@ -133,7 +143,8 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         var buffer:[UInt8] = [UInt8](count: bufferSize, repeatedValue: 0)
         let length:Int = inputStream!.read(&buffer, maxLength: bufferSize)
         if 0 < length {
-            inputBuffer += buffer
+            inputBuffer += Array(buffer[0..<length])
+            _totalBytesIn += length
         }
         handleEvent()
     }
@@ -152,6 +163,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
                     break
                 }
                 total += length!
+                self._totalBytesOut += length!
             }
         }
     }
@@ -198,8 +210,9 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             if (inputBuffer.isEmpty){
                 break
             }
-            delegate?.listen(self, bytes: inputBuffer)
+            let bytes:[UInt8] = inputBuffer
             inputBuffer.removeAll(keepCapacity: false)
+            delegate?.listen(self, bytes: bytes)
             break
         default:
             break

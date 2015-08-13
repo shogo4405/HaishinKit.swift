@@ -58,10 +58,6 @@ class RTMPMessage: NSObject {
     var timestamp:UInt32 = 0
     var payload:[UInt8] = []
 
-    var ready:Bool {
-        return payload.count == length
-    }
-
     override var description:String {
         var className:NSString = NSStringFromClass(self.dynamicType).componentsSeparatedByString(".").last! as String
         var description:String = "\(className){"
@@ -80,20 +76,6 @@ class RTMPMessage: NSObject {
 
     init(type:Type) {
         _type = type
-    }
-
-    func append(bytes:[UInt8], chunkSize:Int) -> Int {
-        if (ready) {
-            return 0
-        }
-
-        var length:Int = self.length - payload.count
-        if (bytes.count < length) {
-            length = bytes.count
-        }
-        payload += Array(bytes[0..<length])
-
-        return length
     }
 }
 

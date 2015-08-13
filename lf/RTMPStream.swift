@@ -61,6 +61,9 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         self.rtmpConnection = rtmpConnection
         super.init()
         self.rtmpConnection.addEventListener("rtmpStatus", selector: "rtmpStatusHandler:", observer: self)
+        if (rtmpConnection.connected) {
+            rtmpConnection.createStream(self)
+        }
     }
 
     public func attachFile(file:NSURL) {
@@ -123,7 +126,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             self.muxer.encoder = self.encoder
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
-                streamId: RTMPChunkStreamId.AUDIO.rawValue,
+                streamId: RTMPChunk.audio,
                 message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
@@ -146,7 +149,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             self.muxer.stopRunnning()
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
-                streamId: RTMPChunkStreamId.AUDIO.rawValue,
+                streamId: RTMPChunk.audio,
                 message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
@@ -177,7 +180,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData) {
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
-            streamId: type == RTMPSampleType.Audio ? RTMPChunkStreamId.AUDIO.rawValue : RTMPChunkStreamId.VIDEO.rawValue,
+            streamId: type == .Audio ? RTMPChunk.audio : RTMPChunk.video,
             message: RTMPMediaMessage(
                 streamId: id,
                 timestamp: UInt32(timestamp),

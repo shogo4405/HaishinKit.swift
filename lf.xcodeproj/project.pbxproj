@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		2945CBC31B4BE66000104112 /* lf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2945CBC21B4BE66000104112 /* lf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2945CBC91B4BE66000104112 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
-		2945CBD01B4BE66000104112 /* lfTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2945CBCF1B4BE66000104112 /* lfTests.swift */; };
 		295F4B281B6124FB000A04B7 /* AVCaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295F4B271B6124FA000A04B7 /* AVCaptureSessionManager.swift */; };
+		297ABFC31B7F7A21004C779D /* RTMPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297ABFC21B7F7A21004C779D /* RTMPConnectionTests.swift */; };
 		29B0123B1B4EB38600BEC343 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B0123A1B4EB38600BEC343 /* EventDispatcher.swift */; };
 		29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */; };
 		29C266BD1B4BE6F900588BBE /* AMFSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266AF1B4BE6F900588BBE /* AMFSerializer.swift */; };
@@ -76,8 +76,8 @@
 		2945CBC21B4BE66000104112 /* lf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lf.h; sourceTree = "<group>"; };
 		2945CBC81B4BE66000104112 /* lfTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lfTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2945CBCE1B4BE66000104112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2945CBCF1B4BE66000104112 /* lfTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = lfTests.swift; sourceTree = "<group>"; };
 		295F4B271B6124FA000A04B7 /* AVCaptureSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVCaptureSessionManager.swift; path = lf/AVCaptureSessionManager.swift; sourceTree = "<group>"; };
+		297ABFC21B7F7A21004C779D /* RTMPConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPConnectionTests.swift; sourceTree = "<group>"; };
 		29B0123A1B4EB38600BEC343 /* EventDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventDispatcher.swift; path = lf/EventDispatcher.swift; sourceTree = "<group>"; };
 		29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDispatcherTests.swift; sourceTree = "<group>"; };
 		29C266AF1B4BE6F900588BBE /* AMFSerializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; name = AMFSerializer.swift; path = lf/AMFSerializer.swift; sourceTree = "<group>"; };
@@ -172,10 +172,10 @@
 		2945CBCC1B4BE66000104112 /* lfTests */ = {
 			isa = PBXGroup;
 			children = (
-				2945CBCF1B4BE66000104112 /* lfTests.swift */,
 				2945CBCD1B4BE66000104112 /* Supporting Files */,
 				29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */,
 				29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */,
+				297ABFC21B7F7A21004C779D /* RTMPConnectionTests.swift */,
 			);
 			path = lfTests;
 			sourceTree = "<group>";
@@ -336,11 +336,11 @@
 				29C266D31B4BEBBA00588BBE /* RTMPStream.swift in Sources */,
 				29C266D41B4BEBBA00588BBE /* Responder.swift in Sources */,
 				29C266D51B4BEBBA00588BBE /* RTMPChunk.swift in Sources */,
+				297ABFC31B7F7A21004C779D /* RTMPConnectionTests.swift in Sources */,
 				29C266D61B4BEBBA00588BBE /* MP4Encoder.swift in Sources */,
 				29C266D81B4BEBBA00588BBE /* RTMPMuxer.swift in Sources */,
 				29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */,
 				29C266D91B4BEBBA00588BBE /* RTMPSocket.swift in Sources */,
-				2945CBD01B4BE66000104112 /* lfTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
