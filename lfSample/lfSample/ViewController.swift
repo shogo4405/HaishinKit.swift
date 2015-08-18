@@ -42,7 +42,8 @@ class ViewController: UIViewController {
         self.view.addSubview(self.stopButton)
     }
 
-    override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+    override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation:
+        UIInterfaceOrientation, duration: NSTimeInterval) {
         startButton.layer.position = CGPoint(x: view.bounds.width / 2 - 70, y: view.bounds.height - 50)
         stopButton.layer.position = CGPoint(x: view.bounds.width / 2 + 70, y: view.bounds.height - 50)
         previewLayer!.frame = view.bounds
@@ -57,11 +58,13 @@ class ViewController: UIViewController {
     }
 
     func startButton_onClick(sender:UIButton) {
+        UIApplication.sharedApplication().idleTimerDisabled = true
         rtmpConnection.addEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler:", observer: self)
         rtmpConnection.connect(url)
     }
 
     func stopButton_onClick(sender:UIButton) {
+        UIApplication.sharedApplication().idleTimerDisabled = false
         rtmpConnection.close()
         rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
     }

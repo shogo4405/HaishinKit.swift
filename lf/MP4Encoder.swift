@@ -21,6 +21,7 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         AVVideoWidthKey: MP4Encoder.defaultWidth,
         AVVideoHeightKey: MP4Encoder.defaultHeight,
         AVVideoCompressionPropertiesKey: [
+            AVVideoMaxKeyFrameIntervalDurationKey: NSNumber(longLong: MP4Encoder.defaultDuration),
             AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
             AVVideoAverageBitRateKey: MP4Encoder.defaultVideoBitrate
         ]
