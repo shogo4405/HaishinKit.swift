@@ -110,44 +110,22 @@ struct MP4SampleTable: Printable {
     }
 }
 
-class MP4Sampler: NSObject {
+class MP4Sampler: NSObject, MP4EncoderDelegate {
     var running:Bool = false
     var currentFile:MP4File = MP4File()
     var sampleTables:[MP4SampleTable] = []
-    private let queue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Sampler.private", DISPATCH_QUEUE_SERIAL)
-
-    final func startRunning() {
-        dispatch_async(queue) {
-            self.running = true
-            self.internalForStartRunning()
-        }
-    }
-
-    final func stopRunnning() {
-        dispatch_async(queue) {
-            self.running = false
-        }
-    }
-
-    final func internalForStartRunning() {
-        while (running) {
-            if (prepareForRunning()) {
-                autoreleasepool(doSampling)
-                continue
-            }
-            NSRunLoop.currentRunLoop().runUntilDate(NSDate(timeIntervalSinceNow: 0.1))
-        }
-    }
-
-    func prepareForRunning() -> Bool {
-        return currentFile.url != nil
-    }
+    private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Sampler.lock", DISPATCH_QUEUE_SERIAL)
 
     func sampleOutput(index:Int, buffer:NSData, timestamp:Double, keyframe:Bool) {
     }
 
-    private func doSampling() {
+    func encoderOnFinishWriting(encoder:MP4Encoder, outputURL:NSURL) {
+        doSampling(outputURL)
+    }
 
+    private func doSampling(url:NSURL) {
+
+        currentFile.url = url
         currentFile.loadFile()
 
         var videoDuration:Double = 0
@@ -191,6 +169,7 @@ class MP4Sampler: NSObject {
         while inLoop(sampleTables)
     
         currentFile.closeFile()
+        NSFileManager.defaultManager().removeItemAtURL(url, error: nil)
     }
 
     private func inLoop(sampleTables:[MP4SampleTable]) -> Bool{

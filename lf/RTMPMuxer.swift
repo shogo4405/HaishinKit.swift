@@ -80,7 +80,6 @@ protocol RTMPMuxerDelegate: class {
 }
 
 final class RTMPMuxer: MP4Sampler {
-    var encoder:MP4Encoder? = nil
     var sampleTypes:Dictionary<Int, RTMPSampleType> = [:]
     var timestamps:Dictionary<Int, Double> = [:]
     var configurationChanged:Bool = true
@@ -126,14 +125,6 @@ final class RTMPMuxer: MP4Sampler {
 
     override init() {
         super.init()
-    }
-
-    override func prepareForRunning() -> Bool{
-        if (currentFile.url != nil) {
-            encoder!.remove(currentFile.url!)
-        }
-        currentFile.url = encoder!.shift()
-        return super.prepareForRunning()
     }
 
     override func sampleOutput(index:Int, buffer:NSData, timestamp:Double, keyframe:Bool) {

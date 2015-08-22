@@ -66,10 +66,6 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         }
     }
 
-    public func attachFile(file:NSURL) {
-        encoder.push(file)
-    }
-
     public func attachAudio(audio:AVCaptureDevice?) {
         sessionManager.attachAudio(audio)
         sessionManager.audioDataOutput.setSampleBufferDelegate(encoder, queue: encoder.audioQueue)
@@ -114,7 +110,6 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public func publish(name:String?, type:String) {
         dispatch_async(lockQueue) {
             if (name == nil) {
-                self.muxer.stopRunnning()
                 return
             }
 
@@ -122,8 +117,8 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 usleep(100)
             }
 
+            self.encoder.delegate = self.muxer
             self.muxer.delegate = self
-            self.muxer.encoder = self.encoder
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,
@@ -137,7 +132,6 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 )
             ))
 
-            self.muxer.startRunning()
             self.readyState = .Publish
             self.encoder.recording = true
         }
@@ -146,7 +140,6 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public func close() {
         dispatch_async(lockQueue) {
             self.encoder.recording = false
-            self.muxer.stopRunnning()
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,

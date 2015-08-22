@@ -1,6 +1,9 @@
 import Foundation
 import AVFoundation
-import CoreMedia
+
+protocol MP4EncoderDelegate: class {
+    func encoderOnFinishWriting(encoder:MP4Encoder, outputURL:NSURL)
+}
 
 final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     static let defaultDuration:Int64 = 2
@@ -31,19 +34,15 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         return NSURL(fileURLWithPath: NSTemporaryDirectory().stringByAppendingPathComponent(NSUUID().UUIDString + ".mp4"))!
     }
 
-    var isEmpty:Bool {
-        return files.isEmpty
-    }
-
+    weak var delegate:MP4EncoderDelegate? = nil
     var duration:Int64 = MP4Encoder.defaultDuration
     var recording:Bool = false
     var expectsMediaDataInRealTime:Bool = true
     var audioSettings:Dictionary<String, AnyObject> = MP4Encoder.defaultAudioSettings
     var videoSettings:Dictionary<String, AnyObject> = MP4Encoder.defaultVideoSettings
-    let audioQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.audioQueue", DISPATCH_QUEUE_SERIAL)
-    let videoQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.videoQueue", DISPATCH_QUEUE_SERIAL)
+    let audioQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.audio", DISPATCH_QUEUE_SERIAL)
+    let videoQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.video", DISPATCH_QUEUE_SERIAL)
 
-    private var files:[NSURL] = []
     private var rotateTime:CMTime = CMTimeAdd(kCMTimeZero, CMTimeMake(MP4Encoder.defaultDuration, 1))
     private var writer:AVAssetWriter? = nil
     private var writers:Dictionary<NSURL, AVAssetWriter> = [:]
@@ -53,34 +52,8 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         super.init()
     }
 
-    func shift() -> NSURL? {
-        var url:NSURL? = nil
-        dispatch_sync(lockQueue) {
-            if (!self.files.isEmpty) {
-                url = self.files.removeAtIndex(self.files.startIndex)
-            }
-        }
-        return url
-    }
-
-    func push(file:NSURL) {
-        dispatch_async(lockQueue) {
-            self.files.append(file)
-        }
-    }
-
-    func remove(url:NSURL) -> Bool{
-        var error:NSError?
-        let removed:Bool = NSFileManager.defaultManager().removeItemAtURL(url, error: &error)
-        if (!removed) {
-            print(error!)
-        }
-        return removed
-    }
-
     func clear() {
         dispatch_sync(lockQueue) {
-            self.files.removeAll(keepCapacity: false)
             self.writers.removeAll(keepCapacity: false)
             self.writer = nil
         }
@@ -95,14 +68,16 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         let mediaType:String = captureOutput is AVCaptureAudioDataOutput ? AVMediaTypeAudio : AVMediaTypeVideo
         let timestamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
 
-        if (rotateTime.value < timestamp.value) {
+        if (mediaType == AVMediaTypeVideo && rotateTime.value <= timestamp.value) {
             rotateAssetWriter(timestamp, mediaType: mediaType)
         }
 
-        for input in writer!.inputs {
-            let input:AVAssetWriterInput = input as! AVAssetWriterInput
-            if (input.mediaType == mediaType && input.readyForMoreMediaData) {
-                input.appendSampleBuffer(sampleBuffer)
+        if (writer != nil) {
+            for input in writer!.inputs {
+                let input:AVAssetWriterInput = input as! AVAssetWriterInput
+                if (input.mediaType == mediaType && input.readyForMoreMediaData) {
+                    input.appendSampleBuffer(sampleBuffer)
+                }
             }
         }
     }
@@ -153,10 +128,10 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         return writer
     }
 
-    private func onFinishWriting(url:NSURL) {
+    private func onFinishWriting(outputURL:NSURL) {
         dispatch_async(lockQueue) {
-            self.files.append(url)
-            self.writers[url] = nil
+            self.writers[outputURL] = nil
+            self.delegate?.encoderOnFinishWriting(self , outputURL: outputURL)
         }
     }
 }

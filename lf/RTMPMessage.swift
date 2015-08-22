@@ -147,14 +147,14 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            super.payload = sequence.bytes.reverse()
+            super.payload = sequence.bigEndian.bytes
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            sequence = UInt32(bytes: newValue.reverse())
+            sequence = UInt32(bytes: newValue).bigEndian
             super.payload = newValue
         }
     }
