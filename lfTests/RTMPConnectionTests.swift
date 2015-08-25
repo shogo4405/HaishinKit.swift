@@ -15,6 +15,7 @@ class RTMPConnectionTests: XCTestCase {
     }
 
     func testPlay() {
+        /*
         let rtmpConnection:RTMPConnection = RTMPConnection()
         let rtmpStream:RTMPStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpConnection.connect(url)
@@ -22,6 +23,18 @@ class RTMPConnectionTests: XCTestCase {
         rtmpStream.play(streamName)
         
         println("--------")
+        while (true) {
+            sleep(1)
+        }
+        */
+    }
+
+    func testSharedObject() {
+        let rtmpConnection:RTMPConnection = RTMPConnection()
+        let sharedObject:RTMPSharedObject = RTMPSharedObject.getRemote("shared/liveSessions", remotePath: url, persistence: false)
+        rtmpConnection.connect(url)
+        sharedObject.connect(rtmpConnection)
+
         while (true) {
             sleep(1)
         }

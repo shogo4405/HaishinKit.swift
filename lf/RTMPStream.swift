@@ -60,7 +60,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
         super.init()
-        self.rtmpConnection.addEventListener("rtmpStatus", selector: "rtmpStatusHandler:", observer: self)
+        rtmpConnection.addEventListener("rtmpStatus", selector: "rtmpStatusHandler:", observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
@@ -152,7 +152,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                     arguments: [self.id]
                 )
             ))
-            self.rtmpConnection.removeEventListener("rtmpStatus", selector: "rtmpStatusHandler:", observer: self)
+            self.readyState = .Closed
         }
     }
 
@@ -195,6 +195,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             if let code:String = data["code"] as? String {
                 switch code {
                 case "NetConnection.Connect.Success":
+                    readyState = .Initilized
                     rtmpConnection.createStream(self)
                     break
                 default:

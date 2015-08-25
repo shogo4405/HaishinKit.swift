@@ -25,6 +25,8 @@ class RTMPMessage: NSObject {
         switch type {
         case Type.ChunkSize.rawValue:
             return RTMPSetChunkSizeMessage()
+        case Type.Abort.rawValue:
+            return RTMPAbortMessge()
         case Type.Ack.rawValue:
             return RTMPAcknowledgementMessage();
         case Type.User.rawValue:
@@ -34,15 +36,11 @@ class RTMPMessage: NSObject {
         case Type.Bandwidth.rawValue:
             return RTMPSetPeerBandwidthMessage()
         case Type.AMF0Data.rawValue:
-            return RTMPDataMessage()
+            return RTMPDataMessage(objectEncoding: 0x00)
+        case Type.AMF0Shared.rawValue:
+            return RTMPSharedObjectMessage(objectEncoding: 0x00)
         case Type.AMF0Command.rawValue:
-            let message:RTMPCommandMessage = RTMPCommandMessage()
-            message.objectEncoding = 0x00
-            return message
-        case Type.AMF3Command.rawValue:
-            let message:RTMPCommandMessage = RTMPCommandMessage()
-            message.objectEncoding = 0x03
-            return message
+            return RTMPCommandMessage(objectEncoding: 0x00)
         default:
             return RTMPMessage(type: Type(rawValue: type)!)
         }
@@ -88,7 +86,7 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
         return .ChunkSize
     }
     
-    var size:Int32 = 0 {
+    var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -98,7 +96,7 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
         super.init()
     }
 
-    init (size:Int32) {
+    init (size:UInt32) {
         super.init()
         self.size = size
     }
@@ -108,14 +106,14 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            super.payload = size.bytes.reverse();
+            super.payload = size.bigEndian.bytes
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            size = Int32(bytes: newValue.reverse())
+            size = UInt32(bytes: newValue).bigEndian
             super.payload = newValue
         }
     }
@@ -126,6 +124,32 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
  * 5.4.2. Abort Message (2)
  */
 final class RTMPAbortMessge: RTMPMessage {
+    override var type:Type {
+        return .Abort
+    }
+
+    var chunkStreamId:UInt32 = 0 {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+
+    override var payload:[UInt8] {
+        get {
+            if (!super.payload.isEmpty) {
+                return super.payload
+            }
+            super.payload = chunkStreamId.bigEndian.bytes
+            return super.payload
+        }
+        set {
+            if (super.payload == newValue) {
+                return
+            }
+            chunkStreamId = UInt32(bytes: newValue).bigEndian
+            super.payload = newValue
+        }
+    }
 }
 
 /**
@@ -180,14 +204,14 @@ final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            super.payload = size.bytes.reverse()
+            super.payload = size.bigEndian.bytes
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            size = UInt32(bytes: newValue.reverse())
+            size = UInt32(bytes: newValue).bigEndian
             super.payload = newValue
         }
     }
@@ -202,13 +226,14 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
         case Hard = 0x00
         case Soft = 0x01
         case Dynamic = 0x10
+        case Unknown = 0xFF
     }
     
     override var type:Type {
         return .Bandwidth
     }
     
-    var size:Int32 = 0 {
+    var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -226,7 +251,7 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
                 return super.payload
             }
             var payload:[UInt8] = []
-            payload += Int32(size).bytes.reverse()
+            payload += size.bigEndian.bytes
             payload += [limit.rawValue]
             super.payload = payload
             return super.payload
@@ -335,7 +360,12 @@ final class RTMPCommandMessage: RTMPMessage {
     override init () {
         super.init()
     }
-    
+
+    init (objectEncoding:UInt8) {
+        super.init()
+        self.objectEncoding = objectEncoding
+    }
+
     init (streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject:ECMAObject?, arguments:[Any?]) {
         super.init()
         self.streamId = streamId
@@ -423,6 +453,12 @@ final class RTMPDataMessage:RTMPMessage {
         super.init()
     }
 
+    init (objectEncoding:UInt8) {
+        super.init()
+        self.objectEncoding = objectEncoding
+        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+    }
+
     init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?]) {
         super.init()
         self.streamId = streamId
@@ -441,18 +477,140 @@ final class RTMPDataMessage:RTMPMessage {
  * @see 7.1.3. Shared Object Message (19, 16)
  */
 final class RTMPSharedObjectMessage:RTMPMessage {
-    enum Event:UInt8 {
-        case Use = 0
-        case Release = 1
-        case RequestChange = 2
-        case Change = 3
-        case Success = 5
-        case SendMessage = 6
-        case Status = 7
-        case Clear = 8
-        case Remove = 9
-        case RequestRemove = 10
-        case UseSuccess = 11
+
+    struct Event {
+        enum Type:UInt8 {
+            case Use = 1
+            case Release = 2
+            case RequestChange = 3
+            case Change = 4
+            case Success = 5
+            case SendMessage = 6
+            case Status = 7
+            case Clear = 8
+            case Remove = 9
+            case RequestRemove = 10
+            case UseSuccess = 11
+            case Unknown = 255
+        }
+
+        var type:Type = .Unknown
+        var data:Any? = nil
+
+        init(type:Type) {
+            self.type = type
+        }
+    
+        init(type:UInt8, data:Any?) {
+            self.type = Type(rawValue: type)!
+            self.data = data
+        }
+
+        init (type:Type, data:Any?) {
+            self.type = type
+            self.data = data
+        }
+    }
+
+    override var type:Type {
+        return objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared
+    }
+
+    var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
+        didSet {
+            serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+        }
+    }
+
+    var sharedObjectName:String = "" {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+
+    var currentVersion:Int32 = -1 {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+
+    var flags:Bool = true {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+
+    var events:[Event]! = nil {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+
+    override var payload:[UInt8] {
+        get {
+            if (!super.payload.isEmpty) {
+                return super.payload
+            }
+
+            let buffer:[UInt8] = [UInt8](sharedObjectName.utf8)
+            super.payload += UInt16(buffer.count).bigEndian.bytes
+            super.payload += buffer
+            super.payload += currentVersion.bigEndian.bytes
+            super.payload += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+
+            for event in events {
+                super.payload += [event.type.rawValue]
+                if (event.data != nil) {
+                    let data:[UInt8] = serializer.serialize(event.data)
+                    super.payload += UInt32(data.count).bigEndian.bytes
+                    super.payload += data
+                } else {
+                    super.payload += UInt32(0).bytes
+                }
+            }
+
+            return super.payload
+        }
+        set {
+            if (super.payload == newValue) {
+                return
+            }
+            if (length == newValue.count) {
+                var offset:Int = Int(UInt16(bytes: Array(newValue[0..<2])).bigEndian) + 2
+                sharedObjectName = String(bytes: Array(newValue[2..<offset]), encoding: NSUTF8StringEncoding)!
+                currentVersion = Int32(bytes: Array(newValue[offset..<offset + 4])).bigEndian
+                offset += 12
+                events = []
+                while (offset < newValue.count) {
+                    let type:UInt8 = newValue[offset++]
+                    let dataLength:Int = Int(UInt32(bytes: Array(newValue[offset..<offset + 4])).bigEndian)
+                    offset += 4
+                    if (dataLength == 0) {
+                        events.append(Event(type: type, data: nil))
+                    } else {
+                        var position:Int = 0
+                        events.append(Event(type: type, data: serializer.deserialize(Array(newValue[offset..<offset + dataLength]), position: &position)))
+                        offset += dataLength
+                    }
+                }
+            }
+            super.payload = newValue
+        }
+    }
+
+    private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+
+    init (objectEncoding:UInt8) {
+        super.init()
+        self.objectEncoding = objectEncoding
+    }
+
+    init (objectEncoding:UInt8, sharedObjectName:String, flags:Bool, events:[Event]) {
+        super.init()
+        self.objectEncoding = objectEncoding
+        self.sharedObjectName = sharedObjectName
+        self.flags = flags
+        self.events = events
     }
 }
 

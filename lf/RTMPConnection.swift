@@ -56,7 +56,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     private var currentTransactionId:Int = 0
     private var socket:RTMPSocket = RTMPSocket()
-    private var bandWidth:Int32 = 0
+    private var bandWidth:UInt32 = 0
     private var operations:Dictionary<Int, Responder> = [:]
     private var rtmpStreams:Dictionary<UInt32, RTMPStream> = [:]
     private var currentChunk:RTMPChunk? = nil
@@ -91,8 +91,15 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
     
     public func close() {
+        if (!connected) {
+            return
+        }
         _uri = ""
         removeEventListener("rtmpStatus", selector: "rtmpStatusHandler:")
+        for (id, rtmpStream) in rtmpStreams {
+            rtmpStream.close()
+            rtmpStreams.removeValueForKey(id)
+        }
         socket.close()
     }
 
@@ -133,31 +140,15 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             case .ChunkSize:
                 let message:RTMPSetChunkSizeMessage = message as! RTMPSetChunkSizeMessage
                 socket.chunkSizeC = Int(message.size)
-                break
-            case .Abort:
-                break
-            case .Ack:
-                onAcknowledgement(message as! RTMPAcknowledgementMessage)
-                break
             case .User:
                 onUserControl(message as! RTMPUserControlMessage)
-                break
-            case .WindowAck:
-                onWindowAcknowledgementSize(message as! RTMPWindowAcknowledgementSizeMessage)
-                break
             case .Bandwidth:
                 let message:RTMPSetPeerBandwidthMessage = message as! RTMPSetPeerBandwidthMessage
                 bandWidth = message.size
-                break
-            case .Audio:
-                break
-            case .Video:
-                break
-            case .AMF0Command, .AMF3Command:
+            case .AMF0Command:
                 onCommandMessage(message as! RTMPCommandMessage)
-                break
-            case .Unknown:
-                break
+            case .AMF0Shared:
+                onSharedObjectMessage(message as! RTMPSharedObjectMessage)
             default:
                 break
             }
@@ -187,34 +178,26 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
         switch socket.readyState {
-        case .Initialized:
-            break
-        case .VersionSent:
-            break
-        case .AckSent:
-            break
         case .HandshakeDone:
             socket.doWrite(createConnectionChunk())
-            break
+        case .Closed:
+            _connected = false
         default:
             break
         }
-    }
-
-    private func onAcknowledgement(message:RTMPAcknowledgementMessage) {
-    }
-
-    private func onWindowAcknowledgementSize(message:RTMPWindowAcknowledgementSizeMessage) {
     }
 
     private func onUserControl(message:RTMPUserControlMessage) {
         switch message.event {
         case .Ping:
             socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: RTMPUserControlMessage.Event.Pong)))
-            break;
         default:
             break;
         }
+    }
+
+    private func onSharedObjectMessage(message:RTMPSharedObjectMessage) {
+        RTMPSharedObject.getRemote(message.sharedObjectName, remotePath: uri, persistence: message.flags).onMessage(message)
     }
 
     private func onCommandMessage(message:RTMPCommandMessage) {
@@ -230,10 +213,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         switch message.commandName {
         case "_result":
             responder.onResult(message.arguments)
-            break
         case "_error":
             responder.onStatus(message.arguments)
-            break
         default:
             break;
         }
@@ -280,7 +261,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 case "NetConnection.Connect.Success":
                     _connected = true
                     socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
-                    socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: Int32(socket.chunkSizeS))))
+                    socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
                     break
                 default:
                     break

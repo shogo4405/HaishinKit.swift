@@ -66,21 +66,24 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     func connect(host:CFString, port:UInt32) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),{
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
             self.initConnection(host, port: port)
         })
     }
 
     func close() {
+        if (ReadyState.Closing.rawValue <= readyState.rawValue) {
+            return
+        }
         readyState = .Closing
 
-        inputStream!.delegate = nil
-        inputStream!.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
-        inputStream!.close()
-        
-        outputStream!.delegate = nil
-        outputStream!.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
-        outputStream!.close()
+        inputStream?.delegate = nil
+        inputStream?.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        inputStream?.close()
+
+        outputStream?.delegate = nil
+        outputStream?.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        outputStream?.close()
 
         inputStream = nil
         outputStream = nil
@@ -91,21 +94,23 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
 
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
         switch eventCode {
+        case NSStreamEvent.None:
+            break
         case NSStreamEvent.OpenCompleted:
             if (inputStream!.streamStatus == NSStreamStatus.Open &&
                 outputStream!.streamStatus == NSStreamStatus.Open) {
                 handleEvent()
             }
+        case NSStreamEvent.HasSpaceAvailable:
+            break
         case NSStreamEvent.HasBytesAvailable:
             if (aStream == inputStream) {
                 doInputProcess()
             }
-        case NSStreamEvent.EndEncountered:
-            break
-        case NSStreamEvent.None:
-            break
         case NSStreamEvent.ErrorOccurred:
             close()
+            break
+        case NSStreamEvent.EndEncountered:
             break
         default:
             break
@@ -113,29 +118,34 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     private func initConnection(host:CFString, port:UInt32) {
+        readyState = .Initialized
+
         timestamp = 0
         chunkSizeS = RTMPSocket.defaultChunkSize
         chunkSizeC = RTMPSocket.defaultChunkSize
         bufferSize = RTMPSocket.defaultBufferSize
+        _totalBytesIn = 0
+        _totalBytesOut = 0
         inputBuffer.removeAll(keepCapacity: false)
 
         var readStream:Unmanaged<CFReadStream>? = nil
         var writeStream:Unmanaged<CFWriteStream>? = nil
         CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, host, port, &readStream, &writeStream)
-        inputStream = readStream!.takeRetainedValue()
-        inputStream!.delegate = self
-        inputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        if (readStream != nil && writeStream != nil) {
+            inputStream = readStream!.takeRetainedValue()
+            inputStream!.delegate = self
+            inputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+            outputStream = writeStream!.takeRetainedValue()
+            outputStream!.delegate = self
+            outputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
 
-        outputStream = writeStream!.takeRetainedValue()
-        outputStream!.delegate = self
-        outputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+            inputStream!.open()
+            outputStream!.open()
 
-        inputStream!.open()
-        outputStream!.open()
-
-        running = true
-        while (running) {
-            NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() as! NSDate)
+            running = true
+            while (running) {
+                NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() as! NSDate)
+            }
         }
     }
 
