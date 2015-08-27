@@ -17,10 +17,13 @@ public class RTMPSharedObject: EventDispatcher {
     var path:String
     var persistence:Bool
 
-    public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    private var _data:Any? = nil
+    public var data:Any? {
+        return _data
+    }
 
+    public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     private var rtmpConnection:RTMPConnection? = nil
-    private var data:Dictionary<String, AnyObject?> = [:]
 
     init (name:String, path:String, persistence:Bool) {
         self.name = name
@@ -46,16 +49,49 @@ public class RTMPSharedObject: EventDispatcher {
         rtmpConnection = nil
     }
 
-    func onMessage(message:RTMPSharedObjectMessage) {
+    final func onMessage(message:RTMPSharedObjectMessage) {
+        var changeList:[Dictionary<String, Any?>] = []
         for event in message.events {
+            var change:Dictionary<String, Any?> = [
+                "code": "",
+                "name": event.name,
+                "oldValue": nil
+            ]
+            switch event.type {
+            case .Change:
+                change["code"] = "change"
+                change["oldValue"] = _data
+                break
+            case .Success:
+                change["code"] = "success"
+                break
+            case .Status:
+                change["code"] = "reject"
+                change["oldValue"] = _data
+                break
+            case .Clear:
+                change["code"] = "clear"
+                _data = nil
+                break
+            case .Remove:
+                change["code"] = "delete"
+                break
+            case .UseSuccess:
+                break
+            default:
+                break
+            }
+            _data = event.data
+            changeList.append(change)
         }
+        dispatchEventWith(Event.SYNC, bubbles: false, data: changeList)
     }
 
     func createChunk(events:[RTMPSharedObjectMessage.Event]) -> RTMPChunk {
         return RTMPChunk(message: RTMPSharedObjectMessage(
             objectEncoding: self.objectEncoding,
             sharedObjectName: name,
-            flags: persistence,
+            flags: [persistence ? 0x01 : 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
             events: events
         ))
     }

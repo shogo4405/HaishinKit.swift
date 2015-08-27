@@ -19,6 +19,8 @@ public enum EventPhase:UInt8 {
 }
 
 public class Event:NSObject {
+    public static let SYNC:String = "sync"
+    public static let RTMP_STATUS:String = "rtmpStatus"
 
     public static func from(notification:NSNotification) -> Event {
         if let userInfo = notification.userInfo {

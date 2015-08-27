@@ -141,7 +141,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 let message:RTMPSetChunkSizeMessage = message as! RTMPSetChunkSizeMessage
                 socket.chunkSizeC = Int(message.size)
             case .User:
-                onUserControl(message as! RTMPUserControlMessage)
+                onUserControlMessage(message as! RTMPUserControlMessage)
             case .Bandwidth:
                 let message:RTMPSetPeerBandwidthMessage = message as! RTMPSetPeerBandwidthMessage
                 bandWidth = message.size
@@ -187,7 +187,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
     }
 
-    private func onUserControl(message:RTMPUserControlMessage) {
+    private func onUserControlMessage(message:RTMPUserControlMessage) {
         switch message.event {
         case .Ping:
             socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: RTMPUserControlMessage.Event.Pong)))
@@ -197,11 +197,11 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
 
     private func onSharedObjectMessage(message:RTMPSharedObjectMessage) {
-        RTMPSharedObject.getRemote(message.sharedObjectName, remotePath: uri, persistence: message.flags).onMessage(message)
+        let persistence:Bool = message.flags[0] == 0x01
+        RTMPSharedObject.getRemote(message.sharedObjectName, remotePath: uri, persistence: persistence).onMessage(message)
     }
 
     private func onCommandMessage(message:RTMPCommandMessage) {
-
         let transactionId:Int = message.transactionId
 
         if (operations[transactionId] == nil) {

@@ -41,12 +41,14 @@ class RTMPMessage: NSObject {
             return RTMPSharedObjectMessage(objectEncoding: 0x00)
         case Type.AMF0Command.rawValue:
             return RTMPCommandMessage(objectEncoding: 0x00)
+        case Type.Aggregate.rawValue:
+            return RTMPAggregateMessage()
         default:
             return RTMPMessage(type: Type(rawValue: type)!)
         }
     }
 
-    private var _type:Type = Type.Unknown
+    private var _type:Type = .Unknown
     var type:Type {
         return _type
     }
@@ -57,13 +59,13 @@ class RTMPMessage: NSObject {
     var payload:[UInt8] = []
 
     override var description:String {
-        var className:NSString = NSStringFromClass(self.dynamicType).componentsSeparatedByString(".").last! as String
+        let className:NSString = NSStringFromClass(self.dynamicType).componentsSeparatedByString(".").last! as String
         var description:String = "\(className){"
-        description += "type:" + type.rawValue.description + ","
-        description += "length:" + length.description + ","
-        description += "streamId:" + streamId.description + ","
-        description += "timestamp:" + timestamp.description + ","
-        description += "payload:" + payload.count.description
+        description += "type:\(type.rawValue),"
+        description += "length:\(length),"
+        description += "streamId:\(streamId),"
+        description += "timestamp:\(timestamp),"
+        description += "payload:\(payload.count)"
         description += "}"
         return description
     }
@@ -335,23 +337,15 @@ final class RTMPCommandMessage: RTMPMessage {
     
     override var description: String {
         var description:String = "RTMPCommandMessage{"
-        description += "type:" + type.rawValue.description + ","
-        description += "length:" + length.description + ","
-        description += "streamId:" + streamId.description + ","
-        description += "timestamp:" + timestamp.description + ","
-        description += "commandName:" + commandName + ","
-        description += "transactionId:" + transactionId.description + ","
-
-        if (commandObject == nil) {
-            description += "commandObject: null,"
-        } else {
-            description += "commandObject:" + commandObject!.description + ","
-        }
-        
-        description += "arguments:"
-        description += arguments.description
+        description += "type:\(type),"
+        description += "length:\(length),"
+        description += "streamId:\(streamId),"
+        description += "timestamp:\(timestamp),"
+        description += "commandName:\(commandName),"
+        description += "transactionId:\(transactionId),"
+        description += "commandObject:\(commandObject),"
+        description += "arguments:\(arguments)"
         description += "}"
-        
         return description
     }
 
@@ -409,12 +403,12 @@ final class RTMPDataMessage:RTMPMessage {
 
     override var description: String {
         var description:String = "RTMPDataMessage{"
-        description += "type:" + type.rawValue.description + ","
-        description += "length:" + length.description + ","
-        description += "streamId:" + streamId.description + ","
-        description += "timestamp:" + timestamp.description + ","
-        description += "handleName:" + handlerName + ","
-        description += "arguments:" + arguments.description
+        description += "type:\(type.rawValue),"
+        description += "length:\(length),"
+        description += "streamId:\(streamId),"
+        description += "timestamp:\(timestamp),"
+        description += "handlerName:\(handlerName),"
+        description += "arguments:\(arguments)"
         description += "}"
         return description
     }
@@ -478,7 +472,7 @@ final class RTMPDataMessage:RTMPMessage {
  */
 final class RTMPSharedObjectMessage:RTMPMessage {
 
-    struct Event {
+    struct Event: Printable {
         enum Type:UInt8 {
             case Use = 1
             case Release = 2
@@ -495,20 +489,40 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         }
 
         var type:Type = .Unknown
+        var name:String? = nil
         var data:Any? = nil
+
+        var description:String {
+            var description:String = "Event{"
+            description += "type:\(type),"
+            description += "name:\(name),"
+            description += "data:\(data),"
+            description += "}"
+            return description
+        }
 
         init(type:Type) {
             self.type = type
-        }
-    
-        init(type:UInt8, data:Any?) {
-            self.type = Type(rawValue: type)!
-            self.data = data
         }
 
         init (type:Type, data:Any?) {
             self.type = type
             self.data = data
+        }
+
+        init(bytes:[UInt8], inout position:Int, serializer:AMFSerializer) {
+            type = Type(rawValue: bytes[position++])!
+
+            let length:Int = Int(UInt32(bytes: Array(bytes[position..<position + 4])).bigEndian)
+            position += 4
+
+            if (length != 0) {
+                let nameLength:Int = Int(UInt16(bytes: Array(bytes[position..<position + 2])).bigEndian)
+                position += 2
+                name = String(bytes: Array(bytes[position..<position + nameLength]), encoding: NSUTF8StringEncoding)!
+                position += nameLength
+                data = serializer.deserialize(bytes, position: &position)
+            }
         }
     }
 
@@ -528,13 +542,13 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         }
     }
 
-    var currentVersion:Int32 = -1 {
+    var currentVersion:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
 
-    var flags:Bool = true {
+    var flags:[UInt8] = [UInt8](count: 8, repeatedValue: 0x00) {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -556,7 +570,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
             super.payload += UInt16(buffer.count).bigEndian.bytes
             super.payload += buffer
             super.payload += currentVersion.bigEndian.bytes
-            super.payload += [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+            super.payload += flags
 
             for event in events {
                 super.payload += [event.type.rawValue]
@@ -576,22 +590,15 @@ final class RTMPSharedObjectMessage:RTMPMessage {
                 return
             }
             if (length == newValue.count) {
-                var offset:Int = Int(UInt16(bytes: Array(newValue[0..<2])).bigEndian) + 2
-                sharedObjectName = String(bytes: Array(newValue[2..<offset]), encoding: NSUTF8StringEncoding)!
-                currentVersion = Int32(bytes: Array(newValue[offset..<offset + 4])).bigEndian
-                offset += 12
+                var position:Int = Int(UInt16(bytes: Array(newValue[0..<2])).bigEndian) + 2
+                sharedObjectName = String(bytes: Array(newValue[2..<position]), encoding: NSUTF8StringEncoding)!
+                currentVersion = UInt32(bytes: Array(newValue[position..<position + 4])).bigEndian
+                position += 4
+                flags = Array(newValue[position..<position + 8])
+                position += 8
                 events = []
-                while (offset < newValue.count) {
-                    let type:UInt8 = newValue[offset++]
-                    let dataLength:Int = Int(UInt32(bytes: Array(newValue[offset..<offset + 4])).bigEndian)
-                    offset += 4
-                    if (dataLength == 0) {
-                        events.append(Event(type: type, data: nil))
-                    } else {
-                        var position:Int = 0
-                        events.append(Event(type: type, data: serializer.deserialize(Array(newValue[offset..<offset + dataLength]), position: &position)))
-                        offset += dataLength
-                    }
+                while (position < newValue.count) {
+                    events.append(Event(bytes: newValue, position: &position, serializer: serializer))
                 }
             }
             super.payload = newValue
@@ -605,7 +612,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         self.objectEncoding = objectEncoding
     }
 
-    init (objectEncoding:UInt8, sharedObjectName:String, flags:Bool, events:[Event]) {
+    init (objectEncoding:UInt8, sharedObjectName:String, flags:[UInt8], events:[Event]) {
         super.init()
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
@@ -656,6 +663,9 @@ final class RTMPMediaMessage:RTMPMessage {
  * @see 7.1.6. Aggregate Message (22)
  */
 final class RTMPAggregateMessage:RTMPMessage {
+    override var type:Type {
+        return .Aggregate
+    }
 }
 
 /**
