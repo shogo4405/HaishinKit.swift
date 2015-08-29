@@ -24,7 +24,7 @@ struct FLVTag: Printable {
 
     static let headerSize = 11
 
-    var type:Type = Type.Unkown
+    var type:Type = .Unkown
     var dataSize:UInt32 = 0
     var timestamp:UInt32 = 0
     var timestampExtended:UInt8 = 0
@@ -32,11 +32,11 @@ struct FLVTag: Printable {
 
     var description:String {
         var description = "FLVTag{"
-        description += "type:" + type.description + ","
-        description += "dataSize:" + dataSize.description + ","
-        description += "timestamp:" + timestamp.description + ","
-        description += "timestampExtended:" + timestampExtended.description + ","
-        description += "streamId:" + streamId.description
+        description += "type:\(type),"
+        description += "dataSize:\(dataSize),"
+        description += "timestamp:\(timestamp),"
+        description += "timestampExtended:\(timestampExtended),"
+        description += "streamId:\(streamId)"
         description += "}"
         return description
     }

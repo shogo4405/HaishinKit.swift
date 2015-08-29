@@ -60,7 +60,7 @@ public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
         super.init()
-        rtmpConnection.addEventListener("rtmpStatus", selector: "rtmpStatusHandler:", observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:", observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }

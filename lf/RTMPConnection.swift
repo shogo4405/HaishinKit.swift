@@ -85,7 +85,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     public func connect(command:String, arguments:NSObject...) {
         if let url:NSURL = NSURL(string: command) {
             _uri = command
-            addEventListener("rtmpStatus", selector: "rtmpStatusHandler:")
+            addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
             socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : UInt32(url.port!.intValue))
         }
     }
@@ -95,7 +95,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             return
         }
         _uri = ""
-        removeEventListener("rtmpStatus", selector: "rtmpStatusHandler:")
+        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         for (id, rtmpStream) in rtmpStreams {
             rtmpStream.close()
             rtmpStreams.removeValueForKey(id)
@@ -205,7 +205,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         let transactionId:Int = message.transactionId
 
         if (operations[transactionId] == nil) {
-            dispatchEventWith("rtmpStatus", bubbles: false, data: message.arguments[0])
+            dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: message.arguments[0])
             return
         }
 

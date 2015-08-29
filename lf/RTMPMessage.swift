@@ -494,9 +494,9 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
         var description:String {
             var description:String = "Event{"
-            description += "type:\(type),"
+            description += "type:\(type.rawValue),"
             description += "name:\(name),"
-            description += "data:\(data),"
+            description += "data:\(data)"
             description += "}"
             return description
         }
@@ -505,8 +505,9 @@ final class RTMPSharedObjectMessage:RTMPMessage {
             self.type = type
         }
 
-        init (type:Type, data:Any?) {
+        init (type:Type, name:String, data:Any?) {
             self.type = type
+            self.name = name
             self.data = data
         }
 
@@ -560,6 +561,16 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         }
     }
 
+    override var description: String {
+        var description:String = "RTMPSharedObjectMessage{"
+        description += "sharedObjectName:\(sharedObjectName),"
+        description += "currentVersion:\(currentVersion),"
+        description += "flags:\(flags),"
+        description += "events:\(events)"
+        description += "}"
+        return description
+    }
+
     override var payload:[UInt8] {
         get {
             if (!super.payload.isEmpty) {
@@ -575,6 +586,9 @@ final class RTMPSharedObjectMessage:RTMPMessage {
             for event in events {
                 super.payload += [event.type.rawValue]
                 if (event.data != nil) {
+                    let name:[UInt8] = [UInt8](event.name!.utf8)
+                    super.payload += UInt16(name.count).bigEndian.bytes
+                    super.payload += name
                     let data:[UInt8] = serializer.serialize(event.data)
                     super.payload += UInt32(data.count).bigEndian.bytes
                     super.payload += data
@@ -612,10 +626,11 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         self.objectEncoding = objectEncoding
     }
 
-    init (objectEncoding:UInt8, sharedObjectName:String, flags:[UInt8], events:[Event]) {
+    init (objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {
         super.init()
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
+        self.currentVersion = currentVersion
         self.flags = flags
         self.events = events
     }

@@ -46,6 +46,11 @@ public class Event:NSObject {
         return _data
     }
 
+    private var _target:AnyObject? = nil
+    public var target:AnyObject? {
+        return _target
+    }
+
     init(type:String, bubbles:Bool, data:Any?) {
         _type = type
         _bubbles = bubbles
@@ -102,8 +107,10 @@ public class EventDispatcher: NSObject, IEventDispatcher {
     }
 
     public func dispatchEvent(e:Event) {
+        e._target = target == nil ? self : target!
         let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
         center.postNotificationName(e.type, object: target == nil ? self : target!, userInfo: ["event": e])
+        e._target = nil
     }
 
     public final func dispatchEventWith(type:String, bubbles:Bool, data:Any?) {
