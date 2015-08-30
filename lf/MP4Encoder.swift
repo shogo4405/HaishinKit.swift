@@ -5,6 +5,33 @@ protocol MP4EncoderDelegate: class {
     func encoderOnFinishWriting(encoder:MP4Encoder, outputURL:NSURL)
 }
 
+class AVAssetWriterComponent {
+    var writer:AVAssetWriter
+    var video:AVAssetWriterInput
+    var audio:AVAssetWriterInput
+
+    init (expectsMediaDataInRealTime:Bool, audioSettings:Dictionary<String, AnyObject>, videoSettings:Dictionary<String, AnyObject>) {
+        var error:NSError?
+        writer = AVAssetWriter(URL: MP4Encoder.createTemporaryURL(), fileType: AVFileTypeMPEG4, error: &error)
+
+        audio = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
+        audio.expectsMediaDataInRealTime = expectsMediaDataInRealTime
+        writer.addInput(audio)
+
+        video = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
+        video.expectsMediaDataInRealTime = expectsMediaDataInRealTime
+        writer.addInput(video)
+
+        writer.startWriting()
+        writer.startSessionAtSourceTime(kCMTimeZero)
+    }
+
+    func markAsFinished() {
+        audio.markAsFinished()
+        video.markAsFinished()
+    }
+}
+
 final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
     static let defaultDuration:Int64 = 2
     static let defaultWidth:NSNumber = 480
@@ -23,6 +50,7 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         AVVideoCodecKey: AVVideoCodecH264,
         AVVideoWidthKey: MP4Encoder.defaultWidth,
         AVVideoHeightKey: MP4Encoder.defaultHeight,
+        AVVideoScalingModeKey: AVVideoScalingModeResizeAspectFill,
         AVVideoCompressionPropertiesKey: [
             AVVideoMaxKeyFrameIntervalDurationKey: NSNumber(longLong: MP4Encoder.defaultDuration),
             AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
@@ -44,8 +72,8 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     let videoQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.video", DISPATCH_QUEUE_SERIAL)
 
     private var rotateTime:CMTime = CMTimeAdd(kCMTimeZero, CMTimeMake(MP4Encoder.defaultDuration, 1))
-    private var writer:AVAssetWriter? = nil
-    private var writers:Dictionary<NSURL, AVAssetWriter> = [:]
+    private var component:AVAssetWriterComponent? = nil
+    private var components:Dictionary<NSURL, AVAssetWriterComponent> = [:]
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.lock", DISPATCH_QUEUE_SERIAL)
 
     override init() {
@@ -54,8 +82,8 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
 
     func clear() {
         dispatch_sync(lockQueue) {
-            self.writers.removeAll(keepCapacity: false)
-            self.writer = nil
+            self.components.removeAll(keepCapacity: false)
+            self.component = nil
         }
     }
 
@@ -72,12 +100,14 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
             rotateAssetWriter(timestamp, mediaType: mediaType)
         }
 
-        if (writer != nil) {
-            for input in writer!.inputs {
-                let input:AVAssetWriterInput = input as! AVAssetWriterInput
-                if (input.mediaType == mediaType && input.readyForMoreMediaData) {
-                    input.appendSampleBuffer(sampleBuffer)
-                }
+        if (component != nil) {
+            switch mediaType {
+            case AVMediaTypeAudio:
+                onAudioSampleBuffer(sampleBuffer)
+            case AVMediaTypeVideo:
+                onVideoSampleBuffer(sampleBuffer)
+            default:
+                break
             }
         }
     }
@@ -85,52 +115,38 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
     }
 
+    func onAudioSampleBuffer(sampleBuffer:CMSampleBufferRef) {
+        if (component!.audio.readyForMoreMediaData) {
+            component!.audio.appendSampleBuffer(sampleBuffer)
+        }
+    }
+
+    func onVideoSampleBuffer(sampleBuffer:CMSampleBufferRef) {
+        if (component!.video.readyForMoreMediaData) {
+            component!.video.appendSampleBuffer(sampleBuffer)
+        }
+    }
+
     private func rotateAssetWriter(timestamp:CMTime, mediaType:String) {
         dispatch_suspend(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
         rotateTime = CMTimeAdd(timestamp, CMTimeMake(duration, 1))
-        let writer:AVAssetWriter? = self.writer
-        self.writer = createAssetWriter()
+        let component:AVAssetWriterComponent? = self.component
+        self.component = AVAssetWriterComponent(expectsMediaDataInRealTime: expectsMediaDataInRealTime, audioSettings: audioSettings, videoSettings: videoSettings)
         dispatch_resume(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
 
-        if (writer != nil) {
-            let outputURL:NSURL = writer!.outputURL
-            writers[outputURL] = writer
-            for input in writer!.inputs {
-                if let input:AVAssetWriterInput = input as? AVAssetWriterInput {
-                    input.markAsFinished()
-                }
-            }
-            writer!.finishWritingWithCompletionHandler {
+        if (component != nil) {
+            let outputURL:NSURL = component!.writer.outputURL
+            components[outputURL] = component
+            component!.markAsFinished()
+            component!.writer.finishWritingWithCompletionHandler {
                 self.onFinishWriting(outputURL)
             }
         }
     }
 
-    private func createAssetWriter() -> AVAssetWriter {
-        var error:NSError?
-        let writer:AVAssetWriter = AVAssetWriter(
-            URL: MP4Encoder.createTemporaryURL(),
-            fileType: AVFileTypeMPEG4,
-            error: &error
-        )
-
-        let audio:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
-        audio.expectsMediaDataInRealTime = expectsMediaDataInRealTime
-        writer.addInput(audio)
-
-        let video:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
-        video.expectsMediaDataInRealTime = expectsMediaDataInRealTime
-        writer.addInput(video)
-
-        writer.startWriting()
-        writer.startSessionAtSourceTime(kCMTimeZero)
-
-        return writer
-    }
-
     private func onFinishWriting(outputURL:NSURL) {
         dispatch_async(lockQueue) {
-            self.writers[outputURL] = nil
+            self.components.removeValueForKey(outputURL)
             self.delegate?.encoderOnFinishWriting(self , outputURL: outputURL)
         }
     }

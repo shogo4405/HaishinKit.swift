@@ -1,7 +1,6 @@
 import Foundation
 
 public class RTMPSharedObject: EventDispatcher {
-    
     private static var remoteSharedObjects:Dictionary<String, RTMPSharedObject> = [:]
 
     public static func getRemote(name:String, remotePath:String, persistence:Bool) -> RTMPSharedObject {
