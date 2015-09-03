@@ -20,7 +20,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     static let defaultChunkSize:Int = 128
     static let defaultBufferSize:Int = 1024
 
-    var readyState:ReadyState = ReadyState.Initialized {
+    var readyState:ReadyState = .Initialized {
         didSet {
             delegate?.didSetReadyState(self, readyState: readyState)
         }

@@ -2,7 +2,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-public final class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
+public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     enum ReadyState:UInt8 {
         case Initilized = 0

@@ -5,7 +5,7 @@ protocol MP4EncoderDelegate: class {
     func encoderOnFinishWriting(encoder:MP4Encoder, outputURL:NSURL)
 }
 
-class AVAssetWriterComponent {
+final class AVAssetWriterComponent {
     var writer:AVAssetWriter
     var video:AVAssetWriterInput
     var audio:AVAssetWriterInput
@@ -97,7 +97,7 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         let timestamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
 
         if (mediaType == AVMediaTypeVideo && rotateTime.value <= timestamp.value) {
-            rotateAssetWriter(timestamp, mediaType: mediaType)
+            rotateComponent(timestamp, mediaType: mediaType)
         }
 
         if (component != nil) {
@@ -127,7 +127,7 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         }
     }
 
-    private func rotateAssetWriter(timestamp:CMTime, mediaType:String) {
+    private func rotateComponent(timestamp:CMTime, mediaType:String) {
         dispatch_suspend(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
         rotateTime = CMTimeAdd(timestamp, CMTimeMake(duration, 1))
         let component:AVAssetWriterComponent? = self.component

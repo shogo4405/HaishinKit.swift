@@ -134,8 +134,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
 
         if (chunk!.ready) {
+            println(chunk!)
             let message:RTMPMessage = chunk!.message!
-            println(message)
             switch message.type {
             case .ChunkSize:
                 let message:RTMPSetChunkSizeMessage = message as! RTMPSetChunkSizeMessage

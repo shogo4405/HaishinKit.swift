@@ -149,13 +149,9 @@ final class RTMPChunk: NSObject {
 
     override var description:String {
         var description:String = "RTMPChunk{"
-        description += "type:" + type.rawValue.description + ","
-        description += "streamId:" + streamId.description + ","
-        if (message == nil) {
-            description += "message: nil"
-        } else {
-            description += "message:" + message!.description + ""
-        }
+        description += "type:\(type.rawValue),"
+        description += "streamId:\(streamId),"
+        description += "message:\(message)"
         description += "}"
         return description
     }
