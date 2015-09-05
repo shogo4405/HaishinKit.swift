@@ -1,10 +1,10 @@
 # lf.swift
 iOS用のライブ配信ライブラリーです。現在、RTMPをサポートしています。視聴のほうはサポートしていません。ライセンスは、修正BSDライセンスです。
 
-# ライセンス
+## ライセンス
 修正BSDで公開しています。
 
-## サンプル
+## 簡単な説明
 ### RTMP
 api自体はAS3のNetConnectionとNetStreamに似せています。
 * flash.net.SharedObject → RTMPSharedObject
