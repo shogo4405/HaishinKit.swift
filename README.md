@@ -1,6 +1,19 @@
 # lf.swift
-iOS用のライブ配信ライブラリーです。ライセンスは、修正BSDライセンスです。
+iOS用のライブ配信ライブラリーです。現在、RTMPをサポートしています。視聴のほうはサポートしていません。ライセンスは、修正BSDライセンスです。
 
-## 機能概要
-1. RTMPの配信
-2. H264, AACのハードウェアエンコーディング
+## サンプル
+### RTMP
+```swift
+var rtmpConnection:RTMPConnection = RTMPConnection()
+var rtmpStream:RTMPStream = RTMPStream()
+rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+rtmpStream!.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
+rtmpStream!.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
+rtmpConnection.connect("rtmp://localhost/appName/instanceName")
+rtmpStream!.publish("streamName")
+
+var previewLayer:AVCaptureVideoPreviewLayer? = rtmpStream!.toPreviewLayer()
+previewLayer!.frame = view.bounds
+previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+view.layer.addSublayer(previewLayer!)
+```
