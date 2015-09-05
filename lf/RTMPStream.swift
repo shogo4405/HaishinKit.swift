@@ -119,6 +119,8 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
             self.encoder.delegate = self.muxer
             self.muxer.delegate = self
+            self.muxer.configurationChanged = true
+            self.chunkTypes.removeAll(keepCapacity: false)
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,

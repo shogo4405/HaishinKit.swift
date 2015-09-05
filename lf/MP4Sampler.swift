@@ -111,9 +111,8 @@ struct MP4SampleTable: Printable {
 }
 
 class MP4Sampler: NSObject, MP4EncoderDelegate {
-    var running:Bool = false
-    var currentFile:MP4File = MP4File()
     var sampleTables:[MP4SampleTable] = []
+    var currentFile:MP4File = MP4File()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Sampler.lock", DISPATCH_QUEUE_SERIAL)
 
     func sampleOutput(index:Int, buffer:NSData, timestamp:Double, keyframe:Bool) {

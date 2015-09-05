@@ -4,7 +4,7 @@ import AVFoundation
 
 class ViewController: UIViewController {
     
-    let url:String = "rtmp://192.168.179.4/live"
+    let url:String = "rtmp://192.168.179.2/live"
     let streamName:String = "test"
     
     var startButton, stopButton : UIButton!

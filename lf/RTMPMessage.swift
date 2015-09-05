@@ -337,7 +337,7 @@ final class RTMPCommandMessage: RTMPMessage {
     
     override var description: String {
         var description:String = "RTMPCommandMessage{"
-        description += "type:\(type),"
+        description += "type:\(type.rawValue),"
         description += "length:\(length),"
         description += "streamId:\(streamId),"
         description += "timestamp:\(timestamp),"
