@@ -215,11 +215,11 @@ final class MP4TimeToSampleBox: MP4Box {
     struct Entry: CustomStringConvertible {
         var sampleCount:UInt32 = 0
         var sampleDuration:UInt32 = 0
-        
+
         var description:String {
             var description:String = "MP4TimeToSample{"
-            description += "sampleCount:" + sampleCount.description + ","
-            description += "sampleDuration:" + sampleDuration.description
+            description += "sampleCount:\(sampleCount),"
+            description += "sampleDuration:\(sampleDuration)"
             description += "}"
             return description
         }
@@ -418,15 +418,15 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
     var depth:UInt16 = 16
 
     override var description:String {
-        var desc:String = type + "(" + size.description + "){";
-        desc += "width:" + width.description + ","
-        desc += "height:" + height.description + ","
-        desc += "hSolution:" + hSolution.description + ","
-        desc += "vSolution:" + vSolution.description + ","
-        desc += "frameCount:" + frameCount.description + ","
-        desc += "compressorname:" + compressorname + ","
-        desc += "depth:" + depth.description + "}"
-        return desc
+        var description:String = type + "(" + size.description + "){";
+        description += "width:" + width.description + ","
+        description += "height:" + height.description + ","
+        description += "hSolution:" + hSolution.description + ","
+        description += "vSolution:" + vSolution.description + ","
+        description += "frameCount:" + frameCount.description + ","
+        description += "compressorname:" + compressorname + ","
+        description += "depth:" + depth.description + "}"
+        return description
     }
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
@@ -481,12 +481,14 @@ final class MP4SampleToChunkBox: MP4Box {
         var firstChunk:UInt32 = 0
         var samplesPerChunk:UInt32 = 0
         var sampleDescriptionIndex:UInt32 = 0
+
         var description: String {
-            return "SampleToChunk{" +
-                "firstChunk=" + firstChunk.description +
-                ", samplesPerChunk=" + samplesPerChunk.description +
-                ", sampleDescriptionIndex=" + sampleDescriptionIndex.description +
-            "}";
+            var description:String = "SampleToChunk{"
+            description += "firstChunk:\(firstChunk),"
+            description += "samplesPerChunk:\(samplesPerChunk),"
+            description += "sampleDescriptionIndex:\(sampleDescriptionIndex)"
+            description += "}";
+            return description
         }
 
         init(firstChunk:UInt32, samplesPerChunk:UInt32, sampleDescriptionIndex:UInt32) {
@@ -524,9 +526,9 @@ final class MP4EditListBox: MP4Box {
 
         var description:String {
             var description:String = "MP4EditListBox.Entry("
-            description += "segmentDuration:" + segmentDuration.description + ","
-            description += "mediaTime:" + mediaTime.description + ","
-            description += "mediaRate:" + mediaRate.description
+            description += "segmentDuration:\(segmentDuration),"
+            description += "mediaTime:\(mediaTime),"
+            description += "mediaRate:\(mediaRate)"
             description += ")"
             return description
         }

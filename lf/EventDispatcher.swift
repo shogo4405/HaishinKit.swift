@@ -109,7 +109,8 @@ public class EventDispatcher: NSObject, IEventDispatcher {
     public func dispatchEvent(e:Event) {
         e._target = target == nil ? self : target!
         let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
-        center.postNotificationName(e.type, object: target == nil ? self : target!, userInfo: ["event": e])
+        let name:String = e.type + "/false"
+        center.postNotificationName(name, object: target == nil ? self : target!, userInfo: ["event": e])
         e._target = nil
     }
 
