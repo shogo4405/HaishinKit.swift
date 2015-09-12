@@ -26,7 +26,7 @@ struct MP4SampleTable: CustomStringConvertible {
     }
 
     var offset:[UInt32] = []
-    var keyframe:Dictionary<Int, Bool> = Dictionary<Int, Bool>()
+    var keyframe:[Int:Bool] = [:]
     var timeScale:UInt32 = 0
     var sampleSize:[UInt32] = []
     var timeToSample:[UInt32] = []

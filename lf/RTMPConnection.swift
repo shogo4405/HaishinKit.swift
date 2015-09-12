@@ -57,10 +57,10 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     private var currentTransactionId:Int = 0
     private var socket:RTMPSocket = RTMPSocket()
     private var bandWidth:UInt32 = 0
-    private var operations:Dictionary<Int, Responder> = [:]
-    private var rtmpStreams:Dictionary<UInt32, RTMPStream> = [:]
+    private var operations:[Int:Responder] = [:]
+    private var rtmpStreams:[UInt32:RTMPStream] = [:]
     private var currentChunk:RTMPChunk? = nil
-    private var fragmentedChunks:Dictionary<UInt16, RTMPChunk> = [:]
+    private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
 
     override public init() {
         super.init()

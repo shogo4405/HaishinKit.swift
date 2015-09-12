@@ -1,7 +1,7 @@
 import Foundation
 
 public class RTMPSharedObject: EventDispatcher {
-    private static var remoteSharedObjects:Dictionary<String, RTMPSharedObject> = [:]
+    private static var remoteSharedObjects:[String:RTMPSharedObject] = [:]
 
     public static func getRemote(name:String, remotePath:String, persistence:Bool) -> RTMPSharedObject {
         let key:String = remotePath + "/" + name + "?persistence=" + persistence.description
@@ -24,8 +24,8 @@ public class RTMPSharedObject: EventDispatcher {
         return data.description
     }
 
-    private var _data:Dictionary<String, Any?> = [:]
-    public var data:Dictionary<String, Any?> {
+    private var _data:[String:Any?] = [:]
+    public var data:[String:Any?] {
         return _data
     }
     
@@ -71,9 +71,9 @@ public class RTMPSharedObject: EventDispatcher {
 
     final func onMessage(message:RTMPSharedObjectMessage) {
         currentVersion = message.currentVersion
-        var changeList:[Dictionary<String, Any?>] = []
+        var changeList:[[String:Any?]] = []
         for event in message.events {
-            var change:Dictionary<String, Any?> = [
+            var change:[String:Any?] = [
                 "code": "",
                 "name": event.name,
                 "oldValue": nil

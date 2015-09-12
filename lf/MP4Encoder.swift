@@ -10,7 +10,7 @@ final class AVAssetWriterComponent {
     var video:AVAssetWriterInput!
     var audio:AVAssetWriterInput!
 
-    init (expectsMediaDataInRealTime:Bool, audioSettings:Dictionary<String, AnyObject>, videoSettings:Dictionary<String, AnyObject>) {
+    init (expectsMediaDataInRealTime:Bool, audioSettings:[String:AnyObject], videoSettings:[String:AnyObject]) {
         do {
             writer = try AVAssetWriter(URL: MP4Encoder.createTemporaryURL(), fileType: AVFileTypeMPEG4)
 
@@ -72,14 +72,14 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     var duration:Int64 = MP4Encoder.defaultDuration
     var recording:Bool = false
     var expectsMediaDataInRealTime:Bool = true
-    var audioSettings:Dictionary<String, AnyObject> = MP4Encoder.defaultAudioSettings
-    var videoSettings:Dictionary<String, AnyObject> = MP4Encoder.defaultVideoSettings
+    var audioSettings:[String:AnyObject] = MP4Encoder.defaultAudioSettings
+    var videoSettings:[String:AnyObject] = MP4Encoder.defaultVideoSettings
     let audioQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.audio", DISPATCH_QUEUE_SERIAL)
     let videoQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.video", DISPATCH_QUEUE_SERIAL)
 
     private var rotateTime:CMTime = CMTimeAdd(kCMTimeZero, CMTimeMake(MP4Encoder.defaultDuration, 1))
     private var component:AVAssetWriterComponent? = nil
-    private var components:Dictionary<NSURL, AVAssetWriterComponent> = [:]
+    private var components:[NSURL:AVAssetWriterComponent] = [:]
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.lock", DISPATCH_QUEUE_SERIAL)
 
     override init() {

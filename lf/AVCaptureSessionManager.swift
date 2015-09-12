@@ -42,7 +42,7 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public var videoSetting:Dictionary<NSObject, AnyObject> = AVCaptureSessionManager.defaultVideoSettings {
+    public var videoSetting:[NSObject:AnyObject] = AVCaptureSessionManager.defaultVideoSettings {
         didSet {
             videoDataOutput.videoSettings = videoSetting
         }

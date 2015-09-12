@@ -21,7 +21,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     private var rtmpConnection:RTMPConnection
-    private var chunkTypes:Dictionary<RTMPSampleType, Bool> = [:]
+    private var chunkTypes:[RTMPSampleType:Bool] = [:]
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var encoder:MP4Encoder = MP4Encoder()
     private var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()

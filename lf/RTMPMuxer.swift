@@ -6,8 +6,8 @@ protocol RTMPMuxerDelegate: class {
 }
 
 final class RTMPMuxer: MP4Sampler {
-    var sampleTypes:Dictionary<Int, RTMPSampleType> = [:]
-    var timestamps:Dictionary<Int, Double> = [:]
+    var sampleTypes:[Int:RTMPSampleType] = [:]
+    var timestamps:[Int:Double] = [:]
     var configurationChanged:Bool = true
     weak var delegate:RTMPMuxerDelegate? = nil
 
