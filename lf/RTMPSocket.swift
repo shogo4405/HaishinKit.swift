@@ -58,7 +58,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     }
 
     func doWrite(chunk:RTMPChunk) {
-        println(chunk)
+        print(chunk)
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
             doWrite(chunk)
@@ -144,7 +144,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
 
             running = true
             while (running) {
-                NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() as! NSDate)
+                NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() )
             }
         }
     }
@@ -185,7 +185,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             let c1packet:ByteArray = ByteArray()
             c1packet.write(Int32(timestamp))
             c1packet.write([0x00, 0x00, 0x00, 0x00])
-            for i in 0..<RTMPSocket.sigSize - 8 {
+            for _ in 0..<RTMPSocket.sigSize - 8 {
                 c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
             }
             doWrite([objectEncoding])
@@ -212,7 +212,6 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             if (inputBuffer.count < RTMPSocket.sigSize) {
                 break
             }
-            let s2packet:[UInt8] = Array(inputBuffer[0..<RTMPSocket.sigSize])
             inputBuffer.removeAll(keepCapacity: false)
             readyState = .HandshakeDone
             break

@@ -5,10 +5,10 @@ import AVFoundation
 public class AVCaptureSessionManager: NSObject {
 
     static public let defaultFPS:Int32 = 30
-    static public let defaultVideoSettings:Dictionary<NSObject, AnyObject> = [
-        kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
-    ]
     static public let defaultSessionPreset:String = AVCaptureSessionPresetMedium
+    static public let defaultVideoSettings:[NSObject:AnyObject] = [
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
+    ]
 
     private var _session:AVCaptureSession? = nil
     public var session:AVCaptureSession! {
@@ -105,7 +105,7 @@ public class AVCaptureSessionManager: NSObject {
                 if (connection.supportsVideoOrientation) {
                     connection.videoOrientation = orientation
                 } else {
-                    println("AVCaptureConnection.videoOrientation not supported")
+                    print("AVCaptureConnection.videoOrientation not supported")
                 }
             }
             for output:AnyObject in session.outputs {
@@ -115,7 +115,7 @@ public class AVCaptureSessionManager: NSObject {
                             if (connection.supportsVideoOrientation) {
                                 connection.videoOrientation = orientation
                             } else {
-                                println("AVCaptureConnection.videoOrientation not supported")
+                                print("AVCaptureConnection.videoOrientation not supported")
                             }
                         }
                     }
@@ -132,17 +132,25 @@ public class AVCaptureSessionManager: NSObject {
         if (audio == nil) {
             return
         }
-        session.addInput(AVCaptureDeviceInput.deviceInputWithDevice(audio!, error: nil) as! AVCaptureDeviceInput)
-        session.addOutput(audioDataOutput!)
+        do {
+            session.addInput(try AVCaptureDeviceInput(device: audio) as AVCaptureDeviceInput)
+            session.addOutput(audioDataOutput!)
+        } catch let error as NSError {
+            print(error)
+        }
     }
     
     public func attachCamera(camera:AVCaptureDevice?) {
         if (camera == nil) {
             return
         }
-        camera!.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
-        session.addInput(AVCaptureDeviceInput.deviceInputWithDevice(camera!, error: nil) as! AVCaptureDeviceInput)
-        session.addOutput(videoDataOutput!)
+        do {
+            camera!.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
+            session.addInput(try AVCaptureDeviceInput(device: camera) as AVCaptureDeviceInput)
+            session.addOutput(videoDataOutput!)
+        } catch let error as NSError {
+            print(error)
+        }
     }
 
     public func startRunning() {

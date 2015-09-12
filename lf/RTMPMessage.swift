@@ -472,7 +472,7 @@ final class RTMPDataMessage:RTMPMessage {
  */
 final class RTMPSharedObjectMessage:RTMPMessage {
 
-    struct Event: Printable {
+    struct Event: CustomStringConvertible {
         enum Type:UInt8 {
             case Use = 1
             case Release = 2
@@ -760,7 +760,7 @@ final class RTMPUserControlMessage:RTMPMessage {
     override var description: String {
         var description:String = "RTMPUserControlMessage{"
         description += "event:" + event.description + "(" + Array(payload[0..<2]).description + "),"
-        description += "value:" + UInt32(bytes: Array(payload[2..<payload.count]).reverse()).description
+        description += "value:" + UInt32(bytes: Array(Array(payload[2..<payload.count]).reverse())).description
         description += "}"
         return description
     }

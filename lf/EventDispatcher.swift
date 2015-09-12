@@ -89,7 +89,7 @@ public class EventDispatcher: NSObject, IEventDispatcher {
     public final func addEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool) {
         let name:String = type + "/" + useCapture.description
         let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
-        center.addObserver(observer, selector: selector, name: type, object: self)
+        center.addObserver(observer, selector: selector, name: name, object: self)
     }
 
     public final func removeEventListener(type:String, selector:Selector) {
@@ -103,7 +103,7 @@ public class EventDispatcher: NSObject, IEventDispatcher {
     public final func removeEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool) {
         let name:String = type + "/" + useCapture.description
         let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
-        center.removeObserver(observer, name: type, object: target == nil ? self : target!)
+        center.removeObserver(observer, name: name, object: target == nil ? self : target!)
     }
 
     public func dispatchEvent(e:Event) {

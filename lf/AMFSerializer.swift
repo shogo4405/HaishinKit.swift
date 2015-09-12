@@ -2,7 +2,7 @@ import Foundation
 
 public typealias ECMAObject = Dictionary<String, Any?>
 
-public struct ECMAArray: ArrayLiteralConvertible, Printable {
+public struct ECMAArray: ArrayLiteralConvertible, CustomStringConvertible {
     private var data:[Any?] = []
     private var dict:Dictionary<String, Any?> = [:]
 
@@ -72,7 +72,7 @@ protocol AMFSerializer {
     func deserialize(bytes:[UInt8], inout position:Int) -> Any?
 }
 
-class SynchronizedArray<T:Comparable>: Printable {
+class SynchronizedArray<T:Comparable>: CustomStringConvertible {
     private var data:[T] = []
 
     var description:String {
@@ -183,8 +183,6 @@ class AMF0Serializer:AMFSerializer {
             return serialize(Double(value))
         case let value as Float:
             return serialize(Double(value))
-        case let value as Float32:
-            return serialize(Double(value))
         case let value as Double:
             return serialize(Double(value))
         case let value as NSDate:
@@ -254,7 +252,7 @@ class AMF0Serializer:AMFSerializer {
      * @see 2.2 Number Type
      */
     func serialize(value:Double) -> [UInt8] {
-        return [Type.Number.rawValue] + value.bytes.reverse()
+        return [Type.Number.rawValue] + Array(value.bytes.reverse())
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> Double {
@@ -264,7 +262,7 @@ class AMF0Serializer:AMFSerializer {
         }
         let start:Int = ++position
         position += sizeof(Double.self)
-        return Double(bytes: Array(bytes[start..<position].reverse()))
+        return Double(bytes: Array(Array(bytes[start..<position].reverse())))
     }
     
     func serialize(value:Int) -> [UInt8] {
@@ -295,7 +293,7 @@ class AMF0Serializer:AMFSerializer {
      * @see 2.4 String Type
      */
     func serialize(value:String) -> [UInt8] {
-        let isLong:Bool = UInt32(UInt16.max) < UInt32(count(value))
+        let isLong:Bool = UInt32(UInt16.max) < UInt32(value.characters.count)
         return [isLong ? Type.LongString.rawValue : Type.String.rawValue] + serializeUTF8(value, isLong: isLong)
     }
     
@@ -348,7 +346,7 @@ class AMF0Serializer:AMFSerializer {
         }
         ++position
         while (true) {
-            var key:String = deserializeUTF8(bytes, position: &position, isLong: false)
+            let key:String = deserializeUTF8(bytes, position: &position, isLong: false)
             if (key == "") {
                 ++position
                 break
@@ -384,7 +382,7 @@ class AMF0Serializer:AMFSerializer {
 
         ++position
         while (true) {
-            var key:String = deserializeUTF8(bytes, position: &position, isLong: false)
+            let key:String = deserializeUTF8(bytes, position: &position, isLong: false)
             if (key == "") {
                 ++position
                 break
@@ -419,8 +417,8 @@ class AMF0Serializer:AMFSerializer {
         var result:[Any?] = []
         let start:Int = position
         position += sizeof(UInt32.self)
-        let count:Int = Int(UInt32(bytes: Array(bytes[start..<position]).reverse()))
-        for i in 0..<count {
+        let count:Int = Int(UInt32(bytes: Array(Array(bytes[start..<position]).reverse())))
+        for _ in 0..<count {
             result.append(deserialize(bytes, position: &position))
         }
         return result
@@ -528,8 +526,6 @@ class AMF3Serializer:AMFSerializer {
         case let value as UInt32:
             return serialize(Double(value))
         case let value as Float:
-            return serialize(Double(value))
-        case let value as Float32:
             return serialize(Double(value))
         case let value as Double:
             return serialize(Double(value))
@@ -642,7 +638,7 @@ class AMF3Serializer:AMFSerializer {
      * @see 3.7 double type
      */
     func serialize(value:Double) -> [UInt8] {
-        return [TYPE.NUMBER.rawValue] + value.bytes.reverse()
+        return [TYPE.NUMBER.rawValue] + Array(value.bytes.reverse())
     }
     
     func deserialize(bytes:[UInt8], inout position:Int) -> Double {
@@ -652,7 +648,7 @@ class AMF3Serializer:AMFSerializer {
         }
         let start:Int = ++position
         position += sizeof(Double.self)
-        return Double(bytes: Array(bytes[start..<position].reverse()))
+        return Double(bytes: Array(Array(bytes[start..<position].reverse())))
     }
 
     /**
@@ -728,7 +724,7 @@ class AMF3Serializer:AMFSerializer {
     }
 
     func deserialize(bytes:[UInt8], inout position:Int) -> ECMAObject {
-        var result:ECMAObject = ECMAObject()
+        let result:ECMAObject = ECMAObject()
         return result
     }
 

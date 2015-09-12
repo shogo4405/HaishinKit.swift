@@ -109,7 +109,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     func createStream(rtmpStream: RTMPStream) {
         let responder:Responder = Responder { (data) -> Void in
-            var id:Any? = data[0]
+            let id:Any? = data[0]
             if let id:Double = id as? Double {
                 rtmpStream.id = UInt32(id)
                 self.rtmpStreams[rtmpStream.id] = rtmpStream
@@ -134,7 +134,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
 
         if (chunk!.ready) {
-            println(chunk!)
+            print(chunk!)
             let message:RTMPMessage = chunk!.message!
             switch message.type {
             case .ChunkSize:
@@ -223,7 +223,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     private func createConnectionChunk() -> RTMPChunk {
         let url:NSURL = NSURL(string: _uri)!
         let path:String = url.path!
-        var app:String = path.substringFromIndex(advance(path.startIndex, 1))
+        var app:String = path.substringFromIndex(path.startIndex.advancedBy(1))
         
         if (url.query != nil) {
             app += "?" + url.query!

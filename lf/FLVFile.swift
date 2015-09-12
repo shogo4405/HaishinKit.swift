@@ -74,9 +74,9 @@ enum RTMPSampleType:UInt8 {
     }
 }
 
-struct FLVTag: Printable {
+struct FLVTag: CustomStringConvertible {
 
-    enum Type:UInt8, Printable {
+    enum Type:UInt8, CustomStringConvertible {
         case Audio = 8
         case Video = 9
         case Data  = 18
@@ -134,18 +134,11 @@ class FLVFile {
     var version:UInt8 = 0
 
     func loadFile(fileHandle:NSFileHandle) {
-        var buffer:ByteArray = ByteArray(data:fileHandle.readDataOfLength(FLVFile.headerSize))
+        let buffer:ByteArray = ByteArray(data:fileHandle.readDataOfLength(FLVFile.headerSize))
 
         let signature:String = buffer.read(3)
         if (FLVFile.signature != signature) {
             return
-        }
-        
-        while (true) {
-            var tag:FLVTag = FLVTag(data:fileHandle.readDataOfLength(FLVTag.headerSize))
-            fileHandle.seekToFileOffset(fileHandle.offsetInFile + UInt64(tag.dataSize))
-            var tagSize:NSData = fileHandle.readDataOfLength(4)
-            tags.append(tag)
         }
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-class MP4Box:NSObject, Printable {
+class MP4Box:NSObject {
     static func create(data:NSData) -> MP4Box {
         let buffer:ByteArray = ByteArray(data: data)
         let size:UInt32 = buffer.readUInt32()
@@ -87,7 +87,7 @@ class MP4Box:NSObject, Printable {
     }
 
     func create(data:NSData, offset:UInt32) -> MP4Box {
-        var box:MP4Box = MP4Box.create(data)
+        let box:MP4Box = MP4Box.create(data)
         box._parent = self
         box._offset = _offset + UInt64(offset)
         return box
@@ -109,7 +109,7 @@ class MP4ContainerBox: MP4Box {
         fileHandle.seekToFileOffset(_offset + UInt64(offset))
 
         while (size != offset) {
-            var child:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
+            let child:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
             offset += child.loadFile(fileHandle)
             children.append(child)
         }
@@ -180,11 +180,11 @@ final class MP4ChunkOffsetBox: MP4Box {
     var entries:[UInt32] = []
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
         buffer.position += 4
 
-        var numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
+        let numberOfEntries:UInt32 = buffer.readUInt32()
+        for _ in 0..<numberOfEntries {
             entries.append(buffer.readUInt32())
         }
         buffer.clear()
@@ -199,11 +199,11 @@ final class MP4SyncSampleBox: MP4Box {
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
         entries.removeAll(keepCapacity: false)
 
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
         buffer.position += 4
 
-        var numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
+        let numberOfEntries:UInt32 = buffer.readUInt32()
+        for _ in 0..<numberOfEntries {
             entries.append(buffer.readUInt32())
         }
 
@@ -212,7 +212,7 @@ final class MP4SyncSampleBox: MP4Box {
 }
 
 final class MP4TimeToSampleBox: MP4Box {
-    struct Entry: Printable {
+    struct Entry: CustomStringConvertible {
         var sampleCount:UInt32 = 0
         var sampleDuration:UInt32 = 0
         
@@ -235,11 +235,11 @@ final class MP4TimeToSampleBox: MP4Box {
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
         entries.removeAll(keepCapacity: false)
 
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
         buffer.position += 4
 
-        var numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
+        let numberOfEntries:UInt32 = buffer.readUInt32()
+        for _ in 0..<numberOfEntries {
             entries.append(Entry(
                 sampleCount: buffer.readUInt32(),
                 sampleDuration: buffer.readUInt32()
@@ -256,18 +256,18 @@ final class MP4SampleSizeBox: MP4Box {
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
         entries.removeAll(keepCapacity: false)
 
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(self.size) - 8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(self.size) - 8))
         buffer.position += 4
 
-        var sampleSize:UInt32 = buffer.readUInt32()
+        let sampleSize:UInt32 = buffer.readUInt32()
 
         if (sampleSize != 0) {
             entries.append(sampleSize)
             return size
         }
 
-        var numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
+        let numberOfEntries:UInt32 = buffer.readUInt32()
+        for _ in 0..<numberOfEntries {
             entries.append(buffer.readUInt32())
         }
         buffer.clear()
@@ -289,7 +289,7 @@ final class MP4ElementaryStreamDescriptorBox:MP4ContainerBox {
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
         var tagSize:UInt8 = 0
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(self.size) - 8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(self.size) - 8))
         buffer.position += 4
 
         tag = buffer.readUInt8()
@@ -301,14 +301,14 @@ final class MP4ElementaryStreamDescriptorBox:MP4ContainerBox {
 
         id = buffer.readUInt16()
 
-        var data:UInt8 = buffer.readUInt8()
+        let data:UInt8 = buffer.readUInt8()
         streamDependenceFlag = data >> 7
         urlFlag = (data >> 6) & 0x1
         ocrStreamFlag = (data >> 5) & 0x1
         streamPriority = data & 0x1f
 
         if (streamDependenceFlag == 1) {
-            var dependeOnEsId:UInt16 = buffer.readUInt16()
+            buffer.readUInt16()
         }
     
         // Decorder Config Descriptor
@@ -367,7 +367,7 @@ final class MP4AudioSampleEntryBox: MP4ContainerBox {
     }
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(Int(size) - 8))
         buffer.position += 8
 
         version = buffer.readUInt16()
@@ -397,7 +397,7 @@ final class MP4AudioSampleEntryBox: MP4ContainerBox {
         var offset:UInt32 = UInt32(buffer.position) + 8
         fileHandle.seekToFileOffset(_offset + UInt64(offset))
 
-        var esds:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
+        let esds:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
         offset += esds.loadFile(fileHandle)
         children.append(esds)
 
@@ -430,7 +430,7 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
     }
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(78))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(78))
 
         buffer.position += 24
         width = buffer.readUInt16()
@@ -445,7 +445,7 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
         buffer.clear()
 
         var offset:UInt32 = 78
-        var child:MP4Box = MP4Box.create(fileHandle.readDataOfLength(8))
+        let child:MP4Box = MP4Box.create(fileHandle.readDataOfLength(8))
         child._parent = self
         child._offset = _offset + UInt64(offset) + 8
         offset += child.loadFile(fileHandle)
@@ -461,13 +461,13 @@ final class MP4SampleDescriptionBox: MP4ContainerBox {
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
         children.removeAll(keepCapacity: false)
 
-        var buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(8))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(8))
         buffer.position = 4
 
         var offset:UInt32 = 16
-        var numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
-            var child:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
+        let numberOfEntries:UInt32 = buffer.readUInt32()
+        for _ in 0..<numberOfEntries {
+            let child:MP4Box = create(fileHandle.readDataOfLength(8), offset: offset)
             offset += child.loadFile(fileHandle)
             children.append(child)
         }
@@ -477,7 +477,7 @@ final class MP4SampleDescriptionBox: MP4ContainerBox {
 }
 
 final class MP4SampleToChunkBox: MP4Box {
-    struct Entry:Printable {
+    struct Entry:CustomStringConvertible {
         var firstChunk:UInt32 = 0
         var samplesPerChunk:UInt32 = 0
         var sampleDescriptionIndex:UInt32 = 0
@@ -503,7 +503,7 @@ final class MP4SampleToChunkBox: MP4Box {
         buffer.position += 4
 
         let numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
+        for _ in 0..<numberOfEntries {
             entries.append(Entry(
                 firstChunk: buffer.readUInt32(),
                 samplesPerChunk: buffer.readUInt32(),
@@ -517,7 +517,7 @@ final class MP4SampleToChunkBox: MP4Box {
 }
 
 final class MP4EditListBox: MP4Box {
-    struct Entry:Printable {
+    struct Entry:CustomStringConvertible {
         var segmentDuration:UInt32 = 0
         var mediaTime:UInt32 = 0
         var mediaRate:UInt32 = 0
@@ -548,7 +548,7 @@ final class MP4EditListBox: MP4Box {
         entries.removeAll(keepCapacity: false)
         
         let numberOfEntries:UInt32 = buffer.readUInt32()
-        for i in 0..<numberOfEntries {
+        for _ in 0..<numberOfEntries {
             entries.append(Entry(
                 segmentDuration: buffer.readUInt32(),
                 mediaTime: buffer.readUInt32(),
@@ -567,11 +567,14 @@ final class MP4File: MP4ContainerBox {
                 return
             }
             var error:NSError?
-            if let fileHandle:NSFileHandle = NSFileHandle(forReadingFromURL: url!, error: &error) {
+            do {
+                let fileHandle:NSFileHandle = try NSFileHandle(forReadingFromURL: url!)
                 self.fileHandle = fileHandle
                 return
+            } catch let error1 as NSError {
+                error = error1
             }
-            println(error!)
+            print(error!)
             self.fileHandle = nil
         }
     }

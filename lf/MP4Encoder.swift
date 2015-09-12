@@ -6,24 +6,27 @@ protocol MP4EncoderDelegate: class {
 }
 
 final class AVAssetWriterComponent {
-    var writer:AVAssetWriter
-    var video:AVAssetWriterInput
-    var audio:AVAssetWriterInput
+    var writer:AVAssetWriter!
+    var video:AVAssetWriterInput!
+    var audio:AVAssetWriterInput!
 
     init (expectsMediaDataInRealTime:Bool, audioSettings:Dictionary<String, AnyObject>, videoSettings:Dictionary<String, AnyObject>) {
-        var error:NSError?
-        writer = AVAssetWriter(URL: MP4Encoder.createTemporaryURL(), fileType: AVFileTypeMPEG4, error: &error)
+        do {
+            writer = try AVAssetWriter(URL: MP4Encoder.createTemporaryURL(), fileType: AVFileTypeMPEG4)
 
-        audio = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
-        audio.expectsMediaDataInRealTime = expectsMediaDataInRealTime
-        writer.addInput(audio)
-
-        video = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
-        video.expectsMediaDataInRealTime = expectsMediaDataInRealTime
-        writer.addInput(video)
-
-        writer.startWriting()
-        writer.startSessionAtSourceTime(kCMTimeZero)
+            audio = AVAssetWriterInput(mediaType: AVMediaTypeAudio, outputSettings: audioSettings)
+            audio.expectsMediaDataInRealTime = expectsMediaDataInRealTime
+            writer.addInput(audio)
+            
+            video = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
+            video.expectsMediaDataInRealTime = expectsMediaDataInRealTime
+            writer.addInput(video)
+            
+            writer.startWriting()
+            writer.startSessionAtSourceTime(kCMTimeZero)
+        } catch let error as NSError {
+            print(error)
+        }
     }
 
     func markAsFinished() {
@@ -36,17 +39,19 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     static let defaultDuration:Int64 = 2
     static let defaultWidth:NSNumber = 480
     static let defaultHeight:NSNumber = 270
+    static let defaultChannels:NSNumber = 1
+    static let defaultSampleRate:NSNumber = 44100
     static let defaultAudioBitrate:NSNumber = 32 * 1024
     static let defaultVideoBitrate:NSNumber = 16 * 10 * 1024
 
-    static let defaultAudioSettings:Dictionary<String, AnyObject> = [
-        AVFormatIDKey: kAudioFormatMPEG4AAC,
-        AVNumberOfChannelsKey: 1,
+    static let defaultAudioSettings:[String:AnyObject] = [
+        AVFormatIDKey: NSNumber(unsignedInt: kAudioFormatMPEG4AAC),
+        AVNumberOfChannelsKey: MP4Encoder.defaultChannels,
         AVEncoderBitRateKey: MP4Encoder.defaultAudioBitrate,
-        AVSampleRateKey: 44100
+        AVSampleRateKey: MP4Encoder.defaultSampleRate
     ]
 
-    static let defaultVideoSettings:Dictionary<String, AnyObject> = [
+    static let defaultVideoSettings:[String:AnyObject] = [
         AVVideoCodecKey: AVVideoCodecH264,
         AVVideoWidthKey: MP4Encoder.defaultWidth,
         AVVideoHeightKey: MP4Encoder.defaultHeight,
@@ -59,7 +64,8 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     ]
 
     private static func createTemporaryURL() -> NSURL {
-        return NSURL(fileURLWithPath: NSTemporaryDirectory().stringByAppendingPathComponent(NSUUID().UUIDString + ".mp4"))!
+        return NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(NSUUID().UUIDString + ".mp4")
+        
     }
 
     weak var delegate:MP4EncoderDelegate? = nil
@@ -89,7 +95,7 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
 
-        if (!recording || CMSampleBufferDataIsReady(sampleBuffer) == 0) {
+        if (!recording || !CMSampleBufferDataIsReady(sampleBuffer)) {
             return
         }
 

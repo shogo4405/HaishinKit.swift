@@ -1,6 +1,6 @@
 import Foundation
 
-final class ByteArray: NSObject, Printable {
+final class ByteArray: NSObject {
     private var _bytes:[UInt8] = []
 
     var bytes:[UInt8] {
@@ -47,7 +47,7 @@ final class ByteArray: NSObject, Printable {
 
     func readUInt16() -> UInt16 {
         position += 2
-        return UInt16(bytes: Array(_bytes[position - 2..<position]).reverse())
+        return UInt16(bytes: Array(Array(_bytes[position - 2..<position]).reverse()))
     }
 
     func readUInt24() -> UInt32 {
@@ -56,7 +56,7 @@ final class ByteArray: NSObject, Printable {
 
     func readUInt32() -> UInt32 {
         position += 4
-        return UInt32(bytes: Array(_bytes[position - 4..<position]).reverse())
+        return UInt32(bytes: Array(Array(_bytes[position - 4..<position]).reverse()))
     }
 
     func read(length:Int) -> String {

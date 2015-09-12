@@ -120,14 +120,14 @@ final class RTMPChunk: NSObject {
                 return
             }
 
-            var message:RTMPMessage = RTMPMessage.create(newValue[pos + 6])
-            message.timestamp = UInt32(bytes: ([0x00] + Array(newValue[pos..<pos + 3])).reverse())
+            let message:RTMPMessage = RTMPMessage.create(newValue[pos + 6])
+            message.timestamp = UInt32(bytes: Array(([0x00] + Array(newValue[pos..<pos + 3])).reverse()))
 
             if (type == .Two) {
                 return
             }
 
-            message.length = Int(Int32(bytes: ([0x00] + Array(newValue[pos + 3..<pos + 6])).reverse()))
+            message.length = Int(Int32(bytes: Array(([0x00] + Array(newValue[pos + 3..<pos + 6])).reverse())))
 
             if (type == .Zero) {
                 message.streamId = UInt32(bytes: Array(newValue[pos + 7...pos + headerSize - 1]))

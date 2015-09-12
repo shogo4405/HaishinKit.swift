@@ -1,6 +1,6 @@
 import Foundation
 
-struct MP4SampleTable: Printable {
+struct MP4SampleTable: CustomStringConvertible {
     var trak:MP4Box
 
     private var cursor:Int = 0
@@ -46,12 +46,12 @@ struct MP4SampleTable: Printable {
         
         self.trak = trak
         
-        var mdhd:MP4Box? = trak.getBoxesByName("mdhd").first
+        let mdhd:MP4Box? = trak.getBoxesByName("mdhd").first
         if let mdhd:MP4MediaHeaderBox = mdhd as? MP4MediaHeaderBox {
             timeScale = mdhd.timeScale
         }
 
-        var stss:MP4Box? = trak.getBoxesByName("stss").first
+        let stss:MP4Box? = trak.getBoxesByName("stss").first
         if let stss:MP4SyncSampleBox = stss as? MP4SyncSampleBox {
             var keyframes:[UInt32] = stss.entries
             for i in 0..<keyframes.count {
@@ -59,37 +59,36 @@ struct MP4SampleTable: Printable {
             }
         }
 
-        var stts:MP4Box? = trak.getBoxesByName("stts").first
+        let stts:MP4Box? = trak.getBoxesByName("stts").first
         if let stts:MP4TimeToSampleBox = stts as? MP4TimeToSampleBox {
             var timeToSample:[MP4TimeToSampleBox.Entry] = stts.entries
-            var sampleDuration:UInt32 = 0
             for i in 0..<timeToSample.count {
                 let entry:MP4TimeToSampleBox.Entry = timeToSample[i]
-                for j in 0..<entry.sampleCount {
+                for _ in 0..<entry.sampleCount {
                     self.timeToSample.append(entry.sampleDuration)
                 }
             }
         }
 
-        var stsz:MP4Box? = trak.getBoxesByName("stsz").first
+        let stsz:MP4Box? = trak.getBoxesByName("stsz").first
         if let stsz:MP4SampleSizeBox = stsz as? MP4SampleSizeBox {
             sampleSize = stsz.entries
         }
 
-        var stco:MP4Box = trak.getBoxesByName("stco").first!
-        var stsc:MP4Box = trak.getBoxesByName("stsc").first!
+        let stco:MP4Box = trak.getBoxesByName("stco").first!
+        let stsc:MP4Box = trak.getBoxesByName("stsc").first!
         var offsets:[UInt32] = (stco as! MP4ChunkOffsetBox).entries
         var sampleToChunk:[MP4SampleToChunkBox.Entry] = (stsc as! MP4SampleToChunkBox).entries
 
         var index:Int = 0
-        var count:Int = sampleToChunk.count
+        let count:Int = sampleToChunk.count
 
         for i in 0..<count {
             var j:Int = Int(sampleToChunk[i].firstChunk) - 1
-            var m:Int = (i + 1 < count) ? Int(sampleToChunk[i + 1].firstChunk) - 1 : offsets.count
+            let m:Int = (i + 1 < count) ? Int(sampleToChunk[i + 1].firstChunk) - 1 : offsets.count
             for (; j < m; ++j) {
                 var offset:UInt32 = offsets[j]
-                for k in 0..<sampleToChunk[i].samplesPerChunk {
+                for _ in 0..<sampleToChunk[i].samplesPerChunk {
                     self.offset.append(offset)
                     offset += sampleSize[index]
                     ++index
@@ -140,7 +139,7 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
         self.sampleTables = sampleTables
 
         var duration:Double = sampleTables.count == 1 ? videoDuration : 0
-        do {
+        repeat {
             for i in 0..<sampleTables.count {
                 if i == 0 {
                     if (duration < sampleTables[i].currentDuration) {
@@ -168,7 +167,10 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
         while inLoop(sampleTables)
     
         currentFile.closeFile()
-        NSFileManager.defaultManager().removeItemAtURL(url, error: nil)
+        do {
+            try NSFileManager.defaultManager().removeItemAtURL(url)
+        } catch _ {
+        }
     }
 
     private func inLoop(sampleTables:[MP4SampleTable]) -> Bool{
