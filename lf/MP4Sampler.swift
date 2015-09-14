@@ -34,11 +34,12 @@ struct MP4SampleTable: CustomStringConvertible {
 
     var description:String {
         var description:String = "MP4SampleTable{"
-        description += "offset:" + offset.description + ","
-        description += "keyframe:" + keyframe.description + ","
-        description += "timeScale:" + timeScale.description + ","
-        description += "sampleSize:" + sampleSize.description + ","
-        description += "timeToSample:" + timeToSample.description + "}"
+        description += "offset:\(offset),"
+        description += "keyframe:\(keyframe),"
+        description += "timeScale:\(timeScale),"
+        description += "sampleSize:\(sampleSize),"
+        description += "timeToSample:\(timeToSample)"
+        description += "}"
         return description
     }
 
@@ -141,7 +142,7 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
         var duration:Double = sampleTables.count == 1 ? videoDuration : 0
         repeat {
             for i in 0..<sampleTables.count {
-                if i == 0 {
+                if i == 1 {
                     if (duration < sampleTables[i].currentDuration) {
                         continue
                     }
@@ -152,6 +153,7 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
                         continue
                     }
                 }
+
                 autoreleasepool {
                     currentFile.seekToFileOffset(sampleTables[i].currentOffset)
                     sampleOutput(i,
@@ -161,16 +163,14 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
                     )
                 }
 
-                sampleTables[i].next()
+                if (sampleTables[i].hasNext()) {
+                    sampleTables[i].next()
+                }
             }
         }
         while inLoop(sampleTables)
     
         currentFile.closeFile()
-        do {
-            try NSFileManager.defaultManager().removeItemAtURL(url)
-        } catch _ {
-        }
     }
 
     private func inLoop(sampleTables:[MP4SampleTable]) -> Bool{

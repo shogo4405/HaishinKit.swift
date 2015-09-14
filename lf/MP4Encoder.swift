@@ -154,6 +154,11 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
         dispatch_async(lockQueue) {
             self.components.removeValueForKey(outputURL)
             self.delegate?.encoderOnFinishWriting(self , outputURL: outputURL)
+            do {
+                try NSFileManager.defaultManager().removeItemAtURL(outputURL)
+            } catch let error as NSError {
+                print(error)
+            }
         }
     }
 }
