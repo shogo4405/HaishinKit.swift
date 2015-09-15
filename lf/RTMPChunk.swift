@@ -6,6 +6,17 @@ final class RTMPChunk: NSObject {
     static let audio:UInt16 = 0x04
     static let video:UInt16 = 0x05
 
+    static func getStreamIdSize(byte:UInt8) -> Int {
+        switch (byte & 0b00111111) {
+        case 0:
+            return 2
+        case 1:
+            return 3
+        default:
+            return 1
+        }
+    }
+
     enum Type:UInt8 {
         case Zero = 0
         case One = 1
@@ -13,18 +24,20 @@ final class RTMPChunk: NSObject {
         case Three = 3
         
         var headerSize:Int {
-            get {
-                switch self {
-                case .Zero:
-                    return 11
-                case .One:
-                    return 7
-                case .Two:
-                    return 3
-                case .Three:
-                    return 0
-                }
+            switch self {
+            case .Zero:
+                return 11
+            case .One:
+                return 7
+            case .Two:
+                return 3
+            case .Three:
+                return 0
             }
+        }
+
+        func ready(bytes:[UInt8]) -> Bool {
+            return headerSize + RTMPChunk.getStreamIdSize(bytes[0]) <= bytes.count
         }
 
         func toBasicHeader(streamId:UInt16) -> [UInt8] {
@@ -41,21 +54,11 @@ final class RTMPChunk: NSObject {
     var type:Type = .Zero
     var streamId:UInt16 = RTMPChunk.command
 
-    private var _message:RTMPMessage?
-    var message:RTMPMessage? {
-        return _message
-    }
-
     var ready:Bool  {
         if (_message == nil) {
             return false
         }
         return _message!.length == _message!.payload.count
-    }
-
-    private var _fragmented:Bool = false
-    var fragmented:Bool {
-        return _fragmented
     }
 
     var headerSize:Int {
@@ -68,6 +71,16 @@ final class RTMPChunk: NSObject {
         return 3 + type.headerSize
     }
 
+    private var _message:RTMPMessage?
+    var message:RTMPMessage? {
+        return _message
+    }
+
+    private var _fragmented:Bool = false
+    var fragmented:Bool {
+        return _fragmented
+    }
+
     private var _bytes:[UInt8] = []
     var bytes:[UInt8] {
         get {
@@ -75,7 +88,6 @@ final class RTMPChunk: NSObject {
                 return message == nil ? _bytes : _bytes + message!.payload
             }
 
-            let hasTimestampExtended:Bool = 0xFFFFFF < message!.timestamp
             let timestamp:[UInt8] = message!.timestamp.bigEndian.bytes
             let length:[UInt8] = UInt32(message!.payload.count).bigEndian.bytes
 
@@ -88,8 +100,8 @@ final class RTMPChunk: NSObject {
                 _bytes += message!.streamId.littleEndian.bytes
             }
 
-            if (hasTimestampExtended) {
-                _bytes += timestamp
+            if (0 < message!.timestampExtended) {
+                _bytes += message!.timestampExtended.bigEndian.bytes
             }
 
             return _bytes + message!.payload
@@ -156,40 +168,24 @@ final class RTMPChunk: NSObject {
         return description
     }
     
-    override init() {
-    }
-    
     init?(bytes:[UInt8], size:Int) {
         super.init()
 
-        if (bytes.isEmpty || bytes[0] == 0) {
+        if (bytes.isEmpty) {
             return nil
         }
 
-        let type:Type? = Type(rawValue: (bytes[0] & 0b11000000) >> 6)
-        if (type == nil) {
+        if let type:Type = Type(rawValue: (bytes[0] & 0b11000000) >> 6) {
+            self.type = type
+        } else {
             return nil
         }
 
-        self.type = type!
-        var require:Int = self.headerSize
-        switch (bytes[0] & 0b00111111) {
-        case 0:
-            require += 2
-            break
-        case 1:
-            require += 3
-            break
-        default:
-            require += 1
-            break
-        }
-
-        if (bytes.count <= require) {
+        if (type.ready(bytes)) {
+            self.bytes = bytes
+        } else {
             return nil
         }
-
-        self.bytes = bytes
     }
 
     init(type:Type, streamId:UInt16, message:RTMPMessage) {

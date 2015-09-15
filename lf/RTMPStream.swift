@@ -190,9 +190,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             objectEncoding: objectEncoding,
             handlerName: handlerName,
             arguments: arguments
-            )))
+        )))
     }
-    
+
     public func toPreviewLayer() -> AVCaptureVideoPreviewLayer {
         sessionManager.startRunning()
         return sessionManager.previewLayer
@@ -209,7 +209,6 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 buffer: buffer
         )))
         chunkTypes[type] = true
-        
     }
     
     func didSetSampleTables(muxer:RTMPMuxer, sampleTables:[MP4SampleTable]) {

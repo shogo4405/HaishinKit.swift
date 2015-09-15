@@ -56,6 +56,7 @@ class RTMPMessage: NSObject {
     var length:Int = 0
     var streamId:UInt32 = 0
     var timestamp:UInt32 = 0
+    var timestampExtended:UInt32 = 0
     var payload:[UInt8] = []
 
     override var description:String {
