@@ -20,7 +20,7 @@ class EventDispatcherTest: XCTestCase {
 
     func onTest(notification: NSNotification) {
         if let info = notification.userInfo as? Dictionary<String, AnyObject> {
-            println(info["event"]!)
+            print(info["event"]!)
         }
     }
 }

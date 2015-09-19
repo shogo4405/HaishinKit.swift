@@ -86,7 +86,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 commandName: "receiveAudio",
                 commandObject: nil,
                 arguments: [flag]
-                )))
+            )))
         }
     }
     
@@ -157,8 +157,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                     commandName: "publish",
                     commandObject: nil,
                     arguments: [name!, type]
-                )
-                ))
+            )))
             
             self.readyState = .Publish
             self.encoder.recording = true
@@ -178,8 +177,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                     commandName: "deleteStream",
                     commandObject: nil,
                     arguments: [self.id]
-                )
-                ))
+            )))
             self.readyState = .Closed
         }
     }

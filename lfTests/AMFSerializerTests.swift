@@ -14,7 +14,7 @@ class AMF0SerializerTests: XCTestCase {
 
     func testString() {
         var position:Int = 0
-        var string:String = "Hello World!!"
+        let string:String = "Hello World!!"
         let bytes:[UInt8] = amf0.serialize(string)
         XCTAssertEqual(string, amf0.deserialize(bytes, position: &position))
     }

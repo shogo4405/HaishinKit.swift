@@ -101,6 +101,7 @@ public class AVCaptureSessionManager: NSObject {
 
     public var orientation:AVCaptureVideoOrientation = AVCaptureVideoOrientation.LandscapeLeft {
         didSet {
+
             if let connection:AVCaptureConnection = _previewLayer?.connection {
                 if (connection.supportsVideoOrientation) {
                     connection.videoOrientation = orientation
@@ -108,6 +109,7 @@ public class AVCaptureSessionManager: NSObject {
                     print("AVCaptureConnection.videoOrientation not supported")
                 }
             }
+
             for output:AnyObject in session.outputs {
                 if let output:AVCaptureVideoDataOutput = output as? AVCaptureVideoDataOutput {
                     for connection in output.connections {
@@ -121,6 +123,7 @@ public class AVCaptureSessionManager: NSObject {
                     }
                 }
             }
+
         }
     }
 
@@ -166,20 +169,34 @@ public class AVCaptureSessionManager: NSObject {
     }
 
     func onOrientationChanged(notification:NSNotification) {
-        switch UIApplication.sharedApplication().statusBarOrientation {
-        case .PortraitUpsideDown:
-            orientation = AVCaptureVideoOrientation.PortraitUpsideDown
-            break
-        case .LandscapeRight:
-            orientation = AVCaptureVideoOrientation.LandscapeRight
-            break
-        case .LandscapeLeft:
-            orientation = AVCaptureVideoOrientation.LandscapeLeft
+        var deviceOrientation:UIDeviceOrientation = UIDeviceOrientation.Unknown
+
+        // iOS9からUIApplication.sharedApplication().statusBarOrientationが変更前の値が取れる気がする
+        if let device:UIDevice = notification.object as? UIDevice {
+            deviceOrientation = device.orientation
+        }
+        
+        switch deviceOrientation {
+        case .Unknown:
+            orientation = AVCaptureVideoOrientation.Portrait
             break
         case .Portrait:
             orientation = AVCaptureVideoOrientation.Portrait
             break
-        case .Unknown:
+        case .PortraitUpsideDown:
+            orientation = AVCaptureVideoOrientation.PortraitUpsideDown
+            break
+        case .LandscapeLeft:
+            orientation = AVCaptureVideoOrientation.LandscapeRight
+            break
+        case .LandscapeRight:
+            orientation = AVCaptureVideoOrientation.LandscapeLeft
+            break
+        case .FaceUp:
+            orientation = AVCaptureVideoOrientation.Portrait;
+            break
+        case .FaceDown:
+            orientation = AVCaptureVideoOrientation.Portrait;
             break
         }
     }

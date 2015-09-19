@@ -9,6 +9,7 @@ final class AVAssetWriterComponent {
     var writer:AVAssetWriter!
     var video:AVAssetWriterInput!
     var audio:AVAssetWriterInput!
+    var pixel:AVAssetWriterInputPixelBufferAdaptor!
 
     init (expectsMediaDataInRealTime:Bool, audioSettings:[String:AnyObject], videoSettings:[String:AnyObject]) {
         do {
@@ -21,7 +22,14 @@ final class AVAssetWriterComponent {
             video = AVAssetWriterInput(mediaType: AVMediaTypeVideo, outputSettings: videoSettings)
             video.expectsMediaDataInRealTime = expectsMediaDataInRealTime
             writer.addInput(video)
-            
+
+            let attributes:[String:AnyObject] = [
+                kCVPixelBufferPixelFormatTypeKey as String: NSNumber(unsignedInt: kCVPixelFormatType_32ARGB),
+                kCVPixelBufferWidthKey as String: MP4Encoder.defaultWidth,
+                kCVPixelBufferHeightKey as String: MP4Encoder.defaultHeight
+            ]
+            pixel = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: video, sourcePixelBufferAttributes: attributes)
+
             writer.startWriting()
             writer.startSessionAtSourceTime(kCMTimeZero)
         } catch let error as NSError {
@@ -35,7 +43,8 @@ final class AVAssetWriterComponent {
     }
 }
 
-final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate {
+final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, AVCaptureAudioDataOutputSampleBufferDelegate, ScreenCaptureOutputPixelBufferDelegate
+    {
     static let defaultDuration:Int64 = 2
     static let defaultWidth:NSNumber = 480
     static let defaultHeight:NSNumber = 270
@@ -119,6 +128,19 @@ final class MP4Encoder: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, 
     }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+    }
+
+    func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
+        if (!recording) {
+            return
+        }
+        if (rotateTime.value <= timestamp.value) {
+            rotateComponent(timestamp, mediaType: AVMediaTypeVideo)
+        }
+
+        if (component!.video.readyForMoreMediaData) {
+            component!.pixel.appendPixelBuffer(pixelBuffer, withPresentationTime: timestamp)
+        }
     }
 
     func onAudioSampleBuffer(sampleBuffer:CMSampleBufferRef) {

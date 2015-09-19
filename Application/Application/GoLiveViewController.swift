@@ -2,12 +2,12 @@ import lf
 import UIKit
 import AVFoundation
 
-final class GoLiveViewController: UIViewController, UITextFieldDelegate {
+final class GoLiveViewController: UIViewController {
     
-    let url:String = "rtmp://192.168.179.2/live"
+    let url:String = "rtmp://localhost/live"
     let streamName:String = "test"
     
-    var startButton, stopButton : UIButton!
+    var startButton, stopButton:UIButton!
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream?
     var previewLayer:AVCaptureVideoPreviewLayer?
@@ -19,23 +19,24 @@ final class GoLiveViewController: UIViewController, UITextFieldDelegate {
         rtmpStream!.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream!.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
         
-        startButton = UIButton(frame: CGRectMake(0, 0, 120, 50))
+        startButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
         startButton.backgroundColor = UIColor.blueColor()
         startButton.setTitle("start", forState: .Normal)
         startButton.layer.masksToBounds = true
-        startButton.layer.position = CGPoint(x: self.view.bounds.width / 2 - 70, y:self.view.bounds.height - 50)
+        startButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
         startButton.addTarget(self, action: "startButton_onClick:", forControlEvents: .TouchUpInside)
         
-        stopButton = UIButton(frame: CGRectMake(0, 0, 120, 50))
+        stopButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
         stopButton.backgroundColor = UIColor.grayColor();
         stopButton.layer.masksToBounds = true
         stopButton.setTitle("stop", forState: .Normal)
-        stopButton.layer.position = CGPoint(x: self.view.bounds.width / 2 + 70, y:self.view.bounds.height - 50)
+        stopButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32 + 44 + 8)
         stopButton.addTarget(self, action: "stopButton_onClick:", forControlEvents: .TouchUpInside)
         
         previewLayer = rtmpStream!.toPreviewLayer()
-        previewLayer!.frame = view.bounds
+        previewLayer!.frame = getPreviewLayerRect()
         previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+        
         view.layer.addSublayer(previewLayer!)
         
         self.view.addSubview(self.startButton)
@@ -44,9 +45,9 @@ final class GoLiveViewController: UIViewController, UITextFieldDelegate {
     
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation:
         UIInterfaceOrientation, duration: NSTimeInterval) {
-            startButton.layer.position = CGPoint(x: view.bounds.width / 2 - 70, y: view.bounds.height - 50)
-            stopButton.layer.position = CGPoint(x: view.bounds.width / 2 + 70, y: view.bounds.height - 50)
-            previewLayer!.frame = view.bounds
+        startButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
+        stopButton.layer.position =  CGPoint(x: self.view.bounds.width - 32, y: 32 + 44 + 8)
+        previewLayer!.frame = getPreviewLayerRect()
     }
     
     override func didReceiveMemoryWarning() {
@@ -84,4 +85,14 @@ final class GoLiveViewController: UIViewController, UITextFieldDelegate {
         }
     }
 
+    func getPreviewLayerRect() -> CGRect{
+        switch UIApplication.sharedApplication().statusBarOrientation {
+        case .Portrait, .PortraitUpsideDown:
+            return CGRectMake(0, 0, view.bounds.width, view.bounds.width * 9 / 16)
+        case .LandscapeRight, .LandscapeLeft:
+            return view.bounds
+        case .Unknown:
+            return view.bounds
+        }
+    }
 }

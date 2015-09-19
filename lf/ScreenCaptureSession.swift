@@ -1,7 +1,8 @@
+import UIKit
 import Foundation
 import AVFoundation
 
-public protocol ScreenCaptureOutputPixelBufferDelegate: class {
+public protocol ScreenCaptureOutputPixelBufferDelegate:class {
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime)
 }
 
