@@ -1,15 +1,19 @@
+import lf
 import UIKit
+import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var service:AirPlayService = AirPlayService(domain: "", name: "Sample", port: AirPlayService.defaultPort)
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        self.window?.backgroundColor = UIColor.whiteColor()
-        self.window?.rootViewController = TabBarController()
-        self.window?.makeKeyAndVisible()
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        window?.backgroundColor = UIColor.whiteColor()
+        window?.rootViewController = TabBarController()
+        window?.makeKeyAndVisible()
+        service.startRunning()
         return true
     }
 
@@ -26,6 +30,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(application: UIApplication) {
+        service.stopRunning()
     }
 }
 

@@ -57,12 +57,12 @@ class MP4Box:NSObject {
         return _parent
     }
 
-    var leafNode: Bool {
+    var leafNode:Bool {
         return false
     }
 
-    override var description: String {
-        return type + "(" + size.description + ")"
+    override var description:String {
+        return "MP4Box{type:\(type),size:\(size),offset:\(offset)}"
     }
 
     override init() {
@@ -74,6 +74,10 @@ class MP4Box:NSObject {
     }
 
     func loadFile(fileHandle: NSFileHandle) -> UInt32 {
+        if (_size == 0) {
+            _size = UInt32(fileHandle.seekToEndOfFile() - _offset)
+            return size
+        }
         fileHandle.seekToFileOffset(_offset + UInt64(size))
         return size
     }
@@ -94,7 +98,7 @@ class MP4Box:NSObject {
     }
 }
 
-class MP4ContainerBox: MP4Box {
+class MP4ContainerBox:MP4Box {
 
     private var children:[MP4Box] = []
 
@@ -139,7 +143,11 @@ class MP4ContainerBox: MP4Box {
     }
 }
 
-final class MP4MediaHeaderBox: MP4Box {
+class MP4FullBox:MP4Box {
+    var version:UInt8 = 0
+}
+
+final class MP4MediaHeaderBox:MP4Box {
     var version:UInt8 = 0
     var creationTime:UInt32 = 0
     var modificationTime:UInt32 = 0
@@ -150,13 +158,13 @@ final class MP4MediaHeaderBox: MP4Box {
 
     override var description:String {
         var description:String = "MP4MediaHeaderBox{"
-        description += "version:" + version.description + ","
-        description += "creationTime:" + creationTime.description + ","
-        description += "modificationTime:" + modificationTime.description + ","
-        description += "timeScale:" + timeScale.description + ","
-        description += "duration:" + duration.description + ","
-        description += "language:" + language.description + ","
-        description += "quality:" + quality.description
+        description += "version:\(version),"
+        description += "creationTime:\(creationTime),"
+        description += "modificationTime:\(modificationTime),"
+        description += "timeScale:\(timeScale),"
+        description += "duration:\(duration),"
+        description += "language:\(language),"
+        description += "quality:\(quality)"
         description += "}"
         return description
     }
@@ -334,7 +342,7 @@ final class MP4ElementaryStreamDescriptorBox:MP4ContainerBox {
     }
 }
 
-final class MP4AudioSampleEntryBox: MP4ContainerBox {
+final class MP4AudioSampleEntryBox:MP4ContainerBox {
     var version:UInt16 = 0
 
     var channelCount:UInt16 = 0
@@ -342,7 +350,6 @@ final class MP4AudioSampleEntryBox: MP4ContainerBox {
     var compressionId:UInt16 = 0
     var packetSize:UInt16 = 0
     var sampleRate:UInt32 = 0
-
     var samplesPerPacket:UInt32 = 0
     var bytesPerPacket:UInt32 = 0
     var bytesPerFrame:UInt32 = 0
@@ -351,19 +358,22 @@ final class MP4AudioSampleEntryBox: MP4ContainerBox {
     var soundVersion2Data:[UInt8] = []
 
     override var description:String {
-        var desc:String = type + "(" + size.description + "){";
-        desc += "version:" + version.description + ","
-        desc += "channelCount:" + channelCount.description + ","
-        desc += "sampleSize:" + sampleSize.description + ","
-        desc += "compressionId:" + compressionId.description + ","
-        desc += "packetSize:" + packetSize.description + ","
-        desc += "sampleRate:" + sampleRate.description + ","
-        desc += "samplesPerPacket:" + samplesPerPacket.description + ","
-        desc += "bytesPerPacket:" + bytesPerPacket.description + ","
-        desc += "bytesPerFrame:" + bytesPerFrame.description + ","
-        desc += "bytesPerSample:" + bytesPerSample.description + ","
-        desc += "soundVersion2Data:" + soundVersion2Data.description + "}"
-        return desc
+        var description:String = "MP4AudioSampleEntryBox{"
+        description += "type:\(type),"
+        description += "size:\(size),"
+        description += "version:\(version),"
+        description += "channelCount:\(channelCount),"
+        description += "sampleSize:\(sampleSize),"
+        description += "compressionId:\(compressionId),"
+        description += "packetSize:\(packetSize),"
+        description += "sampleRate:\(sampleRate),"
+        description += "samplesPerPacket:\(samplesPerPacket),"
+        description += "bytesPerPacket:\(bytesPerPacket),"
+        description += "bytesPerFrame:\(bytesPerFrame),"
+        description += "bytesPerSample:\(bytesPerSample),"
+        description += "soundVersion2Data:\(soundVersion2Data)"
+        description += "}"
+        return description
     }
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
@@ -408,7 +418,9 @@ final class MP4AudioSampleEntryBox: MP4ContainerBox {
     }
 }
 
-final class MP4VisualSampleEntryBox: MP4ContainerBox {
+final class MP4VisualSampleEntryBox:MP4ContainerBox {
+    static var dataSize:Int = 78
+
     var width:UInt16 = 0
     var height:UInt16 = 0
     var hSolution:UInt32 = 0
@@ -418,19 +430,23 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
     var depth:UInt16 = 16
 
     override var description:String {
-        var description:String = type + "(" + size.description + "){";
-        description += "width:" + width.description + ","
-        description += "height:" + height.description + ","
-        description += "hSolution:" + hSolution.description + ","
-        description += "vSolution:" + vSolution.description + ","
-        description += "frameCount:" + frameCount.description + ","
-        description += "compressorname:" + compressorname + ","
-        description += "depth:" + depth.description + "}"
+        var description:String = "MP4VisualSampleEntryBox{"
+        description += "type:\(type),"
+        description += "size:\(size),"
+        description += "offset:\(offset),"
+        description += "width:\(width)),"
+        description += "height:\(height),"
+        description += "hSolution:\(hSolution),"
+        description += "vSolution:\(vSolution),"
+        description += "frameCount:\(frameCount),"
+        description += "compressorname:\(compressorname),"
+        description += "depth:\(depth)"
+        description += "}"
         return description
     }
 
     override func loadFile(fileHandle: NSFileHandle) -> UInt32 {
-        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(78))
+        let buffer:ByteArray = ByteArray(data: fileHandle.readDataOfLength(MP4VisualSampleEntryBox.dataSize))
 
         buffer.position += 24
         width = buffer.readUInt16()
@@ -444,14 +460,15 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
         buffer.readUInt16()
         buffer.clear()
 
-        var offset:UInt32 = 78
+        var offset:UInt32 = UInt32(MP4VisualSampleEntryBox.dataSize)
         let child:MP4Box = MP4Box.create(fileHandle.readDataOfLength(8))
         child._parent = self
         child._offset = _offset + UInt64(offset) + 8
         offset += child.loadFile(fileHandle)
         children.append(child)
 
-        fileHandle.readDataOfLength(Int(size) - 78 - Int(child.size))
+        // skip
+        fileHandle.seekToFileOffset(_offset + UInt64(size))
 
         return size
     }
@@ -482,8 +499,8 @@ final class MP4SampleToChunkBox: MP4Box {
         var samplesPerChunk:UInt32 = 0
         var sampleDescriptionIndex:UInt32 = 0
 
-        var description: String {
-            var description:String = "SampleToChunk{"
+        var description:String {
+            var description:String = "MP4SampleToChunkBox.Entry{"
             description += "firstChunk:\(firstChunk),"
             description += "samplesPerChunk:\(samplesPerChunk),"
             description += "sampleDescriptionIndex:\(sampleDescriptionIndex)"
@@ -562,26 +579,33 @@ final class MP4EditListBox: MP4Box {
     }
 }
 
-final class MP4File: MP4ContainerBox {
+final class MP4File:MP4ContainerBox {
     var url:NSURL? = nil {
         didSet {
             if (url == nil) {
                 return
             }
-            var error:NSError?
             do {
-                let fileHandle:NSFileHandle = try NSFileHandle(forReadingFromURL: url!)
-                self.fileHandle = fileHandle
-                return
-            } catch let error1 as NSError {
-                error = error1
+                fileHandle = try NSFileHandle(forReadingFromURL: url!)
+            } catch let error as NSError {
+                print(error)
             }
-            print(error!)
-            self.fileHandle = nil
         }
     }
 
+    override var description:String {
+        var description:String = ""
+        for box in getBoxesByName("*") {
+            description += box.description
+        }
+        return description
+    }
+
     private var fileHandle:NSFileHandle? = nil
+
+    func isEmpty() -> Bool {
+        return getBoxesByName("mdhd").isEmpty
+    }
 
     func readDataOfLength(length: Int) -> NSData {
         return fileHandle!.readDataOfLength(length)

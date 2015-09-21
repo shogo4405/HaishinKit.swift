@@ -53,10 +53,11 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[RTMPSampleType:Bool] = [:]
     private var muxer:RTMPMuxer = RTMPMuxer()
+    private var screen:ScreenCaptureSession?
     private var encoder:MP4Encoder = MP4Encoder()
     private var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL)
-    
+
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
         super.init()
@@ -76,7 +77,12 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         sessionManager.attachCamera(camera)
         sessionManager.videoDataOutput.setSampleBufferDelegate(encoder, queue: encoder.videoQueue)
     }
-    
+
+    public func attachScreen(screen:ScreenCaptureSession?) {
+        self.screen = screen
+        self.screen?.delegate = encoder
+    }
+
     public func receiveAudio(flag:Bool) {
         dispatch_async(lockQueue) {
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
@@ -146,6 +152,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             self.encoder.delegate = self.muxer
             self.muxer.delegate = self
             self.muxer.configurationChanged = true
+            self.screen?.startRunning()
             self.chunkTypes.removeAll(keepCapacity: false)
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,

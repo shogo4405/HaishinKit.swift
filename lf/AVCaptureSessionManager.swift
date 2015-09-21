@@ -142,7 +142,7 @@ public class AVCaptureSessionManager: NSObject {
             print(error)
         }
     }
-    
+
     public func attachCamera(camera:AVCaptureDevice?) {
         if (camera == nil) {
             return
@@ -170,12 +170,9 @@ public class AVCaptureSessionManager: NSObject {
 
     func onOrientationChanged(notification:NSNotification) {
         var deviceOrientation:UIDeviceOrientation = UIDeviceOrientation.Unknown
-
-        // iOS9からUIApplication.sharedApplication().statusBarOrientationが変更前の値が取れる気がする
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
         }
-        
         switch deviceOrientation {
         case .Unknown:
             orientation = AVCaptureVideoOrientation.Portrait

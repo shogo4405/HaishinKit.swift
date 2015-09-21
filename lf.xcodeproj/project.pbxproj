@@ -48,6 +48,7 @@
 		29E93C521B65EEDA0009E7F0 /* AVCaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295F4B271B6124FA000A04B7 /* AVCaptureSessionManager.swift */; };
 		29EBD0701B5B7B2A001C6044 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B0123A1B4EB38600BEC343 /* EventDispatcher.swift */; };
 		29F320AA1BAD68AC00108100 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29702CC91BA7284700C757B7 /* ScreenCaptureSession.swift */; };
+		29FFC08C1BB1A57700B85F8F /* AirPlayService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FFC08B1BB1A57700B85F8F /* AirPlayService.swift */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -99,6 +100,7 @@
 		29C266BB1B4BE6F900588BBE /* RTMPMuxer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPMuxer.swift; path = lf/RTMPMuxer.swift; sourceTree = "<group>"; };
 		29C266BC1B4BE6F900588BBE /* RTMPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPSocket.swift; path = lf/RTMPSocket.swift; sourceTree = "<group>"; };
 		29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMFSerializerTests.swift; sourceTree = "<group>"; };
+		29FFC08B1BB1A57700B85F8F /* AirPlayService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AirPlayService.swift; path = lf/AirPlayService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +125,7 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
+				29FFC08B1BB1A57700B85F8F /* AirPlayService.swift */,
 				29702CC91BA7284700C757B7 /* ScreenCaptureSession.swift */,
 				2948CD901B8E1C1300A62EAF /* RTMPSharedObject.swift */,
 				295F4B271B6124FA000A04B7 /* AVCaptureSessionManager.swift */,
@@ -320,6 +323,7 @@
 				29C266C41B4BE6F900588BBE /* RTMPStream.swift in Sources */,
 				29C266CA1B4BE6F900588BBE /* RTMPSocket.swift in Sources */,
 				29C266C21B4BE6F900588BBE /* MP4Sampler.swift in Sources */,
+				29FFC08C1BB1A57700B85F8F /* AirPlayService.swift in Sources */,
 				29C266BE1B4BE6F900588BBE /* ByteArray.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

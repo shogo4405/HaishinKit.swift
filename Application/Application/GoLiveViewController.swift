@@ -4,50 +4,49 @@ import AVFoundation
 
 final class GoLiveViewController: UIViewController {
     
-    let url:String = "rtmp://localhost/live"
+    let url:String = "rtmp://192.168.179.2/live"
     let streamName:String = "test"
     
-    var startButton, stopButton:UIButton!
+    var goLiveButton, captureButton:UIButton!
     var rtmpConnection:RTMPConnection = RTMPConnection()
-    var rtmpStream:RTMPStream?
-    var previewLayer:AVCaptureVideoPreviewLayer?
+    var rtmpStream:RTMPStream!
+    var previewLayer:AVCaptureVideoPreviewLayer!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-        rtmpStream!.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        rtmpStream!.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
+        rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
+        rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
+
+        goLiveButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
+        goLiveButton.backgroundColor = UIColor.blueColor()
+        goLiveButton.setTitle("start", forState: .Normal)
+        goLiveButton.layer.masksToBounds = true
+        goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
+        goLiveButton.addTarget(self, action: "goLiveButton_onClick:", forControlEvents: .TouchUpInside)
         
-        startButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
-        startButton.backgroundColor = UIColor.blueColor()
-        startButton.setTitle("start", forState: .Normal)
-        startButton.layer.masksToBounds = true
-        startButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
-        startButton.addTarget(self, action: "startButton_onClick:", forControlEvents: .TouchUpInside)
-        
-        stopButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
-        stopButton.backgroundColor = UIColor.grayColor();
-        stopButton.layer.masksToBounds = true
-        stopButton.setTitle("stop", forState: .Normal)
-        stopButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32 + 44 + 8)
-        stopButton.addTarget(self, action: "stopButton_onClick:", forControlEvents: .TouchUpInside)
+        captureButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
+        captureButton.backgroundColor = UIColor.grayColor();
+        captureButton.layer.masksToBounds = true
+        captureButton.setTitle("start", forState: .Normal)
+        captureButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32 + 44 + 8)
+        captureButton.addTarget(self, action: "captureButton_onClick:", forControlEvents: .TouchUpInside)
         
         previewLayer = rtmpStream!.toPreviewLayer()
-        previewLayer!.frame = getPreviewLayerRect()
-        previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
+        previewLayer.frame = getPreviewLayerRect()
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         
         view.layer.addSublayer(previewLayer!)
-        
-        self.view.addSubview(self.startButton)
-        self.view.addSubview(self.stopButton)
+        view.addSubview(goLiveButton)
+        view.addSubview(captureButton)
     }
     
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation:
         UIInterfaceOrientation, duration: NSTimeInterval) {
-        startButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
-        stopButton.layer.position =  CGPoint(x: self.view.bounds.width - 32, y: 32 + 44 + 8)
-        previewLayer!.frame = getPreviewLayerRect()
+        goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
+        captureButton.layer.position =  CGPoint(x: self.view.bounds.width - 32, y: 32 + 44 + 8)
+        previewLayer.frame = getPreviewLayerRect()
     }
     
     override func didReceiveMemoryWarning() {
@@ -57,17 +56,38 @@ final class GoLiveViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
     }
-    
-    func startButton_onClick(sender:UIButton) {
-        UIApplication.sharedApplication().idleTimerDisabled = true
-        rtmpConnection.addEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler:", observer: self)
-        rtmpConnection.connect(url)
+
+    func goLiveButton_onClick(sender:UIButton) {
+        
+        if (goLiveButton.selected) {
+            UIApplication.sharedApplication().idleTimerDisabled = false
+            rtmpConnection.close()
+            rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
+            goLiveButton.setTitle("start", forState: .Normal)
+        } else {
+            UIApplication.sharedApplication().idleTimerDisabled = true
+            rtmpConnection.addEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler:", observer: self)
+            rtmpConnection.connect(url)
+            goLiveButton.setTitle("stop", forState: .Normal)
+        }
+
+        goLiveButton.selected = !goLiveButton.selected
     }
     
-    func stopButton_onClick(sender:UIButton) {
-        UIApplication.sharedApplication().idleTimerDisabled = false
-        rtmpConnection.close()
-        rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
+    func captureButton_onClick(sender:UIButton) {
+        if (captureButton.selected) {
+            UIApplication.sharedApplication().idleTimerDisabled = false
+            rtmpConnection.close()
+            rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
+            captureButton.setTitle("start", forState: .Normal)
+        } else {
+            UIApplication.sharedApplication().idleTimerDisabled = true
+            rtmpStream.attachScreen(ScreenCaptureSession())
+            rtmpConnection.addEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler:", observer: self)
+            rtmpConnection.connect(url)
+            captureButton.setTitle("stop", forState: .Normal)
+        }
+        captureButton.selected = !captureButton.selected
     }
     
     func rtmpConnection_rtmpStatusHandler(notification:NSNotification) {

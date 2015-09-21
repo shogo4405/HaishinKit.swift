@@ -86,7 +86,7 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
     let audioQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.audio", DISPATCH_QUEUE_SERIAL)
     let videoQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.video", DISPATCH_QUEUE_SERIAL)
 
-    private var rotateTime:CMTime = CMTimeAdd(kCMTimeZero, CMTimeMake(MP4Encoder.defaultDuration, 1))
+    private var rotateTime:CMTime = kCMTimeZero
     private var component:AVAssetWriterComponent? = nil
     private var components:[NSURL:AVAssetWriterComponent] = [:]
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.MP4Encoder.lock", DISPATCH_QUEUE_SERIAL)
@@ -134,6 +134,7 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         if (!recording) {
             return
         }
+    
         if (rotateTime.value <= timestamp.value) {
             rotateComponent(timestamp, mediaType: AVMediaTypeVideo)
         }
@@ -157,7 +158,7 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
 
     private func rotateComponent(timestamp:CMTime, mediaType:String) {
         dispatch_suspend(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
-        rotateTime = CMTimeAdd(timestamp, CMTimeMake(duration, 1))
+        rotateTime = CMTimeAdd(timestamp, CMTimeMake(duration * Int64(timestamp.timescale), timestamp.timescale))
         let component:AVAssetWriterComponent? = self.component
         self.component = AVAssetWriterComponent(expectsMediaDataInRealTime: expectsMediaDataInRealTime, audioSettings: audioSettings, videoSettings: videoSettings)
         dispatch_resume(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)

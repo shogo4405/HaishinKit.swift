@@ -123,15 +123,19 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
     }
 
     private func doSampling(url:NSURL) {
-
         currentFile.url = url
         currentFile.loadFile()
+
+        if (currentFile.isEmpty()) {
+            currentFile.closeFile()
+            return
+        }
 
         var videoDuration:Double = 0
         if let mdhd:MP4MediaHeaderBox = currentFile.getBoxesByName("mdhd").first! as? MP4MediaHeaderBox {
             videoDuration = Double(mdhd.duration) / Double(mdhd.timeScale) * 1000
         }
- 
+
         var sampleTables:[MP4SampleTable] = []
         var traks:[MP4Box] = currentFile.getBoxesByName("trak")
         for i in 0..<traks.count {
@@ -141,6 +145,7 @@ class MP4Sampler: NSObject, MP4EncoderDelegate {
 
         var duration:Double = sampleTables.count == 1 ? videoDuration : 0
         repeat {
+            
             for i in 0..<sampleTables.count {
                 if i == 1 {
                     if (duration < sampleTables[i].currentDuration) {
