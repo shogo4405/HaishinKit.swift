@@ -31,6 +31,9 @@ public final class ScreenCaptureSession:NSObject {
 
     public func startRunning() {
         dispatch_sync(lockQueue) {
+            if (self.running) {
+                return
+            }
             self.running = true
             self.pixelBufferPool = nil
             self.attributes[kCVPixelBufferWidthKey] = self.size.width
@@ -45,6 +48,9 @@ public final class ScreenCaptureSession:NSObject {
 
     public func stopRunning() {
         dispatch_sync(lockQueue) {
+            if (!self.running) {
+                return
+            }
             self.displayLink.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
             self.colorSpace = nil
             self.displayLink = nil

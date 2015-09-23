@@ -85,6 +85,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public func receiveAudio(flag:Bool) {
         dispatch_async(lockQueue) {
+            if (self.readyState != .Playing) {
+                return
+            }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -98,6 +101,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     
     public func receiveVideo(flag:Bool) {
         dispatch_async(lockQueue) {
+            if (self.readyState != .Playing) {
+                return
+            }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -128,6 +134,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     
     public func seek(offset:Double) {
         dispatch_async(lockQueue) {
+            if (self.readyState != .Playing) {
+                return
+            }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -173,6 +182,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     
     public func close() {
         dispatch_async(lockQueue) {
+            if (self.readyState == .Closed) {
+                return
+            }
             self.encoder.recording = false
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
@@ -190,6 +202,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
     
     public func send(handlerName:String, arguments:Any?...) {
+        if (readyState == .Closed) {
+            return
+        }
         rtmpConnection.doWrite(RTMPChunk(message: RTMPDataMessage(
             streamId: id,
             objectEncoding: objectEncoding,

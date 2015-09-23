@@ -101,13 +101,13 @@
 		295D82171BA9B8EE00073478 /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				295D82181BA9B8EE00073478 /* AppDelegate.swift */,
-				295D821F1BA9B8EE00073478 /* Assets.xcassets */,
-				295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */,
 				295D82241BA9B8EE00073478 /* Info.plist */,
-				295D822C1BA9BB2700073478 /* TabBarController.swift */,
+				295D82181BA9B8EE00073478 /* AppDelegate.swift */,
 				295D822E1BA9BB5900073478 /* GoLiveViewController.swift */,
 				295D82321BA9BBA600073478 /* SettingViewController.swift */,
+				295D822C1BA9BB2700073478 /* TabBarController.swift */,
+				295D821F1BA9B8EE00073478 /* Assets.xcassets */,
+				295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */,
 			);
 			path = Application;
 			sourceTree = "<group>";

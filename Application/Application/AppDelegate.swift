@@ -6,7 +6,7 @@ import AVFoundation
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var service:AirPlayService = AirPlayService(domain: "", name: "Sample", port: AirPlayService.defaultPort)
+    var service:AirService = AirService(domain: "", name: "Sample", port: AirService.defaultPort)
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)

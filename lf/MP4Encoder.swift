@@ -97,6 +97,7 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
 
     func clear() {
         dispatch_sync(lockQueue) {
+            self.rotateTime = kCMTimeZero
             self.components.removeAll(keepCapacity: false)
             self.component = nil
         }
@@ -111,6 +112,10 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         let mediaType:String = captureOutput is AVCaptureAudioDataOutput ? AVMediaTypeAudio : AVMediaTypeVideo
         let timestamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
 
+        if (rotateTime == kCMTimeZero) {
+            rotateTime = timestamp
+        }
+
         if (mediaType == AVMediaTypeVideo && rotateTime.value <= timestamp.value) {
             rotateComponent(timestamp, mediaType: mediaType)
         }
@@ -118,21 +123,26 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         if (component != nil) {
             switch mediaType {
             case AVMediaTypeAudio:
-                onAudioSampleBuffer(sampleBuffer)
+                if (component!.audio.readyForMoreMediaData) {
+                    component!.audio.appendSampleBuffer(sampleBuffer)
+                }
             case AVMediaTypeVideo:
-                onVideoSampleBuffer(sampleBuffer)
+                if (component!.video.readyForMoreMediaData) {
+                    component!.video.appendSampleBuffer(sampleBuffer)
+                }
             default:
                 break
             }
         }
     }
 
-    func captureOutput(captureOutput: AVCaptureOutput!, didDropSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-    }
-
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
         if (!recording) {
             return
+        }
+
+        if (rotateTime == kCMTimeZero) {
+            rotateTime = timestamp
         }
     
         if (rotateTime.value <= timestamp.value) {
@@ -144,21 +154,9 @@ final class MP4Encoder:NSObject, AVCaptureVideoDataOutputSampleBufferDelegate, A
         }
     }
 
-    func onAudioSampleBuffer(sampleBuffer:CMSampleBufferRef) {
-        if (component!.audio.readyForMoreMediaData) {
-            component!.audio.appendSampleBuffer(sampleBuffer)
-        }
-    }
-
-    func onVideoSampleBuffer(sampleBuffer:CMSampleBufferRef) {
-        if (component!.video.readyForMoreMediaData) {
-            component!.video.appendSampleBuffer(sampleBuffer)
-        }
-    }
-
     private func rotateComponent(timestamp:CMTime, mediaType:String) {
         dispatch_suspend(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
-        rotateTime = CMTimeAdd(timestamp, CMTimeMake(duration * Int64(timestamp.timescale), timestamp.timescale))
+        rotateTime = CMTimeAdd(rotateTime, CMTimeMake(duration * Int64(timestamp.timescale), timestamp.timescale))
         let component:AVAssetWriterComponent? = self.component
         self.component = AVAssetWriterComponent(expectsMediaDataInRealTime: expectsMediaDataInRealTime, audioSettings: audioSettings, videoSettings: videoSettings)
         dispatch_resume(mediaType == AVMediaTypeAudio ? videoQueue : audioQueue)
