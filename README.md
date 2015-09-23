@@ -1,5 +1,5 @@
 # lf.swift
-iOS用のライブ配信ライブラリーです。現在、RTMPをサポートしています。視聴のほうはサポートしていません。ライセンスは、修正BSDライセンスです。
+iOS向けライブ配信用のライブラリーです。現在、RTMPでの配信をサポートしています。映像および音声の再生についてはサポートしていません。
 
 ## ライセンス
 修正BSDで公開しています。
@@ -11,20 +11,27 @@ api自体はAS3のNetConnectionとNetStreamに似せています。
 * flash.net.Responder → Responder
 * flash.net.NetConnection → RTMPConnection
 * flash.net.NetStream → RTMPStream
-* AMF0をサポート
+* AMF0をサポート、AMF3はこれからサポート予定
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream:RTMPStream = RTMPStream()
 rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-rtmpStream!.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-rtmpStream!.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
-rtmpConnection.connect("rtmp://localhost/appName/instanceName")
-rtmpStream!.publish("streamName")
+rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
+rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
 
-var previewLayer:AVCaptureVideoPreviewLayer? = rtmpStream!.toPreviewLayer()
-previewLayer!.frame = view.bounds
-previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
-view.layer.addSublayer(previewLayer!)
+var previewLayer:AVCaptureVideoPreviewLayer = rtmpStream!.toPreviewLayer()
+previewLayer.frame = view.bounds
+previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+view.layer.addSublayer(previewLayer)
+
+rtmpConnection.connect("rtmp://localhost/appName/instanceName")
+rtmpStream.publish("streamName")
 ```
 
 ## 参考文献
+* Adobe’s Real Time Messaging Protocol
+ * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
+* Action Message Format -- AMF 0
+ * http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
+* Action Message Format -- AMF 3 
+ * http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
