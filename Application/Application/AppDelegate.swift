@@ -1,19 +1,18 @@
 import lf
 import UIKit
+import HomeKit
 import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-    var service:AirService = AirService(domain: "", name: "Sample", port: AirService.defaultPort)
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.backgroundColor = UIColor.whiteColor()
         window?.rootViewController = TabBarController()
         window?.makeKeyAndVisible()
-        service.startRunning()
         return true
     }
 
@@ -30,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        service.stopRunning()
     }
 }
 

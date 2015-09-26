@@ -1,20 +1,38 @@
 import Foundation
 
-protocol NetServiceClientDeledate:class {
-    func handleEvent(client:NetServiceClient)
+@objc protocol NetServiceClientDeledate:class {
+    optional func client(inputBuffer client:NetServiceClient)
+    optional func client(didAccepetConnection client:NetServiceClient)
+    optional func client(didOpenCompleted client:NetServiceClient)
 }
 
-class NetServiceClient:NSObject, NSStreamDelegate {
+final class NetServiceClient:NSObject, NSStreamDelegate {
     static let defaultBufferSize:Int = 8192
 
     var inputBuffer:[UInt8] = []
     weak var delegate:NetServiceClientDeledate?
     let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.NetServiceClient.lock", DISPATCH_QUEUE_SERIAL)
+    var metadata:[String:AnyObject] = [:]
+
+    private var _service:NSNetService?
+    var service:NSNetService! {
+        return _service!
+    }
 
     private var inputStream:NSInputStream
     private var outputStream:NSOutputStream
 
-    init (inputStream:NSInputStream, outputStream:NSOutputStream) {
+    init (service:NSNetService) {
+        var inputStream:NSInputStream?
+        var outputStream:NSOutputStream?
+        NSStream.getStreamsToHostWithName(service.hostName!, port: service.port, inputStream: &inputStream, outputStream: &outputStream)
+        _service = service
+        self.inputStream = inputStream!
+        self.outputStream = outputStream!
+    }
+
+    init (service:NSNetService, inputStream:NSInputStream, outputStream:NSOutputStream) {
+        _service = service
         self.inputStream = inputStream
         self.outputStream = outputStream
     }
@@ -37,6 +55,16 @@ class NetServiceClient:NSObject, NSStreamDelegate {
         outputStream.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
         inputStream.open()
         outputStream.open()
+        delegate?.client?(didAccepetConnection: self)
+    }
+
+    func disconnect() {
+        inputStream.close()
+        inputStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        inputStream.delegate = nil
+        outputStream.close()
+        outputStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        outputStream.delegate = nil
     }
 
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
@@ -45,7 +73,7 @@ class NetServiceClient:NSObject, NSStreamDelegate {
             break
         case NSStreamEvent.OpenCompleted:
             if (inputStream.streamStatus == NSStreamStatus.Open && outputStream.streamStatus == NSStreamStatus.Open) {
-                delegate?.handleEvent(self)
+                delegate?.client?(didOpenCompleted: self)
             }
         case NSStreamEvent.HasSpaceAvailable:
             break
@@ -68,6 +96,8 @@ class NetServiceClient:NSObject, NSStreamDelegate {
         if 0 < length {
             inputBuffer += Array(buffer[0..<length])
         }
-        delegate?.handleEvent(self)
+        if (!inputBuffer.isEmpty) {
+            delegate?.client?(inputBuffer: self)
+        }
     }
 }
