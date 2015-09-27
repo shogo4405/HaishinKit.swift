@@ -150,13 +150,9 @@ public class AbstractNetService:NSObject, NSNetServiceDelegate, NetServiceClient
 
     public func netService(sender: NSNetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream: NSOutputStream) {
         let client:NetServiceClient = NetServiceClient(service: sender, inputStream: inputStream, outputStream: outputStream)
-        client.delegate = self
         clients.append(client)
+        client.delegate = self
         client.acceptConnection()
-    }
-
-    public func netService(sender: NSNetService, didNotPublish errorDict: [String : NSNumber]) {
-        print(errorDict)
     }
 
     func onStartRunning() {
@@ -180,5 +176,6 @@ public class AbstractNetService:NSObject, NSNetServiceDelegate, NetServiceClient
 }
 
 public class HTTPService:AbstractNetService {
+    public static let type:String = "_http._tcp"
+    public static let defaultPort:Int = 8080
 }
-

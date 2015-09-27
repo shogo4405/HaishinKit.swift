@@ -1,7 +1,5 @@
 import lf
 import UIKit
-import HomeKit
-import AVFoundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

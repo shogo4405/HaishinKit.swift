@@ -25,8 +25,13 @@ public final class ScreenCaptureSession:NSObject {
         dispatch_set_target_queue(queue, dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0));
         return queue
     }()
+
     private lazy var size:CGSize = {
         return UIApplication.sharedApplication().delegate!.window!!.bounds.size
+    }()
+
+    private lazy var scale:CGFloat = {
+        return UIScreen.mainScreen().scale
     }()
 
     public func startRunning() {
@@ -36,8 +41,8 @@ public final class ScreenCaptureSession:NSObject {
             }
             self.running = true
             self.pixelBufferPool = nil
-            self.attributes[kCVPixelBufferWidthKey] = self.size.width
-            self.attributes[kCVPixelBufferHeightKey] = self.size.height
+            self.attributes[kCVPixelBufferWidthKey] = self.size.width * self.scale
+            self.attributes[kCVPixelBufferHeightKey] = self.size.height * self.scale
             self.attributes[kCVPixelBufferBytesPerRowAlignmentKey] = self.size.width * 4
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: "onScreen:")
@@ -79,7 +84,7 @@ public final class ScreenCaptureSession:NSObject {
         dispatch_sync(dispatch_get_main_queue()) {
             UIGraphicsPushContext(context)
             for window:UIWindow in UIApplication.sharedApplication().windows {
-                window.drawViewHierarchyInRect(CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height), afterScreenUpdates: true)
+                window.drawViewHierarchyInRect(CGRect(x: 0, y: 0, width: self.size.width * self.scale, height: self.size.height * self.scale), afterScreenUpdates: true)
             }
             UIGraphicsPopContext()
         }
@@ -104,7 +109,7 @@ public final class ScreenCaptureSession:NSObject {
             bitmapInfo.rawValue
         )!
 
-        CGContextScaleCTM(context, 1, 1);
+        CGContextScaleCTM(context, scale, scale);
         CGContextConcatCTM(context, CGAffineTransformMake(1, 0, 0, -1, 0, size.height))
 
         return context
