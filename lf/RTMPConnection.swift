@@ -56,9 +56,10 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     private var currentTransactionId:Int = 0
     private var socket:RTMPSocket = RTMPSocket()
+    private var streams:[UInt32:RTMPStream] = [:]
     private var bandWidth:UInt32 = 0
+    private var streamsmap:[UInt16:UInt32] = [:]
     private var operations:[Int:Responder] = [:]
-    private var rtmpStreams:[UInt32:RTMPStream] = [:]
     private var currentChunk:RTMPChunk? = nil
     private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
 
@@ -96,9 +97,9 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
         _uri = ""
         removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
-        for (id, rtmpStream) in rtmpStreams {
-            rtmpStream.close()
-            rtmpStreams.removeValueForKey(id)
+        for (id, stream) in streams {
+            stream.close()
+            streams.removeValueForKey(id)
         }
         socket.close()
     }
@@ -107,13 +108,13 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         socket.doWrite(chunk)
     }
 
-    func createStream(rtmpStream: RTMPStream) {
+    func createStream(stream: RTMPStream) {
         let responder:Responder = Responder { (data) -> Void in
             let id:Any? = data[0]
             if let id:Double = id as? Double {
-                rtmpStream.id = UInt32(id)
-                self.rtmpStreams[rtmpStream.id] = rtmpStream
-                rtmpStream.readyState = .Open
+                stream.id = UInt32(id)
+                self.streams[stream.id] = stream
+                stream.readyState = .Open
             }
         }
         call("createStream", responder: responder)
@@ -135,6 +136,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
         if (chunk!.ready) {
             print(chunk!)
+
             let message:RTMPMessage = chunk!.message!
             switch message.type {
             case .ChunkSize:
@@ -149,6 +151,16 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 onCommandMessage(message as! RTMPCommandMessage)
             case .AMF0Shared:
                 onSharedObjectMessage(message as! RTMPSharedObjectMessage)
+            case .Audio:
+                if (chunk!.type == .Zero) {
+                    streamsmap[chunk!.streamId] = message.streamId
+                }
+                onAudioMessage(streamsmap[chunk!.streamId], message: message as! RTMPAudioMessage)
+            case .Video:
+                if (chunk!.type == .Zero) {
+                    streamsmap[chunk!.streamId] = message.streamId
+                }
+                onVideoMessage(streamsmap[chunk!.streamId], message: message as! RTMPVideoMessage)
             default:
                 break
             }
@@ -187,12 +199,36 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
     }
 
+    private func onAudioMessage(id:UInt32?, message:RTMPAudioMessage) {
+        if (id == nil) {
+            return
+        }
+        if let stream:RTMPStream = streams[id!] {
+            stream.onAudioMessage(message)
+        }
+    }
+
+    private func onVideoMessage(id:UInt32?, message:RTMPVideoMessage) {
+        if (id == nil) {
+            return
+        }
+        if let stream:RTMPStream = streams[id!] {
+            stream.onVideoMessage(message)
+        }
+    }
+
     private func onUserControlMessage(message:RTMPUserControlMessage) {
         switch message.event {
         case .Ping:
-            socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: RTMPUserControlMessage.Event.Pong)))
+            socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: .Pong)))
+        case .BufferEmpty, .BufferFull:
+            streams[UInt32(message.value)]?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: [
+                "level": "status",
+                "code": message.description,
+                "description": ""
+            ])
         default:
-            break;
+            break
         }
     }
 

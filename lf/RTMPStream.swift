@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
+public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
 
     enum ReadyState:UInt8 {
         case Initilized = 0
@@ -23,7 +23,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         case Switch = "switch"
     }
 
-    public struct PlayOptions: CustomStringConvertible {
+    public struct PlayOptions:CustomStringConvertible {
         public var len:Double = 0
         public var offset:Double = 0
         public var oldStreamName:String = ""
@@ -117,6 +117,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     
     public func play(arguments:Any?...) {
         dispatch_async(lockQueue) {
+            while (self.readyState == .Initilized) {
+                usleep(100)
+            }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -217,17 +220,19 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         sessionManager.startRunning()
         return sessionManager.previewLayer
     }
-    
+
+    func onAudioMessage(message:RTMPAudioMessage) {
+    }
+
+    func onVideoMessage(message:RTMPVideoMessage) {
+    }
+
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData) {
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
-            streamId: type == .Audio ? RTMPChunk.audio : RTMPChunk.video,
-            message: RTMPMediaMessage(
-                streamId: id,
-                timestamp: UInt32(timestamp),
-                type: type,
-                buffer: buffer
-        )))
+            streamId: type.streamId,
+            message: type.createMessage(id, timestamp: UInt32(timestamp), buffer: buffer)
+        ))
         chunkTypes[type] = true
     }
     

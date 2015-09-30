@@ -63,25 +63,43 @@ enum RTMPVideoCodec:UInt8 {
 enum RTMPSampleType:UInt8 {
     case Video = 0
     case Audio = 1
+
+    var streamId:UInt16 {
+        switch self {
+        case .Audio:
+            return RTMPChunk.audio
+        case .Video:
+            return RTMPChunk.video
+        }
+    }
     
     var headerSize:Int {
         switch self {
-        case .Video:
-            return 5
         case .Audio:
             return 2
+        case .Video:
+            return 5
+        }
+    }
+
+    func createMessage(streamId: UInt32, timestamp: UInt32, buffer:NSData) -> RTMPMessage {
+        switch self {
+        case .Audio:
+            return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+        case .Video:
+            return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
         }
     }
 }
 
-struct FLVTag: CustomStringConvertible {
+struct FLVTag:CustomStringConvertible {
 
     enum Type:UInt8, CustomStringConvertible {
         case Audio = 8
         case Video = 9
         case Data  = 18
         case Unkown = 0xFF
-        
+
         var description:String {
             switch self {
             case .Audio:

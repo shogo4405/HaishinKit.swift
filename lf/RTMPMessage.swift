@@ -1,4 +1,5 @@
 import Foundation
+import AVFoundation
 
 class RTMPMessage: NSObject {
 
@@ -43,6 +44,10 @@ class RTMPMessage: NSObject {
             return RTMPCommandMessage(objectEncoding: 0x00)
         case Type.Aggregate.rawValue:
             return RTMPAggregateMessage()
+        case Type.Audio.rawValue:
+            return RTMPAudioMessage()
+        case Type.Video.rawValue:
+            return RTMPVideoMessage()
         default:
             return RTMPMessage(type: Type(rawValue: type)!)
         }
@@ -426,7 +431,7 @@ final class RTMPDataMessage:RTMPMessage {
                 payload += serializer.serialize(arg)
             }
             super.payload = payload
-            
+
             return super.payload
         }
         set {
@@ -638,42 +643,56 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 }
 
 /**
- * @see 7.1.4. Audio Message (8)
- * @see 7.1.5. Video Message (9)
+ * @see 7.1.5. Audio Message (9)
  */
-final class RTMPMediaMessage:RTMPMessage {
-    var buffer:NSData? = nil {
-        didSet {
-            payload.removeAll(keepCapacity: false)
-        }
+class RTMPAudioMessage:RTMPMessage {
+
+    override var type:Type {
+        return .Audio
     }
 
-    init (streamId: UInt32, timestamp: UInt32, type:RTMPSampleType, buffer:NSData) {
+    override init() {
+        super.init()
+    }
+
+    init (streamId: UInt32, timestamp: UInt32, buffer:NSData) {
         super.init()
         self.streamId = streamId
         self.timestamp = timestamp
-        _type = type == RTMPSampleType.Audio ? Type.Audio : Type.Video
-        self.buffer = buffer
-    }
-
-    override var payload:[UInt8] {
-        get {
-            if (!super.payload.isEmpty || buffer == nil) {
-                return super.payload
-            }
-            var data:[UInt8] = [UInt8](count: buffer!.length, repeatedValue: 0x00)
-            buffer!.getBytes(&data, length: data.count)
-            super.payload = data
-            return super.payload
-        }
-        set {
-            if (super.payload == newValue) {
-                return
-            }
-            super.payload = newValue
-        }
+        payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
+        buffer.getBytes(&payload, length: payload.count)
     }
 }
+
+/**
+* @see 7.1.5. Video Message (9)
+*/
+final class RTMPVideoMessage:RTMPAudioMessage {
+    static let numberOfSamples:CMItemCount = 1
+    static let numberOfSampleEntries:CMItemCount = 1
+
+    override var type:Type {
+        return .Video
+    }
+
+    func toSampleBuffer() -> CMSampleBuffer? {
+        var sampleSize:Int = payload.count
+        var sampleBuffer:CMSampleBufferRef?
+
+        var formatDescription:CMFormatDescriptionRef?
+        CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_H264, 480, 360, nil, &formatDescription)
+
+        var blockBuffer:CMBlockBufferRef?
+        CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, nil, sampleSize, kCFAllocatorDefault, nil, 0, 0, kCMBlockBufferAssureMemoryNowFlag, &blockBuffer)
+        CMBlockBufferReplaceDataBytes(&payload, blockBuffer!, 0, sampleSize)
+
+        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
+        CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, formatDescription!, RTMPVideoMessage.numberOfSamples, RTMPVideoMessage.numberOfSampleEntries, &timing, 1, &sampleSize, &sampleBuffer)
+
+        return sampleBuffer
+    }
+}
+
 
 /**
  * @see 7.1.6. Aggregate Message (22)
@@ -700,19 +719,23 @@ final class RTMPUserControlMessage:RTMPMessage {
         case BufferEmpty = 0x1F
         case BufferFull = 0x20
         case Unknown = 0xFF
-        
+
+        var bytes:[UInt8] {
+            return [0x00, rawValue]
+        }
+
         var description:String {
             switch self {
             case .StreamBegin:
-                return "NetStream.Begin"
+                return "NetStream.Play.Start"
             case .StreamEof:
-                return "NetStream.Dry"
+                return "NetStream.Play.Stop"
             case .StreamDry:
-                return "NetStream.EOF"
+                return "NetStream.Play.Reset"
             case .SetBuffer:
                 return "SetBuffer.Length"
             case .Recorded:
-                return "StreamId.Recorded"
+                return "NetStream.Record.Start"
             case .Ping:
                 return "Ping"
             case .Pong:
@@ -722,7 +745,7 @@ final class RTMPUserControlMessage:RTMPMessage {
             case .BufferFull:
                 return "NetStream.Buffer.Full"
             default:
-                return "UNKNOW"
+                return "Unknown"
             }
         }
     }
@@ -731,7 +754,13 @@ final class RTMPUserControlMessage:RTMPMessage {
         return .User
     }
 
-    var event:Event = Event.Unknown {
+    var event:Event = .Unknown {
+        didSet {
+            super.payload.removeAll(keepCapacity: false)
+        }
+    }
+
+    var value:Int32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -742,26 +771,33 @@ final class RTMPUserControlMessage:RTMPMessage {
             if (!super.payload.isEmpty) {
                 return super.payload
             }
-            var payload:[UInt8] = [UInt8](count:6, repeatedValue: 0)
-            payload[1] = event.rawValue
-            super.payload = payload
+
+            super.payload.removeAll()
+            super.payload += event.bytes
+            super.payload += value.bigEndian.bytes
+
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            if let event:Event = Event(rawValue: newValue[1]) {
-                self.event = event
+
+            if (length == newValue.count) {
+                if let event:Event = Event(rawValue: newValue[1]) {
+                    self.event = event
+                }
+                value = Int32(bytes: Array(newValue[2..<newValue.count])).bigEndian
             }
+
             super.payload = newValue
         }
     }
 
     override var description: String {
         var description:String = "RTMPUserControlMessage{"
-        description += "event:" + event.description + "(" + Array(payload[0..<2]).description + "),"
-        description += "value:" + UInt32(bytes: Array(Array(payload[2..<payload.count]).reverse())).description
+        description += "event:\(event),"
+        description += "value:\(value)"
         description += "}"
         return description
     }
