@@ -116,15 +116,12 @@ final class RTMPChunk: NSObject {
             case 0:
                 pos = 2
                 streamId = UInt16(newValue[1]) + 64
-                break;
             case 1:
                 pos = 3
                 streamId = UInt16(bytes: Array(newValue[1...2])) + 64
-                break;
             default:
                 pos = 1
                 streamId = UInt16(newValue[0] & 0b00111111)
-                break;
             }
 
             _bytes += Array(newValue[0..<headerSize])

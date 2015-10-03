@@ -54,12 +54,13 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         return _connected
     }
 
-    private var currentTransactionId:Int = 0
-    private var socket:RTMPSocket = RTMPSocket()
-    private var streams:[UInt32:RTMPStream] = [:]
-    private var bandWidth:UInt32 = 0
-    private var streamsmap:[UInt16:UInt32] = [:]
-    private var operations:[Int:Responder] = [:]
+    var currentTransactionId:Int = 0
+    var socket:RTMPSocket = RTMPSocket()
+    var streams:[UInt32:RTMPStream] = [:]
+    var bandWidth:UInt32 = 0
+    var streamsmap:[UInt16:UInt32] = [:]
+    var operations:[Int:Responder] = [:]
+
     private var currentChunk:RTMPChunk? = nil
     private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
 
@@ -138,32 +139,15 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             print(chunk!)
 
             let message:RTMPMessage = chunk!.message!
-            switch message.type {
-            case .ChunkSize:
-                let message:RTMPSetChunkSizeMessage = message as! RTMPSetChunkSizeMessage
-                socket.chunkSizeC = Int(message.size)
-            case .User:
-                onUserControlMessage(message as! RTMPUserControlMessage)
-            case .Bandwidth:
-                let message:RTMPSetPeerBandwidthMessage = message as! RTMPSetPeerBandwidthMessage
-                bandWidth = message.size
-            case .AMF0Command:
-                onCommandMessage(message as! RTMPCommandMessage)
-            case .AMF0Shared:
-                onSharedObjectMessage(message as! RTMPSharedObjectMessage)
-            case .Audio:
-                if (chunk!.type == .Zero) {
-                    streamsmap[chunk!.streamId] = message.streamId
-                }
-                onAudioMessage(streamsmap[chunk!.streamId], message: message as! RTMPAudioMessage)
-            case .Video:
-                if (chunk!.type == .Zero) {
-                    streamsmap[chunk!.streamId] = message.streamId
-                }
-                onVideoMessage(streamsmap[chunk!.streamId], message: message as! RTMPVideoMessage)
+            switch chunk!.type {
+            case .Zero:
+                streamsmap[chunk!.streamId] = message.streamId
+            case .One:
+                message.streamId = streamsmap[chunk!.streamId]!
             default:
                 break
             }
+            message.execute(self)
 
             if (currentChunk == nil) {
                 listen(socket, bytes: Array(bytes[chunk!.bytes.count..<bytes.count]))
@@ -196,63 +180,6 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             _connected = false
         default:
             break
-        }
-    }
-
-    private func onAudioMessage(id:UInt32?, message:RTMPAudioMessage) {
-        if (id == nil) {
-            return
-        }
-        if let stream:RTMPStream = streams[id!] {
-            stream.onAudioMessage(message)
-        }
-    }
-
-    private func onVideoMessage(id:UInt32?, message:RTMPVideoMessage) {
-        if (id == nil) {
-            return
-        }
-        if let stream:RTMPStream = streams[id!] {
-            stream.onVideoMessage(message)
-        }
-    }
-
-    private func onUserControlMessage(message:RTMPUserControlMessage) {
-        switch message.event {
-        case .Ping:
-            socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: .Pong)))
-        case .BufferEmpty, .BufferFull:
-            streams[UInt32(message.value)]?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: [
-                "level": "status",
-                "code": message.description,
-                "description": ""
-            ])
-        default:
-            break
-        }
-    }
-
-    private func onSharedObjectMessage(message:RTMPSharedObjectMessage) {
-        let persistence:Bool = message.flags[0] == 0x01
-        RTMPSharedObject.getRemote(message.sharedObjectName, remotePath: uri, persistence: persistence).onMessage(message)
-    }
-
-    private func onCommandMessage(message:RTMPCommandMessage) {
-        let transactionId:Int = message.transactionId
-
-        if (operations[transactionId] == nil) {
-            dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: message.arguments[0])
-            return
-        }
-
-        let responder:Responder = operations.removeValueForKey(transactionId)!
-        switch message.commandName {
-        case "_result":
-            responder.onResult(message.arguments)
-        case "_error":
-            responder.onStatus(message.arguments)
-        default:
-            break;
         }
     }
 

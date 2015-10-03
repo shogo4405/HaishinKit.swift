@@ -45,11 +45,16 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
     }
     
     static let defaultID:UInt32 = 0
-    
+
     var id:UInt32 = RTMPStream.defaultID
+    var duration:CMTime = kCMTimeZero
     var readyState:ReadyState = .Initilized
-    
+    var videoFormatDescription:CMVideoFormatDescriptionRef?
+    var audioFormatDescription:CMAudioFormatDescriptionRef?
+
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    public var display:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
+
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[RTMPSampleType:Bool] = [:]
     private var muxer:RTMPMuxer = RTMPMuxer()
@@ -221,10 +226,14 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
         return sessionManager.previewLayer
     }
 
-    func onAudioMessage(message:RTMPAudioMessage) {
-    }
-
-    func onVideoMessage(message:RTMPVideoMessage) {
+    func enqueueSampleBuffer(sampleBuffer:CMSampleBuffer?) {
+        if (sampleBuffer == nil) {
+            return
+        }
+        if (display.readyForMoreMediaData) {
+            display.enqueueSampleBuffer(sampleBuffer!)
+            display.setNeedsDisplay()
+        }
     }
 
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData) {

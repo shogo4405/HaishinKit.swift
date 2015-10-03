@@ -1,8 +1,9 @@
+import Foundation
 import lf
 import UIKit
 import AVFoundation
 
-final class GoLiveViewController: UIViewController {
+final class ShowLiveViewController: UIViewController {
     
     let url:String = "rtmp://localhost/test"
     let streamName:String = "test/0"
@@ -10,23 +11,20 @@ final class GoLiveViewController: UIViewController {
     var goLiveButton: UIButton!
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
-    var previewLayer:AVCaptureVideoPreviewLayer!
-
+    var previewLayer:AVSampleBufferDisplayLayer!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-        rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
-
         goLiveButton = UIButton(frame: CGRectMake(0, 0, 44, 44))
         goLiveButton.backgroundColor = UIColor.blueColor()
         goLiveButton.setTitle("start", forState: .Normal)
         goLiveButton.layer.masksToBounds = true
         goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
         goLiveButton.addTarget(self, action: "goLiveButton_onClick:", forControlEvents: .TouchUpInside)
-
-        previewLayer = rtmpStream.toPreviewLayer()
+        
+        previewLayer = rtmpStream.display
         previewLayer.frame = getPreviewLayerRect()
         previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
         
@@ -36,8 +34,8 @@ final class GoLiveViewController: UIViewController {
     
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation:
         UIInterfaceOrientation, duration: NSTimeInterval) {
-        goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
-        previewLayer.frame = getPreviewLayerRect()
+            goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
+            previewLayer.frame = getPreviewLayerRect()
     }
     
     override func didReceiveMemoryWarning() {
@@ -47,7 +45,7 @@ final class GoLiveViewController: UIViewController {
     override func viewDidAppear(animated: Bool) {
         super.viewDidAppear(animated)
     }
-
+    
     func goLiveButton_onClick(sender:UIButton) {
         
         if (goLiveButton.selected) {
@@ -61,7 +59,7 @@ final class GoLiveViewController: UIViewController {
             rtmpConnection.connect(url)
             goLiveButton.setTitle("stop", forState: .Normal)
         }
-
+        
         goLiveButton.selected = !goLiveButton.selected
     }
     
@@ -71,7 +69,7 @@ final class GoLiveViewController: UIViewController {
             if let code:String = data["code"] as? String {
                 switch code {
                 case "NetConnection.Connect.Success":
-                    rtmpStream!.publish(streamName)
+                    rtmpStream!.play(streamName)
                     break
                 default:
                     break
@@ -79,7 +77,7 @@ final class GoLiveViewController: UIViewController {
             }
         }
     }
-
+    
     func getPreviewLayerRect() -> CGRect{
         switch UIApplication.sharedApplication().statusBarOrientation {
         case .Portrait, .PortraitUpsideDown:

@@ -19,6 +19,10 @@ final class ByteArray: NSObject {
     override init() {
     }
 
+    init (bytes:[UInt8]) {
+        _bytes = bytes
+    }
+
     init (data:NSData) {
         _bytes = [UInt8](count: data.length, repeatedValue: 0x00)
         data.getBytes(&_bytes, length: data.length)

@@ -83,6 +83,9 @@ class RTMPMessage: NSObject {
     init(type:Type) {
         _type = type
     }
+
+    func execute(connection:RTMPConnection) {
+    }
 }
 
 /**
@@ -125,7 +128,10 @@ final class RTMPSetChunkSizeMessage:RTMPMessage {
             super.payload = newValue
         }
     }
-    
+
+    override func execute(connection:RTMPConnection) {
+        connection.socket.chunkSizeC = Int(size)
+    }
 }
 
 /**
@@ -271,6 +277,10 @@ final class RTMPSetPeerBandwidthMessage:RTMPMessage {
             super.payload = newValue
         }
     }
+
+    override func execute(connection: RTMPConnection) {
+        connection.bandWidth = size
+    }
 }
 
 /**
@@ -343,7 +353,7 @@ final class RTMPCommandMessage: RTMPMessage {
     
     override var description: String {
         var description:String = "RTMPCommandMessage{"
-        description += "type:\(type.rawValue),"
+        description += "type:\(type),"
         description += "length:\(length),"
         description += "streamId:\(streamId),"
         description += "timestamp:\(timestamp),"
@@ -375,6 +385,24 @@ final class RTMPCommandMessage: RTMPMessage {
         self.commandObject = commandObject
         self.arguments = arguments
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
+    }
+
+    override func execute(connection: RTMPConnection) {
+
+        if (connection.operations[transactionId] == nil) {
+            connection.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: arguments[0])
+            return
+        }
+
+        let responder:Responder = connection.operations.removeValueForKey(transactionId)!
+        switch commandName {
+        case "_result":
+            responder.onResult(arguments)
+        case "_error":
+            responder.onStatus(arguments)
+        default:
+            break;
+        }
     }
 }
 
@@ -470,6 +498,9 @@ final class RTMPDataMessage:RTMPMessage {
 
     convenience init(streamId:UInt32, objectEncoding:UInt8, handlerName:String) {
         self.init(streamId: streamId, objectEncoding: objectEncoding, handlerName: handlerName, arguments: [])
+    }
+
+    override func execute(connection: RTMPConnection) {
     }
 }
 
@@ -640,6 +671,11 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         self.flags = flags
         self.events = events
     }
+
+    override func execute(connection:RTMPConnection) {
+        let persistence:Bool = flags[0] == 0x01
+        RTMPSharedObject.getRemote(sharedObjectName, remotePath: connection.uri, persistence: persistence).onMessage(self)
+    }
 }
 
 /**
@@ -662,12 +698,16 @@ class RTMPAudioMessage:RTMPMessage {
         payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
         buffer.getBytes(&payload, length: payload.count)
     }
+
+    override func execute(connection:RTMPConnection) {
+    }
 }
 
 /**
 * @see 7.1.5. Video Message (9)
 */
 final class RTMPVideoMessage:RTMPAudioMessage {
+    static let timeScale:Int32 = 1000
     static let numberOfSamples:CMItemCount = 1
     static let numberOfSampleEntries:CMItemCount = 1
 
@@ -675,21 +715,96 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         return .Video
     }
 
-    func toSampleBuffer() -> CMSampleBuffer? {
-        var sampleSize:Int = payload.count
+    override func execute(connection:RTMPConnection) {
+        if (payload.count <= RTMPSampleType.Video.headerSize) {
+            return
+        }
+        if let stream:RTMPStream = connection.streams[streamId] {
+            switch payload[1] {
+            case FLVTag.AVCPacketType.Seq.rawValue:
+                createFormatDescription(stream)
+            case FLVTag.AVCPacketType.Nal.rawValue:
+                stream.enqueueSampleBuffer(createSampleBuffer(stream))
+            default:
+                break
+            }
+        }
+    }
+
+    func createSampleBuffer(stream: RTMPStream) -> CMSampleBuffer? {
+        var blockBuffer:CMBlockBufferRef?
         var sampleBuffer:CMSampleBufferRef?
 
-        var formatDescription:CMFormatDescriptionRef?
-        CMVideoFormatDescriptionCreate(kCFAllocatorDefault, kCMVideoCodecType_H264, 480, 360, nil, &formatDescription)
+        var status:OSStatus = 0
+        var bytes:UnsafePointer<UInt8> = UnsafePointer<UInt8>(payload)
+        var sampleSize:Int = payload.count - RTMPSampleType.Video.headerSize
 
-        var blockBuffer:CMBlockBufferRef?
-        CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, nil, sampleSize, kCFAllocatorDefault, nil, 0, 0, kCMBlockBufferAssureMemoryNowFlag, &blockBuffer)
-        CMBlockBufferReplaceDataBytes(&payload, blockBuffer!, 0, sampleSize)
+        stream.duration = CMTimeAdd(stream.duration, CMTime(value: Int64(timestamp), timescale: RTMPVideoMessage.timeScale))
 
-        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
-        CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, formatDescription!, RTMPVideoMessage.numberOfSamples, RTMPVideoMessage.numberOfSampleEntries, &timing, 1, &sampleSize, &sampleBuffer)
+        bytes += RTMPSampleType.Video.headerSize
+        status = CMBlockBufferCreateWithMemoryBlock(
+            kCFAllocatorDefault,
+            &bytes,
+            sampleSize,
+            kCFAllocatorNull,
+            nil,
+            0,
+            sampleSize,
+            0,
+            &blockBuffer
+        )
+
+        if (status != noErr || blockBuffer == nil) {
+            return nil
+        }
+
+        CMBlockBufferReplaceDataBytes(&bytes, blockBuffer!, 0, sampleSize)
+
+        var timing:CMSampleTimingInfo = CMSampleTimingInfo(
+            duration: stream.duration,
+            presentationTimeStamp: CMTimeMake(Int64(timestamp), RTMPVideoMessage.timeScale),
+            decodeTimeStamp: CMTimeMake(Int64(timestamp), RTMPVideoMessage.timeScale)
+        )
+
+        status = CMSampleBufferCreate(
+            kCFAllocatorDefault,
+            blockBuffer!,
+            true,
+            nil,
+            nil,
+            stream.videoFormatDescription!,
+            RTMPVideoMessage.numberOfSamples,
+            RTMPVideoMessage.numberOfSampleEntries,
+            &timing,
+            RTMPVideoMessage.numberOfSampleEntries,
+            &sampleSize,
+            &sampleBuffer
+        )
 
         return sampleBuffer
+    }
+
+    func createFormatDescription(stream: RTMPStream) {
+        let config:MP4AvcConfigurationBox = MP4AvcConfigurationBox()
+        config.bytes = Array(payload[5..<payload.count])
+
+        var parameterSetPointers:[UnsafePointer<UInt8>] = [
+            UnsafePointer<UInt8>(config.sequenceParameterSets),
+            UnsafePointer<UInt8>(config.pictureParameterSets)
+        ]
+        var parameterSetSizes:[Int] = [
+            config.sequenceParameterSets.count,
+            config.pictureParameterSets.count
+        ]
+
+        CMVideoFormatDescriptionCreateFromH264ParameterSets(
+            kCFAllocatorDefault,
+            2,
+            &parameterSetPointers,
+            &parameterSetSizes,
+            4,
+            &stream.videoFormatDescription
+        )
     }
 }
 
@@ -809,5 +924,20 @@ final class RTMPUserControlMessage:RTMPMessage {
     init(event:Event) {
         super.init()
         self.event = event
+    }
+
+    override func execute(connection: RTMPConnection) {
+        switch event {
+        case .Ping:
+            connection.socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: .Pong)))
+        case .BufferEmpty, .BufferFull:
+            connection.streams[UInt32(value)]?.dispatchEventWith("rtmpStatus", bubbles: false, data: [
+                "level": "status",
+                "code": description,
+                "description": ""
+            ])
+        default:
+            break
+        }
     }
 }

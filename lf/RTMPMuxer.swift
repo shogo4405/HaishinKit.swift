@@ -25,22 +25,22 @@ final class RTMPMuxer: MP4Sampler {
                 if let avcC:MP4Box = sampleTables[i].trak.getBoxesByName("avcC").first {
                     sampleTypes[i] = RTMPSampleType.Video
                     let buffer:NSMutableData = NSMutableData()
-                    var data:[UInt8] = [0x00, RTMPAVCPacketType.Seq.rawValue, 0x00, 0x00, 0x00]
-                    data[0] = RTMPFrameType.Key.rawValue << 4 | RTMPVideoCodec.AVC.rawValue
+                    var data:[UInt8] = [0x00, FLVTag.AVCPacketType.Seq.rawValue, 0x00, 0x00, 0x00]
+                    data[0] = FLVTag.FrameType.Key.rawValue << 4 | FLVTag.VideoCodec.AVC.rawValue
                     buffer.appendBytes(&data, length: data.count)
                     buffer.appendData(currentFile.readDataOfBox(avcC))
-                    delegate?.sampleOutput(self, type: RTMPSampleType.Video, timestamp: 0, buffer: buffer)
+                    delegate?.sampleOutput(self, type: .Video, timestamp: 0, buffer: buffer)
                     timestamps[i] = 0
                 }
                 
                 if let esds:MP4ElementaryStreamDescriptorBox = sampleTables[i].trak.getBoxesByName("esds").first as? MP4ElementaryStreamDescriptorBox {
                     sampleTypes[i] = RTMPSampleType.Audio
                     let buffer:NSMutableData = NSMutableData()
-                    var data:[UInt8] = [0x00, RTMPAACPacketType.Seq.rawValue]
-                    data[0] = RTMPAudioCodec.AAC.rawValue << 4 | RTMPSoundRate.KHz44.rawValue << 2 | RTMPSoundSize.Snd16bit.rawValue << 1 | RTMPSoundType.Stereo.rawValue
+                    var data:[UInt8] = [0x00, FLVTag.AACPacketType.Seq.rawValue]
+                    data[0] = FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
                     data += esds.audioDecorderSpecificConfig
                     buffer.appendBytes(&data, length: data.count)
-                    delegate?.sampleOutput(self, type: RTMPSampleType.Audio, timestamp: 0, buffer: buffer)
+                    delegate?.sampleOutput(self, type: .Audio, timestamp: 0, buffer: buffer)
                     timestamps[i] = 0
                 }
             }
@@ -65,13 +65,13 @@ final class RTMPMuxer: MP4Sampler {
 
         switch type! {
         case RTMPSampleType.Video:
-            data[0] = ((keyframe ? RTMPFrameType.Key.rawValue : RTMPFrameType.Inter.rawValue) << 4) | RTMPVideoCodec.AVC.rawValue
-            data[1] = RTMPAVCPacketType.Nal.rawValue
+            data[0] = ((keyframe ? FLVTag.FrameType.Key.rawValue : FLVTag.FrameType.Inter.rawValue) << 4) | FLVTag.VideoCodec.AVC.rawValue
+            data[1] = FLVTag.AVCPacketType.Nal.rawValue
             break
         case RTMPSampleType.Audio:
             // XXX: 実際のデータの内容に関わらず固定です
-            data[0] = RTMPAudioCodec.AAC.rawValue << 4 | RTMPSoundRate.KHz44.rawValue << 2 | RTMPSoundSize.Snd16bit.rawValue << 1 | RTMPSoundType.Stereo.rawValue
-            data[1] = RTMPAACPacketType.Raw.rawValue
+            data[0] = FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
+            data[1] = FLVTag.AACPacketType.Raw.rawValue
             break
         }
 
@@ -89,11 +89,11 @@ final class RTMPMuxer: MP4Sampler {
             if let avc1:MP4VisualSampleEntryBox = sampleTable.trak.getBoxesByName("avc1").first as? MP4VisualSampleEntryBox {
                 metadata["width"] = avc1.width
                 metadata["height"] = avc1.height
-                metadata["videocodecid"] = RTMPVideoCodec.AVC.rawValue
+                metadata["videocodecid"] = FLVTag.VideoCodec.AVC.rawValue
             }
 
             if let mp4a:MP4AudioSampleEntryBox = sampleTable.trak.getBoxesByName("mp4a").first as? MP4AudioSampleEntryBox {
-                metadata["audiocodecid"] = RTMPAudioCodec.AAC.rawValue
+                metadata["audiocodecid"] = FLVTag.AudioCodec.AAC.rawValue
                 metadata["audiodatarate"] = mp4a.sampleRate
                 metadata["audiochannels"] = mp4a.channelCount
                 metadata["audiosamplerate"] = mp4a.sampleRate
