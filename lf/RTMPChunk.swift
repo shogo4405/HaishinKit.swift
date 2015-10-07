@@ -37,7 +37,7 @@ final class RTMPChunk: NSObject {
         }
 
         func ready(bytes:[UInt8]) -> Bool {
-            return headerSize + RTMPChunk.getStreamIdSize(bytes[0]) <= bytes.count
+            return headerSize + RTMPChunk.getStreamIdSize(bytes[0]) < bytes.count
         }
 
         func toBasicHeader(streamId:UInt16) -> [UInt8] {
@@ -130,18 +130,16 @@ final class RTMPChunk: NSObject {
             }
 
             let message:RTMPMessage = RTMPMessage.create(newValue[pos + 6])
-            message.timestamp = UInt32(bytes: Array(([0x00] + Array(newValue[pos..<pos + 3])).reverse()))
+            message.timestamp = UInt32(bytes: [0x00] + Array(newValue[pos..<pos + 3])).bigEndian
 
-            if (type == .Two) {
-                return
-            }
-
-            message.length = Int(Int32(bytes: Array(([0x00] + Array(newValue[pos + 3..<pos + 6])).reverse())))
-
-            if (type == .Zero) {
-                message.streamId = UInt32(bytes: Array(newValue[pos + 7...pos + headerSize - 1]))
-            } else {
-                message.streamId = UInt32(streamId)
+            switch type {
+            case .Zero:
+                message.length = Int(Int32(bytes: [0x00] + Array(newValue[pos + 3..<pos + 6])).bigEndian)
+                message.streamId = UInt32(bytes: Array(newValue[pos + 7..<pos + headerSize]))
+            case .One:
+                message.length = Int(Int32(bytes: [0x00] + Array(newValue[pos + 3..<pos + 6])).bigEndian)
+            default:
+                break
             }
 
             let start:Int = headerSize

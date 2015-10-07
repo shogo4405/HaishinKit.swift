@@ -698,9 +698,6 @@ class RTMPAudioMessage:RTMPMessage {
         payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
         buffer.getBytes(&payload, length: payload.count)
     }
-
-    override func execute(connection:RTMPConnection) {
-    }
 }
 
 /**
@@ -708,8 +705,6 @@ class RTMPAudioMessage:RTMPMessage {
 */
 final class RTMPVideoMessage:RTMPAudioMessage {
     static let timeScale:Int32 = 1000
-    static let numberOfSamples:CMItemCount = 1
-    static let numberOfSampleEntries:CMItemCount = 1
 
     override var type:Type {
         return .Video
@@ -724,87 +719,44 @@ final class RTMPVideoMessage:RTMPAudioMessage {
             case FLVTag.AVCPacketType.Seq.rawValue:
                 createFormatDescription(stream)
             case FLVTag.AVCPacketType.Nal.rawValue:
-                stream.enqueueSampleBuffer(createSampleBuffer(stream))
+                enqueueSampleBuffer(stream)
             default:
                 break
             }
         }
     }
 
-    func createSampleBuffer(stream: RTMPStream) -> CMSampleBuffer? {
-        var blockBuffer:CMBlockBufferRef?
-        var sampleBuffer:CMSampleBufferRef?
+    func enqueueSampleBuffer(stream: RTMPStream) {
 
-        var status:OSStatus = 0
+        let sampleSize:Int = payload.count - RTMPSampleType.Video.headerSize
+
         var bytes:UnsafePointer<UInt8> = UnsafePointer<UInt8>(payload)
-        var sampleSize:Int = payload.count - RTMPSampleType.Video.headerSize
-
-        stream.duration = CMTimeAdd(stream.duration, CMTime(value: Int64(timestamp), timescale: RTMPVideoMessage.timeScale))
-
         bytes += RTMPSampleType.Video.headerSize
-        status = CMBlockBufferCreateWithMemoryBlock(
-            kCFAllocatorDefault,
-            &bytes,
-            sampleSize,
-            kCFAllocatorNull,
-            nil,
-            0,
-            sampleSize,
-            0,
-            &blockBuffer
-        )
 
-        if (status != noErr || blockBuffer == nil) {
-            return nil
+        var blockBuffer:CMBlockBufferRef?
+        if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &bytes, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) != noErr) {
+            return
         }
 
-        CMBlockBufferReplaceDataBytes(&bytes, blockBuffer!, 0, sampleSize)
+        var sampleBuffer:CMSampleBufferRef?
+        var sampleSizes:[Int] = [sampleSize]
+        if (CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 0, nil, 1, &sampleSizes, &sampleBuffer) != noErr) {
+            return
+        }
 
-        var timing:CMSampleTimingInfo = CMSampleTimingInfo(
-            duration: stream.duration,
-            presentationTimeStamp: CMTimeMake(Int64(timestamp), RTMPVideoMessage.timeScale),
-            decodeTimeStamp: CMTimeMake(Int64(timestamp), RTMPVideoMessage.timeScale)
+        let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
+        let dictionary:CFMutableDictionaryRef = unsafeBitCast(
+            CFArrayGetValueAtIndex(attachments, 0), CFMutableDictionaryRef.self
         )
+        CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
 
-        status = CMSampleBufferCreate(
-            kCFAllocatorDefault,
-            blockBuffer!,
-            true,
-            nil,
-            nil,
-            stream.videoFormatDescription!,
-            RTMPVideoMessage.numberOfSamples,
-            RTMPVideoMessage.numberOfSampleEntries,
-            &timing,
-            RTMPVideoMessage.numberOfSampleEntries,
-            &sampleSize,
-            &sampleBuffer
-        )
-
-        return sampleBuffer
+        stream.enqueueSampleBuffer(sampleBuffer!)
     }
 
     func createFormatDescription(stream: RTMPStream) {
-        let config:MP4AvcConfigurationBox = MP4AvcConfigurationBox()
+        var config:AVCConfigurationRecord = AVCConfigurationRecord()
         config.bytes = Array(payload[5..<payload.count])
-
-        var parameterSetPointers:[UnsafePointer<UInt8>] = [
-            UnsafePointer<UInt8>(config.sequenceParameterSets),
-            UnsafePointer<UInt8>(config.pictureParameterSets)
-        ]
-        var parameterSetSizes:[Int] = [
-            config.sequenceParameterSets.count,
-            config.pictureParameterSets.count
-        ]
-
-        CMVideoFormatDescriptionCreateFromH264ParameterSets(
-            kCFAllocatorDefault,
-            2,
-            &parameterSetPointers,
-            &parameterSetSizes,
-            4,
-            &stream.videoFormatDescription
-        )
+        config.createFormatDescription(&stream.videoFormatDescription)
     }
 }
 

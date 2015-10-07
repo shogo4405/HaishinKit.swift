@@ -1,4 +1,5 @@
 import Foundation
+import AVFoundation
 
 class MP4Box:NSObject {
     static func create(data:NSData) -> MP4Box {
@@ -140,52 +141,6 @@ class MP4ContainerBox:MP4Box {
         }
         children.removeAll(keepCapacity: false)
         _parent = nil
-    }
-}
-
-final class MP4AvcConfigurationBox: MP4Box {
-    var version:UInt8 = 0
-    var avcProfileIndication:UInt8 = 0
-    var profileCompatibility:UInt8 = 0
-    var avcLevelIndication:UInt8 = 0
-    var lengthSizeMinusOnePaddingBits:UInt8 = 0
-    var lengthSizeMinusOne:UInt8 = 0
-    var sequenceParameterSets:[UInt8] = [] // SPS
-    var pictureParameterSets:[UInt8] = [] // PPS
-    var numberOfSequenceParameterSetsPaddingBits:UInt8 = 7
-
-    private var _bytes:[UInt8] = []
-    var bytes:[UInt8] {
-        set {
-            let buffer:ByteArray = ByteArray(bytes: newValue)
-            version = buffer.readUInt8()
-            avcProfileIndication = buffer.readUInt8()
-            profileCompatibility = buffer.readUInt8()
-            avcLevelIndication = buffer.readUInt8()
-
-            // skip for 0xFF, 0xFF
-            buffer.position += 2
-            buffer.position += 1
-
-            let byte:UInt8 = buffer.readUInt8()
-            numberOfSequenceParameterSetsPaddingBits = byte & 0b11100000 << 5
-
-            let numberOfSequenceParameterSets:UInt8 = byte & 0b00011111
-            // for _ in 0..<numberOfSequenceParameterSets {
-                sequenceParameterSets = buffer.readUInt8(Int(numberOfSequenceParameterSets))
-            // }
-
-            let numberOfPictureParameterSets:UInt8 = buffer.readUInt8()
-            for _ in 0..<numberOfPictureParameterSets {
-                let length:UInt16 = buffer.readUInt16()
-                pictureParameterSets = buffer.readUInt8(Int(length))
-            }
-
-            _bytes = newValue
-        }
-        get {
-            return _bytes
-        }
     }
 }
 

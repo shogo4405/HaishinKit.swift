@@ -47,14 +47,12 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
     static let defaultID:UInt32 = 0
 
     var id:UInt32 = RTMPStream.defaultID
-    var duration:CMTime = kCMTimeZero
     var readyState:ReadyState = .Initilized
     var videoFormatDescription:CMVideoFormatDescriptionRef?
     var audioFormatDescription:CMAudioFormatDescriptionRef?
 
+    public lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    public var display:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
-
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[RTMPSampleType:Bool] = [:]
     private var muxer:RTMPMuxer = RTMPMuxer()
@@ -125,6 +123,7 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
+
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -226,16 +225,6 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
         return sessionManager.previewLayer
     }
 
-    func enqueueSampleBuffer(sampleBuffer:CMSampleBuffer?) {
-        if (sampleBuffer == nil) {
-            return
-        }
-        if (display.readyForMoreMediaData) {
-            display.enqueueSampleBuffer(sampleBuffer!)
-            display.setNeedsDisplay()
-        }
-    }
-
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData) {
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
@@ -248,7 +237,16 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
     func didSetSampleTables(muxer:RTMPMuxer, sampleTables:[MP4SampleTable]) {
         send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(sampleTables))
     }
-    
+
+    func enqueueSampleBuffer(sampleBuffer:CMSampleBuffer) {
+        dispatch_async(dispatch_get_main_queue()) {
+            if (self.layer.readyForMoreMediaData) {
+                self.layer.enqueueSampleBuffer(sampleBuffer)
+                self.layer.setNeedsDisplay()
+            }
+        }
+    }
+
     func rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
         if let data:ECMAObject = e.data as? ECMAObject {

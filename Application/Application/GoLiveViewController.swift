@@ -39,14 +39,6 @@ final class GoLiveViewController: UIViewController {
         goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
         previewLayer.frame = getPreviewLayerRect()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
-    }
 
     func goLiveButton_onClick(sender:UIButton) {
         

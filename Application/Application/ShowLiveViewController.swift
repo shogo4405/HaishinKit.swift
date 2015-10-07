@@ -1,6 +1,6 @@
-import Foundation
 import lf
 import UIKit
+import Foundation
 import AVFoundation
 
 final class ShowLiveViewController: UIViewController {
@@ -23,10 +23,17 @@ final class ShowLiveViewController: UIViewController {
         goLiveButton.layer.masksToBounds = true
         goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
         goLiveButton.addTarget(self, action: "goLiveButton_onClick:", forControlEvents: .TouchUpInside)
-        
-        previewLayer = rtmpStream.display
+
+        previewLayer = rtmpStream.layer
         previewLayer.frame = getPreviewLayerRect()
         previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
+    
+        var controlTimebase:CMTimebaseRef?
+        CMTimebaseCreateWithMasterClock(kCFAllocatorDefault, CMClockGetHostTimeClock(), &controlTimebase);
+        
+        previewLayer.controlTimebase = controlTimebase
+        CMTimebaseSetTime(previewLayer.controlTimebase!, kCMTimeZero)
+        CMTimebaseSetRate(previewLayer.controlTimebase!, 1.0)
         
         view.layer.addSublayer(previewLayer!)
         view.addSubview(goLiveButton)
@@ -35,15 +42,6 @@ final class ShowLiveViewController: UIViewController {
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation:
         UIInterfaceOrientation, duration: NSTimeInterval) {
             goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
-            previewLayer.frame = getPreviewLayerRect()
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-    
-    override func viewDidAppear(animated: Bool) {
-        super.viewDidAppear(animated)
     }
     
     func goLiveButton_onClick(sender:UIButton) {
