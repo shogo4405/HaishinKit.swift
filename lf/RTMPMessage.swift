@@ -704,8 +704,6 @@ class RTMPAudioMessage:RTMPMessage {
 * @see 7.1.5. Video Message (9)
 */
 final class RTMPVideoMessage:RTMPAudioMessage {
-    static let timeScale:Int32 = 1000
-
     override var type:Type {
         return .Video
     }
@@ -719,7 +717,11 @@ final class RTMPVideoMessage:RTMPAudioMessage {
             case FLVTag.AVCPacketType.Seq.rawValue:
                 createFormatDescription(stream)
             case FLVTag.AVCPacketType.Nal.rawValue:
-                enqueueSampleBuffer(stream)
+                if (!stream.readyForKeyframe) {
+                    stream.readyForKeyframe = (payload[0] >> 4 == FLVTag.FrameType.Key.rawValue)
+                } else {
+                    enqueueSampleBuffer(stream)
+                }
             default:
                 break
             }
@@ -727,11 +729,8 @@ final class RTMPVideoMessage:RTMPAudioMessage {
     }
 
     func enqueueSampleBuffer(stream: RTMPStream) {
-
-        let sampleSize:Int = payload.count - RTMPSampleType.Video.headerSize
-
-        var bytes:UnsafePointer<UInt8> = UnsafePointer<UInt8>(payload)
-        bytes += RTMPSampleType.Video.headerSize
+        var bytes:[UInt8] = Array(payload[RTMPSampleType.Video.headerSize..<payload.count])
+        let sampleSize:Int = bytes.count
 
         var blockBuffer:CMBlockBufferRef?
         if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &bytes, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) != noErr) {

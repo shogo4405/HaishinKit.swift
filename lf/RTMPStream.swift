@@ -48,6 +48,7 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
 
     var id:UInt32 = RTMPStream.defaultID
     var readyState:ReadyState = .Initilized
+    var readyForKeyframe:Bool = false
     var videoFormatDescription:CMVideoFormatDescriptionRef?
     var audioFormatDescription:CMAudioFormatDescriptionRef?
 
@@ -123,7 +124,7 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
-
+            self.readyForKeyframe = false
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -240,7 +241,7 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
 
     func enqueueSampleBuffer(sampleBuffer:CMSampleBuffer) {
         dispatch_async(dispatch_get_main_queue()) {
-            if (self.layer.readyForMoreMediaData) {
+            if (self.readyForKeyframe && self.layer.readyForMoreMediaData) {
                 self.layer.enqueueSampleBuffer(sampleBuffer)
                 self.layer.setNeedsDisplay()
             }

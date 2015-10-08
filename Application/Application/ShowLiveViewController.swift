@@ -26,6 +26,7 @@ final class ShowLiveViewController: UIViewController {
 
         previewLayer = rtmpStream.layer
         previewLayer.frame = getPreviewLayerRect()
+        previewLayer.bounds = view.bounds
         previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     
         var controlTimebase:CMTimebaseRef?
@@ -42,6 +43,7 @@ final class ShowLiveViewController: UIViewController {
     override func willAnimateRotationToInterfaceOrientation(toInterfaceOrientation:
         UIInterfaceOrientation, duration: NSTimeInterval) {
             goLiveButton.layer.position = CGPoint(x: self.view.bounds.width - 32, y: 32)
+        previewLayer.frame = getPreviewLayerRect()
     }
     
     func goLiveButton_onClick(sender:UIButton) {
