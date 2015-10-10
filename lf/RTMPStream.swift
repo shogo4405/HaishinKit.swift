@@ -239,7 +239,10 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
         send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(sampleTables))
     }
 
-    func enqueueSampleBuffer(sampleBuffer:CMSampleBuffer) {
+    func enqueueAudioSampleBuffer(sampleBuffer:CMSampleBuffer) {
+    }
+
+    func enqueueVideoSampleBuffer(sampleBuffer:CMSampleBuffer) {
         dispatch_async(dispatch_get_main_queue()) {
             if (self.readyForKeyframe && self.layer.readyForMoreMediaData) {
                 self.layer.enqueueSampleBuffer(sampleBuffer)

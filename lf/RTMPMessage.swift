@@ -698,6 +698,59 @@ class RTMPAudioMessage:RTMPMessage {
         payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
         buffer.getBytes(&payload, length: payload.count)
     }
+
+    override func execute(connection:RTMPConnection) {
+        if (payload.isEmpty || payload[0] << 4 != FLVTag.AudioCodec.AAC.rawValue) {
+            return
+        }
+        if let stream:RTMPStream = connection.streams[streamId] {
+            switch payload[1] {
+            case FLVTag.AVCPacketType.Seq.rawValue:
+                createFormatDescription(stream)
+            case FLVTag.AVCPacketType.Nal.rawValue:
+                enqueueSampleBuffer(stream)
+            default:
+                break
+            }
+        }
+    }
+
+    func enqueueSampleBuffer(stream: RTMPStream) {
+        var data:[UInt8] = Array(payload[2..<payload.count])
+        var size:Int = data.count
+        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
+        timing.duration = CMTimeMake(Int64(timestamp), 1000)
+
+        var buffer:CMBlockBufferRef?
+        if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &data, size, kCFAllocatorDefault, nil, 0, size, kCMBlockBufferAssureMemoryNowFlag, &buffer) != noErr) {
+            return
+        }
+        
+        var sampleBuffer:CMSampleBufferRef?
+        if (CMSampleBufferCreate(kCFAllocatorDefault, buffer, true, nil, nil, stream.audioFormatDescription!, 1, 1, &timing, 1, &size, &sampleBuffer) != noErr) {
+            return
+        }
+
+        stream.enqueueAudioSampleBuffer(sampleBuffer!)
+    }
+
+    func createFormatDescription(stream: RTMPStream) -> OSStatus {
+        let data:[UInt8] = Array(payload[2..<payload.count])
+        var asbd:AudioStreamBasicDescription = AudioStreamBasicDescription()
+        asbd.mFormatID = kAudioFormatMPEG4AAC
+        asbd.mFormatFlags = 0
+        asbd.mFramesPerPacket = 1024
+        return CMAudioFormatDescriptionCreate(
+            kCFAllocatorDefault,
+            &asbd,
+            0,
+            nil,
+            data.count,
+            data,
+            nil,
+            &stream.audioFormatDescription
+        )
+    }
 }
 
 /**
@@ -728,7 +781,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         }
     }
 
-    func enqueueSampleBuffer(stream: RTMPStream) {
+    override func enqueueSampleBuffer(stream: RTMPStream) {
         var bytes:[UInt8] = Array(payload[RTMPSampleType.Video.headerSize..<payload.count])
         let sampleSize:Int = bytes.count
 
@@ -739,7 +792,10 @@ final class RTMPVideoMessage:RTMPAudioMessage {
 
         var sampleBuffer:CMSampleBufferRef?
         var sampleSizes:[Int] = [sampleSize]
-        if (CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 0, nil, 1, &sampleSizes, &sampleBuffer) != noErr) {
+        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
+        timing.duration = CMTimeMake(Int64(timestamp), 1000)
+
+        if (CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 0, &timing, 1, &sampleSizes, &sampleBuffer) != noErr) {
             return
         }
 
@@ -749,13 +805,13 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         )
         CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
 
-        stream.enqueueSampleBuffer(sampleBuffer!)
+        stream.enqueueVideoSampleBuffer(sampleBuffer!)
     }
 
-    func createFormatDescription(stream: RTMPStream) {
+    override func createFormatDescription(stream: RTMPStream) -> OSStatus{
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
         config.bytes = Array(payload[5..<payload.count])
-        config.createFormatDescription(&stream.videoFormatDescription)
+        return config.createFormatDescription(&stream.videoFormatDescription)
     }
 }
 

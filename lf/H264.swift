@@ -4,6 +4,17 @@ import AVFoundation
 public struct NALUnit {
 }
 
+public enum AVCProfileIndication:UInt8 {
+    case Baseline = 66
+    case Main = 77
+    case Extended = 88
+    case High = 100
+    case High10 = 110
+    case High422 = 122
+    case High444 = 144
+    case High424Predictive = 244
+}
+
 // @see ISO/IEC 14496-15 2010
 public struct AVCConfigurationRecord: CustomStringConvertible {
     static let reserveLengthSizeMinusOne:UInt8 = 0x3F
@@ -25,6 +36,10 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
     public var bitDepthLumaMinus8WithReserve:UInt8 = 0
     public var bitDepthChromaMinus8WithReserve:UInt8 = 0
     public var sequenceParameterSetExt:[[UInt8]] = []
+
+    var naluLength:Int32 {
+        return Int32((lengthSizeMinusOneWithReserved >> 6) + 1)
+    }
     
     public var description:String {
         var description:String = "AVCConfigurationRecord{"
@@ -68,7 +83,7 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
         }
     }
     
-    func createFormatDescription(formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) {
+    func createFormatDescription(formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
         var parameterSetPointers:[UnsafePointer<UInt8>] = [
             UnsafePointer<UInt8>(sequenceParameterSets[0]),
             UnsafePointer<UInt8>(pictureParameterSets[0])
@@ -77,12 +92,12 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
             sequenceParameterSets[0].count,
             pictureParameterSets[0].count
         ]
-        CMVideoFormatDescriptionCreateFromH264ParameterSets(
+        return CMVideoFormatDescriptionCreateFromH264ParameterSets(
             kCFAllocatorDefault,
             2,
             &parameterSetPointers,
             &parameterSetSizes,
-            4,
+            naluLength,
             formatDescriptionOut
         )
     }
