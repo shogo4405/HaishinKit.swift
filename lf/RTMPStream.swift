@@ -54,6 +54,23 @@ public class RTMPStream:EventDispatcher, RTMPMuxerDelegate {
 
     public lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    public var audioSettings:[String:AnyObject] {
+        get {
+            return encoder.audioSettings
+        }
+        set {
+            encoder.audioSettings = newValue
+        }
+    }
+    public var videoSettings:[String:AnyObject] {
+        get {
+            return encoder.videoSettings
+        }
+        set {
+            encoder.videoSettings = newValue
+        }
+    }
+
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[RTMPSampleType:Bool] = [:]
     private var muxer:RTMPMuxer = RTMPMuxer()
