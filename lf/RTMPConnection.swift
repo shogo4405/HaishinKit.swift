@@ -93,9 +93,6 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
     
     public func close() {
-        if (!connected) {
-            return
-        }
         _uri = ""
         removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         for (id, stream) in streams {
@@ -225,7 +222,6 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                     _connected = true
                     socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
                     socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
-                    break
                 default:
                     break
                 }

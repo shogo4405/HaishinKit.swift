@@ -64,7 +64,9 @@ final class GoLiveViewController: UIViewController {
                 switch code {
                 case "NetConnection.Connect.Success":
                     rtmpStream!.publish(streamName)
-                    break
+                case "NetConnection.Connect.Rejected":
+                    rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
+                    goLiveButton.setTitle("start", forState: .Normal)
                 default:
                     break
                 }

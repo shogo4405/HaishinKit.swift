@@ -344,8 +344,10 @@ final class RTMPCommandMessage: RTMPMessage {
                 commandName = serializer.deserialize(newValue, position: &position)
                 transactionId = serializer.deserialize(newValue, position: &position)
                 commandObject = serializer.deserialize(newValue, position: &position)
-                arguments = []
-                arguments.append(serializer.deserialize(newValue, position: &position))
+                arguments.removeAll()
+                if (position < newValue.count) {
+                    arguments.append(serializer.deserialize(newValue, position: &position))
+                }
             }
             super.payload = newValue
         }
@@ -390,18 +392,24 @@ final class RTMPCommandMessage: RTMPMessage {
     override func execute(connection: RTMPConnection) {
 
         if (connection.operations[transactionId] == nil) {
-            connection.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: arguments[0])
+            switch commandName {
+            case "close":
+                connection.close()
+            default:
+                connection.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: arguments.isEmpty ? nil : arguments[0])
+            }
             return
         }
 
         let responder:Responder = connection.operations.removeValueForKey(transactionId)!
+
         switch commandName {
         case "_result":
             responder.onResult(arguments)
         case "_error":
             responder.onStatus(arguments)
         default:
-            break;
+            break
         }
     }
 }
