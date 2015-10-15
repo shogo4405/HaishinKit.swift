@@ -123,7 +123,6 @@ public class AVCaptureSessionManager: NSObject {
                     }
                 }
             }
-
         }
     }
 
@@ -169,32 +168,25 @@ public class AVCaptureSessionManager: NSObject {
     }
 
     func onOrientationChanged(notification:NSNotification) {
-        var deviceOrientation:UIDeviceOrientation = UIDeviceOrientation.Unknown
+        var deviceOrientation:UIDeviceOrientation = .Unknown
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
         }
         switch deviceOrientation {
         case .Unknown:
-            orientation = AVCaptureVideoOrientation.Portrait
-            break
+            orientation = .Portrait
         case .Portrait:
-            orientation = AVCaptureVideoOrientation.Portrait
-            break
+            orientation = .Portrait
         case .PortraitUpsideDown:
-            orientation = AVCaptureVideoOrientation.PortraitUpsideDown
-            break
+            orientation = .PortraitUpsideDown
         case .LandscapeLeft:
-            orientation = AVCaptureVideoOrientation.LandscapeRight
-            break
+            orientation = .LandscapeRight
         case .LandscapeRight:
-            orientation = AVCaptureVideoOrientation.LandscapeLeft
-            break
+            orientation = .LandscapeLeft
         case .FaceUp:
-            orientation = AVCaptureVideoOrientation.Portrait;
-            break
+            orientation = .Portrait
         case .FaceDown:
-            orientation = AVCaptureVideoOrientation.Portrait;
-            break
+            orientation = .Portrait
         }
     }
 }

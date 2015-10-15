@@ -1,6 +1,6 @@
 import Foundation
 
-public typealias ECMAObject = Dictionary<String, Any?>
+public typealias ECMAObject = [String:Any?]
 
 public struct ECMAArray: ArrayLiteralConvertible, CustomStringConvertible {
     private var data:[Any?] = []

@@ -61,6 +61,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     var streamsmap:[UInt16:UInt32] = [:]
     var operations:[Int:Responder] = [:]
 
+    private var arguments:[Any?] = []
     private var currentChunk:RTMPChunk? = nil
     private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
 
@@ -83,10 +84,11 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
         socket.doWrite(RTMPChunk(message: message))
     }
-    
-    public func connect(command:String, arguments:NSObject...) {
+
+    public func connect(command: String, arguments: Any?...) {
         if let url:NSURL = NSURL(string: command) {
             _uri = command
+            self.arguments = arguments
             addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
             socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : UInt32(url.port!.intValue))
         }
@@ -141,7 +143,9 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 streamsmap[chunk!.streamId] = message.streamId
             case .One:
                 message.streamId = streamsmap[chunk!.streamId]!
-            default:
+            case .Two:
+                break
+            case .Three:
                 break
             }
             message.execute(self)
@@ -207,7 +211,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 "pageUrl": nil,
                 "objectEncoding": objectEncoding
             ],
-            arguments: []
+            arguments: arguments
         )
 
         return RTMPChunk(message: message)
