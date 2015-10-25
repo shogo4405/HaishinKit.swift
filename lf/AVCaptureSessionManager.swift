@@ -6,19 +6,17 @@ public class AVCaptureSessionManager: NSObject {
 
     static public let defaultFPS:Int32 = 30
     static public let defaultSessionPreset:String = AVCaptureSessionPresetMedium
-    static public let defaultVideoSettings:[NSObject:AnyObject] = [
+    static public let defaultVideoSettings:[NSObject: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
     ]
 
     private var _session:AVCaptureSession? = nil
     public var session:AVCaptureSession! {
-        get {
-            if (_session == nil) {
-                _session = AVCaptureSession()
-                _session!.sessionPreset = AVCaptureSessionManager.defaultSessionPreset
-            }
-            return _session!
+        if (_session == nil) {
+            _session = AVCaptureSession()
+            _session!.sessionPreset = AVCaptureSessionManager.defaultSessionPreset
         }
+        return _session!
     }
 
     public var syncOrientation:Bool = false {
@@ -91,12 +89,10 @@ public class AVCaptureSessionManager: NSObject {
 
     private var _previewLayer:AVCaptureVideoPreviewLayer? = nil
     var previewLayer:AVCaptureVideoPreviewLayer! {
-        get {
-            if (_previewLayer == nil) {
-                _previewLayer = AVCaptureVideoPreviewLayer(session: session)
-            }
-            return _previewLayer
+        if (_previewLayer == nil) {
+            _previewLayer = AVCaptureVideoPreviewLayer(session: session)
         }
+        return _previewLayer
     }
 
     public var orientation:AVCaptureVideoOrientation = AVCaptureVideoOrientation.LandscapeLeft {

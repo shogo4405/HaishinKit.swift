@@ -1,8 +1,6 @@
 import Foundation
 import AVFoundation
-
-public struct NALUnit {
-}
+import VideoToolbox
 
 public enum AVCProfileIndication:UInt8 {
     case Baseline = 66
@@ -100,5 +98,80 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
             naluLength,
             formatDescriptionOut
         )
+    }
+}
+
+func AVCEncoderCallback(
+    outputCallbackRefCon:UnsafeMutablePointer<Void>,
+    sourceFrameRefCon:UnsafeMutablePointer<Void>,
+    status:OSStatus,
+    infoFlags:VTEncodeInfoFlags,
+    sampleBuffer:CMSampleBuffer?) {
+    let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
+    encoder.delegate?.sampleOuput(video: sampleBuffer!)
+}
+
+class AVCEncoder:NSObject, Encode, AVCaptureVideoDataOutputSampleBufferDelegate {
+    static let defaultAttributes:[NSString: NSObject] = [
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+        kCVPixelBufferOpenGLESCompatibilityKey: true,
+    ]
+    static let defaultEndcoderSpecifications:[NSString: NSObject] = [
+        kVTVideoEncoderSpecification_EncoderID: "com.apple.videotoolbox.videoencoder.h264.gva",
+    ]
+
+    var width:Int32 = 640
+    var height:Int32 = 480
+    var status:OSStatus = noErr
+    weak var delegate:VideoEncoderDelegate?
+
+    private var attributes:[NSString: NSObject] {
+        var attributes:[NSString: NSObject] = AVCEncoder.defaultAttributes
+        attributes[kCVPixelBufferWidthKey] = NSNumber(int: width)
+        attributes[kCVPixelBufferHeightKey] = NSNumber(int: height)
+        return attributes
+    }
+
+    private var properties:[NSString: NSObject] = [:]
+    private var _session:VTCompressionSession?
+    private var session:VTCompressionSession! {
+        get {
+            if (_session == nil) {
+                status = VTCompressionSessionCreate(
+                    kCFAllocatorDefault,
+                    width,
+                    height,
+                    kCMVideoCodecType_H264,
+                    AVCEncoder.defaultEndcoderSpecifications,
+                    attributes,
+                    nil,
+                    AVCEncoderCallback,
+                    unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
+                    &_session
+                )
+                if (_session != nil) {
+                    status = VTSessionSetProperties(_session!, properties)
+                }
+            }
+            return _session!
+        }
+        set {
+            if (_session != nil) {
+                VTCompressionSessionInvalidate(_session!)
+            }
+            _session = newValue
+        }
+    }
+
+    func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
+        var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
+        VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
+    }
+
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+    }
+
+    func dispose() {
+        session = nil
     }
 }
