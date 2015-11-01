@@ -20,13 +20,26 @@ func AACEncoderComplexInputDataProc(
     ioData: UnsafeMutablePointer<AudioBufferList>,
     outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>>,
     inUserData:UnsafeMutablePointer<Void>) -> OSStatus {
+    let encoder:AACEncoder = unsafeBitCast(inUserData, AACEncoder.self)
+    print(encoder)
     return noErr
 }
 
 class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
+    var channels:UInt32 = 2
+    var sampleRate:Double = 44100
+    
     private var _inSourceFormat:AudioStreamBasicDescription?
     var inSourceFormat:AudioStreamBasicDescription {
         get {
+            if (_inSourceFormat == nil) {
+                _inSourceFormat = AudioStreamBasicDescription()
+                _inSourceFormat!.mFormatID = kAudioFormatLinearPCM
+                _inSourceFormat!.mSampleRate = sampleRate
+                _inSourceFormat!.mBitsPerChannel = 16
+                _inSourceFormat!.mFramesPerPacket = 1
+                _inSourceFormat!.mChannelsPerFrame = channels
+            }
             return _inSourceFormat!
         }
         set {
@@ -37,6 +50,13 @@ class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate
     private var _inDestinationFormat:AudioStreamBasicDescription?
     var inDestinationFormat:AudioStreamBasicDescription {
         get {
+            if (_inDestinationFormat == nil) {
+                _inDestinationFormat = AudioStreamBasicDescription()
+                _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
+                _inDestinationFormat!.mSampleRate = sampleRate
+                _inDestinationFormat!.mFormatFlags = 0
+                _inDestinationFormat!.mChannelsPerFrame = channels
+            }
             return _inDestinationFormat!
         }
         set {
@@ -80,8 +100,15 @@ class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
     }
 
-    func fillComplexBuffer() -> OSStatus {
-        return noErr
+    func fillComplexBuffer(inOutputDataPacketSize: UnsafeMutablePointer<UInt32>, outOutputData: UnsafeMutablePointer<AudioBufferList>, outPacketDescription: UnsafeMutablePointer<AudioStreamPacketDescription>) -> OSStatus {
+        return AudioConverterFillComplexBuffer(
+            converter,
+            AACEncoderComplexInputDataProc,
+            unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
+            inOutputDataPacketSize,
+            outOutputData,
+            outPacketDescription
+        )
     }
 
     func dispose() {

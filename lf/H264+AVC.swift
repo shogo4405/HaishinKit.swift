@@ -11,6 +11,31 @@ public enum AVCProfileIndication:UInt8 {
     case High422 = 122
     case High444 = 144
     case High424Predictive = 244
+
+    var autoLevel:String {
+        switch self {
+        case .Baseline:
+            return kVTProfileLevel_H264_Baseline_AutoLevel as String
+        case .Main:
+            return kVTProfileLevel_H264_Main_AutoLevel as String
+        case .Extended:
+            return kVTProfileLevel_H264_Extended_AutoLevel as String
+        case .High:
+            return kVTProfileLevel_H264_High_AutoLevel as String
+        case .High10:
+            return kVTProfileLevel_H264_High_AutoLevel as String
+        case .High422:
+            return kVTProfileLevel_H264_High_AutoLevel as String
+        case .High444:
+            return kVTProfileLevel_H264_High_AutoLevel as String
+        case .High424Predictive:
+            return kVTProfileLevel_H264_High_AutoLevel as String
+        }
+    }
+
+    var allowFrameReordering:Bool {
+        return AVCProfileIndication.Baseline.rawValue < rawValue
+    }
 }
 
 // @see ISO/IEC 14496-15 2010
@@ -111,7 +136,11 @@ func AVCEncoderCallback(
     encoder.delegate?.sampleOuput(video: sampleBuffer!)
 }
 
-class AVCEncoder:NSObject, Encode, AVCaptureVideoDataOutputSampleBufferDelegate {
+class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate {
+    static let defaultFPS:Int = 30
+    static let defaultWidth:Int32 = 640
+    static let defaultHeight:Int32 = 480
+
     static let defaultAttributes:[NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
         kCVPixelBufferOpenGLESCompatibilityKey: true,
@@ -120,9 +149,18 @@ class AVCEncoder:NSObject, Encode, AVCaptureVideoDataOutputSampleBufferDelegate 
         kVTVideoEncoderSpecification_EncoderID: "com.apple.videotoolbox.videoencoder.h264.gva",
     ]
 
-    var width:Int32 = 640
-    var height:Int32 = 480
+    var fps:Int = AVCEncoder.defaultFPS
+    var width:Int32 = AVCEncoder.defaultWidth
+    var height:Int32 = AVCEncoder.defaultHeight
+    var bitrate:Int32 = 192
+    var keyframeInterval:Int = AVCEncoder.defaultFPS * 2
     var status:OSStatus = noErr
+    var profile:AVCProfileIndication = .Baseline
+    var config:AVCConfigurationRecord {
+        let config:AVCConfigurationRecord = AVCConfigurationRecord()
+        return config
+    }
+    
     weak var delegate:VideoEncoderDelegate?
 
     private var attributes:[NSString: NSObject] {
@@ -132,7 +170,21 @@ class AVCEncoder:NSObject, Encode, AVCaptureVideoDataOutputSampleBufferDelegate 
         return attributes
     }
 
-    private var properties:[NSString: NSObject] = [:]
+    private var properties:[NSString: NSObject] {
+        var properties:[NSString: NSObject] = [
+            kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
+            kVTCompressionPropertyKey_ProfileLevel: profile.autoLevel,
+            // kVTCompressionPropertyKey_AverageBitRate: bitrate,
+            kVTCompressionPropertyKey_ExpectedFrameRate: fps,
+            kVTCompressionPropertyKey_MaxKeyFrameInterval: keyframeInterval,
+            kVTCompressionPropertyKey_AllowFrameReordering: profile.allowFrameReordering,
+        ]
+        if (profile != .Baseline) {
+            properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
+        }
+        return properties
+    }
+
     private var _session:VTCompressionSession?
     private var session:VTCompressionSession! {
         get {
@@ -149,8 +201,11 @@ class AVCEncoder:NSObject, Encode, AVCaptureVideoDataOutputSampleBufferDelegate 
                     unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
                     &_session
                 )
-                if (_session != nil) {
+                if (status == noErr) {
                     status = VTSessionSetProperties(_session!, properties)
+                }
+                if (status == noErr) {
+                    VTCompressionSessionPrepareToEncodeFrames(_session!)
                 }
             }
             return _session!
@@ -169,6 +224,7 @@ class AVCEncoder:NSObject, Encode, AVCaptureVideoDataOutputSampleBufferDelegate 
     }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        encodeImageBuffer(CMSampleBufferGetImageBuffer(sampleBuffer)!, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
     }
 
     func dispose() {
