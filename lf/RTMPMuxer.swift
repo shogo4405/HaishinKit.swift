@@ -2,58 +2,19 @@ import Foundation
 
 protocol RTMPMuxerDelegate: class {
     func sampleOutput(muxer:RTMPMuxer, type:RTMPSampleType, timestamp:Double, buffer:NSData)
-    func didSetSampleTables(muxer:RTMPMuxer, sampleTables:[MP4SampleTable])
 }
 
-final class RTMPMuxer: MP4Sampler {
+final class RTMPMuxer: NSObject {
     var sampleTypes:[Int:RTMPSampleType] = [:]
     var timestamps:[Int:Double] = [:]
     var configurationChanged:Bool = true
+    var videoSettings:[String: AnyObject] = [:]
+    var audioSettings:[String: AnyObject] = [:]
+    lazy var audioEncoder:AACEncoder = AACEncoder()
+    lazy var videoEncoder:AVCEncoder = AVCEncoder()
     weak var delegate:RTMPMuxerDelegate? = nil
 
-    override var sampleTables:[MP4SampleTable] {
-        didSet {
-            if (!configurationChanged) {
-                return
-            }
-
-            sampleTypes.removeAll(keepCapacity: false)
-            delegate?.didSetSampleTables(self, sampleTables: sampleTables)
-
-            for i in 0..<sampleTables.count {
-
-                if let avcC:MP4Box = sampleTables[i].trak.getBoxesByName("avcC").first {
-                    sampleTypes[i] = RTMPSampleType.Video
-                    let buffer:NSMutableData = NSMutableData()
-                    var data:[UInt8] = [0x00, FLVTag.AVCPacketType.Seq.rawValue, 0x00, 0x00, 0x00]
-                    data[0] = FLVTag.FrameType.Key.rawValue << 4 | FLVTag.VideoCodec.AVC.rawValue
-                    buffer.appendBytes(&data, length: data.count)
-                    buffer.appendData(currentFile.readDataOfBox(avcC))
-                    delegate?.sampleOutput(self, type: .Video, timestamp: 0, buffer: buffer)
-                    timestamps[i] = 0
-                }
-                
-                if let esds:MP4ElementaryStreamDescriptorBox = sampleTables[i].trak.getBoxesByName("esds").first as? MP4ElementaryStreamDescriptorBox {
-                    sampleTypes[i] = RTMPSampleType.Audio
-                    let buffer:NSMutableData = NSMutableData()
-                    var data:[UInt8] = [0x00, FLVTag.AACPacketType.Seq.rawValue]
-                    data[0] = FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
-                    data += esds.audioDecorderSpecificConfig
-                    buffer.appendBytes(&data, length: data.count)
-                    delegate?.sampleOutput(self, type: .Audio, timestamp: 0, buffer: buffer)
-                    timestamps[i] = 0
-                }
-            }
-            
-            configurationChanged = false
-        }
-    }
-
-    override init() {
-        super.init()
-    }
-
-    override func sampleOutput(index:Int, buffer:NSData, timestamp:Double, keyframe:Bool) {
+    func sampleOutput(index:Int, buffer:NSData, timestamp:Double, keyframe:Bool) {
         let type:RTMPSampleType? = sampleTypes[index]
 
         if (type == nil) {
@@ -80,27 +41,5 @@ final class RTMPMuxer: MP4Sampler {
 
         delegate?.sampleOutput(self, type: type!, timestamp: timestamps[index]!, buffer: mutableBuffer)
         timestamps[index] = timestamp + (timestamps[index]! - floor(timestamps[index]!))
-    }
-
-    func createMetadata(sampleTables:[MP4SampleTable]) -> ECMAObject {
-        var metadata:ECMAObject = ECMAObject()
-
-        for sampleTable in sampleTables {
-            if let avc1:MP4VisualSampleEntryBox = sampleTable.trak.getBoxesByName("avc1").first as? MP4VisualSampleEntryBox {
-                metadata["width"] = avc1.width
-                metadata["height"] = avc1.height
-                metadata["videocodecid"] = FLVTag.VideoCodec.AVC.rawValue
-            }
-
-            if let mp4a:MP4AudioSampleEntryBox = sampleTable.trak.getBoxesByName("mp4a").first as? MP4AudioSampleEntryBox {
-                metadata["audiocodecid"] = FLVTag.AudioCodec.AAC.rawValue
-                metadata["audiodatarate"] = mp4a.sampleRate
-                metadata["audiochannels"] = mp4a.channelCount
-                metadata["audiosamplerate"] = mp4a.sampleRate
-                metadata["audiosamplesize"] = mp4a.sampleSize
-            }
-        }
-
-        return metadata
     }
 }

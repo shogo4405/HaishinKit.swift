@@ -28,7 +28,9 @@ func AACEncoderComplexInputDataProc(
 class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
     var channels:UInt32 = 2
     var sampleRate:Double = 44100
-    
+
+    let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AACEncoder.lock", DISPATCH_QUEUE_SERIAL)
+
     private var _inSourceFormat:AudioStreamBasicDescription?
     var inSourceFormat:AudioStreamBasicDescription {
         get {

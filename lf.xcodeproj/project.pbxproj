@@ -27,11 +27,9 @@
 		29C266BF1B4BE6F900588BBE /* FLVFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B11B4BE6F900588BBE /* FLVFile.swift */; };
 		29C266C01B4BE6F900588BBE /* global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B21B4BE6F900588BBE /* global.swift */; };
 		29C266C11B4BE6F900588BBE /* MP4File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B31B4BE6F900588BBE /* MP4File.swift */; };
-		29C266C21B4BE6F900588BBE /* MP4Sampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B41B4BE6F900588BBE /* MP4Sampler.swift */; };
 		29C266C31B4BE6F900588BBE /* RTMPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B51B4BE6F900588BBE /* RTMPConnection.swift */; };
 		29C266C41B4BE6F900588BBE /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B61B4BE6F900588BBE /* RTMPStream.swift */; };
 		29C266C61B4BE6F900588BBE /* RTMPChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B81B4BE6F900588BBE /* RTMPChunk.swift */; };
-		29C266C71B4BE6F900588BBE /* MP4Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B91B4BE6F900588BBE /* MP4Encoder.swift */; };
 		29C266C81B4BE6F900588BBE /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266BA1B4BE6F900588BBE /* RTMPMessage.swift */; };
 		29C266C91B4BE6F900588BBE /* RTMPMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266BB1B4BE6F900588BBE /* RTMPMuxer.swift */; };
 		29C266CA1B4BE6F900588BBE /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266BC1B4BE6F900588BBE /* RTMPSocket.swift */; };
@@ -40,11 +38,9 @@
 		29C266CE1B4BEBBA00588BBE /* FLVFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B11B4BE6F900588BBE /* FLVFile.swift */; };
 		29C266CF1B4BEBBA00588BBE /* global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B21B4BE6F900588BBE /* global.swift */; };
 		29C266D01B4BEBBA00588BBE /* MP4File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B31B4BE6F900588BBE /* MP4File.swift */; };
-		29C266D11B4BEBBA00588BBE /* MP4Sampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B41B4BE6F900588BBE /* MP4Sampler.swift */; };
 		29C266D21B4BEBBA00588BBE /* RTMPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B51B4BE6F900588BBE /* RTMPConnection.swift */; };
 		29C266D31B4BEBBA00588BBE /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B61B4BE6F900588BBE /* RTMPStream.swift */; };
 		29C266D51B4BEBBA00588BBE /* RTMPChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B81B4BE6F900588BBE /* RTMPChunk.swift */; };
-		29C266D61B4BEBBA00588BBE /* MP4Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B91B4BE6F900588BBE /* MP4Encoder.swift */; };
 		29C266D81B4BEBBA00588BBE /* RTMPMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266BB1B4BE6F900588BBE /* RTMPMuxer.swift */; };
 		29C266D91B4BEBBA00588BBE /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266BC1B4BE6F900588BBE /* RTMPSocket.swift */; };
 		29C266DE1B4C19A700588BBE /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266BA1B4BE6F900588BBE /* RTMPMessage.swift */; };
@@ -97,11 +93,9 @@
 		29C266B11B4BE6F900588BBE /* FLVFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FLVFile.swift; path = lf/FLVFile.swift; sourceTree = "<group>"; };
 		29C266B21B4BE6F900588BBE /* global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = global.swift; path = lf/global.swift; sourceTree = "<group>"; };
 		29C266B31B4BE6F900588BBE /* MP4File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4File.swift; path = lf/MP4File.swift; sourceTree = "<group>"; };
-		29C266B41B4BE6F900588BBE /* MP4Sampler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4Sampler.swift; path = lf/MP4Sampler.swift; sourceTree = "<group>"; };
 		29C266B51B4BE6F900588BBE /* RTMPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPConnection.swift; path = lf/RTMPConnection.swift; sourceTree = "<group>"; };
 		29C266B61B4BE6F900588BBE /* RTMPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPStream.swift; path = lf/RTMPStream.swift; sourceTree = "<group>"; };
 		29C266B81B4BE6F900588BBE /* RTMPChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPChunk.swift; path = lf/RTMPChunk.swift; sourceTree = "<group>"; };
-		29C266B91B4BE6F900588BBE /* MP4Encoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4Encoder.swift; path = lf/MP4Encoder.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		29C266BA1B4BE6F900588BBE /* RTMPMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPMessage.swift; path = lf/RTMPMessage.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		29C266BB1B4BE6F900588BBE /* RTMPMuxer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPMuxer.swift; path = lf/RTMPMuxer.swift; sourceTree = "<group>"; };
 		29C266BC1B4BE6F900588BBE /* RTMPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPSocket.swift; path = lf/RTMPSocket.swift; sourceTree = "<group>"; };
@@ -141,9 +135,7 @@
 				29C266B21B4BE6F900588BBE /* global.swift */,
 				29570D5B1BC6BF2200E71EEB /* H264+AVC.swift */,
 				29FFC08B1BB1A57700B85F8F /* HTTPService.swift */,
-				29C266B91B4BE6F900588BBE /* MP4Encoder.swift */,
 				29C266B31B4BE6F900588BBE /* MP4File.swift */,
-				29C266B41B4BE6F900588BBE /* MP4Sampler.swift */,
 				29E87EE81BB323A3006D53C1 /* NetServiceClient.swift */,
 				29C266B81B4BE6F900588BBE /* RTMPChunk.swift */,
 				29C266B51B4BE6F900588BBE /* RTMPConnection.swift */,
@@ -329,11 +321,9 @@
 				29C266BD1B4BE6F900588BBE /* AMFSerializer.swift in Sources */,
 				29B0123B1B4EB38600BEC343 /* EventDispatcher.swift in Sources */,
 				29C266C11B4BE6F900588BBE /* MP4File.swift in Sources */,
-				29C266C71B4BE6F900588BBE /* MP4Encoder.swift in Sources */,
 				29C266BF1B4BE6F900588BBE /* FLVFile.swift in Sources */,
 				29C266C41B4BE6F900588BBE /* RTMPStream.swift in Sources */,
 				29C266CA1B4BE6F900588BBE /* RTMPSocket.swift in Sources */,
-				29C266C21B4BE6F900588BBE /* MP4Sampler.swift in Sources */,
 				29FFC08C1BB1A57700B85F8F /* HTTPService.swift in Sources */,
 				29C266BE1B4BE6F900588BBE /* ByteArray.swift in Sources */,
 			);
@@ -358,12 +348,10 @@
 				29C266CF1B4BEBBA00588BBE /* global.swift in Sources */,
 				29C266D01B4BEBBA00588BBE /* MP4File.swift in Sources */,
 				29DD18381B6E77EF00B9E10A /* AMFSerializerTests.swift in Sources */,
-				29C266D11B4BEBBA00588BBE /* MP4Sampler.swift in Sources */,
 				29C266D21B4BEBBA00588BBE /* RTMPConnection.swift in Sources */,
 				29C266D31B4BEBBA00588BBE /* RTMPStream.swift in Sources */,
 				29C266D51B4BEBBA00588BBE /* RTMPChunk.swift in Sources */,
 				297ABFC31B7F7A21004C779D /* RTMPConnectionTests.swift in Sources */,
-				29C266D61B4BEBBA00588BBE /* MP4Encoder.swift in Sources */,
 				29C266D81B4BEBBA00588BBE /* RTMPMuxer.swift in Sources */,
 				29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */,
 				29C266D91B4BEBBA00588BBE /* RTMPSocket.swift in Sources */,

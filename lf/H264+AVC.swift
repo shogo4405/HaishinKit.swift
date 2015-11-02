@@ -156,6 +156,7 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
     var keyframeInterval:Int = AVCEncoder.defaultFPS * 2
     var status:OSStatus = noErr
     var profile:AVCProfileIndication = .Baseline
+    let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL)
     var config:AVCConfigurationRecord {
         let config:AVCConfigurationRecord = AVCConfigurationRecord()
         return config
