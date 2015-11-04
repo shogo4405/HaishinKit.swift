@@ -83,21 +83,16 @@ public class RTMPSharedObject: EventDispatcher {
                 change["code"] = "change"
                 change["oldValue"] = _data.removeValueForKey(event.name!)
                 _data[event.name!] = event.data
-                break
             case .Success:
                 change["code"] = "success"
-                break
             case .Status:
                 change["code"] = "reject"
                 change["oldValue"] = _data.removeValueForKey(event.name!)
-                break
             case .Clear:
                 _data.removeAll(keepCapacity: false)
                 change["code"] = "clear"
-                break
             case .Remove:
                 change["code"] = "delete"
-                break
             case .UseSuccess:
                 break
             default:
@@ -125,7 +120,6 @@ public class RTMPSharedObject: EventDispatcher {
                 switch code {
                 case "NetConnection.Connect.Success":
                     rtmpConnection!.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Use)]))
-                    break
                 default:
                     break
                 }

@@ -109,7 +109,6 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             }
         case NSStreamEvent.ErrorOccurred:
             close()
-            break
         case NSStreamEvent.EndEncountered:
             break
         default:
@@ -191,7 +190,6 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             doWrite([objectEncoding])
             doWrite(c1packet.bytes)
             readyState = .VersionSent
-            break
         case .VersionSent:
             if (inputBuffer.count < RTMPSocket.sigSize + 1) {
                 break
@@ -207,14 +205,12 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             doWrite(c2packet.bytes)
             inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
             readyState = .AckSent
-            break
         case .AckSent:
             if (inputBuffer.count < RTMPSocket.sigSize) {
                 break
             }
             inputBuffer.removeAll(keepCapacity: false)
             readyState = .HandshakeDone
-            break
         case .HandshakeDone:
             if (inputBuffer.isEmpty){
                 break
@@ -222,7 +218,6 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             let bytes:[UInt8] = inputBuffer
             inputBuffer.removeAll(keepCapacity: false)
             delegate?.listen(self, bytes: bytes)
-            break
         default:
             break
         }

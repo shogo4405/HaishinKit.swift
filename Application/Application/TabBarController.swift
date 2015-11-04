@@ -1,23 +1,18 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
-    var goLiveView:GoLiveViewController!
-    var showLiveView:ShowLiveViewController!
-    
+    var goLive:GoLiveViewController!
+    var showLive:ShowLiveViewController!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        goLiveView = GoLiveViewController()
-        goLiveView.tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarSystemItem.Featured, tag: 1)
+        goLive = GoLiveViewController()
+        goLive.tabBarItem = UITabBarItem(tabBarSystemItem: .Featured, tag: 1)
 
-        showLiveView = ShowLiveViewController()
-        showLiveView.tabBarItem = UITabBarItem(tabBarSystemItem: UITabBarSystemItem.Bookmarks, tag: 2)
-        
-        let tabs:[UIViewController] = [goLiveView, showLiveView]
-        setViewControllers(tabs, animated: true)
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+        showLive = ShowLiveViewController()
+        showLive.tabBarItem = UITabBarItem(tabBarSystemItem: .Bookmarks, tag: 2)
+
+        setViewControllers([goLive, showLive], animated: true)
     }
 }

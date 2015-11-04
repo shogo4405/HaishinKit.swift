@@ -853,31 +853,6 @@ final class RTMPUserControlMessage:RTMPMessage {
         var bytes:[UInt8] {
             return [0x00, rawValue]
         }
-
-        var description:String {
-            switch self {
-            case .StreamBegin:
-                return "NetStream.Play.Start"
-            case .StreamEof:
-                return "NetStream.Play.Stop"
-            case .StreamDry:
-                return "NetStream.Play.Reset"
-            case .SetBuffer:
-                return "SetBuffer.Length"
-            case .Recorded:
-                return "NetStream.Record.Start"
-            case .Ping:
-                return "Ping"
-            case .Pong:
-                return "Pong"
-            case .BufferEmpty:
-                return "NetStream.Buffer.Empty"
-            case .BufferFull:
-                return "NetStream.Buffer.Full"
-            default:
-                return "Unknown"
-            }
-        }
     }
 
     override var type:Type {
@@ -951,6 +926,8 @@ final class RTMPUserControlMessage:RTMPMessage {
                 "code": description,
                 "description": ""
             ])
+        case .StreamBegin:
+            connection.streams[UInt32(value)]?.readyState = .Publishing
         default:
             break
         }
