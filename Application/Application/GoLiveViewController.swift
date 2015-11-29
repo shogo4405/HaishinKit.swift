@@ -4,8 +4,8 @@ import AVFoundation
 
 final class GoLiveViewController: UIViewController {
     
-    let url:String = "rtmp://localhost/test"
-    let streamName:String = "test"
+    let url:String = "rtmp://localhost"
+    let streamName:String = "test/0"
     
     var goLiveButton: UIButton!
     var rtmpConnection:RTMPConnection = RTMPConnection()

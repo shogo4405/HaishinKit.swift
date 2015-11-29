@@ -3,10 +3,14 @@ import AVFoundation
 
 // @see http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
 
-public struct AudioSpecificConfig {
+public struct AudioSpecificConfig: CustomStringConvertible {
     public var type:AudioObjectType
     public var frequency:SamplingFrequency
     public var channel:ChannelConfiguration
+
+    public var description:String {
+        return "AudioSpecificConfig{type:\(type),frequency:\(frequency),channel:\(channel)}"
+    }
 
     public var bytes:[UInt8] {
         var bytes:[UInt8] = [UInt8](count: 2, repeatedValue: 0)
@@ -38,8 +42,13 @@ public enum AudioObjectType:UInt8 {
     case SBR = 5
     case AACScalable = 6
 
-    init (formatID: AudioFormatID) {
-        self = .Null
+    public init (formatID: AudioFormatID) {
+        switch formatID {
+        case kAudioFormatMPEG4AAC:
+            self = .AACMain
+        default:
+            self = .Null
+        }
     }
 }
 

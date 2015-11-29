@@ -106,8 +106,11 @@ final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
             sampleBuffer, nil, &audioBufferList, sizeof(AudioBufferList.self), nil, nil, 0, &blockBuffer
         )
         let buffer:NSMutableData = NSMutableData()
-        let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        var data:[UInt8] = [0x00, FLVTag.AACPacketType.Raw.rawValue]
+        data[0] =  FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
+        buffer.appendBytes(&data, length: data.count)
         buffer.appendBytes(audioBufferList.mBuffers.mData, length: Int(audioBufferList.mBuffers.mDataByteSize))
+        let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
         let delta:Double = audioTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(audioTimestamp)
         delegate?.sampleOutput(self, audio: buffer, timestamp: delta * 1000)
         audioTimestamp = presentationTimeStamp
