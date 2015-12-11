@@ -200,15 +200,21 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
         return attributes
     }
 
+    // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties:[NSString: NSObject] {
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
             kVTCompressionPropertyKey_ProfileLevel: profile.autoLevel,
+            kVTCompressionPropertyKey_AspectRatio16x9:  kCFBooleanTrue,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: fps,
             kVTCompressionPropertyKey_MaxKeyFrameInterval: keyframeInterval,
             kVTCompressionPropertyKey_AllowFrameReordering: profile.allowFrameReordering,
+            kVTCompressionPropertyKey_PixelTransferProperties: [
+                "ScalingMode": "Trim"
+            ]
         ]
+        print(kVTCompressionPropertyKey_PixelTransferProperties)
         if (profile != .Baseline) {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }
