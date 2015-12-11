@@ -7,55 +7,73 @@ protocol Encoder {
 }
 
 protocol VideoEncoderDelegate: class {
+    func didSetFormatDescription(video formatDescription:CMFormatDescriptionRef?)
     func sampleOuput(video sampleBuffer: CMSampleBuffer)
 }
 
 protocol AudioEncoderDelegate: class {
+    func didSetFormatDescription(audio formatDescription:CMFormatDescriptionRef?)
     func sampleOuput(audio sampleBuffer: CMSampleBuffer)
 }
 
 func AACEncoderComplexInputDataProc(
-    convert:AudioConverterRef,
+    convert: AudioConverterRef,
     ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
     ioData: UnsafeMutablePointer<AudioBufferList>,
     outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>>,
-    inUserData:UnsafeMutablePointer<Void>) -> OSStatus {
+    inUserData: UnsafeMutablePointer<Void>) -> OSStatus {
+
     let encoder:AACEncoder = unsafeBitCast(inUserData, AACEncoder.self)
-    print(encoder)
+    let dataBytesSize:UInt32 = encoder.currentBufferList!.mBuffers.mDataByteSize
+
+    ioData.memory.mBuffers.mData = encoder.currentBufferList!.mBuffers.mData
+    ioData.memory.mBuffers.mDataByteSize = dataBytesSize
+    ioNumberDataPackets.memory = 1
+
     return noErr
 }
 
-class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
-    var channels:UInt32 = 2
-    var sampleRate:Double = 44100
-    
-    private var _inSourceFormat:AudioStreamBasicDescription?
-    var inSourceFormat:AudioStreamBasicDescription {
-        get {
-            if (_inSourceFormat == nil) {
-                _inSourceFormat = AudioStreamBasicDescription()
-                _inSourceFormat!.mFormatID = kAudioFormatLinearPCM
-                _inSourceFormat!.mSampleRate = sampleRate
-                _inSourceFormat!.mBitsPerChannel = 16
-                _inSourceFormat!.mFramesPerPacket = 1
-                _inSourceFormat!.mChannelsPerFrame = channels
+final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
+    static let samplesPerFrame:UInt32 = 1024
+    static let defaultChannels:UInt32 = 1
+    static let defaultSampleRate:Double = 44100
+    static let defaultAACBufferSize:UInt32 = 1024
+    static let defaultInClassDescriptions:[AudioClassDescription] = [
+        AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer),
+        AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
+    ]
+
+    var delegate:AudioEncoderDelegate?
+    var channels:UInt32 = AACEncoder.defaultChannels
+    var sampleRate:Double = AACEncoder.defaultSampleRate
+    var sampleSize:UInt32 = AACEncoder.defaultAACBufferSize
+    var currentBufferList:AudioBufferList? = nil
+    var inClassDescriptions:[AudioClassDescription] = AACEncoder.defaultInClassDescriptions
+    var formatDescription:CMFormatDescriptionRef? = nil {
+        didSet {
+            if (!CMFormatDescriptionEqual(formatDescription, oldValue)) {
+                delegate?.didSetFormatDescription(audio: formatDescription)
             }
-            return _inSourceFormat!
-        }
-        set {
-            _inSourceFormat = newValue
         }
     }
+
+    let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AACEncoder.lock", DISPATCH_QUEUE_SERIAL)
+
+    private var inSourceFormat:AudioStreamBasicDescription?
 
     private var _inDestinationFormat:AudioStreamBasicDescription?
     var inDestinationFormat:AudioStreamBasicDescription {
         get {
             if (_inDestinationFormat == nil) {
                 _inDestinationFormat = AudioStreamBasicDescription()
-                _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
                 _inDestinationFormat!.mSampleRate = sampleRate
+                _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
                 _inDestinationFormat!.mFormatFlags = 0
+                _inDestinationFormat!.mBytesPerPacket = 0
+                _inDestinationFormat!.mFramesPerPacket = AACEncoder.samplesPerFrame
                 _inDestinationFormat!.mChannelsPerFrame = channels
+                _inDestinationFormat!.mBitsPerChannel = 0
+                _inDestinationFormat!.mReserved = 0
             }
             return _inDestinationFormat!
         }
@@ -64,25 +82,20 @@ class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate
         }
     }
 
-    lazy var inClassDescriptions:[AudioClassDescription] = {
-        var inClassDescriptions:[AudioClassDescription] = []
-        inClassDescriptions.append(AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer))
-        inClassDescriptions.append(AudioClassDescription(mType: kAudioEncoderComponentType,mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer))
-        return inClassDescriptions
-    }()
-
-    private var _converter:AudioConverterRef?
+    private var _converter:AudioConverterRef? = nil
     private var converter:AudioConverterRef {
         get {
             var status:OSStatus = noErr
             if (_converter == nil) {
+                var converterRef:AudioConverterRef = AudioConverterRef()
                 status = AudioConverterNewSpecific(
-                    &inSourceFormat,
+                    &inSourceFormat!,
                     &inDestinationFormat,
                     UInt32(inClassDescriptions.count),
                     &inClassDescriptions,
-                    &_converter!
+                    &converterRef
                 )
+                _converter = converterRef
             }
             if (status != noErr) {
                 print(status)
@@ -98,6 +111,55 @@ class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate
     }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+
+        if (inSourceFormat == nil) {
+            if let format:CMAudioFormatDescriptionRef = CMSampleBufferGetFormatDescription(sampleBuffer) {
+                inSourceFormat = CMAudioFormatDescriptionGetStreamBasicDescription(format).memory
+            } else {
+                return
+            }
+        }
+
+        var status:OSStatus = noErr
+        var blockBuffer:CMBlockBufferRef?
+        var inAudioBufferList:AudioBufferList = AudioBufferList()
+        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+            sampleBuffer, nil, &inAudioBufferList, sizeof(AudioBufferList.self), nil, nil, 0, &blockBuffer
+        )
+        
+        var data:[UInt8] = [UInt8](count: Int(AACEncoder.defaultAACBufferSize), repeatedValue: 0)
+        var outOutputData:AudioBufferList = AudioBufferList(
+            mNumberBuffers: 1,
+            mBuffers: AudioBuffer(
+                mNumberChannels: 1,
+                mDataByteSize: UInt32(data.count),
+                mData: &data
+            )
+        )
+
+        currentBufferList = inAudioBufferList
+        var outputDataPacketSize:UInt32 = 1
+        status = fillComplexBuffer(&outputDataPacketSize, outOutputData: &outOutputData, outPacketDescription: nil)
+
+        if (status == noErr)
+        {
+            var result:CMSampleBufferRef?
+            var format:CMAudioFormatDescriptionRef?
+            var timing:CMSampleTimingInfo = CMSampleTimingInfo()
+            let numSamples:CMItemCount = CMSampleBufferGetNumSamples(sampleBuffer)
+
+            CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timing)
+            CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &inDestinationFormat, 0, nil, 0, nil, nil, &format)
+            formatDescription = format
+            CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, format, numSamples, 1, &timing, 0, nil, &result)
+            CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, &outOutputData)
+
+            delegate?.sampleOuput(audio: result!)
+        }
+        else
+        {
+            print(status)
+        }
     }
 
     func fillComplexBuffer(inOutputDataPacketSize: UnsafeMutablePointer<UInt32>, outOutputData: UnsafeMutablePointer<AudioBufferList>, outPacketDescription: UnsafeMutablePointer<AudioStreamPacketDescription>) -> OSStatus {
@@ -113,5 +175,7 @@ class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate
 
     func dispose() {
         converter = nil
+        inSourceFormat = nil
+        currentBufferList = nil
     }
 }

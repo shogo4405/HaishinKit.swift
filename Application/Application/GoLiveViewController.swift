@@ -4,7 +4,7 @@ import AVFoundation
 
 final class GoLiveViewController: UIViewController {
     
-    let url:String = "rtmp://localhost/test"
+    let url:String = "rtmp://localhost"
     let streamName:String = "test/0"
     
     var goLiveButton: UIButton!
@@ -16,6 +16,7 @@ final class GoLiveViewController: UIViewController {
         super.viewDidLoad()
         
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+        rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
 

@@ -3,7 +3,7 @@ import XCTest
 
 class RTMPConnectionTests: XCTestCase {
 
-    let url:String = "rtmp://192.168.179.4/live"
+    let url:String = "rtmp://localhost/"
     let streamName:String = "test"
 
     override func setUp() {
