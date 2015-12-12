@@ -739,7 +739,7 @@ class RTMPAudioMessage:RTMPMessage {
             return
         }
 
-        stream.enqueueAudioSampleBuffer(sampleBuffer!)
+        stream.enqueueSampleBuffer(audio: sampleBuffer!)
     }
 
     func createFormatDescription(stream: RTMPStream) -> OSStatus {
@@ -813,7 +813,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         )
         CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
 
-        stream.enqueueVideoSampleBuffer(sampleBuffer!)
+        stream.enqueueSampleBuffer(video: sampleBuffer!)
     }
 
     override func createFormatDescription(stream: RTMPStream) -> OSStatus{

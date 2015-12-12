@@ -205,7 +205,7 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
             kVTCompressionPropertyKey_ProfileLevel: profile.autoLevel,
-            kVTCompressionPropertyKey_AspectRatio16x9:  kCFBooleanTrue,
+            kVTCompressionPropertyKey_AspectRatio16x9: kCFBooleanTrue,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: fps,
             kVTCompressionPropertyKey_MaxKeyFrameInterval: keyframeInterval,
@@ -214,7 +214,6 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
                 "ScalingMode": "Trim"
             ]
         ]
-        print(kVTCompressionPropertyKey_PixelTransferProperties)
         if (profile != .Baseline) {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }

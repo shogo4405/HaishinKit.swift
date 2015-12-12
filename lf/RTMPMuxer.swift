@@ -93,8 +93,8 @@ final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
             buffer.appendBytes(&data, length: data.count)
             buffer.appendData(AVCEncoder.getData(dataPointer, length: totalLength))
             let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-            let delta:Double = videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(videoTimestamp)
-            delegate?.sampleOutput(self, video: buffer, timestamp: delta * 1000)
+            let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(videoTimestamp)) * 1000
+            delegate?.sampleOutput(self, video: buffer, timestamp: delta)
             videoTimestamp = presentationTimeStamp
         }
     }
@@ -111,8 +111,8 @@ final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
         buffer.appendBytes(&data, length: data.count)
         buffer.appendBytes(audioBufferList.mBuffers.mData, length: Int(audioBufferList.mBuffers.mDataByteSize))
         let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        let delta:Double = audioTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(audioTimestamp)
-        delegate?.sampleOutput(self, audio: buffer, timestamp: delta * 1000)
+        let delta:Double = (audioTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(audioTimestamp)) * 1000
+        delegate?.sampleOutput(self, audio: buffer, timestamp: delta)
         audioTimestamp = presentationTimeStamp
     }
 }

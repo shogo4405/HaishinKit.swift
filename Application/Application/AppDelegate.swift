@@ -4,29 +4,22 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
+    var window:UIWindow?
+    var rootViewController:UINavigationController = {
+        let controller:UINavigationController = UINavigationController()
+        controller.setViewControllers([ LiveViewController()], animated: true)
+        controller.navigationBar.tintColor = UIColor.whiteColor()
+        controller.navigationBar.barTintColor = UIColor(
+            red: 0x00 / 0xff, green: 0xa4 / 0xff, blue: 0xe4 / 0xff, alpha: 0
+        )
+        return controller
+    }()
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.backgroundColor = UIColor.whiteColor()
-        window?.rootViewController = TabBarController()
+        window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
         return true
     }
-
-    func applicationWillResignActive(application: UIApplication) {
-    }
-
-    func applicationDidEnterBackground(application: UIApplication) {
-    }
-
-    func applicationWillEnterForeground(application: UIApplication) {
-    }
-
-    func applicationDidBecomeActive(application: UIApplication) {
-    }
-
-    func applicationWillTerminate(application: UIApplication) {
-    }
 }
-

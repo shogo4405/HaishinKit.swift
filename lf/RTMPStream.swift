@@ -1,3 +1,4 @@
+import UIKit
 import Foundation
 import AVFoundation
 
@@ -76,7 +77,20 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         }
     }
 
-    public lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
+    private var _view:UIView? = nil
+    public var view:UIView! {
+        if (_view == nil) {
+            sessionManager.startRunning()
+            let layer:AVCaptureVideoPreviewLayer = sessionManager.previewLayer
+            layer.videoGravity = videoGravity
+            _view = UIView()
+            _view!.layer.addSublayer(layer)
+            _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
+        }
+        return _view!
+    }
+
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     public var audioSettings:[String: AnyObject] {
         get {
@@ -97,6 +111,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[RTMPSampleType:Bool] = [:]
+    private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private lazy var muxer:RTMPMuxer = RTMPMuxer()
     private var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL)
@@ -109,7 +124,13 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             rtmpConnection.createStream(self)
         }
     }
-    
+
+    deinit {
+        if (_view != nil) {
+            _view?.removeObserver(self, forKeyPath: "bounds")
+        }
+    }
+
     public func attachAudio(audio:AVCaptureDevice?) {
         sessionManager.attachAudio(audio)
     }
@@ -247,11 +268,6 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         )))
     }
 
-    public func toPreviewLayer() -> AVCaptureVideoPreviewLayer {
-        sessionManager.startRunning()
-        return sessionManager.previewLayer
-    }
-
     func sampleOutput(muxer:RTMPMuxer,audio buffer:NSData, timestamp:Double) {
         let type:RTMPSampleType = .Audio
         rtmpConnection.doWrite(RTMPChunk(
@@ -272,10 +288,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         chunkTypes[type] = true
     }
 
-    func enqueueAudioSampleBuffer(sampleBuffer:CMSampleBuffer) {
+    func enqueueSampleBuffer(audio sampleBuffer:CMSampleBuffer) {
     }
 
-    func enqueueVideoSampleBuffer(sampleBuffer:CMSampleBuffer) {
+    func enqueueSampleBuffer(video sampleBuffer:CMSampleBuffer) {
         dispatch_async(dispatch_get_main_queue()) {
             if (self.readyForKeyframe && self.layer.readyForMoreMediaData) {
                 self.layer.enqueueSampleBuffer(sampleBuffer)
@@ -297,6 +313,18 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                     break
                 }
             }
+        }
+    }
+
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        guard keyPath != nil else {
+            return
+        }
+        switch keyPath! {
+        case "frame":
+            sessionManager.previewLayer.frame = view.bounds
+        default:
+            break
         }
     }
 }
