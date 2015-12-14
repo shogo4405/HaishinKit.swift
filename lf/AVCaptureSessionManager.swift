@@ -4,19 +4,50 @@ import AVFoundation
 
 public class AVCaptureSessionManager: NSObject {
 
+    static public func deviceWithPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
+        for device in AVCaptureDevice.devices() {
+            if let device = device as? AVCaptureDevice {
+                if (device.hasMediaType(AVMediaTypeVideo) && device.position == position) {
+                    return device
+                }
+            }
+        }
+        return nil
+    }
+
     static public let defaultFPS:Int32 = 30
     static public let defaultSessionPreset:String = AVCaptureSessionPresetMedium
     static public let defaultVideoSettings:[NSObject: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
     ]
 
-    private var _session:AVCaptureSession? = nil
-    public var session:AVCaptureSession! {
-        if (_session == nil) {
-            _session = AVCaptureSession()
-            _session!.sessionPreset = AVCaptureSessionManager.defaultSessionPreset
+    public var FPS:Int32 = AVCaptureSessionManager.defaultFPS
+
+    public var orientation:AVCaptureVideoOrientation = AVCaptureVideoOrientation.LandscapeLeft {
+        didSet {
+            
+            if let connection:AVCaptureConnection = _previewLayer?.connection {
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
+                } else {
+                    print("AVCaptureConnection.videoOrientation not supported")
+                }
+            }
+            
+            for output:AnyObject in session.outputs {
+                if let output:AVCaptureVideoDataOutput = output as? AVCaptureVideoDataOutput {
+                    for connection in output.connections {
+                        if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
+                            if (connection.supportsVideoOrientation) {
+                                connection.videoOrientation = orientation
+                            } else {
+                                print("AVCaptureConnection.videoOrientation not supported")
+                            }
+                        }
+                    }
+                }
+            }
         }
-        return _session!
     }
 
     public var syncOrientation:Bool = false {
@@ -30,8 +61,6 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public var FPS:Int32 = AVCaptureSessionManager.defaultFPS
-
     public var sessionPreset:String = AVCaptureSessionManager.defaultSessionPreset {
         didSet {
             session.beginConfiguration()
@@ -44,6 +73,15 @@ public class AVCaptureSessionManager: NSObject {
         didSet {
             videoDataOutput.videoSettings = videoSetting
         }
+    }
+
+    private var _session:AVCaptureSession? = nil
+    var session:AVCaptureSession! {
+        if (_session == nil) {
+            _session = AVCaptureSession()
+            _session!.sessionPreset = AVCaptureSessionManager.defaultSessionPreset
+        }
+        return _session!
     }
 
     private var _videoDataOutput:AVCaptureVideoDataOutput? = nil
@@ -95,29 +133,30 @@ public class AVCaptureSessionManager: NSObject {
         return _previewLayer
     }
 
-    public var orientation:AVCaptureVideoOrientation = AVCaptureVideoOrientation.LandscapeLeft {
+    private var currentAudio:AVCaptureDeviceInput? = nil {
         didSet {
-
-            if let connection:AVCaptureConnection = _previewLayer?.connection {
-                if (connection.supportsVideoOrientation) {
-                    connection.videoOrientation = orientation
-                } else {
-                    print("AVCaptureConnection.videoOrientation not supported")
-                }
+            guard oldValue != currentAudio else {
+                return
             }
+            if (oldValue != nil) {
+                session.removeInput(oldValue!)
+            }
+            if (currentAudio != nil) {
+                session.addInput(currentAudio!)
+            }
+        }
+    }
 
-            for output:AnyObject in session.outputs {
-                if let output:AVCaptureVideoDataOutput = output as? AVCaptureVideoDataOutput {
-                    for connection in output.connections {
-                        if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                            if (connection.supportsVideoOrientation) {
-                                connection.videoOrientation = orientation
-                            } else {
-                                print("AVCaptureConnection.videoOrientation not supported")
-                            }
-                        }
-                    }
-                }
+    private var currentCamera:AVCaptureDeviceInput? = nil {
+        didSet {
+            guard oldValue != currentCamera else {
+                return
+            }
+            if (oldValue != nil) {
+                session.removeInput(oldValue!)
+            }
+            if (currentCamera != nil) {
+                session.addInput(currentCamera!)
             }
         }
     }
@@ -127,25 +166,29 @@ public class AVCaptureSessionManager: NSObject {
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
-        if (audio == nil) {
+        audioDataOutput = nil
+        guard audio != nil else {
+            currentAudio = nil
             return
         }
         do {
-            session.addInput(try AVCaptureDeviceInput(device: audio) as AVCaptureDeviceInput)
-            session.addOutput(audioDataOutput!)
+            currentAudio = try AVCaptureDeviceInput(device: audio!)
+            session.addOutput(audioDataOutput)
         } catch let error as NSError {
             print(error)
         }
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
-        if (camera == nil) {
+        videoDataOutput = nil
+        guard camera != nil else {
+            currentCamera = nil
             return
         }
         do {
             camera!.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
-            session.addInput(try AVCaptureDeviceInput(device: camera) as AVCaptureDeviceInput)
-            session.addOutput(videoDataOutput!)
+            currentCamera = try AVCaptureDeviceInput(device: camera!)
+            session.addOutput(videoDataOutput)
         } catch let error as NSError {
             print(error)
         }

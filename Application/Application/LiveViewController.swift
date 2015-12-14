@@ -27,6 +27,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
+        rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(AVCaptureDevicePosition.Front))
         publishButton.addTarget(self, action: "onClickPublish:", forControlEvents: .TouchUpInside)
 
         view.addSubview(rtmpStream.view)
