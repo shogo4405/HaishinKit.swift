@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "lf"
-  s.version      = "0.0.4"
+  s.version      = "0.1.0"
   s.summary      = "iOS Camera/Microphone streaming library via RTMP"
 
   s.description  = <<-DESC
