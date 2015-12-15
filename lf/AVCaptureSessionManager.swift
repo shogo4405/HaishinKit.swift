@@ -99,6 +99,7 @@ public class AVCaptureSessionManager: NSObject {
                 return
             }
             if (_videoDataOutput != nil) {
+                _videoDataOutput!.setSampleBufferDelegate(nil, queue: nil)
                 session.removeOutput(_videoDataOutput!)
             }
             _videoDataOutput = newValue

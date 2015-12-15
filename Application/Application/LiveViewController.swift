@@ -18,16 +18,18 @@ final class LiveViewController: UIViewController {
         return button
     }()
 
+    var currentPosition:AVCaptureDevicePosition = AVCaptureDevicePosition.Back
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "lf.TestApplication"
-        
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Switch", style: .Plain, target: self, action: "toggleCamera:")
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
-        rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(AVCaptureDevicePosition.Front))
+        rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(.Back))
         publishButton.addTarget(self, action: "onClickPublish:", forControlEvents: .TouchUpInside)
 
         view.addSubview(rtmpStream.view)
@@ -40,6 +42,12 @@ final class LiveViewController: UIViewController {
         let navigationHeight:CGFloat = view.bounds.width < view.bounds.height ? 64 : 0
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 22, y: navigationHeight + 44, width: 44, height: 44)
         rtmpStream.view.frame = CGRect(x: 0, y: navigationHeight, width: view.bounds.width, height: videoHeight)
+    }
+
+    func toggleCamera(sender:UIBarButtonItem) {
+        let position:AVCaptureDevicePosition = currentPosition == .Back ? .Front : .Back
+        rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(position))
+        currentPosition = position
     }
 
     func onClickPublish(sender:UIButton) {

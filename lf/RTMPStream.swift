@@ -84,6 +84,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             let layer:AVCaptureVideoPreviewLayer = sessionManager.previewLayer
             layer.videoGravity = videoGravity
             _view = UIView()
+            _view!.backgroundColor = UIColor.blackColor()
             _view!.layer.addSublayer(layer)
             _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
         }
@@ -134,9 +135,12 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public func attachAudio(audio:AVCaptureDevice?) {
         sessionManager.attachAudio(audio)
     }
-    
+
     public func attachCamera(camera:AVCaptureDevice?) {
         sessionManager.attachCamera(camera)
+        if (readyState == .Publishing) {
+            sessionManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
+        }
     }
 
     public func receiveAudio(flag:Bool) {
