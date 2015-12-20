@@ -159,6 +159,15 @@ func AVCEncoderCallback(
 
 class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate {
 
+    static let dictionaryKeys:[String] = [
+        "fps",
+        "width",
+        "height",
+        "bitrate",
+        "aspectRatio16by9",
+        "keyframeInterval",
+    ]
+
     static func getData(bytes: UnsafeMutablePointer<Int8>, length:Int) -> NSData {
         let mutableData:NSMutableData = NSMutableData()
         mutableData.appendBytes(bytes, length: length)
@@ -166,8 +175,8 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
     }
 
     static let defaultFPS:Int = 30
-    static let defaultWidth:Int32 = 640
-    static let defaultHeight:Int32 = 360
+    static let defaultWidth:Int32 = 480
+    static let defaultHeight:Int32 = 272
 
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
@@ -179,9 +188,10 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
     var width:Int32 = AVCEncoder.defaultWidth
     var height:Int32 = AVCEncoder.defaultHeight
     var bitrate:Int32 = 160 * 1000
-    var keyframeInterval:Int = AVCEncoder.defaultFPS * 2
-    var status:OSStatus = noErr
     var profile:AVCProfileIndication = .Baseline
+    var aspectRatio16by9:Bool = true
+    var keyframeInterval:Int = AVCEncoder.defaultFPS * 2
+
     let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL)
     weak var delegate:VideoEncoderDelegate?
 
@@ -193,6 +203,7 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
         }
     }
 
+    private var status:OSStatus = noErr
     private var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = AVCEncoder.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(int: width)
@@ -205,7 +216,6 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
             kVTCompressionPropertyKey_ProfileLevel: profile.autoLevel,
-            kVTCompressionPropertyKey_AspectRatio16x9: kCFBooleanTrue,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: fps,
             kVTCompressionPropertyKey_MaxKeyFrameInterval: keyframeInterval,
@@ -214,6 +224,9 @@ class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate
                 "ScalingMode": "Trim"
             ]
         ]
+        if (aspectRatio16by9) {
+            properties[kVTCompressionPropertyKey_AspectRatio16x9] = kCFBooleanTrue
+        }
         if (profile != .Baseline) {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }

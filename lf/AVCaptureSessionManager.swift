@@ -29,8 +29,6 @@ public class AVCaptureSessionManager: NSObject {
             if let connection:AVCaptureConnection = _previewLayer?.connection {
                 if (connection.supportsVideoOrientation) {
                     connection.videoOrientation = orientation
-                } else {
-                    print("AVCaptureConnection.videoOrientation not supported")
                 }
             }
             
@@ -40,8 +38,6 @@ public class AVCaptureSessionManager: NSObject {
                         if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
                             if (connection.supportsVideoOrientation) {
                                 connection.videoOrientation = orientation
-                            } else {
-                                print("AVCaptureConnection.videoOrientation not supported")
                             }
                         }
                     }
@@ -91,6 +87,13 @@ public class AVCaptureSessionManager: NSObject {
                 _videoDataOutput = AVCaptureVideoDataOutput()
                 _videoDataOutput!.alwaysDiscardsLateVideoFrames = true
                 _videoDataOutput!.videoSettings = videoSetting
+                for connection in _videoDataOutput!.connections {
+                    if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
+                        if (connection.supportsVideoOrientation) {
+                            connection.videoOrientation = orientation
+                        }
+                    }
+                }
             }
             return _videoDataOutput!
         }

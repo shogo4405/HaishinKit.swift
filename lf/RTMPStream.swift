@@ -80,18 +80,23 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     private var _view:UIView? = nil
     public var view:UIView! {
         if (_view == nil) {
-            sessionManager.startRunning()
-            let layer:AVCaptureVideoPreviewLayer = sessionManager.previewLayer
             layer.videoGravity = videoGravity
+            sessionManager.previewLayer.videoGravity = videoGravity
             _view = UIView()
             _view!.backgroundColor = UIColor.blackColor()
+            _view!.layer.addSublayer(sessionManager.previewLayer)
             _view!.layer.addSublayer(layer)
             _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
         }
         return _view!
     }
 
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
+        didSet {
+            layer.videoGravity = videoGravity
+            sessionManager.previewLayer.videoGravity = videoGravity
+        }
+    }
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     public var audioSettings:[String: AnyObject] {
         get {
@@ -141,6 +146,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         if (readyState == .Publishing) {
             sessionManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
         }
+        sessionManager.startRunning()
     }
 
     public func receiveAudio(flag:Bool) {
@@ -326,6 +332,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         }
         switch keyPath! {
         case "frame":
+            layer.frame = view.bounds
             sessionManager.previewLayer.frame = view.bounds
         default:
             break
