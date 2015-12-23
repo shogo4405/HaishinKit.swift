@@ -82,32 +82,24 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         }
     }
 
-    private var _converter:AudioConverterRef? = nil
+    private var _converter:AudioConverterRef?
     private var converter:AudioConverterRef {
-        get {
-            var status:OSStatus = noErr
-            if (_converter == nil) {
-                var converterRef:AudioConverterRef = AudioConverterRef()
-                status = AudioConverterNewSpecific(
-                    &inSourceFormat!,
-                    &inDestinationFormat,
-                    UInt32(inClassDescriptions.count),
-                    &inClassDescriptions,
-                    &converterRef
-                )
-                _converter = converterRef
-            }
-            if (status != noErr) {
-                print(status)
-            }
-            return _converter!
+        var status:OSStatus = noErr
+        if (_converter == nil) {
+            var converterRef:AudioConverterRef = AudioConverterRef()
+            status = AudioConverterNewSpecific(
+                &inSourceFormat!,
+                &inDestinationFormat,
+                UInt32(inClassDescriptions.count),
+                &inClassDescriptions,
+                &converterRef
+            )
+            _converter = converterRef
         }
-        set {
-            if (_converter != nil) {
-                AudioConverterDispose(_converter!)
-            }
-            _converter = newValue
+        if (status != noErr) {
+            print(status)
         }
+        return _converter!
     }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
@@ -174,8 +166,13 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
     }
 
     func dispose() {
-        converter = nil
+        if (_converter != nil) {
+            AudioConverterDispose(_converter!)
+            _converter = nil
+        }
         inSourceFormat = nil
+        formatDescription = nil
+        _inDestinationFormat = nil
         currentBufferList = nil
     }
 }

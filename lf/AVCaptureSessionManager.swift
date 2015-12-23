@@ -4,6 +4,21 @@ import AVFoundation
 
 public class AVCaptureSessionManager: NSObject {
 
+    static public func getAVCaptureVideoOrientation(orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+        switch orientation {
+        case .Portrait:
+            return .Portrait
+        case .PortraitUpsideDown:
+            return .PortraitUpsideDown
+        case .LandscapeLeft:
+            return .LandscapeRight
+        case .LandscapeRight:
+            return .LandscapeLeft
+        default:
+            return nil
+        }
+    }
+
     static public func deviceWithPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
             if let device = device as? AVCaptureDevice {
@@ -23,26 +38,34 @@ public class AVCaptureSessionManager: NSObject {
 
     public var FPS:Int32 = AVCaptureSessionManager.defaultFPS
 
-    public var orientation:AVCaptureVideoOrientation = AVCaptureVideoOrientation.LandscapeLeft {
+    public var orientation:AVCaptureVideoOrientation = .Portrait {
         didSet {
-            
-            if let connection:AVCaptureConnection = _previewLayer?.connection {
+            guard orientation != oldValue else {
+                return
+            }
+
+            if let connection:AVCaptureConnection = _layer?.connection {
                 if (connection.supportsVideoOrientation) {
                     connection.videoOrientation = orientation
                 }
             }
-            
-            for output:AnyObject in session.outputs {
-                if let output:AVCaptureVideoDataOutput = output as? AVCaptureVideoDataOutput {
-                    for connection in output.connections {
-                        if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                            if (connection.supportsVideoOrientation) {
-                                connection.videoOrientation = orientation
-                            }
+
+            if (_videoDataOutput != nil) {
+                for connection in _videoDataOutput!.connections {
+                    if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
+                        if (connection.supportsVideoOrientation) {
+                            connection.videoOrientation = orientation
                         }
                     }
                 }
             }
+        }
+    }
+
+    public override init() {
+        super.init()
+        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
+            self.orientation = orientation
         }
     }
 
@@ -80,35 +103,6 @@ public class AVCaptureSessionManager: NSObject {
         return _session!
     }
 
-    private var _videoDataOutput:AVCaptureVideoDataOutput? = nil
-    var videoDataOutput:AVCaptureVideoDataOutput! {
-        get {
-            if (_videoDataOutput == nil) {
-                _videoDataOutput = AVCaptureVideoDataOutput()
-                _videoDataOutput!.alwaysDiscardsLateVideoFrames = true
-                _videoDataOutput!.videoSettings = videoSetting
-                for connection in _videoDataOutput!.connections {
-                    if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                        if (connection.supportsVideoOrientation) {
-                            connection.videoOrientation = orientation
-                        }
-                    }
-                }
-            }
-            return _videoDataOutput!
-        }
-        set {
-            if (_videoDataOutput == newValue) {
-                return
-            }
-            if (_videoDataOutput != nil) {
-                _videoDataOutput!.setSampleBufferDelegate(nil, queue: nil)
-                session.removeOutput(_videoDataOutput!)
-            }
-            _videoDataOutput = newValue
-        }
-    }
-    
     private var _audioDataOutput:AVCaptureAudioDataOutput? = nil
     var audioDataOutput:AVCaptureAudioDataOutput! {
         get {
@@ -129,12 +123,39 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    private var _previewLayer:AVCaptureVideoPreviewLayer? = nil
-    var previewLayer:AVCaptureVideoPreviewLayer! {
-        if (_previewLayer == nil) {
-            _previewLayer = AVCaptureVideoPreviewLayer(session: session)
+    private var _videoDataOutput:AVCaptureVideoDataOutput? = nil
+    var videoDataOutput:AVCaptureVideoDataOutput! {
+        get {
+            if (_videoDataOutput == nil) {
+                _videoDataOutput = AVCaptureVideoDataOutput()
+                _videoDataOutput!.alwaysDiscardsLateVideoFrames = true
+                _videoDataOutput!.videoSettings = videoSetting
+            }
+            return _videoDataOutput!
         }
-        return _previewLayer
+        set {
+            if (_videoDataOutput == newValue) {
+                return
+            }
+            if (_videoDataOutput != nil) {
+                _videoDataOutput!.setSampleBufferDelegate(nil, queue: nil)
+                session.removeOutput(_videoDataOutput!)
+            }
+            _videoDataOutput = newValue
+        }
+    }
+
+    private var _layer:AVCaptureVideoPreviewLayer? = nil
+    var layer:AVCaptureVideoPreviewLayer! {
+        if (_layer == nil) {
+            _layer = AVCaptureVideoPreviewLayer(session: session)
+            if let connection:AVCaptureConnection = _layer?.connection {
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
+                }
+            }
+        }
+        return _layer
     }
 
     private var currentAudio:AVCaptureDeviceInput? = nil {
@@ -193,6 +214,13 @@ public class AVCaptureSessionManager: NSObject {
             camera!.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
             currentCamera = try AVCaptureDeviceInput(device: camera!)
             session.addOutput(videoDataOutput)
+            for connection in videoDataOutput.connections {
+                if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
+                    if (connection.supportsVideoOrientation) {
+                        connection.videoOrientation = orientation
+                    }
+                }
+            }
         } catch let error as NSError {
             print(error)
         }
@@ -215,21 +243,8 @@ public class AVCaptureSessionManager: NSObject {
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
         }
-        switch deviceOrientation {
-        case .Unknown:
-            orientation = .Portrait
-        case .Portrait:
-            orientation = .Portrait
-        case .PortraitUpsideDown:
-            orientation = .PortraitUpsideDown
-        case .LandscapeLeft:
-            orientation = .LandscapeRight
-        case .LandscapeRight:
-            orientation = .LandscapeLeft
-        case .FaceUp:
-            orientation = .Portrait
-        case .FaceDown:
-            orientation = .Portrait
+        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(deviceOrientation) {
+            self.orientation = orientation
         }
     }
 }

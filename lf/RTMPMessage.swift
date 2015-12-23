@@ -926,8 +926,6 @@ final class RTMPUserControlMessage:RTMPMessage {
                 "code": description,
                 "description": ""
             ])
-        case .StreamBegin:
-            connection.streams[UInt32(value)]?.readyState = .Publishing
         default:
             break
         }

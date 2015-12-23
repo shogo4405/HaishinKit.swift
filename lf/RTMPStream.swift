@@ -81,10 +81,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public var view:UIView! {
         if (_view == nil) {
             layer.videoGravity = videoGravity
-            sessionManager.previewLayer.videoGravity = videoGravity
+            sessionManager.layer.videoGravity = videoGravity
             _view = UIView()
             _view!.backgroundColor = UIColor.blackColor()
-            _view!.layer.addSublayer(sessionManager.previewLayer)
+            _view!.layer.addSublayer(sessionManager.layer)
             _view!.layer.addSublayer(layer)
             _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
         }
@@ -94,9 +94,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
         didSet {
             layer.videoGravity = videoGravity
-            sessionManager.previewLayer.videoGravity = videoGravity
+            sessionManager.layer.videoGravity = videoGravity
         }
     }
+
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     public var audioSettings:[String: AnyObject] {
         get {
@@ -132,9 +133,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     deinit {
-        if (_view != nil) {
-            _view?.removeObserver(self, forKeyPath: "bounds")
-        }
+        _view?.removeObserver(self, forKeyPath: "bounds")
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
@@ -228,6 +227,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 usleep(100)
             }
 
+            self.muxer.dispose()
             self.muxer.delegate = self
             self.chunkTypes.removeAll(keepCapacity: false)
             self.rtmpConnection.doWrite(RTMPChunk(
@@ -284,7 +284,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
             message: type.createMessage(id, timestamp: UInt32(timestamp), buffer: buffer)
-            ))
+        ))
         chunkTypes[type] = true
     }
 
@@ -318,7 +318,8 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                 case "NetConnection.Connect.Success":
                     readyState = .Initilized
                     rtmpConnection.createStream(self)
-                    break
+                case "NetStream.Publish.Start":
+                    readyState = .Publishing
                 default:
                     break
                 }
@@ -333,7 +334,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         switch keyPath! {
         case "frame":
             layer.frame = view.bounds
-            sessionManager.previewLayer.frame = view.bounds
+            sessionManager.layer.frame = view.bounds
         default:
             break
         }
