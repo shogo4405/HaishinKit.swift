@@ -57,7 +57,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         case ClientSeek = 1
     }
 
-    static let defaultPort:UInt32 = 1935
+    static let defaultPort:Int = 1935
     static let defaultObjectEncoding:UInt8 = 0x00
     static let defaultChunkSizeS:Int = 1024 * 16
     static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
@@ -114,7 +114,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             _uri = command
             self.arguments = arguments
             addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
-            socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : UInt32(url.port!.intValue))
+            socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : url.port!.integerValue)
         }
     }
     

@@ -67,14 +67,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     var readyForKeyframe:Bool = false
     var videoFormatDescription:CMVideoFormatDescriptionRef?
     var audioFormatDescription:CMAudioFormatDescriptionRef?
-    
+
     public var syncOrientation:Bool {
-        get {
-            return sessionManager.syncOrientation
-        }
-        set {
-            sessionManager.syncOrientation = newValue
-        }
+        get { return sessionManager.syncOrientation }
+        set { sessionManager.syncOrientation = newValue }
     }
 
     private var _view:UIView? = nil
@@ -100,20 +96,12 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     public var audioSettings:[String: AnyObject] {
-        get {
-            return muxer.audioSettings
-        }
-        set {
-            muxer.audioSettings = newValue
-        }
+        get { return muxer.audioSettings }
+        set { muxer.audioSettings = newValue }
     }
     public var videoSettings:[String: AnyObject] {
-        get {
-            return muxer.videoSettings
-        }
-        set {
-            muxer.videoSettings = newValue
-        }
+        get { return muxer.videoSettings }
+        set { muxer.videoSettings = newValue }
     }
 
     private var rtmpConnection:RTMPConnection

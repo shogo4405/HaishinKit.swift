@@ -44,6 +44,7 @@
 		29C266CF1B4BEBBA00588BBE /* global.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B21B4BE6F900588BBE /* global.swift */; };
 		29C266D01B4BEBBA00588BBE /* MP4File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C266B31B4BE6F900588BBE /* MP4File.swift */; };
 		29DD18381B6E77EF00B9E10A /* AMFSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */; };
+		29E8603A1C2EFC0E00C595FB /* globalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E860391C2EFC0E00C595FB /* globalTests.swift */; };
 		29E93C521B65EEDA0009E7F0 /* AVCaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295F4B271B6124FA000A04B7 /* AVCaptureSessionManager.swift */; };
 		29EBD0701B5B7B2A001C6044 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B0123A1B4EB38600BEC343 /* EventDispatcher.swift */; };
 		29F320AA1BAD68AC00108100 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29702CC91BA7284700C757B7 /* ScreenCaptureSession.swift */; };
@@ -99,6 +100,7 @@
 		29C266B21B4BE6F900588BBE /* global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = global.swift; sourceTree = "<group>"; };
 		29C266B31B4BE6F900588BBE /* MP4File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP4File.swift; sourceTree = "<group>"; };
 		29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMFSerializerTests.swift; sourceTree = "<group>"; };
+		29E860391C2EFC0E00C595FB /* globalTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = globalTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -174,6 +176,7 @@
 				29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */,
 				29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */,
 				297ABFC21B7F7A21004C779D /* RTMPConnectionTests.swift */,
+				29E860391C2EFC0E00C595FB /* globalTests.swift */,
 			);
 			path = lfTests;
 			sourceTree = "<group>";
@@ -348,6 +351,7 @@
 				295B81831BC6C1E3007A2F9B /* H264+AVC.swift in Sources */,
 				29F320AA1BAD68AC00108100 /* ScreenCaptureSession.swift in Sources */,
 				29E93C521B65EEDA0009E7F0 /* AVCaptureSessionManager.swift in Sources */,
+				29E8603A1C2EFC0E00C595FB /* globalTests.swift in Sources */,
 				29EBD0701B5B7B2A001C6044 /* EventDispatcher.swift in Sources */,
 				29C266CC1B4BEBBA00588BBE /* AMFSerializer.swift in Sources */,
 				29C266CD1B4BEBBA00588BBE /* ByteArray.swift in Sources */,
@@ -477,6 +481,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "";
 			};
 			name = Debug;
 		};
@@ -496,6 +501,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "";
 			};
 			name = Release;
 		};

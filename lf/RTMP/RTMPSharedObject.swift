@@ -1,9 +1,9 @@
 import Foundation
 
 public class RTMPSharedObject: EventDispatcher {
-    private static var remoteSharedObjects:[String:RTMPSharedObject] = [:]
+    static private var remoteSharedObjects:[String:RTMPSharedObject] = [:]
 
-    public static func getRemote(name:String, remotePath:String, persistence:Bool) -> RTMPSharedObject {
+    static public func getRemote(name:String, remotePath:String, persistence:Bool) -> RTMPSharedObject {
         let key:String = remotePath + "/" + name + "?persistence=" + persistence.description
         objc_sync_enter(remoteSharedObjects)
         if (remoteSharedObjects[key] == nil) {

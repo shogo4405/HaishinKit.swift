@@ -65,9 +65,9 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         }
     }
 
-    func connect(host:CFString, port:UInt32) {
+    func connect(hostname:String, port:Int) {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
-            self.initConnection(host, port: port)
+            self.initConnection(hostname, port: port)
         })
     }
 
@@ -78,11 +78,11 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         readyState = .Closing
 
         inputStream?.delegate = nil
-        inputStream?.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        inputStream?.removeFromRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
         inputStream?.close()
 
         outputStream?.delegate = nil
-        outputStream?.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        outputStream?.removeFromRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
         outputStream?.close()
 
         inputStream = nil
@@ -116,7 +116,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         }
     }
 
-    private func initConnection(host:CFString, port:UInt32) {
+    private func initConnection(hostname:String, port:Int) {
         readyState = .Initialized
 
         timestamp = 0
@@ -127,16 +127,13 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         _totalBytesOut = 0
         inputBuffer.removeAll(keepCapacity: false)
 
-        var readStream:Unmanaged<CFReadStream>? = nil
-        var writeStream:Unmanaged<CFWriteStream>? = nil
-        CFStreamCreatePairWithSocketToHost(kCFAllocatorDefault, host, port, &readStream, &writeStream)
-        if (readStream != nil && writeStream != nil) {
-            inputStream = readStream!.takeRetainedValue()
+        NSStream.getStreamsToHostWithName(hostname, port: port, inputStream: &inputStream, outputStream: &outputStream)
+        if (inputStream != nil && outputStream != nil) {
             inputStream!.delegate = self
-            inputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
-            outputStream = writeStream!.takeRetainedValue()
+            inputStream!.scheduleInRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+
             outputStream!.delegate = self
-            outputStream!.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+            outputStream!.scheduleInRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
 
             inputStream!.open()
             outputStream!.open()
