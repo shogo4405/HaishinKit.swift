@@ -14,16 +14,12 @@ api自体はAS3のNetConnectionとNetStreamに似せています。
 * AMF0をサポート、AMF3はこれからサポート予定
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
-var rtmpStream:RTMPStream = RTMPStream()
-rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+rtmpStream.videoGravity = AVLayerVideoGravityResizeAspectFill
 rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
 rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
 
-var previewLayer:AVCaptureVideoPreviewLayer = rtmpStream!.toPreviewLayer()
-previewLayer.frame = view.bounds
-previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-view.layer.addSublayer(previewLayer)
-
+view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
