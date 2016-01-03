@@ -5,7 +5,7 @@ import AVFoundation
 final class LiveViewController: UIViewController {
     
     let url:String = "rtmp://localhost/test"
-    let streamName:String = "test/0"
+    let streamName:String = "test"
 
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
