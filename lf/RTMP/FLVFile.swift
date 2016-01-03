@@ -1,44 +1,45 @@
 import Foundation
 
-enum RTMPSampleType:UInt8 {
-    case Video = 0
-    case Audio = 1
 
-    var streamId:UInt16 {
-        switch self {
-        case .Audio:
-            return RTMPChunk.audio
-        case .Video:
-            return RTMPChunk.video
-        }
-    }
-    
-    var headerSize:Int {
-        switch self {
-        case .Audio:
-            return 2
-        case .Video:
-            return 5
-        }
-    }
+struct FLVTag: CustomStringConvertible {
 
-    func createMessage(streamId: UInt32, timestamp: UInt32, buffer:NSData) -> RTMPMessage {
-        switch self {
-        case .Audio:
-            return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
-        case .Video:
-            return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
-        }
-    }
-}
-
-struct FLVTag:CustomStringConvertible {
-
-    enum Type:UInt8 {
+    enum TagType:UInt8 {
         case Audio = 8
         case Video = 9
         case Data  = 18
-        case Unkown = 0xFF
+
+        var streamId:UInt16 {
+            switch self {
+            case .Audio:
+                return RTMPChunk.audio
+            case .Video:
+                return RTMPChunk.video
+            case .Data:
+                return 0
+            }
+        }
+        
+        var headerSize:Int {
+            switch self {
+            case .Audio:
+                return 2
+            case .Video:
+                return 5
+            case .Data:
+                return 0
+            }
+        }
+
+        func createMessage(streamId: UInt32, timestamp: UInt32, buffer:NSData) -> RTMPMessage {
+            switch self {
+            case .Audio:
+                return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+            case .Video:
+                return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+            case .Data:
+                return RTMPDataMessage()
+            }
+        }
     }
 
     enum FrameType:UInt8 {
@@ -103,7 +104,7 @@ struct FLVTag:CustomStringConvertible {
 
     static let headerSize = 11
 
-    var type:Type = .Unkown
+    var tagType:TagType = .Data
     var dataSize:UInt32 = 0
     var timestamp:UInt32 = 0
     var timestampExtended:UInt8 = 0
@@ -111,7 +112,7 @@ struct FLVTag:CustomStringConvertible {
 
     var description:String {
         var description = "FLVTag{"
-        description += "type:\(type),"
+        description += "tagType:\(tagType),"
         description += "dataSize:\(dataSize),"
         description += "timestamp:\(timestamp),"
         description += "timestampExtended:\(timestampExtended),"
@@ -122,7 +123,7 @@ struct FLVTag:CustomStringConvertible {
 
     init(data:NSData) {
         let buffer:ByteArray = ByteArray(data: data)
-        type = Type(rawValue: buffer.readUInt8())!
+        tagType = TagType(rawValue: buffer.readUInt8())!
         dataSize = buffer.readUInt24()
         timestamp = buffer.readUInt24()
         timestampExtended = buffer.readUInt8()

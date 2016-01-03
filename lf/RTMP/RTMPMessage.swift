@@ -765,12 +765,13 @@ class RTMPAudioMessage:RTMPMessage {
 * @see 7.1.5. Video Message (9)
 */
 final class RTMPVideoMessage:RTMPAudioMessage {
+
     override var type:Type {
         return .Video
     }
 
     override func execute(connection:RTMPConnection) {
-        if (payload.count <= RTMPSampleType.Video.headerSize) {
+        if (payload.count <= FLVTag.TagType.Video.headerSize) {
             return
         }
         if let stream:RTMPStream = connection.streams[streamId] {
@@ -790,7 +791,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
     }
 
     override func enqueueSampleBuffer(stream: RTMPStream) {
-        var bytes:[UInt8] = Array(payload[RTMPSampleType.Video.headerSize..<payload.count])
+        var bytes:[UInt8] = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
         let sampleSize:Int = bytes.count
 
         var blockBuffer:CMBlockBufferRef?

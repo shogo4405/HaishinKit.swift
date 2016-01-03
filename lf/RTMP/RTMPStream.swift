@@ -105,7 +105,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     private var rtmpConnection:RTMPConnection
-    private var chunkTypes:[RTMPSampleType:Bool] = [:]
+    private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private lazy var muxer:RTMPMuxer = RTMPMuxer()
     private var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
@@ -266,8 +266,8 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         )))
     }
 
-    func sampleOutput(muxer:RTMPMuxer,audio buffer:NSData, timestamp:Double) {
-        let type:RTMPSampleType = .Audio
+    func sampleOutput(muxer:RTMPMuxer, audio buffer:NSData, timestamp:Double) {
+        let type:FLVTag.TagType = .Audio
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
@@ -276,8 +276,8 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         chunkTypes[type] = true
     }
 
-    func sampleOutput(muxer:RTMPMuxer,video buffer:NSData, timestamp:Double) {
-        let type:RTMPSampleType = .Video
+    func sampleOutput(muxer:RTMPMuxer, video buffer:NSData, timestamp:Double) {
+        let type:FLVTag.TagType = .Video
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
