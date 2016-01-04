@@ -65,8 +65,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     var readyForKeyframe:Bool = false
-    var videoFormatDescription:CMVideoFormatDescriptionRef?
     var audioFormatDescription:CMAudioFormatDescriptionRef?
+    var videoFormatDescription:CMVideoFormatDescriptionRef?
+    private var audioTimestamp:Double = 0
+    private var videoTimestamp:Double = 0
 
     public var syncOrientation:Bool {
         get { return sessionManager.syncOrientation }
@@ -271,9 +273,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(timestamp), buffer: buffer)
+            message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
+        audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
     }
 
     func sampleOutput(muxer:RTMPMuxer, video buffer:NSData, timestamp:Double) {
@@ -281,9 +284,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         rtmpConnection.doWrite(RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(timestamp), buffer: buffer)
+            message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
+        videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
     }
 
     func enqueueSampleBuffer(audio sampleBuffer:CMSampleBuffer) {
