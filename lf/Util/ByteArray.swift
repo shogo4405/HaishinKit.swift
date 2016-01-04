@@ -1,22 +1,22 @@
 import Foundation
 
-final class ByteArray: NSObject {
+final class ByteArray: CustomStringConvertible {
     private var _bytes:[UInt8] = []
     var bytes:[UInt8] {
         return _bytes
     }
 
+    var position:Int = 0
+
     var length:Int {
         return _bytes.count
     }
 
-    var position:Int = 0
-
-    override var description:String {
+    var description:String {
         return _bytes.description
     }
 
-    override init() {
+    init() {
     }
 
     init (bytes:[UInt8]) {
@@ -28,25 +28,23 @@ final class ByteArray: NSObject {
         data.getBytes(&_bytes, length: data.length)
     }
 
-    func write(value:Int32) {
-        _bytes += value.bytes
-    }
-
-    func write(value:[UInt8]) {
-        _bytes += value
-    }
-
-    func writeUInt8(value:UInt8) {
-        _bytes.append(value)
-    }
-
     func readUInt8() -> UInt8 {
         return _bytes[position++]
+    }
+
+    func writeUInt8(value:UInt8) -> ByteArray {
+        _bytes.append(value)
+        return self
     }
 
     func readUInt8(length:Int) -> [UInt8] {
         position += length
         return Array(_bytes[position - length..<position])
+    }
+
+    func writeUInt8(value:[UInt8]) -> ByteArray {
+        _bytes += value
+        return self
     }
 
     func readUInt16() -> UInt16 {
@@ -63,9 +61,19 @@ final class ByteArray: NSObject {
         return UInt32(bytes: Array(_bytes[position - 4..<position])).bigEndian
     }
 
+    func write(value:Int32) -> ByteArray {
+        _bytes += value.bytes
+        return self
+    }
+
     func read(length:Int) -> String {
         position += length
         return String(bytes: Array(_bytes[position - length..<position]), encoding: NSUTF8StringEncoding)!
+    }
+
+    func write(value:String) -> ByteArray {
+        _bytes += [UInt8](value.utf8)
+        return self
     }
 
     func clear() {
