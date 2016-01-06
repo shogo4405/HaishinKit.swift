@@ -1,6 +1,5 @@
 import Foundation
 import AVFoundation
-import AudioToolbox
 
 protocol Encoder {
     func dispose()
