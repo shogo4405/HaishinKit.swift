@@ -9,11 +9,32 @@ final class ByteArray: CustomStringConvertible {
     var position:Int = 0
 
     var length:Int {
-        return _bytes.count
+        get {
+            return _bytes.count
+        }
+        set {
+            switch true {
+            case (_bytes.count < newValue):
+                _bytes += [UInt8](count: newValue - _bytes.count, repeatedValue: 0)
+            case (newValue < bytes.count):
+                _bytes = Array(_bytes[0..<newValue])
+            default:
+                break
+            }
+        }
     }
 
     var description:String {
         return _bytes.description
+    }
+
+    subscript(i: Int) -> UInt8 {
+        get {
+            return _bytes[i]
+        }
+        set {
+            _bytes[i] = newValue
+        }
     }
 
     init() {
@@ -76,8 +97,30 @@ final class ByteArray: CustomStringConvertible {
         return self
     }
 
+    func sequence(length:Int, lambda:(ByteArray -> Void)) {
+        let r:Int = (_bytes.count - position) % length
+        for index in _bytes.startIndex.advancedBy(position).stride(to: _bytes.endIndex.advancedBy(-r), by: length) {
+            lambda(ByteArray(bytes: Array(_bytes[index..<index.advancedBy(length)])))
+        }
+        if (0 < r) {
+            lambda(ByteArray(bytes: Array(_bytes[_bytes.endIndex - r..<_bytes.endIndex])))
+        }
+     }
+
     func clear() {
         position = 0
         _bytes.removeAll(keepCapacity: false)
+    }
+
+    func toUInt32() -> [UInt32] {
+        let size:Int = sizeof(UInt32)
+        if ((_bytes.endIndex - position) % size != 0) {
+            return []
+        }
+        var result:[UInt32] = []
+        for index in _bytes.startIndex.advancedBy(position).stride(to: _bytes.endIndex, by: size) {
+            result.append(UInt32(bytes: Array(_bytes[index..<index.advancedBy(size)])))
+        }
+        return result
     }
 }

@@ -1,5 +1,16 @@
 import Foundation
 
+extension String {
+    var md5:String {
+        var hash = ""
+        let data:[UInt8] = MD5.calculate(ByteArray().write(self).bytes)
+        for (var i = 0; i < 16; ++i) {
+            hash +=  String(format: "%02x", data[i])
+        }
+        return hash
+    }
+}
+
 extension NSURL {
     func dictionaryFromQuery() -> [String: AnyObject] {
         var result:[String: AnyObject] = [:]
@@ -70,6 +81,21 @@ extension UInt32 {
     init(bytes:[UInt8]) {
         self = bytes.withUnsafeBufferPointer {
             return UnsafePointer<UInt32>($0.baseAddress).memory
+        }
+    }
+}
+
+extension UInt64 {
+    var bytes:[UInt8] {
+        var value:UInt64 = self
+        return withUnsafePointer(&value) {
+            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(UInt64.self)))
+        }
+    }
+    
+    init(bytes:[UInt8]) {
+        self = bytes.withUnsafeBufferPointer {
+            return UnsafePointer<UInt64>($0.baseAddress).memory
         }
     }
 }
