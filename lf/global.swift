@@ -12,6 +12,21 @@ extension String {
 }
 
 extension NSURL {
+
+    var absoluteWithoutAuthenticationString:String {
+        var target:String = ""
+        if let user:String = user {
+            target += user
+        }
+        if let password:String = password {
+            target += ":" + password
+        }
+        if (target != "") {
+            target += "@"
+        }
+        return absoluteString.stringByReplacingOccurrencesOfString(target, withString: "")
+    }
+
     func dictionaryFromQuery() -> [String: AnyObject] {
         var result:[String: AnyObject] = [:]
         if let comonents:NSURLComponents = NSURLComponents(string: absoluteString) {

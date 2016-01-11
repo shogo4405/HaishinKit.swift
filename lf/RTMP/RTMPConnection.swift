@@ -57,25 +57,49 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         case ClientSeek = 1
     }
 
+    static func createSanJoseAuthCommand(url:NSURL, description:String) -> String {
+        var command:String = url.absoluteString
+
+        if let index:String.CharacterView.Index = description.characters.indexOf("?") {
+            let query:String = description.substringFromIndex(index.advancedBy(1))
+            let challenge:String = String(format: "%08x", random())
+            let dictionary:[String:AnyObject] = NSURL(string: "http://localhost?" + query)!.dictionaryFromQuery()
+
+            var response:String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
+
+            if let opaque:String = dictionary["opaque"] as? String {
+                command += "&opaque=\(opaque)"
+                response += opaque
+            } else if let challenge:String = dictionary["challenge"] as? String {
+                response += challenge
+            }
+
+            response = MD5.base64("\(response)\(challenge)")
+            command += "&challenge=\(challenge)&response=\(response)"
+        }
+
+        return command
+    }
+
     static let defaultPort:Int = 1935
     static let defaultObjectEncoding:UInt8 = 0x00
     static let defaultChunkSizeS:Int = 1024 * 16
     static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
 
-    private var _uri:String = ""
-    public var uri:String {
+    private var _uri:NSURL?
+    public var uri:NSURL? {
         return _uri
+    }
+
+    private var _connected:Bool = false
+    public var connected:Bool {
+        return _connected
     }
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
         didSet {
             socket.objectEncoding = objectEncoding
         }
-    }
-
-    private var _connected:Bool = false
-    public var connected:Bool {
-        return _connected
     }
 
     var currentTransactionId:Int = 0
@@ -111,7 +135,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     public func connect(command: String, arguments: Any?...) {
         if let url:NSURL = NSURL(string: command) {
-            _uri = command
+            _uri = url
             self.arguments = arguments
             addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
             socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : url.port!.integerValue)
@@ -119,8 +143,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
     
     public func close() {
-        _uri = ""
-        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+        _uri = nil
         for (id, stream) in streams {
             stream.close()
             streams.removeValueForKey(id)
@@ -209,12 +232,10 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
 
     private func createConnectionChunk() -> RTMPChunk {
-        let url:NSURL = NSURL(string: _uri)!
-        let path:String = url.path!
-        var app:String = path.substringFromIndex(path.startIndex.advancedBy(1))
+        var app:String = _uri!.path!.substringFromIndex(_uri!.path!.startIndex.advancedBy(1))
         
-        if (url.query != nil) {
-            app += "?" + url.query!
+        if (_uri!.query != nil) {
+            app += "?" + _uri!.query!
         }
         
         let message:RTMPCommandMessage = RTMPCommandMessage(
@@ -225,8 +246,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             commandObject: [
                 "app": app,
                 "flashVer": RTMPConnection.defaultFlashVer,
-                "swfUrl": _uri,
-                "tcUrl": _uri,
+                "swfUrl": _uri!.absoluteWithoutAuthenticationString,
+                "tcUrl": _uri!.absoluteWithoutAuthenticationString,
                 "fpad": false,
                 "capabilities": 0,
                 "audioCodecs": SupportSound.AAC.rawValue,
@@ -242,6 +263,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
 
     func rtmpStatusHandler(notification: NSNotification) {
+        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         let e:Event = Event.from(notification)
         if let data:ECMAObject = e.data as? ECMAObject {
             if let code:String = data["code"] as? String {
@@ -250,6 +272,28 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                     _connected = true
                     socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
                     socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
+                case "NetConnection.Connect.Rejected":
+                    guard _uri?.user != nil && _uri?.password != nil else {
+                        break
+                    }
+                    let query:String = _uri!.query ?? ""
+                    let description:String = data["description"] as! String
+                    // Step 3
+                    if (description.containsString("reason=authfailed")) {
+                        break
+                    }
+                    // Step 2
+                    if (description.containsString("reason=needauth")) {
+                        let command:String = RTMPConnection.createSanJoseAuthCommand(_uri!, description: description)
+                        connect(command, arguments: arguments)
+                        break
+                    }
+                    // Step 1
+                    if (description.containsString("authmod=adobe")) {
+                        let command:String = _uri!.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(_uri!.user!)"
+                        connect(command, arguments: arguments)
+                        break
+                    }
                 default:
                     break
                 }

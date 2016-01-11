@@ -373,12 +373,12 @@ final class RTMPCommandMessage: RTMPMessage {
         super.init()
     }
 
-    init (objectEncoding:UInt8) {
+    init(objectEncoding:UInt8) {
         super.init()
         self.objectEncoding = objectEncoding
     }
 
-    init (streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject:ECMAObject?, arguments:[Any?]) {
+    init(streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject:ECMAObject?, arguments:[Any?]) {
         super.init()
         self.streamId = streamId
         self.transactionId = transactionId
@@ -485,11 +485,11 @@ final class RTMPDataMessage:RTMPMessage {
         }
     }
 
-    override init () {
+    override init() {
         super.init()
     }
 
-    init (objectEncoding:UInt8) {
+    init(objectEncoding:UInt8) {
         super.init()
         self.objectEncoding = objectEncoding
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
@@ -550,7 +550,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
             self.type = type
         }
 
-        init (type:Type, name:String, data:Any?) {
+        init(type:Type, name:String, data:Any?) {
             self.type = type
             self.name = name
             self.data = data
@@ -666,12 +666,12 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
     private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
 
-    init (objectEncoding:UInt8) {
+    init(objectEncoding:UInt8) {
         super.init()
         self.objectEncoding = objectEncoding
     }
 
-    init (objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {
+    init(objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {
         super.init()
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
@@ -682,7 +682,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
     override func execute(connection:RTMPConnection) {
         let persistence:Bool = flags[0] == 0x01
-        RTMPSharedObject.getRemote(sharedObjectName, remotePath: connection.uri, persistence: persistence).onMessage(self)
+        RTMPSharedObject.getRemote(sharedObjectName, remotePath: connection.uri!.absoluteWithoutAuthenticationString, persistence: persistence).onMessage(self)
     }
 }
 
