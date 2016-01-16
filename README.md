@@ -1,10 +1,12 @@
 # lf.swift
 iOS向けライブ配信用のライブラリーです。現在、RTMPでの配信をサポートしています。映像および音声の再生についてはサポートしていません。
 
-## ライセンス
-修正BSDで公開しています。
+## インストール方法
+### Cocoapod
+    pod 'lf'
+    use_frameworks!
 
-## 簡単な説明
+## 利用方法
 ### RTMP
 api自体はAS3のNetConnectionとNetStreamに似せています。
 * flash.net.SharedObject → RTMPSharedObject
@@ -12,6 +14,8 @@ api自体はAS3のNetConnectionとNetStreamに似せています。
 * flash.net.NetConnection → RTMPConnection
 * flash.net.NetStream → RTMPStream
 * AMF0をサポート、AMF3はこれからサポート予定
+* Adobe形式のRTMP認証にも対応しています。下記のフォーマットでユーザー名を渡せます。
+ * rtmp://user:password@path.to.host/appName/instanceName
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
@@ -23,6 +27,9 @@ view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
+
+## ライセンス
+修正BSDで公開しています。
 
 ## 参考文献
 * Adobe’s Real Time Messaging Protocol
