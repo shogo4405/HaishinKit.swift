@@ -80,7 +80,7 @@ final class MD5 {
     }
 
     static func base64(message:String) -> String {
-        var result:[UInt8] = calculate(message)
+        let result:[UInt8] = calculate(message)
         let data:NSData = NSData(bytes: result, length: result.count)
         return data.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
     }

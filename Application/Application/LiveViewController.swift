@@ -54,11 +54,11 @@ final class LiveViewController: UIViewController {
         if (sender.selected) {
             UIApplication.sharedApplication().idleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:"rtmpConnection_rtmpStatusHandler", observer: self)
             sender.setTitle("start", forState: .Normal)
         } else {
             UIApplication.sharedApplication().idleTimerDisabled = true
-            rtmpConnection.addEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler:", observer: self)
+            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:"rtmpConnection_rtmpStatusHandler:", observer: self)
             rtmpConnection.connect(url)
             sender.setTitle("stop", forState: .Normal)
         }
@@ -72,9 +72,6 @@ final class LiveViewController: UIViewController {
                 switch code {
                 case "NetConnection.Connect.Success":
                     rtmpStream!.publish(streamName)
-                case "NetConnection.Connect.Rejected":
-                    rtmpConnection.removeEventListener("rtmpStatus", selector:"rtmpConnection_rtmpStatusHandler", observer: self)
-                    publishButton.setTitle("start", forState: .Normal)
                 default:
                     break
                 }
