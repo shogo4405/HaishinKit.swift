@@ -1,16 +1,5 @@
 import Foundation
 
-extension String {
-    var md5:String {
-        var hash = ""
-        let data:[UInt8] = MD5.calculate(ByteArray().write(self).bytes)
-        for (var i = 0; i < 16; ++i) {
-            hash +=  String(format: "%02x", data[i])
-        }
-        return hash
-    }
-}
-
 extension NSURL {
 
     var absoluteWithoutAuthenticationString:String {
