@@ -123,7 +123,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     deinit {
-        _view?.removeObserver(self, forKeyPath: "bounds")
+        _view?.removeObserver(self, forKeyPath: "frame")
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
