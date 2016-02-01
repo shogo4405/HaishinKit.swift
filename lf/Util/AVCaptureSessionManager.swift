@@ -71,7 +71,7 @@ public class AVCaptureSessionManager: NSObject {
     public var torch = false {
         didSet {
             if let device = currentCamera?.device {
-                let torchMode = oldValue ? AVCaptureTorchMode.On : AVCaptureTorchMode.Off
+                let torchMode = torch ? AVCaptureTorchMode.On : AVCaptureTorchMode.Off
                 
                 if device.isTorchModeSupported(torchMode) && device.torchAvailable {
                     
@@ -124,7 +124,7 @@ public class AVCaptureSessionManager: NSObject {
     public var continuousAutofocus = true {
         didSet {
             if let device = currentCamera?.device {
-                let focusMode = oldValue ? AVCaptureFocusMode.AutoFocus : AVCaptureFocusMode.ContinuousAutoFocus
+                let focusMode = continuousAutofocus ? AVCaptureFocusMode.ContinuousAutoFocus : AVCaptureFocusMode.AutoFocus
                 
                 if device.isFocusModeSupported(focusMode) {
                     
@@ -177,7 +177,7 @@ public class AVCaptureSessionManager: NSObject {
     public var continuousExposure = true {
         didSet {
             if let device = currentCamera?.device {
-                let exposeMode = oldValue ? AVCaptureExposureMode.AutoExpose : AVCaptureExposureMode.ContinuousAutoExposure
+                let exposeMode = continuousExposure ? AVCaptureExposureMode.ContinuousAutoExposure : AVCaptureExposureMode.AutoExpose
                 
                 if device.isExposureModeSupported(exposeMode) {
                     
