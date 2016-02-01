@@ -133,7 +133,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private lazy var muxer:RTMPMuxer = RTMPMuxer()
-    private var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
+    
+    // expose to public
+    public private(set) var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL)
 
     public init(rtmpConnection: RTMPConnection) {
