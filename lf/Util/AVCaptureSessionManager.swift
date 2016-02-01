@@ -198,6 +198,135 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
+    //MARK: - AVCaptureDevice Configurations
+    public var torch = false {
+        didSet {
+            if let s = session {
+                s.beginConfiguration()
+                
+                if s.inputs.count > 0 {
+                    if let currentInput = s.inputs[0] as? AVCaptureDeviceInput where currentInput.device.torchAvailable {
+                        do {
+                            try currentInput.device.lockForConfiguration()
+                            currentInput.device.torchMode = oldValue ? AVCaptureTorchMode.On : AVCaptureTorchMode.Off
+                            currentInput.device.unlockForConfiguration()
+                        }
+                        catch {
+                            print("Error while setting torch: \(error)")
+                        }
+                    }
+                    
+                }
+            }
+        }
+    }
+    
+    public var focusPointOfInterest: CGPoint? {
+        set {
+            if let device = currentCamera?.device {
+                
+                if device.focusPointOfInterestSupported {
+                    
+                    if let newValue = newValue {
+                        do {
+                            try device.lockForConfiguration()
+                            device.focusPointOfInterest = newValue
+                            device.focusMode = AVCaptureFocusMode.AutoFocus
+                            device.unlockForConfiguration()
+                        }
+                        catch let error {
+                            print("Error while locking device for focus poi: \(error)")
+                        }
+                    }
+                }
+                else {
+                    print("focus poi not supported");
+                }
+            }
+        }
+        
+        get {
+            return self.focusPointOfInterest
+        }
+    }
+    
+    public var continuousAutofocus = true {
+        didSet {
+            if let device = currentCamera?.device {
+                let focusMode = oldValue ? AVCaptureFocusMode.AutoFocus : AVCaptureFocusMode.ContinuousAutoFocus
+                
+                if device.isFocusModeSupported(focusMode) {
+                    
+                    do {
+                        try device.lockForConfiguration()
+                        device.focusMode = focusMode
+                        device.unlockForConfiguration()
+                    }
+                    catch let error {
+                        print("Error while locking device for autofocus: \(error)")
+                    }
+                    
+                }
+                else {
+                    print("Focus mode not supported");
+                }
+            }
+        }
+    }
+    
+    public var exposurePointOfInterest: CGPoint? {
+        set {
+            if let device = currentCamera?.device {
+
+                if device.exposurePointOfInterestSupported {
+                    
+                    if let newValue = newValue {
+                        do {
+                            try device.lockForConfiguration()
+                            device.exposurePointOfInterest = newValue
+                            device.exposureMode = AVCaptureExposureMode.AutoExpose
+                            device.unlockForConfiguration()
+                        }
+                        catch let error {
+                            print("Error while locking device for expose poi: \(error)")
+                        }
+                    }
+                }
+                else {
+                    print("expose poi not supported");
+                }
+            }
+        }
+        
+        get {
+            return self.exposurePointOfInterest
+        }
+    }
+    
+    public var continuousExposure = true {
+        didSet {
+            if let device = currentCamera?.device {
+                let exposeMode = oldValue ? AVCaptureExposureMode.AutoExpose : AVCaptureExposureMode.ContinuousAutoExposure
+                
+                if device.isExposureModeSupported(exposeMode) {
+                    
+                    do {
+                        try device.lockForConfiguration()
+                        device.exposureMode = exposeMode
+                        device.unlockForConfiguration()
+                    }
+                    catch let error {
+                        print("Error while locking device for autoexpose: \(error)")
+                    }
+                    
+                }
+                else {
+                    print("expose mode not supported");
+                }
+            }
+        }
+    }
+
     public override init() {
         super.init()
         if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
