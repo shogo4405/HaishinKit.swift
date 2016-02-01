@@ -201,21 +201,23 @@ public class AVCaptureSessionManager: NSObject {
     //MARK: - AVCaptureDevice Configurations
     public var torch = false {
         didSet {
-            if let s = session {
-                s.beginConfiguration()
+            if let device = currentCamera?.device {
+                let torchMode = oldValue ? AVCaptureTorchMode.On : AVCaptureTorchMode.Off
                 
-                if s.inputs.count > 0 {
-                    if let currentInput = s.inputs[0] as? AVCaptureDeviceInput where currentInput.device.torchAvailable {
-                        do {
-                            try currentInput.device.lockForConfiguration()
-                            currentInput.device.torchMode = oldValue ? AVCaptureTorchMode.On : AVCaptureTorchMode.Off
-                            currentInput.device.unlockForConfiguration()
-                        }
-                        catch {
-                            print("Error while setting torch: \(error)")
-                        }
+                if device.isTorchModeSupported(torchMode) && device.torchAvailable {
+                    
+                    do {
+                        try device.lockForConfiguration()
+                        device.torchMode = torchMode
+                        device.unlockForConfiguration()
+                    }
+                    catch let error {
+                        print("Error while setting torch: \(error)")
                     }
                     
+                }
+                else {
+                    print("torch mode not supported");
                 }
             }
         }
