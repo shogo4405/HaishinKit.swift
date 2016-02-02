@@ -2,7 +2,6 @@ import Foundation
 import AVFoundation
 
 final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
-
     static let samplesPerFrame:UInt32 = 1024
     static let defaultChannels:UInt32 = 1
     static let defaultSampleRate:Double = 44100
@@ -40,7 +39,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
                 _inDestinationFormat = AudioStreamBasicDescription()
                 _inDestinationFormat!.mSampleRate = sampleRate
                 _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
-                _inDestinationFormat!.mFormatFlags = 0
+                _inDestinationFormat!.mFormatFlags = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
                 _inDestinationFormat!.mBytesPerPacket = 0
                 _inDestinationFormat!.mFramesPerPacket = AACEncoder.samplesPerFrame
                 _inDestinationFormat!.mChannelsPerFrame = channels
@@ -76,6 +75,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         
+
         if (inSourceFormat == nil) {
             if let format:CMAudioFormatDescriptionRef = CMSampleBufferGetFormatDescription(sampleBuffer) {
                 inSourceFormat = CMAudioFormatDescriptionGetStreamBasicDescription(format).memory
@@ -83,7 +83,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
                 return
             }
         }
-        
+
         var status:OSStatus = noErr
         var blockBuffer:CMBlockBufferRef?
         var inAudioBufferList:AudioBufferList = AudioBufferList()
@@ -93,7 +93,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         
         var data:[UInt8] = [UInt8](count: Int(AACEncoder.defaultAACBufferSize), repeatedValue: 0)
         var outOutputData:AudioBufferList = AudioBufferList(
-            mNumberBuffers: 1,
+            mNumberBuffers: channels,
             mBuffers: AudioBuffer(
                 mNumberChannels: 1,
                 mDataByteSize: UInt32(data.count),
@@ -104,7 +104,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         currentBufferList = inAudioBufferList
         var outputDataPacketSize:UInt32 = 1
         status = fillComplexBuffer(&outputDataPacketSize, outOutputData: &outOutputData, outPacketDescription: nil)
-        
+
         if (status == noErr)
         {
             var result:CMSampleBufferRef?

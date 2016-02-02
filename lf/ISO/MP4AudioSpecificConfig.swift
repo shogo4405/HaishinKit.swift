@@ -27,7 +27,7 @@ public struct AudioSpecificConfig: CustomStringConvertible {
 
     public init(formatDescription: CMFormatDescriptionRef) {
         let asbd:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription).memory
-        type = AudioObjectType(formatID: asbd.mFormatID)
+        type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(asbd.mFormatFlags))!)
         frequency = SamplingFrequency(sampleRate: asbd.mSampleRate)
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
     }
@@ -35,19 +35,23 @@ public struct AudioSpecificConfig: CustomStringConvertible {
 
 public enum AudioObjectType:UInt8 {
     case Null = 0
-    case AACMain = 1
-    case AACLC = 2
-    case AACSSR = 3
-    case AACLTP = 4
+    case AAC_Main = 1
+    case AAC_LC = 2
+    case AAC_SSR = 3
+    case AAC_LTP = 4
     case SBR = 5
-    case AACScalable = 6
+    case AAC_Scalable = 6
 
-    public init (formatID: AudioFormatID) {
-        switch formatID {
-        case kAudioFormatMPEG4AAC:
-            self = .AACMain
+    public init (objectID: MPEG4ObjectID) {
+        switch objectID {
+        case .AAC_Main:
+            self = .AAC_Main
+        case .AAC_LC:
+            self = .AAC_LC
+        case .AAC_LTP:
+            self = .AAC_LTP
         default:
-            self = .Null
+            self = Null
         }
     }
 }

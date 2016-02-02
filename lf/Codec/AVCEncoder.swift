@@ -36,7 +36,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     var bitrate:Int32 = 160 * 1000
     var profileLevel:CFString = kVTProfileLevel_H264_Baseline_3_0
     var aspectRatio16by9:Bool = true
-    var keyframeInterval:Int = AVCEncoder.defaultFPS * 2
+    var keyframeInterval:Int = 2
 
     let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL)
     weak var delegate:VideoEncoderDelegate?
@@ -64,7 +64,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
             kVTCompressionPropertyKey_ProfileLevel: profileLevel,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: fps,
-            kVTCompressionPropertyKey_MaxKeyFrameInterval: keyframeInterval,
+            kVTCompressionPropertyKey_MaxKeyFrameInterval: fps * keyframeInterval,
             kVTCompressionPropertyKey_AllowFrameReordering: false,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": "Trim"

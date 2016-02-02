@@ -238,6 +238,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
             self.muxer.dispose()
             self.muxer.delegate = self
+            self.sessionManager.startRunning()
             self.chunkTypes.removeAll(keepCapacity: false)
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
