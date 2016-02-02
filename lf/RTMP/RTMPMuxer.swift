@@ -8,13 +8,21 @@ protocol RTMPMuxerDelegate: class {
 
 final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
     var audioSettings:[String: AnyObject] {
-        get { return audioEncoder.dictionaryWithValuesForKeys([]) }
-        set { videoEncoder.setValuesForKeysWithDictionary(audioSettings) }
+        get {
+            return audioEncoder.dictionaryWithValuesForKeys([])
+        }
+        set {
+            audioEncoder.setValuesForKeysWithDictionary(newValue)
+        }
     }
 
     var videoSettings:[String: AnyObject] {
-        get { return videoEncoder.dictionaryWithValuesForKeys(AVCEncoder.dictionaryKeys) }
-        set { videoEncoder.setValuesForKeysWithDictionary(videoSettings) }
+        get {
+            return videoEncoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)
+        }
+        set {
+            videoEncoder.setValuesForKeysWithDictionary(newValue)
+        }
     }
 
     lazy var audioEncoder:AACEncoder = {

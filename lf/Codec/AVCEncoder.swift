@@ -4,7 +4,7 @@ import VideoToolbox
 
 final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate {
 
-    static let dictionaryKeys:[String] = [
+    static let supportedSettingsKeys:[String] = [
         "fps",
         "width",
         "height",

@@ -4,6 +4,11 @@ import AVFoundation
 
 public class AVCaptureSessionManager: NSObject {
 
+    static let supportedSettingsKeys:[String] = [
+        "sessionPreset",
+        "orientation"
+    ]
+
     static public func getAVCaptureVideoOrientation(orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
         case .Portrait:
@@ -88,9 +93,9 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public var videoSetting:[NSObject:AnyObject] = AVCaptureSessionManager.defaultVideoSettings {
+    public var videoSettings:[NSObject:AnyObject] = AVCaptureSessionManager.defaultVideoSettings {
         didSet {
-            videoDataOutput.videoSettings = videoSetting
+            videoDataOutput.videoSettings = videoSettings
         }
     }
 
@@ -129,7 +134,7 @@ public class AVCaptureSessionManager: NSObject {
             if (_videoDataOutput == nil) {
                 _videoDataOutput = AVCaptureVideoDataOutput()
                 _videoDataOutput!.alwaysDiscardsLateVideoFrames = true
-                _videoDataOutput!.videoSettings = videoSetting
+                _videoDataOutput!.videoSettings = videoSettings
             }
             return _videoDataOutput!
         }

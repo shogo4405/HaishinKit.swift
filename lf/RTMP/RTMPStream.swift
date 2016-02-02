@@ -97,13 +97,32 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+
     public var audioSettings:[String: AnyObject] {
-        get { return muxer.audioSettings }
-        set { muxer.audioSettings = newValue }
+        get {
+            return muxer.audioSettings
+        }
+        set {
+            muxer.audioSettings = newValue
+        }
     }
+
     public var videoSettings:[String: AnyObject] {
-        get { return muxer.videoSettings }
-        set { muxer.videoSettings = newValue }
+        get {
+            return muxer.videoSettings
+        }
+        set {
+            muxer.videoSettings = newValue
+        }
+    }
+
+    public var captureSettings:[String: AnyObject] {
+        get {
+            return sessionManager.dictionaryWithValuesForKeys(AVCaptureSessionManager.supportedSettingsKeys)
+        }
+        set {
+            sessionManager.setValuesForKeysWithDictionary(newValue)
+        }
     }
 
     private var rtmpConnection:RTMPConnection

@@ -2,15 +2,19 @@ import Foundation
 import AVFoundation
 
 final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
+
     static let samplesPerFrame:UInt32 = 1024
     static let defaultChannels:UInt32 = 1
     static let defaultSampleRate:Double = 44100
     static let defaultAACBufferSize:UInt32 = 1024
+    static let supportedSettingsKeys:[String] = [
+        "sampleRate"
+    ]
     static let defaultInClassDescriptions:[AudioClassDescription] = [
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer),
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
     ]
-    
+
     var delegate:AudioEncoderDelegate?
     var channels:UInt32 = AACEncoder.defaultChannels
     var sampleRate:Double = AACEncoder.defaultSampleRate
