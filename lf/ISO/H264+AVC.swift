@@ -2,42 +2,6 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-public enum AVCProfileIndication:UInt8 {
-    case Baseline = 66
-    case Main = 77
-    case Extended = 88
-    case High = 100
-    case High10 = 110
-    case High422 = 122
-    case High444 = 144
-    case High424Predictive = 244
-    
-    var autoLevel:String {
-        switch self {
-        case .Baseline:
-            return kVTProfileLevel_H264_Baseline_AutoLevel as String
-        case .Main:
-            return kVTProfileLevel_H264_Main_AutoLevel as String
-        case .Extended:
-            return kVTProfileLevel_H264_Extended_AutoLevel as String
-        case .High:
-            return kVTProfileLevel_H264_High_AutoLevel as String
-        case .High10:
-            return kVTProfileLevel_H264_High_AutoLevel as String
-        case .High422:
-            return kVTProfileLevel_H264_High_AutoLevel as String
-        case .High444:
-            return kVTProfileLevel_H264_High_AutoLevel as String
-        case .High424Predictive:
-            return kVTProfileLevel_H264_High_AutoLevel as String
-        }
-    }
-    
-    var allowFrameReordering:Bool {
-        return AVCProfileIndication.Baseline.rawValue < rawValue
-    }
-}
-
 // @see ISO/IEC 14496-15 2010
 public struct AVCConfigurationRecord: CustomStringConvertible {
     

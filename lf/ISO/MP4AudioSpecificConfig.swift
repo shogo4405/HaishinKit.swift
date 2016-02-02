@@ -94,7 +94,7 @@ public enum SamplingFrequency:UInt8 {
         case 7350:
             self = .hz7350
         default:
-            self = .hz7350
+            self = .hz44100
         }
     }
 }

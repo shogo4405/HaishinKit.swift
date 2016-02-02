@@ -9,6 +9,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
         "width",
         "height",
         "bitrate",
+        "profileLevel",
         "aspectRatio16by9",
         "keyframeInterval",
     ]
@@ -33,7 +34,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     var width:Int32 = AVCEncoder.defaultWidth
     var height:Int32 = AVCEncoder.defaultHeight
     var bitrate:Int32 = 160 * 1000
-    var profile:AVCProfileIndication = .Baseline
+    var profileLevel:CFString = kVTProfileLevel_H264_Baseline_3_0
     var aspectRatio16by9:Bool = true
     var keyframeInterval:Int = AVCEncoder.defaultFPS * 2
 
@@ -60,20 +61,17 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     private var properties:[NSString: NSObject] {
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
-            kVTCompressionPropertyKey_ProfileLevel: profile.autoLevel,
+            kVTCompressionPropertyKey_ProfileLevel: profileLevel,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: fps,
             kVTCompressionPropertyKey_MaxKeyFrameInterval: keyframeInterval,
-            kVTCompressionPropertyKey_AllowFrameReordering: profile.allowFrameReordering,
+            kVTCompressionPropertyKey_AllowFrameReordering: false,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": "Trim"
             ]
         ]
         if (aspectRatio16by9) {
             properties[kVTCompressionPropertyKey_AspectRatio16x9] = kCFBooleanTrue
-        }
-        if (profile != .Baseline) {
-            properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }
         return properties
     }
