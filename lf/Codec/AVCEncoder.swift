@@ -34,7 +34,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     var width:Int32 = AVCEncoder.defaultWidth
     var height:Int32 = AVCEncoder.defaultHeight
     var bitrate:Int32 = 160 * 1000
-    var profileLevel:CFString = kVTProfileLevel_H264_Baseline_3_0
+    var profileLevel:String = kVTProfileLevel_H264_Baseline_3_0 as String
     var aspectRatio16by9:Bool = true
     var keyframeInterval:Int = 2
 
