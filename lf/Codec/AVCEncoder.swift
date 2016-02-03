@@ -82,6 +82,10 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
         status:OSStatus,
         infoFlags:VTEncodeInfoFlags,
         sampleBuffer:CMSampleBuffer?) in
+        guard status == noErr else {
+            print(status)
+            return
+        }
         let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer!)
         encoder.delegate?.sampleOuput(video: sampleBuffer!)
