@@ -69,8 +69,9 @@ final class LiveViewController: UIViewController {
         let e:Event = Event.from(notification)
         if let data:ECMAObject = e.data as? ECMAObject {
             if let code:String = data["code"] as? String {
+                print(code)
                 switch code {
-                case "NetConnection.Connect.Success":
+                case RTMPConnection.Code.ConnectSuccess.rawValue:
                     rtmpStream!.publish(streamName)
                 default:
                     break

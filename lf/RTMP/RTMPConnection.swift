@@ -26,6 +26,17 @@ public class Responder: NSObject {
 
 public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
+    public enum Code:String {
+        case ConnectFailed = "NetConnection.Connect.Failed"
+        case ConnectClosed = "NetConnection.Connect.Closed"
+        case ConnectSuccess = "NetConnection.Connect.Success"
+        case ConnectRejected = "NetConnection.Connect.Rejected"
+        case ConenctInvalidApp = "NetConnection.Connect.InvalidApp"
+        case ConnectAppshutdown = "NetConnection.Connect.AppShutdown"
+        case ConnectIdleTimeOut = "NetConnection.Connect.IdleTimeOut"
+        case ConnectNetworkChange = "NetConnection.Connect.NetworkChange"
+    }
+
     enum SupportVideo:UInt16 {
         case Unused = 0x001
         case Jpeg = 0x002
@@ -212,13 +223,17 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             listen(socket, bytes: Array(bytes[position..<bytes.count]))
         }
     }
-    
+
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
         switch socket.readyState {
         case .HandshakeDone:
             socket.doWrite(createConnectionChunk())
         case .Closed:
+            let data:ECMAObject = [
+                "code": connected ? Code.ConnectClosed.rawValue : Code.ConnectFailed.rawValue
+            ]
             connected = false
+            dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: data)
         default:
             break
         }
@@ -261,11 +276,11 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         if let data:ECMAObject = e.data as? ECMAObject {
             if let code:String = data["code"] as? String {
                 switch code {
-                case "NetConnection.Connect.Success":
+                case Code.ConnectSuccess.rawValue:
                     connected = true
                     socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
                     socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
-                case "NetConnection.Connect.Rejected":
+                case Code.ConnectRejected.rawValue:
                     guard uri?.user != nil && uri?.password != nil else {
                         break
                     }
