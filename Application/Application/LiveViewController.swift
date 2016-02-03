@@ -4,8 +4,8 @@ import AVFoundation
 
 final class LiveViewController: UIViewController {
     
-    let url:String = "rtmp://ios:12345@dev-ap-wowza.chaatz.com:1935/live"
-    let streamName:String = "aa"
+    let url:String = "rtmp://test:test@192.168.179.4/live"
+    let streamName:String = "live"
 
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
