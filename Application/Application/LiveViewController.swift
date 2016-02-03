@@ -4,8 +4,8 @@ import AVFoundation
 
 final class LiveViewController: UIViewController {
     
-    let url:String = "rtmp://test:test@192.168.179.4/live"
-    let streamName:String = "live"
+    let url:String = "rtmp://ios:12345@dev-ap-wowza.chaatz.com:1935/live"
+    let streamName:String = "aa"
 
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
@@ -105,7 +105,7 @@ final class LiveViewController: UIViewController {
         if let gestureView = gesture.view where gesture.state == .Ended {
             let touchPoint: CGPoint = gesture.locationInView(gestureView)
             let pointOfInterest: CGPoint = CGPoint(x: touchPoint.x/gestureView.bounds.size.width,
-                y: gestureView.bounds.size.height)
+                y: touchPoint.y/gestureView.bounds.size.height)
             
             print("pointOfInterest: \(pointOfInterest)")
             rtmpStream.sessionManager.focusPointOfInterest = pointOfInterest
