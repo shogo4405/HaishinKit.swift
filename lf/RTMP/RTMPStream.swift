@@ -71,8 +71,12 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     private var videoTimestamp:Double = 0
 
     public var syncOrientation:Bool {
-        get { return sessionManager.syncOrientation }
-        set { sessionManager.syncOrientation = newValue }
+        get {
+            return sessionManager.syncOrientation
+        }
+        set {
+            sessionManager.syncOrientation = newValue
+        }
     }
 
     private var _view:UIView? = nil

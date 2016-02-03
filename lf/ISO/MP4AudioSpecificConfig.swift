@@ -34,7 +34,7 @@ public struct AudioSpecificConfig: CustomStringConvertible {
 }
 
 public enum AudioObjectType:UInt8 {
-    case Null = 0
+    case Unknown = 0
     case AAC_Main = 1
     case AAC_LC = 2
     case AAC_SSR = 3
@@ -51,7 +51,7 @@ public enum AudioObjectType:UInt8 {
         case .AAC_LTP:
             self = .AAC_LTP
         default:
-            self = Null
+            self = .Unknown
         }
     }
 }

@@ -86,15 +86,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     static let defaultChunkSizeS:Int = 1024 * 16
     static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
 
-    private var _uri:NSURL?
-    public var uri:NSURL? {
-        return _uri
-    }
-
-    private var _connected:Bool = false
-    public var connected:Bool {
-        return _connected
-    }
+    public private(set) var uri:NSURL? = nil
+    public private(set) var connected:Bool = false
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
         didSet {
@@ -135,15 +128,15 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     public func connect(command: String, arguments: Any?...) {
         if let url:NSURL = NSURL(string: command) {
-            _uri = url
+            uri = url
             self.arguments = arguments
             addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
             socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : url.port!.integerValue)
         }
     }
-    
+
     public func close() {
-        _uri = nil
+        uri = nil
         for (id, stream) in streams {
             stream.close()
             streams.removeValueForKey(id)
@@ -225,17 +218,17 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         case .HandshakeDone:
             socket.doWrite(createConnectionChunk())
         case .Closed:
-            _connected = false
+            connected = false
         default:
             break
         }
     }
 
     private func createConnectionChunk() -> RTMPChunk {
-        var app:String = _uri!.path!.substringFromIndex(_uri!.path!.startIndex.advancedBy(1))
+        var app:String = uri!.path!.substringFromIndex(uri!.path!.startIndex.advancedBy(1))
         
-        if (_uri!.query != nil) {
-            app += "?" + _uri!.query!
+        if (uri!.query != nil) {
+            app += "?" + uri!.query!
         }
         
         let message:RTMPCommandMessage = RTMPCommandMessage(
@@ -246,8 +239,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             commandObject: [
                 "app": app,
                 "flashVer": RTMPConnection.defaultFlashVer,
-                "swfUrl": _uri!.absoluteWithoutAuthenticationString,
-                "tcUrl": _uri!.absoluteWithoutAuthenticationString,
+                "swfUrl": uri!.absoluteWithoutAuthenticationString,
+                "tcUrl": uri!.absoluteWithoutAuthenticationString,
                 "fpad": false,
                 "capabilities": 0,
                 "audioCodecs": SupportSound.AAC.rawValue,
@@ -269,14 +262,14 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             if let code:String = data["code"] as? String {
                 switch code {
                 case "NetConnection.Connect.Success":
-                    _connected = true
+                    connected = true
                     socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
                     socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
                 case "NetConnection.Connect.Rejected":
-                    guard _uri?.user != nil && _uri?.password != nil else {
+                    guard uri?.user != nil && uri?.password != nil else {
                         break
                     }
-                    let query:String = _uri!.query ?? ""
+                    let query:String = uri!.query ?? ""
                     let description:String = data["description"] as! String
                     // Step 3
                     if (description.containsString("reason=authfailed")) {
@@ -284,13 +277,13 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                     }
                     // Step 2
                     if (description.containsString("reason=needauth")) {
-                        let command:String = RTMPConnection.createSanJoseAuthCommand(_uri!, description: description)
+                        let command:String = RTMPConnection.createSanJoseAuthCommand(uri!, description: description)
                         connect(command, arguments: arguments)
                         break
                     }
                     // Step 1
                     if (description.containsString("authmod=adobe")) {
-                        let command:String = _uri!.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(_uri!.user!)"
+                        let command:String = uri!.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(uri!.user!)"
                         connect(command, arguments: arguments)
                         break
                     }
