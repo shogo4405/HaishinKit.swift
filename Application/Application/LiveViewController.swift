@@ -18,6 +18,13 @@ final class LiveViewController: UIViewController {
         return button
     }()
 
+    var audioBitrateSlider:UISlider = {
+        let slider:UISlider = UISlider()
+        slider.minimumValue = 0.0;
+        slider.maximumValue = 120;
+        return slider
+    }()
+
     var currentPosition:AVCaptureDevicePosition = AVCaptureDevicePosition.Back
 
     override func viewDidLoad() {
@@ -25,7 +32,8 @@ final class LiveViewController: UIViewController {
 
         title = "lf.TestApplication"
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Switch", style: .Plain, target: self, action: "toggleCamera:")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Switch", style: .Plain, target: self, action: "rotateCamera:")
+
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
@@ -44,7 +52,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.view.frame = CGRect(x: 0, y: navigationHeight, width: view.bounds.width, height: videoHeight)
     }
 
-    func toggleCamera(sender:UIBarButtonItem) {
+    func rotateCamera(sender:UIBarButtonItem) {
         let position:AVCaptureDevicePosition = currentPosition == .Back ? .Front : .Back
         rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(position))
         currentPosition = position

@@ -2,18 +2,23 @@ import Foundation
 import AVFoundation
 
 final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
+    static let supportedSettingsKeys:[String] = [
+        "bitrate",
+        "sampleRate",
+    ]
+
     static let samplesPerFrame:UInt32 = 1024
+    static let defaultBitrate:UInt32 = 32 * 1024
     static let defaultChannels:UInt32 = 1
     static let defaultSampleRate:Double = 44100
     static let defaultAACBufferSize:UInt32 = 1024
-    static let supportedSettingsKeys:[String] = [
-        "sampleRate"
-    ]
+
     static let defaultInClassDescriptions:[AudioClassDescription] = [
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer),
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
     ]
 
+    var bitrate:UInt32 = AACEncoder.defaultBitrate
     var delegate:AudioEncoderDelegate?
     var channels:UInt32 = AACEncoder.defaultChannels
     var sampleRate:Double = AACEncoder.defaultSampleRate
@@ -57,15 +62,21 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
     private var converter:AudioConverterRef {
         var status:OSStatus = noErr
         if (_converter == nil) {
-            var converterRef:AudioConverterRef = AudioConverterRef()
+            var converter:AudioConverterRef = AudioConverterRef()
             status = AudioConverterNewSpecific(
                 &inSourceFormat!,
                 &inDestinationFormat,
                 UInt32(inClassDescriptions.count),
                 &inClassDescriptions,
-                &converterRef
+                &converter
             )
-            _converter = converterRef
+
+            if (status == noErr) {
+                let dataSize:UInt32 = UInt32(sizeof(UInt32))
+                AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, dataSize, &bitrate)
+            }
+
+            _converter = converter
         }
         if (status != noErr) {
             print(status)
@@ -74,7 +85,6 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
     }
     
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        
 
         if (inSourceFormat == nil) {
             if let format:CMAudioFormatDescriptionRef = CMSampleBufferGetFormatDescription(sampleBuffer) {
