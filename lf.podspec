@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "lf"
-  s.version      = "0.1.4"
+  s.version      = "0.1.5"
   s.summary      = "iOS Camera/Microphone streaming library via RTMP"
 
   s.description  = <<-DESC
@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/shogo4405/lf.swift.git", :tag => "0.1.4" }
 
-  s.source_files  = "lf", "lf/**/*"
+  s.source_files = "lf", "if/{Codec,ISO,RTMP,Util}/*/"
 
 end
 
