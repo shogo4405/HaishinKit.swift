@@ -49,35 +49,23 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
     public static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
 
-    var id:UInt32 = RTMPStream.defaultID
-    var readyState:ReadyState = .Initilized {
-        didSet {
-            switch readyState {
-            case .Publishing:
-                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata())
-                sessionManager.audioDataOutput.setSampleBufferDelegate(muxer.audioEncoder, queue: muxer.audioEncoder.lockQueue)
-                sessionManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
-            case .Closed:
-                sessionManager.audioDataOutput.setSampleBufferDelegate(nil, queue: nil)
-                sessionManager.videoDataOutput.setSampleBufferDelegate(nil, queue: nil)
-            default:
-                break
-            }
+    public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+
+    public var torch:Bool {
+        get {
+            return captureManager.torch
+        }
+        set {
+            captureManager.torch = newValue
         }
     }
 
-    var readyForKeyframe:Bool = false
-    var audioFormatDescription:CMAudioFormatDescriptionRef?
-    var videoFormatDescription:CMVideoFormatDescriptionRef?
-    private var audioTimestamp:Double = 0
-    private var videoTimestamp:Double = 0
-
     public var syncOrientation:Bool {
         get {
-            return sessionManager.syncOrientation
+            return captureManager.syncOrientation
         }
         set {
-            sessionManager.syncOrientation = newValue
+            captureManager.syncOrientation = newValue
         }
     }
 
@@ -85,10 +73,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public var view:UIView! {
         if (_view == nil) {
             layer.videoGravity = videoGravity
-            sessionManager.layer.videoGravity = videoGravity
+            captureManager.layer.videoGravity = videoGravity
             _view = UIView()
             _view!.backgroundColor = UIColor.blackColor()
-            _view!.layer.addSublayer(sessionManager.layer)
+            _view!.layer.addSublayer(captureManager.layer)
             _view!.layer.addSublayer(layer)
             _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
         }
@@ -98,11 +86,9 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
         didSet {
             layer.videoGravity = videoGravity
-            sessionManager.layer.videoGravity = videoGravity
+            captureManager.layer.videoGravity = videoGravity
         }
     }
-
-    public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
 
     public var audioSettings:[String: AnyObject] {
         get {
@@ -124,20 +110,41 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public var captureSettings:[String: AnyObject] {
         get {
-            return sessionManager.dictionaryWithValuesForKeys(AVCaptureSessionManager.supportedSettingsKeys)
+            return captureManager.dictionaryWithValuesForKeys(AVCaptureSessionManager.supportedSettingsKeys)
         }
         set {
-            sessionManager.setValuesForKeysWithDictionary(newValue)
+            captureManager.setValuesForKeysWithDictionary(newValue)
         }
     }
 
+    var id:UInt32 = RTMPStream.defaultID
+    var readyState:ReadyState = .Initilized {
+        didSet {
+            switch readyState {
+            case .Publishing:
+                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata())
+                captureManager.audioDataOutput.setSampleBufferDelegate(muxer.audioEncoder, queue: muxer.audioEncoder.lockQueue)
+                captureManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
+            case .Closed:
+                captureManager.audioDataOutput.setSampleBufferDelegate(nil, queue: nil)
+                captureManager.videoDataOutput.setSampleBufferDelegate(nil, queue: nil)
+            default:
+                break
+            }
+        }
+    }
+    
+    var readyForKeyframe:Bool = false
+    var audioFormatDescription:CMAudioFormatDescriptionRef?
+    var videoFormatDescription:CMVideoFormatDescriptionRef?
+
+    private var audioTimestamp:Double = 0
+    private var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private lazy var muxer:RTMPMuxer = RTMPMuxer()
-    
-    // expose to public
-    public private(set) var sessionManager:AVCaptureSessionManager = AVCaptureSessionManager()
+    private var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL)
 
     public init(rtmpConnection: RTMPConnection) {
@@ -154,15 +161,15 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
-        sessionManager.attachAudio(audio)
+        captureManager.attachAudio(audio)
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
-        sessionManager.attachCamera(camera)
+        captureManager.attachCamera(camera)
         if (readyState == .Publishing) {
-            sessionManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
+            captureManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
         }
-        sessionManager.startRunning()
+        captureManager.startRunning()
     }
 
     public func receiveAudio(flag:Bool) {
@@ -246,7 +253,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
             self.muxer.dispose()
             self.muxer.delegate = self
-            self.sessionManager.startRunning()
+            self.captureManager.startRunning()
             self.chunkTypes.removeAll(keepCapacity: false)
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
@@ -294,6 +301,11 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             handlerName: handlerName,
             arguments: arguments
         )))
+    }
+
+    public func setPointOfInterest(focus: CGPoint, exposure:CGPoint) {
+        captureManager.focusPointOfInterest = focus
+        captureManager.exposurePointOfInterest = exposure
     }
 
     func sampleOutput(muxer:RTMPMuxer, audio buffer:NSData, timestamp:Double) {
@@ -348,13 +360,13 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard keyPath != nil else {
+        guard let keyPath:String = keyPath else {
             return
         }
-        switch keyPath! {
+        switch keyPath {
         case "frame":
             layer.frame = view.bounds
-            sessionManager.layer.frame = view.bounds
+            captureManager.layer.frame = view.bounds
         default:
             break
         }

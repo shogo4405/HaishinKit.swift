@@ -54,8 +54,10 @@ final class LiveViewController: UIViewController {
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(.Back))
         
-        rtmpStream.sessionManager.continuousAutofocus = true
-        rtmpStream.sessionManager.continuousExposure = true
+        rtmpStream.captureSettings = [
+            "continuousAutofocus": true,
+            "continuousExposure": true,
+        ]
         
         publishButton.addTarget(self, action: "onClickPublish:", forControlEvents: .TouchUpInside)
 
@@ -97,7 +99,7 @@ final class LiveViewController: UIViewController {
     }
 
     func toggleTorch(sender:UIBarButtonItem) {
-        rtmpStream.sessionManager.torch = !rtmpStream.sessionManager.torch
+        rtmpStream.torch = !rtmpStream.torch
     }
 
     func onSliderValueChanged(slider:UISlider) {
@@ -106,7 +108,6 @@ final class LiveViewController: UIViewController {
             rtmpStream.audioSettings["bitrate"] = slider.value * 1024
         }
         if (slider == videoBitrateSlider) {
-            print(rtmpStream.videoSettings)
             videoBitrateLabel.text = "video \(Int(slider.value))/kbsp"
             rtmpStream.videoSettings["bitrate"] = slider.value * 1024
         }
@@ -148,8 +149,8 @@ final class LiveViewController: UIViewController {
             let pointOfInterest: CGPoint = CGPoint(x: touchPoint.x/gestureView.bounds.size.width,
                 y: touchPoint.y/gestureView.bounds.size.height)
             print("pointOfInterest: \(pointOfInterest)")
-            rtmpStream.sessionManager.focusPointOfInterest = pointOfInterest
-            rtmpStream.sessionManager.exposurePointOfInterest = pointOfInterest
+
+            rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
         }
     }
     

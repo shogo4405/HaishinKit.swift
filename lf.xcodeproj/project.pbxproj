@@ -137,9 +137,9 @@
 		290907CD1C3961AD00F2E80C /* Codec */ = {
 			isa = PBXGroup;
 			children = (
-				290907D11C3961E500F2E80C /* Encoder.swift */,
-				290907D21C3961E500F2E80C /* AVCEncoder.swift */,
 				290907DC1C3965F000F2E80C /* AACEncoder.swift */,
+				290907D21C3961E500F2E80C /* AVCEncoder.swift */,
+				290907D11C3961E500F2E80C /* Encoder.swift */,
 			);
 			name = Codec;
 			sourceTree = "<group>";
@@ -148,10 +148,10 @@
 			isa = PBXGroup;
 			children = (
 				29882E071C54CFEA000D446E /* AVCaptureSessionManager.swift */,
-				29882E081C54CFEA000D446E /* global.swift */,
-				29882E091C54CFEA000D446E /* ScreenCaptureSession.swift */,
 				290907CF1C3961CE00F2E80C /* ByteArray.swift */,
+				29882E081C54CFEA000D446E /* global.swift */,
 				2922DA331C4150830016F67A /* MD5.swift */,
+				29882E091C54CFEA000D446E /* ScreenCaptureSession.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";

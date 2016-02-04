@@ -6,7 +6,11 @@ public class AVCaptureSessionManager: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "sessionPreset",
-        "orientation"
+        "orientation",
+        "continuousAutofocus",
+        "continuousExposure",
+        "focusPointOfInterest",
+        "exposurePointOfInterest",
     ]
 
     static public func getAVCaptureVideoOrientation(orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
@@ -67,7 +71,6 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    //MARK: - AVCaptureDevice Configurations
     public var torch = false {
         didSet {
             if let device = currentCamera?.device {
