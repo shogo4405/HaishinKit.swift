@@ -9,8 +9,6 @@ public class AVCaptureSessionManager: NSObject {
         "orientation",
         "continuousAutofocus",
         "continuousExposure",
-        "focusPointOfInterest",
-        "exposurePointOfInterest",
     ]
 
     static public func getAVCaptureVideoOrientation(orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
@@ -201,13 +199,6 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public override init() {
-        super.init()
-        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
-            self.orientation = orientation
-        }
-    }
-
     public var syncOrientation:Bool = false {
         didSet {
             let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
@@ -322,6 +313,13 @@ public class AVCaptureSessionManager: NSObject {
             if (currentCamera != nil) {
                 session.addInput(currentCamera!)
             }
+        }
+    }
+
+    public override init() {
+        super.init()
+        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
+            self.orientation = orientation
         }
     }
 
