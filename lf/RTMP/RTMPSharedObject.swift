@@ -19,16 +19,12 @@ public class RTMPSharedObject: EventDispatcher {
     var currentVersion:UInt32 = 0
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    public private(set) var data:[String:Any?] = [:]
 
     override public var description:String {
         return data.description
     }
 
-    private var _data:[String:Any?] = [:]
-    public var data:[String:Any?] {
-        return _data
-    }
-    
     private var rtmpConnection:RTMPConnection? = nil
 
     init (name:String, path:String, persistence:Bool) {
@@ -39,7 +35,7 @@ public class RTMPSharedObject: EventDispatcher {
     }
 
     public func setProperty(name:String, value:Any?) {
-        _data[name] = value
+        data[name] = value
         if ((rtmpConnection?.connected) != nil) {
             let event:RTMPSharedObjectMessage.Event = RTMPSharedObjectMessage.Event(type: .RequestChange, name: name, data: value)
             rtmpConnection?.doWrite(createChunk([event]))
@@ -58,12 +54,12 @@ public class RTMPSharedObject: EventDispatcher {
     }
 
     public func clear() {
-        _data.removeAll(keepCapacity: false)
+        data.removeAll(keepCapacity: false)
         rtmpConnection?.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Clear)]))
     }
 
     public func close() {
-        _data.removeAll(keepCapacity: false)
+        data.removeAll(keepCapacity: false)
         rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: "rtmpConnection_rtmpStatusHandler:", observer: self)
         rtmpConnection?.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Release)]))
         rtmpConnection = nil
@@ -81,15 +77,15 @@ public class RTMPSharedObject: EventDispatcher {
             switch event.type {
             case .Change:
                 change["code"] = "change"
-                change["oldValue"] = _data.removeValueForKey(event.name!)
-                _data[event.name!] = event.data
+                change["oldValue"] = data.removeValueForKey(event.name!)
+                data[event.name!] = event.data
             case .Success:
                 change["code"] = "success"
             case .Status:
                 change["code"] = "reject"
-                change["oldValue"] = _data.removeValueForKey(event.name!)
+                change["oldValue"] = data.removeValueForKey(event.name!)
             case .Clear:
-                _data.removeAll(keepCapacity: false)
+                data.removeAll(keepCapacity: false)
                 change["code"] = "clear"
             case .Remove:
                 change["code"] = "delete"

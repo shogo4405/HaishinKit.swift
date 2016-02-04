@@ -32,17 +32,8 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
     var bufferSize:Int = RTMPSocket.defaultBufferSize
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     weak var delegate:RTMPSocketDelegate? = nil
-
-    private var _totalBytesIn:Int = 0
-    var totalBytesIn:Int {
-        return _totalBytesIn
-    }
-
-    private var _totalBytesOut:Int = 0
-    var totalBytesOut:Int {
-        return _totalBytesOut
-    }
-
+    private(set) var totalBytesIn:Int = 0
+    private(set) var totalBytesOut:Int = 0
     private var running:Bool = false
     private var timestamp:NSTimeInterval = 0
     private var inputStream:NSInputStream? = nil
@@ -123,8 +114,8 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         chunkSizeS = RTMPSocket.defaultChunkSize
         chunkSizeC = RTMPSocket.defaultChunkSize
         bufferSize = RTMPSocket.defaultBufferSize
-        _totalBytesIn = 0
-        _totalBytesOut = 0
+        totalBytesIn = 0
+        totalBytesOut = 0
         inputBuffer.removeAll(keepCapacity: false)
 
         NSStream.getStreamsToHostWithName(hostname, port: port, inputStream: &inputStream, outputStream: &outputStream)
@@ -150,7 +141,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         let length:Int = inputStream!.read(&buffer, maxLength: bufferSize)
         if 0 < length {
             inputBuffer += Array(buffer[0..<length])
-            _totalBytesIn += length
+            totalBytesIn += length
         }
         handleEvent()
     }
@@ -169,7 +160,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
                     break
                 }
                 total += length!
-                self._totalBytesOut += length!
+                self.totalBytesOut += length!
             }
         }
     }

@@ -31,30 +31,15 @@ public class Event:NSObject {
         return Event(type: "")
     }
 
-    private var _type:String = ""
-    public var type:String {
-        return _type
-    }
-
-    private var _bubbles:Bool
-    public var bubbles:Bool {
-        return _bubbles
-    }
-
-    private var _data:Any?
-    public var data:Any? {
-        return _data
-    }
-
-    private var _target:AnyObject? = nil
-    public var target:AnyObject? {
-        return _target
-    }
+    public private(set) var type:String = ""
+    public private(set) var bubbles:Bool = false
+    public private(set) var data:Any? = nil
+    public private(set) var target:AnyObject? = nil
 
     init(type:String, bubbles:Bool, data:Any?) {
-        _type = type
-        _bubbles = bubbles
-        _data = data
+        self.type = type
+        self.bubbles = bubbles
+        self.data = data
     }
 
     convenience init(type:String) {
@@ -107,11 +92,11 @@ public class EventDispatcher: NSObject, IEventDispatcher {
     }
 
     public func dispatchEvent(e:Event) {
-        e._target = target == nil ? self : target!
+        e.target = target == nil ? self : target!
         let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
         let name:String = e.type + "/false"
         center.postNotificationName(name, object: target == nil ? self : target!, userInfo: ["event": e])
-        e._target = nil
+        e.target = nil
     }
 
     public final func dispatchEventWith(type:String, bubbles:Bool, data:Any?) {
