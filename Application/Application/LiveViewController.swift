@@ -53,19 +53,16 @@ final class LiveViewController: UIViewController {
         touchView.addGestureRecognizer(tapGesture)
         touchView.frame = view.frame
         touchView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+
         view.addSubview(touchView)
-        
         view.addSubview(publishButton)
     }
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        //let videoHeight:CGFloat = view.bounds.width * 9 / 16
         let navigationHeight:CGFloat = view.bounds.width < view.bounds.height ? 64 : 0
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 22, y: navigationHeight + 44, width: 44, height: 44)
-        //rtmpStream.view.frame = CGRect(x: 0, y: navigationHeight, width: view.bounds.width, height: videoHeight)
-        
-        rtmpStream.view.frame = view.frame//CGRect(x: 0, y: navigationHeight, width: view.bounds.width, height: videoHeight)
+        rtmpStream.view.frame = view.frame
     }
 
     func rotateCamera(sender:UIBarButtonItem) {
@@ -87,6 +84,10 @@ final class LiveViewController: UIViewController {
             sender.setTitle("stop", forState: .Normal)
         }
         sender.selected = !sender.selected
+    }
+
+    func toggleTorch(sender:UIBarButtonItem) {
+        rtmpStream.sessionManager.torch = !rtmpStream.sessionManager.torch
     }
     
     func rtmpConnection_rtmpStatusHandler(notification:NSNotification) {
