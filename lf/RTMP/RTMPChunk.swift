@@ -55,10 +55,10 @@ final class RTMPChunk: NSObject {
     var streamId:UInt16 = RTMPChunk.command
 
     var ready:Bool  {
-        if (_message == nil) {
+        if (message == nil) {
             return false
         }
-        return _message!.length == _message!.payload.count
+        return message!.length == message!.payload.count
     }
 
     var headerSize:Int {
@@ -71,15 +71,8 @@ final class RTMPChunk: NSObject {
         return 3 + type.headerSize
     }
 
-    private var _message:RTMPMessage?
-    var message:RTMPMessage? {
-        return _message
-    }
-
-    private var _fragmented:Bool = false
-    var fragmented:Bool {
-        return _fragmented
-    }
+    private(set) var message:RTMPMessage?
+    private(set) var fragmented:Bool = false
 
     private var _bytes:[UInt8] = []
     var bytes:[UInt8] {
@@ -150,7 +143,7 @@ final class RTMPChunk: NSObject {
 
             message.payload = Array(newValue[start..<length])
 
-            _message = message
+            self.message = message
         }
     }
 
@@ -183,18 +176,18 @@ final class RTMPChunk: NSObject {
         }
     }
 
-    init(type:Type, streamId:UInt16, message:RTMPMessage) {
+    init (type:Type, streamId:UInt16, message:RTMPMessage) {
         self.type = type
         self.streamId = streamId
-        _message = message
+        self.message = message
     }
 
-    init(message:RTMPMessage) {
-        _message = message
+    init (message:RTMPMessage) {
+        self.message = message
     }
 
     func append(bytes:[UInt8], size:Int) -> Int {
-        _fragmented = false
+        fragmented = false
 
         var length:Int = message!.length - message!.payload.count
         if (bytes.count < length) {
@@ -204,7 +197,7 @@ final class RTMPChunk: NSObject {
         let chunkSize:Int = size - (message!.payload.count % size)
         if (chunkSize < length) {
             length = chunkSize
-            _fragmented = true
+            fragmented = true
         }
 
         message!.payload += Array(bytes[0..<length])
