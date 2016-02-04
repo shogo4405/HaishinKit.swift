@@ -39,8 +39,11 @@ public enum AudioObjectType:UInt8 {
     case AAC_LC = 2
     case AAC_SSR = 3
     case AAC_LTP = 4
-    case SBR = 5
+    case AAC_SBR = 5
     case AAC_Scalable = 6
+    case TwinqVQ = 7
+    case CELP = 8
+    case HXVC = 9
 
     public init (objectID: MPEG4ObjectID) {
         switch objectID {
@@ -48,10 +51,20 @@ public enum AudioObjectType:UInt8 {
             self = .AAC_Main
         case .AAC_LC:
             self = .AAC_LC
+        case .AAC_SSR:
+            self = .AAC_SSR
         case .AAC_LTP:
             self = .AAC_LTP
-        default:
-            self = .Unknown
+        case .AAC_SBR:
+            self = .AAC_SBR
+        case .AAC_Scalable:
+            self = .AAC_Scalable
+        case .TwinVQ:
+            self = .TwinqVQ
+        case .CELP:
+            self = .CELP
+        case .HVXC:
+            self = .HXVC
         }
     }
 }

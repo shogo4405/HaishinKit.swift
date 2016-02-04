@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import VideoToolbox
+import CoreFoundation
 
 final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate {
 
@@ -34,7 +35,20 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     var fps:Int = AVCEncoder.defaultFPS
     var width:Int32 = AVCEncoder.defaultWidth
     var height:Int32 = AVCEncoder.defaultHeight
-    var bitrate:UInt32 = AVCEncoder.defaultBitrate
+    var bitrate:UInt32 = AVCEncoder.defaultBitrate {
+        didSet {
+            dispatch_async(lockQueue) {
+                guard let session:VTCompressionSessionRef = self._session else {
+                    return
+                }
+                let number:CFNumberRef = CFNumberCreate(nil, .SInt32Type, &self.bitrate)
+                let status:OSStatus = VTSessionSetProperty(session, kVTCompressionPropertyKey_AverageBitRate, number)
+                if (status != noErr) {
+                    print("error setting video bitrate")
+                }
+            }
+        }
+    }
     var profileLevel:String = kVTProfileLevel_H264_Baseline_3_0 as String
     var aspectRatio16by9:Bool = true
     var keyframeInterval:Int = 2

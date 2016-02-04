@@ -18,7 +18,17 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
     ]
 
-    var bitrate:UInt32 = AACEncoder.defaultBitrate
+    var bitrate:UInt32 = AACEncoder.defaultBitrate {
+        didSet {
+            dispatch_async(lockQueue) {
+                guard let converter:AudioConverterRef = self._converter else {
+                    return
+                }
+                let dataSize:UInt32 = UInt32(sizeof(UInt32))
+                AudioConverterSetProperty(converter, kAudioConverterEncodeBitRate, dataSize, &self.bitrate)
+            }
+        }
+    }
     var delegate:AudioEncoderDelegate?
     var channels:UInt32 = AACEncoder.defaultChannels
     var sampleRate:Double = AACEncoder.defaultSampleRate

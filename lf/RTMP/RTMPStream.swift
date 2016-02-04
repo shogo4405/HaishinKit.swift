@@ -44,8 +44,10 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             return description
         }
     }
-    
+
     static let defaultID:UInt32 = 0
+    public static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
+    public static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
 
     var id:UInt32 = RTMPStream.defaultID
     var readyState:ReadyState = .Initilized {
