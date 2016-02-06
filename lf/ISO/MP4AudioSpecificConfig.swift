@@ -2,11 +2,12 @@ import Foundation
 import AVFoundation
 
 // @see http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
-
+// @see http://wiki.multimedia.cx/?title=Understanding_AAC
 public struct AudioSpecificConfig: CustomStringConvertible {
     public var type:AudioObjectType
     public var frequency:SamplingFrequency
     public var channel:ChannelConfiguration
+    public var frameLengthFlag:Bool = false
 
     public var description:String {
         return "AudioSpecificConfig{type:\(type),frequency:\(frequency),channel:\(channel)}"
@@ -17,6 +18,18 @@ public struct AudioSpecificConfig: CustomStringConvertible {
         bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1 & 0x3)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
+    }
+
+    public init?(bytes:[UInt8]) {
+        guard let
+            type:AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
+            frequency:SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
+            channel:ChannelConfiguration = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
+            return nil
+        }
+        self.type = type
+        self.frequency = frequency
+        self.channel = channel
     }
 
     public init(type:AudioObjectType, frequency:SamplingFrequency, channel:ChannelConfiguration) {
@@ -30,6 +43,16 @@ public struct AudioSpecificConfig: CustomStringConvertible {
         type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(asbd.mFormatFlags))!)
         frequency = SamplingFrequency(sampleRate: asbd.mSampleRate)
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
+    }
+
+    public func createFormatDescription(formatDescription: UnsafeMutablePointer<CMAudioFormatDescription?>) -> OSStatus {
+        var asbd:AudioStreamBasicDescription = AudioStreamBasicDescription()
+        asbd.mFormatID = kAudioFormatMPEG4AAC
+        asbd.mFormatFlags = UInt32(type.rawValue)
+        asbd.mSampleRate = frequency.sampleRate
+        asbd.mChannelsPerFrame = UInt32(channel.rawValue)
+        asbd.mFramesPerPacket = frameLengthFlag ? 960 : 1024
+        return CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &asbd, 0, nil, 0, nil, nil, formatDescription)
     }
 }
 
@@ -83,6 +106,37 @@ public enum SamplingFrequency:UInt8 {
     case hz11025 = 10
     case hz8000  = 11
     case hz7350  = 12
+
+    var sampleRate:Float64 {
+        switch self {
+        case hz96000:
+            return 96000
+        case hz88200:
+            return 88200
+        case hz64000:
+            return 64000
+        case hz48000:
+            return 48000
+        case hz44100:
+            return 44100
+        case hz32000:
+            return 32000
+        case hz24000:
+            return 24000
+        case hz22050:
+            return 22050
+        case hz16000:
+            return 16000
+        case hz12000:
+            return 12000
+        case hz11025:
+            return 11025
+        case hz8000:
+            return 8000
+        case hz7350:
+            return 7350
+        }
+    }
 
     public init(sampleRate: Float64) {
         switch Int(sampleRate) {

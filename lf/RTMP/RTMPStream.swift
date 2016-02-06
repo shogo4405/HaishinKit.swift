@@ -4,6 +4,8 @@ import AVFoundation
 
 public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
+    public static var rootPath:String = NSTemporaryDirectory()
+
     enum ReadyState:UInt8 {
         case Initilized = 0
         case Open = 1
@@ -14,7 +16,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         case Closed = 6
     }
 
-    public enum PlayTransitions: String {
+    public enum PlayTransition: String {
         case Append = "append"
         case AppendAndWait = "appendAndWait"
         case Reset = "reset"
@@ -24,13 +26,27 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         case Switch = "switch"
     }
 
-    public struct PlayOptions: CustomStringConvertible {
+    public enum RecordOption: String {
+        case New = "new"
+        case Append = "append"
+
+        func createFileHandle(path:String) -> NSFileHandle? {
+            switch self {
+            case .New:
+                return NSFileHandle(forWritingAtPath: rootPath + path + ".flv")
+            case .Append:
+                return NSFileHandle(forUpdatingAtPath: rootPath + path + ".flv")
+            }
+        }
+    }
+
+    public struct PlayOption: CustomStringConvertible {
         public var len:Double = 0
         public var offset:Double = 0
         public var oldStreamName:String = ""
         public var start:Double = 0
         public var streamName:String = ""
-        public var transition:PlayTransitions = .Switch
+        public var transition:PlayTransition = .Switch
         
         public var description:String {
             var description:String = "RTMPStreamPlayOptions{"
@@ -137,11 +153,13 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     var readyForKeyframe:Bool = false
     var audioFormatDescription:CMAudioFormatDescriptionRef?
     var videoFormatDescription:CMVideoFormatDescriptionRef?
+    private(set) lazy var recorder:RTMPRecorder = RTMPRecorder()
 
     private var audioTimestamp:Double = 0
     private var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
+    private lazy var audio:AudioQueuePlayback = AudioQueuePlayback()
     private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private lazy var muxer:RTMPMuxer = RTMPMuxer()
     private var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
@@ -203,13 +221,14 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             )))
         }
     }
-    
+
     public func play(arguments:Any?...) {
         dispatch_async(lockQueue) {
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
             self.readyForKeyframe = false
+            self.audio.startRunnning()
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -220,11 +239,30 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             )))
         }
     }
-    
+
+    public func record(option:RecordOption, arguments:Any?...) {
+        dispatch_async(lockQueue) {
+            while (self.readyState == .Initilized) {
+                usleep(100)
+            }
+            self.readyForKeyframe = false
+            self.audio.startRunnning()
+            self.recorder.open(arguments[0] as! String, option: option)
+            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
+                streamId: self.id,
+                transactionId: 0,
+                objectEncoding: self.objectEncoding,
+                commandName: "play",
+                commandObject: nil,
+                arguments: arguments
+            )))
+        }
+    }
+
     public func publish(name:String?) {
         self.publish(name, type: "live")
     }
-    
+
     public func seek(offset:Double) {
         dispatch_async(lockQueue) {
             if (self.readyState != .Playing) {
@@ -287,6 +325,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
                     commandObject: nil,
                     arguments: [self.id]
             )))
+            self.recorder.close()
             self.readyState = .Closed
         }
     }
@@ -331,6 +370,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     }
 
     func enqueueSampleBuffer(audio sampleBuffer:CMSampleBuffer) {
+        audio.enqueueSampleBuffer(sampleBuffer)
     }
 
     func enqueueSampleBuffer(video sampleBuffer:CMSampleBuffer) {
@@ -347,7 +387,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         if let data:ECMAObject = e.data as? ECMAObject {
             if let code:String = data["code"] as? String {
                 switch code {
-                case "NetConnection.Connect.Success":
+                case RTMPConnection.Code.ConnectSuccess.rawValue:
                     readyState = .Initilized
                     rtmpConnection.createStream(self)
                 case "NetStream.Publish.Start":

@@ -509,6 +509,10 @@ final class RTMPDataMessage:RTMPMessage {
     }
 
     override func execute(connection: RTMPConnection) {
+        guard let stream:RTMPStream = connection.streams[streamId] else {
+            return
+        }
+        stream.recorder.onMessage(data: self)
     }
 }
 
@@ -708,18 +712,26 @@ class RTMPAudioMessage:RTMPMessage {
     }
 
     override func execute(connection:RTMPConnection) {
-        if (payload.isEmpty || payload[0] << 4 != FLVTag.AudioCodec.AAC.rawValue) {
+        guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
-        if let stream:RTMPStream = connection.streams[streamId] {
-            switch payload[1] {
-            case FLVTag.AVCPacketType.Seq.rawValue:
-                createFormatDescription(stream)
-            case FLVTag.AVCPacketType.Nal.rawValue:
-                enqueueSampleBuffer(stream)
-            default:
-                break
-            }
+        stream.recorder.onMessage(audio: self)
+
+        if (payload.isEmpty) {
+            return
+        }
+
+        guard let codec:FLVTag.AudioCodec = FLVTag.AudioCodec(rawValue: payload[0] >> 4) where codec.isSupported else {
+            return
+        }
+
+        switch payload[1] {
+        case FLVTag.AACPacketType.Seq.rawValue:
+            createFormatDescription(stream)
+        case FLVTag.AACPacketType.Raw.rawValue:
+            enqueueSampleBuffer(stream)
+        default:
+            break
         }
     }
 
@@ -730,10 +742,10 @@ class RTMPAudioMessage:RTMPMessage {
         timing.duration = CMTimeMake(Int64(timestamp), 1000)
 
         var buffer:CMBlockBufferRef?
-        if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &data, size, kCFAllocatorDefault, nil, 0, size, kCMBlockBufferAssureMemoryNowFlag, &buffer) != noErr) {
+        if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &data, size, kCFAllocatorNull, nil, 0, size, kCMBlockBufferAssureMemoryNowFlag, &buffer) != noErr) {
             return
         }
-        
+
         var sampleBuffer:CMSampleBufferRef?
         if (CMSampleBufferCreate(kCFAllocatorDefault, buffer, true, nil, nil, stream.audioFormatDescription!, 1, 1, &timing, 1, &size, &sampleBuffer) != noErr) {
             return
@@ -743,21 +755,10 @@ class RTMPAudioMessage:RTMPMessage {
     }
 
     func createFormatDescription(stream: RTMPStream) -> OSStatus {
-        let data:[UInt8] = Array(payload[2..<payload.count])
-        var asbd:AudioStreamBasicDescription = AudioStreamBasicDescription()
-        asbd.mFormatID = kAudioFormatMPEG4AAC
-        asbd.mFormatFlags = 0
-        asbd.mFramesPerPacket = 1024
-        return CMAudioFormatDescriptionCreate(
-            kCFAllocatorDefault,
-            &asbd,
-            0,
-            nil,
-            data.count,
-            data,
-            nil,
-            &stream.audioFormatDescription
-        )
+        guard let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array(payload[2..<payload.count])) else {
+            return -1
+        }
+        return config.createFormatDescription(&stream.audioFormatDescription)
     }
 }
 
@@ -771,31 +772,40 @@ final class RTMPVideoMessage:RTMPAudioMessage {
     }
 
     override func execute(connection:RTMPConnection) {
+        guard let stream:RTMPStream = connection.streams[streamId] else {
+            return
+        }
+        stream.recorder.onMessage(video: self)
         if (payload.count <= FLVTag.TagType.Video.headerSize) {
             return
         }
-        if let stream:RTMPStream = connection.streams[streamId] {
-            switch payload[1] {
-            case FLVTag.AVCPacketType.Seq.rawValue:
-                createFormatDescription(stream)
-            case FLVTag.AVCPacketType.Nal.rawValue:
-                if (!stream.readyForKeyframe) {
-                    stream.readyForKeyframe = (payload[0] >> 4 == FLVTag.FrameType.Key.rawValue)
-                } else {
+        switch payload[1] {
+        case FLVTag.AVCPacketType.Seq.rawValue:
+            createFormatDescription(stream)
+        case FLVTag.AVCPacketType.Nal.rawValue:
+            if (!stream.readyForKeyframe) {
+                stream.readyForKeyframe = (payload[0] >> 4 == FLVTag.FrameType.Key.rawValue)
+                if (stream.readyForKeyframe) {
                     enqueueSampleBuffer(stream)
                 }
-            default:
-                break
+            } else {
+                enqueueSampleBuffer(stream)
             }
+        default:
+            break
         }
     }
 
     override func enqueueSampleBuffer(stream: RTMPStream) {
+        guard let frame:FLVTag.FrameType = FLVTag.FrameType(rawValue: payload[0] >> 4) else {
+            return
+        }
+
         var bytes:[UInt8] = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
         let sampleSize:Int = bytes.count
 
         var blockBuffer:CMBlockBufferRef?
-        if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &bytes, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) != noErr) {
+        guard CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &bytes, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) == noErr else {
             return
         }
 
@@ -803,16 +813,23 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         var sampleSizes:[Int] = [sampleSize]
         var timing:CMSampleTimingInfo = CMSampleTimingInfo()
         timing.duration = CMTimeMake(Int64(timestamp), 1000)
-
-        if (CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 0, &timing, 1, &sampleSizes, &sampleBuffer) != noErr) {
+        guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 0, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
             return
         }
 
+
         let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
-        let dictionary:CFMutableDictionaryRef = unsafeBitCast(
-            CFArrayGetValueAtIndex(attachments, 0), CFMutableDictionaryRef.self
+        let dictionary:CFMutableDictionaryRef = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), CFMutableDictionaryRef.self
         )
-        CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
+
+        switch frame {
+        case .Key:
+            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
+        case .Inter:
+            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DependsOnOthers), unsafeAddressOf(kCFBooleanTrue))
+        default:
+            break
+        }
 
         stream.enqueueSampleBuffer(video: sampleBuffer!)
     }

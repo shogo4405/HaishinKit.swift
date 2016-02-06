@@ -135,6 +135,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
             CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timing)
             CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &inDestinationFormat, 0, nil, 0, nil, nil, &format)
             formatDescription = format
+
             CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, format, numSamples, 1, &timing, 0, nil, &result)
             CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, &outOutputData)
 
