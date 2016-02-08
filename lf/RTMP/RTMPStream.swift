@@ -6,6 +6,40 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public static var rootPath:String = NSTemporaryDirectory()
 
+    public enum Code:String {
+        case RecordAlreadyExists     = "NetStream.Record.AlreadyExists"
+        case RecordFailed            = "NetStream.Record.Failed"
+        case RecordNoAccess          = "NetStream.Record.NoAccess"
+        case RecordStart             = "NetStream.Record.Start"
+        case RecordStop              = "NetStream.Record.Stop"
+        case RecordDiskQuotaExceeded = "NetStream.Record.DiskQuotaExceeded"
+
+        public var level:String {
+            switch self {
+            case .RecordAlreadyExists:
+                return "status"
+            case .RecordFailed:
+                return "error"
+            case .RecordNoAccess:
+                return "status"
+            case .RecordStart:
+                return "status"
+            case .RecordStop:
+                return "status"
+            case .RecordDiskQuotaExceeded:
+                return "error"
+            }
+        }
+
+        func data(description:String) -> ECMAObject {
+            return [
+                "code": rawValue,
+                "level": level,
+                "description": description,
+            ]
+        }
+    }
+
     enum ReadyState:UInt8 {
         case Initilized = 0
         case Open = 1
@@ -192,7 +226,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public func receiveAudio(flag:Bool) {
         dispatch_async(lockQueue) {
-            if (self.readyState != .Playing) {
+            guard self.readyState == .Playing else {
                 return
             }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
@@ -208,7 +242,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     
     public func receiveVideo(flag:Bool) {
         dispatch_async(lockQueue) {
-            if (self.readyState != .Playing) {
+            guard self.readyState == .Playing else {
                 return
             }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
@@ -247,6 +281,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             }
             self.readyForKeyframe = false
             self.audio.startRunnning()
+            self.recorder.dispatcher = self
             self.recorder.open(arguments[0] as! String, option: option)
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
@@ -265,7 +300,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     public func seek(offset:Double) {
         dispatch_async(lockQueue) {
-            if (self.readyState != .Playing) {
+            guard self.readyState == .Playing else {
                 return
             }
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
@@ -384,17 +419,15 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     func rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject {
-            if let code:String = data["code"] as? String {
-                switch code {
-                case RTMPConnection.Code.ConnectSuccess.rawValue:
-                    readyState = .Initilized
-                    rtmpConnection.createStream(self)
-                case "NetStream.Publish.Start":
-                    readyState = .Publishing
-                default:
-                    break
-                }
+        if let data:ECMAObject = e.data as? ECMAObject, code:String = data["code"] as? String {
+            switch code {
+            case RTMPConnection.Code.ConnectSuccess.rawValue:
+                readyState = .Initilized
+                rtmpConnection.createStream(self)
+            case "NetStream.Publish.Start":
+                readyState = .Publishing
+            default:
+                break
             }
         }
     }

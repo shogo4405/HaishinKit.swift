@@ -747,7 +747,7 @@ class RTMPAudioMessage:RTMPMessage {
         }
 
         var sampleBuffer:CMSampleBufferRef?
-        if (CMSampleBufferCreate(kCFAllocatorDefault, buffer, true, nil, nil, stream.audioFormatDescription!, 1, 1, &timing, 1, &size, &sampleBuffer) != noErr) {
+        if (CMSampleBufferCreate(kCFAllocatorDefault, buffer, true, nil, nil, stream.audioFormatDescription!, 1, 1, &timing, 0, &size, &sampleBuffer) != noErr) {
             return
         }
 
@@ -813,22 +813,17 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         var sampleSizes:[Int] = [sampleSize]
         var timing:CMSampleTimingInfo = CMSampleTimingInfo()
         timing.duration = CMTimeMake(Int64(timestamp), 1000)
-        guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 0, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
+        
+        guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
             return
         }
 
-
+        let naluType:NALUType? = NALUType(bytes: bytes, naluLength: 4)
         let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
-        let dictionary:CFMutableDictionaryRef = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), CFMutableDictionaryRef.self
-        )
-
-        switch frame {
-        case .Key:
-            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
-        case .Inter:
-            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DependsOnOthers), unsafeAddressOf(kCFBooleanTrue))
-        default:
-            break
+        for i:CFIndex in 0..<CFArrayGetCount(attachments) {
+            let dictionary:CFMutableDictionaryRef = unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self
+            )
+            naluType?.setCMSampleAttachmentValues(dictionary)
         }
 
         stream.enqueueSampleBuffer(video: sampleBuffer!)

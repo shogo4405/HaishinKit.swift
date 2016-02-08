@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol IEventDispatcher {
+public protocol IEventDispatcher: class {
     func addEventListener(type:String, selector:Selector)
     func addEventListener(type:String, selector:Selector, observer:AnyObject)
     func addEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool)

@@ -25,8 +25,6 @@
 		2922DA341C4150830016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
 		2922DA361C415FB70016F67A /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA351C415FB70016F67A /* MD5Tests.swift */; };
 		2922DA371C41600A0016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
-		29349CE21C6603860090FA99 /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29349CE11C6603860090FA99 /* AudioQueuePlayback.swift */; };
-		29349CE41C661E960090FA99 /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29349CE11C6603860090FA99 /* AudioQueuePlayback.swift */; };
 		2945CBC31B4BE66000104112 /* lf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2945CBC21B4BE66000104112 /* lf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2945CBC91B4BE66000104112 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
 		295FEFAE1C3823BE00271E90 /* AMFSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFAB1C3823BE00271E90 /* AMFSerializer.swift */; };
@@ -40,6 +38,7 @@
 		299E08031C65BE1100AC356E /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */; };
 		299E08041C65BE1100AC356E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */; };
 		29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */; };
+		29B7C1741C68E660000BD35A /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */; };
 		29BDE0BF1C65BD4300D6A768 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */; };
 		29BDE0C21C65BD5000D6A768 /* AVCaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */; };
 		29BDE0C31C65BD5000D6A768 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */; };
@@ -59,6 +58,7 @@
 		29C0E06E1C2EB188009DD8E8 /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0E0601C2EB02E009DD8E8 /* RTMPStream.swift */; };
 		29DD18381B6E77EF00B9E10A /* AMFSerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */; };
 		29E8603A1C2EFC0E00C595FB /* globalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E860391C2EFC0E00C595FB /* globalTests.swift */; };
+		29FA89731C68CA9C0032B242 /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -91,7 +91,6 @@
 		290907DC1C3965F000F2E80C /* AACEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACEncoder.swift; path = Codec/AACEncoder.swift; sourceTree = "<group>"; };
 		2922DA331C4150830016F67A /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Util/MD5.swift; sourceTree = "<group>"; };
 		2922DA351C415FB70016F67A /* MD5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5Tests.swift; sourceTree = "<group>"; };
-		29349CE11C6603860090FA99 /* AudioQueuePlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioQueuePlayback.swift; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2945CBC11B4BE66000104112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2945CBC21B4BE66000104112 /* lf.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = lf.h; sourceTree = "<group>"; };
@@ -116,6 +115,7 @@
 		29C0E0601C2EB02E009DD8E8 /* RTMPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPStream.swift; path = RTMP/RTMPStream.swift; sourceTree = "<group>"; };
 		29DD18371B6E77EF00B9E10A /* AMFSerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMFSerializerTests.swift; sourceTree = "<group>"; };
 		29E860391C2EFC0E00C595FB /* globalTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = globalTests.swift; sourceTree = "<group>"; };
+		29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioQueuePlayback.swift; path = Media/AudioQueuePlayback.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -232,7 +232,7 @@
 		29BDE0BD1C65BC2400D6A768 /* Media */ = {
 			isa = PBXGroup;
 			children = (
-				29349CE11C6603860090FA99 /* AudioQueuePlayback.swift */,
+				29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */,
 				29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */,
 				29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */,
 			);
@@ -386,7 +386,7 @@
 				29BDE0C31C65BD5000D6A768 /* ScreenCaptureSession.swift in Sources */,
 				290907D41C3961E500F2E80C /* AVCEncoder.swift in Sources */,
 				29C0E0671C2EB02E009DD8E8 /* RTMPStream.swift in Sources */,
-				29349CE21C6603860090FA99 /* AudioQueuePlayback.swift in Sources */,
+				29FA89731C68CA9C0032B242 /* AudioQueuePlayback.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -394,7 +394,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29349CE41C661E960090FA99 /* AudioQueuePlayback.swift in Sources */,
+				29B7C1741C68E660000BD35A /* AudioQueuePlayback.swift in Sources */,
 				299E08021C65BE1100AC356E /* AVCaptureSessionManager.swift in Sources */,
 				299E08031C65BE1100AC356E /* ScreenCaptureSession.swift in Sources */,
 				299E08041C65BE1100AC356E /* EventDispatcher.swift in Sources */,

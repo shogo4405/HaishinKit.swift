@@ -249,7 +249,8 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: 3,
             transactionId: ++currentTransactionId,
-            objectEncoding: objectEncoding,
+            // "connect" must be a objectEncoding = 0
+            objectEncoding: 0,
             commandName: "connect",
             commandObject: [
                 "app": app,
@@ -273,38 +274,36 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     func rtmpStatusHandler(notification: NSNotification) {
         removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject {
-            if let code:String = data["code"] as? String {
-                switch code {
-                case Code.ConnectSuccess.rawValue:
-                    connected = true
-                    socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
-                    socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
-                case Code.ConnectRejected.rawValue:
-                    guard uri?.user != nil && uri?.password != nil else {
-                        break
-                    }
-                    let query:String = uri!.query ?? ""
-                    let description:String = data["description"] as! String
-                    // Step 3
-                    if (description.containsString("reason=authfailed")) {
-                        break
-                    }
-                    // Step 2
-                    if (description.containsString("reason=needauth")) {
-                        let command:String = RTMPConnection.createSanJoseAuthCommand(uri!, description: description)
-                        connect(command, arguments: arguments)
-                        break
-                    }
-                    // Step 1
-                    if (description.containsString("authmod=adobe")) {
-                        let command:String = uri!.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(uri!.user!)"
-                        connect(command, arguments: arguments)
-                        break
-                    }
-                default:
+        if let data:ECMAObject = e.data as? ECMAObject, code:String = data["code"] as? String {
+            switch code {
+            case Code.ConnectSuccess.rawValue:
+                connected = true
+                socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
+                socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
+            case Code.ConnectRejected.rawValue:
+                guard uri?.user != nil && uri?.password != nil else {
                     break
                 }
+                let query:String = uri!.query ?? ""
+                let description:String = data["description"] as! String
+                // Step 3
+                if (description.containsString("reason=authfailed")) {
+                    break
+                }
+                // Step 2
+                if (description.containsString("reason=needauth")) {
+                    let command:String = RTMPConnection.createSanJoseAuthCommand(uri!, description: description)
+                    connect(command, arguments: arguments)
+                    break
+                }
+                // Step 1
+                if (description.containsString("authmod=adobe")) {
+                    let command:String = uri!.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(uri!.user!)"
+                    connect(command, arguments: arguments)
+                    break
+                }
+            default:
+                break
             }
         }
     }
