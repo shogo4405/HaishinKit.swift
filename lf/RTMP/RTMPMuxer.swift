@@ -69,29 +69,30 @@ final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
     }
 
     func didSetFormatDescription(audio formatDescription: CMFormatDescriptionRef?) {
-        if (formatDescription == nil) {
+        guard let formatDescription:CMFormatDescriptionRef = formatDescription else {
             return
         }
         let buffer:NSMutableData = NSMutableData()
-        let config:[UInt8] = AudioSpecificConfig(formatDescription: formatDescription!).bytes
+        let config:[UInt8] = AudioSpecificConfig(formatDescription: formatDescription).bytes
         var data:[UInt8] = [0x00, FLVTag.AACPacketType.Seq.rawValue]
         data[0] =  FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
         buffer.appendBytes(&data, length: data.count)
-        buffer.appendBytes(config, length:config.count)
+        buffer.appendBytes(config, length: config.count)
         delegate?.sampleOutput(self, audio: buffer, timestamp: 0)
     }
 
     func didSetFormatDescription(video formatDescription: CMFormatDescriptionRef?) {
-        if (formatDescription == nil) {
+        guard let
+            formatDescription:CMFormatDescriptionRef = formatDescription,
+            avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
-        let avcC:NSData? = AVCConfigurationRecord.getData(formatDescription!)
         let buffer:NSMutableData = NSMutableData()
         var data:[UInt8] = [UInt8](count: 5, repeatedValue: 0x00)
         data[0] = FLVTag.FrameType.Key.rawValue << 4 | FLVTag.VideoCodec.AVC.rawValue
         data[1] = FLVTag.AVCPacketType.Seq.rawValue
         buffer.appendBytes(&data, length: data.count)
-        buffer.appendData(avcC!)
+        buffer.appendData(avcC)
         delegate?.sampleOutput(self, video: buffer, timestamp: 0)
     }
 

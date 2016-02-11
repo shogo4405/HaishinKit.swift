@@ -1,6 +1,6 @@
 import Foundation
 
-protocol RTMPSocketDelegate: class {
+protocol RTMPSocketDelegate: IEventDispatcher {
     func listen(socket: RTMPSocket, bytes:[UInt8])
     func didSetReadyState(socket: RTMPSocket, readyState:RTMPSocket.ReadyState)
 }
@@ -62,10 +62,18 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         })
     }
 
-    func close() {
+    func close(disconnect:Bool) {
+
         if (ReadyState.Closing.rawValue <= readyState.rawValue) {
             return
         }
+
+        var data:ECMAObject? = nil
+        if (disconnect) {
+            data = (readyState == ReadyState.HandshakeDone) ?
+                RTMPConnection.Code.ConnectClosed.data("") : RTMPConnection.Code.ConnectFailed.data("")
+        }
+
         readyState = .Closing
 
         inputStream?.delegate = nil
@@ -81,6 +89,10 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
 
         running = false
         readyState = .Closed
+
+        if let data:ECMAObject = data {
+            delegate?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: data)
+        }
     }
 
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
@@ -99,7 +111,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
                 doInputProcess()
             }
         case NSStreamEvent.ErrorOccurred:
-            close()
+            close(true)
         case NSStreamEvent.EndEncountered:
             break
         default:
@@ -119,20 +131,22 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         inputBuffer.removeAll(keepCapacity: false)
 
         NSStream.getStreamsToHostWithName(hostname, port: port, inputStream: &inputStream, outputStream: &outputStream)
-        if (inputStream != nil && outputStream != nil) {
-            inputStream!.delegate = self
-            inputStream!.scheduleInRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        guard let inputStream:NSInputStream = inputStream, outputStream:NSOutputStream = outputStream else {
+            return
+        }
 
-            outputStream!.delegate = self
-            outputStream!.scheduleInRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+        inputStream.delegate = self
+        inputStream.scheduleInRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
 
-            inputStream!.open()
-            outputStream!.open()
+        outputStream.delegate = self
+        outputStream.scheduleInRunLoop(.currentRunLoop(), forMode: NSDefaultRunLoopMode)
 
-            running = true
-            while (running) {
-                NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() )
-            }
+        inputStream.open()
+        outputStream.open()
+
+        running = true
+        while (running) {
+            NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: NSDate.distantFuture() )
         }
     }
 
@@ -156,7 +170,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             while total < bytes.count {
                 let length:Int? = self.outputStream?.write(buffer + total, maxLength: bytes.count - total)
                 if length == nil || length! <= 0 {
-                    self.close()
+                    self.close(true)
                     break
                 }
                 total += length!
@@ -184,7 +198,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             }
             let objectEncoding:UInt8 = inputBuffer[0]
             if (objectEncoding != self.objectEncoding) {
-                close()
+                close(true)
             }
             let c2packet:ByteArray = ByteArray()
             c2packet.writeUInt8(Array(inputBuffer[1...4]))

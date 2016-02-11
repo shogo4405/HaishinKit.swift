@@ -35,6 +35,35 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         case ConnectAppshutdown = "NetConnection.Connect.AppShutdown"
         case ConnectIdleTimeOut = "NetConnection.Connect.IdleTimeOut"
         case ConnectNetworkChange = "NetConnection.Connect.NetworkChange"
+
+        public var level:String {
+            switch self {
+            case .ConnectFailed:
+                return "error"
+            case .ConnectClosed:
+                return "status"
+            case .ConnectSuccess:
+                return "status"
+            case .ConnectRejected:
+                return "status"
+            case .ConenctInvalidApp:
+                return "error"
+            case .ConnectAppshutdown:
+                return "status"
+            case .ConnectIdleTimeOut:
+                return "status"
+            case .ConnectNetworkChange:
+                return "status"
+            }
+        }
+
+        func data(description:String) -> ECMAObject {
+            return [
+                "code": self.rawValue,
+                "level": self.level,
+                "description": description,
+            ]
+        }
     }
 
     enum SupportVideo:UInt16 {
@@ -138,21 +167,25 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
 
     public func connect(command: String, arguments: Any?...) {
-        if let url:NSURL = NSURL(string: command) {
-            uri = url
-            self.arguments = arguments
-            addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
-            socket.connect(url.host!, port: url.port == nil ? RTMPConnection.defaultPort : url.port!.integerValue)
+        guard let uri:NSURL = NSURL(string: command) where !connected else {
+            return
         }
+        self.uri = uri
+        self.arguments = arguments
+        addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+        socket.connect(uri.host!, port: uri.port == nil ? RTMPConnection.defaultPort : uri.port!.integerValue)
     }
 
     public func close() {
+        guard connected else {
+            return
+        }
         uri = nil
         for (id, stream) in streams {
             stream.close()
             streams.removeValueForKey(id)
         }
-        socket.close()
+        socket.close(false)
     }
 
     func doWrite(chunk: RTMPChunk) {
@@ -229,11 +262,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         case .HandshakeDone:
             socket.doWrite(createConnectionChunk())
         case .Closed:
-            let data:ECMAObject = [
-                "code": connected ? Code.ConnectClosed.rawValue : Code.ConnectFailed.rawValue
-            ]
             connected = false
-            dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: data)
         default:
             break
         }
@@ -281,10 +310,10 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
                 socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
             case Code.ConnectRejected.rawValue:
-                guard uri?.user != nil && uri?.password != nil else {
+                guard let uri:NSURL = uri, user:String = uri.user, _:String = uri.password else {
                     break
                 }
-                let query:String = uri!.query ?? ""
+                let query:String = uri.query ?? ""
                 let description:String = data["description"] as! String
                 // Step 3
                 if (description.containsString("reason=authfailed")) {
@@ -292,13 +321,13 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
                 }
                 // Step 2
                 if (description.containsString("reason=needauth")) {
-                    let command:String = RTMPConnection.createSanJoseAuthCommand(uri!, description: description)
+                    let command:String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
                     connect(command, arguments: arguments)
                     break
                 }
                 // Step 1
                 if (description.containsString("authmod=adobe")) {
-                    let command:String = uri!.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(uri!.user!)"
+                    let command:String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
                     connect(command, arguments: arguments)
                     break
                 }
