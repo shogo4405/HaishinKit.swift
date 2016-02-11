@@ -57,6 +57,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
                 _inDestinationFormat!.mFormatFlags = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
                 _inDestinationFormat!.mBytesPerPacket = 0
                 _inDestinationFormat!.mFramesPerPacket = AACEncoder.samplesPerFrame
+                _inDestinationFormat!.mBytesPerFrame = 0
                 _inDestinationFormat!.mChannelsPerFrame = channels
                 _inDestinationFormat!.mBitsPerChannel = 0
                 _inDestinationFormat!.mReserved = 0

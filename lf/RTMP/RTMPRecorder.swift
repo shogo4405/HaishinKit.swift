@@ -1,6 +1,5 @@
 import Foundation
 
-
 struct FLVTag: CustomStringConvertible {
 
     enum TagType:UInt8 {
