@@ -172,7 +172,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         didSet {
             switch readyState {
             case .Publishing:
-                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata())
+                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(captureManager.currentAudio, captureManager.currentCamera))
                 captureManager.audioDataOutput.setSampleBufferDelegate(muxer.audioEncoder, queue: muxer.audioEncoder.lockQueue)
                 captureManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
             case .Closed:

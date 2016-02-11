@@ -797,7 +797,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
     }
 
     override func enqueueSampleBuffer(stream: RTMPStream) {
-        guard let frame:FLVTag.FrameType = FLVTag.FrameType(rawValue: payload[0] >> 4) else {
+        guard let _:FLVTag.FrameType = FLVTag.FrameType(rawValue: payload[0] >> 4) else {
             return
         }
 
@@ -821,9 +821,8 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         let naluType:NALUType? = NALUType(bytes: bytes, naluLength: 4)
         let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
         for i:CFIndex in 0..<CFArrayGetCount(attachments) {
-            let dictionary:CFMutableDictionaryRef = unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self
-            )
-            naluType?.setCMSampleAttachmentValues(dictionary)
+            naluType?.setCMSampleAttachmentValues(unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self
+                ))
         }
 
         stream.enqueueSampleBuffer(video: sampleBuffer!)

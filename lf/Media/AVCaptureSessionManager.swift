@@ -288,7 +288,7 @@ public class AVCaptureSessionManager: NSObject {
         return _layer
     }
 
-    private var currentAudio:AVCaptureDeviceInput? = nil {
+    public private(set) var currentAudio:AVCaptureDeviceInput? = nil {
         didSet {
             guard oldValue != currentAudio else {
                 return
@@ -302,7 +302,7 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    private var currentCamera:AVCaptureDeviceInput? = nil {
+    public private(set) var currentCamera:AVCaptureDeviceInput? = nil {
         didSet {
             guard oldValue != currentCamera else {
                 return

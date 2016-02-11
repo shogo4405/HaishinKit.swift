@@ -33,8 +33,16 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     ]
 
     var fps:Int = AVCEncoder.defaultFPS
-    var width:Int32 = AVCEncoder.defaultWidth
-    var height:Int32 = AVCEncoder.defaultHeight
+    var width:Int32 = AVCEncoder.defaultWidth {
+        didSet {
+            invalidateSession = true
+        }
+    }
+    var height:Int32 = AVCEncoder.defaultHeight {
+        didSet {
+            invalidateSession = true
+        }
+    }
     var bitrate:UInt32 = AVCEncoder.defaultBitrate {
         didSet {
             dispatch_async(lockQueue) {
@@ -49,7 +57,12 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
             }
         }
     }
-    var profileLevel:String = kVTProfileLevel_H264_Baseline_3_0 as String
+    var profileLevel:String = kVTProfileLevel_H264_Baseline_3_0 as String {
+        didSet {
+            invalidateSession = true
+        }
+    }
+    
     var aspectRatio16by9:Bool = true
     var keyframeInterval:Int = 2
 
@@ -71,6 +84,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
         attributes[kCVPixelBufferHeightKey] = NSNumber(int: height)
         return attributes
     }
+    private var invalidateSession:Bool = true
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties:[NSString: NSObject] {
@@ -141,6 +155,10 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     }
 
     func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
+        if (invalidateSession) {
+            session = nil
+            invalidateSession = false
+        }
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
         VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
     }
