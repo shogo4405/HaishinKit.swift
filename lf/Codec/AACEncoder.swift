@@ -75,13 +75,19 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         ioData: UnsafeMutablePointer<AudioBufferList>,
         outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>>,
         inUserData: UnsafeMutablePointer<Void>) in
+
         let encoder:AACEncoder = unsafeBitCast(inUserData, AACEncoder.self)
-        let dataBytesSize:UInt32 = encoder.currentBufferList!.mBuffers.mDataByteSize
-        
-        ioData.memory.mBuffers.mData = encoder.currentBufferList!.mBuffers.mData
-        ioData.memory.mBuffers.mDataByteSize = dataBytesSize
+
+        guard let audioBufferList:AudioBufferList = encoder.currentBufferList else {
+            ioNumberDataPackets.memory = 0
+            return -1
+        }
+
+        ioData.memory.mBuffers.mData = audioBufferList.mBuffers.mData
+        ioData.memory.mBuffers.mDataByteSize = audioBufferList.mBuffers.mDataByteSize
+        encoder.currentBufferList = nil
         ioNumberDataPackets.memory = 1
-        
+
         return noErr
     }
 

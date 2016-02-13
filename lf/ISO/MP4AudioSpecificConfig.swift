@@ -154,6 +154,8 @@ public enum SamplingFrequency:UInt8 {
             self = .hz32000
         case 24000:
             self = .hz24000
+        case 22050:
+            self = .hz22050
         case 16000:
             self = .hz16000
         case 12000:
