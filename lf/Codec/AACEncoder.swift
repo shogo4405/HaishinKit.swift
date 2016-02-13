@@ -68,7 +68,23 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
             _inDestinationFormat = newValue
         }
     }
-    
+
+    private var inputDataProc:AudioConverterComplexInputDataProc = {(
+        convert: AudioConverterRef,
+        ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
+        ioData: UnsafeMutablePointer<AudioBufferList>,
+        outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>>,
+        inUserData: UnsafeMutablePointer<Void>) in
+        let encoder:AACEncoder = unsafeBitCast(inUserData, AACEncoder.self)
+        let dataBytesSize:UInt32 = encoder.currentBufferList!.mBuffers.mDataByteSize
+        
+        ioData.memory.mBuffers.mData = encoder.currentBufferList!.mBuffers.mData
+        ioData.memory.mBuffers.mDataByteSize = dataBytesSize
+        ioNumberDataPackets.memory = 1
+        
+        return noErr
+    }
+
     private var _converter:AudioConverterRef?
     private var converter:AudioConverterRef {
         var status:OSStatus = noErr
@@ -124,7 +140,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         
         currentBufferList = inAudioBufferList
         var outputDataPacketSize:UInt32 = 1
-        status = fillComplexBuffer(&outputDataPacketSize, outOutputData: &outOutputData, outPacketDescription: nil)
+        status = fillComplexBuffer(&outputDataPacketSize, &outOutputData, nil)
 
         if (status == noErr)
         {
@@ -144,23 +160,9 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         }
     }
 
-    private var inputDataProc:AudioConverterComplexInputDataProc = {(
-        convert: AudioConverterRef,
-        ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
-        ioData: UnsafeMutablePointer<AudioBufferList>,
-        outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>>,
-        inUserData: UnsafeMutablePointer<Void>) in
-        let encoder:AACEncoder = unsafeBitCast(inUserData, AACEncoder.self)
-        let dataBytesSize:UInt32 = encoder.currentBufferList!.mBuffers.mDataByteSize
-        
-        ioData.memory.mBuffers.mData = encoder.currentBufferList!.mBuffers.mData
-        ioData.memory.mBuffers.mDataByteSize = dataBytesSize
-        ioNumberDataPackets.memory = 1
-        
-        return noErr
-    }
-
-    func fillComplexBuffer(inOutputDataPacketSize: UnsafeMutablePointer<UInt32>, outOutputData: UnsafeMutablePointer<AudioBufferList>, outPacketDescription: UnsafeMutablePointer<AudioStreamPacketDescription>) -> OSStatus {
+    func fillComplexBuffer(inOutputDataPacketSize: UnsafeMutablePointer<UInt32>,
+        _ outOutputData: UnsafeMutablePointer<AudioBufferList>,
+        _ outPacketDescription: UnsafeMutablePointer<AudioStreamPacketDescription>) -> OSStatus {
         return AudioConverterFillComplexBuffer(
             converter,
             inputDataProc,
