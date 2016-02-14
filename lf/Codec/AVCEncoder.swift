@@ -117,7 +117,6 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
         }
         let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer!)
-
         encoder.delegate?.sampleOuput(video: sampleBuffer!)
     }
 
@@ -164,7 +163,9 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     }
 
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer)!
+        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
         encodeImageBuffer(image, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
     }
 

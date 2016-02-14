@@ -62,7 +62,6 @@ final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
             metadata["audiocodecid"] = FLVTag.AudioCodec.AAC.rawValue
             metadata["audiochannels"] = audioEncoder.channels
             metadata["audiosamplerate"] = audioEncoder.sampleRate
-            metadata["audiosamplesize"] = audioEncoder.sampleSize
         }
 
         return metadata
