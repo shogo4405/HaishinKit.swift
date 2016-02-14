@@ -152,25 +152,17 @@ final class RTMPChunk: NSObject {
         description += "}"
         return description
     }
-    
-    init?(bytes:[UInt8], size:Int) {
-        super.init()
 
+    init? (bytes:[UInt8], size:Int) {
+        super.init()
         if (bytes.isEmpty) {
             return nil
         }
-
-        if let type:Type = Type(rawValue: (bytes[0] & 0b11000000) >> 6) {
-            self.type = type
-        } else {
+        guard let type:Type = Type(rawValue: (bytes[0] & 0b11000000) >> 6) where type.ready(bytes) else {
             return nil
         }
-
-        if (type.ready(bytes)) {
-            self.bytes = bytes
-        } else {
-            return nil
-        }
+        self.type = type
+        self.bytes = bytes
     }
 
     init (type:Type, streamId:UInt16, message:RTMPMessage) {
