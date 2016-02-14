@@ -5,6 +5,7 @@ final class RTMPChunk: NSObject {
     static let command:UInt16 = 0x03
     static let audio:UInt16 = 0x04
     static let video:UInt16 = 0x05
+    static let maxTimestamp:UInt32 = 0xFFFFFF
 
     static func getStreamIdSize(byte:UInt8) -> Int {
         switch (byte & 0b00111111) {
@@ -81,20 +82,17 @@ final class RTMPChunk: NSObject {
                 return message == nil ? _bytes : _bytes + message!.payload
             }
 
-            let timestamp:[UInt8] = message!.timestamp.bigEndian.bytes
-            let length:[UInt8] = UInt32(message!.payload.count).bigEndian.bytes
-
             _bytes += type.toBasicHeader(streamId)
-            _bytes += Array(timestamp[1...3])
-            _bytes += Array(length[1...3])
+            _bytes += (RTMPChunk.maxTimestamp < message!.timestamp) ? [0xFF, 0xFF, 0xFF] : Array(message!.timestamp.bigEndian.bytes[1...3])
+            _bytes += Array(UInt32(message!.payload.count).bigEndian.bytes[1...3])
             _bytes.append(message!.type.rawValue)
 
             if (type == .Zero) {
                 _bytes += message!.streamId.littleEndian.bytes
             }
 
-            if (0 < message!.timestampExtended) {
-                _bytes += message!.timestampExtended.bigEndian.bytes
+            if (RTMPChunk.maxTimestamp < message!.timestamp) {
+                _bytes += message!.timestamp.bigEndian.bytes
             }
 
             return _bytes + message!.payload
@@ -135,13 +133,12 @@ final class RTMPChunk: NSObject {
                 break
             }
 
-            let start:Int = headerSize
-            var length:Int = message.length + start
-            if (newValue.count < length) {
-                length = newValue.count
+            var start:Int = headerSize
+            if (message.timestamp == RTMPChunk.maxTimestamp) {
+                message.timestamp = UInt32(bytes: Array(newValue[start..<start + 4])).bigEndian
+                start += 4
             }
-
-            message.payload = Array(newValue[start..<length])
+            message.payload = Array(newValue[start..<min(message.length + start, newValue.count)])
 
             self.message = message
         }
