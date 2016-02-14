@@ -128,12 +128,6 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         }
 
         var status:OSStatus = noErr
-        var blockBuffer:CMBlockBufferRef?
-        var inAudioBufferList:AudioBufferList = AudioBufferList()
-        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-            sampleBuffer, nil, &inAudioBufferList, sizeof(AudioBufferList.self), nil, nil, 0, &blockBuffer
-        )
-        
         var data:[UInt8] = [UInt8](count: Int(AACEncoder.defaultAACBufferSize), repeatedValue: 0)
         var outOutputData:AudioBufferList = AudioBufferList(
             mNumberBuffers: channels,
@@ -144,7 +138,8 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
             )
         )
         
-        currentBufferList = inAudioBufferList
+        currentBufferList = createAudioBufferList(sampleBuffer)
+
         var outputDataPacketSize:UInt32 = 1
         status = fillComplexBuffer(&outputDataPacketSize, &outOutputData, nil)
 
@@ -188,5 +183,14 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         formatDescription = nil
         _inDestinationFormat = nil
         currentBufferList = nil
+    }
+
+    func createAudioBufferList(sampleBuffer:CMSampleBufferRef) -> AudioBufferList {
+        var blockBuffer:CMBlockBufferRef?
+        var inAudioBufferList:AudioBufferList = AudioBufferList()
+        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
+            sampleBuffer, nil, &inAudioBufferList, sizeof(AudioBufferList.self), nil, nil, 0, &blockBuffer
+        )
+        return inAudioBufferList
     }
 }
