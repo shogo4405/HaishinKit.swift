@@ -121,7 +121,7 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     }
 
     private var _session:VTCompressionSessionRef? = nil
-    private var session:VTCompressionSessionRef! {
+    private var session:VTCompressionSessionRef? {
         get {
             if (_session == nil)  {
                 status = VTCompressionSessionCreate(
@@ -136,18 +136,19 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
                     unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
                     &_session
                 )
-                if (status == noErr) {
-                    status = VTSessionSetProperties(_session!, properties)
+                guard status == noErr else {
+                    print("VTCompressionSessionCreate error \(status)")
+                    return nil
                 }
-                if (status == noErr) {
-                    VTCompressionSessionPrepareToEncodeFrames(_session!)
-                }
+                invalidateSession = false
+                status = VTSessionSetProperties(_session!, properties)
+                VTCompressionSessionPrepareToEncodeFrames(_session!)
             }
-            return _session!
+            return _session
         }
         set {
-            if (_session != nil) {
-                VTCompressionSessionInvalidate(_session!)
+            if let session:VTCompressionSessionRef = _session {
+                VTCompressionSessionInvalidate(session)
             }
             _session = newValue
         }
@@ -156,7 +157,9 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
     func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
         if (invalidateSession) {
             session = nil
-            invalidateSession = false
+        }
+        guard let session:VTCompressionSessionRef = session else {
+            return
         }
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
         VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
