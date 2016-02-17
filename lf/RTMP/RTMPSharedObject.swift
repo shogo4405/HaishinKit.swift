@@ -1,9 +1,8 @@
 import Foundation
 
 public class RTMPSharedObject: EventDispatcher {
-    static private var remoteSharedObjects:[String:RTMPSharedObject] = [:]
-
-    static public func getRemote(name:String, remotePath:String, persistence:Bool) -> RTMPSharedObject {
+    static private var remoteSharedObjects:[String: RTMPSharedObject] = [:]
+    static public func getRemote(name: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
         let key:String = remotePath + "/" + name + "?persistence=" + persistence.description
         objc_sync_enter(remoteSharedObjects)
         if (remoteSharedObjects[key] == nil) {
@@ -19,7 +18,7 @@ public class RTMPSharedObject: EventDispatcher {
     var currentVersion:UInt32 = 0
 
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    public private(set) var data:[String:Any?] = [:]
+    public private(set) var data:[String: Any?] = [:]
 
     override public var description:String {
         return data.description
@@ -36,10 +35,11 @@ public class RTMPSharedObject: EventDispatcher {
 
     public func setProperty(name:String, value:Any?) {
         data[name] = value
-        if ((rtmpConnection?.connected) != nil) {
-            let event:RTMPSharedObjectMessage.Event = RTMPSharedObjectMessage.Event(type: .RequestChange, name: name, data: value)
-            rtmpConnection?.doWrite(createChunk([event]))
+        guard let rtmpConnection:RTMPConnection = rtmpConnection where rtmpConnection.connected else {
+            return
         }
+        let event:RTMPSharedObjectMessage.Event = RTMPSharedObjectMessage.Event(type: .RequestChange, name: name, data: value)
+        rtmpConnection.doWrite(createChunk([event]))
     }
 
     public func connect(rtmpConnection:RTMPConnection) {
@@ -111,14 +111,12 @@ public class RTMPSharedObject: EventDispatcher {
 
     func rtmpConnection_rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject {
-            if let code:String = data["code"] as? String {
-                switch code {
-                case "NetConnection.Connect.Success":
-                    rtmpConnection!.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Use)]))
-                default:
-                    break
-                }
+        if let data:ECMAObject = e.data as? ECMAObject, code:String = data["code"] as? String {
+            switch code {
+            case RTMPConnection.Code.ConnectSuccess.rawValue:
+                rtmpConnection?.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Use)]))
+            default:
+                break
             }
         }
     }

@@ -390,7 +390,7 @@ final class RTMPCommandMessage: RTMPMessage {
 
     override func execute(connection: RTMPConnection) {
 
-        if (connection.operations[transactionId] == nil) {
+        guard let responder:Responder = connection.operations.removeValueForKey(transactionId) else {
             switch commandName {
             case "close":
                 connection.close()
@@ -399,8 +399,6 @@ final class RTMPCommandMessage: RTMPMessage {
             }
             return
         }
-
-        let responder:Responder = connection.operations.removeValueForKey(transactionId)!
 
         switch commandName {
         case "_result":

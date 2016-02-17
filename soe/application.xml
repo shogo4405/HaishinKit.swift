@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<application xmlns="http://ns.adobe.com/air/application/3.9">
+
+  <id>soe</id>
+  <versionNumber>1.0</versionNumber>
+  <filename>soe</filename>
+
+  <name>SharedObjectExplorer</name>
+  <description></description>
+  <copyright></copyright>
+
+  <initialWindow>
+    <title>soe</title>
+    <content>soe.swf</content>
+    <systemChrome>standard</systemChrome>
+    <transparent>false</transparent>
+    <visible>true</visible>
+    <minimizable>true</minimizable>
+    <maximizable>true</maximizable>
+    <resizable>true</resizable>
+  </initialWindow>
+
+</application>

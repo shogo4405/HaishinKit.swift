@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<flex-config>
+  <compiler>
+    <locale>
+      <locale-element>ja_JP</locale-element>
+    </locale>
+    <source-path append="true">
+      <path-element>../src</path-element>
+    </source-path>
+    <namespaces append="true">
+      <namespace>
+        <uri>library://ns.adobe.com/flex/spark</uri>
+        <manifest>${flexlib}/spark-manifest.xml</manifest>
+      </namespace>
+    </namespaces>
+  </compiler>
+  <default-background-color>#FFFFFF</default-background-color>
+</flex-config>
