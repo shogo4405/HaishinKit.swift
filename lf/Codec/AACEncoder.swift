@@ -1,6 +1,8 @@
 import Foundation
 import AVFoundation
 
+// @reference https://developer.apple.com/library/ios/technotes/tn2236/_index.html
+// @reference https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/MultimediaPG/UsingAudio/UsingAudio.html
 final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDelegate {
     static let supportedSettingsKeys:[String] = [
         "bitrate",
@@ -13,8 +15,10 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
 
     static let defaultProfile:UInt32 = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
     static let defaultBitrate:UInt32 = 32 * 1024
-    static let defaultChannels:UInt32 = 1
-    static let defaultSampleRate:Double = 44100
+    // 0 means according to a input source
+    static let defaultChannels:UInt32 = 0
+    // 0 means according to a input source
+    static let defaultSampleRate:Double = 0
     static let defaultInClassDescriptions:[AudioClassDescription] = [
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer),
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
@@ -51,7 +55,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         get {
             if (_inDestinationFormat == nil) {
                 _inDestinationFormat = AudioStreamBasicDescription()
-                _inDestinationFormat!.mSampleRate = sampleRate
+                _inDestinationFormat!.mSampleRate = min((sampleRate == 0) ? inSourceFormat!.mSampleRate : sampleRate, 44100)
                 _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
                 _inDestinationFormat!.mFormatFlags = profile
                 _inDestinationFormat!.mBytesPerPacket = 0
@@ -109,6 +113,7 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
             )
 
             if (status == noErr) {
+                var bitrate:UInt32 = self.bitrate * inDestinationFormat.mChannelsPerFrame
                 setProperty(kAudioConverterEncodeBitRate, UInt32(sizeof(UInt32)), &bitrate)
             }
 
@@ -190,17 +195,17 @@ final class AACEncoder:NSObject, Encoder, AVCaptureAudioDataOutputSampleBufferDe
         return inAudioBufferList
     }
 
-    func getProperty(inPropertyID: AudioConverterPropertyID, _ ioPropertyDataSize: UnsafeMutablePointer<UInt32>, _ outPropertyData: UnsafeMutablePointer<Void>) {
+    func getProperty(inPropertyID: AudioConverterPropertyID, _ ioPropertyDataSize: UnsafeMutablePointer<UInt32>, _ outPropertyData: UnsafeMutablePointer<Void>) -> OSStatus{
         guard let converter:AudioConverterRef = _converter else {
-            return
+            return -1
         }
-        AudioConverterGetProperty(converter, inPropertyID, ioPropertyDataSize, outPropertyData)
+        return AudioConverterGetProperty(converter, inPropertyID, ioPropertyDataSize, outPropertyData)
     }
 
-    func setProperty(inPropertyID: AudioConverterPropertyID, _ inPropertyDataSize: UInt32, _ inPropertyData: UnsafePointer<Void>) {
+    func setProperty(inPropertyID: AudioConverterPropertyID, _ inPropertyDataSize: UInt32, _ inPropertyData: UnsafePointer<Void>) -> OSStatus {
         guard let converter:AudioConverterRef = _converter else {
-            return
+            return -1
         }
-        AudioConverterSetProperty(converter, inPropertyID, inPropertyDataSize, inPropertyData)
+        return AudioConverterSetProperty(converter, inPropertyID, inPropertyDataSize, inPropertyData)
     }
 }
