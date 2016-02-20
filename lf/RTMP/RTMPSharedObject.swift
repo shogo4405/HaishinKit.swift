@@ -17,7 +17,7 @@ public class RTMPSharedObject: EventDispatcher {
     var persistence:Bool
     var currentVersion:UInt32 = 0
 
-    public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    public private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     public private(set) var data:[String: Any?] = [:]
 
     override public var description:String {
@@ -111,7 +111,7 @@ public class RTMPSharedObject: EventDispatcher {
 
     func rtmpConnection_rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject, code:String = data["code"] as? String {
+        if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpConnection?.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Use)]))

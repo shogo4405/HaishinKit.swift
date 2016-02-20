@@ -9,6 +9,7 @@ final class LiveViewController: UIViewController {
 
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
+    var sharedObject:RTMPSharedObject!
 
     let touchView: UIView! = UIView()
 
@@ -138,10 +139,11 @@ final class LiveViewController: UIViewController {
     
     func rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject , code:String = data["code"] as? String {
+        if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish(streamName)
+                break
             default:
                 break
             }

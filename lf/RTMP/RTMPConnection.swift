@@ -57,7 +57,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             }
         }
 
-        func data(description:String) -> ECMAObject {
+        func data(description:String) -> ASObject {
             return [
                 "code": self.rawValue,
                 "level": self.level,
@@ -206,27 +206,25 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     func listen(socket:RTMPSocket, bytes:[UInt8]) {
 
-        let chunk:RTMPChunk? = currentChunk == nil ? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) : currentChunk
-
-        if (chunk == nil) {
+        guard let chunk:RTMPChunk = currentChunk == nil ? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) : currentChunk else {
             socket.inputBuffer += bytes
             return
         }
 
-        var position:Int = chunk!.bytes.count
+        var position:Int = chunk.bytes.count
         if (currentChunk != nil) {
-            position = chunk!.append(bytes, size: socket.chunkSizeC)
+            position = chunk.append(bytes, size: socket.chunkSizeC)
         }
 
-        if (chunk!.ready) {
-            print(chunk!)
+        if (chunk.ready) {
+            print(chunk)
 
-            let message:RTMPMessage = chunk!.message!
-            switch chunk!.type {
+            let message:RTMPMessage = chunk.message!
+            switch chunk.type {
             case .Zero:
-                streamsmap[chunk!.streamId] = message.streamId
+                streamsmap[chunk.streamId] = message.streamId
             case .One:
-                message.streamId = streamsmap[chunk!.streamId]!
+                message.streamId = streamsmap[chunk.streamId]!
             case .Two:
                 break
             case .Three:
@@ -235,7 +233,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             message.execute(self)
 
             if (currentChunk == nil) {
-                listen(socket, bytes: Array(bytes[chunk!.bytes.count..<bytes.count]))
+                listen(socket, bytes: Array(bytes[chunk.bytes.count..<bytes.count]))
             } else {
                 currentChunk = nil
                 listen(socket, bytes: Array(bytes[position..<bytes.count]))
@@ -244,12 +242,12 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             return
         }
 
-        if (chunk!.fragmented) {
-            fragmentedChunks[chunk!.streamId] = chunk
+        if (chunk.fragmented) {
+            fragmentedChunks[chunk.streamId] = chunk
             currentChunk = nil
         } else {
-            currentChunk = chunk!.type == .Three ? fragmentedChunks[chunk!.streamId] : chunk
-            fragmentedChunks.removeValueForKey(chunk!.streamId)
+            currentChunk = chunk.type == .Three ? fragmentedChunks[chunk.streamId] : chunk
+            fragmentedChunks.removeValueForKey(chunk.streamId)
         }
 
         if (position < bytes.count) {
@@ -303,7 +301,7 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     func rtmpStatusHandler(notification: NSNotification) {
         removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject, code:String = data["code"] as? String {
+        if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
             switch code {
             case Code.ConnectSuccess.rawValue:
                 connected = true

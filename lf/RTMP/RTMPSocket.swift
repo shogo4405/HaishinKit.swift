@@ -68,7 +68,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             return
         }
 
-        var data:ECMAObject? = nil
+        var data:ASObject? = nil
         if (disconnect) {
             data = (readyState == ReadyState.HandshakeDone) ?
                 RTMPConnection.Code.ConnectClosed.data("") : RTMPConnection.Code.ConnectFailed.data("")
@@ -90,7 +90,7 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
         running = false
         readyState = .Closed
 
-        if let data:ECMAObject = data {
+        if let data:ASObject = data {
             delegate?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: data)
         }
     }

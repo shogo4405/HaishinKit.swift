@@ -31,7 +31,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
             }
         }
 
-        func data(description:String) -> ECMAObject {
+        func data(description:String) -> ASObject {
             return [
                 "code": rawValue,
                 "level": level,
@@ -99,7 +99,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
     public static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
     public static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
 
-    public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    public private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
 
     public var torch:Bool {
         get {
@@ -419,7 +419,7 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
 
     func rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
-        if let data:ECMAObject = e.data as? ECMAObject, code:String = data["code"] as? String {
+        if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 readyState = .Initilized

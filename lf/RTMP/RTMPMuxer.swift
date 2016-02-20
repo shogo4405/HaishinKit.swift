@@ -49,8 +49,8 @@ final class RTMPMuxer: NSObject, VideoEncoderDelegate, AudioEncoderDelegate {
         videoEncoder.dispose()
     }
 
-    func createMetadata(audio:AVCaptureInput?, _ camera:AVCaptureInput?) -> ECMAObject {
-        var metadata:ECMAObject = ECMAObject()
+    func createMetadata(audio:AVCaptureInput?, _ camera:AVCaptureInput?) -> ASObject {
+        var metadata:ASObject = ASObject()
 
         if let _:AVCaptureInput = camera {
             metadata["width"] = videoEncoder.width

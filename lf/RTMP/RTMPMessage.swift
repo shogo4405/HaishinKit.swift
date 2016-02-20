@@ -36,6 +36,18 @@ class RTMPMessage: NSObject {
             return RTMPWindowAcknowledgementSizeMessage()
         case Type.Bandwidth.rawValue:
             return RTMPSetPeerBandwidthMessage()
+        case Type.Audio.rawValue:
+            return RTMPAudioMessage()
+        case Type.Video.rawValue:
+            return RTMPVideoMessage()
+        /*
+        case Type.AMF3Data.rawValue:
+            return RTMPDataMessage(objectEncoding: 0x03)
+        case Type.AMF3Shared.rawValue:
+            return RTMPSharedObjectMessage(objectEncoding: 0x03)
+        case Type.AMF3Command.rawValue:
+            return RTMPCommandMessage(objectEncoding: 0x03)
+        */
         case Type.AMF0Data.rawValue:
             return RTMPDataMessage(objectEncoding: 0x00)
         case Type.AMF0Shared.rawValue:
@@ -44,10 +56,6 @@ class RTMPMessage: NSObject {
             return RTMPCommandMessage(objectEncoding: 0x00)
         case Type.Aggregate.rawValue:
             return RTMPAggregateMessage()
-        case Type.Audio.rawValue:
-            return RTMPAudioMessage()
-        case Type.Video.rawValue:
-            return RTMPVideoMessage()
         default:
             return RTMPMessage(type: Type(rawValue: type)!)
         }
@@ -309,7 +317,7 @@ final class RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    var commandObject:ECMAObject? = nil {
+    var commandObject:ASObject? = nil {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -340,12 +348,13 @@ final class RTMPCommandMessage: RTMPMessage {
             }
             if (length == newValue.count) {
                 var position:Int = 0
-                commandName = serializer.deserialize(newValue, position: &position)
-                transactionId = serializer.deserialize(newValue, position: &position)
-                commandObject = serializer.deserialize(newValue, position: &position)
+                var bytes:[UInt8] = newValue
+                commandName = serializer.deserialize(&bytes, &position)
+                transactionId = serializer.deserialize(&bytes, &position)
+                commandObject = serializer.deserialize(&bytes, &position)
                 arguments.removeAll()
                 if (position < newValue.count) {
-                    arguments.append(serializer.deserialize(newValue, position: &position))
+                    arguments.append(serializer.deserialize(&bytes, &position))
                 }
             }
             super.payload = newValue
@@ -375,9 +384,10 @@ final class RTMPCommandMessage: RTMPMessage {
     init(objectEncoding:UInt8) {
         super.init()
         self.objectEncoding = objectEncoding
+        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
-    init(streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject:ECMAObject?, arguments:[Any?]) {
+    init(streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject: ASObject?, arguments:[Any?]) {
         super.init()
         self.streamId = streamId
         self.transactionId = transactionId
@@ -474,8 +484,9 @@ final class RTMPDataMessage:RTMPMessage {
 
             if (length == newValue.count) {
                 var positon:Int = 0
-                handlerName = serializer.deserialize(newValue, position: &positon)
-                arguments.append(serializer.deserialize(newValue, position: &positon))
+                var bytes:[UInt8] = newValue
+                handlerName = serializer.deserialize(&bytes, &positon)
+                arguments.append(serializer.deserialize(&bytes, &positon))
             }
 
             super.payload = newValue
@@ -568,7 +579,8 @@ final class RTMPSharedObjectMessage:RTMPMessage {
                 position += 2
                 name = String(bytes: Array(bytes[position..<position + nameLength]), encoding: NSUTF8StringEncoding)!
                 position += nameLength
-                data = serializer.deserialize(bytes, position: &position)
+                var value:[UInt8] = bytes
+                data = serializer.deserialize(&value, &position)
             }
         }
     }
@@ -609,6 +621,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
     override var description: String {
         var description:String = "RTMPSharedObjectMessage{"
+        description += "objectEncoding:\(objectEncoding),"
         description += "sharedObjectName:\(sharedObjectName),"
         description += "currentVersion:\(currentVersion),"
         description += "flags:\(flags),"
@@ -619,7 +632,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
 
@@ -670,6 +683,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
     init(objectEncoding:UInt8) {
         super.init()
         self.objectEncoding = objectEncoding
+        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
     init(objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {

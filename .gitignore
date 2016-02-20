@@ -8,3 +8,8 @@ xcuserdata
 *.xcscmblueprint
 .DS_Store
 
+soe/bat/*
+soe/obj/*
+soe/bin/*
+soe/air/*
+soe/AIR_readme.txt
