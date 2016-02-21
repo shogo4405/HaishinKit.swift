@@ -5,7 +5,7 @@ protocol RTMPSocketDelegate: IEventDispatcher {
     func didSetReadyState(socket: RTMPSocket, readyState:RTMPSocket.ReadyState)
 }
 
-final class RTMPSocket: NSObject, NSStreamDelegate {
+final class RTMPSocket: NSObject {
 
     enum ReadyState:UInt8 {
         case Initialized = 1
@@ -92,30 +92,6 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
 
         if let data:ASObject = data {
             delegate?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: data)
-        }
-    }
-
-    func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
-        switch eventCode {
-        case NSStreamEvent.None:
-            break
-        case NSStreamEvent.OpenCompleted:
-            if (inputStream!.streamStatus == NSStreamStatus.Open &&
-                outputStream!.streamStatus == NSStreamStatus.Open) {
-                handleEvent()
-            }
-        case NSStreamEvent.HasSpaceAvailable:
-            break
-        case NSStreamEvent.HasBytesAvailable:
-            if (aStream == inputStream) {
-                doInputProcess()
-            }
-        case NSStreamEvent.ErrorOccurred:
-            close(true)
-        case NSStreamEvent.EndEncountered:
-            break
-        default:
-            break
         }
     }
 
@@ -220,6 +196,33 @@ final class RTMPSocket: NSObject, NSStreamDelegate {
             let bytes:[UInt8] = inputBuffer
             inputBuffer.removeAll(keepCapacity: false)
             delegate?.listen(self, bytes: bytes)
+        default:
+            break
+        }
+    }
+}
+
+// MARK: NSStreamDelegate
+extension RTMPSocket: NSStreamDelegate {
+    func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
+        switch eventCode {
+        case NSStreamEvent.None:
+            break
+        case NSStreamEvent.OpenCompleted:
+            if (inputStream!.streamStatus == NSStreamStatus.Open &&
+                outputStream!.streamStatus == NSStreamStatus.Open) {
+                    handleEvent()
+            }
+        case NSStreamEvent.HasSpaceAvailable:
+            break
+        case NSStreamEvent.HasBytesAvailable:
+            if (aStream == inputStream) {
+                doInputProcess()
+            }
+        case NSStreamEvent.ErrorOccurred:
+            close(true)
+        case NSStreamEvent.EndEncountered:
+            break
         default:
             break
         }

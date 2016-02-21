@@ -34,14 +34,14 @@ final class ByteArray: CustomStringConvertible {
         }
     }
 
-    init () {
+    init() {
     }
 
-    init (bytes:[UInt8]) {
+    init(bytes:[UInt8]) {
         self.bytes = bytes
     }
 
-    init (data:NSData) {
+    init(data:NSData) {
         bytes = [UInt8](count: data.length, repeatedValue: 0x00)
         data.getBytes(&bytes, length: data.length)
     }

@@ -2,7 +2,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
+public class RTMPStream: EventDispatcher {
 
     public static var rootPath:String = NSTemporaryDirectory()
 
@@ -382,28 +382,6 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         captureManager.exposurePointOfInterest = exposure
     }
 
-    func sampleOutput(muxer:RTMPMuxer, audio buffer:NSData, timestamp:Double) {
-        let type:FLVTag.TagType = .Audio
-        rtmpConnection.doWrite(RTMPChunk(
-            type: chunkTypes[type] == nil ? .Zero : .One,
-            streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
-        ))
-        chunkTypes[type] = true
-        audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
-    }
-
-    func sampleOutput(muxer:RTMPMuxer, video buffer:NSData, timestamp:Double) {
-        let type:FLVTag.TagType = .Video
-        rtmpConnection.doWrite(RTMPChunk(
-            type: chunkTypes[type] == nil ? .Zero : .One,
-            streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
-        ))
-        chunkTypes[type] = true
-        videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
-    }
-
     func enqueueSampleBuffer(audio sampleBuffer:CMSampleBuffer) {
         audio.enqueueSampleBuffer(sampleBuffer)
     }
@@ -443,5 +421,30 @@ public class RTMPStream: EventDispatcher, RTMPMuxerDelegate {
         default:
             break
         }
+    }
+}
+
+// MARK: - RTMPMuxerDelegate
+extension RTMPStream: RTMPMuxerDelegate {
+    func sampleOutput(muxer:RTMPMuxer, audio buffer:NSData, timestamp:Double) {
+        let type:FLVTag.TagType = .Audio
+        rtmpConnection.doWrite(RTMPChunk(
+            type: chunkTypes[type] == nil ? .Zero : .One,
+            streamId: type.streamId,
+            message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
+            ))
+        chunkTypes[type] = true
+        audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
+    }
+
+    func sampleOutput(muxer:RTMPMuxer, video buffer:NSData, timestamp:Double) {
+        let type:FLVTag.TagType = .Video
+        rtmpConnection.doWrite(RTMPChunk(
+            type: chunkTypes[type] == nil ? .Zero : .One,
+            streamId: type.streamId,
+            message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
+            ))
+        chunkTypes[type] = true
+        videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
     }
 }

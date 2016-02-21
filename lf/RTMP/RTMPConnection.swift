@@ -24,16 +24,16 @@ public class Responder: NSObject {
     }
 }
 
-public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
+public class RTMPConnection: EventDispatcher {
 
     public enum Code:String {
-        case ConnectFailed = "NetConnection.Connect.Failed"
-        case ConnectClosed = "NetConnection.Connect.Closed"
-        case ConnectSuccess = "NetConnection.Connect.Success"
-        case ConnectRejected = "NetConnection.Connect.Rejected"
-        case ConenctInvalidApp = "NetConnection.Connect.InvalidApp"
-        case ConnectAppshutdown = "NetConnection.Connect.AppShutdown"
-        case ConnectIdleTimeOut = "NetConnection.Connect.IdleTimeOut"
+        case ConnectFailed        = "NetConnection.Connect.Failed"
+        case ConnectClosed        = "NetConnection.Connect.Closed"
+        case ConnectSuccess       = "NetConnection.Connect.Success"
+        case ConnectRejected      = "NetConnection.Connect.Rejected"
+        case ConenctInvalidApp    = "NetConnection.Connect.InvalidApp"
+        case ConnectAppshutdown   = "NetConnection.Connect.AppShutdown"
+        case ConnectIdleTimeOut   = "NetConnection.Connect.IdleTimeOut"
         case ConnectNetworkChange = "NetConnection.Connect.NetworkChange"
 
         public var level:String {
@@ -137,18 +137,23 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
 
     var currentTransactionId:Int = 0
     var socket:RTMPSocket = RTMPSocket()
-    var streams:[UInt32:RTMPStream] = [:]
+    var streams:[UInt32: RTMPStream] = [:]
     var bandWidth:UInt32 = 0
-    var streamsmap:[UInt16:UInt32] = [:]
-    var operations:[Int:Responder] = [:]
+    var streamsmap:[UInt16: UInt32] = [:]
+    var operations:[Int: Responder] = [:]
 
     private var arguments:[Any?] = []
     private var currentChunk:RTMPChunk? = nil
-    private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
+    private var fragmentedChunks:[UInt16: RTMPChunk] = [:]
 
     override public init() {
         super.init()
         socket.delegate = self
+        addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+    }
+
+    deinit {
+        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
     }
     
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
@@ -172,7 +177,6 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
         }
         self.uri = uri
         self.arguments = arguments
-        addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         socket.connect(uri.host!, port: uri.port == nil ? RTMPConnection.defaultPort : uri.port!.integerValue)
     }
 
@@ -202,68 +206,6 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             }
         }
         call("createStream", responder: responder)
-    }
-
-    func listen(socket:RTMPSocket, bytes:[UInt8]) {
-
-        guard let chunk:RTMPChunk = currentChunk == nil ? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) : currentChunk else {
-            socket.inputBuffer += bytes
-            return
-        }
-
-        var position:Int = chunk.bytes.count
-        if (currentChunk != nil) {
-            position = chunk.append(bytes, size: socket.chunkSizeC)
-        }
-
-        if (chunk.ready) {
-            print(chunk)
-
-            let message:RTMPMessage = chunk.message!
-            switch chunk.type {
-            case .Zero:
-                streamsmap[chunk.streamId] = message.streamId
-            case .One:
-                message.streamId = streamsmap[chunk.streamId]!
-            case .Two:
-                break
-            case .Three:
-                break
-            }
-            message.execute(self)
-
-            if (currentChunk == nil) {
-                listen(socket, bytes: Array(bytes[chunk.bytes.count..<bytes.count]))
-            } else {
-                currentChunk = nil
-                listen(socket, bytes: Array(bytes[position..<bytes.count]))
-            }
-            
-            return
-        }
-
-        if (chunk.fragmented) {
-            fragmentedChunks[chunk.streamId] = chunk
-            currentChunk = nil
-        } else {
-            currentChunk = chunk.type == .Three ? fragmentedChunks[chunk.streamId] : chunk
-            fragmentedChunks.removeValueForKey(chunk.streamId)
-        }
-
-        if (position < bytes.count) {
-            listen(socket, bytes: Array(bytes[position..<bytes.count]))
-        }
-    }
-
-    func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
-        switch socket.readyState {
-        case .HandshakeDone:
-            socket.doWrite(createConnectionChunk())
-        case .Closed:
-            connected = false
-        default:
-            break
-        }
     }
 
     private func createConnectionChunk() -> RTMPChunk {
@@ -299,7 +241,6 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
     }
 
     func rtmpStatusHandler(notification: NSNotification) {
-        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
             switch code {
@@ -332,6 +273,72 @@ public class RTMPConnection: EventDispatcher, RTMPSocketDelegate {
             default:
                 break
             }
+        }
+    }
+}
+
+// MARK: - RTMPSocketDelegate
+extension RTMPConnection: RTMPSocketDelegate {
+
+    func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
+        switch socket.readyState {
+        case .HandshakeDone:
+            socket.doWrite(createConnectionChunk())
+        case .Closed:
+            connected = false
+        default:
+            break
+        }
+    }
+
+    func listen(socket:RTMPSocket, bytes:[UInt8]) {
+        
+        guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) else {
+            socket.inputBuffer += bytes
+            return
+        }
+        
+        var position:Int = chunk.bytes.count
+        if (currentChunk != nil) {
+            position = chunk.append(bytes, size: socket.chunkSizeC)
+        }
+        
+        if (chunk.ready) {
+            print(chunk)
+            
+            let message:RTMPMessage = chunk.message!
+            switch chunk.type {
+            case .Zero:
+                streamsmap[chunk.streamId] = message.streamId
+            case .One:
+                message.streamId = streamsmap[chunk.streamId]!
+            case .Two:
+                break
+            case .Three:
+                break
+            }
+            message.execute(self)
+            
+            if (currentChunk == nil) {
+                listen(socket, bytes: Array(bytes[chunk.bytes.count..<bytes.count]))
+            } else {
+                currentChunk = nil
+                listen(socket, bytes: Array(bytes[position..<bytes.count]))
+            }
+            
+            return
+        }
+        
+        if (chunk.fragmented) {
+            fragmentedChunks[chunk.streamId] = chunk
+            currentChunk = nil
+        } else {
+            currentChunk = chunk.type == .Three ? fragmentedChunks[chunk.streamId] : chunk
+            fragmentedChunks.removeValueForKey(chunk.streamId)
+        }
+        
+        if (position < bytes.count) {
+            listen(socket, bytes: Array(bytes[position..<bytes.count]))
         }
     }
 }
