@@ -3,7 +3,7 @@ import AVFoundation
 import VideoToolbox
 import CoreFoundation
 
-final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDelegate {
+final class AVCEncoder: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "fps",
@@ -164,18 +164,24 @@ final class AVCEncoder:NSObject, Encoder, AVCaptureVideoDataOutputSampleBufferDe
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
         VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
     }
+}
 
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-        encodeImageBuffer(image, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
-    }
-
+// MARK: - Encoder
+extension AVCEncoder: Encoder {
     func dispose() {
         dispatch_async(lockQueue) {
             self.session = nil
             self.formatDescription = nil
         }
+    }
+}
+
+//MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+extension AVCEncoder: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+        encodeImageBuffer(image, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
     }
 }

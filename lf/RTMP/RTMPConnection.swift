@@ -292,7 +292,6 @@ extension RTMPConnection: RTMPSocketDelegate {
     }
 
     func listen(socket:RTMPSocket, bytes:[UInt8]) {
-        
         guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) else {
             socket.inputBuffer += bytes
             return
@@ -302,11 +301,8 @@ extension RTMPConnection: RTMPSocketDelegate {
         if (currentChunk != nil) {
             position = chunk.append(bytes, size: socket.chunkSizeC)
         }
-        
-        if (chunk.ready) {
-            print(chunk)
-            
-            let message:RTMPMessage = chunk.message!
+
+        if let message:RTMPMessage = chunk.message where chunk.ready {
             switch chunk.type {
             case .Zero:
                 streamsmap[chunk.streamId] = message.streamId
@@ -318,14 +314,14 @@ extension RTMPConnection: RTMPSocketDelegate {
                 break
             }
             message.execute(self)
-            
+
             if (currentChunk == nil) {
                 listen(socket, bytes: Array(bytes[chunk.bytes.count..<bytes.count]))
             } else {
                 currentChunk = nil
                 listen(socket, bytes: Array(bytes[position..<bytes.count]))
             }
-            
+
             return
         }
         
