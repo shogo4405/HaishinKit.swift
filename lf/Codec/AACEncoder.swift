@@ -20,8 +20,8 @@ final class AACEncoder: NSObject {
     // 0 means according to a input source
     static let defaultSampleRate:Double = 0
     static let defaultInClassDescriptions:[AudioClassDescription] = [
-        AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer),
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
+        AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer)
     ]
 
     var bitrate:UInt32 = AACEncoder.defaultBitrate {
@@ -114,7 +114,7 @@ final class AACEncoder: NSObject {
 
             if (status == noErr) {
                 var bitrate:UInt32 = self.bitrate * inDestinationFormat.mChannelsPerFrame
-                setProperty(kAudioConverterEncodeBitRate, UInt32(sizeof(UInt32)), &bitrate)
+                setProperty(kAudioConverterEncodeBitRate, UInt32(sizeof(bitrate.dynamicType)), &bitrate)
             }
 
             _converter = converter
