@@ -37,6 +37,7 @@
 		299E08021C65BE1100AC356E /* AVCaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */; };
 		299E08031C65BE1100AC356E /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */; };
 		299E08041C65BE1100AC356E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */; };
+		299E18851C7A4440000AB4CC /* RTMPAudioPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */; };
 		29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */; };
 		29B7C1741C68E660000BD35A /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */; };
 		29BDE0BF1C65BD4300D6A768 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */; };
@@ -61,6 +62,7 @@
 		29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */; };
 		29E8603A1C2EFC0E00C595FB /* globalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E860391C2EFC0E00C595FB /* globalTests.swift */; };
 		29FA89731C68CA9C0032B242 /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */; };
+		29FC485E1C7A4EF200834F91 /* RTMPAudioPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -104,6 +106,7 @@
 		295FEFB61C3823E200271E90 /* MP4File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4File.swift; path = ISO/MP4File.swift; sourceTree = "<group>"; };
 		297ABFC21B7F7A21004C779D /* RTMPConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPConnectionTests.swift; sourceTree = "<group>"; };
 		29882E081C54CFEA000D446E /* global.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = global.swift; path = Util/global.swift; sourceTree = "<group>"; };
+		299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPAudioPlayback.swift; path = RTMP/RTMPAudioPlayback.swift; sourceTree = "<group>"; };
 		29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventDispatcherTests.swift; sourceTree = "<group>"; };
 		29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventDispatcher.swift; path = Util/EventDispatcher.swift; sourceTree = "<group>"; };
 		29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVCaptureSessionManager.swift; path = Media/AVCaptureSessionManager.swift; sourceTree = "<group>"; };
@@ -249,6 +252,7 @@
 			isa = PBXGroup;
 			children = (
 				295FEFAB1C3823BE00271E90 /* AMFSerializer.swift */,
+				299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */,
 				29C0E05A1C2EB02E009DD8E8 /* RTMPChunk.swift */,
 				29C0E05B1C2EB02E009DD8E8 /* RTMPConnection.swift */,
 				29C0E05C1C2EB02E009DD8E8 /* RTMPMessage.swift */,
@@ -380,6 +384,7 @@
 				29BDE0C21C65BD5000D6A768 /* AVCaptureSessionManager.swift in Sources */,
 				295FEFB01C3823BE00271E90 /* RTMPRecorder.swift in Sources */,
 				290907D31C3961E500F2E80C /* Encoder.swift in Sources */,
+				299E18851C7A4440000AB4CC /* RTMPAudioPlayback.swift in Sources */,
 				29C0E0611C2EB02E009DD8E8 /* RTMPChunk.swift in Sources */,
 				290907D61C3961F700F2E80C /* H264+AVC.swift in Sources */,
 				29C0E0621C2EB02E009DD8E8 /* RTMPConnection.swift in Sources */,
@@ -400,6 +405,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29FC485E1C7A4EF200834F91 /* RTMPAudioPlayback.swift in Sources */,
 				29B7C1741C68E660000BD35A /* AudioQueuePlayback.swift in Sources */,
 				299E08021C65BE1100AC356E /* AVCaptureSessionManager.swift in Sources */,
 				299E08031C65BE1100AC356E /* ScreenCaptureSession.swift in Sources */,

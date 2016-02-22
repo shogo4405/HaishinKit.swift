@@ -30,10 +30,6 @@ public class AudioQueuePlayback: NSObject {
         }
     }
 
-    public func enqueueSampleBuffer(sampleBuffer:CMSampleBufferRef) {
-        
-    }
-
     private func newOutput(inFormat: UnsafePointer<AudioStreamBasicDescription>) -> OSStatus {
         var queue:AudioQueueRef = self.queue!
         let status:OSStatus = AudioQueueNewOutput(inFormat, callback, unsafeBitCast(self, UnsafeMutablePointer<Void>.self), CFRunLoopGetCurrent(), kCFRunLoopCommonModes, 0, &queue)

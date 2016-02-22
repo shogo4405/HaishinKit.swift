@@ -183,17 +183,16 @@ public class RTMPStream: EventDispatcher {
             }
         }
     }
-    
+
     var readyForKeyframe:Bool = false
-    var audioFormatDescription:CMAudioFormatDescriptionRef?
     var videoFormatDescription:CMVideoFormatDescriptionRef?
     private(set) lazy var recorder:RTMPRecorder = RTMPRecorder()
+    private(set) lazy var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
 
     private var audioTimestamp:Double = 0
     private var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
-    private lazy var audio:AudioQueuePlayback = AudioQueuePlayback()
     private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private lazy var muxer:RTMPMuxer = RTMPMuxer()
     private var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
@@ -262,7 +261,7 @@ public class RTMPStream: EventDispatcher {
                 usleep(100)
             }
             self.readyForKeyframe = false
-            self.audio.startRunnning()
+            self.audioPlayback.startRunnning()
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -280,7 +279,7 @@ public class RTMPStream: EventDispatcher {
                 usleep(100)
             }
             self.readyForKeyframe = false
-            self.audio.startRunnning()
+            self.audioPlayback.startRunnning()
             self.recorder.dispatcher = self
             self.recorder.open(arguments[0] as! String, option: option)
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
@@ -377,13 +376,9 @@ public class RTMPStream: EventDispatcher {
         )))
     }
 
-    public func setPointOfInterest(focus: CGPoint, exposure:CGPoint) {
+    public func setPointOfInterest(focus:CGPoint, exposure:CGPoint) {
         captureManager.focusPointOfInterest = focus
         captureManager.exposurePointOfInterest = exposure
-    }
-
-    func enqueueSampleBuffer(audio sampleBuffer:CMSampleBuffer) {
-        audio.enqueueSampleBuffer(sampleBuffer)
     }
 
     func enqueueSampleBuffer(video sampleBuffer:CMSampleBuffer) {

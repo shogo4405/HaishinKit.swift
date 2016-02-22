@@ -19,7 +19,7 @@ class AMFSerializerUtils {
     }
 }
 
-public class ASUndefined {
+public class ASUndefined: CustomStringConvertible {
 
     public var description:String {
         return "undefined"

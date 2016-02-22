@@ -726,50 +726,8 @@ class RTMPAudioMessage:RTMPMessage {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
+        stream.audioPlayback.onMessage(self)
         stream.recorder.onMessage(audio: self)
-
-        if (payload.isEmpty) {
-            return
-        }
-
-        guard let codec:FLVTag.AudioCodec = FLVTag.AudioCodec(rawValue: payload[0] >> 4) where codec.isSupported else {
-            return
-        }
-
-        switch payload[1] {
-        case FLVTag.AACPacketType.Seq.rawValue:
-            createFormatDescription(stream)
-        case FLVTag.AACPacketType.Raw.rawValue:
-            enqueueSampleBuffer(stream)
-        default:
-            break
-        }
-    }
-
-    func enqueueSampleBuffer(stream: RTMPStream) {
-        var data:[UInt8] = Array(payload[2..<payload.count])
-        var size:Int = data.count
-        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
-        timing.duration = CMTimeMake(Int64(timestamp), 1000)
-
-        var buffer:CMBlockBufferRef?
-        if (CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &data, size, kCFAllocatorNull, nil, 0, size, kCMBlockBufferAssureMemoryNowFlag, &buffer) != noErr) {
-            return
-        }
-
-        var sampleBuffer:CMSampleBufferRef?
-        if (CMSampleBufferCreate(kCFAllocatorDefault, buffer, true, nil, nil, stream.audioFormatDescription!, 1, 1, &timing, 0, &size, &sampleBuffer) != noErr) {
-            return
-        }
-
-        stream.enqueueSampleBuffer(audio: sampleBuffer!)
-    }
-
-    func createFormatDescription(stream: RTMPStream) -> OSStatus {
-        guard let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array(payload[2..<payload.count])) else {
-            return -1
-        }
-        return config.createFormatDescription(&stream.audioFormatDescription)
     }
 }
 
@@ -807,7 +765,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         }
     }
 
-    override func enqueueSampleBuffer(stream: RTMPStream) {
+    func enqueueSampleBuffer(stream: RTMPStream) {
         guard let _:FLVTag.FrameType = FLVTag.FrameType(rawValue: payload[0] >> 4) else {
             return
         }
@@ -839,7 +797,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
         stream.enqueueSampleBuffer(video: sampleBuffer!)
     }
 
-    override func createFormatDescription(stream: RTMPStream) -> OSStatus{
+    func createFormatDescription(stream: RTMPStream) -> OSStatus{
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
         config.bytes = Array(payload[5..<payload.count])
         return config.createFormatDescription(&stream.videoFormatDescription)
