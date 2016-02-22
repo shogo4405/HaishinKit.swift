@@ -10,6 +10,7 @@
   <![CDATA[
 import flash.events.NetStatusEvent;
 import flash.net.NetConnection;
+import flash.net.registerClassAlias;
 import flash.net.SharedObject;
 import flash.events.MouseEvent;
 import flash.events.SyncEvent;
@@ -18,6 +19,8 @@ import mx.utils.ObjectUtil;
 
 private var conenction:NetConnection = null;
 private var sharedObject:SharedObject = null;
+
+registerClassAlias("foo.bar.Hoge", Hoge);
 
 private function idConnectButton_clickHandler(e:MouseEvent):void {
     if (conenction != null) {
@@ -29,7 +32,8 @@ private function idConnectButton_clickHandler(e:MouseEvent):void {
         conenction = null;
     }
     conenction = new NetConnection();
-    conenction.objectEncoding = 0;
+    conenction.objectEncoding = Number(idOjectEncodingRadioButtonGroup.selectedValue)
+	trace(conenction.objectEncoding)
     conenction.client = new NetClient();
     conenction.addEventListener(NetStatusEvent.NET_STATUS, connection_netStatusHandler);
     conenction.connect(idRTMPTextInput.text);
@@ -54,6 +58,10 @@ private function sharedObject_syncHandler(e:SyncEvent):void {
 ]]>
 </fx:Script>
 
+  <fx:Declarations>
+    <s:RadioButtonGroup selectedValue="3" id="idOjectEncodingRadioButtonGroup" />
+  </fx:Declarations>
+
   <s:layout>
     <s:VerticalLayout gap="0" />
   </s:layout>
@@ -65,6 +73,10 @@ private function sharedObject_syncHandler(e:SyncEvent):void {
       </mx:FormItem>
       <mx:FormItem label="SharedObjectName" width="100%" >
         <s:TextInput id="idSharedObjectNameTextInput" text="test" width="100%"/>
+      </mx:FormItem>
+      <mx:FormItem label="objectEncoding" width="100%" >
+        <s:RadioButton group="{idOjectEncodingRadioButtonGroup}" id="idAMF0RadioButton" value="0" label="AMF0" />
+        <s:RadioButton group="{idOjectEncodingRadioButtonGroup}" id="idAMF3RadioButton" value="3" label="AMF3" />
       </mx:FormItem>
     </mx:Form>
     <s:Button width="20%" height="100%" id="idConnectButton" click="idConnectButton_clickHandler(event)" label="connect" />
@@ -81,6 +93,7 @@ private function sharedObject_syncHandler(e:SyncEvent):void {
       <s:Button width="100%" height="30" click="sharedObject.setProperty('BoolFalse', false);" label="BoolFalse" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('BoolTrue', true);" label="BoolTrue" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('Integer', int.MIN_VALUE);" label="Integer" />
+      <s:Button width="100%" height="30" click="sharedObject.setProperty('TypedObject', new Hoge());" label="TypedObject" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('Number', Number.MAX_VALUE);" label="Number" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('String', 'Hello World!!');" label="String" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('Xml', new XMLDocument('&lt;a&gt;hoge&lt;/a&gt;'));" label="Xml(flash.xml.XMLDocument)" />
