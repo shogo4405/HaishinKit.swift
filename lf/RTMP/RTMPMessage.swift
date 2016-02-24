@@ -551,7 +551,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
         var description:String {
             var description:String = "Event{"
-            description += "type:\(type.rawValue),"
+            description += "type:\(type),"
             description += "name:\(name),"
             description += "data:\(data)"
             description += "}"
@@ -570,15 +570,16 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
         init(bytes:[UInt8], inout position:Int, serializer:AMFSerializer) {
             type = Type(rawValue: bytes[position++])!
-
-            let length:Int = Int(UInt32(bytes: Array(bytes[position..<position + 4])).bigEndian)
+            guard 0 < UInt32(bytes: Array(bytes[position..<position + 4])).bigEndian else {
+                position += 4
+                return
+            }
             position += 4
-
-            if (length != 0) {
-                let nameLength:Int = Int(UInt16(bytes: Array(bytes[position..<position + 2])).bigEndian)
-                position += 2
-                name = String(bytes: Array(bytes[position..<position + nameLength]), encoding: NSUTF8StringEncoding)!
-                position += nameLength
+            let length:Int = Int(UInt16(bytes: Array(bytes[position..<position + 2])).bigEndian)
+            position += 2
+            name = String(bytes: Array(bytes[position..<position + length]), encoding: NSUTF8StringEncoding)!
+            position += length
+            if (position < bytes.count) {
                 var value:[UInt8] = bytes
                 data = serializer.deserialize(&value, &position)
             }
@@ -621,6 +622,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
     override var description: String {
         var description:String = "RTMPSharedObjectMessage{"
+        description += "timestmap:\(timestamp),"
         description += "objectEncoding:\(objectEncoding),"
         description += "sharedObjectName:\(sharedObjectName),"
         description += "currentVersion:\(currentVersion),"
@@ -646,10 +648,10 @@ final class RTMPSharedObjectMessage:RTMPMessage {
                 super.payload += [event.type.rawValue]
                 if (event.data != nil) {
                     let name:[UInt8] = [UInt8](event.name!.utf8)
+                    let data:[UInt8] = serializer.serialize(event.data)
+                    super.payload += UInt32(name.count + data.count + 2).bigEndian.bytes
                     super.payload += UInt16(name.count).bigEndian.bytes
                     super.payload += name
-                    let data:[UInt8] = serializer.serialize(event.data)
-                    super.payload += UInt32(data.count).bigEndian.bytes
                     super.payload += data
                 } else {
                     super.payload += UInt32(0).bytes
@@ -686,8 +688,9 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
-    init(objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {
+    init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {
         super.init()
+        self.timestamp = timestamp
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
         self.currentVersion = currentVersion
@@ -697,7 +700,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 
     override func execute(connection:RTMPConnection) {
         let persistence:Bool = flags[0] == 0x01
-        RTMPSharedObject.getRemote(sharedObjectName, remotePath: connection.uri!.absoluteWithoutAuthenticationString, persistence: persistence).onMessage(self)
+        RTMPSharedObject.getRemote(sharedObjectName, remotePath: connection.uri!.absoluteWithoutQueryString, persistence: persistence).onMessage(self)
     }
 }
 

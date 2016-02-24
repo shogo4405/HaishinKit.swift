@@ -303,6 +303,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         if let message:RTMPMessage = chunk.message where chunk.ready {
+            print(chunk)
             switch chunk.type {
             case .Zero:
                 streamsmap[chunk.streamId] = message.streamId

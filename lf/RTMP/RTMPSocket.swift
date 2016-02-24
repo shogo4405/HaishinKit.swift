@@ -34,8 +34,9 @@ final class RTMPSocket: NSObject {
     weak var delegate:RTMPSocketDelegate? = nil
     private(set) var totalBytesIn:Int = 0
     private(set) var totalBytesOut:Int = 0
+    private(set) var timestamp:NSTimeInterval = 0
+
     private var running:Bool = false
-    private var timestamp:NSTimeInterval = 0
     private var inputStream:NSInputStream? = nil
     private var outputStream:NSOutputStream? = nil
     private var outputQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPSocket.network", DISPATCH_QUEUE_SERIAL)

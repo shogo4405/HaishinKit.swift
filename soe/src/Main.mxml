@@ -100,6 +100,7 @@ private function sharedObject_syncHandler(e:SyncEvent):void {
       <s:Button width="100%" height="30" click="sharedObject.setProperty('Date', new Date());" label="Date" />
       <s:Button width="100%" height="30" click="var a:Array = [0, 1, 'hello', '3']; a.hoge = 100; sharedObject.setProperty('Array', a);" label="Array" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('ArrayComplex', [0, 1, 'hello', [0, 1, 2], {'foo':'bar'}]);" label="Array(Complex)" />
+      <s:Button width="100%" height="30" click="sharedObject.setProperty('ArrayComplex', null);" label="Array(Complex) - Remove" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('XmlString', new XML('&lt;a&gt;hoge&lt;/a&gt;'));" label="XmlString(XML)" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('VectorInt', new &lt;int&gt;[0, -1, int.MIN_VALUE,]);" label="VectorInt" />
       <s:Button width="100%" height="30" click="sharedObject.setProperty('VectorUInt', new &lt;uint&gt;[0, 1, 2,]);" label="VectorUInt" />
