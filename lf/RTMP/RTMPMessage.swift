@@ -707,17 +707,47 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 /**
  * @see 7.1.5. Audio Message (9)
  */
-class RTMPAudioMessage:RTMPMessage {
+final class RTMPAudioMessage:RTMPMessage {
+    private(set) var codec:FLVAudioCodec = .Unknown
+    private(set) var soundRate:FLVSoundRate = .KHz44
+    private(set) var soundSize:FLVSoundSize = .Snd8bit
+    private(set) var soundType:FLVSoundType = .Stereo
 
     override var type:Type {
         return .Audio
+    }
+
+    override var payload:[UInt8] {
+        get {
+            return super.payload
+        }
+        set {
+            if (super.payload == newValue) {
+                return
+            }
+
+            if (length == newValue.count && !newValue.isEmpty) {
+                guard let codec:FLVAudioCodec = FLVAudioCodec(rawValue: newValue[0] >> 4),
+                    soundRate:FLVSoundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
+                    soundSize:FLVSoundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
+                    soundType:FLVSoundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
+                    return
+                }
+                self.codec = codec
+                self.soundRate = soundRate
+                self.soundSize = soundSize
+                self.soundType = soundType
+            }
+            
+            super.payload = newValue
+        }
     }
 
     override init() {
         super.init()
     }
 
-    init (streamId: UInt32, timestamp: UInt32, buffer:NSData) {
+    init(streamId: UInt32, timestamp: UInt32, buffer:NSData) {
         super.init()
         self.streamId = streamId
         self.timestamp = timestamp
@@ -732,15 +762,47 @@ class RTMPAudioMessage:RTMPMessage {
         stream.audioPlayback.onMessage(self)
         stream.recorder.onMessage(audio: self)
     }
+
+    func createFormatDescription() -> AudioStreamBasicDescription? {
+        if (payload.isEmpty) {
+            return nil
+        }
+        if (codec == FLVAudioCodec.AAC) {
+            if (payload[1] == FLVAACPacketType.Seq.rawValue) {
+                if let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array(payload[codec.headerSize..<payload.count])) {
+                    return config.createAudioStreamBasicDescription()
+                }
+            }
+            return nil
+        }
+        var formatDescription:AudioStreamBasicDescription = AudioStreamBasicDescription()
+        formatDescription.mFormatID = codec.formatID
+        formatDescription.mSampleRate = soundRate.floatValue
+        formatDescription.mChannelsPerFrame = UInt32(soundType.rawValue)
+        return formatDescription
+    }
 }
 
 /**
 * @see 7.1.5. Video Message (9)
 */
-final class RTMPVideoMessage:RTMPAudioMessage {
+final class RTMPVideoMessage:RTMPMessage {
+    private(set) var codec:FLVVideoCodec = .Unknown
 
     override var type:Type {
         return .Video
+    }
+
+    override init() {
+        super.init()
+    }
+
+    init(streamId: UInt32, timestamp: UInt32, buffer:NSData) {
+        super.init()
+        self.streamId = streamId
+        self.timestamp = timestamp
+        payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
+        buffer.getBytes(&payload, length: payload.count)
     }
 
     override func execute(connection:RTMPConnection) {
@@ -752,11 +814,11 @@ final class RTMPVideoMessage:RTMPAudioMessage {
             return
         }
         switch payload[1] {
-        case FLVTag.AVCPacketType.Seq.rawValue:
+        case FLVAVCPacketType.Seq.rawValue:
             createFormatDescription(stream)
-        case FLVTag.AVCPacketType.Nal.rawValue:
+        case FLVAVCPacketType.Nal.rawValue:
             if (!stream.readyForKeyframe) {
-                stream.readyForKeyframe = (payload[0] >> 4 == FLVTag.FrameType.Key.rawValue)
+                stream.readyForKeyframe = (payload[0] >> 4 == FLVFrameType.Key.rawValue)
                 if (stream.readyForKeyframe) {
                     enqueueSampleBuffer(stream)
                 }
@@ -769,7 +831,7 @@ final class RTMPVideoMessage:RTMPAudioMessage {
     }
 
     func enqueueSampleBuffer(stream: RTMPStream) {
-        guard let _:FLVTag.FrameType = FLVTag.FrameType(rawValue: payload[0] >> 4) else {
+        guard let _:FLVFrameType = FLVFrameType(rawValue: payload[0] >> 4) else {
             return
         }
 

@@ -2,7 +2,7 @@ import Foundation
 
 public let kASUndefined:ASUndefined = ASUndefined()
 
-class AMFSerializerUtils {
+class AMFSerializerUtil {
     private static var classes:[String: AnyClass] = [:]
 
     static func getClassByAlias(name:String) -> AnyClass? {

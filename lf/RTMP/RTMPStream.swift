@@ -261,7 +261,7 @@ public class RTMPStream: EventDispatcher {
                 usleep(100)
             }
             self.readyForKeyframe = false
-            self.audioPlayback.startRunnning()
+            self.audioPlayback.startRunning()
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -279,7 +279,7 @@ public class RTMPStream: EventDispatcher {
                 usleep(100)
             }
             self.readyForKeyframe = false
-            self.audioPlayback.startRunnning()
+            self.audioPlayback.startRunning()
             self.recorder.dispatcher = self
             self.recorder.open(arguments[0] as! String, option: option)
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
@@ -427,7 +427,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
             message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
-            ))
+        ))
         chunkTypes[type] = true
         audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
     }
@@ -438,7 +438,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
             message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
-            ))
+        ))
         chunkTypes[type] = true
         videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
     }

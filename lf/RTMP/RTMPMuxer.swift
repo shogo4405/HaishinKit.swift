@@ -48,11 +48,11 @@ final class RTMPMuxer: NSObject {
         if let _:AVCaptureInput = camera {
             metadata["width"] = videoEncoder.width
             metadata["height"] = videoEncoder.height
-            metadata["videocodecid"] = FLVTag.VideoCodec.AVC.rawValue
+            metadata["videocodecid"] = FLVVideoCodec.AVC.rawValue
         }
         
         if let _:AVCaptureInput = audio {
-            metadata["audiocodecid"] = FLVTag.AudioCodec.AAC.rawValue
+            metadata["audiocodecid"] = FLVAudioCodec.AAC.rawValue
             metadata["audiochannels"] = audioEncoder.channels
             metadata["audiosamplerate"] = audioEncoder.sampleRate
         }
@@ -76,8 +76,8 @@ extension RTMPMuxer: AudioEncoderDelegate {
         }
         let buffer:NSMutableData = NSMutableData()
         let config:[UInt8] = AudioSpecificConfig(formatDescription: formatDescription).bytes
-        var data:[UInt8] = [0x00, FLVTag.AACPacketType.Seq.rawValue]
-        data[0] =  FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
+        var data:[UInt8] = [0x00, FLVAACPacketType.Seq.rawValue]
+        data[0] =  FLVAudioCodec.AAC.rawValue << 4 | FLVSoundRate.KHz44.rawValue << 2 | FLVSoundSize.Snd16bit.rawValue << 1 | FLVSoundType.Stereo.rawValue
         buffer.appendBytes(&data, length: data.count)
         buffer.appendBytes(config, length: config.count)
         delegate?.sampleOutput(self, audio: buffer, timestamp: 0)
@@ -90,8 +90,8 @@ extension RTMPMuxer: AudioEncoderDelegate {
             sampleBuffer, nil, &audioBufferList, sizeof(AudioBufferList.self), nil, nil, 0, &blockBuffer
         )
         let buffer:NSMutableData = NSMutableData()
-        var data:[UInt8] = [0x00, FLVTag.AACPacketType.Raw.rawValue]
-        data[0] =  FLVTag.AudioCodec.AAC.rawValue << 4 | FLVTag.SoundRate.KHz44.rawValue << 2 | FLVTag.SoundSize.Snd16bit.rawValue << 1 | FLVTag.SoundType.Stereo.rawValue
+        var data:[UInt8] = [0x00, FLVAACPacketType.Raw.rawValue]
+        data[0] =  FLVAudioCodec.AAC.rawValue << 4 | FLVSoundRate.KHz44.rawValue << 2 | FLVSoundSize.Snd16bit.rawValue << 1 | FLVSoundType.Stereo.rawValue
         buffer.appendBytes(&data, length: data.count)
         buffer.appendBytes(audioBufferList.mBuffers.mData, length: Int(audioBufferList.mBuffers.mDataByteSize))
         let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
@@ -112,8 +112,8 @@ extension RTMPMuxer: VideoEncoderDelegate {
         }
         let buffer:NSMutableData = NSMutableData()
         var data:[UInt8] = [UInt8](count: 5, repeatedValue: 0x00)
-        data[0] = FLVTag.FrameType.Key.rawValue << 4 | FLVTag.VideoCodec.AVC.rawValue
-        data[1] = FLVTag.AVCPacketType.Seq.rawValue
+        data[0] = FLVFrameType.Key.rawValue << 4 | FLVVideoCodec.AVC.rawValue
+        data[1] = FLVAVCPacketType.Seq.rawValue
         buffer.appendBytes(&data, length: data.count)
         buffer.appendData(avcC)
         delegate?.sampleOutput(self, video: buffer, timestamp: 0)
@@ -133,8 +133,8 @@ extension RTMPMuxer: VideoEncoderDelegate {
         if (block != nil && CMBlockBufferGetDataPointer(block!, 0, nil, &totalLength, &dataPointer) == noErr) {
             let buffer:NSMutableData = NSMutableData()
             var data:[UInt8] = [UInt8](count: 5, repeatedValue: 0x00)
-            data[0] = ((keyframe ? FLVTag.FrameType.Key.rawValue : FLVTag.FrameType.Inter.rawValue) << 4) | FLVTag.VideoCodec.AVC.rawValue
-            data[1] = FLVTag.AVCPacketType.Nal.rawValue
+            data[0] = ((keyframe ? FLVFrameType.Key.rawValue : FLVFrameType.Inter.rawValue) << 4) | FLVVideoCodec.AVC.rawValue
+            data[1] = FLVAVCPacketType.Nal.rawValue
             buffer.appendBytes(&data, length: data.count)
             buffer.appendData(AVCEncoder.getData(dataPointer, length: totalLength))
             let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)

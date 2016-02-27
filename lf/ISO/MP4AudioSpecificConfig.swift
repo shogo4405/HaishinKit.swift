@@ -45,14 +45,18 @@ public struct AudioSpecificConfig: CustomStringConvertible {
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
     }
 
-    public func createFormatDescription(formatDescription: UnsafeMutablePointer<CMAudioFormatDescription?>) -> OSStatus {
+    public func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {
         var asbd:AudioStreamBasicDescription = AudioStreamBasicDescription()
+        asbd.mSampleRate = frequency.sampleRate
         asbd.mFormatID = kAudioFormatMPEG4AAC
         asbd.mFormatFlags = UInt32(type.rawValue)
-        asbd.mSampleRate = frequency.sampleRate
-        asbd.mChannelsPerFrame = UInt32(channel.rawValue)
+        asbd.mBytesPerPacket = 0
         asbd.mFramesPerPacket = frameLengthFlag ? 960 : 1024
-        return CMAudioFormatDescriptionCreate(kCFAllocatorDefault, &asbd, 0, nil, 0, nil, nil, formatDescription)
+        asbd.mBytesPerFrame = 0
+        asbd.mChannelsPerFrame = UInt32(channel.rawValue)
+        asbd.mBitsPerChannel = 0
+        asbd.mReserved = 0
+        return asbd
     }
 }
 
