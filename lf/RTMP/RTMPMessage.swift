@@ -721,32 +721,6 @@ final class RTMPAudioMessage:RTMPMessage {
         return payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
     }
 
-    override var payload:[UInt8] {
-        get {
-            return super.payload
-        }
-        set {
-            if (super.payload == newValue) {
-                return
-            }
-
-            if (length == newValue.count && !newValue.isEmpty) {
-                guard let codec:FLVAudioCodec = FLVAudioCodec(rawValue: newValue[0] >> 4),
-                    soundRate:FLVSoundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
-                    soundSize:FLVSoundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
-                    soundType:FLVSoundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
-                    return
-                }
-                self.codec = codec
-                self.soundRate = soundRate
-                self.soundSize = soundSize
-                self.soundType = soundType
-            }
-            
-            super.payload = newValue
-        }
-    }
-
     override init() {
         super.init()
     }
