@@ -11,7 +11,6 @@ final class AVCEncoder: NSObject {
         "height",
         "bitrate",
         "profileLevel",
-        "aspectRatio16by9",
         "keyframeInterval",
     ]
 
@@ -62,8 +61,7 @@ final class AVCEncoder: NSObject {
             invalidateSession = true
         }
     }
-    
-    var aspectRatio16by9:Bool = true
+
     var keyframeInterval:Int = 2
 
     let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL)
@@ -88,6 +86,7 @@ final class AVCEncoder: NSObject {
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties:[NSString: NSObject] {
+        let isBaseline:Bool = profileLevel.containsString("Baseline")
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
             kVTCompressionPropertyKey_ProfileLevel: profileLevel,
@@ -99,8 +98,8 @@ final class AVCEncoder: NSObject {
                 "ScalingMode": "Trim"
             ]
         ]
-        if (aspectRatio16by9) {
-            properties[kVTCompressionPropertyKey_AspectRatio16x9] = kCFBooleanTrue
+        if (!isBaseline) {
+            properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }
         return properties
     }

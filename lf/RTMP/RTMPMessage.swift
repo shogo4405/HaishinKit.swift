@@ -717,6 +717,10 @@ final class RTMPAudioMessage:RTMPMessage {
         return .Audio
     }
 
+    var soundData:[UInt8] {
+        return payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
+    }
+
     override var payload:[UInt8] {
         get {
             return super.payload

@@ -41,6 +41,10 @@ public class AudioQueuePlayback: NSObject {
         inInputData:UnsafePointer<Void>,
         inPacketDescriptions:UnsafeMutablePointer<AudioStreamPacketDescription>) -> Void in
         let playback:AudioQueuePlayback = unsafeBitCast(inClientData, AudioQueuePlayback.self)
+        for (var i:Int = 0; i < Int(inNumberPackets); ++i) {
+            let offset:Int64 = inPacketDescriptions[i].mStartOffset
+            let packetSize:UInt32 = inPacketDescriptions[i].mDataByteSize
+        }
     }
 
     private var propertyListenerProc:AudioFileStream_PropertyListenerProc = {(
@@ -59,11 +63,11 @@ public class AudioQueuePlayback: NSObject {
         }
     }
 
-    public func parseBytes(bytes:[UInt8]) {
+    public func parseBytes(bytes:[UInt8]) -> OSStatus {
         guard let fileStreamID:AudioFileStreamID = fileStreamID where running else {
-            return
+            return kAudio_ParamError
         }
-        AudioFileStreamParseBytes(fileStreamID, UInt32(bytes.count), bytes, AudioFileStreamParseFlags(rawValue: 0))
+        return AudioFileStreamParseBytes(fileStreamID, UInt32(bytes.count), bytes, AudioFileStreamParseFlags(rawValue: 0))
     }
 
     private func newOutput(inFormat: UnsafePointer<AudioStreamBasicDescription>) -> OSStatus {
