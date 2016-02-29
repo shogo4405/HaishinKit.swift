@@ -18,6 +18,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/shogo4405/lf.swift.git", :tag => "0.1.9" }
 
   s.source_files = "lf", "lf/{Codec,ISO,RTMP,Media,Util}/**/*.swift"
+  s.dependency 'XCGLogger', '~> 3.2'
 
 end
 

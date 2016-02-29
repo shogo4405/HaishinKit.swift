@@ -1,5 +1,8 @@
+import XCGLogger
 import Foundation
 import AVFoundation
+
+let logger:XCGLogger = XCGLogger.defaultInstance()
 
 extension NSURL {
 

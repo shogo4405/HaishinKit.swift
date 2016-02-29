@@ -7,6 +7,7 @@ xcuserdata
 *.xcuserstate
 *.xcscmblueprint
 .DS_Store
+Pods
 
 soe/bat/*
 soe/obj/*

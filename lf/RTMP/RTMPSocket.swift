@@ -1,3 +1,4 @@
+import XCGLogger
 import Foundation
 
 protocol RTMPSocketDelegate: IEventDispatcher {
@@ -50,7 +51,7 @@ final class RTMPSocket: NSObject {
     }
 
     func doWrite(chunk:RTMPChunk) {
-        print(chunk)
+        logger.verbose(chunk.description)
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
             doWrite(chunk)

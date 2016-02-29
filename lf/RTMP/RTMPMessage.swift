@@ -721,6 +721,32 @@ final class RTMPAudioMessage:RTMPMessage {
         return payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
     }
 
+    override var payload:[UInt8] {
+        get {
+            return super.payload
+        }
+        set {
+            if (super.payload == newValue) {
+                return
+            }
+
+            super.payload = newValue
+
+            if (length == newValue.count && !newValue.isEmpty) {
+                guard let codec:FLVAudioCodec = FLVAudioCodec(rawValue: newValue[0] >> 4),
+                    soundRate:FLVSoundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
+                    soundSize:FLVSoundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
+                    soundType:FLVSoundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
+                    return
+                }
+                self.codec = codec
+                self.soundRate = soundRate
+                self.soundSize = soundSize
+                self.soundType = soundType
+            }
+        }
+    }
+
     override init() {
         super.init()
     }
@@ -729,8 +755,9 @@ final class RTMPAudioMessage:RTMPMessage {
         super.init()
         self.streamId = streamId
         self.timestamp = timestamp
-        payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
+        var payload:[UInt8] = [UInt8](count: buffer.length, repeatedValue: 0x00)
         buffer.getBytes(&payload, length: payload.count)
+        self.payload = payload
     }
 
     override func execute(connection:RTMPConnection) {

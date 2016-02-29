@@ -7,30 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		291934E61BAD4126001A67B0 /* lf.framework in Copy Files */ = {isa = PBXBuildFile; fileRef = 292DE5C41BAD3B59000CEEBD /* lf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		292DE5C71BAD3B7B000CEEBD /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 292DE5C41BAD3B59000CEEBD /* lf.framework */; };
+		2924F5371C86F25300D38307 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2924F5361C86F25300D38307 /* lf.framework */; };
 		295D82191BA9B8EE00073478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D82181BA9B8EE00073478 /* AppDelegate.swift */; };
 		295D82201BA9B8EE00073478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295D821F1BA9B8EE00073478 /* Assets.xcassets */; };
 		295D82231BA9B8EE00073478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */; };
 		295D822F1BA9BB5900073478 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D822E1BA9BB5900073478 /* LiveViewController.swift */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		292DE5C31BAD3B59000CEEBD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 292DE5BE1BAD3B59000CEEBD /* lf.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2945CBBD1B4BE66000104112;
-			remoteInfo = lf;
-		};
-		292DE5C51BAD3B59000CEEBD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 292DE5BE1BAD3B59000CEEBD /* lf.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 2945CBC81B4BE66000104112;
-			remoteInfo = lfTests;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		291934E51BAD411E001A67B0 /* Copy Files */ = {
@@ -39,7 +21,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				291934E61BAD4126001A67B0 /* lf.framework in Copy Files */,
 			);
 			name = "Copy Files";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -47,7 +28,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		292DE5BE1BAD3B59000CEEBD /* lf.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = lf.xcodeproj; path = ../lf.xcodeproj; sourceTree = "<group>"; };
+		2924F5361C86F25300D38307 /* lf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lf.framework; path = "../build/Debug-iphoneos/lf.framework"; sourceTree = "<group>"; };
 		295D82151BA9B8EE00073478 /* Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		295D82181BA9B8EE00073478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		295D821F1BA9B8EE00073478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -61,28 +42,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				292DE5C71BAD3B7B000CEEBD /* lf.framework in Frameworks */,
+				2924F5371C86F25300D38307 /* lf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		292DE5BF1BAD3B59000CEEBD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				292DE5C41BAD3B59000CEEBD /* lf.framework */,
-				292DE5C61BAD3B59000CEEBD /* lfTests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		295D820C1BA9B8EE00073478 = {
 			isa = PBXGroup;
 			children = (
+				2924F5361C86F25300D38307 /* lf.framework */,
 				295D82171BA9B8EE00073478 /* Application */,
 				295D82161BA9B8EE00073478 /* Products */,
-				292DE5BE1BAD3B59000CEEBD /* lf.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,35 +129,12 @@
 			mainGroup = 295D820C1BA9B8EE00073478;
 			productRefGroup = 295D82161BA9B8EE00073478 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 292DE5BF1BAD3B59000CEEBD /* Products */;
-					ProjectRef = 292DE5BE1BAD3B59000CEEBD /* lf.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				295D82141BA9B8EE00073478 /* Application */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		292DE5C41BAD3B59000CEEBD /* lf.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = lf.framework;
-			remoteRef = 292DE5C31BAD3B59000CEEBD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		292DE5C61BAD3B59000CEEBD /* lfTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = lfTests.xctest;
-			remoteRef = 292DE5C51BAD3B59000CEEBD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		295D82131BA9B8EE00073478 /* Resources */ = {
@@ -259,7 +208,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -298,8 +247,9 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				"OTHER_SWIFT_FLAGS[arch=*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -313,7 +263,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = BrandAsset;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Application/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf.Application;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -328,7 +278,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = BrandAsset;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = Application/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.4;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf.Application;
 				PRODUCT_NAME = "$(TARGET_NAME)";

@@ -1,4 +1,5 @@
 import Foundation
+import XCGLogger
 
 public class Responder: NSObject {
     
@@ -303,7 +304,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         if let message:RTMPMessage = chunk.message where chunk.ready {
-            print(chunk)
+            logger.verbose(chunk.description)
             switch chunk.type {
             case .Zero:
                 streamsmap[chunk.streamId] = message.streamId

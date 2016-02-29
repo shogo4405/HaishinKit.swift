@@ -41,7 +41,7 @@
 		299E08041C65BE1100AC356E /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */; };
 		299E18851C7A4440000AB4CC /* RTMPAudioPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */; };
 		29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */; };
-		29B7C1741C68E660000BD35A /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */; };
+		29B7C1741C68E660000BD35A /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */; };
 		29BDE0BF1C65BD4300D6A768 /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */; };
 		29BDE0C21C65BD5000D6A768 /* AVCaptureSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */; };
 		29BDE0C31C65BD5000D6A768 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */; };
@@ -63,8 +63,9 @@
 		29C5620D1C78D73F00D4E51B /* AMF0SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C5620C1C78D73F00D4E51B /* AMF0SerializerTests.swift */; };
 		29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */; };
 		29E8603A1C2EFC0E00C595FB /* globalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E860391C2EFC0E00C595FB /* globalTests.swift */; };
-		29FA89731C68CA9C0032B242 /* AudioQueuePlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */; };
+		29FA89731C68CA9C0032B242 /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */; };
 		29FC485E1C7A4EF200834F91 /* RTMPAudioPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */; };
+		67460023EF7E2574A7D65F9E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE640B87794C358ED57DD302 /* Pods.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -125,7 +126,10 @@
 		29C5620C1C78D73F00D4E51B /* AMF0SerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMF0SerializerTests.swift; sourceTree = "<group>"; };
 		29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMF3SerializerTests.swift; sourceTree = "<group>"; };
 		29E860391C2EFC0E00C595FB /* globalTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = globalTests.swift; sourceTree = "<group>"; };
-		29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioQueuePlayback.swift; path = Media/AudioQueuePlayback.swift; sourceTree = "<group>"; };
+		29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioStreamPlayback.swift; path = Media/AudioStreamPlayback.swift; sourceTree = "<group>"; };
+		74A266A03AD43A5BEB04877E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		BDCFE3A53B8641D3F888F723 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		FE640B87794C358ED57DD302 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +137,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				67460023EF7E2574A7D65F9E /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -147,6 +152,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0B8300DF4C3FACAEF3A8223C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FE640B87794C358ED57DD302 /* Pods.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		290907CD1C3961AD00F2E80C /* Codec */ = {
 			isa = PBXGroup;
 			children = (
@@ -175,6 +188,8 @@
 				2945CBBF1B4BE66000104112 /* lf */,
 				2945CBCC1B4BE66000104112 /* lfTests */,
 				2945CBBE1B4BE66000104112 /* Products */,
+				6559B12A7618D880F64E523C /* Pods */,
+				0B8300DF4C3FACAEF3A8223C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -245,7 +260,7 @@
 		29BDE0BD1C65BC2400D6A768 /* Media */ = {
 			isa = PBXGroup;
 			children = (
-				29FA89721C68CA9C0032B242 /* AudioQueuePlayback.swift */,
+				29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */,
 				29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */,
 				29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */,
 			);
@@ -269,6 +284,15 @@
 			name = RTMP;
 			sourceTree = "<group>";
 		};
+		6559B12A7618D880F64E523C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				BDCFE3A53B8641D3F888F723 /* Pods.debug.xcconfig */,
+				74A266A03AD43A5BEB04877E /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -287,10 +311,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "lf" */;
 			buildPhases = (
+				E0260EBE02D27F65D7DFDB5C /* Check Pods Manifest.lock */,
 				2945CBB81B4BE66000104112 /* Sources */,
 				2945CBB91B4BE66000104112 /* Frameworks */,
 				2945CBBA1B4BE66000104112 /* Headers */,
 				2945CBBB1B4BE66000104112 /* Resources */,
+				5F93E32211E234F3FF440D7B /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -374,6 +400,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		5F93E32211E234F3FF440D7B /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E0260EBE02D27F65D7DFDB5C /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2945CBB81B4BE66000104112 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -402,7 +461,7 @@
 				29BDE0C31C65BD5000D6A768 /* ScreenCaptureSession.swift in Sources */,
 				290907D41C3961E500F2E80C /* AVCEncoder.swift in Sources */,
 				29C0E0671C2EB02E009DD8E8 /* RTMPStream.swift in Sources */,
-				29FA89731C68CA9C0032B242 /* AudioQueuePlayback.swift in Sources */,
+				29FA89731C68CA9C0032B242 /* AudioStreamPlayback.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,7 +471,7 @@
 			files = (
 				291E1BA81C7F46300092564E /* Runnable.swift in Sources */,
 				29FC485E1C7A4EF200834F91 /* RTMPAudioPlayback.swift in Sources */,
-				29B7C1741C68E660000BD35A /* AudioQueuePlayback.swift in Sources */,
+				29B7C1741C68E660000BD35A /* AudioStreamPlayback.swift in Sources */,
 				299E08021C65BE1100AC356E /* AVCaptureSessionManager.swift in Sources */,
 				299E08031C65BE1100AC356E /* ScreenCaptureSession.swift in Sources */,
 				29C5620B1C78D71700D4E51B /* ASStructTests.swift in Sources */,
@@ -548,6 +607,7 @@
 		};
 		2945CBD41B4BE66000104112 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BDCFE3A53B8641D3F888F723 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -568,6 +628,7 @@
 		};
 		2945CBD51B4BE66000104112 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 74A266A03AD43A5BEB04877E /* Pods.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
