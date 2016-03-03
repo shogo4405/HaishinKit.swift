@@ -4,6 +4,8 @@ import AVFoundation
 // @see http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
 // @see http://wiki.multimedia.cx/?title=Understanding_AAC
 public struct AudioSpecificConfig: CustomStringConvertible {
+    static let ADTSHeaderSize:Int = 7
+
     public var type:AudioObjectType
     public var frequency:SamplingFrequency
     public var channel:ChannelConfiguration
@@ -43,6 +45,20 @@ public struct AudioSpecificConfig: CustomStringConvertible {
         type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(asbd.mFormatFlags))!)
         frequency = SamplingFrequency(sampleRate: asbd.mSampleRate)
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
+    }
+
+    public func adts(length:Int) -> [UInt8] {
+        let size:Int = 7
+        let fullSize:Int = size + length
+        var adts:[UInt8] = [UInt8](count: size, repeatedValue: 0x00)
+        adts[0] = 0xFF
+        adts[1] = 0xF9
+        adts[2] = (type.rawValue - 1) << 6 | (frequency.rawValue << 2) | (channel.rawValue >> 2)
+        adts[3] = (channel.rawValue & 3) << 6 | UInt8(fullSize >> 11)
+        adts[4] = UInt8((fullSize & 0x7FF) >> 3)
+        adts[5] = ((UInt8(fullSize & 7)) << 5) + 0x1F
+        adts[6] = 0xFC
+        return adts
     }
 
     public func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {

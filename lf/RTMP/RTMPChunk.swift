@@ -178,18 +178,24 @@ final class RTMPChunk: NSObject {
     func append(bytes:[UInt8], size:Int) -> Int {
         fragmented = false
 
-        var length:Int = message!.length - message!.payload.count
+        guard let message:RTMPMessage = message else {
+            return 0
+        }
+
+        var length:Int = message.length - message.payload.count
         if (bytes.count < length) {
             length = bytes.count
         }
 
-        let chunkSize:Int = size - (message!.payload.count % size)
+        let chunkSize:Int = size - (message.payload.count % size)
         if (chunkSize < length) {
             length = chunkSize
             fragmented = true
         }
 
-        message!.payload += Array(bytes[0..<length])
+        if (0 < length) {
+            message.payload += Array(bytes[0..<length])
+        }
 
         return length
     }

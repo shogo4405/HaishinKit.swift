@@ -768,23 +768,22 @@ final class RTMPAudioMessage:RTMPMessage {
         stream.recorder.onMessage(audio: self)
     }
 
-    func createFormatDescription() -> AudioStreamBasicDescription? {
+    func createAudioSpecificConfig() -> AudioSpecificConfig? {
         if (payload.isEmpty) {
             return nil
         }
-        if (codec == FLVAudioCodec.AAC) {
-            if (payload[1] == FLVAACPacketType.Seq.rawValue) {
-                if let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array(payload[codec.headerSize..<payload.count])) {
-                    return config.createAudioStreamBasicDescription()
-                }
-            }
+
+        guard codec == FLVAudioCodec.AAC else {
             return nil
         }
-        var formatDescription:AudioStreamBasicDescription = AudioStreamBasicDescription()
-        formatDescription.mFormatID = codec.formatID
-        formatDescription.mSampleRate = soundRate.floatValue
-        formatDescription.mChannelsPerFrame = UInt32(soundType.rawValue)
-        return formatDescription
+
+        if (payload[1] == FLVAACPacketType.Seq.rawValue) {
+            if let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array(payload[codec.headerSize..<payload.count])) {
+                return config
+            }
+        }
+
+        return nil
     }
 }
 
