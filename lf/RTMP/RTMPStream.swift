@@ -102,21 +102,18 @@ public class RTMPStream: EventDispatcher {
     public private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
 
     public var torch:Bool {
-        get {
-            return captureManager.torch
-        }
-        set {
-            captureManager.torch = newValue
-        }
+        get { return captureManager.torch }
+        set { captureManager.torch = newValue }
+    }
+
+    public var soundTransform:SoundTransform {
+        get { return audioPlayback.soundTransform }
+        set { audioPlayback.soundTransform = newValue }
     }
 
     public var syncOrientation:Bool {
-        get {
-            return captureManager.syncOrientation
-        }
-        set {
-            captureManager.syncOrientation = newValue
-        }
+        get { return captureManager.syncOrientation }
+        set { captureManager.syncOrientation = newValue }
     }
 
     private var _view:UIView? = nil

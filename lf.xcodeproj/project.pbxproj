@@ -18,6 +18,7 @@
 		290907DB1C39631A00F2E80C /* ByteArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907CF1C3961CE00F2E80C /* ByteArray.swift */; };
 		290907DD1C3965F000F2E80C /* AACEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907DC1C3965F000F2E80C /* AACEncoder.swift */; };
 		290907DE1C3966A400F2E80C /* AACEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907DC1C3965F000F2E80C /* AACEncoder.swift */; };
+		290D74761C888AD8008AC3AE /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291F69DD1C88810E00C8B53E /* SoundTransform.swift */; };
 		290DDA351C88645200EA5BEB /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA341C88645200EA5BEB /* Constant.swift */; };
 		290DDA381C8864A900EA5BEB /* Runnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA361C8864A900EA5BEB /* Runnable.swift */; };
 		290DDA391C8864A900EA5BEB /* SiwftCore+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA371C8864A900EA5BEB /* SiwftCore+Extension.swift */; };
@@ -30,6 +31,7 @@
 		291F69DA1C887A4700C8B53E /* Foundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA3A1C8864EB00EA5BEB /* Foundation+Extension.swift */; };
 		291F69DB1C887A4700C8B53E /* Runnable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA361C8864A900EA5BEB /* Runnable.swift */; };
 		291F69DC1C887A4700C8B53E /* SiwftCore+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA371C8864A900EA5BEB /* SiwftCore+Extension.swift */; };
+		291F69DE1C88810E00C8B53E /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291F69DD1C88810E00C8B53E /* SoundTransform.swift */; };
 		2922DA341C4150830016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
 		2922DA361C415FB70016F67A /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA351C415FB70016F67A /* MD5Tests.swift */; };
 		2922DA371C41600A0016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
@@ -108,6 +110,7 @@
 		290DDA361C8864A900EA5BEB /* Runnable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Runnable.swift; sourceTree = "<group>"; };
 		290DDA371C8864A900EA5BEB /* SiwftCore+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiwftCore+Extension.swift"; sourceTree = "<group>"; };
 		290DDA3A1C8864EB00EA5BEB /* Foundation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Foundation+Extension.swift"; sourceTree = "<group>"; };
+		291F69DD1C88810E00C8B53E /* SoundTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundTransform.swift; path = Media/SoundTransform.swift; sourceTree = "<group>"; };
 		2922DA331C4150830016F67A /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Util/MD5.swift; sourceTree = "<group>"; };
 		2922DA351C415FB70016F67A /* MD5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5Tests.swift; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -287,6 +290,7 @@
 				29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */,
 				29BDE0C01C65BD5000D6A768 /* AVCaptureSessionManager.swift */,
 				29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */,
+				291F69DD1C88810E00C8B53E /* SoundTransform.swift */,
 			);
 			name = Media;
 			sourceTree = "<group>";
@@ -465,6 +469,7 @@
 				290DDA3B1C8864EB00EA5BEB /* Foundation+Extension.swift in Sources */,
 				29B4396C1C871A63003136FF /* AudioQueueUtil.swift in Sources */,
 				295FEFAE1C3823BE00271E90 /* AMFSerializer.swift in Sources */,
+				291F69DE1C88810E00C8B53E /* SoundTransform.swift in Sources */,
 				29C0E0631C2EB02E009DD8E8 /* RTMPMessage.swift in Sources */,
 				295FEFB71C3823E200271E90 /* MP4AudioSpecificConfig.swift in Sources */,
 				29C0E0661C2EB02E009DD8E8 /* RTMPSocket.swift in Sources */,
@@ -497,6 +502,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				290D74761C888AD8008AC3AE /* SoundTransform.swift in Sources */,
 				291F69D91C887A4700C8B53E /* Constant.swift in Sources */,
 				291F69DA1C887A4700C8B53E /* Foundation+Extension.swift in Sources */,
 				291F69DB1C887A4700C8B53E /* Runnable.swift in Sources */,

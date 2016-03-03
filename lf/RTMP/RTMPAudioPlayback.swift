@@ -19,7 +19,7 @@ final class RTMPAudioPlayback: AudioStreamPlayback {
         }
 
         let data:[UInt8] = message.soundData
-        let adts:[UInt8] = config.adts(data.count)
+        let _:[UInt8] = config.adts(data.count)
 
         // parseBytes(adts + data)
     }

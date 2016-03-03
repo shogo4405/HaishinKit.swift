@@ -7,6 +7,15 @@ public class AudioStreamPlayback: NSObject {
     static let numberOfBuffers:Int = 3
     static let maxPacketDescriptions:Int = 12 * 12
 
+    public var soundTransform:SoundTransform = SoundTransform() {
+        didSet {
+            guard let queue:AudioQueueRef = queue where running else {
+                return
+            }
+            soundTransform.setParameter(queue)
+        }
+    }
+
     public private(set) var running:Bool = false
     public private(set) var fileStreamID:AudioFileStreamID?
     public var formatDescription:AudioStreamBasicDescription? = nil {
