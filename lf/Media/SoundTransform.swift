@@ -16,20 +16,10 @@ public struct SoundTransform {
     public var pan:Float32 = SoundTransform.defaultPan
 
     func setParameter(inAQ: AudioQueueRef) {
-        if (AudioQueueSetParameter(inAQ, kAudioQueueParam_Volume, volume) != noErr) {
-            logger.warning("set volume = \(volume)")
-        }
-        if (AudioQueueSetParameter(inAQ, kAudioQueueParam_PlayRate, playRate) != noErr) {
-            logger.warning("set playrate = \(playRate)")
-        }
-        if (AudioQueueSetParameter(inAQ, kAudioQueueParam_Pitch, pitch) != noErr) {
-            logger.warning("set pitch = \(pitch)")
-        }
-        if (AudioQueueSetParameter(inAQ, kAudioQueueParam_VolumeRampTime, volumeRampTime) != noErr) {
-            logger.warning("set volueRampTime = \(volumeRampTime)")
-        }
-        if (AudioQueueSetParameter(inAQ, kAudioQueueParam_Pan, pan) != noErr) {
-            logger.warning("set pan = \(pan)")
-        }
+        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Volume, volume), "set volume = \(volume)")
+        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_PlayRate, playRate), "set playrate = \(playRate)")
+        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Pitch, pitch), "set pitch = \(pitch)")
+        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_VolumeRampTime, volumeRampTime), "set volueRampTime = \(volumeRampTime)")
+        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Pan, pan), "set pan = \(pan)")
     }
 }
