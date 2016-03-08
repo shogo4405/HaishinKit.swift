@@ -27,7 +27,7 @@ final class VideoIOComponent: NSObject {
     }
 }
 
-//MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         effect(sampleBuffer)
@@ -40,7 +40,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-//MARK: - ScreenCaptureOutputPixelBufferDelegate
+// MARK: - ScreenCaptureOutputPixelBufferDelegate
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
         encoder.encodeImageBuffer(pixelBuffer,

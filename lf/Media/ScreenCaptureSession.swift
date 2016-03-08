@@ -22,7 +22,7 @@ public final class ScreenCaptureSession:NSObject {
     private let semaphore:dispatch_semaphore_t = dispatch_semaphore_create(1)
     private let lockQueue:dispatch_queue_t = {
         var queue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.ScreenCaptureSession.lock", DISPATCH_QUEUE_SERIAL)
-        dispatch_set_target_queue(queue, dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0));
+        dispatch_set_target_queue(queue, dispatch_get_global_queue( DISPATCH_QUEUE_PRIORITY_HIGH, 0))
         return queue
     }()
 

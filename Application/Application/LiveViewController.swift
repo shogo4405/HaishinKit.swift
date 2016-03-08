@@ -143,7 +143,6 @@ final class LiveViewController: UIViewController {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish(streamName)
-                break
             default:
                 break
             }
@@ -156,7 +155,6 @@ final class LiveViewController: UIViewController {
             let pointOfInterest: CGPoint = CGPoint(x: touchPoint.x/gestureView.bounds.size.width,
                 y: touchPoint.y/gestureView.bounds.size.height)
             print("pointOfInterest: \(pointOfInterest)")
-
             rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
         }
     }
