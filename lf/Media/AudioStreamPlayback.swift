@@ -18,15 +18,46 @@ public class AudioStreamPlayback: NSObject {
 
     public private(set) var running:Bool = false
     public var formatDescription:AudioStreamBasicDescription? = nil
+    public var hint:AudioFileTypeID = 0 {
+        didSet {
+            guard hint != oldValue else {
+                return
+            }
+            var fileStreamID = COpaquePointer()
+            AudioFileStreamOpen(
+                unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
+                self.propertyListenerProc,
+                self.packetsProc,
+                hint,
+                &fileStreamID
+            )
+            self.fileStreamID = fileStreamID
+        }
+    }
 
-    private var queue:AudioQueueRef? = nil
+    private var queue:AudioQueueRef? = nil {
+        didSet {
+            guard let oldValue:AudioQueueRef = oldValue else {
+                return
+            }
+            AudioQueueStop(oldValue, true)
+            AudioQueueDispose(oldValue, true)
+        }
+    }
     private var inuse:[Bool] = []
     private var buffers:[AudioQueueBufferRef] = []
     private var current:Int = 0
     private var started:Bool = false
     private var filledBytes:UInt32 = 0
     private var packetDescriptions:[AudioStreamPacketDescription] = []
-    private var fileStreamID:AudioFileStreamID?
+    private var fileStreamID:AudioFileStreamID? = nil {
+        didSet {
+            guard let oldValue:AudioFileStreamID = oldValue else {
+                return
+            }
+            AudioFileStreamClose(oldValue)
+        }
+    }
     private var isPacketDescriptionsFull:Bool {
         return packetDescriptions.count == AudioStreamPlayback.maxPacketDescriptions
     }
@@ -181,13 +212,7 @@ public class AudioStreamPlayback: NSObject {
     final func onPropertyChangeForFileStream(inAudioFileStream:AudioFileStreamID, _ inPropertyID:AudioFileStreamPropertyID, _ ioFlags:UnsafeMutablePointer<AudioFileStreamPropertyFlags>) {
         switch inPropertyID {
         case kAudioFileStreamProperty_ReadyToProducePackets:
-            guard let
-                fileFormatID:AudioFileStreamID = fileStreamID,
-                formatDescription:AudioStreamBasicDescription = AudioFileStreamUtil.getFormatDescription(fileFormatID) else {
-                logger.warning("ReadyToProducePackets")
-                return
-            }
-            self.formatDescription = formatDescription
+            self.formatDescription = AudioFileStreamUtil.getFormatDescription(inAudioFileStream)
         default:
             break
         }
@@ -201,17 +226,10 @@ extension AudioStreamPlayback: Runnable {
             guard !self.running else {
                 return
             }
-            var fileStreamID = COpaquePointer()
-            AudioFileStreamOpen(
-                unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
-                self.propertyListenerProc,
-                self.packetsProc,
-                kAudioFileAAC_ADTSType,
-                &fileStreamID
-            )
             self.inuse = [Bool](count: AudioStreamPlayback.numberOfBuffers, repeatedValue: false)
             self.started = false
-            self.fileStreamID = fileStreamID
+            self.current = 0
+            self.filledBytes = 0
             self.packetDescriptions.removeAll(keepCapacity: false)
             for _ in 0..<AudioStreamPlayback.numberOfBuffers {
                 self.buffers.append(AudioQueueBufferRef())
@@ -225,19 +243,10 @@ extension AudioStreamPlayback: Runnable {
             guard self.running else {
                 return
             }
-            if let fileStreamID:AudioFileStreamID = self.fileStreamID {
-                AudioFileStreamClose(fileStreamID)
-            }
-            if let queue:AudioQueueRef = self.queue {
-                AudioQueueStop(queue, false)
-                AudioQueueDispose(queue, true)
-            }
             self.queue = nil
             self.inuse.removeAll(keepCapacity: false)
             self.buffers.removeAll(keepCapacity: false)
             self.started = false
-            self.current = 0
-            self.filledBytes = 0
             self.fileStreamID = nil
             self.packetDescriptions.removeAll(keepCapacity: false)
             self.running = false
