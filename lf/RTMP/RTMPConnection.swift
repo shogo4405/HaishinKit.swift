@@ -127,6 +127,10 @@ public class RTMPConnection: EventDispatcher {
     static let defaultChunkSizeS:Int = 1024 * 16
     static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
 
+    public var swfUrl:String? = nil
+    public var pageUrl:String? = nil
+    public var flashVer:String = RTMPConnection.defaultFlashVer
+
     public private(set) var uri:NSURL? = nil
     public private(set) var connected:Bool = false
 
@@ -224,15 +228,15 @@ public class RTMPConnection: EventDispatcher {
             commandName: "connect",
             commandObject: [
                 "app": app,
-                "flashVer": RTMPConnection.defaultFlashVer,
-                "swfUrl": uri!.absoluteWithoutAuthenticationString,
+                "flashVer": flashVer,
+                "swfUrl": swfUrl,
                 "tcUrl": uri!.absoluteWithoutAuthenticationString,
                 "fpad": false,
                 "capabilities": 0,
                 "audioCodecs": SupportSound.AAC.rawValue,
                 "videoCodecs": SupportVideo.H264.rawValue,
                 "videoFunction": VideoFunction.ClientSeek.rawValue,
-                "pageUrl": nil,
+                "pageUrl": pageUrl,
                 "objectEncoding": objectEncoding
             ],
             arguments: arguments
