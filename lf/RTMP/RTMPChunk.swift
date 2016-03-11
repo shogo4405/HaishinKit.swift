@@ -7,6 +7,8 @@ final class RTMPChunk: NSObject {
     static let video:UInt16 = 0x05
     static let maxTimestamp:UInt32 = 0xFFFFFF
 
+    static let defaultSize:Int = 128
+
     static func getStreamIdSize(byte:UInt8) -> Int {
         switch (byte & 0b00111111) {
         case 0:
@@ -52,14 +54,15 @@ final class RTMPChunk: NSObject {
         }
     }
 
+    var size:Int = 0
     var type:Type = .Zero
     var streamId:UInt16 = RTMPChunk.command
 
     var ready:Bool  {
-        if (message == nil) {
+        guard let message:RTMPMessage = message else {
             return false
         }
-        return message!.length == message!.payload.count
+        return message.length == message.payload.count
     }
 
     var headerSize:Int {
@@ -138,7 +141,10 @@ final class RTMPChunk: NSObject {
                 message.timestamp = UInt32(bytes: Array(newValue[start..<start + 4])).bigEndian
                 start += 4
             }
-            message.payload = Array(newValue[start..<min(message.length + start, newValue.count)])
+
+            let end:Int = min(message.length + start, newValue.count)
+            fragmented = size < size
+            message.payload = Array(newValue[start..<min(size, end)])
 
             self.message = message
         }
@@ -146,9 +152,11 @@ final class RTMPChunk: NSObject {
 
     override var description:String {
         var description:String = "RTMPChunk{"
-        description += "type:\(type.rawValue),"
-        description += "streamId:\(streamId),"
+        description += "size:\(size),"
+        description += "type:\(type),"
         description += "message:\(message)"
+        description += "streamId:\(streamId),"
+        description += "fragmented:\(fragmented)"
         description += "}"
         return description
     }
@@ -161,6 +169,7 @@ final class RTMPChunk: NSObject {
         guard let type:Type = Type(rawValue: (bytes[0] & 0b11000000) >> 6) where type.ready(bytes) else {
             return nil
         }
+        self.size = size
         self.type = type
         self.bytes = bytes
     }

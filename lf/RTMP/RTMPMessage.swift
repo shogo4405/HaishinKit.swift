@@ -74,7 +74,7 @@ class RTMPMessage: NSObject {
     override var description:String {
         let className:NSString = NSStringFromClass(self.dynamicType).componentsSeparatedByString(".").last! as String
         var description:String = "\(className){"
-        description += "type:\(type.rawValue),"
+        description += "type:\(type),"
         description += "length:\(length),"
         description += "streamId:\(streamId),"
         description += "timestamp:\(timestamp),"

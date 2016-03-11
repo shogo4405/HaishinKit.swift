@@ -19,7 +19,6 @@ final class RTMPSocket: NSObject {
 
     static let sigSize:Int = 1536
     static let protocolVersion:UInt8 = 3
-    static let defaultChunkSize:Int = 128
     static let defaultBufferSize:Int = 1024
 
     var readyState:ReadyState = .Initialized {
@@ -29,8 +28,8 @@ final class RTMPSocket: NSObject {
     }
 
     var inputBuffer:[UInt8] = []
-    var chunkSizeC:Int = RTMPSocket.defaultChunkSize
-    var chunkSizeS:Int = RTMPSocket.defaultChunkSize
+    var chunkSizeC:Int = RTMPChunk.defaultSize
+    var chunkSizeS:Int = RTMPChunk.defaultSize
     var bufferSize:Int = RTMPSocket.defaultBufferSize
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     weak var delegate:RTMPSocketDelegate? = nil
@@ -102,8 +101,8 @@ final class RTMPSocket: NSObject {
         readyState = .Initialized
 
         timestamp = 0
-        chunkSizeS = RTMPSocket.defaultChunkSize
-        chunkSizeC = RTMPSocket.defaultChunkSize
+        chunkSizeS = RTMPChunk.defaultSize
+        chunkSizeC = RTMPChunk.defaultSize
         bufferSize = RTMPSocket.defaultBufferSize
         totalBytesIn = 0
         totalBytesOut = 0

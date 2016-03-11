@@ -160,7 +160,7 @@ public class RTMPConnection: EventDispatcher {
     deinit {
         removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
     }
-    
+
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: UInt32(RTMPChunk.command),
@@ -301,7 +301,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             socket.inputBuffer += bytes
             return
         }
-        
+
         var position:Int = chunk.bytes.count
         if (currentChunk != nil) {
             position = chunk.append(bytes, size: socket.chunkSizeC)
