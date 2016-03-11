@@ -16,8 +16,9 @@ final class RTMPSocket: NSObject {
         case Closing = 5
         case Closed = 6
     }
-    
+
     static let sigSize:Int = 1536
+    static let protocolVersion:UInt8 = 3
     static let defaultChunkSize:Int = 128
     static let defaultBufferSize:Int = 1024
 
@@ -167,16 +168,12 @@ final class RTMPSocket: NSObject {
             for _ in 0..<RTMPSocket.sigSize - 8 {
                 c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
             }
-            doWrite([objectEncoding])
+            doWrite([RTMPSocket.protocolVersion])
             doWrite(c1packet.bytes)
             readyState = .VersionSent
         case .VersionSent:
             if (inputBuffer.count < RTMPSocket.sigSize + 1) {
                 break
-            }
-            let objectEncoding:UInt8 = inputBuffer[0]
-            if (objectEncoding != self.objectEncoding) {
-                close(true)
             }
             let c2packet:ByteArray = ByteArray()
             c2packet.writeUInt8(Array(inputBuffer[1...4]))
