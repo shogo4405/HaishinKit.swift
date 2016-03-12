@@ -58,7 +58,7 @@ final class RTMPChunk: NSObject {
     var type:Type = .Zero
     var streamId:UInt16 = RTMPChunk.command
 
-    var ready:Bool  {
+    var ready:Bool {
         guard let message:RTMPMessage = message else {
             return false
         }

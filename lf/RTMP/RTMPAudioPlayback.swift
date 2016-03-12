@@ -9,7 +9,7 @@ final class RTMPAudioPlayback: AudioStreamPlayback {
             return
         }
         if let config:AudioSpecificConfig = message.createAudioSpecificConfig() {
-            hint = kAudioFileAAC_ADTSType
+            fileTypeHint = kAudioFileAAC_ADTSType
             self.config = config
             return
         }

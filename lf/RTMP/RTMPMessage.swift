@@ -520,7 +520,7 @@ final class RTMPDataMessage:RTMPMessage {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
-        stream.recorder.onMessage(data: self)
+        stream.recorder.onMessage(self)
     }
 }
 
@@ -772,7 +772,7 @@ final class RTMPAudioMessage:RTMPMessage {
             return
         }
         stream.audioPlayback.onMessage(self)
-        stream.recorder.onMessage(audio: self)
+        stream.recorder.onMessage(self)
     }
 
     func createAudioSpecificConfig() -> AudioSpecificConfig? {
@@ -820,7 +820,7 @@ final class RTMPVideoMessage:RTMPMessage {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
-        stream.recorder.onMessage(video: self)
+        stream.recorder.onMessage(self)
         if (payload.count <= FLVTag.TagType.Video.headerSize) {
             return
         }

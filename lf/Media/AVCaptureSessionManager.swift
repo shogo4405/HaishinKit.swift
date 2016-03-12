@@ -28,10 +28,11 @@ public class AVCaptureSessionManager: NSObject {
 
     static public func deviceWithPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
-            if let device = device as? AVCaptureDevice {
-                if (device.hasMediaType(AVMediaTypeVideo) && device.position == position) {
-                    return device
-                }
+            guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
+                continue
+            }
+            if (device.hasMediaType(AVMediaTypeVideo) && device.position == position) {
+                return device
             }
         }
         return nil
@@ -69,30 +70,44 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public var torch = false {
+    public var torch:Bool = false {
         didSet {
-            if let device = currentCamera?.device {
-                let torchMode = torch ? AVCaptureTorchMode.On : AVCaptureTorchMode.Off
-                
-                if device.isTorchModeSupported(torchMode) && device.torchAvailable {
-                    
-                    do {
-                        try device.lockForConfiguration()
-                        device.torchMode = torchMode
-                        device.unlockForConfiguration()
-                    }
-                    catch let error {
-                        print("Error while setting torch: \(error)")
-                    }
-                    
-                }
-                else {
-                    print("torch mode not supported");
-                }
+            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            guard let device:AVCaptureDevice = currentCamera?.device
+                where device.isTorchModeSupported(torchMode) && device.torchAvailable else {
+                logger.warning("torchMode(\(torchMode)) is not supported")
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.torchMode = torchMode
+                device.unlockForConfiguration()
+            }
+            catch let error as NSError {
+                logger.error("while setting torch: \(error)")
             }
         }
     }
-    
+
+    public var continuousAutofocus:Bool = true {
+        didSet {
+            let focusMode:AVCaptureFocusMode = continuousAutofocus ? .ContinuousAutoFocus : .AutoFocus
+            guard let device:AVCaptureDevice = currentCamera?.device
+                where device.isFocusModeSupported(focusMode) else {
+                logger.warning("focusMode\(focusMode) is not supported")
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.focusMode = focusMode
+                device.unlockForConfiguration()
+            }
+            catch let error as NSError {
+                logger.error("while locking device for autofocus: \(error)")
+            }
+        }
+    }
+
     public var focusPointOfInterest: CGPoint? {
         set {
             if let device = currentCamera?.device {
@@ -122,30 +137,6 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
     
-    public var continuousAutofocus = true {
-        didSet {
-            if let device = currentCamera?.device {
-                let focusMode = continuousAutofocus ? AVCaptureFocusMode.ContinuousAutoFocus : AVCaptureFocusMode.AutoFocus
-                
-                if device.isFocusModeSupported(focusMode) {
-                    
-                    do {
-                        try device.lockForConfiguration()
-                        device.focusMode = focusMode
-                        device.unlockForConfiguration()
-                    }
-                    catch let error {
-                        print("Error while locking device for autofocus: \(error)")
-                    }
-                    
-                }
-                else {
-                    print("Focus mode not supported");
-                }
-            }
-        }
-    }
-    
     public var exposurePointOfInterest: CGPoint? {
         set {
             if let device = currentCamera?.device {
@@ -169,32 +160,25 @@ public class AVCaptureSessionManager: NSObject {
                 }
             }
         }
-        
         get {
             return self.exposurePointOfInterest
         }
     }
-    
-    public var continuousExposure = true {
+
+    public var continuousExposure:Bool = true {
         didSet {
-            if let device = currentCamera?.device {
-                let exposeMode = continuousExposure ? AVCaptureExposureMode.ContinuousAutoExposure : AVCaptureExposureMode.AutoExpose
-                
-                if device.isExposureModeSupported(exposeMode) {
-                    
-                    do {
-                        try device.lockForConfiguration()
-                        device.exposureMode = exposeMode
-                        device.unlockForConfiguration()
-                    }
-                    catch let error {
-                        print("Error while locking device for autoexpose: \(error)")
-                    }
-                    
-                }
-                else {
-                    print("expose mode not supported");
-                }
+            let exposeMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
+            guard let device:AVCaptureDevice = currentCamera?.device
+                where device.isExposureModeSupported(exposeMode) else {
+                logger.warning("exposeMode\(exposeMode) not supported")
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.exposureMode = exposeMode
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for autoexpose: \(error)")
             }
         }
     }
@@ -329,49 +313,38 @@ public class AVCaptureSessionManager: NSObject {
 
     public func attachAudio(audio:AVCaptureDevice?) {
         audioDataOutput = nil
-        guard audio != nil else {
+        guard let audio:AVCaptureDevice = audio else {
             currentAudio = nil
             return
         }
         do {
-            currentAudio = try AVCaptureDeviceInput(device: audio!)
+            currentAudio = try AVCaptureDeviceInput(device: audio)
             session.addOutput(audioDataOutput)
         } catch let error as NSError {
-            print(error)
+            logger.error("\(error)")
         }
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
         videoDataOutput = nil
-        guard camera != nil else {
+        guard let camera:AVCaptureDevice = camera else {
             currentCamera = nil
             return
         }
         do {
-            camera!.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
-            currentCamera = try AVCaptureDeviceInput(device: camera!)
+            camera.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
+            currentCamera = try AVCaptureDeviceInput(device: camera)
             session.addOutput(videoDataOutput)
             for connection in videoDataOutput.connections {
-                if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                    if (connection.supportsVideoOrientation) {
-                        connection.videoOrientation = orientation
-                    }
+                guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
+                    continue
+                }
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
                 }
             }
         } catch let error as NSError {
-            print(error)
-        }
-    }
-
-    public func startRunning() {
-        if (!session.running) {
-            session.startRunning()
-        }
-    }
-
-    public func stopRunning() {
-        if (session.running) {
-            session.stopRunning()
+            logger.error("\(error)")
         }
     }
 
@@ -385,3 +358,15 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 }
+
+// MARK: - Runnable
+extension AVCaptureSessionManager: Runnable {
+    public func startRunning() {
+        session.startRunning()
+    }
+    
+    public func stopRunning() {
+        session.stopRunning()
+    }
+}
+

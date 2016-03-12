@@ -4,7 +4,7 @@ import AVFoundation
 
 final class LiveViewController: UIViewController {
     
-    let url:String = "rtmp://test:test@192.168.179.5/live"
+    let url:String = "rtmp://192.168.179.5/live"
     let streamName:String = "live"
 
     var rtmpConnection:RTMPConnection = RTMPConnection()
@@ -142,7 +142,7 @@ final class LiveViewController: UIViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish(streamName)
+                rtmpStream!.play(streamName)
             default:
                 break
             }

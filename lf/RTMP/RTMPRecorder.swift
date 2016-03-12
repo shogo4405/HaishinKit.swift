@@ -212,7 +212,7 @@ struct FLVTag: CustomStringConvertible {
         return description
     }
 
-    init (data:NSData) {
+    init(data:NSData) {
         let buffer:ByteArray = ByteArray(data: data)
         tagType = TagType(rawValue: buffer.readUInt8())!
         dataSize = buffer.readUInt24()
@@ -223,43 +223,45 @@ struct FLVTag: CustomStringConvertible {
     }
 }
 
-class RTMPRecorder: NSObject {
+final class RTMPRecorder: NSObject {
 
     static let defaultVersion:UInt8 = 1
     static let headerSize:UInt32 = 13
 
-    var dispatcher:IEventDispatcher? = nil
+    weak var dispatcher:IEventDispatcher? = nil
     private var version:UInt8 = RTMPRecorder.defaultVersion
     private var fileHandle:NSFileHandle? = nil
     private var audioTimestamp:UInt32 = 0
     private var videoTimestamp:UInt32 = 0
+    private let lockQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.RTMPRecorder.lock", DISPATCH_QUEUE_SERIAL
+    )
 
     func open(file:String, option:RTMPStream.RecordOption) {
-        let path:String = RTMPStream.rootPath + file + ".flv"
-        createFileIfNotExists(path)
-        objc_sync_enter(fileHandle)
-        fileHandle = option.createFileHandle(file)
-        guard let fileHandle = fileHandle else {
-            objc_sync_exit(self.fileHandle)
-            dispatcher?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: RTMPStream.Code.RecordFailed.data(path))
-            return
+        dispatch_async(lockQueue) {
+            let path:String = RTMPStream.rootPath + file + ".flv"
+            self.createFileIfNotExists(path)
+            self.fileHandle = option.createFileHandle(file)
+            guard let fileHandle:NSFileHandle = self.fileHandle else {
+                self.dispatcher?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: RTMPStream.Code.RecordFailed.data(path))
+                return
+            }
+            fileHandle.seekToFileOffset(UInt64(RTMPRecorder.headerSize))
+            self.dispatcher?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: RTMPStream.Code.RecordStart.data(path))
         }
-        fileHandle.seekToFileOffset(UInt64(RTMPRecorder.headerSize))
-        objc_sync_exit(fileHandle)
-        dispatcher?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: RTMPStream.Code.RecordStart.data(path))
     }
 
     func close() {
-        audioTimestamp = 0
-        videoTimestamp = 0
-        objc_sync_enter(fileHandle)
-        fileHandle?.closeFile()
-        fileHandle = nil
-        objc_sync_exit(fileHandle)
-        dispatcher?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: RTMPStream.Code.RecordStop.data(""))
+        dispatch_async(lockQueue) {
+            self.audioTimestamp = 0
+            self.videoTimestamp = 0
+            self.fileHandle?.closeFile()
+            self.fileHandle = nil
+            self.dispatcher?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: RTMPStream.Code.RecordStop.data(""))
+        }
     }
 
-    func createFileIfNotExists(path: String) {
+    private func createFileIfNotExists(path: String) {
         let manager:NSFileManager = NSFileManager.defaultManager()
         guard !manager.fileExistsAtPath(path) else {
             return
@@ -276,7 +278,7 @@ class RTMPRecorder: NSObject {
         }
     }
 
-    func appendData(type:UInt8, timestamp:UInt32, payload:[UInt8]) {
+    private func appendData(type:UInt8, timestamp:UInt32, payload:[UInt8]) {
         var bytes:[UInt8] = [type]
         bytes += Array(UInt32(payload.count).bigEndian.bytes[1...3])
         bytes += Array(timestamp.bigEndian.bytes[1...3])
@@ -284,24 +286,27 @@ class RTMPRecorder: NSObject {
         bytes += [0, 0, 0]
         bytes += payload
         bytes += UInt32(payload.count + 11).bigEndian.bytes
-        objc_sync_enter(fileHandle)
         let data:NSData = NSData(bytes: bytes, length: bytes.count)
         fileHandle?.writeData(data)
-        objc_sync_exit(fileHandle)
     }
 
-    func onMessage(audio message: RTMPAudioMessage) {
-        appendData(FLVTag.TagType.Audio.rawValue, timestamp: audioTimestamp, payload: message.payload)
-        audioTimestamp += message.timestamp
-    }
-
-    func onMessage(video message: RTMPVideoMessage) {
-        appendData(FLVTag.TagType.Video.rawValue, timestamp: videoTimestamp, payload: message.payload)
-        videoTimestamp += message.timestamp
-    }
-
-    func onMessage(data message: RTMPDataMessage) {
-        appendData(FLVTag.TagType.Data.rawValue, timestamp: 0, payload: message.payload)
-        videoTimestamp += message.timestamp
+    func onMessage(message: RTMPMessage) {
+        dispatch_async(lockQueue) {
+            guard let _:NSFileHandle = self.fileHandle else {
+                return
+            }
+            switch message {
+            case message as RTMPAudioMessage:
+                self.appendData(FLVTag.TagType.Audio.rawValue, timestamp: self.audioTimestamp, payload: message.payload)
+                self.audioTimestamp += message.timestamp
+            case message as RTMPVideoMessage:
+                self.appendData(FLVTag.TagType.Video.rawValue, timestamp: self.videoTimestamp, payload: message.payload)
+                self.videoTimestamp += message.timestamp
+            case message as RTMPDataMessage:
+                self.appendData(FLVTag.TagType.Data.rawValue, timestamp: 0, payload: message.payload)
+            default:
+                break
+            }
+        }
     }
 }

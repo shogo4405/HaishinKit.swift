@@ -357,6 +357,7 @@ public class RTMPStream: EventDispatcher {
                     arguments: [self.id]
             )))
             self.recorder.close()
+            self.audioPlayback.stopRunning()
             self.readyState = .Closed
         }
     }
