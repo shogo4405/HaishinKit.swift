@@ -7,27 +7,126 @@ public class RTMPStream: EventDispatcher {
     public static var rootPath:String = NSTemporaryDirectory()
 
     public enum Code:String {
-        case RecordAlreadyExists     = "NetStream.Record.AlreadyExists"
-        case RecordFailed            = "NetStream.Record.Failed"
-        case RecordNoAccess          = "NetStream.Record.NoAccess"
-        case RecordStart             = "NetStream.Record.Start"
-        case RecordStop              = "NetStream.Record.Stop"
-        case RecordDiskQuotaExceeded = "NetStream.Record.DiskQuotaExceeded"
+        case BufferEmpty               = "NetStream.Buffer.Empty"
+        case BufferFlush               = "NetStream.Buffer.Flush"
+        case BufferFull                = "NetStream.Buffer.Full"
+        case ConnectClosed             = "NetStream.Connect.Closed"
+        case ConnectFailed             = "NetStream.Connect.Failed"
+        case ConnectRejected           = "NetStream.Connect.Rejected"
+        case ConnectSuccess            = "NetStream.Connect.Success"
+        case DRMUpdateNeeded           = "NetStream.DRM.UpdateNeeded"
+        case Failed                    = "NetStream.Failed"
+        case MulticastStreamReset      = "NetStream.MulticastStream.Reset"
+        case PauseNotify               = "NetStream.Pause.Notify"
+        case PlayFailed                = "NetStream.Play.Failed"
+        case PlayFileStructureInvalid  = "NetStream.Play.FileStructureInvalid"
+        case PlayInsufficientBW        = "NetStream.Play.InsufficientBW"
+        case PlayNoSupportedTrackFound = "NetStream.Play.NoSupportedTrackFound"
+        case PlayReset                 = "NetStream.Play.Reset"
+        case PlayStart                 = "NetStream.Play.Start"
+        case PlayStop                  = "NetStream.Play.Stop"
+        case PlayStreamNotFound        = "NetStream.Play.StreamNotFound"
+        case PlayTransition            = "NetStream.Play.Transition"
+        case PlayUnpublishNotify       = "NetStream.Play.UnpublishNotify"
+        case PublishBadName            = "NetStream.Publish.BadName"
+        case PublishIdle               = "NetStream.Publish.Idle"
+        case PublishStart              = "NetStream.Publish.Start"
+        case RecordAlreadyExists       = "NetStream.Record.AlreadyExists"
+        case RecordFailed              = "NetStream.Record.Failed"
+        case RecordNoAccess            = "NetStream.Record.NoAccess"
+        case RecordStart               = "NetStream.Record.Start"
+        case RecordStop                = "NetStream.Record.Stop"
+        case RecordDiskQuotaExceeded   = "NetStream.Record.DiskQuotaExceeded"
+        case SecondScreenStart         = "NetStream.SecondScreen.Start"
+        case SecondScreenStop          = "NetStream.SecondScreen.Stop"
+        case SeekFailed                = "NetStream.Seek.Failed"
+        case SeekInvalidTime           = "NetStream.Seek.InvalidTime"
+        case SeekNotify                = "NetStream.Seek.Notify"
+        case StepNotify                = "NetStream.Step.Notify"
+        case UnpauseNotify             = "NetStream.Unpause.Notify"
+        case UnpublishSuccess          = "NetStream.Unpublish.Success"
+        case VideoDimensionChange      = "NetStream.Video.DimensionChange"
 
         public var level:String {
             switch self {
+            case .BufferEmpty:
+                return "status"
+            case .BufferFlush:
+                return "status"
+            case .BufferFull:
+                return "status"
+            case .ConnectClosed:
+                return "status"
+            case .ConnectFailed:
+                return "error"
+            case .ConnectRejected:
+                return "error"
+            case .ConnectSuccess:
+                return "status"
+            case .DRMUpdateNeeded:
+                return "status"
+            case .Failed:
+                return "error"
+            case .MulticastStreamReset:
+                return "status"
+            case .PauseNotify:
+                return "status"
+            case .PlayFailed:
+                return "error"
+            case .PlayFileStructureInvalid:
+                return "error"
+            case .PlayInsufficientBW:
+                return "warning"
+            case .PlayNoSupportedTrackFound:
+                return "status"
+            case .PlayReset:
+                return "status"
+            case .PlayStart:
+                return "status"
+            case .PlayStop:
+                return "status"
+            case .PlayStreamNotFound:
+                return "status"
+            case .PlayTransition:
+                return "status"
+            case .PlayUnpublishNotify:
+                return "status"
+            case .PublishBadName:
+                return "error"
+            case .PublishIdle:
+                return "status"
+            case .PublishStart:
+                return "status"
             case .RecordAlreadyExists:
                 return "status"
             case .RecordFailed:
                 return "error"
             case .RecordNoAccess:
-                return "status"
+                return "error"
             case .RecordStart:
                 return "status"
             case .RecordStop:
                 return "status"
             case .RecordDiskQuotaExceeded:
                 return "error"
+            case .SecondScreenStart:
+                return "status"
+            case .SecondScreenStop:
+                return "status"
+            case .SeekFailed:
+                return "error"
+            case .SeekInvalidTime:
+                return "error"
+            case .SeekNotify:
+                return "status"
+            case .StepNotify:
+                return "status"
+            case .UnpauseNotify:
+                return "status"
+            case .UnpublishSuccess:
+                return "status"
+            case .VideoDimensionChange:
+                return "status"
             }
         }
 
@@ -102,28 +201,40 @@ public class RTMPStream: EventDispatcher {
     public private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
 
     public var torch:Bool {
-        get { return captureManager.torch }
-        set { captureManager.torch = newValue }
+        get {
+            return captureManager.torch
+        }
+        set {
+            captureManager.torch = newValue
+        }
     }
 
     public var soundTransform:SoundTransform {
-        get { return audioPlayback.soundTransform }
-        set { audioPlayback.soundTransform = newValue }
+        get {
+            return audioPlayback.soundTransform
+        }
+        set {
+            audioPlayback.soundTransform = newValue
+        }
     }
 
     public var syncOrientation:Bool {
-        get { return captureManager.syncOrientation }
-        set { captureManager.syncOrientation = newValue }
+        get {
+            return captureManager.syncOrientation
+        }
+        set {
+            captureManager.syncOrientation = newValue
+        }
     }
 
     private var _view:UIView? = nil
     public var view:UIView! {
         if (_view == nil) {
             layer.videoGravity = videoGravity
-            captureManager.layer.videoGravity = videoGravity
+            captureManager.videoIO.layer.contentsGravity = VideoIOComponent.getContentsGravity(videoGravity)
             _view = UIView()
             _view!.backgroundColor = UIColor.blackColor()
-            _view!.layer.addSublayer(captureManager.layer)
+            _view!.layer.addSublayer(captureManager.videoIO.layer)
             _view!.layer.addSublayer(layer)
             _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
         }
@@ -133,25 +244,25 @@ public class RTMPStream: EventDispatcher {
     public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
         didSet {
             layer.videoGravity = videoGravity
-            captureManager.layer.videoGravity = videoGravity
+            captureManager.videoIO.layer.contentsGravity = VideoIOComponent.getContentsGravity(videoGravity)
         }
     }
 
     public var audioSettings:[String: AnyObject] {
         get {
-            return muxer.audioSettings
+            return captureManager.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)
         }
         set {
-            muxer.audioSettings = newValue
+            captureManager.audioIO.encoder.setValuesForKeysWithDictionary(newValue)
         }
     }
 
     public var videoSettings:[String: AnyObject] {
         get {
-            return muxer.videoSettings
+            return captureManager.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)
         }
         set {
-            muxer.videoSettings = newValue
+            captureManager.videoIO.encoder.setValuesForKeysWithDictionary(newValue)
         }
     }
 
@@ -169,12 +280,12 @@ public class RTMPStream: EventDispatcher {
         didSet {
             switch readyState {
             case .Publishing:
-                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(captureManager.currentAudio, captureManager.currentCamera))
-                captureManager.audioDataOutput.setSampleBufferDelegate(muxer.audioEncoder, queue: muxer.audioEncoder.lockQueue)
-                captureManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
+                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(captureManager))
+                captureManager.audioIO.encoder.startRunning()
+                captureManager.videoIO.encoder.startRunning()
             case .Closed:
-                captureManager.audioDataOutput.setSampleBufferDelegate(nil, queue: nil)
-                captureManager.videoDataOutput.setSampleBufferDelegate(nil, queue: nil)
+                captureManager.audioIO.encoder.stopRunning()
+                captureManager.videoIO.encoder.stopRunning()
             default:
                 break
             }
@@ -183,21 +294,27 @@ public class RTMPStream: EventDispatcher {
 
     var readyForKeyframe:Bool = false
     var videoFormatDescription:CMVideoFormatDescriptionRef?
-    private(set) lazy var recorder:RTMPRecorder = RTMPRecorder()
-    private(set) lazy var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
 
+    private(set) var recorder:RTMPRecorder = RTMPRecorder()
+    private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
+
+    private var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
+    private var muxer:RTMPMuxer = RTMPMuxer()
+    private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private var audioTimestamp:Double = 0
     private var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
-    private var chunkTypes:[FLVTag.TagType:Bool] = [:]
-    private lazy var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
-    private lazy var muxer:RTMPMuxer = RTMPMuxer()
     private var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
-    private let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL)
+
+    private let lockQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL
+    )
 
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
         super.init()
+        captureManager.audioIO.encoder.delegate = muxer
+        captureManager.videoIO.encoder.delegate = muxer
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:", observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
@@ -214,9 +331,6 @@ public class RTMPStream: EventDispatcher {
 
     public func attachCamera(camera:AVCaptureDevice?) {
         captureManager.attachCamera(camera)
-        if (readyState == .Publishing) {
-            captureManager.videoDataOutput.setSampleBufferDelegate(muxer.videoEncoder, queue: muxer.videoEncoder.lockQueue)
-        }
         captureManager.startRunning()
     }
 
@@ -374,6 +488,14 @@ public class RTMPStream: EventDispatcher {
         )))
     }
 
+    public func registerEffect(video effect:VisualEffect) -> Bool {
+        return captureManager.videoIO.registerEffect(effect)
+    }
+
+    public func unregisterEffect(video effect:VisualEffect) -> Bool {
+        return captureManager.videoIO.unregisterEffect(effect)
+    }
+
     public func setPointOfInterest(focus:CGPoint, exposure:CGPoint) {
         captureManager.focusPointOfInterest = focus
         captureManager.exposurePointOfInterest = exposure
@@ -395,7 +517,7 @@ public class RTMPStream: EventDispatcher {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 readyState = .Initilized
                 rtmpConnection.createStream(self)
-            case "NetStream.Publish.Start":
+            case RTMPStream.Code.PublishStart.rawValue:
                 readyState = .Publishing
             default:
                 break
@@ -410,7 +532,7 @@ public class RTMPStream: EventDispatcher {
         switch keyPath {
         case "frame":
             layer.frame = view.bounds
-            captureManager.layer.frame = view.bounds
+            captureManager.videoIO.layer.frame = view.bounds
         default:
             break
         }

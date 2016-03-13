@@ -60,6 +60,9 @@ final class LiveViewController: UIViewController {
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(.Back))
+        rtmpStream.registerEffect(video: MonochromeEffect())
+
+        print(rtmpStream.videoGravity)
         
         rtmpStream.captureSettings = [
             "continuousAutofocus": true,
@@ -142,7 +145,7 @@ final class LiveViewController: UIViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.play(streamName)
+                rtmpStream!.publish(streamName)
             default:
                 break
             }

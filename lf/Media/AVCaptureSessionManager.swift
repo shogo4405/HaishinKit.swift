@@ -51,13 +51,6 @@ public class AVCaptureSessionManager: NSObject {
             guard orientation != oldValue else {
                 return
             }
-
-            if let connection:AVCaptureConnection = _layer?.connection {
-                if (connection.supportsVideoOrientation) {
-                    connection.videoOrientation = orientation
-                }
-            }
-
             if (_videoDataOutput != nil) {
                 for connection in _videoDataOutput!.connections {
                     if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
@@ -259,19 +252,6 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    private var _layer:AVCaptureVideoPreviewLayer? = nil
-    var layer:AVCaptureVideoPreviewLayer! {
-        if (_layer == nil) {
-            _layer = AVCaptureVideoPreviewLayer(session: session)
-            if let connection:AVCaptureConnection = _layer?.connection {
-                if (connection.supportsVideoOrientation) {
-                    connection.videoOrientation = orientation
-                }
-            }
-        }
-        return _layer
-    }
-
     public private(set) var currentAudio:AVCaptureDeviceInput? = nil {
         didSet {
             guard oldValue != currentAudio else {
@@ -300,6 +280,9 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
+    private(set) var audioIO:AudioIOComponent = AudioIOComponent()
+    private(set) var videoIO:VideoIOComponent = VideoIOComponent()
+
     public override init() {
         super.init()
         if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
@@ -320,6 +303,7 @@ public class AVCaptureSessionManager: NSObject {
         do {
             currentAudio = try AVCaptureDeviceInput(device: audio)
             session.addOutput(audioDataOutput)
+            audioDataOutput.setSampleBufferDelegate(audioIO, queue: audioIO.lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
         }
@@ -331,8 +315,20 @@ public class AVCaptureSessionManager: NSObject {
             currentCamera = nil
             return
         }
+
         do {
+            try camera.lockForConfiguration()
             camera.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
+            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            if (camera.isTorchModeSupported(torchMode)) {
+                camera.torchMode = torchMode
+            }
+            camera.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("\(error)")
+        }
+
+        do {
             currentCamera = try AVCaptureDeviceInput(device: camera)
             session.addOutput(videoDataOutput)
             for connection in videoDataOutput.connections {
@@ -343,6 +339,7 @@ public class AVCaptureSessionManager: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
+            videoDataOutput.setSampleBufferDelegate(videoIO, queue: videoIO.lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
         }
@@ -369,4 +366,3 @@ extension AVCaptureSessionManager: Runnable {
         session.stopRunning()
     }
 }
-

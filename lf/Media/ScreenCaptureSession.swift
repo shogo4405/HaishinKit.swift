@@ -34,35 +34,6 @@ public final class ScreenCaptureSession:NSObject {
         return UIScreen.mainScreen().scale
     }()
 
-    public func startRunning() {
-        dispatch_sync(lockQueue) {
-            if (self.running) {
-                return
-            }
-            self.running = true
-            self.pixelBufferPool = nil
-            self.attributes[kCVPixelBufferWidthKey] = self.size.width * self.scale
-            self.attributes[kCVPixelBufferHeightKey] = self.size.height * self.scale
-            self.attributes[kCVPixelBufferBytesPerRowAlignmentKey] = self.size.width * 4
-            self.colorSpace = CGColorSpaceCreateDeviceRGB()
-            self.displayLink = CADisplayLink(target: self, selector: "onScreen:")
-            CVPixelBufferPoolCreate(nil, nil, self.attributes, &self.pixelBufferPool)
-            self.displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
-        }
-    }
-
-    public func stopRunning() {
-        dispatch_sync(lockQueue) {
-            if (!self.running) {
-                return
-            }
-            self.displayLink.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
-            self.colorSpace = nil
-            self.displayLink = nil
-            self.running = false
-        }
-    }
-    
     public func onScreen(displayLink:CADisplayLink) {
         if (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0) {
             return;
@@ -113,5 +84,37 @@ public final class ScreenCaptureSession:NSObject {
         CGContextConcatCTM(context, CGAffineTransformMake(1, 0, 0, -1, 0, size.height))
 
         return context
+    }
+}
+
+// MARK - Runnable
+extension ScreenCaptureSession: Runnable {
+    public func startRunning() {
+        dispatch_sync(lockQueue) {
+            guard self.running else {
+                return
+            }
+            self.running = true
+            self.pixelBufferPool = nil
+            self.attributes[kCVPixelBufferWidthKey] = self.size.width * self.scale
+            self.attributes[kCVPixelBufferHeightKey] = self.size.height * self.scale
+            self.attributes[kCVPixelBufferBytesPerRowAlignmentKey] = self.size.width * 4
+            self.colorSpace = CGColorSpaceCreateDeviceRGB()
+            self.displayLink = CADisplayLink(target: self, selector: "onScreen:")
+            CVPixelBufferPoolCreate(nil, nil, self.attributes, &self.pixelBufferPool)
+            self.displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+        }
+    }
+    
+    public func stopRunning() {
+        dispatch_sync(lockQueue) {
+            guard !self.running else {
+                return
+            }
+            self.displayLink.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            self.colorSpace = nil
+            self.displayLink = nil
+            self.running = false
+        }
     }
 }

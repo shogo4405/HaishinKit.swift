@@ -28,32 +28,41 @@ public class Responder: NSObject {
 public class RTMPConnection: EventDispatcher {
 
     public enum Code:String {
-        case ConnectFailed        = "NetConnection.Connect.Failed"
-        case ConnectClosed        = "NetConnection.Connect.Closed"
-        case ConnectSuccess       = "NetConnection.Connect.Success"
-        case ConnectRejected      = "NetConnection.Connect.Rejected"
-        case ConenctInvalidApp    = "NetConnection.Connect.InvalidApp"
+        case CallBadVersion       = "NetConnection.Call.BadVersion"
+        case CallFailed           = "NetConnection.Call.Failed"
+        case CallProhibited       = "NetConnection.Call.Prohibited"
         case ConnectAppshutdown   = "NetConnection.Connect.AppShutdown"
+        case ConnectClosed        = "NetConnection.Connect.Closed"
+        case ConnectFailed        = "NetConnection.Connect.Failed"
         case ConnectIdleTimeOut   = "NetConnection.Connect.IdleTimeOut"
+        case ConenctInvalidApp    = "NetConnection.Connect.InvalidApp"
         case ConnectNetworkChange = "NetConnection.Connect.NetworkChange"
+        case ConnectRejected      = "NetConnection.Connect.Rejected"
+        case ConnectSuccess       = "NetConnection.Connect.Success"
 
         public var level:String {
             switch self {
-            case .ConnectFailed:
+            case .CallBadVersion:
                 return "error"
-            case .ConnectClosed:
-                return "status"
-            case .ConnectSuccess:
-                return "status"
-            case .ConnectRejected:
-                return "status"
-            case .ConenctInvalidApp:
+            case .CallFailed:
+                return "error"
+            case .CallProhibited:
                 return "error"
             case .ConnectAppshutdown:
                 return "status"
+            case .ConnectClosed:
+                return "status"
+            case .ConnectFailed:
+                return "error"
             case .ConnectIdleTimeOut:
                 return "status"
+            case .ConenctInvalidApp:
+                return "error"
             case .ConnectNetworkChange:
+                return "status"
+            case .ConnectRejected:
+                return "status"
+            case .ConnectSuccess:
                 return "status"
             }
         }

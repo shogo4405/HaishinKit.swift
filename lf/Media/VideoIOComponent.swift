@@ -1,42 +1,100 @@
+import CoreImage
 import Foundation
 import AVFoundation
 
-protocol VideoIOComponentDelegate: class {
-    func didEffect(sampleBuffer: CMSampleBuffer!)
-}
-
 final class VideoIOComponent: NSObject {
-    var delegate:VideoIOComponentDelegate?
+
+    static func getContentsGravity(videoGravity:String) -> String {
+        switch videoGravity {
+        case AVLayerVideoGravityResizeAspect:
+            return kCAGravityResizeAspect
+        case AVLayerVideoGravityResizeAspectFill:
+            return kCAGravityResizeAspectFill
+        case AVLayerVideoGravityResize:
+            return kCAGravityResize
+        default:
+            return kCAGravityResizeAspect
+        }
+    }
+
+    var layer:CALayer = CALayer()
     var encoder:AVCEncoder = AVCEncoder()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
-    private var effects:[IEffect] = []
+    private var context:CIContext = CIContext()
+    private var effects:[VisualEffect] = []
 
-    func effect(sampleBuffer: CMSampleBuffer!) {
-        for effect in effects {
-            effect.execute(sampleBuffer)
+    override init() {
+        encoder.lockQueue = lockQueue
+    }
+
+    func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
+        var image:CIImage!
+        autoreleasepool {
+            if #available(iOS 9.0, *) {
+                image = CIImage(CVImageBuffer: buffer)
+            } else {
+                image = createImage(buffer)
+            }
+            for effect in self.effects {
+                image = effect.execute(image)
+            }
+            let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.layer.contents = content
+            }
         }
-        delegate?.didEffect(sampleBuffer)
+        return createImageBuffer(image)!
     }
 
-    func registerEffect(effect:IEffect) {
+    func registerEffect(effect:VisualEffect) -> Bool {
+        objc_sync_enter(effects)
+        if let _:Int = effects.indexOf(effect) {
+            objc_sync_exit(effects)
+            return false
+        }
+        effects.append(effect)
+        objc_sync_exit(effects)
+        return true
     }
 
-    func unregisterEffect(effect:IEffect) {
+    func unregisterEffect(effect:VisualEffect) -> Bool {
+        objc_sync_enter(effects)
+        if let i:Int = effects.indexOf(effect) {
+            effects.removeAtIndex(i)
+            objc_sync_exit(effects)
+            return true
+        }
+        objc_sync_exit(effects)
+        return false
+    }
+
+    func createImage(buffer:CVImageBuffer) -> CIImage {
+        return CIImage()
+    }
+
+    func createImageBuffer(image:CIImage) -> CVImageBufferRef? {
+        var buffer:CVPixelBuffer?
+        CVPixelBufferCreate(kCFAllocatorDefault, Int(image.extent.width), Int(image.extent.height), kCVPixelFormatType_32BGRA, nil, &buffer)
+        CVPixelBufferLockBaseAddress(buffer!, 0)
+        context.render(image, toCVPixelBuffer: buffer!)
+        CVPixelBufferUnlockBaseAddress(buffer!, 0)
+        return buffer
     }
 }
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        effect(sampleBuffer)
-        if let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) {
-            encoder.encodeImageBuffer(image,
-                presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
-                duration: CMSampleBufferGetDuration(sampleBuffer)
-            )
+        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
         }
+        encoder.encodeImageBuffer(
+            effect(image),
+            presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
+            duration: CMSampleBufferGetDuration(sampleBuffer)
+        )
     }
 }
 

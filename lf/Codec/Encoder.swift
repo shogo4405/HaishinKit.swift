@@ -1,8 +1,7 @@
 import Foundation
 import AVFoundation
 
-protocol Encoder {
-    func dispose()
+protocol Encoder: Runnable {
 }
 
 protocol VideoEncoderDelegate: class {

@@ -24,7 +24,6 @@ final class AVCEncoder: NSObject {
     static let defaultWidth:Int32 = 480
     static let defaultHeight:Int32 = 272
     static let defaultBitrate:UInt32 = 160 * 1024
-
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
@@ -49,22 +48,20 @@ final class AVCEncoder: NSObject {
                     return
                 }
                 let number:CFNumberRef = CFNumberCreate(nil, .SInt32Type, &self.bitrate)
-                let status:OSStatus = VTSessionSetProperty(session, kVTCompressionPropertyKey_AverageBitRate, number)
-                if (status != noErr) {
-                    print("error setting video bitrate")
-                }
+                IsNoErr(VTSessionSetProperty(session, kVTCompressionPropertyKey_AverageBitRate, number), "setting video bitrate \(number)")
             }
         }
     }
+    var running:Bool = false
     var profileLevel:String = kVTProfileLevel_H264_Baseline_3_0 as String {
         didSet {
             invalidateSession = true
         }
     }
-
     var keyframeInterval:Int = 2
-
-    let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL)
+    var lockQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL
+    )
     weak var delegate:VideoEncoderDelegate?
 
     var formatDescription:CMFormatDescriptionRef? = nil {
@@ -75,7 +72,6 @@ final class AVCEncoder: NSObject {
         }
     }
 
-    private var status:OSStatus = noErr
     private var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = AVCEncoder.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(int: width)
@@ -111,7 +107,7 @@ final class AVCEncoder: NSObject {
         infoFlags:VTEncodeInfoFlags,
         sampleBuffer:CMSampleBuffer?) in
         guard status == noErr else {
-            print(status)
+            logger.error("status = \(status)")
             return
         }
         let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
@@ -123,7 +119,7 @@ final class AVCEncoder: NSObject {
     private var session:VTCompressionSessionRef? {
         get {
             if (_session == nil)  {
-                status = VTCompressionSessionCreate(
+                guard IsNoErr(VTCompressionSessionCreate(
                     kCFAllocatorDefault,
                     width,
                     height,
@@ -134,14 +130,12 @@ final class AVCEncoder: NSObject {
                     callback,
                     unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
                     &_session
-                )
-                guard status == noErr else {
-                    print("VTCompressionSessionCreate error \(status)")
+                ), "VTCompressionSessionCreate") else {
                     return nil
                 }
                 invalidateSession = false
-                status = VTSessionSetProperties(_session!, properties)
-                VTCompressionSessionPrepareToEncodeFrames(_session!)
+                IsNoErr(VTSessionSetProperties(_session!, properties))
+                IsNoErr(VTCompressionSessionPrepareToEncodeFrames(_session!))
             }
             return _session
         }
@@ -154,6 +148,9 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
+        guard running else {
+            return
+        }
         if (invalidateSession) {
             session = nil
         }
@@ -167,20 +164,16 @@ final class AVCEncoder: NSObject {
 
 // MARK: - Encoder
 extension AVCEncoder: Encoder {
-    func dispose() {
+    func startRunning() {
+        dispatch_async(lockQueue) {
+            self.running = true
+        }
+    }
+    func stopRunning() {
         dispatch_async(lockQueue) {
             self.session = nil
             self.formatDescription = nil
+            self.running = false
         }
-    }
-}
-
-//MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
-extension AVCEncoder: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-        encodeImageBuffer(image, presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer), duration: CMSampleBufferGetDuration(sampleBuffer))
     }
 }

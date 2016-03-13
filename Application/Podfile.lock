@@ -1,10 +1,1 @@
-PODS:
-  - XCGLogger (3.2)
-
-DEPENDENCIES:
-  - XCGLogger (~> 3.2)
-
-SPEC CHECKSUMS:
-  XCGLogger: da1f341f4bb8979db6e1df64232f04d9698402d4
-
-COCOAPODS: 0.39.0
+../Podfile.lock

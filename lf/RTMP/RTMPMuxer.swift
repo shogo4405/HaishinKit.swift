@@ -7,64 +7,19 @@ protocol RTMPMuxerDelegate: class {
 }
 
 final class RTMPMuxer: NSObject {
-    var audioSettings:[String: AnyObject] {
-        get {
-            return audioEncoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)
-        }
-        set {
-            audioEncoder.setValuesForKeysWithDictionary(newValue)
-        }
-    }
-
-    var videoSettings:[String: AnyObject] {
-        get {
-            return videoEncoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)
-        }
-        set {
-            videoEncoder.setValuesForKeysWithDictionary(newValue)
-        }
-    }
-
-    lazy var audioEncoder:AACEncoder = {
-        var encoder:AACEncoder = AACEncoder()
-        encoder.delegate = self
-        return encoder
-    }()
-
-    lazy var videoEncoder:AVCEncoder = {
-        var encoder:AVCEncoder = AVCEncoder()
-        encoder.delegate = self
-        return encoder
-    }()
-
     weak var delegate:RTMPMuxerDelegate? = nil
 
     private var audioTimestamp:CMTime = kCMTimeZero
     private var videoTimestamp:CMTime = kCMTimeZero
 
-    func createMetadata(audio:AVCaptureInput?, _ camera:AVCaptureInput?) -> ASObject {
-        var metadata:ASObject = ASObject()
-
-        if let _:AVCaptureInput = camera {
-            metadata["width"] = videoEncoder.width
-            metadata["height"] = videoEncoder.height
-            metadata["videocodecid"] = FLVVideoCodec.AVC.rawValue
-        }
-        
-        if let _:AVCaptureInput = audio {
-            metadata["audiocodecid"] = FLVAudioCodec.AAC.rawValue
-            metadata["audiochannels"] = audioEncoder.channels
-            metadata["audiosamplerate"] = audioEncoder.sampleRate
-        }
-
+    func createMetadata(captureManager:AVCaptureSessionManager) -> ASObject {
+        let metadata:ASObject = ASObject()
         return metadata
     }
 
     func dispose() {
         audioTimestamp = kCMTimeZero
-        audioEncoder.dispose()
         videoTimestamp = kCMTimeZero
-        videoEncoder.dispose()
     }
 }
 

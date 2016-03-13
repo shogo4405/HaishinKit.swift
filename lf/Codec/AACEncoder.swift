@@ -32,8 +32,8 @@ final class AACEncoder: NSObject {
         }
     }
 
-    var delegate:AudioEncoderDelegate?
     var profile:UInt32 = AACEncoder.defaultProfile
+    var running:Bool = false
     var channels:UInt32 = AACEncoder.defaultChannels
     var sampleRate:Double = AACEncoder.defaultSampleRate
     var currentBufferList:AudioBufferList? = nil
@@ -45,11 +45,13 @@ final class AACEncoder: NSObject {
             }
         }
     }
-
-    let lockQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.AACEncoder.lock", DISPATCH_QUEUE_SERIAL)
+    var lockQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.AACEncoder.lock", DISPATCH_QUEUE_SERIAL
+    )
+    weak var delegate:AudioEncoderDelegate?
 
     private var inSourceFormat:AudioStreamBasicDescription?
-    
+
     private var _inDestinationFormat:AudioStreamBasicDescription?
     var inDestinationFormat:AudioStreamBasicDescription {
         get {
@@ -171,22 +173,34 @@ final class AACEncoder: NSObject {
 
 // MARK: - Encoder
 extension AACEncoder: Encoder {
-    func dispose() {
-        if (_converter != nil) {
-            AudioConverterDispose(_converter!)
-            _converter = nil
+    func startRunning() {
+        dispatch_async(lockQueue) {
+            self.running = true
         }
-        inSourceFormat = nil
-        formatDescription = nil
-        _inDestinationFormat = nil
-        currentBufferList = nil
+    }
+    func stopRunning() {
+        dispatch_async(lockQueue) {
+            if (self._converter != nil) {
+                AudioConverterDispose(self._converter!)
+                self._converter = nil
+            }
+            self.inSourceFormat = nil
+            self.formatDescription = nil
+            self._inDestinationFormat = nil
+            self.currentBufferList = nil
+            self.running = false
+        }
     }
 }
 
 // MARK: - AVCaptureAudioDataOutputSampleBufferDelegate
 extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
-        
+
+        guard running else {
+            return
+        }
+
         if (inSourceFormat == nil) {
             if let format:CMAudioFormatDescriptionRef = CMSampleBufferGetFormatDescription(sampleBuffer) {
                 inSourceFormat = CMAudioFormatDescriptionGetStreamBasicDescription(format).memory
@@ -194,24 +208,29 @@ extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
                 return
             }
         }
-        
-        var status:OSStatus = noErr
+
         var outputDataPacketSize:UInt32 = AACEncoder.packetSize
-        var outputData:AudioBufferList = createAudioBufferList(inDestinationFormat.mChannelsPerFrame, size: AACEncoder.framesPerPacket)
+        var outputData:AudioBufferList = createAudioBufferList(
+            inDestinationFormat.mChannelsPerFrame, size: AACEncoder.framesPerPacket
+        )
         currentBufferList = createAudioBufferList(sampleBuffer)
-        status = fillComplexBuffer(&outputDataPacketSize, &outputData, nil)
-        
-        if (status == noErr)
-        {
-            var result:CMSampleBufferRef?
-            var timing:CMSampleTimingInfo = CMSampleTimingInfo()
-            let numSamples:CMItemCount = CMSampleBufferGetNumSamples(sampleBuffer)
-            
-            CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timing)
-            CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
-            CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, &outputData)
-            
-            delegate?.sampleOuput(audio: result!)
+
+        guard IsNoErr(fillComplexBuffer(&outputDataPacketSize, &outputData, nil)) else {
+            return
+        }
+
+        var result:CMSampleBufferRef?
+        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
+        let numSamples:CMItemCount = CMSampleBufferGetNumSamples(sampleBuffer)
+        CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timing)
+        CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
+        CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, &outputData)
+
+        delegate?.sampleOuput(audio: result!)
+    
+        let list:UnsafeMutableAudioBufferListPointer = UnsafeMutableAudioBufferListPointer(&outputData)
+        for buffer in list {
+            free(buffer.mData)
         }
     }
 }
