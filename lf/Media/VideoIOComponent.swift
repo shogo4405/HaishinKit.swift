@@ -30,16 +30,13 @@ final class VideoIOComponent: NSObject {
     }
 
     func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
-        var image:CIImage!
+        CVPixelBufferLockBaseAddress(buffer, 0)
+        var image:CIImage = CIImage(CVPixelBuffer: buffer)
         autoreleasepool {
-            if #available(iOS 9.0, *) {
-                image = CIImage(CVImageBuffer: buffer)
-            } else {
-                image = createImage(buffer)
-            }
             for effect in self.effects {
                 image = effect.execute(image)
             }
+            CVPixelBufferUnlockBaseAddress(buffer, 0)
             let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
                 self.layer.contents = content
@@ -68,10 +65,6 @@ final class VideoIOComponent: NSObject {
         }
         objc_sync_exit(effects)
         return false
-    }
-
-    func createImage(buffer:CVImageBuffer) -> CIImage {
-        return CIImage()
     }
 
     func createImageBuffer(image:CIImage) -> CVImageBufferRef? {
