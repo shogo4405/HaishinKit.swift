@@ -271,7 +271,9 @@ public class RTMPStream: EventDispatcher {
             return captureManager.dictionaryWithValuesForKeys(AVCaptureSessionManager.supportedSettingsKeys)
         }
         set {
-            captureManager.setValuesForKeysWithDictionary(newValue)
+            dispatch_async(lockQueue) {
+                self.captureManager.setValuesForKeysWithDictionary(newValue)
+            }
         }
     }
 
@@ -326,12 +328,22 @@ public class RTMPStream: EventDispatcher {
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
-        captureManager.attachAudio(audio)
+        dispatch_async(lockQueue) {
+            self.captureManager.attachAudio(audio)
+        }
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
-        captureManager.attachCamera(camera)
-        captureManager.startRunning()
+        dispatch_async(lockQueue) {
+            self.captureManager.attachCamera(camera)
+            self.captureManager.startRunning()
+        }
+    }
+
+    public func attachScreen(screen:ScreenCaptureSession?) {
+        dispatch_async(lockQueue) {
+            self.captureManager.attachScreen(screen)
+        }
     }
 
     public func receiveAudio(flag:Bool) {
@@ -426,10 +438,10 @@ public class RTMPStream: EventDispatcher {
     
     public func publish(name:String?, type:String) {
         dispatch_async(lockQueue) {
-            if (name == nil) {
+            guard let name:String = name else {
                 return
             }
-            
+
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
@@ -447,13 +459,13 @@ public class RTMPStream: EventDispatcher {
                     objectEncoding: self.objectEncoding,
                     commandName: "publish",
                     commandObject: nil,
-                    arguments: [name!, type]
+                    arguments: [name, type]
             )))
-            
+
             self.readyState = .Publish
         }
     }
-    
+
     public func close() {
         dispatch_async(lockQueue) {
             if (self.readyState == .Closed) {
@@ -477,15 +489,17 @@ public class RTMPStream: EventDispatcher {
     }
     
     public func send(handlerName:String, arguments:Any?...) {
-        if (readyState == .Closed) {
-            return
+        dispatch_async(lockQueue) {
+            if (self.readyState == .Closed) {
+                return
+            }
+            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPDataMessage(
+                streamId: self.id,
+                objectEncoding: self.objectEncoding,
+                handlerName: handlerName,
+                arguments: arguments
+            )))
         }
-        rtmpConnection.doWrite(RTMPChunk(message: RTMPDataMessage(
-            streamId: id,
-            objectEncoding: objectEncoding,
-            handlerName: handlerName,
-            arguments: arguments
-        )))
     }
 
     public func registerEffect(video effect:VisualEffect) -> Bool {

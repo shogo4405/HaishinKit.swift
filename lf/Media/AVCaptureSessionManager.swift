@@ -257,11 +257,11 @@ public class AVCaptureSessionManager: NSObject {
             guard oldValue != currentAudio else {
                 return
             }
-            if (oldValue != nil) {
-                session.removeInput(oldValue!)
+            if let oldValue:AVCaptureDeviceInput = oldValue {
+                session.removeInput(oldValue)
             }
-            if (currentAudio != nil) {
-                session.addInput(currentAudio!)
+            if let currentAudio:AVCaptureDeviceInput = oldValue {
+                session.addInput(currentAudio)
             }
         }
     }
@@ -271,11 +271,27 @@ public class AVCaptureSessionManager: NSObject {
             guard oldValue != currentCamera else {
                 return
             }
-            if (oldValue != nil) {
-                session.removeInput(oldValue!)
+            if let oldValue:AVCaptureDeviceInput = oldValue {
+                session.removeInput(oldValue)
             }
-            if (currentCamera != nil) {
-                session.addInput(currentCamera!)
+            if let currentCamera:AVCaptureDeviceInput = currentCamera {
+                session.addInput(currentCamera)
+            }
+        }
+    }
+
+    private(set) var currentScreen:ScreenCaptureSession? = nil {
+        didSet {
+            guard oldValue != currentScreen else {
+                return
+            }
+            if let oldValue:ScreenCaptureSession = oldValue {
+                oldValue.delegate = nil
+                oldValue.stopRunning()
+            }
+            if let currentScreen:ScreenCaptureSession = currentScreen {
+                currentScreen.delegate = videoIO
+                currentScreen.startRunning()
             }
         }
     }
@@ -316,6 +332,8 @@ public class AVCaptureSessionManager: NSObject {
             return
         }
 
+        currentScreen = nil
+
         do {
             try camera.lockForConfiguration()
             camera.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
@@ -343,6 +361,15 @@ public class AVCaptureSessionManager: NSObject {
         } catch let error as NSError {
             logger.error("\(error)")
         }
+    }
+
+    public func attachScreen(screen:ScreenCaptureSession?) {
+        guard let screen:ScreenCaptureSession = screen else {
+            return
+        }
+        currentCamera = nil
+        screen.delegate = videoIO
+        screen.startRunning()
     }
 
     func onOrientationChanged(notification:NSNotification) {
