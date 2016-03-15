@@ -22,7 +22,14 @@ final class VideoIOComponent: NSObject {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
-    private var context:CIContext = CIContext()
+    private var context:CIContext = {
+        if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
+            logger.info("cicontext use hardware renderer")
+            return context
+        }
+        logger.info("cicontext use software renderer")
+        return CIContext()
+    }()
     private var effects:[VisualEffect] = []
 
     override init() {
