@@ -100,6 +100,12 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 // MARK: - ScreenCaptureOutputPixelBufferDelegate
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
+    func didSetSize(size: CGSize) {
+        dispatch_async(lockQueue) {
+            self.encoder.width = Int32(size.width)
+            self.encoder.height = Int32(size.height)
+        }
+    }
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
         encoder.encodeImageBuffer(pixelBuffer,
             presentationTimeStamp: timestamp,

@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		294432F71C9554B8006359CB /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 294432F31C955429006359CB /* lf.framework */; };
 		294432F81C9554B8006359CB /* lf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 294432F31C955429006359CB /* lf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		294432FE1C95B460006359CB /* MonochromeEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294432FD1C95B460006359CB /* MonochromeEffect.swift */; };
 		295D82191BA9B8EE00073478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D82181BA9B8EE00073478 /* AppDelegate.swift */; };
 		295D82201BA9B8EE00073478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295D821F1BA9B8EE00073478 /* Assets.xcassets */; };
 		295D82231BA9B8EE00073478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */; };
@@ -35,7 +34,6 @@
 		0DDD70EA3CCF88EBD0E84F6A /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		294432F11C954CE3006359CB /* lf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lf.framework; path = "../build/Debug-iphoneos/lf.framework"; sourceTree = "<group>"; };
 		294432F31C955429006359CB /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = lf.framework; path = "/Users/shogo/Library/Developer/Xcode/DerivedData/Application-fudwypqujgogzggzpnjvxktmoyie/Build/Products/Debug-iphoneos/lf.framework"; sourceTree = "<absolute>"; };
-		294432FD1C95B460006359CB /* MonochromeEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MonochromeEffect.swift; sourceTree = "<group>"; };
 		295D82151BA9B8EE00073478 /* Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		295D82181BA9B8EE00073478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		295D821F1BA9B8EE00073478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -92,7 +90,6 @@
 				295D82241BA9B8EE00073478 /* Info.plist */,
 				295D82181BA9B8EE00073478 /* AppDelegate.swift */,
 				295D822E1BA9BB5900073478 /* LiveViewController.swift */,
-				294432FD1C95B460006359CB /* MonochromeEffect.swift */,
 				295D821F1BA9B8EE00073478 /* Assets.xcassets */,
 				4587C1B1DC7EC532F07A3EC3 /* Frameworks */,
 				295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */,
@@ -204,7 +201,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				294432FE1C95B460006359CB /* MonochromeEffect.swift in Sources */,
 				295D822F1BA9BB5900073478 /* LiveViewController.swift in Sources */,
 				295D82191BA9B8EE00073478 /* AppDelegate.swift in Sources */,
 			);

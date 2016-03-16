@@ -8,11 +8,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window:UIWindow?
     var rootViewController:UINavigationController = {
         let controller:UINavigationController = UINavigationController()
-        controller.setViewControllers([ LiveViewController()], animated: true)
-        controller.navigationBar.tintColor = UIColor.whiteColor()
-        controller.navigationBar.barTintColor = UIColor(
-            red: 0x00 / 0xff, green: 0xa4 / 0xff, blue: 0xe4 / 0xff, alpha: 0
-        )
+        controller.setViewControllers([LiveViewController()], animated: true)
+        controller.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
+        controller.navigationBar.translucent = true
+        controller.navigationBar.shadowImage = UIImage()
         return controller
     }()
 

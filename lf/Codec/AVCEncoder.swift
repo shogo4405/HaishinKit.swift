@@ -53,7 +53,7 @@ final class AVCEncoder: NSObject {
         }
     }
     var running:Bool = false
-    var profileLevel:String = kVTProfileLevel_H264_Baseline_3_0 as String {
+    var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
             invalidateSession = true
         }

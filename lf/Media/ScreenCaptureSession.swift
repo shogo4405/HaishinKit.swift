@@ -3,40 +3,85 @@ import Foundation
 import AVFoundation
 
 public protocol ScreenCaptureOutputPixelBufferDelegate:class {
+    func didSetSize(size:CGSize)
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime)
 }
 
-public final class ScreenCaptureSession:NSObject {
+public final class ScreenCaptureSession: NSObject {
+    static let defaultFrameInterval:Int = 2
     static let defaultAttributes:[NSString:NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_32BGRA),
         kCVPixelBufferCGBitmapContextCompatibilityKey: true
     ]
 
-    public var attributes:[NSString:NSObject] = ScreenCaptureSession.defaultAttributes
+    public var frameInterval:Int = ScreenCaptureSession.defaultFrameInterval
+    public var attributes:[NSString:NSObject] {
+        get {
+            var attributes:[NSString: NSObject] = ScreenCaptureSession.defaultAttributes
+            attributes[kCVPixelBufferWidthKey] = size.width * scale
+            attributes[kCVPixelBufferHeightKey] = size.height * scale
+            attributes[kCVPixelBufferBytesPerRowAlignmentKey] = size.width * scale * 4
+            return attributes
+        }
+    }
     public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
 
     private var running:Bool = false
-    private var displayLink:CADisplayLink!
-    private var colorSpace:CGColorSpaceRef!
-    private var pixelBufferPool:CVPixelBufferPool?
+    private var context:CIContext = {
+        if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
+            logger.info("cicontext use hardware renderer")
+            return context
+        }
+        logger.info("cicontext use software renderer")
+        return CIContext()
+    }()
     private let semaphore:dispatch_semaphore_t = dispatch_semaphore_create(1)
     private let lockQueue:dispatch_queue_t = {
-        var queue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.ScreenCaptureSession.lock", DISPATCH_QUEUE_SERIAL)
+        var queue:dispatch_queue_t = dispatch_queue_create(
+            "com.github.shogo4405.lf.ScreenCaptureSession.lock", DISPATCH_QUEUE_SERIAL
+        )
         dispatch_set_target_queue(queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0))
         return queue
     }()
+    private var colorSpace:CGColorSpaceRef!
+    private var displayLink:CADisplayLink!
 
-    private lazy var size:CGSize = {
-        return UIApplication.sharedApplication().delegate!.window!!.bounds.size
-    }()
-
-    private lazy var scale:CGFloat = {
+    private var size:CGSize = CGSize() {
+        didSet {
+            guard size != oldValue else {
+                return
+            }
+            delegate?.didSetSize(CGSize(width: size.width * scale, height: size.height * scale))
+            pixelBufferPool = nil
+        }
+    }
+    private var scale:CGFloat {
         return UIScreen.mainScreen().scale
-    }()
+    }
+
+    private var _pixelBufferPool:CVPixelBufferPoolRef?
+    private var pixelBufferPool:CVPixelBufferPoolRef! {
+        get {
+            if (_pixelBufferPool == nil) {
+                var pool:CVPixelBufferPoolRef?
+                CVPixelBufferPoolCreate(nil, nil, attributes, &pool)
+                _pixelBufferPool = pool
+            }
+            return _pixelBufferPool!
+        }
+        set {
+            _pixelBufferPool = newValue
+        }
+    }
+
+    public override init() {
+        super.init()
+        size = UIApplication.sharedApplication().delegate!.window!!.bounds.size
+    }
 
     public func onScreen(displayLink:CADisplayLink) {
-        if (dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) != 0) {
-            return;
+        guard dispatch_semaphore_wait(semaphore, DISPATCH_TIME_NOW) == 0 else {
+            return
         }
         dispatch_async(lockQueue) {
             autoreleasepool {
@@ -48,42 +93,26 @@ public final class ScreenCaptureSession:NSObject {
 
     private func onScreenProcess(displayLink:CADisplayLink) {
         var pixelBuffer:CVPixelBufferRef?
-        CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool!, &pixelBuffer)
+        size = UIApplication.sharedApplication().delegate!.window!!.bounds.size
+        CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)
         CVPixelBufferLockBaseAddress(pixelBuffer!, 0)
-
-        let context:CGContextRef = createContext(pixelBuffer!)
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        let cgctx:CGContextRef = UIGraphicsGetCurrentContext()!
         dispatch_sync(dispatch_get_main_queue()) {
-            UIGraphicsPushContext(context)
+            UIGraphicsPushContext(cgctx)
             for window:UIWindow in UIApplication.sharedApplication().windows {
-                window.drawViewHierarchyInRect(CGRect(x: 0, y: 0, width: self.size.width * self.scale, height: self.size.height * self.scale), afterScreenUpdates: true)
+                window.drawViewHierarchyInRect(
+                    CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
+                    afterScreenUpdates: false
+                )
             }
             UIGraphicsPopContext()
         }
+        let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        context.render(CIImage(CGImage: image.CGImage!), toCVPixelBuffer: pixelBuffer!)
         delegate?.pixelBufferOutput(pixelBuffer!, timestamp: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
-        
         CVPixelBufferUnlockBaseAddress(pixelBuffer!, 0)
-    }
-
-    private func createContext(pixelBuffer:CVPixelBufferRef) -> CGContextRef {
-        
-        let bitmapInfo:CGBitmapInfo = CGBitmapInfo(rawValue:
-            CGImageAlphaInfo.PremultipliedFirst.rawValue | CGBitmapInfo.ByteOrder32Little.rawValue
-        )
-
-        let context:CGContextRef = CGBitmapContextCreate(
-            CVPixelBufferGetBaseAddress(pixelBuffer),
-            CVPixelBufferGetWidth(pixelBuffer),
-            CVPixelBufferGetHeight(pixelBuffer),
-            8,
-            CVPixelBufferGetBytesPerRow(pixelBuffer),
-            colorSpace,
-            bitmapInfo.rawValue
-        )!
-
-        CGContextScaleCTM(context, scale, scale);
-        CGContextConcatCTM(context, CGAffineTransformMake(1, 0, 0, -1, 0, size.height))
-
-        return context
     }
 }
 
@@ -91,26 +120,24 @@ public final class ScreenCaptureSession:NSObject {
 extension ScreenCaptureSession: Runnable {
     public func startRunning() {
         dispatch_sync(lockQueue) {
-            guard self.running else {
+            guard !self.running else {
                 return
             }
             self.running = true
             self.pixelBufferPool = nil
-            self.attributes[kCVPixelBufferWidthKey] = self.size.width * self.scale
-            self.attributes[kCVPixelBufferHeightKey] = self.size.height * self.scale
-            self.attributes[kCVPixelBufferBytesPerRowAlignmentKey] = self.size.width * 4
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: "onScreen:")
-            CVPixelBufferPoolCreate(nil, nil, self.attributes, &self.pixelBufferPool)
+            self.displayLink.frameInterval = self.frameInterval
             self.displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
         }
     }
-    
+
     public func stopRunning() {
         dispatch_sync(lockQueue) {
-            guard !self.running else {
+            guard self.running else {
                 return
             }
+            self.displayLink.invalidate()
             self.displayLink.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
             self.colorSpace = nil
             self.displayLink = nil

@@ -368,8 +368,11 @@ public class AVCaptureSessionManager: NSObject {
             return
         }
         currentCamera = nil
-        screen.delegate = videoIO
-        screen.startRunning()
+        videoIO.encoder.setValuesForKeysWithDictionary([
+            "width": screen.attributes["Width"]!,
+            "height": screen.attributes["Height"]!,
+        ])
+        currentScreen = screen
     }
 
     func onOrientationChanged(notification:NSNotification) {
