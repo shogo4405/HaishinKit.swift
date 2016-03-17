@@ -51,6 +51,11 @@ public class AVCaptureSessionManager: NSObject {
             guard orientation != oldValue else {
                 return
             }
+            if let connection:AVCaptureConnection = videoIO.layer.connection {
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
+                }
+            }
             if (_videoDataOutput != nil) {
                 for connection in _videoDataOutput!.connections {
                     if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
@@ -301,6 +306,7 @@ public class AVCaptureSessionManager: NSObject {
 
     public override init() {
         super.init()
+        videoIO.layer.session = session
         if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
             self.orientation = orientation
         }

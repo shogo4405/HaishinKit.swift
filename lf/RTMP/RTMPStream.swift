@@ -231,7 +231,7 @@ public class RTMPStream: EventDispatcher {
     public var view:UIView! {
         if (_view == nil) {
             layer.videoGravity = videoGravity
-            captureManager.videoIO.layer.contentsGravity = VideoIOComponent.getContentsGravity(videoGravity)
+            captureManager.videoIO.layer.videoGravity = videoGravity
             _view = UIView()
             _view!.backgroundColor = UIColor.blackColor()
             _view!.layer.addSublayer(captureManager.videoIO.layer)
@@ -244,7 +244,7 @@ public class RTMPStream: EventDispatcher {
     public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
         didSet {
             layer.videoGravity = videoGravity
-            captureManager.videoIO.layer.contentsGravity = VideoIOComponent.getContentsGravity(videoGravity)
+            captureManager.videoIO.layer.videoGravity = videoGravity
         }
     }
 

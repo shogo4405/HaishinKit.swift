@@ -3,31 +3,17 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: NSObject {
-
-    static func getContentsGravity(videoGravity:String) -> String {
-        switch videoGravity {
-        case AVLayerVideoGravityResizeAspect:
-            return kCAGravityResizeAspect
-        case AVLayerVideoGravityResizeAspectFill:
-            return kCAGravityResizeAspectFill
-        case AVLayerVideoGravityResize:
-            return kCAGravityResize
-        default:
-            return kCAGravityResizeAspect
-        }
-    }
-
-    var layer:CALayer = CALayer()
+    var layer:VideoPreviewLayer = VideoPreviewLayer()
     var encoder:AVCEncoder = AVCEncoder()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
     private var context:CIContext = {
         if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
-            logger.info("cicontext use hardware renderer")
+            logger.debug("cicontext use hardware renderer")
             return context
         }
-        logger.info("cicontext use software renderer")
+        logger.debug("cicontext use software renderer")
         return CIContext()
     }()
     private var effects:[VisualEffect] = []
@@ -47,7 +33,7 @@ final class VideoIOComponent: NSObject {
             }
             let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
-                self.layer.contents = content
+                self.layer.image.contents = content
             }
         }
         CVPixelBufferUnlockBaseAddress(buffer, 0)
@@ -61,6 +47,7 @@ final class VideoIOComponent: NSObject {
             return false
         }
         effects.append(effect)
+        layer.useCIContext = !effects.isEmpty
         objc_sync_exit(effects)
         return true
     }
@@ -69,6 +56,7 @@ final class VideoIOComponent: NSObject {
         objc_sync_enter(effects)
         if let i:Int = effects.indexOf(effect) {
             effects.removeAtIndex(i)
+            layer.useCIContext = !effects.isEmpty
             objc_sync_exit(effects)
             return true
         }
@@ -93,7 +81,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             return
         }
         encoder.encodeImageBuffer(
-            effect(image),
+            effects.isEmpty ? image : effect(image),
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
             duration: CMSampleBufferGetDuration(sampleBuffer)
         )
