@@ -66,7 +66,7 @@ final class VideoIOComponent: NSObject {
 
     func createImageBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVImageBufferRef? {
         var buffer:CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, nil, &buffer)
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &buffer)
         CVPixelBufferLockBaseAddress(buffer!, 0)
         context.render(image, toCVPixelBuffer: buffer!)
         CVPixelBufferUnlockBaseAddress(buffer!, 0)

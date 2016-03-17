@@ -363,6 +363,14 @@ public class AVCaptureSessionManager: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
+            switch camera.position {
+            case AVCaptureDevicePosition.Front:
+                videoIO.layer.image.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+            case AVCaptureDevicePosition.Back:
+                videoIO.layer.image.transform = CATransform3DMakeRotation(0, 0, 1, 0)
+            default:
+                break
+            }
             videoDataOutput.setSampleBufferDelegate(videoIO, queue: videoIO.lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
