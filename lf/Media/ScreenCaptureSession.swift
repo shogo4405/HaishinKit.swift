@@ -10,7 +10,7 @@ public protocol ScreenCaptureOutputPixelBufferDelegate:class {
 public final class ScreenCaptureSession: NSObject {
     static let defaultFrameInterval:Int = 2
     static let defaultAttributes:[NSString:NSObject] = [
-        kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_32BGRA),
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
         kCVPixelBufferCGBitmapContextCompatibilityKey: true
     ]
 

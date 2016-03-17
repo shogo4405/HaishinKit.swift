@@ -87,7 +87,7 @@ public class AVCaptureSessionManager: NSObject {
             let focusMode:AVCaptureFocusMode = continuousAutofocus ? .ContinuousAutoFocus : .AutoFocus
             guard let device:AVCaptureDevice = currentCamera?.device
                 where device.isFocusModeSupported(focusMode) else {
-                logger.warning("focusMode\(focusMode) is not supported")
+                logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
             do {
@@ -160,15 +160,15 @@ public class AVCaptureSessionManager: NSObject {
 
     public var continuousExposure:Bool = true {
         didSet {
-            let exposeMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
+            let exposureMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
             guard let device:AVCaptureDevice = currentCamera?.device
-                where device.isExposureModeSupported(exposeMode) else {
-                logger.warning("exposeMode\(exposeMode) not supported")
+                where device.isExposureModeSupported(exposureMode) else {
+                logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }
             do {
                 try device.lockForConfiguration()
-                device.exposureMode = exposeMode
+                device.exposureMode = exposureMode
                 device.unlockForConfiguration()
             } catch let error as NSError {
                 logger.error("while locking device for autoexpose: \(error)")

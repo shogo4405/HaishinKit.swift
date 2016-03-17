@@ -38,18 +38,20 @@ final class VideoIOComponent: NSObject {
 
     func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
         CVPixelBufferLockBaseAddress(buffer, 0)
+        let width:Int = CVPixelBufferGetWidth(buffer)
+        let height:Int = CVPixelBufferGetHeight(buffer)
         var image:CIImage = CIImage(CVPixelBuffer: buffer)
         autoreleasepool {
-            for effect in self.effects {
+            for effect in effects {
                 image = effect.execute(image)
             }
-            CVPixelBufferUnlockBaseAddress(buffer, 0)
             let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
                 self.layer.contents = content
             }
         }
-        return createImageBuffer(image)!
+        CVPixelBufferUnlockBaseAddress(buffer, 0)
+        return createImageBuffer(image, width, height)!
     }
 
     func registerEffect(effect:VisualEffect) -> Bool {
@@ -74,9 +76,9 @@ final class VideoIOComponent: NSObject {
         return false
     }
 
-    func createImageBuffer(image:CIImage) -> CVImageBufferRef? {
+    func createImageBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVImageBufferRef? {
         var buffer:CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, Int(image.extent.width), Int(image.extent.height), kCVPixelFormatType_32BGRA, nil, &buffer)
+        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange, nil, &buffer)
         CVPixelBufferLockBaseAddress(buffer!, 0)
         context.render(image, toCVPixelBuffer: buffer!)
         CVPixelBufferUnlockBaseAddress(buffer!, 0)
@@ -107,7 +109,8 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
     }
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
-        encoder.encodeImageBuffer(pixelBuffer,
+        encoder.encodeImageBuffer(
+            pixelBuffer,
             presentationTimeStamp: timestamp,
             duration: timestamp
         )
