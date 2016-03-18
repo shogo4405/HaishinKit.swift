@@ -33,7 +33,7 @@ final class VideoIOComponent: NSObject {
             }
             let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
-                self.layer.image.contents = content
+                self.layer.surface.contents = content
             }
         }
         CVPixelBufferUnlockBaseAddress(buffer, 0)
@@ -47,7 +47,7 @@ final class VideoIOComponent: NSObject {
             return false
         }
         effects.append(effect)
-        layer.useCIContext = !effects.isEmpty
+        layer.enabledSurface = !effects.isEmpty
         objc_sync_exit(effects)
         return true
     }
@@ -56,7 +56,7 @@ final class VideoIOComponent: NSObject {
         objc_sync_enter(effects)
         if let i:Int = effects.indexOf(effect) {
             effects.removeAtIndex(i)
-            layer.useCIContext = !effects.isEmpty
+            layer.enabledSurface = !effects.isEmpty
             objc_sync_exit(effects)
             return true
         }

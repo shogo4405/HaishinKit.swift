@@ -1,24 +1,19 @@
 import AVFoundation
 
 final class VideoPreviewLayer: AVCaptureVideoPreviewLayer {
-    var image:CALayer = CALayer()
-    private var currentSession:AVCaptureSession!
+    var surface:CALayer = CALayer()
 
-    var useCIContext:Bool = false {
+    var enabledSurface:Bool = false {
         didSet{
-            guard useCIContext != oldValue else {
+            guard enabledSurface != oldValue else {
                 return
             }
-            if (useCIContext) {
-                currentSession = session
-                image.frame = frame
-                addSublayer(image)
-                session = nil
+            if (enabledSurface) {
+                surface.frame = frame
+                addSublayer(surface)
                 return
             }
-            session = currentSession
-            image.removeFromSuperlayer()
-            currentSession = nil
+            surface.removeFromSuperlayer()
         }
     }
 
@@ -30,13 +25,13 @@ final class VideoPreviewLayer: AVCaptureVideoPreviewLayer {
             super.videoGravity = newValue
             switch newValue {
             case AVLayerVideoGravityResizeAspect:
-                image.contentsGravity = kCAGravityResizeAspect
+                surface.contentsGravity = kCAGravityResizeAspect
             case AVLayerVideoGravityResizeAspectFill:
-                image.contentsGravity = kCAGravityResizeAspectFill
+                surface.contentsGravity = kCAGravityResizeAspectFill
             case AVLayerVideoGravityResize:
-                image.contentsGravity = kCAGravityResize
+                surface.contentsGravity = kCAGravityResize
             default:
-                image.contentsGravity = kCAGravityResizeAspect
+                surface.contentsGravity = kCAGravityResizeAspect
             }
         }
     }
