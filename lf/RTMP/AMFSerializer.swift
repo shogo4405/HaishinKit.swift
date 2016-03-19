@@ -92,8 +92,8 @@ public typealias ECMAObject = ASObject
 
 /**
  * ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
- * @see 2.17 XML Document Type (amf0-file-format-specification.pdf)
- * @see 3.9 XMLDocument type (amf-file-format-spec.pdf)
+ * - seealso: 2.17 XML Document Type (amf0-file-format-specification.pdf)
+ * - seealso: 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
 public struct ASXMLDocument: CustomStringConvertible {
     private var data:String
@@ -109,7 +109,7 @@ public struct ASXMLDocument: CustomStringConvertible {
 
 /**
  * ActionScript 3.0 introduces a new XML type.
- * @see 3.13 XML type (amf-file-format-spec.pdf)
+ * -seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
 public struct ASXML: CustomStringConvertible {
     private var data:String
@@ -157,7 +157,7 @@ protocol AMFSerializer {
 
 /**
  * AMF0Serializer
- * @reference http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
+ * -seealso: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
  */
 class AMF0Serializer:AMFSerializer {
     

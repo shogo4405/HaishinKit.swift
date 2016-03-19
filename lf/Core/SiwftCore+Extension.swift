@@ -1,17 +1,17 @@
 import Foundation
 import AVFoundation
 
-extension Double {
+extension Int16 {
     var bytes:[UInt8] {
-        var value:Double = self
+        var value:Int16 = self
         return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Double.self)))
+            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Int16.self)))
         }
     }
-    
+
     init(bytes:[UInt8]) {
         self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<Double>($0.baseAddress).memory
+            return UnsafePointer<Int16>($0.baseAddress).memory
         }
     }
 }
@@ -76,3 +76,32 @@ extension UInt64 {
     }
 }
 
+extension Double {
+    var bytes:[UInt8] {
+        var value:Double = self
+        return withUnsafePointer(&value) {
+            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Double.self)))
+        }
+    }
+    
+    init(bytes:[UInt8]) {
+        self = bytes.withUnsafeBufferPointer {
+            return UnsafePointer<Double>($0.baseAddress).memory
+        }
+    }
+}
+
+extension Float {
+    var bytes:[UInt8] {
+        var value:Float = self
+        return withUnsafePointer(&value) {
+            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Float.self)))
+        }
+    }
+
+    init(bytes:[UInt8]) {
+        self = bytes.withUnsafeBufferPointer {
+            return UnsafePointer<Float>($0.baseAddress).memory
+        }
+    }
+}

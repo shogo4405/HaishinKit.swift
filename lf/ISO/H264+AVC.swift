@@ -126,23 +126,28 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
         }
         set {
             let buffer:ByteArray = ByteArray(bytes: newValue)
-            configurationVersion = buffer.readUInt8()
-            AVCProfileIndication = buffer.readUInt8()
-            profileCompatibility = buffer.readUInt8()
-            AVCLevelIndication = buffer.readUInt8()
-            lengthSizeMinusOneWithReserved = buffer.readUInt8()
-            numOfSequenceParameterSetsWithReserved = buffer.readUInt8()
+
+            do {
+                configurationVersion = try buffer.readUInt8()
+                AVCProfileIndication = try buffer.readUInt8()
+                profileCompatibility = try buffer.readUInt8()
+                AVCLevelIndication = try buffer.readUInt8()
+                lengthSizeMinusOneWithReserved = try buffer.readUInt8()
+                numOfSequenceParameterSetsWithReserved = try buffer.readUInt8()
             
-            let numOfSequenceParameterSets:UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
-            for _ in 0..<numOfSequenceParameterSets {
-                let length:Int = Int(buffer.readUInt16())
-                sequenceParameterSets.append(buffer.readUInt8(length))
-            }
+                let numOfSequenceParameterSets:UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
+                for _ in 0..<numOfSequenceParameterSets {
+                    let length:Int = Int(try buffer.readUInt16())
+                    sequenceParameterSets.append(try buffer.readUInt8(length))
+                }
             
-            let numPictureParameterSets:UInt8 = buffer.readUInt8()
-            for _ in 0..<numPictureParameterSets {
-                let length:Int = Int(buffer.readUInt16())
-                pictureParameterSets.append(buffer.readUInt8(length))
+                let numPictureParameterSets:UInt8 = try buffer.readUInt8()
+                for _ in 0..<numPictureParameterSets {
+                    let length:Int = Int(try buffer.readUInt16())
+                    pictureParameterSets.append(try buffer.readUInt8(length))
+                }
+            } catch {
+                
             }
             
             _bytes = newValue

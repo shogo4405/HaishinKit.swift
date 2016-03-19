@@ -211,16 +211,6 @@ struct FLVTag: CustomStringConvertible {
         description += "}"
         return description
     }
-
-    init(data:NSData) {
-        let buffer:ByteArray = ByteArray(data: data)
-        tagType = TagType(rawValue: buffer.readUInt8())!
-        dataSize = buffer.readUInt24()
-        timestamp = buffer.readUInt24()
-        timestampExtended = buffer.readUInt8()
-        streamId = buffer.readUInt24()
-        buffer.clear()
-    }
 }
 
 final class RTMPRecorder: NSObject {
