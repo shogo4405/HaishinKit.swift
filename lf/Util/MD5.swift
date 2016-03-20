@@ -86,7 +86,7 @@ final class MD5 {
     }
 
     static func calculate(message:String) -> [UInt8] {
-        return calculate(ByteArray().writeUTF8(message).bytes)
+        return calculate(ByteArray().writeUTF8Bytes(message).bytes)
     }
 
     static func calculate(bytes:[UInt8]) -> [UInt8] {

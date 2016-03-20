@@ -1,11 +1,13 @@
 import XCGLogger
 import Foundation
 
+// MARK: RTMPSocketDelegate
 protocol RTMPSocketDelegate: IEventDispatcher {
     func listen(socket: RTMPSocket, bytes:[UInt8])
     func didSetReadyState(socket: RTMPSocket, readyState:RTMPSocket.ReadyState)
 }
 
+// MARK: - RTMPSocket
 final class RTMPSocket: NSObject {
 
     enum ReadyState:UInt8 {
@@ -40,7 +42,9 @@ final class RTMPSocket: NSObject {
     private var running:Bool = false
     private var inputStream:NSInputStream? = nil
     private var outputStream:NSOutputStream? = nil
-    private var outputQueue:dispatch_queue_t = dispatch_queue_create("com.github.shogo4405.lf.RTMPSocket.network", DISPATCH_QUEUE_SERIAL)
+    private var outputQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.RTMPSocket.network", DISPATCH_QUEUE_SERIAL
+    )
 
     override init() {
         super.init()
@@ -163,7 +167,7 @@ final class RTMPSocket: NSObject {
             timestamp = NSDate().timeIntervalSince1970
             let c1packet:ByteArray = ByteArray()
             c1packet.writeInt32(Int32(timestamp))
-            c1packet.writeUInt8([0x00, 0x00, 0x00, 0x00])
+            c1packet.writeBytes([0x00, 0x00, 0x00, 0x00])
             for _ in 0..<RTMPSocket.sigSize - 8 {
                 c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
             }
@@ -175,9 +179,9 @@ final class RTMPSocket: NSObject {
                 break
             }
             let c2packet:ByteArray = ByteArray()
-            c2packet.writeUInt8(Array(inputBuffer[1...4]))
+            c2packet.writeBytes(Array(inputBuffer[1...4]))
             c2packet.writeInt32(Int32(NSDate().timeIntervalSince1970 - timestamp))
-            c2packet.writeUInt8(Array(inputBuffer[9...RTMPSocket.sigSize]))
+            c2packet.writeBytes(Array(inputBuffer[9...RTMPSocket.sigSize]))
             doWrite(c2packet.bytes)
             inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
             readyState = .AckSent
@@ -200,7 +204,7 @@ final class RTMPSocket: NSObject {
     }
 }
 
-// MARK: NSStreamDelegate
+// MARK: - NSStreamDelegate
 extension RTMPSocket: NSStreamDelegate {
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
         switch eventCode {

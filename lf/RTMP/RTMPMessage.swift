@@ -331,32 +331,38 @@ final class RTMPCommandMessage: RTMPMessage {
 
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
-            super.payload += serializer.serialize(commandName)
-            super.payload += serializer.serialize(transactionId)
-            super.payload += serializer.serialize(commandObject)
+
+            serializer.buffer.clear()
+            serializer.serialize(commandName)
+            serializer.serialize(transactionId)
+            serializer.serialize(commandObject)
             for i in arguments {
-                super.payload += serializer.serialize(i)
+                serializer.serialize(i)
             }
+            super.payload = serializer.buffer.bytes
+
             return super.payload
         }
         set {
-            if (super.payload == newValue) {
-                return
-            }
             if (length == newValue.count) {
-                var position:Int = 0
-                var bytes:[UInt8] = newValue
-                commandName = serializer.deserialize(&bytes, &position)
-                transactionId = serializer.deserialize(&bytes, &position)
-                commandObject = serializer.deserialize(&bytes, &position)
-                arguments.removeAll()
-                if (position < newValue.count) {
-                    arguments.append(serializer.deserialize(&bytes, &position))
+                serializer.buffer.clear()
+                serializer.buffer.writeBytes(newValue).position = 0
+                do {
+                    commandName = try serializer.deserialize()
+                    transactionId = try serializer.deserialize()
+                    commandObject = try serializer.deserialize()
+                    arguments.removeAll()
+                    if (0 < serializer.buffer.bytesAvailable) {
+                        arguments.append(try serializer.deserialize())
+                    }
+                } catch {
+                    logger.error("\(serializer.buffer)")
                 }
             }
+
             super.payload = newValue
         }
     }
@@ -464,29 +470,34 @@ final class RTMPDataMessage:RTMPMessage {
 
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
 
-            var payload:[UInt8] = []
-            payload += serializer.serialize(handlerName)
+            serializer.buffer.clear()
+            serializer.serialize(handlerName)
             for arg in arguments {
-                payload += serializer.serialize(arg)
+                serializer.serialize(arg)
             }
-            super.payload = payload
+            super.payload = serializer.buffer.bytes
 
             return super.payload
         }
         set {
-            if (super.payload == newValue) {
+
+            guard super.payload != newValue else {
                 return
             }
 
             if (length == newValue.count) {
-                var positon:Int = 0
-                var bytes:[UInt8] = newValue
-                handlerName = serializer.deserialize(&bytes, &positon)
-                arguments.append(serializer.deserialize(&bytes, &positon))
+                serializer.buffer.clear()
+                serializer.buffer.writeBytes(newValue).position = 0
+                do {
+                    handlerName = try serializer.deserialize()
+                    arguments.append(try serializer.deserialize())
+                } catch {
+                    logger.error("\(serializer.buffer)")
+                }
             }
 
             super.payload = newValue
@@ -568,20 +579,18 @@ final class RTMPSharedObjectMessage:RTMPMessage {
             self.data = data
         }
 
-        init(bytes:[UInt8], inout position:Int, serializer:AMFSerializer) {
-            type = Type(rawValue: bytes[position++])!
-            guard 0 < UInt32(bytes: Array(bytes[position..<position + 4])).bigEndian else {
-                position += 4
-                return
+        init?(serializer:AMFSerializer) throws {
+            guard let type:Type = Type(rawValue: try serializer.buffer.readUInt8()) else {
+                return nil
             }
-            position += 4
-            let length:Int = Int(UInt16(bytes: Array(bytes[position..<position + 2])).bigEndian)
-            position += 2
-            name = String(bytes: Array(bytes[position..<position + length]), encoding: NSUTF8StringEncoding)!
-            position += length
-            if (position < bytes.count) {
-                var value:[UInt8] = bytes
-                data = serializer.deserialize(&value, &position)
+            self.type = type
+            let length:Int = Int(try serializer.buffer.readUInt32())
+            let position:Int = serializer.buffer.position
+            if (0 < length) {
+                name = try serializer.buffer.readUTF8()
+                if (serializer.buffer.position - position < length) {
+                    data = try serializer.deserialize()
+                }
             }
         }
     }
@@ -614,7 +623,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
         }
     }
 
-    var events:[Event]! = nil {
+    var events:[Event] = [] {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -638,25 +647,28 @@ final class RTMPSharedObjectMessage:RTMPMessage {
                 return super.payload
             }
 
-            let buffer:[UInt8] = [UInt8](sharedObjectName.utf8)
-            super.payload += UInt16(buffer.count).bigEndian.bytes
-            super.payload += buffer
-            super.payload += currentVersion.bigEndian.bytes
-            super.payload += flags
+            serializer.buffer.clear()
+            try! serializer.buffer.writeUTF8(sharedObjectName)
+            serializer.buffer.writeUInt32(currentVersion)
+            serializer.buffer.writeBytes(flags)
 
             for event in events {
-                super.payload += [event.type.rawValue]
-                if (event.data != nil) {
-                    let name:[UInt8] = [UInt8](event.name!.utf8)
-                    let data:[UInt8] = serializer.serialize(event.data)
-                    super.payload += UInt32(name.count + data.count + 2).bigEndian.bytes
-                    super.payload += UInt16(name.count).bigEndian.bytes
-                    super.payload += name
-                    super.payload += data
+                serializer.buffer.writeUInt8(event.type.rawValue)
+                if (event.data == nil) {
+                    serializer.buffer.writeUInt32(0)
                 } else {
-                    super.payload += UInt32(0).bytes
+                    let position:Int = serializer.buffer.position
+                    serializer.buffer.writeUInt32(0)
+                    try! serializer.buffer.writeUTF8(event.name!)
+                    serializer.serialize(event.data)
+                    let size:Int = serializer.buffer.position - position
+                    serializer.buffer.position = position
+                    serializer.buffer.writeUInt32(UInt32(size) - 4)
+                    serializer.buffer.position = serializer.buffer.length
                 }
             }
+
+            super.payload = serializer.buffer.bytes
 
             return super.payload
         }
@@ -664,18 +676,25 @@ final class RTMPSharedObjectMessage:RTMPMessage {
             if (super.payload == newValue) {
                 return
             }
+
             if (length == newValue.count) {
-                var position:Int = Int(UInt16(bytes: Array(newValue[0..<2])).bigEndian) + 2
-                sharedObjectName = String(bytes: Array(newValue[2..<position]), encoding: NSUTF8StringEncoding)!
-                currentVersion = UInt32(bytes: Array(newValue[position..<position + 4])).bigEndian
-                position += 4
-                flags = Array(newValue[position..<position + 8])
-                position += 8
-                events = []
-                while (position < newValue.count) {
-                    events.append(Event(bytes: newValue, position: &position, serializer: serializer))
+                serializer.buffer.clear()
+                serializer.buffer.writeBytes(newValue).position = 0
+                do {
+                    sharedObjectName = try serializer.buffer.readUTF8()
+                    currentVersion = try serializer.buffer.readUInt32()
+                    flags = try serializer.buffer.readBytes(8)
+                    events.removeAll(keepCapacity: false)
+                    while (0 < serializer.buffer.bytesAvailable) {
+                        if let event:Event = try Event(serializer: serializer) {
+                            events.append(event)
+                        }
+                    }
+                } catch {
+                    logger.error("\(serializer.buffer)")
                 }
             }
+
             super.payload = newValue
         }
     }

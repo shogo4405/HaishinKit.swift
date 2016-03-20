@@ -28,10 +28,6 @@ class ByteArrayTests: XCTestCase {
     }
 
     func testInt16() {
-        
-        print(Int16.min)
-        print(Int16.min.bytes)
-        
         let bytes:ByteArray = ByteArray()
         bytes.writeInt16(Int16.min)
         bytes.writeInt16(0)

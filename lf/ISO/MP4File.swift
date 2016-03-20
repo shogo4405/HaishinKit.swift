@@ -5,7 +5,7 @@ class MP4Box:NSObject {
     static func create(data:NSData) throws -> MP4Box {
         let buffer:ByteArray = ByteArray(data: data)
         let size:UInt32 = try buffer.readUInt32()
-        let type:String = try buffer.readUTF8(4)
+        let type:String = try buffer.readUTF8Bytes(4)
 
         buffer.clear()
         switch type {
@@ -333,7 +333,7 @@ final class MP4ElementaryStreamDescriptorBox:MP4ContainerBox {
             tagSize = try buffer.readUInt8()
         }
 
-        audioDecorderSpecificConfig = try buffer.readUInt8(Int(tagSize))
+        audioDecorderSpecificConfig = try buffer.readBytes(Int(tagSize))
 
         return size
     }
@@ -398,7 +398,7 @@ final class MP4AudioSampleEntryBox:MP4ContainerBox {
         }
 
         if (version == 2) {
-            soundVersion2Data += try buffer.readUInt8(20)
+            soundVersion2Data += try buffer.readBytes(20)
         }
 
         var offset:UInt32 = UInt32(buffer.position) + 8
@@ -452,7 +452,7 @@ final class MP4VisualSampleEntryBox:MP4ContainerBox {
         vSolution = try buffer.readUInt32()
         buffer.position += 4
         frameCount = try buffer.readUInt16()
-        compressorname = try buffer.readUTF8(32)
+        compressorname = try buffer.readUTF8Bytes(32)
         depth = try buffer.readUInt16()
         try buffer.readUInt16()
         buffer.clear()

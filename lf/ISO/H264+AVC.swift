@@ -138,13 +138,13 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
                 let numOfSequenceParameterSets:UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
                 for _ in 0..<numOfSequenceParameterSets {
                     let length:Int = Int(try buffer.readUInt16())
-                    sequenceParameterSets.append(try buffer.readUInt8(length))
+                    sequenceParameterSets.append(try buffer.readBytes(length))
                 }
             
                 let numPictureParameterSets:UInt8 = try buffer.readUInt8()
                 for _ in 0..<numPictureParameterSets {
                     let length:Int = Int(try buffer.readUInt16())
-                    pictureParameterSets.append(try buffer.readUInt8(length))
+                    pictureParameterSets.append(try buffer.readBytes(length))
                 }
             } catch {
                 
