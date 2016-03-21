@@ -1,11 +1,11 @@
 import Foundation
 
-enum ByteArrayError: ErrorType {
+public enum ByteArrayError: ErrorType {
     case EOF
     case Parse
 }
 
-final class ByteArray {
+final public class ByteArray {
     static let sizeOfInt8:Int = 1
     static let sizeOfInt16:Int = 2
     static let sizeOfInt24:Int = 3
@@ -15,7 +15,7 @@ final class ByteArray {
 
     private(set) var bytes:[UInt8] = []
 
-    var length:Int {
+    public var length:Int {
         get {
             return bytes.count
         }
@@ -31,13 +31,13 @@ final class ByteArray {
         }
     }
 
-    var position:Int = 0
+    public var position:Int = 0
 
-    var bytesAvailable:Int {
+    public var bytesAvailable:Int {
         return bytes.count - position
     }
 
-    subscript(i: Int) -> UInt8 {
+    public subscript(i: Int) -> UInt8 {
         get {
             return bytes[i]
         }
@@ -58,29 +58,29 @@ final class ByteArray {
         data.getBytes(&bytes, length: data.length)
     }
 
-    func readUInt8() throws -> UInt8 {
+    public func readUInt8() throws -> UInt8 {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
         return bytes[position++]
     }
 
-    func writeUInt8(value:UInt8) -> ByteArray {
+    public func writeUInt8(value:UInt8) -> ByteArray {
         return writeBytes([value])
     }
 
-    func readInt8() throws -> Int8 {
+    public func readInt8() throws -> Int8 {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
         return Int8(bitPattern: UInt8(bytes[position++]))
     }
 
-    func writeInt8(value:Int8) -> ByteArray {
+    public func writeInt8(value:Int8) -> ByteArray {
         return writeBytes([UInt8(bitPattern: value)])
     }
 
-    func readUInt16() throws -> UInt16 {
+    public func readUInt16() throws -> UInt16 {
         guard ByteArray.sizeOfInt16 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -88,11 +88,11 @@ final class ByteArray {
         return UInt16(bytes: Array(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
     }
 
-    func writeUInt16(value:UInt16) -> ByteArray {
+    public func writeUInt16(value:UInt16) -> ByteArray {
         return writeBytes(value.bigEndian.bytes)
     }
 
-    func readInt16() throws -> Int16 {
+    public func readInt16() throws -> Int16 {
         guard ByteArray.sizeOfInt16 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -100,22 +100,22 @@ final class ByteArray {
         return Int16(bytes: Array(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
     }
 
-    func writeInt16(value:Int16) -> ByteArray {
+    public func writeInt16(value:Int16) -> ByteArray {
         return writeBytes(value.bigEndian.bytes)
     }
 
-    func readUInt24() throws -> UInt32 {
+    public func readUInt24() throws -> UInt32 {
         guard ByteArray.sizeOfInt24 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
         return (UInt32(bytes[position++]) << 16) | (UInt32(bytes[position++]) << 8) | UInt32(bytes[position++])
     }
 
-    func writeUInt24(value:UInt32) -> ByteArray {
+    public func writeUInt24(value:UInt32) -> ByteArray {
         return writeBytes(Array(value.bigEndian.bytes[1...ByteArray.sizeOfInt24]))
     }
 
-    func readUInt32() throws -> UInt32 {
+    public func readUInt32() throws -> UInt32 {
         guard ByteArray.sizeOfInt32 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -123,11 +123,11 @@ final class ByteArray {
         return UInt32(bytes: Array(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
     }
 
-    func writeUInt32(value:UInt32) -> ByteArray {
+    public func writeUInt32(value:UInt32) -> ByteArray {
         return writeBytes(value.bigEndian.bytes)
     }
 
-    func readInt32() throws -> Int32 {
+    public func readInt32() throws -> Int32 {
         guard ByteArray.sizeOfInt32 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -135,11 +135,11 @@ final class ByteArray {
         return Int32(bytes: Array(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
     }
 
-    func writeInt32(value:Int32) -> ByteArray {
+    public func writeInt32(value:Int32) -> ByteArray {
         return writeBytes(value.bigEndian.bytes)
     }
 
-    func readDouble() throws -> Double {
+    public func readDouble() throws -> Double {
         guard ByteArray.sizeOfDouble <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -147,11 +147,11 @@ final class ByteArray {
         return Double(bytes: Array(bytes[position - ByteArray.sizeOfDouble..<position].reverse()))
     }
 
-    func writeDouble(value:Double) -> ByteArray {
+    public func writeDouble(value:Double) -> ByteArray {
         return writeBytes(value.bytes.reverse())
     }
 
-    func readFloat() throws -> Float {
+    public func readFloat() throws -> Float {
         guard ByteArray.sizeOfFloat <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -159,20 +159,20 @@ final class ByteArray {
         return Float(bytes: Array(bytes[position - ByteArray.sizeOfFloat..<position].reverse()))
     }
 
-    func writeFloat(value:Float) -> ByteArray {
+    public func writeFloat(value:Float) -> ByteArray {
         return writeBytes(value.bytes.reverse())
     }
 
-    func readUTF8() throws -> String {
+    public func readUTF8() throws -> String {
         return try readUTF8Bytes(Int(try readUInt16()))
     }
 
-    func writeUTF8(value:String) throws -> ByteArray {
+    public func writeUTF8(value:String) throws -> ByteArray {
         let utf8:[UInt8] = [UInt8](value.utf8)
         return writeUInt16(UInt16(utf8.count)).writeBytes(utf8)
     }
 
-    func readUTF8Bytes(length:Int) throws -> String {
+    public func readUTF8Bytes(length:Int) throws -> String {
         guard length <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -183,11 +183,11 @@ final class ByteArray {
         return result
     }
 
-    func writeUTF8Bytes(value:String) -> ByteArray {
+    public func writeUTF8Bytes(value:String) -> ByteArray {
         return writeBytes([UInt8](value.utf8))
     }
 
-    func readBytes(length:Int) throws -> [UInt8] {
+    public func readBytes(length:Int) throws -> [UInt8] {
         guard length <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
@@ -195,7 +195,7 @@ final class ByteArray {
         return Array(bytes[position - length..<position])
     }
 
-    func writeBytes(value:[UInt8]) -> ByteArray {
+    public func writeBytes(value:[UInt8]) -> ByteArray {
 
         if (position == bytes.count) {
             bytes += value
@@ -243,7 +243,7 @@ final class ByteArray {
 
 // MARK: - CustomStringConvertible
 extension ByteArray: CustomStringConvertible {
-    var description:String {
+    public var description:String {
         var description:String = "ByteArray{"
         description += "position:\(position),"
         description += "bytesAvailable:\(bytesAvailable),"

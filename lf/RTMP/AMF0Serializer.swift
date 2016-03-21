@@ -19,10 +19,53 @@ class AMFSerializerUtil {
 
 enum AMFSerializerError: ErrorType {
     case Deserialize
+    case OutOfIndex
+}
+
+class AMFReference {
+    var strings:[String] = []
+    var objects:[Any] = []
+
+    func getString(index:Int) throws -> String {
+        if (strings.count <= index) {
+            throw AMFSerializerError.OutOfIndex
+        }
+        return strings[index]
+    }
+
+    func getObject(index:Int) throws -> Any {
+        if (objects.count <= index) {
+            throw AMFSerializerError.OutOfIndex
+        }
+        return objects[index]
+    }
+
+    func indexOf<T:Equatable>(value: T) -> Int? {
+        for (index, data) in objects.enumerate() {
+            if let data:T = data as? T where data == value {
+                return index
+            }
+        }
+        return nil
+    }
+
+    func indexOf(value:ASObject) -> Int? {
+        for (index, data) in objects.enumerate() {
+            if let data:ASObject = data as? ASObject where data.description == value.description {
+                return index
+            }
+        }
+        return nil
+    }
+
+    func indexOf(value:String) -> Int? {
+        return strings.indexOf(value)
+    }
 }
 
 protocol AMFSerializer {
     var buffer:ByteArray { get set }
+    var reference:AMFReference { get set }
 
     func serialize(value:Bool) -> AMFSerializer
     func deserialize() throws -> Bool
@@ -83,6 +126,7 @@ class AMF0Serializer:AMFSerializer {
     }
 
     var buffer:ByteArray = ByteArray()
+    var reference:AMFReference = AMFReference()
 
     func serialize(value:Any?) -> AMFSerializer {
         if value == nil {
