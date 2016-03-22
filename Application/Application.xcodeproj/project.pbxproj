@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		292A16881CA0FC3A00B02325 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 292A16871CA0FC3A00B02325 /* lf.framework */; };
+		292A16891CA0FC3A00B02325 /* lf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 292A16871CA0FC3A00B02325 /* lf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		295D82191BA9B8EE00073478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D82181BA9B8EE00073478 /* AppDelegate.swift */; };
 		295D82201BA9B8EE00073478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295D821F1BA9B8EE00073478 /* Assets.xcassets */; };
 		295D82231BA9B8EE00073478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */; };
@@ -15,8 +17,23 @@
 		297581121C9F1438007C6CE3 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 297581111C9F1438007C6CE3 /* lf.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		292A168A1CA0FC3B00B02325 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				292A16891CA0FC3A00B02325 /* lf.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		0DDD70EA3CCF88EBD0E84F6A /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		292A16871CA0FC3A00B02325 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; name = lf.framework; path = "/Users/shogo/Library/Developer/Xcode/DerivedData/Application-fudwypqujgogzggzpnjvxktmoyie/Build/Products/Debug-iphoneos/lf.framework"; sourceTree = "<absolute>"; };
 		294432F11C954CE3006359CB /* lf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lf.framework; path = "../build/Debug-iphoneos/lf.framework"; sourceTree = "<group>"; };
 		295D82151BA9B8EE00073478 /* Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		295D82181BA9B8EE00073478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -25,7 +42,7 @@
 		295D82241BA9B8EE00073478 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		295D822E1BA9BB5900073478 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
 		2960FDFB1C946FC000549253 /* Pods.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Pods.framework; path = "Pods/../build/Debug-iphoneos/Pods.framework"; sourceTree = "<group>"; };
-		297581111C9F1438007C6CE3 /* lf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lf.framework; path = "../build/Debug-iphoneos/lf.framework"; sourceTree = "<group>"; };
+		297581111C9F1438007C6CE3 /* lf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lf.framework; path = "/Users/shogo/Dropbox/xcode/lf.swift/build/Debug-iphoneos/lf.framework"; sourceTree = "<absolute>"; };
 		6E8A644E62EFBF98DF9439AA /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -35,6 +52,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				297581121C9F1438007C6CE3 /* lf.framework in Frameworks */,
+				292A16881CA0FC3A00B02325 /* lf.framework in Frameworks */,
 				2960FDFC1C946FC000549253 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -54,7 +72,7 @@
 		295D820C1BA9B8EE00073478 = {
 			isa = PBXGroup;
 			children = (
-				297581111C9F1438007C6CE3 /* lf.framework */,
+				292A16871CA0FC3A00B02325 /* lf.framework */,
 				295D82171BA9B8EE00073478 /* Application */,
 				123363F22A25354276253A9F /* Pods */,
 				295D82161BA9B8EE00073478 /* Products */,
@@ -103,6 +121,7 @@
 				295D82121BA9B8EE00073478 /* Frameworks */,
 				295D82131BA9B8EE00073478 /* Resources */,
 				21605BDA220C68B7AE8166DE /* Embed Pods Frameworks */,
+				292A168A1CA0FC3B00B02325 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

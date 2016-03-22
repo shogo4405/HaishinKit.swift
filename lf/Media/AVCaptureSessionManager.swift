@@ -51,7 +51,7 @@ public class AVCaptureSessionManager: NSObject {
             guard orientation != oldValue else {
                 return
             }
-            if let connection:AVCaptureConnection = videoIO.layer.connection {
+            if let connection:AVCaptureConnection = videoIO.view.layer.valueForKey("connection") as? AVCaptureConnection {
                 if (connection.supportsVideoOrientation) {
                     connection.videoOrientation = orientation
                 }
@@ -306,7 +306,7 @@ public class AVCaptureSessionManager: NSObject {
 
     public override init() {
         super.init()
-        videoIO.layer.session = session
+        videoIO.view.layer.setValue(session, forKey: "session")
         if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
             self.orientation = orientation
         }
@@ -365,9 +365,9 @@ public class AVCaptureSessionManager: NSObject {
             }
             switch camera.position {
             case AVCaptureDevicePosition.Front:
-                videoIO.layer.surface.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+                videoIO.view.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
             case AVCaptureDevicePosition.Back:
-                videoIO.layer.surface.transform = CATransform3DMakeRotation(0, 0, 1, 0)
+                videoIO.view.layer.transform = CATransform3DMakeRotation(0, 0, 1, 0)
             default:
                 break
             }

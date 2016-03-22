@@ -3,11 +3,12 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: NSObject {
-    var layer:VideoPreviewLayer = VideoPreviewLayer()
     var encoder:AVCEncoder = AVCEncoder()
+    var view:VideoIOView = VideoIOView()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
+
     private var context:CIContext = {
         if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
             logger.debug("cicontext use hardware renderer")
@@ -33,7 +34,7 @@ final class VideoIOComponent: NSObject {
             }
             let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
-                self.layer.surface.contents = content
+                self.view.layer.contents = content
             }
         }
         CVPixelBufferUnlockBaseAddress(buffer, 0)
@@ -47,7 +48,7 @@ final class VideoIOComponent: NSObject {
             return false
         }
         effects.append(effect)
-        layer.enabledSurface = !effects.isEmpty
+        view.layer.setValue(!effects.isEmpty, forKey: "enabledSurface")
         objc_sync_exit(effects)
         return true
     }
@@ -56,7 +57,7 @@ final class VideoIOComponent: NSObject {
         objc_sync_enter(effects)
         if let i:Int = effects.indexOf(effect) {
             effects.removeAtIndex(i)
-            layer.enabledSurface = !effects.isEmpty
+            view.layer.setValue(!effects.isEmpty, forKey: "enabledSurface")
             objc_sync_exit(effects)
             return true
         }

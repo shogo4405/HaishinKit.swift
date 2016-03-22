@@ -227,25 +227,8 @@ public class RTMPStream: EventDispatcher {
         }
     }
 
-    private var _view:UIView? = nil
-    public var view:UIView! {
-        if (_view == nil) {
-            layer.videoGravity = videoGravity
-            captureManager.videoIO.layer.videoGravity = videoGravity
-            _view = UIView()
-            _view!.backgroundColor = UIColor.blackColor()
-            _view!.layer.addSublayer(captureManager.videoIO.layer)
-            _view!.layer.addSublayer(layer)
-            _view!.addObserver(self, forKeyPath: "frame", options: NSKeyValueObservingOptions.New, context: nil)
-        }
-        return _view!
-    }
-
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
-        didSet {
-            layer.videoGravity = videoGravity
-            captureManager.videoIO.layer.videoGravity = videoGravity
-        }
+    public var view:VideoIOView {
+        return captureManager.videoIO.view
     }
 
     public var audioSettings:[String: AnyObject] {
@@ -300,7 +283,6 @@ public class RTMPStream: EventDispatcher {
     private(set) var recorder:RTMPRecorder = RTMPRecorder()
     private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
 
-    private var layer:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private var audioTimestamp:Double = 0
@@ -321,10 +303,6 @@ public class RTMPStream: EventDispatcher {
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
-    }
-
-    deinit {
-        _view?.removeObserver(self, forKeyPath: "frame")
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
@@ -517,9 +495,8 @@ public class RTMPStream: EventDispatcher {
 
     func enqueueSampleBuffer(video sampleBuffer:CMSampleBuffer) {
         dispatch_async(dispatch_get_main_queue()) {
-            if (self.readyForKeyframe && self.layer.readyForMoreMediaData) {
-                self.layer.enqueueSampleBuffer(sampleBuffer)
-                self.layer.setNeedsDisplay()
+            if (self.readyForKeyframe) {
+                self.captureManager.videoIO.view.enqueueSampleBuffer(sampleBuffer)
             }
         }
     }
@@ -536,19 +513,6 @@ public class RTMPStream: EventDispatcher {
             default:
                 break
             }
-        }
-    }
-
-    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard let keyPath:String = keyPath else {
-            return
-        }
-        switch keyPath {
-        case "frame":
-            layer.frame = view.bounds
-            captureManager.videoIO.layer.frame = view.bounds
-        default:
-            break
         }
     }
 }

@@ -17,6 +17,34 @@ final class VideoPreviewLayer: AVCaptureVideoPreviewLayer {
         }
     }
 
+    override var transform:CATransform3D {
+        get {
+            return surface.transform
+        }
+        set {
+            surface.transform = newValue
+        }
+    }
+
+    override var frame:CGRect {
+        get {
+            return super.frame
+        }
+        set {
+            super.frame = newValue
+            surface.frame = newValue
+        }
+    }
+
+    override var contents:AnyObject? {
+        get {
+            return surface.contents
+        }
+        set {
+            surface.contents = newValue
+        }
+    }
+
     override var videoGravity:String! {
         get {
             return super.videoGravity

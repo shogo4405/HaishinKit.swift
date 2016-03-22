@@ -38,9 +38,11 @@
 		2922DA341C4150830016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
 		2922DA361C415FB70016F67A /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA351C415FB70016F67A /* MD5Tests.swift */; };
 		2922DA371C41600A0016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
+		292A16831CA0DF7300B02325 /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295EDC5B1CA0D488006A4A35 /* VideoIOView.swift */; };
 		2945CBC31B4BE66000104112 /* lf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2945CBC21B4BE66000104112 /* lf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2945CBC91B4BE66000104112 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
 		29556CBD1C8F064C00A7242B /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29556CBC1C8F064C00A7242B /* VisualEffect.swift */; };
+		295EDC5C1CA0D488006A4A35 /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295EDC5B1CA0D488006A4A35 /* VideoIOView.swift */; };
 		295FEFAE1C3823BE00271E90 /* AMF0Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFAB1C3823BE00271E90 /* AMF0Serializer.swift */; };
 		295FEFB01C3823BE00271E90 /* RTMPRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFAD1C3823BE00271E90 /* RTMPRecorder.swift */; };
 		295FEFB71C3823E200271E90 /* MP4AudioSpecificConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFB51C3823E200271E90 /* MP4AudioSpecificConfig.swift */; };
@@ -135,6 +137,7 @@
 		2945CBC81B4BE66000104112 /* lfTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = lfTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2945CBCE1B4BE66000104112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29556CBC1C8F064C00A7242B /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisualEffect.swift; path = Media/VisualEffect.swift; sourceTree = "<group>"; };
+		295EDC5B1CA0D488006A4A35 /* VideoIOView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoIOView.swift; path = Media/VideoIOView.swift; sourceTree = "<group>"; };
 		295FEFAB1C3823BE00271E90 /* AMF0Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AMF0Serializer.swift; path = RTMP/AMF0Serializer.swift; sourceTree = "<group>"; };
 		295FEFAD1C3823BE00271E90 /* RTMPRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPRecorder.swift; path = RTMP/RTMPRecorder.swift; sourceTree = "<group>"; };
 		295FEFB51C3823E200271E90 /* MP4AudioSpecificConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4AudioSpecificConfig.swift; path = ISO/MP4AudioSpecificConfig.swift; sourceTree = "<group>"; };
@@ -318,6 +321,7 @@
 				29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */,
 				291F69DD1C88810E00C8B53E /* SoundTransform.swift */,
 				29EA5FDA1C8C5177001CB36B /* VideoIOComponent.swift */,
+				295EDC5B1CA0D488006A4A35 /* VideoIOView.swift */,
 				2906CD441C9AD920006FCF56 /* VideoPreviewLayer.swift */,
 				29556CBC1C8F064C00A7242B /* VisualEffect.swift */,
 			);
@@ -520,6 +524,7 @@
 				29C0E0621C2EB02E009DD8E8 /* RTMPConnection.swift in Sources */,
 				2922DA341C4150830016F67A /* MD5.swift in Sources */,
 				29C0E0641C2EB02E009DD8E8 /* RTMPMuxer.swift in Sources */,
+				295EDC5C1CA0D488006A4A35 /* VideoIOView.swift in Sources */,
 				29CF9DA01C8DD06700576CA6 /* Function.swift in Sources */,
 				29C0E0651C2EB02E009DD8E8 /* RTMPSharedObject.swift in Sources */,
 				290907D01C3961CE00F2E80C /* ByteArray.swift in Sources */,
@@ -540,6 +545,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				292A16831CA0DF7300B02325 /* VideoIOView.swift in Sources */,
 				2903891B1CA0477B00AD2F75 /* AMF3Serializer.swift in Sources */,
 				2903891C1CA0477B00AD2F75 /* ASStruct.swift in Sources */,
 				29EBCF511C9ADE8500614627 /* VideoPreviewLayer.swift in Sources */,
