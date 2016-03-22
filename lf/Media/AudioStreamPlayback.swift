@@ -199,8 +199,8 @@ public class AudioStreamPlayback: NSObject {
                 &queue),
                 "")
         }
-        if let cookie:[UInt8] = AudioFileStreamUtil.getMagicCookie(fileStreamID!) {
-            AudioQueueUtil.setMagicCookie(queue, cookie)
+        if let cookie:[UInt8] = getMagicCookieForFileStream() {
+            setMagicCookieForQueue(cookie)
         }
         soundTransform.setParameter(queue)
         for i in 0..<buffers.count {
@@ -228,10 +228,54 @@ public class AudioStreamPlayback: NSObject {
         case kAudioFileStreamProperty_ReadyToProducePackets:
             break
         case kAudioFileStreamProperty_DataFormat:
-            self.formatDescription = AudioFileStreamUtil.getFormatDescription(inAudioFileStream)
+            formatDescription = getFormatDescriptionForFileStream()
         default:
             break
         }
+    }
+
+    func setMagicCookieForQueue(inData: [UInt8]) -> Bool {
+        guard let queue:AudioQueueRef = queue else {
+            return false
+        }
+        var status:OSStatus = noErr
+        status = AudioQueueSetProperty(queue, kAudioQueueProperty_MagicCookie, inData, UInt32(inData.count))
+        if (status != noErr) {
+            logger.warning("status \(status)")
+            return false
+        }
+        return true
+    }
+
+    func getFormatDescriptionForFileStream() -> AudioStreamBasicDescription? {
+        guard let fileStreamID:AudioFileStreamID = fileStreamID else {
+            return nil
+        }
+        var data:AudioStreamBasicDescription = AudioStreamBasicDescription()
+        var size:UInt32 = UInt32(sizeof(data.dynamicType))
+        guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_DataFormat, &size, &data) == noErr else {
+            logger.warning("kAudioFileStreamProperty_DataFormat")
+            return nil
+        }
+        return data
+    }
+    
+    func getMagicCookieForFileStream() -> [UInt8]? {
+        guard let fileStreamID:AudioFileStreamID = fileStreamID else {
+            return nil
+        }
+        var size:UInt32 = 0
+        var writable:DarwinBoolean = true
+        guard AudioFileStreamGetPropertyInfo(fileStreamID, kAudioFileStreamProperty_MagicCookieData, &size, &writable) == noErr else {
+            logger.warning("info kAudioFileStreamProperty_MagicCookieData")
+            return nil
+        }
+        var data:[UInt8] = [UInt8](count: Int(size), repeatedValue: 0)
+        guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_MagicCookieData, &size, &data) == noErr else {
+            logger.warning("kAudioFileStreamProperty_MagicCookieData")
+            return nil
+        }
+        return data
     }
 }
 
@@ -252,6 +296,7 @@ extension AudioStreamPlayback: Runnable {
                 self.buffers.append(AudioQueueBufferRef())
             }
             self.running = true
+            AudioSessionUtil.startRunning()
         }
     }
 
@@ -267,6 +312,7 @@ extension AudioStreamPlayback: Runnable {
             self.fileStreamID = nil
             self.packetDescriptions.removeAll(keepCapacity: false)
             self.running = false
+            AudioSessionUtil.stopRunning()
         }
     }
 }

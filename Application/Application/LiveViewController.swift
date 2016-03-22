@@ -2,10 +2,14 @@ import lf
 import UIKit
 import AVFoundation
 
-final class LiveViewController: UIViewController {
-    let url:String = "rtmp://192.168.179.5/live"
-    let streamName:String = "live"
+struct Preference {
+    static let defaultInstance:Preference = Preference()
 
+    var uri:String? = "rtmp://test:test@192.168.179.5/live"
+    var streamName:String? = "live"
+}
+
+final class LiveViewController: UIViewController {
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
     var sharedObject:RTMPSharedObject!
@@ -58,14 +62,19 @@ final class LiveViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "lf.TestApplication"
-
         videoBitrateSlider.addTarget(self, action: "onSliderValueChanged:", forControlEvents: .ValueChanged)
         audioBitrateSlider.addTarget(self, action: "onSliderValueChanged:", forControlEvents: .ValueChanged)
         effectSegmentControl.addTarget(self, action: "onEffectValueChanged:", forControlEvents: .ValueChanged)
 
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: "toggleTorch:")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Camera", style: .Plain, target: self, action: "rotateCamera:")
+        /*
+        navigationItem.leftBarButtonItem =
+            UIBarButtonItem(title: "Preference", style: .Plain, target: self, action: "showPreference:")
+        */
+
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: "toggleTorch:"),
+            UIBarButtonItem(title: "Camera", style: .Plain, target: self, action: "rotateCamera:")
+        ]
 
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
@@ -101,7 +110,7 @@ final class LiveViewController: UIViewController {
 
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        let navigationHeight:CGFloat = view.bounds.width < view.bounds.height ? 64 : 44
+        let navigationHeight:CGFloat = 66
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
         rtmpStream.view.frame = view.frame
@@ -121,6 +130,15 @@ final class LiveViewController: UIViewController {
 
     func toggleTorch(sender:UIBarButtonItem) {
         rtmpStream.torch = !rtmpStream.torch
+    }
+
+    func showPreference(sender:UIBarButtonItem) {
+        let preference:PreferenceController = PreferenceController()
+        preference.view.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)
+        preference.view.frame = view.frame
+        preference.modalPresentationStyle = .OverCurrentContext
+        preference.modalTransitionStyle = .CrossDissolve
+        presentViewController(preference, animated: true, completion: nil)
     }
 
     func onSliderValueChanged(slider:UISlider) {
@@ -143,7 +161,7 @@ final class LiveViewController: UIViewController {
         } else {
             UIApplication.sharedApplication().idleTimerDisabled = true
             rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:"rtmpStatusHandler:", observer: self)
-            rtmpConnection.connect(url)
+            rtmpConnection.connect(Preference.defaultInstance.uri!)
             sender.setTitle("■", forState: .Normal)
         }
         sender.selected = !sender.selected
@@ -154,7 +172,7 @@ final class LiveViewController: UIViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish(streamName)
+                rtmpStream!.publish(Preference.defaultInstance.streamName!)
             default:
                 break
             }

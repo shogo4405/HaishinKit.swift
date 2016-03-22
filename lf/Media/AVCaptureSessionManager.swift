@@ -56,6 +56,7 @@ public class AVCaptureSessionManager: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
+            
             if (_videoDataOutput != nil) {
                 for connection in _videoDataOutput!.connections {
                     if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
@@ -265,7 +266,7 @@ public class AVCaptureSessionManager: NSObject {
             if let oldValue:AVCaptureDeviceInput = oldValue {
                 session.removeInput(oldValue)
             }
-            if let currentAudio:AVCaptureDeviceInput = oldValue {
+            if let currentAudio:AVCaptureDeviceInput = currentAudio {
                 session.addInput(currentAudio)
             }
         }
@@ -306,10 +307,6 @@ public class AVCaptureSessionManager: NSObject {
 
     public override init() {
         super.init()
-        videoIO.view.layer.setValue(session, forKey: "session")
-        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
-            self.orientation = orientation
-        }
     }
 
     deinit {
@@ -403,9 +400,13 @@ public class AVCaptureSessionManager: NSObject {
 // MARK: - Runnable
 extension AVCaptureSessionManager: Runnable {
     public func startRunning() {
+        videoIO.view.layer.setValue(session, forKey: "session")
         session.startRunning()
+        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
+            self.orientation = orientation
+        }
     }
-    
+
     public func stopRunning() {
         session.stopRunning()
     }

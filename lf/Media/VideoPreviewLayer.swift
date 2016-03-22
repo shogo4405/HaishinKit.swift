@@ -9,6 +9,7 @@ final class VideoPreviewLayer: AVCaptureVideoPreviewLayer {
                 return
             }
             if (enabledSurface) {
+                surface.contents = nil
                 surface.frame = frame
                 addSublayer(surface)
                 return

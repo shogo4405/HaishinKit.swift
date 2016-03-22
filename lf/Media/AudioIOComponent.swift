@@ -11,6 +11,7 @@ final class AudioIOComponent: NSObject {
     }
 }
 
+// MARK: - AVCaptureAudioDataOutputSampleBufferDelegate
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
         encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, fromConnection: connection)
