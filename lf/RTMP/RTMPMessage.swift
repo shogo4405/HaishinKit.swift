@@ -484,17 +484,17 @@ final class RTMPDataMessage:RTMPMessage {
             return super.payload
         }
         set {
-
             guard super.payload != newValue else {
                 return
             }
-
             if (length == newValue.count) {
                 serializer.buffer.clear()
                 serializer.buffer.writeBytes(newValue).position = 0
                 do {
                     handlerName = try serializer.deserialize()
-                    arguments.append(try serializer.deserialize())
+                    while (0 < serializer.buffer.bytesAvailable) {
+                        arguments.append(try serializer.deserialize())
+                    }
                 } catch {
                     logger.error("\(serializer.buffer)")
                 }
