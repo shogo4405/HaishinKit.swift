@@ -1,14 +1,21 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 final class MD5Tests: XCTestCase {
 
     func hex(data:[UInt8]) -> String {
-        var hash:String = ""
-        for (var i = 0; i < 16; ++i) {
-            hash +=  String(format: "%02x", data[i])
+        
+        return data.reduce("") { (result, byte) in
+            
+            var result = result
+            result += String(format: "%02x", byte)
+            
+            return result
+            
         }
-        return hash
+    
     }
 
     func testCalculate() {

@@ -186,7 +186,7 @@ public class AVCaptureSessionManager: NSObject {
         didSet {
             let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
             if (syncOrientation) {
-                center.addObserver(self, selector: "onOrientationChanged:", name: UIDeviceOrientationDidChangeNotification, object: nil)
+                center.addObserver(self, selector: #selector(AVCaptureSessionManager.onOrientationChanged(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
             } else {
                 center.removeObserver(self, name: UIDeviceOrientationDidChangeNotification, object: nil)
             }

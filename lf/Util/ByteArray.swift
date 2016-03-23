@@ -62,7 +62,11 @@ final public class ByteArray {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
-        return bytes[position++]
+        // post increment
+        let position = self.position
+        increment(&self.position)
+        
+        return bytes[position]
     }
 
     public func writeUInt8(value:UInt8) -> ByteArray {
@@ -73,7 +77,12 @@ final public class ByteArray {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
-        return Int8(bitPattern: UInt8(bytes[position++]))
+        
+        // post increment
+        let position = self.position
+        increment(&self.position)
+        
+        return Int8(bitPattern: UInt8(bytes[position]))
     }
 
     public func writeInt8(value:Int8) -> ByteArray {
@@ -108,7 +117,21 @@ final public class ByteArray {
         guard ByteArray.sizeOfInt24 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
-        return (UInt32(bytes[position++]) << 16) | (UInt32(bytes[position++]) << 8) | UInt32(bytes[position++])
+        
+        // serial post increment
+        var position = self.position
+        let upper = UInt32(bytes[position]) << 16
+        increment(&self.position)
+        
+        position = self.position
+        let middle = UInt32(bytes[position]) << 8
+        increment(&self.position)
+        
+        position = self.position
+        let lower = UInt32(bytes[position])
+        increment(&self.position)
+        
+        return upper | middle | lower
     }
 
     public func writeUInt24(value:UInt32) -> ByteArray {

@@ -24,14 +24,15 @@ extension NSURL {
     }
     
     func dictionaryFromQuery() -> [String: AnyObject] {
-        var result:[String: AnyObject] = [:]
-        if let comonents:NSURLComponents = NSURLComponents(string: absoluteString) {
-            for (var i=0; i < comonents.queryItems?.count; ++i) {
-                if let item:NSURLQueryItem = comonents.queryItems?[i] {
-                    result[item.name] = item.value
-                }
-            }
-        }
-        return result
+        
+       return NSURLComponents(string: absoluteString)?.queryItems?.reduce([String: AnyObject]()) { (result, item) in
+        
+            var result = result
+            result[item.name] = item.value
+        
+            return result
+        
+        } ?? [:]
+        
     }
 }

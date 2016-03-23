@@ -105,7 +105,7 @@ final class AACEncoder: NSObject {
     private var converter:AudioConverterRef {
         var status:OSStatus = noErr
         if (_converter == nil) {
-            var converter:AudioConverterRef = AudioConverterRef()
+            var converter:AudioConverterRef = nil
             status = AudioConverterNewSpecific(
                 &inSourceFormat!,
                 &inDestinationFormat,

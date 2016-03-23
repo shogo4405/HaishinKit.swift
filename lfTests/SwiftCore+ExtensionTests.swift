@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 class SwiftCoreExtensionTests: XCTestCase {
     
     func testInt32() {

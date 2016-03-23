@@ -299,7 +299,7 @@ public class RTMPStream: EventDispatcher {
         super.init()
         captureManager.audioIO.encoder.delegate = muxer
         captureManager.videoIO.encoder.delegate = muxer
-        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:", observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
