@@ -277,9 +277,6 @@ public class RTMPStream: EventDispatcher {
         }
     }
 
-    var readyForKeyframe:Bool = false
-    var videoFormatDescription:CMVideoFormatDescriptionRef?
-
     private(set) var recorder:RTMPRecorder = RTMPRecorder()
     private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
 
@@ -288,7 +285,7 @@ public class RTMPStream: EventDispatcher {
     private var audioTimestamp:Double = 0
     private var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
-    private var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
+    private(set) var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
 
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL
@@ -299,7 +296,7 @@ public class RTMPStream: EventDispatcher {
         super.init()
         captureManager.audioIO.encoder.delegate = muxer
         captureManager.videoIO.encoder.delegate = muxer
-        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:", observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
@@ -361,7 +358,6 @@ public class RTMPStream: EventDispatcher {
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
-            self.readyForKeyframe = false
             self.audioPlayback.startRunning()
             self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
@@ -379,7 +375,6 @@ public class RTMPStream: EventDispatcher {
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
-            self.readyForKeyframe = false
             self.audioPlayback.startRunning()
             self.recorder.dispatcher = self
             self.recorder.open(arguments[0] as! String, option: option)
@@ -491,14 +486,6 @@ public class RTMPStream: EventDispatcher {
     public func setPointOfInterest(focus:CGPoint, exposure:CGPoint) {
         captureManager.focusPointOfInterest = focus
         captureManager.exposurePointOfInterest = exposure
-    }
-
-    func enqueueSampleBuffer(video sampleBuffer:CMSampleBuffer) {
-        dispatch_async(dispatch_get_main_queue()) {
-            if (self.readyForKeyframe) {
-                self.captureManager.videoIO.view.enqueueSampleBuffer(sampleBuffer)
-            }
-        }
     }
 
     func rtmpStatusHandler(notification:NSNotification) {

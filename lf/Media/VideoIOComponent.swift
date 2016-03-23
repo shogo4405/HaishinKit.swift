@@ -9,6 +9,8 @@ final class VideoIOComponent: NSObject {
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
 
+    var formatDescription:CMVideoFormatDescriptionRef?
+
     private var context:CIContext = {
         if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
             logger.debug("cicontext use hardware renderer")
@@ -63,6 +65,34 @@ final class VideoIOComponent: NSObject {
         }
         objc_sync_exit(effects)
         return false
+    }
+
+    func enqueSampleBuffer(bytes:[UInt8], timestamp:Double) {
+        dispatch_async(lockQueue) {
+            var sample:[UInt8] = bytes
+            let sampleSize:Int = bytes.count
+
+            var blockBuffer:CMBlockBufferRef?
+            guard CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &sample, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) == noErr else {
+                return
+            }
+
+            var sampleBuffer:CMSampleBufferRef?
+            var sampleSizes:[Int] = [sampleSize]
+            var timing:CMSampleTimingInfo = CMSampleTimingInfo()
+            timing.duration = CMTimeMake(Int64(timestamp), 1000)
+            guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, self.formatDescription!, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
+                return
+            }
+
+            let naluType:NALUType? = NALUType(bytes: bytes, naluLength: 4)
+            let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
+            for i:CFIndex in 0..<CFArrayGetCount(attachments) {
+                naluType?.setCMSampleAttachmentValues(unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self))
+            }
+
+            self.view.enqueueSampleBuffer(sampleBuffer!)
+        }
     }
 
     func createImageBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVImageBufferRef? {

@@ -62,7 +62,10 @@ final public class ByteArray {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
-        return bytes[position++]
+        defer {
+            position += 1
+        }
+        return bytes[position]
     }
 
     public func writeUInt8(value:UInt8) -> ByteArray {
@@ -73,7 +76,10 @@ final public class ByteArray {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
-        return Int8(bitPattern: UInt8(bytes[position++]))
+        defer {
+            position += 1
+        }
+        return Int8(bitPattern: UInt8(bytes[position]))
     }
 
     public func writeInt8(value:Int8) -> ByteArray {
@@ -108,7 +114,8 @@ final public class ByteArray {
         guard ByteArray.sizeOfInt24 <= bytesAvailable else {
             throw ByteArrayError.EOF
         }
-        return (UInt32(bytes[position++]) << 16) | (UInt32(bytes[position++]) << 8) | UInt32(bytes[position++])
+        position += ByteArray.sizeOfInt24
+        return UInt32(bytes: [0] + Array(bytes[position - ByteArray.sizeOfInt24..<position])).bigEndian
     }
 
     public func writeUInt24(value:UInt32) -> ByteArray {

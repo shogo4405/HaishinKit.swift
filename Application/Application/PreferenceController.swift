@@ -17,7 +17,7 @@ final class PreferenceController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        closeButton.addTarget(self, action: "closePreference", forControlEvents: .TouchDown)
+        closeButton.addTarget(self, action: #selector(PreferenceController.closePreference), forControlEvents: .TouchDown)
         view.addSubview(closeButton)
     }
 

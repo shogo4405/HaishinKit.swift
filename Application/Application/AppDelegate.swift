@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
-        XCGLogger.defaultInstance().outputLogLevel = .Verbose
+        XCGLogger.defaultInstance().outputLogLevel = .Info
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
 
         window = UIWindow(frame: UIScreen.mainScreen().bounds)

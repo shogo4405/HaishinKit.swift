@@ -39,6 +39,9 @@ public class VideoIOView: UIView {
     }
 
     public func enqueueSampleBuffer(sampleBuffer: CMSampleBufferRef) {
+        guard display.readyForMoreMediaData else {
+            return
+        }
         display.enqueueSampleBuffer(sampleBuffer)
     }
 

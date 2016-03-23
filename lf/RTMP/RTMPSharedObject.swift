@@ -61,7 +61,7 @@ public class RTMPSharedObject: EventDispatcher {
             close()
         }
         self.rtmpConnection = rtmpConnection
-        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:", observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             timestamp = rtmpConnection.socket.timestamp
             rtmpConnection.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Use)]))
@@ -75,7 +75,7 @@ public class RTMPSharedObject: EventDispatcher {
 
     public func close() {
         data.removeAll(keepCapacity: false)
-        rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:", observer: self)
+        rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         rtmpConnection?.doWrite(createChunk([RTMPSharedObjectMessage.Event(type: .Release)]))
         rtmpConnection = nil
     }
@@ -119,6 +119,9 @@ public class RTMPSharedObject: EventDispatcher {
         let now:NSDate = NSDate()
         let timestamp:NSTimeInterval = now.timeIntervalSince1970 - self.timestamp
         self.timestamp = now.timeIntervalSince1970
+        defer {
+            currentVersion += 1
+        }
         return RTMPChunk(
             type: succeeded ? .One : .Zero,
             streamId: RTMPChunk.command,
@@ -126,7 +129,7 @@ public class RTMPSharedObject: EventDispatcher {
                 timestamp: UInt32(timestamp * 1000),
                 objectEncoding: objectEncoding,
                 sharedObjectName: name,
-                currentVersion: succeeded ? 0 : currentVersion++,
+                currentVersion: succeeded ? 0 : currentVersion,
                 flags: [persistence ? 0x01 : 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
                 events: events
             )

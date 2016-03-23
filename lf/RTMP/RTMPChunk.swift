@@ -119,11 +119,15 @@ final class RTMPChunk: NSObject {
             }
 
             _bytes += Array(newValue[0..<headerSize])
+            
             if (type == .Three) {
                 return
             }
 
-            let message:RTMPMessage = RTMPMessage.create(newValue[pos + 6])
+            guard let message:RTMPMessage = RTMPMessage.create(newValue[pos + 6]) else {
+                logger.error(newValue.description)
+                return
+            }
             message.timestamp = UInt32(bytes: [0x00] + Array(newValue[pos..<pos + 3])).bigEndian
 
             switch type {
@@ -143,8 +147,8 @@ final class RTMPChunk: NSObject {
             }
 
             let end:Int = min(message.length + start, newValue.count)
-            fragmented = size < size
-            message.payload = Array(newValue[start..<min(size, end)])
+            fragmented = size + start < end
+            message.payload = Array(newValue[start..<min(size + start, end)])
 
             self.message = message
         }
@@ -152,9 +156,8 @@ final class RTMPChunk: NSObject {
 
     override var description:String {
         var description:String = "RTMPChunk{"
-        description += "size:\(size),"
         description += "type:\(type),"
-        description += "message:\(message)"
+        description += "message:\(message),"
         description += "streamId:\(streamId),"
         description += "fragmented:\(fragmented)"
         description += "}"
@@ -192,6 +195,7 @@ final class RTMPChunk: NSObject {
         }
 
         var length:Int = message.length - message.payload.count
+
         if (bytes.count < length) {
             length = bytes.count
         }
@@ -199,12 +203,14 @@ final class RTMPChunk: NSObject {
         let chunkSize:Int = size - (message.payload.count % size)
         if (chunkSize < length) {
             length = chunkSize
-            fragmented = true
         }
 
         if (0 < length) {
             message.payload += Array(bytes[0..<length])
         }
+
+        fragmented = message.payload.count % size == 0
+
 
         return length
     }

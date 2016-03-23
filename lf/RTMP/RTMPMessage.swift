@@ -22,8 +22,8 @@ class RTMPMessage: NSObject {
         case Unknown = 255
     }
 
-    static func create(type:UInt8) -> RTMPMessage {
-        switch type {
+    static func create(value:UInt8) -> RTMPMessage? {
+        switch value {
         case Type.ChunkSize.rawValue:
             return RTMPSetChunkSizeMessage()
         case Type.Abort.rawValue:
@@ -57,7 +57,11 @@ class RTMPMessage: NSObject {
         case Type.Aggregate.rawValue:
             return RTMPAggregateMessage()
         default:
-            return RTMPMessage(type: Type(rawValue: type)!)
+            guard let type:Type = Type(rawValue: value) else {
+                logger.error("\(value)")
+                return nil
+            }
+            return RTMPMessage(type: type)
         }
     }
 
@@ -840,62 +844,27 @@ final class RTMPVideoMessage:RTMPMessage {
             return
         }
         stream.recorder.onMessage(self)
-        if (payload.count <= FLVTag.TagType.Video.headerSize) {
+        guard FLVTag.TagType.Video.headerSize < payload.count else {
             return
         }
         switch payload[1] {
         case FLVAVCPacketType.Seq.rawValue:
             createFormatDescription(stream)
         case FLVAVCPacketType.Nal.rawValue:
-            if (!stream.readyForKeyframe) {
-                stream.readyForKeyframe = (payload[0] >> 4 == FLVFrameType.Key.rawValue)
-                if (stream.readyForKeyframe) {
-                    enqueueSampleBuffer(stream)
-                }
-            } else {
-                enqueueSampleBuffer(stream)
-            }
+            enqueueSampleBuffer(stream)
         default:
             break
         }
     }
 
     func enqueueSampleBuffer(stream: RTMPStream) {
-        guard let _:FLVFrameType = FLVFrameType(rawValue: payload[0] >> 4) else {
-            return
-        }
-
-        var bytes:[UInt8] = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
-        let sampleSize:Int = bytes.count
-
-        var blockBuffer:CMBlockBufferRef?
-        guard CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &bytes, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) == noErr else {
-            return
-        }
-
-        var sampleBuffer:CMSampleBufferRef?
-        var sampleSizes:[Int] = [sampleSize]
-        var timing:CMSampleTimingInfo = CMSampleTimingInfo()
-        timing.duration = CMTimeMake(Int64(timestamp), 1000)
-        
-        guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.videoFormatDescription!, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
-            return
-        }
-
-        let naluType:NALUType? = NALUType(bytes: bytes, naluLength: 4)
-        let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
-        for i:CFIndex in 0..<CFArrayGetCount(attachments) {
-            naluType?.setCMSampleAttachmentValues(unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self
-                ))
-        }
-
-        stream.enqueueSampleBuffer(video: sampleBuffer!)
+        stream.captureManager.videoIO.enqueSampleBuffer(Array(payload[FLVTag.TagType.Video.headerSize..<payload.count]), timestamp: Double(timestamp))
     }
 
     func createFormatDescription(stream: RTMPStream) -> OSStatus{
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
-        config.bytes = Array(payload[5..<payload.count])
-        return config.createFormatDescription(&stream.videoFormatDescription)
+        config.bytes = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
+        return config.createFormatDescription(&stream.captureManager.videoIO.formatDescription)
     }
 }
 

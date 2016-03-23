@@ -77,10 +77,10 @@ class AMF3Serializer: AMFSerializer {
         guard let type:Type = Type(rawValue: try buffer.readUInt8()) else {
             throw AMFSerializerError.Deserialize
         }
-        --buffer.position
+        buffer.position -= 1
         switch type {
         case .Undefined, .Null:
-            ++buffer.position
+            buffer.position += 1
             return nil
         case .BoolFalse:
             return try deserialize() as Bool
@@ -420,7 +420,7 @@ class AMF3Serializer: AMFSerializer {
             result <<= 7
             result |= Int(byte & 0x7F)
             byte = try buffer.readUInt8()
-            ++count
+            count += 1
         }
         
         if (count < 4) {

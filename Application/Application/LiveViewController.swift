@@ -62,9 +62,9 @@ final class LiveViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        videoBitrateSlider.addTarget(self, action: "onSliderValueChanged:", forControlEvents: .ValueChanged)
-        audioBitrateSlider.addTarget(self, action: "onSliderValueChanged:", forControlEvents: .ValueChanged)
-        effectSegmentControl.addTarget(self, action: "onEffectValueChanged:", forControlEvents: .ValueChanged)
+        videoBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
+        audioBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
+        effectSegmentControl.addTarget(self, action: #selector(LiveViewController.onEffectValueChanged(_:)), forControlEvents: .ValueChanged)
 
         /*
         navigationItem.leftBarButtonItem =
@@ -72,8 +72,8 @@ final class LiveViewController: UIViewController {
         */
 
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: "toggleTorch:"),
-            UIBarButtonItem(title: "Camera", style: .Plain, target: self, action: "rotateCamera:")
+            UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),
+            UIBarButtonItem(title: "Camera", style: .Plain, target: self, action: #selector(LiveViewController.rotateCamera(_:)))
         ]
 
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
@@ -87,11 +87,11 @@ final class LiveViewController: UIViewController {
             "continuousExposure": true,
         ]
         
-        publishButton.addTarget(self, action: "onClickPublish:", forControlEvents: .TouchUpInside)
+        publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)
 
         view.addSubview(rtmpStream.view)
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: "tapScreen:")
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LiveViewController.tapScreen(_:)))
         touchView.addGestureRecognizer(tapGesture)
         touchView.frame = view.frame
         touchView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
@@ -156,11 +156,11 @@ final class LiveViewController: UIViewController {
         if (sender.selected) {
             UIApplication.sharedApplication().idleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:"rtmpStatusHandler", observer: self)
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             sender.setTitle("●", forState: .Normal)
         } else {
             UIApplication.sharedApplication().idleTimerDisabled = true
-            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:"rtmpStatusHandler:", observer: self)
+            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             sender.setTitle("■", forState: .Normal)
         }

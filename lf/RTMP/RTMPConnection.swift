@@ -1,6 +1,6 @@
 import Foundation
-import XCGLogger
 
+// MARK: - Responder
 public class Responder: NSObject {
     
     private var result:(data:[Any?]) -> Void
@@ -25,6 +25,7 @@ public class Responder: NSObject {
     }
 }
 
+// MARK: - RTMPConnection
 public class RTMPConnection: EventDispatcher {
 
     public enum Code:String {
@@ -163,17 +164,18 @@ public class RTMPConnection: EventDispatcher {
     override public init() {
         super.init()
         socket.delegate = self
-        addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+        addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
     deinit {
-        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
+        currentTransactionId += 1
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: UInt32(RTMPChunk.command),
-            transactionId: ++currentTransactionId,
+            transactionId: currentTransactionId,
             objectEncoding: objectEncoding,
             commandName: commandName,
             commandObject: nil,
@@ -224,14 +226,15 @@ public class RTMPConnection: EventDispatcher {
 
     private func createConnectionChunk() -> RTMPChunk {
         var app:String = uri!.path!.substringFromIndex(uri!.path!.startIndex.advancedBy(1))
-        
+
         if (uri!.query != nil) {
             app += "?" + uri!.query!
         }
-        
+        currentTransactionId += 1
+
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: 3,
-            transactionId: ++currentTransactionId,
+            transactionId: currentTransactionId,
             // "connect" must be a objectEncoding = 0
             objectEncoding: 0,
             commandName: "connect",
@@ -318,11 +321,14 @@ extension RTMPConnection: RTMPSocketDelegate {
 
         if let message:RTMPMessage = chunk.message where chunk.ready {
             logger.verbose(chunk.description)
+
             switch chunk.type {
             case .Zero:
                 streamsmap[chunk.streamId] = message.streamId
             case .One:
-                message.streamId = streamsmap[chunk.streamId]!
+                if let streamId = streamsmap[chunk.streamId] {
+                    message.streamId = streamId
+                }
             case .Two:
                 break
             case .Three:
@@ -339,7 +345,7 @@ extension RTMPConnection: RTMPSocketDelegate {
 
             return
         }
-        
+
         if (chunk.fragmented) {
             fragmentedChunks[chunk.streamId] = chunk
             currentChunk = nil
@@ -347,7 +353,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             currentChunk = chunk.type == .Three ? fragmentedChunks[chunk.streamId] : chunk
             fragmentedChunks.removeValueForKey(chunk.streamId)
         }
-        
+
         if (position < bytes.count) {
             listen(socket, bytes: Array(bytes[position..<bytes.count]))
         }
