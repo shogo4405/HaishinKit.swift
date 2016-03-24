@@ -28,10 +28,10 @@ rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
 
-## LICENSE
+## License
 New BSD
 
-## REFERENCE
+## Reference
 * Adobe’s Real Time Messaging Protocol
  * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
 * Action Message Format -- AMF 0
