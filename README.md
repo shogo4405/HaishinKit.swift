@@ -1,7 +1,7 @@
 # lf.swift
 iOS向けライブ配信用のライブラリーです。現在、RTMPでの配信をサポートしています。
 
-## インストール方法
+## Install
 ### Cocoapod
     pod 'lf'
     use_frameworks!
@@ -28,10 +28,10 @@ rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
 
-## ライセンス
-修正BSDで公開しています。
+## LICENSE
+New BSD
 
-## 参考文献
+## REFERENCE
 * Adobe’s Real Time Messaging Protocol
  * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
 * Action Message Format -- AMF 0
