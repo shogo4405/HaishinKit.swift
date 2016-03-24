@@ -36,12 +36,12 @@ func IsNoErr(status:OSStatus, _ message:String, _ lambda:() -> Void) -> Bool {
 
 /**
  
- Increments the given value. This function is a workaround for deprecation of `++` operator in swift 2.2/3.0.
+ Increments the given value. This function is a workaround for deprecation of pre `++` operator in swift 2.2/3.0.
  
  - Parameter value: value to be incremented.
  
  */
-func increment<T: ForwardIndexType>(inout value: T) -> T {
+func preIncrement<T: ForwardIndexType>(inout value: T) -> T {
     
     value = value.successor()
     return value
@@ -50,14 +50,48 @@ func increment<T: ForwardIndexType>(inout value: T) -> T {
 
 /**
  
- Decrements the given value. This function is a workaround for deprecation of `--` operator in swift 2.2/3.0.
+ Increments the given value. This function is a workaround for deprecation of post `++` operator in swift 2.2/3.0.
+ 
+ - Parameter value: value to be incremented.
+ 
+ */
+func postIncrement<T: ForwardIndexType>(inout value: T) -> T {
+    
+    defer {
+        value = value.successor()
+    }
+    
+    return value
+    
+}
+
+/**
+ 
+ Decrements the given value. This function is a workaround for deprecation of pre `--` operator in swift 2.2/3.0.
  
  - Parameter value: value to be decremented.
  
  */
-func decrement<T: BidirectionalIndexType>(inout value: T) -> T {
+func preDecrement<T: BidirectionalIndexType>(inout value: T) -> T {
     
     value = value.predecessor()
+    return value
+    
+}
+
+/**
+ 
+ Decrements the given value. This function is a workaround for deprecation of post `--` operator in swift 2.2/3.0.
+ 
+ - Parameter value: value to be decremented.
+ 
+ */
+func postDecrement<T: BidirectionalIndexType>(inout value: T) -> T {
+    
+    defer {
+        value = value.predecessor()
+    }
+    
     return value
     
 }

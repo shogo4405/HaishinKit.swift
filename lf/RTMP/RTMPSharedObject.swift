@@ -119,9 +119,6 @@ public class RTMPSharedObject: EventDispatcher {
         let now:NSDate = NSDate()
         let timestamp:NSTimeInterval = now.timeIntervalSince1970 - self.timestamp
         self.timestamp = now.timeIntervalSince1970
-        // post increment
-        let currentVersion = self.currentVersion
-        increment(&self.currentVersion)
         
         return RTMPChunk(
             type: succeeded ? .One : .Zero,
@@ -130,7 +127,7 @@ public class RTMPSharedObject: EventDispatcher {
                 timestamp: UInt32(timestamp * 1000),
                 objectEncoding: objectEncoding,
                 sharedObjectName: name,
-                currentVersion: succeeded ? 0 : currentVersion,
+                currentVersion: succeeded ? 0 : postIncrement(&currentVersion),
                 flags: [persistence ? 0x01 : 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00],
                 events: events
             )

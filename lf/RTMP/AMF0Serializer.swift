@@ -174,7 +174,7 @@ class AMF0Serializer:AMFSerializer {
         guard let type:Type = Type(rawValue: try buffer.readUInt8()) else {
             return nil
         }
-        decrement(&buffer.position)
+        preDecrement(&buffer.position)
         switch type {
         case .Number:
             return try deserialize() as Double
@@ -185,10 +185,10 @@ class AMF0Serializer:AMFSerializer {
         case .Object:
             return try deserialize() as ASObject
         case .Null:
-            increment(&buffer.position)
+            preIncrement(&buffer.position)
             return nil
         case .Undefined:
-            increment(&buffer.position)
+            preIncrement(&buffer.position)
             return Type.Undefined
         case .Reference:
             assertionFailure("TODO")
@@ -306,7 +306,7 @@ class AMF0Serializer:AMFSerializer {
         while (true) {
             let key:String = try deserializeUTF8(false)
             guard key != "" else {
-                increment(&buffer.position)
+                preIncrement(&buffer.position)
                 break
             }
             result[key] = try deserialize()
@@ -337,7 +337,7 @@ class AMF0Serializer:AMFSerializer {
         while (true) {
             let key:String = try deserializeUTF8(false)
             guard key != "" else {
-                increment(&buffer.position)
+                preIncrement(&buffer.position)
                 break
             }
             result[key] = try deserialize()

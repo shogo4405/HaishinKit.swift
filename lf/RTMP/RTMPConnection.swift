@@ -173,7 +173,7 @@ public class RTMPConnection: EventDispatcher {
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: UInt32(RTMPChunk.command),
-            transactionId: increment(&currentTransactionId),
+            transactionId: preIncrement(&currentTransactionId),
             objectEncoding: objectEncoding,
             commandName: commandName,
             commandObject: nil,
@@ -231,7 +231,7 @@ public class RTMPConnection: EventDispatcher {
         
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: 3,
-            transactionId: increment(&currentTransactionId),
+            transactionId: preIncrement(&currentTransactionId),
             // "connect" must be a objectEncoding = 0
             objectEncoding: 0,
             commandName: "connect",

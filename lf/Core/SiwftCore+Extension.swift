@@ -1,107 +1,41 @@
 import Foundation
 import AVFoundation
 
-extension Int16 {
-    var bytes:[UInt8] {
-        var value:Int16 = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Int16.self)))
-        }
-    }
-
-    init(bytes:[UInt8]) {
-        self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<Int16>($0.baseAddress).memory
-        }
-    }
+protocol BytesConvertible {
+    
+    var bytes: [UInt8] { get }
+    
+    init(bytes: [UInt8])
+    
 }
 
-extension UInt16 {
-    var bytes:[UInt8] {
-        var value:UInt16 = self
+extension BytesConvertible where Self: Strideable {
+    
+    var bytes: [UInt8] {
+        
+        var value: Self = self
+        
         return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(UInt16.self)))
+            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Self.self)))
         }
+        
     }
     
-    init(bytes:[UInt8]) {
+    init(bytes: [UInt8]) {
+        
         self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<UInt16>($0.baseAddress).memory
+            return UnsafePointer($0.baseAddress).memory
         }
-    }
-}
-
-extension Int32 {
-    var bytes:[UInt8] {
-        var value:Int32 = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Int32.self)))
-        }
+        
     }
     
-    init(bytes:[UInt8]) {
-        self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<Int32>($0.baseAddress).memory
-        }
-    }
 }
 
-extension UInt32 {
-    var bytes:[UInt8] {
-        var value:UInt32 = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(UInt32.self)))
-        }
-    }
-    
-    init(bytes:[UInt8]) {
-        self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<UInt32>($0.baseAddress).memory
-        }
-    }
-}
+extension Int16: BytesConvertible {}
+extension UInt16: BytesConvertible {}
+extension Int32: BytesConvertible {}
+extension UInt32: BytesConvertible {}
+extension UInt64: BytesConvertible {}
+extension Double: BytesConvertible {}
+extension Float: BytesConvertible {}
 
-extension UInt64 {
-    var bytes:[UInt8] {
-        var value:UInt64 = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(UInt64.self)))
-        }
-    }
-    
-    init(bytes:[UInt8]) {
-        self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<UInt64>($0.baseAddress).memory
-        }
-    }
-}
-
-extension Double {
-    var bytes:[UInt8] {
-        var value:Double = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Double.self)))
-        }
-    }
-    
-    init(bytes:[UInt8]) {
-        self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<Double>($0.baseAddress).memory
-        }
-    }
-}
-
-extension Float {
-    var bytes:[UInt8] {
-        var value:Float = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Float.self)))
-        }
-    }
-
-    init(bytes:[UInt8]) {
-        self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<Float>($0.baseAddress).memory
-        }
-    }
-}

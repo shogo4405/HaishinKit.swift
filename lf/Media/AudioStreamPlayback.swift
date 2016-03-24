@@ -138,7 +138,7 @@ public class AudioStreamPlayback: NSObject {
 
     func rotateBuffer() {
         packetDescriptions.removeAll(keepCapacity: false)
-        if (AudioStreamPlayback.numberOfBuffers <= increment(&current)) {
+        if (AudioStreamPlayback.numberOfBuffers <= preIncrement(&current)) {
             current = 0
         }
         filledBytes = 0
