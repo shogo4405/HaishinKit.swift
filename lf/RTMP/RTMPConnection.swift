@@ -163,17 +163,17 @@ public class RTMPConnection: EventDispatcher {
     override public init() {
         super.init()
         socket.delegate = self
-        addEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+        addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
     deinit {
-        removeEventListener(Event.RTMP_STATUS, selector: "rtmpStatusHandler:")
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: UInt32(RTMPChunk.command),
-            transactionId: ++currentTransactionId,
+            transactionId: preIncrement(&currentTransactionId),
             objectEncoding: objectEncoding,
             commandName: commandName,
             commandObject: nil,
@@ -231,7 +231,7 @@ public class RTMPConnection: EventDispatcher {
         
         let message:RTMPCommandMessage = RTMPCommandMessage(
             streamId: 3,
-            transactionId: ++currentTransactionId,
+            transactionId: preIncrement(&currentTransactionId),
             // "connect" must be a objectEncoding = 0
             objectEncoding: 0,
             commandName: "connect",

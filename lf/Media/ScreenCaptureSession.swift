@@ -126,7 +126,7 @@ extension ScreenCaptureSession: Runnable {
             self.running = true
             self.pixelBufferPool = nil
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
-            self.displayLink = CADisplayLink(target: self, selector: "onScreen:")
+            self.displayLink = CADisplayLink(target: self, selector: #selector(ScreenCaptureSession.onScreen(_:)))
             self.displayLink.frameInterval = self.frameInterval
             self.displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
         }

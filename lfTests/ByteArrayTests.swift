@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 class ByteArrayTests: XCTestCase {
 
     func testInt8() {
@@ -101,15 +103,19 @@ class ByteArrayTests: XCTestCase {
 
     func testUTF8() {
         let bytes:ByteArray = ByteArray()
-        bytes.writeUTF8("hello world!!")
+        do {
+            try bytes.writeUTF8("hello world!!")
+        } catch {
+            XCTFail()
+        }
         let length:Int = bytes.position
         bytes.position = 0
-        XCTAssertEqual("hello world!!", try! bytes.readUTF8(length))
+        XCTAssertEqual("hello world!!", try! bytes.readUTF8())
         bytes.position = 0
 
         var raiseError:Bool = false
         do {
-            try bytes.readUTF8(length + 10)
+            try bytes.readUTF8Bytes(length + 10)
         } catch {
             raiseError = true
         }

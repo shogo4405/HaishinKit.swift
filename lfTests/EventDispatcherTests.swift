@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 class EventDispatcherTest: XCTestCase {
     override func setUp() {
         super.setUp()
@@ -12,9 +14,9 @@ class EventDispatcherTest: XCTestCase {
 
     func testMain() {
         let eventDispatcher:EventDispatcher = EventDispatcher()
-        eventDispatcher.addEventListener("test", selector: "onTest:", observer: self)
+        eventDispatcher.addEventListener("test", selector: #selector(EventDispatcherTest.onTest(_:)), observer: self)
         eventDispatcher.dispatchEventWith("test", bubbles: false, data: "Hoge")
-        eventDispatcher.removeEventListener("test", selector: "onTest:", observer: self)
+        eventDispatcher.removeEventListener("test", selector: #selector(EventDispatcherTest.onTest(_:)), observer: self)
         eventDispatcher.dispatchEventWith("test", bubbles: false, data: "Hoge")
     }
 
