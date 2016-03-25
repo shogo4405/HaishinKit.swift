@@ -112,7 +112,7 @@ final class AVCEncoder: NSObject {
         }
         let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer!)
-        encoder.delegate?.sampleOuput(video: sampleBuffer!)
+        encoder.delegate?.sampleOutput(video: sampleBuffer!)
     }
 
     private var _session:VTCompressionSessionRef? = nil

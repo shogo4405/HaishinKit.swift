@@ -38,7 +38,7 @@ extension RTMPMuxer: AudioEncoderDelegate {
         delegate?.sampleOutput(self, audio: buffer, timestamp: 0)
     }
     
-    func sampleOuput(audio sampleBuffer: CMSampleBuffer) {
+    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
         var blockBuffer:CMBlockBufferRef?
         var audioBufferList:AudioBufferList = AudioBufferList()
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -74,7 +74,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         delegate?.sampleOutput(self, video: buffer, timestamp: 0)
     }
 
-    func sampleOuput(video sampleBuffer: CMSampleBuffer) {
+    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         var keyframe:Bool = false
         var totalLength:Int = 0
         var dataPointer:UnsafeMutablePointer<Int8> = nil

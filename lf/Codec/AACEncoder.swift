@@ -226,7 +226,7 @@ extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
         CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
         CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, &outputData)
 
-        delegate?.sampleOuput(audio: result!)
+        delegate?.sampleOutput(audio: result!)
     
         let list:UnsafeMutableAudioBufferListPointer = UnsafeMutableAudioBufferListPointer(&outputData)
         for buffer in list {

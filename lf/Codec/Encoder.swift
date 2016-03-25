@@ -6,10 +6,14 @@ protocol Encoder: Runnable {
 
 protocol VideoEncoderDelegate: class {
     func didSetFormatDescription(video formatDescription:CMFormatDescriptionRef?)
-    func sampleOuput(video sampleBuffer: CMSampleBuffer)
+    func sampleOutput(video sampleBuffer: CMSampleBuffer)
+}
+
+protocol VideoDecoderDelegate: class {
+    func imageOutput(imageBuffer:CVImageBuffer,  presentationTimeStamp:CMTime, presentationDuration:CMTime)
 }
 
 protocol AudioEncoderDelegate: class {
     func didSetFormatDescription(audio formatDescription:CMFormatDescriptionRef?)
-    func sampleOuput(audio sampleBuffer: CMSampleBuffer)
+    func sampleOutput(audio sampleBuffer: CMSampleBuffer)
 }
