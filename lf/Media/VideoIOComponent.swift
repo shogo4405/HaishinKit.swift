@@ -3,13 +3,19 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: NSObject {
-    var encoder:AVCEncoder = AVCEncoder()
-    var view:VideoIOView = VideoIOView()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
 
-    var formatDescription:CMVideoFormatDescriptionRef?
+    var view:VideoIOView = VideoIOView()
+    var encoder:AVCEncoder = AVCEncoder()
+    var decoder:AVCDecoder = AVCDecoder()
+
+    var formatDescription:CMVideoFormatDescriptionRef? {
+        didSet {
+            decoder.formatDescription = formatDescription
+        }
+    }
 
     private var context:CIContext = {
         if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
@@ -22,7 +28,10 @@ final class VideoIOComponent: NSObject {
     private var effects:[VisualEffect] = []
 
     override init() {
+        super.init()
         encoder.lockQueue = lockQueue
+        decoder.lockQueue = lockQueue
+        decoder.delegate = self
     }
 
     func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
@@ -91,7 +100,7 @@ final class VideoIOComponent: NSObject {
                 naluType?.setCMSampleAttachmentValues(unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self))
             }
 
-            self.view.enqueueSampleBuffer(sampleBuffer!)
+            self.decoder.decodeSampleBuffer(sampleBuffer!)
         }
     }
 
@@ -116,6 +125,20 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
             duration: CMSampleBufferGetDuration(sampleBuffer)
         )
+    }
+}
+
+// MARK: - VideoDecoderDelegate
+extension VideoIOComponent: VideoDecoderDelegate {
+    func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
+        view.layer.setValue(true, forKey: "enabledSurface")
+        autoreleasepool {
+            let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
+            let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.view.layer.contents = content
+            }
+        }
     }
 }
 

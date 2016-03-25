@@ -5,11 +5,6 @@ import CoreFoundation
 
 // MARK: - AVCDecoder
 final class AVCDecoder: NSObject {
-    static let defaultFPS:Int = 30
-    static let defaultWidth:Int32 = 480
-    static let defaultHeight:Int32 = 272
-    static let defaultBitrate:UInt32 = 160 * 1024
-
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
@@ -17,16 +12,15 @@ final class AVCDecoder: NSObject {
     ]
 
     var running:Bool = false
-
     var lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.AVCDecoder.lock", DISPATCH_QUEUE_SERIAL
     )
-
     var formatDescription:CMFormatDescriptionRef? = nil {
         didSet {
             invalidateSession = true
         }
     }
+    weak var delegate:VideoDecoderDelegate?
 
     private var attributes:[NSString:  AnyObject] {
         return AVCDecoder.defaultAttributes
@@ -46,25 +40,30 @@ final class AVCDecoder: NSObject {
             return
         }
         let decoder:AVCDecoder = unsafeBitCast(decompressionOutputRefCon, AVCDecoder.self)
-        // decoder.onImageBuffer(imageBuffer, presentationTimeStamp, presentationDuration)
+        decoder.delegate?.imageOutput(imageBuffer!,
+            presentationTimeStamp: presentationTimeStamp,
+            presentationDuration: presentationDuration
+        )
     }
 
     private var _session:VTDecompressionSessionRef? = nil
     private var session:VTDecompressionSessionRef! {
         get {
             if (_session == nil)  {
+                guard let formatDescription:CMFormatDescriptionRef = formatDescription else {
+                    return nil
+                }
                 var record:VTDecompressionOutputCallbackRecord = VTDecompressionOutputCallbackRecord(
                     decompressionOutputCallback: callback,
                     decompressionOutputRefCon: unsafeBitCast(self, UnsafeMutablePointer<Void>.self)
                 )
                 guard VTDecompressionSessionCreate(
                     kCFAllocatorDefault,
-                    formatDescription!,
+                    formatDescription,
                     nil,
                     attributes,
                     &record,
-                    &_session
-                    ) == noErr else {
+                    &_session ) == noErr else {
                     return nil
                 }
                 invalidateSession = false
@@ -85,12 +84,11 @@ final class AVCDecoder: NSObject {
         }
         var decodeFlags:VTDecodeFrameFlags = ._EnableAsynchronousDecompression
         var flagsOut:VTDecodeInfoFlags = VTDecodeInfoFlags()
-        var currentTime:NSDate = NSDate()
         return VTDecompressionSessionDecodeFrame(
             session,
             sampleBuffer,
             decodeFlags,
-            unsafeBitCast(currentTime, UnsafeMutablePointer<Void>.self),
+            nil,
             &flagsOut
         )
     }

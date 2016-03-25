@@ -1,6 +1,6 @@
 import AVFoundation
 
-final class VideoPreviewLayer: AVCaptureVideoPreviewLayer {
+final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     var surface:CALayer = CALayer()
 
     var enabledSurface:Bool = false {

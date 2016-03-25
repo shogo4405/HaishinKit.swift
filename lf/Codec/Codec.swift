@@ -10,7 +10,7 @@ protocol VideoEncoderDelegate: class {
 }
 
 protocol VideoDecoderDelegate: class {
-    func imageOutput(imageBuffer:CVImageBuffer,  presentationTimeStamp:CMTime, presentationDuration:CMTime)
+    func imageOutput(imageBuffer:CVImageBuffer!,  presentationTimeStamp:CMTime, presentationDuration:CMTime)
 }
 
 protocol AudioEncoderDelegate: class {

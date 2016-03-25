@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		2903891B1CA0477B00AD2F75 /* AMF3Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298E1FB31CA01FF800B1030B /* AMF3Serializer.swift */; };
 		2903891C1CA0477B00AD2F75 /* ASStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298E1FAF1CA01D5700B1030B /* ASStruct.swift */; };
-		2906CD451C9AD920006FCF56 /* VideoPreviewLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2906CD441C9AD920006FCF56 /* VideoPreviewLayer.swift */; };
+		2906CD451C9AD920006FCF56 /* VideoIOLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2906CD441C9AD920006FCF56 /* VideoIOLayer.swift */; };
 		290907D01C3961CE00F2E80C /* ByteArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907CF1C3961CE00F2E80C /* ByteArray.swift */; };
-		290907D31C3961E500F2E80C /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D11C3961E500F2E80C /* Encoder.swift */; };
+		290907D31C3961E500F2E80C /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D11C3961E500F2E80C /* Codec.swift */; };
 		290907D41C3961E500F2E80C /* AVCEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D21C3961E500F2E80C /* AVCEncoder.swift */; };
 		290907D61C3961F700F2E80C /* H264+AVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D51C3961F700F2E80C /* H264+AVC.swift */; };
-		290907D71C39631A00F2E80C /* Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D11C3961E500F2E80C /* Encoder.swift */; };
+		290907D71C39631A00F2E80C /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D11C3961E500F2E80C /* Codec.swift */; };
 		290907D81C39631A00F2E80C /* AVCEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D21C3961E500F2E80C /* AVCEncoder.swift */; };
 		290907D91C39631A00F2E80C /* H264+AVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290907D51C3961F700F2E80C /* H264+AVC.swift */; };
 		290907DA1C39631A00F2E80C /* Info.plist in Sources */ = {isa = PBXBuildFile; fileRef = 2945CBC11B4BE66000104112 /* Info.plist */; };
@@ -86,8 +86,10 @@
 		29CF9DA41C8DD2B300576CA6 /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA5FDA1C8C5177001CB36B /* VideoIOComponent.swift */; };
 		29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */; };
 		29E8603A1C2EFC0E00C595FB /* Foundation+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E860391C2EFC0E00C595FB /* Foundation+ExtensionTests.swift */; };
+		29E8CCBD1CA5CEFA00C57E03 /* AVCDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E8CCBC1CA5CEFA00C57E03 /* AVCDecoder.swift */; };
+		29E8CCBE1CA5E35100C57E03 /* AVCDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E8CCBC1CA5CEFA00C57E03 /* AVCDecoder.swift */; };
 		29EA5FDB1C8C5178001CB36B /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA5FDA1C8C5177001CB36B /* VideoIOComponent.swift */; };
-		29EBCF511C9ADE8500614627 /* VideoPreviewLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2906CD441C9AD920006FCF56 /* VideoPreviewLayer.swift */; };
+		29EBCF511C9ADE8500614627 /* VideoIOLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2906CD441C9AD920006FCF56 /* VideoIOLayer.swift */; };
 		29FA89731C68CA9C0032B242 /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */; };
 		29FC485E1C7A4EF200834F91 /* RTMPAudioPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299E18841C7A443F000AB4CC /* RTMPAudioPlayback.swift */; };
 		67460023EF7E2574A7D65F9E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE640B87794C358ED57DD302 /* Pods.framework */; };
@@ -116,9 +118,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		2906CD441C9AD920006FCF56 /* VideoPreviewLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoPreviewLayer.swift; path = Media/VideoPreviewLayer.swift; sourceTree = "<group>"; };
+		2906CD441C9AD920006FCF56 /* VideoIOLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoIOLayer.swift; path = Media/VideoIOLayer.swift; sourceTree = "<group>"; };
 		290907CF1C3961CE00F2E80C /* ByteArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ByteArray.swift; path = Util/ByteArray.swift; sourceTree = "<group>"; };
-		290907D11C3961E500F2E80C /* Encoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Encoder.swift; path = Codec/Encoder.swift; sourceTree = "<group>"; };
+		290907D11C3961E500F2E80C /* Codec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Codec.swift; path = Codec/Codec.swift; sourceTree = "<group>"; };
 		290907D21C3961E500F2E80C /* AVCEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVCEncoder.swift; path = Codec/AVCEncoder.swift; sourceTree = "<group>"; };
 		290907D51C3961F700F2E80C /* H264+AVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "H264+AVC.swift"; path = "ISO/H264+AVC.swift"; sourceTree = "<group>"; };
 		290907DC1C3965F000F2E80C /* AACEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACEncoder.swift; path = Codec/AACEncoder.swift; sourceTree = "<group>"; };
@@ -163,6 +165,7 @@
 		29CF9D9F1C8DD06700576CA6 /* Function.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Function.swift; sourceTree = "<group>"; };
 		29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMF3SerializerTests.swift; sourceTree = "<group>"; };
 		29E860391C2EFC0E00C595FB /* Foundation+ExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Foundation+ExtensionTests.swift"; sourceTree = "<group>"; };
+		29E8CCBC1CA5CEFA00C57E03 /* AVCDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVCDecoder.swift; path = Codec/AVCDecoder.swift; sourceTree = "<group>"; };
 		29EA5FDA1C8C5177001CB36B /* VideoIOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoIOComponent.swift; path = Media/VideoIOComponent.swift; sourceTree = "<group>"; };
 		29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioStreamPlayback.swift; path = Media/AudioStreamPlayback.swift; sourceTree = "<group>"; };
 		74A266A03AD43A5BEB04877E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
@@ -202,8 +205,9 @@
 			isa = PBXGroup;
 			children = (
 				290907DC1C3965F000F2E80C /* AACEncoder.swift */,
+				29E8CCBC1CA5CEFA00C57E03 /* AVCDecoder.swift */,
 				290907D21C3961E500F2E80C /* AVCEncoder.swift */,
-				290907D11C3961E500F2E80C /* Encoder.swift */,
+				290907D11C3961E500F2E80C /* Codec.swift */,
 			);
 			name = Codec;
 			sourceTree = "<group>";
@@ -317,8 +321,8 @@
 				29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */,
 				291F69DD1C88810E00C8B53E /* SoundTransform.swift */,
 				29EA5FDA1C8C5177001CB36B /* VideoIOComponent.swift */,
+				2906CD441C9AD920006FCF56 /* VideoIOLayer.swift */,
 				295EDC5B1CA0D488006A4A35 /* VideoIOView.swift */,
-				2906CD441C9AD920006FCF56 /* VideoPreviewLayer.swift */,
 				29556CBC1C8F064C00A7242B /* VisualEffect.swift */,
 			);
 			name = Media;
@@ -505,10 +509,11 @@
 				29C0E0661C2EB02E009DD8E8 /* RTMPSocket.swift in Sources */,
 				290907DD1C3965F000F2E80C /* AACEncoder.swift in Sources */,
 				29BDE0C21C65BD5000D6A768 /* AVCaptureSessionManager.swift in Sources */,
+				29E8CCBD1CA5CEFA00C57E03 /* AVCDecoder.swift in Sources */,
 				295FEFB01C3823BE00271E90 /* RTMPRecorder.swift in Sources */,
-				2906CD451C9AD920006FCF56 /* VideoPreviewLayer.swift in Sources */,
+				2906CD451C9AD920006FCF56 /* VideoIOLayer.swift in Sources */,
 				292A168C1CA17B2E00B02325 /* AudioSessionUtil.swift in Sources */,
-				290907D31C3961E500F2E80C /* Encoder.swift in Sources */,
+				290907D31C3961E500F2E80C /* Codec.swift in Sources */,
 				299E18851C7A4440000AB4CC /* RTMPAudioPlayback.swift in Sources */,
 				290DDA391C8864A900EA5BEB /* SiwftCore+Extension.swift in Sources */,
 				2996B3E71C8C8D7A00CE641B /* AudioIOComponent.swift in Sources */,
@@ -540,11 +545,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29E8CCBE1CA5E35100C57E03 /* AVCDecoder.swift in Sources */,
 				29C818621CA1C93500FBD327 /* AudioSessionUtil.swift in Sources */,
 				292A16831CA0DF7300B02325 /* VideoIOView.swift in Sources */,
 				2903891B1CA0477B00AD2F75 /* AMF3Serializer.swift in Sources */,
 				2903891C1CA0477B00AD2F75 /* ASStruct.swift in Sources */,
-				29EBCF511C9ADE8500614627 /* VideoPreviewLayer.swift in Sources */,
+				29EBCF511C9ADE8500614627 /* VideoIOLayer.swift in Sources */,
 				29949D581C8F2A18007FD932 /* VisualEffect.swift in Sources */,
 				29CF9DA11C8DD2B300576CA6 /* Function.swift in Sources */,
 				29CF9DA21C8DD2B300576CA6 /* AudioIOComponent.swift in Sources */,
@@ -563,7 +569,7 @@
 				299E08041C65BE1100AC356E /* EventDispatcher.swift in Sources */,
 				2922DA371C41600A0016F67A /* MD5.swift in Sources */,
 				290907DE1C3966A400F2E80C /* AACEncoder.swift in Sources */,
-				290907D71C39631A00F2E80C /* Encoder.swift in Sources */,
+				290907D71C39631A00F2E80C /* Codec.swift in Sources */,
 				290907D81C39631A00F2E80C /* AVCEncoder.swift in Sources */,
 				290907D91C39631A00F2E80C /* H264+AVC.swift in Sources */,
 				290907DA1C39631A00F2E80C /* Info.plist in Sources */,

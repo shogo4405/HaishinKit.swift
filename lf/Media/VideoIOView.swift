@@ -5,8 +5,6 @@ import AVFoundation
 public class VideoIOView: UIView {
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
-    private var display:AVSampleBufferDisplayLayer = AVSampleBufferDisplayLayer()
-
     required override public init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -19,36 +17,16 @@ public class VideoIOView: UIView {
 
     public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
         didSet {
-            display.videoGravity = videoGravity
             layer.setValue(videoGravity, forKey: "videoGravity")
         }
     }
 
-    override public var frame:CGRect {
-        get {
-            return super.frame
-        }
-        set {
-            super.frame = newValue
-            display.frame = bounds
-        }
-    }
-
     override public class func layerClass() -> AnyClass {
-        return VideoPreviewLayer.self
-    }
-
-    public func enqueueSampleBuffer(sampleBuffer: CMSampleBufferRef) {
-        guard display.readyForMoreMediaData else {
-            return
-        }
-        display.enqueueSampleBuffer(sampleBuffer)
+        return VideoIOLayer.self
     }
 
     private func initialize() {
         backgroundColor = VideoIOView.defaultBackgroundColor
-        layer.addSublayer(display)
-        display.videoGravity = videoGravity
         layer.setValue(videoGravity, forKey: "videoGravity")
     }
 }
