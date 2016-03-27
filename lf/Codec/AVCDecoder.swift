@@ -22,6 +22,8 @@ final class AVCDecoder: NSObject {
     }
     weak var delegate:VideoDecoderDelegate?
 
+    var buffers:[DecompressionBuffer] = []
+
     private var attributes:[NSString:  AnyObject] {
         return AVCDecoder.defaultAttributes
     }
@@ -31,19 +33,12 @@ final class AVCDecoder: NSObject {
         decompressionOutputRefCon:UnsafeMutablePointer<Void>,
         sourceFrameRefCon:UnsafeMutablePointer<Void>,
         status:OSStatus,
-        infoFlgas:VTDecodeInfoFlags,
+        infoFlags:VTDecodeInfoFlags,
         imageBuffer:CVImageBufferRef?,
         presentationTimeStamp:CMTime,
         presentationDuration:CMTime) in
-        guard status == noErr else {
-            logger.error("\(status)")
-            return
-        }
         let decoder:AVCDecoder = unsafeBitCast(decompressionOutputRefCon, AVCDecoder.self)
-        decoder.delegate?.imageOutput(imageBuffer!,
-            presentationTimeStamp: presentationTimeStamp,
-            presentationDuration: presentationDuration
-        )
+        decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, presentationDuration: presentationDuration)
     }
 
     private var _session:VTDecompressionSessionRef? = nil
@@ -82,14 +77,32 @@ final class AVCDecoder: NSObject {
         guard let session:VTDecompressionSession = session else {
             return kVTInvalidSessionErr
         }
-        var decodeFlags:VTDecodeFrameFlags = ._EnableAsynchronousDecompression
-        var flagsOut:VTDecodeInfoFlags = VTDecodeInfoFlags()
-        return VTDecompressionSessionDecodeFrame(
-            session,
-            sampleBuffer,
-            decodeFlags,
-            nil,
-            &flagsOut
+        var decodeFlags:VTDecodeFrameFlags = VTDecodeFrameFlags(rawValue:
+            VTDecodeFrameFlags._EnableAsynchronousDecompression.rawValue |
+            VTDecodeFrameFlags._EnableTemporalProcessing.rawValue
         )
+        var flagsOut:VTDecodeInfoFlags = VTDecodeInfoFlags()
+        let status:OSStatus = VTDecompressionSessionDecodeFrame(session, sampleBuffer, decodeFlags, nil, &flagsOut)
+        if (status != noErr) {
+            logger.warning("\(status)")
+        }
+        return status
+    }
+
+    func didOutputForSession(status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBufferRef?,presentationTimeStamp:CMTime, presentationDuration:CMTime) {
+        buffers.append(DecompressionBuffer(
+            imageBuffer: imageBuffer,
+            presentationTimeStamp: presentationTimeStamp,
+            presentationDuration:  presentationDuration
+        ))
+        if (12 <= buffers.count) {
+            buffers.sortInPlace {(lhr:DecompressionBuffer, rhr:DecompressionBuffer) -> Bool in
+                return lhr.presentationTimeStamp.value < rhr.presentationTimeStamp.value
+            }
+            for buffer in buffers {
+                delegate?.imageOutput(buffer.imageBuffer, presentationTimeStamp: buffer.presentationTimeStamp, presentationDuration: presentationDuration)
+            }
+            buffers.removeAll(keepCapacity: false)
+        }
     }
 }

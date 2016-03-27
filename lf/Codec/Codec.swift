@@ -10,10 +10,16 @@ protocol VideoEncoderDelegate: class {
 }
 
 protocol VideoDecoderDelegate: class {
-    func imageOutput(imageBuffer:CVImageBuffer!,  presentationTimeStamp:CMTime, presentationDuration:CMTime)
+    func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime)
 }
 
 protocol AudioEncoderDelegate: class {
     func didSetFormatDescription(audio formatDescription:CMFormatDescriptionRef?)
     func sampleOutput(audio sampleBuffer: CMSampleBuffer)
+}
+
+struct DecompressionBuffer {
+    var imageBuffer:CVImageBuffer?
+    var presentationTimeStamp:CMTime
+    var presentationDuration:CMTime
 }

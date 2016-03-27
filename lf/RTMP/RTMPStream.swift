@@ -282,8 +282,8 @@ public class RTMPStream: EventDispatcher {
 
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
-    private var audioTimestamp:Double = 0
-    private var videoTimestamp:Double = 0
+    var audioTimestamp:Double = 0
+    var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
     private(set) var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
 

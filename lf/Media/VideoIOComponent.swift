@@ -2,9 +2,18 @@ import CoreImage
 import Foundation
 import AVFoundation
 
+struct VideoIOData {
+    var image:CGImageRef
+    var presentationTimeStamp:CMTime
+    var presentationDuration:CMTime
+}
+
 final class VideoIOComponent: NSObject {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
+    )
+    let bufferQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.VideoIOComponent.buffer", DISPATCH_QUEUE_SERIAL
     )
 
     var view:VideoIOView = VideoIOView()
@@ -25,7 +34,9 @@ final class VideoIOComponent: NSObject {
         logger.debug("cicontext use software renderer")
         return CIContext()
     }()
+    private var buffers:[VideoIOData] = []
     private var effects:[VisualEffect] = []
+    private var rendering:Bool = false
 
     override init() {
         super.init()
@@ -59,7 +70,6 @@ final class VideoIOComponent: NSObject {
             return false
         }
         effects.append(effect)
-        view.layer.setValue(!effects.isEmpty, forKey: "enabledSurface")
         objc_sync_exit(effects)
         return true
     }
@@ -68,7 +78,6 @@ final class VideoIOComponent: NSObject {
         objc_sync_enter(effects)
         if let i:Int = effects.indexOf(effect) {
             effects.removeAtIndex(i)
-            view.layer.setValue(!effects.isEmpty, forKey: "enabledSurface")
             objc_sync_exit(effects)
             return true
         }
@@ -76,7 +85,7 @@ final class VideoIOComponent: NSObject {
         return false
     }
 
-    func enqueSampleBuffer(bytes:[UInt8], timestamp:Double) {
+    func enqueSampleBuffer(bytes:[UInt8], inout timing:CMSampleTimingInfo) {
         dispatch_async(lockQueue) {
             var sample:[UInt8] = bytes
             let sampleSize:Int = bytes.count
@@ -88,9 +97,7 @@ final class VideoIOComponent: NSObject {
 
             var sampleBuffer:CMSampleBufferRef?
             var sampleSizes:[Int] = [sampleSize]
-            var timing:CMSampleTimingInfo = CMSampleTimingInfo()
-            timing.duration = CMTimeMake(Int64(timestamp), 1000)
-            guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, self.formatDescription!, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
+            guard IsNoErr(CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, self.formatDescription!, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer)) else {
                 return
             }
 
@@ -112,6 +119,29 @@ final class VideoIOComponent: NSObject {
         CVPixelBufferUnlockBaseAddress(buffer!, 0)
         return buffer
     }
+
+    func renderIfNeed() {
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+            guard !self.rendering else {
+                return
+            }
+            self.rendering = true
+            while (!self.buffers.isEmpty) {
+                var buffer:VideoIOData?
+                dispatch_sync(self.bufferQueue) {
+                    buffer = self.buffers.removeFirst()
+                }
+                guard let data:VideoIOData = buffer else {
+                    return
+                }
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.view.layer.contents = data.image
+                }
+                usleep(UInt32(data.presentationDuration.value) * 1000)
+            }
+            self.rendering = false
+        }
+    }
 }
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
@@ -123,22 +153,29 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         encoder.encodeImageBuffer(
             effects.isEmpty ? image : effect(image),
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
-            duration: CMSampleBufferGetDuration(sampleBuffer)
+            presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
         )
+        if (effects.isEmpty && view.layer.contents != nil) {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.view.layer.contents = nil
+            }
+        }
     }
 }
 
 // MARK: - VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
     func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
-        view.layer.setValue(true, forKey: "enabledSurface")
-        autoreleasepool {
-            let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
-            let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.layer.contents = content
-            }
+        let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
+        let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
+        dispatch_async(bufferQueue) {
+            self.buffers.append(VideoIOData(
+                image: content,
+                presentationTimeStamp: presentationTimeStamp,
+                presentationDuration: presentationDuration
+            ))
         }
+        renderIfNeed()
     }
 }
 
@@ -154,7 +191,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         encoder.encodeImageBuffer(
             pixelBuffer,
             presentationTimeStamp: timestamp,
-            duration: timestamp
+            presentationDuration: timestamp
         )
     }
 }

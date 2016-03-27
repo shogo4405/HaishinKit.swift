@@ -858,7 +858,17 @@ final class RTMPVideoMessage:RTMPMessage {
     }
 
     func enqueueSampleBuffer(stream: RTMPStream) {
-        stream.captureManager.videoIO.enqueSampleBuffer(Array(payload[FLVTag.TagType.Video.headerSize..<payload.count]), timestamp: Double(timestamp))
+        stream.videoTimestamp += Double(timestamp)
+        let compositionTimeoffset:Int32 = Int32(bytes: [0] + payload[2..<5]).bigEndian
+        var timing:CMSampleTimingInfo = CMSampleTimingInfo(
+            duration: CMTimeMake(Int64(timestamp), 1000),
+            presentationTimeStamp: CMTimeMake(Int64(stream.videoTimestamp) + Int64(compositionTimeoffset), 1000),
+            decodeTimeStamp: kCMTimeInvalid
+        )
+        stream.captureManager.videoIO.enqueSampleBuffer(
+            Array(payload[FLVTag.TagType.Video.headerSize..<payload.count]),
+            timing: &timing
+        )
     }
 
     func createFormatDescription(stream: RTMPStream) -> OSStatus{

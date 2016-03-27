@@ -27,6 +27,7 @@ public class VideoIOView: UIView {
 
     private func initialize() {
         backgroundColor = VideoIOView.defaultBackgroundColor
+        layer.frame = bounds
         layer.setValue(videoGravity, forKey: "videoGravity")
     }
 }

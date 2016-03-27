@@ -1,21 +1,30 @@
 import AVFoundation
 
 final class VideoIOLayer: AVCaptureVideoPreviewLayer {
-    var surface:CALayer = CALayer()
+    private(set) var currentFPS:Int = 0
 
-    var enabledSurface:Bool = false {
-        didSet{
-            guard enabledSurface != oldValue else {
-                return
-            }
-            if (enabledSurface) {
-                surface.contents = nil
-                surface.frame = frame
-                addSublayer(surface)
-                return
-            }
-            surface.removeFromSuperlayer()
-        }
+    private var timer:NSTimer?
+    private var frameCount:Int = 0
+    private var surface:CALayer = CALayer()
+
+    override init() {
+        super.init()
+        initialize()
+    }
+
+    override init!(session: AVCaptureSession!) {
+        super.init(session: session)
+        initialize()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialize()
+    }
+
+    deinit {
+        timer?.invalidate()
+        timer = nil
     }
 
     override var transform:CATransform3D {
@@ -43,6 +52,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
         }
         set {
             surface.contents = newValue
+            frameCount += 1
         }
     }
 
@@ -63,6 +73,18 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
                 surface.contentsGravity = kCAGravityResizeAspect
             }
         }
+    }
+
+    private func initialize() {
+        timer = NSTimer.scheduledTimerWithTimeInterval(
+            1.0, target: self, selector: #selector(VideoIOLayer.didTimerInterval(_:)), userInfo: nil, repeats: true
+        )
+        addSublayer(surface)
+    }
+
+    func didTimerInterval(timer:NSTimer) {
+        currentFPS = frameCount
+        frameCount = 0
     }
 }
 

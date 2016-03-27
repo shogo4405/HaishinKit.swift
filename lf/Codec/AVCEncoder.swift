@@ -147,7 +147,7 @@ final class AVCEncoder: NSObject {
         }
     }
 
-    func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
+    func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
         guard running else {
             return
         }
@@ -158,7 +158,7 @@ final class AVCEncoder: NSObject {
             return
         }
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
-        VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
+        VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, presentationDuration, nil, nil, &flags)
     }
 }
 
