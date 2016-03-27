@@ -77,7 +77,7 @@ final class AVCDecoder: NSObject {
         guard let session:VTDecompressionSession = session else {
             return kVTInvalidSessionErr
         }
-        var decodeFlags:VTDecodeFrameFlags = VTDecodeFrameFlags(rawValue:
+        let decodeFlags:VTDecodeFrameFlags = VTDecodeFrameFlags(rawValue:
             VTDecodeFrameFlags._EnableAsynchronousDecompression.rawValue |
             VTDecodeFrameFlags._EnableTemporalProcessing.rawValue
         )
