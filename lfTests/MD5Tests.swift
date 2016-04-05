@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 final class MD5Tests: XCTestCase {
 
     func hex(data:[UInt8]) -> String {

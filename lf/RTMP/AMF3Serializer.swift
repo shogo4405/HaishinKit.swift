@@ -181,8 +181,7 @@ extension AMF3Serializer: AMFSerializer {
         }
         reference.objects.append(value)
         let utf8:[UInt8] = [UInt8](value.description.utf8)
-        serialize(utf8.count << 1 | 0x01)
-        return writeBytes(utf8)
+        return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
     func deserialize() throws -> ASXMLDocument {
@@ -196,7 +195,8 @@ extension AMF3Serializer: AMFSerializer {
             }
             return document
         }
-        return ASXMLDocument(data: "string")
+        let document:ASXMLDocument = ASXMLDocument(data: "")
+        return document
     }
     
     /**
@@ -208,9 +208,7 @@ extension AMF3Serializer: AMFSerializer {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        serializeU29(0x01)
-        writeDouble(value.timeIntervalSince1970 * 1000)
-        return self
+        return serializeU29(0x01).writeDouble(value.timeIntervalSince1970 * 1000)
     }
 
     func deserialize() throws -> NSDate {
@@ -285,8 +283,7 @@ extension AMF3Serializer: AMFSerializer {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        serializeU29(0x01)
-        return self
+        return serializeU29(0x01)
     }
 
     func deserialize() throws -> ASXML {
@@ -431,8 +428,7 @@ extension AMF3Serializer: AMFSerializer {
         }
         let utf8:[UInt8] = [UInt8](value.utf8)
         reference.strings.append(value)
-        serializeU29(utf8.count << 1 | 0x01)
-        return writeBytes(utf8)
+        return serializeU29(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
     private func deserializeUTF8() throws -> String {

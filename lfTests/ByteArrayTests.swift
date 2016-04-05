@@ -1,6 +1,8 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 class ByteArrayTests: XCTestCase {
 
     func testInt8() {
