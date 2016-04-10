@@ -95,7 +95,7 @@ public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
 public struct ASXMLDocument {
     private var data:String
 
-    public init (data:String) {
+    public init(data:String) {
         self.data = data
     }
 }
@@ -122,8 +122,8 @@ public func ==(lhs: ASXMLDocument, rhs: ASXMLDocument) -> Bool {
 // MARK: - ASXML
 public struct ASXML {
     private var data:String
-    
-    public init (data:String) {
+
+    public init(data:String) {
         self.data = data
     }
 }

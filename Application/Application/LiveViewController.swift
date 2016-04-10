@@ -5,7 +5,7 @@ import AVFoundation
 struct Preference {
     static let defaultInstance:Preference = Preference()
 
-    var uri:String? = "rtmp://test:test@192.168.179.5/live"
+    var uri:String? = "rtmp://test:test@192.168.179.3/live"
     var streamName:String? = "live"
 }
 
@@ -69,6 +69,7 @@ final class LiveViewController: UIViewController {
         /*
         navigationItem.leftBarButtonItem =
             UIBarButtonItem(title: "Preference", style: .Plain, target: self, action: "showPreference:")
+        sharedObject = RTMPSharedObject.getRemote("test", remotePath: Preference.defaultInstance.uri!, persistence: false)
         */
 
         navigationItem.rightBarButtonItems = [
@@ -79,7 +80,7 @@ final class LiveViewController: UIViewController {
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(.Back))
+        rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
         // rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
@@ -124,7 +125,7 @@ final class LiveViewController: UIViewController {
 
     func rotateCamera(sender:UIBarButtonItem) {
         let position:AVCaptureDevicePosition = currentPosition == .Back ? .Front : .Back
-        rtmpStream.attachCamera(AVCaptureSessionManager.deviceWithPosition(position))
+        rtmpStream.attachCamera(AVMixer.deviceWithPosition(position))
         currentPosition = position
     }
 
@@ -173,6 +174,7 @@ final class LiveViewController: UIViewController {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish(Preference.defaultInstance.streamName!)
+                // sharedObject!.connect(rtmpConnection)
             default:
                 break
             }

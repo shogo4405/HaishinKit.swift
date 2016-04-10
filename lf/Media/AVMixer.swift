@@ -2,7 +2,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-public class AVCaptureSessionManager: NSObject {
+public class AVMixer: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "sessionPreset",
@@ -44,7 +44,7 @@ public class AVCaptureSessionManager: NSObject {
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
     ]
 
-    public var FPS:Int32 = AVCaptureSessionManager.defaultFPS
+    public var FPS:Int32 = AVMixer.defaultFPS
 
     public var orientation:AVCaptureVideoOrientation = .Portrait {
         didSet {
@@ -186,14 +186,14 @@ public class AVCaptureSessionManager: NSObject {
         didSet {
             let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
             if (syncOrientation) {
-                center.addObserver(self, selector: #selector(AVCaptureSessionManager.onOrientationChanged(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+                center.addObserver(self, selector: #selector(AVMixer.onOrientationChanged(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
             } else {
                 center.removeObserver(self, name: UIDeviceOrientationDidChangeNotification, object: nil)
             }
         }
     }
 
-    public var sessionPreset:String = AVCaptureSessionManager.defaultSessionPreset {
+    public var sessionPreset:String = AVMixer.defaultSessionPreset {
         didSet {
             session.beginConfiguration()
             session.sessionPreset = sessionPreset
@@ -201,7 +201,7 @@ public class AVCaptureSessionManager: NSObject {
         }
     }
 
-    public var videoSettings:[NSObject:AnyObject] = AVCaptureSessionManager.defaultVideoSettings {
+    public var videoSettings:[NSObject:AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
             videoDataOutput.videoSettings = videoSettings
         }
@@ -211,7 +211,7 @@ public class AVCaptureSessionManager: NSObject {
     var session:AVCaptureSession! {
         if (_session == nil) {
             _session = AVCaptureSession()
-            _session!.sessionPreset = AVCaptureSessionManager.defaultSessionPreset
+            _session!.sessionPreset = AVMixer.defaultSessionPreset
         }
         return _session!
     }
@@ -391,18 +391,18 @@ public class AVCaptureSessionManager: NSObject {
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
         }
-        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(deviceOrientation) {
+        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(deviceOrientation) {
             self.orientation = orientation
         }
     }
 }
 
 // MARK: - Runnable
-extension AVCaptureSessionManager: Runnable {
+extension AVMixer: Runnable {
     public func startRunning() {
         videoIO.view.layer.setValue(session, forKey: "session")
         session.startRunning()
-        if let orientation:AVCaptureVideoOrientation = AVCaptureSessionManager.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
+        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
             self.orientation = orientation
         }
     }

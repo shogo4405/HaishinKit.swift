@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-public enum NALUType:UInt8 {
+public enum NALUType: UInt8 {
     case UNSPEC   = 0
     case SLICE    = 1 // P frame
     case DPA      = 2

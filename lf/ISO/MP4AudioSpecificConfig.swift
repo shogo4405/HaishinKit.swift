@@ -3,17 +3,13 @@ import AVFoundation
 
 // @see http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
 // @see http://wiki.multimedia.cx/?title=Understanding_AAC
-public struct AudioSpecificConfig: CustomStringConvertible {
+public struct AudioSpecificConfig {
     static let ADTSHeaderSize:Int = 7
 
     public var type:AudioObjectType
     public var frequency:SamplingFrequency
     public var channel:ChannelConfiguration
     public var frameLengthFlag:Bool = false
-
-    public var description:String {
-        return "AudioSpecificConfig{type:\(type),frequency:\(frequency),channel:\(channel)}"
-    }
 
     public var bytes:[UInt8] {
         var bytes:[UInt8] = [UInt8](count: 2, repeatedValue: 0)
@@ -76,7 +72,15 @@ public struct AudioSpecificConfig: CustomStringConvertible {
     }
 }
 
-public enum AudioObjectType:UInt8 {
+// MARK: CustomStringConvertible
+extension AudioSpecificConfig: CustomStringConvertible {
+    public var description:String {
+        return Mirror(reflecting: self).description
+    }
+}
+
+// MARK: - AudioObjectType
+public enum AudioObjectType: UInt8 {
     case Unknown = 0
     case AAC_Main = 1
     case AAC_LC = 2
@@ -112,7 +116,8 @@ public enum AudioObjectType:UInt8 {
     }
 }
 
-public enum SamplingFrequency:UInt8 {
+// MARK: - SamplingFrequency
+public enum SamplingFrequency: UInt8 {
     case hz96000 = 0
     case hz88200 = 1
     case hz64000 = 2
@@ -192,7 +197,8 @@ public enum SamplingFrequency:UInt8 {
     }
 }
 
-public enum ChannelConfiguration:UInt8 {
+// MARK: - ChannelConfiguration
+public enum ChannelConfiguration: UInt8 {
     case definedInAOTSpecificConfig = 0
     case frontCenter = 1
     case frontLeftAndFrontRight = 2

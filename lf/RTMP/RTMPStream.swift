@@ -202,10 +202,10 @@ public class RTMPStream: EventDispatcher {
 
     public var torch:Bool {
         get {
-            return captureManager.torch
+            return mixer.torch
         }
         set {
-            captureManager.torch = newValue
+            mixer.torch = newValue
         }
     }
 
@@ -220,42 +220,42 @@ public class RTMPStream: EventDispatcher {
 
     public var syncOrientation:Bool {
         get {
-            return captureManager.syncOrientation
+            return mixer.syncOrientation
         }
         set {
-            captureManager.syncOrientation = newValue
+            mixer.syncOrientation = newValue
         }
     }
 
     public var view:VideoIOView {
-        return captureManager.videoIO.view
+        return mixer.videoIO.view
     }
 
     public var audioSettings:[String: AnyObject] {
         get {
-            return captureManager.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)
+            return mixer.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)
         }
         set {
-            captureManager.audioIO.encoder.setValuesForKeysWithDictionary(newValue)
+            mixer.audioIO.encoder.setValuesForKeysWithDictionary(newValue)
         }
     }
 
     public var videoSettings:[String: AnyObject] {
         get {
-            return captureManager.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)
+            return mixer.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)
         }
         set {
-            captureManager.videoIO.encoder.setValuesForKeysWithDictionary(newValue)
+            mixer.videoIO.encoder.setValuesForKeysWithDictionary(newValue)
         }
     }
 
     public var captureSettings:[String: AnyObject] {
         get {
-            return captureManager.dictionaryWithValuesForKeys(AVCaptureSessionManager.supportedSettingsKeys)
+            return mixer.dictionaryWithValuesForKeys(AVMixer.supportedSettingsKeys)
         }
         set {
             dispatch_async(lockQueue) {
-                self.captureManager.setValuesForKeysWithDictionary(newValue)
+                self.mixer.setValuesForKeysWithDictionary(newValue)
             }
         }
     }
@@ -265,12 +265,12 @@ public class RTMPStream: EventDispatcher {
         didSet {
             switch readyState {
             case .Publishing:
-                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(captureManager))
-                captureManager.audioIO.encoder.startRunning()
-                captureManager.videoIO.encoder.startRunning()
+                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(mixer))
+                mixer.audioIO.encoder.startRunning()
+                mixer.videoIO.encoder.startRunning()
             case .Closed:
-                captureManager.audioIO.encoder.stopRunning()
-                captureManager.videoIO.encoder.stopRunning()
+                mixer.audioIO.encoder.stopRunning()
+                mixer.videoIO.encoder.stopRunning()
             default:
                 break
             }
@@ -285,7 +285,7 @@ public class RTMPStream: EventDispatcher {
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
     private var rtmpConnection:RTMPConnection
-    private(set) var captureManager:AVCaptureSessionManager = AVCaptureSessionManager()
+    private(set) var mixer:AVMixer = AVMixer()
 
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL
@@ -294,8 +294,8 @@ public class RTMPStream: EventDispatcher {
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
         super.init()
-        captureManager.audioIO.encoder.delegate = muxer
-        captureManager.videoIO.encoder.delegate = muxer
+        mixer.audioIO.encoder.delegate = muxer
+        mixer.videoIO.encoder.delegate = muxer
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
@@ -304,20 +304,20 @@ public class RTMPStream: EventDispatcher {
 
     public func attachAudio(audio:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
-            self.captureManager.attachAudio(audio)
+            self.mixer.attachAudio(audio)
         }
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
-            self.captureManager.attachCamera(camera)
-            self.captureManager.startRunning()
+            self.mixer.attachCamera(camera)
+            self.mixer.startRunning()
         }
     }
 
     public func attachScreen(screen:ScreenCaptureSession?) {
         dispatch_async(lockQueue) {
-            self.captureManager.attachScreen(screen)
+            self.mixer.attachScreen(screen)
         }
     }
 
@@ -421,7 +421,7 @@ public class RTMPStream: EventDispatcher {
 
             self.muxer.dispose()
             self.muxer.delegate = self
-            self.captureManager.startRunning()
+            self.mixer.startRunning()
             self.chunkTypes.removeAll(keepCapacity: false)
             self.rtmpConnection.doWrite(RTMPChunk(
                 type: .Zero,
@@ -476,16 +476,16 @@ public class RTMPStream: EventDispatcher {
     }
 
     public func registerEffect(video effect:VisualEffect) -> Bool {
-        return captureManager.videoIO.registerEffect(effect)
+        return mixer.videoIO.registerEffect(effect)
     }
 
     public func unregisterEffect(video effect:VisualEffect) -> Bool {
-        return captureManager.videoIO.unregisterEffect(effect)
+        return mixer.videoIO.unregisterEffect(effect)
     }
 
     public func setPointOfInterest(focus:CGPoint, exposure:CGPoint) {
-        captureManager.focusPointOfInterest = focus
-        captureManager.exposurePointOfInterest = exposure
+        mixer.focusPointOfInterest = focus
+        mixer.exposurePointOfInterest = exposure
     }
 
     func rtmpStatusHandler(notification:NSNotification) {

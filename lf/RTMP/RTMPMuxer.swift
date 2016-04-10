@@ -12,7 +12,7 @@ final class RTMPMuxer: NSObject {
     private var audioTimestamp:CMTime = kCMTimeZero
     private var videoTimestamp:CMTime = kCMTimeZero
 
-    func createMetadata(captureManager:AVCaptureSessionManager) -> ASObject {
+    func createMetadata(mixer:AVMixer) -> ASObject {
         let metadata:ASObject = ASObject()
         return metadata
     }

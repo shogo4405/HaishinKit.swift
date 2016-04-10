@@ -65,23 +65,25 @@ final class VideoIOComponent: NSObject {
 
     func registerEffect(effect:VisualEffect) -> Bool {
         objc_sync_enter(effects)
-        if let _:Int = effects.indexOf(effect) {
+        defer {
             objc_sync_exit(effects)
+        }
+        if let _:Int = effects.indexOf(effect) {
             return false
         }
         effects.append(effect)
-        objc_sync_exit(effects)
         return true
     }
 
     func unregisterEffect(effect:VisualEffect) -> Bool {
         objc_sync_enter(effects)
+        defer {
+            objc_sync_exit(effects)
+        }
         if let i:Int = effects.indexOf(effect) {
             effects.removeAtIndex(i)
-            objc_sync_exit(effects)
             return true
         }
-        objc_sync_exit(effects)
         return false
     }
 
@@ -195,3 +197,123 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         )
     }
 }
+
+
+final class VideoIOLayer: AVCaptureVideoPreviewLayer {
+    private(set) var currentFPS:Int = 0
+    
+    private var timer:NSTimer?
+    private var frameCount:Int = 0
+    private var surface:CALayer = CALayer()
+    
+    override init() {
+        super.init()
+        initialize()
+    }
+    
+    override init!(session: AVCaptureSession!) {
+        super.init(session: session)
+        initialize()
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialize()
+    }
+    
+    deinit {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    override var transform:CATransform3D {
+        get {
+            return surface.transform
+        }
+        set {
+            surface.transform = newValue
+        }
+    }
+    
+    override var frame:CGRect {
+        get {
+            return super.frame
+        }
+        set {
+            super.frame = newValue
+            surface.frame = newValue
+        }
+    }
+    
+    override var contents:AnyObject? {
+        get {
+            return surface.contents
+        }
+        set {
+            surface.contents = newValue
+            frameCount += 1
+        }
+    }
+    
+    override var videoGravity:String! {
+        get {
+            return super.videoGravity
+        }
+        set {
+            super.videoGravity = newValue
+            switch newValue {
+            case AVLayerVideoGravityResizeAspect:
+                surface.contentsGravity = kCAGravityResizeAspect
+            case AVLayerVideoGravityResizeAspectFill:
+                surface.contentsGravity = kCAGravityResizeAspectFill
+            case AVLayerVideoGravityResize:
+                surface.contentsGravity = kCAGravityResize
+            default:
+                surface.contentsGravity = kCAGravityResizeAspect
+            }
+        }
+    }
+    
+    private func initialize() {
+        timer = NSTimer.scheduledTimerWithTimeInterval(
+            1.0, target: self, selector: #selector(VideoIOLayer.didTimerInterval(_:)), userInfo: nil, repeats: true
+        )
+        addSublayer(surface)
+    }
+    
+    func didTimerInterval(timer:NSTimer) {
+        currentFPS = frameCount
+        frameCount = 0
+    }
+}
+
+public class VideoIOView: UIView {
+    static var defaultBackgroundColor:UIColor = UIColor.blackColor()
+    
+    required override public init(frame: CGRect) {
+        super.init(frame: frame)
+        initialize()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialize()
+    }
+    
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
+        didSet {
+            layer.setValue(videoGravity, forKey: "videoGravity")
+        }
+    }
+    
+    override public class func layerClass() -> AnyClass {
+        return VideoIOLayer.self
+    }
+    
+    private func initialize() {
+        backgroundColor = VideoIOView.defaultBackgroundColor
+        layer.frame = bounds
+        layer.setValue(videoGravity, forKey: "videoGravity")
+    }
+}
+

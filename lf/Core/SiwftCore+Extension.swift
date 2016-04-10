@@ -1,6 +1,19 @@
 import Foundation
 import AVFoundation
 
+extension Mirror {
+    var description:String {
+        var data:[String] = []
+        for child in children {
+            guard let label:String = child.label else {
+                continue
+            }
+            data.append("\(label):\(child.value)")
+        }
+        return "\(subjectType){\(data.joinWithSeparator(","))}"
+    }
+}
+
 extension Int16 {
     var bytes:[UInt8] {
         var value:Int16 = self

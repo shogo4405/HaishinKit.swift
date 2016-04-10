@@ -868,7 +868,7 @@ final class RTMPVideoMessage:RTMPMessage {
             presentationTimeStamp: CMTimeMake(Int64(stream.videoTimestamp) + Int64(compositionTimeoffset), 1000),
             decodeTimeStamp: kCMTimeInvalid
         )
-        stream.captureManager.videoIO.enqueSampleBuffer(
+        stream.mixer.videoIO.enqueSampleBuffer(
             Array(payload[FLVTag.TagType.Video.headerSize..<payload.count]),
             timing: &timing
         )
@@ -877,7 +877,7 @@ final class RTMPVideoMessage:RTMPMessage {
     func createFormatDescription(stream: RTMPStream) -> OSStatus{
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
         config.bytes = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
-        return config.createFormatDescription(&stream.captureManager.videoIO.formatDescription)
+        return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
     }
 }
 
