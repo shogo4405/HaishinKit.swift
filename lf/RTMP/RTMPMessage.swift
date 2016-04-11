@@ -217,13 +217,13 @@ final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
     override var type:Type {
         return .WindowAck
     }
-    
+
     var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
-    
+
     override var payload:[UInt8] {
         get {
             if (!super.payload.isEmpty) {
@@ -968,7 +968,7 @@ final class RTMPUserControlMessage:RTMPMessage {
     override init() {
         super.init()
     }
-    
+
     init(event:Event) {
         super.init()
         self.event = event
@@ -977,9 +977,11 @@ final class RTMPUserControlMessage:RTMPMessage {
     override func execute(connection: RTMPConnection) {
         switch event {
         case .Ping:
-            connection.socket.doWrite(RTMPChunk(message: RTMPUserControlMessage(event: .Pong)))
+            let message:RTMPUserControlMessage = RTMPUserControlMessage(event: .Pong)
+            message.value = value
+            connection.socket.doWrite(RTMPChunk(message: message))
         case .BufferEmpty, .BufferFull:
-            connection.streams[UInt32(value)]?.dispatchEventWith("rtmpStatus", bubbles: false, data: [
+            connection.streams[UInt32(value)]?.dispatchEventWith(lf.Event.RTMP_STATUS, bubbles: false, data: [
                 "level": "status",
                 "code": description,
                 "description": ""
