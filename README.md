@@ -6,27 +6,48 @@ iOS向けライブ配信用のライブラリーです。現在、RTMPでの配�
     pod 'lf'
     use_frameworks!
 
-## 利用方法
-### RTMP
-api自体はAS3のNetConnectionとNetStreamに似せています。
-* flash.net.SharedObject → RTMPSharedObject
-* flash.net.Responder → Responder
-* flash.net.NetConnection → RTMPConnection
-* flash.net.NetStream → RTMPStream
-* AMF0をサポート、AMF3はこれからサポート予定
-* Adobe形式のRTMP認証にも対応しています。下記のフォーマットでユーザー名を渡せます。
- * rtmp://user:password@path.to.host/appName/instanceName
+## Usage
+### Basic
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.videoGravity = AVLayerVideoGravityResizeAspectFill
 rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-rtmpStream.attachCamera(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo))
+rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
 
 view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
+
+### Setting
+```swift
+var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+rtmpStream.captureSetting = [
+    "width": 640,
+    "height": 360,
+]
+```
+
+### RTMP Auth
+```swift
+var rtmpConnection:RTMPConnection = RTMPConnection()
+rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
+```
+
+### Screen Capture
+```swift
+var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+rtmpStream.attachScreen(ScreenCaptureSession())
+```
+
+## Class Overview
+|AS3|lf|
+|----|----|
+|flash.net.SharedObject|RTMPSharedObject|
+|flash.net.Responder|Responder|
+|flash.net.NetConnection|RTMPConnection|
+|flash.net.NetStream|RTMPStream|
 
 ## License
 New BSD
