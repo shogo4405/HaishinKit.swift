@@ -19,12 +19,12 @@ view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
-* Setting
+* Settings
 ```swift
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-rtmpStream.captureSetting = [
-    "width": 640,
-    "height": 360,
+rtmpStream.videoSettings = [
+    "width": 640, // video output width
+    "height": 360, // video output height
 ]
 ```
 * RTMP Auth
