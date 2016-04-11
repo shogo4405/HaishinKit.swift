@@ -14,12 +14,6 @@ final class AVCEncoder: NSObject {
         "keyframeInterval",
     ]
 
-    static func getData(bytes: UnsafeMutablePointer<Int8>, length:Int) -> NSData {
-        let mutableData:NSMutableData = NSMutableData()
-        mutableData.appendBytes(bytes, length: length)
-        return mutableData
-    }
-
     static let defaultFPS:Int = 30
     static let defaultWidth:Int32 = 480
     static let defaultHeight:Int32 = 272

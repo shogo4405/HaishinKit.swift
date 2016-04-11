@@ -265,7 +265,6 @@ public class RTMPStream: EventDispatcher {
         didSet {
             switch readyState {
             case .Publishing:
-                send("@setDataFrame", arguments: "onMetaData", muxer.createMetadata(mixer))
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
             case .Closed:
