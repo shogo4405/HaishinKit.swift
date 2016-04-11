@@ -90,6 +90,7 @@ class AMF3Serializer: ByteArray {
 
 // MARK: AMFSerializer
 extension AMF3Serializer: AMFSerializer {
+
     func serialize(value:Any?) -> Self {
         
         if value == nil {

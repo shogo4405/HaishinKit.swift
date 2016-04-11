@@ -46,18 +46,15 @@ final class AVCEncoder: NSObject {
             }
         }
     }
-    var running:Bool = false
+    var lockQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL
+    )
     var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
             invalidateSession = true
         }
     }
     var keyframeInterval:Int = 2
-    var lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL
-    )
-    weak var delegate:VideoEncoderDelegate?
-
     var formatDescription:CMFormatDescriptionRef? = nil {
         didSet {
             if (!CMFormatDescriptionEqual(formatDescription, oldValue)) {
@@ -65,6 +62,8 @@ final class AVCEncoder: NSObject {
             }
         }
     }
+    weak var delegate:VideoEncoderDelegate?
+    internal(set) var running:Bool = false
 
     private var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = AVCEncoder.defaultAttributes
