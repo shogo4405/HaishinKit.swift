@@ -7,7 +7,7 @@ iOS向けライブ配信用のライブラリーです。現在、RTMPでの配�
     use_frameworks!
 
 ## Usage
-### Basic
+* Basic
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
@@ -19,8 +19,7 @@ view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
-
-### Setting
+* Setting
 ```swift
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.captureSetting = [
@@ -28,14 +27,12 @@ rtmpStream.captureSetting = [
     "height": 360,
 ]
 ```
-
-### RTMP Auth
+* RTMP Auth
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```
-
-### Screen Capture
+* Screen Capture
 ```swift
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.attachScreen(ScreenCaptureSession())
