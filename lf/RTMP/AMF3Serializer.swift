@@ -1,6 +1,6 @@
 import Foundation
 
-
+// MARK: - AMFReference
 class AMFReference {
     var strings:[String] = []
     var objects:[Any] = []
@@ -62,6 +62,7 @@ class AMFReference {
  * AMF3 Serializer
  * @reference http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
  */
+// MARK: - AMF3Serializer
 class AMF3Serializer: ByteArray {
     enum Type:UInt8 {
         case Undefined    = 0x00
@@ -87,6 +88,7 @@ class AMF3Serializer: ByteArray {
     var reference:AMFReference = AMFReference()
 }
 
+// MARK: AMFSerializer
 extension AMF3Serializer: AMFSerializer {
     func serialize(value:Any?) -> Self {
         

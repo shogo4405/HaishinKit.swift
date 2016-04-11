@@ -83,7 +83,7 @@ final class AVCEncoder: NSObject {
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: fps,
             kVTCompressionPropertyKey_MaxKeyFrameInterval: fps * keyframeInterval,
-            kVTCompressionPropertyKey_AllowFrameReordering: false,
+            kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": "Trim"
             ]

@@ -87,18 +87,28 @@ extension RTMPMuxer: VideoEncoderDelegate {
         guard IsNoErr(CMBlockBufferGetDataPointer(block, 0, nil, &totalLength, &dataPointer)) else {
             return
         }
+
+        var compositionTimeOffset:Int32 = 0
+        let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        var decodeTimeStamp:CMTime = CMSampleBufferGetDecodeTimeStamp(sampleBuffer)
+
+        if (decodeTimeStamp == kCMTimeInvalid) {
+            decodeTimeStamp = presentationTimeStamp
+        } else {
+            compositionTimeOffset = Int32((CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(decodeTimeStamp)) * 1000)
+        }
+        let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(decodeTimeStamp) - CMTimeGetSeconds(videoTimestamp)) * 1000
+
+        print(decodeTimeStamp)
+
         let buffer:NSMutableData = NSMutableData()
         var data:[UInt8] = [UInt8](count: 5, repeatedValue: 0x00)
         data[0] = ((keyframe ? FLVFrameType.Key.rawValue : FLVFrameType.Inter.rawValue) << 4) | FLVVideoCodec.AVC.rawValue
         data[1] = FLVAVCPacketType.Nal.rawValue
-        data[2] = 0
-        data[3] = 0
-        data[4] = 0
+        data[2..<5] = compositionTimeOffset.bigEndian.bytes[1..<4]
         buffer.appendBytes(&data, length: data.count)
         buffer.appendBytes(dataPointer, length: totalLength)
-        let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(videoTimestamp)) * 1000
         delegate?.sampleOutput(self, video: buffer, timestamp: delta)
-        videoTimestamp = presentationTimeStamp
+        videoTimestamp = decodeTimeStamp
     }
 }
