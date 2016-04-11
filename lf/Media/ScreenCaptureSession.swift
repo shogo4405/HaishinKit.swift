@@ -26,7 +26,7 @@ public final class ScreenCaptureSession: NSObject {
     }
     public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
 
-    private var running:Bool = false
+    internal(set) var running:Bool = false
     private var context:CIContext = {
         if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
             logger.info("cicontext use hardware renderer")

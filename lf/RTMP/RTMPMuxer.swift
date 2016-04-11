@@ -88,27 +88,25 @@ extension RTMPMuxer: VideoEncoderDelegate {
             return
         }
 
-        var compositionTimeOffset:Int32 = 0
-        let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        var decodeTimeStamp:CMTime = CMSampleBufferGetDecodeTimeStamp(sampleBuffer)
+        var cto:Int32 = 0
+        let pts:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
+        var dts:CMTime = CMSampleBufferGetDecodeTimeStamp(sampleBuffer)
 
-        if (decodeTimeStamp == kCMTimeInvalid) {
-            decodeTimeStamp = presentationTimeStamp
+        if (dts == kCMTimeInvalid) {
+            dts = pts
         } else {
-            compositionTimeOffset = Int32((CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(decodeTimeStamp)) * 1000)
+            cto = Int32((CMTimeGetSeconds(pts) - CMTimeGetSeconds(dts)) * 1000)
         }
-        let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(decodeTimeStamp) - CMTimeGetSeconds(videoTimestamp)) * 1000
-
-        print(decodeTimeStamp)
+        let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(dts) - CMTimeGetSeconds(videoTimestamp)) * 1000
 
         let buffer:NSMutableData = NSMutableData()
         var data:[UInt8] = [UInt8](count: 5, repeatedValue: 0x00)
         data[0] = ((keyframe ? FLVFrameType.Key.rawValue : FLVFrameType.Inter.rawValue) << 4) | FLVVideoCodec.AVC.rawValue
         data[1] = FLVAVCPacketType.Nal.rawValue
-        data[2..<5] = compositionTimeOffset.bigEndian.bytes[1..<4]
+        data[2..<5] = cto.bigEndian.bytes[1..<4]
         buffer.appendBytes(&data, length: data.count)
         buffer.appendBytes(dataPointer, length: totalLength)
         delegate?.sampleOutput(self, video: buffer, timestamp: delta)
-        videoTimestamp = decodeTimeStamp
+        videoTimestamp = dts
     }
 }

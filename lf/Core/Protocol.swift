@@ -5,6 +5,7 @@ protocol BytesConvertible {
 }
 
 protocol Runnable: class {
+    var running:Bool { get }
     func startRunning()
     func stopRunning()
 }

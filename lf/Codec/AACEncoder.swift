@@ -33,7 +33,6 @@ final class AACEncoder: NSObject {
     }
 
     var profile:UInt32 = AACEncoder.defaultProfile
-    var running:Bool = false
     var channels:UInt32 = AACEncoder.defaultChannels
     var sampleRate:Double = AACEncoder.defaultSampleRate
     var currentBufferList:AudioBufferList? = nil
@@ -49,6 +48,7 @@ final class AACEncoder: NSObject {
         "com.github.shogo4405.lf.AACEncoder.lock", DISPATCH_QUEUE_SERIAL
     )
     weak var delegate:AudioEncoderDelegate?
+    internal(set) var running:Bool = false
 
     private var inSourceFormat:AudioStreamBasicDescription?
 

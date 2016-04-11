@@ -2,7 +2,8 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-public enum NALUType: UInt8 {
+// MARK: - NALUType
+enum NALUType: UInt8 {
     case UNSPEC   = 0
     case SLICE    = 1 // P frame
     case DPA      = 2
@@ -61,99 +62,55 @@ public enum NALUType: UInt8 {
     }
 }
 
-// @see ISO/IEC 14496-15 2010
-public struct AVCConfigurationRecord: CustomStringConvertible {
-    
+/*
+ - seealso: ISO/IEC 14496-15 2010
+ */
+// MARK: - AVCConfigurationRecord
+struct AVCConfigurationRecord {
+
     static func getData(formatDescription:CMFormatDescriptionRef?) -> NSData? {
-        if (formatDescription == nil) {
+        guard let formatDescription:CMFormatDescriptionRef = formatDescription else {
             return nil
         }
-        if let atoms:NSDictionary = CMFormatDescriptionGetExtension(formatDescription!, "SampleDescriptionExtensionAtoms") as? NSDictionary {
+        if let atoms:NSDictionary = CMFormatDescriptionGetExtension(formatDescription, "SampleDescriptionExtensionAtoms") as? NSDictionary {
             return atoms["avcC"] as? NSData
         }
         return nil
     }
-    
+
     static let reserveLengthSizeMinusOne:UInt8 = 0x3F
     static let reserveNumOfSequenceParameterSets:UInt8 = 0xE0
     static let reserveChromaFormat:UInt8 = 0xFC
     static let reserveBitDepthLumaMinus8:UInt8 = 0xF8
     static let reserveBitDepthChromaMinus8 = 0xF8
-    
-    public var configurationVersion:UInt8 = 1
-    public var AVCProfileIndication:UInt8 = 0
-    public var profileCompatibility:UInt8 = 0
-    public var AVCLevelIndication:UInt8 = 0
-    public var lengthSizeMinusOneWithReserved:UInt8 = 0
-    public var numOfSequenceParameterSetsWithReserved:UInt8 = 0
-    public var sequenceParameterSets:[[UInt8]] = []
-    public var pictureParameterSets:[[UInt8]] = []
-    
-    public var chromaFormatWithReserve:UInt8 = 0
-    public var bitDepthLumaMinus8WithReserve:UInt8 = 0
-    public var bitDepthChromaMinus8WithReserve:UInt8 = 0
-    public var sequenceParameterSetExt:[[UInt8]] = []
-    
+
+    var configurationVersion:UInt8 = 1
+    var AVCProfileIndication:UInt8 = 0
+    var profileCompatibility:UInt8 = 0
+    var AVCLevelIndication:UInt8 = 0
+    var lengthSizeMinusOneWithReserved:UInt8 = 0
+    var numOfSequenceParameterSetsWithReserved:UInt8 = 0
+    var sequenceParameterSets:[[UInt8]] = []
+    var pictureParameterSets:[[UInt8]] = []
+
+    var chromaFormatWithReserve:UInt8 = 0
+    var bitDepthLumaMinus8WithReserve:UInt8 = 0
+    var bitDepthChromaMinus8WithReserve:UInt8 = 0
+    var sequenceParameterSetExt:[[UInt8]] = []
+
     var naluLength:Int32 {
         return Int32((lengthSizeMinusOneWithReserved >> 6) + 1)
     }
-    
-    public var description:String {
-        var description:String = "AVCConfigurationRecord{"
-        description += "configurationVersion:\(configurationVersion),"
-        description += "AVCProfileIndication:\(AVCProfileIndication),"
-        description += "lengthSizeMinusOneWithReserved:\(lengthSizeMinusOneWithReserved),"
-        description += "numOfSequenceParameterSetsWithReserved:\(numOfSequenceParameterSetsWithReserved),"
-        description += "sequenceParameterSets:\(sequenceParameterSets),"
-        description += "pictureParameterSets:\(pictureParameterSets)"
-        description += "}"
-        return description
-    }
-    
+
     init() {
     }
-    
+
     init(data: NSData) {
         var bytes:[UInt8] = [UInt8](count: data.length, repeatedValue: 0x00)
         data.getBytes(&bytes, length: bytes.count)
         self.bytes = bytes
     }
-    
-    private var _bytes:[UInt8] = []
-    var bytes:[UInt8] {
-        get {
-            return _bytes
-        }
-        set {
-            let buffer:ByteArray = ByteArray(bytes: newValue)
 
-            do {
-                configurationVersion = try buffer.readUInt8()
-                AVCProfileIndication = try buffer.readUInt8()
-                profileCompatibility = try buffer.readUInt8()
-                AVCLevelIndication = try buffer.readUInt8()
-                lengthSizeMinusOneWithReserved = try buffer.readUInt8()
-                numOfSequenceParameterSetsWithReserved = try buffer.readUInt8()
-            
-                let numOfSequenceParameterSets:UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
-                for _ in 0..<numOfSequenceParameterSets {
-                    let length:Int = Int(try buffer.readUInt16())
-                    sequenceParameterSets.append(try buffer.readBytes(length))
-                }
-            
-                let numPictureParameterSets:UInt8 = try buffer.readUInt8()
-                for _ in 0..<numPictureParameterSets {
-                    let length:Int = Int(try buffer.readUInt16())
-                    pictureParameterSets.append(try buffer.readBytes(length))
-                }
-            } catch {
-                
-            }
-            
-            _bytes = newValue
-        }
-    }
-    
     func createFormatDescription(formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
         var parameterSetPointers:[UnsafePointer<UInt8>] = [
             UnsafePointer<UInt8>(sequenceParameterSets[0]),
@@ -171,5 +128,60 @@ public struct AVCConfigurationRecord: CustomStringConvertible {
             naluLength,
             formatDescriptionOut
         )
+    }
+}
+
+// MARK: BytesConvertible
+extension AVCConfigurationRecord: BytesConvertible {
+    var bytes:[UInt8] {
+        get {
+            let buffer:ByteArray = ByteArray()
+            buffer.writeUInt8(configurationVersion)
+            buffer.writeUInt8(AVCProfileIndication)
+            buffer.writeUInt8(profileCompatibility)
+            buffer.writeUInt8(AVCLevelIndication)
+            buffer.writeUInt8(lengthSizeMinusOneWithReserved)
+            buffer.writeUInt8(numOfSequenceParameterSetsWithReserved)
+            for i in 0..<sequenceParameterSets.count {
+                buffer.writeUInt16(UInt16(sequenceParameterSets[i].count))
+                buffer.writeBytes(sequenceParameterSets[i])
+            }
+            buffer.writeUInt8(UInt8(pictureParameterSets.count))
+            for i in 0..<pictureParameterSets.count {
+                buffer.writeUInt16(UInt16(pictureParameterSets[i].count))
+                buffer.writeBytes(pictureParameterSets[i])
+            }
+            return buffer.bytes
+        }
+        set {
+            let buffer:ByteArray = ByteArray(bytes: newValue)
+            do {
+                configurationVersion = try buffer.readUInt8()
+                AVCProfileIndication = try buffer.readUInt8()
+                profileCompatibility = try buffer.readUInt8()
+                AVCLevelIndication = try buffer.readUInt8()
+                lengthSizeMinusOneWithReserved = try buffer.readUInt8()
+                numOfSequenceParameterSetsWithReserved = try buffer.readUInt8()
+                let numOfSequenceParameterSets:UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
+                for _ in 0..<numOfSequenceParameterSets {
+                    let length:Int = Int(try buffer.readUInt16())
+                    sequenceParameterSets.append(try buffer.readBytes(length))
+                }
+                let numPictureParameterSets:UInt8 = try buffer.readUInt8()
+                for _ in 0..<numPictureParameterSets {
+                    let length:Int = Int(try buffer.readUInt16())
+                    pictureParameterSets.append(try buffer.readBytes(length))
+                }
+            } catch {
+                logger.error("\(buffer)")
+            }
+        }
+    }
+}
+
+// MARK: CustomStringConvertible
+extension AVCConfigurationRecord: CustomStringConvertible {
+    var description:String {
+        return Mirror(reflecting: self).description
     }
 }

@@ -23,3 +23,10 @@ public struct SoundTransform {
         IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Pan, pan), "set pan = \(pan)")
     }
 }
+
+// MARK: CustomStringConvertible
+extension SoundTransform: CustomStringConvertible {
+    public var description:String {
+        return Mirror(reflecting: self).description
+    }
+}

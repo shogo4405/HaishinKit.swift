@@ -399,6 +399,10 @@ public class AVMixer: NSObject {
 
 // MARK: - Runnable
 extension AVMixer: Runnable {
+    var running:Bool {
+        return session.running
+    }
+
     public func startRunning() {
         videoIO.view.layer.setValue(session, forKey: "session")
         session.startRunning()
