@@ -32,11 +32,6 @@ rtmpStream.videoSettings = [
 var rtmpConnection:RTMPConnection = RTMPConnection()
 rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```
-* Screen Capture
-```swift
-var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-rtmpStream.attachScreen(ScreenCaptureSession())
-```
 
 ## Class Overview
 |AS3|lf|
