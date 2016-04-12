@@ -224,6 +224,15 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
         }
     }
 
+    override init() {
+        super.init()
+    }
+
+    init(size:UInt32) {
+        super.init()
+        self.size = size
+    }
+
     override var payload:[UInt8] {
         get {
             if (!super.payload.isEmpty) {
@@ -239,6 +248,14 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
             size = UInt32(bytes: newValue).bigEndian
             super.payload = newValue
         }
+    }
+
+    override func execute(connection: RTMPConnection) {
+        connection.doWrite(RTMPChunk(
+            type: .Zero,
+            streamId: RTMPChunk.control,
+            message: RTMPWindowAcknowledgementSizeMessage(size: size)
+        ))
     }
 }
 
