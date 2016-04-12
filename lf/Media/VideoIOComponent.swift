@@ -198,7 +198,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     }
 }
 
-
+// MARK: - VideoIOLayer
 final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     private(set) var currentFPS:Int = 0
     
@@ -287,6 +287,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     }
 }
 
+// MARK: - VideoIOView
 public class VideoIOView: UIView {
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
     
