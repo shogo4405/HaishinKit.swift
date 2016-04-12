@@ -212,8 +212,8 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
 /**
  * 5.4.4. Window Acknowledgement Size (5)
  */
-final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
-    
+final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
+
     override var type:Type {
         return .WindowAck
     }
@@ -245,7 +245,7 @@ final class RTMPWindowAcknowledgementSizeMessage:RTMPMessage {
 /**
  * @see 5.4.5. Set Peer Bandwidth (6)
  */
-final class RTMPSetPeerBandwidthMessage:RTMPMessage {
+final class RTMPSetPeerBandwidthMessage: RTMPMessage {
     
     enum Limit:UInt8 {
         case Hard = 0x00
@@ -435,7 +435,7 @@ final class RTMPCommandMessage: RTMPMessage {
 /**
  * @see 7.1.2. Data Message (18, 15)
  */
-final class RTMPDataMessage:RTMPMessage {
+final class RTMPDataMessage: RTMPMessage {
 
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
         didSet {
@@ -544,7 +544,7 @@ final class RTMPDataMessage:RTMPMessage {
 /**
  * @see 7.1.3. Shared Object Message (19, 16)
  */
-final class RTMPSharedObjectMessage:RTMPMessage {
+final class RTMPSharedObjectMessage: RTMPMessage {
 
     struct Event: CustomStringConvertible {
         enum Type:UInt8 {
@@ -733,7 +733,7 @@ final class RTMPSharedObjectMessage:RTMPMessage {
 /**
  * @see 7.1.5. Audio Message (9)
  */
-final class RTMPAudioMessage:RTMPMessage {
+final class RTMPAudioMessage: RTMPMessage {
     var config:AudioSpecificConfig?
 
     private(set) var codec:FLVAudioCodec = .Unknown
@@ -823,7 +823,7 @@ final class RTMPAudioMessage:RTMPMessage {
 /**
 * @see 7.1.5. Video Message (9)
 */
-final class RTMPVideoMessage:RTMPMessage {
+final class RTMPVideoMessage: RTMPMessage {
     private(set) var codec:FLVVideoCodec = .Unknown
 
     override var type:Type {
@@ -885,7 +885,7 @@ final class RTMPVideoMessage:RTMPMessage {
 /**
  * @see 7.1.6. Aggregate Message (22)
  */
-final class RTMPAggregateMessage:RTMPMessage {
+final class RTMPAggregateMessage: RTMPMessage {
     override var type:Type {
         return .Aggregate
     }
@@ -894,7 +894,7 @@ final class RTMPAggregateMessage:RTMPMessage {
 /**
  * @see 7.1.7. User Control Message Events
  */
-final class RTMPUserControlMessage:RTMPMessage {
+final class RTMPUserControlMessage: RTMPMessage {
 
     enum Event:UInt8 {
         case StreamBegin = 0x00
