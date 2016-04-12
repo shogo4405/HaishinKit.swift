@@ -133,9 +133,10 @@ public class RTMPConnection: EventDispatcher {
     }
 
     static let defaultPort:Int = 1935
-    static let defaultObjectEncoding:UInt8 = 0x00
-    static let defaultChunkSizeS:Int = 1024 * 16
     static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
+    static let defaultChunkSizeS:Int = 1024 * 16
+    static let defaultCapabilities:Int = 239
+    static let defaultObjectEncoding:UInt8 = 0x00
 
     public var swfUrl:String? = nil
     public var pageUrl:String? = nil
@@ -244,7 +245,7 @@ public class RTMPConnection: EventDispatcher {
                 "swfUrl": swfUrl,
                 "tcUrl": uri!.absoluteWithoutAuthenticationString,
                 "fpad": false,
-                "capabilities": 0,
+                "capabilities": RTMPConnection.defaultCapabilities,
                 "audioCodecs": SupportSound.AAC.rawValue,
                 "videoCodecs": SupportVideo.H264.rawValue,
                 "videoFunction": VideoFunction.ClientSeek.rawValue,
