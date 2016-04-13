@@ -52,7 +52,7 @@ final class LiveViewController: UIViewController {
     }()
 
     var effectSegmentControl:UISegmentedControl = {
-        let segment:UISegmentedControl = UISegmentedControl(items: ["None", "Monochrome", "Sepia"])
+        let segment:UISegmentedControl = UISegmentedControl(items: ["None", "Monochrome", "Pronama"])
         segment.tintColor = UIColor.whiteColor()
         return segment
     }()
@@ -200,38 +200,10 @@ final class LiveViewController: UIViewController {
             currentEffect = MonochromeEffect()
             rtmpStream.registerEffect(video: currentEffect!)
         case 2:
-            currentEffect = SepiaEffect()
+            currentEffect = PronamaEffect()
             rtmpStream.registerEffect(video: currentEffect!)
         default:
             break
         }
     }
 }
-
-final class SepiaEffect: VisualEffect {
-    let filter:CIFilter? = CIFilter(name: "CISepiaTone")
-    
-    override func execute(image: CIImage) -> CIImage {
-        guard let filter:CIFilter = filter else {
-            return image
-        }
-        filter.setValue(image, forKey: "inputImage")
-        filter.setValue(0.8, forKey: "inputIntensity")
-        return filter.outputImage!
-    }
-}
-
-final class MonochromeEffect: VisualEffect {
-    let filter:CIFilter? = CIFilter(name: "CIColorMonochrome")
-
-    override func execute(image: CIImage) -> CIImage {
-        guard let filter:CIFilter = filter else {
-            return image
-        }
-        filter.setValue(image, forKey: "inputImage")
-        filter.setValue(CIColor(red: 0.75, green: 0.75, blue: 0.75), forKey: "inputColor")
-        filter.setValue(1.0, forKey: "inputIntensity")
-        return filter.outputImage!
-    }
-}
-

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		29205DC41CBE6C7E00054674 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29205DC31CBE6C7E00054674 /* VisualEffect.swift */; };
+		29205DCA1CBE868E00054674 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 29205DC91CBE868E00054674 /* Icon.png */; };
 		292A168E1CA1AAB200B02325 /* PreferenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292A168D1CA1AAB200B02325 /* PreferenceController.swift */; };
 		295D82191BA9B8EE00073478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295D82181BA9B8EE00073478 /* AppDelegate.swift */; };
 		295D82201BA9B8EE00073478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 295D821F1BA9B8EE00073478 /* Assets.xcassets */; };
@@ -33,6 +35,8 @@
 
 /* Begin PBXFileReference section */
 		0DDD70EA3CCF88EBD0E84F6A /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		29205DC31CBE6C7E00054674 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
+		29205DC91CBE868E00054674 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		292A168D1CA1AAB200B02325 /* PreferenceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceController.swift; sourceTree = "<group>"; };
 		294432F11C954CE3006359CB /* lf.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = lf.framework; path = "../build/Debug-iphoneos/lf.framework"; sourceTree = "<group>"; };
 		295D82151BA9B8EE00073478 /* Application.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Application.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -71,8 +75,8 @@
 		295D820C1BA9B8EE00073478 = {
 			isa = PBXGroup;
 			children = (
-				29C0665C1CB366D600D1060C /* lf.framework */,
 				295D82171BA9B8EE00073478 /* Application */,
+				29C0665C1CB366D600D1060C /* lf.framework */,
 				123363F22A25354276253A9F /* Pods */,
 				295D82161BA9B8EE00073478 /* Products */,
 			);
@@ -89,6 +93,7 @@
 		295D82171BA9B8EE00073478 /* Application */ = {
 			isa = PBXGroup;
 			children = (
+				29205DC91CBE868E00054674 /* Icon.png */,
 				295D82181BA9B8EE00073478 /* AppDelegate.swift */,
 				295D821F1BA9B8EE00073478 /* Assets.xcassets */,
 				4587C1B1DC7EC532F07A3EC3 /* Frameworks */,
@@ -96,6 +101,7 @@
 				295D82211BA9B8EE00073478 /* LaunchScreen.storyboard */,
 				295D822E1BA9BB5900073478 /* LiveViewController.swift */,
 				292A168D1CA1AAB200B02325 /* PreferenceController.swift */,
+				29205DC31CBE6C7E00054674 /* VisualEffect.swift */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -174,6 +180,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29205DCA1CBE868E00054674 /* Icon.png in Resources */,
 				295D82231BA9B8EE00073478 /* LaunchScreen.storyboard in Resources */,
 				295D82201BA9B8EE00073478 /* Assets.xcassets in Resources */,
 			);
@@ -206,6 +213,7 @@
 			files = (
 				295D822F1BA9BB5900073478 /* LiveViewController.swift in Sources */,
 				295D82191BA9B8EE00073478 /* AppDelegate.swift in Sources */,
+				29205DC41CBE6C7E00054674 /* VisualEffect.swift in Sources */,
 				292A168E1CA1AAB200B02325 /* PreferenceController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
