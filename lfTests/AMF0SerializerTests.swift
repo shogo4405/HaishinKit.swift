@@ -3,5 +3,5 @@ import XCTest
 
 @testable import lf
 
-class AMF0SerializerTests: XCTestCase {
+final class AMF0SerializerTests: XCTestCase {
 }

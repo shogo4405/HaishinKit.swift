@@ -3,7 +3,7 @@ import XCTest
 
 @testable import lf
 
-class FoundationExtensionTest: XCTestCase {
+final class FoundationExtensionTest: XCTestCase {
     func testNSURL() {
         let url:NSURL = NSURL(string: "http://localhost/foo/bar?hello=world!!&foo=bar")!
         let dictionary:[String:AnyObject] = url.dictionaryFromQuery()

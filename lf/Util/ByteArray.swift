@@ -264,42 +264,17 @@ public class ByteArray: ByteArrayConvertible {
         return self
     }
 
-    func clear() -> Self {
+    public func clear() -> Self {
         position = 0
         bytes.removeAll(keepCapacity: false)
         return self
-    }
-
-    func sequence(length:Int, lambda:(ByteArray -> Void)) {
-        let r:Int = (bytes.count - position) % length
-        for index in bytes.startIndex.advancedBy(position).stride(to: bytes.endIndex.advancedBy(-r), by: length) {
-            lambda(ByteArray(bytes: Array(bytes[index..<index.advancedBy(length)])))
-        }
-        if (0 < r) {
-            lambda(ByteArray(bytes: Array(bytes[bytes.endIndex - r..<bytes.endIndex])))
-        }
-    }
-
-    func toUInt32() -> [UInt32] {
-        let size:Int = sizeof(UInt32)
-        if ((bytes.endIndex - position) % size != 0) {
-            return []
-        }
-        var result:[UInt32] = []
-        for index in bytes.startIndex.advancedBy(position).stride(to: bytes.endIndex, by: size) {
-            result.append(UInt32(bytes: Array(bytes[index..<index.advancedBy(size)])))
-        }
-        return result
     }
 }
 
 // MARK: - CustomStringConvertible
 extension ByteArray: CustomStringConvertible {
     public var description:String {
-        var description:String = "ByteArray{"
-        description += "position:\(position),"
-        description += "bytesAvailable:\(bytesAvailable),"
-        description += "bytes:\(bytes)}"
-        return description
+        return Mirror(reflecting: self).description
     }
 }
+

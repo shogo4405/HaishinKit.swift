@@ -3,7 +3,7 @@ import XCTest
 
 @testable import lf
 
-class EventDispatcherTest: XCTestCase {
+final class EventDispatcherTest: XCTestCase {
     override func setUp() {
         super.setUp()
     }

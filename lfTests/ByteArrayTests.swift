@@ -3,7 +3,7 @@ import XCTest
 
 @testable import lf
 
-class ByteArrayTests: XCTestCase {
+final class ByteArrayTests: XCTestCase {
 
     func testInt8() {
         let bytes:ByteArray = ByteArray()

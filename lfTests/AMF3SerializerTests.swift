@@ -3,7 +3,7 @@ import XCTest
 
 @testable import lf
 
-class AMF3SerializerTests: XCTestCase {
+final class AMF3SerializerTests: XCTestCase {
     func testBool() {
         let amf:AMF3Serializer = AMF3Serializer()
         amf.serialize(true)

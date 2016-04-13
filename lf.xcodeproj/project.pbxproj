@@ -18,8 +18,6 @@
 		290DDA391C8864A900EA5BEB /* SiwftCore+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA371C8864A900EA5BEB /* SiwftCore+Extension.swift */; };
 		290DDA3B1C8864EB00EA5BEB /* Foundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290DDA3A1C8864EB00EA5BEB /* Foundation+Extension.swift */; };
 		291F69DE1C88810E00C8B53E /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291F69DD1C88810E00C8B53E /* SoundTransform.swift */; };
-		2922DA341C4150830016F67A /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA331C4150830016F67A /* MD5.swift */; };
-		2922DA361C415FB70016F67A /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2922DA351C415FB70016F67A /* MD5Tests.swift */; };
 		292A168C1CA17B2E00B02325 /* AudioSessionUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292A168B1CA17B2E00B02325 /* AudioSessionUtil.swift */; };
 		2945CBC31B4BE66000104112 /* lf.h in Headers */ = {isa = PBXBuildFile; fileRef = 2945CBC21B4BE66000104112 /* lf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2945CBC91B4BE66000104112 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
@@ -91,8 +89,6 @@
 		290DDA371C8864A900EA5BEB /* SiwftCore+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SiwftCore+Extension.swift"; sourceTree = "<group>"; };
 		290DDA3A1C8864EB00EA5BEB /* Foundation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Foundation+Extension.swift"; sourceTree = "<group>"; };
 		291F69DD1C88810E00C8B53E /* SoundTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundTransform.swift; path = Media/SoundTransform.swift; sourceTree = "<group>"; };
-		2922DA331C4150830016F67A /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Util/MD5.swift; sourceTree = "<group>"; };
-		2922DA351C415FB70016F67A /* MD5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5Tests.swift; sourceTree = "<group>"; };
 		292A168B1CA17B2E00B02325 /* AudioSessionUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioSessionUtil.swift; path = Util/AudioSessionUtil.swift; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2945CBC11B4BE66000104112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -181,7 +177,6 @@
 				292A168B1CA17B2E00B02325 /* AudioSessionUtil.swift */,
 				290907CF1C3961CE00F2E80C /* ByteArray.swift */,
 				29BDE0BE1C65BD4300D6A768 /* EventDispatcher.swift */,
-				2922DA331C4150830016F67A /* MD5.swift */,
 			);
 			name = Util;
 			sourceTree = "<group>";
@@ -250,9 +245,8 @@
 				29B018A51C9E3648005F995E /* ByteArrayTests.swift */,
 				29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */,
 				29E860391C2EFC0E00C595FB /* Foundation+ExtensionTests.swift */,
-				2922DA351C415FB70016F67A /* MD5Tests.swift */,
-				29B018A71C9E57FF005F995E /* SwiftCore+ExtensionTests.swift */,
 				2945CBCD1B4BE66000104112 /* Supporting Files */,
+				29B018A71C9E57FF005F995E /* SwiftCore+ExtensionTests.swift */,
 			);
 			path = lfTests;
 			sourceTree = "<group>";
@@ -485,7 +479,6 @@
 				29C0E0611C2EB02E009DD8E8 /* RTMPChunk.swift in Sources */,
 				290907D61C3961F700F2E80C /* H264+AVC.swift in Sources */,
 				29C0E0621C2EB02E009DD8E8 /* RTMPConnection.swift in Sources */,
-				2922DA341C4150830016F67A /* MD5.swift in Sources */,
 				29C0E0641C2EB02E009DD8E8 /* RTMPMuxer.swift in Sources */,
 				29CF9DA01C8DD06700576CA6 /* Function.swift in Sources */,
 				29C0E0651C2EB02E009DD8E8 /* RTMPSharedObject.swift in Sources */,
@@ -513,7 +506,6 @@
 				290907DA1C39631A00F2E80C /* Info.plist in Sources */,
 				29C5620D1C78D73F00D4E51B /* AMF0SerializerTests.swift in Sources */,
 				29B018A61C9E3648005F995E /* ByteArrayTests.swift in Sources */,
-				2922DA361C415FB70016F67A /* MD5Tests.swift in Sources */,
 				29E8603A1C2EFC0E00C595FB /* Foundation+ExtensionTests.swift in Sources */,
 				29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */,
 				29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */,

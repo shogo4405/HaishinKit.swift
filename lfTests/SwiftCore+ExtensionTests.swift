@@ -3,7 +3,7 @@ import XCTest
 
 @testable import lf
 
-class SwiftCoreExtensionTests: XCTestCase {
+final class SwiftCoreExtensionTests: XCTestCase {
     
     func testInt32() {
         XCTAssertEqual(Int32.min, Int32(bytes: Int32.min.bytes))

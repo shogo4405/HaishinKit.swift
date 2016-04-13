@@ -1,4 +1,5 @@
 import Foundation
+import CryptoSwift
 
 // MARK: - Responder
 public class Responder: NSObject {
@@ -108,26 +109,32 @@ public class RTMPConnection: EventDispatcher {
         case ClientSeek = 1
     }
 
-    static func createSanJoseAuthCommand(url:NSURL, description:String) -> String {
+    private static func md5(data:String) -> String {
+        let value:[UInt8] = [UInt8](data.utf8).md5()
+        return NSData(bytes: value).base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+    }
+
+    private static func createSanJoseAuthCommand(url:NSURL, description:String) -> String {
         var command:String = url.absoluteString
 
-        if let index:String.CharacterView.Index = description.characters.indexOf("?") {
-            let query:String = description.substringFromIndex(index.advancedBy(1))
-            let challenge:String = String(format: "%08x", random())
-            let dictionary:[String:AnyObject] = NSURL(string: "http://localhost?" + query)!.dictionaryFromQuery()
-
-            var response:String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
-
-            if let opaque:String = dictionary["opaque"] as? String {
-                command += "&opaque=\(opaque)"
-                response += opaque
-            } else if let challenge:String = dictionary["challenge"] as? String {
-                response += challenge
-            }
-
-            response = MD5.base64("\(response)\(challenge)")
-            command += "&challenge=\(challenge)&response=\(response)"
+        guard let index:String.CharacterView.Index = description.characters.indexOf("?") else {
+            return command
         }
+
+        let query:String = description.substringFromIndex(index.advancedBy(1))
+        let challenge:String = String(format: "%08x", random())
+        let dictionary:[String:AnyObject] = NSURL(string: "http://localhost?" + query)!.dictionaryFromQuery()
+
+        var response:String = md5("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
+        if let opaque:String = dictionary["opaque"] as? String {
+            command += "&opaque=\(opaque)"
+            response += opaque
+        } else if let challenge:String = dictionary["challenge"] as? String {
+            response += challenge
+        }
+
+        response = md5("\(response)\(challenge)")
+        command += "&challenge=\(challenge)&response=\(response)"
 
         return command
     }
