@@ -19,6 +19,7 @@ Pod::Spec.new do |s|
 
   s.source_files = "lf", "lf/{Core,Codec,ISO,RTMP,Media,Util}/**/*.swift"
   s.dependency 'XCGLogger', '~> 3.2'
+  s.dependency 'CryptoSwift'
 
 end
 

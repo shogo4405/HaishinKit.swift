@@ -18,7 +18,7 @@ enum NALUType: UInt8 {
     case EOSTREAM = 11
     case FILL     = 12
 
-    public var isVCL:Bool {
+    var isVCL:Bool {
         switch self {
         case SLICE:
             return true
