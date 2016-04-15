@@ -25,7 +25,15 @@
 		295FEFAE1C3823BE00271E90 /* AMF0Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFAB1C3823BE00271E90 /* AMF0Serializer.swift */; };
 		295FEFB01C3823BE00271E90 /* RTMPRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFAD1C3823BE00271E90 /* RTMPRecorder.swift */; };
 		295FEFB71C3823E200271E90 /* MP4AudioSpecificConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFB51C3823E200271E90 /* MP4AudioSpecificConfig.swift */; };
-		295FEFB81C3823E200271E90 /* MP4File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295FEFB61C3823E200271E90 /* MP4File.swift */; };
+		2960CD381CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = 2960CD371CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 */; };
+		2960CD3A1CC0818000B4E877 /* SampleVideo_360x240_5mb in Resources */ = {isa = PBXBuildFile; fileRef = 2960CD391CC0818000B4E877 /* SampleVideo_360x240_5mb */; };
+		2960CD3C1CC0821400B4E877 /* TSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD3B1CC0821400B4E877 /* TSTests.swift */; };
+		2960CD3D1CC08CC500B4E877 /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2960CD351CC0752B00B4E877 /* SampleVideo_360x240_5mb.mp4 */; };
+		2960CD421CC0C82400B4E877 /* HTTPService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD411CC0C82400B4E877 /* HTTPService.swift */; };
+		2960CD461CC0D37400B4E877 /* ProgramSpecific.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD451CC0D37400B4E877 /* ProgramSpecific.swift */; };
+		2960CD481CC1F48F00B4E877 /* PacketizedElementaryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD471CC1F48F00B4E877 /* PacketizedElementaryStream.swift */; };
+		2960CD4A1CC21F3300B4E877 /* PacketizedElementaryStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */; };
+		2960CD511CC259FC00B4E877 /* ProgramSpecificTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */; };
 		298E1FB01CA01D5700B1030B /* ASStruct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298E1FAF1CA01D5700B1030B /* ASStruct.swift */; };
 		298E1FB41CA01FF800B1030B /* AMF3Serializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298E1FB31CA01FF800B1030B /* AMF3Serializer.swift */; };
 		2996B3E71C8C8D7A00CE641B /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2996B3E61C8C8D7A00CE641B /* AudioIOComponent.swift */; };
@@ -37,7 +45,6 @@
 		29BDE0C21C65BD5000D6A768 /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C01C65BD5000D6A768 /* AVMixer.swift */; };
 		29BDE0C31C65BD5000D6A768 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */; };
 		29C066611CB651F900D1060C /* TransportStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C066601CB651F900D1060C /* TransportStream.swift */; };
-		29C066631CB6958900D1060C /* ElementaryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C066621CB6958900D1060C /* ElementaryStream.swift */; };
 		29C0E0611C2EB02E009DD8E8 /* RTMPChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0E05A1C2EB02E009DD8E8 /* RTMPChunk.swift */; };
 		29C0E0621C2EB02E009DD8E8 /* RTMPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0E05B1C2EB02E009DD8E8 /* RTMPConnection.swift */; };
 		29C0E0631C2EB02E009DD8E8 /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C0E05C1C2EB02E009DD8E8 /* RTMPMessage.swift */; };
@@ -99,7 +106,15 @@
 		295FEFAB1C3823BE00271E90 /* AMF0Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AMF0Serializer.swift; path = RTMP/AMF0Serializer.swift; sourceTree = "<group>"; };
 		295FEFAD1C3823BE00271E90 /* RTMPRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPRecorder.swift; path = RTMP/RTMPRecorder.swift; sourceTree = "<group>"; };
 		295FEFB51C3823E200271E90 /* MP4AudioSpecificConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4AudioSpecificConfig.swift; path = ISO/MP4AudioSpecificConfig.swift; sourceTree = "<group>"; };
-		295FEFB61C3823E200271E90 /* MP4File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4File.swift; path = ISO/MP4File.swift; sourceTree = "<group>"; };
+		2960CD351CC0752B00B4E877 /* SampleVideo_360x240_5mb.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb.mp4; sourceTree = "<group>"; };
+		2960CD371CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SampleVideo_360x240_5mb.m3u8; sourceTree = "<group>"; };
+		2960CD391CC0818000B4E877 /* SampleVideo_360x240_5mb */ = {isa = PBXFileReference; lastKnownFileType = folder; path = SampleVideo_360x240_5mb; sourceTree = "<group>"; };
+		2960CD3B1CC0821400B4E877 /* TSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSTests.swift; sourceTree = "<group>"; };
+		2960CD411CC0C82400B4E877 /* HTTPService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPService.swift; path = HTTP/HTTPService.swift; sourceTree = "<group>"; };
+		2960CD451CC0D37400B4E877 /* ProgramSpecific.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ProgramSpecific.swift; path = ISO/ProgramSpecific.swift; sourceTree = "<group>"; };
+		2960CD471CC1F48F00B4E877 /* PacketizedElementaryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PacketizedElementaryStream.swift; path = ISO/PacketizedElementaryStream.swift; sourceTree = "<group>"; };
+		2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PacketizedElementaryStreamTests.swift; sourceTree = "<group>"; };
+		2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramSpecificTests.swift; sourceTree = "<group>"; };
 		298E1FAF1CA01D5700B1030B /* ASStruct.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASStruct.swift; path = RTMP/ASStruct.swift; sourceTree = "<group>"; };
 		298E1FB31CA01FF800B1030B /* AMF3Serializer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AMF3Serializer.swift; path = RTMP/AMF3Serializer.swift; sourceTree = "<group>"; };
 		2996B3E61C8C8D7A00CE641B /* AudioIOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioIOComponent.swift; path = Media/AudioIOComponent.swift; sourceTree = "<group>"; };
@@ -111,7 +126,6 @@
 		29BDE0C01C65BD5000D6A768 /* AVMixer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVMixer.swift; path = Media/AVMixer.swift; sourceTree = "<group>"; };
 		29BDE0C11C65BD5000D6A768 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScreenCaptureSession.swift; path = Media/ScreenCaptureSession.swift; sourceTree = "<group>"; };
 		29C066601CB651F900D1060C /* TransportStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TransportStream.swift; path = ISO/TransportStream.swift; sourceTree = "<group>"; };
-		29C066621CB6958900D1060C /* ElementaryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ElementaryStream.swift; path = ISO/ElementaryStream.swift; sourceTree = "<group>"; };
 		29C0E05A1C2EB02E009DD8E8 /* RTMPChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPChunk.swift; path = RTMP/RTMPChunk.swift; sourceTree = "<group>"; };
 		29C0E05B1C2EB02E009DD8E8 /* RTMPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPConnection.swift; path = RTMP/RTMPConnection.swift; sourceTree = "<group>"; };
 		29C0E05C1C2EB02E009DD8E8 /* RTMPMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPMessage.swift; path = RTMP/RTMPMessage.swift; sourceTree = "<group>"; };
@@ -219,6 +233,7 @@
 				2945CBC21B4BE66000104112 /* lf.h */,
 				290907CD1C3961AD00F2E80C /* Codec */,
 				290DDA321C88642100EA5BEB /* Core */,
+				2960CD3E1CC0C7C900B4E877 /* HTTP */,
 				295FEFA91C38236900271E90 /* ISO */,
 				29BDE0BD1C65BC2400D6A768 /* Media */,
 				29C0E0591C2EB00A009DD8E8 /* RTMP */,
@@ -239,14 +254,12 @@
 		2945CBCC1B4BE66000104112 /* lfTests */ = {
 			isa = PBXGroup;
 			children = (
-				29C5620C1C78D73F00D4E51B /* AMF0SerializerTests.swift */,
-				29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */,
-				29C5620A1C78D71700D4E51B /* ASStructTests.swift */,
-				29B018A51C9E3648005F995E /* ByteArrayTests.swift */,
-				29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */,
-				29E860391C2EFC0E00C595FB /* Foundation+ExtensionTests.swift */,
+				2960CD4D1CC21F7700B4E877 /* Core */,
+				2960CD341CC074EE00B4E877 /* http://www.sample-videos.com/ */,
+				2960CD4B1CC21F4700B4E877 /* ISO */,
+				2960CD4C1CC21F5E00B4E877 /* RTMP */,
 				2945CBCD1B4BE66000104112 /* Supporting Files */,
-				29B018A71C9E57FF005F995E /* SwiftCore+ExtensionTests.swift */,
+				2960CD4E1CC21F8B00B4E877 /* Util */,
 			);
 			path = lfTests;
 			sourceTree = "<group>";
@@ -262,13 +275,69 @@
 		295FEFA91C38236900271E90 /* ISO */ = {
 			isa = PBXGroup;
 			children = (
-				29C066621CB6958900D1060C /* ElementaryStream.swift */,
 				290907D51C3961F700F2E80C /* H264+AVC.swift */,
 				295FEFB51C3823E200271E90 /* MP4AudioSpecificConfig.swift */,
-				295FEFB61C3823E200271E90 /* MP4File.swift */,
+				2960CD471CC1F48F00B4E877 /* PacketizedElementaryStream.swift */,
+				2960CD451CC0D37400B4E877 /* ProgramSpecific.swift */,
 				29C066601CB651F900D1060C /* TransportStream.swift */,
 			);
 			name = ISO;
+			sourceTree = "<group>";
+		};
+		2960CD341CC074EE00B4E877 /* http://www.sample-videos.com/ */ = {
+			isa = PBXGroup;
+			children = (
+				2960CD391CC0818000B4E877 /* SampleVideo_360x240_5mb */,
+				2960CD371CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 */,
+				2960CD351CC0752B00B4E877 /* SampleVideo_360x240_5mb.mp4 */,
+			);
+			name = "http://www.sample-videos.com/";
+			sourceTree = "<group>";
+		};
+		2960CD3E1CC0C7C900B4E877 /* HTTP */ = {
+			isa = PBXGroup;
+			children = (
+				2960CD411CC0C82400B4E877 /* HTTPService.swift */,
+			);
+			name = HTTP;
+			sourceTree = "<group>";
+		};
+		2960CD4B1CC21F4700B4E877 /* ISO */ = {
+			isa = PBXGroup;
+			children = (
+				2960CD3B1CC0821400B4E877 /* TSTests.swift */,
+				2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */,
+				2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */,
+			);
+			name = ISO;
+			sourceTree = "<group>";
+		};
+		2960CD4C1CC21F5E00B4E877 /* RTMP */ = {
+			isa = PBXGroup;
+			children = (
+				29DD18371B6E77EF00B9E10A /* AMF3SerializerTests.swift */,
+				29C5620A1C78D71700D4E51B /* ASStructTests.swift */,
+				29C5620C1C78D73F00D4E51B /* AMF0SerializerTests.swift */,
+			);
+			name = RTMP;
+			sourceTree = "<group>";
+		};
+		2960CD4D1CC21F7700B4E877 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				29E860391C2EFC0E00C595FB /* Foundation+ExtensionTests.swift */,
+				29B018A71C9E57FF005F995E /* SwiftCore+ExtensionTests.swift */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		2960CD4E1CC21F8B00B4E877 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				29B018A51C9E3648005F995E /* ByteArrayTests.swift */,
+				29B2833F1B67AC3800E7CE5B /* EventDispatcherTests.swift */,
+			);
+			name = Util;
 			sourceTree = "<group>";
 		};
 		29BDE0BD1C65BC2400D6A768 /* Media */ = {
@@ -415,6 +484,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2960CD3D1CC08CC500B4E877 /* SampleVideo_360x240_5mb.mp4 in Resources */,
+				2960CD381CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 in Resources */,
+				2960CD3A1CC0818000B4E877 /* SampleVideo_360x240_5mb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -471,7 +543,7 @@
 				292A168C1CA17B2E00B02325 /* AudioSessionUtil.swift in Sources */,
 				290907D31C3961E500F2E80C /* Codec.swift in Sources */,
 				299E18851C7A4440000AB4CC /* RTMPAudioPlayback.swift in Sources */,
-				29C066631CB6958900D1060C /* ElementaryStream.swift in Sources */,
+				2960CD481CC1F48F00B4E877 /* PacketizedElementaryStream.swift in Sources */,
 				290DDA391C8864A900EA5BEB /* SiwftCore+Extension.swift in Sources */,
 				2996B3E71C8C8D7A00CE641B /* AudioIOComponent.swift in Sources */,
 				298E1FB41CA01FF800B1030B /* AMF3Serializer.swift in Sources */,
@@ -486,14 +558,15 @@
 				290DDA381C8864A900EA5BEB /* Protocol.swift in Sources */,
 				290DDA351C88645200EA5BEB /* Constant.swift in Sources */,
 				29BDE0BF1C65BD4300D6A768 /* EventDispatcher.swift in Sources */,
-				295FEFB81C3823E200271E90 /* MP4File.swift in Sources */,
 				298E1FB01CA01D5700B1030B /* ASStruct.swift in Sources */,
 				29BDE0C31C65BD5000D6A768 /* ScreenCaptureSession.swift in Sources */,
 				290907D41C3961E500F2E80C /* AVCEncoder.swift in Sources */,
 				29C0E0671C2EB02E009DD8E8 /* RTMPStream.swift in Sources */,
+				2960CD421CC0C82400B4E877 /* HTTPService.swift in Sources */,
 				29C066611CB651F900D1060C /* TransportStream.swift in Sources */,
 				29EA5FDB1C8C5178001CB36B /* VideoIOComponent.swift in Sources */,
 				29FA89731C68CA9C0032B242 /* AudioStreamPlayback.swift in Sources */,
+				2960CD461CC0D37400B4E877 /* ProgramSpecific.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -507,7 +580,10 @@
 				29C5620D1C78D73F00D4E51B /* AMF0SerializerTests.swift in Sources */,
 				29B018A61C9E3648005F995E /* ByteArrayTests.swift in Sources */,
 				29E8603A1C2EFC0E00C595FB /* Foundation+ExtensionTests.swift in Sources */,
+				2960CD4A1CC21F3300B4E877 /* PacketizedElementaryStreamTests.swift in Sources */,
 				29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */,
+				2960CD3C1CC0821400B4E877 /* TSTests.swift in Sources */,
+				2960CD511CC259FC00B4E877 /* ProgramSpecificTests.swift in Sources */,
 				29B283401B67AC3800E7CE5B /* EventDispatcherTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -136,20 +136,22 @@ extension AVCConfigurationRecord: BytesConvertible {
     var bytes:[UInt8] {
         get {
             let buffer:ByteArray = ByteArray()
-            buffer.writeUInt8(configurationVersion)
-            buffer.writeUInt8(AVCProfileIndication)
-            buffer.writeUInt8(profileCompatibility)
-            buffer.writeUInt8(AVCLevelIndication)
-            buffer.writeUInt8(lengthSizeMinusOneWithReserved)
-            buffer.writeUInt8(numOfSequenceParameterSetsWithReserved)
+                .writeUInt8(configurationVersion)
+                .writeUInt8(AVCProfileIndication)
+                .writeUInt8(profileCompatibility)
+                .writeUInt8(AVCLevelIndication)
+                .writeUInt8(lengthSizeMinusOneWithReserved)
+                .writeUInt8(numOfSequenceParameterSetsWithReserved)
             for i in 0..<sequenceParameterSets.count {
-                buffer.writeUInt16(UInt16(sequenceParameterSets[i].count))
-                buffer.writeBytes(sequenceParameterSets[i])
+                buffer
+                    .writeUInt16(UInt16(sequenceParameterSets[i].count))
+                    .writeBytes(sequenceParameterSets[i])
             }
             buffer.writeUInt8(UInt8(pictureParameterSets.count))
             for i in 0..<pictureParameterSets.count {
-                buffer.writeUInt16(UInt16(pictureParameterSets[i].count))
-                buffer.writeBytes(pictureParameterSets[i])
+                buffer
+                    .writeUInt16(UInt16(pictureParameterSets[i].count))
+                    .writeBytes(pictureParameterSets[i])
             }
             return buffer.bytes
         }

@@ -9,3 +9,9 @@ protocol Runnable: class {
     func startRunning()
     func stopRunning()
 }
+
+protocol Iterator {
+    associatedtype T
+    func hasNext() -> Bool
+    func next() -> T?
+}
