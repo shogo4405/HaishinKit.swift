@@ -260,18 +260,41 @@ extension TSAdaptationExtensionField: CustomStringConvertible {
 
 // MARK: - TSReaderDelegate
 protocol TSReaderDelegate: class {
-    
+    func didReadPacketizedElementaryStream(data:ElementaryStreamSpecificData, PES:PacketizedElementaryStream)
 }
 
 // MARK: - TSReader
 class TSReader {
+    weak var delegate:TSReaderDelegate?
+
     private var eof:UInt64 = 0
     private var cursor:Int = 0
     private var fileHandle:NSFileHandle?
 
-    private(set) var PAT:ProgramAssociationSpecific?
-    private(set) var PMT:[UInt16: ProgramMapSpecific] = [:]
+    private(set) var PAT:ProgramAssociationSpecific? {
+        didSet {
+            guard let PAT:ProgramAssociationSpecific = PAT else {
+                return
+            }
+            for (channel, PID) in PAT.programs {
+                dictionaryForPrograms[PID] = channel
+            }
+        }
+    }
+    private(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
+        didSet {
+            for (_, pmt) in PMT {
+                for data in pmt.elementaryStreamSpecificData {
+                    dictionaryForESSpecData[data.elementaryPID] = data
+                }
+            }
+        }
+    }
     private(set) var numberOfPackets:Int = 0
+
+    private var dictionaryForPrograms:[UInt16: UInt16] = [:]
+    private var dictionaryForESSpecData:[UInt16: ElementaryStreamSpecificData] = [:]
+    private var packetizedElementaryStreams:[UInt16: PacketizedElementaryStream] = [:]
 
     init(url:NSURL) throws {
         fileHandle = try NSFileHandle(forReadingFromURL: url)
@@ -283,17 +306,32 @@ class TSReader {
             guard let packet:TSPacket = next() else {
                 continue
             }
-            switch packet.PID {
-            case 0x0000:
-                PAT = ProgramAssociationSpecific(bytes: packet.payload)
-            default:
-                if let channel:UInt16 = PAT?.programs[packet.PID] {
-                    PMT[channel] = ProgramMapSpecific(bytes: packet.payload)
-                }
-                break
-            }
             numberOfPackets += 1
+
+            if (packet.PID == 0x0000) {
+                PAT = ProgramAssociationSpecific(bytes: packet.payload)
+                continue
+            }
+
+            if let channel:UInt16 = dictionaryForPrograms[packet.PID] {
+                PMT[channel] = ProgramMapSpecific(bytes: packet.payload)
+            }
+
+            if let data:ElementaryStreamSpecificData = dictionaryForESSpecData[packet.PID] {
+                readPacketizedElementaryStream(data, packet: packet)
+            }
         }
+    }
+
+    func readPacketizedElementaryStream(data:ElementaryStreamSpecificData, packet: TSPacket) {
+        if (packet.payloadUnitStartIndicator) {
+            if let PES:PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
+                delegate?.didReadPacketizedElementaryStream(data, PES: PES)
+            }
+            packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(bytes: packet.payload)
+            return
+        }
+        packetizedElementaryStreams[packet.PID]?.append(packet.payload)
     }
 
     func close() {
