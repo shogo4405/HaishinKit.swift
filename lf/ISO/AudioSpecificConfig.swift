@@ -3,22 +3,22 @@ import AVFoundation
 
 // @see http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
 // @see http://wiki.multimedia.cx/?title=Understanding_AAC
-public struct AudioSpecificConfig {
+struct AudioSpecificConfig {
     static let ADTSHeaderSize:Int = 7
 
-    public var type:AudioObjectType
-    public var frequency:SamplingFrequency
-    public var channel:ChannelConfiguration
-    public var frameLengthFlag:Bool = false
+    var type:AudioObjectType
+    var frequency:SamplingFrequency
+    var channel:ChannelConfiguration
+    var frameLengthFlag:Bool = false
 
-    public var bytes:[UInt8] {
+    var bytes:[UInt8] {
         var bytes:[UInt8] = [UInt8](count: 2, repeatedValue: 0)
         bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1 & 0x3)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
     }
 
-    public init?(bytes:[UInt8]) {
+    init?(bytes:[UInt8]) {
         guard let
             type:AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
             frequency:SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
@@ -30,20 +30,20 @@ public struct AudioSpecificConfig {
         self.channel = channel
     }
 
-    public init(type:AudioObjectType, frequency:SamplingFrequency, channel:ChannelConfiguration) {
+    init(type:AudioObjectType, frequency:SamplingFrequency, channel:ChannelConfiguration) {
         self.type = type
         self.frequency = frequency
         self.channel = channel
     }
 
-    public init(formatDescription: CMFormatDescriptionRef) {
+    init(formatDescription: CMFormatDescriptionRef) {
         let asbd:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription).memory
         type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(asbd.mFormatFlags))!)
         frequency = SamplingFrequency(sampleRate: asbd.mSampleRate)
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
     }
 
-    public func adts(length:Int) -> [UInt8] {
+    func adts(length:Int) -> [UInt8] {
         let size:Int = 7
         let fullSize:Int = size + length
         var adts:[UInt8] = [UInt8](count: size, repeatedValue: 0x00)
@@ -57,7 +57,7 @@ public struct AudioSpecificConfig {
         return adts
     }
 
-    public func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {
+    func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {
         var asbd:AudioStreamBasicDescription = AudioStreamBasicDescription()
         asbd.mSampleRate = frequency.sampleRate
         asbd.mFormatID = kAudioFormatMPEG4AAC
@@ -74,13 +74,13 @@ public struct AudioSpecificConfig {
 
 // MARK: CustomStringConvertible
 extension AudioSpecificConfig: CustomStringConvertible {
-    public var description:String {
+    var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
 // MARK: - AudioObjectType
-public enum AudioObjectType: UInt8 {
+enum AudioObjectType: UInt8 {
     case Unknown = 0
     case AAC_Main = 1
     case AAC_LC = 2
@@ -92,7 +92,7 @@ public enum AudioObjectType: UInt8 {
     case CELP = 8
     case HXVC = 9
 
-    public init (objectID: MPEG4ObjectID) {
+    init (objectID: MPEG4ObjectID) {
         switch objectID {
         case .AAC_Main:
             self = .AAC_Main
@@ -117,7 +117,7 @@ public enum AudioObjectType: UInt8 {
 }
 
 // MARK: - SamplingFrequency
-public enum SamplingFrequency: UInt8 {
+enum SamplingFrequency: UInt8 {
     case hz96000 = 0
     case hz88200 = 1
     case hz64000 = 2
@@ -163,7 +163,7 @@ public enum SamplingFrequency: UInt8 {
         }
     }
 
-    public init(sampleRate: Float64) {
+    init(sampleRate: Float64) {
         switch Int(sampleRate) {
         case 96000:
             self = .hz96000
@@ -198,7 +198,7 @@ public enum SamplingFrequency: UInt8 {
 }
 
 // MARK: - ChannelConfiguration
-public enum ChannelConfiguration: UInt8 {
+enum ChannelConfiguration: UInt8 {
     case definedInAOTSpecificConfig = 0
     case frontCenter = 1
     case frontLeftAndFrontRight = 2

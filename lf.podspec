@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/shogo4405/lf.swift.git", :tag => "0.1.11" }
 
-  s.source_files = "lf", "lf/{Core,Codec,ISO,RTMP,Media,Util}/**/*.swift"
+  s.source_files = "lf", "lf/{Core,Codec,HTTP,ISO,RTMP,Media,Util}/**/*.swift"
   s.dependency 'XCGLogger', '~> 3.2'
   s.dependency 'CryptoSwift'
 

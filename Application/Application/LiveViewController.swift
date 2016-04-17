@@ -1,6 +1,7 @@
-import lf
 import UIKit
 import AVFoundation
+
+@testable import lf
 
 struct Preference {
     static let defaultInstance:Preference = Preference()
@@ -14,6 +15,7 @@ final class LiveViewController: UIViewController {
     var rtmpStream:RTMPStream!
     var sharedObject:RTMPSharedObject!
     var currentEffect:VisualEffect? = nil
+    var httpService:HTTPService!
 
     let touchView: UIView! = UIView()
 
@@ -71,6 +73,9 @@ final class LiveViewController: UIViewController {
             UIBarButtonItem(title: "Preference", style: .Plain, target: self, action: "showPreference:")
         sharedObject = RTMPSharedObject.getRemote("test", remotePath: Preference.defaultInstance.uri!, persistence: false)
         */
+
+        httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
+        httpService.startRunning()
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),

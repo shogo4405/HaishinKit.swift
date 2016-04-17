@@ -1,4 +1,5 @@
 import Foundation
+import AVFoundation
 
 /*
  - seealso: https://en.wikipedia.org/wiki/Packetized_elementary_stream
@@ -12,15 +13,25 @@ protocol PESPacketHeader {
     var data:[UInt8] { get set }
 }
 
+// MARK: - PESPTSDTSIndicator
+enum PESPTSDTSIndicator:UInt8 {
+    case None        = 0
+    case OnlyPTS     = 1
+    case Forbidden   = 2
+    case BothPresent = 3
+}
+
 // MARK: - PESOptinalHeader
 struct PESOptionalHeader {
-    var markerBits:UInt8 = 0
+    static let defaultMarkerBits:UInt8 = 2
+
+    var markerBits:UInt8 = PESOptionalHeader.defaultMarkerBits
     var scramblingControl:UInt8 = 0
     var priority:Bool = false
     var dataAlignmentIndicator:Bool = false
     var copyright:Bool = false
     var originalOrCopy:Bool = false
-    var PTSDTSIndicator:UInt8 = 0
+    var PTSDTSIndicator:UInt8 = PESPTSDTSIndicator.None.rawValue
     var ESCRFlag:Bool = false
     var ESRateFlag:Bool = false
     var DSMTrickModeFlag:Bool = false
@@ -109,6 +120,37 @@ struct PacketizedElementaryStream: PESPacketHeader {
         if (startCode != PacketizedElementaryStream.startCode) {
             return nil
         }
+    }
+
+    init?(sampleBuffer: CMSampleBuffer) {
+        data = sampleBuffer.bytes
+        packetLength = UInt16(data.count)
+    }
+
+    func arrayOfPackets(PID:UInt16) -> [TSPacket] {
+        let position:Int = 0
+        var packets:[TSPacket] = []
+        var continuityCounter:UInt8 = 1
+        let r:Int = (data.count - position) % 184
+        for index in bytes.startIndex.advancedBy(position).stride(to: data.endIndex.advancedBy(-r), by: data.count) {
+            var packet:TSPacket = TSPacket()
+            packet.PID = PID
+            packet.payloadFlag = true
+            packet.continuityCounter = continuityCounter
+            packet.payload = Array(data[index..<index.advancedBy(184)])
+            packets.append(packet)
+            continuityCounter += 1
+        }
+        if (0 < r) {
+            var packet:TSPacket = TSPacket()
+            packet.PID = PID
+            packet.payloadFlag = true
+            packet.payload = Array(data[data.endIndex - r..<data.endIndex])
+            packet.adaptationFieldFlag = true
+            packet.adaptationField = TSAdaptationField()
+            packets.append(packet)
+        }
+        return packets
     }
 
     mutating func append(bytes:[UInt8]) -> Int {
