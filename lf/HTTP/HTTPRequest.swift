@@ -4,11 +4,17 @@ import Foundation
 struct HTTPRequest {
     static let separator:UInt8 = 0x0a
 
-    var uri:String?
-    var method:String?
-    var version:String?
-
+    var uri:String = "/"
+    var method:HTTPMethod = .UNKOWN
+    var version:HTTPVersion = .Unkown
     var headerFields:[String: String] = [:]
+
+    init?(bytes:[UInt8]) {
+        self.bytes = bytes
+        if (method == .UNKOWN || version == .Unkown) {
+            return nil
+        }
+    }
 }
 
 // MARK: CustomStringConvertible
@@ -40,9 +46,9 @@ extension HTTPRequest: BytesConvertible {
             }
 
             let first:[String] = lines.first!.componentsSeparatedByString(" ")
-            method = first[0]
+            method = HTTPMethod(rawValue: first[0]) ?? .UNKOWN
             uri = first[1]
-            version = first[2]
+            version = HTTPVersion(rawValue: first[2]) ?? .Unkown
 
             for i in 1..<lines.count {
                 if (lines[i].isEmpty) {

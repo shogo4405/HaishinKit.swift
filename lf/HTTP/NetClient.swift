@@ -11,11 +11,11 @@ import Foundation
 class NetClient: NSObject {
     static let defaultBufferSize:Int = 8192
 
+    var inputBuffer:[UInt8] = []
     weak var delegate:NetClientDelegate?
     private(set) var service:NSNetService?
-    private(set) var inputBuffer:[UInt8] = []
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.NetServiceClient.lock", DISPATCH_QUEUE_SERIAL
+        "com.github.shogo4405.lf.NetClient.lock", DISPATCH_QUEUE_SERIAL
     )
 
     private var inputStream:NSInputStream!
@@ -41,8 +41,12 @@ class NetClient: NSObject {
             var total:Int = 0
             let buffer:UnsafePointer<UInt8> = UnsafePointer<UInt8>(bytes)
             while total < bytes.count {
-                let length:Int? = self.outputStream!.write(buffer + total, maxLength: bytes.count - total)
-                total += length!
+                let length:Int? = self.outputStream?.write(buffer + total, maxLength: bytes.count - total)
+                guard let size:Int = length where 0 < size else {
+                    self.disconnect()
+                    return
+                }
+                total += size
             }
         }
     }
@@ -58,12 +62,14 @@ class NetClient: NSObject {
     }
 
     func disconnect() {
-        inputStream.close()
-        inputStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
-        inputStream.delegate = nil
-        outputStream.close()
-        outputStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
-        outputStream.delegate = nil
+        dispatch_async(lockQueue) {
+            self.inputStream.close()
+            self.inputStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+            self.inputStream.delegate = nil
+            self.outputStream.close()
+            self.outputStream.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSDefaultRunLoopMode)
+            self.outputStream.delegate = nil
+        }
     }
 
     private func doInputProcess() {
