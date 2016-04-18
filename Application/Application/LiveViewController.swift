@@ -16,6 +16,7 @@ final class LiveViewController: UIViewController {
     var sharedObject:RTMPSharedObject!
     var currentEffect:VisualEffect? = nil
     var httpService:HTTPService!
+    var httpStream:HTTPStream!
 
     let touchView: UIView! = UIView()
 
@@ -73,9 +74,18 @@ final class LiveViewController: UIViewController {
             UIBarButtonItem(title: "Preference", style: .Plain, target: self, action: "showPreference:")
         sharedObject = RTMPSharedObject.getRemote("test", remotePath: Preference.defaultInstance.uri!, persistence: false)
         */
+        
+        /*
+        httpStream = HTTPStream()
+        httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+        httpStream.publish("hello")
+        */
 
+        /*
         httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
         httpService.startRunning()
+        httpService.addHTTPStream(httpStream)
+        */
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),

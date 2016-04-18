@@ -1,7 +1,6 @@
 import Foundation
 
 extension NSURL {
-    
     var absoluteWithoutAuthenticationString:String {
         var target:String = ""
         if let user:String = user {
@@ -15,14 +14,14 @@ extension NSURL {
         }
         return absoluteString.stringByReplacingOccurrencesOfString(target, withString: "")
     }
-    
+
     var absoluteWithoutQueryString:String {
         guard let query:String = self.query else {
             return self.absoluteString
         }
         return absoluteString.stringByReplacingOccurrencesOfString("?" + query, withString: "")
     }
-    
+
     func dictionaryFromQuery() -> [String: AnyObject] {
         var result:[String: AnyObject] = [:]
         guard
@@ -38,4 +37,3 @@ extension NSURL {
         return result
     }
 }
-

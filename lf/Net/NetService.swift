@@ -7,6 +7,10 @@ class NetService: NSObject {
         return nil
     }
 
+    let lockQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.NetService.lock", DISPATCH_QUEUE_SERIAL
+    )
+
     private(set) var domain:String
     private(set) var name:String
     private(set) var port:Int32
@@ -14,10 +18,7 @@ class NetService: NSObject {
     private(set) var running:Bool = false
     private(set) var clients:[NetClient] = []
     private(set) var service:NSNetService!
-
-    private let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.NetService.lock", DISPATCH_QUEUE_SERIAL
-    )
+    private var runloop:NSRunLoop!
 
     init(domain:String, type:String, name:String, port:Int32) {
         self.domain = domain
@@ -27,18 +28,30 @@ class NetService: NSObject {
     }
 
     func willStartRunning() {
-        service = NSNetService(domain: domain, type: type, name: name, port: port)
-        service.delegate = self
-        service.setTXTRecordData(recordData)
-        service.scheduleInRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
-        service.publishWithOptions(NSNetServiceOptions.ListenForConnections)
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+            self.initService()
+        })
     }
 
     func willStopRunning() {
+        if let runloop:NSRunLoop = runloop {
+            service.removeFromRunLoop(runloop, forMode: NSRunLoopCommonModes)
+            CFRunLoopStop(runloop.getCFRunLoop())
+        }
         service.stop()
         service.delegate = nil
-        service.removeFromRunLoop(NSRunLoop.currentRunLoop(), forMode: NSRunLoopCommonModes)
         service = nil
+        runloop = nil
+    }
+
+    private func initService() {
+        runloop = NSRunLoop.currentRunLoop()
+        service = NSNetService(domain: domain, type: type, name: name, port: port)
+        service.delegate = self
+        service.setTXTRecordData(recordData)
+        service.scheduleInRunLoop(runloop, forMode: NSRunLoopCommonModes)
+        service.publishWithOptions(NSNetServiceOptions.ListenForConnections)
+        runloop.run()
     }
 }
 
@@ -58,13 +71,12 @@ extension NetService: NSNetServiceDelegate {
 
 // MARK: NetClientDelegate
 extension NetService: NetClientDelegate {
-    
 }
 
 // MARK: Runnbale 
 extension NetService: Runnable {
     final func startRunning() {
-        dispatch_sync(lockQueue) {
+        dispatch_async(lockQueue) {
             if (self.running) {
                 return
             }
@@ -74,12 +86,11 @@ extension NetService: Runnable {
     }
 
     final func stopRunning() {
-        dispatch_sync(lockQueue) {
+        dispatch_async(lockQueue) {
             if (!self.running) {
                 return
             }
             self.willStopRunning()
-            self.clients.removeAll(keepCapacity: true)
             self.running = false
         }
     }

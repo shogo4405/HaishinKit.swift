@@ -167,8 +167,10 @@ extension HTTPStatusCode: CustomStringConvertible {
 class HTTPService: NetService {
     static let type:String = "_http._tcp"
     static let defaultPort:Int = 8080
-    static let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body></body></html>"
-    private(set) var streams:[String: HTTPStream] = [:]
+    static let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
+
+    var document:String = HTTPService.defaultDocument
+    private(set) var streams:[HTTPStream] = []
 
     func client(inputBuffer client:NetClient) {
         guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
@@ -183,22 +185,57 @@ class HTTPService: NetService {
         }
     }
 
+    func addHTTPStream(stream:HTTPStream) {
+        for i in 0..<streams.count {
+            if (stream.name == streams[i].name) {
+                return
+            }
+        }
+        streams.append(stream)
+    }
+
+    func removeHTTPStream(stream:HTTPStream) {
+        for i in 0..<streams.count {
+            if (stream.name == streams[i].name) {
+                streams.removeAtIndex(i)
+                return
+            }
+        }
+    }
+
     func get(request:HTTPRequest, client:NetClient) {
+        logger.verbose("\(request)")
+        var response:HTTPResponse = HTTPResponse()
+        response.headerFields["Connection"] = "close"
+
         switch request.uri {
         case "/":
-            var response:HTTPResponse = HTTPResponse()
             response.headerFields["Content-Type"] = "text/html"
-            response.headerFields["Connection"] = "close"
-            response.body = [UInt8](HTTPService.defaultDocument.utf8)
-            client.doWrite(response.bytes)
-            client.disconnect()
+            response.body = [UInt8](document.utf8)
+            client.doOutput(response.bytes)
+            client.close(true)
         default:
-            var response:HTTPResponse = HTTPResponse()
+            for stream in streams {
+                guard let (mime, resource) = stream.getResource(request.uri) else {
+                    break
+                }
+                logger.info(resource)
+                response.headerFields["Content-Type"] = mime.rawValue
+                switch mime {
+                case .VideoMP2T:
+                    client.doOutput(response.bytes)
+                    client.doOutputFromURL(NSURL(fileURLWithPath: resource), length: 8 * 1024)
+                default:
+                    response.body = [UInt8](resource.utf8)
+                    client.doOutput(response.bytes)
+                }
+                client.close(true)
+                return
+            }
             response.statusCode = .NotFound
             response.headerFields["Connection"] = "close"
-            client.doWrite(response.bytes)
-            client.disconnect()
-            break
+            client.doOutput(response.bytes)
+            client.close(true)
         }
     }
 }

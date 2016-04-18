@@ -56,7 +56,7 @@ extension TSPacket: BytesConvertible {
             bytes[1] |= (payloadUnitStartIndicator ? 1 : 0) << 6
             bytes[1] |= (transportPriority ? 1 : 0) << 5
             bytes[1] |= UInt8(PID >> 8)
-            bytes[2] |= UInt8(PID)
+            bytes[2] |= UInt8(PID & 0x00FF)
             bytes[3] |= scramblingControl << 6
             bytes[3] |= (adaptationFieldFlag ? 1 : 0) << 5
             bytes[3] |= (payloadFlag ? 1 : 0) << 4
