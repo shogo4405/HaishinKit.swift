@@ -223,6 +223,9 @@ class HTTPService: NetService {
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
                 case .VideoMP2T:
+                    if let info = try? NSFileManager.defaultManager().attributesOfItemAtPath(resource) {
+                        response.headerFields["Content-Length"] = String(info["NSFileSize"]!)
+                    }
                     client.doOutput(response.bytes)
                     client.doOutputFromURL(NSURL(fileURLWithPath: resource), length: 8 * 1024)
                 default:

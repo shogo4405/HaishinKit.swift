@@ -16,12 +16,17 @@ final class TSTests: XCTestCase {
     func testTSReader() {
         do {
             let bundle:NSBundle = NSBundle(forClass: self.dynamicType)
-            let url:NSURL = NSURL(fileURLWithPath: bundle.pathForResource("SampleVideo_360x240_5mb/000", ofType: "ts")!)
+            let url:NSURL = NSURL(fileURLWithPath: bundle.pathForResource("SampleVideo_360x240_5mb/57286", ofType: "ts")!)
             let reader:TSReader = try TSReader(url: url)
             reader.read()
             XCTAssertEqual(reader.numberOfPackets, 5984)
         } catch {
-            
         }
+    }
+
+    func testTSProgramClockReference() {
+        let data:[UInt8] = [0, 1, 66, 68, 126, 0]
+        let (b, e) = TSProgramClockReference.decode(data)
+        XCTAssertEqual(data, TSProgramClockReference.encode(b, e))
     }
 }

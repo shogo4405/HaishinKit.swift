@@ -39,6 +39,12 @@ class HTTPStream {
         }
     }
 
+    func attachScreen(screen:ScreenCaptureSession?) {
+        dispatch_async(lockQueue) {
+            self.mixer.attachScreen(screen)
+        }
+    }
+
     func publish(name:String?) {
         dispatch_async(lockQueue) {
             if (name == nil) {

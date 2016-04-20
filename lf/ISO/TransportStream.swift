@@ -6,27 +6,34 @@ import AVFoundation
  */
 struct TSPacket {
     static let size:Int = 188
+    static let headerSize:Int = 4
     static let defaultSyncByte:UInt8 = 0x47
-    static let defaultPID:UInt16 = 0
-    static let defaultScramblingControl:UInt8 = 0
-    static let defaultContinuityCounter:UInt8 = 0
 
     var syncByte:UInt8 = TSPacket.defaultSyncByte
     var transportErrorIndicator:Bool = false
     var payloadUnitStartIndicator:Bool = false
     var transportPriority:Bool = false
-    var PID:UInt16 = TSPacket.defaultPID
-    var scramblingControl:UInt8 = TSPacket.defaultScramblingControl
+    var PID:UInt16 = 0
+    var scramblingControl:UInt8 = 0
     var adaptationFieldFlag:Bool = false
     var payloadFlag:Bool = false
-    var continuityCounter:UInt8 = TSPacket.defaultContinuityCounter
+    var continuityCounter:UInt8 = 0
     var adaptationField:TSAdaptationField?
     var payload:[UInt8] = []
+
+    private var remain:Int {
+        var adaptationFieldSize:Int = 0
+        if var adaptationField:TSAdaptationField = adaptationField where adaptationFieldFlag {
+            adaptationField.compute()
+            adaptationFieldSize = Int(adaptationField.length) + 1
+        }
+        return TSPacket.size - TSPacket.headerSize - adaptationFieldSize - payload.count
+    }
 
     init() {
     }
 
-    init?(bytes: [UInt8]) {
+    init?(bytes:[UInt8]) {
         guard TSPacket.size == bytes.count else {
             return nil
         }
@@ -36,14 +43,37 @@ struct TSPacket {
         }
     }
 
-    init?(data: NSData) {
+    init?(data:NSData) {
         guard TSPacket.size == data.length else {
             return nil
         }
-        self.bytes = data.arrayOfBytes()
+        bytes = data.arrayOfBytes()
         if (syncByte != TSPacket.defaultSyncByte) {
             return nil
         }
+    }
+
+    mutating func fill(data:[UInt8]?, useAdaptationField:Bool) -> Int {
+        guard let data:[UInt8] = data else {
+            payload += [UInt8](count: remain, repeatedValue: 0xff)
+            return 0
+        }
+        payloadFlag = true
+        let length:Int = min(data.count, remain)
+        payload += Array(data[0..<length])
+        if (remain == 0) {
+            return length
+        }
+        if (useAdaptationField) {
+            adaptationFieldFlag = true
+            if (adaptationField == nil) {
+                adaptationField = TSAdaptationField()
+            }
+            adaptationField?.stuffing(remain)
+            return length
+        }
+        payload += [UInt8](count: remain, repeatedValue: 0xff)
+        return length
     }
 }
 
@@ -95,6 +125,46 @@ extension TSPacket: BytesConvertible {
     }
 }
 
+// MARK: - TSProgramClockReference
+struct TSProgramClockReference {
+    static let resolutionForBase:Double = 90 * 1000 // 90kHz
+    static let resolutionForExtension:Double = 27 * 1000 * 1000 // 27MHz
+
+    static func decode(bytes:[UInt8]) -> (UInt64, UInt16) {
+        var b:UInt64 = 0
+        var e:UInt16 = 0
+        b |= UInt64(bytes[0]) << 25
+        b |= UInt64(bytes[1]) << 17
+        b |= UInt64(bytes[2]) << 9
+        b |= UInt64(bytes[3]) << 1
+        b |= (bytes[4] & 0x80 == 0x80) ? 1 : 0
+        e |= UInt16(bytes[4] & 0x01) << 8
+        e |= UInt16(bytes[5])
+        return (b, e)
+    }
+
+    static func encode(b:UInt64, _ e:UInt16) -> [UInt8] {
+        var bytes:[UInt8] = [UInt8](count: 6, repeatedValue: 0)
+        bytes[0] = UInt8(truncatingBitPattern: b >> 25)
+        bytes[1] = UInt8(truncatingBitPattern: b >> 17)
+        bytes[2] = UInt8(truncatingBitPattern: b >> 9)
+        bytes[3] = UInt8(truncatingBitPattern: b >> 1)
+        bytes[4] = 0xff
+        if (b & 1 == 1) {
+            bytes[4] |= 0x80
+        } else {
+            bytes[4] &= 0x7f
+        }
+        if (UInt16(bytes[4] & 0x01) >> 8 == 1) {
+            bytes[4] |= 1
+        } else {
+            bytes[4] &= 0xfe
+        }
+        bytes[5] = UInt8(truncatingBitPattern: e)
+        return bytes
+    }
+}
+
 // MARK: CustomStringConvertible
 extension TSPacket: CustomStringConvertible {
     var description:String {
@@ -105,7 +175,7 @@ extension TSPacket: CustomStringConvertible {
 // MARK: - TSAdaptationField
 struct TSAdaptationField {
     static let PCRSize:Int = 6
-    static let OPCRSize:Int = 6
+    static let fixedSectionSize:Int = 2
 
     var length:UInt8 = 0
     var discontinuityIndicator:Bool = false
@@ -127,8 +197,25 @@ struct TSAdaptationField {
     init() {
     }
 
-    init?(bytes: [UInt8]) {
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
+    }
+
+    mutating func compute() {
+        length  = UInt8(truncatingBitPattern: TSAdaptationField.fixedSectionSize)
+        length += UInt8(truncatingBitPattern: PCR.count)
+        length += UInt8(truncatingBitPattern: OPCR.count)
+        length += UInt8(truncatingBitPattern: transportPrivateData.count)
+        if let adaptationExtension:TSAdaptationExtensionField = adaptationExtension {
+            length += adaptationExtension.length + 1
+        }
+        length += UInt8(truncatingBitPattern: stuffingBytes.count)
+        length -= 1
+    }
+
+    mutating func stuffing(size:Int) {
+        stuffingBytes = [UInt8](count: size, repeatedValue: 0xff)
+        length += UInt8(size)
     }
 }
 
@@ -136,15 +223,47 @@ struct TSAdaptationField {
 extension TSAdaptationField: BytesConvertible {
     var bytes:[UInt8] {
         get {
+            var byte:UInt8 = 0
+            byte |= discontinuityIndicator ? 0x80 : 0
+            byte |= randomAccessIndicator ? 0x40 : 0
+            byte |= elementaryStreamPriorityIndicator ? 0x20 : 0
+            byte |= PCRFlag ? 0x10 : 0
+            byte |= OPCRFlag ? 0x08 : 0
+            byte |= splicingPointFlag ? 0x04 : 0
+            byte |= transportPrivateDataFlag ? 0x02 : 0
+            byte |= adaptationFieldExtensionFlag ? 0x01 : 0
             let buffer:ByteArray = ByteArray()
-            return buffer.bytes
+                .writeUInt8(length)
+                .writeUInt8(byte)
+            if (PCRFlag) {
+                buffer
+                    .writeBytes(PCR)
+            }
+            if (OPCRFlag) {
+                buffer
+                    .writeBytes(OPCR)
+            }
+            if (splicingPointFlag) {
+                buffer
+                    .writeUInt8(spliceCountdown)
+            }
+            if (transportPrivateDataFlag) {
+                buffer
+                    .writeUInt8(transportPrivateDataLength)
+                    .writeBytes(transportPrivateData)
+            }
+            if (adaptationFieldExtensionFlag) {
+                buffer
+                    .writeBytes(adaptationExtension!.bytes)
+            }
+            return buffer.writeBytes(stuffingBytes).bytes
         }
         set {
             let buffer:ByteArray = ByteArray(bytes: newValue)
             do {
-                var byte:UInt8 = 0
+                print(newValue)
                 length = try buffer.readUInt8()
-                byte = try buffer.readUInt8()
+                let byte:UInt8 = try buffer.readUInt8()
                 discontinuityIndicator = byte & 0x80 == 0x80
                 randomAccessIndicator = byte & 0x40 == 0x40
                 elementaryStreamPriorityIndicator = byte & 0x20 == 0x20
@@ -157,7 +276,7 @@ extension TSAdaptationField: BytesConvertible {
                     PCR = try buffer.readBytes(TSAdaptationField.PCRSize)
                 }
                 if (OPCRFlag) {
-                    OPCR = try buffer.readBytes(TSAdaptationField.OPCRSize)
+                    OPCR = try buffer.readBytes(TSAdaptationField.PCRSize)
                 }
                 if (splicingPointFlag) {
                     spliceCountdown = try buffer.readUInt8()
@@ -210,13 +329,13 @@ extension TSAdaptationExtensionField: BytesConvertible {
             let buffer:ByteArray = ByteArray()
                 .writeUInt8(length)
                 .writeUInt8(
-                    (legalTimeWindowFlag ? 1 : 0) << 7 |
-                    (piecewiseRateFlag ? 1 : 0) << 6 |
-                    (seamlessSpiceFlag ? 1 : 0) << 5
+                    (legalTimeWindowFlag ? 0x80 : 0) |
+                    (piecewiseRateFlag ? 0x40 : 0) |
+                    (seamlessSpiceFlag ? 0x1f : 0)
                 )
             if (legalTimeWindowFlag) {
                 buffer
-                    .writeUInt16((legalTimeWindowFlag ? 1 : 0) << 15 | legalTimeWindowOffset)
+                    .writeUInt16((legalTimeWindowFlag ? 0x8000 : 0) | legalTimeWindowOffset)
             }
             if (piecewiseRateFlag) {
                 buffer

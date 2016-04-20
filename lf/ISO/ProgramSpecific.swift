@@ -28,6 +28,7 @@ protocol PSITableSyntax {
 // MARK: - ProgramSpecific
 class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     static let reservedBits:UInt8 = 0x03
+    static let defaultTableIDExtension:UInt16 = 1
 
     // MARK: PSIPointer
     var pointerField:UInt8 = 0
@@ -40,9 +41,9 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     var sectionLength:UInt16 = 0
 
     // MARK: PSITableSyntax
-    var tableIDExtension:UInt16 = 0
+    var tableIDExtension:UInt16 = ProgramSpecific.defaultTableIDExtension
     var versionNumber:UInt8 = 0
-    var currentNextIndicator:Bool = false
+    var currentNextIndicator:Bool = true
     var sectionNumber:UInt8 = 0
     var lastSectionNumber:UInt8 = 0
     var data:[UInt8] {
@@ -58,12 +59,17 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     init() {
     }
 
-    init?(bytes: [UInt8]) {
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
     }
 
     func arrayOfPackets(PID:UInt16) -> [TSPacket] {
-        let packets:[TSPacket] = []
+        var packets:[TSPacket] = []
+        var packet:TSPacket = TSPacket()
+        packet.payloadUnitStartIndicator = true
+        packet.PID = PID
+        packet.fill(bytes, useAdaptationField: false)
+        packets.append(packet)
         return packets
     }
 }
@@ -79,11 +85,14 @@ extension ProgramSpecific: CustomStringConvertible {
 extension ProgramSpecific: BytesConvertible {
     var bytes:[UInt8] {
         get {
+            let data:[UInt8] = self.data
+            sectionLength = UInt16(data.count) + 9
+            sectionSyntaxIndicator = data.count != 0
             let buffer:ByteArray = ByteArray()
                 .writeUInt8(tableID)
                 .writeUInt16(
-                    (sectionSyntaxIndicator ? 1 : 0) << 15 |
-                    (privateBit ? 1 : 0) << 14 |
+                    (sectionSyntaxIndicator ? 0x8000 : 0) |
+                    (privateBit ? 0x4000 : 0) |
                     UInt16(ProgramSpecific.reservedBits) << 12 |
                     sectionLength
                 )
@@ -127,6 +136,7 @@ extension ProgramSpecific: BytesConvertible {
 
 // MARK: - ProgramAssociationSpecific
 final class ProgramAssociationSpecific: ProgramSpecific {
+    static let tableID:UInt8 = 0
     var programs:[UInt16:UInt16] = [:]
 
     override var data:[UInt8] {
@@ -152,12 +162,22 @@ final class ProgramAssociationSpecific: ProgramSpecific {
 
 // MARK: - ProgramMapSpecific
 final class ProgramMapSpecific: ProgramSpecific {
+    static let tableID:UInt8 = 2
     static let unusedPCRID:UInt16 = 0x1fff
-    static let defaultTableID:UInt8 = 2
 
     var PCRPID:UInt16 = 0
     var programInfoLength:UInt16 = 0
     var elementaryStreamSpecificData:[ElementaryStreamSpecificData] = []
+
+    override init() {
+        super.init()
+        tableID = ProgramMapSpecific.tableID
+    }
+
+    override init?(bytes:[UInt8]) {
+        super.init()
+        self.bytes = bytes
+    }
 
     override var data:[UInt8] {
         get {

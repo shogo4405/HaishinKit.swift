@@ -35,11 +35,11 @@ class NetSocket: NSObject {
                 let endOfFile:Int = Int(fileHandle.seekToEndOfFile())
                 for i in 0..<Int(endOfFile / length) {
                     fileHandle.seekToFileOffset(UInt64(i * length))
-                    self.doOutput(fileHandle.readDataOfLength(length))
+                    self.doOutputProcess(fileHandle.readDataOfLength(length))
                 }
                 let remain:Int = endOfFile % length
                 if (0 < remain) {
-                    self.doOutput(fileHandle.readDataOfLength(remain))
+                    self.doOutputProcess(fileHandle.readDataOfLength(remain))
                 }
                 defer {
                     fileHandle.closeFile()
@@ -48,6 +48,10 @@ class NetSocket: NSObject {
                 logger.error("\(error)")
             }
         }
+    }
+
+    final func doOutputProcess(data:NSData) {
+        doOutputProcess(UnsafePointer<UInt8>(data.bytes), maxLength: data.length)
     }
 
     final func doOutputProcess(buffer:UnsafePointer<UInt8>, maxLength:Int) {

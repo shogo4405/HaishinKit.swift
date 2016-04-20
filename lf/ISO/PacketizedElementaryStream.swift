@@ -23,6 +23,7 @@ enum PESPTSDTSIndicator:UInt8 {
 
 // MARK: - PESOptinalHeader
 struct PESOptionalHeader {
+    static let fixedSectionSize:Int = 3
     static let defaultMarkerBits:UInt8 = 2
 
     var markerBits:UInt8 = PESOptionalHeader.defaultMarkerBits
@@ -42,8 +43,26 @@ struct PESOptionalHeader {
     var optionalFields:[UInt8] = []
     var stuffingBytes:[UInt8] = []
 
-    init?(bytes: [UInt8]) {
+    init() {
+    }
+
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
+    }
+
+    mutating func setTimestamp(presentationTimeStamp: CMTime, decodeTimeStamp:CMTime) {
+        if (presentationTimeStamp != kCMTimeInvalid) {
+            PTSDTSIndicator |= 1
+            let PTS:UInt64 = UInt64(CMTimeGetSeconds(presentationTimeStamp) * TSProgramClockReference.resolutionForBase)
+            let data:[UInt8] = TSProgramClockReference.encode(PTS, 0)
+            optionalFields += data[0..<5]
+        }
+        if (decodeTimeStamp != kCMTimeInvalid) {
+            PTSDTSIndicator |= 2
+            let DTS:UInt64 = UInt64(CMTimeGetSeconds(decodeTimeStamp) * TSProgramClockReference.resolutionForBase)
+            let data:[UInt8] = TSProgramClockReference.encode(DTS, 0)
+            optionalFields += data[0..<5]
+        }
     }
 }
 
@@ -74,7 +93,7 @@ extension PESOptionalHeader: BytesConvertible {
         set {
             let buffer:ByteArray = ByteArray(bytes: newValue)
             do {
-                var bytes:[UInt8] = try buffer.readBytes(3)
+                var bytes:[UInt8] = try buffer.readBytes(PESOptionalHeader.fixedSectionSize)
                 markerBits = (bytes[0] & 0b11000000) >> 6
                 scramblingControl = bytes[0] & 0b00110000 >> 4
                 priority = bytes[0] & 0b00001000 == 0b00001000
@@ -122,34 +141,68 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
-    init?(sampleBuffer: CMSampleBuffer) {
-        data = sampleBuffer.bytes
-        packetLength = UInt16(data.count)
+    init?(sampleBuffer: CMSampleBuffer, config:AVCConfigurationRecord) {
+        let sps:NALUnit = NALUnit(refIdc: 1, type: .SPS, payload: config.sequenceParameterSets[0])
+        let pps:NALUnit = NALUnit(refIdc: 1, type: .PPS, payload: config.pictureParameterSets[0])
+        let byteStream:[UInt8] = AVCFormatStream(bytes: sampleBuffer.bytes, config: config).toByteStream()
+        data = [0x00, 0x00, 0x00, 0x01]
+        data += sps.bytes
+        data += [0x00, 0x00, 0x00, 0x01]
+        data += pps.bytes + byteStream
+        print(byteStream)
+        packetLength = 0
+        optionalPESHeader = PESOptionalHeader()
+        optionalPESHeader?.setTimestamp(
+            sampleBuffer.presentationTimeStamp,
+            decodeTimeStamp: sampleBuffer.decodeTimeStamp
+        )
     }
 
-    func arrayOfPackets(PID:UInt16) -> [TSPacket] {
-        let position:Int = 0
+    func arrayOfPackets(PID:UInt16, PCR:UInt64?) -> [TSPacket] {
+        let payload:[UInt8] = bytes
         var packets:[TSPacket] = []
         var continuityCounter:UInt8 = 1
-        let r:Int = (data.count - position) % 184
-        for index in bytes.startIndex.advancedBy(position).stride(to: data.endIndex.advancedBy(-r), by: data.count) {
+
+        // start
+        var packet:TSPacket = TSPacket()
+        packet.PID = PID
+        packet.adaptationFieldFlag = true
+        packet.adaptationField = TSAdaptationField()
+        if let PCR:UInt64 = PCR {
+            packet.adaptationField!.PCRFlag = true
+            packet.adaptationField!.PCR = TSProgramClockReference.encode(PCR, 0)
+        }
+        packet.adaptationField?.compute()
+        packet.continuityCounter = 0
+        packet.payloadUnitStartIndicator = true
+        let position:Int = packet.fill(payload, useAdaptationField: true)
+        packets.append(packet)
+
+        // middle
+        let r:Int = (payload.count - position) % 184
+        for index in payload.startIndex.advancedBy(position).stride(to: payload.endIndex.advancedBy(-r), by: payload.count) {
             var packet:TSPacket = TSPacket()
             packet.PID = PID
-            packet.payloadFlag = true
             packet.continuityCounter = continuityCounter
-            packet.payload = Array(data[index..<index.advancedBy(184)])
+            packet.payloadFlag = true
+            packet.payload = Array(payload[index..<index.advancedBy(184)])
             packets.append(packet)
             continuityCounter += 1
         }
+
+        // last
         if (0 < r) {
             var packet:TSPacket = TSPacket()
+            let remain:[UInt8] = Array(payload[payload.endIndex - r..<payload.endIndex])
             packet.PID = PID
-            packet.payloadFlag = true
-            packet.payload = Array(data[data.endIndex - r..<data.endIndex])
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
+            packet.adaptationField?.compute()
+            packet.continuityCounter = continuityCounter
+            packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
         }
+
         return packets
     }
 
@@ -167,7 +220,7 @@ extension PacketizedElementaryStream: BytesConvertible {
                 .writeBytes(startCode)
                 .writeUInt8(streamID)
                 .writeUInt16(packetLength)
-                .writeBytes(optionalPESHeader == nil ? [] : optionalPESHeader!.bytes)
+                .writeBytes(optionalPESHeader?.bytes ?? [])
                 .writeBytes(data)
                 .bytes
         }

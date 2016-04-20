@@ -40,6 +40,8 @@
 		2960CD481CC1F48F00B4E877 /* PacketizedElementaryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD471CC1F48F00B4E877 /* PacketizedElementaryStream.swift */; };
 		2960CD4A1CC21F3300B4E877 /* PacketizedElementaryStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */; };
 		2960CD511CC259FC00B4E877 /* ProgramSpecificTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */; };
+		2964662D1CC9319300EA4A85 /* NALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964662C1CC9319300EA4A85 /* NALUnit.swift */; };
+		2964662F1CC9819300EA4A85 /* H264+AVCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964662E1CC9819200EA4A85 /* H264+AVCTests.swift */; };
 		2968B7431CC3572A00EBF97F /* CoreMedia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2968B7421CC3572A00EBF97F /* CoreMedia+Extension.swift */; };
 		297C168C1CC5393200117ADF /* MIME.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C16891CC5393200117ADF /* MIME.swift */; };
 		297C168D1CC5393200117ADF /* NetClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C168A1CC5393200117ADF /* NetClient.swift */; };
@@ -134,6 +136,8 @@
 		2960CD471CC1F48F00B4E877 /* PacketizedElementaryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PacketizedElementaryStream.swift; path = ISO/PacketizedElementaryStream.swift; sourceTree = "<group>"; };
 		2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PacketizedElementaryStreamTests.swift; sourceTree = "<group>"; };
 		2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramSpecificTests.swift; sourceTree = "<group>"; };
+		2964662C1CC9319300EA4A85 /* NALUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NALUnit.swift; path = ISO/NALUnit.swift; sourceTree = "<group>"; };
+		2964662E1CC9819200EA4A85 /* H264+AVCTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "H264+AVCTests.swift"; sourceTree = "<group>"; };
 		2968B7421CC3572A00EBF97F /* CoreMedia+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreMedia+Extension.swift"; sourceTree = "<group>"; };
 		297C16891CC5393200117ADF /* MIME.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MIME.swift; path = Net/MIME.swift; sourceTree = "<group>"; };
 		297C168A1CC5393200117ADF /* NetClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetClient.swift; path = Net/NetClient.swift; sourceTree = "<group>"; };
@@ -315,6 +319,7 @@
 			children = (
 				295FEFB51C3823E200271E90 /* AudioSpecificConfig.swift */,
 				290907D51C3961F700F2E80C /* H264+AVC.swift */,
+				2964662C1CC9319300EA4A85 /* NALUnit.swift */,
 				2960CD471CC1F48F00B4E877 /* PacketizedElementaryStream.swift */,
 				2960CD451CC0D37400B4E877 /* ProgramSpecific.swift */,
 				29C066601CB651F900D1060C /* TransportStream.swift */,
@@ -351,6 +356,7 @@
 				2960CD3B1CC0821400B4E877 /* TSTests.swift */,
 				2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */,
 				2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */,
+				2964662E1CC9819200EA4A85 /* H264+AVCTests.swift */,
 			);
 			name = ISO;
 			sourceTree = "<group>";
@@ -607,6 +613,7 @@
 				298EC1E91CC73DDF008A0D04 /* CRC32.swift in Sources */,
 				2996B3E71C8C8D7A00CE641B /* AudioIOComponent.swift in Sources */,
 				298E1FB41CA01FF800B1030B /* AMF3Serializer.swift in Sources */,
+				2964662D1CC9319300EA4A85 /* NALUnit.swift in Sources */,
 				29556CBD1C8F064C00A7242B /* VisualEffect.swift in Sources */,
 				290D1C4A1CC37013003C54D3 /* TSReader.swift in Sources */,
 				29C0E0611C2EB02E009DD8E8 /* RTMPChunk.swift in Sources */,
@@ -646,6 +653,7 @@
 				29C5620D1C78D73F00D4E51B /* AMF0SerializerTests.swift in Sources */,
 				29B018A61C9E3648005F995E /* ByteArrayTests.swift in Sources */,
 				29E8603A1C2EFC0E00C595FB /* Foundation+ExtensionTests.swift in Sources */,
+				2964662F1CC9819300EA4A85 /* H264+AVCTests.swift in Sources */,
 				2960CD4A1CC21F3300B4E877 /* PacketizedElementaryStreamTests.swift in Sources */,
 				29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */,
 				2960CD3C1CC0821400B4E877 /* TSTests.swift in Sources */,

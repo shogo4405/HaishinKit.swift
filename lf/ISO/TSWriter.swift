@@ -41,7 +41,8 @@ class TSWriter {
         let PMT:ProgramMapSpecific = ProgramMapSpecific()
         var essd:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
         essd.elementaryPID = TSWriter.defaultVideoPID
-        essd.streamType = 17
+        essd.streamType = 27
+        PMT.PCRPID = TSWriter.defaultVideoPID
         PMT.elementaryStreamSpecificData.append(essd)
         return PMT
     }()
@@ -49,8 +50,11 @@ class TSWriter {
     private(set) var files:[NSURL] = []
     private(set) var durations:[Double] = []
 
-    private var timestamp:CMTime = kCMTimeZero
+    private var clock:NSDate = NSDate()
+    private var config:AVCConfigurationRecord?
+    private var timestamp:NSDate = NSDate()
     private var currentFileURL:NSURL?
+    private var videoTimestamp:CMTime = kCMTimeZero
     private var currentFileHandle:NSFileHandle? {
         didSet {
             oldValue?.closeFile()
@@ -68,14 +72,19 @@ class TSWriter {
 
     func writePacketizedElementaryStream(PID:UInt16, PES: PacketizedElementaryStream) {
         dispatch_async(lockQueue) {
-            for packet in PES.arrayOfPackets(PID) {
+            var PCR:UInt64?
+            if (self.timestamp.timeIntervalSinceNow < -0.1) {
+                PCR = UInt64(abs(self.clock.timeIntervalSinceNow) * TSProgramClockReference.resolutionForExtension)
+                self.timestamp = NSDate()
+            }
+            for packet in PES.arrayOfPackets(PID, PCR: PCR) {
                 self.currentFileHandle?.writeData(NSData(bytes: packet.bytes))
             }
         }
     }
 
     private func rorateFileHandle(timestamp:CMTime) {
-        let duration:Double = CMTimeGetSeconds(timestamp) - CMTimeGetSeconds(self.timestamp)
+        let duration:Double = CMTimeGetSeconds(timestamp) - CMTimeGetSeconds(videoTimestamp)
         if (duration < segmentTimeInterval) {
             return
         }
@@ -91,10 +100,16 @@ class TSWriter {
             fileManager.createFileAtPath(url.path!, contents: nil, attributes: nil)
             currentFileURL = url
             currentFileHandle = try NSFileHandle(forWritingToURL: url)
+            var packets:[TSPacket] = []
+            packets += PAT.arrayOfPackets(0)
+            packets += PMT.arrayOfPackets(4096)
+            for packet in packets {
+                self.currentFileHandle?.writeData(NSData(bytes: packet.bytes))
+            }
         } catch let error as NSError {
             logger.error("\(error)")
         }
-        self.timestamp = timestamp
+        videoTimestamp = timestamp
     }
 }
 
@@ -105,6 +120,7 @@ extension TSWriter: Runnable {
             if (!self.running) {
                 return
             }
+            self.clock = NSDate()
             self.running = true
         }
     }
@@ -125,9 +141,16 @@ extension TSWriter: Runnable {
 // MARK: VideoEncoderDelegate
 extension TSWriter: VideoEncoderDelegate {
     func didSetFormatDescription(video formatDescription: CMFormatDescriptionRef?) {
+        guard let
+            formatDescription:CMFormatDescriptionRef = formatDescription,
+            avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
+            return
+        }
+        config = AVCConfigurationRecord(data: avcC)
     }
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        guard let pes:PacketizedElementaryStream = PacketizedElementaryStream(sampleBuffer: sampleBuffer) else {
+        guard let config:AVCConfigurationRecord = config,
+            var pes:PacketizedElementaryStream = PacketizedElementaryStream(sampleBuffer: sampleBuffer, config: config) else {
             return
         }
         var timestamp:CMTime = sampleBuffer.decodeTimeStamp
@@ -135,6 +158,7 @@ extension TSWriter: VideoEncoderDelegate {
             timestamp = sampleBuffer.presentationTimeStamp
         }
         rorateFileHandle(timestamp)
+        pes.streamID = 224
         writePacketizedElementaryStream(TSWriter.defaultVideoPID, PES: pes)
     }
 }

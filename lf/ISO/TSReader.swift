@@ -55,6 +55,7 @@ class TSReader {
             }
             if let channel:UInt16 = dictionaryForPrograms[packet.PID] {
                 PMT[channel] = ProgramMapSpecific(bytes: packet.payload)
+                continue
             }
             if let data:ElementaryStreamSpecificData = dictionaryForESSpecData[packet.PID] {
                 readPacketizedElementaryStream(data, packet: packet)

@@ -74,14 +74,12 @@ final class LiveViewController: UIViewController {
             UIBarButtonItem(title: "Preference", style: .Plain, target: self, action: "showPreference:")
         sharedObject = RTMPSharedObject.getRemote("test", remotePath: Preference.defaultInstance.uri!, persistence: false)
         */
-        
-        /*
-        httpStream = HTTPStream()
-        httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
-        httpStream.publish("hello")
-        */
 
         /*
+        httpStream = HTTPStream()
+        httpStream.attachScreen(ScreenCaptureSession())
+        httpStream.publish("hello")
+
         httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
         httpService.startRunning()
         httpService.addHTTPStream(httpStream)
@@ -105,7 +103,7 @@ final class LiveViewController: UIViewController {
         
         publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)
 
-        view.addSubview(rtmpStream.view)
+        //view.addSubview(rtmpStream.view)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LiveViewController.tapScreen(_:)))
         touchView.addGestureRecognizer(tapGesture)
