@@ -22,7 +22,7 @@ protocol PSITableSyntax {
     var sectionNumber:UInt8 { get set }
     var lastSectionNumber:UInt8 { get set }
     var data:[UInt8] { get set }
-    var CRC32:[UInt8] { get set }
+    var CRC32:UInt32 { get set }
 }
 
 // MARK: - ProgramSpecific
@@ -53,10 +53,18 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
             
         }
     }
-    var CRC32:[UInt8] = []
+    var CRC32:UInt32 = 0
+
+    init() {
+    }
 
     init?(bytes: [UInt8]) {
         self.bytes = bytes
+    }
+
+    func arrayOfPackets(PID:UInt16) -> [TSPacket] {
+        let packets:[TSPacket] = []
+        return packets
     }
 }
 
@@ -71,9 +79,7 @@ extension ProgramSpecific: CustomStringConvertible {
 extension ProgramSpecific: BytesConvertible {
     var bytes:[UInt8] {
         get {
-            return ByteArray()
-                .writeUInt8(pointerField)
-                .writeBytes(pointerFillerBytes)
+            let buffer:ByteArray = ByteArray()
                 .writeUInt8(tableID)
                 .writeUInt16(
                     (sectionSyntaxIndicator ? 1 : 0) << 15 |
@@ -90,8 +96,8 @@ extension ProgramSpecific: BytesConvertible {
                 .writeUInt8(sectionNumber)
                 .writeUInt8(lastSectionNumber)
                 .writeBytes(data)
-                .writeBytes(CRC32)
-                .bytes
+            CRC32 = lf.CRC32.MPEG2.calculate(buffer.bytes)
+            return [pointerField] + pointerFillerBytes + buffer.writeUInt32(CRC32).bytes
         }
         set {
             let buffer:ByteArray = ByteArray(bytes: newValue)
@@ -111,7 +117,7 @@ extension ProgramSpecific: BytesConvertible {
                 sectionNumber = try buffer.readUInt8()
                 lastSectionNumber = try buffer.readUInt8()
                 data = try buffer.readBytes(Int(sectionLength - 9))
-                CRC32 = try buffer.readBytes(4)
+                CRC32 = try buffer.readUInt32()
             } catch {
                 logger.error("\(buffer)")
             }
@@ -147,6 +153,7 @@ final class ProgramAssociationSpecific: ProgramSpecific {
 // MARK: - ProgramMapSpecific
 final class ProgramMapSpecific: ProgramSpecific {
     static let unusedPCRID:UInt16 = 0x1fff
+    static let defaultTableID:UInt8 = 2
 
     var PCRPID:UInt16 = 0
     var programInfoLength:UInt16 = 0
@@ -188,6 +195,11 @@ final class ProgramMapSpecific: ProgramSpecific {
     }
 }
 
+enum ElementaryStreamType:UInt8 {
+    case MPEG4H263BasedVideo = 16
+    case MPEG4LOASMultiFormatFramedAudio = 17
+}
+
 // MARK: - ElementaryStreamSpecificData
 struct ElementaryStreamSpecificData {
     static let fixedHeaderSize:Int = 5
@@ -197,7 +209,10 @@ struct ElementaryStreamSpecificData {
     var ESInfoLength:UInt16 = 0
     var ESDescriptors:[UInt8] = []
 
-    init?(bytes: [UInt8]) {
+    init() {
+    }
+
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
     }
 }

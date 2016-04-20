@@ -4,6 +4,7 @@ import Foundation
 // MARK: - TSWriter
 class TSWriter {
     static let version:UInt8 = 3
+    static let defaultPMTPID:UInt16 = 4096
     static let defaultVideoPID:UInt16 = 256
     static let defaultAudioPID:UInt16 = 257
     static let defaultSegmentTimeInterval:NSTimeInterval = 5
@@ -30,8 +31,20 @@ class TSWriter {
         "com.github.shogo4405.lf.TSWriter.lock", DISPATCH_QUEUE_SERIAL
     )
     var allowCache:Bool = true
-    var mediaSequence:Int = 0
     var segmentTimeInterval:NSTimeInterval = TSWriter.defaultSegmentTimeInterval
+    private(set) var PAT:ProgramAssociationSpecific = {
+        let PAT:ProgramAssociationSpecific = ProgramAssociationSpecific()
+        PAT.programs = [1: TSWriter.defaultPMTPID]
+        return PAT
+    }()
+    private(set) var PMT:ProgramMapSpecific = {
+        let PMT:ProgramMapSpecific = ProgramMapSpecific()
+        var essd:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
+        essd.elementaryPID = TSWriter.defaultVideoPID
+        essd.streamType = 17
+        PMT.elementaryStreamSpecificData.append(essd)
+        return PMT
+    }()
     private(set) var running:Bool = false
     private(set) var files:[NSURL] = []
     private(set) var durations:[Double] = []

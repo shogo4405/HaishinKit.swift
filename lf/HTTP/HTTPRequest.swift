@@ -9,6 +9,9 @@ struct HTTPRequest {
     var version:HTTPVersion = .Unkown
     var headerFields:[String: String] = [:]
 
+    init() {
+    }
+
     init?(bytes:[UInt8]) {
         self.bytes = bytes
         if (method == .UNKOWN || version == .Unkown) {

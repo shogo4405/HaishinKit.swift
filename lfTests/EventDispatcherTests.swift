@@ -4,14 +4,6 @@ import XCTest
 @testable import lf
 
 final class EventDispatcherTest: XCTestCase {
-    override func setUp() {
-        super.setUp()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-    }
-
     func testMain() {
         let eventDispatcher:EventDispatcher = EventDispatcher()
         eventDispatcher.addEventListener("test", selector: #selector(EventDispatcherTest.onTest(_:)), observer: self)
