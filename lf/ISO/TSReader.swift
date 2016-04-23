@@ -48,6 +48,7 @@ class TSReader {
             guard let packet:TSPacket = next() else {
                 continue
             }
+            print(packet.adaptationField?.PCR)
             numberOfPackets += 1
             if (packet.PID == 0x0000) {
                 PAT = ProgramAssociationSpecific(bytes: packet.payload)

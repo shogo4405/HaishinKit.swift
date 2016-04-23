@@ -41,7 +41,6 @@
 		2960CD4A1CC21F3300B4E877 /* PacketizedElementaryStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */; };
 		2960CD511CC259FC00B4E877 /* ProgramSpecificTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */; };
 		2964662D1CC9319300EA4A85 /* NALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964662C1CC9319300EA4A85 /* NALUnit.swift */; };
-		2964662F1CC9819300EA4A85 /* H264+AVCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2964662E1CC9819200EA4A85 /* H264+AVCTests.swift */; };
 		2968B7431CC3572A00EBF97F /* CoreMedia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2968B7421CC3572A00EBF97F /* CoreMedia+Extension.swift */; };
 		297C168C1CC5393200117ADF /* MIME.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C16891CC5393200117ADF /* MIME.swift */; };
 		297C168D1CC5393200117ADF /* NetClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297C168A1CC5393200117ADF /* NetClient.swift */; };
@@ -137,7 +136,6 @@
 		2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PacketizedElementaryStreamTests.swift; sourceTree = "<group>"; };
 		2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramSpecificTests.swift; sourceTree = "<group>"; };
 		2964662C1CC9319300EA4A85 /* NALUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NALUnit.swift; path = ISO/NALUnit.swift; sourceTree = "<group>"; };
-		2964662E1CC9819200EA4A85 /* H264+AVCTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "H264+AVCTests.swift"; sourceTree = "<group>"; };
 		2968B7421CC3572A00EBF97F /* CoreMedia+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CoreMedia+Extension.swift"; sourceTree = "<group>"; };
 		297C16891CC5393200117ADF /* MIME.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MIME.swift; path = Net/MIME.swift; sourceTree = "<group>"; };
 		297C168A1CC5393200117ADF /* NetClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NetClient.swift; path = Net/NetClient.swift; sourceTree = "<group>"; };
@@ -297,7 +295,6 @@
 			children = (
 				2960CD4D1CC21F7700B4E877 /* Core */,
 				290D1C541CC3B04D003C54D3 /* HTTP */,
-				2960CD341CC074EE00B4E877 /* http://www.sample-videos.com/ */,
 				2960CD4B1CC21F4700B4E877 /* ISO */,
 				2960CD4C1CC21F5E00B4E877 /* RTMP */,
 				2945CBCD1B4BE66000104112 /* Supporting Files */,
@@ -310,6 +307,9 @@
 			isa = PBXGroup;
 			children = (
 				2945CBCE1B4BE66000104112 /* Info.plist */,
+				2960CD391CC0818000B4E877 /* SampleVideo_360x240_5mb */,
+				2960CD371CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 */,
+				2960CD351CC0752B00B4E877 /* SampleVideo_360x240_5mb.mp4 */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -329,16 +329,6 @@
 			name = ISO;
 			sourceTree = "<group>";
 		};
-		2960CD341CC074EE00B4E877 /* http://www.sample-videos.com/ */ = {
-			isa = PBXGroup;
-			children = (
-				2960CD391CC0818000B4E877 /* SampleVideo_360x240_5mb */,
-				2960CD371CC0817B00B4E877 /* SampleVideo_360x240_5mb.m3u8 */,
-				2960CD351CC0752B00B4E877 /* SampleVideo_360x240_5mb.mp4 */,
-			);
-			name = "http://www.sample-videos.com/";
-			sourceTree = "<group>";
-		};
 		2960CD3E1CC0C7C900B4E877 /* HTTP */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,7 +346,6 @@
 				2960CD3B1CC0821400B4E877 /* TSTests.swift */,
 				2960CD491CC21F3200B4E877 /* PacketizedElementaryStreamTests.swift */,
 				2960CD501CC259FC00B4E877 /* ProgramSpecificTests.swift */,
-				2964662E1CC9819200EA4A85 /* H264+AVCTests.swift */,
 			);
 			name = ISO;
 			sourceTree = "<group>";
@@ -653,7 +642,6 @@
 				29C5620D1C78D73F00D4E51B /* AMF0SerializerTests.swift in Sources */,
 				29B018A61C9E3648005F995E /* ByteArrayTests.swift in Sources */,
 				29E8603A1C2EFC0E00C595FB /* Foundation+ExtensionTests.swift in Sources */,
-				2964662F1CC9819300EA4A85 /* H264+AVCTests.swift in Sources */,
 				2960CD4A1CC21F3300B4E877 /* PacketizedElementaryStreamTests.swift in Sources */,
 				29DD18381B6E77EF00B9E10A /* AMF3SerializerTests.swift in Sources */,
 				2960CD3C1CC0821400B4E877 /* TSTests.swift in Sources */,

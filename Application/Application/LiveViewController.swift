@@ -1,7 +1,6 @@
+import lf
 import UIKit
 import AVFoundation
-
-@testable import lf
 
 struct Preference {
     static let defaultInstance:Preference = Preference()
@@ -77,7 +76,8 @@ final class LiveViewController: UIViewController {
 
         /*
         httpStream = HTTPStream()
-        httpStream.attachScreen(ScreenCaptureSession())
+        //httpStream.attachScreen(ScreenCaptureSession())
+        httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
         httpStream.publish("hello")
 
         httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
@@ -94,7 +94,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
-        // rtmpStream.attachScreen(ScreenCaptureSession())
+        //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
             "continuousAutofocus": true,

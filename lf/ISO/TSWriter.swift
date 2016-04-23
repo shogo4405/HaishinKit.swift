@@ -14,7 +14,6 @@ class TSWriter {
             "#EXTM3U",
             "#EXT-X-VERSION:\(TSWriter.version)",
             "#EXT-X-MEDIA-SEQUENCE:0",
-            "#EXT-X-ALLOW-CACHE:" + (allowCache ? "YES" : "NO"),
             "#EXT-X-TARGETDURATION:\(Int(segmentTimeInterval))"
         ]
         for i in 0..<files.count {
@@ -30,7 +29,6 @@ class TSWriter {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.TSWriter.lock", DISPATCH_QUEUE_SERIAL
     )
-    var allowCache:Bool = true
     var segmentTimeInterval:NSTimeInterval = TSWriter.defaultSegmentTimeInterval
     private(set) var PAT:ProgramAssociationSpecific = {
         let PAT:ProgramAssociationSpecific = ProgramAssociationSpecific()
@@ -50,11 +48,13 @@ class TSWriter {
     private(set) var files:[NSURL] = []
     private(set) var durations:[Double] = []
 
-    private var clock:NSDate = NSDate()
+    private var continuityCounter:UInt8 = 8
     private var config:AVCConfigurationRecord?
-    private var timestamp:NSDate = NSDate()
+    private var rotated:Bool = true
+    private var timestamp:CMTime = kCMTimeZero
+    private var pcrTimestmap:CMTime = kCMTimeZero
     private var currentFileURL:NSURL?
-    private var videoTimestamp:CMTime = kCMTimeZero
+    private var rotatedTimestamp:CMTime = kCMTimeZero
     private var currentFileHandle:NSFileHandle? {
         didSet {
             oldValue?.closeFile()
@@ -70,22 +70,32 @@ class TSWriter {
         return nil
     }
 
-    func writePacketizedElementaryStream(PID:UInt16, PES: PacketizedElementaryStream) {
-        dispatch_async(lockQueue) {
-            var PCR:UInt64?
-            if (self.timestamp.timeIntervalSinceNow < -0.1) {
-                PCR = UInt64(abs(self.clock.timeIntervalSinceNow) * TSProgramClockReference.resolutionForExtension)
-                self.timestamp = NSDate()
-            }
-            for packet in PES.arrayOfPackets(PID, PCR: PCR) {
-                self.currentFileHandle?.writeData(NSData(bytes: packet.bytes))
-            }
+    func writePacketizedElementaryStream(PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
+        var PCR:UInt64?
+        let duration:Double = timestamp.seconds - pcrTimestmap.seconds
+        if (rotated || 0.1 <= duration || willRotateFileHandle(timestamp)) {
+            PCR = UInt64((timestamp.seconds - self.timestamp.seconds) * TSTimestamp.resolution)
+            pcrTimestmap = timestamp
         }
+        var packets:[TSPacket] = []
+        for packet in PES.arrayOfPackets(PID, PCR: PCR) {
+            packets.append(packet)
+        }
+        return packets
+    }
+
+    private func willRotateFileHandle(timestamp:CMTime) -> Bool {
+        let duration:Double = timestamp.seconds - rotatedTimestamp.seconds
+        if (duration < segmentTimeInterval) {
+            return false
+        }
+        return true
     }
 
     private func rorateFileHandle(timestamp:CMTime) {
-        let duration:Double = CMTimeGetSeconds(timestamp) - CMTimeGetSeconds(videoTimestamp)
+        let duration:Double = timestamp.seconds - rotatedTimestamp.seconds
         if (duration < segmentTimeInterval) {
+            rotated = false
             return
         }
         let temp:String = NSTemporaryDirectory()
@@ -109,7 +119,8 @@ class TSWriter {
         } catch let error as NSError {
             logger.error("\(error)")
         }
-        videoTimestamp = timestamp
+        rotated = true
+        rotatedTimestamp = timestamp
     }
 }
 
@@ -120,11 +131,9 @@ extension TSWriter: Runnable {
             if (!self.running) {
                 return
             }
-            self.clock = NSDate()
             self.running = true
         }
     }
-
     func stopRunning() {
         dispatch_async(lockQueue) {
             if (self.running) {
@@ -141,24 +150,44 @@ extension TSWriter: Runnable {
 // MARK: VideoEncoderDelegate
 extension TSWriter: VideoEncoderDelegate {
     func didSetFormatDescription(video formatDescription: CMFormatDescriptionRef?) {
-        guard let
-            formatDescription:CMFormatDescriptionRef = formatDescription,
-            avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
-            return
+        dispatch_async(lockQueue) {
+            guard let
+                formatDescription:CMFormatDescriptionRef = formatDescription,
+                avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
+                return
+            }
+            self.config = AVCConfigurationRecord(data: avcC)
         }
-        config = AVCConfigurationRecord(data: avcC)
     }
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        guard let config:AVCConfigurationRecord = config,
-            var pes:PacketizedElementaryStream = PacketizedElementaryStream(sampleBuffer: sampleBuffer, config: config) else {
-            return
+        dispatch_async(lockQueue) {
+            if (self.timestamp == kCMTimeZero) {
+                self.timestamp = sampleBuffer.presentationTimeStamp
+                self.pcrTimestmap = sampleBuffer.presentationTimeStamp
+            }
+            guard
+                let config:AVCConfigurationRecord = self.config,
+                var pes:PacketizedElementaryStream = PacketizedElementaryStream(
+                    sampleBuffer: sampleBuffer, timestamp: self.timestamp, config: sampleBuffer.dependsOnOthers ? nil : config
+                ) else {
+                return
+            }
+            pes.streamID = 224
+            var timestamp:CMTime = sampleBuffer.decodeTimeStamp
+            if (timestamp == kCMTimeInvalid) {
+                timestamp = sampleBuffer.presentationTimeStamp
+            }
+            var packets:[TSPacket] = self.writePacketizedElementaryStream(TSWriter.defaultVideoPID, PES: pes, timestamp: timestamp)
+            self.rorateFileHandle(timestamp)
+            if (self.rotated) {
+                packets[0].adaptationField?.randomAccessIndicator = true
+                packets[0].adaptationField?.discontinuityIndicator = true
+            }
+            for var packet in packets {
+                packet.continuityCounter = self.continuityCounter
+                self.continuityCounter = (self.continuityCounter + 1) & 0xf
+                self.currentFileHandle?.writeData(NSData(bytes: packet.bytes))
+            }
         }
-        var timestamp:CMTime = sampleBuffer.decodeTimeStamp
-        if (timestamp == kCMTimeInvalid) {
-            timestamp = sampleBuffer.presentationTimeStamp
-        }
-        rorateFileHandle(timestamp)
-        pes.streamID = 224
-        writePacketizedElementaryStream(TSWriter.defaultVideoPID, PES: pes)
     }
 }

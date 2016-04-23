@@ -103,12 +103,6 @@ final class VideoIOComponent: NSObject {
                 return
             }
 
-            let naluType:NALUnitType? = NALUnitType(bytes: bytes, naluLength: 4)
-            let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer!, true)!
-            for i:CFIndex in 0..<CFArrayGetCount(attachments) {
-                naluType?.setCMSampleAttachmentValues(unsafeBitCast(CFArrayGetValueAtIndex(attachments, i), CFMutableDictionaryRef.self))
-            }
-
             self.decoder.decodeSampleBuffer(sampleBuffer!)
         }
     }

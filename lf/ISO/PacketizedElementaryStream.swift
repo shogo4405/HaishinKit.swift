@@ -50,19 +50,23 @@ struct PESOptionalHeader {
         self.bytes = bytes
     }
 
-    mutating func setTimestamp(presentationTimeStamp: CMTime, decodeTimeStamp:CMTime) {
+    mutating func setTimestamp(timestamp:CMTime, presentationTimeStamp:CMTime, decodeTimeStamp:CMTime) {
+        let base:Double = Double(timestamp.seconds)
         if (presentationTimeStamp != kCMTimeInvalid) {
-            PTSDTSIndicator |= 1
-            let PTS:UInt64 = UInt64(CMTimeGetSeconds(presentationTimeStamp) * TSProgramClockReference.resolutionForBase)
-            let data:[UInt8] = TSProgramClockReference.encode(PTS, 0)
-            optionalFields += data[0..<5]
+            PTSDTSIndicator |= 0x02
         }
-        if (decodeTimeStamp != kCMTimeInvalid) {
-            PTSDTSIndicator |= 2
-            let DTS:UInt64 = UInt64(CMTimeGetSeconds(decodeTimeStamp) * TSProgramClockReference.resolutionForBase)
-            let data:[UInt8] = TSProgramClockReference.encode(DTS, 0)
-            optionalFields += data[0..<5]
+        if (decodeTimeStamp != kCMTimeInvalid && presentationTimeStamp != decodeTimeStamp) {
+            PTSDTSIndicator |= 0x01
         }
+        if (PTSDTSIndicator & 0x02 == 0x02) {
+            let PTS:UInt64 = UInt64((presentationTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
+            optionalFields += TSTimestamp.encode(PTS, PTSDTSIndicator << 4)
+        }
+        if (PTSDTSIndicator & 0x01 == 0x01) {
+            let DTS:UInt64 = UInt64((decodeTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
+            optionalFields += TSTimestamp.encode(DTS, 0x01 << 4)
+        }
+        PESHeaderLength = UInt8(optionalFields.count)
     }
 }
 
@@ -141,64 +145,76 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
-    init?(sampleBuffer: CMSampleBuffer, config:AVCConfigurationRecord) {
-        let sps:NALUnit = NALUnit(refIdc: 1, type: .SPS, payload: config.sequenceParameterSets[0])
-        let pps:NALUnit = NALUnit(refIdc: 1, type: .PPS, payload: config.pictureParameterSets[0])
-        let byteStream:[UInt8] = AVCFormatStream(bytes: sampleBuffer.bytes, config: config).toByteStream()
-        data = [0x00, 0x00, 0x00, 0x01]
-        data += sps.bytes
-        data += [0x00, 0x00, 0x00, 0x01]
-        data += pps.bytes + byteStream
-        print(byteStream)
-        packetLength = 0
+    init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AVCConfigurationRecord?) {
+        data += [0x00, 0x00, 0x00, 0x01, 0x09, 0xf0]
+        if let config:AVCConfigurationRecord = config {
+            data += [0x00, 0x00, 0x00, 0x01] + config.sequenceParameterSets[0]
+            data += [0x00, 0x00, 0x00, 0x01] + config.pictureParameterSets[0]
+        }
+        data += AVCFormatStream(bytes: sampleBuffer.bytes).toByteStream()
         optionalPESHeader = PESOptionalHeader()
         optionalPESHeader?.setTimestamp(
-            sampleBuffer.presentationTimeStamp,
+            timestamp,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             decodeTimeStamp: sampleBuffer.decodeTimeStamp
         )
+        packetLength = UInt16(data.count + optionalPESHeader!.bytes.count)
     }
 
     func arrayOfPackets(PID:UInt16, PCR:UInt64?) -> [TSPacket] {
         let payload:[UInt8] = bytes
         var packets:[TSPacket] = []
-        var continuityCounter:UInt8 = 1
 
         // start
         var packet:TSPacket = TSPacket()
         packet.PID = PID
-        packet.adaptationFieldFlag = true
-        packet.adaptationField = TSAdaptationField()
         if let PCR:UInt64 = PCR {
-            packet.adaptationField!.PCRFlag = true
-            packet.adaptationField!.PCR = TSProgramClockReference.encode(PCR, 0)
+            packet.adaptationFieldFlag = true
+            packet.adaptationField = TSAdaptationField()
+            packet.adaptationField?.PCRFlag = true
+            packet.adaptationField?.PCR = TSProgramClockReference.encode(PCR, 0)
+            packet.adaptationField?.compute()
         }
-        packet.adaptationField?.compute()
-        packet.continuityCounter = 0
         packet.payloadUnitStartIndicator = true
         let position:Int = packet.fill(payload, useAdaptationField: true)
         packets.append(packet)
 
         // middle
         let r:Int = (payload.count - position) % 184
-        for index in payload.startIndex.advancedBy(position).stride(to: payload.endIndex.advancedBy(-r), by: payload.count) {
+        for index in payload.startIndex.advancedBy(position).stride(to: payload.endIndex.advancedBy(-r), by: 184) {
             var packet:TSPacket = TSPacket()
             packet.PID = PID
-            packet.continuityCounter = continuityCounter
             packet.payloadFlag = true
             packet.payload = Array(payload[index..<index.advancedBy(184)])
             packets.append(packet)
-            continuityCounter += 1
         }
 
-        // last
-        if (0 < r) {
+        switch r {
+        case 0:
+            break
+        case 183:
+            let remain:[UInt8] = Array(payload[payload.endIndex - r..<payload.endIndex - 1])
             var packet:TSPacket = TSPacket()
-            let remain:[UInt8] = Array(payload[payload.endIndex - r..<payload.endIndex])
             packet.PID = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            packet.continuityCounter = continuityCounter
+            packet.fill(remain, useAdaptationField: true)
+            packets.append(packet)
+            packet = TSPacket()
+            packet.PID = PID
+            packet.adaptationFieldFlag = true
+            packet.adaptationField = TSAdaptationField()
+            packet.adaptationField?.compute()
+            packet.fill([payload[payload.count - 1]], useAdaptationField: true)
+            packets.append(packet)
+        default:
+            let remain:[UInt8] = Array(payload[payload.endIndex - r..<payload.endIndex])
+            var packet:TSPacket = TSPacket()
+            packet.PID = PID
+            packet.adaptationFieldFlag = true
+            packet.adaptationField = TSAdaptationField()
+            packet.adaptationField?.compute()
             packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
         }

@@ -196,9 +196,7 @@ final class ProgramMapSpecific: ProgramSpecific {
             do {
                 PCRPID = try buffer.readUInt16() & 0x1fff
                 programInfoLength = try buffer.readUInt16() & 0x03ff
-                for _ in 0..<programInfoLength / 8 {
-                    buffer.position += 8
-                }
+                buffer.position += Int(programInfoLength)
                 var position:Int = 0
                 while (0 < buffer.bytesAvailable) {
                     position = buffer.position

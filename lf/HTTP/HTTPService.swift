@@ -164,7 +164,7 @@ extension HTTPStatusCode: CustomStringConvertible {
 }
 
 // MARK: - HTTPService
-class HTTPService: NetService {
+public class HTTPService: NetService {
     static let type:String = "_http._tcp"
     static let defaultPort:Int = 8080
     static let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
@@ -172,20 +172,7 @@ class HTTPService: NetService {
     var document:String = HTTPService.defaultDocument
     private(set) var streams:[HTTPStream] = []
 
-    func client(inputBuffer client:NetClient) {
-        guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
-            return
-        }
-        client.inputBuffer.removeAll()
-        switch request.method {
-        case .GET:
-            get(request, client: client)
-        default:
-            break
-        }
-    }
-
-    func addHTTPStream(stream:HTTPStream) {
+    public func addHTTPStream(stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 return
@@ -194,7 +181,7 @@ class HTTPService: NetService {
         streams.append(stream)
     }
 
-    func removeHTTPStream(stream:HTTPStream) {
+    public func removeHTTPStream(stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 streams.removeAtIndex(i)
@@ -208,12 +195,15 @@ class HTTPService: NetService {
         var response:HTTPResponse = HTTPResponse()
         response.headerFields["Connection"] = "close"
 
+        defer {
+            disconnect(client)
+        }
+
         switch request.uri {
         case "/":
             response.headerFields["Content-Type"] = "text/html"
             response.body = [UInt8](document.utf8)
             client.doOutput(response.bytes)
-            client.close(true)
         default:
             for stream in streams {
                 guard let (mime, resource) = stream.getResource(request.uri) else {
@@ -232,13 +222,24 @@ class HTTPService: NetService {
                     response.body = [UInt8](resource.utf8)
                     client.doOutput(response.bytes)
                 }
-                client.close(true)
                 return
             }
             response.statusCode = .NotFound
             response.headerFields["Connection"] = "close"
             client.doOutput(response.bytes)
-            client.close(true)
+        }
+    }
+
+    func client(inputBuffer client:NetClient) {
+        guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
+            return
+        }
+        client.inputBuffer.removeAll()
+        switch request.method {
+        case .GET:
+            get(request, client: client)
+        default:
+            break
         }
     }
 }

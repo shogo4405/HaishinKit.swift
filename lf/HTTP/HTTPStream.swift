@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 // MARK: HTTPStream
-class HTTPStream {
+public class HTTPStream: NSObject {
     private(set) var name:String?
     private var mixer:AVMixer = AVMixer()
     private var tsWriter:TSWriter = TSWriter()
@@ -10,42 +10,20 @@ class HTTPStream {
         "com.github.shogo4405.lf.HTTPStream.lock", DISPATCH_QUEUE_SERIAL
     )
 
-    func getResource(resourceName:String) -> (MIME, String)? {
-        guard let
-            name:String = name,
-            pathComponents:[String] = NSURL(fileURLWithPath: resourceName).pathComponents
-        where
-            2 <= pathComponents.count && pathComponents[1] == name else {
-            return nil
-        }
-        let fileName:String = pathComponents[pathComponents.count - 1]
-        switch true {
-        case fileName == "playlist.m3u8":
-            return (MIME.ApplicationXMpegURL, tsWriter.playlist)
-        case fileName.containsString(".ts"):
-            if let mediaFile:String = tsWriter.getFilePath(fileName) {
-                return (MIME.VideoMP2T, mediaFile)
-            }
-            return nil
-        default:
-            return nil
-        }
-    }
-
-    func attachCamera(camera:AVCaptureDevice?) {
+    public func attachCamera(camera:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
             self.mixer.attachCamera(camera)
             self.mixer.startRunning()
         }
     }
 
-    func attachScreen(screen:ScreenCaptureSession?) {
+    public func attachScreen(screen:ScreenCaptureSession?) {
         dispatch_async(lockQueue) {
             self.mixer.attachScreen(screen)
         }
     }
 
-    func publish(name:String?) {
+    public func publish(name:String?) {
         dispatch_async(lockQueue) {
             if (name == nil) {
                 self.name = name
@@ -62,6 +40,28 @@ class HTTPStream {
             self.mixer.videoIO.encoder.delegate = self.tsWriter
             self.mixer.audioIO.encoder.startRunning()
             self.tsWriter.startRunning()
+        }
+    }
+
+    func getResource(resourceName:String) -> (MIME, String)? {
+        guard let
+            name:String = name,
+            pathComponents:[String] = NSURL(fileURLWithPath: resourceName).pathComponents
+            where
+            2 <= pathComponents.count && pathComponents[1] == name else {
+                return nil
+        }
+        let fileName:String = pathComponents[pathComponents.count - 1]
+        switch true {
+        case fileName == "playlist.m3u8":
+            return (MIME.ApplicationXMpegURL, tsWriter.playlist)
+        case fileName.containsString(".ts"):
+            if let mediaFile:String = tsWriter.getFilePath(fileName) {
+                return (MIME.VideoMP2T, mediaFile)
+            }
+            return nil
+        default:
+            return nil
         }
     }
 }

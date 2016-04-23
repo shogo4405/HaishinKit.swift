@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - NetService
-class NetService: NSObject {
+public class NetService: NSObject {
 
     var recordData:NSData? {
         return nil
@@ -20,11 +20,19 @@ class NetService: NSObject {
     private(set) var service:NSNetService!
     private var runloop:NSRunLoop!
 
-    init(domain:String, type:String, name:String, port:Int32) {
+    public init(domain:String, type:String, name:String, port:Int32) {
         self.domain = domain
         self.name = name
         self.port = port
         self.type = type
+    }
+
+    func disconnect(client:NetClient) {
+        if let index:Int = clients.indexOf(client) {
+            clients.removeAtIndex(index)
+            client.delegate = nil
+            client.close(true)
+        }
     }
 
     func willStartRunning() {
@@ -57,11 +65,11 @@ class NetService: NSObject {
 
 // MARK: NSNetServiceDelegate
 extension NetService: NSNetServiceDelegate {
-    func netService(sender: NSNetService, didNotPublish errorDict: [String : NSNumber]) {
+    public func netService(sender: NSNetService, didNotPublish errorDict: [String : NSNumber]) {
         logger.error("\(errorDict)")
     }
 
-    func netService(sender: NSNetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream: NSOutputStream) {
+    public func netService(sender: NSNetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream: NSOutputStream) {
         let client:NetClient = NetClient(service: sender, inputStream: inputStream, outputStream: outputStream)
         clients.append(client)
         client.delegate = self
@@ -75,7 +83,7 @@ extension NetService: NetClientDelegate {
 
 // MARK: Runnbale 
 extension NetService: Runnable {
-    final func startRunning() {
+    final public func startRunning() {
         dispatch_async(lockQueue) {
             if (self.running) {
                 return
@@ -85,7 +93,7 @@ extension NetService: Runnable {
         }
     }
 
-    final func stopRunning() {
+    final public func stopRunning() {
         dispatch_async(lockQueue) {
             if (!self.running) {
                 return

@@ -17,49 +17,6 @@ enum NALUnitType: UInt8 {
     case EOSEQ    = 10
     case EOSTREAM = 11
     case FILL     = 12
-    
-    var isVCL:Bool {
-        switch self {
-        case SLICE:
-            return true
-        case DPA:
-            return true
-        case DPB:
-            return true
-        case DPC:
-            return true
-        case IDR:
-            return true
-        default:
-            return false
-        }
-    }
-    
-    init?(bytes:[UInt8], naluLength:Int32) {
-        if (bytes.isEmpty) {
-            return nil
-        }
-        guard let type:NALUnitType = NALUnitType(rawValue: bytes[Int(naluLength)] & 0b00011111) else {
-            return nil
-        }
-        self = type
-    }
-    
-    func setCMSampleAttachmentValues(dictionary:CFMutableDictionaryRef) {
-        if (self.isVCL) {
-            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DisplayImmediately), unsafeAddressOf(kCFBooleanTrue))
-        } else {
-            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_DoNotDisplay), unsafeAddressOf(kCFBooleanTrue))
-        }
-        switch self {
-        case .IDR:
-            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_PartialSync), unsafeAddressOf(kCFBooleanTrue))
-        case .SLICE:
-            CFDictionarySetValue(dictionary, unsafeAddressOf(kCMSampleAttachmentKey_IsDependedOnByOthers), unsafeAddressOf(kCFBooleanTrue))
-        default:
-            break
-        }
-    }
 }
 
 // MARK: - NALUnit

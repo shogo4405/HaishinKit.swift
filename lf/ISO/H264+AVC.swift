@@ -5,11 +5,9 @@ import VideoToolbox
 // MARK: - AVCFormatStream
 struct AVCFormatStream {
     var bytes:[UInt8] = []
-    var config:AVCConfigurationRecord
 
-    init(bytes:[UInt8], config:AVCConfigurationRecord) {
+    init(bytes:[UInt8]) {
         self.bytes = bytes
-        self.config = config
     }
 
     func toByteStream() -> [UInt8] {
