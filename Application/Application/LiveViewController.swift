@@ -103,7 +103,7 @@ final class LiveViewController: UIViewController {
         
         publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)
 
-        //view.addSubview(rtmpStream.view)
+        view.addSubview(rtmpStream.view)
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LiveViewController.tapScreen(_:)))
         touchView.addGestureRecognizer(tapGesture)
