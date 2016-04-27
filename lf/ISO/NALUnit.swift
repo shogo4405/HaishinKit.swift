@@ -2,27 +2,27 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-// MARK: - NALUnitType
-enum NALUnitType: UInt8 {
-    case UNSPEC   = 0
-    case SLICE    = 1 // P frame
-    case DPA      = 2
-    case DPB      = 3
-    case DPC      = 4
-    case IDR      = 5 // I frame
-    case SEI      = 6
-    case SPS      = 7
-    case PPS      = 8
-    case AUD      = 9
-    case EOSEQ    = 10
-    case EOSTREAM = 11
-    case FILL     = 12
-}
-
 // MARK: - NALUnit
 struct NALUnit {
+
+    enum Type: UInt8 {
+        case UNSPEC   = 0
+        case SLICE    = 1 // P frame
+        case DPA      = 2
+        case DPB      = 3
+        case DPC      = 4
+        case IDR      = 5 // I frame
+        case SEI      = 6
+        case SPS      = 7
+        case PPS      = 8
+        case AUD      = 9
+        case EOSEQ    = 10
+        case EOSTREAM = 11
+        case FILL     = 12
+    }
+
     var refIdc:UInt8 = 0
-    var type:NALUnitType = NALUnitType.UNSPEC
+    var type:Type = .UNSPEC
     var payload:[UInt8] = []
 }
 
@@ -40,7 +40,7 @@ extension NALUnit: BytesConvertible {
             do {
                 let byte:UInt8 = try buffer.readUInt8()
                 refIdc = byte & 0x60 >> 5
-                type = NALUnitType(rawValue: byte & 0x31) ?? NALUnitType.UNSPEC
+                type = lf.NALUnit.Type(rawValue: byte & 0x31) ?? .UNSPEC
                 payload = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
                 logger.error("\(buffer)")

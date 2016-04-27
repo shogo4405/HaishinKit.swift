@@ -196,6 +196,7 @@ public class HTTPService: NetService {
         response.headerFields["Connection"] = "close"
 
         defer {
+            logger.verbose("\(response)")
             disconnect(client)
         }
 
@@ -209,7 +210,6 @@ public class HTTPService: NetService {
                 guard let (mime, resource) = stream.getResource(request.uri) else {
                     break
                 }
-                logger.info(resource)
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
                 case .VideoMP2T:
@@ -232,6 +232,7 @@ public class HTTPService: NetService {
 
     func client(inputBuffer client:NetClient) {
         guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
+            disconnect(client)
             return
         }
         client.inputBuffer.removeAll()

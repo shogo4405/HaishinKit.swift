@@ -46,18 +46,18 @@ public class HTTPStream: NSObject {
     func getResource(resourceName:String) -> (MIME, String)? {
         guard let
             name:String = name,
-            pathComponents:[String] = NSURL(fileURLWithPath: resourceName).pathComponents
-            where
-            2 <= pathComponents.count && pathComponents[1] == name else {
-                return nil
+            url:NSURL = NSURL(fileURLWithPath: resourceName),
+            pathComponents:[String] = url.pathComponents
+            where 2 <= pathComponents.count && pathComponents[1] == name else {
+            return nil
         }
-        let fileName:String = pathComponents[pathComponents.count - 1]
+        let fileName:String = pathComponents.last!
         switch true {
         case fileName == "playlist.m3u8":
-            return (MIME.ApplicationXMpegURL, tsWriter.playlist)
+            return (.ApplicationXMpegURL, tsWriter.playlist)
         case fileName.containsString(".ts"):
             if let mediaFile:String = tsWriter.getFilePath(fileName) {
-                return (MIME.VideoMP2T, mediaFile)
+                return (.VideoMP2T, mediaFile)
             }
             return nil
         default:

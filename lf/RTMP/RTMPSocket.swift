@@ -1,4 +1,3 @@
-import XCGLogger
 import Foundation
 
 // MARK: RTMPSocketDelegate

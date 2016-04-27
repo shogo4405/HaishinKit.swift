@@ -9,6 +9,10 @@ class NetSocket: NSObject {
     var windowSizeC:Int = NetSocket.defaultWindowSizeC
     var outputStream:NSOutputStream?
 
+    var networkQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.NetSocket.network", DISPATCH_QUEUE_SERIAL
+    )
+
     private(set) var totalBytesIn = 0
     private(set) var totalBytesOut = 0
     private var runloop:NSRunLoop?
@@ -71,7 +75,6 @@ class NetSocket: NSObject {
             guard let runloop = self.runloop else {
                 return
             }
-            CFRunLoopStop(runloop.getCFRunLoop())
             self.inputStream?.close()
             self.inputStream?.removeFromRunLoop(runloop, forMode: NSDefaultRunLoopMode)
             self.inputStream?.delegate = nil
@@ -81,6 +84,8 @@ class NetSocket: NSObject {
             self.outputStream?.delegate = nil
             self.outputStream = nil
             self.runloop = nil
+            CFRunLoopStop(runloop.getCFRunLoop())
+            logger.verbose("disconnect:\(disconnect)")
         }
     }
 
@@ -105,6 +110,7 @@ class NetSocket: NSObject {
         inputStream.open()
         outputStream.open()
         runloop!.run()
+        logger.verbose("EndOfRunLoop")
     }
 
     private func doInput() {

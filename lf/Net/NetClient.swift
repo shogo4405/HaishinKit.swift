@@ -22,10 +22,10 @@ final class NetClient: NetSocket {
     }
 
     func acceptConnection() {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+        dispatch_async(networkQueue) {
             self.initConnection()
             self.delegate?.client?(didAccepetConnection: self)
-        })
+        }
     }
 
     override func listen() {

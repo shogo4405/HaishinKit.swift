@@ -10,7 +10,10 @@ public class NetService: NSObject {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.NetService.lock", DISPATCH_QUEUE_SERIAL
     )
-
+    var networkQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.NetService.nwtwork", DISPATCH_QUEUE_SERIAL
+    )
+    
     private(set) var domain:String
     private(set) var name:String
     private(set) var port:Int32
@@ -36,14 +39,14 @@ public class NetService: NSObject {
     }
 
     func willStartRunning() {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+        dispatch_async(networkQueue) {
             self.initService()
-        })
+        }
     }
 
     func willStopRunning() {
         if let runloop:NSRunLoop = runloop {
-            service.removeFromRunLoop(runloop, forMode: NSRunLoopCommonModes)
+            service.removeFromRunLoop(runloop, forMode: NSDefaultRunLoopMode)
             CFRunLoopStop(runloop.getCFRunLoop())
         }
         service.stop()
@@ -57,7 +60,7 @@ public class NetService: NSObject {
         service = NSNetService(domain: domain, type: type, name: name, port: port)
         service.delegate = self
         service.setTXTRecordData(recordData)
-        service.scheduleInRunLoop(runloop, forMode: NSRunLoopCommonModes)
+        service.scheduleInRunLoop(runloop, forMode: NSDefaultRunLoopMode)
         service.publishWithOptions(NSNetServiceOptions.ListenForConnections)
         runloop.run()
     }
