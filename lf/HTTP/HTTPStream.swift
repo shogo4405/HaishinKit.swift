@@ -3,6 +3,16 @@ import AVFoundation
 
 // MARK: HTTPStream
 public class HTTPStream: NSObject {
+
+    public var syncOrientation:Bool {
+        get { return mixer.syncOrientation }
+        set { mixer.syncOrientation = newValue }
+    }
+
+    public var view:VideoIOView {
+        return mixer.videoIO.view
+    }
+
     private(set) var name:String?
     private var mixer:AVMixer = AVMixer()
     private var tsWriter:TSWriter = TSWriter()
