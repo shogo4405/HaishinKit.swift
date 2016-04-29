@@ -74,6 +74,7 @@ final class LiveViewController: UIViewController {
         sharedObject = RTMPSharedObject.getRemote("test", remotePath: Preference.defaultInstance.uri!, persistence: false)
         */
 
+        /*
         httpStream = HTTPStream()
         //httpStream.attachScreen(ScreenCaptureSession())
         httpStream.syncOrientation = true
@@ -83,6 +84,7 @@ final class LiveViewController: UIViewController {
         httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
         httpService.startRunning()
         httpService.addHTTPStream(httpStream)
+        */
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),
@@ -112,7 +114,7 @@ final class LiveViewController: UIViewController {
         videoBitrateSlider.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider.value = Float(RTMPStream.defaultAudioBitrate) / 1024
 
-        view.addSubview(httpStream.view)
+        // view.addSubview(httpStream.view)
 
         view.addSubview(touchView)
         view.addSubview(videoBitrateLabel)
@@ -129,7 +131,7 @@ final class LiveViewController: UIViewController {
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
         rtmpStream.view.frame = view.frame
-        httpStream.view.frame = view.frame
+        // httpStream.view.frame = view.frame
         videoBitrateLabel.text = "video \(Int(videoBitrateSlider.value))/kbps"
         videoBitrateLabel.frame = CGRect(x: view.frame.width - 150 - 60, y: view.frame.height - 44 * 2 - 22, width: 150, height: 44)
         videoBitrateSlider.frame = CGRect(x: 20, y: view.frame.height - 44 * 2, width: view.frame.width - 44 - 60, height: 44)
