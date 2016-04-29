@@ -1,13 +1,13 @@
 # lf.swift
-iOS向けライブ配信用のライブラリーです。現在、RTMPでの配信をサポートしています。
+lf is a lIVE fRAMEWORK. iOS Camera/Microphone streaming library via RTMP/HTTP
 
 ## Install
 ### Cocoapod
     pod 'lf'
     use_frameworks!
 
-## Usage
-* Basic
+## Usage/RTMP
+Real Time Messaging Protocol (RTMP). Basic snipet.
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
@@ -19,7 +19,7 @@ view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
-* Settings
+Settings
 ```swift
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.videoSettings = [
@@ -27,11 +27,29 @@ rtmpStream.videoSettings = [
     "height": 360, // video output height
 ]
 ```
-* RTMP Auth
+RTMP Auth 
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```
+
+## Usage/HTTP
+HTTP Live Streaming (HLS). Your iPhone become a IP Camera. Basic snipet.
+```swift
+httpStream = HTTPStream()
+httpStream.syncOrientation = true
+httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+
+httpStream.publish("hello")
+
+httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
+httpService.startRunning()
+httpService.addHTTPStream(httpStream)
+
+view.addSubview(httpStream.view)
+```
+
+You can see http://ip.address:8080/hello/playlist.m3u8 
 
 ## Class Overview
 |AS3|lf|

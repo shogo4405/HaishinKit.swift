@@ -75,7 +75,6 @@
 		29E8CCBD1CA5CEFA00C57E03 /* AVCDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E8CCBC1CA5CEFA00C57E03 /* AVCDecoder.swift */; };
 		29EA5FDB1C8C5178001CB36B /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA5FDA1C8C5177001CB36B /* VideoIOComponent.swift */; };
 		29FA89731C68CA9C0032B242 /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */; };
-		67460023EF7E2574A7D65F9E /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FE640B87794C358ED57DD302 /* Pods.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -173,7 +172,6 @@
 		29FA89721C68CA9C0032B242 /* AudioStreamPlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioStreamPlayback.swift; path = Media/AudioStreamPlayback.swift; sourceTree = "<group>"; };
 		74A266A03AD43A5BEB04877E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		BDCFE3A53B8641D3F888F723 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
-		FE640B87794C358ED57DD302 /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,7 +179,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				67460023EF7E2574A7D65F9E /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -196,14 +193,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0B8300DF4C3FACAEF3A8223C /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				FE640B87794C358ED57DD302 /* Pods.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		290907CD1C3961AD00F2E80C /* Codec */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,7 +239,6 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
-				0B8300DF4C3FACAEF3A8223C /* Frameworks */,
 				2945CBBF1B4BE66000104112 /* lf */,
 				2945CBCC1B4BE66000104112 /* lfTests */,
 				6559B12A7618D880F64E523C /* Pods */,
