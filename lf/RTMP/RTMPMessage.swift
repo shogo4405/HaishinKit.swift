@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-class RTMPMessage: NSObject {
+class RTMPMessage {
 
     enum Type:UInt8 {
         case ChunkSize = 1
@@ -75,20 +75,7 @@ class RTMPMessage: NSObject {
     var timestamp:UInt32 = 0
     var payload:[UInt8] = []
 
-    override var description:String {
-        let className:NSString = NSStringFromClass(self.dynamicType).componentsSeparatedByString(".").last! as String
-        var description:String = "\(className){"
-        description += "type:\(type),"
-        description += "length:\(length),"
-        description += "streamId:\(streamId),"
-        description += "timestamp:\(timestamp),"
-        description += "payload:\(payload.count)"
-        description += "}"
-        return description
-    }
-
-    override init() {
-        super.init()
+    init() {
     }
 
     init(type:Type) {
@@ -99,10 +86,16 @@ class RTMPMessage: NSObject {
     }
 }
 
+extension RTMPMessage: CustomStringConvertible {
+    var description:String {
+        return Mirror(reflecting: self).description
+    }
+}
+
 /**
  * @see 5.4.1. Set Chunk Size (1)
  */
-final class RTMPSetChunkSizeMessage:RTMPMessage {
+final class RTMPSetChunkSizeMessage: RTMPMessage {
     
     override var type:Type {
         return .ChunkSize
@@ -388,20 +381,6 @@ final class RTMPCommandMessage: RTMPMessage {
             super.payload = newValue
         }
     }
-    
-    override var description: String {
-        var description:String = "RTMPCommandMessage{"
-        description += "type:\(type),"
-        description += "length:\(length),"
-        description += "streamId:\(streamId),"
-        description += "timestamp:\(timestamp),"
-        description += "commandName:\(commandName),"
-        description += "transactionId:\(transactionId),"
-        description += "commandObject:\(commandObject),"
-        description += "arguments:\(arguments)"
-        description += "}"
-        return description
-    }
 
     private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
 
@@ -477,18 +456,6 @@ final class RTMPDataMessage: RTMPMessage {
     }
 
     private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
-
-    override var description: String {
-        var description:String = "RTMPDataMessage{"
-        description += "type:\(type.rawValue),"
-        description += "length:\(length),"
-        description += "streamId:\(streamId),"
-        description += "timestamp:\(timestamp),"
-        description += "handlerName:\(handlerName),"
-        description += "arguments:\(arguments)"
-        description += "}"
-        return description
-    }
 
     override var payload:[UInt8] {
         get {
@@ -584,12 +551,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         var data:Any? = nil
 
         var description:String {
-            var description:String = "Event{"
-            description += "type:\(type),"
-            description += "name:\(name),"
-            description += "data:\(data)"
-            description += "}"
-            return description
+            return Mirror(reflecting: self).description
         }
 
         init(type:Type) {
@@ -650,18 +612,6 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
-    }
-
-    override var description: String {
-        var description:String = "RTMPSharedObjectMessage{"
-        description += "timestmap:\(timestamp),"
-        description += "objectEncoding:\(objectEncoding),"
-        description += "sharedObjectName:\(sharedObjectName),"
-        description += "currentVersion:\(currentVersion),"
-        description += "flags:\(flags),"
-        description += "events:\(events)"
-        description += "}"
-        return description
     }
 
     override var payload:[UInt8] {
@@ -972,14 +922,6 @@ final class RTMPUserControlMessage: RTMPMessage {
 
             super.payload = newValue
         }
-    }
-
-    override var description: String {
-        var description:String = "RTMPUserControlMessage{"
-        description += "event:\(event),"
-        description += "value:\(value)"
-        description += "}"
-        return description
     }
 
     override init() {

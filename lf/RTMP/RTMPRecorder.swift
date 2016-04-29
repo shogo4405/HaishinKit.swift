@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-enum FLVVideoCodec:UInt8 {
+enum FLVVideoCodec: UInt8 {
     case SorensonH263 = 2
     case Screen1 = 3
     case ON2VP6 = 4
@@ -30,7 +30,7 @@ enum FLVVideoCodec:UInt8 {
     }
 }
 
-enum FLVFrameType:UInt8 {
+enum FLVFrameType: UInt8 {
     case Key = 1
     case Inter = 2
     case Disposable = 3
@@ -285,17 +285,19 @@ final class RTMPRecorder: NSObject {
             guard let _:NSFileHandle = self.fileHandle else {
                 return
             }
-            switch message {
-            case message as RTMPAudioMessage:
+            if let message:RTMPAudioMessage = message as? RTMPAudioMessage {
                 self.appendData(FLVTag.TagType.Audio.rawValue, timestamp: self.audioTimestamp, payload: message.payload)
                 self.audioTimestamp += message.timestamp
-            case message as RTMPVideoMessage:
+                return
+            }
+            if let message:RTMPVideoMessage = message as? RTMPVideoMessage {
                 self.appendData(FLVTag.TagType.Video.rawValue, timestamp: self.videoTimestamp, payload: message.payload)
                 self.videoTimestamp += message.timestamp
-            case message as RTMPDataMessage:
+                return
+            }
+            if let message:RTMPDataMessage = message as? RTMPDataMessage {
                 self.appendData(FLVTag.TagType.Data.rawValue, timestamp: 0, payload: message.payload)
-            default:
-                break
+                return
             }
         }
     }
