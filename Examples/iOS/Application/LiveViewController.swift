@@ -93,8 +93,8 @@ final class LiveViewController: UIViewController {
 
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
-        //rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        //rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+        rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
+        rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [

@@ -1,5 +1,6 @@
 import CoreMedia
 import Foundation
+import CryptoSwift
 
 // MARK: - TSWriter
 class TSWriter {

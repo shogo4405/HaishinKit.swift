@@ -1,5 +1,6 @@
 import Foundation
 import AVFoundation
+import CryptoSwift
 
 /**
  - seealso: https://en.wikipedia.org/wiki/MPEG_transport_stream#Packet
