@@ -62,6 +62,11 @@ You can see http://ip.address:8080/hello/playlist.m3u8
 ## License
 New BSD
 
+## Enviroment
+|lf|Swift|CocoaPod|
+|----|----|----|
+|0.2|2.3|0.39.0|
+
 ## Reference
 * Adobe’s Real Time Messaging Protocol
  * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
