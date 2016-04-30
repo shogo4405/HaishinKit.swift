@@ -530,56 +530,6 @@ final class RTMPDataMessage: RTMPMessage {
  */
 final class RTMPSharedObjectMessage: RTMPMessage {
 
-    struct Event: CustomStringConvertible {
-        enum Type:UInt8 {
-            case Use = 1
-            case Release = 2
-            case RequestChange = 3
-            case Change = 4
-            case Success = 5
-            case SendMessage = 6
-            case Status = 7
-            case Clear = 8
-            case Remove = 9
-            case RequestRemove = 10
-            case UseSuccess = 11
-            case Unknown = 255
-        }
-
-        var type:Type = .Unknown
-        var name:String? = nil
-        var data:Any? = nil
-
-        var description:String {
-            return Mirror(reflecting: self).description
-        }
-
-        init(type:Type) {
-            self.type = type
-        }
-
-        init(type:Type, name:String, data:Any?) {
-            self.type = type
-            self.name = name
-            self.data = data
-        }
-
-        init?(serializer:AMFSerializer) throws {
-            guard let type:Type = Type(rawValue: try serializer.readUInt8()) else {
-                return nil
-            }
-            self.type = type
-            let length:Int = Int(try serializer.readUInt32())
-            let position:Int = serializer.position
-            if (0 < length) {
-                name = try serializer.readUTF8()
-                if (serializer.position - position < length) {
-                    data = try serializer.deserialize()
-                }
-            }
-        }
-    }
-
     override var type:Type {
         return objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared
     }
@@ -608,7 +558,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         }
     }
 
-    var events:[Event] = [] {
+    var events:[RTMPSharedObjectEvent] = [] {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
@@ -620,26 +570,16 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                 return super.payload
             }
 
-            serializer.clear()
-            try! serializer.writeUTF8(sharedObjectName)
-            serializer.writeUInt32(currentVersion)
-            serializer.writeBytes(flags)
-
-            for event in events {
-                serializer.writeUInt8(event.type.rawValue)
-                if (event.data == nil) {
-                    serializer.writeUInt32(0)
-                } else {
-                    let position:Int = serializer.position
-                    serializer.writeUInt32(0)
-                    serializer.writeUInt16(UInt16(event.name!.utf8.count))
-                    serializer.writeUTF8Bytes(event.name!)
-                    serializer.serialize(event.data)
-                    let size:Int = serializer.position - position
-                    serializer.position = position
-                    serializer.writeUInt32(UInt32(size) - 4)
-                    serializer.position = serializer.length
+            do {
+                serializer.clear()
+                try serializer.writeUTF8(sharedObjectName)
+                serializer.writeUInt32(currentVersion)
+                serializer.writeBytes(flags)
+                for event in events {
+                    try event.serialize(&serializer)
                 }
+            } catch {
+                logger.error("\(serializer)")
             }
 
             super.payload = serializer.bytes
@@ -661,7 +601,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                     flags = try serializer.readBytes(8)
                     events.removeAll(keepCapacity: false)
                     while (0 < serializer.bytesAvailable) {
-                        if let event:Event = try Event(serializer: serializer) {
+                        if let event:RTMPSharedObjectEvent = try RTMPSharedObjectEvent(serializer: serializer) {
                             events.append(event)
                         }
                     }
@@ -682,7 +622,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
-    init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[Event]) {
+    init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[RTMPSharedObjectEvent]) {
         super.init()
         self.timestamp = timestamp
         self.objectEncoding = objectEncoding
