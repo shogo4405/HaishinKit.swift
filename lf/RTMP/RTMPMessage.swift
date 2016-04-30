@@ -632,7 +632,8 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                 } else {
                     let position:Int = serializer.position
                     serializer.writeUInt32(0)
-                    try! serializer.writeUTF8(event.name!)
+                    serializer.writeUInt16(UInt16(event.name!.utf8.count))
+                    serializer.writeUTF8Bytes(event.name!)
                     serializer.serialize(event.data)
                     let size:Int = serializer.position - position
                     serializer.position = position
