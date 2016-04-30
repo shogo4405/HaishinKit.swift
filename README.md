@@ -63,9 +63,9 @@ You can see http://ip.address:8080/hello/playlist.m3u8
 New BSD
 
 ## Enviroment
-|lf|Swift|CocoaPod|
-|----|----|----|
-|0.2|2.3|0.39.0|
+|lf|iOS|Swift|CocoaPod|
+|----|----|----|----|
+|0.2|8.0〜|2.3|0.39.0|
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
