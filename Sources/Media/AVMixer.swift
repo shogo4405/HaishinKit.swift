@@ -55,12 +55,13 @@ public class AVMixer: NSObject {
             guard orientation != oldValue else {
                 return
             }
+            #if os(iOS)
             if let connection:AVCaptureConnection = videoIO.view.layer.valueForKey("connection") as? AVCaptureConnection {
                 if (connection.supportsVideoOrientation) {
                     connection.videoOrientation = orientation
                 }
             }
-            
+            #endif
             if (_videoDataOutput != nil) {
                 for connection in _videoDataOutput!.connections {
                     if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
@@ -372,6 +373,7 @@ public class AVMixer: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
+            #if os(iOS)
             switch camera.position {
             case AVCaptureDevicePosition.Front:
                 videoIO.view.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
@@ -380,6 +382,16 @@ public class AVMixer: NSObject {
             default:
                 break
             }
+            #else
+            switch camera.position {
+            case AVCaptureDevicePosition.Front:
+                videoIO.view.layer?.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+            case AVCaptureDevicePosition.Back:
+                videoIO.view.layer?.transform = CATransform3DMakeRotation(0, 0, 1, 0)
+            default:
+                break
+            }
+            #endif
             videoDataOutput.setSampleBufferDelegate(videoIO, queue: videoIO.lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
@@ -418,7 +430,9 @@ extension AVMixer: Runnable {
     }
 
     public func startRunning() {
+        #if os(iOS)
         videoIO.view.layer.setValue(session, forKey: "session")
+        #endif
         session.startRunning()
         #if os(iOS)
         if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {

@@ -1,8 +1,9 @@
 #if os(iOS)
-    import UIKit
+import UIKit
 #else
-    import AppKit
+import AppKit
 #endif
+
 import CoreImage
 import Foundation
 import AVFoundation
@@ -61,7 +62,11 @@ final class VideoIOComponent: NSObject {
             }
             let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
-                self.view.layer.contents = content
+                #if os(iOS)
+                    self.view.layer.contents = content
+                #else
+                    self.view.layer?.contents = content
+                #endif
             }
         }
         CVPixelBufferUnlockBaseAddress(buffer, 0)
@@ -136,7 +141,11 @@ final class VideoIOComponent: NSObject {
                     return
                 }
                 dispatch_async(dispatch_get_main_queue()) {
+                    #if os(iOS)
                     self.view.layer.contents = data.image
+                    #else
+                    self.view.layer?.contents = data.image
+                    #endif
                 }
                 usleep(UInt32(data.presentationDuration.value) * 1000)
             }
@@ -156,11 +165,19 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
             presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
         )
-        if (effects.isEmpty && view.layer.contents != nil) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.layer.contents = nil
+        #if os(iOS)
+            if (effects.isEmpty && view.layer.contents != nil) {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.view.layer.contents = nil
+                }
             }
-        }
+        #else
+            if (effects.isEmpty && view.layer?.contents != nil) {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.view.layer?.contents = nil
+                }
+            }
+        #endif
     }
 }
 
@@ -318,7 +335,7 @@ public class VideoIOView: UIView {
     }
 }
 #else
-public class VideoIOView {
-    public var layer:CALayer!
+// MARK: - VideoIOView
+public class VideoIOView: NSView {
 }
 #endif

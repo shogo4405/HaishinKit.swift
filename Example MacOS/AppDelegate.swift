@@ -3,7 +3,7 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    @IBOutlet weak var window: NSWindow!
+    @IBOutlet weak var window:NSWindow!
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
     }
@@ -11,5 +11,3 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(aNotification: NSNotification) {
     }
 }
-
-
