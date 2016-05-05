@@ -7,17 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2952E9A61CD9AD5400240E56 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E9861CD9AC9700240E56 /* AppDelegate.swift */; };
-		2952E9A91CD9AD5400240E56 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E98A1CD9AC9700240E56 /* LiveViewController.swift */; };
-		2952E9AA1CD9AD5400240E56 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E98B1CD9AC9700240E56 /* MainWindowController.swift */; };
-		2952E9AB1CD9ADCE00240E56 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2952E9921CD9ACA600240E56 /* MainMenu.xib */; };
-		2952E9AC1CD9ADD300240E56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2952E9871CD9AC9700240E56 /* Assets.xcassets */; };
-		2952E9AD1CD9AE5B00240E56 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E9951CD9ACBA00240E56 /* AppDelegate.swift */; };
-		2952E9AE1CD9AE5B00240E56 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E9991CD9ACBA00240E56 /* LiveViewController.swift */; };
-		2952E9AF1CD9AE5B00240E56 /* PreferenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E99A1CD9ACBA00240E56 /* PreferenceController.swift */; };
-		2952E9B01CD9AE5B00240E56 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2952E99B1CD9ACBA00240E56 /* VisualEffect.swift */; };
-		2952E9B11CD9AE6300240E56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2952E9961CD9ACBA00240E56 /* Assets.xcassets */; };
-		2952E9B21CD9AE6300240E56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2952E9A31CD9ACC800240E56 /* LaunchScreen.storyboard */; };
+		296897601CDB022C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897511CDB01EF0074D5F0 /* Assets.xcassets */; };
+		296897611CDB022C0074D5F0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2968975A1CDB01F90074D5F0 /* MainMenu.xib */; };
+		296897621CDB02330074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897501CDB01EF0074D5F0 /* AppDelegate.swift */; };
+		296897631CDB02330074D5F0 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897531CDB01EF0074D5F0 /* LiveViewController.swift */; };
+		296897641CDB02330074D5F0 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897541CDB01EF0074D5F0 /* MainWindowController.swift */; };
+		296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897421CDB01D20074D5F0 /* Assets.xcassets */; };
+		296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */; };
+		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
+		296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897441CDB01D20074D5F0 /* LiveViewController.swift */; };
+		296897691CDB02940074D5F0 /* PreferenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897451CDB01D20074D5F0 /* PreferenceController.swift */; };
+		2968976A1CDB02940074D5F0 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897461CDB01D20074D5F0 /* VisualEffect.swift */; };
 		299F7E1E1CD718FA001E7272 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
 		299F7E241CD7196B001E7272 /* AMF0SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876CC1CD70CE700FC07DA /* AMF0SerializerTests.swift */; };
 		299F7E251CD7196B001E7272 /* AMF3SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876CD1CD70CE700FC07DA /* AMF3SerializerTests.swift */; };
@@ -182,19 +182,19 @@
 		12DBA530DE2C04F756800185 /* Pods_Example_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		225AF89B79B4CD16604AFC6C /* Pods_Example_MacOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_MacOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2952E9861CD9AC9700240E56 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MacOS/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
-		2952E9871CD9AC9700240E56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = MacOS/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		2952E9891CD9AC9700240E56 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MacOS/Info.plist; sourceTree = SOURCE_ROOT; };
-		2952E98A1CD9AC9700240E56 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiveViewController.swift; path = MacOS/LiveViewController.swift; sourceTree = SOURCE_ROOT; };
-		2952E98B1CD9AC9700240E56 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = MacOS/MainWindowController.swift; sourceTree = SOURCE_ROOT; };
-		2952E9931CD9ACA600240E56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = MacOS/Base.lproj/MainMenu.xib; sourceTree = SOURCE_ROOT; };
-		2952E9951CD9ACBA00240E56 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = iOS/AppDelegate.swift; sourceTree = SOURCE_ROOT; };
-		2952E9961CD9ACBA00240E56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = iOS/Assets.xcassets; sourceTree = SOURCE_ROOT; };
-		2952E9981CD9ACBA00240E56 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = iOS/Info.plist; sourceTree = SOURCE_ROOT; };
-		2952E9991CD9ACBA00240E56 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiveViewController.swift; path = iOS/LiveViewController.swift; sourceTree = SOURCE_ROOT; };
-		2952E99A1CD9ACBA00240E56 /* PreferenceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferenceController.swift; path = iOS/PreferenceController.swift; sourceTree = SOURCE_ROOT; };
-		2952E99B1CD9ACBA00240E56 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisualEffect.swift; path = iOS/VisualEffect.swift; sourceTree = SOURCE_ROOT; };
-		2952E9A41CD9ACC800240E56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = iOS/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
+		296897411CDB01D20074D5F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Examples/iOS/AppDelegate.swift; sourceTree = "<group>"; };
+		296897421CDB01D20074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Examples/iOS/Assets.xcassets; sourceTree = "<group>"; };
+		296897431CDB01D20074D5F0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Examples/iOS/Info.plist; sourceTree = "<group>"; };
+		296897441CDB01D20074D5F0 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiveViewController.swift; path = Examples/iOS/LiveViewController.swift; sourceTree = "<group>"; };
+		296897451CDB01D20074D5F0 /* PreferenceController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferenceController.swift; path = Examples/iOS/PreferenceController.swift; sourceTree = "<group>"; };
+		296897461CDB01D20074D5F0 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisualEffect.swift; path = Examples/iOS/VisualEffect.swift; sourceTree = "<group>"; };
+		2968974E1CDB01DD0074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Examples/iOS/Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		296897501CDB01EF0074D5F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Examples/MacOS/AppDelegate.swift; sourceTree = "<group>"; };
+		296897511CDB01EF0074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Examples/MacOS/Assets.xcassets; sourceTree = "<group>"; };
+		296897521CDB01EF0074D5F0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Examples/MacOS/Info.plist; sourceTree = "<group>"; };
+		296897531CDB01EF0074D5F0 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiveViewController.swift; path = Examples/MacOS/LiveViewController.swift; sourceTree = "<group>"; };
+		296897541CDB01EF0074D5F0 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Examples/MacOS/MainWindowController.swift; sourceTree = "<group>"; };
+		2968975B1CDB01F90074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Examples/MacOS/Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		299F7E191CD718FA001E7272 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		299F7E1D1CD718FA001E7272 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Platforms/iOS/Info.plist; sourceTree = "<group>"; };
@@ -364,8 +364,7 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
-				29C9327F1CD76FB800283FC5 /* iOS */,
-				29C932951CD76FD300283FC5 /* MacOS */,
+				2968973E1CDB01920074D5F0 /* Exsamples */,
 				B07AA4241A87981028A8F141 /* Frameworks */,
 				299F7E371CD71A76001E7272 /* Platforms */,
 				6559B12A7618D880F64E523C /* Pods */,
@@ -428,6 +427,42 @@
 				29B876751CD70ACE00FC07DA /* TSWriter.swift */,
 			);
 			name = HTTP;
+			sourceTree = "<group>";
+		};
+		2968973E1CDB01920074D5F0 /* Exsamples */ = {
+			isa = PBXGroup;
+			children = (
+				2968973F1CDB01AD0074D5F0 /* iOS */,
+				296897401CDB01B30074D5F0 /* MacOS */,
+			);
+			name = Exsamples;
+			sourceTree = "<group>";
+		};
+		2968973F1CDB01AD0074D5F0 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
+				296897421CDB01D20074D5F0 /* Assets.xcassets */,
+				296897431CDB01D20074D5F0 /* Info.plist */,
+				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
+				296897441CDB01D20074D5F0 /* LiveViewController.swift */,
+				296897451CDB01D20074D5F0 /* PreferenceController.swift */,
+				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		296897401CDB01B30074D5F0 /* MacOS */ = {
+			isa = PBXGroup;
+			children = (
+				296897501CDB01EF0074D5F0 /* AppDelegate.swift */,
+				296897511CDB01EF0074D5F0 /* Assets.xcassets */,
+				296897521CDB01EF0074D5F0 /* Info.plist */,
+				296897531CDB01EF0074D5F0 /* LiveViewController.swift */,
+				2968975A1CDB01F90074D5F0 /* MainMenu.xib */,
+				296897541CDB01EF0074D5F0 /* MainWindowController.swift */,
+			);
+			name = MacOS;
 			sourceTree = "<group>";
 		};
 		297C16881CC5382600117ADF /* Net */ = {
@@ -523,35 +558,6 @@
 				29B876AA1CD70B2800FC07DA /* RTMPStream.swift */,
 			);
 			name = RTMP;
-			sourceTree = "<group>";
-		};
-		29C9327F1CD76FB800283FC5 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
-				2952E9951CD9ACBA00240E56 /* AppDelegate.swift */,
-				2952E9961CD9ACBA00240E56 /* Assets.xcassets */,
-				2952E9981CD9ACBA00240E56 /* Info.plist */,
-				2952E9A31CD9ACC800240E56 /* LaunchScreen.storyboard */,
-				2952E9991CD9ACBA00240E56 /* LiveViewController.swift */,
-				2952E99A1CD9ACBA00240E56 /* PreferenceController.swift */,
-				2952E99B1CD9ACBA00240E56 /* VisualEffect.swift */,
-			);
-			name = iOS;
-			path = "Example iOS";
-			sourceTree = "<group>";
-		};
-		29C932951CD76FD300283FC5 /* MacOS */ = {
-			isa = PBXGroup;
-			children = (
-				2952E9861CD9AC9700240E56 /* AppDelegate.swift */,
-				2952E9871CD9AC9700240E56 /* Assets.xcassets */,
-				2952E9891CD9AC9700240E56 /* Info.plist */,
-				2952E98A1CD9AC9700240E56 /* LiveViewController.swift */,
-				2952E9921CD9ACA600240E56 /* MainMenu.xib */,
-				2952E98B1CD9AC9700240E56 /* MainWindowController.swift */,
-			);
-			name = MacOS;
-			path = "Example MacOS";
 			sourceTree = "<group>";
 		};
 		6559B12A7618D880F64E523C /* Pods */ = {
@@ -781,8 +787,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2952E9B11CD9AE6300240E56 /* Assets.xcassets in Resources */,
-				2952E9B21CD9AE6300240E56 /* LaunchScreen.storyboard in Resources */,
+				296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */,
+				296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -790,8 +796,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2952E9AC1CD9ADD300240E56 /* Assets.xcassets in Resources */,
-				2952E9AB1CD9ADCE00240E56 /* MainMenu.xib in Resources */,
+				296897601CDB022C0074D5F0 /* Assets.xcassets in Resources */,
+				296897611CDB022C0074D5F0 /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1088,10 +1094,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2952E9AD1CD9AE5B00240E56 /* AppDelegate.swift in Sources */,
-				2952E9AE1CD9AE5B00240E56 /* LiveViewController.swift in Sources */,
-				2952E9AF1CD9AE5B00240E56 /* PreferenceController.swift in Sources */,
-				2952E9B01CD9AE5B00240E56 /* VisualEffect.swift in Sources */,
+				296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */,
+				296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */,
+				296897691CDB02940074D5F0 /* PreferenceController.swift in Sources */,
+				2968976A1CDB02940074D5F0 /* VisualEffect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1099,9 +1105,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2952E9A61CD9AD5400240E56 /* AppDelegate.swift in Sources */,
-				2952E9A91CD9AD5400240E56 /* LiveViewController.swift in Sources */,
-				2952E9AA1CD9AD5400240E56 /* MainWindowController.swift in Sources */,
+				296897621CDB02330074D5F0 /* AppDelegate.swift in Sources */,
+				296897631CDB02330074D5F0 /* LiveViewController.swift in Sources */,
+				296897641CDB02330074D5F0 /* MainWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1121,20 +1127,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		2952E9921CD9ACA600240E56 /* MainMenu.xib */ = {
+		2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				2952E9931CD9ACA600240E56 /* Base */,
-			);
-			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
-		2952E9A31CD9ACC800240E56 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				2952E9A41CD9ACC800240E56 /* Base */,
+				2968974E1CDB01DD0074D5F0 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		2968975A1CDB01F90074D5F0 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2968975B1CDB01F90074D5F0 /* Base */,
+			);
+			name = MainMenu.xib;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -1362,7 +1368,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
@@ -1381,7 +1387,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				EMBEDDED_CONTENT_CONTAINS_SWIFT = YES;
 				ENABLE_BITCODE = NO;
-				INFOPLIST_FILE = "$(SRCROOT)/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.shogo4405.lf.Example-iOS";
@@ -1398,7 +1404,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				INFOPLIST_FILE = "$(SRCROOT)/MacOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Examples/MacOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.shogo4405.lf.Example-MacOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1414,7 +1420,7 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = "$(SRCROOT)/MacOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Examples/MacOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.github.shogo4405.lf.Example-MacOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
