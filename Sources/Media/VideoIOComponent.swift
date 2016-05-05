@@ -243,18 +243,12 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     }
     
     override var transform:CATransform3D {
-        get {
-            return surface.transform
-        }
-        set {
-            surface.transform = newValue
-        }
+        get { return surface.transform }
+        set { surface.transform = newValue }
     }
     
     override var frame:CGRect {
-        get {
-            return super.frame
-        }
+        get { return super.frame }
         set {
             super.frame = newValue
             surface.frame = newValue
@@ -262,9 +256,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     }
     
     override var contents:AnyObject? {
-        get {
-            return surface.contents
-        }
+        get { return surface.contents }
         set {
             surface.contents = newValue
             frameCount += 1
@@ -308,6 +300,10 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
 public class VideoIOView: UIView {
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
+    override public class func layerClass() -> AnyClass {
+        return VideoIOLayer.self
+    }
+
     required override public init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -324,10 +320,6 @@ public class VideoIOView: UIView {
         }
     }
 
-    override public class func layerClass() -> AnyClass {
-        return VideoIOLayer.self
-    }
-
     private func initialize() {
         backgroundColor = VideoIOView.defaultBackgroundColor
         layer.frame = bounds
@@ -337,5 +329,26 @@ public class VideoIOView: UIView {
 #else
 // MARK: - VideoIOView
 public class VideoIOView: NSView {
+    required override public init(frame: CGRect) {
+        super.init(frame: frame)
+        initialize()
+    }
+
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialize()
+    }
+
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
+        didSet {
+            layer?.setValue(videoGravity, forKey: "videoGravity")
+        }
+    }
+
+    private func initialize() {
+        layer = VideoIOLayer()
+        layer?.frame = bounds
+        layer?.setValue(videoGravity, forKey: "videoGravity")
+    }
 }
 #endif

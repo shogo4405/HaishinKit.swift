@@ -348,19 +348,19 @@ public class AVMixer: NSObject {
 
         currentScreen = nil
 
+        #if os(iOS)
         do {
             try camera.lockForConfiguration()
             camera.activeVideoMinFrameDuration = CMTimeMake(1, FPS)
-            #if os(iOS)
             let torchMode:AVCaptureTorchMode = torch ? .On : .Off
             if (camera.isTorchModeSupported(torchMode)) {
                 camera.torchMode = torchMode
             }
-            #endif
             camera.unlockForConfiguration()
         } catch let error as NSError {
             logger.error("\(error)")
         }
+        #endif
 
         do {
             currentCamera = try AVCaptureDeviceInput(device: camera)
@@ -432,6 +432,8 @@ extension AVMixer: Runnable {
     public func startRunning() {
         #if os(iOS)
         videoIO.view.layer.setValue(session, forKey: "session")
+        #else
+        videoIO.view.layer?.setValue(session, forKey: "session")
         #endif
         session.startRunning()
         #if os(iOS)
