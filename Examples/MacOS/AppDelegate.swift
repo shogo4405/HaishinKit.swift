@@ -1,5 +1,6 @@
 import Cocoa
 import XCGLogger
+import AudioToolbox
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -7,7 +8,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window:NSWindow!
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        XCGLogger.defaultInstance().outputLogLevel = .Verbose
+        XCGLogger.defaultInstance().outputLogLevel = .Info
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
 
         let viewController:LiveViewController = LiveViewController()

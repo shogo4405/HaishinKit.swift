@@ -11,7 +11,6 @@
 		296897611CDB022C0074D5F0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2968975A1CDB01F90074D5F0 /* MainMenu.xib */; };
 		296897621CDB02330074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897501CDB01EF0074D5F0 /* AppDelegate.swift */; };
 		296897631CDB02330074D5F0 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897531CDB01EF0074D5F0 /* LiveViewController.swift */; };
-		296897641CDB02330074D5F0 /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897541CDB01EF0074D5F0 /* MainWindowController.swift */; };
 		296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897421CDB01D20074D5F0 /* Assets.xcassets */; };
 		296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */; };
 		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
@@ -193,7 +192,6 @@
 		296897511CDB01EF0074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Examples/MacOS/Assets.xcassets; sourceTree = "<group>"; };
 		296897521CDB01EF0074D5F0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Examples/MacOS/Info.plist; sourceTree = "<group>"; };
 		296897531CDB01EF0074D5F0 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LiveViewController.swift; path = Examples/MacOS/LiveViewController.swift; sourceTree = "<group>"; };
-		296897541CDB01EF0074D5F0 /* MainWindowController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainWindowController.swift; path = Examples/MacOS/MainWindowController.swift; sourceTree = "<group>"; };
 		2968975B1CDB01F90074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Examples/MacOS/Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		299F7E191CD718FA001E7272 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		299F7E1D1CD718FA001E7272 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -460,7 +458,6 @@
 				296897521CDB01EF0074D5F0 /* Info.plist */,
 				296897531CDB01EF0074D5F0 /* LiveViewController.swift */,
 				2968975A1CDB01F90074D5F0 /* MainMenu.xib */,
-				296897541CDB01EF0074D5F0 /* MainWindowController.swift */,
 			);
 			name = MacOS;
 			sourceTree = "<group>";
@@ -1107,7 +1104,6 @@
 			files = (
 				296897621CDB02330074D5F0 /* AppDelegate.swift in Sources */,
 				296897631CDB02330074D5F0 /* LiveViewController.swift in Sources */,
-				296897641CDB02330074D5F0 /* MainWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

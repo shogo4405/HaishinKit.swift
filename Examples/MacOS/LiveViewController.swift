@@ -43,6 +43,8 @@ final class LiveViewController: NSViewController {
         }
 
         audioPopUpButton = NSPopUpButton()
+        audioPopUpButton.action = #selector(LiveViewController.selectAudio(_:))
+        audioPopUpButton.target = self
         let audios:[AnyObject]! = AVCaptureDevice.devicesWithMediaType(AVMediaTypeAudio)
         for audio in audios {
             if let audio:AVCaptureDevice = audio as? AVCaptureDevice {
@@ -76,6 +78,18 @@ final class LiveViewController: NSViewController {
                 continue
             }
             rtmpStream.attachCamera(device)
+        }
+    }
+
+    func selectAudio(sender:AnyObject) {
+        let devices:[AnyObject]! = AVCaptureDevice.devicesWithMediaType(AVMediaTypeAudio)
+        let title:String = audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem]
+        for device in devices {
+            guard let device:AVCaptureDevice = device as? AVCaptureDevice
+                where device.localizedName == title else {
+                    continue
+            }
+            rtmpStream.attachAudio(device)
         }
     }
 
