@@ -25,7 +25,6 @@ final class AACEncoder: NSObject {
     ]
     #else
     static let defaultInClassDescriptions:[AudioClassDescription] = [
-        AudioClassDescription(mType: 1634037347, mSubType: 1633772320, mManufacturer: 1634758764)
     ]
     #endif
 
@@ -64,7 +63,7 @@ final class AACEncoder: NSObject {
         get {
             if (_inDestinationFormat == nil) {
                 _inDestinationFormat = AudioStreamBasicDescription()
-                _inDestinationFormat!.mSampleRate = min((sampleRate == 0) ? inSourceFormat!.mSampleRate : sampleRate, 44100)
+                _inDestinationFormat!.mSampleRate = sampleRate == 0 ? inSourceFormat!.mSampleRate : sampleRate
                 _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
                 _inDestinationFormat!.mFormatFlags = profile
                 _inDestinationFormat!.mBytesPerPacket = 0
@@ -114,6 +113,7 @@ final class AACEncoder: NSObject {
                 var bitrate:UInt32 = self.bitrate * inDestinationFormat.mChannelsPerFrame
                 setProperty(kAudioConverterEncodeBitRate, UInt32(sizeof(bitrate.dynamicType)), &bitrate)
             }
+
             _converter = converter
         }
         if (status != noErr) {
@@ -166,10 +166,8 @@ final class AACEncoder: NSObject {
             currentBufferList!.mBuffers.mDataByteSize
         )
 
-        ioData.memory.mBuffers.mNumberChannels = 1
         ioData.memory.mBuffers.mData = currentBufferList!.mBuffers.mData
         ioData.memory.mBuffers.mDataByteSize = numBytes
-
         ioNumberDataPackets.memory = numBytes / inSourceFormat!.mBytesPerPacket
         currentBufferList = nil
 
@@ -201,7 +199,7 @@ extension AACEncoder: Encoder {
 
 // MARK: - AVCaptureAudioDataOutputSampleBufferDelegate
 extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+    func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
 
         guard running else {
             return
@@ -221,7 +219,7 @@ extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
 
         currentBufferList = createAudioBufferList(sampleBuffer)
 
-        AudioConverterFillComplexBuffer(
+        let status:OSStatus = AudioConverterFillComplexBuffer(
             converter,
             inputDataProc,
             unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
@@ -229,6 +227,10 @@ extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
             &outOutputData,
             nil
         )
+
+        guard status == noErr else {
+            return
+        }
 
         var result:CMSampleBufferRef?
         var timing:CMSampleTimingInfo = CMSampleTimingInfo()
