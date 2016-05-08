@@ -198,8 +198,8 @@ public class RTMPStream: EventDispatcher {
 
     #if os(iOS)
     public var torch:Bool {
-        get { return mixer.torch }
-        set { mixer.torch = newValue }
+        get { return mixer.videoIO.torch }
+        set { mixer.videoIO.torch = newValue }
     }
     public var syncOrientation:Bool {
         get { return mixer.syncOrientation }
@@ -269,20 +269,20 @@ public class RTMPStream: EventDispatcher {
 
     public func attachAudio(audio:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
-            self.mixer.attachAudio(audio)
+            self.mixer.audioIO.attachAudio(audio)
         }
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
-            self.mixer.attachCamera(camera)
+            self.mixer.videoIO.attachCamera(camera)
             self.mixer.startRunning()
         }
     }
 
     public func attachScreen(screen:ScreenCaptureSession?) {
         dispatch_async(lockQueue) {
-            self.mixer.attachScreen(screen)
+            self.mixer.videoIO.attachScreen(screen)
         }
     }
 
@@ -449,8 +449,8 @@ public class RTMPStream: EventDispatcher {
     }
 
     public func setPointOfInterest(focus:CGPoint, exposure:CGPoint) {
-        mixer.focusPointOfInterest = focus
-        mixer.exposurePointOfInterest = exposure
+        mixer.videoIO.focusPointOfInterest = focus
+        mixer.videoIO.exposurePointOfInterest = exposure
     }
 
     func rtmpStatusHandler(notification:NSNotification) {

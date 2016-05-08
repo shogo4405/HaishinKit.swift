@@ -1,6 +1,7 @@
 import Foundation
 import AudioToolbox
 
+// MARK: - SoundTransform
 public struct SoundTransform {
 
     static public let defaultValue:Float32 = 1.0

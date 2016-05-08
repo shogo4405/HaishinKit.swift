@@ -24,14 +24,14 @@ public class HTTPStream: NSObject {
 
     public func attachCamera(camera:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
-            self.mixer.attachCamera(camera)
+            self.mixer.videoIO.attachCamera(camera)
             self.mixer.startRunning()
         }
     }
 
     public func attachScreen(screen:ScreenCaptureSession?) {
         dispatch_async(lockQueue) {
-            self.mixer.attachScreen(screen)
+            self.mixer.videoIO.attachScreen(screen)
         }
     }
 

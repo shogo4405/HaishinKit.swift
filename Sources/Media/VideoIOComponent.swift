@@ -14,6 +14,7 @@ struct VideoIOData {
     var presentationDuration:CMTime
 }
 
+// MARK: - VideoIOComponent
 final class VideoIOComponent: NSObject {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
@@ -44,11 +45,261 @@ final class VideoIOComponent: NSObject {
     private var effects:[VisualEffect] = []
     private var rendering:Bool = false
 
+    var fps:Int32 = AVMixer.defaultFPS
+    var session:AVCaptureSession!
+
+    var videoSettings:[NSObject:AnyObject] = AVMixer.defaultVideoSettings {
+        didSet {
+            output.videoSettings = videoSettings
+        }
+    }
+
+    var orientation:AVCaptureVideoOrientation = .Portrait {
+        didSet {
+            guard orientation != oldValue else {
+                return
+            }
+            #if os(iOS)
+            if let connection:AVCaptureConnection = view.layer.valueForKey("connection") as? AVCaptureConnection {
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
+                }
+            }
+            #endif
+            for connection in output.connections {
+                if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
+                    if (connection.supportsVideoOrientation) {
+                        connection.videoOrientation = orientation
+                    }
+                }
+            }
+        }
+    }
+
+    #if os(iOS)
+    var torch:Bool = false {
+        didSet {
+            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            guard let device:AVCaptureDevice = input?.device
+                where device.isTorchModeSupported(torchMode) && device.torchAvailable else {
+                    logger.warning("torchMode(\(torchMode)) is not supported")
+                    return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.torchMode = torchMode
+                device.unlockForConfiguration()
+            }
+            catch let error as NSError {
+                logger.error("while setting torch: \(error)")
+            }
+        }
+    }
+    #endif
+    
+    var continuousAutofocus:Bool = true {
+        didSet {
+            let focusMode:AVCaptureFocusMode = continuousAutofocus ? .ContinuousAutoFocus : .AutoFocus
+            guard let device:AVCaptureDevice = input?.device
+                where device.isFocusModeSupported(focusMode) else {
+                    logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
+                    return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.focusMode = focusMode
+                device.unlockForConfiguration()
+            }
+            catch let error as NSError {
+                logger.error("while locking device for autofocus: \(error)")
+            }
+        }
+    }
+
+    var focusPointOfInterest:CGPoint? {
+        didSet {
+            guard let
+                device:AVCaptureDevice = input?.device,
+                point:CGPoint = focusPointOfInterest
+            where
+                device.focusPointOfInterestSupported else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.focusPointOfInterest = point
+                device.focusMode = .AutoFocus
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for focusPointOfInterest: \(error)")
+            }
+        }
+    }
+
+    var exposurePointOfInterest:CGPoint? {
+        didSet {
+            guard let
+                device:AVCaptureDevice = input?.device,
+                point:CGPoint = exposurePointOfInterest
+            where
+                device.exposurePointOfInterestSupported else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.exposurePointOfInterest = point
+                device.exposureMode = .AutoExpose
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for exposurePointOfInterest: \(error)")
+            }
+        }
+    }
+
+    var continuousExposure:Bool = true {
+        didSet {
+            let exposureMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
+            guard let device:AVCaptureDevice = input?.device
+                where device.isExposureModeSupported(exposureMode) else {
+                    logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
+                    return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.exposureMode = exposureMode
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for autoexpose: \(error)")
+            }
+        }
+    }
+
+    private var _output:AVCaptureVideoDataOutput? = nil
+    var output:AVCaptureVideoDataOutput! {
+        get {
+            if (_output == nil) {
+                _output = AVCaptureVideoDataOutput()
+                _output!.alwaysDiscardsLateVideoFrames = true
+                _output!.videoSettings = videoSettings
+            }
+            return _output!
+        }
+        set {
+            if (_output == newValue) {
+                return
+            }
+            if let output:AVCaptureVideoDataOutput = _output {
+                output.setSampleBufferDelegate(nil, queue: nil)
+                session.removeOutput(output)
+            }
+            _output = newValue
+        }
+    }
+
+    private(set) var input:AVCaptureDeviceInput? = nil {
+        didSet {
+            guard oldValue != input else {
+                return
+            }
+            if let oldValue:AVCaptureDeviceInput = oldValue {
+                session.removeInput(oldValue)
+            }
+            if let input:AVCaptureDeviceInput = input {
+                session.addInput(input)
+            }
+        }
+    }
+
+    private(set) var screen:ScreenCaptureSession? = nil {
+        didSet {
+            guard oldValue != screen else {
+                return
+            }
+            if let oldValue:ScreenCaptureSession = oldValue {
+                oldValue.delegate = nil
+                oldValue.stopRunning()
+            }
+            if let screen:ScreenCaptureSession = screen {
+                screen.delegate = self
+                screen.startRunning()
+            }
+        }
+    }
+
     override init() {
         super.init()
         encoder.lockQueue = lockQueue
         decoder.lockQueue = lockQueue
         decoder.delegate = self
+    }
+
+    func attachCamera(camera:AVCaptureDevice?) {
+        output = nil
+        guard let camera:AVCaptureDevice = camera else {
+            input = nil
+            return
+        }
+        screen = nil
+        #if os(iOS)
+        do {
+            try camera.lockForConfiguration()
+            camera.activeVideoMinFrameDuration = CMTimeMake(1, fps)
+            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            if (camera.isTorchModeSupported(torchMode)) {
+                camera.torchMode = torchMode
+            }
+            camera.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("\(error)")
+        }
+        #endif
+
+        do {
+            input = try AVCaptureDeviceInput(device: camera)
+            session.addOutput(output)
+            for connection in output.connections {
+                guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
+                    continue
+                }
+                if (connection.supportsVideoOrientation) {
+                    connection.videoOrientation = orientation
+                }
+            }
+            #if os(iOS)
+                switch camera.position {
+                case AVCaptureDevicePosition.Front:
+                    view.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+                case AVCaptureDevicePosition.Back:
+                    view.layer.transform = CATransform3DMakeRotation(0, 0, 1, 0)
+                default:
+                    break
+                }
+            #else
+                switch camera.position {
+                case AVCaptureDevicePosition.Front:
+                    view.layer?.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+                case AVCaptureDevicePosition.Back:
+                    view.layer?.transform = CATransform3DMakeRotation(0, 0, 1, 0)
+                default:
+                    break
+                }
+            #endif
+            output.setSampleBufferDelegate(self, queue: lockQueue)
+        } catch let error as NSError {
+            logger.error("\(error)")
+        }
+    }
+
+    func attachScreen(screen:ScreenCaptureSession?) {
+        guard let screen:ScreenCaptureSession = screen else {
+            return
+        }
+        input = nil
+        encoder.setValuesForKeysWithDictionary([
+            "width": screen.attributes["Width"]!,
+            "height": screen.attributes["Height"]!,
+            ])
+        self.screen = screen
     }
 
     func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
@@ -141,11 +392,11 @@ final class VideoIOComponent: NSObject {
                     return
                 }
                 dispatch_async(dispatch_get_main_queue()) {
-                    #if os(iOS)
+                #if os(iOS)
                     self.view.layer.contents = data.image
-                    #else
+                #else
                     self.view.layer?.contents = data.image
-                    #endif
+                #endif
                 }
                 usleep(UInt32(data.presentationDuration.value) * 1000)
             }
@@ -166,17 +417,17 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
         )
         #if os(iOS)
-            if (effects.isEmpty && view.layer.contents != nil) {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.view.layer.contents = nil
-                }
+        if (effects.isEmpty && view.layer.contents != nil) {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.view.layer.contents = nil
             }
+        }
         #else
-            if (effects.isEmpty && view.layer?.contents != nil) {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.view.layer?.contents = nil
-                }
+        if (effects.isEmpty && view.layer?.contents != nil) {
+            dispatch_async(dispatch_get_main_queue()) {
+                self.view.layer?.contents = nil
             }
+        }
         #endif
     }
 }
@@ -217,36 +468,36 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
 // MARK: - VideoIOLayer
 final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     private(set) var currentFPS:Int = 0
-    
+
     private var timer:NSTimer?
     private var frameCount:Int = 0
     private var surface:CALayer = CALayer()
-    
+
     override init() {
         super.init()
         initialize()
     }
-    
+
     override init!(session: AVCaptureSession!) {
         super.init(session: session)
         initialize()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
     }
-    
+
     deinit {
         timer?.invalidate()
         timer = nil
     }
-    
+
     override var transform:CATransform3D {
         get { return surface.transform }
         set { surface.transform = newValue }
     }
-    
+
     override var frame:CGRect {
         get { return super.frame }
         set {
@@ -254,7 +505,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
             surface.frame = newValue
         }
     }
-    
+
     override var contents:AnyObject? {
         get { return surface.contents }
         set {
@@ -262,7 +513,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
             frameCount += 1
         }
     }
-    
+
     override var videoGravity:String! {
         get {
             return super.videoGravity
@@ -281,14 +532,14 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
             }
         }
     }
-    
+
     private func initialize() {
         timer = NSTimer.scheduledTimerWithTimeInterval(
             1.0, target: self, selector: #selector(VideoIOLayer.didTimerInterval(_:)), userInfo: nil, repeats: true
         )
         addSublayer(surface)
     }
-    
+
     func didTimerInterval(timer:NSTimer) {
         currentFPS = frameCount
         frameCount = 0

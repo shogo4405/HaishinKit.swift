@@ -5,7 +5,7 @@ import CoreImage
 import Foundation
 import AVFoundation
 
-public protocol ScreenCaptureOutputPixelBufferDelegate:class {
+public protocol ScreenCaptureOutputPixelBufferDelegate: class {
     func didSetSize(size:CGSize)
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime)
 }
@@ -18,6 +18,7 @@ public final class ScreenCaptureSession: NSObject {
         kCVPixelBufferCGBitmapContextCompatibilityKey: true
     ]
 
+    public var enabledScale:Bool = false
     public var frameInterval:Int = ScreenCaptureSession.defaultFrameInterval
     public var attributes:[NSString:NSObject] {
         get {
@@ -60,16 +61,16 @@ public final class ScreenCaptureSession: NSObject {
         }
     }
     private var scale:CGFloat {
-        return UIScreen.mainScreen().scale
+        return enabledScale ? UIScreen.mainScreen().scale : 1.0
     }
 
     private var _pixelBufferPool:CVPixelBufferPoolRef?
     private var pixelBufferPool:CVPixelBufferPoolRef! {
         get {
             if (_pixelBufferPool == nil) {
-                var pool:CVPixelBufferPoolRef?
-                CVPixelBufferPoolCreate(nil, nil, attributes, &pool)
-                _pixelBufferPool = pool
+                var pixelBufferPool:CVPixelBufferPoolRef?
+                CVPixelBufferPoolCreate(nil, nil, attributes, &pixelBufferPool)
+                _pixelBufferPool = pixelBufferPool
             }
             return _pixelBufferPool!
         }
@@ -132,7 +133,7 @@ extension ScreenCaptureSession: Runnable {
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: #selector(ScreenCaptureSession.onScreen(_:)))
             self.displayLink.frameInterval = self.frameInterval
-            self.displayLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            self.displayLink.addToRunLoop(.mainRunLoop(), forMode: NSRunLoopCommonModes)
         }
     }
 
@@ -142,7 +143,7 @@ extension ScreenCaptureSession: Runnable {
                 return
             }
             self.displayLink.invalidate()
-            self.displayLink.removeFromRunLoop(NSRunLoop.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            self.displayLink.removeFromRunLoop(.mainRunLoop(), forMode: NSRunLoopCommonModes)
             self.colorSpace = nil
             self.displayLink = nil
             self.running = false
@@ -158,6 +159,6 @@ public final class ScreenCaptureSession: NSObject {
 
 extension ScreenCaptureSession: Runnable {
     public func startRunning() {}
-    public func stopRunning() { }
+    public func stopRunning() {}
 }
 #endif
