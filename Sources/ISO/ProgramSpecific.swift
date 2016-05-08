@@ -137,6 +137,7 @@ extension ProgramSpecific: BytesConvertible {
 // MARK: - ProgramAssociationSpecific
 final class ProgramAssociationSpecific: ProgramSpecific {
     static let tableID:UInt8 = 0
+
     var programs:[UInt16:UInt16] = [:]
 
     override var data:[UInt8] {

@@ -111,3 +111,9 @@ final class LiveViewController: NSViewController {
         }
     }
 }
+
+extension LiveViewController: NSWindowDelegate {
+    func windowWillClose(notification: NSNotification) {
+        NSApp.terminate(self)
+    }
+}

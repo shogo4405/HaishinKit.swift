@@ -15,3 +15,4 @@ protocol Iterator {
     func hasNext() -> Bool
     func next() -> T?
 }
+
