@@ -42,6 +42,18 @@ public class AVMixer: NSObject {
         return nil
     }
 
+    static public func deviceWithLocalizedName(localizedName:String, mediaType:String) -> AVCaptureDevice? {
+        for device in AVCaptureDevice.devices() {
+            guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
+                continue
+            }
+            if (device.hasMediaType(mediaType) && device.localizedName == localizedName) {
+                return device
+            }
+        }
+        return nil
+    }
+
     static let defaultFPS:Int32 = 30
     static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
     static let defaultVideoSettings:[NSObject: AnyObject] = [
