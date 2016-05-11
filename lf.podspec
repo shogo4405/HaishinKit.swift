@@ -2,10 +2,10 @@ Pod::Spec.new do |s|
 
   s.name         = "lf"
   s.version      = "0.3"
-  s.summary      = "iOS/OSX Camera/Microphone streaming library via RTMP"
+  s.summary      = "Camera/Microphone streaming library via RTMP/HLS for iOS/OSX"
 
   s.description  = <<-DESC
-  lf is a lIVE fRAMEWORK. iOS/OSX Camera/Microphone streaming library via RTMP/HTTP
+  lf is a lIVE fRAMEWORK. Camera/Microphone streaming library via RTMP/HLS for iOS/OSX
   DESC
 
   s.homepage     = "https://github.com/shogo4405/lf.swift"
@@ -15,9 +15,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/shogo4405/lf.swift.git", :tag => "#{s.version}" }
   s.social_media_url = "http://twitter.com/shogo4405"
 
-  s.ios.platform  = :ios, "8.0"
   s.ios.deployment_target = "8.0"
-  s.osx.platform  = :osx, "10.10"
   s.osx.deployment_target = "10.10"
 
   s.source_files = "Sources/*.swift"

@@ -1,5 +1,5 @@
 PODS:
-  - CryptoSwift (0.4)
+  - CryptoSwift (0.4.1)
   - XCGLogger (3.3)
 
 DEPENDENCIES:
@@ -7,7 +7,9 @@ DEPENDENCIES:
   - XCGLogger (~> 3.3)
 
 SPEC CHECKSUMS:
-  CryptoSwift: 584eac7d00b2f497fe7b20de271b8c0c52fff844
+  CryptoSwift: 25b5aff3f260967391f8fff2e9abe4254d2c6fd5
   XCGLogger: d6e196e78940ff6daab17d6917107876f973fa31
 
-COCOAPODS: 0.39.0
+PODFILE CHECKSUM: 64d69c7da2cb944421dbf3e482d227860d6d2c92
+
+COCOAPODS: 1.0.0
