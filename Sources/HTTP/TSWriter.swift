@@ -4,12 +4,13 @@ import CryptoSwift
 
 // MARK: - TSWriter
 class TSWriter {
+    static let defaultPATPID:UInt16 = 0
     static let defaultPMTPID:UInt16 = 4096
     static let defaultVideoPID:UInt16 = 256
     static let defaultAudioPID:UInt16 = 257
     static let defaultSegmentCount:Int = 3
     static let defaultSegmentMaxCount:Int = 12
-    static let defaultSegmentDuration:Double = 5
+    static let defaultSegmentDuration:Double = 2
 
     var playlist:String {
         var m3u8:M3U = M3U()
@@ -23,7 +24,7 @@ class TSWriter {
         m3u8.mediaList = Array(files[files.count - TSWriter.defaultSegmentCount..<files.count])
         return m3u8.description
     }
-    let lockQueue:dispatch_queue_t = dispatch_queue_create(
+    var lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.TSWriter.lock", DISPATCH_QUEUE_SERIAL
     )
 
@@ -35,31 +36,24 @@ class TSWriter {
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
-    private(set) var PMT:ProgramMapSpecific = {
-        let PMT:ProgramMapSpecific = ProgramMapSpecific()
-        var data:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
-        data.elementaryPID = TSWriter.defaultVideoPID
-        data.streamType = 27
-        PMT.PCRPID = TSWriter.defaultVideoPID
-        PMT.elementaryStreamSpecificData.append(data)
-        return PMT
-    }()
+    private(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
     private(set) var files:[M3UMediaInfo] = []
     private(set) var running:Bool = false
 
+    private var PCRPID:UInt16 = TSWriter.defaultVideoPID
     private var sequence:Int = 0
-    private var config:AVCConfigurationRecord?
-    private var timestamp:CMTime = kCMTimeZero
+    private var timestamps:[UInt16:CMTime] = [:]
+    private var audioConfig:AudioSpecificConfig?
+    private var videoConfig:AVCConfigurationRecord?
     private var PCRTimestamp:CMTime = kCMTimeZero
     private var currentFileURL:NSURL?
     private var rotatedTimestamp:CMTime = kCMTimeZero
-    private var continuityCounter:UInt8 = 8
     private var currentFileHandle:NSFileHandle? {
         didSet {
             oldValue?.closeFile()
         }
     }
-    private var currentSampleBuffer:CMSampleBuffer?
+    private var continuityCounters:[UInt16:UInt8] = [:]
 
     func getFilePath(fileName:String) -> String? {
         for info in files {
@@ -70,43 +64,38 @@ class TSWriter {
         return nil
     }
 
-    func writeSampleBuffer(sampleBuffer:CMSampleBuffer) {
-        if (timestamp == kCMTimeZero) {
-            timestamp = sampleBuffer.presentationTimeStamp
-            PCRTimestamp = sampleBuffer.presentationTimeStamp
-            currentSampleBuffer = sampleBuffer
+    func writeSampleBuffer(PID:UInt16, streamID:UInt8, sampleBuffer:CMSampleBuffer) {
+        if (timestamps[PID] == nil) {
+            timestamps[PID] = sampleBuffer.presentationTimeStamp
+            if (PCRPID == PID) {
+                PCRTimestamp = sampleBuffer.presentationTimeStamp
+            }
+        }
+        let config:Any? = streamID == 192 ? audioConfig : videoConfig
+        guard var PES:PacketizedElementaryStream = PacketizedElementaryStream.create(
+            sampleBuffer, timestamp:timestamps[PID]!, config:config
+        ) else {
             return
         }
-        guard
-            let config:AVCConfigurationRecord = config,
-                currentSampleBuffer:CMSampleBuffer = currentSampleBuffer,
-            var PES:PacketizedElementaryStream = PacketizedElementaryStream(
-                sampleBuffer: sampleBuffer,
-                timestamp: timestamp,
-                config: sampleBuffer.dependsOnOthers ? nil : config
-            ) else {
-            return
-        }
-        PES.streamID = 224
-        let decodeTimeStamp:CMTime = currentSampleBuffer.decodeTimeStamp
-        var packets:[TSPacket] = split(TSWriter.defaultVideoPID, PES: PES, timestamp: decodeTimeStamp)
-        if (rorateFileHandle(decodeTimeStamp, next: sampleBuffer.decodeTimeStamp)) {
+        PES.streamID = streamID
+        let decodeTimeStamp:CMTime = sampleBuffer.decodeTimeStamp
+        var packets:[TSPacket] = split(PID, PES: PES, timestamp: decodeTimeStamp)
+        if (PCRPID == PID && rorateFileHandle(decodeTimeStamp, next: sampleBuffer.decodeTimeStamp)) {
             packets[0].adaptationField?.randomAccessIndicator = true
             packets[0].adaptationField?.discontinuityIndicator = true
         }
         for var packet in packets {
-            packet.continuityCounter = continuityCounter
-            continuityCounter = (continuityCounter + 1) & 0xf
+            packet.continuityCounter = continuityCounters[PID]!
+            continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0xf
             currentFileHandle?.writeData(NSData(bytes: packet.bytes))
         }
-        self.currentSampleBuffer = sampleBuffer
     }
 
     func split(PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
         var PCR:UInt64?
         let duration:Double = timestamp.seconds - PCRTimestamp.seconds
-        if (0.1 <= duration) {
-            PCR = UInt64((timestamp.seconds - self.timestamp.seconds) * TSTimestamp.resolution)
+        if (PCRPID == PID && 0.1 <= duration) {
+            PCR = UInt64((timestamp.seconds - timestamps[PID]!.seconds) * TSTimestamp.resolution)
             PCRTimestamp = timestamp
         }
         var packets:[TSPacket] = []
@@ -137,13 +126,14 @@ class TSWriter {
             do { try fileManager.removeItemAtURL(info.url) }
             catch let e as NSError { logger.warning("\(e)") }
         }
-
         currentFileURL = url
-        continuityCounter = 0
+        for (pid, _) in continuityCounters {
+            continuityCounters[pid] = 0
+        }
         currentFileHandle = try? NSFileHandle(forWritingToURL: url)
         var packets:[TSPacket] = []
-        packets += PAT.arrayOfPackets(0)
-        packets += PMT.arrayOfPackets(4096)
+        packets += PAT.arrayOfPackets(TSWriter.defaultPATPID)
+        packets += PMT.arrayOfPackets(TSWriter.defaultPMTPID)
         for packet in packets {
             currentFileHandle?.writeData(NSData(bytes: packet.bytes))
         }
@@ -185,22 +175,43 @@ extension TSWriter: Runnable {
     }
 }
 
+// MARK: AudioEncoderDelegate
+extension TSWriter: AudioEncoderDelegate {
+    func didSetFormatDescription(audio formatDescription: CMFormatDescriptionRef?) {
+        guard let
+            formatDescription:CMAudioFormatDescriptionRef = formatDescription else {
+            return
+        }
+        audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
+        var data:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
+        data.streamType = ElementaryStreamType.ADTSAAC.rawValue
+        data.elementaryPID = TSWriter.defaultAudioPID
+        PMT.elementaryStreamSpecificData.append(data)
+        continuityCounters[TSWriter.defaultAudioPID] = 0
+    }
+
+    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
+        writeSampleBuffer(TSWriter.defaultAudioPID, streamID:192, sampleBuffer:sampleBuffer)
+    }
+}
+
 // MARK: VideoEncoderDelegate
 extension TSWriter: VideoEncoderDelegate {
     func didSetFormatDescription(video formatDescription: CMFormatDescriptionRef?) {
-        dispatch_async(lockQueue) {
-            guard let
-                formatDescription:CMFormatDescriptionRef = formatDescription,
-                avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
-                return
-            }
-            self.config = AVCConfigurationRecord(data: avcC)
+        guard let
+            formatDescription:CMFormatDescriptionRef = formatDescription,
+            avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
+            return
         }
+        videoConfig = AVCConfigurationRecord(data: avcC)
+        var data:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
+        data.streamType = ElementaryStreamType.H264.rawValue
+        data.elementaryPID = TSWriter.defaultVideoPID
+        PMT.elementaryStreamSpecificData.append(data)
+        continuityCounters[TSWriter.defaultVideoPID] = 0
     }
 
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        dispatch_async(lockQueue) {
-            self.writeSampleBuffer(sampleBuffer)
-        }
+        writeSampleBuffer(TSWriter.defaultVideoPID, streamID:224, sampleBuffer:sampleBuffer)
     }
 }

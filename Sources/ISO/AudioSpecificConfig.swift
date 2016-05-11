@@ -3,6 +3,7 @@ import AVFoundation
 
 // @see http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
 // @see http://wiki.multimedia.cx/?title=Understanding_AAC
+// MARK: - AudioSpecificConfig
 struct AudioSpecificConfig {
     static let ADTSHeaderSize:Int = 7
 
@@ -81,31 +82,31 @@ extension AudioSpecificConfig: CustomStringConvertible {
 
 // MARK: - AudioObjectType
 enum AudioObjectType: UInt8 {
-    case Unknown = 0
-    case AAC_Main = 1
-    case AAC_LC = 2
-    case AAC_SSR = 3
-    case AAC_LTP = 4
-    case AAC_SBR = 5
-    case AAC_Scalable = 6
-    case TwinqVQ = 7
-    case CELP = 8
-    case HXVC = 9
+    case Unknown     = 0
+    case AACMain     = 1
+    case AACLC       = 2
+    case AACSSR      = 3
+    case AACLTP      = 4
+    case AACSBR      = 5
+    case AACScalable = 6
+    case TwinqVQ     = 7
+    case CELP        = 8
+    case HXVC        = 9
 
     init (objectID: MPEG4ObjectID) {
         switch objectID {
         case .AAC_Main:
-            self = .AAC_Main
+            self = .AACMain
         case .AAC_LC:
-            self = .AAC_LC
+            self = .AACLC
         case .AAC_SSR:
-            self = .AAC_SSR
+            self = .AACSSR
         case .AAC_LTP:
-            self = .AAC_LTP
+            self = .AACLTP
         case .AAC_SBR:
-            self = .AAC_SBR
+            self = .AACSBR
         case .AAC_Scalable:
-            self = .AAC_Scalable
+            self = .AACScalable
         case .TwinVQ:
             self = .TwinqVQ
         case .CELP:
@@ -163,7 +164,7 @@ enum SamplingFrequency: UInt8 {
         }
     }
 
-    init(sampleRate: Float64) {
+    init(sampleRate:Float64) {
         switch Int(sampleRate) {
         case 96000:
             self = .hz96000

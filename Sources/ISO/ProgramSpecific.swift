@@ -214,9 +214,20 @@ final class ProgramMapSpecific: ProgramSpecific {
     }
 }
 
-enum ElementaryStreamType:UInt8 {
-    case MPEG4H263BasedVideo = 16
-    case MPEG4LOASMultiFormatFramedAudio = 17
+// MARK: - ElementaryStreamType
+enum ElementaryStreamType: UInt8 {
+    case MPEG1Video          = 0x01
+    case MPEG2Video          = 0x02
+    case MPEG1Audio          = 0x03
+    case MPEG2Audio          = 0x04
+    case MPEG2TabledData     = 0x05
+    case MPEG2PacketizedData = 0x06
+
+    case ADTSAAC  = 0x0F
+    case H263     = 0x10
+
+    case H264     = 0x1B
+    case H265     = 0x24
 }
 
 // MARK: - ElementaryStreamSpecificData

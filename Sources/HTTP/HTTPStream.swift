@@ -29,6 +29,12 @@ public class HTTPStream: NSObject {
         }
     }
 
+    public func attachAudio(audio:AVCaptureDevice?) {
+        dispatch_async(lockQueue) {
+            self.mixer.audioIO.attachAudio(audio)
+        }
+    }
+
     public func attachScreen(screen:ScreenCaptureSession?) {
         dispatch_async(lockQueue) {
             self.mixer.videoIO.attachScreen(screen)
@@ -41,7 +47,7 @@ public class HTTPStream: NSObject {
                 self.name = name
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.stopRunning()
-                self.mixer.videoIO.encoder.delegate = nil
+                self.mixer.audioIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.tsWriter.stopRunning()
                 return
@@ -49,7 +55,7 @@ public class HTTPStream: NSObject {
             self.name = name
             self.mixer.videoIO.encoder.delegate = self.tsWriter
             self.mixer.videoIO.encoder.startRunning()
-            self.mixer.videoIO.encoder.delegate = self.tsWriter
+            self.mixer.audioIO.encoder.delegate = self.tsWriter
             self.mixer.audioIO.encoder.startRunning()
             self.tsWriter.startRunning()
         }
@@ -75,15 +81,5 @@ public class HTTPStream: NSObject {
         default:
             return nil
         }
-    }
-}
-
-// MARK: - VideoEncoderDelegate
-extension HTTPStream: VideoEncoderDelegate {
-    func didSetFormatDescription(video formatDescription: CMFormatDescriptionRef?) {
-        tsWriter.didSetFormatDescription(video: formatDescription)
-    }
-    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        tsWriter.sampleOutput(video: sampleBuffer)
     }
 }

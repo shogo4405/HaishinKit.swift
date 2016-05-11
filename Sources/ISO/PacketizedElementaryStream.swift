@@ -132,6 +132,16 @@ struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize:Int = 6
     static let startCode:[UInt8] = [0x00, 0x00, 0x01]
 
+    static func create(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:Any?) -> PacketizedElementaryStream? {
+        if let config:AudioSpecificConfig = config as? AudioSpecificConfig {
+            return PacketizedElementaryStream(sampleBuffer: sampleBuffer, timestamp: timestamp, config: config)
+        }
+        if let config:AVCConfigurationRecord = config as? AVCConfigurationRecord {
+            return PacketizedElementaryStream(sampleBuffer: sampleBuffer, timestamp: timestamp, config: sampleBuffer.dependsOnOthers ? nil : config)
+        }
+        return nil
+    }
+
     var startCode:[UInt8] = PacketizedElementaryStream.startCode
     var streamID:UInt8 = 0
     var packetLength:UInt16 = 0
@@ -143,6 +153,19 @@ struct PacketizedElementaryStream: PESPacketHeader {
         if (startCode != PacketizedElementaryStream.startCode) {
             return nil
         }
+    }
+
+    init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AudioSpecificConfig?) {
+        let payload:[UInt8] = sampleBuffer.bytes
+        data += config!.adts(payload.count)
+        data += payload
+        optionalPESHeader = PESOptionalHeader()
+        optionalPESHeader?.setTimestamp(
+            timestamp,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            decodeTimeStamp: sampleBuffer.decodeTimeStamp
+        )
+        packetLength = UInt16(data.count + optionalPESHeader!.bytes.count)
     }
 
     init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AVCConfigurationRecord?) {

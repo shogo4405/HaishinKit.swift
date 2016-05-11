@@ -407,7 +407,7 @@ final class VideoIOComponent: NSObject {
 
 // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(captureOutput: AVCaptureOutput!, didOutputSampleBuffer sampleBuffer: CMSampleBuffer!, fromConnection connection: AVCaptureConnection!) {
+    func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
         guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }

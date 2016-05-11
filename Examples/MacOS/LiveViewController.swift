@@ -28,6 +28,7 @@ final class LiveViewController: NSViewController {
 
     var audioPopUpButton:NSPopUpButton = {
         let button:NSPopUpButton = NSPopUpButton()
+        button.action = #selector(LiveViewController.selectAudio(_:))
         let audios:[AnyObject]! = AVCaptureDevice.devicesWithMediaType(AVMediaTypeAudio)
         for audio in audios {
             if let audio:AVCaptureDevice = audio as? AVCaptureDevice {
@@ -67,6 +68,7 @@ final class LiveViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        audioPopUpButton.target = self
         cameraPopUpButton.target = self
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.attachAudio(
@@ -147,6 +149,22 @@ final class LiveViewController: NSViewController {
             httpStream.attachAudio(AVMixer.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
             httpStream.attachCamera(AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
+        default:
+            break
+        }
+    }
+
+    func selectAudio(sender:AnyObject) {
+        let device:AVCaptureDevice? = AVMixer.deviceWithLocalizedName(
+            audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio
+        )
+        switch segmentedControl.selectedSegment {
+        case 0:
+            rtmpStream.attachAudio(device)
+            httpStream.attachAudio(nil)
+        case 1:
+            rtmpStream.attachAudio(nil)
+            httpStream.attachAudio(device)
         default:
             break
         }
