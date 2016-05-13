@@ -26,3 +26,8 @@ target 'Example MacOS' do
     import_pods
 end
 
+target 'Tests' do
+    platform :osx, '10.9'
+    import_pods
+end
+
