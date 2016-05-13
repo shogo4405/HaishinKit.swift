@@ -15,6 +15,21 @@ public class HTTPStream: NSObject {
         return mixer.videoIO.view
     }
 
+    public var audioSettings:[String: AnyObject] {
+        get { return mixer.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)}
+        set { mixer.audioIO.encoder.setValuesForKeysWithDictionary(newValue) }
+    }
+
+    public var videoSettings:[String: AnyObject] {
+        get { return mixer.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)}
+        set { mixer.videoIO.encoder.setValuesForKeysWithDictionary(newValue)}
+    }
+
+    public var captureSettings:[String: AnyObject] {
+        get { return mixer.dictionaryWithValuesForKeys(AVMixer.supportedSettingsKeys)}
+        set { dispatch_async(lockQueue) { self.mixer.setValuesForKeysWithDictionary(newValue)}}
+    }
+
     private(set) var name:String?
     private var mixer:AVMixer = AVMixer()
     private var tsWriter:TSWriter = TSWriter()
