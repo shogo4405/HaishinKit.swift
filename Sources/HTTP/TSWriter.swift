@@ -91,11 +91,8 @@ class TSWriter {
             continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
             bytes += packet.bytes
         }
-        do {
-            currentFileHandle?.writeData(NSData(bytes: bytes))
-        } catch let error as NSError {
-            logger.warning("\(error)")
-        }
+
+        currentFileHandle?.writeData(NSData(bytes: bytes))
     }
 
     func split(PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
@@ -128,7 +125,11 @@ class TSWriter {
         #endif
 
         if !fileManager.fileExistsAtPath(temp) {
-            try? fileManager.createDirectoryAtPath(temp, withIntermediateDirectories: false, attributes: nil)
+            do {
+                try fileManager.createDirectoryAtPath(temp, withIntermediateDirectories: false, attributes: nil)
+            } catch let error as NSError {
+                logger.warning("\(error)")
+            }
         }
 
         let filename:String = Int(timestamp.seconds).description + ".ts"
@@ -156,8 +157,8 @@ class TSWriter {
         for packet in packets {
             currentFileHandle?.writeData(NSData(bytes: packet.bytes))
         }
-
         rotatedTimestamp = timestamp
+
         return true
     }
 
