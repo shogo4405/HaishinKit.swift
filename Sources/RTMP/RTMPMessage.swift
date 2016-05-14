@@ -3,23 +3,23 @@ import AVFoundation
 
 class RTMPMessage {
 
-    enum Type:UInt8 {
-        case ChunkSize = 1
-        case Abort = 2
-        case Ack = 3
-        case User = 4
-        case WindowAck = 5
-        case Bandwidth = 6
-        case Audio = 8
-        case Video = 9
-        case AMF3Data = 15
-        case AMF3Shared = 16
+    enum Type: UInt8 {
+        case ChunkSize   = 1
+        case Abort       = 2
+        case Ack         = 3
+        case User        = 4
+        case WindowAck   = 5
+        case Bandwidth   = 6
+        case Audio       = 8
+        case Video       = 9
+        case AMF3Data    = 15
+        case AMF3Shared  = 16
         case AMF3Command = 17
-        case AMF0Data = 18
-        case AMF0Shared = 19
+        case AMF0Data    = 18
+        case AMF0Shared  = 19
         case AMF0Command = 20
-        case Aggregate = 22
-        case Unknown = 255
+        case Aggregate   = 22
+        case Unknown     = 255
     }
 
     static func create(value:UInt8) -> RTMPMessage? {

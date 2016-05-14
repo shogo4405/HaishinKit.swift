@@ -84,10 +84,17 @@ class TSWriter {
             packets[0].adaptationField?.randomAccessIndicator = true
             packets[0].adaptationField?.discontinuityIndicator = true
         }
+
+        var bytes:[UInt8] = []
         for var packet in packets {
             packet.continuityCounter = continuityCounters[PID]!
-            continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0xf
-            currentFileHandle?.writeData(NSData(bytes: packet.bytes))
+            continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
+            bytes += packet.bytes
+        }
+        do {
+            currentFileHandle?.writeData(NSData(bytes: bytes))
+        } catch let error as NSError {
+            logger.warning("\(error)")
         }
     }
 
@@ -110,8 +117,20 @@ class TSWriter {
         if (duration <= segmentDuration) {
             return false
         }
-        let temp:String = NSTemporaryDirectory()
+
         let fileManager:NSFileManager = NSFileManager.defaultManager()
+
+        #if os(OSX)
+        let bundleIdentifier:String? = NSBundle.mainBundle().bundleIdentifier
+        let temp:String = bundleIdentifier == nil ? NSTemporaryDirectory() : NSTemporaryDirectory() + bundleIdentifier! + "/"
+        #else
+        let temp:String = NSTemporaryDirectory()
+        #endif
+
+        if !fileManager.fileExistsAtPath(temp) {
+            try? fileManager.createDirectoryAtPath(temp, withIntermediateDirectories: false, attributes: nil)
+        }
+
         let filename:String = Int(timestamp.seconds).description + ".ts"
         let url:NSURL = NSURL(fileURLWithPath: temp + filename)
 

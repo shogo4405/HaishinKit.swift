@@ -36,6 +36,9 @@ class NetSocket: NSObject {
         dispatch_async(lockQueue) {
             do {
                 let fileHandle:NSFileHandle = try NSFileHandle(forReadingFromURL: url)
+                defer {
+                    fileHandle.closeFile()
+                }
                 let endOfFile:Int = Int(fileHandle.seekToEndOfFile())
                 for i in 0..<Int(endOfFile / length) {
                     fileHandle.seekToFileOffset(UInt64(i * length))
@@ -44,9 +47,6 @@ class NetSocket: NSObject {
                 let remain:Int = endOfFile % length
                 if (0 < remain) {
                     self.doOutputProcess(fileHandle.readDataOfLength(remain))
-                }
-                defer {
-                    fileHandle.closeFile()
                 }
             } catch let error as NSError {
                 logger.error("\(error)")

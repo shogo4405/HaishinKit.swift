@@ -413,6 +413,7 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
     }
 }
 
+// MARK: - MP4SampleDescriptionBox
 final class MP4SampleDescriptionBox: MP4ContainerBox {
     override func loadFile(fileHandle: NSFileHandle) throws -> UInt32 {
         children.removeAll(keepCapacity: false)
