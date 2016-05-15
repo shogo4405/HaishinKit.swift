@@ -27,10 +27,6 @@ class TSWriter {
     var lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.TSWriter.lock", DISPATCH_QUEUE_SERIAL
     )
-    var fileQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.TSWriter.file", DISPATCH_QUEUE_SERIAL
-    )
-
     var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration:Double = TSWriter.defaultSegmentDuration
 
