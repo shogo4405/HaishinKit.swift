@@ -27,6 +27,9 @@ class TSWriter {
     var lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.TSWriter.lock", DISPATCH_QUEUE_SERIAL
     )
+    var fileQueue:dispatch_queue_t = dispatch_queue_create(
+        "com.github.shogo4405.lf.TSWriter.file", DISPATCH_QUEUE_SERIAL
+    )
 
     var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration:Double = TSWriter.defaultSegmentDuration
@@ -48,11 +51,7 @@ class TSWriter {
     private var PCRTimestamp:CMTime = kCMTimeZero
     private var currentFileURL:NSURL?
     private var rotatedTimestamp:CMTime = kCMTimeZero
-    private var currentFileHandle:NSFileHandle? {
-        didSet {
-            oldValue?.closeFile()
-        }
-    }
+    private var currentFileHandle:NSFileHandle?
     private var continuityCounters:[UInt16:UInt8] = [:]
 
     func getFilePath(fileName:String) -> String? {
@@ -91,8 +90,12 @@ class TSWriter {
             continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
             bytes += packet.bytes
         }
-
-        currentFileHandle?.writeData(NSData(bytes: bytes))
+        tryc({
+            self.currentFileHandle?.writeData(NSData(bytes: bytes))
+        }){ exception in
+            self.currentFileHandle?.writeData(NSData(bytes: bytes))
+            logger.warning("\(exception)")
+        }
     }
 
     func split(PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
@@ -150,12 +153,21 @@ class TSWriter {
         for (pid, _) in continuityCounters {
             continuityCounters[pid] = 0
         }
+        currentFileHandle?.synchronizeFile()
+        currentFileHandle?.closeFile()
         currentFileHandle = try? NSFileHandle(forWritingToURL: url)
+        var bytes:[UInt8] = []
         var packets:[TSPacket] = []
         packets += PAT.arrayOfPackets(TSWriter.defaultPATPID)
         packets += PMT.arrayOfPackets(TSWriter.defaultPMTPID)
         for packet in packets {
-            currentFileHandle?.writeData(NSData(bytes: packet.bytes))
+            bytes += packet.bytes
+        }
+
+        tryc({
+            self.currentFileHandle?.writeData(NSData(bytes: bytes))
+        }){ exception in
+            logger.warning("\(exception)")
         }
         rotatedTimestamp = timestamp
 
