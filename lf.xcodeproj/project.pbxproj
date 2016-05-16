@@ -384,6 +384,62 @@
 			path = Core;
 			sourceTree = "<group>";
 		};
+		291C2ACE1CE9FF25006F042B /* RTMP */ = {
+			isa = PBXGroup;
+			children = (
+				29B876CD1CD70CE700FC07DA /* AMF3SerializerTests.swift */,
+				29B876CE1CD70CE700FC07DA /* ASStructTests.swift */,
+			);
+			name = RTMP;
+			sourceTree = "<group>";
+		};
+		291C2ACF1CE9FF2B006F042B /* ISO */ = {
+			isa = PBXGroup;
+			children = (
+				29B876D51CD70CE700FC07DA /* PacketizedElementaryStreamTests.swift */,
+				29B876D61CD70CE700FC07DA /* ProgramSpecificTests.swift */,
+				29B876DB1CD70CE700FC07DA /* TSTests.swift */,
+			);
+			name = ISO;
+			sourceTree = "<group>";
+		};
+		291C2AD01CE9FF33006F042B /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				29B876CF1CD70CE700FC07DA /* ByteArrayTests.swift */,
+				29B876D01CD70CE700FC07DA /* CRC32Tests.swift */,
+				29B876D11CD70CE700FC07DA /* EventDispatcherTests.swift */,
+			);
+			name = Util;
+			sourceTree = "<group>";
+		};
+		291C2AD11CE9FF3E006F042B /* Asset */ = {
+			isa = PBXGroup;
+			children = (
+				29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */,
+				29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */,
+				29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */,
+			);
+			name = Asset;
+			sourceTree = "<group>";
+		};
+		291C2AD21CE9FF48006F042B /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				29B876D21CD70CE700FC07DA /* Foundation+ExtensionTests.swift */,
+				29B876DA1CD70CE700FC07DA /* SwiftCore+ExtensionTests.swift */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		291C2AD31CE9FF68006F042B /* HTTP */ = {
+			isa = PBXGroup;
+			children = (
+				29B876D31CD70CE700FC07DA /* HTTPRequestTests.swift */,
+			);
+			name = HTTP;
+			sourceTree = "<group>";
+		};
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
@@ -491,21 +547,13 @@
 		29798E5A1CE60E5300F5CBD0 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				29B876CD1CD70CE700FC07DA /* AMF3SerializerTests.swift */,
-				29B876CE1CD70CE700FC07DA /* ASStructTests.swift */,
-				29B876CF1CD70CE700FC07DA /* ByteArrayTests.swift */,
-				29B876D01CD70CE700FC07DA /* CRC32Tests.swift */,
-				29B876D11CD70CE700FC07DA /* EventDispatcherTests.swift */,
-				29B876D21CD70CE700FC07DA /* Foundation+ExtensionTests.swift */,
-				29B876D31CD70CE700FC07DA /* HTTPRequestTests.swift */,
+				291C2AD11CE9FF3E006F042B /* Asset */,
+				291C2AD21CE9FF48006F042B /* Core */,
+				291C2AD31CE9FF68006F042B /* HTTP */,
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
-				29B876D51CD70CE700FC07DA /* PacketizedElementaryStreamTests.swift */,
-				29B876D61CD70CE700FC07DA /* ProgramSpecificTests.swift */,
-				29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */,
-				29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */,
-				29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */,
-				29B876DA1CD70CE700FC07DA /* SwiftCore+ExtensionTests.swift */,
-				29B876DB1CD70CE700FC07DA /* TSTests.swift */,
+				291C2ACF1CE9FF2B006F042B /* ISO */,
+				291C2ACE1CE9FF25006F042B /* RTMP */,
+				291C2AD01CE9FF33006F042B /* Util */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
