@@ -123,7 +123,7 @@ public class RTMPSharedObject: EventDispatcher {
         guard let rtmpConnection:RTMPConnection = rtmpConnection where succeeded else {
             return
         }
-        rtmpConnection.doWrite(createChunk([
+        rtmpConnection.socket.doOutput(chunk: createChunk([
             RTMPSharedObjectEvent(type: .RequestChange, name: name, data: value)
         ]))
     }
@@ -136,19 +136,19 @@ public class RTMPSharedObject: EventDispatcher {
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             timestamp = rtmpConnection.socket.timestamp
-            rtmpConnection.doWrite(createChunk([RTMPSharedObjectEvent(type: .Use)]))
+            rtmpConnection.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .Use)]))
         }
     }
 
     public func clear() {
         data.removeAll(keepCapacity: false)
-        rtmpConnection?.doWrite(createChunk([RTMPSharedObjectEvent(type: .Clear)]))
+        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .Clear)]))
     }
 
     public func close() {
         data.removeAll(keepCapacity: false)
         rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
-        rtmpConnection?.doWrite(createChunk([RTMPSharedObjectEvent(type: .Release)]))
+        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .Release)]))
         rtmpConnection = nil
     }
 
@@ -214,7 +214,7 @@ public class RTMPSharedObject: EventDispatcher {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 timestamp = rtmpConnection!.socket.timestamp
-                rtmpConnection!.doWrite(createChunk([RTMPSharedObjectEvent(type: .Use)]))
+                rtmpConnection!.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .Use)]))
             default:
                 break
             }

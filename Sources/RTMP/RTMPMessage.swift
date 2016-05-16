@@ -244,7 +244,7 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
     }
 
     override func execute(connection: RTMPConnection) {
-        connection.doWrite(RTMPChunk(
+        connection.socket.doOutput(chunk: RTMPChunk(
             type: .Zero,
             streamId: RTMPChunk.control,
             message: RTMPWindowAcknowledgementSizeMessage(size: size)
@@ -879,7 +879,7 @@ final class RTMPUserControlMessage: RTMPMessage {
         case .Ping:
             let message:RTMPUserControlMessage = RTMPUserControlMessage(event: .Pong)
             message.value = value
-            connection.socket.doWrite(RTMPChunk(message: message))
+            connection.socket.doOutput(chunk: RTMPChunk(message: message))
         case .BufferEmpty, .BufferFull:
             connection.streams[UInt32(value)]?.dispatchEventWith("rtmpStatus", bubbles: false, data: [
                 "level": "status",

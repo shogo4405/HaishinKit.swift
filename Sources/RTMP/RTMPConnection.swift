@@ -192,7 +192,7 @@ public class RTMPConnection: EventDispatcher {
         if (responder != nil) {
             operations[message.transactionId] = responder
         }
-        socket.doWrite(RTMPChunk(message: message))
+        socket.doOutput(chunk: RTMPChunk(message: message))
     }
 
     public func connect(command: String, arguments: Any?...) {
@@ -214,10 +214,6 @@ public class RTMPConnection: EventDispatcher {
             streams.removeValueForKey(id)
         }
         socket.close(false)
-    }
-
-    func doWrite(chunk: RTMPChunk) {
-        socket.doWrite(chunk)
     }
 
     func createStream(stream: RTMPStream) {
@@ -272,7 +268,7 @@ public class RTMPConnection: EventDispatcher {
             case Code.ConnectSuccess.rawValue:
                 connected = true
                 socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
-                socket.doWrite(RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
+                socket.doOutput(chunk: RTMPChunk(message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))))
             case Code.ConnectRejected.rawValue:
                 guard let uri:NSURL = uri, user:String = uri.user, _:String = uri.password else {
                     break
@@ -308,7 +304,7 @@ extension RTMPConnection: RTMPSocketDelegate {
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
         switch socket.readyState {
         case .HandshakeDone:
-            socket.doWrite(createConnectionChunk())
+            socket.doOutput(chunk: createConnectionChunk())
         case .Closed:
             connected = false
         default:

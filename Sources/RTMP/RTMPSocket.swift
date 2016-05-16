@@ -49,15 +49,15 @@ final class RTMPSocket: NSObject {
         super.init()
     }
 
-    func doWrite(bytes:[UInt8]) {
+    func doOutput(bytes bytes:[UInt8]) {
         doOutputProcess(bytes)
     }
 
-    func doWrite(chunk:RTMPChunk) {
+    func doOutput(chunk chunk:RTMPChunk) {
         logger.verbose(chunk.description)
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
-            doWrite(chunk)
+            doOutput(bytes: chunk)
         }
     }
 
@@ -170,8 +170,8 @@ final class RTMPSocket: NSObject {
             for _ in 0..<RTMPSocket.sigSize - 8 {
                 c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
             }
-            doWrite([RTMPSocket.protocolVersion])
-            doWrite(c1packet.bytes)
+            doOutput(bytes: [RTMPSocket.protocolVersion])
+            doOutput(bytes: c1packet.bytes)
             readyState = .VersionSent
         case .VersionSent:
             if (inputBuffer.count < RTMPSocket.sigSize + 1) {
@@ -181,7 +181,7 @@ final class RTMPSocket: NSObject {
             c2packet.writeBytes(Array(inputBuffer[1...4]))
             c2packet.writeInt32(Int32(NSDate().timeIntervalSince1970 - timestamp))
             c2packet.writeBytes(Array(inputBuffer[9...RTMPSocket.sigSize]))
-            doWrite(c2packet.bytes)
+            doOutput(bytes: c2packet.bytes)
             inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
             readyState = .AckSent
         case .AckSent:

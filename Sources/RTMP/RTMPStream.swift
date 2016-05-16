@@ -291,7 +291,7 @@ public class RTMPStream: EventDispatcher {
             guard self.readyState == .Playing else {
                 return
             }
-            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -307,7 +307,7 @@ public class RTMPStream: EventDispatcher {
             guard self.readyState == .Playing else {
                 return
             }
-            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -324,7 +324,7 @@ public class RTMPStream: EventDispatcher {
                 usleep(100)
             }
             self.audioPlayback.startRunning()
-            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -343,7 +343,7 @@ public class RTMPStream: EventDispatcher {
             self.audioPlayback.startRunning()
             self.recorder.dispatcher = self
             self.recorder.open(arguments[0] as! String, option: option)
-            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -363,7 +363,7 @@ public class RTMPStream: EventDispatcher {
             guard self.readyState == .Playing else {
                 return
             }
-            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -388,7 +388,7 @@ public class RTMPStream: EventDispatcher {
             self.muxer.delegate = self
             self.mixer.startRunning()
             self.chunkTypes.removeAll(keepCapacity: false)
-            self.rtmpConnection.doWrite(RTMPChunk(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,
                 message: RTMPCommandMessage(
@@ -409,7 +409,7 @@ public class RTMPStream: EventDispatcher {
             if (self.readyState == .Closed) {
                 return
             }
-            self.rtmpConnection.doWrite(RTMPChunk(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,
                 message: RTMPCommandMessage(
@@ -431,7 +431,7 @@ public class RTMPStream: EventDispatcher {
             if (self.readyState == .Closed) {
                 return
             }
-            self.rtmpConnection.doWrite(RTMPChunk(message: RTMPDataMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPDataMessage(
                 streamId: self.id,
                 objectEncoding: self.objectEncoding,
                 handlerName: handlerName,
@@ -473,7 +473,7 @@ public class RTMPStream: EventDispatcher {
 extension RTMPStream: RTMPMuxerDelegate {
     func sampleOutput(muxer:RTMPMuxer, audio buffer:NSData, timestamp:Double) {
         let type:FLVTag.TagType = .Audio
-        rtmpConnection.doWrite(RTMPChunk(
+        rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
             message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
@@ -484,7 +484,7 @@ extension RTMPStream: RTMPMuxerDelegate {
 
     func sampleOutput(muxer:RTMPMuxer, video buffer:NSData, timestamp:Double) {
         let type:FLVTag.TagType = .Video
-        rtmpConnection.doWrite(RTMPChunk(
+        rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .Zero : .One,
             streamId: type.streamId,
             message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
