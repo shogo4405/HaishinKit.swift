@@ -2,31 +2,30 @@ import Foundation
 
 // MARK: NetSocket
 class NetSocket: NSObject {
-    static let defaultWindowSizeC:Int = 8 * 1024
+    static let defaultWindowSizeC:Int = 1024 * 1
 
     var inputBuffer:[UInt8] = []
     var inputStream:NSInputStream?
     var windowSizeC:Int = NetSocket.defaultWindowSizeC
     var outputStream:NSOutputStream?
-
     var networkQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.NetSocket.network", DISPATCH_QUEUE_SERIAL
     )
-
     private(set) var totalBytesIn = 0
     private(set) var totalBytesOut = 0
+
     private var runloop:NSRunLoop?
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.NetSocket.lock", DISPATCH_QUEUE_SERIAL
     )
 
-    final func doOutput(data:NSData) {
+    final func doOutput(data data:NSData) {
         dispatch_async(lockQueue) {
             self.doOutputProcess(UnsafePointer<UInt8>(data.bytes), maxLength: data.length)
         }
     }
 
-    final func doOutput(bytes:[UInt8]) {
+    final func doOutput(bytes bytes:[UInt8]) {
         dispatch_async(lockQueue) {
             self.doOutputProcess(UnsafePointer<UInt8>(bytes), maxLength: bytes.count)
         }
@@ -61,8 +60,8 @@ class NetSocket: NSObject {
     final func doOutputProcess(buffer:UnsafePointer<UInt8>, maxLength:Int) {
         var total:Int = 0
         while total < maxLength {
-            guard let length:Int = self.outputStream?.write(buffer + total, maxLength: maxLength - total) else {
-                self.close(true)
+            guard let length:Int = outputStream?.write(buffer.advancedBy(total), maxLength: maxLength - total) else {
+                close(true)
                 return
             }
             total += length
@@ -75,14 +74,7 @@ class NetSocket: NSObject {
             guard let runloop = self.runloop else {
                 return
             }
-            self.inputStream?.close()
-            self.inputStream?.removeFromRunLoop(runloop, forMode: NSDefaultRunLoopMode)
-            self.inputStream?.delegate = nil
-            self.inputStream = nil
-            self.outputStream?.close()
-            self.outputStream?.removeFromRunLoop(runloop, forMode: NSDefaultRunLoopMode)
-            self.outputStream?.delegate = nil
-            self.outputStream = nil
+            self.deinitConnection(disconnect)
             self.runloop = nil
             CFRunLoopStop(runloop.getCFRunLoop())
             logger.verbose("disconnect:\(disconnect)")
@@ -95,14 +87,14 @@ class NetSocket: NSObject {
     func didOpenCompleted() {
     }
 
-    final func initConnection() {
+    func initConnection() {
+        totalBytesIn = 0
+        totalBytesOut = 0
+        inputBuffer.removeAll(keepCapacity: false)
         guard let inputStream:NSInputStream = inputStream, outputStream:NSOutputStream = outputStream else {
             return
         }
         runloop = NSRunLoop.currentRunLoop()
-        totalBytesIn = 0
-        totalBytesOut = 0
-        inputBuffer.removeAll(keepCapacity: false)
         inputStream.delegate = self
         inputStream.scheduleInRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
         outputStream.delegate = self
@@ -111,6 +103,17 @@ class NetSocket: NSObject {
         outputStream.open()
         runloop!.run()
         logger.verbose("EndOfRunLoop")
+    }
+
+    func deinitConnection(disconnect:Bool) {
+        inputStream?.close()
+        inputStream?.removeFromRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
+        inputStream?.delegate = nil
+        inputStream = nil
+        outputStream?.close()
+        outputStream?.removeFromRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
+        outputStream?.delegate = nil
+        outputStream = nil
     }
 
     private func doInput() {
@@ -130,8 +133,10 @@ class NetSocket: NSObject {
 extension NetSocket: NSStreamDelegate {
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
         switch eventCode {
+        //  0
         case NSStreamEvent.None:
             break
+        //  1 = 1 << 0
         case NSStreamEvent.OpenCompleted:
             guard let inputStream = inputStream, outputStream = outputStream
                 where
@@ -139,17 +144,23 @@ extension NetSocket: NSStreamDelegate {
                     outputStream.streamStatus == NSStreamStatus.Open else {
                 break
             }
-            didOpenCompleted()
-        case NSStreamEvent.HasSpaceAvailable:
-            break
+            if (aStream == inputStream) {
+                didOpenCompleted()
+            }
+        //  2 = 1 << 1
         case NSStreamEvent.HasBytesAvailable:
             if (aStream == inputStream) {
                 doInput()
             }
+        //  4 = 1 << 2
+        case NSStreamEvent.HasSpaceAvailable:
+            break
+        //  8 = 1 << 3
         case NSStreamEvent.ErrorOccurred:
             close(true)
+        // 16 = 1 << 4
         case NSStreamEvent.EndEncountered:
-            break
+            close(true)
         default:
             break
         }

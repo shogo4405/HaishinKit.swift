@@ -8,7 +8,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window:NSWindow!
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        XCGLogger.defaultInstance().outputLogLevel = .Info
+        XCGLogger.defaultInstance().outputLogLevel = .Verbose
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
 
         let viewController:LiveViewController = LiveViewController()

@@ -204,7 +204,7 @@ public class HTTPService: NetService {
         case "/":
             response.headerFields["Content-Type"] = "text/html"
             response.body = [UInt8](document.utf8)
-            client.doOutput(response.bytes)
+            client.doOutput(bytes: response.bytes)
         default:
             for stream in streams {
                 guard let (mime, resource) = stream.getResource(request.uri) else {
@@ -216,17 +216,17 @@ public class HTTPService: NetService {
                     if let info = try? NSFileManager.defaultManager().attributesOfItemAtPath(resource) {
                         response.headerFields["Content-Length"] = String(info["NSFileSize"]!)
                     }
-                    client.doOutput(response.bytes)
+                    client.doOutput(bytes: response.bytes)
                     client.doOutputFromURL(NSURL(fileURLWithPath: resource), length: 8 * 1024)
                 default:
                     response.body = [UInt8](resource.utf8)
-                    client.doOutput(response.bytes)
+                    client.doOutput(bytes: response.bytes)
                 }
                 return
             }
             response.statusCode = .NotFound
             response.headerFields["Connection"] = "close"
-            client.doOutput(response.bytes)
+            client.doOutput(bytes: response.bytes)
         }
     }
 
