@@ -10,19 +10,19 @@ protocol RTMPSocketDelegate: IEventDispatcher {
 final class RTMPSocket: NetSocket {
 
     enum ReadyState: UInt8 {
-        case Initialized = 1
-        case VersionSent = 2
-        case AckSent = 3
-        case HandshakeDone = 4
-        case Closing = 5
-        case Closed = 6
+        case Uninitialized = 0
+        case VersionSent   = 1
+        case AckSent       = 2
+        case HandshakeDone = 3
+        case Closing       = 4
+        case Closed        = 5
     }
 
     static let sigSize:Int = 1536
     static let protocolVersion:UInt8 = 3
     static let defaultBufferSize:Int = 1024
 
-    var readyState:ReadyState = .Initialized {
+    var readyState:ReadyState = .Uninitialized {
         didSet {
             delegate?.didSetReadyState(self, readyState: readyState)
         }
@@ -84,14 +84,14 @@ final class RTMPSocket: NetSocket {
             if (inputBuffer.count < RTMPSocket.sigSize) {
                 break
             }
-            inputBuffer.removeAll(keepCapacity: false)
+            inputBuffer.removeAll()
             readyState = .HandshakeDone
         case .HandshakeDone:
             if (inputBuffer.isEmpty){
                 break
             }
             let bytes:[UInt8] = inputBuffer
-            inputBuffer.removeAll(keepCapacity: false)
+            inputBuffer.removeAll()
             delegate?.listen(self, bytes: bytes)
         default:
             break
@@ -99,17 +99,17 @@ final class RTMPSocket: NetSocket {
     }
 
     override func initConnection() {
-        readyState = .Initialized
+        readyState = .Uninitialized
         timestamp = 0
         chunkSizeS = RTMPChunk.defaultSize
         chunkSizeC = RTMPChunk.defaultSize
         super.initConnection()
     }
 
-    override func deinitConnection(disconnect: Bool) {
+    override func deinitConnection(disconnect:Bool) {
         var data:ASObject? = nil
         if (disconnect) {
-            data = (readyState == ReadyState.HandshakeDone) ?
+            data = (readyState == .HandshakeDone) ?
                 RTMPConnection.Code.ConnectClosed.data("") : RTMPConnection.Code.ConnectFailed.data("")
         }
         readyState = .Closing

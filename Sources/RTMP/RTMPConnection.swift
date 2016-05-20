@@ -29,7 +29,7 @@ public class Responder: NSObject {
 // MARK: - RTMPConnection
 public class RTMPConnection: EventDispatcher {
 
-    public enum Code:String {
+    public enum Code: String {
         case CallBadVersion       = "NetConnection.Call.BadVersion"
         case CallFailed           = "NetConnection.Call.Failed"
         case CallProhibited       = "NetConnection.Call.Prohibited"
@@ -78,34 +78,35 @@ public class RTMPConnection: EventDispatcher {
         }
     }
 
-    enum SupportVideo:UInt16 {
-        case Unused = 0x001
-        case Jpeg = 0x002
-        case Sorenson = 0x004
-        case Vp6 = 0x008
-        case Vp6Alpha = 0x0010
-        case Homebrew = 0x0040
-        case H264 = 0x0080
-        case All = 0x00FF
+    enum SupportVideo: UInt16 {
+        case Unused    = 0x0001
+        case Jpeg      = 0x0002
+        case Sorenson  = 0x0004
+        case Homebrew  = 0x0008
+        case Vp6       = 0x0010
+        case Vp6Alpha  = 0x0020
+        case Homebrewv = 0x0040
+        case H264      = 0x0080
+        case All       = 0x00FF
     }
 
-    enum SupportSound:UInt16 {
-        case None = 0x001
-        case ADPCM = 0x002
-        case MP3 = 0x003
-        case Intel = 0x0008
-        case Unused = 0x0010
-        case Nelly8 = 0x0020
-        case Nelly = 0x0040
-        case G711A = 0x0080
-        case G711U = 0x0100
+    enum SupportSound: UInt16 {
+        case None    = 0x0001
+        case ADPCM   = 0x0002
+        case MP3     = 0x0004
+        case Intel   = 0x0008
+        case Unused  = 0x0010
+        case Nelly8  = 0x0020
+        case Nelly   = 0x0040
+        case G711A   = 0x0080
+        case G711U   = 0x0100
         case Nelly16 = 0x0200
-        case AAC = 0x0400
-        case Speex = 0x0800
-        case All = 0x0FFF
+        case AAC     = 0x0400
+        case Speex   = 0x0800
+        case All     = 0x0FFF
     }
 
-    enum VideoFunction:UInt8 {
+    enum VideoFunction: UInt8 {
         case ClientSeek = 1
     }
 
@@ -141,7 +142,7 @@ public class RTMPConnection: EventDispatcher {
 
     static let defaultPort:Int = 1935
     static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
-    static let defaultChunkSizeS:Int = 1024 * 16
+    static let defaultChunkSizeS:Int = 1024
     static let defaultCapabilities:Int = 239
     static let defaultObjectEncoding:UInt8 = 0x00
 
@@ -180,9 +181,12 @@ public class RTMPConnection: EventDispatcher {
     }
 
     public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
+        guard connected else {
+            return
+        }
         currentTransactionId += 1
         let message:RTMPCommandMessage = RTMPCommandMessage(
-            streamId: UInt32(RTMPChunk.command),
+            streamId: 0,
             transactionId: currentTransactionId,
             objectEncoding: objectEncoding,
             commandName: commandName,
@@ -201,11 +205,19 @@ public class RTMPConnection: EventDispatcher {
         }
         self.uri = uri
         self.arguments = arguments
+        currentChunk = nil
+        currentTransactionId = 0
+        operations.removeAll()
+        fragmentedChunks.removeAll()
         socket.connect(uri.host!, port: uri.port == nil ? RTMPConnection.defaultPort : uri.port!.integerValue)
     }
 
     public func close() {
-        guard connected else {
+        close(false)
+    }
+
+    func close(disconnect:Bool) {
+        guard connected || disconnect else {
             return
         }
         uri = nil
@@ -237,7 +249,7 @@ public class RTMPConnection: EventDispatcher {
         currentTransactionId += 1
 
         let message:RTMPCommandMessage = RTMPCommandMessage(
-            streamId: 3,
+            streamId: 0,
             transactionId: currentTransactionId,
             // "connect" must be a objectEncoding = 0
             objectEncoding: 0,
@@ -289,6 +301,8 @@ public class RTMPConnection: EventDispatcher {
                     connect(command, arguments: arguments)
                     break
                 }
+            case Code.ConnectClosed.rawValue:
+                close(true)
             default:
                 break
             }

@@ -355,7 +355,6 @@ final class RTMPCommandMessage: RTMPMessage {
                 }
                 serializer.clear()
             }
-
             super.payload = newValue
         }
     }

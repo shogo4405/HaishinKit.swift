@@ -58,12 +58,12 @@ class NetSocket: NSObject {
     }
 
     final func doOutputProcess(buffer:UnsafePointer<UInt8>, maxLength:Int) {
+        guard let outputStream:NSOutputStream = outputStream else {
+            return
+        }
         var total:Int = 0
         while total < maxLength {
-            guard let length:Int = outputStream?.write(buffer.advancedBy(total), maxLength: maxLength - total) else {
-                close(true)
-                return
-            }
+            let length:Int = outputStream.write(buffer.advancedBy(total), maxLength: maxLength - total)
             total += length
             totalBytesOut += length
         }
