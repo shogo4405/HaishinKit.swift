@@ -197,7 +197,7 @@ struct FLVTag {
             case .Video:
                 return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
             case .Data:
-                return RTMPDataMessage()
+                return RTMPDataMessage(objectEncoding: 0x00)
             }
         }
     }

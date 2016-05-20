@@ -65,21 +65,14 @@ class RTMPMessage {
         }
     }
 
-    private var _type:Type = .Unknown
-    var type:Type {
-        return _type
-    }
-
+    let type:Type
     var length:Int = 0
     var streamId:UInt32 = 0
     var timestamp:UInt32 = 0
     var payload:[UInt8] = []
 
-    init() {
-    }
-
     init(type:Type) {
-        _type = type
+        self.type = type
     }
 
     func execute(connection:RTMPConnection) {
@@ -96,29 +89,25 @@ extension RTMPMessage: CustomStringConvertible {
  * @see 5.4.1. Set Chunk Size (1)
  */
 final class RTMPSetChunkSizeMessage: RTMPMessage {
-    
-    override var type:Type {
-        return .ChunkSize
-    }
-    
+
     var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
 
-    override init() {
-        super.init()
+    init() {
+        super.init(type: .ChunkSize)
     }
 
-    init (size:UInt32) {
-        super.init()
+    init(size:UInt32) {
+        super.init(type: .ChunkSize)
         self.size = size
     }
     
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
             super.payload = size.bigEndian.bytes
@@ -142,19 +131,19 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
  * 5.4.2. Abort Message (2)
  */
 final class RTMPAbortMessge: RTMPMessage {
-    override var type:Type {
-        return .Abort
-    }
-
     var chunkStreamId:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
 
+    init() {
+        super.init(type: .Abort)
+    }
+
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
             super.payload = chunkStreamId.bigEndian.bytes
@@ -174,8 +163,8 @@ final class RTMPAbortMessge: RTMPMessage {
  * 5.4.3. Acknowledgement (3)
  */
 final class RTMPAcknowledgementMessage: RTMPMessage {
-    override var type:Type {
-        return .Ack
+    init() {
+        super.init(type: .Ack)
     }
 
     var sequence:UInt32 = 0 {
@@ -186,7 +175,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
     
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
             super.payload = sequence.bigEndian.bytes
@@ -206,29 +195,24 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
  * 5.4.4. Window Acknowledgement Size (5)
  */
 final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
-
-    override var type:Type {
-        return .WindowAck
-    }
-
     var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
 
-    override init() {
-        super.init()
+    init() {
+        super.init(type: .WindowAck)
     }
 
     init(size:UInt32) {
-        super.init()
+        super.init(type: .WindowAck)
         self.size = size
     }
 
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
             super.payload = size.bigEndian.bytes
@@ -258,31 +242,31 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
 final class RTMPSetPeerBandwidthMessage: RTMPMessage {
     
     enum Limit:UInt8 {
-        case Hard = 0x00
-        case Soft = 0x01
+        case Hard    = 0x00
+        case Soft    = 0x01
         case Dynamic = 0x10
         case Unknown = 0xFF
     }
-    
-    override var type:Type {
-        return .Bandwidth
-    }
-    
+
     var size:UInt32 = 0 {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
-    
-    var limit:Limit = Limit.Hard {
+
+    var limit:Limit = .Hard {
         didSet {
             super.payload.removeAll(keepCapacity: false)
         }
     }
-    
+
+    init() {
+        super.init(type: .Bandwidth)
+    }
+
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
             var payload:[UInt8] = []
@@ -315,10 +299,6 @@ final class RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    override var type:Type {
-        return objectEncoding == 0x00 ? .AMF0Command : .AMF3Command
-    }
-    
     var commandName:String = "" {
         didSet {
             super.payload.removeAll(keepCapacity: false)
@@ -348,8 +328,6 @@ final class RTMPCommandMessage: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
-
-            serializer.clear()
             serializer.serialize(commandName)
             serializer.serialize(transactionId)
             serializer.serialize(commandObject)
@@ -357,12 +335,11 @@ final class RTMPCommandMessage: RTMPMessage {
                 serializer.serialize(i)
             }
             super.payload = serializer.bytes
-
+            serializer.clear()
             return super.payload
         }
         set {
             if (length == newValue.count) {
-                serializer.clear()
                 serializer.writeBytes(newValue)
                 serializer.position = 0
                 do {
@@ -376,6 +353,7 @@ final class RTMPCommandMessage: RTMPMessage {
                 } catch {
                     logger.error("\(serializer)")
                 }
+                serializer.clear()
             }
 
             super.payload = newValue
@@ -384,18 +362,14 @@ final class RTMPCommandMessage: RTMPMessage {
 
     private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
 
-    override init () {
-        super.init()
-    }
-
     init(objectEncoding:UInt8) {
-        super.init()
+        super.init(type: objectEncoding == 0x00 ? .AMF0Command : .AMF3Command)
         self.objectEncoding = objectEncoding
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
     init(streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject: ASObject?, arguments:[Any?]) {
-        super.init()
+        super.init(type: objectEncoding == 0x00 ? .AMF0Command : .AMF3Command)
         self.streamId = streamId
         self.transactionId = transactionId
         self.objectEncoding = objectEncoding
@@ -439,10 +413,6 @@ final class RTMPDataMessage: RTMPMessage {
         }
     }
 
-    override var type:Type {
-        return objectEncoding == 0x00 ? .AMF0Data : .AMF3Data
-    }
-
     var handlerName:String = "" {
         didSet {
             payload.removeAll(keepCapacity: false)
@@ -463,12 +433,12 @@ final class RTMPDataMessage: RTMPMessage {
                 return super.payload
             }
 
-            serializer.clear()
             serializer.serialize(handlerName)
             for arg in arguments {
                 serializer.serialize(arg)
             }
             super.payload = serializer.bytes
+            serializer.clear()
 
             return super.payload
         }
@@ -476,8 +446,8 @@ final class RTMPDataMessage: RTMPMessage {
             guard super.payload != newValue else {
                 return
             }
+
             if (length == newValue.count) {
-                serializer.clear()
                 serializer.writeBytes(newValue)
                 serializer.position = 0
                 do {
@@ -488,24 +458,21 @@ final class RTMPDataMessage: RTMPMessage {
                 } catch {
                     logger.error("\(serializer)")
                 }
+                serializer.clear()
             }
 
             super.payload = newValue
         }
     }
 
-    override init() {
-        super.init()
-    }
-
     init(objectEncoding:UInt8) {
-        super.init()
+        super.init(type: objectEncoding == 0x00 ? .AMF0Data : .AMF3Data)
         self.objectEncoding = objectEncoding
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
     init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?]) {
-        super.init()
+        super.init(type: objectEncoding == 0x00 ? .AMF0Data : .AMF3Data)
         self.streamId = streamId
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
@@ -529,10 +496,6 @@ final class RTMPDataMessage: RTMPMessage {
  * @see 7.1.3. Shared Object Message (19, 16)
  */
 final class RTMPSharedObjectMessage: RTMPMessage {
-
-    override var type:Type {
-        return objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared
-    }
 
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
         didSet {
@@ -571,18 +534,17 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             }
 
             do {
-                serializer.clear()
                 try serializer.writeUTF8(sharedObjectName)
                 serializer.writeUInt32(currentVersion)
                 serializer.writeBytes(flags)
                 for event in events {
                     try event.serialize(&serializer)
                 }
+                super.payload = serializer.bytes
+                serializer.clear()
             } catch {
                 logger.error("\(serializer)")
             }
-
-            super.payload = serializer.bytes
 
             return super.payload
         }
@@ -592,7 +554,6 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             }
 
             if (length == newValue.count) {
-                serializer.clear()
                 serializer.writeBytes(newValue)
                 serializer.position = 0
                 do {
@@ -608,6 +569,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                 } catch {
                     logger.error("\(serializer)")
                 }
+                serializer.clear()
             }
 
             super.payload = newValue
@@ -617,13 +579,13 @@ final class RTMPSharedObjectMessage: RTMPMessage {
     private var serializer:AMFSerializer = RTMPConnection.defaultObjectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
 
     init(objectEncoding:UInt8) {
-        super.init()
+        super.init(type: objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared)
         self.objectEncoding = objectEncoding
         self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
     }
 
     init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[RTMPSharedObjectEvent]) {
-        super.init()
+        super.init(type: objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared)
         self.timestamp = timestamp
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
@@ -648,10 +610,6 @@ final class RTMPAudioMessage: RTMPMessage {
     private(set) var soundRate:FLVSoundRate = .KHz44
     private(set) var soundSize:FLVSoundSize = .Snd8bit
     private(set) var soundType:FLVSoundType = .Stereo
-
-    override var type:Type {
-        return .Audio
-    }
 
     var soundData:[UInt8] {
         let data:[UInt8] = payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
@@ -688,12 +646,12 @@ final class RTMPAudioMessage: RTMPMessage {
         }
     }
 
-    override init() {
-        super.init()
+    init() {
+        super.init(type: .Audio)
     }
 
     init(streamId: UInt32, timestamp: UInt32, buffer:NSData) {
-        super.init()
+        super.init(type: .Audio)
         self.streamId = streamId
         self.timestamp = timestamp
         var payload:[UInt8] = [UInt8](count: buffer.length, repeatedValue: 0x00)
@@ -734,16 +692,12 @@ final class RTMPAudioMessage: RTMPMessage {
 final class RTMPVideoMessage: RTMPMessage {
     private(set) var codec:FLVVideoCodec = .Unknown
 
-    override var type:Type {
-        return .Video
-    }
-
-    override init() {
-        super.init()
+    init() {
+        super.init(type: .Video)
     }
 
     init(streamId: UInt32, timestamp: UInt32, buffer:NSData) {
-        super.init()
+        super.init(type: .Video)
         self.streamId = streamId
         self.timestamp = timestamp
         payload = [UInt8](count: buffer.length, repeatedValue: 0x00)
@@ -794,8 +748,8 @@ final class RTMPVideoMessage: RTMPMessage {
  * @see 7.1.6. Aggregate Message (22)
  */
 final class RTMPAggregateMessage: RTMPMessage {
-    override var type:Type {
-        return .Aggregate
+    init() {
+        super.init(type: .Aggregate)
     }
 }
 
@@ -804,25 +758,21 @@ final class RTMPAggregateMessage: RTMPMessage {
  */
 final class RTMPUserControlMessage: RTMPMessage {
 
-    enum Event:UInt8 {
+    enum Event: UInt8 {
         case StreamBegin = 0x00
-        case StreamEof = 0x01
-        case StreamDry = 0x02
-        case SetBuffer = 0x03
-        case Recorded = 0x04
-        case Ping = 0x06
-        case Pong = 0x07
+        case StreamEof   = 0x01
+        case StreamDry   = 0x02
+        case SetBuffer   = 0x03
+        case Recorded    = 0x04
+        case Ping        = 0x06
+        case Pong        = 0x07
         case BufferEmpty = 0x1F
-        case BufferFull = 0x20
-        case Unknown = 0xFF
+        case BufferFull  = 0x20
+        case Unknown     = 0xFF
 
         var bytes:[UInt8] {
             return [0x00, rawValue]
         }
-    }
-
-    override var type:Type {
-        return .User
     }
 
     var event:Event = .Unknown {
@@ -839,38 +789,34 @@ final class RTMPUserControlMessage: RTMPMessage {
 
     override var payload:[UInt8] {
         get {
-            if (!super.payload.isEmpty) {
+            guard super.payload.isEmpty else {
                 return super.payload
             }
-
             super.payload.removeAll()
             super.payload += event.bytes
             super.payload += value.bigEndian.bytes
-
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-
             if (length == newValue.count) {
                 if let event:Event = Event(rawValue: newValue[1]) {
                     self.event = event
                 }
                 value = Int32(bytes: Array(newValue[2..<newValue.count])).bigEndian
             }
-
             super.payload = newValue
         }
     }
 
-    override init() {
-        super.init()
+    init() {
+        super.init(type: .User)
     }
 
     init(event:Event) {
-        super.init()
+        super.init(type: .User)
         self.event = event
     }
 
