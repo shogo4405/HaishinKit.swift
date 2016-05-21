@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - RTMPSharedObjectEvent
 struct RTMPSharedObjectEvent {
     enum Type:UInt8 {
         case Use           = 1
@@ -71,7 +70,7 @@ extension RTMPSharedObjectEvent: CustomStringConvertible {
     }
 }
 
-// MARK: - RTMPSharedObject
+// MARK: -
 public class RTMPSharedObject: EventDispatcher {
 
     static private var remoteSharedObjects:[String: RTMPSharedObject] = [:]

@@ -3,7 +3,6 @@ import Foundation
 public let kASUndefined:ASUndefined = ASUndefined()
 public typealias ASObject = [String: Any?]
 
-// MARK: ASUndefined
 public class ASUndefined {
     private init() {
     }
@@ -16,7 +15,7 @@ extension ASUndefined: CustomStringConvertible {
     }
 }
 
-// MARK: - ASArray
+// MARK: -
 public struct ASArray: ArrayLiteralConvertible {
     private(set) var data:[Any?]
     private(set) var dict:[String: Any?] = [:]
@@ -86,12 +85,14 @@ public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
     return (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
 }
 
+// MARK: -
 /**
- * ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
- * - seealso: 2.17 XML Document Type (amf0-file-format-specification.pdf)
- * - seealso: 3.9 XMLDocument type (amf-file-format-spec.pdf)
+ ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
+
+ - seealso:
+   - 2.17 XML Document Type (amf0-file-format-specification.pdf)
+   - 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
-// MARK: - ASXMLDocument
 public struct ASXMLDocument {
     private var data:String
 
@@ -115,11 +116,12 @@ public func ==(lhs: ASXMLDocument, rhs: ASXMLDocument) -> Bool {
     return lhs.description == rhs.description
 }
 
+// MARK: -
 /**
- * ActionScript 3.0 introduces a new XML type.
- * -seealso: 3.13 XML type (amf-file-format-spec.pdf)
+ ActionScript 3.0 introduces a new XML type.
+ 
+ - seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
-// MARK: - ASXML
 public struct ASXML {
     private var data:String
 

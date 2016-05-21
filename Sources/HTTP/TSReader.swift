@@ -5,7 +5,7 @@ protocol TSReaderDelegate: class {
     func didReadPacketizedElementaryStream(data:ElementaryStreamSpecificData, PES:PacketizedElementaryStream)
 }
 
-// MARK: - TSReader
+// MARK: -
 class TSReader {
     weak var delegate:TSReaderDelegate?
 

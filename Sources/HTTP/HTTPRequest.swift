@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - HTTPRequest
 struct HTTPRequest {
     static let separator:UInt8 = 0x0a
 

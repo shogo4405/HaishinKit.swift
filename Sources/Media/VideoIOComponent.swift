@@ -14,7 +14,7 @@ struct VideoIOData {
     var presentationDuration:CMTime
 }
 
-// MARK: - VideoIOComponent
+// MARK: -
 final class VideoIOComponent: NSObject {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
@@ -547,7 +547,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
 }
 
 #if os(iOS)
-// MARK: - VideoIOView
+// MARK: -
 public class VideoIOView: UIView {
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
@@ -578,7 +578,7 @@ public class VideoIOView: UIView {
     }
 }
 #else
-// MARK: - VideoIOView
+// MARK: -
 public class VideoIOView: NSView {
     required override public init(frame: CGRect) {
         super.init(frame: frame)

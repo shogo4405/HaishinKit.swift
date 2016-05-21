@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - NetService
 public class NetService: NSObject {
 
     var recordData:NSData? {

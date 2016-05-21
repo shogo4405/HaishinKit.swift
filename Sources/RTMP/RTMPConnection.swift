@@ -1,7 +1,7 @@
 import Foundation
 import CryptoSwift
 
-// MARK: - Responder
+// MARK: -
 public class Responder: NSObject {
 
     private var result:(data:[Any?]) -> Void
@@ -26,7 +26,7 @@ public class Responder: NSObject {
     }
 }
 
-// MARK: - RTMPConnection
+// MARK: -
 public class RTMPConnection: EventDispatcher {
 
     public enum Code: String {
@@ -220,7 +220,9 @@ public class RTMPConnection: EventDispatcher {
         guard connected || disconnect else {
             return
         }
-        uri = nil
+        if (!disconnect) {
+            uri = nil
+        }
         for (id, stream) in streams {
             stream.close()
             streams.removeValueForKey(id)
@@ -240,11 +242,14 @@ public class RTMPConnection: EventDispatcher {
         call("createStream", responder: responder)
     }
 
-    private func createConnectionChunk() -> RTMPChunk {
-        var app:String = uri!.path!.substringFromIndex(uri!.path!.startIndex.advancedBy(1))
+    private func createConnectionChunk() -> RTMPChunk? {
+        guard let uri:NSURL = uri, path:String = uri.path else {
+            return nil
+        }
 
-        if (uri!.query != nil) {
-            app += "?" + uri!.query!
+        var app:String = path.substringFromIndex(path.startIndex.advancedBy(1))
+        if let query:String = uri.query {
+            app += "?" + query
         }
         currentTransactionId += 1
 
@@ -258,7 +263,7 @@ public class RTMPConnection: EventDispatcher {
                 "app": app,
                 "flashVer": flashVer,
                 "swfUrl": swfUrl,
-                "tcUrl": uri!.absoluteWithoutAuthenticationString,
+                "tcUrl": uri.absoluteWithoutAuthenticationString,
                 "fpad": false,
                 "capabilities": RTMPConnection.defaultCapabilities,
                 "audioCodecs": SupportSound.AAC.rawValue,
@@ -316,7 +321,11 @@ extension RTMPConnection: RTMPSocketDelegate {
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
         switch socket.readyState {
         case .HandshakeDone:
-            socket.doOutput(chunk: createConnectionChunk())
+            guard let chunk:RTMPChunk = self.createConnectionChunk() else {
+                close()
+                break
+            }
+            socket.doOutput(chunk: chunk)
         case .Closed:
             connected = false
         default:

@@ -163,7 +163,7 @@ extension HTTPStatusCode: CustomStringConvertible {
     }
 }
 
-// MARK: - HTTPService
+// MARK: -
 public class HTTPService: NetService {
     static public let type:String = "_http._tcp"
     static public let defaultPort:Int32 = 8080
