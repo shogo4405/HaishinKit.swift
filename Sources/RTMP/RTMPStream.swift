@@ -424,9 +424,9 @@ public class RTMPStream: EventDispatcher {
         dispatch_sync(lockQueue) {
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
-                streamId: RTMPChunk.audio,
+                streamId: RTMPChunk.command,
                 message: RTMPCommandMessage(
-                    streamId: self.id,
+                    streamId: 0,
                     transactionId: 0,
                     objectEncoding: self.objectEncoding,
                     commandName: "deleteStream",
