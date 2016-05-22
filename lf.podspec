@@ -16,7 +16,9 @@ Pod::Spec.new do |s|
   s.social_media_url = "http://twitter.com/shogo4405"
 
   s.ios.deployment_target = "8.0"
+  s.ios.source_files = "Platforms/iOS"
   s.osx.deployment_target = "10.10"
+  s.osx.source_files = "Platforms/MacOS"
 
   s.source_files = "Sources/*.swift"
   s.dependency 'XCGLogger', '~> 3.3'

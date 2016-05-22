@@ -1,11 +1,5 @@
 import Foundation
 
-// MARK: ByteArrayError
-public enum ByteArrayError: ErrorType {
-    case EOF
-    case Parse
-}
-
 // MARK: - ByteArrayConvertible
 protocol ByteArrayConvertible {
 
@@ -63,6 +57,11 @@ public class ByteArray: ByteArrayConvertible {
     static let sizeOfFloat:Int = 4
     static let sizeOfDouble:Int = 8
 
+    public enum Error: ErrorType {
+        case EOF
+        case Parse
+    }
+
     init() {
     }
 
@@ -110,7 +109,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readUInt8() throws -> UInt8 {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         defer {
             position += 1
@@ -124,7 +123,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readInt8() throws -> Int8 {
         guard ByteArray.sizeOfInt8 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         defer {
             position += 1
@@ -138,7 +137,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readUInt16() throws -> UInt16 {
         guard ByteArray.sizeOfInt16 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfInt16
         return UInt16(bytes: Array(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
@@ -150,7 +149,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readInt16() throws -> Int16 {
         guard ByteArray.sizeOfInt16 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfInt16
         return Int16(bytes: Array(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
@@ -162,7 +161,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readUInt24() throws -> UInt32 {
         guard ByteArray.sizeOfInt24 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfInt24
         return UInt32(bytes: [0] + Array(bytes[position - ByteArray.sizeOfInt24..<position])).bigEndian
@@ -174,7 +173,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readUInt32() throws -> UInt32 {
         guard ByteArray.sizeOfInt32 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfInt32
         return UInt32(bytes: Array(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
@@ -186,7 +185,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readInt32() throws -> Int32 {
         guard ByteArray.sizeOfInt32 <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfInt32
         return Int32(bytes: Array(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
@@ -198,7 +197,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readDouble() throws -> Double {
         guard ByteArray.sizeOfDouble <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfDouble
         return Double(bytes: Array(bytes[position - ByteArray.sizeOfDouble..<position].reverse()))
@@ -210,7 +209,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readFloat() throws -> Float {
         guard ByteArray.sizeOfFloat <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += ByteArray.sizeOfFloat
         return Float(bytes: Array(bytes[position - ByteArray.sizeOfFloat..<position].reverse()))
@@ -231,11 +230,11 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readUTF8Bytes(length:Int) throws -> String {
         guard length <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += length
         guard let result:String = String(bytes: Array(bytes[position - length..<position]), encoding: NSUTF8StringEncoding) else {
-            throw ByteArrayError.Parse
+            throw ByteArray.Error.Parse
         }
         return result
     }
@@ -246,7 +245,7 @@ public class ByteArray: ByteArrayConvertible {
 
     public func readBytes(length:Int) throws -> [UInt8] {
         guard length <= bytesAvailable else {
-            throw ByteArrayError.EOF
+            throw ByteArray.Error.EOF
         }
         position += length
         return Array(bytes[position - length..<position])

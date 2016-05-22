@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		05932E852349517AF5114CB1 /* Pods_Example_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC39416255B1FE34117A703 /* Pods_Example_iOS.framework */; };
 		0D537C0E28DED4737218AB60 /* Pods_lf_MacOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62A18E467F268D280AB4D789 /* Pods_lf_MacOS.framework */; };
-		2965BC231CEFB38000B5B6FC /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 2965BC211CEFB37100B5B6FC /* Icon.png */; };
+		291F4E381CF206E600F59C51 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 291F4E361CF206E200F59C51 /* Icon.png */; };
 		296897601CDB022C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897511CDB01EF0074D5F0 /* Assets.xcassets */; };
 		296897611CDB022C0074D5F0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2968975A1CDB01F90074D5F0 /* MainMenu.xib */; };
 		296897621CDB02330074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897501CDB01EF0074D5F0 /* AppDelegate.swift */; };
@@ -185,8 +185,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		291F4E361CF206E200F59C51 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Examples/iOS/Icon.png; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2965BC211CEFB37100B5B6FC /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
 		296897411CDB01D20074D5F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Examples/iOS/AppDelegate.swift; sourceTree = "<group>"; };
 		296897421CDB01D20074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Examples/iOS/Assets.xcassets; sourceTree = "<group>"; };
 		296897431CDB01D20074D5F0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Examples/iOS/Info.plist; sourceTree = "<group>"; };
@@ -523,14 +523,14 @@
 		2968973F1CDB01AD0074D5F0 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				296897431CDB01D20074D5F0 /* Info.plist */,
-				2965BC211CEFB37100B5B6FC /* Icon.png */,
 				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
+				296897421CDB01D20074D5F0 /* Assets.xcassets */,
+				291F4E361CF206E200F59C51 /* Icon.png */,
+				296897431CDB01D20074D5F0 /* Info.plist */,
+				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
 				296897441CDB01D20074D5F0 /* LiveViewController.swift */,
 				296897451CDB01D20074D5F0 /* PreferenceController.swift */,
 				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
-				296897421CDB01D20074D5F0 /* Assets.xcassets */,
-				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -854,7 +854,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2965BC231CEFB38000B5B6FC /* Icon.png in Resources */,
+				291F4E381CF206E600F59C51 /* Icon.png in Resources */,
 				296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */,
 				296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */,
 			);

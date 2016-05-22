@@ -1,12 +1,15 @@
 import Foundation
 import CryptoSwift
 
-public class Responder: NSObject {
+/**
+ flash.net.Responder for Swift
+ */
+public class Responder {
 
     private var result:(data:[Any?]) -> Void
     private var status:((data:[Any?]) -> Void)?
 
-    public init (result:(data:[Any?]) -> Void, status:((data:[Any?]) -> Void)?) {
+    public init(result:(data:[Any?]) -> Void, status:((data:[Any?]) -> Void)?) {
         self.result = result
         self.status = status
     }
@@ -15,19 +18,25 @@ public class Responder: NSObject {
         self.init(result: result, status: nil)
     }
 
-    public func onResult(data:[Any?]) {
+    func onResult(data:[Any?]) {
         result(data: data)
     }
 
-    public func onStatus(data:[Any?]) {
+    func onStatus(data:[Any?]) {
         status?(data: data)
         status = nil
     }
 }
 
 // MARK: -
+/**
+ flash.net.NetConnection for Swift
+ */
 public class RTMPConnection: EventDispatcher {
 
+    /**
+     NetStatusEvent#info.code for NetConnection
+     */
     public enum Code: String {
         case CallBadVersion       = "NetConnection.Call.BadVersion"
         case CallFailed           = "NetConnection.Call.Failed"

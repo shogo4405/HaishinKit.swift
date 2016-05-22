@@ -2,6 +2,8 @@
 !*.xcodeproj/project.pbxproj
 !*.xcworkspace/contents.xcworkspacedata
 xcuserdata
+docs
+build
 *.xccheckout
 *.moved-aside
 *.xcuserstate

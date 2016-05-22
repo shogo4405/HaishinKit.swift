@@ -71,6 +71,9 @@ extension RTMPSharedObjectEvent: CustomStringConvertible {
 }
 
 // MARK: -
+/**
+ flash.net.SharedObject for Swift
+ */
 public class RTMPSharedObject: EventDispatcher {
 
     static private var remoteSharedObjects:[String: RTMPSharedObject] = [:]

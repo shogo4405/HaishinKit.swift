@@ -1,6 +1,9 @@
 import Foundation
 
 // MARK: IEventDispatcher
+/**
+ flash.events.IEventDispatcher for Swift
+ */
 public protocol IEventDispatcher: class {
     func addEventListener(type:String, selector:Selector)
     func addEventListener(type:String, selector:Selector, observer:AnyObject)
@@ -21,6 +24,9 @@ public enum EventPhase: UInt8 {
 }
 
 // MARK: -
+/**
+ flash.events.Event for Swift
+ */
 public class Event: NSObject {
     public static let SYNC:String = "sync"
     public static let RTMP_STATUS:String = "rtmpStatus"
@@ -55,6 +61,9 @@ public class Event: NSObject {
 }
 
 // MARK: -
+/**
+ flash.events.EventDispatcher for Swift
+ */
 public class EventDispatcher: NSObject, IEventDispatcher {
 
     private var target:AnyObject? = nil

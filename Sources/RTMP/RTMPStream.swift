@@ -1,10 +1,16 @@
 import Foundation
 import AVFoundation
 
+/**
+ flash.net.NetStream for Swift
+ */
 public class RTMPStream: EventDispatcher {
 
     public static var rootPath:String = NSTemporaryDirectory()
 
+    /**
+     NetStatusEvent#info.code for NetStream
+     */
     public enum Code: String {
         case BufferEmpty               = "NetStream.Buffer.Empty"
         case BufferFlush               = "NetStream.Buffer.Flush"
@@ -138,16 +144,9 @@ public class RTMPStream: EventDispatcher {
         }
     }
 
-    enum ReadyState: UInt8 {
-        case Initilized = 0
-        case Open       = 1
-        case Play       = 2
-        case Playing    = 3
-        case Publish    = 4
-        case Publishing = 5
-        case Closed     = 6
-    }
-
+    /**
+     flash.net.NetStreamPlayTransitions for Swift
+     */
     public enum PlayTransition: String {
         case Append        = "append"
         case AppendAndWait = "appendAndWait"
@@ -183,6 +182,16 @@ public class RTMPStream: EventDispatcher {
         public var description:String {
             return Mirror(reflecting: self).description
         }
+    }
+
+    enum ReadyState: UInt8 {
+        case Initilized = 0
+        case Open       = 1
+        case Play       = 2
+        case Playing    = 3
+        case Publish    = 4
+        case Publishing = 5
+        case Closed     = 6
     }
 
     static let defaultID:UInt32 = 0
