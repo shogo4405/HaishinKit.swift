@@ -2,7 +2,6 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-// MARK: - AVCFormatStream
 struct AVCFormatStream {
     var bytes:[UInt8] = []
 
@@ -27,10 +26,10 @@ struct AVCFormatStream {
     }
 }
 
+// MARK: -
 /*
  - seealso: ISO/IEC 14496-15 2010
  */
-// MARK: - AVCConfigurationRecord
 struct AVCConfigurationRecord {
 
     static func getData(formatDescription:CMFormatDescriptionRef?) -> NSData? {

@@ -1,10 +1,12 @@
 import Foundation
 
+// MARK: ByteArrayError
 public enum ByteArrayError: ErrorType {
     case EOF
     case Parse
 }
 
+// MARK: - ByteArrayConvertible
 protocol ByteArrayConvertible {
 
     var bytes:[UInt8] { get }
@@ -52,6 +54,7 @@ protocol ByteArrayConvertible {
     func clear() -> Self
 }
 
+// MARK: -
 public class ByteArray: ByteArrayConvertible {
     static let sizeOfInt8:Int = 1
     static let sizeOfInt16:Int = 2
@@ -271,7 +274,7 @@ public class ByteArray: ByteArrayConvertible {
     }
 }
 
-// MARK: - CustomStringConvertible
+// MARK: CustomStringConvertible
 extension ByteArray: CustomStringConvertible {
     public var description:String {
         return Mirror(reflecting: self).description

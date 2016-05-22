@@ -1,9 +1,8 @@
 import Foundation
 
-/*
+/**
  - seealso: https://tools.ietf.org/html/draft-pantos-http-live-streaming-19
  */
-// MARK: - M3U
 struct M3U {
     static let header:String = "#EXTM3U"
     static let defaultVersion:Int = 3
@@ -34,7 +33,7 @@ extension M3U: CustomStringConvertible {
     }
 }
 
-// MARK: - M3UMediaPath
+// MARK: -
 struct M3UMediaInfo {
     var url:NSURL
     var duration:Double

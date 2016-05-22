@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - HTTPVersion
+// MARK: HTTPVersion
 enum HTTPVersion: String {
     case Unkown    = "UNKOWN"
     case Version10 = "HTTP/1.0"
@@ -27,7 +27,7 @@ enum HTTPMethod: String {
     case CONNECT = "CONNECT"
 }
 
-// MARK: - HTTPStatusCode
+// MARK: HTTPStatusCode
 enum HTTPStatusCode: Int {
     case Continue                     = 100
     case SwitchingProtocols           = 101

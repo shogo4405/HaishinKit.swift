@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: IEventDispatcher
 public protocol IEventDispatcher: class {
     func addEventListener(type:String, selector:Selector)
     func addEventListener(type:String, selector:Selector, observer:AnyObject)
@@ -11,14 +12,16 @@ public protocol IEventDispatcher: class {
     func dispatchEventWith(type:String, bubbles:Bool, data:Any?)
 }
 
-public enum EventPhase:UInt8 {
-    case CAPTURING = 0
-    case AT_TARGET = 1
-    case BUBBLING = 2
-    case DISPOSE = 3
+// MARK: - EventPhase
+public enum EventPhase: UInt8 {
+    case Capturing = 0
+    case AtTarget  = 1
+    case Bubbling  = 2
+    case Dispose   = 3
 }
 
-public class Event:NSObject {
+// MARK: -
+public class Event: NSObject {
     public static let SYNC:String = "sync"
     public static let RTMP_STATUS:String = "rtmpStatus"
 
@@ -31,9 +34,9 @@ public class Event:NSObject {
         return Event(type: "")
     }
 
-    public private(set) var type:String = ""
-    public private(set) var bubbles:Bool = false
-    public private(set) var data:Any? = nil
+    public private(set) var type:String
+    public private(set) var bubbles:Bool
+    public private(set) var data:Any?
     public private(set) var target:AnyObject? = nil
 
     init(type:String, bubbles:Bool, data:Any?) {
@@ -51,6 +54,7 @@ public class Event:NSObject {
     }
 }
 
+// MARK: -
 public class EventDispatcher: NSObject, IEventDispatcher {
 
     private var target:AnyObject? = nil

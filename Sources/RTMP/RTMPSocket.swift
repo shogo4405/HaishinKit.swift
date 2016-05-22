@@ -1,12 +1,12 @@
 import Foundation
 
-// MARK: - RTMPSocketDelegate
+// MARK: RTMPSocketDelegate
 protocol RTMPSocketDelegate: IEventDispatcher {
     func listen(socket:RTMPSocket, bytes:[UInt8])
     func didSetReadyState(socket:RTMPSocket, readyState:RTMPSocket.ReadyState)
 }
 
-// MARK: - RTMPSocket
+// MARK: -
 final class RTMPSocket: NetSocket {
 
     enum ReadyState: UInt8 {

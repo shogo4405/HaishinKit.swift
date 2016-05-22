@@ -1,10 +1,10 @@
 import Foundation
 import AVFoundation
 
-/*
+// MARK: PESPacketHeader
+/**
  - seealso: https://en.wikipedia.org/wiki/Packetized_elementary_stream
  */
-// MARK: - PESPacketHeader
 protocol PESPacketHeader {
     var startCode:[UInt8] { get set }
     var streamID:UInt8 { get set }
@@ -21,7 +21,7 @@ enum PESPTSDTSIndicator:UInt8 {
     case BothPresent = 3
 }
 
-// MARK: - PESOptinalHeader
+// MARK: -
 struct PESOptionalHeader {
     static let fixedSectionSize:Int = 3
     static let defaultMarkerBits:UInt8 = 2
@@ -127,7 +127,7 @@ extension PESOptionalHeader: CustomStringConvertible {
     }
 }
 
-// MARK: - PacketizedElementaryStream
+// MARK: -
 struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize:Int = 6
     static let startCode:[UInt8] = [0x00, 0x00, 0x01]
@@ -251,7 +251,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 }
 
-// MARK: - BytesConvertible
+// MARK: BytesConvertible
 extension PacketizedElementaryStream: BytesConvertible {
     var bytes:[UInt8] {
         get {
@@ -283,7 +283,7 @@ extension PacketizedElementaryStream: BytesConvertible {
     }
 }
 
-// MAKR: CustomStringConvertible
+// MARK: CustomStringConvertible
 extension PacketizedElementaryStream: CustomStringConvertible {
     var description:String {
         return Mirror(reflecting: self).description

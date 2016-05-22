@@ -1,7 +1,6 @@
 import Foundation
 import AVFoundation
 
-// MARK: - AudioIOComponent
 final class AudioIOComponent: NSObject {
     var encoder:AACEncoder = AACEncoder()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(

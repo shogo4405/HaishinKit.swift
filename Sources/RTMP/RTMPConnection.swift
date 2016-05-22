@@ -1,7 +1,6 @@
 import Foundation
 import CryptoSwift
 
-// MARK: -
 public class Responder: NSObject {
 
     private var result:(data:[Any?]) -> Void
@@ -315,7 +314,7 @@ public class RTMPConnection: EventDispatcher {
     }
 }
 
-// MARK: - RTMPSocketDelegate
+// MARK: RTMPSocketDelegate
 extension RTMPConnection: RTMPSocketDelegate {
 
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {

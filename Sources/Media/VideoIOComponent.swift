@@ -405,7 +405,7 @@ final class VideoIOComponent: NSObject {
     }
 }
 
-// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+// MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
         guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
@@ -432,7 +432,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-// MARK: - VideoDecoderDelegate
+// MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
     func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
         let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
@@ -448,7 +448,7 @@ extension VideoIOComponent: VideoDecoderDelegate {
     }
 }
 
-// MARK: - ScreenCaptureOutputPixelBufferDelegate
+// MARK: ScreenCaptureOutputPixelBufferDelegate
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     func didSetSize(size: CGSize) {
         dispatch_async(lockQueue) {
@@ -465,7 +465,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     }
 }
 
-// MARK: - VideoIOLayer
+// MARK: -
 final class VideoIOLayer: AVCaptureVideoPreviewLayer {
     private(set) var currentFPS:Int = 0
 
@@ -547,7 +547,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
 }
 
 #if os(iOS)
-// MARK: -
+// MARK: - iOS
 public class VideoIOView: UIView {
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
@@ -578,7 +578,7 @@ public class VideoIOView: UIView {
     }
 }
 #else
-// MARK: -
+// MARK: - OSX
 public class VideoIOView: NSView {
     required override public init(frame: CGRect) {
         super.init(frame: frame)

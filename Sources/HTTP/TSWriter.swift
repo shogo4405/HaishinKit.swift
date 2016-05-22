@@ -2,7 +2,6 @@ import CoreMedia
 import Foundation
 import CryptoSwift
 
-// MARK: - TSWriter
 class TSWriter {
     static let defaultPATPID:UInt16 = 0
     static let defaultPMTPID:UInt16 = 4096

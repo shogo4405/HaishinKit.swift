@@ -1,6 +1,6 @@
 import Foundation
 
-// MARK: - TSReaderDelegate
+// MARK: TSReaderDelegate
 protocol TSReaderDelegate: class {
     func didReadPacketizedElementaryStream(data:ElementaryStreamSpecificData, PES:PacketizedElementaryStream)
 }

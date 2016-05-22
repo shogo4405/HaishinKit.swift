@@ -133,7 +133,7 @@ public class AVMixer: NSObject {
     #endif
 }
 
-// MARK: - Runnable
+// MARK: Runnable
 extension AVMixer: Runnable {
     var running:Bool {
         return session.running

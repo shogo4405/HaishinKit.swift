@@ -127,7 +127,7 @@ extension TSPacket: BytesConvertible {
     }
 }
 
-// MARK: - TSTimestamp
+// MARK: -
 struct TSTimestamp {
     static let resolution:Double = 90 * 1000 // 90kHz
     static let PTSMask:UInt8 = 0x10
@@ -152,7 +152,7 @@ struct TSTimestamp {
     }
 }
 
-// MARK: - TSProgramClockReference
+// MARK: -
 struct TSProgramClockReference {
     static let resolutionForBase:Int32 = 90 * 1000 // 90kHz
     static let resolutionForExtension:Int32 = 27 * 1000 * 1000 // 27MHz
@@ -199,7 +199,7 @@ extension TSPacket: CustomStringConvertible {
     }
 }
 
-// MARK: - TSAdaptationField
+// MARK: -
 struct TSAdaptationField {
     static let PCRSize:Int = 6
     static let fixedSectionSize:Int = 2

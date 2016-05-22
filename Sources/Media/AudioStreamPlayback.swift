@@ -280,7 +280,7 @@ public class AudioStreamPlayback: NSObject {
     }
 }
 
-// MARK: - Runnable
+// MARK: Runnable
 extension AudioStreamPlayback: Runnable {
     public func startRunning() {
         dispatch_async(lockQueue) {

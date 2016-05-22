@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - CRC32
 final class CRC32 {
     static let MPEG2:CRC32 = CRC32(polynomial: 0x04c11db7)
 

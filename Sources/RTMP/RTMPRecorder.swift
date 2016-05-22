@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-// MARK: - FLVVideoCodec
+// MARK: FLVVideoCodec
 enum FLVVideoCodec: UInt8 {
     case SorensonH263 = 2
     case Screen1      = 3
@@ -160,7 +160,7 @@ enum FLVAudioCodec:UInt8 {
     }
 }
 
-// MARK: - FLVTag
+// MARK: FLVTag
 struct FLVTag {
 
     enum TagType:UInt8 {
@@ -218,7 +218,7 @@ extension FLVTag: CustomStringConvertible {
     }
 }
 
-// MARK: - RTMPRecorder
+// MARK: RTMPRecorder
 final class RTMPRecorder: NSObject {
 
     static let defaultVersion:UInt8 = 1

@@ -1,13 +1,13 @@
 import Foundation
 
-// MARK: - NetClientDelegate
+// MARK: NetClientDelegate
 @objc protocol NetClientDelegate: class {
     optional func client(inputBuffer client:NetClient)
     optional func client(didAccepetConnection client:NetClient)
     optional func client(didOpenCompleted client:NetClient)
 }
 
-// MARK: - NetClient
+// MARK: -
 final class NetClient: NetSocket {
     static let defaultBufferSize:Int = 8192
 

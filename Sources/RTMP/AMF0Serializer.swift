@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: - AMFSerializerUtil
 class AMFSerializerUtil {
     private static var classes:[String: AnyClass] = [:]
 
@@ -59,11 +58,12 @@ protocol AMFSerializer: ByteArrayConvertible {
     func deserialize() throws -> Any?
 }
 
+// MARK: -
 /**
- * AMF0Serializer
- * -seealso: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
+ AMF0Serializer
+
+ -seealso: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
  */
-// MARK: - AMF0Serializer
 class AMF0Serializer: ByteArray {
     enum Type:UInt8 {
         case Number      = 0x00

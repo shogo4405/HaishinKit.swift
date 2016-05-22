@@ -155,7 +155,7 @@ final class AVCEncoder: NSObject {
     }
 }
 
-// MARK: - Encoder
+// MARK: Encoder
 extension AVCEncoder: Encoder {
     func startRunning() {
         dispatch_async(lockQueue) {

@@ -1,7 +1,6 @@
 import Foundation
 
-// MARK: - MP4Box
-class MP4Box: NSObject {
+class MP4Box {
     static func create(data:NSData) throws -> MP4Box {
         let buffer:ByteArray = ByteArray(data: data)
         let size:UInt32 = try buffer.readUInt32()
@@ -84,7 +83,6 @@ class MP4Box: NSObject {
     }
 }
 
-// MARK: - MP4ContainerBox
 class MP4ContainerBox: MP4Box {
 
     private var children:[MP4Box] = []
@@ -130,7 +128,6 @@ class MP4ContainerBox: MP4Box {
     }
 }
 
-// MARK: - MP4MediaHeaderBox
 final class MP4MediaHeaderBox: MP4Box {
     var version:UInt8 = 0
     var creationTime:UInt32 = 0
@@ -155,7 +152,6 @@ final class MP4MediaHeaderBox: MP4Box {
     }
 }
 
-// MARK: - MP4ChunkOffsetBox
 final class MP4ChunkOffsetBox: MP4Box {
     var entries:[UInt32] = []
 
@@ -173,7 +169,6 @@ final class MP4ChunkOffsetBox: MP4Box {
     }
 }
 
-// MARK: - MP4SyncSampleBox
 final class MP4SyncSampleBox: MP4Box {
     var entries:[UInt32] = []
 
@@ -192,7 +187,6 @@ final class MP4SyncSampleBox: MP4Box {
     }
 }
 
-// MARK: - MP4TimeToSampleBox
 final class MP4TimeToSampleBox: MP4Box {
     struct Entry: CustomStringConvertible {
         var sampleCount:UInt32 = 0
@@ -228,7 +222,6 @@ final class MP4TimeToSampleBox: MP4Box {
     }
 }
 
-// MARK: - MP4SampleSizeBox
 final class MP4SampleSizeBox: MP4Box {
     var entries:[UInt32] = []
 
@@ -255,7 +248,6 @@ final class MP4SampleSizeBox: MP4Box {
     }
 }
 
-// MARK: - MP4ElementaryStreamDescriptorBox
 final class MP4ElementaryStreamDescriptorBox: MP4ContainerBox {
     var audioDecorderSpecificConfig:[UInt8] = []
 
@@ -314,7 +306,6 @@ final class MP4ElementaryStreamDescriptorBox: MP4ContainerBox {
     }
 }
 
-// MARK: - MP4AudioSampleEntryBox
 final class MP4AudioSampleEntryBox: MP4ContainerBox {
     var version:UInt16 = 0
 
@@ -372,7 +363,6 @@ final class MP4AudioSampleEntryBox: MP4ContainerBox {
     }
 }
 
-// MARK: - MP4VisualSampleEntryBox
 final class MP4VisualSampleEntryBox: MP4ContainerBox {
     static var dataSize:Int = 78
 
@@ -413,7 +403,6 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
     }
 }
 
-// MARK: - MP4SampleDescriptionBox
 final class MP4SampleDescriptionBox: MP4ContainerBox {
     override func loadFile(fileHandle: NSFileHandle) throws -> UInt32 {
         children.removeAll(keepCapacity: false)
@@ -433,7 +422,6 @@ final class MP4SampleDescriptionBox: MP4ContainerBox {
     }
 }
 
-// MARK: - MP4SampleToChunkBox
 final class MP4SampleToChunkBox: MP4Box {
     struct Entry:CustomStringConvertible {
         var firstChunk:UInt32 = 0
@@ -471,7 +459,6 @@ final class MP4SampleToChunkBox: MP4Box {
     }
 }
 
-// MARK: - MP4EditListBox
 final class MP4EditListBox: MP4Box {
     struct Entry: CustomStringConvertible {
         var segmentDuration:UInt32 = 0
@@ -511,7 +498,6 @@ final class MP4EditListBox: MP4Box {
     }
 }
 
-// MARK: - MP4File
 final class MP4File: MP4ContainerBox {
     var url:NSURL? = nil {
         didSet {

@@ -1,6 +1,7 @@
 import Foundation
 
-/*
+// MARK: PSIPointer
+/**
  - seealso: https://en.wikipedia.org/wiki/Program-specific_information
  */
 protocol PSIPointer {
@@ -8,6 +9,7 @@ protocol PSIPointer {
     var pointerFillerBytes:[UInt8] { get set }
 }
 
+// MARK: - PSITableHeader
 protocol PSITableHeader {
     var tableID:UInt8 { get set }
     var sectionSyntaxIndicator:Bool { get set }
@@ -15,6 +17,7 @@ protocol PSITableHeader {
     var sectionLength:UInt16 { get set }
 }
 
+// MARK: - PSITableSyntax
 protocol PSITableSyntax {
     var tableIDExtension:UInt16 { get set }
     var versionNumber:UInt8 { get set }
@@ -25,7 +28,7 @@ protocol PSITableSyntax {
     var crc32:UInt32 { get set }
 }
 
-// MARK: - ProgramSpecific
+// MARK: -
 class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     static let reservedBits:UInt8 = 0x03
     static let defaultTableIDExtension:UInt16 = 1
@@ -134,7 +137,7 @@ extension ProgramSpecific: BytesConvertible {
     }
 }
 
-// MARK: - ProgramAssociationSpecific
+// MARK: -
 final class ProgramAssociationSpecific: ProgramSpecific {
     static let tableID:UInt8 = 0
 
@@ -161,7 +164,7 @@ final class ProgramAssociationSpecific: ProgramSpecific {
     }
 }
 
-// MARK: - ProgramMapSpecific
+// MARK: -
 final class ProgramMapSpecific: ProgramSpecific {
     static let tableID:UInt8 = 2
     static let unusedPCRID:UInt16 = 0x1fff
@@ -214,7 +217,7 @@ final class ProgramMapSpecific: ProgramSpecific {
     }
 }
 
-// MARK: - ElementaryStreamType
+// MARK: ElementaryStreamType
 enum ElementaryStreamType: UInt8 {
     case MPEG1Video          = 0x01
     case MPEG2Video          = 0x02
@@ -230,7 +233,6 @@ enum ElementaryStreamType: UInt8 {
     case H265     = 0x24
 }
 
-// MARK: - ElementaryStreamSpecificData
 struct ElementaryStreamSpecificData {
     static let fixedHeaderSize:Int = 5
 

@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: NetSocket
 class NetSocket: NSObject {
     static let defaultWindowSizeC:Int = 1024 * 1
 
@@ -129,7 +128,7 @@ class NetSocket: NSObject {
     }
 }
 
-// MARK: - NSStreamDelegate
+// MARK: NSStreamDelegate
 extension NetSocket: NSStreamDelegate {
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
         switch eventCode {

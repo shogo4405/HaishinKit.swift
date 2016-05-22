@@ -35,6 +35,7 @@ extension CMSampleBuffer {
     }
 }
 
+// MARK: BytesConvertible
 extension CMSampleBuffer: BytesConvertible {
     var bytes:[UInt8] {
         get {

@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-// MARK: - NALType
+// MARK: NALType
 enum NALType: UInt8 {
     case UNSPEC   = 0
     case SLICE    = 1 // P frame
@@ -19,7 +19,7 @@ enum NALType: UInt8 {
     case FILL     = 12
 }
 
-// MARK: - NALUnit
+// MARK: -
 struct NALUnit {
     var refIdc:UInt8 = 0
     var type:NALType = .UNSPEC

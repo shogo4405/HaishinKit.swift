@@ -1,8 +1,11 @@
 import Foundation
 import AVFoundation
 
-// @reference https://developer.apple.com/library/ios/technotes/tn2236/_index.html
-// @reference https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/MultimediaPG/UsingAudio/UsingAudio.html
+/**
+ - seealse:
+  - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
+  - https://developer.apple.com/library/ios/documentation/AudioVideo/Conceptual/MultimediaPG/UsingAudio/UsingAudio.html
+ */
 final class AACEncoder: NSObject {
     static let supportedSettingsKeys:[String] = [
         "bitrate",
@@ -165,7 +168,7 @@ final class AACEncoder: NSObject {
     }
 }
 
-// MARK: - Encoder
+// MARK: Encoder
 extension AACEncoder: Encoder {
     func startRunning() {
         dispatch_async(lockQueue) {
@@ -187,7 +190,7 @@ extension AACEncoder: Encoder {
     }
 }
 
-// MARK: - AVCaptureAudioDataOutputSampleBufferDelegate
+// MARK: AVCaptureAudioDataOutputSampleBufferDelegate
 extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
 
