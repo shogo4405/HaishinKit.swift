@@ -292,6 +292,12 @@ public class RTMPConnection: EventDispatcher {
             switch code {
             case Code.ConnectSuccess.rawValue:
                 connected = true
+                socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
+                socket.doOutput(chunk: RTMPChunk(
+                    type: .One,
+                    streamId: RTMPChunk.control,
+                    message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
+                ))
             case Code.ConnectRejected.rawValue:
                 guard let uri:NSURL = uri, user:String = uri.user, _:String = uri.password else {
                     break
