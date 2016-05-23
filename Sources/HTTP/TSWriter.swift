@@ -13,13 +13,13 @@ class TSWriter {
 
     var playlist:String {
         var m3u8:M3U = M3U()
+        m3u8.targetDuration = segmentDuration
         if (sequence <= TSWriter.defaultSegmentMaxCount) {
             m3u8.mediaSequence = 0
             m3u8.mediaList = files
             return m3u8.description
         }
         m3u8.mediaSequence = sequence - TSWriter.defaultSegmentMaxCount
-        m3u8.targetDuration = segmentDuration
         m3u8.mediaList = Array(files[files.count - TSWriter.defaultSegmentCount..<files.count])
         return m3u8.description
     }

@@ -1,5 +1,5 @@
 # lf.swift
-lf is a lIVE fRAMEWORK. iOS Camera/Microphone streaming library via RTMP/HTTP
+lf is a lIVE fRAMEWORK. iOS/OSX Camera/Microphone streaming library via RTMP/HTTP
 
 ## Install
 ### Cocoapod
@@ -34,11 +34,12 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
 ```
 
 ## Usage/HTTP
-HTTP Live Streaming (HLS). Your iPhone become a IP Camera. Basic snipet.
+HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet.
 ```swift
 httpStream = HTTPStream()
 httpStream.syncOrientation = true
 httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
 
 httpStream.publish("hello")
 
@@ -63,9 +64,10 @@ You can see http://ip.address:8080/hello/playlist.m3u8
 New BSD
 
 ## Enviroment
-|lf|iOS|Swift|CocoaPod|
-|----|----|----|----|
-|0.2|8.0〜|2.3|0.39.0|
+|lf|iOS|OSX|Swift|CocoaPod|
+|----|----|----|----|----|
+|0.3|8.0|10.11|2.3|1.0.0|
+|0.2|8.0|-|2.3|0.39.0|
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
@@ -74,3 +76,8 @@ New BSD
  * http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
 * Action Message Format -- AMF 3 
  * http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
+* Video File Format Specification Version 10
+ * https://www.adobe.com/content/dam/Adobe/en/devnet/flv/pdfs/video_file_format_spec_v10.pdf
+* Adobe Flash Video File Format Specification Version 10.1
+ * http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf
+
