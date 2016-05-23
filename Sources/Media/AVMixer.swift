@@ -146,11 +146,6 @@ extension AVMixer: Runnable {
         videoIO.view.layer?.setValue(session, forKey: "session")
         #endif
         session.startRunning()
-        #if os(iOS)
-        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
-            self.orientation = orientation
-        }
-        #endif
     }
 
     func stopRunning() {
