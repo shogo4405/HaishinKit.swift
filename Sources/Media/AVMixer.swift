@@ -147,7 +147,7 @@ extension AVMixer: Runnable {
         #endif
         session.startRunning()
         #if os(iOS)
-        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) {
+        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) where syncOrientation {
             self.orientation = orientation
         }
         #endif
