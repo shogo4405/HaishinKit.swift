@@ -815,17 +815,20 @@ final class RTMPUserControlMessage: RTMPMessage {
         super.init(type: .User)
     }
 
-    init(event:Event) {
+    init(event:Event, value:Int32) {
         super.init(type: .User)
         self.event = event
+        self.value = value
     }
 
     override func execute(connection: RTMPConnection) {
         switch event {
         case .Ping:
-            let message:RTMPUserControlMessage = RTMPUserControlMessage(event: .Pong)
-            message.value = value
-            connection.socket.doOutput(chunk: RTMPChunk(message: message))
+            connection.socket.doOutput(chunk: RTMPChunk(
+                type: .Zero,
+                streamId: RTMPChunk.control,
+                message: RTMPUserControlMessage(event: .Pong, value: value)
+            ))
         case .BufferEmpty, .BufferFull:
             connection.streams[UInt32(value)]?.dispatchEventWith("rtmpStatus", bubbles: false, data: [
                 "level": "status",
