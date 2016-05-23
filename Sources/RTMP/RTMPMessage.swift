@@ -40,14 +40,12 @@ class RTMPMessage {
             return RTMPAudioMessage()
         case Type.Video.rawValue:
             return RTMPVideoMessage()
-        /*
         case Type.AMF3Data.rawValue:
             return RTMPDataMessage(objectEncoding: 0x03)
         case Type.AMF3Shared.rawValue:
             return RTMPSharedObjectMessage(objectEncoding: 0x03)
         case Type.AMF3Command.rawValue:
             return RTMPCommandMessage(objectEncoding: 0x03)
-        */
         case Type.AMF0Data.rawValue:
             return RTMPDataMessage(objectEncoding: 0x00)
         case Type.AMF0Shared.rawValue:
@@ -331,6 +329,9 @@ final class RTMPCommandMessage: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
+            if (type == .AMF3Command) {
+                serializer.writeUInt8(0)
+            }
             serializer.serialize(commandName)
             serializer.serialize(transactionId)
             serializer.serialize(commandObject)
@@ -346,6 +347,9 @@ final class RTMPCommandMessage: RTMPMessage {
                 serializer.writeBytes(newValue)
                 serializer.position = 0
                 do {
+                    if (type == .AMF3Command) {
+                        serializer.position = 1
+                    }
                     commandName = try serializer.deserialize()
                     transactionId = try serializer.deserialize()
                     commandObject = try serializer.deserialize()
@@ -362,11 +366,10 @@ final class RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    private var serializer:AMFSerializer
+    private var serializer:AMFSerializer = AMF0Serializer()
 
     init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
-        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
         super.init(type: objectEncoding == 0x00 ? .AMF0Command : .AMF3Command)
     }
 
@@ -376,7 +379,6 @@ final class RTMPCommandMessage: RTMPMessage {
         self.commandName = commandName
         self.commandObject = commandObject
         self.arguments = arguments
-        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
         super.init(type: objectEncoding == 0x00 ? .AMF0Command : .AMF3Command)
         self.streamId = streamId
     }
@@ -424,7 +426,7 @@ final class RTMPDataMessage: RTMPMessage {
         }
     }
 
-    private var serializer:AMFSerializer
+    private var serializer:AMFSerializer = AMF0Serializer()
 
     override var payload:[UInt8] {
         get {
@@ -432,6 +434,9 @@ final class RTMPDataMessage: RTMPMessage {
                 return super.payload
             }
 
+            if (type == .AMF3Data) {
+                serializer.writeUInt8(0)
+            }
             serializer.serialize(handlerName)
             for arg in arguments {
                 serializer.serialize(arg)
@@ -449,6 +454,9 @@ final class RTMPDataMessage: RTMPMessage {
             if (length == newValue.count) {
                 serializer.writeBytes(newValue)
                 serializer.position = 0
+                if (type == .AMF3Data) {
+                    serializer.position = 1
+                }
                 do {
                     handlerName = try serializer.deserialize()
                     while (0 < serializer.bytesAvailable) {
@@ -466,7 +474,6 @@ final class RTMPDataMessage: RTMPMessage {
 
     init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
-        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
         super.init(type: objectEncoding == 0x00 ? .AMF0Data : .AMF3Data)
     }
 
@@ -474,7 +481,6 @@ final class RTMPDataMessage: RTMPMessage {
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
-        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
         super.init(type: objectEncoding == 0x00 ? .AMF0Data : .AMF3Data)
         self.streamId = streamId
     }
@@ -530,6 +536,9 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             }
 
             do {
+                if (type == .AMF3Shared) {
+                    serializer.writeUInt8(0)
+                }
                 try serializer.writeUTF8(sharedObjectName)
                 serializer.writeUInt32(currentVersion)
                 serializer.writeBytes(flags)
@@ -552,6 +561,9 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             if (length == newValue.count) {
                 serializer.writeBytes(newValue)
                 serializer.position = 0
+                if (type == .AMF3Shared) {
+                    serializer.position = 1
+                }
                 do {
                     sharedObjectName = try serializer.readUTF8()
                     currentVersion = try serializer.readUInt32()
@@ -572,11 +584,10 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         }
     }
 
-    private var serializer:AMFSerializer
+    private var serializer:AMFSerializer = AMF0Serializer()
 
     init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
-        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
         super.init(type: objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared)
     }
 
@@ -586,7 +597,6 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         self.currentVersion = currentVersion
         self.flags = flags
         self.events = events
-        self.serializer = objectEncoding == 0x00 ? AMF0Serializer() : AMF3Serializer()
         super.init(type: objectEncoding == 0x00 ? .AMF0Shared : .AMF3Shared)
         self.timestamp = timestamp
     }

@@ -7,6 +7,7 @@ final class LiveViewController: NSViewController {
 
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
+    var sharedObject:RTMPSharedObject!
 
     var httpService:HTTPService = HTTPService(
         domain: "localhost", type: HTTPService.type, name: "", port: HTTPService.defaultPort
@@ -192,6 +193,9 @@ final class LiveViewController: NSViewController {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish("test")
+                sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
+                sharedObject.connect(rtmpConnection)
+                sharedObject.setProperty("Hello", "World!!")
             default:
                 break
             }

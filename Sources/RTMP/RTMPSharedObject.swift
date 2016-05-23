@@ -39,8 +39,13 @@ struct RTMPSharedObjectEvent {
         let position:Int = serializer.position
         if (0 < length) {
             name = try serializer.readUTF8()
-            if (serializer.position - position < length) {
-                data = try serializer.deserialize()
+            switch type {
+            case .Status:
+                data = try serializer.readUTF8()
+            default:
+                if (serializer.position - position < length) {
+                    data = try serializer.deserialize()
+                }
             }
         }
     }
