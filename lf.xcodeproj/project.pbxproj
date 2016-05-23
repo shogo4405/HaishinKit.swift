@@ -10,7 +10,6 @@
 		05932E852349517AF5114CB1 /* Pods_Example_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC39416255B1FE34117A703 /* Pods_Example_iOS.framework */; };
 		0D537C0E28DED4737218AB60 /* Pods_lf_MacOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 62A18E467F268D280AB4D789 /* Pods_lf_MacOS.framework */; };
 		291F4E381CF206E600F59C51 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 291F4E361CF206E200F59C51 /* Icon.png */; };
-		294139831CF388DA009BCF01 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294139821CF388D9009BCF01 /* MD5.swift */; };
 		296897601CDB022C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897511CDB01EF0074D5F0 /* Assets.xcassets */; };
 		296897611CDB022C0074D5F0 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2968975A1CDB01F90074D5F0 /* MainMenu.xib */; };
 		296897621CDB02330074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897501CDB01EF0074D5F0 /* AppDelegate.swift */; };
@@ -187,7 +186,6 @@
 
 /* Begin PBXFileReference section */
 		291F4E361CF206E200F59C51 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Examples/iOS/Icon.png; sourceTree = "<group>"; };
-		294139821CF388D9009BCF01 /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Sources/Util/MD5.swift; sourceTree = SOURCE_ROOT; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		296897411CDB01D20074D5F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Examples/iOS/AppDelegate.swift; sourceTree = "<group>"; };
 		296897421CDB01D20074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Examples/iOS/Assets.xcassets; sourceTree = "<group>"; };
@@ -367,7 +365,6 @@
 		290907CE1C3961BC00F2E80C /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				294139821CF388D9009BCF01 /* MD5.swift */,
 				29B876B71CD70B3900FC07DA /* AudioSessionUtil.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				29B876B91CD70B3900FC07DA /* CRC32.swift */,
@@ -1123,7 +1120,6 @@
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
 				29B876911CD70AFE00FC07DA /* AudioStreamPlayback.swift in Sources */,
-				294139831CF388DA009BCF01 /* MD5.swift in Sources */,
 				29B8767A1CD70ACE00FC07DA /* M3U.swift in Sources */,
 				29B876901CD70AFE00FC07DA /* AudioIOComponent.swift in Sources */,
 				29B876951CD70AFE00FC07DA /* VideoIOComponent.swift in Sources */,
