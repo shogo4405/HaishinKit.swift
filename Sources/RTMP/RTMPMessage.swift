@@ -89,12 +89,7 @@ extension RTMPMessage: CustomStringConvertible {
  5.4.1. Set Chunk Size (1)
  */
 final class RTMPSetChunkSizeMessage: RTMPMessage {
-
-    var size:UInt32 = 0 {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
+    var size:UInt32 = 0
 
     init() {
         super.init(type: .ChunkSize)
@@ -132,11 +127,7 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
  5.4.2. Abort Message (2)
  */
 final class RTMPAbortMessge: RTMPMessage {
-    var chunkStreamId:UInt32 = 0 {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
+    var chunkStreamId:UInt32 = 0
 
     init() {
         super.init(type: .Abort)
@@ -169,11 +160,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
         super.init(type: .Ack)
     }
 
-    var sequence:UInt32 = 0 {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
+    var sequence:UInt32 = 0
     
     override var payload:[UInt8] {
         get {
@@ -252,17 +239,8 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
         case Unknown = 0xFF
     }
 
-    var size:UInt32 = 0 {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
-
-    var limit:Limit = .Hard {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
+    var size:UInt32 = 0
+    var limit:Limit = .Hard
 
     init() {
         super.init(type: .Bandwidth)
@@ -299,30 +277,10 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
 final class RTMPCommandMessage: RTMPMessage {
 
     let objectEncoding:UInt8
-
-    var commandName:String = "" {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
-
-    var transactionId:Int = 0 {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
-
-    var commandObject:ASObject? = nil {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
-
-    var arguments:[Any?] = [] {
-        didSet {
-            super.payload.removeAll(keepCapacity: false)
-        }
-    }
+    var commandName:String = ""
+    var transactionId:Int = 0
+    var commandObject:ASObject? = nil
+    var arguments:[Any?] = []
 
     override var payload:[UInt8] {
         get {
@@ -413,18 +371,8 @@ final class RTMPCommandMessage: RTMPMessage {
 final class RTMPDataMessage: RTMPMessage {
 
     let objectEncoding:UInt8
-
-    var handlerName:String = "" {
-        didSet {
-            payload.removeAll()
-        }
-    }
-
-    var arguments:[Any?] = [] {
-        didSet {
-            payload.removeAll()
-        }
-    }
+    var handlerName:String = ""
+    var arguments:[Any?] = []
 
     private var serializer:AMFSerializer = AMF0Serializer()
 
@@ -504,30 +452,10 @@ final class RTMPDataMessage: RTMPMessage {
 final class RTMPSharedObjectMessage: RTMPMessage {
 
     let objectEncoding:UInt8
-
-    var sharedObjectName:String = "" {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
-
-    var currentVersion:UInt32 = 0 {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
-
-    var flags:[UInt8] = [UInt8](count: 8, repeatedValue: 0x00) {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
-
-    var events:[RTMPSharedObjectEvent] = [] {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
+    var sharedObjectName:String = ""
+    var currentVersion:UInt32 = 0
+    var flags:[UInt8] = [UInt8](count: 8, repeatedValue: 0x00)
+    var events:[RTMPSharedObjectEvent] = []
 
     override var payload:[UInt8] {
         get {
@@ -535,21 +463,19 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                 return super.payload
             }
 
-            do {
-                if (type == .AMF3Shared) {
-                    serializer.writeUInt8(0)
-                }
-                try serializer.writeUTF8(sharedObjectName)
-                serializer.writeUInt32(currentVersion)
-                serializer.writeBytes(flags)
-                for event in events {
-                    event.serialize(&serializer)
-                }
-                super.payload = serializer.bytes
-                serializer.clear()
-            } catch {
-                logger.error("\(serializer)")
+            if (type == .AMF3Shared) {
+                serializer.writeUInt8(0)
             }
+
+            serializer.writeUInt16(UInt16(sharedObjectName.utf8.count))
+            serializer.writeUTF8Bytes(sharedObjectName)
+            serializer.writeUInt32(currentVersion)
+            serializer.writeBytes(flags)
+            for event in events {
+                event.serialize(&serializer)
+            }
+            super.payload = serializer.bytes
+            serializer.clear()
 
             return super.payload
         }
@@ -568,14 +494,13 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                     sharedObjectName = try serializer.readUTF8()
                     currentVersion = try serializer.readUInt32()
                     flags = try serializer.readBytes(8)
+                    while (0 < serializer.bytesAvailable) {
+                        if let event:RTMPSharedObjectEvent = try RTMPSharedObjectEvent(serializer: &serializer) {
+                            events.append(event)
+                        }
+                    }
                 } catch {
                     logger.error("\(serializer)")
-                }
-                while (0 < serializer.bytesAvailable) {
-                    guard let event:RTMPSharedObjectEvent = RTMPSharedObjectEvent(serializer: &serializer) else {
-                        break
-                    }
-                    events.append(event)
                 }
                 serializer.clear()
             }
@@ -785,17 +710,8 @@ final class RTMPUserControlMessage: RTMPMessage {
         }
     }
 
-    var event:Event = .Unknown {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
-
-    var value:Int32 = 0 {
-        didSet {
-            super.payload.removeAll()
-        }
-    }
+    var event:Event = .Unknown
+    var value:Int32 = 0
 
     override var payload:[UInt8] {
         get {
