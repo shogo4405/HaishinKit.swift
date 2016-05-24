@@ -268,8 +268,30 @@ public class ByteArray: ByteArrayConvertible {
 
     public func clear() -> Self {
         position = 0
-        bytes.removeAll(keepCapacity: false)
+        bytes.removeAll()
         return self
+    }
+
+    func sequence(length:Int, lambda:(ByteArray -> Void)) {
+        let r:Int = (bytes.count - position) % length
+        for index in bytes.startIndex.advancedBy(position).stride(to: bytes.endIndex.advancedBy(-r), by: length) {
+            lambda(ByteArray(bytes: Array(bytes[index..<index.advancedBy(length)])))
+        }
+        if (0 < r) {
+            lambda(ByteArray(bytes: Array(bytes[bytes.endIndex - r..<bytes.endIndex])))
+        }
+    }
+
+    func toUInt32() -> [UInt32] {
+        let size:Int = sizeof(UInt32)
+        if ((bytes.endIndex - position) % size != 0) {
+            return []
+        }
+        var result:[UInt32] = []
+        for index in bytes.startIndex.advancedBy(position).stride(to: bytes.endIndex, by: size) {
+            result.append(UInt32(bytes: Array(bytes[index..<index.advancedBy(size)])))
+        }
+        return result
     }
 }
 

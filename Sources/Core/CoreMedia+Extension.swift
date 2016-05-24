@@ -47,7 +47,8 @@ extension CMSampleBuffer: BytesConvertible {
             guard IsNoErr(CMBlockBufferGetDataPointer(buffer, 0, nil, &length, &bytes)) else {
                 return []
             }
-            return NSData(bytes: bytes, length: length).arrayOfBytes()
+            return Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(bytes), count: length))
+
         }
         set {
             

@@ -1,6 +1,5 @@
 import CoreMedia
 import Foundation
-import CryptoSwift
 
 class TSWriter {
     static let defaultPATPID:UInt16 = 0
@@ -86,9 +85,9 @@ class TSWriter {
             bytes += packet.bytes
         }
         tryc({
-            self.currentFileHandle?.writeData(NSData(bytes: bytes))
+            self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
         }){ exception in
-            self.currentFileHandle?.writeData(NSData(bytes: bytes))
+            self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
             logger.warning("\(exception)")
         }
     }
@@ -160,7 +159,7 @@ class TSWriter {
         }
 
         tryc({
-            self.currentFileHandle?.writeData(NSData(bytes: bytes))
+            self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
         }){ exception in
             logger.warning("\(exception)")
         }

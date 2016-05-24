@@ -3,7 +3,6 @@ use_frameworks!
 
 def import_pods
     pod 'XCGLogger', '~> 3.3'
-    pod 'CryptoSwift', '~> 0.4'
 end
 
 target 'lf iOS'  do
@@ -12,7 +11,7 @@ target 'lf iOS'  do
 end
 
 target 'lf MacOS' do
-    platform :osx, '10.9'
+    platform :osx, '10.11'
     import_pods
 end
 
@@ -22,12 +21,12 @@ target 'Example iOS'  do
 end
 
 target 'Example MacOS' do
-    platform :osx, '10.9'
+    platform :osx, '10.11'
     import_pods
 end
 
 target 'Tests' do
-    platform :osx, '10.9'
+    platform :osx, '10.11'
     import_pods
 end
 

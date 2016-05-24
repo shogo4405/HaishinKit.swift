@@ -1,6 +1,5 @@
 import Foundation
 import AVFoundation
-import CryptoSwift
 
 /**
  - seealso: https://en.wikipedia.org/wiki/MPEG_transport_stream#Packet
@@ -48,7 +47,7 @@ struct TSPacket {
         guard TSPacket.size == data.length else {
             return nil
         }
-        bytes = data.arrayOfBytes()
+        bytes = Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(data.bytes), count: data.length))
         if (syncByte != TSPacket.defaultSyncByte) {
             return nil
         }

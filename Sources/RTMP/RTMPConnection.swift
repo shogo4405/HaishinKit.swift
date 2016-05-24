@@ -1,5 +1,4 @@
 import Foundation
-import CryptoSwift
 
 /**
  flash.net.Responder for Swift
@@ -118,11 +117,6 @@ public class RTMPConnection: EventDispatcher {
         case ClientSeek = 1
     }
 
-    private static func md5(data:String) -> String {
-        let value:[UInt8] = [UInt8](data.utf8).md5()
-        return NSData(bytes: value).base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
-    }
-
     private static func createSanJoseAuthCommand(url:NSURL, description:String) -> String {
         var command:String = url.absoluteString
 
@@ -134,7 +128,7 @@ public class RTMPConnection: EventDispatcher {
         let challenge:String = String(format: "%08x", random())
         let dictionary:[String:AnyObject] = NSURL(string: "http://localhost?" + query)!.dictionaryFromQuery()
 
-        var response:String = md5("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
+        var response:String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
         if let opaque:String = dictionary["opaque"] as? String {
             command += "&opaque=\(opaque)"
             response += opaque
@@ -142,7 +136,7 @@ public class RTMPConnection: EventDispatcher {
             response += challenge
         }
 
-        response = md5("\(response)\(challenge)")
+        response = MD5.base64("\(response)\(challenge)")
         command += "&challenge=\(challenge)&response=\(response)"
 
         return command

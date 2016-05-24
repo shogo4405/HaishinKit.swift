@@ -22,7 +22,6 @@ Pod::Spec.new do |s|
 
   s.source_files = "Sources/**/*.swift"
   s.dependency 'XCGLogger', '~> 3.3'
-  s.dependency 'CryptoSwift', '~> 0.4'
 
 end
 
