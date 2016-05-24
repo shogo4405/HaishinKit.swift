@@ -92,7 +92,7 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
 
     var size:UInt32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
@@ -134,7 +134,7 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
 final class RTMPAbortMessge: RTMPMessage {
     var chunkStreamId:UInt32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
@@ -171,7 +171,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
 
     var sequence:UInt32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
     
@@ -200,7 +200,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
 final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
     var size:UInt32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
@@ -254,13 +254,13 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
 
     var size:UInt32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
     var limit:Limit = .Hard {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
@@ -416,13 +416,13 @@ final class RTMPDataMessage: RTMPMessage {
 
     var handlerName:String = "" {
         didSet {
-            payload.removeAll(keepCapacity: false)
+            payload.removeAll()
         }
     }
 
     var arguments:[Any?] = [] {
         didSet {
-            payload.removeAll(keepCapacity: false)
+            payload.removeAll()
         }
     }
 
@@ -507,25 +507,25 @@ final class RTMPSharedObjectMessage: RTMPMessage {
 
     var sharedObjectName:String = "" {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
     var currentVersion:UInt32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
     var flags:[UInt8] = [UInt8](count: 8, repeatedValue: 0x00) {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
     var events:[RTMPSharedObjectEvent] = [] {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
@@ -787,13 +787,13 @@ final class RTMPUserControlMessage: RTMPMessage {
 
     var event:Event = .Unknown {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
     var value:Int32 = 0 {
         didSet {
-            super.payload.removeAll(keepCapacity: false)
+            super.payload.removeAll()
         }
     }
 
