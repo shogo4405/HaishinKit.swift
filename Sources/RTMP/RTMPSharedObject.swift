@@ -30,27 +30,32 @@ struct RTMPSharedObjectEvent {
         self.data = data
     }
 
-    init?(serializer:AMFSerializer) throws {
-        guard let type:Type = Type(rawValue: try serializer.readUInt8()) else {
+    init?(inout serializer:AMFSerializer) {
+        guard let byte:UInt8 = try? serializer.readUInt8(), type:Type = Type(rawValue: byte) else {
             return nil
         }
         self.type = type
-        let length:Int = Int(try serializer.readUInt32())
-        let position:Int = serializer.position
-        if (0 < length) {
-            name = try serializer.readUTF8()
-            switch type {
-            case .Status:
-                data = try serializer.readUTF8()
-            default:
-                if (serializer.position - position < length) {
-                    data = try serializer.deserialize()
+        do {
+            let length:Int = Int(try serializer.readUInt32())
+            let position:Int = serializer.position
+            if (0 < length) {
+                name = try serializer.readUTF8()
+                switch type {
+                case .Status:
+                    data = try serializer.readUTF8()
+                default:
+                    if (serializer.position - position < length) {
+                        data = try serializer.deserialize()
+                    }
                 }
             }
+        } catch let error {
+            logger.error("\(error)")
+            return nil
         }
     }
 
-    func serialize(inout serializer:AMFSerializer) throws {
+    func serialize(inout serializer:AMFSerializer) {
         serializer.writeUInt8(type.rawValue)
         guard let name:String = name else {
             serializer.writeUInt32(0)

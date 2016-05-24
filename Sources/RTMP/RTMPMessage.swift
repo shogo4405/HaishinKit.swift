@@ -543,7 +543,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                 serializer.writeUInt32(currentVersion)
                 serializer.writeBytes(flags)
                 for event in events {
-                    try event.serialize(&serializer)
+                    event.serialize(&serializer)
                 }
                 super.payload = serializer.bytes
                 serializer.clear()
@@ -568,14 +568,14 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                     sharedObjectName = try serializer.readUTF8()
                     currentVersion = try serializer.readUInt32()
                     flags = try serializer.readBytes(8)
-                    events.removeAll(keepCapacity: false)
-                    while (0 < serializer.bytesAvailable) {
-                        if let event:RTMPSharedObjectEvent = try RTMPSharedObjectEvent(serializer: serializer) {
-                            events.append(event)
-                        }
-                    }
                 } catch {
                     logger.error("\(serializer)")
+                }
+                while (0 < serializer.bytesAvailable) {
+                    guard let event:RTMPSharedObjectEvent = RTMPSharedObjectEvent(serializer: &serializer) else {
+                        break
+                    }
+                    events.append(event)
                 }
                 serializer.clear()
             }
