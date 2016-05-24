@@ -11,7 +11,7 @@ Real Time Messaging Protocol (RTMP). Basic snipet.
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-rtmpStream.videoGravity = AVLayerVideoGravityResizeAspectFill
+rtmpStream.view.videoGravity = AVLayerVideoGravityResizeAspectFill
 rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
 rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
 
