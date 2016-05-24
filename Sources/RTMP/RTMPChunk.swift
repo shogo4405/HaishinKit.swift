@@ -79,6 +79,16 @@ final class RTMPChunk {
     private(set) var fragmented:Bool = false
     private var _bytes:[UInt8] = []
 
+    init(type:Type, streamId:UInt16, message:RTMPMessage) {
+        self.type = type
+        self.streamId = streamId
+        self.message = message
+    }
+
+    init(message:RTMPMessage) {
+        self.message = message
+    }
+
     init?(bytes:[UInt8], size:Int) {
         if (bytes.isEmpty) {
             return nil
@@ -89,16 +99,6 @@ final class RTMPChunk {
         self.size = size
         self.type = type
         self.bytes = bytes
-    }
-
-    init(type:Type, streamId:UInt16, message:RTMPMessage) {
-        self.type = type
-        self.streamId = streamId
-        self.message = message
-    }
-
-    init(message:RTMPMessage) {
-        self.message = message
     }
 
     func append(bytes:[UInt8], size:Int) -> Int {
@@ -169,7 +169,7 @@ extension RTMPChunk: BytesConvertible {
             if (!_bytes.isEmpty) {
                 return message == nil ? _bytes : _bytes + message!.payload
             }
-            
+
             _bytes += type.toBasicHeader(streamId)
             _bytes += (RTMPChunk.maxTimestamp < message!.timestamp) ? [0xFF, 0xFF, 0xFF] : Array(message!.timestamp.bigEndian.bytes[1...3])
             _bytes += Array(UInt32(message!.payload.count).bigEndian.bytes[1...3])
