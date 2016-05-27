@@ -19,7 +19,6 @@ final class TSTests: XCTestCase {
             let url:NSURL = NSURL(fileURLWithPath: bundle.pathForResource("SampleVideo_360x240_5mb/000", ofType: "ts")!)
             let reader:TSReader = try TSReader(url: url)
             reader.read()
-            print(reader)
             XCTAssertEqual(reader.numberOfPackets, 5984)
         } catch {
         }

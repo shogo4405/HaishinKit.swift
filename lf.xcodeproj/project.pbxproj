@@ -144,6 +144,8 @@
 		29EF03781CD79A5400473D99 /* lf.h in Headers */ = {isa = PBXBuildFile; fileRef = 299F7E3B1CD71A97001E7272 /* lf.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29EF037A1CD79B3800473D99 /* lf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		29EF037C1CD7AC7000473D99 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B8761B1CD701F900FC07DA /* lf.framework */; };
+		29FE61471CF7DD2700E51833 /* AMF0SerializerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FE61461CF7DD2700E51833 /* AMF0SerializerTests.swift */; };
+		29FE61491CF7DD3A00E51833 /* RTMPChunkTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FE61481CF7DD3A00E51833 /* RTMPChunkTests.swift */; };
 		5964072068F3169A5D6F88D3 /* Pods_lf_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D006C358F97A4A666838EE0F /* Pods_lf_iOS.framework */; };
 		67F4801052401E5C9D197073 /* Pods_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE5A5055FC38DEF58FBA5938 /* Pods_Tests.framework */; };
 		99E99AB12FF635E5661B78DD /* Pods_Example_MacOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB8545A68FE01191A5D3FBA2 /* Pods_Example_MacOS.framework */; };
@@ -279,6 +281,8 @@
 		29B876DB1CD70CE700FC07DA /* TSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TSTests.swift; path = Tests/TSTests.swift; sourceTree = SOURCE_ROOT; };
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example MacOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example MacOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		29FE61461CF7DD2700E51833 /* AMF0SerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMF0SerializerTests.swift; sourceTree = "<group>"; };
+		29FE61481CF7DD3A00E51833 /* RTMPChunkTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPChunkTests.swift; sourceTree = "<group>"; };
 		2E4A90654B48CE9D553A9B08 /* Pods-Example MacOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example MacOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example MacOS/Pods-Example MacOS.release.xcconfig"; sourceTree = "<group>"; };
 		39CB969698ACF0B3BE13FCCA /* Pods-Example MacOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example MacOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example MacOS/Pods-Example MacOS.debug.xcconfig"; sourceTree = "<group>"; };
 		533C38C964051C778E6633CC /* Pods-Example iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example iOS/Pods-Example iOS.debug.xcconfig"; sourceTree = "<group>"; };
@@ -395,8 +399,10 @@
 		291C2ACE1CE9FF25006F042B /* RTMP */ = {
 			isa = PBXGroup;
 			children = (
+				29FE61461CF7DD2700E51833 /* AMF0SerializerTests.swift */,
 				29B876CD1CD70CE700FC07DA /* AMF3SerializerTests.swift */,
 				29B876CE1CD70CE700FC07DA /* ASStructTests.swift */,
+				29FE61481CF7DD3A00E51833 /* RTMPChunkTests.swift */,
 			);
 			name = RTMP;
 			sourceTree = "<group>";
@@ -1144,10 +1150,12 @@
 				29798E691CE6110F00F5CBD0 /* ASStructTests.swift in Sources */,
 				29798E6A1CE6110F00F5CBD0 /* ByteArrayTests.swift in Sources */,
 				29798E6B1CE6110F00F5CBD0 /* CRC32Tests.swift in Sources */,
+				29FE61491CF7DD3A00E51833 /* RTMPChunkTests.swift in Sources */,
 				29798E6C1CE6110F00F5CBD0 /* EventDispatcherTests.swift in Sources */,
 				29798E6D1CE6110F00F5CBD0 /* Foundation+ExtensionTests.swift in Sources */,
 				29798E6E1CE6110F00F5CBD0 /* HTTPRequestTests.swift in Sources */,
 				29798E6F1CE6110F00F5CBD0 /* PacketizedElementaryStreamTests.swift in Sources */,
+				29FE61471CF7DD2700E51833 /* AMF0SerializerTests.swift in Sources */,
 				29798E701CE6110F00F5CBD0 /* ProgramSpecificTests.swift in Sources */,
 				29798E711CE6110F00F5CBD0 /* SwiftCore+ExtensionTests.swift in Sources */,
 				2942424F1CF4C02300D65DCB /* MD5Tests.swift in Sources */,

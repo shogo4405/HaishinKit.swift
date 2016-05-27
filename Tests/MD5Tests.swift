@@ -1,11 +1,13 @@
 import Foundation
 import XCTest
 
+@testable import lf
+
 final class MD5Tests: XCTestCase {
 
     func hex(data:[UInt8]) -> String {
         var hash:String = ""
-        for (var i = 0; i < 16; ++i) {
+        for i in 0..<data.count {
             hash +=  String(format: "%02x", data[i])
         }
         return hash
