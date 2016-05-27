@@ -2,9 +2,20 @@
 lf is a lIVE fRAMEWORK. iOS/OSX Camera/Microphone streaming library via RTMP/HTTP
 
 ## Install
-### Cocoapod
-    pod 'lf'
-    use_frameworks!
+### CocoaPods
+```rb
+source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
+
+def import_pods
+    pod 'lf', '~> 0.3.0'
+end
+
+target 'Your Target'  do
+    platform :ios, '8.0'
+    import_pods
+end
+```
 
 ## Usage/RTMP
 Real Time Messaging Protocol (RTMP). Basic snipet.
@@ -64,7 +75,7 @@ You can see http://ip.address:8080/hello/playlist.m3u8
 New BSD
 
 ## Enviroment
-|lf|iOS|OSX|Swift|CocoaPod|
+|lf|iOS|OSX|Swift|CocoaPods|
 |----|----|----|----|----|
 |0.3|8.0|10.11|2.3|1.0.0|
 |0.2|8.0|-|2.3|0.39.0|
