@@ -99,13 +99,13 @@ final class AVCEncoder: NSObject {
         status:OSStatus,
         infoFlags:VTEncodeInfoFlags,
         sampleBuffer:CMSampleBuffer?) in
-        guard status == noErr else {
+        guard let sampleBuffer:CMSampleBuffer = sampleBuffer where status == noErr else {
             logger.error("status = \(status)")
             return
         }
         let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
-        encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer!)
-        encoder.delegate?.sampleOutput(video: sampleBuffer!)
+        encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
+        encoder.delegate?.sampleOutput(video: sampleBuffer)
     }
 
     private var _session:VTCompressionSessionRef? = nil

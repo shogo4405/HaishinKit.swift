@@ -2,10 +2,10 @@ Pod::Spec.new do |s|
 
   s.name         = "lf"
   s.version      = "0.3.0"
-  s.summary      = "Camera/Microphone streaming library via RTMP/HLS for iOS/OSX"
+  s.summary      = "Camera, Microphone streaming library via RTMP, HLS for iOS, OSX"
 
   s.description  = <<-DESC
-  lf is a lIVE fRAMEWORK. Camera/Microphone streaming library via RTMP/HLS for iOS/OSX
+  lf is a lIVE fRAMEWORK. Camera, Microphone streaming library via RTMP, HLS for iOS, OSX
   DESC
 
   s.homepage     = "https://github.com/shogo4405/lf.swift"
