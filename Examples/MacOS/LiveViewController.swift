@@ -27,6 +27,16 @@ final class LiveViewController: NSViewController {
         return button
     }()
 
+    var fpsPopUpButton:NSPopUpButton = {
+        let button:NSPopUpButton = NSPopUpButton()
+        button.action = #selector(LiveViewController.selectFPS(_:))
+        button.addItemWithTitle("30")
+        button.addItemWithTitle("60")
+        button.addItemWithTitle("15")
+        button.addItemWithTitle("1")
+        return button
+    }()
+
     var audioPopUpButton:NSPopUpButton = {
         let button:NSPopUpButton = NSPopUpButton()
         button.action = #selector(LiveViewController.selectAudio(_:))
@@ -83,6 +93,7 @@ final class LiveViewController: NSViewController {
         view.addSubview(rtmpStream.view)
         httpStream.view.wantsLayer = true
         view.addSubview(httpStream.view)
+        view.addSubview(fpsPopUpButton)
         view.addSubview(cameraPopUpButton)
         view.addSubview(audioPopUpButton)
         view.addSubview(publishButton)
@@ -96,6 +107,7 @@ final class LiveViewController: NSViewController {
         httpStream.view.frame = view.frame
         urlField.frame = NSMakeRect(20, 20, 300, 20)
         segmentedControl.frame = NSMakeRect(20, view.frame.height - 40, 200, 20)
+        fpsPopUpButton.frame = NSMakeRect(20, view.frame.height - 70, 120, 20)
         publishButton.frame = NSMakeRect(view.frame.width - 120, view.frame.height - 40, 100, 20)
         cameraPopUpButton.frame = NSMakeRect(view.frame.width - 220, 50, 200, 20)
         audioPopUpButton.frame = NSMakeRect(view.frame.width - 220, 20, 200, 20)
@@ -185,6 +197,12 @@ final class LiveViewController: NSViewController {
         default:
             break
         }
+    }
+
+    func selectFPS(sender:AnyObject) {
+        let value:String = fpsPopUpButton.itemTitles[fpsPopUpButton.indexOfSelectedItem]
+        rtmpStream.captureSettings["fps"] = value
+        httpStream.captureSettings["fps"] = value
     }
 
     func rtmpStatusHandler(notification:NSNotification) {

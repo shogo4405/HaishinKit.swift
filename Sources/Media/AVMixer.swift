@@ -7,6 +7,7 @@ import AVFoundation
 public class AVMixer: NSObject {
 
     static let supportedSettingsKeys:[String] = [
+        "fps",
         "sessionPreset",
         "orientation",
         "continuousAutofocus",
@@ -54,11 +55,16 @@ public class AVMixer: NSObject {
         return nil
     }
 
-    static let defaultFPS:Int32 = 30
-    static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
-    static let defaultVideoSettings:[NSObject: AnyObject] = [
+    static public let defaultFPS:Float64 = 30
+    static public let defaultSessionPreset:String = AVCaptureSessionPresetMedium
+    static public let defaultVideoSettings:[NSObject: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)
     ]
+
+    var fps:Float64 {
+        get { return videoIO.fps }
+        set { videoIO.fps = newValue }
+    }
 
     var orientation:AVCaptureVideoOrientation {
         get { return videoIO.orientation }

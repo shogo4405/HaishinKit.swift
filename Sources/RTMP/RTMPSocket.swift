@@ -35,10 +35,12 @@ final class RTMPSocket: NetSocket {
     private(set) var timestamp:NSTimeInterval = 0
 
     func doOutput(chunk chunk:RTMPChunk) {
-        logger.verbose(chunk.description)
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
             doOutput(bytes: chunk)
+        }
+        if (logger.isEnabledForLogLevel(.Verbose)) {
+            logger.verbose(chunk.description)
         }
     }
 

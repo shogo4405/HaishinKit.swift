@@ -6,7 +6,6 @@ import CoreFoundation
 final class AVCEncoder: NSObject {
 
     static let supportedSettingsKeys:[String] = [
-        "fps",
         "width",
         "height",
         "bitrate",
@@ -14,7 +13,6 @@ final class AVCEncoder: NSObject {
         "keyframeInterval",
     ]
 
-    static let defaultFPS:Int = 30
     static let defaultWidth:Int32 = 480
     static let defaultHeight:Int32 = 272
     static let defaultBitrate:UInt32 = 160 * 1024
@@ -24,7 +22,6 @@ final class AVCEncoder: NSObject {
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
 
-    var fps:Int = AVCEncoder.defaultFPS
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {
             invalidateSession = true
@@ -49,6 +46,20 @@ final class AVCEncoder: NSObject {
     var lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL
     )
+    var expectedFPS:Float64 = AVMixer.defaultFPS {
+        didSet {
+            dispatch_async(lockQueue) {
+                guard let session:VTCompressionSessionRef = self._session else {
+                    return
+                }
+                let properties:[NSString: NSObject] = [
+                    kVTCompressionPropertyKey_MaxKeyFrameInterval: NSNumber(double: self.expectedFPS),
+                    kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(double: self.expectedFPS * Float64(self.keyframeInterval)),
+                ]
+                VTSessionSetProperties(session, properties)
+            }
+        }
+    }
     var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
             invalidateSession = true
@@ -57,9 +68,10 @@ final class AVCEncoder: NSObject {
     var keyframeInterval:Int = 2
     var formatDescription:CMFormatDescriptionRef? = nil {
         didSet {
-            if (!CMFormatDescriptionEqual(formatDescription, oldValue)) {
-                delegate?.didSetFormatDescription(video: formatDescription)
+            guard CMFormatDescriptionEqual(formatDescription, oldValue) else {
+                return
             }
+            delegate?.didSetFormatDescription(video: formatDescription)
         }
     }
     weak var delegate:VideoEncoderDelegate?
@@ -80,8 +92,8 @@ final class AVCEncoder: NSObject {
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
             kVTCompressionPropertyKey_ProfileLevel: profileLevel,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
-            kVTCompressionPropertyKey_ExpectedFrameRate: fps,
-            kVTCompressionPropertyKey_MaxKeyFrameInterval: fps * keyframeInterval,
+            kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(double: expectedFPS),
+            kVTCompressionPropertyKey_MaxKeyFrameInterval: NSNumber(double: expectedFPS * Double(keyframeInterval)),
             kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": "Trim"

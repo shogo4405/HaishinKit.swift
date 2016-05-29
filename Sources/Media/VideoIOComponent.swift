@@ -16,6 +16,40 @@ struct VideoIOData {
 
 // MARK: -
 final class VideoIOComponent: NSObject {
+
+    static func getActualFPS(fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
+        var durations:[CMTime] = []
+        var frameRates:[Float64] = []
+
+        for object:AnyObject in device.activeFormat.videoSupportedFrameRateRanges {
+            guard let range:AVFrameRateRange = object as? AVFrameRateRange else {
+                continue
+            }
+            if (range.minFrameRate == range.maxFrameRate) {
+                durations.append(range.minFrameDuration)
+                frameRates.append(range.maxFrameRate)
+                continue
+            }
+            if (range.minFrameRate <= fps && fps <= range.maxFrameRate) {
+                return (fps, CMTimeMake(100, Int32(100 * fps)))
+            }
+        }
+
+        var diff:[Float64] = []
+        for frameRate in frameRates {
+            diff.append(abs(frameRate - fps))
+        }
+        if let minElement:Float64 = diff.minElement() {
+            for i in 0..<diff.count {
+                if (diff[i] == minElement) {
+                    return (frameRates[i], durations[i])
+                }
+            }
+        }
+
+        return nil
+    }
+
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
@@ -45,7 +79,27 @@ final class VideoIOComponent: NSObject {
     private var effects:[VisualEffect] = []
     private var rendering:Bool = false
 
-    var fps:Int32 = AVMixer.defaultFPS
+    var fps:Float64 = AVMixer.defaultFPS {
+        didSet {
+            guard let device:AVCaptureDevice = input?.device,
+                data = VideoIOComponent.getActualFPS(fps, device: device) else {
+                return
+            }
+
+            fps = data.fps
+            encoder.expectedFPS = data.fps
+            logger.info("\(data)")
+
+            do {
+                try device.lockForConfiguration()
+                device.activeVideoMinFrameDuration = data.duration
+                device.activeVideoMaxFrameDuration = data.duration
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for fps: \(error)")
+            }
+        }
+    }
     var session:AVCaptureSession!
 
     var videoSettings:[NSObject:AnyObject] = AVMixer.defaultVideoSettings {
@@ -82,8 +136,8 @@ final class VideoIOComponent: NSObject {
             let torchMode:AVCaptureTorchMode = torch ? .On : .Off
             guard let device:AVCaptureDevice = input?.device
                 where device.isTorchModeSupported(torchMode) && device.torchAvailable else {
-                    logger.warning("torchMode(\(torchMode)) is not supported")
-                    return
+                logger.warning("torchMode(\(torchMode)) is not supported")
+                return
             }
             do {
                 try device.lockForConfiguration()
@@ -240,20 +294,6 @@ final class VideoIOComponent: NSObject {
             return
         }
         screen = nil
-        #if os(iOS)
-        do {
-            try camera.lockForConfiguration()
-            camera.activeVideoMinFrameDuration = CMTimeMake(1, fps)
-            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
-            if (camera.isTorchModeSupported(torchMode)) {
-                camera.torchMode = torchMode
-            }
-            camera.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("\(error)")
-        }
-        #endif
-
         do {
             input = try AVCaptureDeviceInput(device: camera)
             session.addOutput(output)
@@ -276,9 +316,9 @@ final class VideoIOComponent: NSObject {
                 }
             #else
                 switch camera.position {
-                case AVCaptureDevicePosition.Front:
+                case .Front:
                     view.layer?.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
-                case AVCaptureDevicePosition.Back:
+                case .Back:
                     view.layer?.transform = CATransform3DMakeRotation(0, 0, 1, 0)
                 default:
                     break
@@ -288,6 +328,21 @@ final class VideoIOComponent: NSObject {
         } catch let error as NSError {
             logger.error("\(error)")
         }
+
+        fps = fps * 1
+
+        #if os(iOS)
+        do {
+            try camera.lockForConfiguration()
+            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            if (camera.isTorchModeSupported(torchMode)) {
+                camera.torchMode = torchMode
+            }
+            camera.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("\(error)")
+        }
+        #endif
     }
 
     func attachScreen(screen:ScreenCaptureSession?) {
@@ -298,7 +353,7 @@ final class VideoIOComponent: NSObject {
         encoder.setValuesForKeysWithDictionary([
             "width": screen.attributes["Width"]!,
             "height": screen.attributes["Height"]!,
-            ])
+        ])
         self.screen = screen
     }
 
@@ -547,7 +602,7 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
 }
 
 #if os(iOS)
-// MARK: - iOS
+// MARK: -
 public class VideoIOView: UIView {
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
@@ -578,7 +633,7 @@ public class VideoIOView: UIView {
     }
 }
 #else
-// MARK: - OSX
+// MARK: -
 public class VideoIOView: NSView {
     required override public init(frame: CGRect) {
         super.init(frame: frame)

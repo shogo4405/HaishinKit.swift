@@ -75,13 +75,8 @@ extension RTMPMuxer: VideoEncoderDelegate {
         guard let block:CMBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) else {
             return
         }
-        var keyframe:Bool = false
-        if let attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(sampleBuffer, false) {
-            if let attachment:Dictionary = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), CFDictionaryRef.self) as Dictionary? {
-                let dependsOnOthers:Bool = attachment["DependsOnOthers"] as! Bool
-                keyframe = dependsOnOthers == false
-            }
-        }
+
+        let keyframe:Bool = !sampleBuffer.dependsOnOthers
         var totalLength:Int = 0
         var dataPointer:UnsafeMutablePointer<Int8> = nil
         guard IsNoErr(CMBlockBufferGetDataPointer(block, 0, nil, &totalLength, &dataPointer)) else {

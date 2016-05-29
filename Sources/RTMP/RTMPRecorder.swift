@@ -160,10 +160,10 @@ enum FLVAudioCodec:UInt8 {
     }
 }
 
-// MARK: FLVTag
+// MARK: -
 struct FLVTag {
 
-    enum TagType:UInt8 {
+    enum TagType: UInt8 {
         case Audio = 8
         case Video = 9
         case Data  = 18
@@ -218,7 +218,7 @@ extension FLVTag: CustomStringConvertible {
     }
 }
 
-// MARK: RTMPRecorder
+// MARK: -
 final class RTMPRecorder: NSObject {
 
     static let defaultVersion:UInt8 = 1
