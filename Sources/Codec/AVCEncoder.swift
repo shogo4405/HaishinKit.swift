@@ -68,7 +68,7 @@ final class AVCEncoder: NSObject {
     var keyframeInterval:Int = 2
     var formatDescription:CMFormatDescriptionRef? = nil {
         didSet {
-            guard CMFormatDescriptionEqual(formatDescription, oldValue) else {
+            guard !CMFormatDescriptionEqual(formatDescription, oldValue) else {
                 return
             }
             delegate?.didSetFormatDescription(video: formatDescription)
