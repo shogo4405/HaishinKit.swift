@@ -235,6 +235,8 @@ public class RTMPStream: EventDispatcher {
         set { dispatch_async(lockQueue) { self.mixer.setValuesForKeysWithDictionary(newValue)}}
     }
 
+    public private(set) var currentFPS:UInt8 = 0
+
     var id:UInt32 = RTMPStream.defaultID
     var readyState:ReadyState = .Initilized {
         didSet {
@@ -248,15 +250,17 @@ public class RTMPStream: EventDispatcher {
         }
     }
 
-    private(set) var recorder:RTMPRecorder = RTMPRecorder()
-    private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
-
-    private var muxer:RTMPMuxer = RTMPMuxer()
-    private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
-    private var rtmpConnection:RTMPConnection
+
     private(set) var mixer:AVMixer = AVMixer()
+    private(set) var recorder:RTMPRecorder = RTMPRecorder()
+    private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
+    private var timer:NSTimer!
+    private var muxer:RTMPMuxer = RTMPMuxer()
+    private var frameCount:UInt8 = 0
+    private var chunkTypes:[FLVTag.TagType:Bool] = [:]
+    private var rtmpConnection:RTMPConnection
 
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL
@@ -381,6 +385,8 @@ public class RTMPStream: EventDispatcher {
                     return
                 }
                 self.readyState = .Open
+                self.timer.invalidate()
+                self.timer = nil
                 self.mixer.audioIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
@@ -409,6 +415,7 @@ public class RTMPStream: EventDispatcher {
             self.mixer.videoIO.encoder.delegate = self.muxer
             self.mixer.startRunning()
             self.chunkTypes.removeAll()
+            self.timer = NSTimer(timeInterval: 1.0, target: self, selector: #selector(RTMPStream.didTimerInterval(_:)), userInfo: nil, repeats: true)
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,
@@ -420,8 +427,8 @@ public class RTMPStream: EventDispatcher {
                     commandObject: nil,
                     arguments: [name, type]
             )))
-
             self.readyState = .Publish
+            NSRunLoop.mainRunLoop().addTimer(self.timer, forMode: NSRunLoopCommonModes)
         }
     }
 
@@ -473,6 +480,11 @@ public class RTMPStream: EventDispatcher {
         mixer.videoIO.exposurePointOfInterest = exposure
     }
 
+    func didTimerInterval(timer:NSTimer) {
+        currentFPS = frameCount
+        frameCount = 0
+    }
+
     func rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
@@ -517,5 +529,6 @@ extension RTMPStream: RTMPMuxerDelegate {
         ))
         chunkTypes[type] = true
         videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
+        frameCount = (frameCount + 1) & 0xFF
     }
 }
