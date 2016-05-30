@@ -19,6 +19,8 @@ final class LiveViewController: UIViewController {
 
     let touchView: UIView! = UIView()
 
+    var currentFPSLabel:UILabel = UILabel()
+
     var publishButton:UIButton = {
         let button:UIButton = UIButton()
         button.backgroundColor = UIColor.blueColor()
@@ -70,6 +72,8 @@ final class LiveViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        currentFPSLabel.text = "FPS"
+
         videoBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         audioBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         fpsControl.addTarget(self, action: #selector(LiveViewController.onFPSValueChanged(_:)), forControlEvents: .ValueChanged)
@@ -102,6 +106,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.syncOrientation = true
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.New, context: nil)
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
@@ -129,6 +134,7 @@ final class LiveViewController: UIViewController {
         view.addSubview(audioBitrateLabel)
         view.addSubview(audioBitrateSlider)
         view.addSubview(fpsControl)
+        view.addSubview(currentFPSLabel)
         view.addSubview(effectSegmentControl)
         view.addSubview(publishButton)
     }
@@ -139,6 +145,7 @@ final class LiveViewController: UIViewController {
         fpsControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight + 40, width: 200, height: 30)
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
+        currentFPSLabel.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
         rtmpStream.view.frame = view.frame
         // httpStream.view.frame = view.frame
         videoBitrateLabel.text = "video \(Int(videoBitrateSlider.value))/kbps"
@@ -244,5 +251,9 @@ final class LiveViewController: UIViewController {
         default:
             break
         }
+    }
+
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        currentFPSLabel.text = "\(rtmpStream.currentFPS)"
     }
 }

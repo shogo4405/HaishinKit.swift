@@ -235,7 +235,7 @@ public class RTMPStream: EventDispatcher {
         set { dispatch_async(lockQueue) { self.mixer.setValuesForKeysWithDictionary(newValue)}}
     }
 
-    public private(set) var currentFPS:UInt8 = 0
+    dynamic public private(set) var currentFPS:UInt8 = 0
 
     var id:UInt32 = RTMPStream.defaultID
     var readyState:ReadyState = .Initilized {
@@ -385,6 +385,8 @@ public class RTMPStream: EventDispatcher {
                     return
                 }
                 self.readyState = .Open
+                self.frameCount = 0
+                self.currentFPS = 0
                 self.timer.invalidate()
                 self.timer = nil
                 self.mixer.audioIO.encoder.delegate = nil
