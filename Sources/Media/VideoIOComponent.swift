@@ -311,25 +311,14 @@ final class VideoIOComponent: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
-            #if os(iOS)
-                switch camera.position {
-                case AVCaptureDevicePosition.Front:
-                    view.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
-                case AVCaptureDevicePosition.Back:
-                    view.layer.transform = CATransform3DMakeRotation(0, 0, 1, 0)
-                default:
-                    break
-                }
-            #else
-                switch camera.position {
-                case .Front:
-                    view.layer?.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
-                case .Back:
-                    view.layer?.transform = CATransform3DMakeRotation(0, 0, 1, 0)
-                default:
-                    break
-                }
-            #endif
+            switch camera.position {
+            case .Front:
+                view.transform3D = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+            case .Back:
+                view.transform3D = CATransform3DMakeRotation(0, 0, 1, 0)
+            default:
+                break
+            }
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
@@ -372,13 +361,9 @@ final class VideoIOComponent: NSObject {
             for effect in effects {
                 image = effect.execute(image)
             }
-            let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
+            let contents:CGImageRef = context.createCGImage(image, fromRect: image.extent)
             dispatch_async(dispatch_get_main_queue()) {
-                #if os(iOS)
-                    self.view.layer.contents = content
-                #else
-                    self.view.layer?.contents = content
-                #endif
+                self.view.contents = contents
             }
         }
         CVPixelBufferUnlockBaseAddress(buffer, 0)
@@ -453,11 +438,7 @@ final class VideoIOComponent: NSObject {
                     return
                 }
                 dispatch_async(dispatch_get_main_queue()) {
-                #if os(iOS)
-                    self.view.layer.contents = data.image
-                #else
-                    self.view.layer?.contents = data.image
-                #endif
+                    self.view.contents = data.image
                 }
                 usleep(UInt32(data.presentationDuration.value) * 1000)
             }
@@ -477,19 +458,11 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
             presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
         )
-        #if os(iOS)
-        if (effects.isEmpty && view.layer.contents != nil) {
+        if (effects.isEmpty && view.contents != nil) {
             dispatch_async(dispatch_get_main_queue()) {
-                self.view.layer.contents = nil
+                self.view.contents = nil
             }
         }
-        #else
-        if (effects.isEmpty && view.layer?.contents != nil) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.layer?.contents = nil
-            }
-        }
-        #endif
     }
 }
 
@@ -528,36 +501,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
 
 // MARK: -
 final class VideoIOLayer: AVCaptureVideoPreviewLayer {
-    private(set) var currentFPS:Int = 0
-
-    private var timer:NSTimer?
-    private var frameCount:Int = 0
     private var surface:CALayer = CALayer()
-
-    override init() {
-        super.init()
-        initialize()
-    }
-
-    override init!(session: AVCaptureSession!) {
-        super.init(session: session)
-        initialize()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialize()
-    }
-
-    deinit {
-        timer?.invalidate()
-        timer = nil
-    }
-
-    override var transform:CATransform3D {
-        get { return surface.transform }
-        set { surface.transform = newValue }
-    }
 
     override var frame:CGRect {
         get { return super.frame }
@@ -569,10 +513,12 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
 
     override var contents:AnyObject? {
         get { return surface.contents }
-        set {
-            surface.contents = newValue
-            frameCount += 1
-        }
+        set { surface.contents = newValue }
+    }
+
+    override var transform:CATransform3D {
+        get { return surface.transform }
+        set { surface.transform = newValue }
     }
 
     override var videoGravity:String! {
@@ -594,26 +540,49 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
         }
     }
 
-    private func initialize() {
-        timer = NSTimer.scheduledTimerWithTimeInterval(
-            1.0, target: self, selector: #selector(VideoIOLayer.didTimerInterval(_:)), userInfo: nil, repeats: true
-        )
-        addSublayer(surface)
+    override init() {
+        super.init()
+        initialize()
     }
 
-    func didTimerInterval(timer:NSTimer) {
-        currentFPS = frameCount
-        frameCount = 0
+    override init!(session: AVCaptureSession!) {
+        super.init(session: session)
+        initialize()
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initialize()
+    }
+
+    private func initialize() {
+        addSublayer(surface)
     }
 }
 
 #if os(iOS)
 // MARK: -
 public class VideoIOView: UIView {
-    static var defaultBackgroundColor:UIColor = UIColor.blackColor()
+    static public var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
     override public class func layerClass() -> AnyClass {
         return VideoIOLayer.self
+    }
+
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
+        didSet {
+            layer.setValue(videoGravity, forKey: "videoGravity")
+        }
+    }
+
+    var contents:AnyObject? {
+        get { return layer.contents }
+        set { layer.contents = newValue }
+    }
+
+    var transform3D:CATransform3D {
+        get { return layer.transform }
+        set { layer.transform = newValue }
     }
 
     required override public init(frame: CGRect) {
@@ -624,12 +593,6 @@ public class VideoIOView: UIView {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
-    }
-
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
-        didSet {
-            layer.setValue(videoGravity, forKey: "videoGravity")
-        }
     }
 
     private func initialize() {
@@ -641,6 +604,22 @@ public class VideoIOView: UIView {
 #else
 // MARK: -
 public class VideoIOView: NSView {
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
+        didSet {
+            layer?.setValue(videoGravity, forKey: "videoGravity")
+        }
+    }
+
+    var contents:AnyObject? {
+        get { return layer?.contents }
+        set { layer?.contents = newValue }
+    }
+
+    var transform3D:CATransform3D {
+        get { return layer!.transform }
+        set { layer?.transform = newValue }
+    }
+
     required override public init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -649,12 +628,6 @@ public class VideoIOView: NSView {
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initialize()
-    }
-
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill {
-        didSet {
-            layer?.setValue(videoGravity, forKey: "videoGravity")
-        }
     }
 
     private func initialize() {

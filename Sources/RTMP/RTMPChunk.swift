@@ -160,14 +160,7 @@ final class RTMPChunk {
     }
 
     func split(size:Int) -> [[UInt8]] {
-        if (self.message == nil) {
-            return [bytes]
-        }
-
-        let message:RTMPMessage = self.message!
-        let length:Int = message.payload.count
-
-        if (length < size) {
+        guard let message:RTMPMessage = message where size < message.payload.count else {
             return [bytes]
         }
 
