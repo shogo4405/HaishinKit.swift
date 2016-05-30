@@ -10,7 +10,7 @@ final class AVCEncoder: NSObject {
         "height",
         "bitrate",
         "profileLevel",
-        "keyframeInterval",
+        "maxKeyFrameIntervalDuration",
     ]
 
     static let defaultWidth:Int32 = 480
@@ -54,7 +54,6 @@ final class AVCEncoder: NSObject {
                 }
                 let properties:[NSString: NSObject] = [
                     kVTCompressionPropertyKey_MaxKeyFrameInterval: NSNumber(double: self.expectedFPS),
-                    kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(double: self.expectedFPS * Float64(self.keyframeInterval)),
                 ]
                 VTSessionSetProperties(session, properties)
             }
@@ -65,7 +64,19 @@ final class AVCEncoder: NSObject {
             invalidateSession = true
         }
     }
-    var keyframeInterval:Int = 2
+    var maxKeyFrameIntervalDuration:Double = 2.0 {
+        didSet {
+            dispatch_async(lockQueue) {
+                guard let session:VTCompressionSessionRef = self._session else {
+                    return
+                }
+                let properties:[NSString: NSObject] = [
+                    kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(double: self.maxKeyFrameIntervalDuration),
+                ]
+                VTSessionSetProperties(session, properties)
+            }
+        }
+    }
     var formatDescription:CMFormatDescriptionRef? = nil {
         didSet {
             guard !CMFormatDescriptionEqual(formatDescription, oldValue) else {
@@ -93,7 +104,7 @@ final class AVCEncoder: NSObject {
             kVTCompressionPropertyKey_ProfileLevel: profileLevel,
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
             kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(double: expectedFPS),
-            kVTCompressionPropertyKey_MaxKeyFrameInterval: NSNumber(double: expectedFPS * Double(keyframeInterval)),
+            kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(double: maxKeyFrameIntervalDuration),
             kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": "Trim"
