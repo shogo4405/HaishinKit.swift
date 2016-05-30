@@ -53,6 +53,12 @@ final class LiveViewController: UIViewController {
         return slider
     }()
 
+    var fpsControl:UISegmentedControl = {
+        let segment:UISegmentedControl = UISegmentedControl(items: ["15.0", "30.0", "60.0"])
+        segment.tintColor = UIColor.whiteColor()
+        return segment
+    }()
+
     var effectSegmentControl:UISegmentedControl = {
         let segment:UISegmentedControl = UISegmentedControl(items: ["None", "Monochrome", "Pronama"])
         segment.tintColor = UIColor.whiteColor()
@@ -66,6 +72,7 @@ final class LiveViewController: UIViewController {
 
         videoBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         audioBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
+        fpsControl.addTarget(self, action: #selector(LiveViewController.onFPSValueChanged(_:)), forControlEvents: .ValueChanged)
         effectSegmentControl.addTarget(self, action: #selector(LiveViewController.onEffectValueChanged(_:)), forControlEvents: .ValueChanged)
 
         /*
@@ -121,6 +128,7 @@ final class LiveViewController: UIViewController {
         view.addSubview(videoBitrateSlider)
         view.addSubview(audioBitrateLabel)
         view.addSubview(audioBitrateSlider)
+        view.addSubview(fpsControl)
         view.addSubview(effectSegmentControl)
         view.addSubview(publishButton)
     }
@@ -128,6 +136,7 @@ final class LiveViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         let navigationHeight:CGFloat = 66
+        fpsControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight + 40, width: 200, height: 30)
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
         rtmpStream.view.frame = view.frame
@@ -205,6 +214,19 @@ final class LiveViewController: UIViewController {
                 y: touchPoint.y/gestureView.bounds.size.height)
             print("pointOfInterest: \(pointOfInterest)")
             rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
+        }
+    }
+
+    func onFPSValueChanged(segment:UISegmentedControl) {
+        switch segment.selectedSegmentIndex {
+        case 0:
+            rtmpStream.captureSettings["fps"] = 15.0
+        case 1:
+            rtmpStream.captureSettings["fps"] = 30.0
+        case 2:
+            rtmpStream.captureSettings["fps"] = 60.0
+        default:
+            break
         }
     }
 
