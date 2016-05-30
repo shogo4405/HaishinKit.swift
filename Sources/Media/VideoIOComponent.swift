@@ -153,11 +153,14 @@ final class VideoIOComponent: NSObject {
     
     var continuousAutofocus:Bool = true {
         didSet {
+            guard continuousAutofocus != oldValue else {
+                return
+            }
             let focusMode:AVCaptureFocusMode = continuousAutofocus ? .ContinuousAutoFocus : .AutoFocus
             guard let device:AVCaptureDevice = input?.device
                 where device.isFocusModeSupported(focusMode) else {
-                    logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
-                    return
+                logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
+                return
             }
             do {
                 try device.lockForConfiguration()
@@ -212,11 +215,14 @@ final class VideoIOComponent: NSObject {
 
     var continuousExposure:Bool = true {
         didSet {
+            guard continuousExposure != oldValue else {
+                return
+            }
             let exposureMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
             guard let device:AVCaptureDevice = input?.device
                 where device.isExposureModeSupported(exposureMode) else {
-                    logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
-                    return
+                logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
+                return
             }
             do {
                 try device.lockForConfiguration()

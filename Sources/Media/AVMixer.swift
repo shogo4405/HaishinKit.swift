@@ -84,6 +84,9 @@ public class AVMixer: NSObject {
     #if os(iOS)
     var syncOrientation:Bool = false {
         didSet {
+            guard syncOrientation != oldValue else {
+                return
+            }
             let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
             if (syncOrientation) {
                 center.addObserver(self, selector: #selector(AVMixer.onOrientationChanged(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
@@ -96,6 +99,9 @@ public class AVMixer: NSObject {
 
     var sessionPreset:String = AVMixer.defaultSessionPreset {
         didSet {
+            guard sessionPreset != oldValue else {
+                return
+            }
             session.beginConfiguration()
             session.sessionPreset = sessionPreset
             session.commitConfiguration()

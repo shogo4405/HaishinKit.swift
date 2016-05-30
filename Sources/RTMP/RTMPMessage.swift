@@ -91,15 +91,6 @@ extension RTMPMessage: CustomStringConvertible {
 final class RTMPSetChunkSizeMessage: RTMPMessage {
     var size:UInt32 = 0
 
-    init() {
-        super.init(type: .ChunkSize)
-    }
-
-    init(size:UInt32) {
-        super.init(type: .ChunkSize)
-        self.size = size
-    }
-    
     override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
@@ -117,6 +108,15 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
         }
     }
 
+    init() {
+        super.init(type: .ChunkSize)
+    }
+
+    init(size:UInt32) {
+        super.init(type: .ChunkSize)
+        self.size = size
+    }
+
     override func execute(connection:RTMPConnection) {
         connection.socket.chunkSizeC = Int(size)
     }
@@ -128,10 +128,6 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
  */
 final class RTMPAbortMessge: RTMPMessage {
     var chunkStreamId:UInt32 = 0
-
-    init() {
-        super.init(type: .Abort)
-    }
 
     override var payload:[UInt8] {
         get {
@@ -149,6 +145,10 @@ final class RTMPAbortMessge: RTMPMessage {
             super.payload = newValue
         }
     }
+
+    init() {
+        super.init(type: .Abort)
+    }
 }
 
 // MARK: -
@@ -156,10 +156,6 @@ final class RTMPAbortMessge: RTMPMessage {
  5.4.3. Acknowledgement (3)
  */
 final class RTMPAcknowledgementMessage: RTMPMessage {
-    init() {
-        super.init(type: .Ack)
-    }
-
     var sequence:UInt32 = 0
     
     override var payload:[UInt8] {
@@ -177,6 +173,10 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
             sequence = UInt32(bytes: newValue).bigEndian
             super.payload = newValue
         }
+    }
+
+    init() {
+        super.init(type: .Ack)
     }
 }
 
