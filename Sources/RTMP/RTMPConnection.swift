@@ -78,8 +78,8 @@ public class RTMPConnection: EventDispatcher {
 
         func data(description:String) -> ASObject {
             return [
-                "code": self.rawValue,
-                "level": self.level,
+                "code": rawValue,
+                "level": level,
                 "description": description,
             ]
         }
