@@ -33,6 +33,9 @@ final class VideoIOComponent: NSObject {
             if (range.minFrameRate <= fps && fps <= range.maxFrameRate) {
                 return (fps, CMTimeMake(100, Int32(100 * fps)))
             }
+
+            let actualFPS:Float64 = max(range.minFrameRate, min(range.maxFrameRate, fps))
+            return (actualFPS, CMTimeMake(100, Int32(100 * actualFPS)))
         }
 
         var diff:[Float64] = []

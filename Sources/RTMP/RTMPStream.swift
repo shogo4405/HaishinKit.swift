@@ -256,7 +256,18 @@ public class RTMPStream: EventDispatcher {
     private(set) var mixer:AVMixer = AVMixer()
     private(set) var recorder:RTMPRecorder = RTMPRecorder()
     private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
-    private var timer:NSTimer!
+    private var timer:NSTimer? {
+        didSet {
+            if let oldValue:NSTimer = oldValue {
+                oldValue.invalidate()
+                frameCount = 0
+                currentFPS = 0
+            }
+            if let timer:NSTimer = timer {
+                NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+            }
+        }
+    }
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var frameCount:UInt8 = 0
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
@@ -273,6 +284,10 @@ public class RTMPStream: EventDispatcher {
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
+    }
+
+    deinit {
+        timer = nil
     }
 
     public func attachAudio(audio:AVCaptureDevice?) {
@@ -385,9 +400,6 @@ public class RTMPStream: EventDispatcher {
                     return
                 }
                 self.readyState = .Open
-                self.frameCount = 0
-                self.currentFPS = 0
-                self.timer.invalidate()
                 self.timer = nil
                 self.mixer.audioIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.delegate = nil
@@ -430,7 +442,6 @@ public class RTMPStream: EventDispatcher {
                     arguments: [name, type]
             )))
             self.readyState = .Publish
-            NSRunLoop.mainRunLoop().addTimer(self.timer, forMode: NSRunLoopCommonModes)
         }
     }
 

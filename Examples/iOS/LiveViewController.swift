@@ -254,6 +254,8 @@ final class LiveViewController: UIViewController {
     }
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        currentFPSLabel.text = "\(rtmpStream.currentFPS)"
+        if (NSThread.isMainThread()) {
+            currentFPSLabel.text = "\(rtmpStream.currentFPS)"
+        }
     }
 }

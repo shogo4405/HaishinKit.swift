@@ -88,6 +88,7 @@ final class LiveViewController: NSViewController {
         rtmpStream.attachCamera(
             AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
+        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
         publishButton.target = self
         rtmpStream.view.wantsLayer = true
         view.addSubview(rtmpStream.view)
@@ -196,6 +197,12 @@ final class LiveViewController: NSViewController {
             httpStream.attachCamera(device)
         default:
             break
+        }
+    }
+
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if (NSThread.isMainThread()) {
+            view.window!.title = "lf - lIVE fRAMEWORK(FPS:\(rtmpStream.currentFPS))"
         }
     }
 
