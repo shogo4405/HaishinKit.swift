@@ -545,6 +545,11 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
         initialize()
     }
 
+    override init(layer: AnyObject) {
+        super.init(layer: layer)
+        initialize()
+    }
+
     override init!(session: AVCaptureSession!) {
         super.init(session: session)
         initialize()
