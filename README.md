@@ -1,5 +1,5 @@
 # lf.swift
-lf is a lIVE fRAMEWORK. iOS/OSX Camera/Microphone streaming library via RTMP/HTTP
+lf is a lIVE fRAMEWORK. Camera and Microphone streaming library via RTMP, HLS for iOS, OSX.
 
 ## Install
 ### CocoaPods
@@ -17,8 +17,8 @@ target 'Your Target'  do
 end
 ```
 
-## Usage/RTMP
-Real Time Messaging Protocol (RTMP). Basic snipet.
+## RTMP Usage
+Real Time Messaging Protocol (RTMP).
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
@@ -30,7 +30,7 @@ view.addSubview(rtmpStream.view)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 ```
-Settings
+### Settings
 ```swift
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.videoSettings = [
@@ -38,17 +38,17 @@ rtmpStream.videoSettings = [
     "height": 360, // video output height
 ]
 ```
-RTMP Auth 
+### RTMP Auth 
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```
 
-## Usage/HTTP
-HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet.
+## HTTP Usage
+HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
 httpStream = HTTPStream()
-httpStream.syncOrientation = true
+
 httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
 rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
 
@@ -60,16 +60,6 @@ httpService.addHTTPStream(httpStream)
 
 view.addSubview(httpStream.view)
 ```
-
-You can see http://ip.address:8080/hello/playlist.m3u8 
-
-## Class Overview
-|AS3|lf|
-|----|----|
-|flash.net.SharedObject|RTMPSharedObject|
-|flash.net.Responder|Responder|
-|flash.net.NetConnection|RTMPConnection|
-|flash.net.NetStream|RTMPStream|
 
 ## License
 New BSD
