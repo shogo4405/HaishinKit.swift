@@ -154,7 +154,7 @@ final class VideoIOComponent: NSObject {
     }
     #endif
     
-    var continuousAutofocus:Bool = true {
+    var continuousAutofocus:Bool = false {
         didSet {
             guard continuousAutofocus != oldValue else {
                 return
@@ -216,7 +216,7 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    var continuousExposure:Bool = true {
+    var continuousExposure:Bool = false {
         didSet {
             guard continuousExposure != oldValue else {
                 return
