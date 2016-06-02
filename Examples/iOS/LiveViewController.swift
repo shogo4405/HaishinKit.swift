@@ -19,7 +19,11 @@ final class LiveViewController: UIViewController {
 
     let touchView: UIView! = UIView()
 
-    var currentFPSLabel:UILabel = UILabel()
+    var currentFPSLabel:UILabel = {
+        let label:UILabel = UILabel()
+        label.textColor = UIColor.whiteColor()
+        return label
+    }()
 
     var publishButton:UIButton = {
         let button:UIButton = UIButton()
@@ -110,10 +114,16 @@ final class LiveViewController: UIViewController {
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
+            "sessionPreset": AVCaptureSessionPreset1280x720,
             "continuousAutofocus": true,
             "continuousExposure": true,
         ]
-        
+
+        rtmpStream.videoSettings = [
+            "width": 1280,
+            "height": 720,
+        ]
+
         publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)
 
         view.addSubview(rtmpStream.view)
