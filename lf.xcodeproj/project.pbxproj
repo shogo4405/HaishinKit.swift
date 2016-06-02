@@ -287,10 +287,7 @@
 		29C932941CD76FD300283FC5 /* Example OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example OSX.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29FE61461CF7DD2700E51833 /* AMF0SerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMF0SerializerTests.swift; sourceTree = "<group>"; };
 		29FE61481CF7DD3A00E51833 /* RTMPChunkTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPChunkTests.swift; sourceTree = "<group>"; };
-		2E4A90654B48CE9D553A9B08 /* Pods-Example MacOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example MacOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example MacOS/Pods-Example MacOS.release.xcconfig"; sourceTree = "<group>"; };
-		39CB969698ACF0B3BE13FCCA /* Pods-Example MacOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example MacOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example MacOS/Pods-Example MacOS.debug.xcconfig"; sourceTree = "<group>"; };
 		533C38C964051C778E6633CC /* Pods-Example iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example iOS/Pods-Example iOS.debug.xcconfig"; sourceTree = "<group>"; };
-		7037AE8AE0D17FA43BD79C9A /* Pods-lf MacOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lf MacOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-lf MacOS/Pods-lf MacOS.release.xcconfig"; sourceTree = "<group>"; };
 		75E97013BBDF11416FD1E306 /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		77AC26DE78B1340A86744811 /* Pods-lf iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lf iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-lf iOS/Pods-lf iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		7A169012A1222F29032899EF /* Pods-Example OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example OSX/Pods-Example OSX.debug.xcconfig"; sourceTree = "<group>"; };
@@ -300,7 +297,6 @@
 		D01EE6A5667851E0385FB71C /* Pods-lf iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lf iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-lf iOS/Pods-lf iOS.release.xcconfig"; sourceTree = "<group>"; };
 		E2E3D384AE6837410D16A899 /* Pods-lf OSX.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lf OSX.debug.xcconfig"; path = "Pods/Target Support Files/Pods-lf OSX/Pods-lf OSX.debug.xcconfig"; sourceTree = "<group>"; };
 		FBC39416255B1FE34117A703 /* Pods_Example_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		FC5921046D84A74DAED7AF26 /* Pods-lf MacOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-lf MacOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-lf MacOS/Pods-lf MacOS.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -647,20 +643,16 @@
 		E9BB7077335B51236BC78A78 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				39CB969698ACF0B3BE13FCCA /* Pods-Example MacOS.debug.xcconfig */,
-				2E4A90654B48CE9D553A9B08 /* Pods-Example MacOS.release.xcconfig */,
 				533C38C964051C778E6633CC /* Pods-Example iOS.debug.xcconfig */,
 				A1D8ABC4A4E12BFBD293958E /* Pods-Example iOS.release.xcconfig */,
-				FC5921046D84A74DAED7AF26 /* Pods-lf MacOS.debug.xcconfig */,
-				7037AE8AE0D17FA43BD79C9A /* Pods-lf MacOS.release.xcconfig */,
-				77AC26DE78B1340A86744811 /* Pods-lf iOS.debug.xcconfig */,
-				D01EE6A5667851E0385FB71C /* Pods-lf iOS.release.xcconfig */,
-				75E97013BBDF11416FD1E306 /* Pods-Tests.debug.xcconfig */,
-				B67434E36A36E6B4FC381BA2 /* Pods-Tests.release.xcconfig */,
 				7A169012A1222F29032899EF /* Pods-Example OSX.debug.xcconfig */,
 				1F2DB2610429691426B0CCB4 /* Pods-Example OSX.release.xcconfig */,
+				77AC26DE78B1340A86744811 /* Pods-lf iOS.debug.xcconfig */,
+				D01EE6A5667851E0385FB71C /* Pods-lf iOS.release.xcconfig */,
 				E2E3D384AE6837410D16A899 /* Pods-lf OSX.debug.xcconfig */,
 				00657A05B8D0C6D006DA0511 /* Pods-lf OSX.release.xcconfig */,
+				75E97013BBDF11416FD1E306 /* Pods-Tests.debug.xcconfig */,
+				B67434E36A36E6B4FC381BA2 /* Pods-Tests.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
