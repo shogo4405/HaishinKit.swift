@@ -314,14 +314,7 @@ final class VideoIOComponent: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
-            switch camera.position {
-            case .Front:
-                view.transform3D = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
-            case .Back:
-                view.transform3D = CATransform3DMakeRotation(0, 0, 1, 0)
-            default:
-                break
-            }
+            
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
@@ -355,22 +348,12 @@ final class VideoIOComponent: NSObject {
         self.screen = screen
     }
 
-    func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
-        CVPixelBufferLockBaseAddress(buffer, 0)
-        let width:Int = CVPixelBufferGetWidth(buffer)
-        let height:Int = CVPixelBufferGetHeight(buffer)
+    func effect(buffer:CVImageBufferRef) -> CIImage {
         var image:CIImage = CIImage(CVPixelBuffer: buffer)
-        autoreleasepool {
-            for effect in effects {
-                image = effect.execute(image)
-            }
-            let contents:CGImageRef = context.createCGImage(image, fromRect: image.extent)
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.contents = contents
-            }
+        for effect in effects {
+            image = effect.execute(image)
         }
-        CVPixelBufferUnlockBaseAddress(buffer, 0)
-        return createImageBuffer(image, width, height)!
+        return image
     }
 
     func registerEffect(effect:VisualEffect) -> Bool {
@@ -440,9 +423,6 @@ final class VideoIOComponent: NSObject {
                 guard let data:VideoIOData = buffer else {
                     return
                 }
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.view.contents = data.image
-                }
                 usleep(UInt32(data.presentationDuration.value) * 1000)
             }
             self.rendering = false
@@ -453,19 +433,16 @@ final class VideoIOComponent: NSObject {
 // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
-        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard let buffer:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
+        let image:CIImage = effect(buffer)
         encoder.encodeImageBuffer(
-            effects.isEmpty ? image : effect(image),
+            effects.isEmpty ? buffer : createImageBuffer(image, CVPixelBufferGetWidth(buffer), CVPixelBufferGetHeight(buffer))!,
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
             presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
         )
-        if (effects.isEmpty && view.contents != nil) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.contents = nil
-            }
-        }
+        view.render(image)
     }
 }
 
@@ -499,71 +476,5 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             presentationTimeStamp: timestamp,
             presentationDuration: timestamp
         )
-    }
-}
-
-// MARK: -
-final class VideoIOLayer: AVCaptureVideoPreviewLayer {
-    private var surface:CALayer = CALayer()
-
-    override var frame:CGRect {
-        get { return super.frame }
-        set {
-            super.frame = newValue
-            surface.frame = newValue
-        }
-    }
-
-    override var contents:AnyObject? {
-        get { return surface.contents }
-        set { surface.contents = newValue }
-    }
-
-    override var transform:CATransform3D {
-        get { return surface.transform }
-        set { surface.transform = newValue }
-    }
-
-    override var videoGravity:String! {
-        get {
-            return super.videoGravity
-        }
-        set {
-            super.videoGravity = newValue
-            switch newValue {
-            case AVLayerVideoGravityResizeAspect:
-                surface.contentsGravity = kCAGravityResizeAspect
-            case AVLayerVideoGravityResizeAspectFill:
-                surface.contentsGravity = kCAGravityResizeAspectFill
-            case AVLayerVideoGravityResize:
-                surface.contentsGravity = kCAGravityResize
-            default:
-                surface.contentsGravity = kCAGravityResizeAspect
-            }
-        }
-    }
-
-    override init() {
-        super.init()
-        initialize()
-    }
-
-    override init(layer: AnyObject) {
-        super.init(layer: layer)
-        initialize()
-    }
-
-    override init!(session: AVCaptureSession!) {
-        super.init(session: session)
-        initialize()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialize()
-    }
-
-    private func initialize() {
-        addSublayer(surface)
     }
 }
