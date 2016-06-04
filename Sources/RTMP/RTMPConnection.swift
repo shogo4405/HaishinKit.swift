@@ -374,15 +374,9 @@ extension RTMPConnection: RTMPSocketDelegate {
                 break
             }
             message.execute(self)
+            currentChunk = nil
             messages[chunk.streamId] = message
-
-            if (currentChunk == nil) {
-                listen(socket, bytes: Array(bytes[chunk.bytes.count..<bytes.count]))
-            } else {
-                currentChunk = nil
-                listen(socket, bytes: Array(bytes[position..<bytes.count]))
-            }
-
+            listen(socket, bytes: Array(bytes[position..<bytes.count]))
             return
         }
 
