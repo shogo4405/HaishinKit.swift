@@ -139,8 +139,8 @@ extension NetSocket: NSStreamDelegate {
         case NSStreamEvent.OpenCompleted:
             guard let inputStream = inputStream, outputStream = outputStream
                 where
-                    inputStream.streamStatus == NSStreamStatus.Open &&
-                    outputStream.streamStatus == NSStreamStatus.Open else {
+                    inputStream.streamStatus == .Open &&
+                    outputStream.streamStatus == .Open else {
                 break
             }
             if (aStream == inputStream) {

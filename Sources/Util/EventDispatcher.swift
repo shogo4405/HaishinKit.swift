@@ -27,7 +27,7 @@ public enum EventPhase: UInt8 {
 /**
  flash.events.Event for Swift
  */
-public class Event: NSObject {
+public class Event {
     public static let SYNC:String = "sync"
     public static let RTMP_STATUS:String = "rtmpStatus"
 
@@ -57,6 +57,13 @@ public class Event: NSObject {
 
     convenience init(type:String, bubbles:Bool) {
         self.init(type: type, bubbles: bubbles, data: nil)
+    }
+}
+
+// MARK: CustomStringConvertible
+extension Event: CustomStringConvertible {
+    public var description:String {
+        return Mirror(reflecting: self).description
     }
 }
 
