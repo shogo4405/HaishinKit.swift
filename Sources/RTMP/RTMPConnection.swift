@@ -208,11 +208,6 @@ public class RTMPConnection: EventDispatcher {
         }
         self.uri = uri
         self.arguments = arguments
-        currentChunk = nil
-        messages.removeAll()
-        operations.removeAll()
-        fragmentedChunks.removeAll()
-        currentTransactionId = 0
         socket.connect(uri.host!, port: uri.port == nil ? RTMPConnection.defaultPort : uri.port!.integerValue)
     }
 
@@ -329,6 +324,7 @@ public class RTMPConnection: EventDispatcher {
 extension RTMPConnection: RTMPSocketDelegate {
 
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
+        logger.info("\(readyState)")
         switch socket.readyState {
         case .HandshakeDone:
             guard let chunk:RTMPChunk = createConnectionChunk() else {
@@ -338,6 +334,11 @@ extension RTMPConnection: RTMPSocketDelegate {
             socket.doOutput(chunk: chunk)
         case .Closed:
             connected = false
+            currentChunk = nil
+            messages.removeAll()
+            operations.removeAll()
+            fragmentedChunks.removeAll()
+            currentTransactionId = 0
         default:
             break
         }

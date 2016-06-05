@@ -27,12 +27,33 @@ final class RTMPSocket: NetSocket {
             delegate?.didSetReadyState(self, readyState: readyState)
         }
     }
-
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
     var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     weak var delegate:RTMPSocketDelegate? = nil
+    override var connected:Bool {
+        didSet {
+            if (connected) {
+                timestamp = NSDate().timeIntervalSince1970
+                let c1packet:ByteArray = ByteArray()
+                c1packet.writeInt32(Int32(timestamp))
+                c1packet.writeBytes([0x00, 0x00, 0x00, 0x00])
+                for _ in 0..<RTMPSocket.sigSize - 8 {
+                    c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
+                }
+                doOutput(bytes: [RTMPSocket.protocolVersion])
+                doOutput(bytes: c1packet.bytes)
+                readyState = .VersionSent
+                return
+            }
+            readyState = .Closed
+            for event in events {
+                delegate?.dispatchEvent(event)
+            }
+        }
+    }
     private(set) var timestamp:NSTimeInterval = 0
+    private var events:[Event] = []
 
     func doOutput(chunk chunk:RTMPChunk) {
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
@@ -54,19 +75,6 @@ final class RTMPSocket: NetSocket {
             )
             self.initConnection()
         }
-    }
-
-    override func didOpenCompleted() {
-        timestamp = NSDate().timeIntervalSince1970
-        let c1packet:ByteArray = ByteArray()
-        c1packet.writeInt32(Int32(timestamp))
-        c1packet.writeBytes([0x00, 0x00, 0x00, 0x00])
-        for _ in 0..<RTMPSocket.sigSize - 8 {
-            c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
-        }
-        doOutput(bytes: [RTMPSocket.protocolVersion])
-        doOutput(bytes: c1packet.bytes)
-        readyState = .VersionSent
     }
 
     override func listen() {
@@ -109,17 +117,13 @@ final class RTMPSocket: NetSocket {
     }
 
     override func deinitConnection(disconnect:Bool) {
-        var data:ASObject? = nil
         if (disconnect) {
-            data = (readyState == .HandshakeDone) ?
+            let data:ASObject = (readyState == .HandshakeDone) ?
                 RTMPConnection.Code.ConnectClosed.data("") : RTMPConnection.Code.ConnectFailed.data("")
+            events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
         }
         readyState = .Closing
         super.deinitConnection(disconnect)
-        readyState = .Closed
-        if let data:ASObject = data {
-            delegate?.dispatchEventWith(Event.RTMP_STATUS, bubbles: false, data: data)
-        }
     }
 }
 

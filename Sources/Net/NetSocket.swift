@@ -3,6 +3,7 @@ import Foundation
 class NetSocket: NSObject {
     static let defaultWindowSizeC:Int = 1024 * 1
 
+    var connected:Bool = false
     var inputBuffer:[UInt8] = []
     var inputStream:NSInputStream?
     var windowSizeC:Int = NetSocket.defaultWindowSizeC
@@ -83,9 +84,6 @@ class NetSocket: NSObject {
     func listen() {
     }
 
-    func didOpenCompleted() {
-    }
-
     func initConnection() {
         totalBytesIn = 0
         totalBytesOut = 0
@@ -101,7 +99,7 @@ class NetSocket: NSObject {
         inputStream.open()
         outputStream.open()
         runloop!.run()
-        logger.verbose("EndOfRunLoop")
+        connected = false
     }
 
     func deinitConnection(disconnect:Bool) {
@@ -144,7 +142,7 @@ extension NetSocket: NSStreamDelegate {
                 break
             }
             if (aStream == inputStream) {
-                didOpenCompleted()
+                connected = true
             }
         //  2 = 1 << 1
         case NSStreamEvent.HasBytesAvailable:
