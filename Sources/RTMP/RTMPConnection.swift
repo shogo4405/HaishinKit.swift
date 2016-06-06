@@ -243,43 +243,49 @@ public class RTMPConnection: EventDispatcher {
 
     func rtmpStatusHandler(notification: NSNotification) {
         let e:Event = Event.from(notification)
-        if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
-            switch code {
-            case Code.ConnectSuccess.rawValue:
-                connected = true
-                socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
-                socket.doOutput(chunk: RTMPChunk(
-                    type: .One,
-                    streamId: RTMPChunk.control,
-                    message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
-                ))
-            case Code.ConnectRejected.rawValue:
-                guard let uri:NSURL = uri, user:String = uri.user, _:String = uri.password else {
+
+        guard let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String else {
+            return
+        }
+
+        switch code {
+        case Code.ConnectSuccess.rawValue:
+            connected = true
+            socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
+            socket.doOutput(chunk: RTMPChunk(
+                type: .One,
+                streamId: RTMPChunk.control,
+                message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
+            ))
+        case Code.ConnectRejected.rawValue:
+            guard let uri:NSURL = uri, user:String = uri.user, password:String = uri.password else {
+                break
+            }
+            socket.deinitConnection(false)
+            let description:String = data["description"] as! String
+            switch true {
+            case description.containsString("reason=nosuchuser"):
+                break
+            case description.containsString("reason=authfailed"):
+                break
+            case description.containsString("reason=needauth"):
+                let command:String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
+                connect(command, arguments: arguments)
+            case description.containsString("authmod=adobe"):
+                if (user == "" || password == "") {
+                    close(true)
                     break
                 }
                 let query:String = uri.query ?? ""
-                let description:String = data["description"] as! String
-                // Step 3
-                if (description.containsString("reason=authfailed")) {
-                    break
-                }
-                // Step 2
-                if (description.containsString("reason=needauth")) {
-                    let command:String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
-                    connect(command, arguments: arguments)
-                    break
-                }
-                // Step 1
-                if (description.containsString("authmod=adobe")) {
-                    let command:String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
-                    connect(command, arguments: arguments)
-                    break
-                }
-            case Code.ConnectClosed.rawValue:
-                close(true)
+                let command:String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
+                connect(command, arguments: arguments)
             default:
                 break
             }
+        case Code.ConnectClosed.rawValue:
+            close(true)
+        default:
+            break
         }
     }
 
@@ -292,6 +298,7 @@ public class RTMPConnection: EventDispatcher {
         if let query:String = uri.query {
             app += "?" + query
         }
+
         currentTransactionId += 1
 
         let message:RTMPCommandMessage = RTMPCommandMessage(
@@ -324,7 +331,6 @@ public class RTMPConnection: EventDispatcher {
 extension RTMPConnection: RTMPSocketDelegate {
 
     func didSetReadyState(socket: RTMPSocket, readyState: RTMPSocket.ReadyState) {
-        logger.info("\(readyState)")
         switch socket.readyState {
         case .HandshakeDone:
             guard let chunk:RTMPChunk = createConnectionChunk() else {
@@ -335,10 +341,10 @@ extension RTMPConnection: RTMPSocketDelegate {
         case .Closed:
             connected = false
             currentChunk = nil
+            currentTransactionId = 0
             messages.removeAll()
             operations.removeAll()
             fragmentedChunks.removeAll()
-            currentTransactionId = 0
         default:
             break
         }

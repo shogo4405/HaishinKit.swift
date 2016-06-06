@@ -50,6 +50,7 @@ final class RTMPSocket: NetSocket {
             for event in events {
                 delegate?.dispatchEvent(event)
             }
+            events.removeAll()
         }
     }
     private(set) var timestamp:NSTimeInterval = 0

@@ -98,7 +98,7 @@ class NetSocket: NSObject {
         outputStream.scheduleInRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
         inputStream.open()
         outputStream.open()
-        runloop!.run()
+        runloop?.run()
         connected = false
     }
 
