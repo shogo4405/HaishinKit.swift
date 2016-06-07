@@ -143,7 +143,7 @@ public class RTMPConnection: EventDispatcher {
     }
 
     static let defaultPort:Int = 1935
-    static let defaultFlashVer:String = "FME/3.0 (compatible; FMSc/1.0)"
+    static let defaultFlashVer:String = "FMLE/3.0 (compatible; FMSc/1.0)"
     static let defaultChunkSizeS:Int = 1024 * 8
     static let defaultCapabilities:Int = 239
     static let defaultObjectEncoding:UInt8 = 0x00
@@ -183,7 +183,7 @@ public class RTMPConnection: EventDispatcher {
         removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
-    public func call(commandName:String, responder:Responder?, arguments:AnyObject...) {
+    public func call(commandName:String, responder:Responder?, arguments:Any?...) {
         guard connected else {
             return
         }

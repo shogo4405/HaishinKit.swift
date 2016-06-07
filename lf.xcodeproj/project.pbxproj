@@ -141,7 +141,6 @@
 		29C2631B1D00805F0098D4EF /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C263191D00805B0098D4EF /* VideoIOView.swift */; };
 		29C2631C1D0083B50098D4EF /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */; };
 		29C932A71CD7867C00283FC5 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; settings = {ATTRIBUTES = (Required, ); }; };
-		29E5C0F61D05966900407208 /* AudioUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E5C0F51D05966900407208 /* AudioUtilTests.swift */; };
 		29E5C0FD1D05B3B300407208 /* AudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E5C0FB1D05B3AA00407208 /* AudioUtil.swift */; };
 		29E5C0FE1D05B3B600407208 /* AudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E5C0F91D05B32700407208 /* AudioUtil.swift */; };
 		29EF03781CD79A5400473D99 /* lf.h in Headers */ = {isa = PBXBuildFile; fileRef = 299F7E3B1CD71A97001E7272 /* lf.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -286,7 +285,6 @@
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example OSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example OSX.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29E5C0F11D05948D00407208 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
-		29E5C0F51D05966900407208 /* AudioUtilTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUtilTests.swift; sourceTree = "<group>"; };
 		29E5C0F91D05B32700407208 /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioUtil.swift; path = Platforms/iOS/AudioUtil.swift; sourceTree = "<group>"; };
 		29E5C0FB1D05B3AA00407208 /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioUtil.swift; path = Platforms/OSX/AudioUtil.swift; sourceTree = "<group>"; };
 		29FE61461CF7DD2700E51833 /* AMF0SerializerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AMF0SerializerTests.swift; sourceTree = "<group>"; };
@@ -416,7 +414,6 @@
 		291C2AD01CE9FF33006F042B /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				29E5C0F51D05966900407208 /* AudioUtilTests.swift */,
 				29B876CF1CD70CE700FC07DA /* ByteArrayTests.swift */,
 				29B876D01CD70CE700FC07DA /* CRC32Tests.swift */,
 				29B876D11CD70CE700FC07DA /* EventDispatcherTests.swift */,
@@ -1158,7 +1155,6 @@
 				29798E6D1CE6110F00F5CBD0 /* Foundation+ExtensionTests.swift in Sources */,
 				29798E6E1CE6110F00F5CBD0 /* HTTPRequestTests.swift in Sources */,
 				29798E6F1CE6110F00F5CBD0 /* PacketizedElementaryStreamTests.swift in Sources */,
-				29E5C0F61D05966900407208 /* AudioUtilTests.swift in Sources */,
 				29FE61471CF7DD2700E51833 /* AMF0SerializerTests.swift in Sources */,
 				29798E701CE6110F00F5CBD0 /* ProgramSpecificTests.swift in Sources */,
 				29798E711CE6110F00F5CBD0 /* SwiftCore+ExtensionTests.swift in Sources */,

@@ -5,6 +5,7 @@ import AVFoundation
 final class LiveViewController: NSViewController {
     static let defaultURL:String = "rtmp://test:test@localhost/live"
 
+    var enabledSharedObject:Bool = false
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
     var sharedObject:RTMPSharedObject!
@@ -88,6 +89,7 @@ final class LiveViewController: NSViewController {
         rtmpStream.attachCamera(
             AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
+
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
         publishButton.target = self
         rtmpStream.view.wantsLayer = true
@@ -218,9 +220,11 @@ final class LiveViewController: NSViewController {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish("test")
-                sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
-                sharedObject.connect(rtmpConnection)
-                sharedObject.setProperty("Hello", "World!!")
+                if (enabledSharedObject) {
+                    sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
+                    sharedObject.connect(rtmpConnection)
+                    sharedObject.setProperty("Hello", "World!!")
+                }
             default:
                 break
             }
