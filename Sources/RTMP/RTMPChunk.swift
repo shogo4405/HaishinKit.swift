@@ -147,7 +147,7 @@ final class RTMPChunk {
         buffer.position = basicHeaderSize
 
         do {
-            self.message = RTMPMessage(type: message.type)
+            self.message = RTMPMessage.create(message.type.rawValue)
             self.message?.streamId = message.streamId
             self.message?.timestamp = try buffer.readUInt24()
             self.message?.length = message.length
@@ -156,7 +156,7 @@ final class RTMPChunk {
             logger.warning("\(buffer)")
         }
 
-        return type.headerSize + message.length
+        return headerSize + message.length
     }
 
     func split(size:Int) -> [[UInt8]] {
