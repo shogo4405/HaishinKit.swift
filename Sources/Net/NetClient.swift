@@ -4,7 +4,6 @@ import Foundation
 @objc protocol NetClientDelegate: class {
     optional func client(inputBuffer client:NetClient)
     optional func client(didAccepetConnection client:NetClient)
-    optional func client(didOpenCompleted client:NetClient)
 }
 
 // MARK: -
@@ -30,9 +29,5 @@ final class NetClient: NetSocket {
 
     override func listen() {
         delegate?.client?(inputBuffer: self)
-    }
-
-    override func didOpenCompleted() {
-        delegate?.client?(didOpenCompleted: self)
     }
 }

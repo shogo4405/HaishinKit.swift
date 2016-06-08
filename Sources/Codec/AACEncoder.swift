@@ -8,6 +8,7 @@ import AVFoundation
  */
 final class AACEncoder: NSObject {
     static let supportedSettingsKeys:[String] = [
+        "muted",
         "bitrate",
         "profile",
         "sampleRate",
@@ -30,6 +31,8 @@ final class AACEncoder: NSObject {
     static let defaultInClassDescriptions:[AudioClassDescription] = [
     ]
     #endif
+
+    var muted:Bool = false
 
     var bitrate:UInt32 = AACEncoder.defaultBitrate {
         didSet {
@@ -215,6 +218,9 @@ extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer, nil, &currentBufferList!, sizeof(AudioBufferList.self), nil, nil, 0, &blockBuffer
         )
+        if (muted) {
+            memset(currentBufferList!.mBuffers.mData, 0, Int(currentBufferList!.mBuffers.mDataByteSize))
+        }
 
         let status:OSStatus = AudioConverterFillComplexBuffer(
             converter,

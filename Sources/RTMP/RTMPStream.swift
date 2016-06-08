@@ -256,6 +256,7 @@ public class RTMPStream: EventDispatcher {
     private(set) var mixer:AVMixer = AVMixer()
     private(set) var recorder:RTMPRecorder = RTMPRecorder()
     private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
+    private var name:String?
     private var timer:NSTimer? {
         didSet {
             if let oldValue:NSTimer = oldValue {
@@ -405,6 +406,7 @@ public class RTMPStream: EventDispatcher {
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.mixer.videoIO.encoder.stopRunning()
+                self.FCUnpublish()
                 self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                     type: .Zero,
                     streamId: RTMPChunk.audio,
@@ -416,6 +418,7 @@ public class RTMPStream: EventDispatcher {
                         commandObject: nil,
                         arguments: []
                 )))
+                self.name = nil
                 return
             }
 
@@ -423,6 +426,7 @@ public class RTMPStream: EventDispatcher {
                 usleep(100)
             }
 
+            self.name = name
             self.muxer.dispose()
             self.muxer.delegate = self
             self.mixer.audioIO.encoder.delegate = self.muxer
@@ -430,6 +434,7 @@ public class RTMPStream: EventDispatcher {
             self.mixer.startRunning()
             self.chunkTypes.removeAll()
             self.timer = NSTimer(timeInterval: 1.0, target: self, selector: #selector(RTMPStream.didTimerInterval(_:)), userInfo: nil, repeats: true)
+            self.FCPublish()
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,
@@ -496,6 +501,20 @@ public class RTMPStream: EventDispatcher {
     func didTimerInterval(timer:NSTimer) {
         currentFPS = frameCount
         frameCount = 0
+    }
+
+    func FCPublish() {
+        guard let name:String = name where rtmpConnection.flashVer.containsString("FMLE/") else {
+            return
+        }
+        rtmpConnection.call("FCPublish", responder: nil, arguments: name)
+    }
+
+    func FCUnpublish() {
+        guard let name:String = name where rtmpConnection.flashVer.containsString("FMLE/") else {
+            return
+        }
+        rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
     }
 
     func rtmpStatusHandler(notification:NSNotification) {

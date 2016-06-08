@@ -298,7 +298,7 @@ extension AudioStreamPlayback: Runnable {
                 self.buffers.append(queue)
             }
             self.running = true
-            AudioSessionUtil.startRunning()
+            AudioUtil.startRunning()
         }
     }
 
@@ -314,7 +314,7 @@ extension AudioStreamPlayback: Runnable {
             self.fileStreamID = nil
             self.packetDescriptions.removeAll(keepCapacity: false)
             self.running = false
-            AudioSessionUtil.stopRunning()
+            AudioUtil.stopRunning()
         }
     }
 }

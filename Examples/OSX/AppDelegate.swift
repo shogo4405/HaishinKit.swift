@@ -8,8 +8,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window:NSWindow!
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        XCGLogger.defaultInstance().outputLogLevel = .Info
+
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
+        XCGLogger.defaultInstance().setup(
+            .Info,
+            showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: nil, fileLogLevel: nil)
 
         let viewController:LiveViewController = LiveViewController()
         viewController.title = "lf - lIVE fRAMEWORK"
