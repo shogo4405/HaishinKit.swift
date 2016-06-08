@@ -84,7 +84,7 @@ class TSWriter {
             continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
             bytes += packet.bytes
         }
-        tryc({
+        nstry({
             self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
         }){ exception in
             self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
@@ -158,7 +158,7 @@ class TSWriter {
             bytes += packet.bytes
         }
 
-        tryc({
+        nstry({
             self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
         }){ exception in
             logger.warning("\(exception)")
