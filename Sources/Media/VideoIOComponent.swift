@@ -1,9 +1,3 @@
-#if os(iOS)
-import UIKit
-#else
-import AppKit
-#endif
-
 import CoreImage
 import Foundation
 import AVFoundation
@@ -442,7 +436,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
             presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
         )
-        view.render(image)
+        view.drawImage(image)
     }
 }
 

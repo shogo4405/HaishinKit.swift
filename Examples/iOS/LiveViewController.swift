@@ -108,20 +108,23 @@ final class LiveViewController: UIViewController {
 
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
+        
+        rtmpStream.view.videoGravity = AVLayerVideoGravityResizeAspect
+        
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.New, context: nil)
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
-            "sessionPreset": AVCaptureSessionPreset1280x720,
+            "sessionPreset": AVCaptureSessionPreset640x480,
             "continuousAutofocus": true,
             "continuousExposure": true,
         ]
 
         rtmpStream.videoSettings = [
-            "width": 1280,
-            "height": 720,
+            "width": 640,
+            "height": 480,
         ]
 
         publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)

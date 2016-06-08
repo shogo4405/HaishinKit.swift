@@ -12,6 +12,8 @@ public class VideoIOView: NSOpenGLView {
         UInt32(0)
     ]
 
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill
+
     private var context:CIContext!
     private var displayImage:CIImage!
 
@@ -52,7 +54,8 @@ public class VideoIOView: NSOpenGLView {
         }
 
         let integral:CGRect = CGRectIntegral(dirtyRect)
-        let inset:CGRect = CGRectIntersection(CGRectInset(integral, -1.0, -1.0), frame)
+        var inRect:CGRect = CGRectIntersection(CGRectInset(integral, -1.0, -1.0), frame)
+        var fromRect:CGRect = image.extent
         openGLContext!.makeCurrentContext()
 
         glClearColor(0.0, 0.0, 0.0, 0.0)
@@ -61,6 +64,7 @@ public class VideoIOView: NSOpenGLView {
         glScissor(Int32(integral.origin.x), Int32(integral.origin.y), Int32(integral.size.width), Int32(integral.size.height))
         glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
         glEnable(GLenum(GL_BLEND))
+        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
         context.drawImage(image, inRect: inset, fromRect: image.extent)
         glDisable(GLenum(GL_BLEND))
 
@@ -77,7 +81,7 @@ public class VideoIOView: NSOpenGLView {
         glLoadIdentity()
     }
 
-    func render(image:CIImage) {
+    func drawImage(image:CIImage) {
         displayImage = image
         dispatch_async(dispatch_get_main_queue()) {
             self.needsDisplay = true
