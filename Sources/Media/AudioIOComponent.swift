@@ -47,7 +47,7 @@ final class AudioIOComponent: NSObject {
         encoder.lockQueue = lockQueue
     }
 
-    func attachAudio(audio:AVCaptureDevice?) {
+    func attachAudio(audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
         output = nil
         guard let audio:AVCaptureDevice = audio else {
             input = nil
@@ -55,6 +55,9 @@ final class AudioIOComponent: NSObject {
         }
         do {
             input = try AVCaptureDeviceInput(device: audio)
+            #if os(iOS)
+            session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
+            #endif
             session.addOutput(output)
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {

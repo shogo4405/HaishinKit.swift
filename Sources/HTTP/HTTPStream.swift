@@ -43,9 +43,11 @@ public class HTTPStream: NSObject {
         }
     }
 
-    public func attachAudio(audio:AVCaptureDevice?) {
+    public func attachAudio(audio:AVCaptureDevice?, _ automaticallyConfiguresApplicationAudioSession:Bool = true) {
         dispatch_async(lockQueue) {
-            self.mixer.audioIO.attachAudio(audio)
+            self.mixer.audioIO.attachAudio(audio,
+                automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
+            )
         }
     }
 
