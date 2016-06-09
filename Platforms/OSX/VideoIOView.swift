@@ -14,13 +14,13 @@ public class VideoIOView: NSOpenGLView {
 
     public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill
 
-    private var context:CIContext!
+    var ciContext:CIContext!
     private var displayImage:CIImage!
 
     init() {
         let pixelFormat:NSOpenGLPixelFormat = NSOpenGLPixelFormat(attributes: VideoIOView.pixelFormatAttributes)!
         super.init(frame: NSZeroRect, pixelFormat: pixelFormat)!
-        context = CIContext(
+        ciContext = CIContext(
             CGLContext: openGLContext!.CGLContextObj,
             pixelFormat: pixelFormat.CGLPixelFormatObj,
             colorSpace: nil,
@@ -49,23 +49,22 @@ public class VideoIOView: NSOpenGLView {
     }
 
     public override func drawRect(dirtyRect: NSRect) {
-        guard let image:CIImage = displayImage else {
+        guard let
+            image:CIImage = displayImage,
+            glContext:NSOpenGLContext = openGLContext else {
             return
         }
 
         let integral:CGRect = CGRectIntegral(dirtyRect)
         var inRect:CGRect = CGRectIntersection(CGRectInset(integral, -1.0, -1.0), frame)
         var fromRect:CGRect = image.extent
-        openGLContext!.makeCurrentContext()
 
-        glClearColor(0.0, 0.0, 0.0, 0.0)
-        glClear(GLenum(GL_COLOR_BUFFER_BIT));
-
-        glScissor(Int32(integral.origin.x), Int32(integral.origin.y), Int32(integral.size.width), Int32(integral.size.height))
+        glContext.makeCurrentContext()
+        glScissor(GLint(integral.origin.x), GLint(integral.origin.y), GLint(integral.size.width), GLint(integral.size.height))
         glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
         glEnable(GLenum(GL_BLEND))
         VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
-        context.drawImage(image, inRect: inset, fromRect: image.extent)
+        ciContext.drawImage(image, inRect: inRect, fromRect: fromRect)
         glDisable(GLenum(GL_BLEND))
 
         glFlush()

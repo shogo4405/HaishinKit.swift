@@ -5,11 +5,20 @@ import VideoToolbox
 import CoreFoundation
 
 final class AVCDecoder {
+
+    #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
+    #else
+    static let defaultAttributes:[NSString: AnyObject] = [
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
+        kCVPixelBufferIOSurfacePropertiesKey: [:],
+        kCVPixelBufferOpenGLCompatibilityKey: true,
+    ]
+    #endif
 
     var running:Bool = false
     var lockQueue:dispatch_queue_t = dispatch_queue_create(

@@ -117,14 +117,14 @@ final class LiveViewController: UIViewController {
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
-            "sessionPreset": AVCaptureSessionPreset640x480,
+            "sessionPreset": AVCaptureSessionPreset1280x720,
             "continuousAutofocus": true,
             "continuousExposure": true,
         ]
 
         rtmpStream.videoSettings = [
-            "width": 640,
-            "height": 480,
+            "width": 1280,
+            "height": 720,
         ]
 
         publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)

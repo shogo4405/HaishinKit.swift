@@ -64,14 +64,6 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    private var context:CIContext = {
-        if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
-            logger.debug("cicontext use hardware renderer")
-            return context
-        }
-        logger.debug("cicontext use software renderer")
-        return CIContext()
-    }()
     private var buffers:[VideoIOData] = []
     private var effects:[VisualEffect] = []
     private var rendering:Bool = false
@@ -398,7 +390,7 @@ final class VideoIOComponent: NSObject {
         var buffer:CVPixelBuffer?
         CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &buffer)
         CVPixelBufferLockBaseAddress(buffer!, 0)
-        context.render(image, toCVPixelBuffer: buffer!)
+        view.ciContext.render(image, toCVPixelBuffer: buffer!)
         CVPixelBufferUnlockBaseAddress(buffer!, 0)
         return buffer
     }
@@ -444,7 +436,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension VideoIOComponent: VideoDecoderDelegate {
     func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
         let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
-        let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
+        let content:CGImageRef = view.ciContext.createCGImage(image, fromRect: image.extent)
         dispatch_async(bufferQueue) {
             self.buffers.append(VideoIOData(
                 image: content,

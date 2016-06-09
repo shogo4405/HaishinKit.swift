@@ -16,11 +16,20 @@ final class AVCEncoder: NSObject {
     static let defaultWidth:Int32 = 480
     static let defaultHeight:Int32 = 272
     static let defaultBitrate:UInt32 = 160 * 1024
+
+    #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
+    #else
+    static let defaultAttributes:[NSString: AnyObject] = [
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
+        kCVPixelBufferIOSurfacePropertiesKey: [:],
+        kCVPixelBufferOpenGLCompatibilityKey: true,
+    ]
+    #endif
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {

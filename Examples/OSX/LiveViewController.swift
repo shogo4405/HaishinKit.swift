@@ -90,6 +90,8 @@ final class LiveViewController: NSViewController {
             AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
 
+        rtmpStream.registerEffect(video: MonochromeEffect())
+
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
         publishButton.target = self
         rtmpStream.view.wantsLayer = true
