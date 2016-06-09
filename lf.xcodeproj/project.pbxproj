@@ -13,7 +13,7 @@
 		292AC17C1CF4C871004F5730 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942424D1CF4C01300D65DCB /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942424F1CF4C02300D65DCB /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424E1CF4C02300D65DCB /* MD5Tests.swift */; };
-		2955F5171D097947004CC995 /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2955F5161D097947004CC995 /* VideoIOView.swift */; };
+		2955F5181D097A27004CC995 /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2955F5161D097947004CC995 /* VideoIOView.swift */; };
 		296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897421CDB01D20074D5F0 /* Assets.xcassets */; };
 		296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */; };
 		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
@@ -1112,7 +1112,6 @@
 				29B8765E1CD70A7900FC07DA /* Codec.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */,
-				2955F5171D097947004CC995 /* VideoIOView.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AACEncoder.swift in Sources */,
 				29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */,
@@ -1176,6 +1175,7 @@
 				29B876F31CD70D5900FC07DA /* Function.swift in Sources */,
 				292AC17C1CF4C871004F5730 /* MD5.swift in Sources */,
 				29B876F41CD70D5900FC07DA /* Protocol.swift in Sources */,
+				2955F5181D097A27004CC995 /* VideoIOView.swift in Sources */,
 				29B876F51CD70D5900FC07DA /* SiwftCore+Extension.swift in Sources */,
 				29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */,
 				29B876F71CD70D5900FC07DA /* HTTPResponse.swift in Sources */,
