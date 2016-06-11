@@ -33,9 +33,22 @@ rtmpStream.publish("streamName")
 ### Settings
 ```swift
 var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+rtmpStream.captureSettings = [
+    "fps": 30, // FPS
+    "sessionPreset": AVCaptureSessionPresetMedium, // input video width/height
+    "continuousAutofocus": false, // use camera autofocus mode
+    "continuousExposure": false, //  use camera exposure mode
+]
+rtmpStream.audioSettings = [
+    "muted": false, // mute audio
+    "bitrate": 32 * 1024,
+]
 rtmpStream.videoSettings = [
     "width": 640, // video output width
     "height": 360, // video output height
+    "bitrate": 160 * 1024, // video output bitrate
+    "profileLevel": kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
+    "maxKeyFrameIntervalDuration": 2, // key frame / sec
 ]
 ```
 ### RTMP Auth 

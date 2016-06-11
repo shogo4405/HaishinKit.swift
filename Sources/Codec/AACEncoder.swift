@@ -11,7 +11,7 @@ final class AACEncoder: NSObject {
         "muted",
         "bitrate",
         "profile",
-        "sampleRate",
+        "sampleRate", // down,up sampleRate not supported yet #58
     ]
 
     static let packetSize:UInt32 = 1
@@ -164,7 +164,7 @@ final class AACEncoder: NSObject {
 
         ioData.memory.mBuffers.mData = currentBufferList!.mBuffers.mData
         ioData.memory.mBuffers.mDataByteSize = numBytes
-        ioNumberDataPackets.memory = numBytes / inSourceFormat!.mBytesPerPacket
+        ioNumberDataPackets.memory = 1
         currentBufferList = nil
 
         return noErr

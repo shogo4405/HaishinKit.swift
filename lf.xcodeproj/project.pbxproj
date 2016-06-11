@@ -13,6 +13,7 @@
 		292AC17C1CF4C871004F5730 /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942424D1CF4C01300D65DCB /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942424F1CF4C02300D65DCB /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424E1CF4C02300D65DCB /* MD5Tests.swift */; };
+		2955F5181D097A27004CC995 /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2955F5161D097947004CC995 /* VideoIOView.swift */; };
 		29475D3E1D08B80E0088D5DF /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29475D3D1D08B80E0088D5DF /* VideoGravityUtil.swift */; };
 		2955F5141D08C33F004CC995 /* VideoIOView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2955F5121D08C32E004CC995 /* VideoIOView.swift */; };
 		2955F5151D08D80B004CC995 /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29475D3D1D08B80E0088D5DF /* VideoGravityUtil.swift */; };
@@ -207,9 +208,7 @@
 		2942424C1CF4C01300D65DCB /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Sources/Util/MD5.swift; sourceTree = SOURCE_ROOT; };
 		2942424E1CF4C02300D65DCB /* MD5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5Tests.swift; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		29475D3D1D08B80E0088D5DF /* VideoGravityUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoGravityUtil.swift; path = Sources/Util/VideoGravityUtil.swift; sourceTree = SOURCE_ROOT; };
-		2955F5121D08C32E004CC995 /* VideoIOView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoIOView.swift; path = Platforms/OSX/VideoIOView.swift; sourceTree = "<group>"; };
-		2955F5201D09FD9B004CC995 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VisualEffect.swift; path = Examples/OSX/VisualEffect.swift; sourceTree = "<group>"; };
+		2955F5161D097947004CC995 /* VideoIOView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoIOView.swift; path = Platforms/OSX/VideoIOView.swift; sourceTree = "<group>"; };
 		296897411CDB01D20074D5F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Examples/iOS/AppDelegate.swift; sourceTree = "<group>"; };
 		296897421CDB01D20074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = Examples/iOS/Assets.xcassets; sourceTree = "<group>"; };
 		296897431CDB01D20074D5F0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Examples/iOS/Info.plist; sourceTree = "<group>"; };
@@ -600,7 +599,7 @@
 				29E5C0FB1D05B3AA00407208 /* AudioUtil.swift */,
 				29143D911D0071F60044BE0F /* Info.plist */,
 				29143D921D0071F60044BE0F /* lf.h */,
-				2955F5121D08C32E004CC995 /* VideoIOView.swift */,
+				2955F5161D097947004CC995 /* VideoIOView.swift */,
 			);
 			name = OSX;
 			sourceTree = "<group>";
