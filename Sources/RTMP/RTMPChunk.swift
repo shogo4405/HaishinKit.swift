@@ -160,20 +160,22 @@ final class RTMPChunk {
     }
 
     func split(size:Int) -> [[UInt8]] {
+        let bytes:[UInt8] = self.bytes
+
         guard let message:RTMPMessage = message where size < message.payload.count else {
             return [bytes]
         }
 
-        var total:Int = size + headerSize
-        let basicHeader:[UInt8] = Type.Three.toBasicHeader(streamId)
+        let header:[UInt8] = Type.Three.toBasicHeader(streamId)
+        let startIndex:Int = size + headerSize
 
         var result:[[UInt8]] = []
-        result.append(Array(bytes[0..<total]))
-        while (total + size < bytes.count) {
-            result.append(basicHeader + Array(bytes[total..<total + size]))
-            total += size
+        result.append(Array(bytes[0..<startIndex]))
+        for index in startIndex.stride(to: bytes.count, by: size) {
+            var headerCombine:[UInt8] = header
+            headerCombine.appendContentsOf(Array(bytes[index..<index.advancedBy(size, limit: bytes.count)]))
+            result.append(headerCombine)
         }
-        result.append(basicHeader + Array(bytes[total..<bytes.count]))
 
         return result
     }
@@ -190,24 +192,33 @@ extension RTMPChunk: CustomStringConvertible {
 extension RTMPChunk: BytesConvertible {
     var bytes:[UInt8] {
         get {
+            guard let message:RTMPMessage = message else {
+                return _bytes
+            }
+
             guard _bytes.isEmpty else {
-                return message == nil ? _bytes : _bytes + message!.payload
+                var bytes:[UInt8] = _bytes
+                bytes.appendContentsOf(message.payload)
+                return bytes
             }
 
             _bytes += type.toBasicHeader(streamId)
-            _bytes += (RTMPChunk.maxTimestamp < message!.timestamp) ? [0xFF, 0xFF, 0xFF] : Array(message!.timestamp.bigEndian.bytes[1...3])
-            _bytes += Array(UInt32(message!.payload.count).bigEndian.bytes[1...3])
-            _bytes.append(message!.type.rawValue)
+            _bytes += (RTMPChunk.maxTimestamp < message.timestamp) ? [0xFF, 0xFF, 0xFF] : Array(message.timestamp.bigEndian.bytes[1...3])
+            _bytes += Array(UInt32(message.payload.count).bigEndian.bytes[1...3])
+            _bytes.append(message.type.rawValue)
 
             if (type == .Zero) {
-                _bytes += message!.streamId.littleEndian.bytes
+                _bytes += message.streamId.littleEndian.bytes
             }
 
-            if (RTMPChunk.maxTimestamp < message!.timestamp) {
-                _bytes += message!.timestamp.bigEndian.bytes
+            if (RTMPChunk.maxTimestamp < message.timestamp) {
+                _bytes += message.timestamp.bigEndian.bytes
             }
 
-            return _bytes + message!.payload
+            var bytes:[UInt8] = _bytes
+            bytes.appendContentsOf(message.payload)
+
+            return bytes
         }
         set {
             if (_bytes == newValue) {
