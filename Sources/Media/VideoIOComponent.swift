@@ -350,6 +350,7 @@ final class VideoIOComponent: NSObject {
         if let _:Int = effects.indexOf(effect) {
             return false
         }
+        effect.context = view.ciContext
         effects.append(effect)
         return true
     }
@@ -360,6 +361,7 @@ final class VideoIOComponent: NSObject {
             objc_sync_exit(effects)
         }
         if let i:Int = effects.indexOf(effect) {
+            effect.context = nil
             effects.removeAtIndex(i)
             return true
         }
@@ -386,15 +388,6 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    func createImageBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVImageBufferRef? {
-        var buffer:CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &buffer)
-        CVPixelBufferLockBaseAddress(buffer!, 0)
-        view.ciContext.render(image, toCVPixelBuffer: buffer!)
-        CVPixelBufferUnlockBaseAddress(buffer!, 0)
-        return buffer
-    }
-
     func renderIfNeed() {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             guard !self.rendering else {
@@ -414,19 +407,39 @@ final class VideoIOComponent: NSObject {
             self.rendering = false
         }
     }
+
+    func createPixelBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVPixelBuffer? {
+        var buffer:CVPixelBuffer?
+        CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            width,
+            height,
+            kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+            nil,
+            &buffer
+        )
+        return buffer
+    }
 }
 
 // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
-        guard let buffer:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard var buffer:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
         let image:CIImage = effect(buffer)
+        if (!effects.isEmpty) {
+            #if os(OSX)
+            // green edge hack for OSX
+            buffer = createPixelBuffer(image, buffer.width, buffer.height)!
+            #endif
+            view.ciContext.render(image, toCVPixelBuffer: buffer)
+        }
         encoder.encodeImageBuffer(
-            effects.isEmpty ? buffer : createImageBuffer(image, CVPixelBufferGetWidth(buffer), CVPixelBufferGetHeight(buffer))!,
-            presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
-            presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
+            buffer,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            duration: sampleBuffer.duration
         )
         view.drawImage(image)
     }
@@ -460,7 +473,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         encoder.encodeImageBuffer(
             pixelBuffer,
             presentationTimeStamp: timestamp,
-            presentationDuration: timestamp
+            duration: timestamp
         )
     }
 }
