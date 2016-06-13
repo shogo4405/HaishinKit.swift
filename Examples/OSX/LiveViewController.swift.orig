@@ -92,6 +92,8 @@ final class LiveViewController: NSViewController {
         )
         */
 
+        rtmpStream.registerEffect(video: MonochromeEffect())
+
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
         publishButton.target = self
         rtmpStream.view.wantsLayer = true
@@ -221,7 +223,11 @@ final class LiveViewController: NSViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
+<<<<<<< HEAD
                 rtmpStream!.play("mp4:sample.mp4")
+=======
+                rtmpStream!.publish("live")
+>>>>>>> master
                 if (enabledSharedObject) {
                     sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
                     sharedObject.connect(rtmpConnection)
