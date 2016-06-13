@@ -3,7 +3,7 @@ import AudioToolbox
 import AVFoundation
 
 public class AudioStreamPlayback: NSObject {
-    static let numberOfBuffers:Int = 3
+    static let numberOfBuffers:Int = 12
     static let defaultBufferSize:UInt32 = 128 * 1024
     static let maxPacketDescriptions:Int = 12
 
@@ -26,8 +26,8 @@ public class AudioStreamPlayback: NSObject {
             var fileStreamID:COpaquePointer = nil
             if IsNoErr(AudioFileStreamOpen(
                 unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
-                self.propertyListenerProc,
-                self.packetsProc,
+                propertyListenerProc,
+                packetsProc,
                 fileTypeHint,
                 &fileStreamID
                 ), "") {
@@ -106,15 +106,12 @@ public class AudioStreamPlayback: NSObject {
         guard let fileStreamID:AudioFileStreamID = self.fileStreamID where self.running else {
             return
         }
-        guard AudioFileStreamParseBytes(
+        AudioFileStreamParseBytes(
             fileStreamID,
             UInt32(bytes.count),
             bytes,
             AudioFileStreamParseFlags(rawValue: 0)
-            ) == noErr else {
-            logger.warning("parseBytes")
-            return
-        }
+        )
     }
 
     func isBufferFull(packetSize:UInt32) -> Bool {
@@ -137,11 +134,11 @@ public class AudioStreamPlayback: NSObject {
 
     func rotateBuffer() {
         current += 1
-        packetDescriptions.removeAll(keepCapacity: false)
         if (AudioStreamPlayback.numberOfBuffers <= current) {
             current = 0
         }
         filledBytes = 0
+        packetDescriptions.removeAll()
         var loop:Bool = true
         repeat {
             objc_sync_enter(inuse)
@@ -170,18 +167,12 @@ public class AudioStreamPlayback: NSObject {
     }
 
     func startQueueIfNeed() {
-        dispatch_async(backgroundQueue) {
-            guard let queue:AudioQueueRef = self.queue where !self.started else {
-                return
-            }
-            self.started = true
-            AudioQueuePrime(queue, 0, nil)
-            AudioQueueStart(queue, nil)
-            while (self.started) {
-                CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false)
-            }
-            CFRunLoopRunInMode(kCFRunLoopDefaultMode, 2, false)
+        guard let queue:AudioQueueRef = queue where !started else {
+            return
         }
+        started = true
+        AudioQueuePrime(queue, 0, nil)
+        AudioQueueStart(queue, nil)
     }
 
     func initializeForAudioQueue() {
@@ -189,17 +180,15 @@ public class AudioStreamPlayback: NSObject {
             return
         }
         var queue:AudioQueueRef = nil
-        dispatch_sync(backgroundQueue) {
-            IsNoErr(AudioQueueNewOutput(
-                &self.formatDescription!,
-                self.outputCallback,
-                unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
-                CFRunLoopGetCurrent(),
-                kCFRunLoopCommonModes,
-                0,
-                &queue),
-                "")
-        }
+        IsNoErr(AudioQueueNewOutput(
+            &self.formatDescription!,
+            self.outputCallback,
+            unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
+            CFRunLoopGetCurrent(),
+            kCFRunLoopCommonModes,
+            0,
+            &queue),
+        "")
         if let cookie:[UInt8] = getMagicCookieForFileStream() {
             setMagicCookieForQueue(cookie)
         }
@@ -211,11 +200,12 @@ public class AudioStreamPlayback: NSObject {
     }
 
     final func onOutputForQueue(inAQ: AudioQueueRef, _ inBuffer:AudioQueueBufferRef) {
-        if let i:Int = buffers.indexOf(inBuffer) {
-            objc_sync_enter(inuse)
-            inuse[i] = false
-            objc_sync_exit(inuse)
+        guard let i:Int = buffers.indexOf(inBuffer) else {
+            return
         }
+        objc_sync_enter(inuse)
+        inuse[i] = false
+        objc_sync_exit(inuse)
     }
 
     final func onAudioPacketsForFileStream(inNumberBytes:UInt32, _ inNumberPackets:UInt32, _ inInputData:UnsafePointer<Void>, _ inPacketDescriptions:UnsafeMutablePointer<AudioStreamPacketDescription>) {
@@ -292,7 +282,7 @@ extension AudioStreamPlayback: Runnable {
             self.current = 0
             self.filledBytes = 0
             self.fileTypeHint = nil
-            self.packetDescriptions.removeAll(keepCapacity: false)
+            self.packetDescriptions.removeAll()
             for _ in 0..<AudioStreamPlayback.numberOfBuffers {
                 let queue:AudioQueueBufferRef = nil
                 self.buffers.append(queue)
@@ -308,11 +298,11 @@ extension AudioStreamPlayback: Runnable {
                 return
             }
             self.queue = nil
-            self.inuse.removeAll(keepCapacity: false)
-            self.buffers.removeAll(keepCapacity: false)
+            self.inuse.removeAll()
+            self.buffers.removeAll()
             self.started = false
             self.fileStreamID = nil
-            self.packetDescriptions.removeAll(keepCapacity: false)
+            self.packetDescriptions.removeAll()
             self.running = false
             AudioUtil.stopRunning()
         }

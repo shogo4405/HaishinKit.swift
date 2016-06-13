@@ -219,7 +219,7 @@ final class LiveViewController: NSViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish("test")
+                rtmpStream!.publish("live")
                 if (enabledSharedObject) {
                     sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
                     sharedObject.connect(rtmpConnection)
