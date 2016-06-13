@@ -2,12 +2,6 @@ import CoreImage
 import Foundation
 import AVFoundation
 
-struct VideoIOData {
-    var image:CGImageRef
-    var presentationTimeStamp:CMTime
-    var presentationDuration:CMTime
-}
-
 // MARK: -
 final class VideoIOComponent: NSObject {
 
@@ -64,7 +58,7 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    private var buffers:[VideoIOData] = []
+    private var buffers:[DecompressionBuffer] = []
     private var effects:[VisualEffect] = []
     private var rendering:Bool = false
 
@@ -395,14 +389,15 @@ final class VideoIOComponent: NSObject {
             }
             self.rendering = true
             while (!self.buffers.isEmpty) {
-                var buffer:VideoIOData?
+                var buffer:DecompressionBuffer?
                 dispatch_sync(self.bufferQueue) {
                     buffer = self.buffers.removeFirst()
                 }
-                guard let data:VideoIOData = buffer else {
+                guard let data:DecompressionBuffer = buffer else {
                     return
                 }
-                usleep(UInt32(data.presentationDuration.value) * 1000)
+                self.view.drawImage(CIImage(CVPixelBuffer: data.imageBuffer!))
+                usleep(UInt32(data.duration.value) * 1000)
             }
             self.rendering = false
         }
@@ -447,15 +442,9 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 // MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
-    func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
-        let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
-        let content:CGImageRef = view.ciContext.createCGImage(image, fromRect: image.extent)
+    func imageOutput(buffer:DecompressionBuffer) {
         dispatch_async(bufferQueue) {
-            self.buffers.append(VideoIOData(
-                image: content,
-                presentationTimeStamp: presentationTimeStamp,
-                presentationDuration: presentationDuration
-            ))
+            self.buffers.append(buffer)
         }
         renderIfNeed()
     }

@@ -3,7 +3,7 @@ import Cocoa
 import AVFoundation
 
 final class LiveViewController: NSViewController {
-    static let defaultURL:String = "rtmp://test:test@localhost/live"
+    static let defaultURL:String = "rtmp://192.168.179.3:1935/vod"
 
     var enabledSharedObject:Bool = false
     var rtmpConnection:RTMPConnection = RTMPConnection()
@@ -83,12 +83,14 @@ final class LiveViewController: NSViewController {
         audioPopUpButton.target = self
         cameraPopUpButton.target = self
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+        /*
         rtmpStream.attachAudio(
             AVMixer.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
         )
         rtmpStream.attachCamera(
             AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
+        */
 
         rtmpStream.registerEffect(video: MonochromeEffect())
 
@@ -221,7 +223,7 @@ final class LiveViewController: NSViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish("test")
+                rtmpStream!.play("mp4:sample.mp4")
                 if (enabledSharedObject) {
                     sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
                     sharedObject.connect(rtmpConnection)
