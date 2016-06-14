@@ -4,23 +4,19 @@ import AVFoundation
 
 public class VideoIOView: GLKView {
 
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspect
     var ciContext:CIContext!
 
     private var image:CIImage?
 
     init() {
         super.init(frame: CGRectZero, context: EAGLContext(API: .OpenGLES2))
+        enableSetNeedsDisplay = true
         ciContext = CIContext(EAGLContext: context)
     }
 
     required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    func drawImage(image:CIImage) {
-        self.image = image
-        display()
     }
 
     public override func drawRect(rect: CGRect) {
@@ -30,15 +26,19 @@ public class VideoIOView: GLKView {
         }
         var inRect:CGRect = CGRectMake(0, 0, CGFloat(drawableWidth), CGFloat(drawableHeight))
         var fromRect:CGRect = image.extent
-        if (drawable(image.extent.size)) {
-            VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
-        }
+        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
         ciContext.drawImage(image, inRect: inRect, fromRect: image.extent)
     }
 
-    private func drawable(size:CGSize) -> Bool {
-        return
-            (drawableWidth < drawableHeight) && (size.width < size.height) ||
-            (drawableHeight < drawableWidth) && (size.height < size.width)
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        setNeedsDisplay()
+    }
+
+    func drawImage(image:CIImage) {
+        self.image = image
+        dispatch_async(dispatch_get_main_queue()) {
+            self.setNeedsDisplay()
+        }
     }
 }

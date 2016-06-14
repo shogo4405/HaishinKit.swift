@@ -294,7 +294,16 @@ final class VideoIOComponent: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
-            
+            #if os(iOS)
+            switch camera.position {
+            case .Front:
+                view.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
+            case .Back:
+                view.layer.transform = CATransform3DMakeRotation(0, 0, 1, 0)
+            default:
+                break
+            }
+            #endif
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
@@ -344,7 +353,6 @@ final class VideoIOComponent: NSObject {
         if let _:Int = effects.indexOf(effect) {
             return false
         }
-        effect.context = view.ciContext
         effects.append(effect)
         return true
     }
@@ -355,7 +363,6 @@ final class VideoIOComponent: NSObject {
             objc_sync_exit(effects)
         }
         if let i:Int = effects.indexOf(effect) {
-            effect.context = nil
             effects.removeAtIndex(i)
             return true
         }
