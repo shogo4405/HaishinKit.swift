@@ -19,13 +19,11 @@ final class AVCEncoder: NSObject {
 
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
     #else
     static let defaultAttributes:[NSString: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLCompatibilityKey: true,
     ]

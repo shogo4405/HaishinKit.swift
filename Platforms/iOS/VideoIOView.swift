@@ -4,6 +4,10 @@ import AVFoundation
 
 public class VideoIOView: GLKView {
 
+    static let defaultOptions:[String: AnyObject] = [
+        kCIContextWorkingColorSpace: NSNull()
+    ]
+
     public var videoGravity:String! = AVLayerVideoGravityResizeAspect
     var ciContext:CIContext!
 
@@ -12,7 +16,7 @@ public class VideoIOView: GLKView {
     init() {
         super.init(frame: CGRectZero, context: EAGLContext(API: .OpenGLES2))
         enableSetNeedsDisplay = true
-        ciContext = CIContext(EAGLContext: context)
+        ciContext = CIContext(EAGLContext: context, options: VideoIOView.defaultOptions)
     }
 
     required public init?(coder aDecoder: NSCoder) {
