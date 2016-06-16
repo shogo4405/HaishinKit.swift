@@ -352,7 +352,7 @@ extension RTMPConnection: RTMPSocketDelegate {
 
     func listen(socket:RTMPSocket, bytes:[UInt8]) {
         guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) else {
-            socket.inputBuffer += bytes
+            socket.inputBuffer.appendContentsOf(bytes)
             return
         }
 

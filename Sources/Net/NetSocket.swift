@@ -120,7 +120,7 @@ class NetSocket: NSObject {
         var buffer:[UInt8] = [UInt8](count: windowSizeC, repeatedValue: 0)
         let length:Int = inputStream.read(&buffer, maxLength: windowSizeC)
         if 0 < length {
-            inputBuffer += Array(buffer[0..<length])
+            inputBuffer.appendContentsOf(buffer[0..<length])
             listen()
         }
     }

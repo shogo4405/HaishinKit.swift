@@ -253,14 +253,14 @@ public class ByteArray: ByteArrayConvertible {
 
     public func writeBytes(value:[UInt8]) -> Self {
         if (position == bytes.count) {
-            bytes += value
+            bytes.appendContentsOf(value)
             position = bytes.count
             return self
         }
         let length:Int = min(bytes.count, value.count)
         bytes[position..<position + length] = value[0..<length]
         if (length == bytes.count) {
-            bytes += value[length..<value.count]
+            bytes.appendContentsOf(value[length..<value.count])
         }
         position += value.count
         return self
