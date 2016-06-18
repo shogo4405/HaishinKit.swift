@@ -64,6 +64,9 @@ class NetSocket: NSObject {
         var total:Int = 0
         while total < maxLength {
             let length:Int = outputStream.write(buffer.advancedBy(total), maxLength: maxLength - total)
+            if (length <= 0) {
+                break
+            }
             total += length
             totalBytesOut += length
         }
