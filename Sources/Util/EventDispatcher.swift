@@ -29,6 +29,7 @@ public enum EventPhase: UInt8 {
  */
 public class Event {
     public static let SYNC:String = "sync"
+    public static let EVENT:String = "event"
     public static let RTMP_STATUS:String = "rtmpStatus"
 
     public static func from(notification:NSNotification) -> Event {
@@ -37,7 +38,7 @@ public class Event {
                 return event
             }
         }
-        return Event(type: "")
+        return Event(type: Event.EVENT)
     }
 
     public private(set) var type:String
@@ -45,18 +46,10 @@ public class Event {
     public private(set) var data:Any?
     public private(set) var target:AnyObject? = nil
 
-    init(type:String, bubbles:Bool, data:Any?) {
+    init(type:String, bubbles:Bool = false, data:Any? = nil) {
         self.type = type
         self.bubbles = bubbles
         self.data = data
-    }
-
-    convenience init(type:String) {
-        self.init(type: type, bubbles: false, data: nil)
-    }
-
-    convenience init(type:String, bubbles:Bool) {
-        self.init(type: type, bubbles: bubbles, data: nil)
     }
 }
 
