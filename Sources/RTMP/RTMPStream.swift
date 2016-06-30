@@ -242,6 +242,7 @@ public class RTMPStream: EventDispatcher {
         didSet {
             switch readyState {
             case .Publishing:
+                send("@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
             default:
@@ -500,23 +501,22 @@ public class RTMPStream: EventDispatcher {
         mixer.videoIO.exposurePointOfInterest = exposure
     }
 
+    public func createMetaData() -> ASObject {
+        var metadata:ASObject = [:]
+        if let _:AVCaptureInput = mixer.videoIO.input {
+            metadata["width"] = mixer.videoIO.encoder.width
+            metadata["height"] = mixer.videoIO.encoder.height
+            metadata["videocodecid"] = FLVVideoCodec.AVC.rawValue
+        }
+        if let _:AVCaptureInput = mixer.audioIO.input {
+            metadata["audiocodecid"] = FLVAudioCodec.AAC.rawValue
+        }
+        return metadata
+    }
+
     func didTimerInterval(timer:NSTimer) {
         currentFPS = frameCount
         frameCount = 0
-    }
-
-    func FCPublish() {
-        guard let name:String = name where rtmpConnection.flashVer.containsString("FMLE/") else {
-            return
-        }
-        rtmpConnection.call("FCPublish", responder: nil, arguments: name)
-    }
-
-    func FCUnpublish() {
-        guard let name:String = name where rtmpConnection.flashVer.containsString("FMLE/") else {
-            return
-        }
-        rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
     }
 
     func rtmpStatusHandler(notification:NSNotification) {
@@ -532,6 +532,22 @@ public class RTMPStream: EventDispatcher {
                 break
             }
         }
+    }
+}
+
+extension RTMPStream {
+    func FCPublish() {
+        guard let name:String = name where rtmpConnection.flashVer.containsString("FMLE/") else {
+            return
+        }
+        rtmpConnection.call("FCPublish", responder: nil, arguments: name)
+    }
+
+    func FCUnpublish() {
+        guard let name:String = name where rtmpConnection.flashVer.containsString("FMLE/") else {
+            return
+        }
+        rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
     }
 }
 
