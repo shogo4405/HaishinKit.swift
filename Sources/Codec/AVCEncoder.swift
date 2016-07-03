@@ -24,12 +24,18 @@ final class AVCEncoder: NSObject {
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {
-            invalidateSession = width != oldValue
+            guard width != oldValue else {
+                return
+            }
+            invalidateSession = true
         }
     }
     var height:Int32 = AVCEncoder.defaultHeight {
         didSet {
-            invalidateSession = height != oldValue
+            guard height != oldValue else {
+                return
+            }
+            invalidateSession = true
         }
     }
     var bitrate:UInt32 = AVCEncoder.defaultBitrate {

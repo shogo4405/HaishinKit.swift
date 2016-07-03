@@ -98,7 +98,7 @@ final class AACEncoder: NSObject {
                 _inDestinationFormat!.mChannelsPerFrame = (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels
                 _inDestinationFormat!.mBitsPerChannel = 0
                 _inDestinationFormat!.mReserved = 0
-                
+
                 CMAudioFormatDescriptionCreate(
                     kCFAllocatorDefault, &_inDestinationFormat!, 0, nil, 0, nil, nil, &formatDescription
                 )
