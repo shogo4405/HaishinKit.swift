@@ -61,6 +61,7 @@ public class HTTPStream: NSObject {
         dispatch_async(lockQueue) {
             if (name == nil) {
                 self.name = name
+                self.mixer.videoIO.screen?.stopRunning()
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.stopRunning()
                 self.mixer.audioIO.encoder.delegate = nil
@@ -69,6 +70,7 @@ public class HTTPStream: NSObject {
                 return
             }
             self.name = name
+            self.mixer.videoIO.screen?.startRunning()
             self.mixer.videoIO.encoder.delegate = self.tsWriter
             self.mixer.videoIO.encoder.startRunning()
             self.mixer.audioIO.encoder.delegate = self.tsWriter

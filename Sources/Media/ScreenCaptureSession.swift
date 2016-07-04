@@ -16,7 +16,7 @@ public protocol ScreenCaptureOutputPixelBufferDelegate: class {
 public final class ScreenCaptureSession: NSObject {
     static let defaultFrameInterval:Int = 2
     static let defaultAttributes:[NSString:NSObject] = [
-        kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt:kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(unsignedInt: kCVPixelFormatType_32BGRA),
         kCVPixelBufferCGBitmapContextCompatibilityKey: true
     ]
 
@@ -144,8 +144,8 @@ extension ScreenCaptureSession: Runnable {
             guard self.running else {
                 return
             }
-            self.displayLink.invalidate()
             self.displayLink.removeFromRunLoop(.mainRunLoop(), forMode: NSRunLoopCommonModes)
+            self.displayLink.invalidate()
             self.colorSpace = nil
             self.displayLink = nil
             self.running = false

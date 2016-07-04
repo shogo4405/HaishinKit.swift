@@ -77,7 +77,10 @@ final class AVCEncoder: NSObject {
     }
     var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
-            invalidateSession = profileLevel != oldValue
+            guard profileLevel != oldValue else {
+                return
+            }
+            invalidateSession = true
         }
     }
     var maxKeyFrameIntervalDuration:Double = 2.0 {
@@ -183,7 +186,7 @@ final class AVCEncoder: NSObject {
         }
     }
 
-    func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
+    func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
         guard running else {
             return
         }
@@ -194,7 +197,7 @@ final class AVCEncoder: NSObject {
             return
         }
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
-        VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, presentationDuration, nil, nil, &flags)
+        VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
     }
 }
 

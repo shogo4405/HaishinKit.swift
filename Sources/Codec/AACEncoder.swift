@@ -181,7 +181,7 @@ final class AACEncoder: NSObject {
         }
 
         var ioOutputDataPacketSize:UInt32 = 1
-        var dataLength:Int = CMBlockBufferGetDataLength(blockBuffer!)
+        let dataLength:Int = CMBlockBufferGetDataLength(blockBuffer!)
         let outOutputData:UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
         outOutputData[0].mNumberChannels = inDestinationFormat.mChannelsPerFrame
         outOutputData[0].mDataByteSize = UInt32(dataLength)

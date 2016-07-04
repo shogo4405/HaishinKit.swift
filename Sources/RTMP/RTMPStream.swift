@@ -405,6 +405,7 @@ public class RTMPStream: EventDispatcher {
                 }
                 self.readyState = .Open
                 self.timer = nil
+                self.mixer.videoIO.screen?.stopRunning()
                 self.mixer.audioIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
@@ -432,6 +433,7 @@ public class RTMPStream: EventDispatcher {
             self.name = name
             self.muxer.dispose()
             self.muxer.delegate = self
+            self.mixer.videoIO.screen?.startRunning()
             self.mixer.audioIO.encoder.delegate = self.muxer
             self.mixer.videoIO.encoder.delegate = self.muxer
             self.mixer.startRunning()

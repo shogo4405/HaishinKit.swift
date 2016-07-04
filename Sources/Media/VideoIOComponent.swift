@@ -280,11 +280,9 @@ final class VideoIOComponent: NSObject {
             }
             if let oldValue:ScreenCaptureSession = oldValue {
                 oldValue.delegate = nil
-                oldValue.stopRunning()
             }
             if let screen:ScreenCaptureSession = screen {
                 screen.delegate = self
-                screen.startRunning()
             }
         }
     }
@@ -458,8 +456,8 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         encoder.encodeImageBuffer(
             effects.isEmpty ? image : effect(image),
-            presentationTimeStamp: CMSampleBufferGetPresentationTimeStamp(sampleBuffer),
-            presentationDuration: CMSampleBufferGetDuration(sampleBuffer)
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            duration: sampleBuffer.duration
         )
         if (effects.isEmpty && view.contents != nil) {
             dispatch_async(dispatch_get_main_queue()) {
@@ -495,9 +493,9 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     }
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
         encoder.encodeImageBuffer(
-            pixelBuffer,
+            effects.isEmpty ? pixelBuffer : effect(pixelBuffer),
             presentationTimeStamp: timestamp,
-            presentationDuration: timestamp
+            duration: timestamp
         )
     }
 }
