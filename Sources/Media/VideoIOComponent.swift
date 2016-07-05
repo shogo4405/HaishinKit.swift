@@ -341,15 +341,20 @@ final class VideoIOComponent: NSObject {
         #endif
     }
 
-    func attachScreen(screen:ScreenCaptureSession?) {
+    func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         guard let screen:ScreenCaptureSession = screen else {
+            self.screen?.stopRunning()
+            self.screen = nil
             return
         }
         input = nil
-        encoder.setValuesForKeysWithDictionary([
-            "width": screen.attributes["Width"]!,
-            "height": screen.attributes["Height"]!,
-        ])
+        output = nil
+        if (useScreenSize) {
+            encoder.setValuesForKeysWithDictionary([
+                "width": screen.attributes["Width"]!,
+                "height": screen.attributes["Height"]!,
+            ])
+        }
         self.screen = screen
     }
 

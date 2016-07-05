@@ -51,9 +51,9 @@ public class Stream: NSObject {
         }
     }
 
-    public func attachScreen(screen:ScreenCaptureSession?) {
+    public func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         dispatch_async(lockQueue) {
-            self.mixer.videoIO.attachScreen(screen)
+            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
         }
     }
 
