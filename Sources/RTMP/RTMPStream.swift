@@ -4,7 +4,7 @@ import AVFoundation
 /**
  flash.net.NetStream for Swift
  */
-public class RTMPStream: EventDispatcher {
+public class RTMPStream: Stream {
 
     public static var rootPath:String = NSTemporaryDirectory()
 
@@ -205,36 +205,6 @@ public class RTMPStream: EventDispatcher {
         set { audioPlayback.soundTransform = newValue }
     }
 
-    #if os(iOS)
-    public var torch:Bool {
-        get { return mixer.videoIO.torch }
-        set { mixer.videoIO.torch = newValue }
-    }
-    public var syncOrientation:Bool {
-        get { return mixer.syncOrientation }
-        set { mixer.syncOrientation = newValue }
-    }
-    #endif
-
-    public var view:VideoIOView {
-        return mixer.videoIO.view
-    }
-
-    public var audioSettings:[String: AnyObject] {
-        get { return mixer.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)}
-        set { mixer.audioIO.encoder.setValuesForKeysWithDictionary(newValue) }
-    }
-
-    public var videoSettings:[String: AnyObject] {
-        get { return mixer.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)}
-        set { mixer.videoIO.encoder.setValuesForKeysWithDictionary(newValue)}
-    }
-
-    public var captureSettings:[String: AnyObject] {
-        get { return mixer.dictionaryWithValuesForKeys(AVMixer.supportedSettingsKeys)}
-        set { dispatch_async(lockQueue) { self.mixer.setValuesForKeysWithDictionary(newValue)}}
-    }
-
     dynamic public private(set) var currentFPS:UInt8 = 0
 
     var id:UInt32 = RTMPStream.defaultID
@@ -254,7 +224,6 @@ public class RTMPStream: EventDispatcher {
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
 
-    private(set) var mixer:AVMixer = AVMixer()
     private(set) var recorder:RTMPRecorder = RTMPRecorder()
     private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
     private var name:String?
@@ -273,15 +242,13 @@ public class RTMPStream: EventDispatcher {
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var frameCount:UInt8 = 0
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
+    private var dispatcher:IEventDispatcher!
     private var rtmpConnection:RTMPConnection
-
-    private let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.RTMPStream.lock", DISPATCH_QUEUE_SERIAL
-    )
 
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
         super.init()
+        self.dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
@@ -290,27 +257,6 @@ public class RTMPStream: EventDispatcher {
 
     deinit {
         timer = nil
-    }
-
-    public func attachAudio(audio:AVCaptureDevice?, _ automaticallyConfiguresApplicationAudioSession:Bool = true) {
-        dispatch_async(lockQueue) {
-            self.mixer.audioIO.attachAudio(audio,
-                automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
-            )
-        }
-    }
-
-    public func attachCamera(camera:AVCaptureDevice?) {
-        dispatch_async(lockQueue) {
-            self.mixer.videoIO.attachCamera(camera)
-            self.mixer.startRunning()
-        }
-    }
-
-    public func attachScreen(screen:ScreenCaptureSession?) {
-        dispatch_async(lockQueue) {
-            self.mixer.videoIO.attachScreen(screen)
-        }
     }
 
     public func receiveAudio(flag:Bool) {
@@ -490,19 +436,6 @@ public class RTMPStream: EventDispatcher {
         }
     }
 
-    public func registerEffect(video effect:VisualEffect) -> Bool {
-        return mixer.videoIO.registerEffect(effect)
-    }
-
-    public func unregisterEffect(video effect:VisualEffect) -> Bool {
-        return mixer.videoIO.unregisterEffect(effect)
-    }
-
-    public func setPointOfInterest(focus:CGPoint, exposure:CGPoint) {
-        mixer.videoIO.focusPointOfInterest = focus
-        mixer.videoIO.exposurePointOfInterest = exposure
-    }
-
     public func createMetaData() -> ASObject {
         var metadata:ASObject = [:]
         if let _:AVCaptureInput = mixer.videoIO.input {
@@ -550,6 +483,22 @@ extension RTMPStream {
             return
         }
         rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
+    }
+}
+
+// MARK: - IEventDispatcher
+extension RTMPStream: IEventDispatcher {
+    public func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
+    }
+    public func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        dispatcher.removeEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
+    }
+    public func dispatchEvent(e:Event) {
+        dispatcher.dispatchEvent(e)
+    }
+    public func dispatchEventWith(type:String, bubbles:Bool, data:Any?) {
+        dispatcher.dispatchEventWith(type, bubbles: bubbles, data: data)
     }
 }
 
