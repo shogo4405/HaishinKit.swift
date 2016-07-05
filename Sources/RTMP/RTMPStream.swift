@@ -274,7 +274,7 @@ public class RTMPStream: Stream {
             )))
         }
     }
-    
+
     public func receiveVideo(flag:Bool) {
         dispatch_async(lockQueue) {
             guard self.readyState == .Playing else {
@@ -421,7 +421,7 @@ public class RTMPStream: Stream {
             self.readyState = .Closed
         }
     }
-    
+
     public func send(handlerName:String, arguments:Any?...) {
         dispatch_async(lockQueue) {
             if (self.readyState == .Closed) {
@@ -441,10 +441,13 @@ public class RTMPStream: Stream {
         if let _:AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width
             metadata["height"] = mixer.videoIO.encoder.height
+            metadata["framerate"] = mixer.videoIO.fps
             metadata["videocodecid"] = FLVVideoCodec.AVC.rawValue
+            metadata["videodatarate"] = mixer.videoIO.encoder.bitrate
         }
         if let _:AVCaptureInput = mixer.audioIO.input {
             metadata["audiocodecid"] = FLVAudioCodec.AAC.rawValue
+            metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate
         }
         return metadata
     }

@@ -8,6 +8,10 @@ public class Stream: NSObject {
     )
 
     #if os(iOS)
+    public var torch:Bool {
+        get { return mixer.videoIO.torch }
+        set { mixer.videoIO.torch = newValue }
+    }
     public var syncOrientation:Bool {
         get { return mixer.syncOrientation }
         set { mixer.syncOrientation = newValue }
