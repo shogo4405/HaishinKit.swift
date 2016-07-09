@@ -161,6 +161,7 @@ final class RTMPChunk {
 
     func split(size:Int) -> [[UInt8]] {
         let bytes:[UInt8] = self.bytes
+        message?.length = bytes.count
 
         guard let message:RTMPMessage = message where size < message.payload.count else {
             return [bytes]

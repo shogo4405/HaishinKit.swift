@@ -56,7 +56,7 @@ final class RTMPSocket: NetSocket {
     private(set) var timestamp:NSTimeInterval = 0
     private var events:[Event] = []
 
-    func doOutput(chunk chunk:RTMPChunk) {
+    func doOutput(chunk chunk:RTMPChunk) -> Int {
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
             doOutput(bytes: chunk)
@@ -64,6 +64,7 @@ final class RTMPSocket: NetSocket {
         if (logger.isEnabledForLogLevel(.Verbose)) {
             logger.verbose(chunk.description)
         }
+        return chunk.message!.length
     }
 
     func connect(hostname:String, port:Int) {

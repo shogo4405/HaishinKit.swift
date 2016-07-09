@@ -161,17 +161,38 @@ public class RTMPConnection: EventDispatcher {
         }
     }
 
-    var currentTransactionId:Int = 0
     var socket:RTMPSocket = RTMPSocket()
     var streams:[UInt32: RTMPStream] = [:]
     var bandWidth:UInt32 = 0
     var streamsmap:[UInt16: UInt32] = [:]
     var operations:[Int: Responder] = [:]
+    var currentTransactionId:Int = 0
 
+    public var totalBytesIn:UInt64 {
+        return socket.totalBytesIn
+    }
+    public var totalBytesOut:UInt64 {
+        return socket.totalBytesOut
+    }
+    dynamic public private(set) var currentBytesInPerSecond:UInt32 = 0
+    dynamic public private(set) var currentBytesOutPerSecond:UInt32 = 0
+
+    private var timer:NSTimer? {
+        didSet {
+            if let oldValue:NSTimer = oldValue {
+                oldValue.invalidate()
+            }
+            if let timer:NSTimer = timer {
+                NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+            }
+        }
+    }
     private var messages:[UInt16:RTMPMessage] = [:]
     private var arguments:[Any?] = []
     private var currentChunk:RTMPChunk? = nil
     private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
+    private var previousTotalBytesIn:UInt64 = 0
+    private var previousTotalBytesOut:UInt64 = 0
 
     override public init() {
         super.init()
@@ -180,6 +201,7 @@ public class RTMPConnection: EventDispatcher {
     }
 
     deinit {
+        timer = nil
         removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
@@ -208,6 +230,7 @@ public class RTMPConnection: EventDispatcher {
         }
         self.uri = uri
         self.arguments = arguments
+        timer = NSTimer(timeInterval: 1.0, target: self, selector: #selector(RTMPConnection.didTimerInterval(_:)), userInfo: nil, repeats: true)
         socket.connect(uri.host!, port: uri.port == nil ? RTMPConnection.defaultPort : uri.port!.integerValue)
     }
 
@@ -227,6 +250,7 @@ public class RTMPConnection: EventDispatcher {
             streams.removeValueForKey(id)
         }
         socket.close(false)
+        timer = nil
     }
 
     func createStream(stream: RTMPStream) {
@@ -286,6 +310,18 @@ public class RTMPConnection: EventDispatcher {
             close(true)
         default:
             break
+        }
+    }
+
+    func didTimerInterval(timer:NSTimer) {
+        let totalBytesIn:UInt64 = self.totalBytesIn
+        let totalBytesOut:UInt64 = self.totalBytesOut
+        currentBytesInPerSecond = UInt32(totalBytesIn - previousTotalBytesIn)
+        currentBytesOutPerSecond = UInt32(totalBytesOut - previousTotalBytesOut)
+        previousTotalBytesIn = totalBytesIn
+        previousTotalBytesOut = totalBytesOut
+        for (_, stream) in streams {
+            stream.didTimerInterval(timer)
         }
     }
 

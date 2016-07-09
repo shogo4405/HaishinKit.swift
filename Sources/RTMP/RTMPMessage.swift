@@ -441,6 +441,7 @@ final class RTMPDataMessage: RTMPMessage {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
+        stream._info.byteCount = UInt64(payload.count)
         stream.recorder.onMessage(self)
     }
 }
@@ -596,6 +597,7 @@ final class RTMPAudioMessage: RTMPMessage {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
+        stream._info.byteCount = UInt64(payload.count)
         stream.audioPlayback.onMessage(self)
         stream.recorder.onMessage(self)
     }
@@ -642,6 +644,7 @@ final class RTMPVideoMessage: RTMPMessage {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
+        stream._info.byteCount += UInt64(payload.count)
         stream.recorder.onMessage(self)
         guard FLVTag.TagType.Video.headerSize < payload.count else {
             return
