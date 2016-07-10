@@ -168,14 +168,14 @@ public class RTMPConnection: EventDispatcher {
     var operations:[Int: Responder] = [:]
     var currentTransactionId:Int = 0
 
-    public var totalBytesIn:UInt64 {
+    public var totalBytesIn:Int64 {
         return socket.totalBytesIn
     }
-    public var totalBytesOut:UInt64 {
+    public var totalBytesOut:Int64 {
         return socket.totalBytesOut
     }
-    dynamic public private(set) var currentBytesInPerSecond:UInt32 = 0
-    dynamic public private(set) var currentBytesOutPerSecond:UInt32 = 0
+    dynamic public private(set) var currentBytesInPerSecond:Int32 = 0
+    dynamic public private(set) var currentBytesOutPerSecond:Int32 = 0
 
     private var timer:NSTimer? {
         didSet {
@@ -191,8 +191,8 @@ public class RTMPConnection: EventDispatcher {
     private var arguments:[Any?] = []
     private var currentChunk:RTMPChunk? = nil
     private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
-    private var previousTotalBytesIn:UInt64 = 0
-    private var previousTotalBytesOut:UInt64 = 0
+    private var previousTotalBytesIn:Int64 = 0
+    private var previousTotalBytesOut:Int64 = 0
 
     override public init() {
         super.init()
@@ -314,10 +314,10 @@ public class RTMPConnection: EventDispatcher {
     }
 
     func didTimerInterval(timer:NSTimer) {
-        let totalBytesIn:UInt64 = self.totalBytesIn
-        let totalBytesOut:UInt64 = self.totalBytesOut
-        currentBytesInPerSecond = UInt32(totalBytesIn - previousTotalBytesIn)
-        currentBytesOutPerSecond = UInt32(totalBytesOut - previousTotalBytesOut)
+        let totalBytesIn:Int64 = self.totalBytesIn
+        let totalBytesOut:Int64 = self.totalBytesOut
+        currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
+        currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
         for (_, stream) in streams {

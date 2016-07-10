@@ -16,6 +16,7 @@ public final class RTMPStreamInfo: NSObject {
     private var previousByteCount:Int64 = 0
 
     func didTimerInterval(timer:NSTimer) {
+        let byteCount:Int64 = self.byteCount
         currentBytesPerSecond = Int32(byteCount - previousByteCount)
         previousByteCount = byteCount
     }
