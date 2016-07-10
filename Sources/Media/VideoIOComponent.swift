@@ -442,7 +442,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             view.ciContext.render(image, toCVPixelBuffer: buffer)
         }
         encoder.encodeImageBuffer(
-            effects.isEmpty ? image : effect(image),
+            buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
@@ -469,8 +469,11 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
     }
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
+        if (!effects.isEmpty) {
+            view.ciContext.render(effect(pixelBuffer), toCVPixelBuffer: pixelBuffer)
+        }
         encoder.encodeImageBuffer(
-            effects.isEmpty ? pixelBuffer : effect(pixelBuffer),
+            pixelBuffer,
             presentationTimeStamp: timestamp,
             duration: timestamp
         )

@@ -12,8 +12,7 @@ public class VideoIOView: NSOpenGLView {
         UInt32(0)
     ]
 
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspectFill
-
+    public var videoGravity:String! = AVLayerVideoGravityResizeAspect
     var ciContext:CIContext!
     private var displayImage:CIImage!
 
@@ -33,19 +32,19 @@ public class VideoIOView: NSOpenGLView {
     }
 
     public override func prepareOpenGL() {
-        var param:GLint = 1;
+        var param:GLint = 1
         openGLContext?.setValues(&param, forParameter: .GLCPSwapInterval)
-        glDisable(UInt32(GL_ALPHA_TEST))
-        glDisable(UInt32(GL_DEPTH_TEST))
-        glDisable(UInt32(GL_SCISSOR_TEST))
-        glDisable(UInt32(GL_BLEND))
-        glDisable(UInt32(GL_DITHER))
-        glDisable(UInt32(GL_CULL_FACE))
-        glColorMask(UInt8(GL_TRUE), UInt8(GL_TRUE), UInt8(GL_TRUE), UInt8(GL_TRUE))
-        glDepthMask(UInt8(GL_FALSE))
+        glDisable(GLenum(GL_ALPHA_TEST))
+        glDisable(GLenum(GL_DEPTH_TEST))
+        glDisable(GLenum(GL_SCISSOR_TEST))
+        glDisable(GLenum(GL_BLEND))
+        glDisable(GLenum(GL_DITHER))
+        glDisable(GLenum(GL_CULL_FACE))
+        glColorMask(GLboolean(GL_TRUE), GLboolean(GL_TRUE), GLboolean(GL_TRUE), GLboolean(GL_TRUE))
+        glDepthMask(GLboolean(GL_FALSE))
         glStencilMask(0)
-        glClearColor(0.0, 0.0, 0.0, 0.0);
-        glHint(UInt32(GL_TRANSFORM_HINT_APPLE), UInt32(GL_FASTEST))
+        glClearColor(0.0, 0.0, 0.0, 1.0)
+        glHint(GLenum(GL_TRANSFORM_HINT_APPLE), GLenum(GL_FASTEST))
     }
 
     public override func drawRect(dirtyRect: NSRect) {
@@ -60,6 +59,8 @@ public class VideoIOView: NSOpenGLView {
         var fromRect:CGRect = image.extent
 
         glContext.makeCurrentContext()
+        glClear(GLenum(GL_COLOR_BUFFER_BIT))
+
         glScissor(GLint(integral.origin.x), GLint(integral.origin.y), GLint(integral.size.width), GLint(integral.size.height))
         glBlendFunc(GLenum(GL_SRC_ALPHA), GLenum(GL_ONE_MINUS_SRC_ALPHA))
         glEnable(GLenum(GL_BLEND))
@@ -73,10 +74,10 @@ public class VideoIOView: NSOpenGLView {
     override public func reshape() {
         let rect:CGRect = self.frame
         glViewport(0, 0, Int32(rect.width), Int32(rect.height))
-        glMatrixMode(UInt32(GL_PROJECTION))
+        glMatrixMode(GLenum(GL_PROJECTION))
         glLoadIdentity()
-        glOrtho(0, Double(rect.size.width), 0, Double(rect.size.height), -1, 1);
-        glMatrixMode(UInt32(GL_MODELVIEW))
+        glOrtho(0, GLdouble(rect.size.width), 0, GLdouble(rect.size.height), -1, 1)
+        glMatrixMode(GLenum(GL_MODELVIEW))
         glLoadIdentity()
     }
 

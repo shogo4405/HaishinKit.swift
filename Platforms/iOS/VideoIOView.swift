@@ -3,12 +3,26 @@ import Foundation
 import AVFoundation
 
 public class VideoIOView: GLKView {
-
     static let defaultOptions:[String: AnyObject] = [
         kCIContextWorkingColorSpace: NSNull()
     ]
+    static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
-    public var videoGravity:String! = AVLayerVideoGravityResizeAspect
+    public var videoGravity:String! = AVLayerVideoGravityResize {
+        didSet {
+            switch videoGravity {
+            case AVLayerVideoGravityResizeAspect:
+                layer.contentsGravity = kCAGravityResizeAspect
+            case AVLayerVideoGravityResizeAspectFill:
+                layer.contentsGravity = kCAGravityResizeAspectFill
+            case AVLayerVideoGravityResize:
+                layer.contentsGravity = kCAGravityResize
+            default:
+                layer.contentsGravity = kCAGravityResizeAspect
+            }
+        }
+    }
+
     var ciContext:CIContext!
 
     private var image:CIImage?
@@ -16,6 +30,8 @@ public class VideoIOView: GLKView {
     init() {
         super.init(frame: CGRectZero, context: EAGLContext(API: .OpenGLES2))
         enableSetNeedsDisplay = true
+        backgroundColor = VideoIOView.defaultBackgroundColor
+        layer.backgroundColor = VideoIOView.defaultBackgroundColor.CGColor
         ciContext = CIContext(EAGLContext: context, options: VideoIOView.defaultOptions)
     }
 
@@ -28,9 +44,7 @@ public class VideoIOView: GLKView {
         guard let image:CIImage = image else {
             return
         }
-        var inRect:CGRect = CGRectMake(0, 0, CGFloat(drawableWidth), CGFloat(drawableHeight))
-        var fromRect:CGRect = image.extent
-        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
+        let inRect:CGRect = CGRectMake(0, 0, CGFloat(drawableWidth), CGFloat(drawableHeight))
         ciContext.drawImage(image, inRect: inRect, fromRect: image.extent)
     }
 

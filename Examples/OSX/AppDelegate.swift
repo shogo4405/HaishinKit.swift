@@ -11,7 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
         XCGLogger.defaultInstance().setup(
-            .Verbose,
+            .Info,
             showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: nil, fileLogLevel: nil)
 
         let viewController:LiveViewController = LiveViewController()
