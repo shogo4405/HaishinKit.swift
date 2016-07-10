@@ -36,6 +36,7 @@ public final class RTMPStreamInfo: NSObject {
     }
 }
 
+// MARK: -
 /**
  flash.net.NetStream for Swift
  */
