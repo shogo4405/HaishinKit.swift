@@ -31,22 +31,34 @@ final class AVCEncoder: NSObject {
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {
+            guard width != oldValue else {
+                return
+            }
             invalidateSession = true
         }
     }
     var height:Int32 = AVCEncoder.defaultHeight {
         didSet {
+            guard height != oldValue else {
+                return
+            }
             invalidateSession = true
         }
     }
     var bitrate:UInt32 = AVCEncoder.defaultBitrate {
         didSet {
+            guard bitrate != oldValue else {
+                return
+            }
             dispatch_async(lockQueue) {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                let number:CFNumberRef = CFNumberCreate(nil, .SInt32Type, &self.bitrate)
-                IsNoErr(VTSessionSetProperty(session, kVTCompressionPropertyKey_AverageBitRate, number), "setting video bitrate \(number)")
+                IsNoErr(VTSessionSetProperty(
+                    session,
+                    kVTCompressionPropertyKey_AverageBitRate,
+                    Int(self.bitrate)
+                ), "setting bitrate \(self.bitrate)")
             }
         }
     }
@@ -55,32 +67,43 @@ final class AVCEncoder: NSObject {
     )
     var expectedFPS:Float64 = AVMixer.defaultFPS {
         didSet {
+            guard expectedFPS != oldValue else {
+                return
+            }
             dispatch_async(lockQueue) {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                let properties:[NSString: NSObject] = [
-                    kVTCompressionPropertyKey_MaxKeyFrameInterval: NSNumber(double: self.expectedFPS),
-                ]
-                VTSessionSetProperties(session, properties)
+                IsNoErr(VTSessionSetProperty(
+                    session,
+                    kVTCompressionPropertyKey_ExpectedFrameRate,
+                    NSNumber(double: self.expectedFPS)
+                ), "setting expectedFPS \(self.expectedFPS)")
             }
         }
     }
     var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
+            guard profileLevel != oldValue else {
+                return
+            }
             invalidateSession = true
         }
     }
     var maxKeyFrameIntervalDuration:Double = 2.0 {
         didSet {
+            guard maxKeyFrameIntervalDuration != oldValue else {
+                return
+            }
             dispatch_async(lockQueue) {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                let properties:[NSString: NSObject] = [
-                    kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(double: self.maxKeyFrameIntervalDuration),
-                ]
-                VTSessionSetProperties(session, properties)
+                IsNoErr(VTSessionSetProperty(
+                    session,
+                    kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration,
+                    NSNumber(double: self.maxKeyFrameIntervalDuration)
+                ), "setting maxKeyFrameIntervalDuration \(self.maxKeyFrameIntervalDuration)")
             }
         }
     }

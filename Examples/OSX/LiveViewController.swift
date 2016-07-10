@@ -205,8 +205,14 @@ final class LiveViewController: NSViewController {
     }
 
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if (NSThread.isMainThread()) {
-            view.window!.title = "lf - lIVE fRAMEWORK(FPS:\(rtmpStream.currentFPS))"
+        guard let keyPath:String = keyPath where NSThread.isMainThread() else {
+            return
+        }
+        switch keyPath {
+        case "currentFPS":
+            view.window!.title = "lf - lIVE fRAMEWORK(FPS:\(rtmpStream.currentFPS):totalBytesIn:\(rtmpConnection.totalBytesIn):totalBytesOut:\(rtmpConnection.totalBytesOut)"
+        default:
+            break
         }
     }
 

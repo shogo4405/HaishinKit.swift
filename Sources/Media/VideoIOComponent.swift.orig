@@ -442,7 +442,11 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             view.ciContext.render(image, toCVPixelBuffer: buffer)
         }
         encoder.encodeImageBuffer(
+<<<<<<< HEAD
+            buffer,
+=======
             effects.isEmpty ? image : effect(image),
+>>>>>>> master
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )

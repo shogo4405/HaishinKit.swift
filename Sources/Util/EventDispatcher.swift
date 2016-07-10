@@ -5,12 +5,8 @@ import Foundation
  flash.events.IEventDispatcher for Swift
  */
 public protocol IEventDispatcher: class {
-    func addEventListener(type:String, selector:Selector)
-    func addEventListener(type:String, selector:Selector, observer:AnyObject)
-    func addEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool)
-    func removeEventListener(type:String, selector:Selector)
-    func removeEventListener(type:String, selector:Selector, observer:AnyObject)
-    func removeEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool)
+    func addEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func removeEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
     func dispatchEvent(e:Event)
     func dispatchEventWith(type:String, bubbles:Bool, data:Any?)
 }
@@ -29,6 +25,7 @@ public enum EventPhase: UInt8 {
  */
 public class Event {
     public static let SYNC:String = "sync"
+    public static let EVENT:String = "event"
     public static let RTMP_STATUS:String = "rtmpStatus"
 
     public static func from(notification:NSNotification) -> Event {
@@ -37,7 +34,7 @@ public class Event {
                 return event
             }
         }
-        return Event(type: "")
+        return Event(type: Event.EVENT)
     }
 
     public private(set) var type:String
@@ -45,18 +42,10 @@ public class Event {
     public private(set) var data:Any?
     public private(set) var target:AnyObject? = nil
 
-    init(type:String, bubbles:Bool, data:Any?) {
+    init(type:String, bubbles:Bool = false, data:Any? = nil) {
         self.type = type
         self.bubbles = bubbles
         self.data = data
-    }
-
-    convenience init(type:String) {
-        self.init(type: type, bubbles: false, data: nil)
-    }
-
-    convenience init(type:String, bubbles:Bool) {
-        self.init(type: type, bubbles: bubbles, data: nil)
     }
 }
 
@@ -83,43 +72,31 @@ public class EventDispatcher: NSObject, IEventDispatcher {
         self.target = target
     }
 
-    public final func addEventListener(type:String, selector:Selector) {
-        addEventListener(type, selector: selector, observer: target == nil ? self : target!, useCapture: false)
+    deinit {
+        target = nil
     }
 
-    public final func addEventListener(type:String, selector:Selector, observer:AnyObject) {
-        addEventListener(type, selector: selector, observer: observer, useCapture: false)
+    public final func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        NSNotificationCenter.defaultCenter().addObserver(
+            observer ?? target ?? self, selector: selector, name: "\(type)/\(useCapture)", object: target ?? self
+        )
     }
 
-    public final func addEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool) {
-        let name:String = type + "/" + useCapture.description
-        let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
-        center.addObserver(observer, selector: selector, name: name, object: self)
-    }
-
-    public final func removeEventListener(type:String, selector:Selector) {
-        removeEventListener(type, selector: selector, observer: self, useCapture: false)
-    }
-
-    public final func removeEventListener(type:String, selector:Selector, observer:AnyObject) {
-        removeEventListener(type, selector: selector, observer: observer, useCapture: false)
-    }
-
-    public final func removeEventListener(type:String, selector:Selector, observer:AnyObject, useCapture:Bool) {
-        let name:String = type + "/" + useCapture.description
-        let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
-        center.removeObserver(observer, name: name, object: target == nil ? self : target!)
+    public final func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        NSNotificationCenter.defaultCenter().removeObserver(
+            observer ?? target ?? self, name: "\(type)/\(useCapture)", object: target ?? self
+        )
     }
 
     public func dispatchEvent(e:Event) {
-        e.target = target == nil ? self : target!
-        let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
-        let name:String = e.type + "/false"
-        center.postNotificationName(name, object: target == nil ? self : target!, userInfo: ["event": e])
+        e.target = target ?? self
+        NSNotificationCenter.defaultCenter().postNotificationName(
+            "\(e.type)/false", object: target ?? self, userInfo: ["event": e]
+        )
         e.target = nil
     }
 
     public final func dispatchEventWith(type:String, bubbles:Bool, data:Any?) {
-        self.dispatchEvent(Event(type: type, bubbles: bubbles, data: data))
+        dispatchEvent(Event(type: type, bubbles: bubbles, data: data))
     }
 }

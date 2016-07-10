@@ -130,7 +130,7 @@ final class RTMPChunk {
         }
 
         if (0 < length) {
-            message.payload += Array(bytes[0..<length])
+            message.payload.appendContentsOf(bytes[0..<length])
         }
 
         fragmented = message.payload.count % size == 0
@@ -161,6 +161,7 @@ final class RTMPChunk {
 
     func split(size:Int) -> [[UInt8]] {
         let bytes:[UInt8] = self.bytes
+        message?.length = bytes.count
 
         guard let message:RTMPMessage = message where size < message.payload.count else {
             return [bytes]
@@ -173,7 +174,7 @@ final class RTMPChunk {
         result.append(Array(bytes[0..<startIndex]))
         for index in startIndex.stride(to: bytes.count, by: size) {
             var headerCombine:[UInt8] = header
-            headerCombine.appendContentsOf(Array(bytes[index..<index.advancedBy(size, limit: bytes.count)]))
+            headerCombine.appendContentsOf(bytes[index..<index.advancedBy(size, limit: bytes.count)])
             result.append(headerCombine)
         }
 

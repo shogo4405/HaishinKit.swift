@@ -49,6 +49,7 @@ final class AudioIOComponent: NSObject {
 
     func attachAudio(audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
         output = nil
+        encoder.invalidate()
         guard let audio:AVCaptureDevice = audio else {
             input = nil
             return
