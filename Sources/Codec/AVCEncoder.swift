@@ -10,6 +10,7 @@ final class AVCEncoder: NSObject {
         "height",
         "bitrate",
         "profileLevel",
+        "dataRateLimits",
         "maxKeyFrameIntervalDuration",
     ]
 
@@ -71,7 +72,25 @@ final class AVCEncoder: NSObject {
                     session,
                     kVTCompressionPropertyKey_ExpectedFrameRate,
                     NSNumber(double: self.expectedFPS)
-                ), "setting expectedFPS \(self.expectedFPS)")
+                ), "setting expectedFPS=\(self.expectedFPS)")
+            }
+        }
+    }
+    var dataRateLimits:[Int]? = nil {
+        didSet {
+            guard let dataRateLimits:[Int] = dataRateLimits, oldValue:[Int] = oldValue
+                where dataRateLimits != oldValue else {
+                return
+            }
+            dispatch_async(lockQueue) {
+                guard let session:VTCompressionSessionRef = self._session else {
+                    return
+                }
+                IsNoErr(VTSessionSetProperty(
+                    session,
+                    kVTCompressionPropertyKey_DataRateLimits,
+                    dataRateLimits
+                ), "setting dataRateLimits=\(dataRateLimits)")
             }
         }
     }
@@ -133,6 +152,9 @@ final class AVCEncoder: NSObject {
                 "ScalingMode": "Trim"
             ]
         ]
+        if let dataRateLimits:[Int] = dataRateLimits {
+            properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits
+        }
         if (!isBaseline) {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }
@@ -146,7 +168,6 @@ final class AVCEncoder: NSObject {
         infoFlags:VTEncodeInfoFlags,
         sampleBuffer:CMSampleBuffer?) in
         guard let sampleBuffer:CMSampleBuffer = sampleBuffer where status == noErr else {
-            logger.error("status = \(status)")
             return
         }
         let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
