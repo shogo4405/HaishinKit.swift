@@ -26,8 +26,11 @@ public final class RTMPStreamInfo: NSObject {
         resourceName = nil
         currentBytesPerSecond = 0
     }
+}
 
-    func clone() -> RTMPStreamInfo {
+// MARK: NSCopying
+extension RTMPStreamInfo: NSCopying {
+    public func copyWithZone(zone: NSZone) -> AnyObject {
         let info:RTMPStreamInfo = RTMPStreamInfo()
         info.resourceName = resourceName
         info.byteCount = byteCount
@@ -245,7 +248,7 @@ public class RTMPStream: Stream {
 
     var _info:RTMPStreamInfo = RTMPStreamInfo()
     public var info:RTMPStreamInfo {
-        return _info.clone()
+        return _info.copy() as! RTMPStreamInfo
     }
 
     var id:UInt32 = RTMPStream.defaultID
