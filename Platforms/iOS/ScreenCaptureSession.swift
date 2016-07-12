@@ -1,18 +1,8 @@
-#if os(iOS)
-    import UIKit
-#endif
+import UIKit
 import CoreImage
 import Foundation
 import AVFoundation
 
-// MARK: ScreenCaptureOutputPixelBufferDelegate
-public protocol ScreenCaptureOutputPixelBufferDelegate: class {
-    func didSetSize(size:CGSize)
-    func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime)
-}
-
-#if os(iOS)
-// MARK: - iOS
 public final class ScreenCaptureSession: NSObject {
     static let defaultFrameInterval:Int = 2
     static let defaultAttributes:[NSString:NSObject] = [
@@ -152,17 +142,3 @@ extension ScreenCaptureSession: Runnable {
         }
     }
 }
-#else
-// MARK: - OSX
-public final class ScreenCaptureSession: NSObject {
-    private(set) var running:Bool = false
-    public var attributes:[NSString:NSObject] = [:]
-    public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
-}
-
-// MARK: Runnable
-extension ScreenCaptureSession: Runnable {
-    public func startRunning() {}
-    public func stopRunning() {}
-}
-#endif
