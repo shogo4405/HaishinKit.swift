@@ -22,6 +22,7 @@ final class AVCEncoder: NSObject {
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
+    static let defaultDataRateLimits:[Int] = [0, 0]
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {
@@ -76,16 +77,15 @@ final class AVCEncoder: NSObject {
             }
         }
     }
-    var dataRateLimits:[Int]? = nil {
+    var dataRateLimits:[Int] = AVCEncoder.defaultDataRateLimits {
         didSet {
-            guard let dataRateLimits:[Int] = dataRateLimits else {
+            guard dataRateLimits != oldValue else {
                 return
             }
-
-            if let oldValue:[Int] = oldValue where dataRateLimits == oldValue {
+            if (dataRateLimits == AVCEncoder.defaultDataRateLimits) {
+                invalidateSession = true
                 return
             }
-
             dispatch_async(lockQueue) {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
@@ -93,8 +93,8 @@ final class AVCEncoder: NSObject {
                 IsNoErr(VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_DataRateLimits,
-                    dataRateLimits
-                ), "setting dataRateLimits=\(dataRateLimits)")
+                    self.dataRateLimits
+                ), "setting dataRateLimits=\(self.dataRateLimits)")
             }
         }
     }
@@ -133,7 +133,6 @@ final class AVCEncoder: NSObject {
     }
     weak var delegate:VideoEncoderDelegate?
     internal(set) var running:Bool = false
-
     private var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = AVCEncoder.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(int: width)
@@ -156,7 +155,7 @@ final class AVCEncoder: NSObject {
                 "ScalingMode": "Trim"
             ]
         ]
-        if let dataRateLimits:[Int] = dataRateLimits {
+        if (dataRateLimits != AVCEncoder.defaultDataRateLimits) {
             properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits
         }
         if (!isBaseline) {
