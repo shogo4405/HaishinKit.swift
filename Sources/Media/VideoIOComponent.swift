@@ -84,7 +84,7 @@ final class VideoIOComponent: NSObject {
 
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
-            guard let device:AVCaptureDevice = input?.device,
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 data = VideoIOComponent.getActualFPS(fps, device: device) else {
                 return
             }
@@ -137,7 +137,7 @@ final class VideoIOComponent: NSObject {
     var torch:Bool = false {
         didSet {
             let torchMode:AVCaptureTorchMode = torch ? .On : .Off
-            guard let device:AVCaptureDevice = input?.device
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
                 where device.isTorchModeSupported(torchMode) && device.torchAvailable else {
                 logger.warning("torchMode(\(torchMode)) is not supported")
                 return
@@ -160,7 +160,7 @@ final class VideoIOComponent: NSObject {
                 return
             }
             let focusMode:AVCaptureFocusMode = continuousAutofocus ? .ContinuousAutoFocus : .AutoFocus
-            guard let device:AVCaptureDevice = input?.device
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
                 where device.isFocusModeSupported(focusMode) else {
                 logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
                 return
@@ -179,7 +179,7 @@ final class VideoIOComponent: NSObject {
     var focusPointOfInterest:CGPoint? {
         didSet {
             guard let
-                device:AVCaptureDevice = input?.device,
+                device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 point:CGPoint = focusPointOfInterest
             where
                 device.focusPointOfInterestSupported else {
@@ -199,7 +199,7 @@ final class VideoIOComponent: NSObject {
     var exposurePointOfInterest:CGPoint? {
         didSet {
             guard let
-                device:AVCaptureDevice = input?.device,
+                device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 point:CGPoint = exposurePointOfInterest
             where
                 device.exposurePointOfInterestSupported else {
@@ -222,7 +222,7 @@ final class VideoIOComponent: NSObject {
                 return
             }
             let exposureMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
-            guard let device:AVCaptureDevice = input?.device
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
                 where device.isExposureModeSupported(exposureMode) else {
                 logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
@@ -259,15 +259,15 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    private(set) var input:AVCaptureDeviceInput? = nil {
+    private(set) var input:AVCaptureInput? = nil {
         didSet {
             guard oldValue != input else {
                 return
             }
-            if let oldValue:AVCaptureDeviceInput = oldValue {
+            if let oldValue:AVCaptureInput = oldValue {
                 session.removeInput(oldValue)
             }
-            if let input:AVCaptureDeviceInput = input {
+            if let input:AVCaptureInput = input {
                 session.addInput(input)
             }
         }
@@ -341,6 +341,19 @@ final class VideoIOComponent: NSObject {
         #endif
     }
 
+    #if os(OSX)
+    func attachScreen(screen:AVCaptureScreenInput?) {
+        output = nil
+        guard let _:AVCaptureScreenInput = screen else {
+            input = nil
+            return
+        }
+        input = screen
+        session.addOutput(output)
+        output.setSampleBufferDelegate(self, queue: lockQueue)
+        session.startRunning()
+    }
+    #else
     func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         guard let screen:ScreenCaptureSession = screen else {
             self.screen?.stopRunning()
@@ -357,6 +370,7 @@ final class VideoIOComponent: NSObject {
         }
         self.screen = screen
     }
+    #endif
 
     func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
         CVPixelBufferLockBaseAddress(buffer, 0)

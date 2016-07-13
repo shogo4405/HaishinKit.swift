@@ -51,11 +51,19 @@ public class Stream: NSObject {
         }
     }
 
+    #if os(OSX)
+    public func attachScreen(screen:AVCaptureScreenInput?) {
+        dispatch_async(lockQueue) {
+            self.mixer.videoIO.attachScreen(screen)
+        }
+    }
+    #else
     public func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         dispatch_async(lockQueue) {
             self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
         }
     }
+    #endif
 
     public func registerEffect(video effect:VisualEffect) -> Bool {
         return mixer.videoIO.registerEffect(effect)
