@@ -78,10 +78,14 @@ final class AVCEncoder: NSObject {
     }
     var dataRateLimits:[Int]? = nil {
         didSet {
-            guard let dataRateLimits:[Int] = dataRateLimits, oldValue:[Int] = oldValue
-                where dataRateLimits != oldValue else {
+            guard let dataRateLimits:[Int] = dataRateLimits else {
                 return
             }
+
+            if let oldValue:[Int] = oldValue where dataRateLimits == oldValue {
+                return
+            }
+
             dispatch_async(lockQueue) {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
