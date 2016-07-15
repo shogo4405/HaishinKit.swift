@@ -5,19 +5,19 @@ import AVFoundation
  flash.net.NetStreamInfo for Swift
  */
 public final class RTMPStreamInfo: NSObject {
-    public internal(set) var byteCount:UInt64 = 0
+    public internal(set) var byteCount:Int64 = 0
     public internal(set) var resourceName:String?
-    public internal(set) var currentBytesPerSecond:UInt32 = 0
+    public internal(set) var currentBytesPerSecond:Int32 = 0
 
     public override var description: String {
         return Mirror(reflecting: self).description
     }
 
-    private var previousByteCount:UInt64 = 0
+    private var previousByteCount:Int64 = 0
 
     func didTimerInterval(timer:NSTimer) {
-        let byteCount:UInt64 = self.byteCount
-        currentBytesPerSecond = UInt32(byteCount - previousByteCount)
+        let byteCount:Int64 = self.byteCount
+        currentBytesPerSecond = Int32(byteCount - previousByteCount)
         previousByteCount = byteCount
     }
 
@@ -26,8 +26,11 @@ public final class RTMPStreamInfo: NSObject {
         resourceName = nil
         currentBytesPerSecond = 0
     }
+}
 
-    func clone() -> RTMPStreamInfo {
+// MARK: NSCopying
+extension RTMPStreamInfo: NSCopying {
+    public func copyWithZone(zone: NSZone) -> AnyObject {
         let info:RTMPStreamInfo = RTMPStreamInfo()
         info.resourceName = resourceName
         info.byteCount = byteCount
@@ -245,7 +248,7 @@ public class RTMPStream: Stream {
 
     var _info:RTMPStreamInfo = RTMPStreamInfo()
     public var info:RTMPStreamInfo {
-        return _info.clone()
+        return _info.copy() as! RTMPStreamInfo
     }
 
     var id:UInt32 = RTMPStream.defaultID
@@ -325,7 +328,7 @@ public class RTMPStream: Stream {
                 usleep(100)
             }
             self.audioPlayback.startRunning()
-            let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -333,7 +336,6 @@ public class RTMPStream: Stream {
                 commandObject: nil,
                 arguments: arguments
             )))
-            self._info.byteCount += UInt64(length)
         }
     }
 
@@ -345,7 +347,7 @@ public class RTMPStream: Stream {
             self.audioPlayback.startRunning()
             self.recorder.dispatcher = self
             self.recorder.open(arguments[0] as! String, option: option)
-            let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -353,7 +355,6 @@ public class RTMPStream: Stream {
                 commandObject: nil,
                 arguments: arguments
             )))
-            self._info.byteCount += UInt64(length)
         }
     }
 
@@ -362,7 +363,7 @@ public class RTMPStream: Stream {
             guard self.readyState == .Playing else {
                 return
             }
-            let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -370,7 +371,6 @@ public class RTMPStream: Stream {
                 commandObject: nil,
                 arguments: [offset]
             )))
-            self._info.byteCount += UInt64(length)
         }
     }
 
@@ -381,13 +381,15 @@ public class RTMPStream: Stream {
                     return
                 }
                 self.readyState = .Open
+                #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
+                #endif
                 self.mixer.audioIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.mixer.videoIO.encoder.stopRunning()
                 self.FCUnpublish()
-                let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                     type: .Zero,
                     streamId: RTMPChunk.audio,
                     message: RTMPCommandMessage(
@@ -398,7 +400,6 @@ public class RTMPStream: Stream {
                         commandObject: nil,
                         arguments: []
                 )))
-                self._info.byteCount += UInt64(length)
                 return
             }
 
@@ -409,13 +410,15 @@ public class RTMPStream: Stream {
             self._info.resourceName = name
             self.muxer.dispose()
             self.muxer.delegate = self
+            #if os(iOS)
             self.mixer.videoIO.screen?.startRunning()
+            #endif
             self.mixer.audioIO.encoder.delegate = self.muxer
             self.mixer.videoIO.encoder.delegate = self.muxer
             self.mixer.startRunning()
             self.chunkTypes.removeAll()
             self.FCPublish()
-            let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.audio,
                 message: RTMPCommandMessage(
@@ -426,7 +429,6 @@ public class RTMPStream: Stream {
                     commandObject: nil,
                     arguments: [name, type]
             )))
-            self._info.byteCount += UInt64(length)
             self.readyState = .Publish
         }
     }
@@ -437,7 +439,7 @@ public class RTMPStream: Stream {
         }
         publish(nil)
         dispatch_sync(lockQueue) {
-            let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .Zero,
                 streamId: RTMPChunk.command,
                 message: RTMPCommandMessage(
@@ -448,7 +450,6 @@ public class RTMPStream: Stream {
                     commandObject: nil,
                     arguments: [self.id]
             )))
-            self._info.byteCount += UInt64(length)
             self.readyState = .Closed
         }
     }
@@ -464,7 +465,7 @@ public class RTMPStream: Stream {
                 handlerName: handlerName,
                 arguments: arguments
             )))
-            self._info.byteCount += UInt64(length)
+            OSAtomicAdd64(Int64(length), &self._info.byteCount)
         }
     }
 
@@ -551,7 +552,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
-        _info.byteCount += UInt64(length)
+        OSAtomicAdd64(Int64(length), &_info.byteCount)
         audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
     }
 
@@ -566,7 +567,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
-        _info.byteCount += UInt64(length)
+        OSAtomicAdd64(Int64(length), &_info.byteCount)
         videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
         frameCount = (frameCount + 1) & 0xFF
     }

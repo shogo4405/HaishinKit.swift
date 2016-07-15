@@ -23,13 +23,16 @@ final class AVCEncoder: NSObject {
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
+<<<<<<< HEAD
     #else
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLCompatibilityKey: true,
     ]
     #endif
+=======
     static let defaultDataRateLimits:[Int] = [0, 0]
+>>>>>>> master
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {

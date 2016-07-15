@@ -11,8 +11,8 @@ class NetSocket: NSObject {
     var networkQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.NetSocket.network", DISPATCH_QUEUE_SERIAL
     )
-    private(set) var totalBytesIn:UInt64 = 0
-    private(set) var totalBytesOut:UInt64 = 0
+    private(set) var totalBytesIn:Int64 = 0
+    private(set) var totalBytesOut:Int64 = 0
 
     private var runloop:NSRunLoop?
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
@@ -70,7 +70,7 @@ class NetSocket: NSObject {
                 break
             }
             total += length
-            totalBytesOut += UInt64(length)
+            totalBytesOut += Int64(length)
         }
     }
 
@@ -125,7 +125,7 @@ class NetSocket: NSObject {
         var buffer:[UInt8] = [UInt8](count: windowSizeC, repeatedValue: 0)
         let length:Int = inputStream.read(&buffer, maxLength: windowSizeC)
         if 0 < length {
-            totalBytesIn += UInt64(length)
+            totalBytesIn += Int64(length)
             inputBuffer.appendContentsOf(buffer[0..<length])
             listen()
         }

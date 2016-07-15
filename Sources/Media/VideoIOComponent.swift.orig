@@ -498,6 +498,8 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         )
     }
 }
+<<<<<<< HEAD
+=======
 #endif
 
 // MARK: -
@@ -565,3 +567,4 @@ final class VideoIOLayer: AVCaptureVideoPreviewLayer {
         addSublayer(surface)
     }
 }
+>>>>>>> master
