@@ -273,6 +273,7 @@ final class VideoIOComponent: NSObject {
         }
     }
 
+    #if !os(OSX)
     private(set) var screen:ScreenCaptureSession? = nil {
         didSet {
             guard oldValue != screen else {
@@ -286,6 +287,7 @@ final class VideoIOComponent: NSObject {
             }
         }
     }
+    #endif
 
     override init() {
         super.init()
@@ -300,7 +302,9 @@ final class VideoIOComponent: NSObject {
             input = nil
             return
         }
+        #if os(iOS)
         screen = nil
+        #endif
         do {
             input = try AVCaptureDeviceInput(device: camera)
             session.addOutput(output)
@@ -502,6 +506,7 @@ extension VideoIOComponent: VideoDecoderDelegate {
     }
 }
 
+#if os(iOS)
 // MARK: ScreenCaptureOutputPixelBufferDelegate
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     func didSetSize(size: CGSize) {
@@ -518,6 +523,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         )
     }
 }
+#endif
 
 // MARK: -
 final class VideoIOLayer: AVCaptureVideoPreviewLayer {

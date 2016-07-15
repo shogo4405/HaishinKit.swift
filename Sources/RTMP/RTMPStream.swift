@@ -381,7 +381,9 @@ public class RTMPStream: Stream {
                     return
                 }
                 self.readyState = .Open
+                #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
+                #endif
                 self.mixer.audioIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
@@ -408,7 +410,9 @@ public class RTMPStream: Stream {
             self._info.resourceName = name
             self.muxer.dispose()
             self.muxer.delegate = self
+            #if os(iOS)
             self.mixer.videoIO.screen?.startRunning()
+            #endif
             self.mixer.audioIO.encoder.delegate = self.muxer
             self.mixer.videoIO.encoder.delegate = self.muxer
             self.mixer.startRunning()

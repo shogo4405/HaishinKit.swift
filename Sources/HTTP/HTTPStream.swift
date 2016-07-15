@@ -9,7 +9,9 @@ public class HTTPStream: Stream {
         dispatch_async(lockQueue) {
             if (name == nil) {
                 self.name = name
+                #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
+                #endif
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.videoIO.encoder.stopRunning()
                 self.mixer.audioIO.encoder.delegate = nil
@@ -18,7 +20,9 @@ public class HTTPStream: Stream {
                 return
             }
             self.name = name
+            #if os(iOS)
             self.mixer.videoIO.screen?.startRunning()
+            #endif
             self.mixer.videoIO.encoder.delegate = self.tsWriter
             self.mixer.videoIO.encoder.startRunning()
             self.mixer.audioIO.encoder.delegate = self.tsWriter

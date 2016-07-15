@@ -3,6 +3,13 @@ import CoreImage
 import Foundation
 import AVFoundation
 
+// MARK: ScreenCaptureOutputPixelBufferDelegate
+public protocol ScreenCaptureOutputPixelBufferDelegate: class {
+    func didSetSize(size:CGSize)
+    func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime)
+}
+
+// MARK: -
 public final class ScreenCaptureSession: NSObject {
     static let defaultFrameInterval:Int = 2
     static let defaultAttributes:[NSString:NSObject] = [

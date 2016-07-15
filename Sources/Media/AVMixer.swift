@@ -124,6 +124,11 @@ public class AVMixer: NSObject {
         super.init()
         audioIO.session = session
         videoIO.session = session
+        #if os(iOS)
+            videoIO.view.layer.setValue(session, forKey: "session")
+        #else
+            videoIO.view.layer?.setValue(session, forKey: "session")
+        #endif
     }
 
     deinit {
@@ -152,11 +157,6 @@ extension AVMixer: Runnable {
     }
 
     func startRunning() {
-        #if os(iOS)
-        videoIO.view.layer.setValue(session, forKey: "session")
-        #else
-        videoIO.view.layer?.setValue(session, forKey: "session")
-        #endif
         session.startRunning()
         #if os(iOS)
         if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) where syncOrientation {
