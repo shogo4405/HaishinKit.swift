@@ -1,5 +1,5 @@
 # lf.swift
-lf is a lIVE fRAMEWORK. Camera and Microphone streaming library via RTMP, HLS for iOS, OSX.
+lf is a lIVE fRAMEWORK. Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 
 ## Install
 ### CocoaPods
