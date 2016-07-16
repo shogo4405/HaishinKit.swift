@@ -47,6 +47,7 @@ rtmpStream.videoSettings = [
     "width": 640, // video output width
     "height": 360, // video output height
     "bitrate": 160 * 1024, // video output bitrate
+    // "dataRateLimits": [160 * 1024 / 8, 1], optional kVTCompressionPropertyKey_DataRateLimits property
     "profileLevel": kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
     "maxKeyFrameIntervalDuration": 2, // key frame / sec
 ]
@@ -55,6 +56,14 @@ rtmpStream.videoSettings = [
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
+```
+
+### Screen Capture
+```swift
+// iOS
+rtmpStream.attachScreen(ScreenCaptureSession())
+// macOS
+rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```
 
 ## HTTP Usage
