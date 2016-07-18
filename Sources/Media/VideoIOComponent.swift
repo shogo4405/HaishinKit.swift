@@ -48,9 +48,9 @@ final class VideoIOComponent: NSObject {
         "com.github.shogo4405.lf.VideoIOComponent.buffer", DISPATCH_QUEUE_SERIAL
     )
 
-    var view:VideoIOView = VideoIOView()
     var encoder:AVCEncoder = AVCEncoder()
     var decoder:AVCDecoder = AVCDecoder()
+    var drawable:StreamDrawable?
 
     var formatDescription:CMVideoFormatDescriptionRef? {
         didSet {
@@ -96,13 +96,7 @@ final class VideoIOComponent: NSObject {
             guard orientation != oldValue else {
                 return
             }
-            #if os(iOS)
-            if let connection:AVCaptureConnection = view.layer.valueForKey("connection") as? AVCaptureConnection {
-                if (connection.supportsVideoOrientation) {
-                    connection.videoOrientation = orientation
-                }
-            }
-            #endif
+            drawable?.orientation = orientation
             for connection in output.connections {
                 if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
                     if (connection.supportsVideoOrientation) {
@@ -296,22 +290,13 @@ final class VideoIOComponent: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
-            #if os(iOS)
-            switch camera.position {
-            case .Front:
-                view.layer.transform = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
-            case .Back:
-                view.layer.transform = CATransform3DMakeRotation(0, 0, 1, 0)
-            default:
-                break
-            }
-            #endif
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
         }
 
         fps = fps * 1
+        drawable?.position = camera.position
 
         #if os(iOS)
         do {
@@ -424,7 +409,7 @@ final class VideoIOComponent: NSObject {
                 guard let data:DecompressionBuffer = buffer else {
                     return
                 }
-                self.view.drawImage(CIImage(CVPixelBuffer: data.imageBuffer!))
+                self.drawable?.drawImage(CIImage(CVPixelBuffer: data.imageBuffer!))
                 usleep(UInt32(data.duration.value) * 1000)
             }
             self.rendering = false
@@ -457,14 +442,14 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             // green edge hack for OSX
             buffer = createPixelBuffer(image, buffer.width, buffer.height)!
             #endif
-            view.ciContext.render(image, toCVPixelBuffer: buffer)
+            drawable?.render(image, toCVPixelBuffer: buffer)
         }
         encoder.encodeImageBuffer(
             buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        view.drawImage(image)
+        drawable?.drawImage(image)
     }
 }
 
@@ -489,7 +474,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     }
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
         if (!effects.isEmpty) {
-            view.ciContext.render(effect(pixelBuffer), toCVPixelBuffer: pixelBuffer)
+            drawable?.render(effect(pixelBuffer), toCVPixelBuffer: pixelBuffer)
         }
         encoder.encodeImageBuffer(
             pixelBuffer,
@@ -500,68 +485,3 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
 }
 #endif
 
-// MARK: -
-final class VideoIOLayer: AVCaptureVideoPreviewLayer {
-    private var surface:CALayer = CALayer()
-
-    override var frame:CGRect {
-        get { return super.frame }
-        set {
-            super.frame = newValue
-            surface.frame = newValue
-        }
-    }
-
-    override var contents:AnyObject? {
-        get { return surface.contents }
-        set { surface.contents = newValue }
-    }
-
-    override var transform:CATransform3D {
-        get { return surface.transform }
-        set { surface.transform = newValue }
-    }
-
-    override var videoGravity:String! {
-        get {
-            return super.videoGravity
-        }
-        set {
-            super.videoGravity = newValue
-            switch newValue {
-            case AVLayerVideoGravityResizeAspect:
-                surface.contentsGravity = kCAGravityResizeAspect
-            case AVLayerVideoGravityResizeAspectFill:
-                surface.contentsGravity = kCAGravityResizeAspectFill
-            case AVLayerVideoGravityResize:
-                surface.contentsGravity = kCAGravityResize
-            default:
-                surface.contentsGravity = kCAGravityResizeAspect
-            }
-        }
-    }
-
-    override init() {
-        super.init()
-        initialize()
-    }
-
-    override init(layer: AnyObject) {
-        super.init(layer: layer)
-        initialize()
-    }
-
-    override init!(session: AVCaptureSession!) {
-        super.init(session: session)
-        initialize()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialize()
-    }
-
-    private func initialize() {
-        addSublayer(surface)
-    }
-}

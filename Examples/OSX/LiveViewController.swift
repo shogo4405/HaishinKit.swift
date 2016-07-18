@@ -15,6 +15,8 @@ final class LiveViewController: NSViewController {
     )
     var httpStream:HTTPStream = HTTPStream()
 
+    var lfView:GLLFView = GLLFView(frame: NSZeroRect)
+
     var urlField:NSTextField = {
         let field:NSTextField = NSTextField()
         field.stringValue = LiveViewController.defaultURL
@@ -91,9 +93,10 @@ final class LiveViewController: NSViewController {
         )
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
         publishButton.target = self
-        
-        view.addSubview(rtmpStream.view)
-        view.addSubview(httpStream.view)
+
+        lfView.attachStream(rtmpStream)
+
+        view.addSubview(lfView)
         view.addSubview(fpsPopUpButton)
         view.addSubview(cameraPopUpButton)
         view.addSubview(audioPopUpButton)
@@ -104,9 +107,8 @@ final class LiveViewController: NSViewController {
 
     override func viewWillLayout() {
         super.viewWillLayout()
-        rtmpStream.view.frame = view.frame
-        httpStream.view.frame = view.frame
         urlField.frame = NSMakeRect(20, 20, 300, 20)
+        lfView.frame = NSMakeRect(0, 0, view.frame.width, view.frame.height)
         segmentedControl.frame = NSMakeRect(20, view.frame.height - 40, 200, 20)
         fpsPopUpButton.frame = NSMakeRect(20, view.frame.height - 70, 120, 20)
         publishButton.frame = NSMakeRect(view.frame.width - 120, view.frame.height - 40, 100, 20)

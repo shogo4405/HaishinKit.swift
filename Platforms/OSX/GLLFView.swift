@@ -3,7 +3,7 @@ import OpenGL.GL3
 import Foundation
 import AVFoundation
 
-public class VideoIOView: NSOpenGLView {
+public class GLLFView: NSOpenGLView {
     static let pixelFormatAttributes: [NSOpenGLPixelFormatAttribute] = [
         UInt32(NSOpenGLPFAAccelerated),
         UInt32(NSOpenGLPFANoRecovery),
@@ -12,26 +12,27 @@ public class VideoIOView: NSOpenGLView {
         UInt32(0)
     ]
 
+    override public class func defaultPixelFormat() -> NSOpenGLPixelFormat {
+        guard let pixelFormat:NSOpenGLPixelFormat = NSOpenGLPixelFormat(attributes: GLLFView.pixelFormatAttributes) else {
+            return NSOpenGLPixelFormat()
+        }
+        return pixelFormat
+    }
+
     public var videoGravity:String! = AVLayerVideoGravityResizeAspect
-    var ciContext:CIContext!
     private var displayImage:CIImage!
-
-    init() {
-        let pixelFormat:NSOpenGLPixelFormat = NSOpenGLPixelFormat(attributes: VideoIOView.pixelFormatAttributes)!
-        super.init(frame: NSZeroRect, pixelFormat: pixelFormat)!
-        ciContext = CIContext(
-            CGLContext: openGLContext!.CGLContextObj,
-            pixelFormat: pixelFormat.CGLPixelFormatObj,
-            colorSpace: nil,
-            options: nil
-        )
-    }
-
-    required public init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
+    private var ciContext:CIContext!
+    private weak var currentStream:Stream?
 
     public override func prepareOpenGL() {
+        if let openGLContext:NSOpenGLContext = openGLContext {
+            ciContext = CIContext(
+                CGLContext: openGLContext.CGLContextObj,
+                pixelFormat: openGLContext.pixelFormat.CGLPixelFormatObj,
+                colorSpace: nil,
+                options: nil
+            )
+        }
         var param:GLint = 1
         openGLContext?.setValues(&param, forParameter: .GLCPSwapInterval)
         glDisable(GLenum(GL_ALPHA_TEST))
@@ -79,6 +80,23 @@ public class VideoIOView: NSOpenGLView {
         glOrtho(0, GLdouble(rect.size.width), 0, GLdouble(rect.size.height), -1, 1)
         glMatrixMode(GLenum(GL_MODELVIEW))
         glLoadIdentity()
+    }
+
+    public func attachStream(stream: Stream?) {
+        if let currentStream:Stream = currentStream {
+            currentStream.mixer.videoIO.drawable = nil
+        }
+        if let stream:Stream = stream {
+            stream.mixer.videoIO.drawable = self
+        }
+        currentStream = stream
+    }
+}
+
+// MARK: - StreamDrawable
+extension GLLFView: StreamDrawable {
+    func render(image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+        ciContext.render(image, toCVPixelBuffer: toCVPixelBuffer)
     }
 
     func drawImage(image:CIImage) {

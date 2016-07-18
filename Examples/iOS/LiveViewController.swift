@@ -18,6 +18,8 @@ final class LiveViewController: UIViewController {
     var httpStream:HTTPStream!
 
     let touchView: UIView! = UIView()
+    
+    let lfView:GLLFView! = GLLFView(frame: CGRectZero)
 
     var currentFPSLabel:UILabel = {
         let label:UILabel = UILabel()
@@ -109,8 +111,6 @@ final class LiveViewController: UIViewController {
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
         
-        rtmpStream.view.videoGravity = AVLayerVideoGravityResizeAspect
-        
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
         rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.New, context: nil)
@@ -129,8 +129,6 @@ final class LiveViewController: UIViewController {
 
         publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)
 
-        view.addSubview(rtmpStream.view)
-
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LiveViewController.tapScreen(_:)))
         touchView.addGestureRecognizer(tapGesture)
         touchView.frame = view.frame
@@ -139,8 +137,9 @@ final class LiveViewController: UIViewController {
         videoBitrateSlider.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider.value = Float(RTMPStream.defaultAudioBitrate) / 1024
 
-        // view.addSubview(httpStream.view)
+        lfView.attachStream(rtmpStream)
 
+        view.addSubview(lfView)
         view.addSubview(touchView)
         view.addSubview(videoBitrateLabel)
         view.addSubview(videoBitrateSlider)
@@ -155,12 +154,11 @@ final class LiveViewController: UIViewController {
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
         let navigationHeight:CGFloat = 66
+        lfView.frame = view.bounds
         fpsControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight + 40, width: 200, height: 30)
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
         currentFPSLabel.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
-        rtmpStream.view.frame = view.frame
-        // httpStream.view.frame = view.frame
         videoBitrateLabel.text = "video \(Int(videoBitrateSlider.value))/kbps"
         videoBitrateLabel.frame = CGRect(x: view.frame.width - 150 - 60, y: view.frame.height - 44 * 2 - 22, width: 150, height: 44)
         videoBitrateSlider.frame = CGRect(x: 20, y: view.frame.height - 44 * 2, width: view.frame.width - 44 - 60, height: 44)
