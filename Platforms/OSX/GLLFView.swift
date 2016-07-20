@@ -20,6 +20,8 @@ public class GLLFView: NSOpenGLView {
     }
 
     public var videoGravity:String! = AVLayerVideoGravityResizeAspect
+    var orientation:AVCaptureVideoOrientation = .Portrait
+    var position:AVCaptureDevicePosition = .Front
     private var displayImage:CIImage!
     private var ciContext:CIContext!
     private weak var currentStream:Stream?
