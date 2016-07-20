@@ -13,7 +13,7 @@ protocol VideoEncoderDelegate: class {
 
 // MARK: VideoDecoderDelegate
 protocol VideoDecoderDelegate: class {
-    func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime)
+    func imageOutput(buffer:DecompressionBuffer)
 }
 
 // MARK: AudioEncoderDelegate
@@ -25,5 +25,5 @@ protocol AudioEncoderDelegate: class {
 struct DecompressionBuffer {
     var imageBuffer:CVImageBuffer?
     var presentationTimeStamp:CMTime
-    var presentationDuration:CMTime
+    var duration:CMTime
 }

@@ -3,9 +3,35 @@ import UIKit
 import Foundation
 import AVFoundation
 
-final class PronamaEffect: VisualEffect {
+final class CurrentTimeEffect: VisualEffect {
+
     let filter:CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
+    let label:UILabel = {
+        let label:UILabel = UILabel()
+        label.frame = CGRectMake(0, 0, 300, 100)
+        return label
+    }()
+
+    override func execute(image: CIImage) -> CIImage {
+        let now:NSDate = NSDate()
+        label.text = now.description
+
+        UIGraphicsBeginImageContext(image.extent.size)
+        label.drawTextInRect(CGRectMake(0, 0, 200, 200))
+        let result:CIImage = CIImage(image: UIGraphicsGetImageFromCurrentImageContext(), options: nil)!
+        UIGraphicsEndImageContext()
+
+        filter!.setValue(result, forKey: "inputImage")
+        filter!.setValue(image, forKey: "inputBackgroundImage")
+
+        return filter!.outputImage!
+    }
+}
+
+final class PronamaEffect: VisualEffect {
+    let filter:CIFilter? = CIFilter(name: "CISourceOverCompositing")
+    
     var extent:CGRect = CGRectZero {
         didSet {
             if (extent == oldValue) {
@@ -19,11 +45,11 @@ final class PronamaEffect: VisualEffect {
         }
     }
     var pronama:CIImage?
-
+    
     override init() {
         super.init()
     }
-
+    
     override func execute(image: CIImage) -> CIImage {
         guard let filter:CIFilter = filter else {
             return image

@@ -1,18 +1,6 @@
-#if os(iOS)
-import UIKit
-#else
-import AppKit
-#endif
-
 import CoreImage
 import Foundation
 import AVFoundation
-
-struct VideoIOData {
-    var image:CGImageRef
-    var presentationTimeStamp:CMTime
-    var presentationDuration:CMTime
-}
 
 // MARK: -
 final class VideoIOComponent: NSObject {
@@ -60,9 +48,9 @@ final class VideoIOComponent: NSObject {
         "com.github.shogo4405.lf.VideoIOComponent.buffer", DISPATCH_QUEUE_SERIAL
     )
 
-    var view:VideoIOView = VideoIOView()
     var encoder:AVCEncoder = AVCEncoder()
     var decoder:AVCDecoder = AVCDecoder()
+    var drawable:StreamDrawable?
 
     var formatDescription:CMVideoFormatDescriptionRef? {
         didSet {
@@ -70,15 +58,7 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    private var context:CIContext = {
-        if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(bool: false)]) {
-            logger.debug("cicontext use hardware renderer")
-            return context
-        }
-        logger.debug("cicontext use software renderer")
-        return CIContext()
-    }()
-    private var buffers:[VideoIOData] = []
+    private var buffers:[DecompressionBuffer] = []
     private var effects:[VisualEffect] = []
     private var rendering:Bool = false
 
@@ -116,13 +96,7 @@ final class VideoIOComponent: NSObject {
             guard orientation != oldValue else {
                 return
             }
-            #if os(iOS)
-            if let connection:AVCaptureConnection = view.layer.valueForKey("connection") as? AVCaptureConnection {
-                if (connection.supportsVideoOrientation) {
-                    connection.videoOrientation = orientation
-                }
-            }
-            #endif
+            drawable?.orientation = orientation
             for connection in output.connections {
                 if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
                     if (connection.supportsVideoOrientation) {
@@ -316,20 +290,13 @@ final class VideoIOComponent: NSObject {
                     connection.videoOrientation = orientation
                 }
             }
-            switch camera.position {
-            case .Front:
-                view.transform3D = CATransform3DMakeRotation(CGFloat(M_PI), 0, 1, 0)
-            case .Back:
-                view.transform3D = CATransform3DMakeRotation(0, 0, 1, 0)
-            default:
-                break
-            }
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
         }
 
         fps = fps * 1
+        drawable?.position = camera.position
 
         #if os(iOS)
         do {
@@ -376,22 +343,12 @@ final class VideoIOComponent: NSObject {
     }
     #endif
 
-    func effect(buffer:CVImageBufferRef) -> CVImageBufferRef {
-        CVPixelBufferLockBaseAddress(buffer, 0)
-        let width:Int = CVPixelBufferGetWidth(buffer)
-        let height:Int = CVPixelBufferGetHeight(buffer)
+    func effect(buffer:CVImageBufferRef) -> CIImage {
         var image:CIImage = CIImage(CVPixelBuffer: buffer)
-        autoreleasepool {
-            for effect in effects {
-                image = effect.execute(image)
-            }
-            let contents:CGImageRef = context.createCGImage(image, fromRect: image.extent)
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.contents = contents
-            }
+        for effect in effects {
+            image = effect.execute(image)
         }
-        CVPixelBufferUnlockBaseAddress(buffer, 0)
-        return createImageBuffer(image, width, height)!
+        return image
     }
 
     func registerEffect(effect:VisualEffect) -> Bool {
@@ -438,15 +395,6 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    func createImageBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVImageBufferRef? {
-        var buffer:CVPixelBuffer?
-        CVPixelBufferCreate(kCFAllocatorDefault, width, height, kCVPixelFormatType_32BGRA, nil, &buffer)
-        CVPixelBufferLockBaseAddress(buffer!, 0)
-        context.render(image, toCVPixelBuffer: buffer!)
-        CVPixelBufferUnlockBaseAddress(buffer!, 0)
-        return buffer
-    }
-
     func renderIfNeed() {
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
             guard !self.rendering else {
@@ -454,53 +402,62 @@ final class VideoIOComponent: NSObject {
             }
             self.rendering = true
             while (!self.buffers.isEmpty) {
-                var buffer:VideoIOData?
+                var buffer:DecompressionBuffer?
                 dispatch_sync(self.bufferQueue) {
                     buffer = self.buffers.removeFirst()
                 }
-                guard let data:VideoIOData = buffer else {
+                guard let data:DecompressionBuffer = buffer else {
                     return
                 }
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.view.contents = data.image
-                }
-                usleep(UInt32(data.presentationDuration.value) * 1000)
+                self.drawable?.drawImage(CIImage(CVPixelBuffer: data.imageBuffer!))
+                usleep(UInt32(data.duration.value) * 1000)
             }
             self.rendering = false
         }
+    }
+
+    func createPixelBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVPixelBuffer? {
+        var buffer:CVPixelBuffer?
+        CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            width,
+            height,
+            kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+            nil,
+            &buffer
+        )
+        return buffer
     }
 }
 
 // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
-        guard let image:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard var buffer:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
+        let image:CIImage = effect(buffer)
+        if (!effects.isEmpty) {
+            #if os(OSX)
+            // green edge hack for OSX
+            buffer = createPixelBuffer(image, buffer.width, buffer.height)!
+            #endif
+            drawable?.render(image, toCVPixelBuffer: buffer)
+        }
         encoder.encodeImageBuffer(
-            effects.isEmpty ? image : effect(image),
+            buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        if (effects.isEmpty && view.contents != nil) {
-            dispatch_async(dispatch_get_main_queue()) {
-                self.view.contents = nil
-            }
-        }
+        drawable?.drawImage(image)
     }
 }
 
 // MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
-    func imageOutput(imageBuffer:CVImageBuffer!, presentationTimeStamp:CMTime, presentationDuration:CMTime) {
-        let image:CIImage = CIImage(CVPixelBuffer: imageBuffer)
-        let content:CGImageRef = context.createCGImage(image, fromRect: image.extent)
+    func imageOutput(buffer:DecompressionBuffer) {
         dispatch_async(bufferQueue) {
-            self.buffers.append(VideoIOData(
-                image: content,
-                presentationTimeStamp: presentationTimeStamp,
-                presentationDuration: presentationDuration
-            ))
+            self.buffers.append(buffer)
         }
         renderIfNeed()
     }
@@ -516,8 +473,11 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
     }
     func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
+        if (!effects.isEmpty) {
+            drawable?.render(effect(pixelBuffer), toCVPixelBuffer: pixelBuffer)
+        }
         encoder.encodeImageBuffer(
-            effects.isEmpty ? pixelBuffer : effect(pixelBuffer),
+            pixelBuffer,
             presentationTimeStamp: timestamp,
             duration: timestamp
         )
@@ -525,68 +485,3 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
 }
 #endif
 
-// MARK: -
-final class VideoIOLayer: AVCaptureVideoPreviewLayer {
-    private var surface:CALayer = CALayer()
-
-    override var frame:CGRect {
-        get { return super.frame }
-        set {
-            super.frame = newValue
-            surface.frame = newValue
-        }
-    }
-
-    override var contents:AnyObject? {
-        get { return surface.contents }
-        set { surface.contents = newValue }
-    }
-
-    override var transform:CATransform3D {
-        get { return surface.transform }
-        set { surface.transform = newValue }
-    }
-
-    override var videoGravity:String! {
-        get {
-            return super.videoGravity
-        }
-        set {
-            super.videoGravity = newValue
-            switch newValue {
-            case AVLayerVideoGravityResizeAspect:
-                surface.contentsGravity = kCAGravityResizeAspect
-            case AVLayerVideoGravityResizeAspectFill:
-                surface.contentsGravity = kCAGravityResizeAspectFill
-            case AVLayerVideoGravityResize:
-                surface.contentsGravity = kCAGravityResize
-            default:
-                surface.contentsGravity = kCAGravityResizeAspect
-            }
-        }
-    }
-
-    override init() {
-        super.init()
-        initialize()
-    }
-
-    override init(layer: AnyObject) {
-        super.init(layer: layer)
-        initialize()
-    }
-
-    override init!(session: AVCaptureSession!) {
-        super.init(session: session)
-        initialize()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        initialize()
-    }
-
-    private func initialize() {
-        addSublayer(surface)
-    }
-}

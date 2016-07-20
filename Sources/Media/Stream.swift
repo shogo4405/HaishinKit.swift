@@ -1,6 +1,15 @@
 import Foundation
 import AVFoundation
 
+// MARK: StreamDrawable
+protocol StreamDrawable: class {
+    var orientation:AVCaptureVideoOrientation { get set }
+    var position:AVCaptureDevicePosition { get set }
+    func drawImage(image:CIImage)
+    func render(image:CIImage, toCVPixelBuffer:CVPixelBuffer)
+}
+
+// MARK: -
 public class Stream: NSObject {
     var mixer:AVMixer = AVMixer()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
@@ -17,10 +26,6 @@ public class Stream: NSObject {
         set { mixer.syncOrientation = newValue }
     }
     #endif
-
-    public var view:VideoIOView {
-        return mixer.videoIO.view
-    }
 
     public var audioSettings:[String: AnyObject] {
         get { return mixer.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)}

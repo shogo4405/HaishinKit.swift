@@ -272,7 +272,6 @@ public class RTMPStream: Stream {
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
 
-    private(set) var recorder:RTMPRecorder = RTMPRecorder()
     private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
     private var muxer:RTMPMuxer = RTMPMuxer()
     private var frameCount:UInt8 = 0
@@ -328,25 +327,6 @@ public class RTMPStream: Stream {
                 usleep(100)
             }
             self.audioPlayback.startRunning()
-            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
-                streamId: self.id,
-                transactionId: 0,
-                objectEncoding: self.objectEncoding,
-                commandName: "play",
-                commandObject: nil,
-                arguments: arguments
-            )))
-        }
-    }
-
-    public func record(option:RecordOption, arguments:Any?...) {
-        dispatch_async(lockQueue) {
-            while (self.readyState == .Initilized) {
-                usleep(100)
-            }
-            self.audioPlayback.startRunning()
-            self.recorder.dispatcher = self
-            self.recorder.open(arguments[0] as! String, option: option)
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,

@@ -5,11 +5,20 @@ import VideoToolbox
 import CoreFoundation
 
 final class AVCDecoder {
+
+    #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:],
         kCVPixelBufferOpenGLESCompatibilityKey: true,
     ]
+    #else
+    static let defaultAttributes:[NSString: AnyObject] = [
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
+        kCVPixelBufferIOSurfacePropertiesKey: [:],
+        kCVPixelBufferOpenGLCompatibilityKey: true,
+    ]
+    #endif
 
     var running:Bool = false
     var lockQueue:dispatch_queue_t = dispatch_queue_create(
@@ -36,9 +45,9 @@ final class AVCDecoder {
         infoFlags:VTDecodeInfoFlags,
         imageBuffer:CVImageBufferRef?,
         presentationTimeStamp:CMTime,
-        presentationDuration:CMTime) in
+        duration:CMTime) in
         let decoder:AVCDecoder = unsafeBitCast(decompressionOutputRefCon, AVCDecoder.self)
-        decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, presentationDuration: presentationDuration)
+        decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration)
     }
 
     private var _session:VTDecompressionSessionRef? = nil
@@ -89,20 +98,20 @@ final class AVCDecoder {
         return status
     }
 
-    func didOutputForSession(status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBufferRef?,presentationTimeStamp:CMTime, presentationDuration:CMTime) {
+    func didOutputForSession(status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBufferRef?, presentationTimeStamp:CMTime, duration:CMTime) {
         buffers.append(DecompressionBuffer(
             imageBuffer: imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
-            presentationDuration:  presentationDuration
+            duration: duration
         ))
         if (12 <= buffers.count) {
             buffers.sortInPlace {(lhr:DecompressionBuffer, rhr:DecompressionBuffer) -> Bool in
                 return lhr.presentationTimeStamp.value < rhr.presentationTimeStamp.value
             }
             for buffer in buffers {
-                delegate?.imageOutput(buffer.imageBuffer, presentationTimeStamp: buffer.presentationTimeStamp, presentationDuration: presentationDuration)
+                delegate?.imageOutput(buffer)
             }
-            buffers.removeAll(keepCapacity: false)
+            buffers.removeAll()
         }
     }
 }
