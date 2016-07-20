@@ -8,7 +8,7 @@ public class GLLFView: GLKView {
     ]
     static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
-    public var videoGravity:String! = AVLayerVideoGravityResize {
+    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
             switch videoGravity {
             case AVLayerVideoGravityResizeAspect:
@@ -77,6 +77,7 @@ public class GLLFView: GLKView {
     private func initilize() {
         enableSetNeedsDisplay = true
         backgroundColor = GLLFView.defaultBackgroundColor
+        layer.contentsGravity = kCAGravityResizeAspect
         layer.backgroundColor = GLLFView.defaultBackgroundColor.CGColor
         ciContext = CIContext(EAGLContext: context, options: GLLFView.defaultOptions)
     }

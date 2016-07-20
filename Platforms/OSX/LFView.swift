@@ -5,18 +5,9 @@ public class LFView: NSView {
 
     public static var defaultBackgroundColor:NSColor = NSColor.blackColor()
 
-    public var videoGravity:String! = AVLayerVideoGravityResize {
+    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
-            switch videoGravity {
-            case AVLayerVideoGravityResizeAspect:
-                layer?.contentsGravity = kCAGravityResizeAspect
-            case AVLayerVideoGravityResizeAspectFill:
-                layer?.contentsGravity = kCAGravityResizeAspectFill
-            case AVLayerVideoGravityResize:
-                layer?.contentsGravity = kCAGravityResize
-            default:
-                layer?.contentsGravity = kCAGravityResizeAspect
-            }
+            layer?.setValue(videoGravity, forKey: "videoGravity")
         }
     }
 
