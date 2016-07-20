@@ -615,10 +615,10 @@
 		299F7E381CD71A7F001E7272 /* OSX */ = {
 			isa = PBXGroup;
 			children = (
-				29143D921D0071F60044BE0F /* lf.h */,
-				29143D911D0071F60044BE0F /* Info.plist */,
 				29E5C0FB1D05B3AA00407208 /* AudioUtil.swift */,
 				29D7B77A1D0CD95500557C96 /* GLLFView.swift */,
+				29143D911D0071F60044BE0F /* Info.plist */,
+				29143D921D0071F60044BE0F /* lf.h */,
 				299B13221D3B74E000A1E8F5 /* LFView.swift */,
 			);
 			name = OSX;
@@ -627,10 +627,10 @@
 		299F7E391CD71A86001E7272 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				299F7E3B1CD71A97001E7272 /* lf.h */,
-				299F7E3A1CD71A97001E7272 /* Info.plist */,
 				29E5C0F91D05B32700407208 /* AudioUtil.swift */,
 				29C263171D00804A0098D4EF /* GLLFView.swift */,
+				299F7E3A1CD71A97001E7272 /* Info.plist */,
+				299F7E3B1CD71A97001E7272 /* lf.h */,
 				299B13261D3B751400A1E8F5 /* LFView.swift */,
 				299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */,
 			);
