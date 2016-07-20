@@ -442,7 +442,6 @@ final class RTMPDataMessage: RTMPMessage {
             return
         }
         OSAtomicAdd64(Int64(payload.count), &stream._info.byteCount)
-        stream.recorder.onMessage(self)
     }
 }
 
@@ -599,7 +598,6 @@ final class RTMPAudioMessage: RTMPMessage {
         }
         OSAtomicAdd64(Int64(payload.count), &stream._info.byteCount)
         stream.audioPlayback.onMessage(self)
-        stream.recorder.onMessage(self)
     }
 
     func createAudioSpecificConfig() -> AudioSpecificConfig? {
@@ -645,7 +643,6 @@ final class RTMPVideoMessage: RTMPMessage {
             return
         }
         OSAtomicAdd64(Int64(payload.count), &stream._info.byteCount)
-        stream.recorder.onMessage(self)
         guard FLVTag.TagType.Video.headerSize < payload.count else {
             return
         }

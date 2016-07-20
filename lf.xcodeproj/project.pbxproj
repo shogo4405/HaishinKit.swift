@@ -84,7 +84,7 @@
 		29B876B01CD70B2800FC07DA /* RTMPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A41CD70B2800FC07DA /* RTMPConnection.swift */; };
 		29B876B11CD70B2800FC07DA /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A51CD70B2800FC07DA /* RTMPMessage.swift */; };
 		29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */; };
-		29B876B31CD70B2800FC07DA /* RTMPRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A71CD70B2800FC07DA /* RTMPRecorder.swift */; };
+		29B876B31CD70B2800FC07DA /* FLVTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A71CD70B2800FC07DA /* FLVTag.swift */; };
 		29B876B41CD70B2800FC07DA /* RTMPSharedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */; };
 		29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A91CD70B2800FC07DA /* RTMPSocket.swift */; };
 		29B876B61CD70B2800FC07DA /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876AA1CD70B2800FC07DA /* RTMPStream.swift */; };
@@ -132,7 +132,7 @@
 		29B877131CD70D5A00FC07DA /* RTMPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A41CD70B2800FC07DA /* RTMPConnection.swift */; };
 		29B877141CD70D5A00FC07DA /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A51CD70B2800FC07DA /* RTMPMessage.swift */; };
 		29B877151CD70D5A00FC07DA /* RTMPMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */; };
-		29B877161CD70D5A00FC07DA /* RTMPRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A71CD70B2800FC07DA /* RTMPRecorder.swift */; };
+		29B877161CD70D5A00FC07DA /* FLVTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A71CD70B2800FC07DA /* FLVTag.swift */; };
 		29B877171CD70D5A00FC07DA /* RTMPSharedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */; };
 		29B877181CD70D5A00FC07DA /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A91CD70B2800FC07DA /* RTMPSocket.swift */; };
 		29B877191CD70D5A00FC07DA /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876AA1CD70B2800FC07DA /* RTMPStream.swift */; };
@@ -272,7 +272,7 @@
 		29B876A41CD70B2800FC07DA /* RTMPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPConnection.swift; path = Sources/RTMP/RTMPConnection.swift; sourceTree = SOURCE_ROOT; };
 		29B876A51CD70B2800FC07DA /* RTMPMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPMessage.swift; path = Sources/RTMP/RTMPMessage.swift; sourceTree = SOURCE_ROOT; };
 		29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPMuxer.swift; path = Sources/RTMP/RTMPMuxer.swift; sourceTree = SOURCE_ROOT; };
-		29B876A71CD70B2800FC07DA /* RTMPRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPRecorder.swift; path = Sources/RTMP/RTMPRecorder.swift; sourceTree = SOURCE_ROOT; };
+		29B876A71CD70B2800FC07DA /* FLVTag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FLVTag.swift; path = Sources/RTMP/FLVTag.swift; sourceTree = SOURCE_ROOT; };
 		29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPSharedObject.swift; path = Sources/RTMP/RTMPSharedObject.swift; sourceTree = SOURCE_ROOT; };
 		29B876A91CD70B2800FC07DA /* RTMPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPSocket.swift; path = Sources/RTMP/RTMPSocket.swift; sourceTree = SOURCE_ROOT; };
 		29B876AA1CD70B2800FC07DA /* RTMPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPStream.swift; path = Sources/RTMP/RTMPStream.swift; sourceTree = SOURCE_ROOT; };
@@ -657,12 +657,12 @@
 				29B8769F1CD70B2800FC07DA /* AMF0Serializer.swift */,
 				29B876A01CD70B2800FC07DA /* AMF3Serializer.swift */,
 				29B876A11CD70B2800FC07DA /* ASStruct.swift */,
+				29B876A71CD70B2800FC07DA /* FLVTag.swift */,
 				29B876A21CD70B2800FC07DA /* RTMPAudioPlayback.swift */,
 				29B876A31CD70B2800FC07DA /* RTMPChunk.swift */,
 				29B876A41CD70B2800FC07DA /* RTMPConnection.swift */,
 				29B876A51CD70B2800FC07DA /* RTMPMessage.swift */,
 				29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */,
-				29B876A71CD70B2800FC07DA /* RTMPRecorder.swift */,
 				29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */,
 				29B876A91CD70B2800FC07DA /* RTMPSocket.swift */,
 				29B876AA1CD70B2800FC07DA /* RTMPStream.swift */,
@@ -1126,7 +1126,7 @@
 				29B876AD1CD70B2800FC07DA /* ASStruct.swift in Sources */,
 				29B8766B1CD70AB300FC07DA /* Foundation+Extension.swift in Sources */,
 				29B8765D1CD70A7900FC07DA /* AVCEncoder.swift in Sources */,
-				29B876B31CD70B2800FC07DA /* RTMPRecorder.swift in Sources */,
+				29B876B31CD70B2800FC07DA /* FLVTag.swift in Sources */,
 				299B13271D3B751400A1E8F5 /* LFView.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
 				29B876841CD70AE800FC07DA /* H264+AVC.swift in Sources */,
@@ -1243,7 +1243,7 @@
 				29B877131CD70D5A00FC07DA /* RTMPConnection.swift in Sources */,
 				29B877141CD70D5A00FC07DA /* RTMPMessage.swift in Sources */,
 				29B877151CD70D5A00FC07DA /* RTMPMuxer.swift in Sources */,
-				29B877161CD70D5A00FC07DA /* RTMPRecorder.swift in Sources */,
+				29B877161CD70D5A00FC07DA /* FLVTag.swift in Sources */,
 				29B877171CD70D5A00FC07DA /* RTMPSharedObject.swift in Sources */,
 				29B877181CD70D5A00FC07DA /* RTMPSocket.swift in Sources */,
 				29B877191CD70D5A00FC07DA /* RTMPStream.swift in Sources */,
