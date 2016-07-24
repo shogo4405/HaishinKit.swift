@@ -31,12 +31,9 @@ final class AVCDecoder {
     }
     weak var delegate:VideoDecoderDelegate?
 
-    var buffers:[DecompressionBuffer] = []
-
     private var attributes:[NSString:  AnyObject] {
         return AVCDecoder.defaultAttributes
     }
-
     private var invalidateSession:Bool = true
     private var callback:VTDecompressionOutputCallback = {(
         decompressionOutputRefCon:UnsafeMutablePointer<Void>,
@@ -99,19 +96,13 @@ final class AVCDecoder {
     }
 
     func didOutputForSession(status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBufferRef?, presentationTimeStamp:CMTime, duration:CMTime) {
-        buffers.append(DecompressionBuffer(
+        guard let imageBuffer:CVImageBuffer = imageBuffer where status == noErr else {
+            return
+        }
+        delegate?.imageOutput(DecompressionBuffer(
             imageBuffer: imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
             duration: duration
         ))
-        if (12 <= buffers.count) {
-            buffers.sortInPlace {(lhr:DecompressionBuffer, rhr:DecompressionBuffer) -> Bool in
-                return lhr.presentationTimeStamp.value < rhr.presentationTimeStamp.value
-            }
-            for buffer in buffers {
-                delegate?.imageOutput(buffer)
-            }
-            buffers.removeAll()
-        }
     }
 }

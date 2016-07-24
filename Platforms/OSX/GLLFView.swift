@@ -37,6 +37,7 @@ public class GLLFView: NSOpenGLView {
                 colorSpace: nil,
                 options: nil
             )
+            openGLContext.makeCurrentContext()
         }
         var param:GLint = 1
         openGLContext?.setValues(&param, forParameter: .GLCPSwapInterval)
@@ -49,7 +50,9 @@ public class GLLFView: NSOpenGLView {
         glDepthMask(GLboolean(GL_FALSE))
         glStencilMask(0)
         glClearColor(0.0, 0.0, 0.0, 1.0)
+        glClear(GLenum(GL_COLOR_BUFFER_BIT))
         glHint(GLenum(GL_TRANSFORM_HINT_APPLE), GLenum(GL_FASTEST))
+        glFlush()
         originalFrame = frame
     }
 
@@ -77,7 +80,7 @@ public class GLLFView: NSOpenGLView {
     }
 
     override public func reshape() {
-        let rect:CGRect = self.frame
+        let rect:CGRect = frame
         scale = CGRectMake(0, 0, originalFrame.size.width / rect.size.width, originalFrame.size.height / rect.size.height)
         glViewport(0, 0, Int32(rect.width), Int32(rect.height))
         glMatrixMode(GLenum(GL_PROJECTION))

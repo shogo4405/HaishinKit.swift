@@ -1,18 +1,19 @@
 import Foundation
 import AVFoundation
 
+// MARK: ClockedQueueDelegate
 protocol ClockedQueueDelegate:class {
-    func queue<T>(buffer: T)
+    func queue(buffer: Any)
 }
 
 // MARK: -
 class ClockedQueue<T> {
     var bufferTime:NSTimeInterval = 0.1 // sec
     private(set) var running:Bool = false
-    
+    private(set) var duration:NSTimeInterval = 0
     weak var delegate:ClockedQueueDelegate?
+
     private var buffers:[T] = []
-    private var duration:NSTimeInterval = 0
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.ClockedQueue.lock", DISPATCH_QUEUE_SERIAL
     )
@@ -62,6 +63,13 @@ extension ClockedQueue: CustomStringConvertible {
 // MARK: -
 final class CMSampleBufferClockedQueue:ClockedQueue<CMSampleBuffer> {
     override func getDuration(buffer: CMSampleBuffer) -> NSTimeInterval {
+        return buffer.duration.seconds
+    }
+}
+
+//MARK: -
+final class DecompressionBufferClockedQueue:ClockedQueue<DecompressionBuffer> {
+    override func getDuration(buffer: DecompressionBuffer) -> NSTimeInterval {
         return buffer.duration.seconds
     }
 }

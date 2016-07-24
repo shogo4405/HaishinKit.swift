@@ -44,23 +44,20 @@ final class VideoIOComponent: NSObject {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
-    let bufferQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.VideoIOComponent.buffer", DISPATCH_QUEUE_SERIAL
-    )
-
     var encoder:AVCEncoder = AVCEncoder()
     var decoder:AVCDecoder = AVCDecoder()
     var drawable:StreamDrawable?
-
     var formatDescription:CMVideoFormatDescriptionRef? {
         didSet {
             decoder.formatDescription = formatDescription
         }
     }
-
-    private var buffers:[DecompressionBuffer] = []
+    private lazy var queue:DecompressionBufferClockedQueue = {
+        let queue:DecompressionBufferClockedQueue = DecompressionBufferClockedQueue()
+        queue.delegate = self
+        return queue
+    }()
     private var effects:[VisualEffect] = []
-    private var rendering:Bool = false
 
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
@@ -395,27 +392,6 @@ final class VideoIOComponent: NSObject {
         }
     }
 
-    func renderIfNeed() {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-            guard !self.rendering else {
-                return
-            }
-            self.rendering = true
-            while (!self.buffers.isEmpty) {
-                var buffer:DecompressionBuffer?
-                dispatch_sync(self.bufferQueue) {
-                    buffer = self.buffers.removeFirst()
-                }
-                guard let data:DecompressionBuffer = buffer else {
-                    return
-                }
-                self.drawable?.drawImage(CIImage(CVPixelBuffer: data.imageBuffer!))
-                usleep(UInt32(data.duration.value) * 1000)
-            }
-            self.rendering = false
-        }
-    }
-
     func createPixelBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVPixelBuffer? {
         var buffer:CVPixelBuffer?
         CVPixelBufferCreate(
@@ -456,10 +432,17 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
 // MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
     func imageOutput(buffer:DecompressionBuffer) {
-        dispatch_async(bufferQueue) {
-            self.buffers.append(buffer)
+        queue.enqueue(buffer)
+    }
+}
+
+// MARK: ClockedQueueDelegate
+extension VideoIOComponent: ClockedQueueDelegate {
+    func queue(buffer: Any) {
+        guard let buffer:DecompressionBuffer = buffer as? DecompressionBuffer else {
+            return
         }
-        renderIfNeed()
+        drawable?.drawImage(CIImage(CVPixelBuffer: buffer.imageBuffer!))
     }
 }
 
