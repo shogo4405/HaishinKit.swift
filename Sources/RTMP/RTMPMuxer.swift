@@ -82,7 +82,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         let keyframe:Bool = !sampleBuffer.dependsOnOthers
         var totalLength:Int = 0
         var dataPointer:UnsafeMutablePointer<Int8> = nil
-        guard IsNoErr(CMBlockBufferGetDataPointer(block, 0, nil, &totalLength, &dataPointer)) else {
+        guard CMBlockBufferGetDataPointer(block, 0, nil, &totalLength, &dataPointer) == noErr else {
             return
         }
 

@@ -18,28 +18,78 @@ public class Stream: NSObject {
 
     #if os(iOS)
     public var torch:Bool {
-        get { return mixer.videoIO.torch }
-        set { mixer.videoIO.torch = newValue }
+        get {
+            var torch:Bool = false
+            dispatch_sync(lockQueue) {
+                torch = mixer.videoIO.torch
+            }
+            return torch
+        }
+        set {
+            dispatch_async(lockQueue) {
+                self.mixer.videoIO.torch = newValue
+            }
+        }
     }
     public var syncOrientation:Bool {
-        get { return mixer.syncOrientation }
-        set { mixer.syncOrientation = newValue }
+        get {
+            var syncOrientation:Bool = false
+            dispatch_sync(lockQueue) {
+                syncOrientation = mixer.syncOrientation
+            }
+            return syncOrientation
+        }
+        set {
+            dispatch_aync(lockQueue) {
+                self.mixer.syncOrientation = newValue
+            }
+        }
     }
     #endif
 
     public var audioSettings:[String: AnyObject] {
-        get { return mixer.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)}
-        set { mixer.audioIO.encoder.setValuesForKeysWithDictionary(newValue) }
+        get {
+            var audioSettings:[String: AnyObject]!
+            dispatch_sync(lockQueue) {
+                audioSettings = self.mixer.audioIO.encoder.dictionaryWithValuesForKeys(AACEncoder.supportedSettingsKeys)
+            }
+            return  audioSettings
+        }
+        set {
+            dispatch_async(lockQueue) {
+                self.mixer.audioIO.encoder.setValuesForKeysWithDictionary(newValue)
+            }
+        }
     }
 
     public var videoSettings:[String: AnyObject] {
-        get { return mixer.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)}
-        set { mixer.videoIO.encoder.setValuesForKeysWithDictionary(newValue)}
+        get {
+            var videoSettings:[String:AnyObject]!
+            dispatch_sync(lockQueue) {
+                videoSettings = self.mixer.videoIO.encoder.dictionaryWithValuesForKeys(AVCEncoder.supportedSettingsKeys)
+            }
+            return videoSettings
+        }
+        set {
+            dispatch_async(lockQueue) {
+                self.mixer.videoIO.encoder.setValuesForKeysWithDictionary(newValue)
+            }
+        }
     }
 
     public var captureSettings:[String: AnyObject] {
-        get { return mixer.dictionaryWithValuesForKeys(AVMixer.supportedSettingsKeys)}
-        set { mixer.setValuesForKeysWithDictionary(newValue) }
+        get {
+            var captureSettings:[String: AnyObject]!
+            dispatch_sync(lockQueue) {
+                captureSettings = self.mixer.dictionaryWithValuesForKeys(AVMixer.supportedSettingsKeys)
+            }
+            return captureSettings
+        }
+        set {
+            dispatch_async(lockQueue) {
+                self.mixer.setValuesForKeysWithDictionary(newValue)
+            }
+        }
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {

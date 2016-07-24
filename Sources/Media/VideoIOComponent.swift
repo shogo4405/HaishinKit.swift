@@ -2,7 +2,6 @@ import CoreImage
 import Foundation
 import AVFoundation
 
-// MARK: -
 final class VideoIOComponent: NSObject {
 
     static func getActualFPS(fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
@@ -370,26 +369,6 @@ final class VideoIOComponent: NSObject {
             return true
         }
         return false
-    }
-
-    func enqueSampleBuffer(bytes:[UInt8], inout timing:CMSampleTimingInfo) {
-        dispatch_async(lockQueue) {
-            var sample:[UInt8] = bytes
-            let sampleSize:Int = bytes.count
-
-            var blockBuffer:CMBlockBufferRef?
-            guard CMBlockBufferCreateWithMemoryBlock(kCFAllocatorDefault, &sample, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) == noErr else {
-                return
-            }
-
-            var sampleBuffer:CMSampleBufferRef?
-            var sampleSizes:[Int] = [sampleSize]
-            guard IsNoErr(CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, self.formatDescription!, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer)) else {
-                return
-            }
-
-            self.decoder.decodeSampleBuffer(sampleBuffer!)
-        }
     }
 
     func createPixelBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVPixelBuffer? {

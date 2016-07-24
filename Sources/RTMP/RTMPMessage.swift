@@ -658,19 +658,32 @@ final class RTMPVideoMessage: RTMPMessage {
 
     func enqueueSampleBuffer(stream: RTMPStream) {
         stream.videoTimestamp += Double(timestamp)
+
         let compositionTimeoffset:Int32 = Int32(bytes: [0] + payload[2..<5]).bigEndian
         var timing:CMSampleTimingInfo = CMSampleTimingInfo(
             duration: CMTimeMake(Int64(timestamp), 1000),
             presentationTimeStamp: CMTimeMake(Int64(stream.videoTimestamp) + Int64(compositionTimeoffset), 1000),
             decodeTimeStamp: kCMTimeInvalid
         )
-        stream.mixer.videoIO.enqueSampleBuffer(
-            Array(payload[FLVTag.TagType.Video.headerSize..<payload.count]),
-            timing: &timing
-        )
+
+        let bytes:[UInt8] = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
+        var sample:[UInt8] = bytes
+        let sampleSize:Int = bytes.count
+        var blockBuffer:CMBlockBufferRef?
+        guard CMBlockBufferCreateWithMemoryBlock(
+            kCFAllocatorDefault, &sample, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) == noErr else {
+            return
+        }
+        var sampleBuffer:CMSampleBufferRef?
+        var sampleSizes:[Int] = [sampleSize]
+        guard CMSampleBufferCreate(kCFAllocatorDefault, blockBuffer!, true, nil, nil, stream.mixer.videoIO.formatDescription, 1, 1, &timing, 1, &sampleSizes, &sampleBuffer) == noErr else {
+            return
+        }
+
+        stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer!)
     }
 
-    func createFormatDescription(stream: RTMPStream) -> OSStatus{
+    func createFormatDescription(stream: RTMPStream) -> OSStatus {
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
         config.bytes = Array(payload[FLVTag.TagType.Video.headerSize..<payload.count])
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)

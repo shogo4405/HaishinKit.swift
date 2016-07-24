@@ -44,7 +44,7 @@ extension CMSampleBuffer: BytesConvertible {
             }
             var length:Int = 0
             var bytes:UnsafeMutablePointer<Int8> = nil
-            guard IsNoErr(CMBlockBufferGetDataPointer(buffer, 0, nil, &length, &bytes)) else {
+            guard CMBlockBufferGetDataPointer(buffer, 0, nil, &length, &bytes) == noErr else {
                 return []
             }
             return Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(bytes), count: length))

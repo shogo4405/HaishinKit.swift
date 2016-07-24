@@ -56,11 +56,11 @@ final class AVCEncoder: NSObject {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                IsNoErr(VTSessionSetProperty(
+                self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_AverageBitRate,
                     Int(self.bitrate)
-                ), "setting bitrate \(self.bitrate)")
+                )
             }
         }
     }
@@ -76,11 +76,11 @@ final class AVCEncoder: NSObject {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                IsNoErr(VTSessionSetProperty(
+                self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_ExpectedFrameRate,
                     NSNumber(double: self.expectedFPS)
-                ), "setting expectedFPS=\(self.expectedFPS)")
+                )
             }
         }
     }
@@ -97,11 +97,11 @@ final class AVCEncoder: NSObject {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                IsNoErr(VTSessionSetProperty(
+                self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_DataRateLimits,
                     self.dataRateLimits
-                ), "setting dataRateLimits=\(self.dataRateLimits)")
+                )
             }
         }
     }
@@ -122,11 +122,11 @@ final class AVCEncoder: NSObject {
                 guard let session:VTCompressionSessionRef = self._session else {
                     return
                 }
-                IsNoErr(VTSessionSetProperty(
+                self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration,
                     NSNumber(double: self.maxKeyFrameIntervalDuration)
-                ), "setting maxKeyFrameIntervalDuration \(self.maxKeyFrameIntervalDuration)")
+                )
             }
         }
     }
@@ -140,6 +140,7 @@ final class AVCEncoder: NSObject {
     }
     weak var delegate:VideoEncoderDelegate?
     internal(set) var running:Bool = false
+    private(set) var status:OSStatus = noErr
     private var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = AVCEncoder.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(int: width)
@@ -189,7 +190,7 @@ final class AVCEncoder: NSObject {
     private var session:VTCompressionSessionRef? {
         get {
             if (_session == nil)  {
-                guard IsNoErr(VTCompressionSessionCreate(
+                guard VTCompressionSessionCreate(
                     kCFAllocatorDefault,
                     width,
                     height,
@@ -200,12 +201,13 @@ final class AVCEncoder: NSObject {
                     callback,
                     unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
                     &_session
-                ), "VTCompressionSessionCreate") else {
+                    ) == noErr else {
+                    logger.warning("create a VTCompressionSessionCreate")
                     return nil
                 }
                 invalidateSession = false
-                IsNoErr(VTSessionSetProperties(_session!, properties))
-                IsNoErr(VTCompressionSessionPrepareToEncodeFrames(_session!))
+                status = VTSessionSetProperties(_session!, properties)
+                status = VTCompressionSessionPrepareToEncodeFrames(_session!)
             }
             return _session
         }

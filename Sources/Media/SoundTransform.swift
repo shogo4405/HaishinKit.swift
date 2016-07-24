@@ -16,11 +16,11 @@ public struct SoundTransform {
     public var pan:Float32 = SoundTransform.defaultPan
 
     func setParameter(inAQ: AudioQueueRef) {
-        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Volume, volume), "set volume = \(volume)")
-        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_PlayRate, playRate), "set playrate = \(playRate)")
-        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Pitch, pitch), "set pitch = \(pitch)")
-        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_VolumeRampTime, volumeRampTime), "set volumeRampTime = \(volumeRampTime)")
-        IsNoErr(AudioQueueSetParameter(inAQ, kAudioQueueParam_Pan, pan), "set pan = \(pan)")
+        AudioQueueSetParameter(inAQ, kAudioQueueParam_Volume, volume)
+        AudioQueueSetParameter(inAQ, kAudioQueueParam_PlayRate, playRate)
+        AudioQueueSetParameter(inAQ, kAudioQueueParam_Pitch, pitch)
+        AudioQueueSetParameter(inAQ, kAudioQueueParam_VolumeRampTime, volumeRampTime)
+        AudioQueueSetParameter(inAQ, kAudioQueueParam_Pan, pan)
     }
 }
 

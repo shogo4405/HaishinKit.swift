@@ -54,7 +54,6 @@
 		29B876691CD70AB300FC07DA /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constant.swift */; };
 		29B8766A1CD70AB300FC07DA /* CoreMedia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */; };
 		29B8766B1CD70AB300FC07DA /* Foundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876651CD70AB300FC07DA /* Foundation+Extension.swift */; };
-		29B8766C1CD70AB300FC07DA /* Inline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876661CD70AB300FC07DA /* Inline.swift */; };
 		29B8766D1CD70AB300FC07DA /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876671CD70AB300FC07DA /* Protocol.swift */; };
 		29B8766E1CD70AB300FC07DA /* SiwftCore+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876681CD70AB300FC07DA /* SiwftCore+Extension.swift */; };
 		29B876761CD70ACE00FC07DA /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8766F1CD70ACE00FC07DA /* HTTPRequest.swift */; };
@@ -101,7 +100,6 @@
 		29B876F01CD70D5900FC07DA /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constant.swift */; };
 		29B876F11CD70D5900FC07DA /* CoreMedia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */; };
 		29B876F21CD70D5900FC07DA /* Foundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876651CD70AB300FC07DA /* Foundation+Extension.swift */; };
-		29B876F31CD70D5900FC07DA /* Inline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876661CD70AB300FC07DA /* Inline.swift */; };
 		29B876F41CD70D5900FC07DA /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876671CD70AB300FC07DA /* Protocol.swift */; };
 		29B876F51CD70D5900FC07DA /* SiwftCore+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876681CD70AB300FC07DA /* SiwftCore+Extension.swift */; };
 		29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8766F1CD70ACE00FC07DA /* HTTPRequest.swift */; };
@@ -243,7 +241,6 @@
 		29B876631CD70AB300FC07DA /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constant.swift; path = Sources/Core/Constant.swift; sourceTree = SOURCE_ROOT; };
 		29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CoreMedia+Extension.swift"; path = "Sources/Core/CoreMedia+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29B876651CD70AB300FC07DA /* Foundation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Foundation+Extension.swift"; path = "Sources/Core/Foundation+Extension.swift"; sourceTree = SOURCE_ROOT; };
-		29B876661CD70AB300FC07DA /* Inline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Inline.swift; path = Sources/Core/Inline.swift; sourceTree = SOURCE_ROOT; };
 		29B876671CD70AB300FC07DA /* Protocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Protocol.swift; path = Sources/Core/Protocol.swift; sourceTree = SOURCE_ROOT; };
 		29B876681CD70AB300FC07DA /* SiwftCore+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "SiwftCore+Extension.swift"; path = "Sources/Core/SiwftCore+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29B8766F1CD70ACE00FC07DA /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequest.swift; path = Sources/HTTP/HTTPRequest.swift; sourceTree = SOURCE_ROOT; };
@@ -410,7 +407,6 @@
 				29B876631CD70AB300FC07DA /* Constant.swift */,
 				29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */,
 				29B876651CD70AB300FC07DA /* Foundation+Extension.swift */,
-				29B876661CD70AB300FC07DA /* Inline.swift */,
 				29B876671CD70AB300FC07DA /* Protocol.swift */,
 				29B876681CD70AB300FC07DA /* SiwftCore+Extension.swift */,
 			);
@@ -1165,7 +1161,6 @@
 				29B8769D1CD70B1100FC07DA /* NetService.swift in Sources */,
 				29B8769E1CD70B1100FC07DA /* NetSocket.swift in Sources */,
 				29B876791CD70ACE00FC07DA /* HTTPStream.swift in Sources */,
-				29B8766C1CD70AB300FC07DA /* Inline.swift in Sources */,
 				29798E521CE5DF1A00F5CBD0 /* MP4File.swift in Sources */,
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
@@ -1213,7 +1208,6 @@
 				29B876F11CD70D5900FC07DA /* CoreMedia+Extension.swift in Sources */,
 				299B13281D3CC69000A1E8F5 /* LFView.swift in Sources */,
 				29B876F21CD70D5900FC07DA /* Foundation+Extension.swift in Sources */,
-				29B876F31CD70D5900FC07DA /* Inline.swift in Sources */,
 				292AC17C1CF4C871004F5730 /* MD5.swift in Sources */,
 				29B876F41CD70D5900FC07DA /* Protocol.swift in Sources */,
 				29B876F51CD70D5900FC07DA /* SiwftCore+Extension.swift in Sources */,
