@@ -1,11 +1,20 @@
 import Foundation
 
-struct HTTPRequest {
+// MARK: HTTPRequestConvertible
+protocol HTTPRequestConvertible: BytesConvertible {
+    var uri:String { get set }
+    var method:String { get set }
+    var version:String { get set }
+    var headerFields:[String: String] { get set }
+}
+
+// MARK: -
+struct HTTPRequest: HTTPRequestConvertible {
     static let separator:UInt8 = 0x0a
 
     var uri:String = "/"
-    var method:HTTPMethod = .UNKOWN
-    var version:HTTPVersion = .Unkown
+    var method:String = ""
+    var version:String = HTTPVersion.Version11.description
     var headerFields:[String: String] = [:]
 
     init() {
@@ -13,24 +22,24 @@ struct HTTPRequest {
 
     init?(bytes:[UInt8]) {
         self.bytes = bytes
-        if (method == .UNKOWN || version == .Unkown) {
-            return nil
-        }
     }
 }
 
-// MARK: CustomStringConvertible
-extension HTTPRequest: CustomStringConvertible {
+// MARK: -
+extension HTTPRequestConvertible {
+    
     var description:String {
         return Mirror(reflecting: self).description
     }
-}
-
-// MARK: BytesConvertible
-extension HTTPRequest: BytesConvertible {
+    
     var bytes:[UInt8] {
         get {
-            return []
+            var lines:[String] = ["\(method) \(uri) \(version)"]
+            for (field, value) in headerFields {
+                lines.append("\(field): \(value)")
+            }
+            lines.append("\r\n")
+            return [UInt8](lines.joinWithSeparator("\r\n").utf8)
         }
         set {
             var count:Int = 0
@@ -46,12 +55,10 @@ extension HTTPRequest: BytesConvertible {
                     break
                 }
             }
-
             let first:[String] = lines.first!.componentsSeparatedByString(" ")
-            method = HTTPMethod(rawValue: first[0]) ?? .UNKOWN
+            method = first[0]
             uri = first[1]
-            version = HTTPVersion(rawValue: first[2]) ?? .Unkown
-
+            version = first[2]
             for i in 1..<lines.count {
                 if (lines[i].isEmpty) {
                     continue
@@ -62,3 +69,4 @@ extension HTTPRequest: BytesConvertible {
         }
     }
 }
+

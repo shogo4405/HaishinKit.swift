@@ -135,6 +135,9 @@ class NetSocket: NSObject {
 // MARK: NSStreamDelegate
 extension NetSocket: NSStreamDelegate {
     func stream(aStream: NSStream, handleEvent eventCode: NSStreamEvent) {
+        if (logger.isEnabledForLogLevel(.Debug)) {
+            logger.debug("eventCode: \(eventCode)")
+        }
         switch eventCode {
         //  0
         case NSStreamEvent.None:

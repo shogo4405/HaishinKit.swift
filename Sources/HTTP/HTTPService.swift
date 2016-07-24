@@ -2,7 +2,6 @@ import Foundation
 
 // MARK: HTTPVersion
 enum HTTPVersion: String {
-    case Unkown    = "UNKOWN"
     case Version10 = "HTTP/1.0"
     case Version11 = "HTTP/1.1"
 }
@@ -16,7 +15,6 @@ extension HTTPVersion: CustomStringConvertible {
 
 // MARK: - HTTPMethod
 enum HTTPMethod: String {
-    case UNKOWN  = "UNKOWN"
     case GET     = "GET"
     case POST    = "POST"
     case PUT     = "PUT"
@@ -224,7 +222,7 @@ public class HTTPService: NetService {
                 }
                 return
             }
-            response.statusCode = .NotFound
+            response.statusCode = HTTPStatusCode.NotFound.description
             response.headerFields["Connection"] = "close"
             client.doOutput(bytes: response.bytes)
         }
@@ -237,7 +235,7 @@ public class HTTPService: NetService {
         }
         client.inputBuffer.removeAll()
         switch request.method {
-        case .GET:
+        case "GET":
             get(request, client: client)
         default:
             break
