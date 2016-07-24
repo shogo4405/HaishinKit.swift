@@ -21,7 +21,7 @@ public class Stream: NSObject {
         get {
             var torch:Bool = false
             dispatch_sync(lockQueue) {
-                torch = mixer.videoIO.torch
+                torch = self.mixer.videoIO.torch
             }
             return torch
         }
@@ -35,12 +35,12 @@ public class Stream: NSObject {
         get {
             var syncOrientation:Bool = false
             dispatch_sync(lockQueue) {
-                syncOrientation = mixer.syncOrientation
+                syncOrientation = self.mixer.syncOrientation
             }
             return syncOrientation
         }
         set {
-            dispatch_aync(lockQueue) {
+            dispatch_async(lockQueue) {
                 self.mixer.syncOrientation = newValue
             }
         }
