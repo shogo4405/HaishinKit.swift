@@ -76,7 +76,7 @@ final class CMSampleBufferClockedQueue:ClockedQueue<CMSampleBuffer> {
     }
 }
 
-//MARK: -
+// MARK: -
 final class DecompressionBufferClockedQueue:ClockedQueue<DecompressionBuffer> {
     override func getDuration(buffer: DecompressionBuffer) -> NSTimeInterval {
         return buffer.duration.seconds

@@ -2,6 +2,8 @@ import Foundation
 import AVFoundation
 
 public class LFView: UIView {
+    public static var defaultBackgroundColor:UIColor = UIColor.blackColor()
+
     public override class func layerClass() -> AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
@@ -24,6 +26,16 @@ public class LFView: UIView {
     }
     var position:AVCaptureDevicePosition = .Front
 
+    public override init(frame:CGRect) {
+        super.init(frame:frame)
+        initilize()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        initilize()
+    }
+
     private weak var currentStream:Stream? {
         didSet {
             guard let oldValue:Stream = oldValue else {
@@ -37,6 +49,12 @@ public class LFView: UIView {
         layer.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream
+    }
+
+    private func initilize() {
+        backgroundColor = LFView.defaultBackgroundColor
+        layer.contentsGravity = kCAGravityResizeAspect
+        layer.backgroundColor = LFView.defaultBackgroundColor.CGColor
     }
 }
 

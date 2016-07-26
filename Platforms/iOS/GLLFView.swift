@@ -6,7 +6,7 @@ public class GLLFView: GLKView {
     static let defaultOptions:[String: AnyObject] = [
         kCIContextWorkingColorSpace: NSNull()
     ]
-    static var defaultBackgroundColor:UIColor = UIColor.blackColor()
+    public static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
     public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
