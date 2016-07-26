@@ -13,43 +13,52 @@ class ClockedQueue<T> {
     private(set) var duration:NSTimeInterval = 0
     weak var delegate:ClockedQueueDelegate?
 
+    private var date:NSDate = NSDate()
     private var buffers:[T] = []
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.ClockedQueue.lock", DISPATCH_QUEUE_SERIAL
     )
+    private var timer:NSTimer? {
+        didSet {
+            if let oldValue:NSTimer = oldValue {
+                oldValue.invalidate()
+            }
+            if let timer:NSTimer = timer {
+                NSRunLoop.mainRunLoop().addTimer(timer, forMode: NSRunLoopCommonModes)
+            }
+        }
+    }
 
-    func enqueue(buffer:T) -> Self {
+    func enqueue(buffer:T) {
         dispatch_async(lockQueue) {
             self.duration += self.getDuration(buffer)
             self.buffers.append(buffer)
-            if (!self.running) {
-                self.dequeue()
-            }
         }
-        return self
+        if (timer == nil) {
+            timer = NSTimer(
+                timeInterval: 0.001, target: self, selector: #selector(ClockedQueue.onTimer(_:)), userInfo: nil, repeats: true
+            )
+        }
     }
 
     func getDuration(buffer:T) -> NSTimeInterval {
         return 0
     }
 
-    private func dequeue() {
-        guard bufferTime <= self.duration && !buffers.isEmpty else {
+    @objc func onTimer(timer:NSTimer) {
+        guard let buffer:T = buffers.first where bufferTime <= self.duration else {
             return
         }
-        let buffer:T = buffers.removeFirst()
+        let duration:NSTimeInterval = getDuration(buffer)
+        guard duration <= abs(date.timeIntervalSinceNow) else {
+            return
+        }
+        date = NSDate()
         delegate?.queue(buffer)
-        if (buffers.isEmpty) {
-            running = false
-            return
+        dispatch_async(lockQueue) {
+            self.duration -= duration
+            self.buffers.removeFirst()
         }
-        running = true
-        let duration:NSTimeInterval = getDuration(buffers[0])
-        let when:dispatch_time_t = dispatch_time(
-            DISPATCH_TIME_NOW,
-            Int64(duration * Double(NSEC_PER_SEC))
-        )
-        dispatch_after(when, lockQueue, dequeue)
     }
 }
 

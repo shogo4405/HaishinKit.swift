@@ -3,7 +3,7 @@ import Cocoa
 import AVFoundation
 
 final class LiveViewController: NSViewController {
-    static let defaultURL:String = "rtmp://test:test@192.168.179.3:1935/live"
+    static let defaultURL:String = "rtmp://test:test@localhost:1935/live"
 
     var enabledSharedObject:Bool = false
     var rtmpConnection:RTMPConnection = RTMPConnection()

@@ -17,10 +17,9 @@ final class TestBufferClockedQueue:ClockedQueue<ClockedQueueTestBuffer> {
 final class ClockedQueueTests: XCTestCase {
     func testTestBufferClockedQueue() {
         let queue:TestBufferClockedQueue = TestBufferClockedQueue()
-        queue
-            .enqueue(ClockedQueueTestBuffer(duration: 0.033))
-            .enqueue(ClockedQueueTestBuffer(duration: 0.033))
-            .enqueue(ClockedQueueTestBuffer(duration: 0.033))
-            .enqueue(ClockedQueueTestBuffer(duration: 0.033))
+        queue.enqueue(ClockedQueueTestBuffer(duration: 0.033))
+        queue.enqueue(ClockedQueueTestBuffer(duration: 0.033))
+        queue.enqueue(ClockedQueueTestBuffer(duration: 0.033))
+        queue.enqueue(ClockedQueueTestBuffer(duration: 0.033))
     }
 }
