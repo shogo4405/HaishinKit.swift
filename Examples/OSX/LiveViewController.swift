@@ -86,10 +86,10 @@ final class LiveViewController: NSViewController {
         cameraPopUpButton.target = self
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.attachAudio(
-            AVMixer.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
+            DeviceUtil.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
         )
         rtmpStream.attachCamera(
-            AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
+            DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
         publishButton.target = self
@@ -156,14 +156,14 @@ final class LiveViewController: NSViewController {
         case 0:
             httpStream.attachAudio(nil)
             httpStream.attachCamera(nil)
-            rtmpStream.attachAudio(AVMixer.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            rtmpStream.attachCamera(AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            rtmpStream.attachAudio(DeviceUtil.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+            rtmpStream.attachCamera(DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
             urlField.stringValue = LiveViewController.defaultURL
         case 1:
             rtmpStream.attachAudio(nil)
             rtmpStream.attachCamera(nil)
-            httpStream.attachAudio(AVMixer.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            httpStream.attachCamera(AVMixer.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            httpStream.attachAudio(DeviceUtil.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+            httpStream.attachCamera(DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break
@@ -171,7 +171,7 @@ final class LiveViewController: NSViewController {
     }
 
     func selectAudio(sender:AnyObject) {
-        let device:AVCaptureDevice? = AVMixer.deviceWithLocalizedName(
+        let device:AVCaptureDevice? = DeviceUtil.deviceWithLocalizedName(
             audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio
         )
         switch segmentedControl.selectedSegment {
@@ -187,7 +187,7 @@ final class LiveViewController: NSViewController {
     }
 
     func selectCamera(sender:AnyObject) {
-        let device:AVCaptureDevice? = AVMixer.deviceWithLocalizedName(
+        let device:AVCaptureDevice? = DeviceUtil.deviceWithLocalizedName(
             cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo
         )
         switch segmentedControl.selectedSegment {
@@ -225,7 +225,7 @@ final class LiveViewController: NSViewController {
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish("live")
+                rtmpStream!.publish("live", "localRecord")
                 if (enabledSharedObject) {
                     sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
                     sharedObject.connect(rtmpConnection)

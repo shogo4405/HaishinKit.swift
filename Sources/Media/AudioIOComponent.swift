@@ -1,13 +1,11 @@
 import Foundation
 import AVFoundation
 
-final class AudioIOComponent: NSObject {
+final class AudioIOComponent: IOComponent {
     var encoder:AACEncoder = AACEncoder()
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.AudioIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
-
-    var session:AVCaptureSession!
 
     var input:AVCaptureDeviceInput? = nil {
         didSet {
@@ -15,10 +13,10 @@ final class AudioIOComponent: NSObject {
                 return
             }
             if let oldValue:AVCaptureDeviceInput = oldValue {
-                session.removeInput(oldValue)
+                mixer.session.removeInput(oldValue)
             }
             if let input:AVCaptureDeviceInput = input {
-                session.addInput(input)
+                mixer.session.addInput(input)
             }
         }
     }
@@ -29,7 +27,7 @@ final class AudioIOComponent: NSObject {
             if (_output == nil) {
                 _output = AVCaptureAudioDataOutput()
             }
-            return _output!
+            return _output
         }
         set {
             if (_output == newValue) {
@@ -37,13 +35,14 @@ final class AudioIOComponent: NSObject {
             }
             if let output:AVCaptureAudioDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
-                session.removeOutput(output)
+                mixer.session.removeOutput(output)
             }
             _output = newValue
         }
     }
 
-    override init() {
+    override init(mixer: AVMixer) {
+        super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
     }
 
@@ -57,9 +56,9 @@ final class AudioIOComponent: NSObject {
         do {
             input = try AVCaptureDeviceInput(device: audio)
             #if os(iOS)
-            session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
+            mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
             #endif
-            session.addOutput(output)
+            mixer.session.addOutput(output)
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")

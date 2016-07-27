@@ -2,44 +2,7 @@ import CoreImage
 import Foundation
 import AVFoundation
 
-final class VideoIOComponent: NSObject {
-
-    static func getActualFPS(fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
-        var durations:[CMTime] = []
-        var frameRates:[Float64] = []
-
-        for object:AnyObject in device.activeFormat.videoSupportedFrameRateRanges {
-            guard let range:AVFrameRateRange = object as? AVFrameRateRange else {
-                continue
-            }
-            if (range.minFrameRate == range.maxFrameRate) {
-                durations.append(range.minFrameDuration)
-                frameRates.append(range.maxFrameRate)
-                continue
-            }
-            if (range.minFrameRate <= fps && fps <= range.maxFrameRate) {
-                return (fps, CMTimeMake(100, Int32(100 * fps)))
-            }
-
-            let actualFPS:Float64 = max(range.minFrameRate, min(range.maxFrameRate, fps))
-            return (actualFPS, CMTimeMake(100, Int32(100 * actualFPS)))
-        }
-
-        var diff:[Float64] = []
-        for frameRate in frameRates {
-            diff.append(abs(frameRate - fps))
-        }
-        if let minElement:Float64 = diff.minElement() {
-            for i in 0..<diff.count {
-                if (diff[i] == minElement) {
-                    return (frameRates[i], durations[i])
-                }
-            }
-        }
-
-        return nil
-    }
-
+final class VideoIOComponent: IOComponent {
     let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
     )
@@ -61,7 +24,7 @@ final class VideoIOComponent: NSObject {
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                data = VideoIOComponent.getActualFPS(fps, device: device) else {
+                data = DeviceUtil.getActualFPS(fps, device: device) else {
                 return
             }
 
@@ -79,7 +42,6 @@ final class VideoIOComponent: NSObject {
             }
         }
     }
-    var session:AVCaptureSession!
 
     var videoSettings:[NSObject:AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
@@ -223,7 +185,7 @@ final class VideoIOComponent: NSObject {
             }
             if let output:AVCaptureVideoDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
-                session.removeOutput(output)
+                mixer.session.removeOutput(output)
             }
             _output = newValue
         }
@@ -235,10 +197,10 @@ final class VideoIOComponent: NSObject {
                 return
             }
             if let oldValue:AVCaptureInput = oldValue {
-                session.removeInput(oldValue)
+                mixer.session.removeInput(oldValue)
             }
             if let input:AVCaptureInput = input {
-                session.addInput(input)
+                mixer.session.addInput(input)
             }
         }
     }
@@ -259,8 +221,8 @@ final class VideoIOComponent: NSObject {
     }
     #endif
 
-    override init() {
-        super.init()
+    override init(mixer: AVMixer) {
+        super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
         decoder.lockQueue = lockQueue
         decoder.delegate = self
@@ -277,7 +239,7 @@ final class VideoIOComponent: NSObject {
         #endif
         do {
             input = try AVCaptureDeviceInput(device: camera)
-            session.addOutput(output)
+            mixer.session.addOutput(output)
             for connection in output.connections {
                 guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
                     continue
@@ -316,9 +278,9 @@ final class VideoIOComponent: NSObject {
             return
         }
         input = screen
-        session.addOutput(output)
+        mixer.session.addOutput(output)
         output.setSampleBufferDelegate(self, queue: lockQueue)
-        session.startRunning()
+        mixer.session.startRunning()
     }
     #else
     func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
@@ -388,6 +350,7 @@ final class VideoIOComponent: NSObject {
 // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
+        mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
         guard var buffer:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }

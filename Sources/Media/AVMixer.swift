@@ -4,7 +4,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-public class AVMixer: NSObject {
+class AVMixer: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "fps",
@@ -14,50 +14,9 @@ public class AVMixer: NSObject {
         "continuousExposure",
     ]
 
-#if os(iOS)
-    static public func getAVCaptureVideoOrientation(orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
-        switch orientation {
-        case .Portrait:
-            return .Portrait
-        case .PortraitUpsideDown:
-            return .PortraitUpsideDown
-        case .LandscapeLeft:
-            return .LandscapeRight
-        case .LandscapeRight:
-            return .LandscapeLeft
-        default:
-            return nil
-        }
-    }
-#endif
-
-    static public func deviceWithPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
-        for device in AVCaptureDevice.devices() {
-            guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
-                continue
-            }
-            if (device.hasMediaType(AVMediaTypeVideo) && device.position == position) {
-                return device
-            }
-        }
-        return nil
-    }
-
-    static public func deviceWithLocalizedName(localizedName:String, mediaType:String) -> AVCaptureDevice? {
-        for device in AVCaptureDevice.devices() {
-            guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
-                continue
-            }
-            if (device.hasMediaType(mediaType) && device.localizedName == localizedName) {
-                return device
-            }
-        }
-        return nil
-    }
-
-    static public let defaultFPS:Float64 = 30
-    static public let defaultSessionPreset:String = AVCaptureSessionPresetMedium
-    static public let defaultVideoSettings:[NSObject: AnyObject] = [
+    static let defaultFPS:Float64 = 30
+    static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
+    static let defaultVideoSettings:[NSObject: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA)
     ]
 
@@ -117,13 +76,14 @@ public class AVMixer: NSObject {
         return _session!
     }
 
-    private(set) var audioIO:AudioIOComponent = AudioIOComponent()
-    private(set) var videoIO:VideoIOComponent = VideoIOComponent()
+    private(set) var audioIO:AudioIOComponent!
+    private(set) var videoIO:VideoIOComponent!
+    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
     override init() {
         super.init()
-        audioIO.session = session
-        videoIO.session = session
+        audioIO = AudioIOComponent(mixer: self)
+        videoIO = VideoIOComponent(mixer: self)
     }
 
     deinit {

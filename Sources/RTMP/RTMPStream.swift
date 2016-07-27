@@ -196,20 +196,6 @@ public class RTMPStream: Stream {
         case Switch        = "switch"
     }
 
-    public enum RecordOption: String {
-        case New    = "new"
-        case Append = "append"
-
-        func createFileHandle(path:String) -> NSFileHandle? {
-            switch self {
-            case .New:
-                return NSFileHandle(forWritingAtPath: rootPath + path + ".flv")
-            case .Append:
-                return NSFileHandle(forUpdatingAtPath: rootPath + path + ".flv")
-            }
-        }
-    }
-
     public struct PlayOption: CustomStringConvertible {
         public var len:Double = 0
         public var offset:Double = 0
@@ -263,6 +249,10 @@ public class RTMPStream: Stream {
                 send("@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
+                if (howToPublish == "localRecord") {
+                    mixer.recorder.fileName = _info.resourceName
+                    mixer.recorder.startRunning()
+                }
             default:
                 break
             }
@@ -278,6 +268,7 @@ public class RTMPStream: Stream {
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private var dispatcher:IEventDispatcher!
     private var rtmpConnection:RTMPConnection
+    private var howToPublish:String = "live"
 
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
@@ -358,6 +349,14 @@ public class RTMPStream: Stream {
         dispatch_async(lockQueue) {
             guard let name:String = name else {
                 guard self.readyState == .Publishing else {
+                    self.howToPublish = type
+                    switch type {
+                    case "localRecord":
+                        self.mixer.recorder.fileName = self._info.resourceName
+                        self.mixer.recorder.startRunning()
+                    default:
+                        break
+                    }
                     return
                 }
                 self.readyState = .Open
@@ -368,6 +367,7 @@ public class RTMPStream: Stream {
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.mixer.videoIO.encoder.stopRunning()
+                self.mixer.recorder.stopRunning()
                 self.FCUnpublish()
                 self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                     type: .Zero,
@@ -388,6 +388,7 @@ public class RTMPStream: Stream {
             }
 
             self._info.resourceName = name
+            self.howToPublish = type
             self.muxer.dispose()
             self.muxer.delegate = self
             #if os(iOS)
@@ -407,7 +408,7 @@ public class RTMPStream: Stream {
                     objectEncoding: self.objectEncoding,
                     commandName: "publish",
                     commandObject: nil,
-                    arguments: [name, type]
+                    arguments: [name, type == "localRecord" ? "live" : type]
             )))
             self.readyState = .Publish
         }
