@@ -1,5 +1,8 @@
 import Foundation
 import AVFoundation
+#if os(iOS)
+import AssetsLibrary
+#endif
 
 // MARK: AVMixerRecorderDelegate
 public protocol AVMixerRecorderDelegate: class {
@@ -7,6 +10,7 @@ public protocol AVMixerRecorderDelegate: class {
     func createWriter(fileName:String?) -> AVAssetWriter?
     func createWriterInputs(outputSettings:[String:[String:AnyObject]?]) -> [String: AVAssetWriterInput]
     func fileRotate(sampleBuffer:CMSampleBuffer, mediaType:String, recorder:AVMixerRecorder)
+    func finishWritingWithCompletion(recorder:AVMixerRecorder)
 }
 
 // MARK: -
@@ -25,6 +29,7 @@ public class AVMixerRecorder: NSObject {
             AVVideoWidthKey: 1200,
         ],
     ]
+
     public var writer:AVAssetWriter?
     public var fileName:String?
     public var writerInputs:[String:AVAssetWriterInput] = [:]
@@ -89,7 +94,9 @@ extension AVMixerRecorder: Runnable {
             }
             self.markAsFinished()
             if let writer:AVAssetWriter = self.writer {
-                writer.finishWritingWithCompletionHandler({})
+                writer.finishWritingWithCompletionHandler({
+                    self.delegate?.finishWritingWithCompletion(self)
+                })
             }
             self.running = false
         }
@@ -98,19 +105,34 @@ extension AVMixerRecorder: Runnable {
 
 // MARK: -
 public class DefaultAVMixerRecorderDelegate: NSObject {
+    public var dateFormat:String = "-yyyyMMdd-HHmmss"
 }
 
 // MARK: AVMixerRecorderDelegate
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
 
+    #if os(OSX)
     public var moviesDirectory:NSURL {
         return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.MoviesDirectory, .UserDomainMask, true)[0])
     }
+    #else
+    public var moviesDirectory:NSURL {
+        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
+    }
+    #endif
 
     public func createWriter(fileName: String?) -> AVAssetWriter? {
         do {
-            let fullPath:NSURL = moviesDirectory.URLByAppendingPathComponent((fileName ?? NSUUID().UUIDString) + ".mp4")
-            return try AVAssetWriter(URL: fullPath, fileType: AVFileTypeMPEG4)
+            let dateFormatter:NSDateFormatter = NSDateFormatter()
+            dateFormatter.locale = NSLocale(localeIdentifier: "en_US")
+            dateFormatter.dateFormat = dateFormat
+            var fileCompoent:String? = nil
+            if let fileName:String = fileName {
+                fileCompoent = fileName + dateFormatter.stringFromDate(NSDate())
+            }
+            let url:NSURL = moviesDirectory.URLByAppendingPathComponent((fileCompoent ?? NSUUID().UUIDString) + ".mp4")
+            logger.info("\(url)")
+            return try AVAssetWriter(URL: url, fileType: AVFileTypeMPEG4)
         } catch {
             logger.warning("create an AVAssetWriter")
         }
@@ -127,5 +149,14 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     }
 
     public func fileRotate(sampleBuffer: CMSampleBuffer, mediaType: String, recorder: AVMixerRecorder) {
+    }
+
+    public func finishWritingWithCompletion(recorder:AVMixerRecorder) {
+    #if os(iOS)
+        guard let writer:AVAssetWriter = recorder.writer else {
+            return
+        }
+        ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(writer.outputURL, completionBlock: nil)
+    #endif
     }
 }

@@ -6,7 +6,7 @@ import AVFoundation
  */
 public final class RTMPStreamInfo: NSObject {
     public internal(set) var byteCount:Int64 = 0
-    public internal(set) var resourceName:String?
+    public internal(set) var resourceName:String? = nil
     public internal(set) var currentBytesPerSecond:Int32 = 0
 
     public override var description: String {
@@ -23,7 +23,6 @@ public final class RTMPStreamInfo: NSObject {
 
     func clear() {
         byteCount = 0
-        resourceName = nil
         currentBytesPerSecond = 0
     }
 }
@@ -267,8 +266,8 @@ public class RTMPStream: Stream {
     private var frameCount:UInt8 = 0
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private var dispatcher:IEventDispatcher!
-    private var rtmpConnection:RTMPConnection
     private var howToPublish:String = "live"
+    private var rtmpConnection:RTMPConnection
 
     public init(rtmpConnection: RTMPConnection) {
         self.rtmpConnection = rtmpConnection
@@ -410,6 +409,7 @@ public class RTMPStream: Stream {
                     commandObject: nil,
                     arguments: [name, type == "localRecord" ? "live" : type]
             )))
+
             self.readyState = .Publish
         }
     }

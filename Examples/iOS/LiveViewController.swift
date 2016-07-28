@@ -5,7 +5,7 @@ import AVFoundation
 struct Preference {
     static let defaultInstance:Preference = Preference()
 
-    var uri:String? = "rtmp://test:test@192.168.179.3/live"
+    var uri:String? = "rtmp://test:test@192.168.179.4/live"
     var streamName:String? = "live"
 }
 
@@ -112,7 +112,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.syncOrientation = true
         
         rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+        rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(.Back))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.New, context: nil)
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
@@ -169,7 +169,7 @@ final class LiveViewController: UIViewController {
 
     func rotateCamera(sender:UIBarButtonItem) {
         let position:AVCaptureDevicePosition = currentPosition == .Back ? .Front : .Back
-        rtmpStream.attachCamera(AVMixer.deviceWithPosition(position))
+        rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(position))
         currentPosition = position
     }
 
@@ -211,7 +211,7 @@ final class LiveViewController: UIViewController {
         }
         sender.selected = !sender.selected
     }
-    
+
     func rtmpStatusHandler(notification:NSNotification) {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {

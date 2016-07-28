@@ -92,6 +92,36 @@ public class Stream: NSObject {
         }
     }
 
+    public var outputSettings:[String:[String:AnyObject]?] {
+        get {
+            var outputSettings:[String:[String:AnyObject]?]!
+            dispatch_sync(lockQueue) {
+                outputSettings = self.mixer.recorder.outputSettings
+            }
+            return outputSettings
+        }
+        set {
+            dispatch_async(lockQueue) {
+                self.mixer.recorder.outputSettings = newValue
+            }
+        }
+    }
+
+    public var recorderDelegate:AVMixerRecorderDelegate? {
+        get {
+            var recorderDelegate:AVMixerRecorderDelegate?
+            dispatch_sync(lockQueue) {
+                recorderDelegate = self.mixer.recorder.delegate
+            }
+            return recorderDelegate
+        }
+        set {
+            dispatch_async(lockQueue) {
+                self.mixer.recorder.delegate = newValue
+            }
+        }
+    }
+
     public func attachCamera(camera:AVCaptureDevice?) {
         dispatch_async(lockQueue) {
             self.mixer.videoIO.attachCamera(camera)

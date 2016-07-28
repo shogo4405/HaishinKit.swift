@@ -98,7 +98,7 @@ class AVMixer: NSObject {
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
         }
-        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(deviceOrientation) {
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.getAVCaptureVideoOrientation(deviceOrientation) {
             self.orientation = orientation
         }
     }
@@ -114,7 +114,7 @@ extension AVMixer: Runnable {
     func startRunning() {
         session.startRunning()
         #if os(iOS)
-        if let orientation:AVCaptureVideoOrientation = AVMixer.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) where syncOrientation {
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) where syncOrientation {
             self.orientation = orientation
         }
         #endif
