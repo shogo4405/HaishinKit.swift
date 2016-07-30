@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 final class VideoGravityUtil {
-    static func calclute(videoGravity:String, inout inRect:CGRect, inout fromRect:CGRect) {
+    @inline(__always) static func calclute(videoGravity:String, inout inRect:CGRect, inout fromRect:CGRect) {
         switch videoGravity {
         case AVLayerVideoGravityResizeAspect:
             resizeAspect(&inRect, fromRect: &fromRect)
@@ -13,7 +13,7 @@ final class VideoGravityUtil {
         }
     }
 
-    static func resizeAspect(inout inRect:CGRect, inout fromRect:CGRect) {
+    @inline(__always) static func resizeAspect(inout inRect:CGRect, inout fromRect:CGRect) {
         let xRatio:CGFloat = inRect.width / fromRect.width
         let yRatio:CGFloat = inRect.height / fromRect.height
         if (yRatio < xRatio) {
@@ -25,7 +25,7 @@ final class VideoGravityUtil {
         }
     }
 
-    static func resizeAspectFill(inout inRect:CGRect, inout fromRect:CGRect) {
+    @inline(__always) static func resizeAspectFill(inout inRect:CGRect, inout fromRect:CGRect) {
         let inRectAspect:CGFloat = inRect.size.width / inRect.size.height
         let fromRectAspect:CGFloat = fromRect.size.width / fromRect.size.height
         if (inRectAspect < fromRectAspect) {

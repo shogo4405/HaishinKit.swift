@@ -28,12 +28,17 @@ public class LFView: UIView {
 
     public override init(frame:CGRect) {
         super.init(frame:frame)
-        initilize()
+        awakeFromNib()
     }
 
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initilize()
+    }
+
+    override public func awakeFromNib() {
+        backgroundColor = LFView.defaultBackgroundColor
+        layer.contentsGravity = kCAGravityResizeAspect
+        layer.backgroundColor = LFView.defaultBackgroundColor.CGColor
     }
 
     private weak var currentStream:Stream? {
@@ -49,12 +54,6 @@ public class LFView: UIView {
         layer.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream
-    }
-
-    private func initilize() {
-        backgroundColor = LFView.defaultBackgroundColor
-        layer.contentsGravity = kCAGravityResizeAspect
-        layer.backgroundColor = LFView.defaultBackgroundColor.CGColor
     }
 }
 

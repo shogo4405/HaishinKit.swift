@@ -8,20 +8,7 @@ public class GLLFView: GLKView {
     ]
     public static var defaultBackgroundColor:UIColor = UIColor.blackColor()
 
-    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
-        didSet {
-            switch videoGravity {
-            case AVLayerVideoGravityResizeAspect:
-                layer.contentsGravity = kCAGravityResizeAspect
-            case AVLayerVideoGravityResizeAspectFill:
-                layer.contentsGravity = kCAGravityResizeAspectFill
-            case AVLayerVideoGravityResize:
-                layer.contentsGravity = kCAGravityResize
-            default:
-                layer.contentsGravity = kCAGravityResizeAspect
-            }
-        }
-    }
+    public var videoGravity:String = AVLayerVideoGravityResizeAspect
 
     var orientation:AVCaptureVideoOrientation = .Portrait
     var position:AVCaptureDevicePosition = .Front {
@@ -50,12 +37,18 @@ public class GLLFView: GLKView {
 
     public override init(frame: CGRect) {
         super.init(frame: frame, context: EAGLContext(API: .OpenGLES2))
-        initilize()
+        awakeFromNib()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        initilize()
+    }
+
+    public override func awakeFromNib() {
+        enableSetNeedsDisplay = true
+        backgroundColor = GLLFView.defaultBackgroundColor
+        layer.backgroundColor = GLLFView.defaultBackgroundColor.CGColor
+        ciContext = CIContext(EAGLContext: context, options: GLLFView.defaultOptions)
     }
 
     public override func drawRect(rect: CGRect) {
@@ -63,8 +56,10 @@ public class GLLFView: GLKView {
         guard let displayImage:CIImage = displayImage else {
             return
         }
-        let inRect:CGRect = CGRectMake(0, 0, CGFloat(drawableWidth), CGFloat(drawableHeight))
-        ciContext.drawImage(displayImage, inRect: inRect, fromRect: displayImage.extent)
+        var inRect:CGRect = CGRectMake(0, 0, CGFloat(drawableWidth), CGFloat(drawableHeight))
+        var fromRect:CGRect = displayImage.extent
+        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
+        ciContext.drawImage(displayImage, inRect: inRect, fromRect: fromRect)
     }
 
     public func attachStream(stream:Stream?) {
@@ -72,14 +67,6 @@ public class GLLFView: GLKView {
             stream.mixer.videoIO.drawable = self
         }
         currentStream = stream
-    }
-
-    private func initilize() {
-        enableSetNeedsDisplay = true
-        backgroundColor = GLLFView.defaultBackgroundColor
-        layer.contentsGravity = kCAGravityResizeAspect
-        layer.backgroundColor = GLLFView.defaultBackgroundColor.CGColor
-        ciContext = CIContext(EAGLContext: context, options: GLLFView.defaultOptions)
     }
 }
 

@@ -13,22 +13,21 @@ public class LFView: NSView {
 
     override public init(frame: NSRect) {
         super.init(frame: frame)
-        initialize()
+        awakeFromNib()
     }
 
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-        initialize()
     }
 
-    public func attachStream(stream:Stream?) {
-        layer?.setValue(stream?.mixer.session, forKey: "session")
-    }
-
-    private func initialize() {
+    public override func awakeFromNib() {
         wantsLayer = true
         layer = AVCaptureVideoPreviewLayer()
         layer?.backgroundColor = LFView.defaultBackgroundColor.CGColor
         layer?.setValue(videoGravity, forKey: "videoGravity")
+    }
+
+    public func attachStream(stream:Stream?) {
+        layer?.setValue(stream?.mixer.session, forKey: "session")
     }
 }
