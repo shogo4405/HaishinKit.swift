@@ -92,13 +92,13 @@ public class Stream: NSObject {
         }
     }
 
-    public var outputSettings:[String:[String:AnyObject]?] {
+    public var recorderSettings:[String:[String:AnyObject]] {
         get {
-            var outputSettings:[String:[String:AnyObject]?]!
+            var recorderSettings:[String:[String:AnyObject]]!
             dispatch_sync(lockQueue) {
-                outputSettings = self.mixer.recorder.outputSettings
+                recorderSettings = self.mixer.recorder.outputSettings
             }
-            return outputSettings
+            return recorderSettings
         }
         set {
             dispatch_async(lockQueue) {
