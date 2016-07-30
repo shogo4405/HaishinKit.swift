@@ -4,37 +4,30 @@ import AVFoundation
 /**
  flash.net.NetStreamInfo for Swift
  */
-public final class RTMPStreamInfo: NSObject {
+public struct RTMPStreamInfo {
     public internal(set) var byteCount:Int64 = 0
     public internal(set) var resourceName:String? = nil
     public internal(set) var currentBytesPerSecond:Int32 = 0
 
-    public override var description: String {
-        return Mirror(reflecting: self).description
-    }
-
     private var previousByteCount:Int64 = 0
 
-    func didTimerInterval(timer:NSTimer) {
+    mutating func didTimerInterval(timer:NSTimer) {
         let byteCount:Int64 = self.byteCount
         currentBytesPerSecond = Int32(byteCount - previousByteCount)
         previousByteCount = byteCount
     }
 
-    func clear() {
+    mutating func clear() {
         byteCount = 0
         currentBytesPerSecond = 0
+        previousByteCount = 0
     }
 }
 
-// MARK: NSCopying
-extension RTMPStreamInfo: NSCopying {
-    public func copyWithZone(zone: NSZone) -> AnyObject {
-        let info:RTMPStreamInfo = RTMPStreamInfo()
-        info.resourceName = resourceName
-        info.byteCount = byteCount
-        info.currentBytesPerSecond = currentBytesPerSecond
-        return info
+// MARK: CustomStringConvertible
+extension RTMPStreamInfo: CustomStringConvertible {
+    public var description:String {
+        return Mirror(reflecting: self).description
     }
 }
 
@@ -208,6 +201,14 @@ public class RTMPStream: Stream {
         }
     }
 
+    public enum HowToPublish: String {
+        case Record = "record"
+        case Append = "append"
+        case AppendWithGap = "appendWithGap"
+        case Live = "live"
+        case LocalRecord = "localRecord"
+    }
+
     enum ReadyState: UInt8 {
         case Initilized = 0
         case Open       = 1
@@ -221,19 +222,12 @@ public class RTMPStream: Stream {
     static let defaultID:UInt32 = 0
     public static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
     public static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
-
+    public internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
     public private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-
+    public private(set) dynamic var currentFPS:UInt8 = 0
     public var soundTransform:SoundTransform {
         get { return audioPlayback.soundTransform }
         set { audioPlayback.soundTransform = newValue }
-    }
-
-    dynamic public private(set) var currentFPS:UInt8 = 0
-
-    var _info:RTMPStreamInfo = RTMPStreamInfo()
-    public var info:RTMPStreamInfo {
-        return _info.copy() as! RTMPStreamInfo
     }
 
     var id:UInt32 = RTMPStream.defaultID
@@ -243,13 +237,13 @@ public class RTMPStream: Stream {
             case .Open:
                 currentFPS = 0
                 frameCount = 0
-                _info.clear()
+                info.clear()
             case .Publishing:
                 send("@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
-                if (howToPublish == "localRecord") {
-                    mixer.recorder.fileName = _info.resourceName
+                if (howToPublish == .LocalRecord) {
+                    mixer.recorder.fileName = info.resourceName
                     mixer.recorder.startRunning()
                 }
             default:
@@ -266,7 +260,7 @@ public class RTMPStream: Stream {
     private var frameCount:UInt8 = 0
     private var chunkTypes:[FLVTag.TagType:Bool] = [:]
     private var dispatcher:IEventDispatcher!
-    private var howToPublish:String = "live"
+    private var howToPublish:RTMPStream.HowToPublish = .Live
     private var rtmpConnection:RTMPConnection
 
     public init(rtmpConnection: RTMPConnection) {
@@ -344,14 +338,14 @@ public class RTMPStream: Stream {
         }
     }
 
-    public func publish(name:String?, _ type:String = "live") {
+    public func publish(name:String?, _ type:RTMPStream.HowToPublish = .Live) {
         dispatch_async(lockQueue) {
             guard let name:String = name else {
                 guard self.readyState == .Publishing else {
                     self.howToPublish = type
                     switch type {
-                    case "localRecord":
-                        self.mixer.recorder.fileName = self._info.resourceName
+                    case .LocalRecord:
+                        self.mixer.recorder.fileName = self.info.resourceName
                         self.mixer.recorder.startRunning()
                     default:
                         break
@@ -386,7 +380,7 @@ public class RTMPStream: Stream {
                 usleep(100)
             }
 
-            self._info.resourceName = name
+            self.info.resourceName = name
             self.howToPublish = type
             self.muxer.dispose()
             self.muxer.delegate = self
@@ -407,7 +401,7 @@ public class RTMPStream: Stream {
                     objectEncoding: self.objectEncoding,
                     commandName: "publish",
                     commandObject: nil,
-                    arguments: [name, type == "localRecord" ? "live" : type]
+                    arguments: [name, type == .LocalRecord ? RTMPStream.HowToPublish.Live.rawValue : type.rawValue]
             )))
 
             self.readyState = .Publish
@@ -446,7 +440,7 @@ public class RTMPStream: Stream {
                 handlerName: handlerName,
                 arguments: arguments
             )))
-            OSAtomicAdd64(Int64(length), &self._info.byteCount)
+            OSAtomicAdd64(Int64(length), &self.info.byteCount)
         }
     }
 
@@ -469,7 +463,7 @@ public class RTMPStream: Stream {
     func didTimerInterval(timer:NSTimer) {
         currentFPS = frameCount
         frameCount = 0
-        _info.didTimerInterval(timer)
+        info.didTimerInterval(timer)
     }
 
     func rtmpStatusHandler(notification:NSNotification) {
@@ -490,14 +484,14 @@ public class RTMPStream: Stream {
 
 extension RTMPStream {
     func FCPublish() {
-        guard let name:String = _info.resourceName where rtmpConnection.flashVer.containsString("FMLE/") else {
+        guard let name:String = info.resourceName where rtmpConnection.flashVer.containsString("FMLE/") else {
             return
         }
         rtmpConnection.call("FCPublish", responder: nil, arguments: name)
     }
 
     func FCUnpublish() {
-        guard let name:String = _info.resourceName where rtmpConnection.flashVer.containsString("FMLE/") else {
+        guard let name:String = info.resourceName where rtmpConnection.flashVer.containsString("FMLE/") else {
             return
         }
         rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
@@ -533,7 +527,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
-        OSAtomicAdd64(Int64(length), &_info.byteCount)
+        OSAtomicAdd64(Int64(length), &info.byteCount)
         audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
     }
 
@@ -548,7 +542,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
-        OSAtomicAdd64(Int64(length), &_info.byteCount)
+        OSAtomicAdd64(Int64(length), &info.byteCount)
         videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
         frameCount = (frameCount + 1) & 0xFF
     }
