@@ -338,7 +338,15 @@ public class RTMPStream: Stream {
         }
     }
 
-    public func publish(name:String?, _ type:RTMPStream.HowToPublish = .Live) {
+    @available(*, unavailable)
+    public func publish(name:String?, type:String = "live") {
+        guard let howToPublish:RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
+            return
+        }
+        publish(name, type: howToPublish)
+    }
+
+    public func publish(name:String?, type:RTMPStream.HowToPublish = .Live) {
         dispatch_async(lockQueue) {
             guard let name:String = name else {
                 guard self.readyState == .Publishing else {
