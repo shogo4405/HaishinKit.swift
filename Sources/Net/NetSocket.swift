@@ -109,7 +109,7 @@ class NetSocket: NSObject {
         connected = false
 
         if (0 < timeout) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * Int64(NSEC_PER_SEC)), lockQueue, isTimeout)
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * Int64(NSEC_PER_SEC)), lockQueue, isTimedout)
         }
     }
 
@@ -124,7 +124,7 @@ class NetSocket: NSObject {
         outputStream = nil
     }
 
-    func isTimeout() {
+    func isTimedout() {
     }
 
     private func doInput() {
