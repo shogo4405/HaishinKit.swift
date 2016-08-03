@@ -10,9 +10,9 @@ public class NetService: NSObject {
         "com.github.shogo4405.lf.NetService.lock", DISPATCH_QUEUE_SERIAL
     )
     var networkQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.NetService.nwtwork", DISPATCH_QUEUE_SERIAL
+        "com.github.shogo4405.lf.NetService.network", DISPATCH_QUEUE_SERIAL
     )
-    
+
     private(set) var domain:String
     private(set) var name:String
     private(set) var port:Int32

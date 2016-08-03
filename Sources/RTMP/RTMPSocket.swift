@@ -111,6 +111,7 @@ final class RTMPSocket: NetSocket {
     }
 
     override func initConnection() {
+        logger.info("init")
         readyState = .Uninitialized
         timestamp = 0
         chunkSizeS = RTMPChunk.defaultSize
@@ -127,5 +128,13 @@ final class RTMPSocket: NetSocket {
         readyState = .Closing
         super.deinitConnection(disconnect)
     }
-}
 
+    override func isTimeout() {
+        guard !connected else {
+            return
+        }
+        deinitConnection(false)
+        delegate?.dispatchEventWith(Event.IO_ERROR, bubbles: false, data: nil)
+        logger.warning("connection timedout")
+    }
+}

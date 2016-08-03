@@ -23,9 +23,10 @@ public enum EventPhase: UInt8 {
 /**
  flash.events.Event for Swift
  */
-public class Event {
+public class Event: NSObject {
     public static let SYNC:String = "sync"
     public static let EVENT:String = "event"
+    public static let IO_ERROR:String = "ioError"
     public static let RTMP_STATUS:String = "rtmpStatus"
 
     public static func from(notification:NSNotification) -> Event {
@@ -42,17 +43,14 @@ public class Event {
     public private(set) var data:Any?
     public private(set) var target:AnyObject? = nil
 
+    public override var description:String {
+        return Mirror(reflecting: self).description
+    }
+
     init(type:String, bubbles:Bool = false, data:Any? = nil) {
         self.type = type
         self.bubbles = bubbles
         self.data = data
-    }
-}
-
-// MARK: CustomStringConvertible
-extension Event: CustomStringConvertible {
-    public var description:String {
-        return Mirror(reflecting: self).description
     }
 }
 

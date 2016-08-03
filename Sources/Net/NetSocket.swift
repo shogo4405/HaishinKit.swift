@@ -1,8 +1,10 @@
 import Foundation
 
 class NetSocket: NSObject {
+    static let defaultTimeout:Int64 = 15 // sec
     static let defaultWindowSizeC:Int = 1024 * 1
 
+    var timeout:Int64 = NetSocket.defaultTimeout
     var connected:Bool = false
     var inputBuffer:[UInt8] = []
     var inputStream:NSInputStream?
@@ -105,6 +107,10 @@ class NetSocket: NSObject {
         outputStream.open()
         runloop?.run()
         connected = false
+
+        if (0 < timeout) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * Int64(NSEC_PER_SEC)), lockQueue, isTimeout)
+        }
     }
 
     func deinitConnection(disconnect:Bool) {
@@ -116,6 +122,9 @@ class NetSocket: NSObject {
         outputStream?.removeFromRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
         outputStream?.delegate = nil
         outputStream = nil
+    }
+
+    func isTimeout() {
     }
 
     private func doInput() {

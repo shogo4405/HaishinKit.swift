@@ -151,7 +151,10 @@ public class RTMPConnection: EventDispatcher {
     public var swfUrl:String? = nil
     public var pageUrl:String? = nil
     public var flashVer:String = RTMPConnection.defaultFlashVer
-
+    public var timeout:Int64 {
+        get { return socket.timeout }
+        set { socket.timeout = newValue }
+    }
     public private(set) var uri:NSURL? = nil
     public private(set) var connected:Bool = false
 
