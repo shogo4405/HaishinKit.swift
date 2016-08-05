@@ -1,6 +1,23 @@
 # lf - lIVE fRAMEWORK
 Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 
+## Features
+### RTMP
+- [x] RTMP Auth
+- [x] Publish
+- [x] AMF0
+- [x] SharedObject
+- [ ] Play
+- [ ] AMF3
+
+### HLS
+- [x] HTTPService
+- [x] HLS Publish
+
+### Others
+- [x] Hardware acceleration for H264 video encoding/AAC audio encoding
+- [ ] Objectiv-C Bridging 
+
 ## Install
 ### CocoaPods
 ```rb
@@ -8,7 +25,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'lf', '~> 0.3.0'
+    pod 'lf', '~> 0.3.4'
 end
 
 target 'Your Target'  do
