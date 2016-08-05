@@ -199,9 +199,8 @@ final class AACEncoder: NSObject {
         // XXX: perhaps mistake. but can support macOS BuiltIn Mic #61
         if (0 <= status && ioOutputDataPacketSize == 1) {
             var result:CMSampleBufferRef?
-            var timing:CMSampleTimingInfo = CMSampleTimingInfo()
-            let numSamples:CMItemCount = CMSampleBufferGetNumSamples(sampleBuffer)
-            CMSampleBufferGetSampleTimingInfo(sampleBuffer, 0, &timing)
+            var timing:CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
+            let numSamples:CMItemCount = sampleBuffer.numSamples
             CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
             CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outOutputData.unsafePointer)
             delegate?.sampleOutput(audio: result!)

@@ -20,6 +20,11 @@ extension CMSampleBuffer {
             CMSampleBufferSetDataBuffer(self, dataBuffer)
         }
     }
+    
+    var numSamples:CMItemCount {
+        return CMSampleBufferGetNumSamples(self)
+    }
+    
     var duration:CMTime {
         return CMSampleBufferGetDuration(self)
     }
@@ -63,5 +68,14 @@ extension CVPixelBuffer {
     }
     var height:Int {
         return CVPixelBufferGetHeight(self)
+    }
+}
+
+// MARK: -
+extension CMSampleTimingInfo {
+    init(sampleBuffer:CMSampleBuffer) {
+        duration = sampleBuffer.duration
+        decodeTimeStamp = sampleBuffer.decodeTimeStamp
+        presentationTimeStamp = sampleBuffer.presentationTimeStamp
     }
 }
