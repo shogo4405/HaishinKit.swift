@@ -20,6 +20,7 @@ class NetSocket: NSObject {
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.NetSocket.lock", DISPATCH_QUEUE_SERIAL
     )
+    private var timeoutHandler:(() -> Void)?
 
     final func doOutput(data data:NSData) -> Int {
         dispatch_async(lockQueue) {
@@ -92,9 +93,12 @@ class NetSocket: NSObject {
     }
 
     func initConnection() {
+        connected = false
         totalBytesIn = 0
         totalBytesOut = 0
+        timeoutHandler = didTimeout
         inputBuffer.removeAll(keepCapacity: false)
+
         guard let inputStream:NSInputStream = inputStream, outputStream:NSOutputStream = outputStream else {
             return
         }
@@ -106,10 +110,14 @@ class NetSocket: NSObject {
         inputStream.open()
         outputStream.open()
         runloop?.run()
-        connected = false
 
         if (0 < timeout) {
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * Int64(NSEC_PER_SEC)), lockQueue, isTimedout)
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * Int64(NSEC_PER_SEC)), lockQueue) {
+                guard let timeoutHandler:(() -> Void) = self.timeoutHandler else {
+                    return
+                }
+                timeoutHandler()
+            }
         }
     }
 
@@ -124,7 +132,7 @@ class NetSocket: NSObject {
         outputStream = nil
     }
 
-    func isTimedout() {
+    func didTimeout() {
     }
 
     private func doInput() {
@@ -160,6 +168,7 @@ extension NetSocket: NSStreamDelegate {
                 break
             }
             if (aStream == inputStream) {
+                timeoutHandler = nil
                 connected = true
             }
         //  2 = 1 << 1
