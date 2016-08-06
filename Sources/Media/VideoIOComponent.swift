@@ -65,12 +65,14 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    #if os(iOS)
     var torch:Bool = false {
         didSet {
+            guard torch != oldValue else {
+                return
+            }
             let torchMode:AVCaptureTorchMode = torch ? .On : .Off
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                where device.isTorchModeSupported(torchMode) && device.torchAvailable else {
+                where device.isTorchModeSupported(torchMode) else {
                 logger.warning("torchMode(\(torchMode)) is not supported")
                 return
             }
@@ -84,8 +86,7 @@ final class VideoIOComponent: IOComponent {
             }
         }
     }
-    #endif
-    
+
     var continuousAutofocus:Bool = false {
         didSet {
             guard continuousAutofocus != oldValue else {
@@ -256,7 +257,6 @@ final class VideoIOComponent: IOComponent {
         fps = fps * 1
         drawable?.position = camera.position
 
-        #if os(iOS)
         do {
             try camera.lockForConfiguration()
             let torchMode:AVCaptureTorchMode = torch ? .On : .Off
@@ -267,7 +267,6 @@ final class VideoIOComponent: IOComponent {
         } catch let error as NSError {
             logger.error("\(error)")
         }
-        #endif
     }
 
     #if os(OSX)
@@ -333,18 +332,21 @@ final class VideoIOComponent: IOComponent {
         return false
     }
 
-    func createPixelBuffer(image:CIImage, _ width:Int, _ height:Int) -> CVPixelBuffer? {
-        var buffer:CVPixelBuffer?
-        CVPixelBufferCreate(
-            kCFAllocatorDefault,
-            width,
-            height,
-            kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
-            nil,
-            &buffer
-        )
-        return buffer
+    #if os(iOS)
+    func rampToVideoZoomFactor(factor:CGFloat, withRate:Float) {
+        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
+            where factor < device.activeFormat.videoMaxZoomFactor else {
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.rampToVideoZoomFactor(factor, withRate: withRate)
+            device.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("while locking device for rampToVideoZoomFactor: \(error)")
+        }
     }
+    #endif
 }
 
 // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
@@ -358,7 +360,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         if (!effects.isEmpty) {
             #if os(OSX)
             // green edge hack for OSX
-            buffer = createPixelBuffer(image, buffer.width, buffer.height)!
+            buffer = CVPixelBuffer.create(image)!
             #endif
             drawable?.render(image, toCVPixelBuffer: buffer)
         }
@@ -409,4 +411,3 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
     }
 }
 #endif
-

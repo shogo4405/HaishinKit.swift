@@ -16,7 +16,6 @@ public class Stream: NSObject {
         "com.github.shogo4405.lf.Stream.lock", DISPATCH_QUEUE_SERIAL
     )
 
-    #if os(iOS)
     public var torch:Bool {
         get {
             var torch:Bool = false
@@ -31,6 +30,8 @@ public class Stream: NSObject {
             }
         }
     }
+
+    #if os(iOS)
     public var syncOrientation:Bool {
         get {
             var syncOrientation:Bool = false
@@ -146,6 +147,11 @@ public class Stream: NSObject {
     public func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         dispatch_async(lockQueue) {
             self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
+        }
+    }
+    public func rampToVideoZoomFactor(factor:CGFloat, withRate:Float) {
+        dispatch_async(lockQueue) {
+            self.mixer.videoIO.rampToVideoZoomFactor(factor, withRate: withRate)
         }
     }
     #endif

@@ -1,4 +1,5 @@
 import CoreMedia
+import CoreImage
 
 extension CMSampleBuffer {
     var dependsOnOthers:Bool {
@@ -63,6 +64,21 @@ extension CMSampleBuffer: BytesConvertible {
 
 // MARK: -
 extension CVPixelBuffer {
+
+    static func create(image:CIImage) -> CVPixelBuffer? {
+        var buffer:CVPixelBuffer?
+        CVPixelBufferCreate(
+            kCFAllocatorDefault,
+            Int(image.extent.width),
+            Int(image.extent.height),
+            kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+            nil,
+            &buffer
+        )
+        return buffer
+    }
+    
+    
     var width:Int {
         return CVPixelBufferGetWidth(self)
     }
