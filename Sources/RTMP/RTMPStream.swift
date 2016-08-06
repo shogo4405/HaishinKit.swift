@@ -307,10 +307,33 @@ public class RTMPStream: Stream {
 
     public func play(arguments:Any?...) {
         dispatch_async(lockQueue) {
+            guard let name:String = arguments.first as? String else {
+                switch self.readyState {
+                case .Play:
+                    fallthrough
+                case .Playing:
+                    self.audioPlayback.stopRunning()
+                    self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+                        type: .Zero,
+                        streamId: RTMPChunk.audio,
+                        message: RTMPCommandMessage(
+                            streamId: self.id,
+                            transactionId: 0,
+                            objectEncoding: self.objectEncoding,
+                            commandName: "closeStream",
+                            commandObject: nil,
+                            arguments: []
+                        )))
+                default:
+                    break
+                }
+                return
+            }
             while (self.readyState == .Initilized) {
                 usleep(100)
             }
             self.audioPlayback.startRunning()
+            self.info.resourceName = name
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
@@ -420,6 +443,7 @@ public class RTMPStream: Stream {
         if (self.readyState == .Closed) {
             return
         }
+        play()
         publish(nil)
         dispatch_sync(lockQueue) {
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(

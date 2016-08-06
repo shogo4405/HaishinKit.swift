@@ -30,3 +30,9 @@ target 'Tests' do
     import_pods
 end
 
+target 'Tests Objective-C' do
+    platform :osx, '10.11'
+    import_pods
+end
+
+
