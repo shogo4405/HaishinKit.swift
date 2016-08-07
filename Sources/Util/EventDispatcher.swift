@@ -30,12 +30,12 @@ public class Event: NSObject {
     public static let RTMP_STATUS:String = "rtmpStatus"
 
     public static func from(notification:NSNotification) -> Event {
-        if let userInfo = notification.userInfo {
-            if let event:Event = userInfo["event"] as? Event {
-                return event
-            }
+        guard let
+            userInfo:[NSObject: AnyObject] = notification.userInfo,
+            event:Event = userInfo["event"] as? Event else {
+            return Event(type: Event.EVENT)
         }
-        return Event(type: Event.EVENT)
+        return event
     }
 
     public private(set) var type:String
@@ -47,7 +47,7 @@ public class Event: NSObject {
         return Mirror(reflecting: self).description
     }
 
-    init(type:String, bubbles:Bool = false, data:Any? = nil) {
+    public init(type:String, bubbles:Bool = false, data:Any? = nil) {
         self.type = type
         self.bubbles = bubbles
         self.data = data

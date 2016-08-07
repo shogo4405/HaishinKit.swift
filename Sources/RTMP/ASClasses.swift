@@ -3,22 +3,38 @@ import Foundation
 public let kASUndefined:ASUndefined = ASUndefined()
 public typealias ASObject = [String: Any?]
 
-public class ASUndefined {
-    private init() {
-    }
-}
-
-// MARK: CustomStringConvertible
-extension ASUndefined: CustomStringConvertible {
-    public var description:String {
+public final class ASUndefined: NSObject {
+    public override var description:String {
         return "undefined"
+    }
+    private override init() {
+        super.init()
     }
 }
 
 // MARK: -
-public struct ASArray: ArrayLiteralConvertible {
+public struct ASArray {
     private(set) var data:[Any?]
     private(set) var dict:[String: Any?] = [:]
+
+    public var length:Int {
+        return data.count
+    }
+
+    public init(count:Int) {
+        self.data = [Any?](count: count, repeatedValue: kASUndefined)
+    }
+
+    public init(data:[Any?]) {
+        self.data = data
+    }
+}
+
+// MARK: ArrayLiteralConvertible
+extension ASArray: ArrayLiteralConvertible {
+    public init (arrayLiteral elements: Any?...) {
+        self = ASArray(data: elements)
+    }
 
     public subscript(i: Any) -> Any? {
         get {
@@ -52,22 +68,6 @@ public struct ASArray: ArrayLiteralConvertible {
             }
         }
     }
-    
-    public var length:Int {
-        return data.count
-    }
-    
-    public init(count:Int) {
-        self.data = [Any?](count: count, repeatedValue: kASUndefined)
-    }
-    
-    public init(data:[Any?]) {
-        self.data = data
-    }
-    
-    public init (arrayLiteral elements: Any?...) {
-        self = ASArray(data: elements)
-    }
 }
 
 // MARK: CustomStringConvertible
@@ -93,27 +93,12 @@ public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
    - 2.17 XML Document Type (amf0-file-format-specification.pdf)
    - 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
-public struct ASXMLDocument {
+public final class ASXMLDocument: NSObject {
     private var data:String
 
     public init(data:String) {
         self.data = data
     }
-}
-
-// MARK: CustomStringConvertible
-extension ASXMLDocument: CustomStringConvertible {
-    public var description:String {
-        return data
-    }
-}
-
-// MARK: Equatable
-extension ASXMLDocument: Equatable {
-}
-
-public func ==(lhs: ASXMLDocument, rhs: ASXMLDocument) -> Bool {
-    return lhs.description == rhs.description
 }
 
 // MARK: -
@@ -122,25 +107,10 @@ public func ==(lhs: ASXMLDocument, rhs: ASXMLDocument) -> Bool {
  
  - seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
-public struct ASXML {
+public final class ASXML: NSObject {
     private var data:String
 
     public init(data:String) {
         self.data = data
     }
-}
-
-// MARK: CustomStringConvertible
-extension ASXML: CustomStringConvertible {
-    public var description:String {
-        return data
-    }
-}
-
-// MARK: Equatable
-extension ASXML: Equatable {
-}
-
-public func ==(lhs: ASXML, rhs: ASXML) -> Bool {
-    return lhs.description == rhs.description
 }
