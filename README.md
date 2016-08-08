@@ -3,12 +3,12 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 
 ## Features
 ### RTMP
-- [x] RTMP Auth
-- [x] Publish
+- [x] Authentication
+- [x] Publish (H264/AAC)
+- [ ] Playback
 - [x] AMF0
-- [x] SharedObject
-- [ ] Play
 - [ ] AMF3
+- [x] SharedObject
 
 ### HLS
 - [x] HTTPService
@@ -18,7 +18,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] Hardware acceleration for H264 video encoding/AAC audio encoding
 - [ ] Objectiv-C Bridging 
 
-## Install
+## Installation
 ### CocoaPods
 ```rb
 source 'https://github.com/CocoaPods/Specs.git'
