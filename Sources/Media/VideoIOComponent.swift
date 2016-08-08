@@ -335,7 +335,7 @@ final class VideoIOComponent: IOComponent {
     #if os(iOS)
     func rampToVideoZoomFactor(factor:CGFloat, withRate:Float) {
         guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-            where factor < device.activeFormat.videoMaxZoomFactor else {
+            where 1 <= factor && factor < device.activeFormat.videoMaxZoomFactor else {
             return
         }
         do {

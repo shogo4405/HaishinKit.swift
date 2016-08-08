@@ -54,6 +54,13 @@ final class LiveViewController: UIViewController {
         return label
     }()
 
+    var zoomSlider:UISlider = {
+        let slider:UISlider = UISlider()
+        slider.minimumValue = 0.0
+        slider.maximumValue = 5.0
+        return slider
+    }()
+
     var audioBitrateSlider:UISlider = {
         let slider:UISlider = UISlider()
         slider.minimumValue = 16
@@ -80,6 +87,7 @@ final class LiveViewController: UIViewController {
 
         currentFPSLabel.text = "FPS"
 
+        zoomSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         videoBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         audioBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
         fpsControl.addTarget(self, action: #selector(LiveViewController.onFPSValueChanged(_:)), forControlEvents: .ValueChanged)
@@ -145,6 +153,7 @@ final class LiveViewController: UIViewController {
         view.addSubview(videoBitrateSlider)
         view.addSubview(audioBitrateLabel)
         view.addSubview(audioBitrateSlider)
+        view.addSubview(zoomSlider)
         view.addSubview(fpsControl)
         view.addSubview(currentFPSLabel)
         view.addSubview(effectSegmentControl)
@@ -159,6 +168,7 @@ final class LiveViewController: UIViewController {
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
         currentFPSLabel.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
+        zoomSlider.frame = CGRect(x: 20, y: view.frame.height - 44 * 3 - 22, width: view.frame.width - 44 - 60, height: 44)
         videoBitrateLabel.text = "video \(Int(videoBitrateSlider.value))/kbps"
         videoBitrateLabel.frame = CGRect(x: view.frame.width - 150 - 60, y: view.frame.height - 44 * 2 - 22, width: 150, height: 44)
         videoBitrateSlider.frame = CGRect(x: 20, y: view.frame.height - 44 * 2, width: view.frame.width - 44 - 60, height: 44)
@@ -194,6 +204,9 @@ final class LiveViewController: UIViewController {
         if (slider == videoBitrateSlider) {
             videoBitrateLabel.text = "video \(Int(slider.value))/kbsp"
             rtmpStream.videoSettings["bitrate"] = slider.value * 1024
+        }
+        if (slider == zoomSlider) {
+            rtmpStream.rampToVideoZoomFactor(CGFloat(slider.value), withRate: 5.0)
         }
     }
 
