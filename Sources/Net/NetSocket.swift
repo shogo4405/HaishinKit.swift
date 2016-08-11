@@ -13,6 +13,7 @@ class NetSocket: NSObject {
     var networkQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.NetSocket.network", DISPATCH_QUEUE_SERIAL
     )
+    var securityLevel:String = NSStreamSocketSecurityLevelNone
     private(set) var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
 
@@ -102,11 +103,17 @@ class NetSocket: NSObject {
         guard let inputStream:NSInputStream = inputStream, outputStream:NSOutputStream = outputStream else {
             return
         }
+        
         runloop = NSRunLoop.currentRunLoop()
+
         inputStream.delegate = self
         inputStream.scheduleInRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
+        inputStream.setProperty(securityLevel, forKey: NSStreamSocketSecurityLevelKey)
+
         outputStream.delegate = self
         outputStream.scheduleInRunLoop(runloop!, forMode: NSDefaultRunLoopMode)
+        outputStream.setProperty(securityLevel, forKey: NSStreamSocketSecurityLevelKey)
+
         inputStream.open()
         outputStream.open()
         runloop?.run()

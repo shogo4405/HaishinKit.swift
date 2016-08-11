@@ -3,7 +3,7 @@ import Foundation
 /**
  flash.net.Responder for Swift
  */
-public class Responder {
+public class Responder: NSObject {
 
     private var result:(data:[Any?]) -> Void
     private var status:((data:[Any?]) -> Void)?
@@ -32,6 +32,7 @@ public class Responder {
  flash.net.NetConnection for Swift
  */
 public class RTMPConnection: EventDispatcher {
+    static public let supportedProtocols:[String] = ["rtmp", "rtmps"]
 
     /**
      NetStatusEvent#info.code for NetConnection
@@ -228,12 +229,13 @@ public class RTMPConnection: EventDispatcher {
     }
 
     public func connect(command: String, arguments: Any?...) {
-        guard let uri:NSURL = NSURL(string: command) where !connected else {
+        guard let uri:NSURL = NSURL(string: command) where !connected && RTMPConnection.supportedProtocols.contains(uri.scheme) else {
             return
         }
         self.uri = uri
         self.arguments = arguments
         timer = NSTimer(timeInterval: 1.0, target: self, selector: #selector(RTMPConnection.didTimerInterval(_:)), userInfo: nil, repeats: true)
+        socket.securityLevel = uri.scheme == "rtmps" ? NSStreamSocketSecurityLevelNegotiatedSSL : NSStreamSocketSecurityLevelNone
         socket.connect(uri.host!, port: uri.port == nil ? RTMPConnection.defaultPort : uri.port!.integerValue)
     }
 
