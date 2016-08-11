@@ -94,7 +94,6 @@ class NetSocket: NSObject {
     }
 
     func initConnection() {
-        connected = false
         totalBytesIn = 0
         totalBytesOut = 0
         timeoutHandler = didTimeout
@@ -103,7 +102,7 @@ class NetSocket: NSObject {
         guard let inputStream:NSInputStream = inputStream, outputStream:NSOutputStream = outputStream else {
             return
         }
-        
+
         runloop = NSRunLoop.currentRunLoop()
 
         inputStream.delegate = self
@@ -116,7 +115,6 @@ class NetSocket: NSObject {
 
         inputStream.open()
         outputStream.open()
-        runloop?.run()
 
         if (0 < timeout) {
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, timeout * Int64(NSEC_PER_SEC)), lockQueue) {
@@ -126,6 +124,9 @@ class NetSocket: NSObject {
                 timeoutHandler()
             }
         }
+
+        runloop?.run()
+        connected = false
     }
 
     func deinitConnection(disconnect:Bool) {
