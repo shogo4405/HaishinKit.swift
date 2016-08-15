@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-public class DeviceUtil {
+public final class DeviceUtil {
     private init() {
     }
 

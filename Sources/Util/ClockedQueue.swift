@@ -15,6 +15,7 @@ class ClockedQueue<T> {
 
     private var date:NSDate = NSDate()
     private var buffers:[T] = []
+    private let mutex:Mutex = Mutex()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.ClockedQueue.lock", DISPATCH_QUEUE_SERIAL
     )
@@ -30,9 +31,13 @@ class ClockedQueue<T> {
     }
 
     func enqueue(buffer:T) {
-        dispatch_async(lockQueue) {
-            self.duration += self.getDuration(buffer)
-            self.buffers.append(buffer)
+        do {
+            try mutex.lock()
+            duration += getDuration(buffer)
+            buffers.append(buffer)
+            mutex.unlock()
+        } catch {
+            
         }
         if (timer == nil) {
             timer = NSTimer(
@@ -55,9 +60,13 @@ class ClockedQueue<T> {
         }
         date = NSDate()
         delegate?.queue(buffer)
-        dispatch_async(lockQueue) {
+        do {
+            try mutex.lock()
             self.duration -= duration
-            self.buffers.removeFirst()
+            buffers.removeFirst()
+            mutex.unlock()
+        } catch {
+            
         }
     }
 }
