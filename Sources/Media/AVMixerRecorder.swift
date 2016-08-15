@@ -80,6 +80,7 @@ public class AVMixerRecorder: NSObject {
         writer?.finishWritingWithCompletionHandler {
             self.delegate?.didFinishWriting(self)
         }
+        writer = nil
         writerInputs = [:]
     }
 }
@@ -114,20 +115,20 @@ public class DefaultAVMixerRecorderDelegate: NSObject {
     public var dateFormat:String = "-yyyyMMdd-HHmmss"
     private var rotateTime:CMTime = kCMTimeZero
     private var clockReference:String = AVMediaTypeVideo
+
+    #if os(OSX)
+    public lazy var moviesDirectory:NSURL = {
+        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.MoviesDirectory, .UserDomainMask, true)[0])
+    }()
+    #else
+    public lazy var moviesDirectory:NSURL = {
+        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
+    }()
+    #endif
 }
 
 // MARK: AVMixerRecorderDelegate
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
-
-    #if os(OSX)
-    public var moviesDirectory:NSURL {
-        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.MoviesDirectory, .UserDomainMask, true)[0])
-    }
-    #else
-    public var moviesDirectory:NSURL {
-        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
-    }
-    #endif
 
     public func rotateFile(recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String) {
         let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
@@ -210,11 +211,14 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             let dateFormatter:NSDateFormatter = NSDateFormatter()
             dateFormatter.locale = NSLocale(localeIdentifier: "en_US")
             dateFormatter.dateFormat = dateFormat
-            var fileCompoent:String? = nil
-            if let fileName:String = fileName {
-                fileCompoent = fileName + dateFormatter.stringFromDate(NSDate())
+            var fileComponent:String? = nil
+            if var fileName:String = fileName {
+                if let q:String.CharacterView.Index = fileName.characters.indexOf("?") {
+                    fileName.removeRange(q..<fileName.characters.endIndex)
+                }
+                fileComponent = fileName + dateFormatter.stringFromDate(NSDate())
             }
-            let url:NSURL = moviesDirectory.URLByAppendingPathComponent((fileCompoent ?? NSUUID().UUIDString) + ".mp4")
+            let url:NSURL = moviesDirectory.URLByAppendingPathComponent((fileComponent ?? NSUUID().UUIDString) + ".mp4")
             logger.info("\(url)")
             return try AVAssetWriter(URL: url, fileType: AVFileTypeMPEG4)
         } catch {
