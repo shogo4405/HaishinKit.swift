@@ -11,6 +11,7 @@ final class AVCEncoder: NSObject {
         "bitrate",
         "profileLevel",
         "dataRateLimits",
+        "enabledHardwareEncoder", // macOS only
         "maxKeyFrameIntervalDuration",
     ]
 
@@ -42,6 +43,14 @@ final class AVCEncoder: NSObject {
     var height:Int32 = AVCEncoder.defaultHeight {
         didSet {
             guard height != oldValue else {
+                return
+            }
+            invalidateSession = true
+        }
+    }
+    var enabledHardwareAccelerated:Bool = true {
+        didSet {
+            guard enabledHardwareAccelerated != oldValue else {
                 return
             }
             invalidateSession = true
@@ -163,6 +172,15 @@ final class AVCEncoder: NSObject {
                 "ScalingMode": "Trim"
             ]
         ]
+
+#if os(OSX)
+        if (enabledHardwareAccelerated) {
+            properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva"
+            properties["EnableHardwareAcceleratedVideoEncoder"] = true
+            properties["RequireHardwareAcceleratedVideoEncoder"] = true
+        }
+#endif
+
         if (dataRateLimits != AVCEncoder.defaultDataRateLimits) {
             properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits
         }
@@ -230,7 +248,15 @@ final class AVCEncoder: NSObject {
             return
         }
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
-        VTCompressionSessionEncodeFrame(session, imageBuffer, presentationTimeStamp, duration, nil, nil, &flags)
+        VTCompressionSessionEncodeFrame(
+            session,
+            imageBuffer,
+            presentationTimeStamp,
+            duration,
+            nil,
+            nil,
+            &flags
+        )
     }
 }
 
