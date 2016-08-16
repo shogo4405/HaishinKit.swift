@@ -10,7 +10,7 @@ target 'lf iOS'  do
     import_pods
 end
 
-target 'lf OSX' do
+target 'lf macOS' do
     platform :osx, '10.11'
     import_pods
 end
@@ -20,7 +20,7 @@ target 'Example iOS'  do
     import_pods
 end
 
-target 'Example OSX' do
+target 'Example macOS' do
     platform :osx, '10.11'
     import_pods
 end
@@ -34,5 +34,4 @@ target 'Tests Objective-C' do
     platform :osx, '10.11'
     import_pods
 end
-
 
