@@ -18,7 +18,6 @@
 		2923A1F51D6300550019FBCD /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543681D62FEB700734698 /* LiveViewController.swift */; };
 		2923A1F71D63005F0019FBCD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296543651D62FEB700734698 /* Assets.xcassets */; };
 		2923A1F81D6300650019FBCD /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543641D62FEB700734698 /* AppDelegate.swift */; };
-		2923A1FB1D63011E0019FBCD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2923A1F91D63011E0019FBCD /* MainMenu.xib */; };
 		2923A1FC1D6301220019FBCD /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2923A1F91D63011E0019FBCD /* MainMenu.xib */; };
 		29245AEE1D32347E00AFFB9A /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245AEC1D3233EB00AFFB9A /* VideoGravityUtil.swift */; };
 		29245AEF1D32348400AFFB9A /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245AEC1D3233EB00AFFB9A /* VideoGravityUtil.swift */; };
@@ -1013,7 +1012,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2923A1FB1D63011E0019FBCD /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
