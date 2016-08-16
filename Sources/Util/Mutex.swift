@@ -31,8 +31,7 @@ final class Mutex {
     }
 
     func lock() throws {
-        let result:Int32 = pthread_mutex_trylock(mutex)
-        switch result {
+        switch pthread_mutex_trylock(mutex) {
         case EBUSY:
             throw Mutex.Error.Busy
         case EINVAL:

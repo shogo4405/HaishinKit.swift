@@ -94,6 +94,10 @@ public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
    - 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
 public final class ASXMLDocument: NSObject {
+    public override var description:String {
+        return data
+    }
+
     private var data:String
 
     public init(data:String) {
@@ -108,6 +112,10 @@ public final class ASXMLDocument: NSObject {
  - seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
 public final class ASXML: NSObject {
+    public override var description:String {
+        return data
+    }
+
     private var data:String
 
     public init(data:String) {

@@ -228,6 +228,11 @@ public class RTMPConnection: EventDispatcher {
         socket.doOutput(chunk: RTMPChunk(message: message))
     }
 
+    @available(*, unavailable)
+    public func connect(command:String) {
+        connect(command, arguments: nil)
+    }
+
     public func connect(command: String, arguments: Any?...) {
         guard let uri:NSURL = NSURL(string: command) where !connected && RTMPConnection.supportedProtocols.contains(uri.scheme) else {
             return
