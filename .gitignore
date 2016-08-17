@@ -1,7 +1,5 @@
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcworkspace/contents.xcworkspacedata
-xcuserdata
+*.xcodeproj/xcuserdata/*
+*.xcworkspace/xcuserdata/*
 docs
 build
 *.xccheckout
