@@ -1,14 +1,19 @@
 # lf - lIVE fRAMEWORK
+[![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/lf.swift/master/LICENSE.txt)
+
 Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 
 ## Features
 ### RTMP
 - [x] Authentication
-- [x] Publish (H264/AAC)
+- [x] Publish and Recording (H264/AAC)
 - [ ] Playback
 - [x] AMF0
 - [ ] AMF3
 - [x] SharedObject
+- [x] RTMPS
+ - [x] Native (RTMP over SSL/TSL)
+ - [ ] ~~Tunneled (RTMPT over SSL/TSL)~~
 
 ### HLS
 - [x] HTTPService
@@ -16,7 +21,12 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 
 ### Others
 - [x] Hardware acceleration for H264 video encoding/AAC audio encoding
-- [ ] Objectiv-C Bridging 
+- [ ] Objectiv-C Bridging
+
+## Requirements
+* iOS 8.0+
+* macOS 10.11+
+* xcode 7.3+
 
 ## Installation
 ### CocoaPods
@@ -25,7 +35,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'lf', '~> 0.3.4'
+    pod 'lf', '~> 0.4.0'
 end
 
 target 'Your Target'  do
@@ -38,18 +48,25 @@ end
 Real Time Messaging Protocol (RTMP).
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
-var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-rtmpStream.view.videoGravity = AVLayerVideoGravityResizeAspectFill
+var rtmpStream:RTMPStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
 rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
 
-view.addSubview(rtmpStream.view)
+var lfView:LFView = LFView(frame: view.bounds)
+lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
+lfView.attachStream(rtmpStream)
+
+// add ViewController#view
+view.addSubview(lfView)
+
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
+// if you want to record a stream.
+// rtmpStream.publish("streamName", type: .LocalRecord)
 ```
 ### Settings
 ```swift
-var rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+var rtmpStream:RTMPStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
     "sessionPreset": AVCaptureSessionPresetMedium, // input video width/height
@@ -68,8 +85,21 @@ rtmpStream.videoSettings = [
     "profileLevel": kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
     "maxKeyFrameIntervalDuration": 2, // key frame / sec
 ]
+// "0" means the same of input
+rtmpStream.recorderSettings = [
+    AVMediaTypeAudio: [
+        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+        AVSampleRateKey: 0,
+        AVNumberOfChannelsKey: 0,
+    ],
+    AVMediaTypeVideo: [
+        AVVideoCodecKey: AVVideoCodecH264,
+        AVVideoHeightKey: 0,
+        AVVideoWidthKey: 0,
+    ],
+]
 ```
-### RTMP Auth 
+### Authentication
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
@@ -86,28 +116,31 @@ rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ## HTTP Usage
 HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
-httpStream = HTTPStream()
-
+var httpStream:HTTPStream = HTTPStream()
 httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
-rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-
+httpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
 httpStream.publish("hello")
 
-httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
+var lfView:LFView = LFView(frame: view.bounds)
+lfView.attachStream(httpStream)
+
+var httpService:HTTPService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
 httpService.startRunning()
 httpService.addHTTPStream(httpStream)
 
-view.addSubview(httpStream.view)
+// add ViewController#view
+view.addSubview(lfView)
 ```
 
 ## License
 New BSD
 
 ## Enviroment
-|lf|iOS|OSX|Swift|CocoaPods|
-|----|----|----|----|----|
-|0.3|8.0|10.11|2.3|1.0.0|
-|0.2|8.0|-|2.3|0.39.0|
+|lf|iOS|OSX|Swift|CocoaPods|Carthage|
+|:----:|:----:|:----:|:----:|:----:|:----:|
+|0.4|8.0|10.11|2.3|1.0.0|◯|
+|0.3|8.0|10.11|2.3|1.0.0|-|
+|0.2|8.0|-|2.3|0.39.0|-|
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
