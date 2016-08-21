@@ -16,7 +16,9 @@ final class RTSPSocket: NetSocket {
         didSet {
             if (connected) {
                 for request in requests {
-                    print(request.bytes)
+                    if (logger.isEnabledForLogLevel(.Verbose)) {
+                        logger.verbose("\(request)")
+                    }
                     doOutput(bytes: request.bytes)
                 }
                 requests.removeAll()
@@ -26,6 +28,9 @@ final class RTSPSocket: NetSocket {
 
     func doOutput(request:RTSPRequest) {
         if (connected) {
+            if (logger.isEnabledForLogLevel(.Verbose)) {
+                logger.verbose("\(request)")
+            }
             doOutput(bytes: request.bytes)
             return
         }
@@ -40,7 +45,11 @@ final class RTSPSocket: NetSocket {
         guard let response:RTSPResponse = RTSPResponse(bytes: inputBuffer) else {
             return
         }
+        if (logger.isEnabledForLogLevel(.Verbose)) {
+            logger.verbose("\(response)")
+        }
         delegate?.listen(response)
+        inputBuffer.removeAll()
     }
 
     private func connect(hostname:String, port:Int) {

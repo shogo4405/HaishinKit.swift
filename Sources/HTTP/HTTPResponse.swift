@@ -9,7 +9,7 @@ protocol HTTPResponseConvertible: BytesConvertible, CustomStringConvertible {
 }
 
 // MARK: -
-struct HTTPResponse:HTTPResponseConvertible {
+struct HTTPResponse: HTTPResponseConvertible {
     static let separator:[UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
     var version:String = HTTPVersion.Version11.rawValue
@@ -37,27 +37,30 @@ extension HTTPResponseConvertible {
         set {
             var count:Int = 0
             var lines:[String] = []
+
             let bytes:[ArraySlice<UInt8>] = newValue.split(HTTPRequest.separator)
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
-                guard let line:String = String(bytes: Array(bytes[i]), encoding: NSUTF8StringEncoding) else {
-                    continue
-                }
-                lines.append(line.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()))
-                if (bytes.last!.isEmpty) {
+                guard let line:String = String(bytes: Array(bytes[i]), encoding: NSUTF8StringEncoding)
+                    where line != "\r" else {
                     break
                 }
+                lines.append(line.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()))
             }
-            let first:[String] = lines.first!.componentsSeparatedByString(" ")
+
+            guard let first:[String] = lines.first?.componentsSeparatedByString(" ") else {
+                return
+            }
+
             version = first[0]
             statusCode = first[1]
+
             for i in 1..<lines.count {
-                if (lines[i].isEmpty) {
-                    continue
-                }
                 let pairs:[String] = lines[i].componentsSeparatedByString(": ")
                 headerFields[pairs[0]] = pairs[1]
             }
+
+            body = Array(newValue[count..<newValue.count])
         }
     }
 }
