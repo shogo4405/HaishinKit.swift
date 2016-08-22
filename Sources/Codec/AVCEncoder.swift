@@ -48,9 +48,9 @@ final class AVCEncoder: NSObject {
             invalidateSession = true
         }
     }
-    var enabledHardwareAccelerated:Bool = true {
+    var enabledHardwareEncoder:Bool = true {
         didSet {
-            guard enabledHardwareAccelerated != oldValue else {
+            guard enabledHardwareEncoder != oldValue else {
                 return
             }
             invalidateSession = true
