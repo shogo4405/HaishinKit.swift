@@ -30,11 +30,12 @@ public class NetService: NSObject {
     }
 
     func disconnect(client:NetClient) {
-        if let index:Int = clients.indexOf(client) {
-            clients.removeAtIndex(index)
-            client.delegate = nil
-            client.close(true)
+        guard let index:Int = clients.indexOf(client) else {
+            return
         }
+        clients.removeAtIndex(index)
+        client.delegate = nil
+        client.close(true)
     }
 
     func willStartRunning() {
@@ -60,14 +61,18 @@ public class NetService: NSObject {
         service.delegate = self
         service.setTXTRecordData(recordData)
         service.scheduleInRunLoop(runloop, forMode: NSDefaultRunLoopMode)
-        service.publishWithOptions(NSNetServiceOptions.ListenForConnections)
+        if (type.containsString("._udp")) {
+            service.publish()
+        } else {
+            service.publishWithOptions(NSNetServiceOptions.ListenForConnections)
+        }
         runloop.run()
     }
 }
 
 // MARK: NSNetServiceDelegate
 extension NetService: NSNetServiceDelegate {
-    public func netService(sender: NSNetService, didNotPublish errorDict: [String : NSNumber]) {
+    public func netService(sender: NSNetService, didNotPublish errorDict: [String:NSNumber]) {
         logger.error("\(errorDict)")
     }
 

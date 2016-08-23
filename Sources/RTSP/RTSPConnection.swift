@@ -20,16 +20,18 @@ protocol RTSPResponder: class {
 }
 
 // MARK: -
-final class RTSPLoggerResponder: RTSPResponder {
-    static let instance:RTSPLoggerResponder = RTSPLoggerResponder()
+final class RTSPNullResponder: RTSPResponder {
+    static let instance:RTSPNullResponder = RTSPNullResponder()
 
     func onResponse(response:RTSPResponse) {
-        logger.info("\(response)")
     }
 }
 
 // MARK: -
 class RTSPConnection: NSObject {
+
+    static let defaultRTPPort:Int32 = 8000
+
     var userAgent:String = "lf.swift"
     private var sequence:Int = 0
     private lazy var socket:RTSPSocket = {
@@ -40,7 +42,7 @@ class RTSPConnection: NSObject {
 
     private var responders:[RTSPResponder] = []
 
-    func doMethod(method: RTSPMethod, _ uri: String, _ headerFields:[String:String] = [:], _ responder:RTSPResponder = RTSPLoggerResponder.instance) {
+    func doMethod(method: RTSPMethod, _ uri: String, _ headerFields:[String:String] = [:], _ responder:RTSPResponder = RTSPNullResponder.instance) {
         sequence += 1
         var request:RTSPRequest = RTSPRequest()
         request.uri = uri
