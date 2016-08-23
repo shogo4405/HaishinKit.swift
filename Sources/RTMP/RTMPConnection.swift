@@ -151,11 +151,14 @@ public class RTMPConnection: EventDispatcher {
 
     public var swfUrl:String? = nil
     public var pageUrl:String? = nil
-    public var flashVer:String = RTMPConnection.defaultFlashVer
     public var timeout:Int64 {
         get { return socket.timeout }
         set { socket.timeout = newValue }
     }
+    public var flashVer:String = RTMPConnection.defaultFlashVer
+    /// Outgoing RTMP ChunkSize
+    public var chunkSize:Int = RTMPConnection.defaultChunkSizeS
+
     public private(set) var uri:NSURL? = nil
     public private(set) var connected:Bool = false
 
@@ -285,7 +288,7 @@ public class RTMPConnection: EventDispatcher {
         switch code {
         case Code.ConnectSuccess.rawValue:
             connected = true
-            socket.chunkSizeS = RTMPConnection.defaultChunkSizeS
+            socket.chunkSizeS = chunkSize
             socket.doOutput(chunk: RTMPChunk(
                 type: .One,
                 streamId: RTMPChunk.control,
