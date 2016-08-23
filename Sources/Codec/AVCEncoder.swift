@@ -174,7 +174,7 @@ final class AVCEncoder: NSObject {
         ]
 
 #if os(OSX)
-        if (enabledHardwareAccelerated) {
+        if (enabledHardwareEncoder) {
             properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva"
             properties["EnableHardwareAcceleratedVideoEncoder"] = true
             properties["RequireHardwareAcceleratedVideoEncoder"] = true
