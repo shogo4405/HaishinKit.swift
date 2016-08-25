@@ -20,7 +20,6 @@ final class RTSPPlaySequenceResponder: RTSPResponder {
             stream.listen()
             stream.connection.doMethod(.SETUP, uri, ["Transport":"RTP/AVP;unicast;client_port=8000-8001"], self)
         case .SETUP:
-            break
             method = .PLAY
             stream.connection.doMethod(.PLAY, uri, [:], self)
         default:
