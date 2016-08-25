@@ -316,7 +316,7 @@ final class RTMPCommandMessage: RTMPMessage {
                         arguments.append(try serializer.deserialize())
                     }
                 } catch {
-                    logger.error("\(serializer)")
+                    logger.error("\(self.serializer)")
                 }
                 serializer.clear()
             }
@@ -411,7 +411,7 @@ final class RTMPDataMessage: RTMPMessage {
                         arguments.append(try serializer.deserialize())
                     }
                 } catch {
-                    logger.error("\(serializer)")
+                    logger.error("\(self.serializer)")
                 }
                 serializer.clear()
             }
@@ -500,7 +500,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
                         }
                     }
                 } catch {
-                    logger.error("\(serializer)")
+                    logger.error("\(self.serializer)")
                 }
                 serializer.clear()
             }
