@@ -258,6 +258,24 @@ final class AVCEncoder: NSObject {
             &flags
         )
     }
+
+#if os(iOS)
+    func didAudioSessionInterruption(notification:NSNotification) {
+        guard let
+            userInfo:[NSObject:AnyObject] = notification.userInfo,
+            value:NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
+            type:AVAudioSessionInterruptionType = AVAudioSessionInterruptionType(rawValue: value.unsignedLongValue)
+            else {
+                return
+        }
+        switch type {
+        case .Ended:
+            invalidateSession = true
+        default:
+            break
+        }
+    }
+#endif
 }
 
 // MARK: Encoder
@@ -265,12 +283,28 @@ extension AVCEncoder: Encoder {
     func startRunning() {
         dispatch_async(lockQueue) {
             self.running = true
+#if os(iOS)
+            NSNotificationCenter.defaultCenter().addObserver(
+                self,
+                selector: #selector(AVCEncoder.didAudioSessionInterruption(_:)),
+                name: AVAudioSessionInterruptionNotification,
+                object: nil
+            )
+#endif
         }
     }
+
     func stopRunning() {
         dispatch_async(lockQueue) {
             self.session = nil
             self.formatDescription = nil
+#if os(iOS)
+            NSNotificationCenter.defaultCenter().removeObserver(
+                self,
+                name: AVAudioSessionInterruptionNotification,
+                object: nil
+            )
+#endif
             self.running = false
         }
     }
