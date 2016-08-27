@@ -4,6 +4,12 @@ import AVFoundation
 import VideoToolbox
 import CoreFoundation
 
+// MARK: VideoDecoderDelegate
+protocol VideoDecoderDelegate: class {
+    func sampleOutput(video sampleBuffer: CMSampleBuffer)
+}
+
+// MARK: -
 final class AVCDecoder {
 
     #if os(iOS)
@@ -99,10 +105,31 @@ final class AVCDecoder {
         guard let imageBuffer:CVImageBuffer = imageBuffer where status == noErr else {
             return
         }
-        delegate?.imageOutput(DecompressionBuffer(
-            imageBuffer: imageBuffer,
+        var timingInfo:CMSampleTimingInfo = CMSampleTimingInfo(
+            duration: duration,
             presentationTimeStamp: presentationTimeStamp,
-            duration: duration
-        ))
+            decodeTimeStamp: kCMTimeInvalid
+        )
+        var videoFormatDescription:CMVideoFormatDescription? = nil
+        CMVideoFormatDescriptionCreateForImageBuffer(
+            kCFAllocatorDefault,
+            imageBuffer,
+            &videoFormatDescription
+        )
+        var sampleBuffer:CMSampleBuffer? = nil
+        CMSampleBufferCreateForImageBuffer(
+            kCFAllocatorDefault,
+            imageBuffer,
+            true,
+            nil,
+            nil,
+            videoFormatDescription!,
+            &timingInfo,
+            &sampleBuffer
+        )
+        guard let buffer:CMSampleBuffer = sampleBuffer else {
+            return
+        }
+        delegate?.sampleOutput(video: buffer)
     }
 }

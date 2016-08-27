@@ -14,8 +14,8 @@ final class VideoIOComponent: IOComponent {
             decoder.formatDescription = formatDescription
         }
     }
-    private lazy var queue:DecompressionBufferClockedQueue = {
-        let queue:DecompressionBufferClockedQueue = DecompressionBufferClockedQueue()
+    private lazy var queue:ClockedQueue = {
+        let queue:ClockedQueue = ClockedQueue()
         queue.delegate = self
         return queue
     }()
@@ -375,17 +375,14 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 // MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
-    func imageOutput(buffer:DecompressionBuffer) {
-        queue.enqueue(buffer)
+    func sampleOutput(video sampleBuffer:CMSampleBuffer) {
+        queue.enqueue(sampleBuffer)
     }
 }
 
 // MARK: ClockedQueueDelegate
 extension VideoIOComponent: ClockedQueueDelegate {
-    func queue(buffer: Any) {
-        guard let buffer:DecompressionBuffer = buffer as? DecompressionBuffer else {
-            return
-        }
+    func queue(buffer: CMSampleBuffer) {
         drawable?.drawImage(CIImage(CVPixelBuffer: buffer.imageBuffer!))
     }
 }

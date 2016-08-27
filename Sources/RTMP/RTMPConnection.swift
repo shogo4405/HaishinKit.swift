@@ -149,24 +149,41 @@ public class RTMPConnection: EventDispatcher {
     static let defaultCapabilities:Int = 239
     static let defaultObjectEncoding:UInt8 = 0x00
 
+    /// The URL of .swf.
     public var swfUrl:String? = nil
+    /// The URL of an HTTP referer.
     public var pageUrl:String? = nil
+    /// The time to wait for TCP/IP Handshake done.
     public var timeout:Int64 {
         get { return socket.timeout }
         set { socket.timeout = newValue }
     }
+    /// The name of application.
     public var flashVer:String = RTMPConnection.defaultFlashVer
-    /// Outgoing RTMP ChunkSize
+    /// The outgoing RTMPChunkSize.
     public var chunkSize:Int = RTMPConnection.defaultChunkSizeS
-
+    /// The URI passed to the RTMPConnection.connect() method.
     public private(set) var uri:NSURL? = nil
+    /// This instance connected to server(true) or not(false).
     public private(set) var connected:Bool = false
-
+    /// The object encoding for this RTMPConnection instance.
     public var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
         didSet {
             socket.objectEncoding = objectEncoding
         }
     }
+    /// The statistics of total incoming bytes.
+    public var totalBytesIn:Int64 {
+        return socket.totalBytesIn
+    }
+    /// The statistics of total outgoing bytes.
+    public var totalBytesOut:Int64 {
+        return socket.totalBytesOut
+    }
+    /// The statistics of incoming bytes per second.
+    dynamic public private(set) var currentBytesInPerSecond:Int32 = 0
+    /// The statistics of outgoing bytes per second.
+    dynamic public private(set) var currentBytesOutPerSecond:Int32 = 0
 
     var socket:RTMPSocket = RTMPSocket()
     var streams:[UInt32: RTMPStream] = [:]
@@ -174,15 +191,6 @@ public class RTMPConnection: EventDispatcher {
     var streamsmap:[UInt16: UInt32] = [:]
     var operations:[Int: Responder] = [:]
     var currentTransactionId:Int = 0
-
-    public var totalBytesIn:Int64 {
-        return socket.totalBytesIn
-    }
-    public var totalBytesOut:Int64 {
-        return socket.totalBytesOut
-    }
-    dynamic public private(set) var currentBytesInPerSecond:Int32 = 0
-    dynamic public private(set) var currentBytesOutPerSecond:Int32 = 0
 
     private var timer:NSTimer? {
         didSet {

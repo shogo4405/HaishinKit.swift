@@ -75,7 +75,6 @@
 		29B8765B1CD70A7900FC07DA /* AACEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AACEncoder.swift */; };
 		29B8765C1CD70A7900FC07DA /* AVCDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876581CD70A7900FC07DA /* AVCDecoder.swift */; };
 		29B8765D1CD70A7900FC07DA /* AVCEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* AVCEncoder.swift */; };
-		29B8765E1CD70A7900FC07DA /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8765A1CD70A7900FC07DA /* Codec.swift */; };
 		29B876691CD70AB300FC07DA /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constant.swift */; };
 		29B8766A1CD70AB300FC07DA /* CoreMedia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */; };
 		29B8766B1CD70AB300FC07DA /* Foundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876651CD70AB300FC07DA /* Foundation+Extension.swift */; };
@@ -121,7 +120,6 @@
 		29B876EC1CD70D5900FC07DA /* AACEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AACEncoder.swift */; };
 		29B876ED1CD70D5900FC07DA /* AVCDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876581CD70A7900FC07DA /* AVCDecoder.swift */; };
 		29B876EE1CD70D5900FC07DA /* AVCEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* AVCEncoder.swift */; };
-		29B876EF1CD70D5900FC07DA /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8765A1CD70A7900FC07DA /* Codec.swift */; };
 		29B876F01CD70D5900FC07DA /* Constant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constant.swift */; };
 		29B876F11CD70D5900FC07DA /* CoreMedia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */; };
 		29B876F21CD70D5900FC07DA /* Foundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876651CD70AB300FC07DA /* Foundation+Extension.swift */; };
@@ -289,7 +287,6 @@
 		29B876571CD70A7900FC07DA /* AACEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AACEncoder.swift; path = Sources/Codec/AACEncoder.swift; sourceTree = SOURCE_ROOT; };
 		29B876581CD70A7900FC07DA /* AVCDecoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVCDecoder.swift; path = Sources/Codec/AVCDecoder.swift; sourceTree = SOURCE_ROOT; };
 		29B876591CD70A7900FC07DA /* AVCEncoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVCEncoder.swift; path = Sources/Codec/AVCEncoder.swift; sourceTree = SOURCE_ROOT; };
-		29B8765A1CD70A7900FC07DA /* Codec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Codec.swift; path = Sources/Codec/Codec.swift; sourceTree = SOURCE_ROOT; };
 		29B876631CD70AB300FC07DA /* Constant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constant.swift; path = Sources/Core/Constant.swift; sourceTree = SOURCE_ROOT; };
 		29B876641CD70AB300FC07DA /* CoreMedia+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CoreMedia+Extension.swift"; path = "Sources/Core/CoreMedia+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29B876651CD70AB300FC07DA /* Foundation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Foundation+Extension.swift"; path = "Sources/Core/Foundation+Extension.swift"; sourceTree = SOURCE_ROOT; };
@@ -451,7 +448,6 @@
 				29B876571CD70A7900FC07DA /* AACEncoder.swift */,
 				29B876581CD70A7900FC07DA /* AVCDecoder.swift */,
 				29B876591CD70A7900FC07DA /* AVCEncoder.swift */,
-				29B8765A1CD70A7900FC07DA /* Codec.swift */,
 			);
 			name = Codec;
 			sourceTree = "<group>";
@@ -1349,7 +1345,6 @@
 				2976A47E1D48C5C700B53EF2 /* AVMixerRecorder.swift in Sources */,
 				29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */,
 				29B876851CD70AE800FC07DA /* NALUnit.swift in Sources */,
-				29B8765E1CD70A7900FC07DA /* Codec.swift in Sources */,
 				294B155F1D32009C004D021D /* Stream.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */,
@@ -1415,7 +1410,6 @@
 				29B876ED1CD70D5900FC07DA /* AVCDecoder.swift in Sources */,
 				29B876EE1CD70D5900FC07DA /* AVCEncoder.swift in Sources */,
 				293120501D4529FB00B14211 /* RTSPResponse.swift in Sources */,
-				29B876EF1CD70D5900FC07DA /* Codec.swift in Sources */,
 				29B876F01CD70D5900FC07DA /* Constant.swift in Sources */,
 				29B876F11CD70D5900FC07DA /* CoreMedia+Extension.swift in Sources */,
 				29B876F21CD70D5900FC07DA /* Foundation+Extension.swift in Sources */,

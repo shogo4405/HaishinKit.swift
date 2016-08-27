@@ -3,6 +3,13 @@ import AVFoundation
 import VideoToolbox
 import CoreFoundation
 
+// MARK: VideoEncoderDelegate
+protocol VideoEncoderDelegate: class {
+    func didSetFormatDescription(video formatDescription:CMFormatDescriptionRef?)
+    func sampleOutput(video sampleBuffer: CMSampleBuffer)
+}
+
+// MARK: -
 final class AVCEncoder: NSObject {
 
     static let supportedSettingsKeys:[String] = [
@@ -279,7 +286,7 @@ final class AVCEncoder: NSObject {
 }
 
 // MARK: Encoder
-extension AVCEncoder: Encoder {
+extension AVCEncoder: Runnable {
     func startRunning() {
         dispatch_async(lockQueue) {
             self.running = true

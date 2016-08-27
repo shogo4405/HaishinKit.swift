@@ -3,18 +3,18 @@ import AVFoundation
 
 // MARK: ClockedQueueDelegate
 protocol ClockedQueueDelegate:class {
-    func queue(buffer: Any)
+    func queue(buffer: CMSampleBuffer)
 }
 
 // MARK: -
-class ClockedQueue<T> {
+class ClockedQueue {
     var bufferTime:NSTimeInterval = 0.1 // sec
     private(set) var running:Bool = false
     private(set) var duration:NSTimeInterval = 0
     weak var delegate:ClockedQueueDelegate?
 
     private var date:NSDate = NSDate()
-    private var buffers:[T] = []
+    private var buffers:[CMSampleBuffer] = []
     private let mutex:Mutex = Mutex()
     private let lockQueue:dispatch_queue_t = dispatch_queue_create(
         "com.github.shogo4405.lf.ClockedQueue.lock", DISPATCH_QUEUE_SERIAL
@@ -30,10 +30,10 @@ class ClockedQueue<T> {
         }
     }
 
-    func enqueue(buffer:T) {
+    func enqueue(buffer:CMSampleBuffer) {
         do {
             try mutex.lock()
-            duration += getDuration(buffer)
+            duration += buffer.duration.seconds
             buffers.append(buffer)
             mutex.unlock()
         } catch {
@@ -46,15 +46,11 @@ class ClockedQueue<T> {
         }
     }
 
-    func getDuration(buffer:T) -> NSTimeInterval {
-        return 0
-    }
-
     @objc func onTimer(timer:NSTimer) {
-        guard let buffer:T = buffers.first where bufferTime <= self.duration else {
+        guard let buffer:CMSampleBuffer = buffers.first where bufferTime <= self.duration else {
             return
         }
-        let duration:NSTimeInterval = getDuration(buffer)
+        let duration:NSTimeInterval = buffer.duration.seconds
         guard duration <= abs(date.timeIntervalSinceNow) else {
             return
         }
@@ -75,19 +71,5 @@ class ClockedQueue<T> {
 extension ClockedQueue: CustomStringConvertible {
     var description:String {
         return Mirror(reflecting: self).description
-    }
-}
-
-// MARK: -
-final class CMSampleBufferClockedQueue:ClockedQueue<CMSampleBuffer> {
-    override func getDuration(buffer: CMSampleBuffer) -> NSTimeInterval {
-        return buffer.duration.seconds
-    }
-}
-
-// MARK: -
-final class DecompressionBufferClockedQueue:ClockedQueue<DecompressionBuffer> {
-    override func getDuration(buffer: DecompressionBuffer) -> NSTimeInterval {
-        return buffer.duration.seconds
     }
 }

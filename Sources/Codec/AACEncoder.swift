@@ -1,6 +1,12 @@
 import Foundation
 import AVFoundation
 
+// MARK: AudioEncoderDelegate
+protocol AudioEncoderDelegate: class {
+    func didSetFormatDescription(audio formatDescription:CMFormatDescriptionRef?)
+    func sampleOutput(audio sampleBuffer: CMSampleBuffer)
+}
+
 /**
  - seealse:
   - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
@@ -243,7 +249,7 @@ final class AACEncoder: NSObject {
 }
 
 // MARK: Encoder
-extension AACEncoder: Encoder {
+extension AACEncoder: Runnable {
     func startRunning() {
         dispatch_async(lockQueue) {
             self.running = true

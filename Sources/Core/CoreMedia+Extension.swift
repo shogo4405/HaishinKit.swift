@@ -21,11 +21,12 @@ extension CMSampleBuffer {
             CMSampleBufferSetDataBuffer(self, dataBuffer)
         }
     }
-    
+    var imageBuffer:CVImageBuffer? {
+        return CMSampleBufferGetImageBuffer(self)
+    }
     var numSamples:CMItemCount {
         return CMSampleBufferGetNumSamples(self)
     }
-    
     var duration:CMTime {
         return CMSampleBufferGetDuration(self)
     }
