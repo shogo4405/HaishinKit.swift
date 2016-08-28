@@ -2,8 +2,8 @@ import Foundation
 
 // MARK: HTTPVersion
 enum HTTPVersion: String {
-    case Version10 = "HTTP/1.0"
-    case Version11 = "HTTP/1.1"
+    case version10 = "HTTP/1.0"
+    case version11 = "HTTP/1.1"
 }
 
 // MARK: CustomStringConvertible
@@ -15,14 +15,14 @@ extension HTTPVersion: CustomStringConvertible {
 
 // MARK: - HTTPMethod
 enum HTTPMethod: String {
-    case GET     = "GET"
-    case POST    = "POST"
-    case PUT     = "PUT"
-    case DELETE  = "DELETE"
-    case HEAD    = "HEAD"
-    case OPTIONS = "OPTIONS"
-    case TRACE   = "TRACE"
-    case CONNECT = "CONNECT"
+    case get     = "GET"
+    case post    = "POST"
+    case put     = "PUT"
+    case delete  = "DELETE"
+    case head    = "HEAD"
+    case options = "OPTIONS"
+    case trace   = "TRACE"
+    case connect = "CONNECT"
 }
 
 // MARK: HTTPStatusCode

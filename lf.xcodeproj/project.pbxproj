@@ -10,7 +10,6 @@
 		05932E852349517AF5114CB1 /* Pods_Example_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC39416255B1FE34117A703 /* Pods_Example_iOS.framework */; };
 		2901A4EE1D437170002BBD23 /* ClockedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* ClockedQueue.swift */; };
 		2901A4EF1D437662002BBD23 /* ClockedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* ClockedQueue.swift */; };
-		2901A4F11D438464002BBD23 /* ClockedQueueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4F01D438464002BBD23 /* ClockedQueueTests.swift */; };
 		291F4E381CF206E600F59C51 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 291F4E361CF206E200F59C51 /* Icon.png */; };
 		2923A1F31D63004E0019FBCD /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2965436A1D62FEB700734698 /* VisualEffect.swift */; };
 		2923A1F41D6300510019FBCD /* MainWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543691D62FEB700734698 /* MainWindowController.swift */; };
@@ -64,6 +63,9 @@
 		29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */; };
 		29798E761CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */; };
 		29798E771CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */; };
+		2981B7F41D7345D5002FA821 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2981B7F31D7345D5002FA821 /* SessionDescription.swift */; };
+		2981B7F61D73476B002FA821 /* SessionDescriptionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2981B7F51D73476B002FA821 /* SessionDescriptionTests.swift */; };
+		2981B7F71D734A39002FA821 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2981B7F31D7345D5002FA821 /* SessionDescription.swift */; };
 		2989C3B61D69C43000038653 /* RTPPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD70E51D68CF020021904A /* RTPPacket.swift */; };
 		2997BDD21D50D2FC000AF900 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 2997BDD11D50D2FC000AF900 /* README.md */; };
 		299AE0E31D44E6EE00D26A49 /* RTSPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E21D44E6EE00D26A49 /* RTSPConnection.swift */; };
@@ -236,7 +238,6 @@
 		1363274A77A734C669D6055F /* Pods-Tests Objective-C.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests Objective-C.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Tests Objective-C/Pods-Tests Objective-C.debug.xcconfig"; sourceTree = "<group>"; };
 		1DF7E7E9A4DEEF0DE28197B7 /* Pods-Example macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example macOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example macOS/Pods-Example macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		2901A4ED1D437170002BBD23 /* ClockedQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ClockedQueue.swift; path = Sources/Util/ClockedQueue.swift; sourceTree = SOURCE_ROOT; };
-		2901A4F01D438464002BBD23 /* ClockedQueueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClockedQueueTests.swift; sourceTree = "<group>"; };
 		291F4E361CF206E200F59C51 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Icon.png; path = Examples/iOS/Icon.png; sourceTree = "<group>"; };
 		2923A1FA1D63011E0019FBCD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Examples/macOS/Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		29245AEC1D3233EB00AFFB9A /* VideoGravityUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = VideoGravityUtil.swift; path = Sources/Util/VideoGravityUtil.swift; sourceTree = SOURCE_ROOT; };
@@ -272,6 +273,8 @@
 		29798E511CE5DF1900F5CBD0 /* MP4File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4File.swift; path = Sources/ISO/MP4File.swift; sourceTree = SOURCE_ROOT; };
 		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29798E5D1CE60E5300F5CBD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2981B7F31D7345D5002FA821 /* SessionDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionDescription.swift; path = Sources/RTSP/SessionDescription.swift; sourceTree = SOURCE_ROOT; };
+		2981B7F51D73476B002FA821 /* SessionDescriptionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionDescriptionTests.swift; sourceTree = "<group>"; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		2997BDD11D50D2FC000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -504,7 +507,6 @@
 			isa = PBXGroup;
 			children = (
 				29B876CF1CD70CE700FC07DA /* ByteArrayTests.swift */,
-				2901A4F01D438464002BBD23 /* ClockedQueueTests.swift */,
 				29B876D01CD70CE700FC07DA /* CRC32Tests.swift */,
 				29B876D11CD70CE700FC07DA /* EventDispatcherTests.swift */,
 				2942424E1CF4C02300D65DCB /* MD5Tests.swift */,
@@ -683,6 +685,7 @@
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				291C2ACF1CE9FF2B006F042B /* ISO */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
+				2981B7F81D734A63002FA821 /* RTSP */,
 				291C2AD01CE9FF33006F042B /* Util */,
 			);
 			path = Tests;
@@ -699,6 +702,14 @@
 			name = Net;
 			sourceTree = "<group>";
 		};
+		2981B7F81D734A63002FA821 /* RTSP */ = {
+			isa = PBXGroup;
+			children = (
+				2981B7F51D73476B002FA821 /* SessionDescriptionTests.swift */,
+			);
+			name = RTSP;
+			sourceTree = "<group>";
+		};
 		299AE0E11D44E6A500D26A49 /* RTSP */ = {
 			isa = PBXGroup;
 			children = (
@@ -707,6 +718,7 @@
 				2931204D1D4522E400B14211 /* RTSPResponse.swift */,
 				299AE0E41D44EC7800D26A49 /* RTSPSocket.swift */,
 				29DD70E31D68CACA0021904A /* RTSPStream.swift */,
+				2981B7F31D7345D5002FA821 /* SessionDescription.swift */,
 			);
 			name = RTSP;
 			sourceTree = "<group>";
@@ -1328,6 +1340,7 @@
 				29DD70E61D68CF020021904A /* RTPPacket.swift in Sources */,
 				29B876AD1CD70B2800FC07DA /* ASClass.swift in Sources */,
 				29B8766B1CD70AB300FC07DA /* Foundation+Extension.swift in Sources */,
+				2981B7F41D7345D5002FA821 /* SessionDescription.swift in Sources */,
 				2931204E1D4522E400B14211 /* RTSPResponse.swift in Sources */,
 				29B8765D1CD70A7900FC07DA /* AVCEncoder.swift in Sources */,
 				29B876B31CD70B2800FC07DA /* FLVTag.swift in Sources */,
@@ -1385,10 +1398,10 @@
 			files = (
 				29798E681CE6110F00F5CBD0 /* AMF3SerializerTests.swift in Sources */,
 				29798E691CE6110F00F5CBD0 /* ASClassTests.swift in Sources */,
+				2981B7F61D73476B002FA821 /* SessionDescriptionTests.swift in Sources */,
 				29798E6A1CE6110F00F5CBD0 /* ByteArrayTests.swift in Sources */,
 				29798E6B1CE6110F00F5CBD0 /* CRC32Tests.swift in Sources */,
 				29FE61491CF7DD3A00E51833 /* RTMPChunkTests.swift in Sources */,
-				2901A4F11D438464002BBD23 /* ClockedQueueTests.swift in Sources */,
 				29798E6C1CE6110F00F5CBD0 /* EventDispatcherTests.swift in Sources */,
 				29798E6D1CE6110F00F5CBD0 /* Foundation+ExtensionTests.swift in Sources */,
 				29798E6E1CE6110F00F5CBD0 /* HTTPRequestTests.swift in Sources */,
@@ -1450,6 +1463,7 @@
 				29B8770E1CD70D5A00FC07DA /* AMF0Serializer.swift in Sources */,
 				2976A4871D49045700B53EF2 /* DeviceUtil.swift in Sources */,
 				29B8770F1CD70D5A00FC07DA /* AMF3Serializer.swift in Sources */,
+				2981B7F71D734A39002FA821 /* SessionDescription.swift in Sources */,
 				29B877101CD70D5A00FC07DA /* ASClass.swift in Sources */,
 				29B877111CD70D5A00FC07DA /* RTMPAudioPlayback.swift in Sources */,
 				29B877121CD70D5A00FC07DA /* RTMPChunk.swift in Sources */,

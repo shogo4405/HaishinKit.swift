@@ -12,7 +12,7 @@ protocol HTTPResponseConvertible: BytesConvertible, CustomStringConvertible {
 struct HTTPResponse: HTTPResponseConvertible {
     static let separator:[UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
-    var version:String = HTTPVersion.Version11.rawValue
+    var version:String = HTTPVersion.version11.rawValue
     var statusCode:String = ""
     var headerFields:[String: String] = [:]
     var body:[UInt8] = []

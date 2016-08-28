@@ -14,7 +14,7 @@ struct HTTPRequest: HTTPRequestConvertible {
 
     var uri:String = "/"
     var method:String = ""
-    var version:String = HTTPVersion.Version11.description
+    var version:String = HTTPVersion.version11.description
     var headerFields:[String: String] = [:]
 
     init() {

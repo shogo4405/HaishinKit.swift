@@ -3,7 +3,7 @@ import Foundation
 final class RTSPPlaySequenceResponder: RTSPResponder {
     private var uri:String
     private var stream:RTSPStream
-    private var method:RTSPMethod = .OPTIONS
+    private var method:RTSPMethod = .options
 
     init(uri:String, stream:RTSPStream) {
         self.uri = uri
@@ -12,16 +12,16 @@ final class RTSPPlaySequenceResponder: RTSPResponder {
 
     func onResponse(response: RTSPResponse) {
         switch method {
-        case .OPTIONS:
-            method = .DESCRIBE
-            stream.connection.doMethod(.DESCRIBE, uri, [:], self)
-        case .DESCRIBE:
-            method = .SETUP
+        case .options:
+            method = .describe
+            stream.connection.doMethod(.describe, uri, [:], self)
+        case .describe:
+            method = .setup
             stream.listen()
-            stream.connection.doMethod(.SETUP, uri, ["Transport":"RTP/AVP;unicast;client_port=8000-8001"], self)
-        case .SETUP:
-            method = .PLAY
-            stream.connection.doMethod(.PLAY, uri, [:], self)
+            stream.connection.doMethod(.setup, uri, ["Transport":"RTP/AVP;unicast;client_port=8000-8001"], self)
+        case .setup:
+            method = .play
+            stream.connection.doMethod(.play, uri, [:], self)
         default:
             break
         }
@@ -32,7 +32,7 @@ final class RTSPPlaySequenceResponder: RTSPResponder {
 final class RTSPRecordSequenceResponder: RTSPResponder {
     private var uri:String
     private var stream:RTSPStream
-    private var method:RTSPMethod = .OPTIONS
+    private var method:RTSPMethod = .options
 
     init(uri:String, stream:RTSPStream) {
         self.uri = uri
@@ -54,11 +54,11 @@ class RTSPStream: Stream {
     }
 
     func play(uri:String) {
-        connection.doMethod(.OPTIONS, uri, [:], RTSPPlaySequenceResponder(uri: uri, stream: self))
+        connection.doMethod(.options, uri, [:], RTSPPlaySequenceResponder(uri: uri, stream: self))
     }
 
     func record(uri:String) {
-        connection.doMethod(.OPTIONS, uri, [:], RTSPRecordSequenceResponder(uri: uri, stream: self))
+        connection.doMethod(.options, uri, [:], RTSPRecordSequenceResponder(uri: uri, stream: self))
     }
 
     func tearDown() {
