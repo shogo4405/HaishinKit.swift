@@ -217,6 +217,7 @@ public class HTTPService: NetService {
                     client.doOutput(bytes: response.bytes)
                     client.doOutputFromURL(NSURL(fileURLWithPath: resource), length: 8 * 1024)
                 default:
+                    response.statusCode = HTTPStatusCode.OK.description
                     response.body = [UInt8](resource.utf8)
                     client.doOutput(bytes: response.bytes)
                 }
