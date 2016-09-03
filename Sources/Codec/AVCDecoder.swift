@@ -14,61 +14,61 @@ final class AVCDecoder {
 
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
-        kCVPixelBufferIOSurfacePropertiesKey: [:],
-        kCVPixelBufferOpenGLESCompatibilityKey: true,
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA) as AnyObject,
+        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+        kCVPixelBufferOpenGLESCompatibilityKey: true as AnyObject,
     ]
     #else
     static let defaultAttributes:[NSString: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA),
-        kCVPixelBufferIOSurfacePropertiesKey: [:],
-        kCVPixelBufferOpenGLCompatibilityKey: true,
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA) as AnyObject,
+        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+        kCVPixelBufferOpenGLCompatibilityKey: true as AnyObject,
     ]
     #endif
 
     var running:Bool = false
-    var lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.AVCDecoder.lock", DISPATCH_QUEUE_SERIAL
+    var lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.AVCDecoder.lock", attributes: []
     )
-    var formatDescription:CMFormatDescriptionRef? = nil {
+    var formatDescription:CMFormatDescription? = nil {
         didSet {
             invalidateSession = true
         }
     }
     weak var delegate:VideoDecoderDelegate?
 
-    private var attributes:[NSString:  AnyObject] {
+    fileprivate var attributes:[NSString:  AnyObject] {
         return AVCDecoder.defaultAttributes
     }
-    private var invalidateSession:Bool = true
-    private var callback:VTDecompressionOutputCallback = {(
-        decompressionOutputRefCon:UnsafeMutablePointer<Void>,
-        sourceFrameRefCon:UnsafeMutablePointer<Void>,
+    fileprivate var invalidateSession:Bool = true
+    fileprivate var callback:VTDecompressionOutputCallback = {(
+        decompressionOutputRefCon:UnsafeMutableRawPointer?,
+        sourceFrameRefCon:UnsafeMutableRawPointer?,
         status:OSStatus,
         infoFlags:VTDecodeInfoFlags,
-        imageBuffer:CVImageBufferRef?,
+        imageBuffer:CVBuffer?,
         presentationTimeStamp:CMTime,
         duration:CMTime) in
-        let decoder:AVCDecoder = unsafeBitCast(decompressionOutputRefCon, AVCDecoder.self)
+        let decoder:AVCDecoder = unsafeBitCast(decompressionOutputRefCon, to: AVCDecoder.self)
         decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration)
     }
 
-    private var _session:VTDecompressionSessionRef? = nil
-    private var session:VTDecompressionSessionRef! {
+    fileprivate var _session:VTDecompressionSession? = nil
+    fileprivate var session:VTDecompressionSession! {
         get {
             if (_session == nil)  {
-                guard let formatDescription:CMFormatDescriptionRef = formatDescription else {
+                guard let formatDescription:CMFormatDescription = formatDescription else {
                     return nil
                 }
                 var record:VTDecompressionOutputCallbackRecord = VTDecompressionOutputCallbackRecord(
                     decompressionOutputCallback: callback,
-                    decompressionOutputRefCon: unsafeBitCast(self, UnsafeMutablePointer<Void>.self)
+                    decompressionOutputRefCon: unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
                 )
                 guard VTDecompressionSessionCreate(
                     kCFAllocatorDefault,
                     formatDescription,
                     nil,
-                    attributes,
+                    attributes as CFDictionary?,
                     &record,
                     &_session ) == noErr else {
                     return nil
@@ -78,14 +78,14 @@ final class AVCDecoder {
             return _session!
         }
         set {
-            if let session:VTDecompressionSessionRef = _session {
+            if let session:VTDecompressionSession = _session {
                 VTDecompressionSessionInvalidate(session)
             }
             _session = newValue
         }
     }
 
-    func decodeSampleBuffer(sampleBuffer:CMSampleBuffer) -> OSStatus {
+    func decodeSampleBuffer(_ sampleBuffer:CMSampleBuffer) -> OSStatus {
         guard let session:VTDecompressionSession = session else {
             return kVTInvalidSessionErr
         }
@@ -101,8 +101,8 @@ final class AVCDecoder {
         return status
     }
 
-    func didOutputForSession(status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBufferRef?, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard let imageBuffer:CVImageBuffer = imageBuffer where status == noErr else {
+    func didOutputForSession(_ status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBuffer?, presentationTimeStamp:CMTime, duration:CMTime) {
+        guard let imageBuffer:CVImageBuffer = imageBuffer , status == noErr else {
             return
         }
         var timingInfo:CMSampleTimingInfo = CMSampleTimingInfo(

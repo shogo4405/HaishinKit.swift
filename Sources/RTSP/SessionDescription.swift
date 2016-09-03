@@ -1,7 +1,7 @@
 import Foundation
 
 protocol SessionDescriptionConvertible {
-     mutating func appendLine(line:String)
+     mutating func appendLine(_ line:String)
 }
 
 struct SessionDescription: SessionDescriptionConvertible {
@@ -17,15 +17,15 @@ struct SessionDescription: SessionDescriptionConvertible {
     var time:[TimeDescription] = []
     var medias:[MediaDescription] = []
 
-    private var media:MediaDescription?
+    fileprivate var media:MediaDescription?
 
-    mutating func appendLine(line:String) {
-        let character:String = line.substringToIndex(line.startIndex.advancedBy(1))
+    mutating func appendLine(_ line:String) {
+        let character:String = line.substring(to: line.characters.index(line.startIndex, offsetBy: 1))
         if (media != nil && character != "m") {
             media?.appendLine(line)
             return
         }
-        let value:String = line.substringFromIndex(line.startIndex.advancedBy(2))
+        let value:String = line.substring(from: line.characters.index(line.startIndex, offsetBy: 2))
         switch character {
         case "v":
             protocolVersionNumber = value
@@ -42,7 +42,7 @@ struct SessionDescription: SessionDescriptionConvertible {
             }
             media = MediaDescription(mediaNameAndTransportAddress: line)
         case "a":
-            let pairs:[String] = value.componentsSeparatedByString(":")
+            let pairs:[String] = value.components(separatedBy: ":")
             sessionAttributes[pairs[0]] = pairs[1]
         default:
             break
@@ -57,7 +57,7 @@ extension SessionDescription: CustomStringConvertible {
             return Mirror(reflecting: self).description
         }
         set {
-            let lines:[String] = newValue.componentsSeparatedByString("\n")
+            let lines:[String] = newValue.components(separatedBy: "\n")
             for line in lines {
                 appendLine(line)
             }
@@ -78,9 +78,9 @@ struct TimeDescription: SessionDescriptionConvertible {
         self.timeTheSessionIsActive = timeTheSessionIsActive
     }
 
-    mutating func appendLine(line:String) {
-        let value:String = line.substringFromIndex(line.startIndex.advancedBy(2))
-        switch line.substringToIndex(line.startIndex.advancedBy(1)) {
+    mutating func appendLine(_ line:String) {
+        let value:String = line.substring(from: line.characters.index(line.startIndex, offsetBy: 2))
+        switch line.substring(to: line.characters.index(line.startIndex, offsetBy: 1)) {
         case "r":
             repeatTimes.append(value)
         default:
@@ -102,9 +102,9 @@ struct MediaDescription: SessionDescriptionConvertible {
         self.mediaNameAndTransportAddress = mediaNameAndTransportAddress
     }
 
-    mutating func appendLine(line:String) {
-        let value:String = line.substringFromIndex(line.startIndex.advancedBy(2))
-        switch line.substringToIndex(line.startIndex.advancedBy(1)) {
+    mutating func appendLine(_ line:String) {
+        let value:String = line.substring(from: line.characters.index(line.startIndex, offsetBy: 2))
+        switch line.substring(to: line.characters.index(line.startIndex, offsetBy: 1)) {
         case "i":
             mediaTitleInformationField.append(value)
         case "c":
@@ -114,7 +114,7 @@ struct MediaDescription: SessionDescriptionConvertible {
         case "k":
             encryptionKey.append(value)
         case "a":
-            let pairs:[String] = value.componentsSeparatedByString(":")
+            let pairs:[String] = value.components(separatedBy: ":")
             mediaAttributes[pairs[0]] = pairs[1]
         default:
             break

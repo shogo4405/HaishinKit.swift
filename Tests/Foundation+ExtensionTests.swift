@@ -5,9 +5,9 @@ import XCTest
 
 final class FoundationExtensionTest: XCTestCase {
     func testNSURL() {
-        let url:NSURL = NSURL(string: "http://localhost/foo/bar?hello=world!!&foo=bar")!
-        let dictionary:[String:AnyObject] = url.dictionaryFromQuery()
-        XCTAssertEqual(dictionary["hello"] as? String, "world!!")
-        XCTAssertEqual(dictionary["foo"] as? String, "bar")
+        let url:URL = URL(string: "http://localhost/foo/bar?hello=world!!&foo=bar")!
+        let dictionary:[String:String] = url.dictionaryFromQuery()
+        XCTAssertEqual(dictionary["hello"], "world!!")
+        XCTAssertEqual(dictionary["foo"], "bar")
     }
 }

@@ -6,7 +6,7 @@ final class CRC32 {
     let table:[UInt32]
 
     init(polynomial:UInt32) {
-        var table:[UInt32] = [UInt32](count: 256, repeatedValue: 0x00000000)
+        var table:[UInt32] = [UInt32](repeating: 0x00000000, count: 256)
         for i in 0..<table.count {
             var crc:UInt32 = UInt32(i) << 24
             for _ in 0..<8 {
@@ -17,11 +17,11 @@ final class CRC32 {
         self.table = table
     }
 
-    func calculate(bytes:[UInt8]) -> UInt32 {
+    func calculate(_ bytes:[UInt8]) -> UInt32 {
         return calculate(bytes, seed: nil)
     }
 
-    func calculate(bytes:[UInt8], seed:UInt32?) -> UInt32 {
+    func calculate(_ bytes:[UInt8], seed:UInt32?) -> UInt32 {
         var crc:UInt32 = seed ?? 0xffffffff
         for i in 0..<bytes.count {
             crc = (crc << 8) ^ table[Int((crc >> 24) ^ (UInt32(bytes[i]) & 0xff) & 0xff)]

@@ -37,7 +37,7 @@ final class MD5 {
         var c:UInt32 = MD5.c
         var d:UInt32 = MD5.d
 
-        mutating func FF(x:UInt32, _ s:UInt32, _ k:UInt32) {
+        mutating func FF(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
             let swap:UInt32 = d
             let F:UInt32 = (b & c) | ((~b) & d)
             d = c
@@ -46,7 +46,7 @@ final class MD5 {
             a = swap
         }
         
-        mutating func GG(x:UInt32, _ s:UInt32, _ k:UInt32) {
+        mutating func GG(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
             let swap:UInt32 = d
             let G:UInt32 = (d & b) | (c & (~d))
             d = c
@@ -55,7 +55,7 @@ final class MD5 {
             a = swap
         }
     
-        mutating func HH(x:UInt32, _ s:UInt32, _ k:UInt32) {
+        mutating func HH(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
             let swap:UInt32 = d
             let H:UInt32 = b ^ c ^ d
             d = c
@@ -64,7 +64,7 @@ final class MD5 {
             a = swap
         }
 
-        mutating func II(x:UInt32, _ s:UInt32, _ k:UInt32) {
+        mutating func II(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
             let swap:UInt32 = d
             let I:UInt32 =  c ^ (b | (~d))
             d = c
@@ -73,7 +73,7 @@ final class MD5 {
             a = swap
         }
 
-        func rotateLeft(x:UInt32, _ n:UInt32) -> UInt32 {
+        func rotateLeft(_ x:UInt32, _ n:UInt32) -> UInt32 {
             return ((x << n) & 0xFFFFFFFF) | (x >> (32 - n))
         }
 
@@ -82,17 +82,17 @@ final class MD5 {
         }
     }
 
-    static func base64(message:String) -> String {
+    static func base64(_ message:String) -> String {
         let result:[UInt8] = calculate(message)
-        let data:NSData = NSData(bytes: result, length: result.count)
-        return data.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+        let data:Data = Data(bytes: UnsafePointer<UInt8>(result), count: result.count)
+        return data.base64EncodedString(options: .lineLength64Characters)
     }
 
-    static func calculate(message:String) -> [UInt8] {
+    static func calculate(_ message:String) -> [UInt8] {
         return calculate(ByteArray().writeUTF8Bytes(message).bytes)
     }
 
-    static func calculate(bytes:[UInt8]) -> [UInt8] {
+    static func calculate(_ bytes:[UInt8]) -> [UInt8] {
         var context:Context = Context()
 
         let count:[UInt8] = UInt64(bytes.count * 8).bigEndian.bytes

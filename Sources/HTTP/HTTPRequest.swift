@@ -39,23 +39,23 @@ extension HTTPRequestConvertible {
                 lines.append("\(field): \(value)")
             }
             lines.append("\r\n")
-            return [UInt8](lines.joinWithSeparator("\r\n").utf8)
+            return [UInt8](lines.joined(separator: "\r\n").utf8)
         }
         set {
             var count:Int = 0
             var lines:[String] = []
-            let bytes:[ArraySlice<UInt8>] = newValue.split(HTTPRequest.separator)
+            let bytes:[ArraySlice<UInt8>] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
-                guard let line:String = String(bytes: Array(bytes[i]), encoding: NSUTF8StringEncoding) else {
+                guard let line:String = String(bytes: Array(bytes[i]), encoding: String.Encoding.utf8) else {
                     continue
                 }
-                lines.append(line.stringByTrimmingCharactersInSet(NSCharacterSet.newlineCharacterSet()))
+                lines.append(line.trimmingCharacters(in: CharacterSet.newlines))
                 if (bytes.last!.isEmpty) {
                     break
                 }
             }
-            let first:[String] = lines.first!.componentsSeparatedByString(" ")
+            let first:[String] = lines.first!.components(separatedBy: " ")
             method = first[0]
             uri = first[1]
             version = first[2]
@@ -63,7 +63,7 @@ extension HTTPRequestConvertible {
                 if (lines[i].isEmpty) {
                     continue
                 }
-                let pairs:[String] = lines[i].componentsSeparatedByString(": ")
+                let pairs:[String] = lines[i].components(separatedBy: ": ")
                 headerFields[pairs[0]] = pairs[1]
             }
         }

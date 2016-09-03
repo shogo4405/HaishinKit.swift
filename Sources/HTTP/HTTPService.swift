@@ -27,128 +27,128 @@ enum HTTPMethod: String {
 
 // MARK: HTTPStatusCode
 enum HTTPStatusCode: Int {
-    case Continue                     = 100
-    case SwitchingProtocols           = 101
-    case OK                           = 200
-    case Created                      = 201
-    case Accepted                     = 202
-    case NonAuthoritative             = 203
-    case NoContent                    = 204
-    case ResetContent                 = 205
-    case PartialContent               = 206
-    case MultipleChoices              = 300
-    case MovedParmanently             = 301
-    case Found                        = 302
-    case SeeOther                     = 303
-    case NotModified                  = 304
-    case UseProxy                     = 305
-    case TemporaryRedirect	          = 307
-    case BadRequest                   = 400
-    case Unauthorixed                 = 401
-    case PaymentRequired              = 402
-    case Forbidden                    = 403
-    case NotFound                     = 404
-    case MethodNotAllowed             = 405
-    case NotAcceptable                = 406
-    case ProxyAuthenticationRequired  = 407
-    case RequestTimeOut               = 408
-    case Conflict                     = 409
-    case Gone                         = 410
-    case LengthRequired               = 411
-    case PreconditionFailed	          = 412
-    case RequestEntityTooLarge        = 413
-    case RequestURITooLarge           = 414
-    case UnsupportedMediaType         = 415
-    case RequestedRangeNotSatisfiable = 416
-    case ExpectationFailed            = 417
-    case InternalServerError          = 500
-    case NotImplemented               = 501
-    case BadGateway                   = 502
-    case ServiceUnavailable           = 503
-    case GatewayTimeOut               = 504
-    case HTTPVersionNotSupported      = 505
+    case `continue`                     = 100
+    case switchingProtocols           = 101
+    case ok                           = 200
+    case created                      = 201
+    case accepted                     = 202
+    case nonAuthoritative             = 203
+    case noContent                    = 204
+    case resetContent                 = 205
+    case partialContent               = 206
+    case multipleChoices              = 300
+    case movedParmanently             = 301
+    case found                        = 302
+    case seeOther                     = 303
+    case notModified                  = 304
+    case useProxy                     = 305
+    case temporaryRedirect	          = 307
+    case badRequest                   = 400
+    case unauthorixed                 = 401
+    case paymentRequired              = 402
+    case forbidden                    = 403
+    case notFound                     = 404
+    case methodNotAllowed             = 405
+    case notAcceptable                = 406
+    case proxyAuthenticationRequired  = 407
+    case requestTimeOut               = 408
+    case conflict                     = 409
+    case gone                         = 410
+    case lengthRequired               = 411
+    case preconditionFailed	          = 412
+    case requestEntityTooLarge        = 413
+    case requestURITooLarge           = 414
+    case unsupportedMediaType         = 415
+    case requestedRangeNotSatisfiable = 416
+    case expectationFailed            = 417
+    case internalServerError          = 500
+    case notImplemented               = 501
+    case badGateway                   = 502
+    case serviceUnavailable           = 503
+    case gatewayTimeOut               = 504
+    case httpVersionNotSupported      = 505
 
     var message:String {
         switch self {
-        case Continue:
+        case .continue:
             return "Continue"
-        case SwitchingProtocols:
+        case .switchingProtocols:
             return "Switching Protocols"
-        case OK:
+        case .ok:
             return "OK"
-        case Created:
+        case .created:
             return "Created"
-        case Accepted:
+        case .accepted:
             return "Accepted"
-        case NonAuthoritative:
+        case .nonAuthoritative:
             return "Non-Authoritative Information"
-        case NoContent:
+        case .noContent:
             return "No Content"
-        case ResetContent:
+        case .resetContent:
             return "Reset Content"
-        case PartialContent:
+        case .partialContent:
             return "Partial Content"
-        case MultipleChoices:
+        case .multipleChoices:
             return "Multiple Choices"
-        case MovedParmanently:
+        case .movedParmanently:
             return "Moved Permanently"
-        case Found:
+        case .found:
             return "Found"
-        case SeeOther:
+        case .seeOther:
             return "See Other"
-        case NotModified:
+        case .notModified:
             return "Not Modified"
-        case UseProxy:
+        case .useProxy:
             return "Use Proxy"
-        case TemporaryRedirect:
+        case .temporaryRedirect:
             return "Temporary Redirect"
-        case BadRequest:
+        case .badRequest:
             return "Bad Request"
-        case Unauthorixed:
+        case .unauthorixed:
             return "Unauthorixed"
-        case PaymentRequired:
+        case .paymentRequired:
             return "Payment Required"
-        case Forbidden:
+        case .forbidden:
             return "Forbidden"
-        case NotFound:
+        case .notFound:
             return "Not Found"
-        case MethodNotAllowed:
+        case .methodNotAllowed:
             return "Method Not Allowed"
-        case NotAcceptable:
+        case .notAcceptable:
             return "Not"
-        case ProxyAuthenticationRequired:
+        case .proxyAuthenticationRequired:
             return "Proxy Authentication Required"
-        case RequestTimeOut:
+        case .requestTimeOut:
             return "Request Time-out"
-        case Conflict:
+        case .conflict:
             return "Conflict"
-        case Gone:
+        case .gone:
             return "Gone"
-        case LengthRequired:
+        case .lengthRequired:
             return "Length Required"
-        case PreconditionFailed:
+        case .preconditionFailed:
             return "Precondition Failed"
-        case RequestEntityTooLarge:
+        case .requestEntityTooLarge:
             return "Request Entity Too Large"
-        case RequestURITooLarge:
+        case .requestURITooLarge:
             return "Request-URI Too Large"
-        case UnsupportedMediaType:
+        case .unsupportedMediaType:
             return "Unsupported Media Type"
-        case RequestedRangeNotSatisfiable:
+        case .requestedRangeNotSatisfiable:
             return "Requested range not satisfiable"
-        case ExpectationFailed:
+        case .expectationFailed:
             return "Expectation Failed"
-        case InternalServerError:
+        case .internalServerError:
             return "Internal Server Error"
-        case NotImplemented:
+        case .notImplemented:
             return "Not Implemented"
-        case BadGateway:
+        case .badGateway:
             return "Bad Gateway"
-        case ServiceUnavailable:
+        case .serviceUnavailable:
             return "Service Unavailable"
-        case GatewayTimeOut:
+        case .gatewayTimeOut:
             return "Gateway Time-out"
-        case HTTPVersionNotSupported:
+        case .httpVersionNotSupported:
             return "HTTP Version not supported"
         }
     }
@@ -162,15 +162,15 @@ extension HTTPStatusCode: CustomStringConvertible {
 }
 
 // MARK: -
-public class HTTPService: NetService {
-    static public let type:String = "_http._tcp"
-    static public let defaultPort:Int32 = 8080
-    static public let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
+open class HTTPService: NetService {
+    static open let type:String = "_http._tcp"
+    static open let defaultPort:Int32 = 8080
+    static open let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
 
     var document:String = HTTPService.defaultDocument
-    private(set) var streams:[HTTPStream] = []
+    fileprivate(set) var streams:[HTTPStream] = []
 
-    public func addHTTPStream(stream:HTTPStream) {
+    open func addHTTPStream(_ stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 return
@@ -179,16 +179,16 @@ public class HTTPService: NetService {
         streams.append(stream)
     }
 
-    public func removeHTTPStream(stream:HTTPStream) {
+    open func removeHTTPStream(_ stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
-                streams.removeAtIndex(i)
+                streams.remove(at: i)
                 return
             }
         }
     }
 
-    func get(request:HTTPRequest, client:NetClient) {
+    func get(_ request:HTTPRequest, client:NetClient) {
         logger.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
         response.headerFields["Connection"] = "close"
@@ -211,19 +211,19 @@ public class HTTPService: NetService {
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
                 case .VideoMP2T:
-                    if let info = try? NSFileManager.defaultManager().attributesOfItemAtPath(resource) {
-                        response.headerFields["Content-Length"] = String(info["NSFileSize"]!)
+                    if let info:[FileAttributeKey:Any] = try? FileManager.default.attributesOfItem(atPath: resource) {
+                        response.headerFields["Content-Length"] = String(describing: info[FileAttributeKey.size])
                     }
                     client.doOutput(bytes: response.bytes)
-                    client.doOutputFromURL(NSURL(fileURLWithPath: resource), length: 8 * 1024)
+                    client.doOutputFromURL(URL(fileURLWithPath: resource), length: 8 * 1024)
                 default:
-                    response.statusCode = HTTPStatusCode.OK.description
+                    response.statusCode = HTTPStatusCode.ok.description
                     response.body = [UInt8](resource.utf8)
                     client.doOutput(bytes: response.bytes)
                 }
                 return
             }
-            response.statusCode = HTTPStatusCode.NotFound.description
+            response.statusCode = HTTPStatusCode.notFound.description
             response.headerFields["Connection"] = "close"
             client.doOutput(bytes: response.bytes)
         }

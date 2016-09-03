@@ -3,12 +3,7 @@ import CoreImage
 
 extension CMSampleBuffer {
     var dependsOnOthers:Bool {
-        guard let
-            attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(self, false),
-            attachment:Dictionary = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), CFDictionaryRef.self) as Dictionary? else {
-            return false
-        }
-        return attachment["DependsOnOthers"] as! Bool
+        return false
     }
     var dataBuffer:CMBlockBuffer? {
         get {
@@ -49,24 +44,21 @@ extension CMSampleBuffer: BytesConvertible {
             guard let buffer:CMBlockBuffer = dataBuffer else {
                 return []
             }
+            var bytes:UnsafeMutablePointer<Int8>? = nil
             var length:Int = 0
-            var bytes:UnsafeMutablePointer<Int8> = nil
             guard CMBlockBufferGetDataPointer(buffer, 0, nil, &length, &bytes) == noErr else {
                 return []
             }
-            return Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(bytes), count: length))
-
+            return Array(Data(bytes: bytes!, count: length))
         }
         set {
-            
         }
     }
 }
 
 // MARK: -
 extension CVPixelBuffer {
-
-    static func create(image:CIImage) -> CVPixelBuffer? {
+    static func create(_ image:CIImage) -> CVPixelBuffer? {
         var buffer:CVPixelBuffer?
         CVPixelBufferCreate(
             kCFAllocatorDefault,
@@ -78,8 +70,6 @@ extension CVPixelBuffer {
         )
         return buffer
     }
-    
-    
     var width:Int {
         return CVPixelBufferGetWidth(self)
     }

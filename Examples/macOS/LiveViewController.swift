@@ -33,20 +33,20 @@ final class LiveViewController: NSViewController {
     var fpsPopUpButton:NSPopUpButton = {
         let button:NSPopUpButton = NSPopUpButton()
         button.action = #selector(LiveViewController.selectFPS(_:))
-        button.addItemWithTitle("30")
-        button.addItemWithTitle("60")
-        button.addItemWithTitle("15")
-        button.addItemWithTitle("1")
+        button.addItem(withTitle: "30")
+        button.addItem(withTitle: "60")
+        button.addItem(withTitle: "15")
+        button.addItem(withTitle: "1")
         return button
     }()
 
     var audioPopUpButton:NSPopUpButton = {
         let button:NSPopUpButton = NSPopUpButton()
         button.action = #selector(LiveViewController.selectAudio(_:))
-        let audios:[AnyObject]! = AVCaptureDevice.devicesWithMediaType(AVMediaTypeAudio)
+        let audios:[Any]! = AVCaptureDevice.devices(withMediaType: AVMediaTypeAudio)
         for audio in audios {
             if let audio:AVCaptureDevice = audio as? AVCaptureDevice {
-                button.addItemWithTitle(audio.localizedName)
+                button.addItem(withTitle: audio.localizedName)
             }
         }
         return button
@@ -55,10 +55,10 @@ final class LiveViewController: NSViewController {
     var cameraPopUpButton:NSPopUpButton = {
         let button:NSPopUpButton = NSPopUpButton()
         button.action = #selector(LiveViewController.selectCamera(_:))
-        let cameras:[AnyObject]! = AVCaptureDevice.devicesWithMediaType(AVMediaTypeVideo)
+        let cameras:[Any]! = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo)
         for camera in cameras {
             if let camera:AVCaptureDevice = camera as? AVCaptureDevice {
-                button.addItemWithTitle(camera.localizedName)
+                button.addItem(withTitle: camera.localizedName)
             }
         }
         return button
@@ -91,10 +91,10 @@ final class LiveViewController: NSViewController {
         rtmpStream.attachCamera(
             DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
-        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .New, context: nil)
+        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         publishButton.target = self
 
-        lfView.attachStream(rtmpStream)
+        lfView.attachStream(stream: rtmpStream)
 
         view.addSubview(lfView)
         view.addSubview(fpsPopUpButton)
@@ -116,11 +116,11 @@ final class LiveViewController: NSViewController {
         audioPopUpButton.frame = NSMakeRect(view.frame.width - 220, 20, 200, 20)
     }
 
-    func publishOrStop(sender:NSButton) {
+    func publishOrStop(_ sender:NSButton) {
         // Publish
         if (sender.title == "Publish") {
             sender.title = "Stop"
-            segmentedControl.enabled = false
+            segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:
                 rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
@@ -136,7 +136,7 @@ final class LiveViewController: NSViewController {
         }
         // Stop
         sender.title = "Publish"
-        segmentedControl.enabled = true
+        segmentedControl.isEnabled = true
         switch segmentedControl.selectedSegment {
         case 0:
             rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
@@ -151,7 +151,7 @@ final class LiveViewController: NSViewController {
         return
     }
 
-    func modeChanged(sender:NSSegmentedControl) {
+    func modeChanged(_ sender:NSSegmentedControl) {
         switch sender.selectedSegment {
         case 0:
             httpStream.attachAudio(nil)
@@ -170,7 +170,7 @@ final class LiveViewController: NSViewController {
         }
     }
 
-    func selectAudio(sender:AnyObject) {
+    func selectAudio(_ sender:AnyObject) {
         let device:AVCaptureDevice? = DeviceUtil.deviceWithLocalizedName(
             audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio
         )
@@ -186,7 +186,7 @@ final class LiveViewController: NSViewController {
         }
     }
 
-    func selectCamera(sender:AnyObject) {
+    func selectCamera(_ sender:AnyObject) {
         let device:AVCaptureDevice? = DeviceUtil.deviceWithLocalizedName(
             cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo
         )
@@ -202,8 +202,9 @@ final class LiveViewController: NSViewController {
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard let keyPath:String = keyPath where NSThread.isMainThread() else {
+    /*
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [String : Any]?, context: UnsafeMutableRawPointer?) {
+        guard let keyPath:String = keyPath , Thread.isMainThread else {
             return
         }
         switch keyPath {
@@ -213,16 +214,17 @@ final class LiveViewController: NSViewController {
             break
         }
     }
+    */
 
-    func selectFPS(sender:AnyObject) {
+    func selectFPS(_ sender:AnyObject) {
         let value:String = fpsPopUpButton.itemTitles[fpsPopUpButton.indexOfSelectedItem]
         rtmpStream.captureSettings["fps"] = value
         httpStream.captureSettings["fps"] = value
     }
 
-    func rtmpStatusHandler(notification:NSNotification) {
+    func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
-        if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
+        if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish("live")
@@ -239,7 +241,7 @@ final class LiveViewController: NSViewController {
 }
 
 extension LiveViewController: NSWindowDelegate {
-    func windowWillClose(notification: NSNotification) {
+    func windowWillClose(_ notification: Notification) {
         NSApp.terminate(self)
     }
 }

@@ -2,22 +2,22 @@ import Foundation
 
 final class Mutex {
 
-    enum Error: ErrorType {
-        case Inval
-        case Busy
-        case Again
-        case Deadlnk
-        case Perm
+    enum Error: Swift.Error {
+        case inval
+        case busy
+        case again
+        case deadlnk
+        case perm
     }
 
-    private let mutex:UnsafeMutablePointer<pthread_mutex_t>
-    private let condition:UnsafeMutablePointer<pthread_cond_t>
-    private let attribute:UnsafeMutablePointer<pthread_mutexattr_t>
+    fileprivate let mutex:UnsafeMutablePointer<pthread_mutex_t>
+    fileprivate let condition:UnsafeMutablePointer<pthread_cond_t>
+    fileprivate let attribute:UnsafeMutablePointer<pthread_mutexattr_t>
 
     init() {
-        mutex = UnsafeMutablePointer.alloc(sizeof(pthread_mutex_t))
-        condition = UnsafeMutablePointer.alloc(sizeof(pthread_cond_t))
-        attribute = UnsafeMutablePointer.alloc(sizeof(pthread_mutexattr_t))
+        mutex = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: MemoryLayout<pthread_mutex_t>.size)
+        condition = UnsafeMutablePointer<pthread_cond_t>.allocate(capacity: MemoryLayout<pthread_cond_t>.size)
+        attribute = UnsafeMutablePointer<pthread_mutexattr_t>.allocate(capacity: MemoryLayout<pthread_mutexattr_t>.size)
 
         pthread_mutexattr_init(attribute)
         pthread_mutex_init(mutex, attribute)
@@ -33,9 +33,9 @@ final class Mutex {
     func lock() throws {
         switch pthread_mutex_trylock(mutex) {
         case EBUSY:
-            throw Mutex.Error.Busy
+            throw Mutex.Error.busy
         case EINVAL:
-            throw Mutex.Error.Inval
+            throw Mutex.Error.inval
         default:
             break
         }

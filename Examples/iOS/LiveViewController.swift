@@ -19,25 +19,25 @@ final class LiveViewController: UIViewController {
 
     let touchView: UIView! = UIView()
     
-    let lfView:GLLFView! = GLLFView(frame: CGRectZero)
+    let lfView:GLLFView! = GLLFView(frame: CGRect.zero)
 
     var currentFPSLabel:UILabel = {
         let label:UILabel = UILabel()
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         return label
     }()
 
     var publishButton:UIButton = {
         let button:UIButton = UIButton()
-        button.backgroundColor = UIColor.blueColor()
-        button.setTitle("●", forState: .Normal)
+        button.backgroundColor = UIColor.blue
+        button.setTitle("●", for: UIControlState())
         button.layer.masksToBounds = true
         return button
     }()
 
     var videoBitrateLabel:UILabel = {
         let label:UILabel = UILabel()
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         return label
     }()
 
@@ -50,7 +50,7 @@ final class LiveViewController: UIViewController {
 
     var audioBitrateLabel:UILabel = {
         let label:UILabel = UILabel()
-        label.textColor = UIColor.whiteColor()
+        label.textColor = UIColor.white
         return label
     }()
 
@@ -70,28 +70,28 @@ final class LiveViewController: UIViewController {
 
     var fpsControl:UISegmentedControl = {
         let segment:UISegmentedControl = UISegmentedControl(items: ["15.0", "30.0", "60.0"])
-        segment.tintColor = UIColor.whiteColor()
+        segment.tintColor = UIColor.white
         return segment
     }()
 
     var effectSegmentControl:UISegmentedControl = {
         let segment:UISegmentedControl = UISegmentedControl(items: ["None", "Monochrome", "Pronama"])
-        segment.tintColor = UIColor.whiteColor()
+        segment.tintColor = UIColor.white
         return segment
     }()
 
-    var currentPosition:AVCaptureDevicePosition = AVCaptureDevicePosition.Back
+    var currentPosition:AVCaptureDevicePosition = AVCaptureDevicePosition.back
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         currentFPSLabel.text = "FPS"
 
-        zoomSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
-        videoBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
-        audioBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), forControlEvents: .ValueChanged)
-        fpsControl.addTarget(self, action: #selector(LiveViewController.onFPSValueChanged(_:)), forControlEvents: .ValueChanged)
-        effectSegmentControl.addTarget(self, action: #selector(LiveViewController.onEffectValueChanged(_:)), forControlEvents: .ValueChanged)
+        zoomSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), for: .valueChanged)
+        videoBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), for: .valueChanged)
+        audioBitrateSlider.addTarget(self, action: #selector(LiveViewController.onSliderValueChanged(_:)), for: .valueChanged)
+        fpsControl.addTarget(self, action: #selector(LiveViewController.onFPSValueChanged(_:)), for: .valueChanged)
+        effectSegmentControl.addTarget(self, action: #selector(LiveViewController.onEffectValueChanged(_:)), for: .valueChanged)
 
         /*
         navigationItem.leftBarButtonItem =
@@ -112,16 +112,16 @@ final class LiveViewController: UIViewController {
         */
 
         navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(title: "Torch", style: .Plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),
-            UIBarButtonItem(title: "Camera", style: .Plain, target: self, action: #selector(LiveViewController.rotateCamera(_:)))
+            UIBarButtonItem(title: "Torch", style: .plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),
+            UIBarButtonItem(title: "Camera", style: .plain, target: self, action: #selector(LiveViewController.rotateCamera(_:)))
         ]
 
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
         
-        rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-        rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(.Back))
-        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.New, context: nil)
+        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+        rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(.back))
+        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
         //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
@@ -135,12 +135,12 @@ final class LiveViewController: UIViewController {
             "height": 720,
         ]
 
-        publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), forControlEvents: .TouchUpInside)
+        publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), for: .touchUpInside)
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LiveViewController.tapScreen(_:)))
         touchView.addGestureRecognizer(tapGesture)
         touchView.frame = view.frame
-        touchView.autoresizingMask = [.FlexibleWidth, .FlexibleHeight]
+        touchView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
 
         videoBitrateSlider.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider.value = Float(RTMPStream.defaultAudioBitrate) / 1024
@@ -177,26 +177,26 @@ final class LiveViewController: UIViewController {
         audioBitrateSlider.frame = CGRect(x: 20, y: view.frame.height - 44, width: view.frame.width - 44 - 60, height: 44)
     }
 
-    func rotateCamera(sender:UIBarButtonItem) {
-        let position:AVCaptureDevicePosition = currentPosition == .Back ? .Front : .Back
+    func rotateCamera(_ sender:UIBarButtonItem) {
+        let position:AVCaptureDevicePosition = currentPosition == .back ? .front : .back
         rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(position))
         currentPosition = position
     }
 
-    func toggleTorch(sender:UIBarButtonItem) {
+    func toggleTorch(_ sender:UIBarButtonItem) {
         rtmpStream.torch = !rtmpStream.torch
     }
 
-    func showPreference(sender:UIBarButtonItem) {
+    func showPreference(_ sender:UIBarButtonItem) {
         let preference:PreferenceController = PreferenceController()
         preference.view.backgroundColor = UIColor(colorLiteralRed: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)
         preference.view.frame = view.frame
-        preference.modalPresentationStyle = .OverCurrentContext
-        preference.modalTransitionStyle = .CrossDissolve
-        presentViewController(preference, animated: true, completion: nil)
+        preference.modalPresentationStyle = .overCurrentContext
+        preference.modalTransitionStyle = .crossDissolve
+        present(preference, animated: true, completion: nil)
     }
 
-    func onSliderValueChanged(slider:UISlider) {
+    func onSliderValueChanged(_ slider:UISlider) {
         if (slider == audioBitrateSlider) {
             audioBitrateLabel.text = "audio \(Int(slider.value))/kbps"
             rtmpStream.audioSettings["bitrate"] = slider.value * 1024
@@ -210,24 +210,24 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    func onClickPublish(sender:UIButton) {
-        if (sender.selected) {
-            UIApplication.sharedApplication().idleTimerDisabled = false
+    func onClickPublish(_ sender:UIButton) {
+        if (sender.isSelected) {
+            UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
             rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-            sender.setTitle("●", forState: .Normal)
+            sender.setTitle("●", for: UIControlState())
         } else {
-            UIApplication.sharedApplication().idleTimerDisabled = true
+            UIApplication.shared.isIdleTimerDisabled = true
             rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
-            sender.setTitle("■", forState: .Normal)
+            sender.setTitle("■", for: UIControlState())
         }
-        sender.selected = !sender.selected
+        sender.isSelected = !sender.isSelected
     }
 
-    func rtmpStatusHandler(notification:NSNotification) {
+    func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
-        if let data:ASObject = e.data as? ASObject , code:String = data["code"] as? String {
+        if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.ConnectSuccess.rawValue:
                 rtmpStream!.publish(Preference.defaultInstance.streamName!)
@@ -238,9 +238,9 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    func tapScreen(gesture: UIGestureRecognizer) {
-        if let gestureView = gesture.view where gesture.state == .Ended {
-            let touchPoint: CGPoint = gesture.locationInView(gestureView)
+    func tapScreen(_ gesture: UIGestureRecognizer) {
+        if let gestureView = gesture.view , gesture.state == .ended {
+            let touchPoint: CGPoint = gesture.location(in: gestureView)
             let pointOfInterest: CGPoint = CGPoint(x: touchPoint.x/gestureView.bounds.size.width,
                 y: touchPoint.y/gestureView.bounds.size.height)
             print("pointOfInterest: \(pointOfInterest)")
@@ -248,7 +248,7 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    func onFPSValueChanged(segment:UISegmentedControl) {
+    func onFPSValueChanged(_ segment:UISegmentedControl) {
         switch segment.selectedSegmentIndex {
         case 0:
             rtmpStream.captureSettings["fps"] = 15.0
@@ -261,7 +261,7 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    func onEffectValueChanged(segment:UISegmentedControl) {
+    func onEffectValueChanged(_ segment:UISegmentedControl) {
         if let currentEffect:VisualEffect = currentEffect {
             rtmpStream.unregisterEffect(video: currentEffect)
         }
@@ -277,9 +277,11 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if (NSThread.isMainThread()) {
+    /*
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [String : Any]?, context: UnsafeMutableRawPointer?) {
+        if (Thread.isMainThread) {
             currentFPSLabel.text = "\(rtmpStream.currentFPS)"
         }
     }
+    */
 }

@@ -32,12 +32,12 @@ struct AVCFormatStream {
  */
 struct AVCConfigurationRecord {
 
-    static func getData(formatDescription:CMFormatDescriptionRef?) -> NSData? {
-        guard let formatDescription:CMFormatDescriptionRef = formatDescription else {
+    static func getData(_ formatDescription:CMFormatDescription?) -> Data? {
+        guard let formatDescription:CMFormatDescription = formatDescription else {
             return nil
         }
-        if let atoms:NSDictionary = CMFormatDescriptionGetExtension(formatDescription, "SampleDescriptionExtensionAtoms") as? NSDictionary {
-            return atoms["avcC"] as? NSData
+        if let atoms:NSDictionary = CMFormatDescriptionGetExtension(formatDescription, "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
+            return atoms["avcC"] as? Data
         }
         return nil
     }
@@ -69,13 +69,13 @@ struct AVCConfigurationRecord {
     init() {
     }
 
-    init(data: NSData) {
-        var bytes:[UInt8] = [UInt8](count: data.length, repeatedValue: 0x00)
-        data.getBytes(&bytes, length: bytes.count)
+    init(data: Data) {
+        var bytes:[UInt8] = [UInt8](repeating: 0x00, count: data.count)
+        (data as NSData).getBytes(&bytes, length: bytes.count)
         self.bytes = bytes
     }
 
-    func createFormatDescription(formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
+    func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
         var parameterSetPointers:[UnsafePointer<UInt8>] = [
             UnsafePointer<UInt8>(sequenceParameterSets[0]),
             UnsafePointer<UInt8>(pictureParameterSets[0])

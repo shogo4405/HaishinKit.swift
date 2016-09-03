@@ -1,9 +1,8 @@
 import Foundation
 
-// MARK: NetClientDelegate
 @objc protocol NetClientDelegate: class {
-    optional func client(inputBuffer client:NetClient)
-    optional func client(didAccepetConnection client:NetClient)
+    @objc optional func client(inputBuffer client:NetClient)
+    @objc optional func client(didAccepetConnection client:NetClient)
 }
 
 // MARK: -
@@ -11,9 +10,9 @@ final class NetClient: NetSocket {
     static let defaultBufferSize:Int = 8192
 
     weak var delegate:NetClientDelegate?
-    private(set) var service:NSNetService?
+    fileprivate(set) var service:Foundation.NetService?
 
-    init(service:NSNetService, inputStream:NSInputStream, outputStream:NSOutputStream) {
+    init(service:Foundation.NetService, inputStream:InputStream, outputStream:OutputStream) {
         super.init()
         self.service = service
         self.inputStream = inputStream
@@ -21,7 +20,7 @@ final class NetClient: NetSocket {
     }
 
     func acceptConnection() {
-        dispatch_async(networkQueue) {
+        networkQueue.async {
             self.initConnection()
             self.delegate?.client?(didAccepetConnection: self)
         }

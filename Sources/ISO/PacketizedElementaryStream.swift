@@ -15,10 +15,10 @@ protocol PESPacketHeader {
 
 // MARK: - PESPTSDTSIndicator
 enum PESPTSDTSIndicator:UInt8 {
-    case None        = 0
-    case OnlyPTS     = 1
-    case Forbidden   = 2
-    case BothPresent = 3
+    case none        = 0
+    case onlyPTS     = 1
+    case forbidden   = 2
+    case bothPresent = 3
 }
 
 // MARK: -
@@ -32,7 +32,7 @@ struct PESOptionalHeader {
     var dataAlignmentIndicator:Bool = false
     var copyright:Bool = false
     var originalOrCopy:Bool = false
-    var PTSDTSIndicator:UInt8 = PESPTSDTSIndicator.None.rawValue
+    var PTSDTSIndicator:UInt8 = PESPTSDTSIndicator.none.rawValue
     var ESCRFlag:Bool = false
     var ESRateFlag:Bool = false
     var DSMTrickModeFlag:Bool = false
@@ -50,7 +50,7 @@ struct PESOptionalHeader {
         self.bytes = bytes
     }
 
-    mutating func setTimestamp(timestamp:CMTime, presentationTimeStamp:CMTime, decodeTimeStamp:CMTime) {
+    mutating func setTimestamp(_ timestamp:CMTime, presentationTimeStamp:CMTime, decodeTimeStamp:CMTime) {
         let base:Double = Double(timestamp.seconds)
         if (presentationTimeStamp != kCMTimeInvalid) {
             PTSDTSIndicator |= 0x02
@@ -132,7 +132,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize:Int = 6
     static let startCode:[UInt8] = [0x00, 0x00, 0x01]
 
-    static func create(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:Any?) -> PacketizedElementaryStream? {
+    static func create(_ sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:Any?) -> PacketizedElementaryStream? {
         if let config:AudioSpecificConfig = config as? AudioSpecificConfig {
             return PacketizedElementaryStream(sampleBuffer: sampleBuffer, timestamp: timestamp, config: config)
         }
@@ -184,7 +184,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         packetLength = UInt16(data.count + optionalPESHeader!.bytes.count)
     }
 
-    func arrayOfPackets(PID:UInt16, PCR:UInt64?) -> [TSPacket] {
+    func arrayOfPackets(_ PID:UInt16, PCR:UInt64?) -> [TSPacket] {
         let payload:[UInt8] = bytes
         var packets:[TSPacket] = []
 
@@ -195,7 +195,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.PCRFlag = true
-            packet.adaptationField?.PCR = TSProgramClockReference.encode(PCR, 0)
+            packet.adaptationField?.PCR = TSProgramClockReference.encode(0, UInt16(PCR))
             packet.adaptationField?.compute()
         }
         packet.payloadUnitStartIndicator = true
@@ -204,11 +204,11 @@ struct PacketizedElementaryStream: PESPacketHeader {
 
         // middle
         let r:Int = (payload.count - position) % 184
-        for index in payload.startIndex.advancedBy(position).stride(to: payload.endIndex.advancedBy(-r), by: 184) {
+        for index in stride(from: payload.startIndex.advanced(by: position), to: payload.endIndex.advanced(by: -r), by: 184) {
             var packet:TSPacket = TSPacket()
             packet.PID = PID
             packet.payloadFlag = true
-            packet.payload = Array(payload[index..<index.advancedBy(184)])
+            packet.payload = Array(payload[index..<index.advanced(by: 184)])
             packets.append(packet)
         }
 
@@ -222,30 +222,30 @@ struct PacketizedElementaryStream: PESPacketHeader {
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            packet.fill(remain, useAdaptationField: true)
+            let _ = packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
             packet = TSPacket()
             packet.PID = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            packet.fill([payload[payload.count - 1]], useAdaptationField: true)
+            let _ = packet.fill([payload[payload.count - 1]], useAdaptationField: true)
             packets.append(packet)
         default:
-            let remain:[UInt8] = Array(payload[payload.endIndex - r..<payload.endIndex])
+            let remain:[UInt8] = Array(payload[payload.indices.suffix(from: payload.endIndex - r)])
             var packet:TSPacket = TSPacket()
             packet.PID = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            packet.fill(remain, useAdaptationField: true)
+            let _ = packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
         }
 
         return packets
     }
 
-    mutating func append(bytes:[UInt8]) -> Int {
+    mutating func append(_ bytes:[UInt8]) -> Int {
         data += bytes
         return bytes.count
     }

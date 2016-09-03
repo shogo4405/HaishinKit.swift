@@ -3,7 +3,7 @@ import Foundation
 extension Mirror {
     var description:String {
         var data:[String] = []
-        if let superclassMirror:Mirror = superclassMirror() {
+        if let superclassMirror:Mirror = superclassMirror {
             for child in superclassMirror.children {
                 guard let label:String = child.label else {
                     continue
@@ -17,21 +17,23 @@ extension Mirror {
             }
             data.append("\(label):\(child.value)")
         }
-        return "\(subjectType){\(data.joinWithSeparator(","))}"
+        return "\(subjectType){\(data.joined(separator: ","))}"
     }
 }
 
-extension IntegerLiteralConvertible {
+// MARK: -
+extension ExpressibleByIntegerLiteral {
     var bytes:[UInt8] {
-        var value:Self = self
-        return withUnsafePointer(&value) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>($0), count: sizeof(Self.self)))
+        var data = [UInt8](repeating: 0, count: MemoryLayout<`Self`>.size)
+        data.withUnsafeMutableBufferPointer {
+            UnsafeMutableRawPointer($0.baseAddress!).storeBytes(of: self, as: Self.self)
         }
+        return data
     }
 
     init(bytes:[UInt8]) {
         self = bytes.withUnsafeBufferPointer {
-            return UnsafePointer<`Self`>($0.baseAddress).memory
+            UnsafeRawPointer($0.baseAddress!).load(as: Self.self)
         }
     }
 }

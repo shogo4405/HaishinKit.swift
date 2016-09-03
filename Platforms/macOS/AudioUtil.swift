@@ -4,9 +4,9 @@ import CoreAudio
 
 final class AudioUtil {
 
-    private static var defaultDeviceID:AudioObjectID {
+    fileprivate static var defaultDeviceID:AudioObjectID {
         var deviceID:AudioObjectID = AudioObjectID(0)
-        var size:UInt32 = UInt32(sizeof(AudioObjectID))
+        var size:UInt32 = UInt32(MemoryLayout<AudioObjectID>.size)
         var address:AudioObjectPropertyAddress = AudioObjectPropertyAddress()
         address.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
         address.mScope = kAudioObjectPropertyScopeGlobal;
@@ -15,12 +15,12 @@ final class AudioUtil {
         return deviceID
     }
 
-    private init() {
+    fileprivate init() {
     }
 
-    static func setInputGain(volume:Float32) -> OSStatus {
+    static func setInputGain(_ volume:Float32) -> OSStatus {
         var inputVolume:Float32 = volume
-        let size:UInt32 = UInt32(sizeof(Float32))
+        let size:UInt32 = UInt32(MemoryLayout<Float32>.size)
         var address:AudioObjectPropertyAddress = AudioObjectPropertyAddress()
         address.mSelector = kAudioDevicePropertyVolumeScalar
         address.mScope = kAudioObjectPropertyScopeGlobal
@@ -30,7 +30,7 @@ final class AudioUtil {
 
     static func getInputGain() -> Float32{
         var volume:Float32 = 0.5
-        var size:UInt32 = UInt32(sizeof(Float32))
+        var size:UInt32 = UInt32(MemoryLayout<Float32>.size)
         var address:AudioObjectPropertyAddress = AudioObjectPropertyAddress()
         address.mSelector = kAudioDevicePropertyVolumeScalar
         address.mScope = kAudioObjectPropertyScopeGlobal

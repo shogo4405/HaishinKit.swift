@@ -12,9 +12,6 @@ final class EventDispatcherTest: XCTestCase {
         eventDispatcher.dispatchEventWith("test", bubbles: false, data: "Hoge")
     }
 
-    func onTest(notification: NSNotification) {
-        if let info = notification.userInfo as? Dictionary<String, AnyObject> {
-            print(info["event"]!)
-        }
+    func onTest(_ notification: Notification) {
     }
 }

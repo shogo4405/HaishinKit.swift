@@ -15,8 +15,8 @@ final class TSTests: XCTestCase {
 
     func testTSReader() {
         do {
-            let bundle:NSBundle = NSBundle(forClass: self.dynamicType)
-            let url:NSURL = NSURL(fileURLWithPath: bundle.pathForResource("SampleVideo_360x240_5mb/000", ofType: "ts")!)
+            let bundle:Bundle = Bundle(for: type(of: self))
+            let url:URL = URL(fileURLWithPath: bundle.path(forResource: "SampleVideo_360x240_5mb/000", ofType: "ts")!)
             let reader:TSReader = try TSReader(url: url)
             reader.read()
             XCTAssertEqual(reader.numberOfPackets, 5984)

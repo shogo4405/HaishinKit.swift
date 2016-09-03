@@ -8,23 +8,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var rootViewController:UINavigationController = {
         let controller:UINavigationController = UINavigationController()
         controller.setViewControllers([LiveViewController()], animated: true)
-        controller.navigationBar.setBackgroundImage(UIImage(), forBarMetrics: UIBarMetrics.Default)
-        controller.navigationBar.translucent = true
+        controller.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        controller.navigationBar.isTranslucent = true
         controller.navigationBar.titleTextAttributes = [
-            NSForegroundColorAttributeName: UIColor.whiteColor()
+            NSForegroundColorAttributeName: UIColor.white
         ]
-        controller.navigationBar.tintColor = UIColor.whiteColor()
+        controller.navigationBar.tintColor = UIColor.white
         controller.navigationBar.shadowImage = UIImage()
         return controller
     }()
 
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+    private func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
 
-        XCGLogger.defaultInstance().outputLogLevel = .Info
+        XCGLogger.defaultInstance().outputLogLevel = .info
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
 
-        window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        window?.backgroundColor = UIColor.whiteColor()
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.backgroundColor = UIColor.white
         window?.rootViewController = rootViewController
         window?.makeKeyAndVisible()
 

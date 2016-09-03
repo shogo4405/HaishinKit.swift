@@ -5,7 +5,7 @@ import Foundation
 final class MonochromeEffect: VisualEffect {
     let filter:CIFilter? = CIFilter(name: "CIColorMonochrome")
     
-    override func execute(image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage) -> CIImage {
         guard let filter:CIFilter = filter else {
             return image
         }

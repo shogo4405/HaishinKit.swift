@@ -1,30 +1,30 @@
 import Foundation
 import AVFoundation
 
-public class LFView: UIView {
-    public static var defaultBackgroundColor:UIColor = UIColor.blackColor()
+open class LFView: UIView {
+    open static var defaultBackgroundColor:UIColor = UIColor.black
 
-    public override class func layerClass() -> AnyClass {
+    open override class var layerClass:AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
 
-    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
+    open var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
             layer.setValue(videoGravity, forKey: "videoGravity")
         }
     }
 
-    var orientation:AVCaptureVideoOrientation = .Portrait {
+    var orientation:AVCaptureVideoOrientation = .portrait {
         didSet {
-            guard let connection:AVCaptureConnection = layer.valueForKey("connection") as? AVCaptureConnection else {
+            guard let connection:AVCaptureConnection = layer.value(forKey: "connection") as? AVCaptureConnection else {
                 return
             }
-            if (connection.supportsVideoOrientation) {
+            if (connection.isVideoOrientationSupported) {
                 connection.videoOrientation = orientation
             }
         }
     }
-    var position:AVCaptureDevicePosition = .Front
+    var position:AVCaptureDevicePosition = .front
 
     public override init(frame:CGRect) {
         super.init(frame:frame)
@@ -35,13 +35,13 @@ public class LFView: UIView {
         super.init(coder: aDecoder)
     }
 
-    override public func awakeFromNib() {
+    override open func awakeFromNib() {
         backgroundColor = LFView.defaultBackgroundColor
         layer.contentsGravity = kCAGravityResizeAspect
-        layer.backgroundColor = LFView.defaultBackgroundColor.CGColor
+        layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
     }
 
-    private weak var currentStream:Stream? {
+    fileprivate weak var currentStream:Stream? {
         didSet {
             guard let oldValue:Stream = oldValue else {
                 return
@@ -50,7 +50,7 @@ public class LFView: UIView {
         }
     }
 
-    public func attachStream(stream:Stream?) {
+    open func attachStream(_ stream:Stream?) {
         layer.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream
@@ -59,8 +59,8 @@ public class LFView: UIView {
 
 // MARK: - StreamDrawable
 extension LFView: StreamDrawable {
-    func render(image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
     }
-    func drawImage(image:CIImage) {
+    func drawImage(_ image:CIImage) {
     }
 }

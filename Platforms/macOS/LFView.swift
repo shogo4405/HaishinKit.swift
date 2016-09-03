@@ -2,17 +2,19 @@ import Foundation
 import AVFoundation
 
 public class LFView: NSView {
-    public static var defaultBackgroundColor:NSColor = NSColor.blackColor()
+    public static var defaultBackgroundColor:NSColor = NSColor.black
 
-    var position:AVCaptureDevicePosition = .Front {
+    var position:AVCaptureDevicePosition = .front {
         didSet {
-            let when:dispatch_time_t  = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-            dispatch_after(when, dispatch_get_main_queue()) {
+            /*
+            let when:dispatch_time_t  = DispatchTime.now(dispatch_time_t(DISPATCH_TIME_NOW), Int64(0.1 * Double(NSEC_PER_SEC)))
+            dispatch_after(when, DispatchQueue.main) {
                 self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
             }
+            */
         }
     }
-    var orientation:AVCaptureVideoOrientation = .Portrait
+    var orientation:AVCaptureVideoOrientation = .portrait
 
     public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
@@ -41,7 +43,7 @@ public class LFView: NSView {
     public override func awakeFromNib() {
         wantsLayer = true
         layer = AVCaptureVideoPreviewLayer()
-        layer?.backgroundColor = LFView.defaultBackgroundColor.CGColor
+        layer?.backgroundColor = LFView.defaultBackgroundColor.cgColor
         layer?.setValue(videoGravity, forKey: "videoGravity")
     }
 
@@ -54,8 +56,8 @@ public class LFView: NSView {
 
 // MARK: - StreamDrawable
 extension LFView: StreamDrawable {
-    func render(image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
     }
-    func drawImage(image:CIImage) {
+    func drawImage(_ image:CIImage) {
     }
 }

@@ -2,27 +2,27 @@ import Foundation
 import AVFoundation
 
 public final class DeviceUtil {
-    private init() {
+    fileprivate init() {
     }
 
     #if os(iOS)
-    static public func getAVCaptureVideoOrientation(orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+    static public func getAVCaptureVideoOrientation(_ orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
-        case .Portrait:
-            return .Portrait
-        case .PortraitUpsideDown:
-            return .PortraitUpsideDown
-        case .LandscapeLeft:
-            return .LandscapeRight
-        case .LandscapeRight:
-            return .LandscapeLeft
+        case .portrait:
+            return .portrait
+        case .portraitUpsideDown:
+            return .portraitUpsideDown
+        case .landscapeLeft:
+            return .landscapeRight
+        case .landscapeRight:
+            return .landscapeLeft
         default:
             return nil
         }
     }
     #endif
 
-    static public func deviceWithPosition(position:AVCaptureDevicePosition) -> AVCaptureDevice? {
+    static public func deviceWithPosition(_ position:AVCaptureDevicePosition) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
             guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
                 continue
@@ -34,7 +34,7 @@ public final class DeviceUtil {
         return nil
     }
 
-    static public func deviceWithLocalizedName(localizedName:String, mediaType:String) -> AVCaptureDevice? {
+    static public func deviceWithLocalizedName(_ localizedName:String, mediaType:String) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
             guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
                 continue
@@ -46,11 +46,11 @@ public final class DeviceUtil {
         return nil
     }
 
-    static func getActualFPS(fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
+    static func getActualFPS(_ fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
         var durations:[CMTime] = []
         var frameRates:[Float64] = []
-        
-        for object:AnyObject in device.activeFormat.videoSupportedFrameRateRanges {
+
+        for object:Any in device.activeFormat.videoSupportedFrameRateRanges {
             guard let range:AVFrameRateRange = object as? AVFrameRateRange else {
                 continue
             }
@@ -71,7 +71,7 @@ public final class DeviceUtil {
         for frameRate in frameRates {
             diff.append(abs(frameRate - fps))
         }
-        if let minElement:Float64 = diff.minElement() {
+        if let minElement:Float64 = diff.min() {
             for i in 0..<diff.count {
                 if (diff[i] == minElement) {
                     return (frameRates[i], durations[i])

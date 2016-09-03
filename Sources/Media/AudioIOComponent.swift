@@ -3,8 +3,8 @@ import AVFoundation
 
 final class AudioIOComponent: IOComponent {
     var encoder:AACEncoder = AACEncoder()
-    let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.AudioIOComponent.lock", DISPATCH_QUEUE_SERIAL
+    let lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.AudioIOComponent.lock", attributes: []
     )
 
     var input:AVCaptureDeviceInput? = nil {
@@ -21,7 +21,7 @@ final class AudioIOComponent: IOComponent {
         }
     }
 
-    private var _output:AVCaptureAudioDataOutput? = nil
+    fileprivate var _output:AVCaptureAudioDataOutput? = nil
     var output:AVCaptureAudioDataOutput! {
         get {
             if (_output == nil) {
@@ -46,7 +46,7 @@ final class AudioIOComponent: IOComponent {
         encoder.lockQueue = lockQueue
     }
 
-    func attachAudio(audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
+    func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
         output = nil
         encoder.invalidate()
         guard let audio:AVCaptureDevice = audio else {
@@ -68,7 +68,7 @@ final class AudioIOComponent: IOComponent {
 
 // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
-    func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
-        encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, fromConnection: connection)
+    func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
+        encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, from: connection)
     }
 }

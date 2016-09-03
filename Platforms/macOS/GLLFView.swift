@@ -21,26 +21,26 @@ public class GLLFView: NSOpenGLView {
     }
 
     public var videoGravity:String! = AVLayerVideoGravityResizeAspect
-    var orientation:AVCaptureVideoOrientation = .Portrait
-    var position:AVCaptureDevicePosition = .Front
-    private var displayImage:CIImage!
-    private var ciContext:CIContext!
-    private var originalFrame:CGRect = CGRectZero
-    private var scale:CGRect = CGRectZero
-    private weak var currentStream:Stream?
+    var orientation:AVCaptureVideoOrientation = .portrait
+    var position:AVCaptureDevicePosition = .front
+    fileprivate var displayImage:CIImage!
+    fileprivate var ciContext:CIContext!
+    fileprivate var originalFrame:CGRect = CGRect.zero
+    fileprivate var scale:CGRect = CGRect.zero
+    fileprivate weak var currentStream:Stream?
 
     public override func prepareOpenGL() {
         if let openGLContext:NSOpenGLContext = openGLContext {
             ciContext = CIContext(
-                CGLContext: openGLContext.CGLContextObj,
-                pixelFormat: openGLContext.pixelFormat.CGLPixelFormatObj,
+                cglContext: openGLContext.cglContextObj!,
+                pixelFormat: openGLContext.pixelFormat.cglPixelFormatObj,
                 colorSpace: nil,
                 options: nil
             )
             openGLContext.makeCurrentContext()
         }
         var param:GLint = 1
-        openGLContext?.setValues(&param, forParameter: .GLCPSwapInterval)
+        openGLContext?.setValues(&param, for: .swapInterval)
         glDisable(GLenum(GL_ALPHA_TEST))
         glDisable(GLenum(GL_DEPTH_TEST))
         glDisable(GLenum(GL_BLEND))
@@ -56,10 +56,10 @@ public class GLLFView: NSOpenGLView {
         originalFrame = frame
     }
 
-    public override func drawRect(dirtyRect: NSRect) {
-        guard let
-            image:CIImage = displayImage,
-            glContext:NSOpenGLContext = openGLContext else {
+    public override func draw(_ dirtyRect: NSRect) {
+        guard
+            let image:CIImage = displayImage,
+            let glContext:NSOpenGLContext = openGLContext else {
             return
         }
 
@@ -74,14 +74,14 @@ public class GLLFView: NSOpenGLView {
 
         glContext.makeCurrentContext()
         glClear(GLenum(GL_COLOR_BUFFER_BIT))
-        ciContext.drawImage(image, inRect: inRect.integral, fromRect: fromRect)
+        ciContext.draw(image, in: inRect.integral, from: fromRect)
 
         glFlush()
     }
 
     override public func reshape() {
         let rect:CGRect = frame
-        scale = CGRectMake(0, 0, originalFrame.size.width / rect.size.width, originalFrame.size.height / rect.size.height)
+        scale = CGRect(x: 0, y: 0, width: originalFrame.size.width / rect.size.width, height: originalFrame.size.height / rect.size.height)
         glViewport(0, 0, Int32(rect.width), Int32(rect.height))
         glMatrixMode(GLenum(GL_PROJECTION))
         glLoadIdentity()
@@ -101,15 +101,15 @@ public class GLLFView: NSOpenGLView {
     }
 }
 
-// MARK: - StreamDrawable
 extension GLLFView: StreamDrawable {
-    func render(image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
-        ciContext.render(image, toCVPixelBuffer: toCVPixelBuffer)
+    // MARK: - StreamDrawable
+    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+        ciContext.render(image, to: toCVPixelBuffer)
     }
 
-    func drawImage(image:CIImage) {
+    func drawImage(_ image:CIImage) {
         displayImage = image
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.needsDisplay = true
         }
     }

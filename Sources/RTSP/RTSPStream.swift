@@ -1,27 +1,27 @@
 import Foundation
 
 final class RTSPPlaySequenceResponder: RTSPResponder {
-    private var uri:String
-    private var stream:RTSPStream
-    private var method:RTSPMethod = .options
+    fileprivate var uri:String
+    fileprivate var stream:RTSPStream
+    fileprivate var method:RTSPMethod = .options
 
     init(uri:String, stream:RTSPStream) {
         self.uri = uri
         self.stream = stream
     }
 
-    func onResponse(response: RTSPResponse) {
+    func onResponse(_ response: RTSPResponse) {
         switch method {
         case .options:
             method = .describe
-            stream.connection.doMethod(.describe, uri, [:], self)
+            stream.connection.doMethod(.describe, uri, self, [:])
         case .describe:
             method = .setup
             stream.listen()
-            stream.connection.doMethod(.setup, uri, ["Transport":"RTP/AVP;unicast;client_port=8000-8001"], self)
+            stream.connection.doMethod(.setup, uri, self, ["Transport":"RTP/AVP;unicast;client_port=8000-8001"])
         case .setup:
             method = .play
-            stream.connection.doMethod(.play, uri, [:], self)
+            stream.connection.doMethod(.play, uri, self, [:])
         default:
             break
         }
@@ -30,35 +30,35 @@ final class RTSPPlaySequenceResponder: RTSPResponder {
 
 // MARK: -
 final class RTSPRecordSequenceResponder: RTSPResponder {
-    private var uri:String
-    private var stream:RTSPStream
-    private var method:RTSPMethod = .options
+    fileprivate var uri:String
+    fileprivate var stream:RTSPStream
+    fileprivate var method:RTSPMethod = .options
 
     init(uri:String, stream:RTSPStream) {
         self.uri = uri
         self.stream = stream
     }
 
-    func onResponse(response: RTSPResponse) {
+    func onResponse(_ response: RTSPResponse) {
     }
 }
 
 // MARK: -
 class RTSPStream: Stream {
     var sessionID:String?
-    private var services:[RTPService] = []
-    private var connection:RTSPConnection
+    fileprivate var services:[RTPService] = []
+    fileprivate var connection:RTSPConnection
 
     init(connection: RTSPConnection) {
         self.connection = connection
     }
 
-    func play(uri:String) {
-        connection.doMethod(.options, uri, [:], RTSPPlaySequenceResponder(uri: uri, stream: self))
+    func play(_ uri:String) {
+        connection.doMethod(.options, uri, RTSPPlaySequenceResponder(uri: uri, stream: self), [:])
     }
 
-    func record(uri:String) {
-        connection.doMethod(.options, uri, [:], RTSPRecordSequenceResponder(uri: uri, stream: self))
+    func record(_ uri:String) {
+        connection.doMethod(.options, uri, RTSPRecordSequenceResponder(uri: uri, stream: self), [:])
     }
 
     func tearDown() {

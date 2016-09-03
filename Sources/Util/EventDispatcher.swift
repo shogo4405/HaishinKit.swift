@@ -1,49 +1,47 @@
 import Foundation
 
-// MARK: IEventDispatcher
 /**
  flash.events.IEventDispatcher for Swift
  */
 public protocol IEventDispatcher: class {
-    func addEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
-    func removeEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
-    func dispatchEvent(e:Event)
-    func dispatchEventWith(type:String, bubbles:Bool, data:Any?)
+    func addEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func removeEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func dispatchEvent(_ e:Event)
+    func dispatchEventWith(_ type:String, bubbles:Bool, data:Any?)
 }
 
-// MARK: - EventPhase
 public enum EventPhase: UInt8 {
-    case Capturing = 0
-    case AtTarget  = 1
-    case Bubbling  = 2
-    case Dispose   = 3
+    case capturing = 0
+    case atTarget  = 1
+    case bubbling  = 2
+    case dispose   = 3
 }
 
 // MARK: -
 /**
  flash.events.Event for Swift
  */
-public class Event: NSObject {
-    public static let SYNC:String = "sync"
-    public static let EVENT:String = "event"
-    public static let IO_ERROR:String = "ioError"
-    public static let RTMP_STATUS:String = "rtmpStatus"
+open class Event: NSObject {
+    open static let SYNC:String = "sync"
+    open static let EVENT:String = "event"
+    open static let IO_ERROR:String = "ioError"
+    open static let RTMP_STATUS:String = "rtmpStatus"
 
-    public static func from(notification:NSNotification) -> Event {
-        guard let
-            userInfo:[NSObject: AnyObject] = notification.userInfo,
-            event:Event = userInfo["event"] as? Event else {
+    open static func from(_ notification:Notification) -> Event {
+        guard
+            let userInfo:[AnyHashable: Any] = notification.userInfo,
+            let event:Event = userInfo["event"] as? Event else {
             return Event(type: Event.EVENT)
         }
         return event
     }
 
-    public private(set) var type:String
-    public private(set) var bubbles:Bool
-    public private(set) var data:Any?
-    public private(set) var target:AnyObject? = nil
+    open fileprivate(set) var type:String
+    open fileprivate(set) var bubbles:Bool
+    open fileprivate(set) var data:Any?
+    open fileprivate(set) var target:AnyObject? = nil
 
-    public override var description:String {
+    open override var description:String {
         return Mirror(reflecting: self).description
     }
 
@@ -58,9 +56,9 @@ public class Event: NSObject {
 /**
  flash.events.EventDispatcher for Swift
  */
-public class EventDispatcher: NSObject, IEventDispatcher {
+open class EventDispatcher: NSObject, IEventDispatcher {
 
-    private var target:AnyObject? = nil
+    fileprivate var target:AnyObject? = nil
 
     override public init() {
         super.init()
@@ -74,27 +72,27 @@ public class EventDispatcher: NSObject, IEventDispatcher {
         target = nil
     }
 
-    public final func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
-        NSNotificationCenter.defaultCenter().addObserver(
-            observer ?? target ?? self, selector: selector, name: "\(type)/\(useCapture)", object: target ?? self
+    public final func addEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        NotificationCenter.default.addObserver(
+            observer ?? target ?? self, selector: selector, name: NSNotification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
         )
     }
 
-    public final func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
-        NSNotificationCenter.defaultCenter().removeObserver(
-            observer ?? target ?? self, name: "\(type)/\(useCapture)", object: target ?? self
+    public final func removeEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        NotificationCenter.default.removeObserver(
+            observer ?? target ?? self, name: NSNotification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
         )
     }
 
-    public func dispatchEvent(e:Event) {
+    open func dispatchEvent(_ e:Event) {
         e.target = target ?? self
-        NSNotificationCenter.defaultCenter().postNotificationName(
-            "\(e.type)/false", object: target ?? self, userInfo: ["event": e]
+        NotificationCenter.default.post(
+            name: Notification.Name(rawValue: "\(e.type)/false"), object: target ?? self, userInfo: ["event": e]
         )
         e.target = nil
     }
 
-    public final func dispatchEventWith(type:String, bubbles:Bool, data:Any?) {
+    public final func dispatchEventWith(_ type:String, bubbles:Bool, data:Any?) {
         dispatchEvent(Event(type: type, bubbles: bubbles, data: data))
     }
 }

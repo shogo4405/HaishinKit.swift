@@ -22,42 +22,42 @@ class TSWriter {
         m3u8.mediaList = Array(files[files.count - TSWriter.defaultSegmentCount..<files.count])
         return m3u8.description
     }
-    var lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.TSWriter.lock", DISPATCH_QUEUE_SERIAL
+    var lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.TSWriter.lock", attributes: []
     )
     var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration:Double = TSWriter.defaultSegmentDuration
 
-    private(set) var PAT:ProgramAssociationSpecific = {
+    fileprivate(set) var PAT:ProgramAssociationSpecific = {
         let PAT:ProgramAssociationSpecific = ProgramAssociationSpecific()
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
-    private(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
-    private(set) var files:[M3UMediaInfo] = []
-    private(set) var running:Bool = false
+    fileprivate(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
+    fileprivate(set) var files:[M3UMediaInfo] = []
+    fileprivate(set) var running:Bool = false
 
-    private var PCRPID:UInt16 = TSWriter.defaultVideoPID
-    private var sequence:Int = 0
-    private var timestamps:[UInt16:CMTime] = [:]
-    private var audioConfig:AudioSpecificConfig?
-    private var videoConfig:AVCConfigurationRecord?
-    private var PCRTimestamp:CMTime = kCMTimeZero
-    private var currentFileURL:NSURL?
-    private var rotatedTimestamp:CMTime = kCMTimeZero
-    private var currentFileHandle:NSFileHandle?
-    private var continuityCounters:[UInt16:UInt8] = [:]
+    fileprivate var PCRPID:UInt16 = TSWriter.defaultVideoPID
+    fileprivate var sequence:Int = 0
+    fileprivate var timestamps:[UInt16:CMTime] = [:]
+    fileprivate var audioConfig:AudioSpecificConfig?
+    fileprivate var videoConfig:AVCConfigurationRecord?
+    fileprivate var PCRTimestamp:CMTime = kCMTimeZero
+    fileprivate var currentFileURL:URL?
+    fileprivate var rotatedTimestamp:CMTime = kCMTimeZero
+    fileprivate var currentFileHandle:FileHandle?
+    fileprivate var continuityCounters:[UInt16:UInt8] = [:]
 
-    func getFilePath(fileName:String) -> String? {
+    func getFilePath(_ fileName:String) -> String? {
         for info in files {
-            if (info.url.absoluteString.containsString(fileName)) {
-                return info.url.path!
+            if (info.url.absoluteString.contains(fileName)) {
+                return info.url.path
             }
         }
         return nil
     }
 
-    func writeSampleBuffer(PID:UInt16, streamID:UInt8, sampleBuffer:CMSampleBuffer) {
+    func writeSampleBuffer(_ PID:UInt16, streamID:UInt8, sampleBuffer:CMSampleBuffer) {
         if (timestamps[PID] == nil) {
             timestamps[PID] = sampleBuffer.presentationTimeStamp
             if (PCRPID == PID) {
@@ -85,14 +85,14 @@ class TSWriter {
             bytes += packet.bytes
         }
         nstry({
-            self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
+            self.currentFileHandle?.write(Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count))
         }){ exception in
-            self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
+            self.currentFileHandle?.write(Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count))
             logger.warning("\(exception)")
         }
     }
 
-    func split(PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
+    func split(_ PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
         var PCR:UInt64?
         let duration:Double = timestamp.seconds - PCRTimestamp.seconds
         if (PCRPID == PID && 0.1 <= duration) {
@@ -106,41 +106,41 @@ class TSWriter {
         return packets
     }
 
-    func rorateFileHandle(timestamp:CMTime, next:CMTime) -> Bool {
+    func rorateFileHandle(_ timestamp:CMTime, next:CMTime) -> Bool {
         let duration:Double = timestamp.seconds - rotatedTimestamp.seconds
         if (duration <= segmentDuration) {
             return false
         }
 
-        let fileManager:NSFileManager = NSFileManager.defaultManager()
+        let fileManager:FileManager = FileManager.default
 
         #if os(OSX)
-        let bundleIdentifier:String? = NSBundle.mainBundle().bundleIdentifier
+        let bundleIdentifier:String? = Bundle.main.bundleIdentifier
         let temp:String = bundleIdentifier == nil ? NSTemporaryDirectory() : NSTemporaryDirectory() + bundleIdentifier! + "/"
         #else
         let temp:String = NSTemporaryDirectory()
         #endif
 
-        if !fileManager.fileExistsAtPath(temp) {
+        if !fileManager.fileExists(atPath: temp) {
             do {
-                try fileManager.createDirectoryAtPath(temp, withIntermediateDirectories: false, attributes: nil)
+                try fileManager.createDirectory(atPath: temp, withIntermediateDirectories: false, attributes: nil)
             } catch let error as NSError {
                 logger.warning("\(error)")
             }
         }
 
         let filename:String = Int(timestamp.seconds).description + ".ts"
-        let url:NSURL = NSURL(fileURLWithPath: temp + filename)
+        let url:URL = URL(fileURLWithPath: temp + filename)
 
-        if let currentFileURL:NSURL = currentFileURL {
+        if let currentFileURL:URL = currentFileURL {
             files.append(M3UMediaInfo(url: currentFileURL, duration: duration))
             sequence += 1
         }
     
-        fileManager.createFileAtPath(url.path!, contents: nil, attributes: nil)
+        fileManager.createFile(atPath: url.path, contents: nil, attributes: nil)
         if (TSWriter.defaultSegmentMaxCount <= files.count) {
             let info:M3UMediaInfo = files.removeFirst()
-            do { try fileManager.removeItemAtURL(info.url) }
+            do { try fileManager.removeItem(at: info.url as URL) }
             catch let e as NSError { logger.warning("\(e)") }
         }
         currentFileURL = url
@@ -149,7 +149,7 @@ class TSWriter {
         }
         currentFileHandle?.synchronizeFile()
         currentFileHandle?.closeFile()
-        currentFileHandle = try? NSFileHandle(forWritingToURL: url)
+        currentFileHandle = try? FileHandle(forWritingTo: url)
         var bytes:[UInt8] = []
         var packets:[TSPacket] = []
         packets += PAT.arrayOfPackets(TSWriter.defaultPATPID)
@@ -159,7 +159,7 @@ class TSWriter {
         }
 
         nstry({
-            self.currentFileHandle?.writeData(NSData(bytes: bytes, length: bytes.count))
+            self.currentFileHandle?.write(Data(bytes: bytes, count: bytes.count))
         }){ exception in
             logger.warning("\(exception)")
         }
@@ -169,19 +169,19 @@ class TSWriter {
     }
 
     func removeFiles() {
-        let fileManager:NSFileManager = NSFileManager.defaultManager()
+        let fileManager:FileManager = FileManager.default
         for info in files {
-            do { try fileManager.removeItemAtURL(info.url) }
+            do { try fileManager.removeItem(at: info.url as URL) }
             catch let e as NSError { logger.warning("\(e)") }
         }
         files.removeAll()
     }
 }
 
-// MARK: Runnable
 extension TSWriter: Runnable {
+    // MARK: Runnable
     func startRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             if (!self.running) {
                 return
             }
@@ -189,7 +189,7 @@ extension TSWriter: Runnable {
         }
     }
     func stopRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             if (self.running) {
                 return
             }
@@ -201,16 +201,15 @@ extension TSWriter: Runnable {
     }
 }
 
-// MARK: AudioEncoderDelegate
 extension TSWriter: AudioEncoderDelegate {
-    func didSetFormatDescription(audio formatDescription: CMFormatDescriptionRef?) {
-        guard let
-            formatDescription:CMAudioFormatDescriptionRef = formatDescription else {
+    // MARK: AudioEncoderDelegate
+    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+        guard let formatDescription:CMAudioFormatDescription = formatDescription else {
             return
         }
         audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
         var data:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
-        data.streamType = ElementaryStreamType.ADTSAAC.rawValue
+        data.streamType = ElementaryStreamType.adtsaac.rawValue
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
         continuityCounters[TSWriter.defaultAudioPID] = 0
@@ -221,17 +220,17 @@ extension TSWriter: AudioEncoderDelegate {
     }
 }
 
-// MARK: VideoEncoderDelegate
 extension TSWriter: VideoEncoderDelegate {
-    func didSetFormatDescription(video formatDescription: CMFormatDescriptionRef?) {
+    // MARK: VideoEncoderDelegate
+    func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard let
-            formatDescription:CMFormatDescriptionRef = formatDescription,
-            avcC:NSData = AVCConfigurationRecord.getData(formatDescription) else {
+            formatDescription:CMFormatDescription = formatDescription,
+            let avcC:Data = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
         videoConfig = AVCConfigurationRecord(data: avcC)
         var data:ElementaryStreamSpecificData = ElementaryStreamSpecificData()
-        data.streamType = ElementaryStreamType.H264.rawValue
+        data.streamType = ElementaryStreamType.h264.rawValue
         data.elementaryPID = TSWriter.defaultVideoPID
         PMT.elementaryStreamSpecificData.append(data)
         continuityCounters[TSWriter.defaultVideoPID] = 0

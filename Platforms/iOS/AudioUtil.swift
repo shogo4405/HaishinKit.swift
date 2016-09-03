@@ -3,15 +3,15 @@ import Foundation
 import AVFoundation
 
 final class AudioUtil {
-    private init() {
+    fileprivate init() {
     }
 
     static func getInputGain() -> Float32 {
         return AVAudioSession.sharedInstance().inputGain
     }
 
-    static func setInputGain(volume:Float32) -> OSStatus {
-        if (AVAudioSession.sharedInstance().inputGainSettable) {
+    static func setInputGain(_ volume:Float32) -> OSStatus {
+        if (AVAudioSession.sharedInstance().isInputGainSettable) {
             do {
                 try AVAudioSession.sharedInstance().setInputGain(volume)
             } catch {

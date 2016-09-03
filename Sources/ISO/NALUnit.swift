@@ -4,25 +4,25 @@ import VideoToolbox
 
 // MARK: NALType
 enum NALType: UInt8 {
-    case UNSPEC   = 0
-    case SLICE    = 1 // P frame
-    case DPA      = 2
-    case DPB      = 3
-    case DPC      = 4
-    case IDR      = 5 // I frame
-    case SEI      = 6
-    case SPS      = 7
-    case PPS      = 8
-    case AUD      = 9
-    case EOSEQ    = 10
-    case EOSTREAM = 11
-    case FILL     = 12
+    case unspec   = 0
+    case slice    = 1 // P frame
+    case dpa      = 2
+    case dpb      = 3
+    case dpc      = 4
+    case idr      = 5 // I frame
+    case sei      = 6
+    case sps      = 7
+    case pps      = 8
+    case aud      = 9
+    case eoseq    = 10
+    case eostream = 11
+    case fill     = 12
 }
 
 // MARK: -
 struct NALUnit {
     var refIdc:UInt8 = 0
-    var type:NALType = .UNSPEC
+    var type:NALType = .unspec
     var payload:[UInt8] = []
 }
 
@@ -40,7 +40,7 @@ extension NALUnit: BytesConvertible {
             do {
                 let byte:UInt8 = try buffer.readUInt8()
                 refIdc = byte & 0x60 >> 5
-                type = NALType(rawValue: byte & 0x31) ?? .UNSPEC
+                type = NALType(rawValue: byte & 0x31) ?? .unspec
                 payload = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
                 logger.error("\(buffer)")
