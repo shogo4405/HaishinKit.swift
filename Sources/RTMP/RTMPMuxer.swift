@@ -1,20 +1,19 @@
 import Foundation
 import AVFoundation
 
-// MARK: - RTMPMuxerDelegate
 protocol RTMPMuxerDelegate: class {
     func sampleOutput(_ muxer:RTMPMuxer, audio buffer:Data, timestamp:Double)
     func sampleOutput(_ muxer:RTMPMuxer, video buffer:Data, timestamp:Double)
 }
 
-// MARK: - RTMPMuxer
+// MARK: -
 final class RTMPMuxer {
-    weak var delegate:RTMPMuxerDelegate? = nil
+    internal weak var delegate:RTMPMuxerDelegate? = nil
 
     fileprivate var audioTimestamp:CMTime = kCMTimeZero
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
-    func dispose() {
+    internal func dispose() {
         audioTimestamp = kCMTimeZero
         videoTimestamp = kCMTimeZero
     }
@@ -22,7 +21,7 @@ final class RTMPMuxer {
 
 extension RTMPMuxer: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
-    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    internal func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription:CMFormatDescription = formatDescription else {
             return
         }
@@ -35,7 +34,7 @@ extension RTMPMuxer: AudioEncoderDelegate {
         delegate?.sampleOutput(self, audio: buffer as Data, timestamp: 0)
     }
 
-    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
+    internal func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
         var blockBuffer:CMBlockBuffer?
         var audioBufferList:AudioBufferList = AudioBufferList()
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -56,10 +55,9 @@ extension RTMPMuxer: AudioEncoderDelegate {
     }
 }
 
-// MARK: VideoEncoderDelegate
 extension RTMPMuxer: VideoEncoderDelegate {
-
-    func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
+    // MARK: VideoEncoderDelegate
+    internal func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard let
             formatDescription:CMFormatDescription = formatDescription,
             let avcC:Data = AVCConfigurationRecord.getData(formatDescription) else {
@@ -74,7 +72,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         delegate?.sampleOutput(self, video: buffer as Data, timestamp: 0)
     }
 
-    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+    internal func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         guard let block:CMBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) else {
             return
         }

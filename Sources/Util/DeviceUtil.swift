@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 public final class DeviceUtil {
-    fileprivate init() {
+    private init() {
     }
 
     #if os(iOS)
@@ -22,31 +22,31 @@ public final class DeviceUtil {
     }
     #endif
 
-    static public func deviceWithPosition(_ position:AVCaptureDevicePosition) -> AVCaptureDevice? {
+    static public func device(withPosition:AVCaptureDevicePosition) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
             guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
                 continue
             }
-            if (device.hasMediaType(AVMediaTypeVideo) && device.position == position) {
+            if (device.hasMediaType(AVMediaTypeVideo) && device.position == withPosition) {
                 return device
             }
         }
         return nil
     }
 
-    static public func deviceWithLocalizedName(_ localizedName:String, mediaType:String) -> AVCaptureDevice? {
+    static public func device(withLocalizedName:String, mediaType:String) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
             guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
                 continue
             }
-            if (device.hasMediaType(mediaType) && device.localizedName == localizedName) {
+            if (device.hasMediaType(mediaType) && device.localizedName == withLocalizedName) {
                 return device
             }
         }
         return nil
     }
 
-    static func getActualFPS(_ fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
+    static internal func getActualFPS(_ fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
         var durations:[CMTime] = []
         var frameRates:[Float64] = []
 

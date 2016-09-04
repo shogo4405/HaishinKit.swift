@@ -93,24 +93,6 @@ final class LiveViewController: UIViewController {
         fpsControl.addTarget(self, action: #selector(LiveViewController.onFPSValueChanged(_:)), for: .valueChanged)
         effectSegmentControl.addTarget(self, action: #selector(LiveViewController.onEffectValueChanged(_:)), for: .valueChanged)
 
-        /*
-        navigationItem.leftBarButtonItem =
-            UIBarButtonItem(title: "Preference", style: .Plain, target: self, action: "showPreference:")
-        sharedObject = RTMPSharedObject.getRemote("test", remotePath: Preference.defaultInstance.uri!, persistence: false)
-        */
-
-        /*
-        httpStream = HTTPStream()
-        //httpStream.attachScreen(ScreenCaptureSession())
-        httpStream.syncOrientation = true
-        httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
-        httpStream.publish("hello")
-
-        httpService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
-        httpService.startRunning()
-        httpService.addHTTPStream(httpStream)
-        */
-
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(title: "Torch", style: .plain, target: self, action: #selector(LiveViewController.toggleTorch(_:))),
             UIBarButtonItem(title: "Camera", style: .plain, target: self, action: #selector(LiveViewController.rotateCamera(_:)))
@@ -119,10 +101,9 @@ final class LiveViewController: UIViewController {
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
         rtmpStream.syncOrientation = true
         
-        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
-        rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(.back))
+        rtmpStream.attach(audio: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+        rtmpStream.attach(camera: DeviceUtil.device(withPosition: .back))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
-        //rtmpStream.attachScreen(ScreenCaptureSession())
 
         rtmpStream.captureSettings = [
             "sessionPreset": AVCaptureSessionPreset1280x720,
@@ -145,7 +126,7 @@ final class LiveViewController: UIViewController {
         videoBitrateSlider.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider.value = Float(RTMPStream.defaultAudioBitrate) / 1024
 
-        lfView.attachStream(rtmpStream)
+        lfView.attach(stream: rtmpStream)
 
         view.addSubview(lfView)
         view.addSubview(touchView)
@@ -179,7 +160,7 @@ final class LiveViewController: UIViewController {
 
     func rotateCamera(_ sender:UIBarButtonItem) {
         let position:AVCaptureDevicePosition = currentPosition == .back ? .front : .back
-        rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(position))
+        rtmpStream.attach(camera: DeviceUtil.device(withPosition: position))
         currentPosition = position
     }
 
@@ -206,7 +187,7 @@ final class LiveViewController: UIViewController {
             rtmpStream.videoSettings["bitrate"] = slider.value * 1024
         }
         if (slider == zoomSlider) {
-            rtmpStream.rampToVideoZoomFactor(CGFloat(slider.value), withRate: 5.0)
+            rtmpStream.ramp(toVideoZoomFactor: CGFloat(slider.value), withRate: 5.0)
         }
     }
 
@@ -214,12 +195,12 @@ final class LiveViewController: UIViewController {
         if (sender.isSelected) {
             UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            rtmpConnection.removeEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             sender.setTitle("●", for: UIControlState())
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-            rtmpConnection.connect(Preference.defaultInstance.uri!)
+            rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            rtmpConnection.connect(withCommand: Preference.defaultInstance.uri!)
             sender.setTitle("■", for: UIControlState())
         }
         sender.isSelected = !sender.isSelected
@@ -229,8 +210,8 @@ final class LiveViewController: UIViewController {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
-            case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish(Preference.defaultInstance.streamName!)
+            case RTMPConnection.Code.connectSuccess.rawValue:
+                rtmpStream!.publish(withName: Preference.defaultInstance.streamName!)
                 // sharedObject!.connect(rtmpConnection)
             default:
                 break
@@ -263,25 +244,23 @@ final class LiveViewController: UIViewController {
 
     func onEffectValueChanged(_ segment:UISegmentedControl) {
         if let currentEffect:VisualEffect = currentEffect {
-            rtmpStream.unregisterEffect(video: currentEffect)
+            let _:Bool = rtmpStream.unregisterEffect(video: currentEffect)
         }
         switch segment.selectedSegmentIndex {
         case 1:
             currentEffect = MonochromeEffect()
-            rtmpStream.registerEffect(video: currentEffect!)
+            let _:Bool = rtmpStream.registerEffect(video: currentEffect!)
         case 2:
             currentEffect = PronamaEffect()
-            rtmpStream.registerEffect(video: currentEffect!)
+            let _:Bool = rtmpStream.registerEffect(video: currentEffect!)
         default:
             break
         }
     }
 
-    /*
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [String : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if (Thread.isMainThread) {
             currentFPSLabel.text = "\(rtmpStream.currentFPS)"
         }
     }
-    */
 }

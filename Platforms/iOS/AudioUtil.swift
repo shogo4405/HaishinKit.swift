@@ -3,7 +3,7 @@ import Foundation
 import AVFoundation
 
 final class AudioUtil {
-    fileprivate init() {
+    private init() {
     }
 
     static func getInputGain() -> Float32 {

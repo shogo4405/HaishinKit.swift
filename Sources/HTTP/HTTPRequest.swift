@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: HTTPRequestConvertible
 protocol HTTPRequestConvertible: BytesConvertible {
     var uri:String { get set }
     var method:String { get set }
@@ -8,30 +7,12 @@ protocol HTTPRequestConvertible: BytesConvertible {
     var headerFields:[String: String] { get set }
 }
 
-// MARK: -
-struct HTTPRequest: HTTPRequestConvertible {
-    static let separator:UInt8 = 0x0a
-
-    var uri:String = "/"
-    var method:String = ""
-    var version:String = HTTPVersion.version11.description
-    var headerFields:[String: String] = [:]
-
-    init() {
-    }
-
-    init?(bytes:[UInt8]) {
-        self.bytes = bytes
-    }
-}
-
-// MARK: -
 extension HTTPRequestConvertible {
-    
+
     var description:String {
         return Mirror(reflecting: self).description
     }
-    
+
     var bytes:[UInt8] {
         get {
             var lines:[String] = ["\(method) \(uri) \(version)"]
@@ -70,3 +51,19 @@ extension HTTPRequestConvertible {
     }
 }
 
+// MARK: -
+struct HTTPRequest: HTTPRequestConvertible {
+    static let separator:UInt8 = 0x0a
+
+    var uri:String = "/"
+    var method:String = ""
+    var version:String = HTTPVersion.version11.description
+    var headerFields:[String: String] = [:]
+
+    init() {
+    }
+
+    init?(bytes:[UInt8]) {
+        self.bytes = bytes
+    }
+}

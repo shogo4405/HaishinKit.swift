@@ -1,18 +1,17 @@
 import Foundation
 
-// MARK: RTSPSocketDelegate
 protocol RTSPSocketDelegate: class {
     func listen(_ response:RTSPResponse)
 }
 
 // MARK: -
 final class RTSPSocket: NetSocket {
-    static let defaultPort:Int = 554
+    static internal let defaultPort:Int = 554
 
-    weak var delegate:RTSPSocketDelegate?
+    weak internal var delegate:RTSPSocketDelegate?
     fileprivate var requests:[RTSPRequest] = []
 
-    override var connected:Bool {
+    override internal var connected:Bool {
         didSet {
             if (connected) {
                 for request in requests {
@@ -26,7 +25,7 @@ final class RTSPSocket: NetSocket {
         }
     }
 
-    func doOutput(_ request:RTSPRequest) {
+    internal func doOutput(_ request:RTSPRequest) {
         if (connected) {
             if (logger.isEnabledForLogLevel(.verbose)) {
                 logger.verbose("\(request)")
@@ -41,7 +40,7 @@ final class RTSPSocket: NetSocket {
         connect(host, port: (uri as NSURL).port?.intValue ?? RTSPSocket.defaultPort)
     }
 
-    override func listen() {
+    override internal func listen() {
         guard let response:RTSPResponse = RTSPResponse(bytes: inputBuffer) else {
             return
         }
@@ -54,7 +53,7 @@ final class RTSPSocket: NetSocket {
 
     fileprivate func connect(_ hostname:String, port:Int) {
         networkQueue.async {
-            Foundation.Stream.getStreamsToHost(
+            Stream.getStreamsToHost(
                 withName: hostname,
                 port: port,
                 inputStream: &self.inputStream,

@@ -266,8 +266,8 @@ class AudioStreamPlayback {
     }
 }
 
-// MARK: Runnable
 extension AudioStreamPlayback: Runnable {
+    // MARK: Runnable
     func startRunning() {
         lockQueue.async {
             guard !self.running else {

@@ -1,7 +1,6 @@
 import Foundation
 import AVFoundation
 
-// MARK: FLVVideoCodec
 enum FLVVideoCodec: UInt8 {
     case sorensonH263 = 2
     case screen1      = 3
@@ -31,7 +30,6 @@ enum FLVVideoCodec: UInt8 {
     }
 }
 
-// MARK: - FLVFrameType
 enum FLVFrameType: UInt8 {
     case key        = 1
     case inter      = 2
@@ -40,20 +38,17 @@ enum FLVFrameType: UInt8 {
     case command    = 5
 }
 
-// MARK: - FLVAVCPacketType
 enum FLVAVCPacketType:UInt8 {
     case seq = 0
     case nal = 1
     case eos = 2
 }
 
-// MARK: - FLVAACPacketType
 enum FLVAACPacketType:UInt8 {
     case seq = 0
     case raw = 1
 }
 
-// MARK: - FLVSoundRate
 enum FLVSoundRate:UInt8 {
     case kHz5_5 = 0
     case kHz11  = 1
@@ -74,19 +69,16 @@ enum FLVSoundRate:UInt8 {
     }
 }
 
-// MARK: - FLVSoundSize
 enum FLVSoundSize:UInt8 {
     case snd8bit = 0
     case snd16bit = 1
 }
 
-// MARK: - FLVSoundType
 enum FLVSoundType:UInt8 {
     case mono = 0
     case stereo = 1
 }
 
-// MARK: - FLVAudioCodec
 enum FLVAudioCodec:UInt8 {
     case pcm           = 0
     case adpcm         = 1
@@ -171,9 +163,9 @@ struct FLVTag {
         var streamId:UInt16 {
             switch self {
             case .audio:
-                return RTMPChunk.audio
+                return RTMPChunk.StreamID.audio.rawValue
             case .video:
-                return RTMPChunk.video
+                return RTMPChunk.StreamID.video.rawValue
             case .data:
                 return 0
             }
@@ -202,17 +194,17 @@ struct FLVTag {
         }
     }
 
-    static let headerSize = 11
+    static internal let headerSize = 11
 
-    var tagType:TagType = .data
-    var dataSize:UInt32 = 0
-    var timestamp:UInt32 = 0
-    var timestampExtended:UInt8 = 0
-    var streamId:UInt32 = 0
+    internal var tagType:TagType = .data
+    internal var dataSize:UInt32 = 0
+    internal var timestamp:UInt32 = 0
+    internal var timestampExtended:UInt8 = 0
+    internal var streamId:UInt32 = 0
 }
 
-// MARK: CustomStringConvertible
 extension FLVTag: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }

@@ -4,9 +4,9 @@ import UIKit
 import Foundation
 import AVFoundation
 
-class AVMixer: NSObject {
+final internal class AVMixer: NSObject {
 
-    static let supportedSettingsKeys:[String] = [
+    static internal let supportedSettingsKeys:[String] = [
         "fps",
         "sessionPreset",
         "orientation",
@@ -14,34 +14,34 @@ class AVMixer: NSObject {
         "continuousExposure",
     ]
 
-    static let defaultFPS:Float64 = 30
-    static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
-    static let defaultVideoSettings:[NSObject: AnyObject] = [
+    static internal let defaultFPS:Float64 = 30
+    static internal let defaultSessionPreset:String = AVCaptureSessionPresetMedium
+    static internal let defaultVideoSettings:[NSObject: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA) as AnyObject
     ]
 
-    var fps:Float64 {
+    internal var fps:Float64 {
         get { return videoIO.fps }
         set { videoIO.fps = newValue }
     }
 
-    var orientation:AVCaptureVideoOrientation {
+    internal var orientation:AVCaptureVideoOrientation {
         get { return videoIO.orientation }
         set { videoIO.orientation = newValue }
     }
 
-    var continuousExposure:Bool {
+    internal var continuousExposure:Bool {
         get { return videoIO.continuousExposure }
         set { videoIO.continuousExposure = newValue }
     }
 
-    var continuousAutofocus:Bool {
+    internal var continuousAutofocus:Bool {
         get { return videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
 
     #if os(iOS)
-    var syncOrientation:Bool = false {
+    internal var syncOrientation:Bool = false {
         didSet {
             guard syncOrientation != oldValue else {
                 return
@@ -56,7 +56,7 @@ class AVMixer: NSObject {
     }
     #endif
 
-    var sessionPreset:String = AVMixer.defaultSessionPreset {
+    internal var sessionPreset:String = AVMixer.defaultSessionPreset {
         didSet {
             guard sessionPreset != oldValue else {
                 return
@@ -68,7 +68,7 @@ class AVMixer: NSObject {
     }
 
     fileprivate var _session:AVCaptureSession? = nil
-    var session:AVCaptureSession! {
+    internal var session:AVCaptureSession! {
         if (_session == nil) {
             _session = AVCaptureSession()
             _session!.sessionPreset = AVMixer.defaultSessionPreset
@@ -76,11 +76,11 @@ class AVMixer: NSObject {
         return _session!
     }
 
-    fileprivate(set) var audioIO:AudioIOComponent!
-    fileprivate(set) var videoIO:VideoIOComponent!
-    fileprivate(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    internal fileprivate(set) var audioIO:AudioIOComponent!
+    internal fileprivate(set) var videoIO:VideoIOComponent!
+    internal fileprivate(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
-    override init() {
+    override internal init() {
         super.init()
         audioIO = AudioIOComponent(mixer: self)
         videoIO = VideoIOComponent(mixer: self)
@@ -93,7 +93,7 @@ class AVMixer: NSObject {
     }
 
     #if os(iOS)
-    func onOrientationChanged(_ notification:Notification) {
+    internal func onOrientationChanged(_ notification:Notification) {
         var deviceOrientation:UIDeviceOrientation = .unknown
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
@@ -105,13 +105,13 @@ class AVMixer: NSObject {
     #endif
 }
 
-// MARK: Runnable
 extension AVMixer: Runnable {
-    var running:Bool {
+    // MARK: Runnable
+    internal var running:Bool {
         return session.isRunning
     }
 
-    func startRunning() {
+    internal func startRunning() {
         session.startRunning()
         #if os(iOS)
         if let orientation:AVCaptureVideoOrientation = DeviceUtil.getAVCaptureVideoOrientation(UIDevice.current.orientation) , syncOrientation {
@@ -120,7 +120,7 @@ extension AVMixer: Runnable {
         #endif
     }
 
-    func stopRunning() {
+    internal func stopRunning() {
         session.stopRunning()
     }
 }

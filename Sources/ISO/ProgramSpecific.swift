@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: PSIPointer
 /**
  - seealso: https://en.wikipedia.org/wiki/Program-specific_information
  */
@@ -9,7 +8,7 @@ protocol PSIPointer {
     var pointerFillerBytes:[UInt8] { get set }
 }
 
-// MARK: - PSITableHeader
+// MARK: -
 protocol PSITableHeader {
     var tableID:UInt8 { get set }
     var sectionSyntaxIndicator:Bool { get set }
@@ -17,7 +16,7 @@ protocol PSITableHeader {
     var sectionLength:UInt16 { get set }
 }
 
-// MARK: - PSITableSyntax
+// MARK: -
 protocol PSITableSyntax {
     var tableIDExtension:UInt16 { get set }
     var versionNumber:UInt8 { get set }
@@ -77,15 +76,15 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     }
 }
 
-// MARK: CustomStringConvertible
 extension ProgramSpecific: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
-// MARK: BytesConvertible
 extension ProgramSpecific: BytesConvertible {
+    // MARK: BytesConvertible
     var bytes:[UInt8] {
         get {
             let data:[UInt8] = self.data
@@ -217,7 +216,7 @@ final class ProgramMapSpecific: ProgramSpecific {
     }
 }
 
-// MARK: ElementaryStreamType
+// MARK: -
 enum ElementaryStreamType: UInt8 {
     case mpeg1Video          = 0x01
     case mpeg2Video          = 0x02
@@ -233,6 +232,7 @@ enum ElementaryStreamType: UInt8 {
     case h265     = 0x24
 }
 
+// MARK: -
 struct ElementaryStreamSpecificData {
     static let fixedHeaderSize:Int = 5
 
@@ -249,9 +249,9 @@ struct ElementaryStreamSpecificData {
     }
 }
 
-// MARK: BytesConvertible
 extension ElementaryStreamSpecificData: BytesConvertible {
-    var bytes:[UInt8] {
+    // MARK: BytesConvertible
+    internal var bytes:[UInt8] {
         get {
             return ByteArray()
                 .writeUInt8(streamType)
@@ -274,8 +274,8 @@ extension ElementaryStreamSpecificData: BytesConvertible {
     }
 }
 
-// MARK: CustomStringConvertible
 extension ElementaryStreamSpecificData: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }

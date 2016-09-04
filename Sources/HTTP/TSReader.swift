@@ -1,19 +1,14 @@
 import Foundation
 
-// MARK: TSReaderDelegate
 protocol TSReaderDelegate: class {
     func didReadPacketizedElementaryStream(_ data:ElementaryStreamSpecificData, PES:PacketizedElementaryStream)
 }
 
 // MARK: -
 class TSReader {
-    weak var delegate:TSReaderDelegate?
+    internal weak var delegate:TSReaderDelegate?
 
-    fileprivate var eof:UInt64 = 0
-    fileprivate var cursor:Int = 0
-    fileprivate var fileHandle:FileHandle?
-
-    fileprivate(set) var PAT:ProgramAssociationSpecific? {
+    internal fileprivate(set) var PAT:ProgramAssociationSpecific? {
         didSet {
             guard let PAT:ProgramAssociationSpecific = PAT else {
                 return
@@ -23,7 +18,7 @@ class TSReader {
             }
         }
     }
-    fileprivate(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
+    internal fileprivate(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
         didSet {
             for (_, pmt) in PMT {
                 for data in pmt.elementaryStreamSpecificData {
@@ -32,18 +27,21 @@ class TSReader {
             }
         }
     }
-    fileprivate(set) var numberOfPackets:Int = 0
+    internal fileprivate(set) var numberOfPackets:Int = 0
 
+    fileprivate var eof:UInt64 = 0
+    fileprivate var cursor:Int = 0
+    fileprivate var fileHandle:FileHandle?
     fileprivate var dictionaryForPrograms:[UInt16:UInt16] = [:]
     fileprivate var dictionaryForESSpecData:[UInt16:ElementaryStreamSpecificData] = [:]
     fileprivate var packetizedElementaryStreams:[UInt16:PacketizedElementaryStream] = [:]
 
-    init(url:URL) throws {
+    internal init(url:URL) throws {
         fileHandle = try FileHandle(forReadingFrom: url)
         eof = fileHandle!.seekToEndOfFile()
     }
 
-    func read() {
+    internal func read() {
         while (hasNext()) {
             guard let packet:TSPacket = next() else {
                 continue
@@ -63,7 +61,7 @@ class TSReader {
         }
     }
 
-    func readPacketizedElementaryStream(_ data:ElementaryStreamSpecificData, packet: TSPacket) {
+    internal func readPacketizedElementaryStream(_ data:ElementaryStreamSpecificData, packet: TSPacket) {
         if (packet.payloadUnitStartIndicator) {
             if let PES:PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
                 delegate?.didReadPacketizedElementaryStream(data, PES: PES)
@@ -74,16 +72,16 @@ class TSReader {
         packetizedElementaryStreams[packet.PID]?.append(packet.payload)
     }
 
-    func close() {
+    internal func close() {
         fileHandle?.closeFile()
     }
 }
 
-// MARK: Iterator
 extension TSReader: Iterator {
+    // MARK: Iterator
     typealias T = TSPacket
 
-    func next() -> TSPacket? {
+    internal func next() -> TSPacket? {
         guard let fileHandle = fileHandle else {
             return nil
         }
@@ -94,14 +92,14 @@ extension TSReader: Iterator {
         return TSPacket(data: fileHandle.readData(ofLength: TSPacket.size))
     }
 
-    func hasNext() -> Bool {
+    internal func hasNext() -> Bool {
         return UInt64(cursor * TSPacket.size) < eof
     }
 }
 
-// MARK: CustomStringConvertible
 extension TSReader: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return Mirror(reflecting: self).description
     }
 }

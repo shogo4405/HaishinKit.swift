@@ -14,24 +14,23 @@ enum RTSPMethod: String {
     case record       = "RECORD"
 }
 
-// MARK: RTSPResponder
 protocol RTSPResponder: class {
-    func onResponse(_ response:RTSPResponse)
+    func on(response:RTSPResponse)
 }
 
 // MARK: -
 final class RTSPNullResponder: RTSPResponder {
     static let instance:RTSPNullResponder = RTSPNullResponder()
 
-    func onResponse(_ response:RTSPResponse) {
+    internal func on(response:RTSPResponse) {
     }
 }
 
 // MARK: -
 class RTSPConnection: NSObject {
-    static let defaultRTPPort:Int32 = 8000
+    static internal let defaultRTPPort:Int32 = 8000
 
-    var userAgent:String = "lf.swift"
+    internal var userAgent:String = "lf.swift"
 
     fileprivate var sequence:Int = 0
     fileprivate lazy var socket:RTSPSocket = {
@@ -42,7 +41,7 @@ class RTSPConnection: NSObject {
 
     fileprivate var responders:[RTSPResponder] = []
 
-    func doMethod(_ method: RTSPMethod, _ uri: String, _ responder:RTSPResponder = RTSPNullResponder.instance, _ headerFields:[String:String] = [:]) {
+    internal func doMethod(_ method: RTSPMethod, _ uri: String, _ responder:RTSPResponder = RTSPNullResponder.instance, _ headerFields:[String:String] = [:]) {
         sequence += 1
         var request:RTSPRequest = RTSPRequest()
         request.uri = uri
@@ -55,13 +54,13 @@ class RTSPConnection: NSObject {
     }
 }
 
-// MARK: RTSPSocketDelegate
 extension RTSPConnection: RTSPSocketDelegate {
-    func listen(_ response: RTSPResponse) {
+    // MARK: RTSPSocketDelegate
+    internal func listen(_ response: RTSPResponse) {
         guard let responder:RTSPResponder = responders.first else {
             return
         }
-        responder.onResponse(response)
+        responder.on(response: response)
         responders.removeFirst()
     }
 }

@@ -1,10 +1,10 @@
 import Foundation
 import AVFoundation
 
-public class LFView: NSView {
+open class LFView: NSView {
     public static var defaultBackgroundColor:NSColor = NSColor.black
 
-    var position:AVCaptureDevicePosition = .front {
+    internal var position:AVCaptureDevicePosition = .front {
         didSet {
             /*
             let when:dispatch_time_t  = DispatchTime.now(dispatch_time_t(DISPATCH_TIME_NOW), Int64(0.1 * Double(NSEC_PER_SEC)))
@@ -14,7 +14,7 @@ public class LFView: NSView {
             */
         }
     }
-    var orientation:AVCaptureVideoOrientation = .portrait
+    internal var orientation:AVCaptureVideoOrientation = .portrait
 
     public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
@@ -22,9 +22,9 @@ public class LFView: NSView {
         }
     }
 
-    private weak var currentStream:Stream? {
+    private weak var currentStream:NetStream? {
         didSet {
-            guard let oldValue:Stream = oldValue else {
+            guard let oldValue:NetStream = oldValue else {
                 return
             }
             oldValue.mixer.videoIO.drawable = nil
@@ -40,24 +40,24 @@ public class LFView: NSView {
         super.init(coder: coder)
     }
 
-    public override func awakeFromNib() {
+    open override func awakeFromNib() {
         wantsLayer = true
         layer = AVCaptureVideoPreviewLayer()
         layer?.backgroundColor = LFView.defaultBackgroundColor.cgColor
         layer?.setValue(videoGravity, forKey: "videoGravity")
     }
 
-    public func attachStream(stream:Stream?) {
+    public func attach(stream:NetStream?) {
         layer?.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream
     }
 }
 
-// MARK: - StreamDrawable
-extension LFView: StreamDrawable {
-    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+extension LFView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
+    internal func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
     }
-    func drawImage(_ image:CIImage) {
+    internal func draw(image:CIImage) {
     }
 }

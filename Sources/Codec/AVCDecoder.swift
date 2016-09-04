@@ -4,7 +4,6 @@ import AVFoundation
 import VideoToolbox
 import CoreFoundation
 
-// MARK: VideoDecoderDelegate
 protocol VideoDecoderDelegate: class {
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
 }

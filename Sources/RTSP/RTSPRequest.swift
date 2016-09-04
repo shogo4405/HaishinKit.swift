@@ -1,15 +1,15 @@
 import Foundation
 
 struct RTSPRequest: HTTPRequestConvertible {
-    var uri:String = "/"
-    var method:String = ""
-    var version:String = "RTSP/1.0"
-    var headerFields:[String: String] = [:]
+    internal var uri:String = "/"
+    internal var method:String = ""
+    internal var version:String = "RTSP/1.0"
+    internal var headerFields:[String: String] = [:]
 
-    init() {
+    internal init() {
     }
 
-    init?(bytes:[UInt8]) {
+    internal init?(bytes:[UInt8]) {
         self.bytes = bytes
     }
 }

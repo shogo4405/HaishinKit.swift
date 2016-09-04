@@ -14,8 +14,8 @@ public final class ASUndefined: NSObject {
 
 // MARK: -
 public struct ASArray {
-    fileprivate(set) var data:[Any?]
-    fileprivate(set) var dict:[String: Any?] = [:]
+    internal fileprivate(set) var data:[Any?]
+    internal fileprivate(set) var dict:[String: Any?] = [:]
 
     public var length:Int {
         return data.count
@@ -30,8 +30,8 @@ public struct ASArray {
     }
 }
 
-// MARK: ArrayLiteralConvertible
 extension ASArray: ExpressibleByArrayLiteral {
+    // MARK: ExpressibleByArrayLiteral
     public init (arrayLiteral elements: Any?...) {
         self = ASArray(data: elements)
     }
@@ -70,15 +70,15 @@ extension ASArray: ExpressibleByArrayLiteral {
     }
 }
 
-// MARK: CustomStringConvertible
 extension ASArray: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     public var description:String {
         return data.description
     }
 }
 
-// MARK: Equatable
 extension ASArray: Equatable {
+    // MARK: Equatable
 }
 
 public func ==(lhs: ASArray, rhs: ASArray) -> Bool {

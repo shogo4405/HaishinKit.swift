@@ -9,21 +9,21 @@ import AVFoundation
   - http://wiki.multimedia.cx/?title=Understanding_AAC
  */
 struct AudioSpecificConfig {
-    static let ADTSHeaderSize:Int = 7
+    static internal let ADTSHeaderSize:Int = 7
 
-    var type:AudioObjectType
-    var frequency:SamplingFrequency
-    var channel:ChannelConfiguration
-    var frameLengthFlag:Bool = false
+    internal var type:AudioObjectType
+    internal var frequency:SamplingFrequency
+    internal var channel:ChannelConfiguration
+    internal var frameLengthFlag:Bool = false
 
-    var bytes:[UInt8] {
+    internal var bytes:[UInt8] {
         var bytes:[UInt8] = [UInt8](repeating: 0, count: 2)
         bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1 & 0x3)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
     }
 
-    init?(bytes:[UInt8]) {
+    internal init?(bytes:[UInt8]) {
         guard let
             type:AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
             let frequency:SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
@@ -35,20 +35,20 @@ struct AudioSpecificConfig {
         self.channel = channel
     }
 
-    init(type:AudioObjectType, frequency:SamplingFrequency, channel:ChannelConfiguration) {
+    internal init(type:AudioObjectType, frequency:SamplingFrequency, channel:ChannelConfiguration) {
         self.type = type
         self.frequency = frequency
         self.channel = channel
     }
 
-    init(formatDescription: CMFormatDescription) {
+    internal init(formatDescription: CMFormatDescription) {
         let asbd:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription)!.pointee
         type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(asbd.mFormatFlags))!)
         frequency = SamplingFrequency(sampleRate: asbd.mSampleRate)
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
     }
 
-    func adts(_ length:Int) -> [UInt8] {
+    internal func adts(_ length:Int) -> [UInt8] {
         let size:Int = 7
         let fullSize:Int = size + length
         var adts:[UInt8] = [UInt8](repeating: 0x00, count: size)
@@ -62,7 +62,7 @@ struct AudioSpecificConfig {
         return adts
     }
 
-    func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {
+    internal func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {
         var asbd:AudioStreamBasicDescription = AudioStreamBasicDescription()
         asbd.mSampleRate = frequency.sampleRate
         asbd.mFormatID = kAudioFormatMPEG4AAC
@@ -77,14 +77,14 @@ struct AudioSpecificConfig {
     }
 }
 
-// MARK: CustomStringConvertible
 extension AudioSpecificConfig: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
-// MARK: - AudioObjectType
+// MARK: -
 enum AudioObjectType: UInt8 {
     case unknown     = 0
     case aacMain     = 1
@@ -97,7 +97,7 @@ enum AudioObjectType: UInt8 {
     case celp        = 8
     case hxvc        = 9
 
-    init (objectID: MPEG4ObjectID) {
+    internal init(objectID: MPEG4ObjectID) {
         switch objectID {
         case .aac_Main:
             self = .aacMain
@@ -121,7 +121,7 @@ enum AudioObjectType: UInt8 {
     }
 }
 
-// MARK: - SamplingFrequency
+// MARK: -
 enum SamplingFrequency: UInt8 {
     case hz96000 = 0
     case hz88200 = 1
@@ -137,7 +137,7 @@ enum SamplingFrequency: UInt8 {
     case hz8000  = 11
     case hz7350  = 12
 
-    var sampleRate:Float64 {
+    internal var sampleRate:Float64 {
         switch self {
         case .hz96000:
             return 96000
@@ -168,7 +168,7 @@ enum SamplingFrequency: UInt8 {
         }
     }
 
-    init(sampleRate:Float64) {
+    internal init(sampleRate:Float64) {
         switch Int(sampleRate) {
         case 96000:
             self = .hz96000
@@ -202,7 +202,7 @@ enum SamplingFrequency: UInt8 {
     }
 }
 
-// MARK: - ChannelConfiguration
+// MARK: -
 enum ChannelConfiguration: UInt8 {
     case definedInAOTSpecificConfig = 0
     case frontCenter = 1

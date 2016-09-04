@@ -3,7 +3,6 @@ import AVFoundation
 import VideoToolbox
 import CoreFoundation
 
-// MARK: VideoEncoderDelegate
 protocol VideoEncoderDelegate: class {
     func didSetFormatDescription(video formatDescription:CMFormatDescription?)
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
@@ -285,8 +284,8 @@ final class AVCEncoder: NSObject {
 #endif
 }
 
-// MARK: Encoder
 extension AVCEncoder: Runnable {
+    // MARK: Runnable
     func startRunning() {
         lockQueue.async {
             self.running = true

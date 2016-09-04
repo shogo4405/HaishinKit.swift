@@ -3,7 +3,7 @@ import Cocoa
 import AVFoundation
 
 final class LiveViewController: NSViewController {
-    static let defaultURL:String = "rtmp://test:test@localhost:1935/live"
+    static let defaultURL:String = "rtmp://test:test@192.168.179.4:1935/live"
 
     var enabledSharedObject:Bool = false
     var rtmpConnection:RTMPConnection = RTMPConnection()
@@ -85,16 +85,16 @@ final class LiveViewController: NSViewController {
         audioPopUpButton.target = self
         cameraPopUpButton.target = self
         rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
-        rtmpStream.attachAudio(
-            DeviceUtil.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
+        rtmpStream.attach(
+            audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
         )
-        rtmpStream.attachCamera(
-            DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
+        rtmpStream.attach(
+            camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         publishButton.target = self
 
-        lfView.attachStream(stream: rtmpStream)
+        lfView.attach(stream: rtmpStream)
 
         view.addSubview(lfView)
         view.addSubview(fpsPopUpButton)
@@ -123,11 +123,11 @@ final class LiveViewController: NSViewController {
             segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:
-                rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-                rtmpConnection.connect(urlField.stringValue)
+                rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+                rtmpConnection.connect(withCommand: urlField.stringValue)
             case 1:
-                httpStream.publish("hello")
-                httpService.addHTTPStream(httpStream)
+                httpStream.publish(withName: "hello")
+                httpService.add(stream: httpStream)
                 httpService.startRunning()
             default:
                 break
@@ -139,12 +139,12 @@ final class LiveViewController: NSViewController {
         segmentedControl.isEnabled = true
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            rtmpConnection.removeEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.close()
         case 1:
-            httpService.removeHTTPStream(httpStream)
+            httpService.remove(stream: httpStream)
             httpService.stopRunning()
-            httpStream.publish(nil)
+            httpStream.publish(withName: nil)
         default:
             break
         }
@@ -154,16 +154,16 @@ final class LiveViewController: NSViewController {
     func modeChanged(_ sender:NSSegmentedControl) {
         switch sender.selectedSegment {
         case 0:
-            httpStream.attachAudio(nil)
-            httpStream.attachCamera(nil)
-            rtmpStream.attachAudio(DeviceUtil.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            rtmpStream.attachCamera(DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            httpStream.attach(audio: nil)
+            httpStream.attach(camera: nil)
+            rtmpStream.attach(audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+            rtmpStream.attach(camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
             urlField.stringValue = LiveViewController.defaultURL
         case 1:
-            rtmpStream.attachAudio(nil)
-            rtmpStream.attachCamera(nil)
-            httpStream.attachAudio(DeviceUtil.deviceWithLocalizedName(audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            httpStream.attachCamera(DeviceUtil.deviceWithLocalizedName(cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            rtmpStream.attach(audio: nil)
+            rtmpStream.attach(camera: nil)
+            httpStream.attach(audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+            httpStream.attach(camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break
@@ -171,39 +171,38 @@ final class LiveViewController: NSViewController {
     }
 
     func selectAudio(_ sender:AnyObject) {
-        let device:AVCaptureDevice? = DeviceUtil.deviceWithLocalizedName(
+        let device:AVCaptureDevice? = DeviceUtil.device(withLocalizedName:
             audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio
         )
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpStream.attachAudio(device)
-            httpStream.attachAudio(nil)
+            rtmpStream.attach(audio: device)
+            httpStream.attach(audio: nil)
         case 1:
-            rtmpStream.attachAudio(nil)
-            httpStream.attachAudio(device)
+            rtmpStream.attach(audio: nil)
+            httpStream.attach(audio: device)
         default:
             break
         }
     }
 
     func selectCamera(_ sender:AnyObject) {
-        let device:AVCaptureDevice? = DeviceUtil.deviceWithLocalizedName(
+        let device:AVCaptureDevice? = DeviceUtil.device(withLocalizedName:
             cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo
         )
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpStream.attachCamera(device)
-            httpStream.attachCamera(nil)
+            rtmpStream.attach(camera: device)
+            httpStream.attach(camera: nil)
         case 1:
-            rtmpStream.attachCamera(nil)
-            httpStream.attachCamera(device)
+            rtmpStream.attach(camera: nil)
+            httpStream.attach(camera: device)
         default:
             break
         }
     }
 
-    /*
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [String : Any]?, context: UnsafeMutableRawPointer?) {
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath:String = keyPath , Thread.isMainThread else {
             return
         }
@@ -214,7 +213,6 @@ final class LiveViewController: NSViewController {
             break
         }
     }
-    */
 
     func selectFPS(_ sender:AnyObject) {
         let value:String = fpsPopUpButton.itemTitles[fpsPopUpButton.indexOfSelectedItem]
@@ -226,10 +224,10 @@ final class LiveViewController: NSViewController {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
-            case RTMPConnection.Code.ConnectSuccess.rawValue:
-                rtmpStream!.publish("live")
+            case RTMPConnection.Code.connectSuccess.rawValue:
+                rtmpStream!.publish(withName: "live")
                 if (enabledSharedObject) {
-                    sharedObject = RTMPSharedObject.getRemote("test", remotePath: urlField.stringValue, persistence: false)
+                    sharedObject = RTMPSharedObject.getRemote(withName: "test", remotePath: urlField.stringValue, persistence: false)
                     sharedObject.connect(rtmpConnection)
                     sharedObject.setProperty("Hello", "World!!")
                 }

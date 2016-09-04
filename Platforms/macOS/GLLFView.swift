@@ -3,7 +3,7 @@ import OpenGL.GL3
 import Foundation
 import AVFoundation
 
-public class GLLFView: NSOpenGLView {
+open class GLLFView: NSOpenGLView {
     static let pixelFormatAttributes: [NSOpenGLPixelFormatAttribute] = [
         UInt32(NSOpenGLPFAAccelerated),
         UInt32(NSOpenGLPFANoRecovery),
@@ -12,7 +12,7 @@ public class GLLFView: NSOpenGLView {
         UInt32(0)
     ]
 
-    override public class func defaultPixelFormat() -> NSOpenGLPixelFormat {
+    override open class func defaultPixelFormat() -> NSOpenGLPixelFormat {
         guard let pixelFormat:NSOpenGLPixelFormat = NSOpenGLPixelFormat(
             attributes: GLLFView.pixelFormatAttributes) else {
             return NSOpenGLPixelFormat()
@@ -21,15 +21,15 @@ public class GLLFView: NSOpenGLView {
     }
 
     public var videoGravity:String! = AVLayerVideoGravityResizeAspect
-    var orientation:AVCaptureVideoOrientation = .portrait
-    var position:AVCaptureDevicePosition = .front
+    internal var orientation:AVCaptureVideoOrientation = .portrait
+    internal var position:AVCaptureDevicePosition = .front
     fileprivate var displayImage:CIImage!
     fileprivate var ciContext:CIContext!
     fileprivate var originalFrame:CGRect = CGRect.zero
     fileprivate var scale:CGRect = CGRect.zero
-    fileprivate weak var currentStream:Stream?
+    fileprivate weak var currentStream:NetStream?
 
-    public override func prepareOpenGL() {
+    open override func prepareOpenGL() {
         if let openGLContext:NSOpenGLContext = openGLContext {
             ciContext = CIContext(
                 cglContext: openGLContext.cglContextObj!,
@@ -56,7 +56,7 @@ public class GLLFView: NSOpenGLView {
         originalFrame = frame
     }
 
-    public override func draw(_ dirtyRect: NSRect) {
+    open override func draw(_ dirtyRect: NSRect) {
         guard
             let image:CIImage = displayImage,
             let glContext:NSOpenGLContext = openGLContext else {
@@ -79,7 +79,7 @@ public class GLLFView: NSOpenGLView {
         glFlush()
     }
 
-    override public func reshape() {
+    override open func reshape() {
         let rect:CGRect = frame
         scale = CGRect(x: 0, y: 0, width: originalFrame.size.width / rect.size.width, height: originalFrame.size.height / rect.size.height)
         glViewport(0, 0, Int32(rect.width), Int32(rect.height))
@@ -90,24 +90,24 @@ public class GLLFView: NSOpenGLView {
         glLoadIdentity()
     }
 
-    public func attachStream(stream: Stream?) {
-        if let currentStream:Stream = currentStream {
+    public func attach(stream: NetStream?) {
+        if let currentStream:NetStream = currentStream {
             currentStream.mixer.videoIO.drawable = nil
         }
-        if let stream:Stream = stream {
+        if let stream:NetStream = stream {
             stream.mixer.videoIO.drawable = self
         }
         currentStream = stream
     }
 }
 
-extension GLLFView: StreamDrawable {
-    // MARK: - StreamDrawable
-    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+extension GLLFView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
+    internal func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
         ciContext.render(image, to: toCVPixelBuffer)
     }
 
-    func drawImage(_ image:CIImage) {
+    internal func draw(image:CIImage) {
         displayImage = image
         DispatchQueue.main.async {
             self.needsDisplay = true

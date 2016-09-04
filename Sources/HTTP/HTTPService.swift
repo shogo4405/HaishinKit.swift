@@ -1,19 +1,18 @@
 import Foundation
 
-// MARK: HTTPVersion
 enum HTTPVersion: String {
     case version10 = "HTTP/1.0"
     case version11 = "HTTP/1.1"
 }
 
-// MARK: CustomStringConvertible
 extension HTTPVersion: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return rawValue
     }
 }
 
-// MARK: - HTTPMethod
+// MARK: -
 enum HTTPMethod: String {
     case get     = "GET"
     case post    = "POST"
@@ -25,9 +24,9 @@ enum HTTPMethod: String {
     case connect = "CONNECT"
 }
 
-// MARK: HTTPStatusCode
+// MARK: -
 enum HTTPStatusCode: Int {
-    case `continue`                     = 100
+    case `continue`                   = 100
     case switchingProtocols           = 101
     case ok                           = 200
     case created                      = 201
@@ -68,7 +67,7 @@ enum HTTPStatusCode: Int {
     case gatewayTimeOut               = 504
     case httpVersionNotSupported      = 505
 
-    var message:String {
+    internal var message:String {
         switch self {
         case .continue:
             return "Continue"
@@ -154,9 +153,9 @@ enum HTTPStatusCode: Int {
     }
 }
 
-// MARK: CustomStringConvertible
 extension HTTPStatusCode: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return "\(rawValue) \(message)"
     }
 }
@@ -167,10 +166,10 @@ open class HTTPService: NetService {
     static open let defaultPort:Int32 = 8080
     static open let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
 
-    var document:String = HTTPService.defaultDocument
-    fileprivate(set) var streams:[HTTPStream] = []
+    internal var document:String = HTTPService.defaultDocument
+    internal fileprivate(set) var streams:[HTTPStream] = []
 
-    open func addHTTPStream(_ stream:HTTPStream) {
+    open func add(stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 return
@@ -179,7 +178,7 @@ open class HTTPService: NetService {
         streams.append(stream)
     }
 
-    open func removeHTTPStream(_ stream:HTTPStream) {
+    open func remove(stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 streams.remove(at: i)
@@ -188,7 +187,7 @@ open class HTTPService: NetService {
         }
     }
 
-    func get(_ request:HTTPRequest, client:NetClient) {
+    internal func get(_ request:HTTPRequest, client:NetClient) {
         logger.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
         response.headerFields["Connection"] = "close"
@@ -229,7 +228,7 @@ open class HTTPService: NetService {
         }
     }
 
-    func client(inputBuffer client:NetClient) {
+    internal func client(inputBuffer client:NetClient) {
         guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
             disconnect(client)
             return
@@ -243,4 +242,3 @@ open class HTTPService: NetService {
         }
     }
 }
-

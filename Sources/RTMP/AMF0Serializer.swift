@@ -17,13 +17,12 @@ class AMFSerializerUtil {
     }
 }
 
-// MARK: - AMFSerializerError
 enum AMFSerializerError: Error {
     case deserialize
     case outOfIndex
 }
 
-// MARK: - AMFSerializer
+// MARK: -
 protocol AMFSerializer: ByteArrayConvertible {
     var reference:AMFReference { get set }
 
@@ -99,9 +98,8 @@ class AMF0Serializer: ByteArray {
     var reference:AMFReference = AMFReference()
 }
 
-// MARK: AMFSerializer
 extension AMF0Serializer: AMFSerializer {
-
+    // MARK: AMFSerializer
     @discardableResult
     func serialize(_ value:Any?) -> Self {
         if value == nil {
@@ -162,7 +160,7 @@ extension AMF0Serializer: AMFSerializer {
             return nil
         case .undefined:
             position += 1
-            return Type.undefined
+            return kASUndefined
         case .reference:
             assertionFailure("TODO")
             return nil

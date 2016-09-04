@@ -10,8 +10,8 @@ open class GLLFView: GLKView {
 
     open var videoGravity:String = AVLayerVideoGravityResizeAspect
 
-    var orientation:AVCaptureVideoOrientation = .portrait
-    var position:AVCaptureDevicePosition = .front {
+    internal var orientation:AVCaptureVideoOrientation = .portrait
+    internal var position:AVCaptureDevicePosition = .front {
         didSet {
             switch position {
             case .front:
@@ -26,9 +26,9 @@ open class GLLFView: GLKView {
 
     fileprivate var ciContext:CIContext!
     fileprivate var displayImage:CIImage?
-    fileprivate weak var currentStream:Stream? {
+    fileprivate weak var currentStream:NetStream? {
         didSet {
-            guard let oldValue:Stream = oldValue else {
+            guard let oldValue:NetStream = oldValue else {
                 return
             }
             oldValue.mixer.videoIO.drawable = nil
@@ -62,8 +62,8 @@ open class GLLFView: GLKView {
         ciContext.draw(displayImage, in: inRect, from: fromRect)
     }
 
-    open func attachStream(_ stream:Stream?) {
-        if let stream:Stream = stream {
+    open func attach(stream:NetStream?) {
+        if let stream:NetStream = stream {
             stream.mixer.videoIO.drawable = self
         }
         currentStream = stream
@@ -71,11 +71,11 @@ open class GLLFView: GLKView {
 }
 
 // MARK: - StreamDrawable
-extension GLLFView: StreamDrawable {
-    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+extension GLLFView: NetStreamDrawable {
+    internal func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
         ciContext.render(image, to: toCVPixelBuffer)
     }
-    func drawImage(_ image:CIImage) {
+    internal func draw(image:CIImage) {
         displayImage = image
         DispatchQueue.main.async {
             self.setNeedsDisplay()

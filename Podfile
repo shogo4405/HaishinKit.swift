@@ -2,7 +2,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'XCGLogger', '~> 3.3'
+    pod 'XCGLogger', '~> 4.0.0'
 end
 
 target 'lf iOS'  do

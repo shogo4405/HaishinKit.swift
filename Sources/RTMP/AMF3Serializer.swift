@@ -88,9 +88,8 @@ class AMF3Serializer: ByteArray {
     var reference:AMFReference = AMFReference()
 }
 
-// MARK: AMFSerializer
 extension AMF3Serializer: AMFSerializer {
-
+    // MARK: AMFSerializer
     @discardableResult
     func serialize(_ value:Any?) -> Self {
         

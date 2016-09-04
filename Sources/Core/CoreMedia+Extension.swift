@@ -3,7 +3,12 @@ import CoreImage
 
 extension CMSampleBuffer {
     var dependsOnOthers:Bool {
-        return false
+        guard
+            let attachments:CFArray = CMSampleBufferGetSampleAttachmentsArray(self, false) else {
+            return false
+        }
+        let attachment:[NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject : AnyObject]
+        return attachment["DependsOnOthers" as NSObject] as! Bool
     }
     var dataBuffer:CMBlockBuffer? {
         get {
@@ -37,8 +42,8 @@ extension CMSampleBuffer {
     }
 }
 
-// MARK: BytesConvertible
 extension CMSampleBuffer: BytesConvertible {
+    // MARK: BytesConvertible
     var bytes:[UInt8] {
         get {
             guard let buffer:CMBlockBuffer = dataBuffer else {

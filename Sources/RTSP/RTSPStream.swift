@@ -5,12 +5,12 @@ final class RTSPPlaySequenceResponder: RTSPResponder {
     fileprivate var stream:RTSPStream
     fileprivate var method:RTSPMethod = .options
 
-    init(uri:String, stream:RTSPStream) {
+    internal init(uri:String, stream:RTSPStream) {
         self.uri = uri
         self.stream = stream
     }
 
-    func onResponse(_ response: RTSPResponse) {
+    internal func on(response: RTSPResponse) {
         switch method {
         case .options:
             method = .describe
@@ -34,37 +34,37 @@ final class RTSPRecordSequenceResponder: RTSPResponder {
     fileprivate var stream:RTSPStream
     fileprivate var method:RTSPMethod = .options
 
-    init(uri:String, stream:RTSPStream) {
+    internal init(uri:String, stream:RTSPStream) {
         self.uri = uri
         self.stream = stream
     }
 
-    func onResponse(_ response: RTSPResponse) {
+    internal func on(response: RTSPResponse) {
     }
 }
 
 // MARK: -
-class RTSPStream: Stream {
-    var sessionID:String?
+class RTSPStream: NetStream {
+    internal var sessionID:String?
     fileprivate var services:[RTPService] = []
     fileprivate var connection:RTSPConnection
 
-    init(connection: RTSPConnection) {
+    internal init(connection: RTSPConnection) {
         self.connection = connection
     }
 
-    func play(_ uri:String) {
+    internal func play(uri:String) {
         connection.doMethod(.options, uri, RTSPPlaySequenceResponder(uri: uri, stream: self), [:])
     }
 
-    func record(_ uri:String) {
+    internal func record(uri:String) {
         connection.doMethod(.options, uri, RTSPRecordSequenceResponder(uri: uri, stream: self), [:])
     }
 
-    func tearDown() {
+    internal func tearDown() {
     }
 
-    func listen() {
+    internal func listen() {
         for i in 0..<2 {
             let service:RTPService = RTPService(domain: "", type: "_rtp._udp", name: "", port: RTSPConnection.defaultRTPPort + i)
             service.startRunning()

@@ -1,18 +1,18 @@
 import Foundation
 import AVFoundation
 
-// MARK: StreamDrawable
-protocol StreamDrawable: class {
+protocol NetStreamDrawable: class {
     var orientation:AVCaptureVideoOrientation { get set }
     var position:AVCaptureDevicePosition { get set }
-    func drawImage(_ image:CIImage)
-    func render(_ image:CIImage, toCVPixelBuffer:CVPixelBuffer)
+
+    func draw(image:CIImage)
+    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer)
 }
 
 // MARK: -
-open class Stream: NSObject {
-    var mixer:AVMixer = AVMixer()
-    let lockQueue:DispatchQueue = DispatchQueue(
+open class NetStream: NSObject {
+    internal var mixer:AVMixer = AVMixer()
+    internal let lockQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.Stream.lock", attributes: []
     )
 
@@ -123,35 +123,35 @@ open class Stream: NSObject {
         }
     }
 
-    open func attachCamera(_ camera:AVCaptureDevice?) {
+    open func attach(camera:AVCaptureDevice?) {
         lockQueue.async {
-            self.mixer.videoIO.attachCamera(camera)
+            self.mixer.videoIO.attach(camera: camera)
             self.mixer.startRunning()
         }
     }
 
-    open func attachAudio(_ audio:AVCaptureDevice?, _ automaticallyConfiguresApplicationAudioSession:Bool = true) {
+    open func attach(audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
         lockQueue.async {
-            self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
+            self.mixer.audioIO.attach(audio: audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
             )
         }
     }
 
     #if os(OSX)
-    public func attachScreen(screen:AVCaptureScreenInput?) {
+    public func attach(screen:AVCaptureScreenInput?) {
         lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen: screen)
+            self.mixer.videoIO.attach(screen: screen)
         }
     }
     #else
-    open func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
+    open func attach(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
+            self.mixer.videoIO.attach(screen: screen, useScreenSize: useScreenSize)
         }
     }
-    open func rampToVideoZoomFactor(_ factor:CGFloat, withRate:Float) {
+    open func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {
         lockQueue.async {
-            self.mixer.videoIO.rampToVideoZoomFactor(factor, withRate: withRate)
+            self.mixer.videoIO.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
         }
     }
     #endif

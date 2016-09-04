@@ -7,26 +7,26 @@ import Foundation
 
 // MARK: -
 final class NetClient: NetSocket {
-    static let defaultBufferSize:Int = 8192
+    static internal let defaultBufferSize:Int = 8192
 
-    weak var delegate:NetClientDelegate?
-    fileprivate(set) var service:Foundation.NetService?
+    internal weak var delegate:NetClientDelegate?
+    internal fileprivate(set) var service:Foundation.NetService?
 
-    init(service:Foundation.NetService, inputStream:InputStream, outputStream:OutputStream) {
+    internal init(service:Foundation.NetService, inputStream:InputStream, outputStream:OutputStream) {
         super.init()
         self.service = service
         self.inputStream = inputStream
         self.outputStream = outputStream
     }
 
-    func acceptConnection() {
+    internal func acceptConnection() {
         networkQueue.async {
             self.initConnection()
             self.delegate?.client?(didAccepetConnection: self)
         }
     }
 
-    override func listen() {
+    override internal func listen() {
         delegate?.client?(inputBuffer: self)
     }
 }

@@ -5,8 +5,8 @@ import AVFoundation
 
 // MARK: ScreenCaptureOutputPixelBufferDelegate
 public protocol ScreenCaptureOutputPixelBufferDelegate: class {
-    func didSetSize(_ size:CGSize)
-    func pixelBufferOutput(_ pixelBuffer:CVPixelBuffer, timestamp:CMTime)
+    func didSet(size:CGSize)
+    func output(pixelBuffer:CVPixelBuffer, withTimestamp:CMTime)
 }
 
 // MARK: -
@@ -31,22 +31,11 @@ public final class ScreenCaptureSession: NSObject {
     public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
 
     internal(set) var running:Bool = false
-    fileprivate var context:CIContext = {
-        if let context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)]) {
-            logger.info("cicontext use hardware renderer")
-            return context
-        }
-        logger.info("cicontext use software renderer")
-        return CIContext()
-    }()
+    fileprivate var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
     fileprivate let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
-    fileprivate let lockQueue:DispatchQueue = {
-        var queue:DispatchQueue = DispatchQueue(
-            label: "com.github.shogo4405.lf.ScreenCaptureSession.lock", attributes: []
-        )
-        queue.setTarget(queue: DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.high))
-        return queue
-    }()
+    fileprivate let lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.ScreenCaptureSession.lock", qos: DispatchQoS.userInteractive, attributes: []
+    )
     fileprivate var colorSpace:CGColorSpace!
     fileprivate var displayLink:CADisplayLink!
 
@@ -55,7 +44,7 @@ public final class ScreenCaptureSession: NSObject {
             guard size != oldValue else {
                 return
             }
-            delegate?.didSetSize(CGSize(width: size.width * scale, height: size.height * scale))
+            delegate?.didSet(size: CGSize(width: size.width * scale, height: size.height * scale))
             pixelBufferPool = nil
         }
     }
@@ -115,7 +104,7 @@ public final class ScreenCaptureSession: NSObject {
         let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         context.render(CIImage(cgImage: image.cgImage!), to: pixelBuffer!)
-        delegate?.pixelBufferOutput(pixelBuffer!, timestamp: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
+        delegate?.output(pixelBuffer: pixelBuffer!, withTimestamp: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
         CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
     }
 }

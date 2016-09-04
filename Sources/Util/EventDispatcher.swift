@@ -4,10 +4,10 @@ import Foundation
  flash.events.IEventDispatcher for Swift
  */
 public protocol IEventDispatcher: class {
-    func addEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
-    func removeEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
-    func dispatchEvent(_ e:Event)
-    func dispatchEventWith(_ type:String, bubbles:Bool, data:Any?)
+    func addEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func removeEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func dispatch(event:Event)
+    func dispatch(type:String, bubbles:Bool, data:Any?)
 }
 
 public enum EventPhase: UInt8 {
@@ -72,27 +72,27 @@ open class EventDispatcher: NSObject, IEventDispatcher {
         target = nil
     }
 
-    public final func addEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+    public final func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
         NotificationCenter.default.addObserver(
             observer ?? target ?? self, selector: selector, name: NSNotification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
         )
     }
 
-    public final func removeEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+    public final func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
         NotificationCenter.default.removeObserver(
             observer ?? target ?? self, name: NSNotification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
         )
     }
 
-    open func dispatchEvent(_ e:Event) {
-        e.target = target ?? self
+    open func dispatch(event:Event) {
+        event.target = target ?? self
         NotificationCenter.default.post(
-            name: Notification.Name(rawValue: "\(e.type)/false"), object: target ?? self, userInfo: ["event": e]
+            name: Notification.Name(rawValue: "\(event.type)/false"), object: target ?? self, userInfo: ["event": event]
         )
-        e.target = nil
+        event.target = nil
     }
 
-    public final func dispatchEventWith(_ type:String, bubbles:Bool, data:Any?) {
-        dispatchEvent(Event(type: type, bubbles: bubbles, data: data))
+    public final func dispatch(type:String, bubbles:Bool, data:Any?) {
+        dispatch(event: Event(type: type, bubbles: bubbles, data: data))
     }
 }

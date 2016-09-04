@@ -1,17 +1,16 @@
 import Foundation
 import AVFoundation
 
-// MARK: ClockedQueueDelegate
 protocol ClockedQueueDelegate:class {
     func queue(_ buffer: CMSampleBuffer)
 }
 
 // MARK: -
 class ClockedQueue {
-    var bufferTime:TimeInterval = 0.1 // sec
-    fileprivate(set) var running:Bool = false
-    fileprivate(set) var duration:TimeInterval = 0
-    weak var delegate:ClockedQueueDelegate?
+    internal var bufferTime:TimeInterval = 0.1 // sec
+    internal fileprivate(set) var running:Bool = false
+    internal fileprivate(set) var duration:TimeInterval = 0
+    internal weak var delegate:ClockedQueueDelegate?
 
     fileprivate var date:Date = Date()
     fileprivate var buffers:[CMSampleBuffer] = []
@@ -30,7 +29,7 @@ class ClockedQueue {
         }
     }
 
-    func enqueue(_ buffer:CMSampleBuffer) {
+    internal func enqueue(_ buffer:CMSampleBuffer) {
         do {
             try mutex.lock()
             duration += buffer.duration.seconds
@@ -41,12 +40,12 @@ class ClockedQueue {
         }
         if (timer == nil) {
             timer = Timer(
-                timeInterval: 0.001, target: self, selector: #selector(ClockedQueue.onTimer(_:)), userInfo: nil, repeats: true
+                timeInterval: 0.001, target: self, selector: #selector(ClockedQueue.on(timer:)), userInfo: nil, repeats: true
             )
         }
     }
 
-    @objc func onTimer(_ timer:Timer) {
+    @objc internal func on(timer:Timer) {
         guard let buffer:CMSampleBuffer = buffers.first , bufferTime <= self.duration else {
             return
         }
@@ -67,8 +66,8 @@ class ClockedQueue {
     }
 }
 
-// MARK: CustomStringConvertible
 extension ClockedQueue: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }

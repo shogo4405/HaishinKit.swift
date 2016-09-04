@@ -2,7 +2,6 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
-// MARK: NALType
 enum NALType: UInt8 {
     case unspec   = 0
     case slice    = 1 // P frame
@@ -21,14 +20,14 @@ enum NALType: UInt8 {
 
 // MARK: -
 struct NALUnit {
-    var refIdc:UInt8 = 0
-    var type:NALType = .unspec
-    var payload:[UInt8] = []
+    internal var refIdc:UInt8 = 0
+    internal var type:NALType = .unspec
+    internal var payload:[UInt8] = []
 }
 
-// MARK: BytesConvertible
 extension NALUnit: BytesConvertible {
-    var bytes:[UInt8] {
+    // MARK: BytesConvertible
+    internal var bytes:[UInt8] {
         get {
             return ByteArray()
                 .writeUInt8(refIdc << 5 | type.rawValue)

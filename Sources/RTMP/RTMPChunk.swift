@@ -1,25 +1,6 @@
 import Foundation
 
 final class RTMPChunk {
-    static let control:UInt16 = 0x02
-    static let command:UInt16 = 0x03
-    static let audio:UInt16 = 0x04
-    static let video:UInt16 = 0x05
-    static let maxTimestamp:UInt32 = 0xFFFFFF
-
-    static let defaultSize:Int = 128
-
-    static func getStreamIdSize(_ byte:UInt8) -> Int {
-        switch (byte & 0b00111111) {
-        case 0:
-            return 2
-        case 1:
-            return 3
-        default:
-            return 1
-        }
-    }
-
     enum `Type`: UInt8 {
         case zero = 0
         case one = 1
@@ -54,18 +35,39 @@ final class RTMPChunk {
         }
     }
 
-    var size:Int = 0
-    var type:Type = .zero
-    var streamId:UInt16 = RTMPChunk.command
+    enum StreamID: UInt16 {
+        case control = 0x02
+        case command = 0x03
+        case audio   = 0x04
+        case video   = 0x05
+    }
 
-    var ready:Bool {
+    static let defaultSize:Int = 128
+    static let maxTimestamp:UInt32 = 0xFFFFFF
+
+    static func getStreamIdSize(_ byte:UInt8) -> Int {
+        switch (byte & 0b00111111) {
+        case 0:
+            return 2
+        case 1:
+            return 3
+        default:
+            return 1
+        }
+    }
+
+    internal var size:Int = 0
+    internal var type:Type = .zero
+    internal var streamId:UInt16 = RTMPChunk.StreamID.command.rawValue
+
+    internal var ready:Bool {
         guard let message:RTMPMessage = message else {
             return false
         }
         return message.length == message.payload.count
     }
 
-    var headerSize:Int {
+    internal var headerSize:Int {
         if (streamId <= 63) {
             return 1 + type.headerSize
         }
@@ -75,7 +77,7 @@ final class RTMPChunk {
         return 3 + type.headerSize
     }
 
-    var basicHeaderSize:Int {
+    internal var basicHeaderSize:Int {
         if (streamId <= 63) {
             return 1
         }
@@ -85,21 +87,21 @@ final class RTMPChunk {
         return 3
     }
 
-    fileprivate(set) var message:RTMPMessage?
-    fileprivate(set) var fragmented:Bool = false
+    internal fileprivate(set) var message:RTMPMessage?
+    internal fileprivate(set) var fragmented:Bool = false
     fileprivate var _bytes:[UInt8] = []
 
-    init(type:Type, streamId:UInt16, message:RTMPMessage) {
+    internal init(type:Type, streamId:UInt16, message:RTMPMessage) {
         self.type = type
         self.streamId = streamId
         self.message = message
     }
 
-    init(message:RTMPMessage) {
+    internal init(message:RTMPMessage) {
         self.message = message
     }
 
-    init?(bytes:[UInt8], size:Int) {
+    internal init?(bytes:[UInt8], size:Int) {
         if (bytes.isEmpty) {
             return nil
         }
@@ -111,7 +113,7 @@ final class RTMPChunk {
         self.bytes = bytes
     }
 
-    func append(_ bytes:[UInt8], size:Int) -> Int {
+    internal func append(_ bytes:[UInt8], size:Int) -> Int {
         fragmented = false
 
         guard let message:RTMPMessage = message else {
@@ -138,7 +140,7 @@ final class RTMPChunk {
         return length
     }
 
-    func append(_ bytes:[UInt8], message: RTMPMessage?) -> Int {
+    internal func append(_ bytes:[UInt8], message: RTMPMessage?) -> Int {
         guard let message:RTMPMessage = message else {
             return 0
         }
@@ -159,42 +161,35 @@ final class RTMPChunk {
         return headerSize + message.length
     }
 
-    func split(_ size:Int) -> [[UInt8]] {
+    internal func split(_ size:Int) -> [[UInt8]] {
         let bytes:[UInt8] = self.bytes
         message?.length = bytes.count
-
-        guard let message:RTMPMessage = message , size < message.payload.count else {
+        guard let message:RTMPMessage = message, size < message.payload.count else {
             return [bytes]
         }
-        /*
-        let header:[UInt8] = Type.three.toBasicHeader(streamId)
-        let startIndex:Int = size + headerSize
-
         var result:[[UInt8]] = []
+        let startIndex:Int = size + headerSize
+        let header:[UInt8] = Type.three.toBasicHeader(streamId)
         result.append(Array(bytes[0..<startIndex]))
-        
-
         for index in stride(from: startIndex, to: bytes.count, by: size) {
-            var headerCombine:[UInt8] = header
-            /// TODO: headerCombine.append(bytes[index..<index.advanced(by: size)])
-            result.append(headerCombine)
+            var data:[UInt8] = header
+            data.append(contentsOf: bytes[index..<index.advanced(by: index + size < bytes.count ? size : bytes.count - index)])
+            result.append(data)
         }
-        */
-
-        return [bytes]
+        return result
     }
 }
 
-// MARK: CustomStringConvertible
 extension RTMPChunk: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
-// MARK: BytesConvertible
 extension RTMPChunk: BytesConvertible {
-    var bytes:[UInt8] {
+    // MARK: BytesConvertible
+    internal var bytes:[UInt8] {
         get {
             guard let message:RTMPMessage = message else {
                 return _bytes

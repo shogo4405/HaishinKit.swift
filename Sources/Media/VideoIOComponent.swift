@@ -8,7 +8,7 @@ final class VideoIOComponent: IOComponent {
     )
     var encoder:AVCEncoder = AVCEncoder()
     var decoder:AVCDecoder = AVCDecoder()
-    var drawable:StreamDrawable?
+    var drawable:NetStreamDrawable?
     var formatDescription:CMVideoFormatDescription? {
         didSet {
             decoder.formatDescription = formatDescription
@@ -229,7 +229,7 @@ final class VideoIOComponent: IOComponent {
         decoder.delegate = self
     }
 
-    func attachCamera(_ camera:AVCaptureDevice?) {
+    func attach(camera:AVCaptureDevice?) {
         output = nil
         guard let camera:AVCaptureDevice = camera else {
             input = nil
@@ -270,7 +270,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if os(OSX)
-    func attachScreen(screen:AVCaptureScreenInput?) {
+    func attach(screen:AVCaptureScreenInput?) {
         output = nil
         guard let _:AVCaptureScreenInput = screen else {
             input = nil
@@ -282,7 +282,7 @@ final class VideoIOComponent: IOComponent {
         mixer.session.startRunning()
     }
     #else
-    func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
+    func attach(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         guard let screen:ScreenCaptureSession = screen else {
             self.screen?.stopRunning()
             self.screen = nil
@@ -333,24 +333,24 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if os(iOS)
-    func rampToVideoZoomFactor(_ factor:CGFloat, withRate:Float) {
-        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-            , 1 <= factor && factor < device.activeFormat.videoMaxZoomFactor else {
+    func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {
+        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+            1 <= toVideoZoomFactor && toVideoZoomFactor < device.activeFormat.videoMaxZoomFactor else {
             return
         }
         do {
             try device.lockForConfiguration()
-            device.ramp(toVideoZoomFactor: factor, withRate: withRate)
+            device.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
             device.unlockForConfiguration()
         } catch let error as NSError {
-            logger.error("while locking device for rampToVideoZoomFactor: \(error)")
+            logger.error("while locking device for ramp: \(error)")
         }
     }
     #endif
 }
 
-// MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
+    // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
         mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
         guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
@@ -362,48 +362,48 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             // green edge hack for OSX
             buffer = CVPixelBuffer.create(image)!
             #endif
-            drawable?.render(image, toCVPixelBuffer: buffer)
+            drawable?.render(image: image, to: buffer)
         }
         encoder.encodeImageBuffer(
             buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        drawable?.drawImage(image)
+        drawable?.draw(image: image)
     }
 }
 
-// MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
+    // MARK: VideoDecoderDelegate
     func sampleOutput(video sampleBuffer:CMSampleBuffer) {
         queue.enqueue(sampleBuffer)
     }
 }
 
-// MARK: ClockedQueueDelegate
 extension VideoIOComponent: ClockedQueueDelegate {
+    // MARK: ClockedQueueDelegate
     func queue(_ buffer: CMSampleBuffer) {
-        drawable?.drawImage(CIImage(cvPixelBuffer: buffer.imageBuffer!))
+        drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
     }
 }
 
 #if os(iOS)
-// MARK: ScreenCaptureOutputPixelBufferDelegate
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
-    func didSetSize(_ size: CGSize) {
+    // MARK: ScreenCaptureOutputPixelBufferDelegate
+    func didSet(size: CGSize) {
         lockQueue.async {
             self.encoder.width = Int32(size.width)
             self.encoder.height = Int32(size.height)
         }
     }
-    func pixelBufferOutput(_ pixelBuffer:CVPixelBuffer, timestamp:CMTime) {
+    func output(pixelBuffer:CVPixelBuffer, withTimestamp:CMTime) {
         if (!effects.isEmpty) {
-            drawable?.render(effect(pixelBuffer), toCVPixelBuffer: pixelBuffer)
+            drawable?.render(image: effect(pixelBuffer), to: pixelBuffer)
         }
         encoder.encodeImageBuffer(
             pixelBuffer,
-            presentationTimeStamp: timestamp,
-            duration: timestamp
+            presentationTimeStamp: withTimestamp,
+            duration: withTimestamp
         )
     }
 }

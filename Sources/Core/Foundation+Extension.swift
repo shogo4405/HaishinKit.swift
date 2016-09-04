@@ -1,5 +1,13 @@
 import Foundation
 
+extension Data {
+    var bytes:[UInt8] {
+        return self.withUnsafeBytes {
+            [UInt8](UnsafeBufferPointer(start: $0, count: self.count))
+        }
+    }
+}
+
 extension URL {
     var absoluteWithoutAuthenticationString:String {
         var target:String = ""

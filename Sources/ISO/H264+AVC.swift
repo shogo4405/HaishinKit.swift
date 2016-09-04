@@ -3,13 +3,13 @@ import AVFoundation
 import VideoToolbox
 
 struct AVCFormatStream {
-    var bytes:[UInt8] = []
+    internal var bytes:[UInt8] = []
 
-    init(bytes:[UInt8]) {
+    internal init(bytes:[UInt8]) {
         self.bytes = bytes
     }
 
-    func toByteStream() -> [UInt8] {
+    internal func toByteStream() -> [UInt8] {
         let buffer:ByteArray = ByteArray(bytes: bytes)
         var result:[UInt8] = []
         while (0 < buffer.bytesAvailable) {
@@ -32,7 +32,7 @@ struct AVCFormatStream {
  */
 struct AVCConfigurationRecord {
 
-    static func getData(_ formatDescription:CMFormatDescription?) -> Data? {
+    static internal func getData(_ formatDescription:CMFormatDescription?) -> Data? {
         guard let formatDescription:CMFormatDescription = formatDescription else {
             return nil
         }
@@ -42,40 +42,40 @@ struct AVCConfigurationRecord {
         return nil
     }
 
-    static let reserveLengthSizeMinusOne:UInt8 = 0x3F
-    static let reserveNumOfSequenceParameterSets:UInt8 = 0xE0
-    static let reserveChromaFormat:UInt8 = 0xFC
-    static let reserveBitDepthLumaMinus8:UInt8 = 0xF8
-    static let reserveBitDepthChromaMinus8 = 0xF8
+    static internal let reserveLengthSizeMinusOne:UInt8 = 0x3F
+    static internal let reserveNumOfSequenceParameterSets:UInt8 = 0xE0
+    static internal let reserveChromaFormat:UInt8 = 0xFC
+    static internal let reserveBitDepthLumaMinus8:UInt8 = 0xF8
+    static internal let reserveBitDepthChromaMinus8 = 0xF8
 
-    var configurationVersion:UInt8 = 1
-    var AVCProfileIndication:UInt8 = 0
-    var profileCompatibility:UInt8 = 0
-    var AVCLevelIndication:UInt8 = 0
-    var lengthSizeMinusOneWithReserved:UInt8 = 0
-    var numOfSequenceParameterSetsWithReserved:UInt8 = 0
-    var sequenceParameterSets:[[UInt8]] = []
-    var pictureParameterSets:[[UInt8]] = []
+    internal var configurationVersion:UInt8 = 1
+    internal var AVCProfileIndication:UInt8 = 0
+    internal var profileCompatibility:UInt8 = 0
+    internal var AVCLevelIndication:UInt8 = 0
+    internal var lengthSizeMinusOneWithReserved:UInt8 = 0
+    internal var numOfSequenceParameterSetsWithReserved:UInt8 = 0
+    internal var sequenceParameterSets:[[UInt8]] = []
+    internal var pictureParameterSets:[[UInt8]] = []
 
-    var chromaFormatWithReserve:UInt8 = 0
-    var bitDepthLumaMinus8WithReserve:UInt8 = 0
-    var bitDepthChromaMinus8WithReserve:UInt8 = 0
-    var sequenceParameterSetExt:[[UInt8]] = []
+    internal var chromaFormatWithReserve:UInt8 = 0
+    internal var bitDepthLumaMinus8WithReserve:UInt8 = 0
+    internal var bitDepthChromaMinus8WithReserve:UInt8 = 0
+    internal var sequenceParameterSetExt:[[UInt8]] = []
 
-    var naluLength:Int32 {
+    internal var naluLength:Int32 {
         return Int32((lengthSizeMinusOneWithReserved >> 6) + 1)
     }
 
-    init() {
+    internal init() {
     }
 
-    init(data: Data) {
+    internal init(data: Data) {
         var bytes:[UInt8] = [UInt8](repeating: 0x00, count: data.count)
         (data as NSData).getBytes(&bytes, length: bytes.count)
         self.bytes = bytes
     }
 
-    func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
+    internal func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
         var parameterSetPointers:[UnsafePointer<UInt8>] = [
             UnsafePointer<UInt8>(sequenceParameterSets[0]),
             UnsafePointer<UInt8>(pictureParameterSets[0])
@@ -95,9 +95,9 @@ struct AVCConfigurationRecord {
     }
 }
 
-// MARK: BytesConvertible
 extension AVCConfigurationRecord: BytesConvertible {
-    var bytes:[UInt8] {
+    // MARK: BytesConvertible
+    internal var bytes:[UInt8] {
         get {
             let buffer:ByteArray = ByteArray()
                 .writeUInt8(configurationVersion)
@@ -145,9 +145,9 @@ extension AVCConfigurationRecord: BytesConvertible {
     }
 }
 
-// MARK: CustomStringConvertible
 extension AVCConfigurationRecord: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return Mirror(reflecting: self).description
     }
 }

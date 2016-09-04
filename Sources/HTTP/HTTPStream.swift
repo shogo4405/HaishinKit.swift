@@ -1,14 +1,14 @@
 import Foundation
 import AVFoundation
 
-open class HTTPStream: Stream {
-    fileprivate(set) var name:String?
+open class HTTPStream: NetStream {
+    internal fileprivate(set) var name:String?
     fileprivate var tsWriter:TSWriter = TSWriter()
 
-    open func publish(_ name:String?) {
+    open func publish(withName:String?) {
         lockQueue.async {
-            if (name == nil) {
-                self.name = name
+            if (withName == nil) {
+                self.name = withName
                 #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
                 #endif
@@ -19,7 +19,7 @@ open class HTTPStream: Stream {
                 self.tsWriter.stopRunning()
                 return
             }
-            self.name = name
+            self.name = withName
             #if os(iOS)
             self.mixer.videoIO.screen?.startRunning()
             #endif
@@ -31,7 +31,7 @@ open class HTTPStream: Stream {
         }
     }
 
-    func getResource(_ resourceName:String) -> (MIME, String)? {
+    internal func getResource(_ resourceName:String) -> (MIME, String)? {
         let url:URL = URL(fileURLWithPath: resourceName)
         guard let name:String = name, 2 <= url.pathComponents.count && url.pathComponents[1] == name else {
             return nil

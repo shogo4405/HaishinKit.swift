@@ -24,7 +24,7 @@ extension Mirror {
 // MARK: -
 extension ExpressibleByIntegerLiteral {
     var bytes:[UInt8] {
-        var data = [UInt8](repeating: 0, count: MemoryLayout<`Self`>.size)
+        var data:[UInt8] = [UInt8](repeating: 0, count: MemoryLayout<`Self`>.size)
         data.withUnsafeMutableBufferPointer {
             UnsafeMutableRawPointer($0.baseAddress!).storeBytes(of: self, as: Self.self)
         }

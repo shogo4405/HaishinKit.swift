@@ -8,13 +8,13 @@ open class LFView: UIView {
         return AVCaptureVideoPreviewLayer.self
     }
 
-    open var videoGravity:String = AVLayerVideoGravityResizeAspect {
+    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
             layer.setValue(videoGravity, forKey: "videoGravity")
         }
     }
 
-    var orientation:AVCaptureVideoOrientation = .portrait {
+    internal var orientation:AVCaptureVideoOrientation = .portrait {
         didSet {
             guard let connection:AVCaptureConnection = layer.value(forKey: "connection") as? AVCaptureConnection else {
                 return
@@ -24,7 +24,16 @@ open class LFView: UIView {
             }
         }
     }
-    var position:AVCaptureDevicePosition = .front
+    internal var position:AVCaptureDevicePosition = .front
+
+    private weak var currentStream:NetStream? {
+        didSet {
+            guard let oldValue:NetStream = oldValue else {
+                return
+            }
+            oldValue.mixer.videoIO.drawable = nil
+        }
+    }
 
     public override init(frame:CGRect) {
         super.init(frame:frame)
@@ -41,26 +50,16 @@ open class LFView: UIView {
         layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
     }
 
-    fileprivate weak var currentStream:Stream? {
-        didSet {
-            guard let oldValue:Stream = oldValue else {
-                return
-            }
-            oldValue.mixer.videoIO.drawable = nil
-        }
-    }
-
-    open func attachStream(_ stream:Stream?) {
+    open func attach(stream:NetStream?) {
         layer.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream
     }
 }
 
-// MARK: - StreamDrawable
-extension LFView: StreamDrawable {
-    func render(_ image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+extension LFView: NetStreamDrawable {
+    internal func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
     }
-    func drawImage(_ image:CIImage) {
+    internal func draw(image:CIImage) {
     }
 }

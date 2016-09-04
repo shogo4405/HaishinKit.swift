@@ -1,12 +1,12 @@
 import Foundation
 import AVFoundation
 
-// MARK: AudioEncoderDelegate
 protocol AudioEncoderDelegate: class {
     func didSetFormatDescription(audio formatDescription:CMFormatDescription?)
     func sampleOutput(audio sampleBuffer: CMSampleBuffer)
 }
 
+// MARK: -
 /**
  - seealse:
   - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
@@ -248,8 +248,8 @@ final class AACEncoder: NSObject {
     }
 }
 
-// MARK: Encoder
 extension AACEncoder: Runnable {
+    // MARK: Runnable
     func startRunning() {
         lockQueue.async {
             self.running = true
@@ -270,8 +270,8 @@ extension AACEncoder: Runnable {
     }
 }
 
-// MARK: AVCaptureAudioDataOutputSampleBufferDelegate
 extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
+    // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
         encodeSampleBuffer(sampleBuffer)
     }

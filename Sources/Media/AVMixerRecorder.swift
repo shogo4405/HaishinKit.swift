@@ -4,7 +4,6 @@ import AVFoundation
 import AssetsLibrary
 #endif
 
-// MARK: AVMixerRecorderDelegate
 public protocol AVMixerRecorderDelegate: class {
     var moviesDirectory:URL { get }
     func rotateFile(_ recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String)
@@ -38,14 +37,14 @@ open class AVMixerRecorder: NSObject {
     open let lockQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.AVMixerRecorder.lock", attributes: []
     )
-    fileprivate(set) var running:Bool = false
+    internal fileprivate(set) var running:Bool = false
 
     public override init() {
         super.init()
         delegate = DefaultAVMixerRecorderDelegate()
     }
 
-    final func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
+    final internal func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
         lockQueue.async {
 
             guard let delegate:AVMixerRecorderDelegate = self.delegate , self.running else {
@@ -73,7 +72,7 @@ open class AVMixerRecorder: NSObject {
         }
     }
 
-    func finishWriting() {
+    internal func finishWriting() {
         for (_, input) in writerInputs {
             input.markAsFinished()
         }
@@ -85,9 +84,9 @@ open class AVMixerRecorder: NSObject {
     }
 }
 
-// MARK: Runnable
 extension AVMixerRecorder: Runnable {
-    final func startRunning() {
+    // MARK: Runnable
+    final internal func startRunning() {
         lockQueue.async {
             guard !self.running else {
                 return
@@ -97,7 +96,7 @@ extension AVMixerRecorder: Runnable {
         }
     }
 
-    final func stopRunning() {
+    final internal func stopRunning() {
         lockQueue.async {
             guard self.running else {
                 return
@@ -127,9 +126,8 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     #endif
 }
 
-// MARK: AVMixerRecorderDelegate
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
-
+    // MARK: AVMixerRecorderDelegate
     public func rotateFile(_ recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String) {
         let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
         guard clockReference == mediaType && rotateTime.value < presentationTimeStamp.value else {

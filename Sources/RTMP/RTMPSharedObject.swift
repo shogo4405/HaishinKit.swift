@@ -16,21 +16,21 @@ struct RTMPSharedObjectEvent {
         case unknown       = 255
     }
 
-    var type:Type = .unknown
-    var name:String? = nil
-    var data:Any? = nil
+    internal var type:Type = .unknown
+    internal var name:String? = nil
+    internal var data:Any? = nil
 
-    init(type:Type) {
+    internal init(type:Type) {
         self.type = type
     }
 
-    init(type:Type, name:String, data:Any?) {
+    internal init(type:Type, name:String, data:Any?) {
         self.type = type
         self.name = name
         self.data = data
     }
 
-    init?(serializer:inout AMFSerializer) throws {
+    internal init?(serializer:inout AMFSerializer) throws {
         guard let byte:UInt8 = try? serializer.readUInt8(), let type:Type = Type(rawValue: byte) else {
             return nil
         }
@@ -50,7 +50,7 @@ struct RTMPSharedObjectEvent {
         }
     }
 
-    func serialize(_ serializer:inout AMFSerializer) {
+    internal func serialize(_ serializer:inout AMFSerializer) {
         serializer.writeUInt8(type.rawValue)
         guard let name:String = name else {
             serializer.writeUInt32(0)
@@ -69,9 +69,9 @@ struct RTMPSharedObjectEvent {
     }
 }
 
-// MARK: CustomStringConvertible
 extension RTMPSharedObjectEvent: CustomStringConvertible {
-    var description:String {
+    // MARK: CustomStringConvertible
+    internal var description:String {
         return Mirror(reflecting: self).description
     }
 }
@@ -83,21 +83,21 @@ extension RTMPSharedObjectEvent: CustomStringConvertible {
 open class RTMPSharedObject: EventDispatcher {
 
     static fileprivate var remoteSharedObjects:[String: RTMPSharedObject] = [:]
-    static open func getRemote(_ name: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
-        let key:String = remotePath + "/" + name + "?persistence=" + persistence.description
+    static open func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
+        let key:String = remotePath + "/" + withName + "?persistence=" + persistence.description
         objc_sync_enter(remoteSharedObjects)
         if (remoteSharedObjects[key] == nil) {
-            remoteSharedObjects[key] = RTMPSharedObject(name: name, path: remotePath, persistence: persistence)
+            remoteSharedObjects[key] = RTMPSharedObject(name: withName, path: remotePath, persistence: persistence)
         }
         objc_sync_exit(remoteSharedObjects)
         return remoteSharedObjects[key]!
     }
 
-    var name:String
-    var path:String
-    var timestamp:TimeInterval = 0
-    var persistence:Bool
-    var currentVersion:UInt32 = 0
+    internal var name:String
+    internal var path:String
+    internal var timestamp:TimeInterval = 0
+    internal var persistence:Bool
+    internal var currentVersion:UInt32 = 0
 
     open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     open fileprivate(set) var data:[String: Any?] = [:]
@@ -119,7 +119,7 @@ open class RTMPSharedObject: EventDispatcher {
 
     fileprivate var rtmpConnection:RTMPConnection? = nil
 
-    init(name:String, path:String, persistence:Bool) {
+    internal init(name:String, path:String, persistence:Bool) {
         self.name = name
         self.path = path
         self.persistence = persistence
@@ -141,7 +141,7 @@ open class RTMPSharedObject: EventDispatcher {
             close()
         }
         self.rtmpConnection = rtmpConnection
-        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
+        rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             timestamp = rtmpConnection.socket.timestamp
             rtmpConnection.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
@@ -155,12 +155,12 @@ open class RTMPSharedObject: EventDispatcher {
 
     open func close() {
         data.removeAll(keepingCapacity: false)
-        rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
+        rtmpConnection?.removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
         rtmpConnection = nil
     }
 
-    final func onMessage(_ message:RTMPSharedObjectMessage) {
+    final internal func on(message:RTMPSharedObjectMessage) {
         currentVersion = message.currentVersion
         var changeList:[[String: Any?]] = []
         for event in message.events {
@@ -192,10 +192,10 @@ open class RTMPSharedObject: EventDispatcher {
             }
             changeList.append(change)
         }
-        dispatchEventWith(Event.SYNC, bubbles: false, data: changeList)
+        dispatch(type: Event.SYNC, bubbles: false, data: changeList)
     }
 
-    func createChunk(_ events:[RTMPSharedObjectEvent]) -> RTMPChunk {
+    internal func createChunk(_ events:[RTMPSharedObjectEvent]) -> RTMPChunk {
         let now:Date = Date()
         let timestamp:TimeInterval = now.timeIntervalSince1970 - self.timestamp
         self.timestamp = now.timeIntervalSince1970
@@ -204,7 +204,7 @@ open class RTMPSharedObject: EventDispatcher {
         }
         return RTMPChunk(
             type: succeeded ? .one : .zero,
-            streamId: RTMPChunk.command,
+            streamId: RTMPChunk.StreamID.command.rawValue,
             message: RTMPSharedObjectMessage(
                 timestamp: UInt32(timestamp * 1000),
                 objectEncoding: objectEncoding,
@@ -216,11 +216,11 @@ open class RTMPSharedObject: EventDispatcher {
         )
     }
 
-    func rtmpStatusHandler(_ notification:Notification) {
+    internal func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String {
             switch code {
-            case RTMPConnection.Code.ConnectSuccess.rawValue:
+            case RTMPConnection.Code.connectSuccess.rawValue:
                 timestamp = rtmpConnection!.socket.timestamp
                 rtmpConnection!.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
             default:
