@@ -50,7 +50,7 @@ Real Time Messaging Protocol (RTMP).
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream:RTMPStream = RTMPStream(rtmpConnection: rtmpConnection)
 rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
-rtmpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+rtmpStream.attachCamera(DeviceUtil.deviceWithPosition(.Back))
 
 var lfView:LFView = LFView(frame: view.bounds)
 lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -118,7 +118,7 @@ HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You
 ```swift
 var httpStream:HTTPStream = HTTPStream()
 httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
-httpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
+httpStream.attachAudio(DeviceUtil.defaultDeviceWithMediaType(AVMediaTypeAudio))
 httpStream.publish("hello")
 
 var lfView:LFView = LFView(frame: view.bounds)
