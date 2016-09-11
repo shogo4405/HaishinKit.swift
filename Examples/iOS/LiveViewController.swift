@@ -98,7 +98,7 @@ final class LiveViewController: UIViewController {
             UIBarButtonItem(title: "Camera", style: .plain, target: self, action: #selector(LiveViewController.rotateCamera(_:)))
         ]
 
-        rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+        rtmpStream = RTMPStream(connection: rtmpConnection)
         rtmpStream.syncOrientation = true
         
         rtmpStream.attach(audio: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))

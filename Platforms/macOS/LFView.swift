@@ -4,23 +4,20 @@ import AVFoundation
 open class LFView: NSView {
     public static var defaultBackgroundColor:NSColor = NSColor.black
 
-    internal var position:AVCaptureDevicePosition = .front {
-        didSet {
-            /*
-            let when:dispatch_time_t  = DispatchTime.now(dispatch_time_t(DISPATCH_TIME_NOW), Int64(0.1 * Double(NSEC_PER_SEC)))
-            dispatch_after(when, DispatchQueue.main) {
-                self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
-            }
-            */
-        }
-    }
-    internal var orientation:AVCaptureVideoOrientation = .portrait
-
     public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
             layer?.setValue(videoGravity, forKey: "videoGravity")
         }
     }
+
+    internal var position:AVCaptureDevicePosition = .front {
+        didSet {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
+            }
+        }
+    }
+    internal var orientation:AVCaptureVideoOrientation = .portrait
 
     private weak var currentStream:NetStream? {
         didSet {

@@ -69,7 +69,7 @@ class TSReader {
             packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(bytes: packet.payload)
             return
         }
-        packetizedElementaryStreams[packet.PID]?.append(packet.payload)
+        let _:Int? = packetizedElementaryStreams[packet.PID]?.append(packet.payload)
     }
 
     internal func close() {

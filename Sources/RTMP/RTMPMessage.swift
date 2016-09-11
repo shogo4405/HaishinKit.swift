@@ -422,16 +422,12 @@ final class RTMPDataMessage: RTMPMessage {
         super.init(type: objectEncoding == 0x00 ? .amf0Data : .amf3Data)
     }
 
-    internal init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?]) {
+    internal init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?] = []) {
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
         super.init(type: objectEncoding == 0x00 ? .amf0Data : .amf3Data)
         self.streamId = streamId
-    }
-
-    convenience internal init(streamId:UInt32, objectEncoding:UInt8, handlerName:String) {
-        self.init(streamId: streamId, objectEncoding: objectEncoding, handlerName: handlerName, arguments: [])
     }
 
     override func execute(_ connection: RTMPConnection) {

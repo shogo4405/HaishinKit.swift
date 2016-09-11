@@ -21,7 +21,7 @@ final class AudioIOComponent: IOComponent {
         }
     }
 
-    fileprivate var _output:AVCaptureAudioDataOutput? = nil
+    private var _output:AVCaptureAudioDataOutput? = nil
     internal var output:AVCaptureAudioDataOutput! {
         get {
             if (_output == nil) {

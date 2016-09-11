@@ -1,6 +1,7 @@
 import Foundation
 
 final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
+    internal static let contentType:String = "application/x-fcs"
 
     internal var timeout:Int64 = 0
     internal var timestamp:TimeInterval = 0
@@ -41,11 +42,15 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
-    private var events:[Event] = []
+    private var mutex:Mutex = Mutex()
     private var index:Int64 = 0
+    private var events:[Event] = []
     private var baseURL:URL!
     private var session:URLSession!
+    private var c2packet:[UInt8] = []
+    private var isPending:Bool = false
     private var connectionID:String!
+    private var outputBuffer:[UInt8] = []
 
     override internal init() {
         super.init()
@@ -53,14 +58,15 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
     internal func connect(withName:String, port:Int) {
         let config:URLSessionConfiguration = URLSessionConfiguration.default
+        config.httpShouldUsePipelining = true
         config.httpAdditionalHeaders = [
-            "Content-Type": "application/x-fcs",
+            "Content-Type": RTMPTSocket.contentType,
             "User-Agent": "Shockwave Flash",
         ]
         let scheme:String = securityLevel == .none ? "http" : "https"
         session = URLSession(configuration: config)
         baseURL = URL(string: "\(scheme)://\(withName):\(port)")!
-        doRequest(pathComonent: "/fcs/ident2", data: Data([0x00]), completionHandler:didIdent2)
+        doRequest("/fcs/ident2", Data([0x00]), didIdent2)
     }
 
     @discardableResult
@@ -70,30 +76,73 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         for chunk in chunks {
             bytes.append(contentsOf: chunk)
         }
-        doOutput(bytes: bytes)
+        do {
+            try mutex.lock()
+            outputBuffer.append(contentsOf: bytes)
+            if (!isPending) {
+                isPending = true
+                doOutput(bytes: outputBuffer)
+                outputBuffer.removeAll()
+            }
+            mutex.unlock()
+        } catch {
+            logger.warning("")
+        }
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(chunk)")
+        }
         return bytes.count
     }
 
     internal func close(isDisconnected:Bool) {
+        deinitConnection(isDisconnected: isDisconnected)
     }
 
     internal func deinitConnection(isDisconnected:Bool) {
+        if (isDisconnected) {
+            let data:ASObject = (readyState == .handshakeDone) ?
+                RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
+            events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
+        }
+        guard let connectionID:String = connectionID else {
+            return
+        }
+        doRequest("/close/\(connectionID)", Data(), didClose)
     }
 
-    internal func listen(data:Data?, response:URLResponse?, error:Error?) {
+    private func listen(data:Data?, response:URLResponse?, error:Error?) {
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(data):\(response):\(error)")
+        }
+
         if let error:Error = error {
             logger.error("\(error)")
             return
         }
 
-        guard let data:Data = data else {
+        do {
+            try mutex.lock()
+            if (outputBuffer.isEmpty) {
+                isPending = false
+            } else {
+                doOutput(bytes: outputBuffer)
+                outputBuffer.removeAll()
+            }
+            mutex.unlock()
+        } catch {
+            logger.warning()
+        }
+
+        guard
+            let response:HTTPURLResponse = response as? HTTPURLResponse,
+            let contentType:String = response.allHeaderFields["Content-Type"] as? String,
+            let data:Data = data, contentType == RTMPTSocket.contentType else {
             return
         }
 
-        logger.info("\(data.bytes):\(response):\(error)")
-
+        var idel:UInt8 = 0
         var buffer:[UInt8] = data.bytes
-        buffer.remove(at: 0)
+        idel = buffer.remove(at: 0)
         inputBuffer.append(contentsOf: buffer)
 
         switch readyState {
@@ -105,7 +154,7 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
                 .writeBytes(Array(inputBuffer[1...4]))
                 .writeInt32(Int32(Date().timeIntervalSince1970 - timestamp))
                 .writeBytes(Array(inputBuffer[9...RTMPSocket.sigSize]))
-            doOutput(bytes: c2packet.bytes)
+            self.c2packet = c2packet.bytes
             inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
             readyState = .ackSent
             fallthrough
@@ -127,16 +176,17 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
-    internal func didIdent2(data:Data?, response:URLResponse?, error:Error?) {
-        logger.info("\(data?.bytes):\(response):\(error)")
+    private func didIdent2(data:Data?, response:URLResponse?, error:Error?) {
         if let error:Error = error {
             logger.error("\(error)")
         }
-        doRequest(pathComonent: "/open/1", data: Data([0x00]), completionHandler: didOpen)
+        doRequest("/open/1", Data([0x00]), didOpen)
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(data?.bytes):\(response)")
+        }
     }
 
-    internal func didOpen(data:Data?, response:URLResponse?, error:Error?) {
-        logger.info("\(data?.bytes):\(response):\(error)")
+    private func didOpen(data:Data?, response:URLResponse?, error:Error?) {
         if let error:Error = error {
             logger.error("\(error)")
         }
@@ -144,37 +194,63 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
             return
         }
         connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
-        doRequest(pathComonent: "/idel/\(connectionID!)/0", data: Data([0x00]), completionHandler: didIdel0)
+        doRequest("/idel/\(connectionID!)/0", Data([0x00]), didIdel0)
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(data.bytes):\(response)")
+        }
     }
 
-    internal func didIdel0(data:Data?, response:URLResponse?, error:Error?) {
-        logger.info("\(data?.bytes):\(response):\(error)")
+    private func didIdel0(data:Data?, response:URLResponse?, error:Error?) {
+        if let error:Error = error {
+            logger.error("\(error)")
+        }
         connected = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: idel)
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(data?.bytes):\(response)")
+        }
+    }
+
+    private func didClose(data:Data?, response:URLResponse?, error:Error?) {
+        if let error:Error = error {
+            logger.error("\(error)")
+        }
+        connected = false
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(data?.bytes):\(response)")
+        }
+    }
+
+    private func didIdel(data:Data?, response:URLResponse?, error:Error?) {
+        listen(data: data, response: response, error: error)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: idel)
     }
 
     @discardableResult
     final private func doOutput(bytes:[UInt8]) -> Int {
-        guard let connectionID:String = connectionID else {
+        guard let connectionID:String = connectionID, connected else {
             return 0
         }
-        index += 1
-        doRequest(pathComonent: "/send/\(connectionID)/\(index)", data: Data(bytes), completionHandler: listen)
+        let index:Int64 = OSAtomicIncrement64(&self.index)
+        doRequest("/send/\(connectionID)/\(index)", Data(c2packet + bytes), listen)
+        c2packet.removeAll()
         return bytes.count
     }
 
     private func idel() {
-        guard let connectionID:String = connectionID else {
+        guard let connectionID:String = connectionID, connected else {
             return
         }
-        index += 1
-        doRequest(pathComonent: "/idel/\(connectionID)/\(index)", data: Data([0x00]), completionHandler: listen)
+        let index:Int64 = OSAtomicIncrement64(&self.index)
+        doRequest("/idel/\(connectionID)/\(index)", Data([0x00]), didIdel)
     }
 
-    private func doRequest(pathComonent: String, data:Data, completionHandler: ((Data?, URLResponse?, Error?) -> Void)) {
+    private func doRequest(_ pathComonent: String,_ data:Data,_ completionHandler: ((Data?, URLResponse?, Error?) -> Void)) {
         var request:URLRequest = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
         request.httpMethod = "POST"
-        let task:URLSessionUploadTask = session.uploadTask(with: request, from: data, completionHandler: completionHandler)
-        task.resume()
-        logger.verbose("\(request)")
+        session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
+        if (logger.isEnabledForLogLevel(.verbose)) {
+            logger.verbose("\(request)")
+        }
     }
 }

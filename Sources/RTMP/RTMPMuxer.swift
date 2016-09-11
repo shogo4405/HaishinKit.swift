@@ -58,8 +58,8 @@ extension RTMPMuxer: AudioEncoderDelegate {
 extension RTMPMuxer: VideoEncoderDelegate {
     // MARK: VideoEncoderDelegate
     internal func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
-        guard let
-            formatDescription:CMFormatDescription = formatDescription,
+        guard
+            let formatDescription:CMFormatDescription = formatDescription,
             let avcC:Data = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
@@ -101,6 +101,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         data[2..<5] = cto.bigEndian.bytes[1..<4]
         buffer.append(&data, length: data.count)
         buffer.append(dataPointer!, length: totalLength)
+        
         delegate?.sampleOutput(self, video: buffer as Data, timestamp: delta)
         videoTimestamp = dts
     }

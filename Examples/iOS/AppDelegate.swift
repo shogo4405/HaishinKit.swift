@@ -18,8 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return controller
     }()
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: Any]?) -> Bool {
-
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         XCGLogger.defaultInstance().outputLogLevel = .info
         XCGLogger.defaultInstance().xcodeColorsEnabled = true
 

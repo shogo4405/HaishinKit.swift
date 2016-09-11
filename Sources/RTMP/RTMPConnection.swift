@@ -28,7 +28,7 @@ open class Responder: NSObject {
  flash.net.NetConnection for Swift
  */
 open class RTMPConnection: EventDispatcher {
-    static public let supportedProtocols:[String] = ["rtmp", "rtmps"]
+    static public let supportedProtocols:[String] = ["rtmp", "rtmps", "rtmpt"]
     static public let defaultPort:Int = 1935
     static public let defaultFlashVer:String = "FMLE/3.0 (compatible; FMSc/1.0)"
     static public let defaultChunkSizeS:Int = 1024 * 8
@@ -180,7 +180,7 @@ open class RTMPConnection: EventDispatcher {
     /// The statistics of outgoing bytes per second.
     dynamic open fileprivate(set) var currentBytesOutPerSecond:Int32 = 0
 
-    var socket:RTMPSocketCompatible = RTMPSocket()
+    var socket:RTMPSocketCompatible!
     var streams:[UInt32: RTMPStream] = [:]
     var bandWidth:UInt32 = 0
     var streamsmap:[UInt16: UInt32] = [:]
@@ -206,7 +206,6 @@ open class RTMPConnection: EventDispatcher {
 
     override public init() {
         super.init()
-        socket.delegate = self
         addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
@@ -215,7 +214,7 @@ open class RTMPConnection: EventDispatcher {
         removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
     }
 
-    open func call(_ commandName:String, responder:Responder?, arguments:Any?...) {
+    open func call(commandName:String, responder:Responder?, arguments:Any?...) {
         guard connected else {
             return
         }
@@ -246,6 +245,8 @@ open class RTMPConnection: EventDispatcher {
         self.uri = uri
         self.arguments = arguments
         timer = Timer(timeInterval: 1.0, target: self, selector: #selector(RTMPConnection.on(timer:)), userInfo: nil, repeats: true)
+        socket = uri.scheme == "rtmpt" ? RTMPTSocket() : RTMPSocket()
+        socket.delegate = self
         socket.securityLevel = uri.scheme == "rtmps" ? .negotiatedSSL : .none
         socket.connect(withName: uri.host!, port: (uri as NSURL).port == nil ? RTMPConnection.defaultPort : (uri as NSURL).port!.intValue)
     }
@@ -278,7 +279,7 @@ open class RTMPConnection: EventDispatcher {
                 stream.readyState = .open
             }
         })
-        call("createStream", responder: responder)
+        call(commandName: "createStream", responder: responder)
     }
 
     internal func rtmpStatusHandler(_ notification: Notification) {

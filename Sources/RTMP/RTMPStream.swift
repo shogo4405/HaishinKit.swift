@@ -255,16 +255,15 @@ open class RTMPStream: NetStream {
     internal var audioTimestamp:Double = 0
     internal var videoTimestamp:Double = 0
     internal fileprivate(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
-
-    fileprivate var muxer:RTMPMuxer = RTMPMuxer()
+    internal fileprivate(set) var muxer:RTMPMuxer = RTMPMuxer()
     fileprivate var frameCount:UInt8 = 0
     fileprivate var chunkTypes:[FLVTag.TagType:Bool] = [:]
     fileprivate var dispatcher:IEventDispatcher!
     fileprivate var howToPublish:RTMPStream.HowToPublish = .live
     fileprivate var rtmpConnection:RTMPConnection
 
-    public init(rtmpConnection: RTMPConnection) {
-        self.rtmpConnection = rtmpConnection
+    public init(connection: RTMPConnection) {
+        self.rtmpConnection = connection
         super.init()
         self.dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPStream.rtmpStatusHandler(_:)), observer: self)
@@ -345,7 +344,7 @@ open class RTMPStream: NetStream {
         }
     }
 
-    open func seek(_ offset:Double) {
+    open func seek(withOffset:Double) {
         lockQueue.async {
             guard self.readyState == .playing else {
                 return
@@ -356,7 +355,7 @@ open class RTMPStream: NetStream {
                 objectEncoding: self.objectEncoding,
                 commandName: "seek",
                 commandObject: nil,
-                arguments: [offset]
+                arguments: [withOffset]
             )))
         }
     }
@@ -519,14 +518,14 @@ extension RTMPStream {
         guard let name:String = info.resourceName , rtmpConnection.flashVer.contains("FMLE/") else {
             return
         }
-        rtmpConnection.call("FCPublish", responder: nil, arguments: name)
+        rtmpConnection.call(commandName: "FCPublish", responder: nil, arguments: name)
     }
 
     func FCUnpublish() {
         guard let name:String = info.resourceName , rtmpConnection.flashVer.contains("FMLE/") else {
             return
         }
-        rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
+        rtmpConnection.call(commandName: "FCUnpublish", responder: nil, arguments: name)
     }
 }
 

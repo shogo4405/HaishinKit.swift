@@ -3,7 +3,7 @@ import Cocoa
 import AVFoundation
 
 final class LiveViewController: NSViewController {
-    static let defaultURL:String = "rtmp://test:test@192.168.179.4:1935/live"
+    static let defaultURL:String = "rtmpt://test:test@192.168.179.4:1935/live"
 
     var enabledSharedObject:Bool = false
     var rtmpConnection:RTMPConnection = RTMPConnection()
@@ -84,7 +84,7 @@ final class LiveViewController: NSViewController {
         super.viewDidLoad()
         audioPopUpButton.target = self
         cameraPopUpButton.target = self
-        rtmpStream = RTMPStream(rtmpConnection: rtmpConnection)
+        rtmpStream = RTMPStream(connection: rtmpConnection)
         rtmpStream.attach(
             audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
         )
