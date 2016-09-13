@@ -124,9 +124,9 @@ final class LiveViewController: NSViewController {
             switch segmentedControl.selectedSegment {
             case 0:
                 rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-                rtmpConnection.connect(withCommand: urlField.stringValue)
+                rtmpConnection.connect(urlField.stringValue)
             case 1:
-                httpStream.publish(withName: "hello")
+                httpStream.publish("hello")
                 httpService.add(stream: httpStream)
                 httpService.startRunning()
             default:
@@ -144,7 +144,7 @@ final class LiveViewController: NSViewController {
         case 1:
             httpService.remove(stream: httpStream)
             httpService.stopRunning()
-            httpStream.publish(withName: nil)
+            httpStream.publish(nil)
         default:
             break
         }
@@ -225,7 +225,7 @@ final class LiveViewController: NSViewController {
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish(withName: "live")
+                rtmpStream!.publish("live")
                 if (enabledSharedObject) {
                     sharedObject = RTMPSharedObject.getRemote(withName: "test", remotePath: urlField.stringValue, persistence: false)
                     sharedObject.connect(rtmpConnection)

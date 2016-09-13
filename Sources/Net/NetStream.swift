@@ -11,8 +11,8 @@ protocol NetStreamDrawable: class {
 
 // MARK: -
 open class NetStream: NSObject {
-    internal var mixer:AVMixer = AVMixer()
-    internal let lockQueue:DispatchQueue = DispatchQueue(
+    var mixer:AVMixer = AVMixer()
+    let lockQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.Stream.lock", attributes: []
     )
 

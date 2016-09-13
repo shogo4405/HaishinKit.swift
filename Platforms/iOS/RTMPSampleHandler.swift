@@ -3,25 +3,9 @@ import Foundation
 
 @available(iOS 10.0, *)
 public class RTMPBroadcaster: RTMPConnection {
-    internal var stream:RTMPStream?
-    internal var formatDescriptions:[RPSampleBufferType:CMFormatDescription] = [:]
+    private var stream:RTMPStream?
 
-    override init() {
-        super.init()
-    }
-
-    override public func connect(withCommand: String, arguments: Any?...) {
-        addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPBroadcaster.on(status:)), observer: self)
-        super.connect(withCommand: withCommand, arguments: arguments)
-    }
-
-    override public func close() {
-        super.close()
-        removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPBroadcaster.on(status:)), observer: self)
-        formatDescriptions.removeAll()
-    }
-
-    internal func process(sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
+    func process(sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         guard let stream:RTMPStream = stream, stream.readyState == .publishing else {
             return
         }
@@ -29,13 +13,14 @@ public class RTMPBroadcaster: RTMPConnection {
         case .video:
             stream.mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
         case .audioApp:
-            stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
-        default:
             break
+        case .audioMic:
+            stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
         }
     }
 
-    @objc private func on(status:Notification) {
+    override func on(status:Notification) {
+        super.on(status: status)
         let e:Event = Event.from(status)
         guard let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String else {
             return
@@ -43,7 +28,7 @@ public class RTMPBroadcaster: RTMPConnection {
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             stream = RTMPStream(connection: self)
-            stream?.publish(withName: "live")
+            stream?.publish("live")
         default:
             break
         }
@@ -61,7 +46,7 @@ open class RTMPSampleHandler: RPBroadcastSampleHandler {
             return
         }
         RTMPSampleHandler.broadcaster = RTMPBroadcaster()
-        RTMPSampleHandler.broadcaster?.connect(withCommand: endpointURL)
+        RTMPSampleHandler.broadcaster?.connect(endpointURL, arguments: nil)
     }
 
     override open func broadcastPaused() {

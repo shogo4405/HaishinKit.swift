@@ -7,7 +7,7 @@ enum HTTPVersion: String {
 
 extension HTTPVersion: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         return rawValue
     }
 }
@@ -67,7 +67,7 @@ enum HTTPStatusCode: Int {
     case gatewayTimeOut               = 504
     case httpVersionNotSupported      = 505
 
-    internal var message:String {
+    var message:String {
         switch self {
         case .continue:
             return "Continue"
@@ -155,7 +155,7 @@ enum HTTPStatusCode: Int {
 
 extension HTTPStatusCode: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         return "\(rawValue) \(message)"
     }
 }
@@ -166,8 +166,8 @@ open class HTTPService: NetService {
     static open let defaultPort:Int32 = 8080
     static open let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
 
-    internal var document:String = HTTPService.defaultDocument
-    internal fileprivate(set) var streams:[HTTPStream] = []
+    var document:String = HTTPService.defaultDocument
+    fileprivate(set) var streams:[HTTPStream] = []
 
     open func add(stream:HTTPStream) {
         for i in 0..<streams.count {
@@ -187,7 +187,7 @@ open class HTTPService: NetService {
         }
     }
 
-    internal func get(_ request:HTTPRequest, client:NetClient) {
+    func get(_ request:HTTPRequest, client:NetClient) {
         logger.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
         response.headerFields["Connection"] = "close"
@@ -228,7 +228,7 @@ open class HTTPService: NetService {
         }
     }
 
-    internal func client(inputBuffer client:NetClient) {
+    func client(inputBuffer client:NetClient) {
         guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
             disconnect(client)
             return

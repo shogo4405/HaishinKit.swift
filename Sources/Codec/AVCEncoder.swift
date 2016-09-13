@@ -266,6 +266,9 @@ final class AVCEncoder: NSObject {
     }
 
 #if os(iOS)
+    func applicationWillEnterForeground(_ notification:Notification) {
+        invalidateSession = true
+    }
     func didAudioSessionInterruption(_ notification:Notification) {
         guard
             let userInfo:[AnyHashable: Any] = notification.userInfo,
@@ -296,6 +299,12 @@ extension AVCEncoder: Runnable {
                 name: NSNotification.Name.AVAudioSessionInterruption,
                 object: nil
             )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(AVCEncoder.applicationWillEnterForeground(_:)),
+                name: NSNotification.Name.UIApplicationWillEnterForeground,
+                object: nil
+            )
 #endif
         }
     }
@@ -305,11 +314,7 @@ extension AVCEncoder: Runnable {
             self.session = nil
             self.formatDescription = nil
 #if os(iOS)
-            NotificationCenter.default.removeObserver(
-                self,
-                name: NSNotification.Name.AVAudioSessionInterruption,
-                object: nil
-            )
+            NotificationCenter.default.removeObserver(self)
 #endif
             self.running = false
         }

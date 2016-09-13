@@ -6,21 +6,21 @@ protocol SessionDescriptionConvertible {
 
 // MARK: -
 struct SessionDescription: SessionDescriptionConvertible {
-    internal var protocolVersionNumber:String = "0"
-    internal var originatorAndSessionIdentifier:String = ""
-    internal var sessionName:String = ""
-    internal var URIOfDescription:String = ""
-    internal var emailAddressWithOptionalNameOfContacts:[String] = []
-    internal var phoneNumberWithOptionalNameOfContacts:[String] = []
-    internal var connectionInformation:String = ""
-    internal var bandwidthInformation:[String] = []
-    internal var sessionAttributes:[String:String] = [:]
-    internal var time:[TimeDescription] = []
-    internal var medias:[MediaDescription] = []
+    var protocolVersionNumber:String = "0"
+    var originatorAndSessionIdentifier:String = ""
+    var sessionName:String = ""
+    var URIOfDescription:String = ""
+    var emailAddressWithOptionalNameOfContacts:[String] = []
+    var phoneNumberWithOptionalNameOfContacts:[String] = []
+    var connectionInformation:String = ""
+    var bandwidthInformation:[String] = []
+    var sessionAttributes:[String:String] = [:]
+    var time:[TimeDescription] = []
+    var medias:[MediaDescription] = []
 
     fileprivate var media:MediaDescription?
 
-    mutating internal func append(line:String) {
+    mutating func append(line:String) {
         let character:String = line.substring(to: line.characters.index(line.startIndex, offsetBy: 1))
         if (media != nil && character != "m") {
             media?.append(line: line)
@@ -72,14 +72,14 @@ extension SessionDescription: CustomStringConvertible {
 
 // MARK: -
 struct TimeDescription: SessionDescriptionConvertible {
-    internal var timeTheSessionIsActive:String = ""
-    internal var repeatTimes:[String] = []
+    var timeTheSessionIsActive:String = ""
+    var repeatTimes:[String] = []
 
-    internal init(timeTheSessionIsActive:String) {
+    init(timeTheSessionIsActive:String) {
         self.timeTheSessionIsActive = timeTheSessionIsActive
     }
 
-    mutating internal func append(line:String) {
+    mutating func append(line:String) {
         let value:String = line.substring(from: line.characters.index(line.startIndex, offsetBy: 2))
         switch line.substring(to: line.characters.index(line.startIndex, offsetBy: 1)) {
         case "r":
@@ -92,18 +92,18 @@ struct TimeDescription: SessionDescriptionConvertible {
 
 // MARK: -
 struct MediaDescription: SessionDescriptionConvertible {
-    internal var mediaNameAndTransportAddress:String = ""
-    internal var mediaTitleInformationField:[String] = []
-    internal var connectionInformation:[String] = []
-    internal var bandwidthInformation:[String] = []
-    internal var encryptionKey:[String] = []
-    internal var mediaAttributes:[String:String] = [:]
+    var mediaNameAndTransportAddress:String = ""
+    var mediaTitleInformationField:[String] = []
+    var connectionInformation:[String] = []
+    var bandwidthInformation:[String] = []
+    var encryptionKey:[String] = []
+    var mediaAttributes:[String:String] = [:]
 
-    internal init(mediaNameAndTransportAddress: String) {
+    init(mediaNameAndTransportAddress: String) {
         self.mediaNameAndTransportAddress = mediaNameAndTransportAddress
     }
 
-    mutating internal func append(line:String) {
+    mutating func append(line:String) {
         let value:String = line.substring(from: line.characters.index(line.startIndex, offsetBy: 2))
         switch line.substring(to: line.characters.index(line.startIndex, offsetBy: 1)) {
         case "i":

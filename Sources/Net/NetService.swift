@@ -2,24 +2,24 @@ import Foundation
 
 open class NetService: NSObject {
 
-    internal var recordData:Data? {
+    var recordData:Data? {
         return nil
     }
 
-    internal let lockQueue:DispatchQueue = DispatchQueue(
+    let lockQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.NetService.lock", attributes: []
     )
-    internal var networkQueue:DispatchQueue = DispatchQueue(
+    var networkQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.NetService.network", attributes: []
     )
 
-    internal fileprivate(set) var domain:String
-    internal fileprivate(set) var name:String
-    internal fileprivate(set) var port:Int32
-    internal fileprivate(set) var type:String
-    internal fileprivate(set) var running:Bool = false
-    internal fileprivate(set) var clients:[NetClient] = []
-    internal fileprivate(set) var service:Foundation.NetService!
+    fileprivate(set) var domain:String
+    fileprivate(set) var name:String
+    fileprivate(set) var port:Int32
+    fileprivate(set) var type:String
+    fileprivate(set) var running:Bool = false
+    fileprivate(set) var clients:[NetClient] = []
+    fileprivate(set) var service:Foundation.NetService!
     fileprivate var runloop:RunLoop!
 
     public init(domain:String, type:String, name:String, port:Int32) {
@@ -29,7 +29,7 @@ open class NetService: NSObject {
         self.type = type
     }
 
-    internal func disconnect(_ client:NetClient) {
+    func disconnect(_ client:NetClient) {
         guard let index:Int = clients.index(of: client) else {
             return
         }
@@ -38,13 +38,13 @@ open class NetService: NSObject {
         client.close(isDisconnected: true)
     }
 
-    internal func willStartRunning() {
+    func willStartRunning() {
         networkQueue.async {
             self.initService()
         }
     }
 
-    internal func willStopRunning() {
+    func willStopRunning() {
         if let runloop:RunLoop = runloop {
             service.remove(from: runloop, forMode: RunLoopMode.defaultRunLoopMode)
             CFRunLoopStop(runloop.getCFRunLoop())

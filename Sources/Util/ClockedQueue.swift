@@ -7,10 +7,10 @@ protocol ClockedQueueDelegate:class {
 
 // MARK: -
 class ClockedQueue {
-    internal var bufferTime:TimeInterval = 0.1 // sec
-    internal fileprivate(set) var running:Bool = false
-    internal fileprivate(set) var duration:TimeInterval = 0
-    internal weak var delegate:ClockedQueueDelegate?
+    var bufferTime:TimeInterval = 0.1 // sec
+    fileprivate(set) var running:Bool = false
+    fileprivate(set) var duration:TimeInterval = 0
+    weak var delegate:ClockedQueueDelegate?
 
     fileprivate var date:Date = Date()
     fileprivate var buffers:[CMSampleBuffer] = []
@@ -29,7 +29,7 @@ class ClockedQueue {
         }
     }
 
-    internal func enqueue(_ buffer:CMSampleBuffer) {
+    func enqueue(_ buffer:CMSampleBuffer) {
         do {
             try mutex.lock()
             duration += buffer.duration.seconds
@@ -45,7 +45,7 @@ class ClockedQueue {
         }
     }
 
-    @objc internal func on(timer:Timer) {
+    @objc func on(timer:Timer) {
         guard let buffer:CMSampleBuffer = buffers.first , bufferTime <= self.duration else {
             return
         }

@@ -10,14 +10,14 @@ open class LFView: NSView {
         }
     }
 
-    internal var position:AVCaptureDevicePosition = .front {
+    var position:AVCaptureDevicePosition = .front {
         didSet {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
             }
         }
     }
-    internal var orientation:AVCaptureVideoOrientation = .portrait
+    var orientation:AVCaptureVideoOrientation = .portrait
 
     private weak var currentStream:NetStream? {
         didSet {
@@ -53,8 +53,8 @@ open class LFView: NSView {
 
 extension LFView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    internal func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
+    func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
     }
-    internal func draw(image:CIImage) {
+    func draw(image:CIImage) {
     }
 }

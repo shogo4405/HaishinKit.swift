@@ -4,16 +4,16 @@ class NetSocket: NSObject {
     static let defaultTimeout:Int64 = 15 // sec
     static let defaultWindowSizeC:Int = 1024 * 1
 
-    internal var timeout:Int64 = NetSocket.defaultTimeout
-    internal var connected:Bool = false
-    internal var inputBuffer:[UInt8] = []
-    internal var inputStream:InputStream?
-    internal var windowSizeC:Int = NetSocket.defaultWindowSizeC
-    internal var outputStream:OutputStream?
-    internal var networkQueue:DispatchQueue = DispatchQueue(
+    var timeout:Int64 = NetSocket.defaultTimeout
+    var connected:Bool = false
+    var inputBuffer:[UInt8] = []
+    var inputStream:InputStream?
+    var windowSizeC:Int = NetSocket.defaultWindowSizeC
+    var outputStream:OutputStream?
+    var networkQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.NetSocket.network", attributes: []
     )
-    internal var securityLevel:StreamSocketSecurityLevel = .none
+    var securityLevel:StreamSocketSecurityLevel = .none
     private(set) var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
 
@@ -24,7 +24,7 @@ class NetSocket: NSObject {
     fileprivate var timeoutHandler:(() -> Void)?
 
     @discardableResult
-    final internal func doOutput(data:Data) -> Int {
+    final func doOutput(data:Data) -> Int {
         lockQueue.async {
             self.doOutputProcess((data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), maxLength: data.count)
         }
@@ -32,14 +32,14 @@ class NetSocket: NSObject {
     }
 
     @discardableResult
-    final internal func doOutput(bytes:[UInt8]) -> Int {
+    final func doOutput(bytes:[UInt8]) -> Int {
         lockQueue.async {
             self.doOutputProcess(UnsafePointer<UInt8>(bytes), maxLength: bytes.count)
         }
         return bytes.count
     }
 
-    final internal func doOutputFromURL(_ url:URL, length:Int) {
+    final func doOutputFromURL(_ url:URL, length:Int) {
         lockQueue.async {
             do {
                 let fileHandle:FileHandle = try FileHandle(forReadingFrom: url)
@@ -61,11 +61,11 @@ class NetSocket: NSObject {
         }
     }
 
-    final internal func doOutputProcess(_ data:Data) {
+    final func doOutputProcess(_ data:Data) {
         doOutputProcess((data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), maxLength: data.count)
     }
 
-    final internal func doOutputProcess(_ buffer:UnsafePointer<UInt8>, maxLength:Int) {
+    final func doOutputProcess(_ buffer:UnsafePointer<UInt8>, maxLength:Int) {
         guard let outputStream:OutputStream = outputStream else {
             return
         }
@@ -80,7 +80,7 @@ class NetSocket: NSObject {
         }
     }
 
-    internal func close(isDisconnected:Bool) {
+    func close(isDisconnected:Bool) {
         lockQueue.async {
             guard let runloop = self.runloop else {
                 return
@@ -92,10 +92,10 @@ class NetSocket: NSObject {
         }
     }
 
-    internal func listen() {
+    func listen() {
     }
 
-    internal func initConnection() {
+    func initConnection() {
         totalBytesIn = 0
         totalBytesOut = 0
         timeoutHandler = didTimeout
@@ -131,7 +131,7 @@ class NetSocket: NSObject {
         connected = false
     }
 
-    internal func deinitConnection(isDisconnected:Bool) {
+    func deinitConnection(isDisconnected:Bool) {
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)
         inputStream?.delegate = nil
@@ -142,7 +142,7 @@ class NetSocket: NSObject {
         outputStream = nil
     }
 
-    internal func didTimeout() {
+    func didTimeout() {
     }
 
     fileprivate func doInput() {
@@ -161,7 +161,7 @@ class NetSocket: NSObject {
 
 extension NetSocket: StreamDelegate {
     // MARK: StreamDelegate
-    internal func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
+    func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         if (logger.isEnabledForLogLevel(.debug)) {
             logger.debug("eventCode: \(eventCode)")
         }

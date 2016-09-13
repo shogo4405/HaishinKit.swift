@@ -56,18 +56,18 @@ final class RTMPChunk {
         }
     }
 
-    internal var size:Int = 0
-    internal var type:Type = .zero
-    internal var streamId:UInt16 = RTMPChunk.StreamID.command.rawValue
+    var size:Int = 0
+    var type:Type = .zero
+    var streamId:UInt16 = RTMPChunk.StreamID.command.rawValue
 
-    internal var ready:Bool {
+    var ready:Bool {
         guard let message:RTMPMessage = message else {
             return false
         }
         return message.length == message.payload.count
     }
 
-    internal var headerSize:Int {
+    var headerSize:Int {
         if (streamId <= 63) {
             return 1 + type.headerSize
         }
@@ -77,7 +77,7 @@ final class RTMPChunk {
         return 3 + type.headerSize
     }
 
-    internal var basicHeaderSize:Int {
+    var basicHeaderSize:Int {
         if (streamId <= 63) {
             return 1
         }
@@ -87,21 +87,21 @@ final class RTMPChunk {
         return 3
     }
 
-    internal fileprivate(set) var message:RTMPMessage?
-    internal fileprivate(set) var fragmented:Bool = false
+    fileprivate(set) var message:RTMPMessage?
+    fileprivate(set) var fragmented:Bool = false
     fileprivate var _bytes:[UInt8] = []
 
-    internal init(type:Type, streamId:UInt16, message:RTMPMessage) {
+    init(type:Type, streamId:UInt16, message:RTMPMessage) {
         self.type = type
         self.streamId = streamId
         self.message = message
     }
 
-    internal init(message:RTMPMessage) {
+    init(message:RTMPMessage) {
         self.message = message
     }
 
-    internal init?(bytes:[UInt8], size:Int) {
+    init?(bytes:[UInt8], size:Int) {
         if (bytes.isEmpty) {
             return nil
         }
@@ -113,7 +113,7 @@ final class RTMPChunk {
         self.bytes = bytes
     }
 
-    internal func append(_ bytes:[UInt8], size:Int) -> Int {
+    func append(_ bytes:[UInt8], size:Int) -> Int {
         fragmented = false
 
         guard let message:RTMPMessage = message else {
@@ -140,7 +140,7 @@ final class RTMPChunk {
         return length
     }
 
-    internal func append(_ bytes:[UInt8], message: RTMPMessage?) -> Int {
+    func append(_ bytes:[UInt8], message: RTMPMessage?) -> Int {
         guard let message:RTMPMessage = message else {
             return 0
         }
@@ -161,7 +161,7 @@ final class RTMPChunk {
         return headerSize + message.length
     }
 
-    internal func split(_ size:Int) -> [[UInt8]] {
+    func split(_ size:Int) -> [[UInt8]] {
         let bytes:[UInt8] = self.bytes
         message?.length = bytes.count
         guard let message:RTMPMessage = message, size < message.payload.count else {
@@ -182,14 +182,14 @@ final class RTMPChunk {
 
 extension RTMPChunk: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
 extension RTMPChunk: BytesConvertible {
     // MARK: BytesConvertible
-    internal var bytes:[UInt8] {
+    var bytes:[UInt8] {
         get {
             guard let message:RTMPMessage = message else {
                 return _bytes

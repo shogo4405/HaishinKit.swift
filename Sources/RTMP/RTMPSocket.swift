@@ -26,9 +26,9 @@ protocol RTMPSocketDelegate: IEventDispatcher {
 }
 
 // MARK: -
-final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
+final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
-    internal enum ReadyState: UInt8 {
+    enum ReadyState: UInt8 {
         case uninitialized = 0
         case versionSent   = 1
         case ackSent       = 2
@@ -37,20 +37,20 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
         case closed        = 5
     }
 
-    static internal let sigSize:Int = 1536
-    static internal let protocolVersion:UInt8 = 3
-    static internal let defaultBufferSize:Int = 1024
+    static let sigSize:Int = 1536
+    static let protocolVersion:UInt8 = 3
+    static let defaultBufferSize:Int = 1024
 
-    internal var readyState:ReadyState = .uninitialized {
+    var readyState:ReadyState = .uninitialized {
         didSet {
             delegate?.didSet(readyState: readyState)
         }
     }
-    internal var chunkSizeC:Int = RTMPChunk.defaultSize
-    internal var chunkSizeS:Int = RTMPChunk.defaultSize
-    internal var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    internal weak var delegate:RTMPSocketDelegate? = nil
-    override internal var connected:Bool {
+    var chunkSizeC:Int = RTMPChunk.defaultSize
+    var chunkSizeS:Int = RTMPChunk.defaultSize
+    var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    weak var delegate:RTMPSocketDelegate? = nil
+    override var connected:Bool {
         didSet {
             if (connected) {
                 timestamp = Date().timeIntervalSince1970
@@ -72,12 +72,11 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
             events.removeAll()
         }
     }
-    internal fileprivate(set) var timestamp:TimeInterval = 0
-
-    fileprivate var events:[Event] = []
+    private(set) var timestamp:TimeInterval = 0
+    private var events:[Event] = []
 
     @discardableResult
-    internal func doOutput(chunk:RTMPChunk) -> Int {
+    func doOutput(chunk:RTMPChunk) -> Int {
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
             doOutput(bytes: chunk)
@@ -88,7 +87,7 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
         return chunk.message!.length
     }
 
-    internal func connect(withName:String, port:Int) {
+    func connect(withName:String, port:Int) {
         networkQueue.async {
             Stream.getStreamsToHost(
                 withName: withName,
@@ -100,7 +99,7 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
         }
     }
 
-    override internal func listen() {
+    override func listen() {
         switch readyState {
         case .versionSent:
             if (inputBuffer.count < RTMPSocket.sigSize + 1) {
@@ -131,7 +130,7 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
         }
     }
 
-    override internal func initConnection() {
+    override func initConnection() {
         readyState = .uninitialized
         timestamp = 0
         chunkSizeS = RTMPChunk.defaultSize
@@ -139,7 +138,7 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
         super.initConnection()
     }
 
-    override internal func deinitConnection(isDisconnected:Bool) {
+    override func deinitConnection(isDisconnected:Bool) {
         if (isDisconnected) {
             let data:ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
@@ -149,7 +148,7 @@ final internal class RTMPSocket: NetSocket, RTMPSocketCompatible {
         super.deinitConnection(isDisconnected: isDisconnected)
     }
 
-    override internal func didTimeout() {
+    override func didTimeout() {
         deinitConnection(isDisconnected: false)
         delegate?.dispatch(type: Event.IO_ERROR, bubbles: false, data: nil)
         logger.warning("connection timedout")

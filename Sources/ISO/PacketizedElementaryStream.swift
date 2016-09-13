@@ -22,34 +22,34 @@ enum PESPTSDTSIndicator:UInt8 {
 
 // MARK: -
 struct PESOptionalHeader {
-    static internal let fixedSectionSize:Int = 3
-    static internal let defaultMarkerBits:UInt8 = 2
+    static let fixedSectionSize:Int = 3
+    static let defaultMarkerBits:UInt8 = 2
 
-    internal var markerBits:UInt8 = PESOptionalHeader.defaultMarkerBits
-    internal var scramblingControl:UInt8 = 0
-    internal var priority:Bool = false
-    internal var dataAlignmentIndicator:Bool = false
-    internal var copyright:Bool = false
-    internal var originalOrCopy:Bool = false
-    internal var PTSDTSIndicator:UInt8 = PESPTSDTSIndicator.none.rawValue
-    internal var ESCRFlag:Bool = false
-    internal var ESRateFlag:Bool = false
-    internal var DSMTrickModeFlag:Bool = false
-    internal var additionalCopyInfoFlag:Bool = false
-    internal var CRCFlag:Bool = false
-    internal var extentionFlag:Bool = false
-    internal var PESHeaderLength:UInt8 = 0
-    internal var optionalFields:[UInt8] = []
-    internal var stuffingBytes:[UInt8] = []
+    var markerBits:UInt8 = PESOptionalHeader.defaultMarkerBits
+    var scramblingControl:UInt8 = 0
+    var priority:Bool = false
+    var dataAlignmentIndicator:Bool = false
+    var copyright:Bool = false
+    var originalOrCopy:Bool = false
+    var PTSDTSIndicator:UInt8 = PESPTSDTSIndicator.none.rawValue
+    var ESCRFlag:Bool = false
+    var ESRateFlag:Bool = false
+    var DSMTrickModeFlag:Bool = false
+    var additionalCopyInfoFlag:Bool = false
+    var CRCFlag:Bool = false
+    var extentionFlag:Bool = false
+    var PESHeaderLength:UInt8 = 0
+    var optionalFields:[UInt8] = []
+    var stuffingBytes:[UInt8] = []
 
-    internal init() {
+    init() {
     }
 
-    internal init?(bytes:[UInt8]) {
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
     }
 
-    mutating internal func setTimestamp(_ timestamp:CMTime, presentationTimeStamp:CMTime, decodeTimeStamp:CMTime) {
+    mutating func setTimestamp(_ timestamp:CMTime, presentationTimeStamp:CMTime, decodeTimeStamp:CMTime) {
         let base:Double = Double(timestamp.seconds)
         if (presentationTimeStamp != kCMTimeInvalid) {
             PTSDTSIndicator |= 0x02
@@ -71,7 +71,7 @@ struct PESOptionalHeader {
 
 extension PESOptionalHeader: BytesConvertible {
     // MARK: BytesConvertible
-    internal var bytes:[UInt8] {
+    var bytes:[UInt8] {
         get {
             var bytes:[UInt8] = [0x00, 0x00]
             bytes[0] |= markerBits << 6
@@ -121,17 +121,17 @@ extension PESOptionalHeader: BytesConvertible {
 
 extension PESOptionalHeader: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
 // MARK: -
 struct PacketizedElementaryStream: PESPacketHeader {
-    static internal let untilPacketLengthSize:Int = 6
-    static internal let startCode:[UInt8] = [0x00, 0x00, 0x01]
+    static let untilPacketLengthSize:Int = 6
+    static let startCode:[UInt8] = [0x00, 0x00, 0x01]
 
-    static internal func create(_ sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:Any?) -> PacketizedElementaryStream? {
+    static func create(_ sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:Any?) -> PacketizedElementaryStream? {
         if let config:AudioSpecificConfig = config as? AudioSpecificConfig {
             return PacketizedElementaryStream(sampleBuffer: sampleBuffer, timestamp: timestamp, config: config)
         }
@@ -141,20 +141,20 @@ struct PacketizedElementaryStream: PESPacketHeader {
         return nil
     }
 
-    internal var startCode:[UInt8] = PacketizedElementaryStream.startCode
-    internal var streamID:UInt8 = 0
-    internal var packetLength:UInt16 = 0
-    internal var optionalPESHeader:PESOptionalHeader?
-    internal var data:[UInt8] = []
+    var startCode:[UInt8] = PacketizedElementaryStream.startCode
+    var streamID:UInt8 = 0
+    var packetLength:UInt16 = 0
+    var optionalPESHeader:PESOptionalHeader?
+    var data:[UInt8] = []
 
-    internal init?(bytes:[UInt8]) {
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
         if (startCode != PacketizedElementaryStream.startCode) {
             return nil
         }
     }
 
-    internal init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AudioSpecificConfig?) {
+    init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AudioSpecificConfig?) {
         let payload:[UInt8] = sampleBuffer.bytes
         data += config!.adts(payload.count)
         data += payload
@@ -167,7 +167,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         packetLength = UInt16(data.count + optionalPESHeader!.bytes.count)
     }
 
-    internal init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AVCConfigurationRecord?) {
+    init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AVCConfigurationRecord?) {
         data += [0x00, 0x00, 0x00, 0x01, 0x09, 0xf0]
         if let config:AVCConfigurationRecord = config {
             data += [0x00, 0x00, 0x00, 0x01] + config.sequenceParameterSets[0]
@@ -183,7 +183,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         packetLength = UInt16(data.count + optionalPESHeader!.bytes.count)
     }
 
-    internal func arrayOfPackets(_ PID:UInt16, PCR:UInt64?) -> [TSPacket] {
+    func arrayOfPackets(_ PID:UInt16, PCR:UInt64?) -> [TSPacket] {
         let payload:[UInt8] = bytes
         var packets:[TSPacket] = []
 
@@ -244,7 +244,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         return packets
     }
 
-    mutating internal func append(_ bytes:[UInt8]) -> Int {
+    mutating func append(_ bytes:[UInt8]) -> Int {
         data += bytes
         return bytes.count
     }
@@ -252,7 +252,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
 
 extension PacketizedElementaryStream: BytesConvertible {
     // MARK: BytesConvertible
-    internal var bytes:[UInt8] {
+    var bytes:[UInt8] {
         get {
             return ByteArray()
                 .writeBytes(startCode)
@@ -284,7 +284,7 @@ extension PacketizedElementaryStream: BytesConvertible {
 
 extension PacketizedElementaryStream: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         return Mirror(reflecting: self).description
     }
 }

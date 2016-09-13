@@ -200,7 +200,7 @@ final class LiveViewController: UIViewController {
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
             rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-            rtmpConnection.connect(withCommand: Preference.defaultInstance.uri!)
+            rtmpConnection.connect(Preference.defaultInstance.uri!)
             sender.setTitle("■", for: UIControlState())
         }
         sender.isSelected = !sender.isSelected
@@ -211,7 +211,7 @@ final class LiveViewController: UIViewController {
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish(withName: Preference.defaultInstance.streamName!)
+                rtmpStream!.publish(Preference.defaultInstance.streamName!)
                 // sharedObject!.connect(rtmpConnection)
             default:
                 break

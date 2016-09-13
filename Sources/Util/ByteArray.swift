@@ -62,26 +62,26 @@ protocol ByteArrayConvertible {
 
 // MARK: -
 open class ByteArray: ByteArrayConvertible {
-    static internal let sizeOfInt8:Int = 1
-    static internal let sizeOfInt16:Int = 2
-    static internal let sizeOfInt24:Int = 3
-    static internal let sizeOfInt32:Int = 4
-    static internal let sizeOfFloat:Int = 4
-    static internal let sizeOfDouble:Int = 8
+    static let sizeOfInt8:Int = 1
+    static let sizeOfInt16:Int = 2
+    static let sizeOfInt24:Int = 3
+    static let sizeOfInt32:Int = 4
+    static let sizeOfFloat:Int = 4
+    static let sizeOfDouble:Int = 8
 
     public enum Error: Swift.Error {
         case eof
         case parse
     }
 
-    internal init() {
+    init() {
     }
 
-    internal init(bytes:[UInt8]) {
+    init(bytes:[UInt8]) {
         self.bytes = bytes
     }
 
-    internal init(data:Data) {
+    init(data:Data) {
         bytes = [UInt8](repeating: 0x00, count: data.count)
         (data as NSData).getBytes(&bytes, length: data.count)
     }
@@ -297,7 +297,7 @@ open class ByteArray: ByteArrayConvertible {
         return self
     }
 
-    internal func sequence(_ length:Int, lambda:((ByteArray) -> Void)) {
+    func sequence(_ length:Int, lambda:((ByteArray) -> Void)) {
         let r:Int = (bytes.count - position) % length
         for index in stride(from: bytes.startIndex.advanced(by: position), to: bytes.endIndex.advanced(by: -r), by: length) {
             lambda(ByteArray(bytes: Array(bytes[index..<index.advanced(by: length)])))
@@ -307,7 +307,7 @@ open class ByteArray: ByteArrayConvertible {
         }
     }
 
-    internal func toUInt32() -> [UInt32] {
+    func toUInt32() -> [UInt32] {
         let size:Int = MemoryLayout<UInt32>.size
         if ((bytes.endIndex - position) % size != 0) {
             return []

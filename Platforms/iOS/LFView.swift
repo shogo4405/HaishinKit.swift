@@ -14,7 +14,7 @@ open class LFView: UIView {
         }
     }
 
-    internal var orientation:AVCaptureVideoOrientation = .portrait {
+    var orientation:AVCaptureVideoOrientation = .portrait {
         didSet {
             guard let connection:AVCaptureConnection = layer.value(forKey: "connection") as? AVCaptureConnection else {
                 return
@@ -24,7 +24,7 @@ open class LFView: UIView {
             }
         }
     }
-    internal var position:AVCaptureDevicePosition = .front
+    var position:AVCaptureDevicePosition = .front
 
     private weak var currentStream:NetStream? {
         didSet {
@@ -58,8 +58,8 @@ open class LFView: UIView {
 }
 
 extension LFView: NetStreamDrawable {
-    internal func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
+    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
     }
-    internal func draw(image:CIImage) {
+    func draw(image:CIImage) {
     }
 }

@@ -1,19 +1,19 @@
 import Foundation
 
-final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
-    internal static let contentType:String = "application/x-fcs"
+final class RTMPTSocket: NSObject, RTMPSocketCompatible {
+    static let contentType:String = "application/x-fcs"
 
-    internal var timeout:Int64 = 0
-    internal var timestamp:TimeInterval = 0
-    internal var chunkSizeC:Int = RTMPChunk.defaultSize
-    internal var chunkSizeS:Int = RTMPChunk.defaultSize
-    internal var totalBytesIn:Int64 = 0
-    internal var totalBytesOut:Int64 = 0
-    internal var inputBuffer:[UInt8] = []
-    internal var securityLevel:StreamSocketSecurityLevel = .none
-    internal var objectEncoding:UInt8 = 0x00
-    internal weak var delegate:RTMPSocketDelegate? = nil
-    internal var connected:Bool = false {
+    var timeout:Int64 = 0
+    var timestamp:TimeInterval = 0
+    var chunkSizeC:Int = RTMPChunk.defaultSize
+    var chunkSizeS:Int = RTMPChunk.defaultSize
+    var totalBytesIn:Int64 = 0
+    var totalBytesOut:Int64 = 0
+    var inputBuffer:[UInt8] = []
+    var securityLevel:StreamSocketSecurityLevel = .none
+    var objectEncoding:UInt8 = 0x00
+    weak var delegate:RTMPSocketDelegate? = nil
+    var connected:Bool = false {
         didSet {
             if (connected) {
                 timestamp = Date().timeIntervalSince1970
@@ -36,12 +36,13 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
-    internal var readyState:RTMPSocket.ReadyState = .uninitialized {
+    var readyState:RTMPSocket.ReadyState = .uninitialized {
         didSet {
             delegate?.didSet(readyState: readyState)
         }
     }
 
+    private var delay:UInt8 = 1
     private var mutex:Mutex = Mutex()
     private var index:Int64 = 0
     private var events:[Event] = []
@@ -52,11 +53,11 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var connectionID:String!
     private var outputBuffer:[UInt8] = []
 
-    override internal init() {
+    override init() {
         super.init()
     }
 
-    internal func connect(withName:String, port:Int) {
+    func connect(withName:String, port:Int) {
         let config:URLSessionConfiguration = URLSessionConfiguration.default
         config.httpShouldUsePipelining = true
         config.httpAdditionalHeaders = [
@@ -70,7 +71,7 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     @discardableResult
-    internal func doOutput(chunk:RTMPChunk) -> Int {
+    func doOutput(chunk:RTMPChunk) -> Int {
         var bytes:[UInt8] = []
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {
@@ -94,11 +95,11 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         return bytes.count
     }
 
-    internal func close(isDisconnected:Bool) {
+    func close(isDisconnected:Bool) {
         deinitConnection(isDisconnected: isDisconnected)
     }
 
-    internal func deinitConnection(isDisconnected:Bool) {
+    func deinitConnection(isDisconnected:Bool) {
         if (isDisconnected) {
             let data:ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
@@ -140,9 +141,8 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
             return
         }
 
-        var idel:UInt8 = 0
         var buffer:[UInt8] = data.bytes
-        idel = buffer.remove(at: 0)
+        delay = buffer.remove(at: 0)
         inputBuffer.append(contentsOf: buffer)
 
         switch readyState {
@@ -205,7 +205,6 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         connected = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0, execute: idel)
         if (logger.isEnabledForLogLevel(.verbose)) {
             logger.verbose("\(data?.bytes):\(response)")
         }
@@ -219,6 +218,14 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         if (logger.isEnabledForLogLevel(.verbose)) {
             logger.verbose("\(data?.bytes):\(response)")
         }
+    }
+
+    private func idel() {
+        guard let connectionID:String = connectionID, connected else {
+            return
+        }
+        let index:Int64 = OSAtomicIncrement64(&self.index)
+        doRequest("/idel/\(connectionID)/\(index)", Data([0x00]), didIdel)
     }
 
     private func didIdel(data:Data?, response:URLResponse?, error:Error?) {
@@ -237,15 +244,7 @@ final internal class RTMPTSocket: NSObject, RTMPSocketCompatible {
         return bytes.count
     }
 
-    private func idel() {
-        guard let connectionID:String = connectionID, connected else {
-            return
-        }
-        let index:Int64 = OSAtomicIncrement64(&self.index)
-        doRequest("/idel/\(connectionID)/\(index)", Data([0x00]), didIdel)
-    }
-
-    private func doRequest(_ pathComonent: String,_ data:Data,_ completionHandler: ((Data?, URLResponse?, Error?) -> Void)) {
+    private func doRequest(_ pathComonent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
         var request:URLRequest = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()

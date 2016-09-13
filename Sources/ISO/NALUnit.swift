@@ -20,14 +20,14 @@ enum NALType: UInt8 {
 
 // MARK: -
 struct NALUnit {
-    internal var refIdc:UInt8 = 0
-    internal var type:NALType = .unspec
-    internal var payload:[UInt8] = []
+    var refIdc:UInt8 = 0
+    var type:NALType = .unspec
+    var payload:[UInt8] = []
 }
 
 extension NALUnit: BytesConvertible {
     // MARK: BytesConvertible
-    internal var bytes:[UInt8] {
+    var bytes:[UInt8] {
         get {
             return ByteArray()
                 .writeUInt8(refIdc << 5 | type.rawValue)

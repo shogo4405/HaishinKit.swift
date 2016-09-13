@@ -63,23 +63,23 @@ class RTMPMessage {
         }
     }
 
-    internal let type:Type
-    internal var length:Int = 0
-    internal var streamId:UInt32 = 0
-    internal var timestamp:UInt32 = 0
-    internal var payload:[UInt8] = []
+    let type:Type
+    var length:Int = 0
+    var streamId:UInt32 = 0
+    var timestamp:UInt32 = 0
+    var payload:[UInt8] = []
 
-    internal init(type:Type) {
+    init(type:Type) {
         self.type = type
     }
 
-    internal func execute(_ connection:RTMPConnection) {
+    func execute(_ connection:RTMPConnection) {
     }
 }
 
 extension RTMPMessage: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         return Mirror(reflecting: self).description
     }
 }
@@ -89,7 +89,7 @@ extension RTMPMessage: CustomStringConvertible {
  5.4.1. Set Chunk Size (1)
  */
 final class RTMPSetChunkSizeMessage: RTMPMessage {
-    internal var size:UInt32 = 0
+    var size:UInt32 = 0
 
     override var payload:[UInt8] {
         get {
@@ -108,16 +108,16 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
         }
     }
 
-    internal init() {
+    init() {
         super.init(type: .chunkSize)
     }
 
-    internal init(size:UInt32) {
+    init(size:UInt32) {
         super.init(type: .chunkSize)
         self.size = size
     }
 
-    override internal func execute(_ connection:RTMPConnection) {
+    override func execute(_ connection:RTMPConnection) {
         connection.socket.chunkSizeC = Int(size)
     }
 }
@@ -127,9 +127,9 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
  5.4.2. Abort Message (2)
  */
 final class RTMPAbortMessge: RTMPMessage {
-    internal var chunkStreamId:UInt32 = 0
+    var chunkStreamId:UInt32 = 0
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -146,7 +146,7 @@ final class RTMPAbortMessge: RTMPMessage {
         }
     }
 
-    internal init() {
+    init() {
         super.init(type: .abort)
     }
 }
@@ -156,9 +156,9 @@ final class RTMPAbortMessge: RTMPMessage {
  5.4.3. Acknowledgement (3)
  */
 final class RTMPAcknowledgementMessage: RTMPMessage {
-    internal var sequence:UInt32 = 0
+    var sequence:UInt32 = 0
     
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -175,7 +175,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
         }
     }
 
-    internal init() {
+    init() {
         super.init(type: .ack)
     }
 }
@@ -185,18 +185,18 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
  5.4.4. Window Acknowledgement Size (5)
  */
 final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
-    internal var size:UInt32 = 0
+    var size:UInt32 = 0
 
-    internal init() {
+    init() {
         super.init(type: .windowAck)
     }
 
-    internal init(size:UInt32) {
+    init(size:UInt32) {
         super.init(type: .windowAck)
         self.size = size
     }
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -213,7 +213,7 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
         }
     }
 
-    override internal func execute(_ connection: RTMPConnection) {
+    override func execute(_ connection: RTMPConnection) {
         connection.socket.doOutput(chunk: RTMPChunk(
             type: .zero,
             streamId: RTMPChunk.StreamID.control.rawValue,
@@ -235,14 +235,14 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
         case unknown = 0xFF
     }
 
-    internal var size:UInt32 = 0
-    internal var limit:Limit = .hard
+    var size:UInt32 = 0
+    var limit:Limit = .hard
 
-    internal init() {
+    init() {
         super.init(type: .bandwidth)
     }
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -261,7 +261,7 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
         }
     }
 
-    override internal func execute(_ connection: RTMPConnection) {
+    override func execute(_ connection: RTMPConnection) {
         connection.bandWidth = size
     }
 }
@@ -272,13 +272,13 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
  */
 final class RTMPCommandMessage: RTMPMessage {
 
-    internal let objectEncoding:UInt8
-    internal var commandName:String = ""
-    internal var transactionId:Int = 0
-    internal var commandObject:ASObject? = nil
-    internal var arguments:[Any?] = []
+    let objectEncoding:UInt8
+    var commandName:String = ""
+    var transactionId:Int = 0
+    var commandObject:ASObject? = nil
+    var arguments:[Any?] = []
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -323,12 +323,12 @@ final class RTMPCommandMessage: RTMPMessage {
 
     fileprivate var serializer:AMFSerializer = AMF0Serializer()
 
-    internal init(objectEncoding:UInt8) {
+    init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
         super.init(type: objectEncoding == 0x00 ? .amf0Command : .amf3Command)
     }
 
-    internal init(streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject: ASObject?, arguments:[Any?]) {
+    init(streamId:UInt32, transactionId:Int, objectEncoding:UInt8, commandName:String, commandObject: ASObject?, arguments:[Any?]) {
         self.transactionId = transactionId
         self.objectEncoding = objectEncoding
         self.commandName = commandName
@@ -338,7 +338,7 @@ final class RTMPCommandMessage: RTMPMessage {
         self.streamId = streamId
     }
 
-    override internal func execute(_ connection: RTMPConnection) {
+    override func execute(_ connection: RTMPConnection) {
 
         guard let responder:Responder = connection.operations.removeValue(forKey: transactionId) else {
             switch commandName {
@@ -367,13 +367,13 @@ final class RTMPCommandMessage: RTMPMessage {
  */
 final class RTMPDataMessage: RTMPMessage {
 
-    internal let objectEncoding:UInt8
-    internal var handlerName:String = ""
-    internal var arguments:[Any?] = []
+    let objectEncoding:UInt8
+    var handlerName:String = ""
+    var arguments:[Any?] = []
 
     fileprivate var serializer:AMFSerializer = AMF0Serializer()
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -417,12 +417,12 @@ final class RTMPDataMessage: RTMPMessage {
         }
     }
 
-    internal init(objectEncoding:UInt8) {
+    init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
         super.init(type: objectEncoding == 0x00 ? .amf0Data : .amf3Data)
     }
 
-    internal init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?] = []) {
+    init(streamId:UInt32, objectEncoding:UInt8, handlerName:String, arguments:[Any?] = []) {
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
@@ -444,13 +444,13 @@ final class RTMPDataMessage: RTMPMessage {
  */
 final class RTMPSharedObjectMessage: RTMPMessage {
 
-    internal let objectEncoding:UInt8
-    internal var sharedObjectName:String = ""
-    internal var currentVersion:UInt32 = 0
-    internal var flags:[UInt8] = [UInt8](repeating: 0x00, count: 8)
-    internal var events:[RTMPSharedObjectEvent] = []
+    let objectEncoding:UInt8
+    var sharedObjectName:String = ""
+    var currentVersion:UInt32 = 0
+    var flags:[UInt8] = [UInt8](repeating: 0x00, count: 8)
+    var events:[RTMPSharedObjectEvent] = []
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -505,12 +505,12 @@ final class RTMPSharedObjectMessage: RTMPMessage {
 
     fileprivate var serializer:AMFSerializer = AMF0Serializer()
 
-    internal init(objectEncoding:UInt8) {
+    init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
         super.init(type: objectEncoding == 0x00 ? .amf0Shared : .amf3Shared)
     }
 
-    internal init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[RTMPSharedObjectEvent]) {
+    init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[RTMPSharedObjectEvent]) {
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
         self.currentVersion = currentVersion
@@ -520,7 +520,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         self.timestamp = timestamp
     }
 
-    override internal func execute(_ connection:RTMPConnection) {
+    override func execute(_ connection:RTMPConnection) {
         let persistence:Bool = flags[0] == 0x01
         RTMPSharedObject.getRemote(withName: sharedObjectName, remotePath: connection.uri!.absoluteWithoutQueryString, persistence: persistence).on(message: self)
     }
@@ -531,14 +531,14 @@ final class RTMPSharedObjectMessage: RTMPMessage {
  7.1.5. Audio Message (9)
  */
 final class RTMPAudioMessage: RTMPMessage {
-    internal var config:AudioSpecificConfig?
+    var config:AudioSpecificConfig?
 
-    internal fileprivate(set) var codec:FLVAudioCodec = .unknown
-    internal fileprivate(set) var soundRate:FLVSoundRate = .kHz44
-    internal fileprivate(set) var soundSize:FLVSoundSize = .snd8bit
-    internal fileprivate(set) var soundType:FLVSoundType = .stereo
+    fileprivate(set) var codec:FLVAudioCodec = .unknown
+    fileprivate(set) var soundRate:FLVSoundRate = .kHz44
+    fileprivate(set) var soundSize:FLVSoundSize = .snd8bit
+    fileprivate(set) var soundType:FLVSoundType = .stereo
 
-    internal var soundData:[UInt8] {
+    var soundData:[UInt8] {
         let data:[UInt8] = payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
         guard let config:AudioSpecificConfig = config else {
             return data
@@ -547,7 +547,7 @@ final class RTMPAudioMessage: RTMPMessage {
         return adts + data
     }
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             return super.payload
         }
@@ -618,14 +618,14 @@ final class RTMPAudioMessage: RTMPMessage {
  7.1.5. Video Message (9)
  */
 final class RTMPVideoMessage: RTMPMessage {
-    internal fileprivate(set) var codec:FLVVideoCodec = .unknown
-    internal fileprivate(set) var status:OSStatus = noErr
+    fileprivate(set) var codec:FLVVideoCodec = .unknown
+    fileprivate(set) var status:OSStatus = noErr
 
-    internal init() {
+    init() {
         super.init(type: .video)
     }
 
-    internal init(streamId: UInt32, timestamp: UInt32, buffer:Data) {
+    init(streamId: UInt32, timestamp: UInt32, buffer:Data) {
         super.init(type: .video)
         self.streamId = streamId
         self.timestamp = timestamp
@@ -633,7 +633,7 @@ final class RTMPVideoMessage: RTMPMessage {
         (buffer as NSData).getBytes(&payload, length: payload.count)
     }
 
-    internal override func execute(_ connection:RTMPConnection) {
+    override func execute(_ connection:RTMPConnection) {
         guard let stream:RTMPStream = connection.streams[streamId] else {
             return
         }
@@ -651,7 +651,7 @@ final class RTMPVideoMessage: RTMPMessage {
         }
     }
 
-    internal func enqueueSampleBuffer(_ stream: RTMPStream) {
+    func enqueueSampleBuffer(_ stream: RTMPStream) {
         stream.videoTimestamp += Double(timestamp)
 
         let compositionTimeoffset:Int32 = Int32(bytes: [0] + payload[2..<5]).bigEndian
@@ -678,7 +678,7 @@ final class RTMPVideoMessage: RTMPMessage {
         status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer!)
     }
 
-    internal func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
+    func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
         config.bytes = Array(payload[FLVTag.TagType.video.headerSize..<payload.count])
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
@@ -690,7 +690,7 @@ final class RTMPVideoMessage: RTMPMessage {
  7.1.6. Aggregate Message (22)
  */
 final class RTMPAggregateMessage: RTMPMessage {
-    internal init() {
+    init() {
         super.init(type: .aggregate)
     }
 }
@@ -701,7 +701,7 @@ final class RTMPAggregateMessage: RTMPMessage {
  */
 final class RTMPUserControlMessage: RTMPMessage {
 
-    internal enum Event: UInt8 {
+    enum Event: UInt8 {
         case streamBegin = 0x00
         case streamEof   = 0x01
         case streamDry   = 0x02
@@ -713,15 +713,15 @@ final class RTMPUserControlMessage: RTMPMessage {
         case bufferFull  = 0x20
         case unknown     = 0xFF
 
-        internal var bytes:[UInt8] {
+        var bytes:[UInt8] {
             return [0x00, rawValue]
         }
     }
 
-    internal var event:Event = .unknown
-    internal var value:Int32 = 0
+    var event:Event = .unknown
+    var value:Int32 = 0
 
-    override internal var payload:[UInt8] {
+    override var payload:[UInt8] {
         get {
             guard super.payload.isEmpty else {
                 return super.payload
@@ -745,17 +745,17 @@ final class RTMPUserControlMessage: RTMPMessage {
         }
     }
 
-    internal init() {
+    init() {
         super.init(type: .user)
     }
 
-    internal init(event:Event, value:Int32) {
+    init(event:Event, value:Int32) {
         super.init(type: .user)
         self.event = event
         self.value = value
     }
 
-    override internal func execute(_ connection: RTMPConnection) {
+    override func execute(_ connection: RTMPConnection) {
         switch event {
         case .ping:
             connection.socket.doOutput(chunk: RTMPChunk(

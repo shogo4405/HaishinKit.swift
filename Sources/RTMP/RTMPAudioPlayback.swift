@@ -2,9 +2,9 @@ import Foundation
 import AudioToolbox
 
 final class RTMPAudioPlayback: AudioStreamPlayback {
-    fileprivate var config:AudioSpecificConfig?
+    private var config:AudioSpecificConfig?
 
-    internal func on(message:RTMPAudioMessage) {
+    func on(message:RTMPAudioMessage) {
         guard message.codec.isSupported else {
             return
         }

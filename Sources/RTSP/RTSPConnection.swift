@@ -22,15 +22,15 @@ protocol RTSPResponder: class {
 final class RTSPNullResponder: RTSPResponder {
     static let instance:RTSPNullResponder = RTSPNullResponder()
 
-    internal func on(response:RTSPResponse) {
+    func on(response:RTSPResponse) {
     }
 }
 
 // MARK: -
 class RTSPConnection: NSObject {
-    static internal let defaultRTPPort:Int32 = 8000
+    static let defaultRTPPort:Int32 = 8000
 
-    internal var userAgent:String = "lf.swift"
+    var userAgent:String = "lf.swift"
 
     fileprivate var sequence:Int = 0
     fileprivate lazy var socket:RTSPSocket = {
@@ -41,7 +41,7 @@ class RTSPConnection: NSObject {
 
     fileprivate var responders:[RTSPResponder] = []
 
-    internal func doMethod(_ method: RTSPMethod, _ uri: String, _ responder:RTSPResponder = RTSPNullResponder.instance, _ headerFields:[String:String] = [:]) {
+    func doMethod(_ method: RTSPMethod, _ uri: String, _ responder:RTSPResponder = RTSPNullResponder.instance, _ headerFields:[String:String] = [:]) {
         sequence += 1
         var request:RTSPRequest = RTSPRequest()
         request.uri = uri
@@ -56,7 +56,7 @@ class RTSPConnection: NSObject {
 
 extension RTSPConnection: RTSPSocketDelegate {
     // MARK: RTSPSocketDelegate
-    internal func listen(_ response: RTSPResponse) {
+    func listen(_ response: RTSPResponse) {
         guard let responder:RTSPResponder = responders.first else {
             return
         }

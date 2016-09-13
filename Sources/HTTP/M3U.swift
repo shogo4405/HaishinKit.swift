@@ -7,15 +7,15 @@ struct M3U {
     static let header:String = "#EXTM3U"
     static let defaultVersion:Int = 3
 
-    internal var version:Int = M3U.defaultVersion
-    internal var mediaList:[M3UMediaInfo] = []
-    internal var mediaSequence:Int = 0
-    internal var targetDuration:Double = 5
+    var version:Int = M3U.defaultVersion
+    var mediaList:[M3UMediaInfo] = []
+    var mediaSequence:Int = 0
+    var targetDuration:Double = 5
 }
 
 extension M3U: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    internal var description:String {
+    var description:String {
         var lines:[String] = [
             "#EXTM3U",
             "#EXT-X-VERSION:\(version)",
@@ -32,6 +32,6 @@ extension M3U: CustomStringConvertible {
 
 // MARK: -
 struct M3UMediaInfo {
-    internal var url:URL
-    internal var duration:Double
+    var url:URL
+    var duration:Double
 }

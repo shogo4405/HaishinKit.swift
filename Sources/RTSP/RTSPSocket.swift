@@ -6,12 +6,12 @@ protocol RTSPSocketDelegate: class {
 
 // MARK: -
 final class RTSPSocket: NetSocket {
-    static internal let defaultPort:Int = 554
+    static let defaultPort:Int = 554
 
-    weak internal var delegate:RTSPSocketDelegate?
+    weak var delegate:RTSPSocketDelegate?
     fileprivate var requests:[RTSPRequest] = []
 
-    override internal var connected:Bool {
+    override var connected:Bool {
         didSet {
             if (connected) {
                 for request in requests {
@@ -25,7 +25,7 @@ final class RTSPSocket: NetSocket {
         }
     }
 
-    internal func doOutput(_ request:RTSPRequest) {
+    func doOutput(_ request:RTSPRequest) {
         if (connected) {
             if (logger.isEnabledForLogLevel(.verbose)) {
                 logger.verbose("\(request)")
@@ -40,7 +40,7 @@ final class RTSPSocket: NetSocket {
         connect(host, port: (uri as NSURL).port?.intValue ?? RTSPSocket.defaultPort)
     }
 
-    override internal func listen() {
+    override func listen() {
         guard let response:RTSPResponse = RTSPResponse(bytes: inputBuffer) else {
             return
         }

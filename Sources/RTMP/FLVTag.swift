@@ -194,13 +194,13 @@ struct FLVTag {
         }
     }
 
-    static internal let headerSize = 11
+    static let headerSize = 11
 
-    internal var tagType:TagType = .data
-    internal var dataSize:UInt32 = 0
-    internal var timestamp:UInt32 = 0
-    internal var timestampExtended:UInt8 = 0
-    internal var streamId:UInt32 = 0
+    var tagType:TagType = .data
+    var dataSize:UInt32 = 0
+    var timestamp:UInt32 = 0
+    var timestampExtended:UInt8 = 0
+    var streamId:UInt32 = 0
 }
 
 extension FLVTag: CustomStringConvertible {

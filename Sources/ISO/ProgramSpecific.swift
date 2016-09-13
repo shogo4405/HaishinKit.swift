@@ -251,7 +251,7 @@ struct ElementaryStreamSpecificData {
 
 extension ElementaryStreamSpecificData: BytesConvertible {
     // MARK: BytesConvertible
-    internal var bytes:[UInt8] {
+    var bytes:[UInt8] {
         get {
             return ByteArray()
                 .writeUInt8(streamType)

@@ -2,15 +2,15 @@ import CoreMedia
 import Foundation
 
 class TSWriter {
-    static internal let defaultPATPID:UInt16 = 0
-    static internal let defaultPMTPID:UInt16 = 4096
-    static internal let defaultVideoPID:UInt16 = 256
-    static internal let defaultAudioPID:UInt16 = 257
-    static internal let defaultSegmentCount:Int = 3
-    static internal let defaultSegmentMaxCount:Int = 12
-    static internal let defaultSegmentDuration:Double = 2
+    static let defaultPATPID:UInt16 = 0
+    static let defaultPMTPID:UInt16 = 4096
+    static let defaultVideoPID:UInt16 = 256
+    static let defaultAudioPID:UInt16 = 257
+    static let defaultSegmentCount:Int = 3
+    static let defaultSegmentMaxCount:Int = 12
+    static let defaultSegmentDuration:Double = 2
 
-    internal var playlist:String {
+    var playlist:String {
         var m3u8:M3U = M3U()
         m3u8.targetDuration = segmentDuration
         if (sequence <= TSWriter.defaultSegmentMaxCount) {
@@ -22,20 +22,20 @@ class TSWriter {
         m3u8.mediaList = Array(files[files.count - TSWriter.defaultSegmentCount..<files.count])
         return m3u8.description
     }
-    internal var lockQueue:DispatchQueue = DispatchQueue(
+    var lockQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.TSWriter.lock", attributes: []
     )
-    internal var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
-    internal var segmentDuration:Double = TSWriter.defaultSegmentDuration
+    var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
+    var segmentDuration:Double = TSWriter.defaultSegmentDuration
 
-    internal fileprivate(set) var PAT:ProgramAssociationSpecific = {
+    fileprivate(set) var PAT:ProgramAssociationSpecific = {
         let PAT:ProgramAssociationSpecific = ProgramAssociationSpecific()
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
-    internal fileprivate(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
-    internal fileprivate(set) var files:[M3UMediaInfo] = []
-    internal fileprivate(set) var running:Bool = false
+    fileprivate(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
+    fileprivate(set) var files:[M3UMediaInfo] = []
+    fileprivate(set) var running:Bool = false
 
     fileprivate var PCRPID:UInt16 = TSWriter.defaultVideoPID
     fileprivate var sequence:Int = 0
@@ -48,7 +48,7 @@ class TSWriter {
     fileprivate var currentFileHandle:FileHandle?
     fileprivate var continuityCounters:[UInt16:UInt8] = [:]
 
-    internal func getFilePath(_ fileName:String) -> String? {
+    func getFilePath(_ fileName:String) -> String? {
         for info in files {
             if (info.url.absoluteString.contains(fileName)) {
                 return info.url.path
@@ -57,7 +57,7 @@ class TSWriter {
         return nil
     }
 
-    internal func writeSampleBuffer(_ PID:UInt16, streamID:UInt8, sampleBuffer:CMSampleBuffer) {
+    func writeSampleBuffer(_ PID:UInt16, streamID:UInt8, sampleBuffer:CMSampleBuffer) {
         if (timestamps[PID] == nil) {
             timestamps[PID] = sampleBuffer.presentationTimeStamp
             if (PCRPID == PID) {
@@ -92,7 +92,7 @@ class TSWriter {
         }
     }
 
-    internal func split(_ PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
+    func split(_ PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
         var PCR:UInt64?
         let duration:Double = timestamp.seconds - PCRTimestamp.seconds
         if (PCRPID == PID && 0.1 <= duration) {
@@ -106,7 +106,7 @@ class TSWriter {
         return packets
     }
 
-    internal func rorateFileHandle(_ timestamp:CMTime, next:CMTime) -> Bool {
+    func rorateFileHandle(_ timestamp:CMTime, next:CMTime) -> Bool {
         let duration:Double = timestamp.seconds - rotatedTimestamp.seconds
         if (duration <= segmentDuration) {
             return false
@@ -168,7 +168,7 @@ class TSWriter {
         return true
     }
 
-    internal func removeFiles() {
+    func removeFiles() {
         let fileManager:FileManager = FileManager.default
         for info in files {
             do { try fileManager.removeItem(at: info.url as URL) }
@@ -180,7 +180,7 @@ class TSWriter {
 
 extension TSWriter: Runnable {
     // MARK: Runnable
-    internal func startRunning() {
+    func startRunning() {
         lockQueue.async {
             if (!self.running) {
                 return
@@ -188,7 +188,7 @@ extension TSWriter: Runnable {
             self.running = true
         }
     }
-    internal func stopRunning() {
+    func stopRunning() {
         lockQueue.async {
             if (self.running) {
                 return
@@ -203,7 +203,7 @@ extension TSWriter: Runnable {
 
 extension TSWriter: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
-    internal func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription:CMAudioFormatDescription = formatDescription else {
             return
         }
@@ -215,14 +215,14 @@ extension TSWriter: AudioEncoderDelegate {
         continuityCounters[TSWriter.defaultAudioPID] = 0
     }
 
-    internal func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
+    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
         writeSampleBuffer(TSWriter.defaultAudioPID, streamID:192, sampleBuffer:sampleBuffer)
     }
 }
 
 extension TSWriter: VideoEncoderDelegate {
     // MARK: VideoEncoderDelegate
-    internal func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
+    func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard let
             formatDescription:CMFormatDescription = formatDescription,
             let avcC:Data = AVCConfigurationRecord.getData(formatDescription) else {
@@ -236,7 +236,7 @@ extension TSWriter: VideoEncoderDelegate {
         continuityCounters[TSWriter.defaultVideoPID] = 0
     }
 
-    internal func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         writeSampleBuffer(TSWriter.defaultVideoPID, streamID:224, sampleBuffer:sampleBuffer)
     }
 }

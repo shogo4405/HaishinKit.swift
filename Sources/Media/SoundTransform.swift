@@ -15,7 +15,7 @@ public struct SoundTransform {
     public var volumeRampTime:Float32 = SoundTransform.defaultVolumeRampTime
     public var pan:Float32 = SoundTransform.defaultPan
 
-    internal func setParameter(_ inAQ: AudioQueueRef) {
+    func setParameter(_ inAQ: AudioQueueRef) {
         AudioQueueSetParameter(inAQ, kAudioQueueParam_Volume, volume)
         AudioQueueSetParameter(inAQ, kAudioQueueParam_PlayRate, playRate)
         AudioQueueSetParameter(inAQ, kAudioQueueParam_Pitch, pitch)

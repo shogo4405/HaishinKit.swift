@@ -37,14 +37,14 @@ open class AVMixerRecorder: NSObject {
     open let lockQueue:DispatchQueue = DispatchQueue(
         label: "com.github.shogo4405.lf.AVMixerRecorder.lock", attributes: []
     )
-    internal fileprivate(set) var running:Bool = false
+    fileprivate(set) var running:Bool = false
 
     public override init() {
         super.init()
         delegate = DefaultAVMixerRecorderDelegate()
     }
 
-    final internal func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
+    final func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
         lockQueue.async {
 
             guard let delegate:AVMixerRecorderDelegate = self.delegate , self.running else {
@@ -72,7 +72,7 @@ open class AVMixerRecorder: NSObject {
         }
     }
 
-    internal func finishWriting() {
+    func finishWriting() {
         for (_, input) in writerInputs {
             input.markAsFinished()
         }
@@ -86,7 +86,7 @@ open class AVMixerRecorder: NSObject {
 
 extension AVMixerRecorder: Runnable {
     // MARK: Runnable
-    final internal func startRunning() {
+    final func startRunning() {
         lockQueue.async {
             guard !self.running else {
                 return
@@ -96,7 +96,7 @@ extension AVMixerRecorder: Runnable {
         }
     }
 
-    final internal func stopRunning() {
+    final func stopRunning() {
         lockQueue.async {
             guard self.running else {
                 return

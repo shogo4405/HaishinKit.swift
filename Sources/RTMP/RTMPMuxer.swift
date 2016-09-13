@@ -2,18 +2,18 @@ import Foundation
 import AVFoundation
 
 protocol RTMPMuxerDelegate: class {
-    func sampleOutput(_ muxer:RTMPMuxer, audio buffer:Data, timestamp:Double)
-    func sampleOutput(_ muxer:RTMPMuxer, video buffer:Data, timestamp:Double)
+    func sampleOutput(audio buffer:Data, withTimestamp:Double, muxer:RTMPMuxer)
+    func sampleOutput(video buffer:Data, withTimestamp:Double, muxer:RTMPMuxer)
 }
 
 // MARK: -
 final class RTMPMuxer {
-    internal weak var delegate:RTMPMuxerDelegate? = nil
+    weak var delegate:RTMPMuxerDelegate? = nil
 
     fileprivate var audioTimestamp:CMTime = kCMTimeZero
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
-    internal func dispose() {
+    func dispose() {
         audioTimestamp = kCMTimeZero
         videoTimestamp = kCMTimeZero
     }
@@ -21,59 +21,52 @@ final class RTMPMuxer {
 
 extension RTMPMuxer: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
-    internal func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    private static let aac:UInt8 = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
+
+    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription:CMFormatDescription = formatDescription else {
             return
         }
-        let buffer:NSMutableData = NSMutableData()
-        let config:[UInt8] = AudioSpecificConfig(formatDescription: formatDescription).bytes
-        var data:[UInt8] = [0x00, FLVAACPacketType.seq.rawValue]
-        data[0] =  FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
-        buffer.append(&data, length: data.count)
-        buffer.append(config, length: config.count)
-        delegate?.sampleOutput(self, audio: buffer as Data, timestamp: 0)
+        var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
+        buffer.append(contentsOf: AudioSpecificConfig(formatDescription: formatDescription).bytes)
+        delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
     }
 
-    internal func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
+    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
         var blockBuffer:CMBlockBuffer?
         var audioBufferList:AudioBufferList = AudioBufferList()
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer, nil, &audioBufferList, MemoryLayout<AudioBufferList>.size, nil, nil, 0, &blockBuffer
         )
-        let presentationTimeStamp:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        let delta:Double = (audioTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(presentationTimeStamp) - CMTimeGetSeconds(audioTimestamp)) * 1000
+        let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
+        let delta:Double = (audioTimestamp == kCMTimeZero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
         guard let _:CMBlockBuffer = blockBuffer , 0 <= delta else {
             return
         }
-        let buffer:NSMutableData = NSMutableData()
-        var data:[UInt8] = [0x00, FLVAACPacketType.raw.rawValue]
-        data[0] = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
-        buffer.append(&data, length: data.count)
-        buffer.append(audioBufferList.mBuffers.mData!, length: Int(audioBufferList.mBuffers.mDataByteSize))
-        delegate?.sampleOutput(self, audio: buffer as Data, timestamp: delta)
+        var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
+        if let mData:UnsafeMutableRawPointer = audioBufferList.mBuffers.mData {
+            buffer.append(mData.assumingMemoryBound(to: UInt8.self), count: Int(audioBufferList.mBuffers.mDataByteSize))
+        }
+        delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
         audioTimestamp = presentationTimeStamp
     }
 }
 
 extension RTMPMuxer: VideoEncoderDelegate {
     // MARK: VideoEncoderDelegate
-    internal func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
+    func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard
             let formatDescription:CMFormatDescription = formatDescription,
             let avcC:Data = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
-        let buffer:NSMutableData = NSMutableData()
-        var data:[UInt8] = [UInt8](repeating: 0x00, count: 5)
-        data[0] = FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue
-        data[1] = FLVAVCPacketType.seq.rawValue
-        buffer.append(&data, length: data.count)
+        var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
         buffer.append(avcC)
-        delegate?.sampleOutput(self, video: buffer as Data, timestamp: 0)
+        delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
     }
 
-    internal func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        guard let block:CMBlockBuffer = CMSampleBufferGetDataBuffer(sampleBuffer) else {
+    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+        guard let block:CMBlockBuffer = sampleBuffer.dataBuffer else {
             return
         }
 
@@ -84,25 +77,21 @@ extension RTMPMuxer: VideoEncoderDelegate {
             return
         }
 
-        var cto:Int32 = 0
-        let pts:CMTime = CMSampleBufferGetPresentationTimeStamp(sampleBuffer)
-        var dts:CMTime = CMSampleBufferGetDecodeTimeStamp(sampleBuffer)
-
-        if (dts == kCMTimeInvalid) {
-            dts = pts
+        var compositionTime:Int32 = 0
+        let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
+        var decodeTimeStamp:CMTime = sampleBuffer.decodeTimeStamp
+        if (decodeTimeStamp == kCMTimeInvalid) {
+            decodeTimeStamp = presentationTimeStamp
         } else {
-            cto = Int32((CMTimeGetSeconds(pts) - CMTimeGetSeconds(dts)) * 1000)
+            compositionTime = Int32((decodeTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
         }
-        let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : CMTimeGetSeconds(dts) - CMTimeGetSeconds(videoTimestamp)) * 1000
-        let buffer:NSMutableData = NSMutableData()
-        var data:[UInt8] = [UInt8](repeating: 0x00, count: 5)
-        data[0] = ((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue
-        data[1] = FLVAVCPacketType.nal.rawValue
-        data[2..<5] = cto.bigEndian.bytes[1..<4]
-        buffer.append(&data, length: data.count)
-        buffer.append(dataPointer!, length: totalLength)
-        
-        delegate?.sampleOutput(self, video: buffer as Data, timestamp: delta)
-        videoTimestamp = dts
+        let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
+        var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
+        buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])
+        if let pointer:UnsafeMutablePointer<Int8> = dataPointer {
+            buffer.append(Data(bytes: pointer, count: totalLength))
+        }
+        delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
+        videoTimestamp = decodeTimeStamp
     }
 }

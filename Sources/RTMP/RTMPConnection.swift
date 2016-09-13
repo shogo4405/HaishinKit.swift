@@ -13,11 +13,11 @@ open class Responder: NSObject {
         self.status = status
     }
 
-    final internal func on(result:[Any?]) {
+    final func on(result:[Any?]) {
         self.result(result)
     }
 
-    final internal func on(status:[Any?]) {
+    final func on(status:[Any?]) {
         self.status?(status)
         self.status = nil
     }
@@ -87,7 +87,7 @@ open class RTMPConnection: EventDispatcher {
         }
     }
 
-    internal enum SupportVideo: UInt16 {
+    enum SupportVideo: UInt16 {
         case unused    = 0x0001
         case jpeg      = 0x0002
         case sorenson  = 0x0004
@@ -99,7 +99,7 @@ open class RTMPConnection: EventDispatcher {
         case all       = 0x00FF
     }
 
-    internal enum SupportSound: UInt16 {
+    enum SupportSound: UInt16 {
         case none    = 0x0001
         case adpcm   = 0x0002
         case mp3     = 0x0004
@@ -115,7 +115,7 @@ open class RTMPConnection: EventDispatcher {
         case all     = 0x0FFF
     }
 
-    internal enum VideoFunction: UInt8 {
+    enum VideoFunction: UInt8 {
         case clientSeek = 1
     }
 
@@ -206,15 +206,15 @@ open class RTMPConnection: EventDispatcher {
 
     override public init() {
         super.init()
-        addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
+        addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 
     deinit {
         timer = nil
-        removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.rtmpStatusHandler(_:)))
+        removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 
-    open func call(commandName:String, responder:Responder?, arguments:Any?...) {
+    open func call(_ commandName:String, responder:Responder?, arguments:Any?...) {
         guard connected else {
             return
         }
@@ -235,11 +235,11 @@ open class RTMPConnection: EventDispatcher {
 
     @available(*, unavailable)
     open func connect(_ command:String) {
-        connect(withCommand: command, arguments: nil)
+        connect(command, arguments: nil)
     }
 
-    open func connect(withCommand: String, arguments: Any?...) {
-        guard let uri:URL = URL(string: withCommand) , !connected && RTMPConnection.supportedProtocols.contains(uri.scheme!) else {
+    open func connect(_ command: String, arguments: Any?...) {
+        guard let uri:URL = URL(string: command) , !connected && RTMPConnection.supportedProtocols.contains(uri.scheme!) else {
             return
         }
         self.uri = uri
@@ -255,7 +255,7 @@ open class RTMPConnection: EventDispatcher {
         close(isDisconnected: false)
     }
 
-    internal func close(isDisconnected:Bool) {
+    func close(isDisconnected:Bool) {
         guard connected || isDisconnected else {
             return
         }
@@ -270,7 +270,7 @@ open class RTMPConnection: EventDispatcher {
         timer = nil
     }
 
-    internal func create(stream: RTMPStream) {
+    func create(stream: RTMPStream) {
         let responder:Responder = Responder(result: { (data) -> Void in
             let id:Any? = data[0]
             if let id:Double = id as? Double {
@@ -279,11 +279,11 @@ open class RTMPConnection: EventDispatcher {
                 stream.readyState = .open
             }
         })
-        call(commandName: "createStream", responder: responder)
+        call("createStream", responder: responder)
     }
 
-    internal func rtmpStatusHandler(_ notification: Notification) {
-        let e:Event = Event.from(notification)
+    func on(status:Notification) {
+        let e:Event = Event.from(status)
 
         guard let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String else {
             return
@@ -311,7 +311,7 @@ open class RTMPConnection: EventDispatcher {
                 break
             case description.contains("reason=needauth"):
                 let command:String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
-                connect(withCommand: command, arguments: arguments)
+                connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
                 if (user == "" || password == "") {
                     close(isDisconnected: true)
@@ -319,7 +319,7 @@ open class RTMPConnection: EventDispatcher {
                 }
                 let query:String = uri.query ?? ""
                 let command:String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
-                connect(withCommand: command, arguments: arguments)
+                connect(command, arguments: arguments)
             default:
                 break
             }
@@ -330,7 +330,7 @@ open class RTMPConnection: EventDispatcher {
         }
     }
 
-    func on(timer:Timer) {
+    @objc private func on(timer:Timer) {
         let totalBytesIn:Int64 = self.totalBytesIn
         let totalBytesOut:Int64 = self.totalBytesOut
         currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
@@ -382,7 +382,7 @@ open class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    internal func didSet(readyState: RTMPSocket.ReadyState) {
+    func didSet(readyState: RTMPSocket.ReadyState) {
         switch readyState {
         case .handshakeDone:
             guard let chunk:RTMPChunk = createConnectionChunk() else {
@@ -402,7 +402,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    internal func listen(bytes:[UInt8]) {
+    func listen(bytes:[UInt8]) {
         guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) else {
             socket.inputBuffer.append(contentsOf: bytes)
             return

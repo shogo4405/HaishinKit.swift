@@ -6,7 +6,7 @@ public final class DeviceUtil {
     }
 
     #if os(iOS)
-    static public func getAVCaptureVideoOrientation(_ orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
+    static public func videoOrientation(by orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
         case .portrait:
             return .portrait
@@ -46,7 +46,7 @@ public final class DeviceUtil {
         return nil
     }
 
-    static internal func getActualFPS(_ fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
+    static func getActualFPS(_ fps:Float64, device:AVCaptureDevice) -> (fps:Float64, duration:CMTime)? {
         var durations:[CMTime] = []
         var frameRates:[Float64] = []
 

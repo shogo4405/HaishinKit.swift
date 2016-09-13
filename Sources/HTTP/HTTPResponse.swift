@@ -9,11 +9,11 @@ protocol HTTPResponseConvertible: BytesConvertible, CustomStringConvertible {
 
 extension HTTPResponseConvertible {
 
-    internal var description:String {
+    var description:String {
         return Mirror(reflecting: self).description
     }
 
-    internal var bytes:[UInt8] {
+    var bytes:[UInt8] {
         get {
             var lines:[String] = []
             lines.append("\(version) \(statusCode)")
@@ -57,8 +57,8 @@ extension HTTPResponseConvertible {
 struct HTTPResponse: HTTPResponseConvertible {
     static let separator:[UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
-    internal var version:String = HTTPVersion.version11.rawValue
-    internal var statusCode:String = ""
-    internal var headerFields:[String: String] = [:]
-    internal var body:[UInt8] = []
+    var version:String = HTTPVersion.version11.rawValue
+    var statusCode:String = ""
+    var headerFields:[String: String] = [:]
+    var body:[UInt8] = []
 }

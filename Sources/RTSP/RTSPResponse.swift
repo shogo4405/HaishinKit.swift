@@ -1,15 +1,15 @@
 import Foundation
 
 struct RTSPResponse: HTTPResponseConvertible {
-    internal var version:String = "RTSP/1.0"
-    internal var statusCode:String = ""
-    internal var headerFields:[String: String] = [:]
-    internal var body:[UInt8] = []
+    var version:String = "RTSP/1.0"
+    var statusCode:String = ""
+    var headerFields:[String: String] = [:]
+    var body:[UInt8] = []
 
-    internal init() {
+    init() {
     }
 
-    internal init?(bytes:[UInt8]) {
+    init?(bytes:[UInt8]) {
         self.bytes = bytes
     }
 }

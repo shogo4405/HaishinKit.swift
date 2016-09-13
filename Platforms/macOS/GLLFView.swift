@@ -21,8 +21,8 @@ open class GLLFView: NSOpenGLView {
     }
 
     public var videoGravity:String! = AVLayerVideoGravityResizeAspect
-    internal var orientation:AVCaptureVideoOrientation = .portrait
-    internal var position:AVCaptureDevicePosition = .front
+    var orientation:AVCaptureVideoOrientation = .portrait
+    var position:AVCaptureDevicePosition = .front
     fileprivate var displayImage:CIImage!
     fileprivate var ciContext:CIContext!
     fileprivate var originalFrame:CGRect = CGRect.zero
@@ -103,11 +103,11 @@ open class GLLFView: NSOpenGLView {
 
 extension GLLFView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    internal func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
+    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
         ciContext.render(image, to: toCVPixelBuffer)
     }
 
-    internal func draw(image:CIImage) {
+    func draw(image:CIImage) {
         displayImage = image
         DispatchQueue.main.async {
             self.needsDisplay = true

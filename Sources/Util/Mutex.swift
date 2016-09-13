@@ -14,7 +14,7 @@ final class Mutex {
     private let condition:UnsafeMutablePointer<pthread_cond_t>
     private let attribute:UnsafeMutablePointer<pthread_mutexattr_t>
 
-    internal init() {
+    init() {
         mutex = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: MemoryLayout<pthread_mutex_t>.size)
         condition = UnsafeMutablePointer<pthread_cond_t>.allocate(capacity: MemoryLayout<pthread_cond_t>.size)
         attribute = UnsafeMutablePointer<pthread_mutexattr_t>.allocate(capacity: MemoryLayout<pthread_mutexattr_t>.size)
@@ -30,7 +30,7 @@ final class Mutex {
         pthread_mutex_destroy(mutex)
     }
 
-    internal func lock() throws {
+    func lock() throws {
         switch pthread_mutex_trylock(mutex) {
         case EBUSY:
             throw Mutex.Error.busy
@@ -41,15 +41,15 @@ final class Mutex {
         }
     }
 
-    internal func unlock() {
+    func unlock() {
         pthread_mutex_unlock(mutex)
     }
 
-    internal func wait() -> Bool {
+    func wait() -> Bool {
         return pthread_cond_wait(condition, mutex) == 0
     }
 
-    internal func signal() -> Bool {
+    func signal() -> Bool {
         return pthread_cond_signal(condition) == 0
     }
 }

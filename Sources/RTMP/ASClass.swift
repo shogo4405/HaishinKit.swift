@@ -14,8 +14,8 @@ public final class ASUndefined: NSObject {
 
 // MARK: -
 public struct ASArray {
-    internal fileprivate(set) var data:[Any?]
-    internal fileprivate(set) var dict:[String: Any?] = [:]
+    fileprivate(set) var data:[Any?]
+    fileprivate(set) var dict:[String: Any?] = [:]
 
     public var length:Int {
         return data.count
