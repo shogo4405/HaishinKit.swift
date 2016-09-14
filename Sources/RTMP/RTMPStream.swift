@@ -266,7 +266,7 @@ open class RTMPStream: NetStream {
         self.rtmpConnection = connection
         super.init()
         self.dispatcher = EventDispatcher(target: self)
-        rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.create(stream: self)
         }
@@ -532,11 +532,11 @@ extension RTMPStream {
 
 extension RTMPStream: IEventDispatcher {
     // MARK: IEventDispatcher
-    public func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
-        dispatcher.addEventListener(type: type, selector: selector, observer: observer, useCapture: useCapture)
+    public func addEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }
-    public func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
-        dispatcher.removeEventListener(type: type, selector: selector, observer: observer, useCapture: useCapture)
+    public func removeEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+        dispatcher.removeEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }
     public func dispatch(event:Event) {
         dispatcher.dispatch(event: event)

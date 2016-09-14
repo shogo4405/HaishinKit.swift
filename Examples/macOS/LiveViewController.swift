@@ -123,7 +123,7 @@ final class LiveViewController: NSViewController {
             segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:
-                rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+                rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
                 rtmpConnection.connect(urlField.stringValue)
             case 1:
                 httpStream.publish("hello")
@@ -139,7 +139,7 @@ final class LiveViewController: NSViewController {
         segmentedControl.isEnabled = true
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpConnection.removeEventListener(type: Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.close()
         case 1:
             httpService.remove(stream: httpStream)

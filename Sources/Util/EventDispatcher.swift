@@ -4,8 +4,8 @@ import Foundation
  flash.events.IEventDispatcher for Swift
  */
 public protocol IEventDispatcher: class {
-    func addEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
-    func removeEventListener(type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func addEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
+    func removeEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
     func dispatch(event:Event)
     func dispatch(type:String, bubbles:Bool, data:Any?)
 }
@@ -72,13 +72,13 @@ open class EventDispatcher: NSObject, IEventDispatcher {
         target = nil
     }
 
-    public final func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+    public final func addEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
         NotificationCenter.default.addObserver(
             observer ?? target ?? self, selector: selector, name: NSNotification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
         )
     }
 
-    public final func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+    public final func removeEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
         NotificationCenter.default.removeObserver(
             observer ?? target ?? self, name: NSNotification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
         )

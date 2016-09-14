@@ -141,7 +141,7 @@ open class RTMPSharedObject: EventDispatcher {
             close()
         }
         self.rtmpConnection = rtmpConnection
-        rtmpConnection.addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             timestamp = rtmpConnection.socket.timestamp
             rtmpConnection.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
@@ -155,7 +155,7 @@ open class RTMPSharedObject: EventDispatcher {
 
     open func close() {
         data.removeAll(keepingCapacity: false)
-        rtmpConnection?.removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
+        rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
         rtmpConnection = nil
     }

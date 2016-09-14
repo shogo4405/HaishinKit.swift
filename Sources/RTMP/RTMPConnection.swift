@@ -206,12 +206,12 @@ open class RTMPConnection: EventDispatcher {
 
     override public init() {
         super.init()
-        addEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
+        addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 
     deinit {
         timer = nil
-        removeEventListener(type: Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 
     open func call(_ commandName:String, responder:Responder?, arguments:Any?...) {
