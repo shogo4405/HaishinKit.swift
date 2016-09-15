@@ -224,7 +224,7 @@ open class RTMPStream: NetStream {
     open static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
     open internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
     open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    open fileprivate(set) dynamic var currentFPS:UInt8 = 0
+    open fileprivate(set) dynamic var currentFPS:UInt16 = 0
     open var soundTransform:SoundTransform {
         get { return audioPlayback.soundTransform }
         set { audioPlayback.soundTransform = newValue }
@@ -242,6 +242,7 @@ open class RTMPStream: NetStream {
                 send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
+                sampler.startRunning()
                 if (howToPublish == .localRecord) {
                     mixer.recorder.fileName = info.resourceName
                     mixer.recorder.startRunning()
@@ -256,8 +257,9 @@ open class RTMPStream: NetStream {
     var videoTimestamp:Double = 0
     fileprivate(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
     fileprivate var muxer:RTMPMuxer = RTMPMuxer()
-    fileprivate var frameCount:UInt8 = 0
-    fileprivate var chunkTypes:[FLVTag.TagType:Bool] = [:]
+    fileprivate var sampler:MP4Sampler = MP4Sampler()
+    fileprivate var frameCount:UInt16 = 0
+    fileprivate var chunkTypes:[FLVTagType:Bool] = [:]
     fileprivate var dispatcher:IEventDispatcher!
     fileprivate var howToPublish:RTMPStream.HowToPublish = .live
     fileprivate var rtmpConnection:RTMPConnection
@@ -390,6 +392,7 @@ open class RTMPStream: NetStream {
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.mixer.videoIO.encoder.stopRunning()
+                self.sampler.stopRunning()
                 self.mixer.recorder.stopRunning()
                 self.FCUnpublish()
                 self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
@@ -419,6 +422,7 @@ open class RTMPStream: NetStream {
             #endif
             self.mixer.audioIO.encoder.delegate = self.muxer
             self.mixer.videoIO.encoder.delegate = self.muxer
+            self.sampler.delegate = self.muxer
             self.mixer.startRunning()
             self.chunkTypes.removeAll()
             self.FCPublish()
@@ -491,6 +495,10 @@ open class RTMPStream: NetStream {
         return metadata
     }
 
+    func append(url:URL, completionHandler: MP4Sampler.Handler? = nil) {
+        sampler.append(file: url, completionHandler: completionHandler)
+    }
+
     func on(timer:Timer) {
         currentFPS = frameCount
         frameCount = 0
@@ -541,8 +549,8 @@ extension RTMPStream: IEventDispatcher {
     public func dispatch(event:Event) {
         dispatcher.dispatch(event: event)
     }
-    public func dispatch(type:String, bubbles:Bool, data:Any?) {
-        dispatcher.dispatch(type: type, bubbles: bubbles, data: data)
+    public func dispatch(_ type:String, bubbles:Bool, data:Any?) {
+        dispatcher.dispatch(type, bubbles: bubbles, data: data)
     }
 }
 
@@ -552,11 +560,11 @@ extension RTMPStream: RTMPMuxerDelegate {
         guard readyState == .publishing else {
             return
         }
-        let type:FLVTag.TagType = .audio
+        let type:FLVTagType = .audio
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
+            message: type.message(with: id, timestamp: UInt32(audioTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
@@ -567,15 +575,15 @@ extension RTMPStream: RTMPMuxerDelegate {
         guard readyState == .publishing else {
             return
         }
-        let type:FLVTag.TagType = .video
+        let type:FLVTagType = .video
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
+            message: type.message(with: id, timestamp: UInt32(videoTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
-        frameCount = (frameCount + 1) & 0xFF
+        frameCount += 1
     }
 }

@@ -5,10 +5,12 @@ import Foundation
  */
 open class Responder: NSObject {
 
-    private var result:(_ data:[Any?]) -> Void
-    private var status:((_ data:[Any?]) -> Void)?
+    public typealias Handler = (_ data:[Any?]) -> Void
 
-    public init(result:@escaping (_ data:[Any?]) -> Void, status:((_ data:[Any?]) -> Void)? = nil) {
+    private var result:Handler
+    private var status:Handler?
+
+    public init(result:@escaping Handler, status:Handler? = nil) {
         self.result = result
         self.status = status
     }
@@ -330,18 +332,6 @@ open class RTMPConnection: EventDispatcher {
         }
     }
 
-    @objc private func on(timer:Timer) {
-        let totalBytesIn:Int64 = self.totalBytesIn
-        let totalBytesOut:Int64 = self.totalBytesOut
-        currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
-        currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
-        previousTotalBytesIn = totalBytesIn
-        previousTotalBytesOut = totalBytesOut
-        for (_, stream) in streams {
-            stream.on(timer: timer)
-        }
-    }
-
     fileprivate func createConnectionChunk() -> RTMPChunk? {
         guard let uri:URL = uri else {
             return nil
@@ -377,6 +367,18 @@ open class RTMPConnection: EventDispatcher {
         )
 
         return RTMPChunk(message: message)
+    }
+
+    @objc private func on(timer:Timer) {
+        let totalBytesIn:Int64 = self.totalBytesIn
+        let totalBytesOut:Int64 = self.totalBytesOut
+        currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
+        currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
+        previousTotalBytesIn = totalBytesIn
+        previousTotalBytesOut = totalBytesOut
+        for (_, stream) in streams {
+            stream.on(timer: timer)
+        }
     }
 }
 

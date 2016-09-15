@@ -345,7 +345,7 @@ final class RTMPCommandMessage: RTMPMessage {
             case "close":
                 connection.close()
             default:
-                connection.dispatch(type: Event.RTMP_STATUS, bubbles: false, data: arguments.isEmpty ? nil : arguments[0])
+                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.isEmpty ? nil : arguments[0])
             }
             return
         }
@@ -371,7 +371,7 @@ final class RTMPDataMessage: RTMPMessage {
     var handlerName:String = ""
     var arguments:[Any?] = []
 
-    fileprivate var serializer:AMFSerializer = AMF0Serializer()
+    private var serializer:AMFSerializer = AMF0Serializer()
 
     override var payload:[UInt8] {
         get {
@@ -533,10 +533,10 @@ final class RTMPSharedObjectMessage: RTMPMessage {
 final class RTMPAudioMessage: RTMPMessage {
     var config:AudioSpecificConfig?
 
-    fileprivate(set) var codec:FLVAudioCodec = .unknown
-    fileprivate(set) var soundRate:FLVSoundRate = .kHz44
-    fileprivate(set) var soundSize:FLVSoundSize = .snd8bit
-    fileprivate(set) var soundType:FLVSoundType = .stereo
+    private(set) var codec:FLVAudioCodec = .unknown
+    private(set) var soundRate:FLVSoundRate = .kHz44
+    private(set) var soundSize:FLVSoundSize = .snd8bit
+    private(set) var soundType:FLVSoundType = .stereo
 
     var soundData:[UInt8] {
         let data:[UInt8] = payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
@@ -618,8 +618,8 @@ final class RTMPAudioMessage: RTMPMessage {
  7.1.5. Video Message (9)
  */
 final class RTMPVideoMessage: RTMPMessage {
-    fileprivate(set) var codec:FLVVideoCodec = .unknown
-    fileprivate(set) var status:OSStatus = noErr
+    private(set) var codec:FLVVideoCodec = .unknown
+    private(set) var status:OSStatus = noErr
 
     init() {
         super.init(type: .video)
@@ -638,7 +638,7 @@ final class RTMPVideoMessage: RTMPMessage {
             return
         }
         OSAtomicAdd64(Int64(payload.count), &stream.info.byteCount)
-        guard FLVTag.TagType.video.headerSize < payload.count else {
+        guard FLVTagType.video.headerSize < payload.count else {
             return
         }
         switch payload[1] {
@@ -661,7 +661,7 @@ final class RTMPVideoMessage: RTMPMessage {
             decodeTimeStamp: kCMTimeInvalid
         )
 
-        let bytes:[UInt8] = Array(payload[FLVTag.TagType.video.headerSize..<payload.count])
+        let bytes:[UInt8] = Array(payload[FLVTagType.video.headerSize..<payload.count])
         var sample:[UInt8] = bytes
         let sampleSize:Int = bytes.count
         var blockBuffer:CMBlockBuffer?
@@ -680,7 +680,7 @@ final class RTMPVideoMessage: RTMPMessage {
 
     func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
-        config.bytes = Array(payload[FLVTag.TagType.video.headerSize..<payload.count])
+        config.bytes = Array(payload[FLVTagType.video.headerSize..<payload.count])
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
     }
 }
@@ -764,7 +764,7 @@ final class RTMPUserControlMessage: RTMPMessage {
                 message: RTMPUserControlMessage(event: .pong, value: value)
             ))
         case .bufferEmpty, .bufferFull:
-            connection.streams[UInt32(value)]?.dispatch(type: "rtmpStatus", bubbles: false, data: [
+            connection.streams[UInt32(value)]?.dispatch("rtmpStatus", bubbles: false, data: [
                 "level": "status",
                 "code": description,
                 "description": ""

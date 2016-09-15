@@ -194,7 +194,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.PCRFlag = true
-            packet.adaptationField?.PCR = TSProgramClockReference.encode(0, UInt16(PCR))
+            packet.adaptationField?.PCR = TSProgramClockReference.encode(PCR, 0)
             packet.adaptationField?.compute()
         }
         packet.payloadUnitStartIndicator = true

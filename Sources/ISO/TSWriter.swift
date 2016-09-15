@@ -58,10 +58,11 @@ class TSWriter {
     }
 
     func writeSampleBuffer(_ PID:UInt16, streamID:UInt8, sampleBuffer:CMSampleBuffer) {
+        let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
         if (timestamps[PID] == nil) {
-            timestamps[PID] = sampleBuffer.presentationTimeStamp
+            timestamps[PID] = presentationTimeStamp
             if (PCRPID == PID) {
-                PCRTimestamp = sampleBuffer.presentationTimeStamp
+                PCRTimestamp = presentationTimeStamp
             }
         }
         let config:Any? = streamID == 192 ? audioConfig : videoConfig
@@ -71,9 +72,14 @@ class TSWriter {
             return
         }
         PES.streamID = streamID
-        let decodeTimeStamp:CMTime = sampleBuffer.decodeTimeStamp
+
+        var decodeTimeStamp:CMTime = sampleBuffer.decodeTimeStamp
+        if (decodeTimeStamp == kCMTimeInvalid) {
+            decodeTimeStamp = presentationTimeStamp
+        }
+
         var packets:[TSPacket] = split(PID, PES: PES, timestamp: decodeTimeStamp)
-        if (PCRPID == PID && rorateFileHandle(decodeTimeStamp, next: sampleBuffer.decodeTimeStamp)) {
+        if (PCRPID == PID && rorateFileHandle(decodeTimeStamp)) {
             packets[0].adaptationField?.randomAccessIndicator = true
             packets[0].adaptationField?.discontinuityIndicator = true
         }
@@ -106,7 +112,7 @@ class TSWriter {
         return packets
     }
 
-    func rorateFileHandle(_ timestamp:CMTime, next:CMTime) -> Bool {
+    func rorateFileHandle(_ timestamp:CMTime) -> Bool {
         let duration:Double = timestamp.seconds - rotatedTimestamp.seconds
         if (duration <= segmentDuration) {
             return false

@@ -192,7 +192,7 @@ open class RTMPSharedObject: EventDispatcher {
             }
             changeList.append(change)
         }
-        dispatch(type: Event.SYNC, bubbles: false, data: changeList)
+        dispatch(Event.SYNC, bubbles: false, data: changeList)
     }
 
     func createChunk(_ events:[RTMPSharedObjectEvent]) -> RTMPChunk {

@@ -158,12 +158,14 @@ final class LiveViewController: NSViewController {
             httpStream.attach(camera: nil)
             rtmpStream.attach(audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
             rtmpStream.attach(camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            lfView.attach(stream: rtmpStream)
             urlField.stringValue = LiveViewController.defaultURL
         case 1:
             rtmpStream.attach(audio: nil)
             rtmpStream.attach(camera: nil)
             httpStream.attach(audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
             httpStream.attach(camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            lfView.attach(stream: httpStream)
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break

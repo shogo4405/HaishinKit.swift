@@ -153,50 +153,51 @@ enum FLVAudioCodec:UInt8 {
 }
 
 // MARK: -
-struct FLVTag {
+enum FLVTagType:UInt8 {
+    case audio = 8
+    case video = 9
+    case data  = 18
 
-    enum TagType: UInt8 {
-        case audio = 8
-        case video = 9
-        case data  = 18
-
-        var streamId:UInt16 {
-            switch self {
-            case .audio:
-                return RTMPChunk.StreamID.audio.rawValue
-            case .video:
-                return RTMPChunk.StreamID.video.rawValue
-            case .data:
-                return 0
-            }
-        }
-        
-        var headerSize:Int {
-            switch self {
-            case .audio:
-                return 2
-            case .video:
-                return 5
-            case .data:
-                return 0
-            }
-        }
-
-        func createMessage(_ streamId: UInt32, timestamp: UInt32, buffer:Foundation.Data) -> RTMPMessage {
-            switch self {
-            case .audio:
-                return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
-            case .video:
-                return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
-            case .data:
-                return RTMPDataMessage(objectEncoding: 0x00)
-            }
+    var streamId:UInt16 {
+        switch self {
+        case .audio:
+            return RTMPChunk.StreamID.audio.rawValue
+        case .video:
+            return RTMPChunk.StreamID.video.rawValue
+        case .data:
+            return 0
         }
     }
 
+    var headerSize:Int {
+        switch self {
+        case .audio:
+            return 2
+        case .video:
+            return 5
+        case .data:
+            return 0
+        }
+    }
+
+    func message(with streamId: UInt32, timestamp: UInt32, buffer:Data) -> RTMPMessage {
+        switch self {
+        case .audio:
+            return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+        case .video:
+            return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+        case .data:
+            return RTMPDataMessage(objectEncoding: 0x00)
+        }
+    }
+
+}
+
+// MARK: -
+struct FLVTag {
     static let headerSize = 11
 
-    var tagType:TagType = .data
+    var tagType:FLVTagType = .data
     var dataSize:UInt32 = 0
     var timestamp:UInt32 = 0
     var timestampExtended:UInt8 = 0

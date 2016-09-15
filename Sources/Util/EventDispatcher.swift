@@ -7,7 +7,7 @@ public protocol IEventDispatcher: class {
     func addEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
     func removeEventListener(_ type:String, selector:Selector, observer:AnyObject?, useCapture:Bool)
     func dispatch(event:Event)
-    func dispatch(type:String, bubbles:Bool, data:Any?)
+    func dispatch(_ type:String, bubbles:Bool, data:Any?)
 }
 
 public enum EventPhase: UInt8 {
@@ -92,7 +92,7 @@ open class EventDispatcher: NSObject, IEventDispatcher {
         event.target = nil
     }
 
-    public final func dispatch(type:String, bubbles:Bool, data:Any?) {
+    public final func dispatch(_ type:String, bubbles:Bool, data:Any?) {
         dispatch(event: Event(type: type, bubbles: bubbles, data: data))
     }
 }

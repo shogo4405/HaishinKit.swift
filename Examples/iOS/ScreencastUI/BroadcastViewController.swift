@@ -22,6 +22,10 @@ class BroadcastViewController: UIViewController {
         ]
 
         let broadcastConfiguration:RPBroadcastConfiguration = RPBroadcastConfiguration()
+        broadcastConfiguration.clipDuration = 2
+        broadcastConfiguration.videoCompressionProperties = [
+            AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel as NSSecureCoding & NSObjectProtocol,
+        ]
 
         self.extensionContext?.completeRequest(
             withBroadcast: broadcastURL,

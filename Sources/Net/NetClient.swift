@@ -10,7 +10,7 @@ final class NetClient: NetSocket {
     static let defaultBufferSize:Int = 8192
 
     weak var delegate:NetClientDelegate?
-    fileprivate(set) var service:Foundation.NetService?
+    private(set) var service:Foundation.NetService?
 
     init(service:Foundation.NetService, inputStream:InputStream, outputStream:OutputStream) {
         super.init()

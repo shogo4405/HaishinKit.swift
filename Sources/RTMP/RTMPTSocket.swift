@@ -43,15 +43,16 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     private var delay:UInt8 = 1
-    private var mutex:Mutex = Mutex()
     private var index:Int64 = 0
     private var events:[Event] = []
     private var baseURL:URL!
     private var session:URLSession!
     private var c2packet:[UInt8] = []
     private var isPending:Bool = false
+    private let outputQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.RTMPTSocket.output")
     private var connectionID:String!
     private var outputBuffer:[UInt8] = []
+    private var lastResponse:Date = Date()
 
     override init() {
         super.init()
@@ -77,20 +78,13 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         for chunk in chunks {
             bytes.append(contentsOf: chunk)
         }
-        do {
-            try mutex.lock()
-            outputBuffer.append(contentsOf: bytes)
-            if (!isPending) {
-                isPending = true
-                doOutput(bytes: outputBuffer)
-                outputBuffer.removeAll()
+        outputQueue.sync {
+            self.outputBuffer.append(contentsOf: bytes)
+            if (!self.isPending) {
+                self.isPending = true
+                self.doOutput(bytes: self.outputBuffer)
+                self.outputBuffer.removeAll()
             }
-            mutex.unlock()
-        } catch {
-            logger.warning("")
-        }
-        if (logger.isEnabledForLogLevel(.verbose)) {
-            logger.verbose("\(chunk)")
         }
         return bytes.count
     }
@@ -121,17 +115,14 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             return
         }
 
-        do {
-            try mutex.lock()
-            if (outputBuffer.isEmpty) {
-                isPending = false
+        lastResponse = Date()
+        outputQueue.sync {
+            if (self.outputBuffer.isEmpty) {
+                self.isPending = false
             } else {
-                doOutput(bytes: outputBuffer)
-                outputBuffer.removeAll()
+                self.doOutput(bytes: outputBuffer)
+                self.outputBuffer.removeAll()
             }
-            mutex.unlock()
-        } catch {
-            logger.warning()
         }
 
         guard

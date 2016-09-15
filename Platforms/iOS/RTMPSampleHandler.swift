@@ -3,20 +3,39 @@ import Foundation
 
 @available(iOS 10.0, *)
 public class RTMPBroadcaster: RTMPConnection {
-    private var stream:RTMPStream?
+    static let `default`:RTMPBroadcaster = RTMPBroadcaster()
 
-    func process(sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
-        guard let stream:RTMPStream = stream, stream.readyState == .publishing else {
+    private var stream:RTMPStream!
+    private var connecting:Bool = false
+    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.RTMPBroadcaster.lock")
+
+    override init() {
+        super.init()
+        stream = RTMPStream(connection: self)
+    }
+
+    override public func connect(_ command: String, arguments: Any?...) {
+        lockQueue.sync {
+            if (connecting) {
+                return
+            }
+            connecting = true
+            super.connect(command, arguments: arguments)
+        }
+    }
+
+    override public func close() {
+        connecting = false
+        super.close()
+    }
+
+    func processMP4Clip(mp4ClipURL: URL?, completionHandler: MP4Sampler.Handler) {
+        guard let url:URL = mp4ClipURL else {
+            completionHandler()
             return
         }
-        switch  sampleBufferType {
-        case .video:
-            stream.mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
-        case .audioApp:
-            break
-        case .audioMic:
-            stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
-        }
+        stream.append(url: url)
+        completionHandler()
     }
 
     override func on(status:Notification) {
@@ -27,8 +46,7 @@ public class RTMPBroadcaster: RTMPConnection {
         }
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            stream = RTMPStream(connection: self)
-            stream?.publish("live")
+            stream.publish("live")
         default:
             break
         }
@@ -36,34 +54,21 @@ public class RTMPBroadcaster: RTMPConnection {
 }
 
 @available(iOS 10.0, *)
-open class RTMPSampleHandler: RPBroadcastSampleHandler {
+open class RTMPMP4ClipHandler: RPBroadcastMP4ClipHandler {
 
-    public static var broadcaster:RTMPBroadcaster?
+    deinit {
+        logger.info("deinit: \(self)")
+    }
 
-    override open func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
-        logger.info("broadcastStarted:\(setupInfo)")
+    override open func processMP4Clip(with mp4ClipURL: URL?, setupInfo: [String : NSObject]?, finished: Bool) {
         guard let endpointURL:String = setupInfo?["endpointURL"] as? String else {
             return
         }
-        RTMPSampleHandler.broadcaster = RTMPBroadcaster()
-        RTMPSampleHandler.broadcaster?.connect(endpointURL, arguments: nil)
-    }
-
-    override open func broadcastPaused() {
-        logger.info("broadcastPaused")
-    }
-
-    override open func broadcastResumed() {
-        logger.info("broadcastResumed")
-    }
-
-    override open func broadcastFinished() {
-        logger.info("broadcastFinished")
-        RTMPSampleHandler.broadcaster?.close()
-        RTMPSampleHandler.broadcaster = nil
-    }
-
-    override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
-        RTMPSampleHandler.broadcaster?.process(sampleBuffer: sampleBuffer, with: sampleBufferType)
+        RTMPBroadcaster.default.connect(endpointURL, arguments: nil)
+        RTMPBroadcaster.default.processMP4Clip(mp4ClipURL: mp4ClipURL) {_ in
+            if (finished) {
+                RTMPBroadcaster.default.close()
+            }
+        }
     }
 }

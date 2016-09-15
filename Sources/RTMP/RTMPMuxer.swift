@@ -8,8 +8,12 @@ protocol RTMPMuxerDelegate: class {
 
 // MARK: -
 final class RTMPMuxer {
-    weak var delegate:RTMPMuxerDelegate? = nil
+    static let aac:UInt8 = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
 
+    weak var delegate:RTMPMuxerDelegate? = nil
+    fileprivate var avcC:Data?
+    fileprivate var audioDecorderSpecificConfig:Data?
+    fileprivate var timestamps:[Int:Double] = [:]
     fileprivate var audioTimestamp:CMTime = kCMTimeZero
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
@@ -21,7 +25,6 @@ final class RTMPMuxer {
 
 extension RTMPMuxer: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
-    private static let aac:UInt8 = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
 
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription:CMFormatDescription = formatDescription else {
@@ -93,5 +96,51 @@ extension RTMPMuxer: VideoEncoderDelegate {
         }
         delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
         videoTimestamp = decodeTimeStamp
+    }
+}
+
+extension RTMPMuxer: MP4SamplerDelegate {
+    // MP4SampleDelegate
+    func didSet(avcC: Data, withType:Int) {
+        if (avcC == self.avcC) {
+            return
+        }
+        var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
+        buffer.append(avcC)
+        delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
+        self.avcC = avcC
+    }
+
+    func didSet(audioDecorderSpecificConfig: Data, withType:Int) {
+        if (withType == 2) {
+            return
+        }
+        if (audioDecorderSpecificConfig == self.audioDecorderSpecificConfig) {
+            return
+        }
+        var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
+        buffer.append(audioDecorderSpecificConfig)
+        delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
+        self.audioDecorderSpecificConfig = audioDecorderSpecificConfig
+    }
+
+    func output(data:Data, withType:Int, currentTime:Double, keyframe:Bool) {
+        let delta:Double = (timestamps[withType] == nil) ? 0 : timestamps[withType]!
+        switch withType {
+        case 0:
+            print(delta)
+            let compositionTime:Int32 = 0
+            var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
+            buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])
+            buffer.append(data)
+            delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
+        case 1:
+            var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
+            buffer.append(data)
+            delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
+        default:
+            break
+        }
+        timestamps[withType] = currentTime
     }
 }
