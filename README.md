@@ -7,7 +7,6 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 ### RTMP
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
-- [ ] ReplayKit Live (Technical Preview)
 - [ ] Playback
 - [x] AMF0
 - [ ] AMF3
@@ -15,7 +14,8 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] RTMPS
  - [x] Native (RTMP over SSL/TSL)
  - [ ] Tunneled (RTMPT over SSL/TSL) (Technical Preview)
-- [ ] RTMPT (Technical Preview)
+- [ ] _RTMPT (Technical Preview)_
+- [ ] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
 
 ### HLS
 - [x] HTTPService
@@ -29,6 +29,11 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 * iOS 8.0+
 * macOS 10.11+
 * xcode 8.0+
+
+## Requirements Cocoa Keys
+iOS10.0+
+* NSMicrophoneUsageDescription
+* NSCameraUsageDescription
 
 ## Installation
 ### CocoaPods
@@ -68,7 +73,7 @@ rtmpStream.publish("streamName")
 ```
 ### Settings
 ```swift
-var rtmpStream:RTMPStream = RTMPStream(rtmpConnection: rtmpConnection)
+var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
     "sessionPreset": AVCaptureSessionPresetMedium, // input video width/height
