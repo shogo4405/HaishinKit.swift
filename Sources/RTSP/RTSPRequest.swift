@@ -1,6 +1,6 @@
 import Foundation
 
-struct RTSPRequest: HTTPRequestConvertible {
+struct RTSPRequest: HTTPRequestCompatible {
     var uri:String = "/"
     var method:String = ""
     var version:String = "RTSP/1.0"

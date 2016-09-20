@@ -1,6 +1,6 @@
 import Foundation
 
-struct RTSPResponse: HTTPResponseConvertible {
+struct RTSPResponse: HTTPResponseCompatible {
     var version:String = "RTSP/1.0"
     var statusCode:String = ""
     var headerFields:[String: String] = [:]

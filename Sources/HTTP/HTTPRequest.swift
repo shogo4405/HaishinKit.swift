@@ -1,13 +1,13 @@
 import Foundation
 
-protocol HTTPRequestConvertible: BytesConvertible {
+protocol HTTPRequestCompatible: BytesConvertible {
     var uri:String { get set }
     var method:String { get set }
     var version:String { get set }
     var headerFields:[String: String] { get set }
 }
 
-extension HTTPRequestConvertible {
+extension HTTPRequestCompatible {
 
     var description:String {
         return Mirror(reflecting: self).description
@@ -52,7 +52,7 @@ extension HTTPRequestConvertible {
 }
 
 // MARK: -
-struct HTTPRequest: HTTPRequestConvertible {
+struct HTTPRequest: HTTPRequestCompatible {
     static let separator:UInt8 = 0x0a
 
     var uri:String = "/"

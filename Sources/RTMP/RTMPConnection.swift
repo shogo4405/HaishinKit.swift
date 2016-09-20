@@ -272,7 +272,7 @@ open class RTMPConnection: EventDispatcher {
         timer = nil
     }
 
-    func create(stream: RTMPStream) {
+    func createStream(_ stream: RTMPStream) {
         let responder:Responder = Responder(result: { (data) -> Void in
             let id:Any? = data[0]
             if let id:Double = id as? Double {

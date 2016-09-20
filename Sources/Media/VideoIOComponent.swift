@@ -229,7 +229,7 @@ final class VideoIOComponent: IOComponent {
         decoder.delegate = self
     }
 
-    func attach(camera:AVCaptureDevice?) {
+    func attachCamera(_ camera:AVCaptureDevice?) {
         output = nil
         guard let camera:AVCaptureDevice = camera else {
             input = nil
@@ -270,7 +270,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if os(OSX)
-    func attach(screen:AVCaptureScreenInput?) {
+    func attachScreen(_ screen:AVCaptureScreenInput?) {
         output = nil
         guard let _:AVCaptureScreenInput = screen else {
             input = nil
@@ -282,7 +282,7 @@ final class VideoIOComponent: IOComponent {
         mixer.session.startRunning()
     }
     #else
-    func attach(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
+    func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         guard let screen:ScreenCaptureSession = screen else {
             self.screen?.stopRunning()
             self.screen = nil

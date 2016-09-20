@@ -123,14 +123,14 @@ open class NetStream: NSObject {
         }
     }
 
-    open func attach(camera:AVCaptureDevice?) {
+    open func attachCamera(_ camera:AVCaptureDevice?) {
         lockQueue.async {
-            self.mixer.videoIO.attach(camera: camera)
+            self.mixer.videoIO.attachCamera(camera)
             self.mixer.startRunning()
         }
     }
 
-    open func attach(audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
+    open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
         lockQueue.async {
             self.mixer.audioIO.attach(audio: audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
             )
@@ -138,15 +138,15 @@ open class NetStream: NSObject {
     }
 
     #if os(OSX)
-    public func attach(screen:AVCaptureScreenInput?) {
+    public func attachScreen(_ screen:AVCaptureScreenInput?) {
         lockQueue.async {
-            self.mixer.videoIO.attach(screen: screen)
+            self.mixer.videoIO.attachScreen(screen)
         }
     }
     #else
-    open func attach(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
+    open func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         lockQueue.async {
-            self.mixer.videoIO.attach(screen: screen, useScreenSize: useScreenSize)
+            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
         }
     }
     open func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {

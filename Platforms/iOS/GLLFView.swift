@@ -62,7 +62,7 @@ open class GLLFView: GLKView {
         ciContext.draw(displayImage, in: inRect, from: fromRect)
     }
 
-    open func attach(stream:NetStream?) {
+    open func attachStream(_ stream:NetStream?) {
         if let stream:NetStream = stream {
             stream.mixer.videoIO.drawable = self
         }

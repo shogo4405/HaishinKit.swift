@@ -270,11 +270,11 @@ open class RTMPStream: NetStream {
         self.dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
         if (rtmpConnection.connected) {
-            rtmpConnection.create(stream: self)
+            rtmpConnection.createStream(self)
         }
     }
 
-    open func receive(audio flag:Bool) {
+    open func receiveAudio(flag:Bool) {
         lockQueue.async {
             guard self.readyState == .playing else {
                 return
@@ -290,7 +290,7 @@ open class RTMPStream: NetStream {
         }
     }
 
-    open func receive(video flag:Bool) {
+    open func receiveVideo(flag:Bool) {
         lockQueue.async {
             guard self.readyState == .playing else {
                 return
@@ -513,7 +513,7 @@ open class RTMPStream: NetStream {
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             readyState = .initilized
-            rtmpConnection.create(stream: self)
+            rtmpConnection.createStream(self)
         case RTMPStream.Code.publishStart.rawValue:
             readyState = .publishing
         default:

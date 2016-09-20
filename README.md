@@ -13,7 +13,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] SharedObject
 - [x] RTMPS
  - [x] Native (RTMP over SSL/TSL)
- - [ ] Tunneled (RTMPT over SSL/TSL) (Technical Preview)
+ - [ ] Tunneled (RTMPT over SSL/TSL)
 - [ ] _RTMPT (Technical Preview)_
 - [ ] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
 
@@ -56,12 +56,12 @@ Real Time Messaging Protocol (RTMP).
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attach(audio: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
-rtmpStream.attach(camera: DeviceUtil.device(withPosition: .Back))
+rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+rtmpStream.attachCamera(DeviceUtil.device(withPosition: .Back))
 
 var lfView:LFView = LFView(frame: view.bounds)
 lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
-lfView.attach(stream: rtmpStream)
+lfView.attachStream(rtmpStream)
 
 // add ViewController#view
 view.addSubview(lfView)
@@ -69,7 +69,7 @@ view.addSubview(lfView)
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
 // if you want to record a stream.
-// rtmpStream.publish("streamName", withType: .LocalRecord)
+// rtmpStream.publish("streamName", type: .LocalRecord)
 ```
 ### Settings
 ```swift
@@ -115,25 +115,25 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
 ### Screen Capture
 ```swift
 // iOS
-rtmpStream.attach(screen: ScreenCaptureSession())
+rtmpStream.attachScreen(ScreenCaptureSession())
 // macOS
-rtmpStream.attach(screen: AVCaptureScreenInput(displayID: CGMainDisplayID()))
+rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```
 
 ## HTTP Usage
 HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
 var httpStream:HTTPStream = HTTPStream()
-httpStream.attach(camera: AVMixer.deviceWithPosition(.Back))
-httpStream.attach(audio: AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio))
+httpStream.attachCamera(DeviceUtil.device(withPosition: .Back))
+httpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
 httpStream.publish("hello")
 
 var lfView:LFView = LFView(frame: view.bounds)
-lfView.attach(stream: httpStream)
+lfView.attachStream(httpStream)
 
 var httpService:HTTPService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
 httpService.startRunning()
-httpService.add(httpStream: httpStream)
+httpService.addHTTPStream(httpStream)
 
 // add ViewController#view
 view.addSubview(lfView)

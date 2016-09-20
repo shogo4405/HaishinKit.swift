@@ -50,7 +50,7 @@ open class LFView: UIView {
         layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
     }
 
-    open func attach(stream:NetStream?) {
+    open func attachStream(_ stream:NetStream?) {
         layer.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream

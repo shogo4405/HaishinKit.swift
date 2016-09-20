@@ -85,16 +85,14 @@ final class LiveViewController: NSViewController {
         audioPopUpButton.target = self
         cameraPopUpButton.target = self
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        rtmpStream.attach(
-            audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
+        rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio)
         )
-        rtmpStream.attach(
-            camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
+        rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo)
         )
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         publishButton.target = self
 
-        lfView.attach(stream: rtmpStream)
+        lfView.attachStream(rtmpStream)
 
         view.addSubview(lfView)
         view.addSubview(fpsPopUpButton)
@@ -127,7 +125,7 @@ final class LiveViewController: NSViewController {
                 rtmpConnection.connect(urlField.stringValue)
             case 1:
                 httpStream.publish("hello")
-                httpService.add(stream: httpStream)
+                httpService.addHTTPStream(httpStream)
                 httpService.startRunning()
             default:
                 break
@@ -142,7 +140,7 @@ final class LiveViewController: NSViewController {
             rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.close()
         case 1:
-            httpService.remove(stream: httpStream)
+            httpService.removeHTTPStream(httpStream)
             httpService.stopRunning()
             httpStream.publish(nil)
         default:
@@ -154,18 +152,18 @@ final class LiveViewController: NSViewController {
     func modeChanged(_ sender:NSSegmentedControl) {
         switch sender.selectedSegment {
         case 0:
-            httpStream.attach(audio: nil)
-            httpStream.attach(camera: nil)
-            rtmpStream.attach(audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            rtmpStream.attach(camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
-            lfView.attach(stream: rtmpStream)
+            httpStream.attachAudio(nil)
+            httpStream.attachCamera(nil)
+            rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+            rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            lfView.attachStream(rtmpStream)
             urlField.stringValue = LiveViewController.defaultURL
         case 1:
-            rtmpStream.attach(audio: nil)
-            rtmpStream.attach(camera: nil)
-            httpStream.attach(audio: DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            httpStream.attach(camera: DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
-            lfView.attach(stream: httpStream)
+            rtmpStream.attachAudio(nil)
+            rtmpStream.attachCamera(nil)
+            httpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+            httpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            lfView.attachStream(httpStream)
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break
@@ -178,11 +176,11 @@ final class LiveViewController: NSViewController {
         )
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpStream.attach(audio: device)
-            httpStream.attach(audio: nil)
+            rtmpStream.attachAudio(device)
+            httpStream.attachAudio(nil)
         case 1:
-            rtmpStream.attach(audio: nil)
-            httpStream.attach(audio: device)
+            rtmpStream.attachAudio(nil)
+            httpStream.attachAudio(device)
         default:
             break
         }
@@ -194,11 +192,11 @@ final class LiveViewController: NSViewController {
         )
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpStream.attach(camera: device)
-            httpStream.attach(camera: nil)
+            rtmpStream.attachCamera(device)
+            httpStream.attachCamera(nil)
         case 1:
-            rtmpStream.attach(camera: nil)
-            httpStream.attach(camera: device)
+            rtmpStream.attachCamera(nil)
+            httpStream.attachCamera(device)
         default:
             break
         }

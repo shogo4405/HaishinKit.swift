@@ -1,13 +1,13 @@
 import Foundation
 
-protocol HTTPResponseConvertible: BytesConvertible, CustomStringConvertible {
+protocol HTTPResponseCompatible: BytesConvertible, CustomStringConvertible {
     var version:String { get set }
     var statusCode:String { get set }
     var headerFields:[String: String] { get set }
     var body:[UInt8] { get set }
 }
 
-extension HTTPResponseConvertible {
+extension HTTPResponseCompatible {
 
     var description:String {
         return Mirror(reflecting: self).description
@@ -54,7 +54,7 @@ extension HTTPResponseConvertible {
 }
 
 // MARK: -
-struct HTTPResponse: HTTPResponseConvertible {
+struct HTTPResponse: HTTPResponseCompatible {
     static let separator:[UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
     var version:String = HTTPVersion.version11.rawValue

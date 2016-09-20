@@ -101,8 +101,8 @@ final class LiveViewController: UIViewController {
         rtmpStream = RTMPStream(connection: rtmpConnection)
         rtmpStream.syncOrientation = true
         
-        rtmpStream.attach(audio: AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
-        rtmpStream.attach(camera: DeviceUtil.device(withPosition: .back))
+        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+        rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
 
         rtmpStream.captureSettings = [
@@ -126,7 +126,7 @@ final class LiveViewController: UIViewController {
         videoBitrateSlider.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider.value = Float(RTMPStream.defaultAudioBitrate) / 1024
 
-        lfView.attach(stream: rtmpStream)
+        lfView.attachStream(rtmpStream)
 
         view.addSubview(lfView)
         view.addSubview(touchView)
@@ -160,7 +160,7 @@ final class LiveViewController: UIViewController {
 
     func rotateCamera(_ sender:UIBarButtonItem) {
         let position:AVCaptureDevicePosition = currentPosition == .back ? .front : .back
-        rtmpStream.attach(camera: DeviceUtil.device(withPosition: position))
+        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position))
         currentPosition = position
     }
 

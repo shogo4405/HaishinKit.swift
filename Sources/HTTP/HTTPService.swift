@@ -169,7 +169,7 @@ open class HTTPService: NetService {
     var document:String = HTTPService.defaultDocument
     fileprivate(set) var streams:[HTTPStream] = []
 
-    open func add(stream:HTTPStream) {
+    open func addHTTPStream(_ stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 return
@@ -178,7 +178,7 @@ open class HTTPService: NetService {
         streams.append(stream)
     }
 
-    open func remove(stream:HTTPStream) {
+    open func removeHTTPStream(_ stream:HTTPStream) {
         for i in 0..<streams.count {
             if (stream.name == streams[i].name) {
                 streams.remove(at: i)

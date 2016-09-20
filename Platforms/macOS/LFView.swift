@@ -44,7 +44,7 @@ open class LFView: NSView {
         layer?.setValue(videoGravity, forKey: "videoGravity")
     }
 
-    public func attach(stream:NetStream?) {
+    open func attachStream(_ stream:NetStream?) {
         layer?.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream

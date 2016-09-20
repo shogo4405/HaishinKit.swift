@@ -90,7 +90,7 @@ open class GLLFView: NSOpenGLView {
         glLoadIdentity()
     }
 
-    public func attach(stream: NetStream?) {
+    open func attachStream(_ stream: NetStream?) {
         if let currentStream:NetStream = currentStream {
             currentStream.mixer.videoIO.drawable = nil
         }
