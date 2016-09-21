@@ -17,7 +17,7 @@ struct AudioSpecificConfig {
     var frameLengthFlag:Bool = false
 
     var bytes:[UInt8] {
-        var bytes:[UInt8] = [UInt8](count: 2, repeatedValue: 0)
+        var bytes:[UInt8] = [UInt8](repeating: 0, count: 2)
         bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1 & 0x3)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
@@ -26,8 +26,8 @@ struct AudioSpecificConfig {
     init?(bytes:[UInt8]) {
         guard let
             type:AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
-            frequency:SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
-            channel:ChannelConfiguration = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
+            let frequency:SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
+            let channel:ChannelConfiguration = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
             return nil
         }
         self.type = type
@@ -41,17 +41,17 @@ struct AudioSpecificConfig {
         self.channel = channel
     }
 
-    init(formatDescription: CMFormatDescriptionRef) {
-        let asbd:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription).memory
+    init(formatDescription: CMFormatDescription) {
+        let asbd:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(formatDescription)!.pointee
         type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(asbd.mFormatFlags))!)
         frequency = SamplingFrequency(sampleRate: asbd.mSampleRate)
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
     }
 
-    func adts(length:Int) -> [UInt8] {
+    func adts(_ length:Int) -> [UInt8] {
         let size:Int = 7
         let fullSize:Int = size + length
-        var adts:[UInt8] = [UInt8](count: size, repeatedValue: 0x00)
+        var adts:[UInt8] = [UInt8](repeating: 0x00, count: size)
         adts[0] = 0xFF
         adts[1] = 0xF9
         adts[2] = (type.rawValue - 1) << 6 | (frequency.rawValue << 2) | (channel.rawValue >> 2)
@@ -77,51 +77,51 @@ struct AudioSpecificConfig {
     }
 }
 
-// MARK: CustomStringConvertible
 extension AudioSpecificConfig: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
-// MARK: - AudioObjectType
+// MARK: -
 enum AudioObjectType: UInt8 {
-    case Unknown     = 0
-    case AACMain     = 1
-    case AACLC       = 2
-    case AACSSR      = 3
-    case AACLTP      = 4
-    case AACSBR      = 5
-    case AACScalable = 6
-    case TwinqVQ     = 7
-    case CELP        = 8
-    case HXVC        = 9
+    case unknown     = 0
+    case aacMain     = 1
+    case aaclc       = 2
+    case aacssr      = 3
+    case aacltp      = 4
+    case aacsbr      = 5
+    case aacScalable = 6
+    case twinqVQ     = 7
+    case celp        = 8
+    case hxvc        = 9
 
-    init (objectID: MPEG4ObjectID) {
+    init(objectID: MPEG4ObjectID) {
         switch objectID {
-        case .AAC_Main:
-            self = .AACMain
+        case .aac_Main:
+            self = .aacMain
         case .AAC_LC:
-            self = .AACLC
+            self = .aaclc
         case .AAC_SSR:
-            self = .AACSSR
+            self = .aacssr
         case .AAC_LTP:
-            self = .AACLTP
+            self = .aacltp
         case .AAC_SBR:
-            self = .AACSBR
-        case .AAC_Scalable:
-            self = .AACScalable
-        case .TwinVQ:
-            self = .TwinqVQ
+            self = .aacsbr
+        case .aac_Scalable:
+            self = .aacScalable
+        case .twinVQ:
+            self = .twinqVQ
         case .CELP:
-            self = .CELP
+            self = .celp
         case .HVXC:
-            self = .HXVC
+            self = .hxvc
         }
     }
 }
 
-// MARK: - SamplingFrequency
+// MARK: -
 enum SamplingFrequency: UInt8 {
     case hz96000 = 0
     case hz88200 = 1
@@ -139,31 +139,31 @@ enum SamplingFrequency: UInt8 {
 
     var sampleRate:Float64 {
         switch self {
-        case hz96000:
+        case .hz96000:
             return 96000
-        case hz88200:
+        case .hz88200:
             return 88200
-        case hz64000:
+        case .hz64000:
             return 64000
-        case hz48000:
+        case .hz48000:
             return 48000
-        case hz44100:
+        case .hz44100:
             return 44100
-        case hz32000:
+        case .hz32000:
             return 32000
-        case hz24000:
+        case .hz24000:
             return 24000
-        case hz22050:
+        case .hz22050:
             return 22050
-        case hz16000:
+        case .hz16000:
             return 16000
-        case hz12000:
+        case .hz12000:
             return 12000
-        case hz11025:
+        case .hz11025:
             return 11025
-        case hz8000:
+        case .hz8000:
             return 8000
-        case hz7350:
+        case .hz7350:
             return 7350
         }
     }
@@ -202,7 +202,7 @@ enum SamplingFrequency: UInt8 {
     }
 }
 
-// MARK: - ChannelConfiguration
+// MARK: -
 enum ChannelConfiguration: UInt8 {
     case definedInAOTSpecificConfig = 0
     case frontCenter = 1

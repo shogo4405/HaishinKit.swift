@@ -4,7 +4,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-class AVMixer: NSObject {
+final class AVMixer: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "fps",
@@ -17,7 +17,7 @@ class AVMixer: NSObject {
     static let defaultFPS:Float64 = 30
     static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
     static let defaultVideoSettings:[NSObject: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA)
+        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA) as AnyObject
     ]
 
     var fps:Float64 {
@@ -46,11 +46,11 @@ class AVMixer: NSObject {
             guard syncOrientation != oldValue else {
                 return
             }
-            let center:NSNotificationCenter = NSNotificationCenter.defaultCenter()
+            let center:NotificationCenter = NotificationCenter.default
             if (syncOrientation) {
-                center.addObserver(self, selector: #selector(AVMixer.onOrientationChanged(_:)), name: UIDeviceOrientationDidChangeNotification, object: nil)
+                center.addObserver(self, selector: #selector(AVMixer.onOrientationChanged(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
             } else {
-                center.removeObserver(self, name: UIDeviceOrientationDidChangeNotification, object: nil)
+                center.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
             }
         }
     }
@@ -67,18 +67,20 @@ class AVMixer: NSObject {
         }
     }
 
-    private var _session:AVCaptureSession? = nil
+    fileprivate var _session:AVCaptureSession? = nil
     var session:AVCaptureSession! {
         if (_session == nil) {
             _session = AVCaptureSession()
-            _session!.sessionPreset = AVMixer.defaultSessionPreset
+            _session?.beginConfiguration()
+            _session?.sessionPreset = AVMixer.defaultSessionPreset
+            _session?.commitConfiguration()
         }
         return _session!
     }
 
-    private(set) var audioIO:AudioIOComponent!
-    private(set) var videoIO:VideoIOComponent!
-    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    fileprivate(set) var audioIO:AudioIOComponent!
+    fileprivate(set) var videoIO:VideoIOComponent!
+    fileprivate(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
     override init() {
         super.init()
@@ -93,28 +95,28 @@ class AVMixer: NSObject {
     }
 
     #if os(iOS)
-    func onOrientationChanged(notification:NSNotification) {
-        var deviceOrientation:UIDeviceOrientation = .Unknown
+    func onOrientationChanged(_ notification:Notification) {
+        var deviceOrientation:UIDeviceOrientation = .unknown
         if let device:UIDevice = notification.object as? UIDevice {
             deviceOrientation = device.orientation
         }
-        if let orientation:AVCaptureVideoOrientation = DeviceUtil.getAVCaptureVideoOrientation(deviceOrientation) {
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: deviceOrientation) {
             self.orientation = orientation
         }
     }
     #endif
 }
 
-// MARK: Runnable
 extension AVMixer: Runnable {
+    // MARK: Runnable
     var running:Bool {
-        return session.running
+        return session.isRunning
     }
 
     func startRunning() {
         session.startRunning()
         #if os(iOS)
-        if let orientation:AVCaptureVideoOrientation = DeviceUtil.getAVCaptureVideoOrientation(UIDevice.currentDevice().orientation) where syncOrientation {
+            if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) , syncOrientation {
             self.orientation = orientation
         }
         #endif

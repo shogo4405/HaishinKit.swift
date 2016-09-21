@@ -1,18 +1,8 @@
 import Foundation
 import AVFoundation
 
-public class LFView: NSView {
-    public static var defaultBackgroundColor:NSColor = NSColor.blackColor()
-
-    var position:AVCaptureDevicePosition = .Front {
-        didSet {
-            let when:dispatch_time_t  = dispatch_time(DISPATCH_TIME_NOW, Int64(0.1 * Double(NSEC_PER_SEC)))
-            dispatch_after(when, dispatch_get_main_queue()) {
-                self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
-            }
-        }
-    }
-    var orientation:AVCaptureVideoOrientation = .Portrait
+open class LFView: NSView {
+    public static var defaultBackgroundColor:NSColor = NSColor.black
 
     public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
@@ -20,9 +10,18 @@ public class LFView: NSView {
         }
     }
 
-    private weak var currentStream:Stream? {
+    var position:AVCaptureDevicePosition = .front {
         didSet {
-            guard let oldValue:Stream = oldValue else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
+            }
+        }
+    }
+    var orientation:AVCaptureVideoOrientation = .portrait
+
+    private weak var currentStream:NetStream? {
+        didSet {
+            guard let oldValue:NetStream = oldValue else {
                 return
             }
             oldValue.mixer.videoIO.drawable = nil
@@ -38,24 +37,24 @@ public class LFView: NSView {
         super.init(coder: coder)
     }
 
-    public override func awakeFromNib() {
+    open override func awakeFromNib() {
         wantsLayer = true
         layer = AVCaptureVideoPreviewLayer()
-        layer?.backgroundColor = LFView.defaultBackgroundColor.CGColor
+        layer?.backgroundColor = LFView.defaultBackgroundColor.cgColor
         layer?.setValue(videoGravity, forKey: "videoGravity")
     }
 
-    public func attachStream(stream:Stream?) {
+    open func attachStream(_ stream:NetStream?) {
         layer?.setValue(stream?.mixer.session, forKey: "session")
         stream?.mixer.videoIO.drawable = self
         currentStream = stream
     }
 }
 
-// MARK: - StreamDrawable
-extension LFView: StreamDrawable {
-    func render(image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
+extension LFView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
+    func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
     }
-    func drawImage(image:CIImage) {
+    func draw(image:CIImage) {
     }
 }

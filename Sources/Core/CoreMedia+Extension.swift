@@ -3,12 +3,12 @@ import CoreImage
 
 extension CMSampleBuffer {
     var dependsOnOthers:Bool {
-        guard let
-            attachments:CFArrayRef = CMSampleBufferGetSampleAttachmentsArray(self, false),
-            attachment:Dictionary = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), CFDictionaryRef.self) as Dictionary? else {
+        guard
+            let attachments:CFArray = CMSampleBufferGetSampleAttachmentsArray(self, false) else {
             return false
         }
-        return attachment["DependsOnOthers"] as! Bool
+        let attachment:[NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject : AnyObject]
+        return attachment["DependsOnOthers" as NSObject] as! Bool
     }
     var dataBuffer:CMBlockBuffer? {
         get {
@@ -34,39 +34,35 @@ extension CMSampleBuffer {
         return CMSampleBufferGetFormatDescription(self)
     }
     var decodeTimeStamp:CMTime {
-        let decodeTimestamp:CMTime = CMSampleBufferGetDecodeTimeStamp(self)
-        return decodeTimestamp == kCMTimeInvalid ? presentationTimeStamp : decodeTimestamp
+        return CMSampleBufferGetDecodeTimeStamp(self)
     }
     var presentationTimeStamp:CMTime {
         return CMSampleBufferGetPresentationTimeStamp(self)
     }
 }
 
-// MARK: BytesConvertible
 extension CMSampleBuffer: BytesConvertible {
+    // MARK: BytesConvertible
     var bytes:[UInt8] {
         get {
             guard let buffer:CMBlockBuffer = dataBuffer else {
                 return []
             }
+            var bytes:UnsafeMutablePointer<Int8>? = nil
             var length:Int = 0
-            var bytes:UnsafeMutablePointer<Int8> = nil
             guard CMBlockBufferGetDataPointer(buffer, 0, nil, &length, &bytes) == noErr else {
                 return []
             }
-            return Array(UnsafeBufferPointer(start: UnsafePointer<UInt8>(bytes), count: length))
-
+            return Array(Data(bytes: bytes!, count: length))
         }
         set {
-            
         }
     }
 }
 
 // MARK: -
 extension CVPixelBuffer {
-
-    static func create(image:CIImage) -> CVPixelBuffer? {
+    static func create(_ image:CIImage) -> CVPixelBuffer? {
         var buffer:CVPixelBuffer?
         CVPixelBufferCreate(
             kCFAllocatorDefault,
@@ -78,8 +74,6 @@ extension CVPixelBuffer {
         )
         return buffer
     }
-    
-    
     var width:Int {
         return CVPixelBufferGetWidth(self)
     }

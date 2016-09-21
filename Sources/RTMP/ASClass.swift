@@ -7,22 +7,22 @@ public final class ASUndefined: NSObject {
     public override var description:String {
         return "undefined"
     }
-    private override init() {
+    fileprivate override init() {
         super.init()
     }
 }
 
 // MARK: -
 public struct ASArray {
-    private(set) var data:[Any?]
-    private(set) var dict:[String: Any?] = [:]
+    fileprivate(set) var data:[Any?]
+    fileprivate(set) var dict:[String: Any?] = [:]
 
     public var length:Int {
         return data.count
     }
 
     public init(count:Int) {
-        self.data = [Any?](count: count, repeatedValue: kASUndefined)
+        self.data = [Any?](repeating: kASUndefined, count: count)
     }
 
     public init(data:[Any?]) {
@@ -30,8 +30,8 @@ public struct ASArray {
     }
 }
 
-// MARK: ArrayLiteralConvertible
-extension ASArray: ArrayLiteralConvertible {
+extension ASArray: ExpressibleByArrayLiteral {
+    // MARK: ExpressibleByArrayLiteral
     public init (arrayLiteral elements: Any?...) {
         self = ASArray(data: elements)
     }
@@ -52,14 +52,14 @@ extension ASArray: ArrayLiteralConvertible {
         set {
             if let i:Int = i as? Int {
                 if (data.count <= i) {
-                    data += [Any?](count: i - data.count + 1, repeatedValue: kASUndefined)
+                    data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
                 }
                 data[i] = newValue
             }
             if let i:String = i as? String {
                 if let i:Int = Int(i) {
                     if (data.count <= i) {
-                        data += [Any?](count: i - data.count + 1, repeatedValue: kASUndefined)
+                        data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
                     }
                     data[i] = newValue
                     return
@@ -70,15 +70,15 @@ extension ASArray: ArrayLiteralConvertible {
     }
 }
 
-// MARK: CustomStringConvertible
 extension ASArray: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     public var description:String {
         return data.description
     }
 }
 
-// MARK: Equatable
 extension ASArray: Equatable {
+    // MARK: Equatable
 }
 
 public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
@@ -98,7 +98,7 @@ public final class ASXMLDocument: NSObject {
         return data
     }
 
-    private var data:String
+    fileprivate var data:String
 
     public init(data:String) {
         self.data = data
@@ -116,7 +116,7 @@ public final class ASXML: NSObject {
         return data
     }
 
-    private var data:String
+    fileprivate var data:String
 
     public init(data:String) {
         self.data = data

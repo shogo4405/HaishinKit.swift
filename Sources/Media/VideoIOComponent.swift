@@ -3,28 +3,28 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: IOComponent {
-    let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.VideoIOComponent.lock", DISPATCH_QUEUE_SERIAL
+    let lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.VideoIOComponent.lock", attributes: []
     )
     var encoder:AVCEncoder = AVCEncoder()
     var decoder:AVCDecoder = AVCDecoder()
-    var drawable:StreamDrawable?
-    var formatDescription:CMVideoFormatDescriptionRef? {
+    var drawable:NetStreamDrawable?
+    var formatDescription:CMVideoFormatDescription? {
         didSet {
             decoder.formatDescription = formatDescription
         }
     }
-    private lazy var queue:ClockedQueue = {
+    fileprivate lazy var queue:ClockedQueue = {
         let queue:ClockedQueue = ClockedQueue()
         queue.delegate = self
         return queue
     }()
-    private var effects:[VisualEffect] = []
+    fileprivate var effects:[VisualEffect] = []
 
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                data = DeviceUtil.getActualFPS(fps, device: device) else {
+                let data = DeviceUtil.getActualFPS(fps, device: device) else {
                 return
             }
 
@@ -49,7 +49,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    var orientation:AVCaptureVideoOrientation = .Portrait {
+    var orientation:AVCaptureVideoOrientation = .portrait {
         didSet {
             guard orientation != oldValue else {
                 return
@@ -57,7 +57,7 @@ final class VideoIOComponent: IOComponent {
             drawable?.orientation = orientation
             for connection in output.connections {
                 if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                    if (connection.supportsVideoOrientation) {
+                    if (connection.isVideoOrientationSupported) {
                         connection.videoOrientation = orientation
                     }
                 }
@@ -70,9 +70,9 @@ final class VideoIOComponent: IOComponent {
             guard torch != oldValue else {
                 return
             }
-            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            let torchMode:AVCaptureTorchMode = torch ? .on : .off
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                where device.isTorchModeSupported(torchMode) else {
+                , device.isTorchModeSupported(torchMode) else {
                 logger.warning("torchMode(\(torchMode)) is not supported")
                 return
             }
@@ -92,9 +92,9 @@ final class VideoIOComponent: IOComponent {
             guard continuousAutofocus != oldValue else {
                 return
             }
-            let focusMode:AVCaptureFocusMode = continuousAutofocus ? .ContinuousAutoFocus : .AutoFocus
+            let focusMode:AVCaptureFocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                where device.isFocusModeSupported(focusMode) else {
+                , device.isFocusModeSupported(focusMode) else {
                 logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
@@ -113,15 +113,15 @@ final class VideoIOComponent: IOComponent {
         didSet {
             guard let
                 device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                point:CGPoint = focusPointOfInterest
-            where
-                device.focusPointOfInterestSupported else {
+                let point:CGPoint = focusPointOfInterest
+            ,
+                device.isFocusPointOfInterestSupported else {
                 return
             }
             do {
                 try device.lockForConfiguration()
                 device.focusPointOfInterest = point
-                device.focusMode = .AutoFocus
+                device.focusMode = .autoFocus
                 device.unlockForConfiguration()
             } catch let error as NSError {
                 logger.error("while locking device for focusPointOfInterest: \(error)")
@@ -133,15 +133,15 @@ final class VideoIOComponent: IOComponent {
         didSet {
             guard let
                 device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                point:CGPoint = exposurePointOfInterest
-            where
-                device.exposurePointOfInterestSupported else {
+                let point:CGPoint = exposurePointOfInterest
+            ,
+                device.isExposurePointOfInterestSupported else {
                 return
             }
             do {
                 try device.lockForConfiguration()
                 device.exposurePointOfInterest = point
-                device.exposureMode = .AutoExpose
+                device.exposureMode = .autoExpose
                 device.unlockForConfiguration()
             } catch let error as NSError {
                 logger.error("while locking device for exposurePointOfInterest: \(error)")
@@ -154,9 +154,9 @@ final class VideoIOComponent: IOComponent {
             guard continuousExposure != oldValue else {
                 return
             }
-            let exposureMode:AVCaptureExposureMode = continuousExposure ? .ContinuousAutoExposure : .AutoExpose
+            let exposureMode:AVCaptureExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                where device.isExposureModeSupported(exposureMode) else {
+                , device.isExposureModeSupported(exposureMode) else {
                 logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }
@@ -170,7 +170,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    private var _output:AVCaptureVideoDataOutput? = nil
+    fileprivate var _output:AVCaptureVideoDataOutput? = nil
     var output:AVCaptureVideoDataOutput! {
         get {
             if (_output == nil) {
@@ -192,7 +192,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    private(set) var input:AVCaptureInput? = nil {
+    fileprivate(set) var input:AVCaptureInput? = nil {
         didSet {
             guard oldValue != input else {
                 return
@@ -207,7 +207,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if !os(OSX)
-    private(set) var screen:ScreenCaptureSession? = nil {
+    fileprivate(set) var screen:ScreenCaptureSession? = nil {
         didSet {
             guard oldValue != screen else {
                 return
@@ -229,7 +229,7 @@ final class VideoIOComponent: IOComponent {
         decoder.delegate = self
     }
 
-    func attachCamera(camera:AVCaptureDevice?) {
+    func attachCamera(_ camera:AVCaptureDevice?) {
         output = nil
         guard let camera:AVCaptureDevice = camera else {
             input = nil
@@ -245,7 +245,7 @@ final class VideoIOComponent: IOComponent {
                 guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
                     continue
                 }
-                if (connection.supportsVideoOrientation) {
+                if (connection.isVideoOrientationSupported) {
                     connection.videoOrientation = orientation
                 }
             }
@@ -259,7 +259,7 @@ final class VideoIOComponent: IOComponent {
 
         do {
             try camera.lockForConfiguration()
-            let torchMode:AVCaptureTorchMode = torch ? .On : .Off
+            let torchMode:AVCaptureTorchMode = torch ? .on : .off
             if (camera.isTorchModeSupported(torchMode)) {
                 camera.torchMode = torchMode
             }
@@ -270,7 +270,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if os(OSX)
-    func attachScreen(screen:AVCaptureScreenInput?) {
+    func attachScreen(_ screen:AVCaptureScreenInput?) {
         output = nil
         guard let _:AVCaptureScreenInput = screen else {
             input = nil
@@ -282,7 +282,7 @@ final class VideoIOComponent: IOComponent {
         mixer.session.startRunning()
     }
     #else
-    func attachScreen(screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
+    func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
         guard let screen:ScreenCaptureSession = screen else {
             self.screen?.stopRunning()
             self.screen = nil
@@ -291,7 +291,7 @@ final class VideoIOComponent: IOComponent {
         input = nil
         output = nil
         if (useScreenSize) {
-            encoder.setValuesForKeysWithDictionary([
+            encoder.setValuesForKeys([
                 "width": screen.attributes["Width"]!,
                 "height": screen.attributes["Height"]!,
             ])
@@ -300,60 +300,60 @@ final class VideoIOComponent: IOComponent {
     }
     #endif
 
-    func effect(buffer:CVImageBufferRef) -> CIImage {
-        var image:CIImage = CIImage(CVPixelBuffer: buffer)
+    func effect(_ buffer:CVImageBuffer) -> CIImage {
+        var image:CIImage = CIImage(cvPixelBuffer: buffer)
         for effect in effects {
             image = effect.execute(image)
         }
         return image
     }
 
-    func registerEffect(effect:VisualEffect) -> Bool {
+    func registerEffect(_ effect:VisualEffect) -> Bool {
         objc_sync_enter(effects)
         defer {
             objc_sync_exit(effects)
         }
-        if let _:Int = effects.indexOf(effect) {
+        if let _:Int = effects.index(of: effect) {
             return false
         }
         effects.append(effect)
         return true
     }
 
-    func unregisterEffect(effect:VisualEffect) -> Bool {
+    func unregisterEffect(_ effect:VisualEffect) -> Bool {
         objc_sync_enter(effects)
         defer {
             objc_sync_exit(effects)
         }
-        if let i:Int = effects.indexOf(effect) {
-            effects.removeAtIndex(i)
+        if let i:Int = effects.index(of: effect) {
+            effects.remove(at: i)
             return true
         }
         return false
     }
 
     #if os(iOS)
-    func rampToVideoZoomFactor(factor:CGFloat, withRate:Float) {
-        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-            where 1 <= factor && factor < device.activeFormat.videoMaxZoomFactor else {
+    func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {
+        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+            1 <= toVideoZoomFactor && toVideoZoomFactor < device.activeFormat.videoMaxZoomFactor else {
             return
         }
         do {
             try device.lockForConfiguration()
-            device.rampToVideoZoomFactor(factor, withRate: withRate)
+            device.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
             device.unlockForConfiguration()
         } catch let error as NSError {
-            logger.error("while locking device for rampToVideoZoomFactor: \(error)")
+            logger.error("while locking device for ramp: \(error)")
         }
     }
     #endif
 }
 
-// MARK: AVCaptureVideoDataOutputSampleBufferDelegate
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
-    func captureOutput(captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, fromConnection connection:AVCaptureConnection!) {
+    // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
+    func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
         mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
-        guard var buffer:CVImageBufferRef = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
         let image:CIImage = effect(buffer)
@@ -362,48 +362,48 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             // green edge hack for OSX
             buffer = CVPixelBuffer.create(image)!
             #endif
-            drawable?.render(image, toCVPixelBuffer: buffer)
+            drawable?.render(image: image, to: buffer)
         }
         encoder.encodeImageBuffer(
             buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        drawable?.drawImage(image)
+        drawable?.draw(image: image)
     }
 }
 
-// MARK: VideoDecoderDelegate
 extension VideoIOComponent: VideoDecoderDelegate {
+    // MARK: VideoDecoderDelegate
     func sampleOutput(video sampleBuffer:CMSampleBuffer) {
         queue.enqueue(sampleBuffer)
     }
 }
 
-// MARK: ClockedQueueDelegate
 extension VideoIOComponent: ClockedQueueDelegate {
-    func queue(buffer: CMSampleBuffer) {
-        drawable?.drawImage(CIImage(CVPixelBuffer: buffer.imageBuffer!))
+    // MARK: ClockedQueueDelegate
+    func queue(_ buffer: CMSampleBuffer) {
+        drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
     }
 }
 
 #if os(iOS)
-// MARK: ScreenCaptureOutputPixelBufferDelegate
 extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
-    func didSetSize(size: CGSize) {
-        dispatch_async(lockQueue) {
+    // MARK: ScreenCaptureOutputPixelBufferDelegate
+    func didSet(size: CGSize) {
+        lockQueue.async {
             self.encoder.width = Int32(size.width)
             self.encoder.height = Int32(size.height)
         }
     }
-    func pixelBufferOutput(pixelBuffer:CVPixelBufferRef, timestamp:CMTime) {
+    func output(pixelBuffer:CVPixelBuffer, withTimestamp:CMTime) {
         if (!effects.isEmpty) {
-            drawable?.render(effect(pixelBuffer), toCVPixelBuffer: pixelBuffer)
+            drawable?.render(image: effect(pixelBuffer), to: pixelBuffer)
         }
         encoder.encodeImageBuffer(
             pixelBuffer,
-            presentationTimeStamp: timestamp,
-            duration: timestamp
+            presentationTimeStamp: withTimestamp,
+            duration: withTimestamp
         )
     }
 }

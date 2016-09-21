@@ -4,20 +4,19 @@ import AVFoundation
 import AssetsLibrary
 #endif
 
-// MARK: AVMixerRecorderDelegate
 public protocol AVMixerRecorderDelegate: class {
-    var moviesDirectory:NSURL { get }
-    func rotateFile(recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String)
-    func getWriterInput(recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput?
-    func didStartRunning(recorder: AVMixerRecorder)
-    func didStopRunning(recorder: AVMixerRecorder)
-    func didFinishWriting(recorder: AVMixerRecorder)
+    var moviesDirectory:URL { get }
+    func rotateFile(_ recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String)
+    func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput?
+    func didStartRunning(_ recorder: AVMixerRecorder)
+    func didStopRunning(_ recorder: AVMixerRecorder)
+    func didFinishWriting(_ recorder: AVMixerRecorder)
 }
 
 // MARK: -
-public class AVMixerRecorder: NSObject {
+open class AVMixerRecorder: NSObject {
 
-    public static let defaultOutputSettings:[String:[String:AnyObject]] = [
+    open static let defaultOutputSettings:[String:[String:Any]] = [
         AVMediaTypeAudio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -30,25 +29,25 @@ public class AVMixerRecorder: NSObject {
         ],
     ]
 
-    public var writer:AVAssetWriter?
-    public var fileName:String?
-    public var writerInputs:[String:AVAssetWriterInput] = [:]
-    public var outputSettings:[String:[String:AnyObject]] = AVMixerRecorder.defaultOutputSettings
-    public var delegate:AVMixerRecorderDelegate?
-    public let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.AVMixerRecorder.lock", DISPATCH_QUEUE_SERIAL
+    open var writer:AVAssetWriter?
+    open var fileName:String?
+    open var writerInputs:[String:AVAssetWriterInput] = [:]
+    open var outputSettings:[String:[String:Any]] = AVMixerRecorder.defaultOutputSettings
+    open var delegate:AVMixerRecorderDelegate?
+    open let lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.AVMixerRecorder.lock", attributes: []
     )
-    private(set) var running:Bool = false
+    fileprivate(set) var running:Bool = false
 
     public override init() {
         super.init()
         delegate = DefaultAVMixerRecorderDelegate()
     }
 
-    final func appendSampleBuffer(sampleBuffer:CMSampleBuffer, mediaType:String) {
-        dispatch_async(lockQueue) {
+    final func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
+        lockQueue.async {
 
-            guard let delegate:AVMixerRecorderDelegate = self.delegate where self.running else {
+            guard let delegate:AVMixerRecorderDelegate = self.delegate , self.running else {
                 return
             }
 
@@ -56,19 +55,19 @@ public class AVMixerRecorder: NSObject {
 
             guard let
                 writer:AVAssetWriter = self.writer,
-                input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: mediaType, sourceFormatHint: sampleBuffer.formatDescription) else {
+                let input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: mediaType, sourceFormatHint: sampleBuffer.formatDescription) else {
                 return
             }
 
             switch writer.status {
-            case .Unknown:
+            case .unknown:
                 writer.startWriting()
-                writer.startSessionAtSourceTime(sampleBuffer.presentationTimeStamp)
+                writer.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
             default:
                 break
             }
-            if (input.readyForMoreMediaData) {
-                input.appendSampleBuffer(sampleBuffer)
+            if (input.isReadyForMoreMediaData) {
+                input.append(sampleBuffer)
             }
         }
     }
@@ -77,7 +76,7 @@ public class AVMixerRecorder: NSObject {
         for (_, input) in writerInputs {
             input.markAsFinished()
         }
-        writer?.finishWritingWithCompletionHandler {
+        writer?.finishWriting {
             self.delegate?.didFinishWriting(self)
         }
         writer = nil
@@ -85,10 +84,10 @@ public class AVMixerRecorder: NSObject {
     }
 }
 
-// MARK: Runnable
 extension AVMixerRecorder: Runnable {
+    // MARK: Runnable
     final func startRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             guard !self.running else {
                 return
             }
@@ -98,7 +97,7 @@ extension AVMixerRecorder: Runnable {
     }
 
     final func stopRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             guard self.running else {
                 return
             }
@@ -110,27 +109,26 @@ extension AVMixerRecorder: Runnable {
 }
 
 // MARK: -
-public class DefaultAVMixerRecorderDelegate: NSObject {
-    public var duration:Int64 = 0
-    public var dateFormat:String = "-yyyyMMdd-HHmmss"
-    private var rotateTime:CMTime = kCMTimeZero
-    private var clockReference:String = AVMediaTypeVideo
+open class DefaultAVMixerRecorderDelegate: NSObject {
+    open var duration:Int64 = 0
+    open var dateFormat:String = "-yyyyMMdd-HHmmss"
+    fileprivate var rotateTime:CMTime = kCMTimeZero
+    fileprivate var clockReference:String = AVMediaTypeVideo
 
     #if os(OSX)
-    public lazy var moviesDirectory:NSURL = {
-        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.MoviesDirectory, .UserDomainMask, true)[0])
+    public lazy var moviesDirectory:URL = {
+        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #else
-    public lazy var moviesDirectory:NSURL = {
-        return NSURL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0])
+    open lazy var moviesDirectory:URL = {
+        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
     }()
     #endif
 }
 
-// MARK: AVMixerRecorderDelegate
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
-
-    public func rotateFile(recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String) {
+    // MARK: AVMixerRecorderDelegate
+    public func rotateFile(_ recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String) {
         let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
         guard clockReference == mediaType && rotateTime.value < presentationTimeStamp.value else {
             return
@@ -145,20 +143,20 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         )
     }
 
-    public func getWriterInput(recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
+    public func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
         guard recorder.writerInputs[mediaType] == nil else {
             return recorder.writerInputs[mediaType]
         }
-        var outputSettings:[String:AnyObject] = [:]
-        if let defaultOutputSettings:[String:AnyObject] = recorder.outputSettings[mediaType] {
+        var outputSettings:[String:Any] = [:]
+        if let defaultOutputSettings:[String:Any] = recorder.outputSettings[mediaType] {
             if (mediaType == AVMediaTypeAudio) {
-                let inSourceFormat:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(sourceFormatHint!).memory
+                let inSourceFormat:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(sourceFormatHint!)!.pointee
                 for (key, value) in defaultOutputSettings {
                     switch key {
                     case AVSampleRateKey:
-                        outputSettings[key] = value as! NSObject == 0 ? inSourceFormat.mSampleRate : value
+                        outputSettings[key] = (value as! Decimal) == 0 ? inSourceFormat.mSampleRate : value
                     case AVNumberOfChannelsKey:
-                        outputSettings[key] = value as! NSObject == 0 ? Int(inSourceFormat.mChannelsPerFrame) : value
+                        outputSettings[key] = (value as! Decimal) == 0 ? Int(inSourceFormat.mChannelsPerFrame) : value
                     default:
                         outputSettings[key] = value
                     }
@@ -169,9 +167,9 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                 for (key, value) in defaultOutputSettings {
                     switch key {
                     case AVVideoHeightKey:
-                        outputSettings[key] = value as! NSObject == 0 ? Int(dimensions.height) : value
+                        outputSettings[key] = (value as! Decimal) == 0 ? Int(dimensions.height) : value
                     case AVVideoWidthKey:
-                        outputSettings[key] = value as! NSObject == 0 ? Int(dimensions.width) : value
+                        outputSettings[key] = (value as! Decimal) == 0 ? Int(dimensions.width) : value
                     default:
                         outputSettings[key] = value
                     }
@@ -181,46 +179,46 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         var input:AVAssetWriterInput?
         input = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
         recorder.writerInputs[mediaType] = input
-        recorder.writer?.addInput(input!)
+        recorder.writer?.add(input!)
         return input
     }
 
-    public func didFinishWriting(recorder:AVMixerRecorder) {
+    public func didFinishWriting(_ recorder:AVMixerRecorder) {
     #if os(iOS)
         guard let writer:AVAssetWriter = recorder.writer else {
             return
         }
-        ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(writer.outputURL, completionBlock: nil)
+        ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: writer.outputURL, completionBlock: nil)
         do {
-            try NSFileManager.defaultManager().removeItemAtURL(writer.outputURL)
+            try FileManager.default.removeItem(at: writer.outputURL)
         } catch let error as NSError {
             logger.error("\(error)")
         }
     #endif
     }
 
-    public func didStartRunning(recorder: AVMixerRecorder) {
+    public func didStartRunning(_ recorder: AVMixerRecorder) {
     }
 
-    public func didStopRunning(recorder: AVMixerRecorder) {
+    public func didStopRunning(_ recorder: AVMixerRecorder) {
         rotateTime = kCMTimeZero
     }
 
-    func createWriter(fileName: String?) -> AVAssetWriter? {
+    func createWriter(_ fileName: String?) -> AVAssetWriter? {
         do {
-            let dateFormatter:NSDateFormatter = NSDateFormatter()
-            dateFormatter.locale = NSLocale(localeIdentifier: "en_US")
+            let dateFormatter:DateFormatter = DateFormatter()
+            dateFormatter.locale = NSLocale(localeIdentifier: "en_US") as Locale!
             dateFormatter.dateFormat = dateFormat
             var fileComponent:String? = nil
             if var fileName:String = fileName {
-                if let q:String.CharacterView.Index = fileName.characters.indexOf("?") {
-                    fileName.removeRange(q..<fileName.characters.endIndex)
+                if let q:String.CharacterView.Index = fileName.characters.index(of: "?") {
+                    fileName.removeSubrange(q..<fileName.characters.endIndex)
                 }
-                fileComponent = fileName + dateFormatter.stringFromDate(NSDate())
+                fileComponent = fileName + dateFormatter.string(from: Date())
             }
-            let url:NSURL = moviesDirectory.URLByAppendingPathComponent((fileComponent ?? NSUUID().UUIDString) + ".mp4")
+            let url:URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + ".mp4")
             logger.info("\(url)")
-            return try AVAssetWriter(URL: url, fileType: AVFileTypeMPEG4)
+            return try AVAssetWriter(outputURL: url, fileType: AVFileTypeMPEG4)
         } catch {
             logger.warning("create an AVAssetWriter")
         }

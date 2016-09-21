@@ -28,6 +28,5 @@ final class SessionDescriptionTests: XCTestCase {
     func testString() {
         var session:SessionDescription = SessionDescription()
         session.description = SessionDescriptionTests.contents
-        print(session.description)
     }
 }

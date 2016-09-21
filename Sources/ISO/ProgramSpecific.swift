@@ -1,6 +1,5 @@
 import Foundation
 
-// MARK: PSIPointer
 /**
  - seealso: https://en.wikipedia.org/wiki/Program-specific_information
  */
@@ -9,7 +8,7 @@ protocol PSIPointer {
     var pointerFillerBytes:[UInt8] { get set }
 }
 
-// MARK: - PSITableHeader
+// MARK: -
 protocol PSITableHeader {
     var tableID:UInt8 { get set }
     var sectionSyntaxIndicator:Bool { get set }
@@ -17,7 +16,7 @@ protocol PSITableHeader {
     var sectionLength:UInt16 { get set }
 }
 
-// MARK: - PSITableSyntax
+// MARK: -
 protocol PSITableSyntax {
     var tableIDExtension:UInt16 { get set }
     var versionNumber:UInt8 { get set }
@@ -66,26 +65,26 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
         self.bytes = bytes
     }
 
-    func arrayOfPackets(PID:UInt16) -> [TSPacket] {
+    func arrayOfPackets(_ PID:UInt16) -> [TSPacket] {
         var packets:[TSPacket] = []
         var packet:TSPacket = TSPacket()
         packet.payloadUnitStartIndicator = true
         packet.PID = PID
-        packet.fill(bytes, useAdaptationField: false)
+        let _ = packet.fill(bytes, useAdaptationField: false)
         packets.append(packet)
         return packets
     }
 }
 
-// MARK: CustomStringConvertible
 extension ProgramSpecific: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }
 }
 
-// MARK: BytesConvertible
 extension ProgramSpecific: BytesConvertible {
+    // MARK: BytesConvertible
     var bytes:[UInt8] {
         get {
             let data:[UInt8] = self.data
@@ -217,22 +216,23 @@ final class ProgramMapSpecific: ProgramSpecific {
     }
 }
 
-// MARK: ElementaryStreamType
+// MARK: -
 enum ElementaryStreamType: UInt8 {
-    case MPEG1Video          = 0x01
-    case MPEG2Video          = 0x02
-    case MPEG1Audio          = 0x03
-    case MPEG2Audio          = 0x04
-    case MPEG2TabledData     = 0x05
-    case MPEG2PacketizedData = 0x06
+    case mpeg1Video          = 0x01
+    case mpeg2Video          = 0x02
+    case mpeg1Audio          = 0x03
+    case mpeg2Audio          = 0x04
+    case mpeg2TabledData     = 0x05
+    case mpeg2PacketizedData = 0x06
 
-    case ADTSAAC  = 0x0F
-    case H263     = 0x10
+    case adtsaac  = 0x0F
+    case h263     = 0x10
 
-    case H264     = 0x1B
-    case H265     = 0x24
+    case h264     = 0x1B
+    case h265     = 0x24
 }
 
+// MARK: -
 struct ElementaryStreamSpecificData {
     static let fixedHeaderSize:Int = 5
 
@@ -249,8 +249,8 @@ struct ElementaryStreamSpecificData {
     }
 }
 
-// MARK: BytesConvertible
 extension ElementaryStreamSpecificData: BytesConvertible {
+    // MARK: BytesConvertible
     var bytes:[UInt8] {
         get {
             return ByteArray()
@@ -274,8 +274,8 @@ extension ElementaryStreamSpecificData: BytesConvertible {
     }
 }
 
-// MARK: CustomStringConvertible
 extension ElementaryStreamSpecificData: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
     }

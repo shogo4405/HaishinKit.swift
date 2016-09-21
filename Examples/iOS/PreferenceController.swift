@@ -7,8 +7,8 @@ final class PreferenceController: UIViewController {
     let closeButton:UIButton = {
         let button:UIButton = UIButton()
         button.layer.cornerRadius = 22
-        button.setTitle("X", forState: .Normal)
-        button.backgroundColor = UIColor.grayColor()
+        button.setTitle("X", for: UIControlState())
+        button.backgroundColor = UIColor.gray
         return button
     }()
 
@@ -16,7 +16,7 @@ final class PreferenceController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        closeButton.addTarget(self, action: #selector(PreferenceController.closePreference), forControlEvents: .TouchDown)
+        closeButton.addTarget(self, action: #selector(PreferenceController.closePreference), for: .touchDown)
         view.addSubview(closeButton)
     }
 
@@ -26,6 +26,6 @@ final class PreferenceController: UIViewController {
     }
 
     func closePreference() {
-        dismissViewControllerAnimated(true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 }

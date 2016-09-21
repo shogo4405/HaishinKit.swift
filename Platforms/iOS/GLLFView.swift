@@ -2,33 +2,33 @@ import GLKit
 import Foundation
 import AVFoundation
 
-public class GLLFView: GLKView {
+open class GLLFView: GLKView {
     static let defaultOptions:[String: AnyObject] = [
         kCIContextWorkingColorSpace: NSNull()
     ]
-    public static var defaultBackgroundColor:UIColor = UIColor.blackColor()
+    open static var defaultBackgroundColor:UIColor = UIColor.black
 
-    public var videoGravity:String = AVLayerVideoGravityResizeAspect
+    open var videoGravity:String = AVLayerVideoGravityResizeAspect
 
-    var orientation:AVCaptureVideoOrientation = .Portrait
-    var position:AVCaptureDevicePosition = .Front {
+    var orientation:AVCaptureVideoOrientation = .portrait
+    var position:AVCaptureDevicePosition = .front {
         didSet {
             switch position {
-            case .Front:
-                transform = CGAffineTransformScale(transform, -1, 1)
-            case .Back:
-                transform = CGAffineTransformIdentity
+            case .front:
+                transform = transform.scaledBy(x: -1, y: 1)
+            case .back:
+                transform = CGAffineTransform.identity
             default:
                 break
             }
         }
     }
 
-    private var ciContext:CIContext!
-    private var displayImage:CIImage?
-    private weak var currentStream:Stream? {
+    fileprivate var ciContext:CIContext!
+    fileprivate var displayImage:CIImage?
+    fileprivate weak var currentStream:NetStream? {
         didSet {
-            guard let oldValue:Stream = oldValue else {
+            guard let oldValue:NetStream = oldValue else {
                 return
             }
             oldValue.mixer.videoIO.drawable = nil
@@ -36,7 +36,7 @@ public class GLLFView: GLKView {
     }
 
     public override init(frame: CGRect) {
-        super.init(frame: frame, context: EAGLContext(API: .OpenGLES2))
+        super.init(frame: frame, context: EAGLContext(api: .openGLES2))
         awakeFromNib()
     }
 
@@ -44,26 +44,26 @@ public class GLLFView: GLKView {
         super.init(coder: aDecoder)
     }
 
-    public override func awakeFromNib() {
+    open override func awakeFromNib() {
         enableSetNeedsDisplay = true
         backgroundColor = GLLFView.defaultBackgroundColor
-        layer.backgroundColor = GLLFView.defaultBackgroundColor.CGColor
-        ciContext = CIContext(EAGLContext: context, options: GLLFView.defaultOptions)
+        layer.backgroundColor = GLLFView.defaultBackgroundColor.cgColor
+        ciContext = CIContext(eaglContext: context, options: GLLFView.defaultOptions)
     }
 
-    public override func drawRect(rect: CGRect) {
+    open override func draw(_ rect: CGRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
         guard let displayImage:CIImage = displayImage else {
             return
         }
-        var inRect:CGRect = CGRectMake(0, 0, CGFloat(drawableWidth), CGFloat(drawableHeight))
+        var inRect:CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect:CGRect = displayImage.extent
         VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
-        ciContext.drawImage(displayImage, inRect: inRect, fromRect: fromRect)
+        ciContext.draw(displayImage, in: inRect, from: fromRect)
     }
 
-    public func attachStream(stream:Stream?) {
-        if let stream:Stream = stream {
+    open func attachStream(_ stream:NetStream?) {
+        if let stream:NetStream = stream {
             stream.mixer.videoIO.drawable = self
         }
         currentStream = stream
@@ -71,13 +71,13 @@ public class GLLFView: GLKView {
 }
 
 // MARK: - StreamDrawable
-extension GLLFView: StreamDrawable {
-    func render(image: CIImage, toCVPixelBuffer: CVPixelBuffer) {
-        ciContext.render(image, toCVPixelBuffer: toCVPixelBuffer)
+extension GLLFView: NetStreamDrawable {
+    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
+        ciContext.render(image, to: toCVPixelBuffer)
     }
-    func drawImage(image:CIImage) {
+    func draw(image:CIImage) {
         displayImage = image
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
             self.setNeedsDisplay()
         }
     }

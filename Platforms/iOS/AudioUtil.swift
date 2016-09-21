@@ -10,8 +10,8 @@ final class AudioUtil {
         return AVAudioSession.sharedInstance().inputGain
     }
 
-    static func setInputGain(volume:Float32) -> OSStatus {
-        if (AVAudioSession.sharedInstance().inputGainSettable) {
+    static func setInputGain(_ volume:Float32) -> OSStatus {
+        if (AVAudioSession.sharedInstance().isInputGainSettable) {
             do {
                 try AVAudioSession.sharedInstance().setInputGain(volume)
             } catch {

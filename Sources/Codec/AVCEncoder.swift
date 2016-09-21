@@ -3,9 +3,8 @@ import AVFoundation
 import VideoToolbox
 import CoreFoundation
 
-// MARK: VideoEncoderDelegate
 protocol VideoEncoderDelegate: class {
-    func didSetFormatDescription(video formatDescription:CMFormatDescriptionRef?)
+    func didSetFormatDescription(video formatDescription:CMFormatDescription?)
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
 }
 
@@ -28,13 +27,13 @@ final class AVCEncoder: NSObject {
 
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
-        kCVPixelBufferIOSurfacePropertiesKey: [:],
-        kCVPixelBufferOpenGLESCompatibilityKey: true,
+        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+        kCVPixelBufferOpenGLESCompatibilityKey: true as AnyObject,
     ]
     #else
     static let defaultAttributes:[NSString: AnyObject] = [
-        kCVPixelBufferIOSurfacePropertiesKey: [:],
-        kCVPixelBufferOpenGLCompatibilityKey: true,
+        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+        kCVPixelBufferOpenGLCompatibilityKey: true as AnyObject,
     ]
     #endif
     static let defaultDataRateLimits:[Int] = [0, 0]
@@ -68,34 +67,34 @@ final class AVCEncoder: NSObject {
             guard bitrate != oldValue else {
                 return
             }
-            dispatch_async(lockQueue) {
-                guard let session:VTCompressionSessionRef = self._session else {
+            lockQueue.async {
+                guard let session:VTCompressionSession = self._session else {
                     return
                 }
                 self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_AverageBitRate,
-                    Int(self.bitrate)
+                    Int(self.bitrate) as CFTypeRef
                 )
             }
         }
     }
-    var lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.AVCEncoder.lock", DISPATCH_QUEUE_SERIAL
+    var lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.AVCEncoder.lock", attributes: []
     )
     var expectedFPS:Float64 = AVMixer.defaultFPS {
         didSet {
             guard expectedFPS != oldValue else {
                 return
             }
-            dispatch_async(lockQueue) {
-                guard let session:VTCompressionSessionRef = self._session else {
+            lockQueue.async {
+                guard let session:VTCompressionSession = self._session else {
                     return
                 }
                 self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_ExpectedFrameRate,
-                    NSNumber(double: self.expectedFPS)
+                    NSNumber(value: self.expectedFPS)
                 )
             }
         }
@@ -109,14 +108,14 @@ final class AVCEncoder: NSObject {
                 invalidateSession = true
                 return
             }
-            dispatch_async(lockQueue) {
-                guard let session:VTCompressionSessionRef = self._session else {
+            lockQueue.async {
+                guard let session:VTCompressionSession = self._session else {
                     return
                 }
                 self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_DataRateLimits,
-                    self.dataRateLimits
+                    self.dataRateLimits as CFTypeRef
                 )
             }
         }
@@ -134,19 +133,19 @@ final class AVCEncoder: NSObject {
             guard maxKeyFrameIntervalDuration != oldValue else {
                 return
             }
-            dispatch_async(lockQueue) {
-                guard let session:VTCompressionSessionRef = self._session else {
+            lockQueue.async {
+                guard let session:VTCompressionSession = self._session else {
                     return
                 }
                 self.status = VTSessionSetProperty(
                     session,
                     kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration,
-                    NSNumber(double: self.maxKeyFrameIntervalDuration)
+                    NSNumber(value: self.maxKeyFrameIntervalDuration)
                 )
             }
         }
     }
-    var formatDescription:CMFormatDescriptionRef? = nil {
+    var formatDescription:CMFormatDescription? = nil {
         didSet {
             guard !CMFormatDescriptionEqual(formatDescription, oldValue) else {
                 return
@@ -156,40 +155,40 @@ final class AVCEncoder: NSObject {
     }
     weak var delegate:VideoEncoderDelegate?
     internal(set) var running:Bool = false
-    private(set) var status:OSStatus = noErr
-    private var attributes:[NSString: AnyObject] {
+    fileprivate(set) var status:OSStatus = noErr
+    fileprivate var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = AVCEncoder.defaultAttributes
-        attributes[kCVPixelBufferWidthKey] = NSNumber(int: width)
-        attributes[kCVPixelBufferHeightKey] = NSNumber(int: height)
+        attributes[kCVPixelBufferWidthKey] = NSNumber(value: width)
+        attributes[kCVPixelBufferHeightKey] = NSNumber(value: height)
         return attributes
     }
-    private var invalidateSession:Bool = true
+    fileprivate var invalidateSession:Bool = true
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
-    private var properties:[NSString: NSObject] {
-        let isBaseline:Bool = profileLevel.containsString("Baseline")
+    fileprivate var properties:[NSString: NSObject] {
+        let isBaseline:Bool = profileLevel.contains("Baseline")
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
-            kVTCompressionPropertyKey_ProfileLevel: profileLevel,
-            kVTCompressionPropertyKey_AverageBitRate: Int(bitrate),
-            kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(double: expectedFPS),
-            kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(double: maxKeyFrameIntervalDuration),
-            kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline,
+            kVTCompressionPropertyKey_ProfileLevel: profileLevel as NSObject,
+            kVTCompressionPropertyKey_AverageBitRate: Int(bitrate) as NSObject,
+            kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(value: expectedFPS),
+            kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
+            kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline as NSObject,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": "Trim"
-            ]
+            ] as NSObject
         ]
 
 #if os(OSX)
         if (enabledHardwareEncoder) {
-            properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva"
-            properties["EnableHardwareAcceleratedVideoEncoder"] = true
-            properties["RequireHardwareAcceleratedVideoEncoder"] = true
+            properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva" as NSObject
+            properties["EnableHardwareAcceleratedVideoEncoder"] = true as NSObject
+            properties["RequireHardwareAcceleratedVideoEncoder"] = true as NSObject
         }
 #endif
 
         if (dataRateLimits != AVCEncoder.defaultDataRateLimits) {
-            properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits
+            properties[kVTCompressionPropertyKey_DataRateLimits] = dataRateLimits as NSObject
         }
         if (!isBaseline) {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
@@ -197,22 +196,22 @@ final class AVCEncoder: NSObject {
         return properties
     }
 
-    private var callback:VTCompressionOutputCallback = {(
-        outputCallbackRefCon:UnsafeMutablePointer<Void>,
-        sourceFrameRefCon:UnsafeMutablePointer<Void>,
+    fileprivate var callback:VTCompressionOutputCallback = {(
+        outputCallbackRefCon:UnsafeMutableRawPointer?,
+        sourceFrameRefCon:UnsafeMutableRawPointer?,
         status:OSStatus,
         infoFlags:VTEncodeInfoFlags,
         sampleBuffer:CMSampleBuffer?) in
-        guard let sampleBuffer:CMSampleBuffer = sampleBuffer where status == noErr else {
+        guard let sampleBuffer:CMSampleBuffer = sampleBuffer , status == noErr else {
             return
         }
-        let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, AVCEncoder.self)
+        let encoder:AVCEncoder = unsafeBitCast(outputCallbackRefCon, to: AVCEncoder.self)
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
         encoder.delegate?.sampleOutput(video: sampleBuffer)
     }
 
-    private var _session:VTCompressionSessionRef? = nil
-    private var session:VTCompressionSessionRef? {
+    fileprivate var _session:VTCompressionSession? = nil
+    fileprivate var session:VTCompressionSession? {
         get {
             if (_session == nil)  {
                 guard VTCompressionSessionCreate(
@@ -221,37 +220,37 @@ final class AVCEncoder: NSObject {
                     height,
                     kCMVideoCodecType_H264,
                     nil,
-                    attributes,
+                    attributes as CFDictionary?,
                     nil,
                     callback,
-                    unsafeBitCast(self, UnsafeMutablePointer<Void>.self),
+                    unsafeBitCast(self, to: UnsafeMutableRawPointer.self),
                     &_session
                     ) == noErr else {
                     logger.warning("create a VTCompressionSessionCreate")
                     return nil
                 }
                 invalidateSession = false
-                status = VTSessionSetProperties(_session!, properties)
+                status = VTSessionSetProperties(_session!, properties as CFDictionary)
                 status = VTCompressionSessionPrepareToEncodeFrames(_session!)
             }
             return _session
         }
         set {
-            if let session:VTCompressionSessionRef = _session {
+            if let session:VTCompressionSession = _session {
                 VTCompressionSessionInvalidate(session)
             }
             _session = newValue
         }
     }
 
-    func encodeImageBuffer(imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
+    func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
         guard running else {
             return
         }
         if (invalidateSession) {
             session = nil
         }
-        guard let session:VTCompressionSessionRef = session else {
+        guard let session:VTCompressionSession = session else {
             return
         }
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
@@ -267,16 +266,19 @@ final class AVCEncoder: NSObject {
     }
 
 #if os(iOS)
-    func didAudioSessionInterruption(notification:NSNotification) {
-        guard let
-            userInfo:[NSObject:AnyObject] = notification.userInfo,
-            value:NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
-            type:AVAudioSessionInterruptionType = AVAudioSessionInterruptionType(rawValue: value.unsignedLongValue)
+    func applicationWillEnterForeground(_ notification:Notification) {
+        invalidateSession = true
+    }
+    func didAudioSessionInterruption(_ notification:Notification) {
+        guard
+            let userInfo:[AnyHashable: Any] = notification.userInfo,
+            let value:NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
+            let type:AVAudioSessionInterruptionType = AVAudioSessionInterruptionType(rawValue: value.uintValue)
             else {
                 return
         }
         switch type {
-        case .Ended:
+        case .ended:
             invalidateSession = true
         default:
             break
@@ -285,16 +287,22 @@ final class AVCEncoder: NSObject {
 #endif
 }
 
-// MARK: Encoder
 extension AVCEncoder: Runnable {
+    // MARK: Runnable
     func startRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             self.running = true
 #if os(iOS)
-            NSNotificationCenter.defaultCenter().addObserver(
+            NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(AVCEncoder.didAudioSessionInterruption(_:)),
-                name: AVAudioSessionInterruptionNotification,
+                name: NSNotification.Name.AVAudioSessionInterruption,
+                object: nil
+            )
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(AVCEncoder.applicationWillEnterForeground(_:)),
+                name: NSNotification.Name.UIApplicationWillEnterForeground,
                 object: nil
             )
 #endif
@@ -302,15 +310,11 @@ extension AVCEncoder: Runnable {
     }
 
     func stopRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             self.session = nil
             self.formatDescription = nil
 #if os(iOS)
-            NSNotificationCenter.defaultCenter().removeObserver(
-                self,
-                name: AVAudioSessionInterruptionNotification,
-                object: nil
-            )
+            NotificationCenter.default.removeObserver(self)
 #endif
             self.running = false
         }

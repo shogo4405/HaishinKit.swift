@@ -13,8 +13,8 @@ struct M3U {
     var targetDuration:Double = 5
 }
 
-// MARK: CustomStringConvertible
 extension M3U: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     var description:String {
         var lines:[String] = [
             "#EXTM3U",
@@ -23,18 +23,15 @@ extension M3U: CustomStringConvertible {
             "#EXT-X-TARGETDURATION:\(Int(targetDuration))"
         ]
         for info in mediaList {
-            guard let pathComponents:[String] = info.url.pathComponents else {
-                continue
-            }
             lines.append("#EXTINF:\(info.duration),")
-            lines.append(pathComponents.last!)
+            lines.append(info.url.pathComponents.last!)
         }
-        return lines.joinWithSeparator("\r\n")
+        return lines.joined(separator: "\r\n")
     }
 }
 
 // MARK: -
 struct M3UMediaInfo {
-    var url:NSURL
+    var url:URL
     var duration:Double
 }

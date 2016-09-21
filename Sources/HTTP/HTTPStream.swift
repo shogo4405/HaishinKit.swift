@@ -1,12 +1,12 @@
 import Foundation
 import AVFoundation
 
-public class HTTPStream: Stream {
+open class HTTPStream: NetStream {
     private(set) var name:String?
     private var tsWriter:TSWriter = TSWriter()
 
-    public func publish(name:String?) {
-        dispatch_async(lockQueue) {
+    open func publish(_ name:String?) {
+        lockQueue.async {
             if (name == nil) {
                 self.name = name
                 #if os(iOS)
@@ -31,19 +31,16 @@ public class HTTPStream: Stream {
         }
     }
 
-    func getResource(resourceName:String) -> (MIME, String)? {
-        guard let
-            name:String = name,
-            url:NSURL = NSURL(fileURLWithPath: resourceName),
-            pathComponents:[String] = url.pathComponents
-            where 2 <= pathComponents.count && pathComponents[1] == name else {
+    func getResource(_ resourceName:String) -> (MIME, String)? {
+        let url:URL = URL(fileURLWithPath: resourceName)
+        guard let name:String = name, 2 <= url.pathComponents.count && url.pathComponents[1] == name else {
             return nil
         }
-        let fileName:String = pathComponents.last!
+        let fileName:String = url.pathComponents.last!
         switch true {
         case fileName == "playlist.m3u8":
             return (.ApplicationXMpegURL, tsWriter.playlist)
-        case fileName.containsString(".ts"):
+        case fileName.contains(".ts"):
             if let mediaFile:String = tsWriter.getFilePath(fileName) {
                 return (.VideoMP2T, mediaFile)
             }

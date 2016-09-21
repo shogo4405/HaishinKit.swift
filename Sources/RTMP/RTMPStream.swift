@@ -11,7 +11,7 @@ public struct RTMPStreamInfo {
 
     private var previousByteCount:Int64 = 0
 
-    mutating func didTimerInterval(timer:NSTimer) {
+    mutating func on(timer:Timer) {
         let byteCount:Int64 = self.byteCount
         currentBytesPerSecond = Int32(byteCount - previousByteCount)
         previousByteCount = byteCount
@@ -24,8 +24,8 @@ public struct RTMPStreamInfo {
     }
 }
 
-// MARK: CustomStringConvertible
 extension RTMPStreamInfo: CustomStringConvertible {
+    // MARK: CustomStringConvertible
     public var description:String {
         return Mirror(reflecting: self).description
     }
@@ -35,138 +35,138 @@ extension RTMPStreamInfo: CustomStringConvertible {
 /**
  flash.net.NetStream for Swift
  */
-public class RTMPStream: Stream {
+open class RTMPStream: NetStream {
 
-    public static var rootPath:String = NSTemporaryDirectory()
+    open static var rootPath:String = NSTemporaryDirectory()
 
     /**
      NetStatusEvent#info.code for NetStream
      */
     public enum Code: String {
-        case BufferEmpty               = "NetStream.Buffer.Empty"
-        case BufferFlush               = "NetStream.Buffer.Flush"
-        case BufferFull                = "NetStream.Buffer.Full"
-        case ConnectClosed             = "NetStream.Connect.Closed"
-        case ConnectFailed             = "NetStream.Connect.Failed"
-        case ConnectRejected           = "NetStream.Connect.Rejected"
-        case ConnectSuccess            = "NetStream.Connect.Success"
-        case DRMUpdateNeeded           = "NetStream.DRM.UpdateNeeded"
-        case Failed                    = "NetStream.Failed"
-        case MulticastStreamReset      = "NetStream.MulticastStream.Reset"
-        case PauseNotify               = "NetStream.Pause.Notify"
-        case PlayFailed                = "NetStream.Play.Failed"
-        case PlayFileStructureInvalid  = "NetStream.Play.FileStructureInvalid"
-        case PlayInsufficientBW        = "NetStream.Play.InsufficientBW"
-        case PlayNoSupportedTrackFound = "NetStream.Play.NoSupportedTrackFound"
-        case PlayReset                 = "NetStream.Play.Reset"
-        case PlayStart                 = "NetStream.Play.Start"
-        case PlayStop                  = "NetStream.Play.Stop"
-        case PlayStreamNotFound        = "NetStream.Play.StreamNotFound"
-        case PlayTransition            = "NetStream.Play.Transition"
-        case PlayUnpublishNotify       = "NetStream.Play.UnpublishNotify"
-        case PublishBadName            = "NetStream.Publish.BadName"
-        case PublishIdle               = "NetStream.Publish.Idle"
-        case PublishStart              = "NetStream.Publish.Start"
-        case RecordAlreadyExists       = "NetStream.Record.AlreadyExists"
-        case RecordFailed              = "NetStream.Record.Failed"
-        case RecordNoAccess            = "NetStream.Record.NoAccess"
-        case RecordStart               = "NetStream.Record.Start"
-        case RecordStop                = "NetStream.Record.Stop"
-        case RecordDiskQuotaExceeded   = "NetStream.Record.DiskQuotaExceeded"
-        case SecondScreenStart         = "NetStream.SecondScreen.Start"
-        case SecondScreenStop          = "NetStream.SecondScreen.Stop"
-        case SeekFailed                = "NetStream.Seek.Failed"
-        case SeekInvalidTime           = "NetStream.Seek.InvalidTime"
-        case SeekNotify                = "NetStream.Seek.Notify"
-        case StepNotify                = "NetStream.Step.Notify"
-        case UnpauseNotify             = "NetStream.Unpause.Notify"
-        case UnpublishSuccess          = "NetStream.Unpublish.Success"
-        case VideoDimensionChange      = "NetStream.Video.DimensionChange"
+        case bufferEmpty               = "NetStream.Buffer.Empty"
+        case bufferFlush               = "NetStream.Buffer.Flush"
+        case bufferFull                = "NetStream.Buffer.Full"
+        case connectClosed             = "NetStream.Connect.Closed"
+        case connectFailed             = "NetStream.Connect.Failed"
+        case connectRejected           = "NetStream.Connect.Rejected"
+        case connectSuccess            = "NetStream.Connect.Success"
+        case drmUpdateNeeded           = "NetStream.DRM.UpdateNeeded"
+        case failed                    = "NetStream.Failed"
+        case multicastStreamReset      = "NetStream.MulticastStream.Reset"
+        case pauseNotify               = "NetStream.Pause.Notify"
+        case playFailed                = "NetStream.Play.Failed"
+        case playFileStructureInvalid  = "NetStream.Play.FileStructureInvalid"
+        case playInsufficientBW        = "NetStream.Play.InsufficientBW"
+        case playNoSupportedTrackFound = "NetStream.Play.NoSupportedTrackFound"
+        case playReset                 = "NetStream.Play.Reset"
+        case playStart                 = "NetStream.Play.Start"
+        case playStop                  = "NetStream.Play.Stop"
+        case playStreamNotFound        = "NetStream.Play.StreamNotFound"
+        case playTransition            = "NetStream.Play.Transition"
+        case playUnpublishNotify       = "NetStream.Play.UnpublishNotify"
+        case publishBadName            = "NetStream.Publish.BadName"
+        case publishIdle               = "NetStream.Publish.Idle"
+        case publishStart              = "NetStream.Publish.Start"
+        case recordAlreadyExists       = "NetStream.Record.AlreadyExists"
+        case recordFailed              = "NetStream.Record.Failed"
+        case recordNoAccess            = "NetStream.Record.NoAccess"
+        case recordStart               = "NetStream.Record.Start"
+        case recordStop                = "NetStream.Record.Stop"
+        case recordDiskQuotaExceeded   = "NetStream.Record.DiskQuotaExceeded"
+        case secondScreenStart         = "NetStream.SecondScreen.Start"
+        case secondScreenStop          = "NetStream.SecondScreen.Stop"
+        case seekFailed                = "NetStream.Seek.Failed"
+        case seekInvalidTime           = "NetStream.Seek.InvalidTime"
+        case seekNotify                = "NetStream.Seek.Notify"
+        case stepNotify                = "NetStream.Step.Notify"
+        case unpauseNotify             = "NetStream.Unpause.Notify"
+        case unpublishSuccess          = "NetStream.Unpublish.Success"
+        case videoDimensionChange      = "NetStream.Video.DimensionChange"
 
         public var level:String {
             switch self {
-            case .BufferEmpty:
+            case .bufferEmpty:
                 return "status"
-            case .BufferFlush:
+            case .bufferFlush:
                 return "status"
-            case .BufferFull:
+            case .bufferFull:
                 return "status"
-            case .ConnectClosed:
+            case .connectClosed:
                 return "status"
-            case .ConnectFailed:
+            case .connectFailed:
                 return "error"
-            case .ConnectRejected:
+            case .connectRejected:
                 return "error"
-            case .ConnectSuccess:
+            case .connectSuccess:
                 return "status"
-            case .DRMUpdateNeeded:
+            case .drmUpdateNeeded:
                 return "status"
-            case .Failed:
+            case .failed:
                 return "error"
-            case .MulticastStreamReset:
+            case .multicastStreamReset:
                 return "status"
-            case .PauseNotify:
+            case .pauseNotify:
                 return "status"
-            case .PlayFailed:
+            case .playFailed:
                 return "error"
-            case .PlayFileStructureInvalid:
+            case .playFileStructureInvalid:
                 return "error"
-            case .PlayInsufficientBW:
+            case .playInsufficientBW:
                 return "warning"
-            case .PlayNoSupportedTrackFound:
+            case .playNoSupportedTrackFound:
                 return "status"
-            case .PlayReset:
+            case .playReset:
                 return "status"
-            case .PlayStart:
+            case .playStart:
                 return "status"
-            case .PlayStop:
+            case .playStop:
                 return "status"
-            case .PlayStreamNotFound:
+            case .playStreamNotFound:
                 return "status"
-            case .PlayTransition:
+            case .playTransition:
                 return "status"
-            case .PlayUnpublishNotify:
+            case .playUnpublishNotify:
                 return "status"
-            case .PublishBadName:
+            case .publishBadName:
                 return "error"
-            case .PublishIdle:
+            case .publishIdle:
                 return "status"
-            case .PublishStart:
+            case .publishStart:
                 return "status"
-            case .RecordAlreadyExists:
+            case .recordAlreadyExists:
                 return "status"
-            case .RecordFailed:
+            case .recordFailed:
                 return "error"
-            case .RecordNoAccess:
+            case .recordNoAccess:
                 return "error"
-            case .RecordStart:
+            case .recordStart:
                 return "status"
-            case .RecordStop:
+            case .recordStop:
                 return "status"
-            case .RecordDiskQuotaExceeded:
+            case .recordDiskQuotaExceeded:
                 return "error"
-            case .SecondScreenStart:
+            case .secondScreenStart:
                 return "status"
-            case .SecondScreenStop:
+            case .secondScreenStop:
                 return "status"
-            case .SeekFailed:
+            case .seekFailed:
                 return "error"
-            case .SeekInvalidTime:
+            case .seekInvalidTime:
                 return "error"
-            case .SeekNotify:
+            case .seekNotify:
                 return "status"
-            case .StepNotify:
+            case .stepNotify:
                 return "status"
-            case .UnpauseNotify:
+            case .unpauseNotify:
                 return "status"
-            case .UnpublishSuccess:
+            case .unpublishSuccess:
                 return "status"
-            case .VideoDimensionChange:
+            case .videoDimensionChange:
                 return "status"
             }
         }
 
-        func data(description:String) -> ASObject {
+        func data(_ description:String) -> ASObject {
             return [
                 "code": rawValue,
                 "level": level,
@@ -179,12 +179,12 @@ public class RTMPStream: Stream {
      flash.net.NetStreamPlayTransitions for Swift
      */
     public enum PlayTransition: String {
-        case Append        = "append"
-        case AppendAndWait = "appendAndWait"
-        case Reset         = "reset"
-        case Resume        = "resume"
-        case Stop          = "stop"
-        case Swap          = "swap"
+        case append        = "append"
+        case appendAndWait = "appendAndWait"
+        case reset         = "reset"
+        case resume        = "resume"
+        case stop          = "stop"
+        case swap          = "swap"
         case Switch        = "switch"
     }
 
@@ -202,47 +202,48 @@ public class RTMPStream: Stream {
     }
 
     public enum HowToPublish: String {
-        case Record = "record"
-        case Append = "append"
-        case AppendWithGap = "appendWithGap"
-        case Live = "live"
-        case LocalRecord = "localRecord"
+        case record = "record"
+        case append = "append"
+        case appendWithGap = "appendWithGap"
+        case live = "live"
+        case localRecord = "localRecord"
     }
 
     enum ReadyState: UInt8 {
-        case Initilized = 0
-        case Open       = 1
-        case Play       = 2
-        case Playing    = 3
-        case Publish    = 4
-        case Publishing = 5
-        case Closed     = 6
+        case initilized = 0
+        case open       = 1
+        case play       = 2
+        case playing    = 3
+        case publish    = 4
+        case publishing = 5
+        case closed     = 6
     }
 
     static let defaultID:UInt32 = 0
-    public static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
-    public static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
-    public internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
-    public private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    public private(set) dynamic var currentFPS:UInt8 = 0
-    public var soundTransform:SoundTransform {
+    open static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
+    open static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
+    open internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
+    open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    open fileprivate(set) dynamic var currentFPS:UInt16 = 0
+    open var soundTransform:SoundTransform {
         get { return audioPlayback.soundTransform }
         set { audioPlayback.soundTransform = newValue }
     }
 
     var id:UInt32 = RTMPStream.defaultID
-    var readyState:ReadyState = .Initilized {
+    var readyState:ReadyState = .initilized {
         didSet {
             switch readyState {
-            case .Open:
+            case .open:
                 currentFPS = 0
                 frameCount = 0
                 info.clear()
-            case .Publishing:
-                send("@setDataFrame", arguments: "onMetaData", createMetaData())
+            case .publishing:
+                send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
-                if (howToPublish == .LocalRecord) {
+                sampler.startRunning()
+                if (howToPublish == .localRecord) {
                     mixer.recorder.fileName = info.resourceName
                     mixer.recorder.startRunning()
                 }
@@ -254,28 +255,28 @@ public class RTMPStream: Stream {
 
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
+    fileprivate(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
+    fileprivate var muxer:RTMPMuxer = RTMPMuxer()
+    fileprivate var sampler:MP4Sampler = MP4Sampler()
+    fileprivate var frameCount:UInt16 = 0
+    fileprivate var chunkTypes:[FLVTagType:Bool] = [:]
+    fileprivate var dispatcher:IEventDispatcher!
+    fileprivate var howToPublish:RTMPStream.HowToPublish = .live
+    fileprivate var rtmpConnection:RTMPConnection
 
-    private(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
-    private var muxer:RTMPMuxer = RTMPMuxer()
-    private var frameCount:UInt8 = 0
-    private var chunkTypes:[FLVTag.TagType:Bool] = [:]
-    private var dispatcher:IEventDispatcher!
-    private var howToPublish:RTMPStream.HowToPublish = .Live
-    private var rtmpConnection:RTMPConnection
-
-    public init(rtmpConnection: RTMPConnection) {
-        self.rtmpConnection = rtmpConnection
+    public init(connection: RTMPConnection) {
+        self.rtmpConnection = connection
         super.init()
         self.dispatcher = EventDispatcher(target: self)
-        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.rtmpStatusHandler(_:)), observer: self)
+        rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
     }
 
-    public func receiveAudio(flag:Bool) {
-        dispatch_async(lockQueue) {
-            guard self.readyState == .Playing else {
+    open func receiveAudio(flag:Bool) {
+        lockQueue.async {
+            guard self.readyState == .playing else {
                 return
             }
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
@@ -289,9 +290,9 @@ public class RTMPStream: Stream {
         }
     }
 
-    public func receiveVideo(flag:Bool) {
-        dispatch_async(lockQueue) {
-            guard self.readyState == .Playing else {
+    open func receiveVideo(flag:Bool) {
+        lockQueue.async {
+            guard self.readyState == .playing else {
                 return
             }
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
@@ -305,17 +306,17 @@ public class RTMPStream: Stream {
         }
     }
 
-    public func play(arguments:Any?...) {
-        dispatch_async(lockQueue) {
+    open func play(_ arguments:Any?...) {
+        lockQueue.async {
             guard let name:String = arguments.first as? String else {
                 switch self.readyState {
-                case .Play:
+                case .play:
                     fallthrough
-                case .Playing:
+                case .playing:
                     self.audioPlayback.stopRunning()
                     self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                        type: .Zero,
-                        streamId: RTMPChunk.audio,
+                        type: .zero,
+                        streamId: RTMPChunk.StreamID.audio.rawValue,
                         message: RTMPCommandMessage(
                             streamId: self.id,
                             transactionId: 0,
@@ -329,7 +330,7 @@ public class RTMPStream: Stream {
                 }
                 return
             }
-            while (self.readyState == .Initilized) {
+            while (self.readyState == .initilized) {
                 usleep(100)
             }
             self.audioPlayback.startRunning()
@@ -345,9 +346,9 @@ public class RTMPStream: Stream {
         }
     }
 
-    public func seek(offset:Double) {
-        dispatch_async(lockQueue) {
-            guard self.readyState == .Playing else {
+    open func seek(_ offset:Double) {
+        lockQueue.async {
+            guard self.readyState == .playing else {
                 return
             }
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
@@ -362,20 +363,20 @@ public class RTMPStream: Stream {
     }
 
     @available(*, unavailable)
-    public func publish(name:String?, type:String = "live") {
+    open func publish(_ name:String?, type:String = "live") {
         guard let howToPublish:RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
             return
         }
         publish(name, type: howToPublish)
     }
 
-    public func publish(name:String?, type:RTMPStream.HowToPublish = .Live) {
-        dispatch_async(lockQueue) {
+    open func publish(_ name:String?, type:RTMPStream.HowToPublish = .live) {
+        lockQueue.async {
             guard let name:String = name else {
-                guard self.readyState == .Publishing else {
+                guard self.readyState == .publishing else {
                     self.howToPublish = type
                     switch type {
-                    case .LocalRecord:
+                    case .localRecord:
                         self.mixer.recorder.fileName = self.info.resourceName
                         self.mixer.recorder.startRunning()
                     default:
@@ -383,7 +384,7 @@ public class RTMPStream: Stream {
                     }
                     return
                 }
-                self.readyState = .Open
+                self.readyState = .open
                 #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
                 #endif
@@ -391,11 +392,12 @@ public class RTMPStream: Stream {
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.mixer.videoIO.encoder.stopRunning()
+                self.sampler.stopRunning()
                 self.mixer.recorder.stopRunning()
                 self.FCUnpublish()
                 self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                    type: .Zero,
-                    streamId: RTMPChunk.audio,
+                    type: .zero,
+                    streamId: RTMPChunk.StreamID.audio.rawValue,
                     message: RTMPCommandMessage(
                         streamId: self.id,
                         transactionId: 0,
@@ -407,7 +409,7 @@ public class RTMPStream: Stream {
                 return
             }
 
-            while (self.readyState == .Initilized) {
+            while (self.readyState == .initilized) {
                 usleep(100)
             }
 
@@ -420,35 +422,36 @@ public class RTMPStream: Stream {
             #endif
             self.mixer.audioIO.encoder.delegate = self.muxer
             self.mixer.videoIO.encoder.delegate = self.muxer
+            self.sampler.delegate = self.muxer
             self.mixer.startRunning()
             self.chunkTypes.removeAll()
             self.FCPublish()
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                type: .Zero,
-                streamId: RTMPChunk.audio,
+                type: .zero,
+                streamId: RTMPChunk.StreamID.audio.rawValue,
                 message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
                     objectEncoding: self.objectEncoding,
                     commandName: "publish",
                     commandObject: nil,
-                    arguments: [name, type == .LocalRecord ? RTMPStream.HowToPublish.Live.rawValue : type.rawValue]
+                    arguments: [name, type == .localRecord ? RTMPStream.HowToPublish.live.rawValue : type.rawValue]
             )))
 
-            self.readyState = .Publish
+            self.readyState = .publish
         }
     }
 
-    public func close() {
-        if (self.readyState == .Closed) {
+    open func close() {
+        if (self.readyState == .closed) {
             return
         }
         play()
         publish(nil)
-        dispatch_sync(lockQueue) {
+        lockQueue.sync {
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                type: .Zero,
-                streamId: RTMPChunk.command,
+                type: .zero,
+                streamId: RTMPChunk.StreamID.command.rawValue,
                 message: RTMPCommandMessage(
                     streamId: 0,
                     transactionId: 0,
@@ -457,13 +460,13 @@ public class RTMPStream: Stream {
                     commandObject: nil,
                     arguments: [self.id]
             )))
-            self.readyState = .Closed
+            self.readyState = .closed
         }
     }
 
-    public func send(handlerName:String, arguments:Any?...) {
-        dispatch_async(lockQueue) {
-            if (self.readyState == .Closed) {
+    open func send(handlerName:String, arguments:Any?...) {
+        lockQueue.async {
+            if (self.readyState == .closed) {
                 return
             }
             let length:Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPDataMessage(
@@ -476,106 +479,111 @@ public class RTMPStream: Stream {
         }
     }
 
-    public func createMetaData() -> ASObject {
+    open func createMetaData() -> ASObject {
         var metadata:ASObject = [:]
         if let _:AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width
             metadata["height"] = mixer.videoIO.encoder.height
             metadata["framerate"] = mixer.videoIO.fps
-            metadata["videocodecid"] = FLVVideoCodec.AVC.rawValue
+            metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
             metadata["videodatarate"] = mixer.videoIO.encoder.bitrate
         }
         if let _:AVCaptureInput = mixer.audioIO.input {
-            metadata["audiocodecid"] = FLVAudioCodec.AAC.rawValue
+            metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate
         }
         return metadata
     }
 
-    func didTimerInterval(timer:NSTimer) {
-        currentFPS = frameCount
-        frameCount = 0
-        info.didTimerInterval(timer)
+    func append(url:URL, completionHandler: MP4Sampler.Handler? = nil) {
+        sampler.append(file: url, completionHandler: completionHandler)
     }
 
-    func rtmpStatusHandler(notification:NSNotification) {
-        let e:Event = Event.from(notification)
-        if let data:ASObject = e.data as? ASObject, code:String = data["code"] as? String {
-            switch code {
-            case RTMPConnection.Code.ConnectSuccess.rawValue:
-                readyState = .Initilized
-                rtmpConnection.createStream(self)
-            case RTMPStream.Code.PublishStart.rawValue:
-                readyState = .Publishing
-            default:
-                break
-            }
+    func on(timer:Timer) {
+        currentFPS = frameCount
+        frameCount = 0
+        info.on(timer: timer)
+    }
+
+    @objc private func on(status:Notification) {
+        let e:Event = Event.from(status)
+        guard let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String else {
+            return
+        }
+        switch code {
+        case RTMPConnection.Code.connectSuccess.rawValue:
+            readyState = .initilized
+            rtmpConnection.createStream(self)
+        case RTMPStream.Code.publishStart.rawValue:
+            readyState = .publishing
+        default:
+            break
         }
     }
 }
 
 extension RTMPStream {
     func FCPublish() {
-        guard let name:String = info.resourceName where rtmpConnection.flashVer.containsString("FMLE/") else {
+        guard let name:String = info.resourceName , rtmpConnection.flashVer.contains("FMLE/") else {
             return
         }
         rtmpConnection.call("FCPublish", responder: nil, arguments: name)
     }
 
     func FCUnpublish() {
-        guard let name:String = info.resourceName where rtmpConnection.flashVer.containsString("FMLE/") else {
+        guard let name:String = info.resourceName , rtmpConnection.flashVer.contains("FMLE/") else {
             return
         }
         rtmpConnection.call("FCUnpublish", responder: nil, arguments: name)
     }
 }
 
-// MARK: - IEventDispatcher
 extension RTMPStream: IEventDispatcher {
-    public func addEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+    // MARK: IEventDispatcher
+    public func addEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
         dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }
-    public func removeEventListener(type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
+    public func removeEventListener(_ type:String, selector:Selector, observer:AnyObject? = nil, useCapture:Bool = false) {
         dispatcher.removeEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }
-    public func dispatchEvent(e:Event) {
-        dispatcher.dispatchEvent(e)
+    public func dispatch(event:Event) {
+        dispatcher.dispatch(event: event)
     }
-    public func dispatchEventWith(type:String, bubbles:Bool, data:Any?) {
-        dispatcher.dispatchEventWith(type, bubbles: bubbles, data: data)
+    public func dispatch(_ type:String, bubbles:Bool, data:Any?) {
+        dispatcher.dispatch(type, bubbles: bubbles, data: data)
     }
 }
 
-// MARK: - RTMPMuxerDelegate
 extension RTMPStream: RTMPMuxerDelegate {
-    func sampleOutput(muxer:RTMPMuxer, audio buffer:NSData, timestamp:Double) {
-        guard readyState == .Publishing else {
+    // MARK: RTMPMuxerDelegate
+    func sampleOutput(audio buffer:Data, withTimestamp:Double, muxer:RTMPMuxer) {
+        guard readyState == .publishing else {
             return
         }
-        let type:FLVTag.TagType = .Audio
+        let type:FLVTagType = .audio
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-            type: chunkTypes[type] == nil ? .Zero : .One,
+            type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(audioTimestamp), buffer: buffer)
+            message: type.message(with: id, timestamp: UInt32(audioTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
-        audioTimestamp = timestamp + (audioTimestamp - floor(audioTimestamp))
+        audioTimestamp = withTimestamp + (audioTimestamp - floor(audioTimestamp))
     }
 
-    func sampleOutput(muxer:RTMPMuxer, video buffer:NSData, timestamp:Double) {
-        guard readyState == .Publishing else {
+    func sampleOutput(video buffer:Data, withTimestamp:Double, muxer:RTMPMuxer) {
+        guard readyState == .publishing else {
             return
         }
-        let type:FLVTag.TagType = .Video
+        let type:FLVTagType = .video
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-            type: chunkTypes[type] == nil ? .Zero : .One,
+            type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
-            message: type.createMessage(id, timestamp: UInt32(videoTimestamp), buffer: buffer)
+            message: type.message(with: id, timestamp: UInt32(videoTimestamp), buffer: buffer)
         ))
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
-        videoTimestamp = timestamp + (videoTimestamp - floor(videoTimestamp))
-        frameCount = (frameCount + 1) & 0xFF
+        videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
+        frameCount += 1
     }
 }

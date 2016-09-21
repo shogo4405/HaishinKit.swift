@@ -1,8 +1,7 @@
 import Foundation
 
-// MARK: RTSPSocketDelegate
 protocol RTSPSocketDelegate: class {
-    func listen(response:RTSPResponse)
+    func listen(_ response:RTSPResponse)
 }
 
 // MARK: -
@@ -10,13 +9,13 @@ final class RTSPSocket: NetSocket {
     static let defaultPort:Int = 554
 
     weak var delegate:RTSPSocketDelegate?
-    private var requests:[RTSPRequest] = []
+    fileprivate var requests:[RTSPRequest] = []
 
     override var connected:Bool {
         didSet {
             if (connected) {
                 for request in requests {
-                    if (logger.isEnabledForLogLevel(.Verbose)) {
+                    if (logger.isEnabledFor(level: .verbose)) {
                         logger.verbose("\(request)")
                     }
                     doOutput(bytes: request.bytes)
@@ -26,36 +25,36 @@ final class RTSPSocket: NetSocket {
         }
     }
 
-    func doOutput(request:RTSPRequest) {
+    func doOutput(_ request:RTSPRequest) {
         if (connected) {
-            if (logger.isEnabledForLogLevel(.Verbose)) {
+            if (logger.isEnabledFor(level: .verbose)) {
                 logger.verbose("\(request)")
             }
             doOutput(bytes: request.bytes)
             return
         }
         requests.append(request)
-        guard let uri:NSURL = NSURL(string: request.uri), host:String = uri.host else {
+        guard let uri:URL = URL(string: request.uri), let host:String = uri.host else {
             return
         }
-        connect(host, port: uri.port?.integerValue ?? RTSPSocket.defaultPort)
+        connect(host, port: (uri as NSURL).port?.intValue ?? RTSPSocket.defaultPort)
     }
 
     override func listen() {
         guard let response:RTSPResponse = RTSPResponse(bytes: inputBuffer) else {
             return
         }
-        if (logger.isEnabledForLogLevel(.Verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(response)")
         }
         delegate?.listen(response)
         inputBuffer.removeAll()
     }
 
-    private func connect(hostname:String, port:Int) {
-        dispatch_async(networkQueue) {
-            NSStream.getStreamsToHostWithName(
-                hostname,
+    fileprivate func connect(_ hostname:String, port:Int) {
+        networkQueue.async {
+            Stream.getStreamsToHost(
+                withName: hostname,
                 port: port,
                 inputStream: &self.inputStream,
                 outputStream: &self.outputStream

@@ -1,6 +1,14 @@
 import Foundation
 
-extension NSURL {
+extension Data {
+    var bytes:[UInt8] {
+        return self.withUnsafeBytes {
+            [UInt8](UnsafeBufferPointer(start: $0, count: self.count))
+        }
+    }
+}
+
+extension URL {
     var absoluteWithoutAuthenticationString:String {
         var target:String = ""
         if let user:String = user {
@@ -12,26 +20,26 @@ extension NSURL {
         if (target != "") {
             target += "@"
         }
-        return absoluteString.stringByReplacingOccurrencesOfString(target, withString: "")
+        return absoluteString.replacingOccurrences(of: target, with: "")
     }
 
     var absoluteWithoutQueryString:String {
         guard let query:String = self.query else {
             return self.absoluteString
         }
-        return absoluteString.stringByReplacingOccurrencesOfString("?" + query, withString: "")
+        return absoluteString.replacingOccurrences(of: "?" + query, with: "")
     }
 
-    func dictionaryFromQuery() -> [String: AnyObject] {
-        var result:[String: AnyObject] = [:]
+    func dictionaryFromQuery() -> [String:String] {
+        var result:[String:String] = [:]
         guard
-            let comonents:NSURLComponents = NSURLComponents(string: absoluteString),
+            let comonents:URLComponents = URLComponents(string: absoluteString),
             let queryItems = comonents.queryItems else {
             return result
         }
-        for i in 0..<queryItems.count {
-            if let item:NSURLQueryItem = queryItems[i] {
-                result[item.name] = item.value
+        for item in queryItems {
+            if let value:String = item.value {
+                result[item.name] = value
             }
         }
         return result

@@ -4,7 +4,7 @@ import AudioToolbox
 final class RTMPAudioPlayback: AudioStreamPlayback {
     private var config:AudioSpecificConfig?
 
-    func onMessage(message:RTMPAudioMessage) {
+    func on(message:RTMPAudioMessage) {
         guard message.codec.isSupported else {
             return
         }

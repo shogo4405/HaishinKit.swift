@@ -1,26 +1,26 @@
 import Foundation
 
-public class NetService: NSObject {
+open class NetService: NSObject {
 
-    var recordData:NSData? {
+    var recordData:Data? {
         return nil
     }
 
-    let lockQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.NetService.lock", DISPATCH_QUEUE_SERIAL
+    let lockQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.NetService.lock", attributes: []
     )
-    var networkQueue:dispatch_queue_t = dispatch_queue_create(
-        "com.github.shogo4405.lf.NetService.network", DISPATCH_QUEUE_SERIAL
+    var networkQueue:DispatchQueue = DispatchQueue(
+        label: "com.github.shogo4405.lf.NetService.network", attributes: []
     )
 
-    private(set) var domain:String
-    private(set) var name:String
-    private(set) var port:Int32
-    private(set) var type:String
-    private(set) var running:Bool = false
-    private(set) var clients:[NetClient] = []
-    private(set) var service:NSNetService!
-    private var runloop:NSRunLoop!
+    fileprivate(set) var domain:String
+    fileprivate(set) var name:String
+    fileprivate(set) var port:Int32
+    fileprivate(set) var type:String
+    fileprivate(set) var running:Bool = false
+    fileprivate(set) var clients:[NetClient] = []
+    fileprivate(set) var service:Foundation.NetService!
+    fileprivate var runloop:RunLoop!
 
     public init(domain:String, type:String, name:String, port:Int32) {
         self.domain = domain
@@ -29,24 +29,24 @@ public class NetService: NSObject {
         self.type = type
     }
 
-    func disconnect(client:NetClient) {
-        guard let index:Int = clients.indexOf(client) else {
+    func disconnect(_ client:NetClient) {
+        guard let index:Int = clients.index(of: client) else {
             return
         }
-        clients.removeAtIndex(index)
+        clients.remove(at: index)
         client.delegate = nil
-        client.close(true)
+        client.close(isDisconnected: true)
     }
 
     func willStartRunning() {
-        dispatch_async(networkQueue) {
+        networkQueue.async {
             self.initService()
         }
     }
 
     func willStopRunning() {
-        if let runloop:NSRunLoop = runloop {
-            service.removeFromRunLoop(runloop, forMode: NSDefaultRunLoopMode)
+        if let runloop:RunLoop = runloop {
+            service.remove(from: runloop, forMode: RunLoopMode.defaultRunLoopMode)
             CFRunLoopStop(runloop.getCFRunLoop())
         }
         service.stop()
@@ -55,28 +55,24 @@ public class NetService: NSObject {
         runloop = nil
     }
 
-    private func initService() {
-        runloop = NSRunLoop.currentRunLoop()
-        service = NSNetService(domain: domain, type: type, name: name, port: port)
+    fileprivate func initService() {
+        runloop = RunLoop.current
+        service = Foundation.NetService(domain: domain, type: type, name: name, port: port)
         service.delegate = self
-        service.setTXTRecordData(recordData)
-        service.scheduleInRunLoop(runloop, forMode: NSDefaultRunLoopMode)
-        if (type.containsString("._udp")) {
+        service.setTXTRecord(recordData)
+        service.schedule(in: runloop, forMode: RunLoopMode.defaultRunLoopMode)
+        if (type.contains("._udp")) {
             service.publish()
         } else {
-            service.publishWithOptions(NSNetServiceOptions.ListenForConnections)
+            service.publish(options: Foundation.NetService.Options.listenForConnections)
         }
         runloop.run()
     }
 }
 
-// MARK: NSNetServiceDelegate
-extension NetService: NSNetServiceDelegate {
-    public func netService(sender: NSNetService, didNotPublish errorDict: [String:NSNumber]) {
-        logger.error("\(errorDict)")
-    }
-
-    public func netService(sender: NSNetService, didAcceptConnectionWithInputStream inputStream: NSInputStream, outputStream: NSOutputStream) {
+extension NetService: NetServiceDelegate {
+    // MARK: NSNetServiceDelegate
+    public func netService(_ sender: Foundation.NetService, didAcceptConnectionWith inputStream: InputStream, outputStream: OutputStream) {
         let client:NetClient = NetClient(service: sender, inputStream: inputStream, outputStream: outputStream)
         clients.append(client)
         client.delegate = self
@@ -84,14 +80,14 @@ extension NetService: NSNetServiceDelegate {
     }
 }
 
-// MARK: NetClientDelegate
 extension NetService: NetClientDelegate {
+    // MARK: NetClientDelegate
 }
 
-// MARK: Runnbale 
 extension NetService: Runnable {
+    // MARK: Runnbale
     final public func startRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             if (self.running) {
                 return
             }
@@ -101,7 +97,7 @@ extension NetService: Runnable {
     }
 
     final public func stopRunning() {
-        dispatch_async(lockQueue) {
+        lockQueue.async {
             if (!self.running) {
                 return
             }

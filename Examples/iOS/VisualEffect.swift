@@ -9,17 +9,17 @@ final class CurrentTimeEffect: VisualEffect {
 
     let label:UILabel = {
         let label:UILabel = UILabel()
-        label.frame = CGRectMake(0, 0, 300, 100)
+        label.frame = CGRect(x: 0, y: 0, width: 300, height: 100)
         return label
     }()
 
-    override func execute(image: CIImage) -> CIImage {
-        let now:NSDate = NSDate()
+    override func execute(_ image: CIImage) -> CIImage {
+        let now:Date = Date()
         label.text = now.description
 
         UIGraphicsBeginImageContext(image.extent.size)
-        label.drawTextInRect(CGRectMake(0, 0, 200, 200))
-        let result:CIImage = CIImage(image: UIGraphicsGetImageFromCurrentImageContext(), options: nil)!
+        label.drawText(in: CGRect(x: 0, y: 0, width: 200, height: 200))
+        let result:CIImage = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)!
         UIGraphicsEndImageContext()
 
         filter!.setValue(result, forKey: "inputImage")
@@ -32,15 +32,15 @@ final class CurrentTimeEffect: VisualEffect {
 final class PronamaEffect: VisualEffect {
     let filter:CIFilter? = CIFilter(name: "CISourceOverCompositing")
     
-    var extent:CGRect = CGRectZero {
+    var extent:CGRect = CGRect.zero {
         didSet {
             if (extent == oldValue) {
                 return
             }
             UIGraphicsBeginImageContext(extent.size)
             let image:UIImage = UIImage(named: "Icon.png")!
-            image.drawAtPoint(CGPointMake(50, 50))
-            pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext(), options: nil)
+            image.draw(at: CGPoint(x: 50, y: 50))
+            pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
             UIGraphicsEndImageContext()
         }
     }
@@ -50,7 +50,7 @@ final class PronamaEffect: VisualEffect {
         super.init()
     }
     
-    override func execute(image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage) -> CIImage {
         guard let filter:CIFilter = filter else {
             return image
         }
@@ -64,7 +64,7 @@ final class PronamaEffect: VisualEffect {
 final class MonochromeEffect: VisualEffect {
     let filter:CIFilter? = CIFilter(name: "CIColorMonochrome")
 
-    override func execute(image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage) -> CIImage {
         guard let filter:CIFilter = filter else {
             return image
         }
