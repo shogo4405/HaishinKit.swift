@@ -124,8 +124,8 @@ rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
 var httpStream:HTTPStream = HTTPStream()
-httpStream.attachCamera(DeviceUtil.device(withPosition: .back))
-httpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+httpStream.attachCamera(AVMixer.deviceWithPosition(.Back))
+httpStream.attachAudio(DeviceUtil.defaultDeviceWithMediaType(AVMediaTypeAudio))
 httpStream.publish("hello")
 
 var lfView:LFView = LFView(frame: view.bounds)
