@@ -46,7 +46,7 @@ final class AudioIOComponent: IOComponent {
         encoder.lockQueue = lockQueue
     }
 
-    func attach(audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
+    func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
         output = nil
         encoder.invalidate()
         guard let audio:AVCaptureDevice = audio else {

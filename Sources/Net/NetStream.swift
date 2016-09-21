@@ -132,7 +132,7 @@ open class NetStream: NSObject {
 
     open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
         lockQueue.async {
-            self.mixer.audioIO.attach(audio: audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
+            self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
             )
         }
     }
