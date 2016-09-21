@@ -106,7 +106,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     private func listen(data:Data?, response:URLResponse?, error:Error?) {
-        if (logger.isEnabledForLogLevel(.verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data):\(response):\(error)")
         }
 
@@ -172,7 +172,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         doRequest("/open/1", Data([0x00]), didOpen)
-        if (logger.isEnabledForLogLevel(.verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data?.bytes):\(response)")
         }
     }
@@ -186,7 +186,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idel/\(connectionID!)/0", Data([0x00]), didIdel0)
-        if (logger.isEnabledForLogLevel(.verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data.bytes):\(response)")
         }
     }
@@ -196,7 +196,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         connected = true
-        if (logger.isEnabledForLogLevel(.verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data?.bytes):\(response)")
         }
     }
@@ -206,7 +206,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         connected = false
-        if (logger.isEnabledForLogLevel(.verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data?.bytes):\(response)")
         }
     }
@@ -239,7 +239,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         var request:URLRequest = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
-        if (logger.isEnabledForLogLevel(.verbose)) {
+        if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(request)")
         }
     }

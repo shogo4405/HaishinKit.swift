@@ -9,10 +9,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
-        XCGLogger.defaultInstance().xcodeColorsEnabled = true
-        XCGLogger.defaultInstance().setup(
-            .info,
-            showThreadName: true, showLogLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: nil, fileLogLevel: nil)
+        XCGLogger.default.setup(
+            level: .info,
+            showThreadName: true, showLevel: true, showFileNames: true, showLineNumbers: true, writeToFile: nil, fileLevel: nil)
 
         let viewController:LiveViewController = LiveViewController()
         viewController.title = "lf - lIVE fRAMEWORK"

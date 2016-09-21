@@ -1,3 +1,3 @@
 import XCGLogger
 
-let logger:XCGLogger = XCGLogger.defaultInstance()
+let logger:XCGLogger = XCGLogger.default

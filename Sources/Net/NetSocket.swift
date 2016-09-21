@@ -162,7 +162,7 @@ class NetSocket: NSObject {
 extension NetSocket: StreamDelegate {
     // MARK: StreamDelegate
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-        if (logger.isEnabledForLogLevel(.debug)) {
+        if (logger.isEnabledFor(level: .debug)) {
             logger.debug("eventCode: \(eventCode)")
         }
         switch eventCode {

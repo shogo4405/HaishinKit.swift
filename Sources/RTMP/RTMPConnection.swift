@@ -419,7 +419,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         if let message:RTMPMessage = chunk.message , chunk.ready {
-            if (logger.isEnabledForLogLevel(.verbose)) {
+            if (logger.isEnabledFor(level: .verbose)) {
                 logger.verbose(chunk.description)
             }
             switch chunk.type {

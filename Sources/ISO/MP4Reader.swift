@@ -203,7 +203,7 @@ final class MP4TimeToSampleBox: MP4Box {
         var description:String {
             return Mirror(reflecting: self).description
         }
-        
+
         init(sampleCount:UInt32, sampleDuration:UInt32) {
             self.sampleCount = sampleCount
             self.sampleDuration = sampleDuration
