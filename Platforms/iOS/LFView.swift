@@ -46,7 +46,6 @@ open class LFView: UIView {
 
     override open func awakeFromNib() {
         backgroundColor = LFView.defaultBackgroundColor
-        layer.contentsGravity = kCAGravityResizeAspect
         layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
     }
 
@@ -58,8 +57,9 @@ open class LFView: UIView {
 }
 
 extension LFView: NetStreamDrawable {
-    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
-    }
+    // MARK: NetStreamDrawable
     func draw(image:CIImage) {
+    }
+    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
     }
 }

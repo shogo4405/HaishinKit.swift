@@ -200,7 +200,7 @@ extension MP4Sampler: Runnable {
         lockQueue.async {
             self.running = true
             while (self.running) {
-                self.fileQueue.async {
+                self.fileQueue.sync {
                     self.run()
                 }
             }

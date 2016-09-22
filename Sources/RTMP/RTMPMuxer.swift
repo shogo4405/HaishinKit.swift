@@ -128,7 +128,6 @@ extension RTMPMuxer: MP4SamplerDelegate {
         let delta:Double = (timestamps[withType] == nil) ? 0 : timestamps[withType]!
         switch withType {
         case 0:
-            print(delta)
             let compositionTime:Int32 = 0
             var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
             buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])

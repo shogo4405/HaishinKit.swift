@@ -53,8 +53,8 @@ open class LFView: NSView {
 
 extension LFView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
-    }
     func draw(image:CIImage) {
+    }
+    func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
     }
 }

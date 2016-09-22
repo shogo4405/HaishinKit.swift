@@ -18,8 +18,7 @@ final class LiveViewController: UIViewController {
     var httpStream:HTTPStream!
 
     let touchView: UIView! = UIView()
-    
-    let lfView:GLLFView! = GLLFView(frame: CGRect.zero)
+    let lfView:GLLFView = GLLFView(frame: CGRect.zero)
 
     var currentFPSLabel:UILabel = {
         let label:UILabel = UILabel()
