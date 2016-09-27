@@ -46,11 +46,10 @@ final class AVMixer: NSObject {
             guard syncOrientation != oldValue else {
                 return
             }
-            let center:NotificationCenter = NotificationCenter.default
             if (syncOrientation) {
-                center.addObserver(self, selector: #selector(AVMixer.onOrientationChanged(_:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(AVMixer.on(uiDeviceOrientationDidChange:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
             } else {
-                center.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+                NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
             }
         }
     }
@@ -95,9 +94,9 @@ final class AVMixer: NSObject {
     }
 
     #if os(iOS)
-    func onOrientationChanged(_ notification:Notification) {
+    @objc private func on(uiDeviceOrientationDidChange:Notification) {
         var deviceOrientation:UIDeviceOrientation = .unknown
-        if let device:UIDevice = notification.object as? UIDevice {
+        if let device:UIDevice = uiDeviceOrientationDidChange.object as? UIDevice {
             deviceOrientation = device.orientation
         }
         if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: deviceOrientation) {
@@ -116,7 +115,7 @@ extension AVMixer: Runnable {
     func startRunning() {
         session.startRunning()
         #if os(iOS)
-            if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) , syncOrientation {
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) , syncOrientation {
             self.orientation = orientation
         }
         #endif
