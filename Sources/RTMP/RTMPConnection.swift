@@ -240,8 +240,8 @@ open class RTMPConnection: EventDispatcher {
         connect(command, arguments: nil)
     }
 
-    open func connect(_ command: String, arguments: Any?...) {
-        guard let uri:URL = URL(string: command) , !connected && RTMPConnection.supportedProtocols.contains(uri.scheme!) else {
+    open func connect(_ command:String, arguments:Any?...) {
+        guard let uri:URL = URL(string: command), let scheme:String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
             return
         }
         self.uri = uri
@@ -250,7 +250,7 @@ open class RTMPConnection: EventDispatcher {
         socket = uri.scheme == "rtmpt" ? RTMPTSocket() : RTMPSocket()
         socket.delegate = self
         socket.securityLevel = uri.scheme == "rtmps" ? .negotiatedSSL : .none
-        socket.connect(withName: uri.host!, port: (uri as NSURL).port == nil ? RTMPConnection.defaultPort : (uri as NSURL).port!.intValue)
+        socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
     }
 
     open func close() {

@@ -12,8 +12,8 @@ open class LFView: NSView {
 
     var position:AVCaptureDevicePosition = .front {
         didSet {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                self.frame = NSRect(x: 0, y: 0, width: self.frame.width - 0.1, height: self.frame.height - 0.1)
+            DispatchQueue.main.async {
+                self.layer?.setNeedsLayout()
             }
         }
     }

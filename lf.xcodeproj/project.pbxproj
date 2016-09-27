@@ -1887,7 +1887,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 43B0F9677D3A60EDF565E82D /* Pods-lf iOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1913,7 +1912,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DDB21101571575D1CB36B2B5 /* Pods-lf iOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEFINES_MODULE = YES;
@@ -1938,7 +1936,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3403F23D89EF299F50EF8DB5 /* Pods-Tests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1960,7 +1957,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C8BDC7568FABED9F05D011AD /* Pods-Tests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -1981,7 +1977,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FEFD5523FF052E4484FB3C74 /* Pods-lf macOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2007,7 +2002,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CBE202A7ECFFA0F1654477E9 /* Pods-lf macOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2031,7 +2025,6 @@
 		29BA5B971D50BEAD00A51EA8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
@@ -2063,7 +2056,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 3C67E69BF8AD999AF28535CF /* Pods-Example iOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2085,7 +2077,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4C6CCFB8BF4952417BC659C6 /* Pods-Example iOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -2105,7 +2096,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 484B9D76487F823CF00A905F /* Pods-Example macOS.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -2124,7 +2114,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E450FB31075479C4359D0513 /* Pods-Example macOS.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ANALYZER_NONNULL = YES;
 				CODE_SIGN_IDENTITY = "-";
