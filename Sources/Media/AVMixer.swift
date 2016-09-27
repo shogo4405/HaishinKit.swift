@@ -25,11 +25,6 @@ final class AVMixer: NSObject {
         set { videoIO.fps = newValue }
     }
 
-    var orientation:AVCaptureVideoOrientation {
-        get { return videoIO.orientation }
-        set { videoIO.orientation = newValue }
-    }
-
     var continuousExposure:Bool {
         get { return videoIO.continuousExposure }
         set { videoIO.continuousExposure = newValue }
@@ -39,21 +34,6 @@ final class AVMixer: NSObject {
         get { return videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
-
-    #if os(iOS)
-    var syncOrientation:Bool = false {
-        didSet {
-            guard syncOrientation != oldValue else {
-                return
-            }
-            if (syncOrientation) {
-                NotificationCenter.default.addObserver(self, selector: #selector(AVMixer.on(uiDeviceOrientationDidChange:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
-            } else {
-                NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
-            }
-        }
-    }
-    #endif
 
     var sessionPreset:String = AVMixer.defaultSessionPreset {
         didSet {
@@ -66,7 +46,7 @@ final class AVMixer: NSObject {
         }
     }
 
-    fileprivate var _session:AVCaptureSession? = nil
+    private var _session:AVCaptureSession? = nil
     var session:AVCaptureSession! {
         if (_session == nil) {
             _session = AVCaptureSession()
@@ -77,33 +57,15 @@ final class AVMixer: NSObject {
         return _session!
     }
 
-    fileprivate(set) var audioIO:AudioIOComponent!
-    fileprivate(set) var videoIO:VideoIOComponent!
-    fileprivate(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    private(set) var audioIO:AudioIOComponent!
+    private(set) var videoIO:VideoIOComponent!
+    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
     override init() {
         super.init()
         audioIO = AudioIOComponent(mixer: self)
         videoIO = VideoIOComponent(mixer: self)
     }
-
-    deinit {
-        #if os(iOS)
-        syncOrientation = false
-        #endif
-    }
-
-    #if os(iOS)
-    @objc private func on(uiDeviceOrientationDidChange:Notification) {
-        var deviceOrientation:UIDeviceOrientation = .unknown
-        if let device:UIDevice = uiDeviceOrientationDidChange.object as? UIDevice {
-            deviceOrientation = device.orientation
-        }
-        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: deviceOrientation) {
-            self.orientation = orientation
-        }
-    }
-    #endif
 }
 
 extension AVMixer: Runnable {
@@ -112,16 +74,17 @@ extension AVMixer: Runnable {
         return session.isRunning
     }
 
-    func startRunning() {
-        session.startRunning()
-        #if os(iOS)
-        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) , syncOrientation {
-            self.orientation = orientation
+    final func startRunning() {
+        guard !running else {
+            return
         }
-        #endif
+        session.startRunning()
     }
 
-    func stopRunning() {
+    final func stopRunning() {
+        guard running else {
+            return
+        }
         session.stopRunning()
     }
 }

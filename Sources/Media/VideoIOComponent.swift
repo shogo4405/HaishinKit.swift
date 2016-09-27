@@ -358,7 +358,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
         let image:CIImage = effect(buffer)
         if (!effects.isEmpty) {
-            #if os(OSX)
+            #if os(macOS)
             // green edge hack for OSX
             buffer = CVPixelBuffer.create(image)!
             #endif

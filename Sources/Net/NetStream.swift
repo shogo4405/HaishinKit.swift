@@ -16,6 +16,12 @@ open class NetStream: NSObject {
         label: "com.github.shogo4405.lf.Stream.lock", attributes: []
     )
 
+    deinit {
+        #if os(iOS)
+        syncOrientation = false
+        #endif
+    }
+
     open var torch:Bool {
         get {
             var torch:Bool = false
@@ -32,17 +38,30 @@ open class NetStream: NSObject {
     }
 
     #if os(iOS)
-    open var syncOrientation:Bool {
+    open var orientation:AVCaptureVideoOrientation {
         get {
-            var syncOrientation:Bool = false
-            lockQueue.sync {
-                syncOrientation = self.mixer.syncOrientation
+            var orientation:AVCaptureVideoOrientation!
+            DispatchQueue.main.sync {
+                orientation = self.mixer.videoIO.orientation
             }
-            return syncOrientation
+            return orientation
         }
         set {
-            lockQueue.async {
-                self.mixer.syncOrientation = newValue
+            DispatchQueue.main.async {
+                self.mixer.videoIO.orientation = newValue
+            }
+        }
+    }
+
+    open var syncOrientation:Bool = false {
+        didSet {
+            guard syncOrientation != oldValue else {
+                return
+            }
+            if (syncOrientation) {
+                NotificationCenter.default.addObserver(self, selector: #selector(NetStream.on(uiDeviceOrientationDidChange:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+            } else {
+                NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
             }
         }
     }
@@ -124,7 +143,7 @@ open class NetStream: NSObject {
     }
 
     open func attachCamera(_ camera:AVCaptureDevice?) {
-        lockQueue.async {
+        DispatchQueue.main.async {
             self.mixer.videoIO.attachCamera(camera)
             self.mixer.startRunning()
         }
@@ -137,7 +156,7 @@ open class NetStream: NSObject {
         }
     }
 
-    #if os(OSX)
+    #if os(macOS)
     public func attachScreen(_ screen:AVCaptureScreenInput?) {
         lockQueue.async {
             self.mixer.videoIO.attachScreen(screen)
@@ -168,4 +187,16 @@ open class NetStream: NSObject {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
     }
+
+    #if os(iOS)
+    @objc private func on(uiDeviceOrientationDidChange:Notification) {
+        var deviceOrientation:UIDeviceOrientation = .unknown
+        if let device:UIDevice = uiDeviceOrientationDidChange.object as? UIDevice {
+            deviceOrientation = device.orientation
+        }
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: deviceOrientation) {
+            self.orientation = orientation
+        }
+    }
+    #endif
 }

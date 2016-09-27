@@ -19,8 +19,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
-        XCGLogger.default.outputLevel = .info
-
+        XCGLogger.default.setup(
+            level: .info,
+            showLogIdentifier: true,
+            showFunctionName: true,
+            showThreadName: true,
+            showLevel: true,
+            showFileNames: false,
+            showLineNumbers: true,
+            showDate: true,
+            writeToFile: nil,
+            fileLevel: nil
+        )
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.backgroundColor = UIColor.white
         window?.rootViewController = rootViewController
