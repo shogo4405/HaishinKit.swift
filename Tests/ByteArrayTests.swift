@@ -116,7 +116,7 @@ final class ByteArrayTests: XCTestCase {
 
         var raiseError:Bool = false
         do {
-            try bytes.readUTF8Bytes(length + 10)
+            let _:String = try bytes.readUTF8Bytes(length + 10)
         } catch {
             raiseError = true
         }
