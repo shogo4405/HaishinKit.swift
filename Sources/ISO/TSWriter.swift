@@ -19,7 +19,9 @@ class TSWriter {
             return m3u8.description
         }
         m3u8.mediaSequence = sequence - TSWriter.defaultSegmentMaxCount
-        m3u8.mediaList = Array(files[files.count - TSWriter.defaultSegmentCount..<files.count])
+        var startIndex = files.count - TSWriter.defaultSegmentCount
+        startIndex = startIndex >= 0 ? startIndex : 0
+        m3u8.mediaList = Array(files[startIndex..<files.count])
         return m3u8.description
     }
     var lockQueue:DispatchQueue = DispatchQueue(
