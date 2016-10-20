@@ -242,7 +242,7 @@ open class RTMPStream: NetStream {
                 send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
-                sampler.startRunning()
+//                sampler.startRunning()
                 if (howToPublish == .localRecord) {
                     mixer.recorder.fileName = info.resourceName
                     mixer.recorder.startRunning()
