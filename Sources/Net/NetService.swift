@@ -30,12 +30,16 @@ open class NetService: NSObject {
     }
 
     func disconnect(_ client:NetClient) {
-        guard let index:Int = clients.index(of: client) else {
-            return
+        lockQueue.sync {
+            guard let index:Int = clients.index(of: client) else {
+                return
+            }
+            
+            clients.remove(at: index)
+            
+            client.delegate = nil
+            client.close(isDisconnected: true)
         }
-        clients.remove(at: index)
-        client.delegate = nil
-        client.close(isDisconnected: true)
     }
 
     func willStartRunning() {
@@ -73,10 +77,12 @@ open class NetService: NSObject {
 extension NetService: NetServiceDelegate {
     // MARK: NSNetServiceDelegate
     public func netService(_ sender: Foundation.NetService, didAcceptConnectionWith inputStream: InputStream, outputStream: OutputStream) {
-        let client:NetClient = NetClient(service: sender, inputStream: inputStream, outputStream: outputStream)
-        clients.append(client)
-        client.delegate = self
-        client.acceptConnection()
+        lockQueue.sync {
+            let client:NetClient = NetClient(service: sender, inputStream: inputStream, outputStream: outputStream)
+            clients.append(client)
+            client.delegate = self
+            client.acceptConnection()
+        }
     }
 }
 
