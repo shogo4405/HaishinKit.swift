@@ -26,11 +26,15 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [ ] Objectiv-C Bridging
 
 ## Requirements
-* iOS 8.0+
-* macOS 10.11+
-* xcode 8.0+
+|lf|iOS|OSX|XCode|Swift|CocoaPods|Carthage|
+|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|0.5.0|8.0+|10.11+|8.0+|3.0|1.1.0|#80|
+|0.4.2|8.0+|10.11+|8.0+|2.3|1.1.0|#80|
+|0.4.0|8.0+|10.11+|7.3+|2.3|1.0.0|#80|
+|0.3.0|8.0+|10.11+|7.3+|2.3|1.0.0|-|
+|0.2.0|8.0+|-|?|2.3|0.39.0|-|
 
-### Cocoa Keys
+## Cocoa Keys
 iOS10.0+
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
@@ -141,14 +145,6 @@ view.addSubview(lfView)
 
 ## License
 New BSD
-
-## Enviroment
-|lf|iOS|OSX|Swift|CocoaPods|Carthage|
-|:----:|:----:|:----:|:----:|:----:|:----:|
-|0.5|8.0|10.11|3.0|1.1.0|#80|
-|0.4|8.0|10.11|2.3|1.0.0|#80|
-|0.3|8.0|10.11|2.3|1.0.0|-|
-|0.2|8.0|-|2.3|0.39.0|-|
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
