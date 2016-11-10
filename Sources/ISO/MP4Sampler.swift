@@ -115,15 +115,17 @@ class MP4Sampler {
 
     fileprivate(set) var running:Bool = false
     fileprivate var files:[URL:Handler?] = [:]
-    fileprivate let fileQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.MP4Sampler.file")
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.MP4Sampler.lock")
+    fileprivate let mutex:Mutex = Mutex()
+    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.MP4Sampler.lock")
+    fileprivate let loopQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.MP4Sampler.loop")
 
     private var reader:MP4Reader = MP4Reader()
     private var sampleTables:[MP4SampleTable] = []
 
     func append(file:URL, completionHandler: Handler? = nil) {
-        fileQueue.async {
+        lockQueue.async {
             self.files[file] = completionHandler
+            let _:Bool = self.mutex.signal()
         }
     }
 
@@ -197,11 +199,14 @@ class MP4Sampler {
 extension MP4Sampler: Runnable {
     // MARK: Runnable
     final func startRunning() {
-        lockQueue.async {
+        loopQueue.async {
             self.running = true
             while (self.running) {
-                self.fileQueue.sync {
+                self.lockQueue.sync {
                     self.run()
+                    if (self.files.isEmpty) {
+                        let _:Bool = self.mutex.wait()
+                    }
                 }
             }
         }

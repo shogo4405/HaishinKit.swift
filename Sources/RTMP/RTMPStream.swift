@@ -242,7 +242,7 @@ open class RTMPStream: NetStream {
                 send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
-                sampler.startRunning()
+                sampler?.startRunning()
                 if (howToPublish == .localRecord) {
                     mixer.recorder.fileName = info.resourceName
                     mixer.recorder.startRunning()
@@ -257,7 +257,7 @@ open class RTMPStream: NetStream {
     var videoTimestamp:Double = 0
     fileprivate(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
     fileprivate var muxer:RTMPMuxer = RTMPMuxer()
-    fileprivate var sampler:MP4Sampler = MP4Sampler()
+    fileprivate var sampler:MP4Sampler? = nil
     fileprivate var frameCount:UInt16 = 0
     fileprivate var chunkTypes:[FLVTagType:Bool] = [:]
     fileprivate var dispatcher:IEventDispatcher!
@@ -392,7 +392,7 @@ open class RTMPStream: NetStream {
                 self.mixer.videoIO.encoder.delegate = nil
                 self.mixer.audioIO.encoder.stopRunning()
                 self.mixer.videoIO.encoder.stopRunning()
-                self.sampler.stopRunning()
+                self.sampler?.stopRunning()
                 self.mixer.recorder.stopRunning()
                 self.FCUnpublish()
                 self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
@@ -422,7 +422,7 @@ open class RTMPStream: NetStream {
             #endif
             self.mixer.audioIO.encoder.delegate = self.muxer
             self.mixer.videoIO.encoder.delegate = self.muxer
-            self.sampler.delegate = self.muxer
+            self.sampler?.delegate = self.muxer
             self.mixer.startRunning()
             self.chunkTypes.removeAll()
             self.FCPublish()
@@ -496,7 +496,19 @@ open class RTMPStream: NetStream {
     }
 
     func append(url:URL, completionHandler: MP4Sampler.Handler? = nil) {
-        sampler.append(file: url, completionHandler: completionHandler)
+        lockQueue.async {
+            if (self.sampler == nil) {
+                self.sampler = MP4Sampler()
+                self.sampler?.delegate = self.muxer
+                switch self.readyState {
+                case .publishing:
+                    self.sampler?.startRunning()
+                default:
+                    break
+                }
+            }
+            self.sampler?.append(file: url, completionHandler: completionHandler)
+        }
     }
 
     func on(timer:Timer) {
