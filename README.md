@@ -78,7 +78,23 @@ rtmpStream.publish("streamName")
 ```
 ### Settings
 ```swift
+let sampleRate:Double = 44_100
+
+// see: #58
+#if(iOS)
+do {
+  try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
+  try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+  try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
+  try AVAudioSession.sharedInstance().setActive(true)
+} catch {
+}
+#endif
+
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
+// 2nd arguemnt set false
+rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), false)
+
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
     "sessionPreset": AVCaptureSessionPresetMedium, // input video width/height
@@ -88,6 +104,7 @@ rtmpStream.captureSettings = [
 rtmpStream.audioSettings = [
     "muted": false, // mute audio
     "bitrate": 32 * 1024,
+    "sampleRate": sampleRate, 
 ]
 rtmpStream.videoSettings = [
     "width": 640, // video output width
