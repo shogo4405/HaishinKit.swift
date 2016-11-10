@@ -38,6 +38,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 iOS10.0+
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
+* NSPhotoLibraryUsageDescription
 
 ## Installation
 ### CocoaPods
