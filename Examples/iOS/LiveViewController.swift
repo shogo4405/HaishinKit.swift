@@ -83,6 +83,16 @@ final class LiveViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let sampleRate:Double = 44_100
+
+        do {
+            try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+        }
 
         currentFPSLabel.text = "FPS"
 
@@ -99,8 +109,7 @@ final class LiveViewController: UIViewController {
 
         rtmpStream = RTMPStream(connection: rtmpConnection)
         rtmpStream.syncOrientation = true
-        
-        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
 
