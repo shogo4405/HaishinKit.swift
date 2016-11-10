@@ -61,7 +61,7 @@ Real Time Messaging Protocol (RTMP).
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
+rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
 rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back))
 
 var lfView:LFView = LFView(frame: view.bounds)
@@ -83,17 +83,17 @@ let sampleRate:Double = 44_100
 // see: #58
 #if(iOS)
 do {
-  try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
-  try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-  try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
-  try AVAudioSession.sharedInstance().setActive(true)
+    try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
+    try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+    try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
+    try AVAudioSession.sharedInstance().setActive(true)
 } catch {
 }
 #endif
 
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
 // 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), false)
+rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
 
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
