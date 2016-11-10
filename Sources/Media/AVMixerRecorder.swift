@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 #if os(iOS)
-import AssetsLibrary
+import Photos
 #endif
 
 public protocol AVMixerRecorderDelegate: class {
@@ -34,9 +34,7 @@ open class AVMixerRecorder: NSObject {
     open var writerInputs:[String:AVAssetWriterInput] = [:]
     open var outputSettings:[String:[String:Any]] = AVMixerRecorder.defaultOutputSettings
     open var delegate:AVMixerRecorderDelegate?
-    open let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.AVMixerRecorder.lock", attributes: []
-    )
+    open let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVMixerRecorder.lock")
     fileprivate(set) var running:Bool = false
 
     public override init() {
@@ -46,7 +44,6 @@ open class AVMixerRecorder: NSObject {
 
     final func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
         lockQueue.async {
-
             guard let delegate:AVMixerRecorderDelegate = self.delegate , self.running else {
                 return
             }
@@ -78,9 +75,9 @@ open class AVMixerRecorder: NSObject {
         }
         writer?.finishWriting {
             self.delegate?.didFinishWriting(self)
+            self.writer = nil
+            self.writerInputs.removeAll()
         }
-        writer = nil
-        writerInputs = [:]
     }
 }
 
@@ -154,9 +151,9 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                 for (key, value) in defaultOutputSettings {
                     switch key {
                     case AVSampleRateKey:
-                        outputSettings[key] = (value as! Decimal) == 0 ? inSourceFormat.mSampleRate : value
+                        outputSettings[key] = AnyUtil.isZero(value) ? inSourceFormat.mSampleRate : value
                     case AVNumberOfChannelsKey:
-                        outputSettings[key] = (value as! Decimal) == 0 ? Int(inSourceFormat.mChannelsPerFrame) : value
+                        outputSettings[key] = AnyUtil.isZero(value) ? Int(inSourceFormat.mChannelsPerFrame) : value
                     default:
                         outputSettings[key] = value
                     }
@@ -167,9 +164,9 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                 for (key, value) in defaultOutputSettings {
                     switch key {
                     case AVVideoHeightKey:
-                        outputSettings[key] = (value as! Decimal) == 0 ? Int(dimensions.height) : value
+                        outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.height) : value
                     case AVVideoWidthKey:
-                        outputSettings[key] = (value as! Decimal) == 0 ? Int(dimensions.width) : value
+                        outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.width) : value
                     default:
                         outputSettings[key] = value
                     }
@@ -188,12 +185,15 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard let writer:AVAssetWriter = recorder.writer else {
             return
         }
-        ALAssetsLibrary().writeVideoAtPath(toSavedPhotosAlbum: writer.outputURL, completionBlock: nil)
-        do {
-            try FileManager.default.removeItem(at: writer.outputURL)
-        } catch let error as NSError {
-            logger.error("\(error)")
-        }
+        PHPhotoLibrary.shared().performChanges({() -> Void in
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
+        }, completionHandler: { (isSuccess, error) -> Void in
+            do {
+                try FileManager.default.removeItem(at: writer.outputURL)
+            } catch let error as NSError {
+                logger.error("\(error)")
+            }
+        })
     #endif
     }
 
