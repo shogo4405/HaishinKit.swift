@@ -50,7 +50,7 @@ class TSWriter {
 
     func getFilePath(fileName:String) -> String? {
         for info in files {
-            if (info.url.absoluteString.containsString(fileName)) {
+            if ((info.url.absoluteString ?? "").containsString(fileName)) {
                 return info.url.path!
             }
         }

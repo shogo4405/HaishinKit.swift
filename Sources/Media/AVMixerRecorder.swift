@@ -218,9 +218,12 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                 }
                 fileComponent = fileName + dateFormatter.stringFromDate(NSDate())
             }
-            let url:NSURL = moviesDirectory.URLByAppendingPathComponent((fileComponent ?? NSUUID().UUIDString) + ".mp4")
+            let url:NSURL? = moviesDirectory.URLByAppendingPathComponent((fileComponent ?? NSUUID().UUIDString) + ".mp4")
+            if (url == nil) {
+                return nil
+            }
             logger.info("\(url)")
-            return try AVAssetWriter(URL: url, fileType: AVFileTypeMPEG4)
+            return try AVAssetWriter(URL: url!, fileType: AVFileTypeMPEG4)
         } catch {
             logger.warning("create an AVAssetWriter")
         }

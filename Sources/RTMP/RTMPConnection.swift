@@ -119,14 +119,14 @@ public class RTMPConnection: EventDispatcher {
     }
 
     private static func createSanJoseAuthCommand(url:NSURL, description:String) -> String {
-        var command:String = url.absoluteString
+        var command:String = url.absoluteString ?? ""
 
         guard let index:String.CharacterView.Index = description.characters.indexOf("?") else {
             return command
         }
 
         let query:String = description.substringFromIndex(index.advancedBy(1))
-        let challenge:String = String(format: "%08x", random())
+        let challenge:String = String(format: "%08x", arc4random())
         let dictionary:[String:AnyObject] = NSURL(string: "http://localhost?" + query)!.dictionaryFromQuery()
 
         var response:String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
@@ -245,7 +245,7 @@ public class RTMPConnection: EventDispatcher {
     }
 
     public func connect(command: String, arguments: Any?...) {
-        guard let uri:NSURL = NSURL(string: command) where !connected && RTMPConnection.supportedProtocols.contains(uri.scheme) else {
+        guard let uri:NSURL = NSURL(string: command) where !connected && RTMPConnection.supportedProtocols.contains(uri.scheme ?? "") else {
             return
         }
         self.uri = uri
@@ -322,7 +322,7 @@ public class RTMPConnection: EventDispatcher {
                     break
                 }
                 let query:String = uri.query ?? ""
-                let command:String = uri.absoluteString + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
+                let command:String = (uri.absoluteString ?? "") + (query == "" ? "?" : "&") + "authmod=adobe&user=\(user)"
                 connect(command, arguments: arguments)
             default:
                 break

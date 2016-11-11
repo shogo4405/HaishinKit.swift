@@ -99,7 +99,7 @@ public final class ScreenCaptureSession: NSObject {
         var pixelBuffer:CVPixelBufferRef?
         size = UIApplication.sharedApplication().delegate!.window!!.bounds.size
         CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)
-        CVPixelBufferLockBaseAddress(pixelBuffer!, 0)
+        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         let cgctx:CGContextRef = UIGraphicsGetCurrentContext()!
         dispatch_sync(dispatch_get_main_queue()) {
@@ -112,11 +112,11 @@ public final class ScreenCaptureSession: NSObject {
             }
             UIGraphicsPopContext()
         }
-        let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()
+        let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         context.render(CIImage(CGImage: image.CGImage!), toCVPixelBuffer: pixelBuffer!)
         delegate?.pixelBufferOutput(pixelBuffer!, timestamp: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
-        CVPixelBufferUnlockBaseAddress(pixelBuffer!, 0)
+        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
     }
 }
 
