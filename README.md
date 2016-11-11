@@ -164,6 +164,12 @@ view.addSubview(lfView)
 ## License
 New BSD
 
+## Donation
+Bitcoin
+```txt
+1FXxyfegCfhLcCAHV6jYu2Uska6JaAVux9
+```
+
 ## Reference
 * Adobe’s Real Time Messaging Protocol
  * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
