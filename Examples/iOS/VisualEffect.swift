@@ -19,7 +19,7 @@ final class CurrentTimeEffect: VisualEffect {
 
         UIGraphicsBeginImageContext(image.extent.size)
         label.drawTextInRect(CGRectMake(0, 0, 200, 200))
-        let result:CIImage = CIImage(image: UIGraphicsGetImageFromCurrentImageContext(), options: nil)!
+        let result:CIImage = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)!
         UIGraphicsEndImageContext()
 
         filter!.setValue(result, forKey: "inputImage")
@@ -40,7 +40,7 @@ final class PronamaEffect: VisualEffect {
             UIGraphicsBeginImageContext(extent.size)
             let image:UIImage = UIImage(named: "Icon.png")!
             image.drawAtPoint(CGPointMake(50, 50))
-            pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext(), options: nil)
+            pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
             UIGraphicsEndImageContext()
         }
     }
