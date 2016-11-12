@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 #if os(iOS)
-import AssetsLibrary
+import Photos
 #endif
 
 // MARK: AVMixerRecorderDelegate
@@ -79,9 +79,9 @@ public class AVMixerRecorder: NSObject {
         }
         writer?.finishWritingWithCompletionHandler {
             self.delegate?.didFinishWriting(self)
+            self.writer = nil
+            self.writerInputs = [:]
         }
-        writer = nil
-        writerInputs = [:]
     }
 }
 
@@ -190,12 +190,15 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard let writer:AVAssetWriter = recorder.writer else {
             return
         }
-        ALAssetsLibrary().writeVideoAtPathToSavedPhotosAlbum(writer.outputURL, completionBlock: nil)
-        do {
-            try NSFileManager.defaultManager().removeItemAtURL(writer.outputURL)
-        } catch let error as NSError {
-            logger.error("\(error)")
-        }
+        PHPhotoLibrary.sharedPhotoLibrary().performChanges({() -> Void in
+            PHAssetChangeRequest.creationRequestForAssetFromVideoAtFileURL(writer.outputURL)
+        }, completionHandler: { (isSuccess, error) -> Void in
+            do {
+                try NSFileManager.defaultManager().removeItemAtURL(writer.outputURL)
+            } catch let error as NSError {
+                logger.error("\(error)")
+            }
+        })
     #endif
     }
 
