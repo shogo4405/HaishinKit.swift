@@ -81,13 +81,13 @@ public class Stream: NSObject {
     public var captureSettings:[String: AnyObject] {
         get {
             var captureSettings:[String: AnyObject]!
-            dispatch_sync(lockQueue) {
+            dispatch_sync(dispatch_get_main_queue()) {
                 captureSettings = self.mixer.dictionaryWithValuesForKeys(AVMixer.supportedSettingsKeys)
             }
             return captureSettings
         }
         set {
-            dispatch_async(lockQueue) {
+            dispatch_async(dispatch_get_main_queue()) {
                 self.mixer.setValuesForKeysWithDictionary(newValue)
             }
         }
@@ -124,7 +124,7 @@ public class Stream: NSObject {
     }
 
     public func attachCamera(camera:AVCaptureDevice?) {
-        dispatch_async(lockQueue) {
+        dispatch_async(dispatch_get_main_queue()) {
             self.mixer.videoIO.attachCamera(camera)
             self.mixer.startRunning()
         }
