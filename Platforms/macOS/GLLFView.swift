@@ -39,8 +39,6 @@ public class GLLFView: NSOpenGLView {
             )
             openGLContext.makeCurrentContext()
         }
-        var param:GLint = 1
-        openGLContext?.setValues(&param, forParameter: .GLCPSwapInterval)
         glDisable(GLenum(GL_ALPHA_TEST))
         glDisable(GLenum(GL_DEPTH_TEST))
         glDisable(GLenum(GL_BLEND))
