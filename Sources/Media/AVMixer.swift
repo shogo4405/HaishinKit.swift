@@ -9,7 +9,6 @@ final class AVMixer: NSObject {
     static let supportedSettingsKeys:[String] = [
         "fps",
         "sessionPreset",
-        "orientation",
         "continuousAutofocus",
         "continuousExposure",
     ]
