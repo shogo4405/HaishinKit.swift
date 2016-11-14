@@ -12,6 +12,7 @@ protocol VideoEncoderDelegate: class {
 final class AVCEncoder: NSObject {
 
     static let supportedSettingsKeys:[String] = [
+        "muted",
         "width",
         "height",
         "bitrate",
@@ -37,6 +38,8 @@ final class AVCEncoder: NSObject {
     ]
     #endif
     static let defaultDataRateLimits:[Int] = [0, 0]
+
+    var muted:Bool = false
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {
@@ -244,7 +247,7 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard running else {
+        guard running && !muted else {
             return
         }
         if (invalidateSession) {

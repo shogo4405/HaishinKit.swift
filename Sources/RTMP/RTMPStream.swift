@@ -257,6 +257,7 @@ open class RTMPStream: NetStream {
     var videoTimestamp:Double = 0
     fileprivate(set) var audioPlayback:RTMPAudioPlayback = RTMPAudioPlayback()
     fileprivate var muxer:RTMPMuxer = RTMPMuxer()
+    fileprivate var paused:Bool = false
     fileprivate var sampler:MP4Sampler? = nil
     fileprivate var frameCount:UInt16 = 0
     fileprivate var chunkTypes:[FLVTagType:Bool] = [:]
@@ -310,9 +311,7 @@ open class RTMPStream: NetStream {
         lockQueue.async {
             guard let name:String = arguments.first as? String else {
                 switch self.readyState {
-                case .play:
-                    fallthrough
-                case .playing:
+                case .play, .playing:
                     self.audioPlayback.stopRunning()
                     self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                         type: .zero,
@@ -479,7 +478,46 @@ open class RTMPStream: NetStream {
         }
     }
 
-    open func createMetaData() -> ASObject {
+    open func pause() {
+        lockQueue.async {
+            self.paused = true
+            switch self.readyState {
+            case .publish, .publishing:
+                self.mixer.audioIO.encoder.muted = true
+                self.mixer.videoIO.encoder.muted = true
+            default:
+                break
+            }
+        }
+    }
+
+    open func resume() {
+        lockQueue.async {
+            self.paused = false
+            switch self.readyState {
+            case .publish, .publishing:
+                self.mixer.audioIO.encoder.muted = false
+                self.mixer.videoIO.encoder.muted = false
+            default:
+                break
+            }
+        }
+    }
+
+    open func togglePause() {
+        lockQueue.async {
+            switch self.readyState {
+            case .publish, .publishing:
+                self.paused = !self.paused
+                self.mixer.audioIO.encoder.muted = self.paused
+                self.mixer.videoIO.encoder.muted = self.paused
+            default:
+                break
+            }
+        }
+    }
+
+    func createMetaData() -> ASObject {
         var metadata:ASObject = [:]
         if let _:AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width

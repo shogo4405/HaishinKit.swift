@@ -5,7 +5,7 @@ import AVFoundation
 struct Preference {
     static let defaultInstance:Preference = Preference()
 
-    var uri:String? = "rtmp://test:test@192.168.179.4/live"
+    var uri:String? = "rtmp://test:test@192.168.179.3/live"
     var streamName:String? = "live"
 }
 
@@ -33,6 +33,15 @@ final class LiveViewController: UIViewController {
         button.layer.masksToBounds = true
         return button
     }()
+
+    var pauseButton:UIButton = {
+        let button:UIButton = UIButton()
+        button.backgroundColor = UIColor.blue
+        button.setTitle("P", for: UIControlState())
+        button.layer.masksToBounds = true
+        return button
+    }()
+
 
     var videoBitrateLabel:UILabel = {
         let label:UILabel = UILabel()
@@ -124,7 +133,9 @@ final class LiveViewController: UIViewController {
             "height": 720,
         ]
 
-        publishButton.addTarget(self, action: #selector(LiveViewController.onClickPublish(_:)), for: .touchUpInside)
+        publishButton.addTarget(self, action: #selector(LiveViewController.on(publish:)), for: .touchUpInside)
+        pauseButton.addTarget(self, action: #selector(LiveViewController.on(pause:)), for: .touchUpInside)
+
 
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(LiveViewController.tapScreen(_:)))
         touchView.addGestureRecognizer(tapGesture)
@@ -146,6 +157,7 @@ final class LiveViewController: UIViewController {
         view.addSubview(fpsControl)
         view.addSubview(currentFPSLabel)
         view.addSubview(effectSegmentControl)
+        view.addSubview(pauseButton)
         view.addSubview(publishButton)
     }
 
@@ -155,6 +167,7 @@ final class LiveViewController: UIViewController {
         lfView.frame = view.bounds
         fpsControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight + 40, width: 200, height: 30)
         effectSegmentControl.frame = CGRect(x: view.bounds.width - 200 - 10 , y: navigationHeight, width: 200, height: 30)
+        pauseButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 * 2 - 20 * 2, width: 44, height: 44)
         publishButton.frame = CGRect(x: view.bounds.width - 44 - 20, y: view.bounds.height - 44 - 20, width: 44, height: 44)
         currentFPSLabel.frame = CGRect(x: 10, y: 10, width: 40, height: 40)
         zoomSlider.frame = CGRect(x: 20, y: view.frame.height - 44 * 3 - 22, width: view.frame.width - 44 - 60, height: 44)
@@ -199,19 +212,24 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    func onClickPublish(_ sender:UIButton) {
-        if (sender.isSelected) {
+    func on(pause:UIButton) {
+        print("pause")
+        rtmpStream.togglePause()
+    }
+
+    func on(publish:UIButton) {
+        if (publish.isSelected) {
             UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
             rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-            sender.setTitle("●", for: UIControlState())
+            publish.setTitle("●", for: UIControlState())
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
             rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
-            sender.setTitle("■", for: UIControlState())
+            publish.setTitle("■", for: UIControlState())
         }
-        sender.isSelected = !sender.isSelected
+        publish.isSelected = !publish.isSelected
     }
 
     func rtmpStatusHandler(_ notification:Notification) {
