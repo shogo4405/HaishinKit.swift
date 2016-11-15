@@ -31,11 +31,19 @@ open class AVMixerRecorder: NSObject {
 
     open var writer:AVAssetWriter?
     open var fileName:String?
+    open var delegate:AVMixerRecorderDelegate?
     open var writerInputs:[String:AVAssetWriterInput] = [:]
     open var outputSettings:[String:[String:Any]] = AVMixerRecorder.defaultOutputSettings
-    open var delegate:AVMixerRecorderDelegate?
     open let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVMixerRecorder.lock")
     fileprivate(set) var running:Bool = false
+    fileprivate(set) var sourceTime:CMTime = kCMTimeZero
+
+    var isReadyForStartWriting:Bool {
+        guard let writer:AVAssetWriter = writer else {
+            return false
+        }
+        return outputSettings.count == writer.inputs.count
+    }
 
     public override init() {
         super.init()
@@ -44,25 +52,27 @@ open class AVMixerRecorder: NSObject {
 
     final func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, mediaType:String) {
         lockQueue.async {
-            guard let delegate:AVMixerRecorderDelegate = self.delegate , self.running else {
+            guard let delegate:AVMixerRecorderDelegate = self.delegate, self.running else {
                 return
             }
 
             delegate.rotateFile(self, sampleBuffer: sampleBuffer, mediaType: mediaType)
 
-            guard let
-                writer:AVAssetWriter = self.writer,
-                let input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: mediaType, sourceFormatHint: sampleBuffer.formatDescription) else {
+            guard
+                let writer:AVAssetWriter = self.writer,
+                let input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: mediaType, sourceFormatHint: sampleBuffer.formatDescription),
+                self.isReadyForStartWriting else {
                 return
             }
 
             switch writer.status {
             case .unknown:
                 writer.startWriting()
-                writer.startSession(atSourceTime: sampleBuffer.presentationTimeStamp)
+                writer.startSession(atSourceTime: self.sourceTime)
             default:
                 break
             }
+
             if (input.isReadyForMoreMediaData) {
                 input.append(sampleBuffer)
             }
@@ -138,12 +148,14 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             presentationTimeStamp,
             CMTimeMake(duration == 0 ? Int64.max : duration * Int64(presentationTimeStamp.timescale), presentationTimeStamp.timescale)
         )
+        recorder.sourceTime = presentationTimeStamp
     }
 
     public func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
         guard recorder.writerInputs[mediaType] == nil else {
             return recorder.writerInputs[mediaType]
         }
+
         var outputSettings:[String:Any] = [:]
         if let defaultOutputSettings:[String:Any] = recorder.outputSettings[mediaType] {
             if (mediaType == AVMediaTypeAudio) {
@@ -173,10 +185,11 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                 }
             }
         }
-        var input:AVAssetWriterInput?
-        input = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
+
+        let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
         recorder.writerInputs[mediaType] = input
-        recorder.writer?.add(input!)
+        recorder.writer?.add(input)
+
         return input
     }
 
