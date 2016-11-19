@@ -166,6 +166,7 @@ final class AVCEncoder: NSObject {
         return attributes
     }
     fileprivate var invalidateSession:Bool = true
+    fileprivate var lastImageBuffer:CVImageBuffer? = nil;
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     fileprivate var properties:[NSString: NSObject] {
@@ -247,7 +248,7 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard running && !muted else {
+        guard running else {
             return
         }
         if (invalidateSession) {
@@ -259,13 +260,16 @@ final class AVCEncoder: NSObject {
         var flags:VTEncodeInfoFlags = VTEncodeInfoFlags()
         VTCompressionSessionEncodeFrame(
             session,
-            imageBuffer,
+            muted ? lastImageBuffer ?? imageBuffer : imageBuffer,
             presentationTimeStamp,
             duration,
             nil,
             nil,
             &flags
         )
+        if (!muted) {
+            lastImageBuffer = imageBuffer
+        }
     }
 
 #if os(iOS)
@@ -315,6 +319,7 @@ extension AVCEncoder: Runnable {
     func stopRunning() {
         lockQueue.async {
             self.session = nil
+            self.lastImageBuffer = nil;
             self.formatDescription = nil
 #if os(iOS)
             NotificationCenter.default.removeObserver(self)
