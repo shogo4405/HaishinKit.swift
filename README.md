@@ -1,4 +1,4 @@
-# lf - lIVE fRAMEWORK
+# HaishinKit (formerly lf)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/lf.swift/master/LICENSE.txt)
 
 Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
@@ -26,7 +26,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [ ] Objectiv-C Bridging
 
 ## Requirements
-|lf|iOS|OSX|XCode|Swift|CocoaPods|Carthage|
+|-|iOS|OSX|XCode|Swift|CocoaPods|Carthage|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |0.5.0|8.0+|10.11+|8.0+|3.0|1.1.0|#80|
 |0.4.0|8.0+|10.11+|7.3+|2.3|1.0.0|#80|
