@@ -292,7 +292,7 @@ final class MP4ElementaryStreamDescriptorBox: MP4ContainerBox {
         if (streamDependenceFlag == 1) {
             let _:UInt16 = try buffer.readUInt16()
         }
-    
+
         // Decorder Config Descriptor
         let _:UInt8 = try buffer.readUInt8()
         tagSize = try buffer.readUInt8()
@@ -508,7 +508,7 @@ final class MP4EditListBox: MP4Box {
                 mediaRate: try buffer.readUInt32()
             ))
         }
-
+        
         return size
     }
 }
@@ -569,5 +569,137 @@ final class MP4Reader: MP4ContainerBox {
         fileHandle.seek(toFileOffset: 0)
         self.size = UInt32(size)
         return try super.load(fileHandle)
+    }
+}
+
+// MARK: -
+final class MP4TrakReader {
+    var trak:MP4Box
+    weak var delegate:MP4SamplerDelegate?
+
+    private var id:Int = 0
+    private var currentOffset:UInt64 {
+        return UInt64(offset[cursor])
+    }
+    private var currentIsKeyframe:Bool {
+        return keyframe[cursor] != nil
+    }
+    private var currentDuration:Double {
+        return Double(totalTimeToSample) * 1000 / Double(timeScale)
+    }
+    private var currentTimeToSample:Double {
+        return Double(timeToSample[cursor]) * 1000 / Double(timeScale)
+    }
+    private var currentSampleSize:Int {
+        return Int((sampleSize.count == 1) ? sampleSize[0] : sampleSize[cursor])
+    }
+    private var cursor:Int = 0
+    private var offset:[UInt32] = []
+    private var keyframe:[Int:Bool] = [:]
+    private var timeScale:UInt32 = 0
+    private var sampleSize:[UInt32] = []
+    private var timeToSample:[UInt32] = []
+    private var totalTimeToSample:UInt32 = 0
+    
+    private var duration:Double = 0
+
+    init(id:Int, trak:MP4Box) {
+        self.id = id
+        self.trak = trak
+
+        let mdhd:MP4Box? = trak.getBoxes(byName: "mdhd").first
+        if let mdhd:MP4MediaHeaderBox = mdhd as? MP4MediaHeaderBox {
+            timeScale = mdhd.timeScale
+        }
+
+        let stss:MP4Box? = trak.getBoxes(byName: "stss").first
+        if let stss:MP4SyncSampleBox = stss as? MP4SyncSampleBox {
+            var keyframes:[UInt32] = stss.entries
+            for i in 0..<keyframes.count {
+                keyframe[Int(keyframes[i])] = true
+            }
+        }
+
+        let stts:MP4Box? = trak.getBoxes(byName: "stts").first
+        if let stts:MP4TimeToSampleBox = stts as? MP4TimeToSampleBox {
+            var timeToSample:[MP4TimeToSampleBox.Entry] = stts.entries
+            for i in 0..<timeToSample.count {
+                let entry:MP4TimeToSampleBox.Entry = timeToSample[i]
+                for _ in 0..<entry.sampleCount {
+                    self.timeToSample.append(entry.sampleDuration)
+                }
+            }
+        }
+
+        let stsz:MP4Box? = trak.getBoxes(byName: "stsz").first
+        if let stsz:MP4SampleSizeBox = stsz as? MP4SampleSizeBox {
+            sampleSize = stsz.entries
+        }
+
+        let stco:MP4Box = trak.getBoxes(byName: "stco").first!
+        let stsc:MP4Box = trak.getBoxes(byName: "stsc").first!
+        var offsets:[UInt32] = (stco as! MP4ChunkOffsetBox).entries
+        var sampleToChunk:[MP4SampleToChunkBox.Entry] = (stsc as! MP4SampleToChunkBox).entries
+
+        var index:Int = 0
+        let count:Int = sampleToChunk.count
+
+        for i in 0..<count {
+            let j:Int = Int(sampleToChunk[i].firstChunk) - 1
+            let m:Int = (i + 1 < count) ? Int(sampleToChunk[i + 1].firstChunk) - 1 : offsets.count
+            for _ in j..<m {
+                var offset:UInt32 = offsets[j]
+                for _ in 0..<sampleToChunk[i].samplesPerChunk {
+                    self.offset.append(offset)
+                    offset += sampleSize[index]
+                    index += 1
+                }
+            }
+        }
+
+        totalTimeToSample = timeToSample[cursor]
+    }
+
+    func execute(url:URL) {
+        duration = 0
+        do {
+            let reader:FileHandle = try FileHandle(forReadingFrom: url)
+            while (hasNext()) {
+                duration += currentTimeToSample
+                reader.seek(toFileOffset: currentOffset)
+                autoreleasepool {
+                    delegate?.output(
+                        data: reader.readData(ofLength: currentSampleSize),
+                        withType: id,
+                        currentTime: currentTimeToSample,
+                        keyframe: currentIsKeyframe
+                    )
+                }
+                if (1000 <= duration) {
+                    usleep(UInt32(currentTimeToSample * 1000 * 0.5))
+                }
+                next()
+            }
+        } catch {
+            logger.warning("")
+        }
+    }
+
+    private func hasNext() -> Bool {
+        return cursor + 1 < offset.count
+    }
+
+    private func next() {
+        defer {
+            cursor += 1
+        }
+        totalTimeToSample += timeToSample[cursor]
+    }
+}
+
+extension MP4TrakReader: CustomStringConvertible {
+    // MARK: CustomStringConvertible
+    var description:String {
+        return Mirror(reflecting: self).description
     }
 }

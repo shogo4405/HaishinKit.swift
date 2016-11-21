@@ -10,6 +10,7 @@
 		2901A4EE1D437170002BBD23 /* ClockedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* ClockedQueue.swift */; };
 		2901A4EF1D437662002BBD23 /* ClockedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* ClockedQueue.swift */; };
 		2911F9901DE2DA19007FD1EC /* lf.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 29B8761B1CD701F900FC07DA /* lf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		2911F9B31DE337BB007FD1EC /* MP4SamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2911F9B21DE337BB007FD1EC /* MP4SamplerTests.swift */; };
 		2915EC4D1D85BB8C00621092 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
 		2915EC601D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
@@ -291,6 +292,7 @@
 
 /* Begin PBXFileReference section */
 		2901A4ED1D437170002BBD23 /* ClockedQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ClockedQueue.swift; path = Sources/Util/ClockedQueue.swift; sourceTree = SOURCE_ROOT; };
+		2911F9B21DE337BB007FD1EC /* MP4SamplerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP4SamplerTests.swift; sourceTree = "<group>"; };
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		2915EC5F1D85BDF100621092 /* ScreencastUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreencastUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -561,6 +563,7 @@
 				29B876D51CD70CE700FC07DA /* PacketizedElementaryStreamTests.swift */,
 				29B876D61CD70CE700FC07DA /* ProgramSpecificTests.swift */,
 				29B876DB1CD70CE700FC07DA /* TSTests.swift */,
+				2911F9B21DE337BB007FD1EC /* MP4SamplerTests.swift */,
 			);
 			name = ISO;
 			sourceTree = "<group>";
@@ -681,13 +684,6 @@
 				29B876731CD70ACE00FC07DA /* M3U.swift */,
 			);
 			name = HTTP;
-			sourceTree = "<group>";
-		};
-		296543501D62FC0300734698 /* RTMP */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = RTMP;
 			sourceTree = "<group>";
 		};
 		296543541D62FE3E00734698 /* macOS */ = {
@@ -835,7 +831,6 @@
 		29BA5B8F1D50BEAD00A51EA8 /* Tests Objective-C */ = {
 			isa = PBXGroup;
 			children = (
-				296543501D62FC0300734698 /* RTMP */,
 				29BA5B921D50BEAD00A51EA8 /* Info.plist */,
 				2997BDD11D50D2FC000AF900 /* README.md */,
 				2965434E1D62FAED00734698 /* RTMPConnectionTests.m */,
@@ -1373,6 +1368,7 @@
 				29798E701CE6110F00F5CBD0 /* ProgramSpecificTests.swift in Sources */,
 				29798E711CE6110F00F5CBD0 /* SwiftCore+ExtensionTests.swift in Sources */,
 				2942424F1CF4C02300D65DCB /* MD5Tests.swift in Sources */,
+				2911F9B31DE337BB007FD1EC /* MP4SamplerTests.swift in Sources */,
 				29798E721CE6110F00F5CBD0 /* TSTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

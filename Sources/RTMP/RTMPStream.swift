@@ -533,7 +533,7 @@ open class RTMPStream: NetStream {
         return metadata
     }
 
-    func append(url:URL, completionHandler: MP4Sampler.Handler? = nil) {
+    func appendFile(_ file:URL, completionHandler: MP4Sampler.Handler? = nil) {
         lockQueue.async {
             if (self.sampler == nil) {
                 self.sampler = MP4Sampler()
@@ -545,7 +545,7 @@ open class RTMPStream: NetStream {
                     break
                 }
             }
-            self.sampler?.append(file: url, completionHandler: completionHandler)
+            self.sampler?.appendFile(file, completionHandler: completionHandler)
         }
     }
 

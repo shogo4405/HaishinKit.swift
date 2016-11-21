@@ -34,7 +34,7 @@ public class RTMPBroadcaster: RTMPConnection {
             completionHandler()
             return
         }
-        stream.append(url: url)
+        stream.appendFile(url)
         completionHandler()
     }
 

@@ -105,13 +105,14 @@ extension RTMPMuxer: MP4SamplerDelegate {
         if (avcC == self.avcC) {
             return
         }
+        logger.info("\(avcC)")
         var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
         buffer.append(avcC)
         delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
         self.avcC = avcC
     }
 
-    func didSet(audioDecorderSpecificConfig: Data, withType:Int) {
+    func didSet(audioDecorderSpecificConfig:Data, withType:Int) {
         if (withType == 2) {
             return
         }
