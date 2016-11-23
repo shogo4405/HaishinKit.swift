@@ -192,6 +192,12 @@ open class HTTPService: NetService {
         var response:HTTPResponse = HTTPResponse()
         response.headerFields["Connection"] = "close"
 
+        // #141
+        response.headerFields["Access-Control-Allow-Headers"] = "*"
+        response.headerFields["Access-Control-Expose-Headers"] = "*"
+        response.headerFields["Access-Control-Allow-Methods"] = "GET, HEAD, OPTIONS"
+        response.headerFields["Access-Control-Allow-Origin"] = "*"
+
         defer {
             logger.verbose("\(response)")
             disconnect(client)
