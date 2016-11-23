@@ -191,6 +191,11 @@ public class HTTPService: NetService {
     func get(request:HTTPRequest, client:NetClient) {
         logger.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
+
+        response.headerFields["Access-Control-Expose-Headers"] = "*"
+        response.headerFields["Access-Control-Allow-Headers"] = "*"
+        response.headerFields["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS"
+        response.headerFields["Access-Control-Allow-Origin"] = "*"
         response.headerFields["Connection"] = "close"
 
         defer {
@@ -224,7 +229,6 @@ public class HTTPService: NetService {
                 return
             }
             response.statusCode = HTTPStatusCode.NotFound.description
-            response.headerFields["Connection"] = "close"
             client.doOutput(bytes: response.bytes)
         }
     }
