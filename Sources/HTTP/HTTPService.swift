@@ -190,13 +190,14 @@ open class HTTPService: NetService {
     func get(_ request:HTTPRequest, client:NetClient) {
         logger.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
-        response.headerFields["Connection"] = "close"
 
         // #141
         response.headerFields["Access-Control-Allow-Headers"] = "*"
-        response.headerFields["Access-Control-Expose-Headers"] = "*"
-        response.headerFields["Access-Control-Allow-Methods"] = "GET, HEAD, OPTIONS"
+        response.headerFields["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS"
         response.headerFields["Access-Control-Allow-Origin"] = "*"
+        response.headerFields["Access-Control-Expose-Headers"] = "*"
+
+        response.headerFields["Connection"] = "close"
 
         defer {
             logger.verbose("\(response)")
@@ -217,7 +218,9 @@ open class HTTPService: NetService {
                 switch mime {
                 case .VideoMP2T:
                     if let info:[FileAttributeKey:Any] = try? FileManager.default.attributesOfItem(atPath: resource) {
-                        response.headerFields["Content-Length"] = String(describing: info[FileAttributeKey.size])
+                        if let length:Any = info[FileAttributeKey.size] {
+                            response.headerFields["Content-Length"] = String(describing: length)
+                        }
                     }
                     client.doOutput(bytes: response.bytes)
                     client.doOutputFromURL(URL(fileURLWithPath: resource), length: 8 * 1024)
@@ -229,7 +232,6 @@ open class HTTPService: NetService {
                 return
             }
             response.statusCode = HTTPStatusCode.notFound.description
-            response.headerFields["Connection"] = "close"
             client.doOutput(bytes: response.bytes)
         }
     }

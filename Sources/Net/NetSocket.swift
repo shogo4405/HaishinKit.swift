@@ -10,17 +10,13 @@ class NetSocket: NSObject {
     var inputStream:InputStream?
     var windowSizeC:Int = NetSocket.defaultWindowSizeC
     var outputStream:OutputStream?
-    var networkQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.NetSocket.network", attributes: []
-    )
+    var networkQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetSocket.network")
     var securityLevel:StreamSocketSecurityLevel = .none
     private(set) var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
 
     private var runloop:RunLoop?
-    private let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.NetSocket.lock", attributes: []
-    )
+    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetSocket.lock")
     fileprivate var timeoutHandler:(() -> Void)?
 
     @discardableResult
@@ -162,9 +158,6 @@ class NetSocket: NSObject {
 extension NetSocket: StreamDelegate {
     // MARK: StreamDelegate
     func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
-        if (logger.isEnabledFor(level: .debug)) {
-            logger.debug("eventCode: \(eventCode)")
-        }
         switch eventCode {
         //  1 = 1 << 0
         case Stream.Event.openCompleted:
