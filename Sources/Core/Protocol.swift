@@ -1,18 +1,17 @@
 import Foundation
 
-// MARK: BytesConvertible
 protocol BytesConvertible {
     var bytes:[UInt8] { get set }
 }
 
-// MARK: Runnable
+// MARK: -
 protocol Runnable: class {
     var running:Bool { get }
     func startRunning()
     func stopRunning()
 }
 
-// MARK: Iterator
+// MARK: -
 protocol Iterator {
     associatedtype T
     func hasNext() -> Bool

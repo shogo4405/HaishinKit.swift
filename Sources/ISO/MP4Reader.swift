@@ -574,23 +574,32 @@ final class MP4Reader: MP4ContainerBox {
 
 // MARK: -
 final class MP4TrakReader {
+    static let defaultBufferTime:Double = 1000
+
     var trak:MP4Box
+    var bufferTime:Double = MP4TrakReader.defaultBufferTime
     weak var delegate:MP4SamplerDelegate?
 
-    private var id:Int = 0
-    private var currentOffset:UInt64 {
+    fileprivate var id:Int = 0
+    fileprivate var reader:FileHandle?
+    private lazy var timerDriver:TimerDriver = {
+        var timerDriver:TimerDriver = TimerDriver()
+        timerDriver.delegate = self
+        return timerDriver
+    }()
+    fileprivate var currentOffset:UInt64 {
         return UInt64(offset[cursor])
     }
-    private var currentIsKeyframe:Bool {
+    fileprivate var currentIsKeyframe:Bool {
         return keyframe[cursor] != nil
     }
-    private var currentDuration:Double {
+    fileprivate var currentDuration:Double {
         return Double(totalTimeToSample) * 1000 / Double(timeScale)
     }
-    private var currentTimeToSample:Double {
+    fileprivate var currentTimeToSample:Double {
         return Double(timeToSample[cursor]) * 1000 / Double(timeScale)
     }
-    private var currentSampleSize:Int {
+    fileprivate var currentSampleSize:Int {
         return Int((sampleSize.count == 1) ? sampleSize[0] : sampleSize[cursor])
     }
     private var cursor:Int = 0
@@ -600,8 +609,6 @@ final class MP4TrakReader {
     private var sampleSize:[UInt32] = []
     private var timeToSample:[UInt32] = []
     private var totalTimeToSample:UInt32 = 0
-    
-    private var duration:Double = 0
 
     init(id:Int, trak:MP4Box) {
         self.id = id
@@ -661,39 +668,51 @@ final class MP4TrakReader {
     }
 
     func execute(url:URL) {
-        duration = 0
         do {
-            let reader:FileHandle = try FileHandle(forReadingFrom: url)
-            while (hasNext()) {
-                duration += currentTimeToSample
-                reader.seek(toFileOffset: currentOffset)
-                autoreleasepool {
-                    delegate?.output(
-                        data: reader.readData(ofLength: currentSampleSize),
-                        withType: id,
-                        currentTime: currentTimeToSample,
-                        keyframe: currentIsKeyframe
-                    )
-                }
-                if (1000 <= duration) {
-                    usleep(UInt32(currentTimeToSample * 1000 * 0.5))
-                }
-                next()
+            reader = try FileHandle(forReadingFrom: url)
+            while (currentDuration <= bufferTime) {
+                tick(timerDriver)
             }
+            timerDriver.startRunning()
         } catch {
-            logger.warning("")
+            logger.warning("file open error :\(url)")
         }
     }
 
-    private func hasNext() -> Bool {
+    fileprivate func hasNext() -> Bool {
         return cursor + 1 < offset.count
     }
 
-    private func next() {
+    fileprivate func next() {
         defer {
             cursor += 1
         }
         totalTimeToSample += timeToSample[cursor]
+    }
+}
+
+extension MP4TrakReader: TimerDriverDelegate {
+    // MARK: TimerDriverDelegate
+    func tick(_ driver:TimerDriver) {
+        guard let reader:FileHandle = reader else {
+            driver.stopRunning()
+            return
+        }
+        driver.interval = MachUtil.nanosToAbs(UInt64(currentTimeToSample * 1000 * 1000))
+        reader.seek(toFileOffset: currentOffset)
+        autoreleasepool {
+            delegate?.output(
+                data: reader.readData(ofLength: currentSampleSize),
+                withType: id,
+                currentTime: currentTimeToSample,
+                keyframe: currentIsKeyframe
+            )
+        }
+        if (hasNext()) {
+            next()
+        } else {
+            driver.stopRunning()
+        }
     }
 }
 
