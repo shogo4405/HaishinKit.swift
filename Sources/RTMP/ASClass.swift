@@ -45,7 +45,7 @@ extension ASArray: ExpressibleByArrayLiteral {
                 if let i:Int = Int(i) {
                     return i < data.count ? data[i] : kASUndefined
                 }
-                return dict[i]
+                return dict[i] as Any
             }
             return nil
         }

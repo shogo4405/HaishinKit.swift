@@ -25,7 +25,7 @@ final class AMF0SerializerTests: XCTestCase {
         amf.position = 0
         let result:ASObject = try! amf.deserialize()
         for key in AMF0SerializerTests.connectionChunk.keys {
-            let value:Any? = result[key]
+            let value:Any? = result[key]! as Any?
             switch key {
             case "tcUrl":
                 XCTAssertEqual(value as? String, "rtmp://localhost:1935/live")
