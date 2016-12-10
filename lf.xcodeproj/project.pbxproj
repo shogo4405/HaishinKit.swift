@@ -206,6 +206,8 @@
 		29EF037C1CD7AC7000473D99 /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B8761B1CD701F900FC07DA /* lf.framework */; };
 		29F5FEA61DE2C70A00D0CCB4 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */; };
 		29F5FEA71DE2C71000D0CCB4 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */; };
+		29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */; };
+		29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -438,6 +440,7 @@
 		29E258361D7C249B0070DC07 /* lf.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lf.podspec; sourceTree = "<group>"; };
 		29E5C0F91D05B32700407208 /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioUtil.swift; path = Platforms/iOS/AudioUtil.swift; sourceTree = "<group>"; };
 		29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/iOS/XCGLogger.framework; sourceTree = "<group>"; };
+		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPHandshake.swift; path = Sources/RTMP/RTMPHandshake.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -890,6 +893,7 @@
 				29B876A21CD70B2800FC07DA /* RTMPAudioPlayback.swift */,
 				29B876A31CD70B2800FC07DA /* RTMPChunk.swift */,
 				29B876A41CD70B2800FC07DA /* RTMPConnection.swift */,
+				29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */,
 				29B876A51CD70B2800FC07DA /* RTMPMessage.swift */,
 				29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */,
 				29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */,
@@ -1340,6 +1344,7 @@
 				29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AACEncoder.swift in Sources */,
+				29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */,
 				29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */,
 				29B876831CD70AE800FC07DA /* AudioSpecificConfig.swift in Sources */,
 				29B876961CD70AFE00FC07DA /* VisualEffect.swift in Sources */,
@@ -1453,6 +1458,7 @@
 				29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */,
 				2975EF701D60B32600DABA5A /* Mutex.swift in Sources */,
 				29BCFFA71D68C75B00F1A726 /* RTPService.swift in Sources */,
+				29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */,
 				29B877131CD70D5A00FC07DA /* RTMPConnection.swift in Sources */,
 				29B877141CD70D5A00FC07DA /* RTMPMessage.swift in Sources */,
 				29B877151CD70D5A00FC07DA /* RTMPMuxer.swift in Sources */,

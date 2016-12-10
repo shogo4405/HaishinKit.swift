@@ -10,7 +10,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
         XCGLogger.default.setup(
-            level: .verbose,
+            level: .info,
             showThreadName: true,
             showLevel: true,
             showFileNames: true,

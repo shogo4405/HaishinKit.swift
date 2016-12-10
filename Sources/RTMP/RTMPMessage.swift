@@ -4,22 +4,22 @@ import AVFoundation
 class RTMPMessage {
 
     enum `Type`: UInt8 {
-        case chunkSize   = 1
-        case abort       = 2
-        case ack         = 3
-        case user        = 4
-        case windowAck   = 5
-        case bandwidth   = 6
-        case audio       = 8
-        case video       = 9
-        case amf3Data    = 15
-        case amf3Shared  = 16
-        case amf3Command = 17
-        case amf0Data    = 18
-        case amf0Shared  = 19
-        case amf0Command = 20
-        case aggregate   = 22
-        case unknown     = 255
+        case chunkSize   = 0x01
+        case abort       = 0x02
+        case ack         = 0x03
+        case user        = 0x04
+        case windowAck   = 0x05
+        case bandwidth   = 0x06
+        case audio       = 0x08
+        case video       = 0x09
+        case amf3Data    = 0x0F
+        case amf3Shared  = 0x10
+        case amf3Command = 0x11
+        case amf0Data    = 0x12
+        case amf0Shared  = 0x13
+        case amf0Command = 0x14
+        case aggregate   = 0x16
+        case unknown     = 0xFF
     }
 
     static func create(_ value:UInt8) -> RTMPMessage? {
@@ -227,11 +227,11 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
  5.4.5. Set Peer Bandwidth (6)
  */
 final class RTMPSetPeerBandwidthMessage: RTMPMessage {
-    
+
     enum Limit:UInt8 {
         case hard    = 0x00
         case soft    = 0x01
-        case dynamic = 0x10
+        case dynamic = 0x02
         case unknown = 0xFF
     }
 
@@ -257,6 +257,8 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
             if (super.payload == newValue) {
                 return
             }
+            size = UInt32(bytes: Array(newValue[0...3])).bigEndian
+            limit = Limit(rawValue: newValue[4]) ?? .unknown
             super.payload = newValue
         }
     }

@@ -4,7 +4,6 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     static let contentType:String = "application/x-fcs"
 
     var timeout:Int64 = 0
-    var timestamp:TimeInterval = 0
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
     var totalBytesIn:Int64 = 0
@@ -16,15 +15,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var connected:Bool = false {
         didSet {
             if (connected) {
-                timestamp = Date().timeIntervalSince1970
-                let c1packet:ByteArray = ByteArray()
-                    .writeUInt8(RTMPSocket.protocolVersion)
-                    .writeInt32(Int32(timestamp))
-                    .writeBytes([0x00, 0x00, 0x00, 0x00])
-                for _ in 0..<RTMPSocket.sigSize - 8 {
-                    c1packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
-                }
-                doOutput(bytes: c1packet.bytes)
+                handshake.timestamp = Date().timeIntervalSince1970
+                doOutput(bytes: handshake.c0c1packet)
                 readyState = .versionSent
                 return
             }
@@ -34,6 +26,10 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             }
             events.removeAll()
         }
+    }
+    
+    var timestamp:TimeInterval {
+        return handshake.timestamp
     }
 
     var readyState:RTMPSocket.ReadyState = .uninitialized {
@@ -53,6 +49,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var connectionID:String!
     private var outputBuffer:[UInt8] = []
     private var lastResponse:Date = Date()
+    private var handshake:RTMPHandshake = RTMPHandshake()
 
     override init() {
         super.init()
@@ -138,19 +135,15 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
         switch readyState {
         case .versionSent:
-            if (inputBuffer.count < RTMPSocket.sigSize + 1) {
+            if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            let c2packet:ByteArray = ByteArray()
-                .writeBytes(Array(inputBuffer[1...4]))
-                .writeInt32(Int32(Date().timeIntervalSince1970 - timestamp))
-                .writeBytes(Array(inputBuffer[9...RTMPSocket.sigSize]))
-            self.c2packet = c2packet.bytes
-            inputBuffer = Array(inputBuffer[RTMPSocket.sigSize + 1..<inputBuffer.count])
+            c2packet = handshake.c2packet(inputBuffer)
+            inputBuffer = Array(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
             readyState = .ackSent
             fallthrough
         case .ackSent:
-            if (inputBuffer.count < RTMPSocket.sigSize) {
+            if (inputBuffer.count < RTMPHandshake.sigSize) {
                 break
             }
             inputBuffer.removeAll()

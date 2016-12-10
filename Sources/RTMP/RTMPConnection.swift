@@ -164,11 +164,7 @@ open class RTMPConnection: EventDispatcher {
     /// This instance connected to server(true) or not(false).
     open fileprivate(set) var connected:Bool = false
     /// The object encoding for this RTMPConnection instance.
-    open var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding {
-        didSet {
-            socket.objectEncoding = objectEncoding
-        }
-    }
+    open var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
     open var totalBytesIn:Int64 {
         return socket.totalBytesIn
