@@ -27,6 +27,8 @@ protocol RTMPSocketDelegate: IEventDispatcher {
 // MARK: -
 final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
+    static let defaultBufferSize:Int = 1024
+
     enum ReadyState: UInt8 {
         case uninitialized = 0
         case versionSent   = 1
@@ -35,8 +37,6 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         case closing       = 4
         case closed        = 5
     }
-
-    static let defaultBufferSize:Int = 1024
 
     var readyState:ReadyState = .uninitialized {
         didSet {

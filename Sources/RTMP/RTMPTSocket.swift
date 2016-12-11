@@ -6,11 +6,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var timeout:Int64 = 0
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
-    var totalBytesIn:Int64 = 0
-    var totalBytesOut:Int64 = 0
     var inputBuffer:[UInt8] = []
     var securityLevel:StreamSocketSecurityLevel = .none
-    var objectEncoding:UInt8 = 0x00
     weak var delegate:RTMPSocketDelegate? = nil
     var connected:Bool = false {
         didSet {
@@ -20,6 +17,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
                 readyState = .versionSent
                 return
             }
+            timer = nil
             readyState = .closed
             for event in events {
                 delegate?.dispatch(event: event)
@@ -27,7 +25,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             events.removeAll()
         }
     }
-    
+
     var timestamp:TimeInterval {
         return handshake.timestamp
     }
@@ -38,18 +36,32 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
+    fileprivate(set) var totalBytesIn:Int64 = 0
+    fileprivate(set) var totalBytesOut:Int64 = 0
+    fileprivate var timer:Timer? {
+        didSet {
+            if let oldValue:Timer = oldValue {
+                oldValue.invalidate()
+            }
+            if let timer:Timer = timer {
+                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+            }
+        }
+    }
+
     private var delay:UInt8 = 1
     private var index:Int64 = 0
     private var events:[Event] = []
     private var baseURL:URL!
     private var session:URLSession!
+    private var request:URLRequest!
     private var c2packet:[UInt8] = []
-    private var isPending:Bool = false
+    private var handshake:RTMPHandshake = RTMPHandshake()
     private let outputQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.RTMPTSocket.output")
-    private var connectionID:String!
+    private var connectionID:String?
+    private var isRequesting:Bool = false
     private var outputBuffer:[UInt8] = []
     private var lastResponse:Date = Date()
-    private var handshake:RTMPHandshake = RTMPHandshake()
 
     override init() {
         super.init()
@@ -63,9 +75,10 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             "User-Agent": "Shockwave Flash",
         ]
         let scheme:String = securityLevel == .none ? "http" : "https"
-        session = URLSession(configuration: config)
+        session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
         baseURL = URL(string: "\(scheme)://\(withName):\(port)")!
         doRequest("/fcs/ident2", Data([0x00]), didIdent2)
+        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(RTMPTSocket.on(timer:)), userInfo: nil, repeats: true)
     }
 
     @discardableResult
@@ -77,8 +90,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         outputQueue.sync {
             self.outputBuffer.append(contentsOf: bytes)
-            if (!self.isPending) {
-                self.isPending = true
+            if (!self.isRequesting) {
                 self.doOutput(bytes: self.outputBuffer)
                 self.outputBuffer.removeAll()
             }
@@ -103,6 +115,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     private func listen(data:Data?, response:URLResponse?, error:Error?) {
+
+        lastResponse = Date()
+
         if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data):\(response):\(error)")
         }
@@ -112,10 +127,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             return
         }
 
-        lastResponse = Date()
         outputQueue.sync {
             if (self.outputBuffer.isEmpty) {
-                self.isPending = false
+                self.isRequesting = false
             } else {
                 self.doOutput(bytes: outputBuffer)
                 self.outputBuffer.removeAll()
@@ -130,6 +144,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
 
         var buffer:[UInt8] = data.bytes
+        OSAtomicAdd64(Int64(buffer.count), &totalBytesIn)
         delay = buffer.remove(at: 0)
         inputBuffer.append(contentsOf: buffer)
 
@@ -178,13 +193,13 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             return
         }
         connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
-        doRequest("/idel/\(connectionID!)/0", Data([0x00]), didIdel0)
+        doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
         if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose("\(data.bytes):\(response)")
         }
     }
 
-    private func didIdel0(data:Data?, response:URLResponse?, error:Error?) {
+    private func didIdle0(data:Data?, response:URLResponse?, error:Error?) {
         if let error:Error = error {
             logger.error("\(error)")
         }
@@ -204,17 +219,23 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
-    private func idel() {
+    private func idle() {
         guard let connectionID:String = connectionID, connected else {
             return
         }
         let index:Int64 = OSAtomicIncrement64(&self.index)
-        doRequest("/idel/\(connectionID)/\(index)", Data([0x00]), didIdel)
+        doRequest("/idle/\(connectionID)/\(index)", Data([0x00]), didIdle)
     }
 
-    private func didIdel(data:Data?, response:URLResponse?, error:Error?) {
+    private func didIdle(data:Data?, response:URLResponse?, error:Error?) {
         listen(data: data, response: response, error: error)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: idel)
+    }
+
+    @objc private func on(timer:Timer) {
+        guard (Double(delay) / 60) < abs(lastResponse.timeIntervalSinceNow), !isRequesting else {
+            return
+        }
+        idle()
     }
 
     @discardableResult
@@ -229,11 +250,19 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     private func doRequest(_ pathComonent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
-        var request:URLRequest = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
+        isRequesting = true
+        request = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(request)")
+            logger.verbose("\(self.request)")
         }
+    }
+}
+
+// MARK: -
+extension RTMPTSocket: URLSessionTaskDelegate {
+    func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
+        OSAtomicAdd64(bytesSent, &totalBytesOut)
     }
 }

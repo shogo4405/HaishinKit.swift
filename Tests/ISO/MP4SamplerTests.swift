@@ -4,7 +4,7 @@ import XCTest
 @testable import lf
 
 final class MP4SamplerTests: XCTestCase {
-    func testMain() {
+    func main() {
         let bundle:Bundle = Bundle(for: type(of: self))
         let url:URL = URL(fileURLWithPath: bundle.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4")!)
         let sampler:MP4Sampler = MP4Sampler()

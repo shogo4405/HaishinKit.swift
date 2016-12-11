@@ -18,6 +18,9 @@ final class RTMPMuxer {
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
     func dispose() {
+        avcC = nil
+        audioDecorderSpecificConfig = nil
+        timestamps.removeAll()
         audioTimestamp = kCMTimeZero
         videoTimestamp = kCMTimeZero
     }
@@ -25,7 +28,6 @@ final class RTMPMuxer {
 
 extension RTMPMuxer: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
-
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription:CMFormatDescription = formatDescription else {
             return
@@ -105,7 +107,6 @@ extension RTMPMuxer: MP4SamplerDelegate {
         if (avcC == self.avcC) {
             return
         }
-        logger.info("\(avcC)")
         var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
         buffer.append(avcC)
         delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
@@ -119,7 +120,7 @@ extension RTMPMuxer: MP4SamplerDelegate {
         if (audioDecorderSpecificConfig == self.audioDecorderSpecificConfig) {
             return
         }
-        var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
+        var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
         buffer.append(audioDecorderSpecificConfig)
         delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
         self.audioDecorderSpecificConfig = audioDecorderSpecificConfig

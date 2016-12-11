@@ -623,7 +623,7 @@ final class MP4TrakReader {
         if let stss:MP4SyncSampleBox = stss as? MP4SyncSampleBox {
             var keyframes:[UInt32] = stss.entries
             for i in 0..<keyframes.count {
-                keyframe[Int(keyframes[i])] = true
+                keyframe[Int(keyframes[i]) - 1] = true
             }
         }
 
@@ -650,11 +650,9 @@ final class MP4TrakReader {
 
         var index:Int = 0
         let count:Int = sampleToChunk.count
-
         for i in 0..<count {
-            let j:Int = Int(sampleToChunk[i].firstChunk) - 1
             let m:Int = (i + 1 < count) ? Int(sampleToChunk[i + 1].firstChunk) - 1 : offsets.count
-            for _ in j..<m {
+            for j in (Int(sampleToChunk[i].firstChunk) - 1)..<m {
                 var offset:UInt32 = offsets[j]
                 for _ in 0..<sampleToChunk[i].samplesPerChunk {
                     self.offset.append(offset)
