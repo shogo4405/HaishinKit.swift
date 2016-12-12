@@ -574,7 +574,7 @@ final class MP4Reader: MP4ContainerBox {
 
 // MARK: -
 final class MP4TrakReader {
-    static let defaultBufferTime:Double = 1000
+    static let defaultBufferTime:Double = 500
 
     var trak:MP4Box
     var bufferTime:Double = MP4TrakReader.defaultBufferTime
@@ -661,13 +661,13 @@ final class MP4TrakReader {
                 }
             }
         }
-
         totalTimeToSample = timeToSample[cursor]
     }
 
     func execute(url:URL) {
         do {
             reader = try FileHandle(forReadingFrom: url)
+            timerDriver.interval = MachUtil.nanosToAbs(UInt64(currentTimeToSample * 1000 * 1000))
             while (currentDuration <= bufferTime) {
                 tick(timerDriver)
             }

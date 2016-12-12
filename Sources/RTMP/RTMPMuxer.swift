@@ -13,14 +13,12 @@ final class RTMPMuxer {
     weak var delegate:RTMPMuxerDelegate? = nil
     fileprivate var avcC:Data?
     fileprivate var audioDecorderSpecificConfig:Data?
-    fileprivate var timestamps:[Int:Double] = [:]
     fileprivate var audioTimestamp:CMTime = kCMTimeZero
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
     func dispose() {
         avcC = nil
         audioDecorderSpecificConfig = nil
-        timestamps.removeAll()
         audioTimestamp = kCMTimeZero
         videoTimestamp = kCMTimeZero
     }
@@ -127,21 +125,19 @@ extension RTMPMuxer: MP4SamplerDelegate {
     }
 
     func output(data:Data, withType:Int, currentTime:Double, keyframe:Bool) {
-        let delta:Double = (timestamps[withType] == nil) ? 0 : timestamps[withType]!
         switch withType {
         case 0:
             let compositionTime:Int32 = 0
             var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
             buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])
             buffer.append(data)
-            delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
+            delegate?.sampleOutput(video: buffer, withTimestamp: currentTime, muxer: self)
         case 1:
             var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
             buffer.append(data)
-            delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
+            delegate?.sampleOutput(audio: buffer, withTimestamp: currentTime, muxer: self)
         default:
             break
         }
-        timestamps[withType] = currentTime
     }
 }

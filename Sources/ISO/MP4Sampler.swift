@@ -14,7 +14,8 @@ class MP4Sampler {
     weak var delegate:MP4SamplerDelegate?
 
     fileprivate(set) var running:Bool = false
-    fileprivate var files:[URL:Handler?] = [:]
+    fileprivate var files:[URL] = []
+    fileprivate var handlers:[URL:Handler?] = [:]
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.MP4Sampler.lock")
     fileprivate let loopQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.MP4Sampler.loop")
     fileprivate let operations:OperationQueue = OperationQueue()
@@ -24,7 +25,8 @@ class MP4Sampler {
 
     func appendFile(_ file:URL, completionHandler: Handler? = nil) {
         lockQueue.async {
-            self.files[file] = completionHandler
+            self.files.append(file)
+            self.handlers[file] = completionHandler
         }
     }
 
@@ -54,10 +56,10 @@ class MP4Sampler {
             }
         }
 
-        for i in 0..<trakReaders.count {
+        for reader in trakReaders {
+            reader.delegate = delegate
             operations.addOperation {
-                self.trakReaders[i].delegate = self.delegate
-                self.trakReaders[i].execute(url: url)
+                reader.execute(url: url)
             }
         }
         operations.waitUntilAllOperationsAreFinished()
@@ -69,7 +71,10 @@ class MP4Sampler {
         if (files.isEmpty) {
             return
         }
-        let (key: url, value: handler) = files.popFirst()!
+        let url:URL = files.first!
+        let handler:Handler? = handlers[url]!
+        files.remove(at: 0)
+        handlers[url] = nil
         execute(url: url)
         handler?()
     }

@@ -4,7 +4,7 @@ import XCTest
 @testable import lf
 
 final class TimerDriverTests: XCTestCase {
-    func main() {
+    func testmain() {
         let timerDriver:TimerDriver = TimerDriver()
         let delegate:TimerDriverDelegate = LoggerTimerDriverDelegate()
         timerDriver.delegate = delegate

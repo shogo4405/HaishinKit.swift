@@ -6,6 +6,9 @@ class BroadcastViewController: UIViewController {
 
     @IBOutlet
     var endpointURLField:UITextField!
+    
+    @IBOutlet
+    var streamNameField:UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -16,9 +19,11 @@ class BroadcastViewController: UIViewController {
 
         let broadcastURL:URL = URL(string: endpointURLField.text!)!
 
+        let streamName:String = streamNameField.text!
         let endpointURL:String = endpointURLField.text!
         let setupInfo: [String: NSCoding & NSObjectProtocol] =  [
-            "endpointURL" : endpointURL as NSString
+            "endpointURL" : endpointURL as NSString,
+            "streamName" : streamName as NSString,
         ]
 
         let broadcastConfiguration:RPBroadcastConfiguration = RPBroadcastConfiguration()

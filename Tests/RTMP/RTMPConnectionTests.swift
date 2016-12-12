@@ -4,7 +4,7 @@ import XCTest
 @testable import lf
 
 final class RTMPConnectionTests: XCTestCase {
-    func testPublish() {
+    func publish() {
         let bundle:Bundle = Bundle(for: type(of: self))
         let url:URL = URL(fileURLWithPath: bundle.path(forResource: "SampleVideo_360x240_5mb-base", ofType: "mp4")!)
         let connection:RTMPConnection = RTMPConnection()

@@ -1,3 +1,7 @@
+#if os(iOS)
+import UIKit
+#endif
+import CoreImage
 import Foundation
 import AVFoundation
 
