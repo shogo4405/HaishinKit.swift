@@ -74,14 +74,9 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         for chunk in chunks {
             doOutput(bytes: chunk)
         }
-        //if (logger.isEnabledFor(level: .verbose)) {
-        //    logger.info(chunk)
-        
-        if let video:RTMPVideoMessage = chunk.message as? RTMPVideoMessage {
-            logger.info(video.timestamp)
+        if (logger.isEnabledFor(level: .verbose)) {
+            logger.verbose(chunk)
         }
-        
-        //}
         return chunk.message!.length
     }
 
