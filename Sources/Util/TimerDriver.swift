@@ -17,7 +17,7 @@ class TimerDriver {
     weak var delegate:TimerDriverDelegate?
 
     fileprivate var runloop:RunLoop?
-    fileprivate var lastFired:UInt64 = 0
+    fileprivate var nextFire:UInt64 = 0
     fileprivate weak var timer:Timer? {
         didSet {
             if let oldValue:Timer = oldValue {
@@ -30,12 +30,11 @@ class TimerDriver {
     }
 
     @objc func on(timer:Timer) {
-        let now:UInt64 = mach_absolute_time()
-        guard interval <= now - lastFired else {
+        guard nextFire <= mach_absolute_time() else {
             return
         }
-        lastFired = now
         delegate?.tick(self)
+        nextFire += interval
     }
 }
 
@@ -59,6 +58,8 @@ extension TimerDriver: Runnable {
         timer = Timer(
             timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer:)), userInfo: nil, repeats: true
         )
+        nextFire = mach_absolute_time() + interval
+        delegate?.tick(self)
         runloop = .current
         runloop?.run()
     }

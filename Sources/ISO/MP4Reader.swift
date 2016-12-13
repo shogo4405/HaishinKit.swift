@@ -1,4 +1,5 @@
 import Foundation
+import AVFoundation
 
 class MP4Box {
     static func create(_ data:Data) throws -> MP4Box {
@@ -515,16 +516,15 @@ final class MP4EditListBox: MP4Box {
 
 // MARK: -
 final class MP4Reader: MP4ContainerBox {
-    var url:URL? = nil {
-        didSet {
-            if (url == nil) {
-                return
-            }
-            do {
-                fileHandle = try FileHandle(forReadingFrom: url!)
-            } catch let error as NSError {
-                print(error)
-            }
+    private(set) var url:URL
+
+    init(url:URL) {
+        do {
+            self.url = url
+            super.init()
+            fileHandle = try FileHandle(forReadingFrom: url)
+        } catch let error as NSError {
+            logger.error("\(error)")
         }
     }
 
@@ -581,7 +581,7 @@ final class MP4TrakReader {
     weak var delegate:MP4SamplerDelegate?
 
     fileprivate var id:Int = 0
-    fileprivate var reader:FileHandle?
+    fileprivate var handle:FileHandle?
     private lazy var timerDriver:TimerDriver = {
         var timerDriver:TimerDriver = TimerDriver()
         timerDriver.delegate = self
@@ -664,16 +664,24 @@ final class MP4TrakReader {
         totalTimeToSample = timeToSample[cursor]
     }
 
-    func execute(url:URL) {
+    func execute(_ reader:MP4Reader) {
         do {
-            reader = try FileHandle(forReadingFrom: url)
+            handle = try FileHandle(forReadingFrom: reader.url)
+
+            if let avcC:MP4Box = trak.getBoxes(byName: "avcC").first {
+                delegate?.didSet(config: reader.readData(ofBox: avcC), withID: id, type: AVMediaTypeVideo)
+            }
+            if let esds:MP4ElementaryStreamDescriptorBox = trak.getBoxes(byName: "esds").first as? MP4ElementaryStreamDescriptorBox {
+                delegate?.didSet(config: Data(esds.audioDecorderSpecificConfig), withID: id, type: AVMediaTypeAudio)
+            }
+
             timerDriver.interval = MachUtil.nanosToAbs(UInt64(currentTimeToSample * 1000 * 1000))
             while (currentDuration <= bufferTime) {
                 tick(timerDriver)
             }
             timerDriver.startRunning()
         } catch {
-            logger.warning("file open error :\(url)")
+            logger.warning("file open error :\(reader.url)")
         }
     }
 
@@ -692,16 +700,16 @@ final class MP4TrakReader {
 extension MP4TrakReader: TimerDriverDelegate {
     // MARK: TimerDriverDelegate
     func tick(_ driver:TimerDriver) {
-        guard let reader:FileHandle = reader else {
+        guard let handle:FileHandle = handle else {
             driver.stopRunning()
             return
         }
         driver.interval = MachUtil.nanosToAbs(UInt64(currentTimeToSample * 1000 * 1000))
-        reader.seek(toFileOffset: currentOffset)
+        handle.seek(toFileOffset: currentOffset)
         autoreleasepool {
             delegate?.output(
-                data: reader.readData(ofLength: currentSampleSize),
-                withType: id,
+                data: handle.readData(ofLength: currentSampleSize),
+                withID: id,
                 currentTime: currentTimeToSample,
                 keyframe: currentIsKeyframe
             )

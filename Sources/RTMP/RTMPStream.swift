@@ -606,6 +606,10 @@ extension RTMPStream: IEventDispatcher {
 
 extension RTMPStream: RTMPMuxerDelegate {
     // MARK: RTMPMuxerDelegate
+    func metadata(_ metadata:ASObject) {
+        send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
+    }
+
     func sampleOutput(audio buffer:Data, withTimestamp:Double, muxer:RTMPMuxer) {
         guard readyState == .publishing else {
             return

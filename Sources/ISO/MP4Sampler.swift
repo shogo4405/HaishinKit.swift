@@ -1,10 +1,9 @@
 import Foundation
 
-// MARK: -
 protocol MP4SamplerDelegate: class {
-    func didSet(avcC:Data, withType:Int)
-    func didSet(audioDecorderSpecificConfig:Data, withType:Int)
-    func output(data:Data, withType:Int, currentTime:Double, keyframe:Bool)
+    func didOpen(_ reader:MP4Reader)
+    func didSet(config:Data, withID:Int, type:String)
+    func output(data:Data, withID:Int, currentTime:Double, keyframe:Bool)
 }
 
 // MARK: -
@@ -13,26 +12,22 @@ class MP4Sampler {
 
     weak var delegate:MP4SamplerDelegate?
 
-    fileprivate(set) var running:Bool = false
     fileprivate var files:[URL] = []
     fileprivate var handlers:[URL:Handler?] = [:]
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.MP4Sampler.lock")
     fileprivate let loopQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.MP4Sampler.loop")
     fileprivate let operations:OperationQueue = OperationQueue()
-
-    private var reader:MP4Reader = MP4Reader()
-    private var trakReaders:[MP4TrakReader] = []
+    fileprivate(set) var running:Bool = false
 
     func appendFile(_ file:URL, completionHandler: Handler? = nil) {
         lockQueue.async {
-            self.files.append(file)
             self.handlers[file] = completionHandler
+            self.files.append(file)
         }
     }
 
     fileprivate func execute(url:URL) {
-
-        reader.url = url
+        let reader:MP4Reader = MP4Reader(url: url)
 
         do {
             let _:UInt32 = try reader.load()
@@ -41,25 +36,13 @@ class MP4Sampler {
             return
         }
 
-        trakReaders.removeAll()
+        delegate?.didOpen(reader)
         let traks:[MP4Box] = reader.getBoxes(byName: "trak")
         for i in 0..<traks.count {
-            trakReaders.append(MP4TrakReader(id:i, trak:traks[i]))
-        }
-
-        for i in 0..<trakReaders.count {
-            if let avcC:MP4Box = trakReaders[i].trak.getBoxes(byName: "avcC").first {
-                delegate?.didSet(avcC: reader.readData(ofBox: avcC), withType: i)
-            }
-            if let esds:MP4ElementaryStreamDescriptorBox = trakReaders[i].trak.getBoxes(byName: "esds").first as? MP4ElementaryStreamDescriptorBox {
-                delegate?.didSet(audioDecorderSpecificConfig: Data(esds.audioDecorderSpecificConfig), withType: i)
-            }
-        }
-
-        for reader in trakReaders {
-            reader.delegate = delegate
+            let trakReader:MP4TrakReader = MP4TrakReader(id:i, trak:traks[i])
+            trakReader.delegate = delegate
             operations.addOperation {
-                reader.execute(url: url)
+                trakReader.execute(reader)
             }
         }
         operations.waitUntilAllOperationsAreFinished()

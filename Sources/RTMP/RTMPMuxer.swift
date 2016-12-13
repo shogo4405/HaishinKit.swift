@@ -2,6 +2,7 @@ import Foundation
 import AVFoundation
 
 protocol RTMPMuxerDelegate: class {
+    func metadata(_ metadata:ASObject)
     func sampleOutput(audio buffer:Data, withTimestamp:Double, muxer:RTMPMuxer)
     func sampleOutput(video buffer:Data, withTimestamp:Double, muxer:RTMPMuxer)
 }
@@ -11,14 +12,12 @@ final class RTMPMuxer {
     static let aac:UInt8 = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
 
     weak var delegate:RTMPMuxerDelegate? = nil
-    fileprivate var avcC:Data?
-    fileprivate var audioDecorderSpecificConfig:Data?
+    fileprivate var configs:[Int:Data] = [:]
     fileprivate var audioTimestamp:CMTime = kCMTimeZero
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
     func dispose() {
-        avcC = nil
-        audioDecorderSpecificConfig = nil
+        configs.removeAll()
         audioTimestamp = kCMTimeZero
         videoTimestamp = kCMTimeZero
     }
@@ -100,32 +99,44 @@ extension RTMPMuxer: VideoEncoderDelegate {
 }
 
 extension RTMPMuxer: MP4SamplerDelegate {
-    // MP4SampleDelegate
-    func didSet(avcC: Data, withType:Int) {
-        if (avcC == self.avcC) {
-            return
+    // MARK: MP4SampleDelegate
+    func didOpen(_ reader: MP4Reader) {
+        var metadata:ASObject = ASObject()
+        if let avc1:MP4VisualSampleEntryBox = reader.getBoxes(byName: "avc1").first as? MP4VisualSampleEntryBox {
+            metadata["width"] = avc1.width
+            metadata["height"] = avc1.height
+            metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
         }
-        var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
-        buffer.append(avcC)
-        delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
-        self.avcC = avcC
+        if let _:MP4AudioSampleEntryBox = reader.getBoxes(byName: "mp4a").first as? MP4AudioSampleEntryBox {
+            metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
+        }
+        delegate?.metadata(metadata)
     }
 
-    func didSet(audioDecorderSpecificConfig:Data, withType:Int) {
-        if (withType == 2) {
+    func didSet(config:Data, withID:Int, type:String) {
+        guard configs[withID] != config else {
             return
         }
-        if (audioDecorderSpecificConfig == self.audioDecorderSpecificConfig) {
-            return
+        configs[withID] = config
+        switch type {
+        case AVMediaTypeVideo:
+            var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
+            buffer.append(config)
+            delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
+        case AVMediaTypeAudio:
+            if (withID != 1) {
+                break
+            }
+            var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
+            buffer.append(config)
+            delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
+        default:
+            break
         }
-        var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
-        buffer.append(audioDecorderSpecificConfig)
-        delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
-        self.audioDecorderSpecificConfig = audioDecorderSpecificConfig
     }
 
-    func output(data:Data, withType:Int, currentTime:Double, keyframe:Bool) {
-        switch withType {
+    func output(data:Data, withID:Int, currentTime:Double, keyframe:Bool) {
+        switch withID {
         case 0:
             let compositionTime:Int32 = 0
             var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
