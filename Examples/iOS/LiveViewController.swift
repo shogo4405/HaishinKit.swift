@@ -5,7 +5,7 @@ import AVFoundation
 struct Preference {
     static let defaultInstance:Preference = Preference()
 
-    var uri:String? = "rtmp://test:test@192.168.179.3/live"
+    var uri:String? = "rtmp://test:test@192.168.11.2/live"
     var streamName:String? = "live"
 }
 
