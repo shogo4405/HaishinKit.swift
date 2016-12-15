@@ -31,6 +31,7 @@ public final class ScreenCaptureSession: NSObject {
     public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
 
     internal(set) var running:Bool = false
+    fileprivate var shared:UIApplication
     fileprivate var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
     fileprivate let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(
@@ -67,9 +68,10 @@ public final class ScreenCaptureSession: NSObject {
         }
     }
 
-    public override init() {
+    public init(shared:UIApplication) {
+        self.shared = shared
+        size = shared.delegate!.window!!.bounds.size
         super.init()
-        size = UIApplication.shared.delegate!.window!!.bounds.size
     }
 
     public func onScreen(_ displayLink:CADisplayLink) {
@@ -86,14 +88,15 @@ public final class ScreenCaptureSession: NSObject {
 
     fileprivate func onScreenProcess(_ displayLink:CADisplayLink) {
         var pixelBuffer:CVPixelBuffer?
-        size = UIApplication.shared.delegate!.window!!.bounds.size
+
+        size = shared.delegate!.window!!.bounds.size
         CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)
         CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         let cgctx:CGContext = UIGraphicsGetCurrentContext()!
         DispatchQueue.main.sync {
             UIGraphicsPushContext(cgctx)
-            for window:UIWindow in UIApplication.shared.windows {
+            for window:UIWindow in shared.windows {
                 window.drawHierarchy(
                     in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
                     afterScreenUpdates: false
