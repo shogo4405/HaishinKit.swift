@@ -36,7 +36,7 @@ extension RTMPStreamInfo: CustomStringConvertible {
  flash.net.NetStream for Swift
  */
 open class RTMPStream: NetStream {
-    
+
     open static var rootPath:String = NSTemporaryDirectory()
 
     /**
@@ -405,7 +405,6 @@ open class RTMPStream: NetStream {
                         commandObject: nil,
                         arguments: []
                 )))
-            
                 return
             }
 
@@ -443,7 +442,6 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        
         DispatchQueue.main.async {
             self.mixer.stopRunning()
         }
@@ -614,6 +612,10 @@ extension RTMPStream: IEventDispatcher {
 
 extension RTMPStream: RTMPMuxerDelegate {
     // MARK: RTMPMuxerDelegate
+    func metadata(_ metadata:ASObject) {
+        send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
+    }
+    
     func sampleOutput(audio buffer:Data, withTimestamp:Double, muxer:RTMPMuxer) {
         guard readyState == .publishing else {
             return
