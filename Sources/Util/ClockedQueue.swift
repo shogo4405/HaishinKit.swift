@@ -6,63 +6,66 @@ protocol ClockedQueueDelegate:class {
 }
 
 // MARK: -
-class ClockedQueue {
+final class ClockedQueue {
     var bufferTime:TimeInterval = 0.1 // sec
-    fileprivate(set) var running:Bool = false
     fileprivate(set) var duration:TimeInterval = 0
     weak var delegate:ClockedQueueDelegate?
 
-    fileprivate var date:Date = Date()
+    fileprivate var isReady:Bool = false
     fileprivate var buffers:[CMSampleBuffer] = []
-    fileprivate let mutex:Mutex = Mutex()
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.ClockedQueue.lock", attributes: []
-    )
-    fileprivate var timer:Timer? {
-        didSet {
-            if let oldValue:Timer = oldValue {
-                oldValue.invalidate()
-            }
-            if let timer:Timer = timer {
-                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
-            }
-        }
-    }
+    fileprivate lazy var driver:TimerDriver = {
+        var driver:TimerDriver = TimerDriver()
+        driver.setDelegate(delegate: self, queue: self.lockQueue)
+        return driver
+    }()
+    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.ClockedQueue.lock")
 
     func enqueue(_ buffer:CMSampleBuffer) {
-        do {
-            try mutex.lock()
-            duration += buffer.duration.seconds
-            buffers.append(buffer)
-            mutex.unlock()
-        } catch {
-            
-        }
-        if (timer == nil) {
-            timer = Timer(
-                timeInterval: 0.001, target: self, selector: #selector(ClockedQueue.on(timer:)), userInfo: nil, repeats: true
-            )
+        lockQueue.async {
+            self.duration += buffer.duration.seconds
+            self.buffers.append(buffer)
+            if (!self.isReady) {
+                self.isReady = self.duration <= self.bufferTime
+            }
         }
     }
+}
 
-    @objc func on(timer:Timer) {
-        guard let buffer:CMSampleBuffer = buffers.first , bufferTime <= self.duration else {
+extension ClockedQueue: Runnable {
+    // MARK: Runnable
+    var running:Bool {
+        return driver.running
+    }
+
+    final func startRunning() {
+        guard !running else {
             return
         }
-        let duration:TimeInterval = buffer.duration.seconds
-        guard duration <= abs(date.timeIntervalSinceNow) else {
+        isReady = false
+        driver.startRunning()
+    }
+
+    final func stopRunning() {
+        guard running else {
             return
         }
-        date = Date()
-        delegate?.queue(buffer)
-        do {
-            try mutex.lock()
-            self.duration -= duration
-            buffers.removeFirst()
-            mutex.unlock()
-        } catch {
-            
+        isReady = false
+        duration = 0
+        buffers.removeAll()
+        driver.stopRunning()
+    }
+}
+
+extension ClockedQueue: TimerDriverDelegate {
+    // MARK: TimerDriverDelegate
+    func tick(_ driver:TimerDriver) {
+        guard let first:CMSampleBuffer = buffers.first, isReady else {
+            return
         }
+        delegate?.queue(first)
+        duration -= first.duration.seconds
+        driver.interval = MachUtil.nanosToAbs(UInt64(first.duration.seconds * 1000 * 1000 * 1000))
+        buffers.removeFirst()
     }
 }
 

@@ -14,6 +14,7 @@ final class LoggerTimerDriverDelegate: TimerDriverDelegate {
 // MARK: -
 class TimerDriver {
     var interval:UInt64 = MachUtil.nanosToAbs(10 * MachUtil.nanosPerMsec)
+    var queue:DispatchQueue?
     weak var delegate:TimerDriverDelegate?
 
     fileprivate var runloop:RunLoop?
@@ -29,11 +30,22 @@ class TimerDriver {
         }
     }
 
+    func setDelegate(delegate:TimerDriverDelegate, queue:DispatchQueue) {
+        self.delegate = delegate
+        self.queue = queue
+    }
+
     @objc func on(timer:Timer) {
         guard nextFire <= mach_absolute_time() else {
             return
         }
-        delegate?.tick(self)
+        if let queue:DispatchQueue = queue {
+            queue.sync {
+                self.delegate?.tick(self)
+            }
+        } else {
+            delegate?.tick(self)
+        }
         nextFire += interval
     }
 }
@@ -46,22 +58,24 @@ extension TimerDriver: CustomStringConvertible {
 }
 
 extension TimerDriver: Runnable {
+    // MARK: Runnable
     var running:Bool {
         return runloop != nil
     }
 
-    // MARK: Runnable
     final func startRunning() {
-        if let _:RunLoop = runloop {
-            return
+        DispatchQueue.global(qos: .userInteractive).async {
+            if let _:RunLoop = self.runloop {
+                return
+            }
+            self.timer = Timer(
+                timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer:)), userInfo: nil, repeats: true
+            )
+            self.nextFire = mach_absolute_time() + self.interval
+            self.delegate?.tick(self)
+            self.runloop = .current
+            self.runloop?.run()
         }
-        timer = Timer(
-            timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer:)), userInfo: nil, repeats: true
-        )
-        nextFire = mach_absolute_time() + interval
-        delegate?.tick(self)
-        runloop = .current
-        runloop?.run()
     }
 
     final func stopRunning() {

@@ -10,7 +10,6 @@ protocol VideoDecoderDelegate: class {
 
 // MARK: -
 final class AVCDecoder {
-
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA) as AnyObject,
@@ -26,9 +25,7 @@ final class AVCDecoder {
     #endif
 
     var running:Bool = false
-    var lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.AVCDecoder.lock", attributes: []
-    )
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVCDecoder.lock")
     var formatDescription:CMFormatDescription? = nil {
         didSet {
             invalidateSession = true
@@ -36,7 +33,7 @@ final class AVCDecoder {
     }
     weak var delegate:VideoDecoderDelegate?
 
-    fileprivate var attributes:[NSString:  AnyObject] {
+    fileprivate var attributes:[NSString:AnyObject] {
         return AVCDecoder.defaultAttributes
     }
     fileprivate var invalidateSession:Bool = true
@@ -101,7 +98,7 @@ final class AVCDecoder {
     }
 
     func didOutputForSession(_ status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBuffer?, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard let imageBuffer:CVImageBuffer = imageBuffer , status == noErr else {
+        guard let imageBuffer:CVImageBuffer = imageBuffer, status == noErr else {
             return
         }
         var timingInfo:CMSampleTimingInfo = CMSampleTimingInfo(

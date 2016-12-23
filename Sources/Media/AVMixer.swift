@@ -67,6 +67,15 @@ final class AVMixer: NSObject {
     }
 }
 
+extension AVMixer {
+    final func startPlaying() {
+        videoIO.queue.startRunning()
+    }
+    final func stopPlaying() {
+        videoIO.queue.stopRunning()
+    }
+}
+
 extension AVMixer: Runnable {
     // MARK: Runnable
     var running:Bool {

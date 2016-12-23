@@ -36,9 +36,6 @@ extension RTMPStreamInfo: CustomStringConvertible {
  flash.net.NetStream for Swift
  */
 open class RTMPStream: NetStream {
-
-    open static var rootPath:String = NSTemporaryDirectory()
-
     /**
      NetStatusEvent#info.code for NetStream
      */
@@ -185,7 +182,7 @@ open class RTMPStream: NetStream {
         case resume        = "resume"
         case stop          = "stop"
         case swap          = "swap"
-        case Switch        = "switch"
+        case `switch`      = "switch"
     }
 
     public struct PlayOption: CustomStringConvertible {
@@ -194,7 +191,7 @@ open class RTMPStream: NetStream {
         public var oldStreamName:String = ""
         public var start:Double = 0
         public var streamName:String = ""
-        public var transition:PlayTransition = .Switch
+        public var transition:PlayTransition = .switch
 
         public var description:String {
             return Mirror(reflecting: self).description
@@ -202,11 +199,11 @@ open class RTMPStream: NetStream {
     }
 
     public enum HowToPublish: String {
-        case record = "record"
-        case append = "append"
+        case record        = "record"
+        case append        = "append"
         case appendWithGap = "appendWithGap"
-        case live = "live"
-        case localRecord = "localRecord"
+        case live          = "live"
+        case localRecord   = "localRecord"
     }
 
     enum ReadyState: UInt8 {
@@ -238,6 +235,9 @@ open class RTMPStream: NetStream {
                 currentFPS = 0
                 frameCount = 0
                 info.clear()
+            case .playing:
+                audioPlayback.startRunning()
+                mixer.startPlaying()
             case .publishing:
                 send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
                 mixer.audioIO.encoder.startRunning()
@@ -246,6 +246,14 @@ open class RTMPStream: NetStream {
                 if (howToPublish == .localRecord) {
                     mixer.recorder.fileName = info.resourceName
                     mixer.recorder.startRunning()
+                }
+            case .closed:
+                switch oldValue {
+                case .playing:
+                    mixer.stopPlaying()
+                    audioPlayback.stopRunning()
+                default:
+                    break
                 }
             default:
                 break
@@ -312,7 +320,6 @@ open class RTMPStream: NetStream {
             guard let name:String = arguments.first as? String else {
                 switch self.readyState {
                 case .play, .playing:
-                    self.audioPlayback.stopRunning()
                     self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                         type: .zero,
                         streamId: RTMPChunk.StreamID.audio.rawValue,
@@ -323,7 +330,8 @@ open class RTMPStream: NetStream {
                             commandName: "closeStream",
                             commandObject: nil,
                             arguments: []
-                        )))
+                    )))
+                    self.info.resourceName = nil
                 default:
                     break
                 }
@@ -332,7 +340,6 @@ open class RTMPStream: NetStream {
             while (self.readyState == .initilized) {
                 usleep(100)
             }
-            self.audioPlayback.startRunning()
             self.info.resourceName = name
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
@@ -564,6 +571,8 @@ open class RTMPStream: NetStream {
         case RTMPConnection.Code.connectSuccess.rawValue:
             readyState = .initilized
             rtmpConnection.createStream(self)
+        case RTMPStream.Code.playStart.rawValue:
+            readyState = .playing
         case RTMPStream.Code.publishStart.rawValue:
             readyState = .publishing
         default:
@@ -574,7 +583,7 @@ open class RTMPStream: NetStream {
 
 extension RTMPStream {
     func FCPublish() {
-        guard let name:String = info.resourceName , rtmpConnection.flashVer.contains("FMLE/") else {
+        guard let name:String = info.resourceName, rtmpConnection.flashVer.contains("FMLE/") else {
             return
         }
         rtmpConnection.call("FCPublish", responder: nil, arguments: name)

@@ -3,18 +3,16 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: IOComponent {
-    let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.VideoIOComponent.lock", attributes: []
-    )
-    var encoder:AVCEncoder = AVCEncoder()
-    var decoder:AVCDecoder = AVCDecoder()
+    let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.VideoIOComponent.lock")
     var drawable:NetStreamDrawable?
     var formatDescription:CMVideoFormatDescription? {
         didSet {
             decoder.formatDescription = formatDescription
         }
     }
-    fileprivate lazy var queue:ClockedQueue = {
+    lazy var encoder:AVCEncoder = AVCEncoder()
+    lazy var decoder:AVCDecoder = AVCDecoder()
+    lazy var queue:ClockedQueue = {
         let queue:ClockedQueue = ClockedQueue()
         queue.delegate = self
         return queue
@@ -23,7 +21,8 @@ final class VideoIOComponent: IOComponent {
 
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
-            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+            guard
+                let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 let data = DeviceUtil.getActualFPS(fps, device: device) else {
                 return
             }
@@ -71,8 +70,8 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             let torchMode:AVCaptureTorchMode = torch ? .on : .off
-            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                , device.isTorchModeSupported(torchMode) else {
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+                device.isTorchModeSupported(torchMode) else {
                 logger.warning("torchMode(\(torchMode)) is not supported")
                 return
             }
@@ -93,8 +92,8 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             let focusMode:AVCaptureFocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
-            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                , device.isFocusModeSupported(focusMode) else {
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+                device.isFocusModeSupported(focusMode) else {
                 logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
@@ -111,10 +110,9 @@ final class VideoIOComponent: IOComponent {
 
     var focusPointOfInterest:CGPoint? {
         didSet {
-            guard let
-                device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let point:CGPoint = focusPointOfInterest
-            ,
+            guard
+                let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+                let point:CGPoint = focusPointOfInterest,
                 device.isFocusPointOfInterestSupported else {
                 return
             }
@@ -131,10 +129,9 @@ final class VideoIOComponent: IOComponent {
 
     var exposurePointOfInterest:CGPoint? {
         didSet {
-            guard let
-                device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let point:CGPoint = exposurePointOfInterest
-            ,
+            guard
+                let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+                let point:CGPoint = exposurePointOfInterest,
                 device.isExposurePointOfInterestSupported else {
                 return
             }
@@ -155,8 +152,8 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             let exposureMode:AVCaptureExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
-            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                , device.isExposureModeSupported(exposureMode) else {
+            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+                device.isExposureModeSupported(exposureMode) else {
                 logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }

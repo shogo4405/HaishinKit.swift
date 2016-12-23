@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         )
 
         let viewController:LiveViewController = LiveViewController()
-        viewController.title = "lf - lIVE fRAMEWORK"
+        viewController.title = "HaishinKit"
         window = NSWindow(contentViewController: viewController)
         window.delegate = viewController
         window.makeKeyAndOrderFront(self)

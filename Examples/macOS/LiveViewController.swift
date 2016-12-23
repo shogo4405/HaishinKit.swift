@@ -206,7 +206,7 @@ final class LiveViewController: NSViewController {
         }
         switch keyPath {
         case "currentFPS":
-            view.window!.title = "lf - lIVE fRAMEWORK(FPS:\(rtmpStream.currentFPS):totalBytesIn:\(rtmpConnection.totalBytesIn):totalBytesOut:\(rtmpConnection.totalBytesOut)"
+            view.window!.title = "HaishinKit(FPS:\(rtmpStream.currentFPS):totalBytesIn:\(rtmpConnection.totalBytesIn):totalBytesOut:\(rtmpConnection.totalBytesOut))"
         default:
             break
         }

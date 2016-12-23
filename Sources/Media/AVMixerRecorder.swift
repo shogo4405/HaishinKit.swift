@@ -123,7 +123,7 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     fileprivate var clockReference:String = AVMediaTypeVideo
 
     #if os(OSX)
-    public lazy var moviesDirectory:URL = {
+    open lazy var moviesDirectory:URL = {
         return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #else

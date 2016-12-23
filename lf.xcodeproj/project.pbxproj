@@ -1102,7 +1102,6 @@
 					};
 					2915EC5E1D85BDF100621092 = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = SUEQ2SZ2L5;
 						ProvisioningStyle = Automatic;
 					};
 					2945CBBC1B4BE66000104112 = {
@@ -1125,6 +1124,7 @@
 						CreatedOnToolsVersion = 7.3;
 						DevelopmentTeam = SUEQ2SZ2L5;
 						LastSwiftMigration = 0800;
+						ProvisioningStyle = Automatic;
 					};
 					29C932931CD76FD300283FC5 = {
 						CreatedOnToolsVersion = 7.3;
@@ -1621,7 +1621,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/ScreencastUI/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
@@ -1641,7 +1641,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/ScreencastUI/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
