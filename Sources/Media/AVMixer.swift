@@ -4,7 +4,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-final class AVMixer: NSObject {
+final public class AVMixer: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "fps",
@@ -46,7 +46,7 @@ final class AVMixer: NSObject {
     }
 
     private var _session:AVCaptureSession? = nil
-    var session:AVCaptureSession! {
+    public var session:AVCaptureSession! {
         if (_session == nil) {
             _session = AVCaptureSession()
             _session?.beginConfiguration()
@@ -56,15 +56,15 @@ final class AVMixer: NSObject {
         return _session!
     }
 
-    private(set) var audioIO:AudioIOComponent!
-    private(set) var videoIO:VideoIOComponent!
-    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    private(set) lazy var audioIO:AudioIOComponent = {
+       return AudioIOComponent(mixer: self)
+    }()
 
-    override init() {
-        super.init()
-        audioIO = AudioIOComponent(mixer: self)
-        videoIO = VideoIOComponent(mixer: self)
-    }
+    private(set) lazy var videoIO:VideoIOComponent = {
+       return VideoIOComponent(mixer: self)
+    }()
+
+    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 }
 
 extension AVMixer {

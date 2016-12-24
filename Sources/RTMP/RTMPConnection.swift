@@ -288,7 +288,9 @@ open class RTMPConnection: EventDispatcher {
     func on(status:Notification) {
         let e:Event = Event.from(status)
 
-        guard let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String else {
+        guard
+            let data:ASObject = e.data as? ASObject,
+            let code:String = data["code"] as? String else {
             return
         }
 
@@ -302,7 +304,10 @@ open class RTMPConnection: EventDispatcher {
                 message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
             ))
         case Code.connectRejected.rawValue:
-            guard let uri:URL = uri, let user:String = uri.user, let password:String = uri.password else {
+            guard
+                let uri:URL = uri,
+                let user:String = uri.user,
+                let password:String = uri.password else {
                 break
             }
             socket.deinitConnection(isDisconnected: false)

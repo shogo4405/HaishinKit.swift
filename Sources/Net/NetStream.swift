@@ -15,10 +15,8 @@ protocol NetStreamDrawable: class {
 
 // MARK: -
 open class NetStream: NSObject {
-    var mixer:AVMixer = AVMixer()
-    let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.Stream.lock", attributes: []
-    )
+    public private(set) var mixer:AVMixer = AVMixer()
+    public let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetStream.lock")
 
     deinit {
         #if os(iOS)
@@ -161,7 +159,7 @@ open class NetStream: NSObject {
     }
 
     #if os(macOS)
-    public func attachScreen(_ screen:AVCaptureScreenInput?) {
+    open func attachScreen(_ screen:AVCaptureScreenInput?) {
         lockQueue.async {
             self.mixer.videoIO.attachScreen(screen)
         }
