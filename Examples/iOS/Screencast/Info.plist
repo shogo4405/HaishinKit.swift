@@ -30,9 +30,9 @@
 		<key>NSExtensionPointIdentifier</key>
 		<string>com.apple.broadcast-services</string>
 		<key>NSExtensionPrincipalClass</key>
-		<string>$(PRODUCT_MODULE_NAME).MovieClipHandler</string>
+		<string>$(PRODUCT_MODULE_NAME).SampleHandler</string>
 		<key>RPBroadcastProcessMode</key>
-		<string>RPBroadcastProcessModeMP4Clip</string>
+		<string>RPBroadcastProcessModeSampleBuffer</string>
 	</dict>
 </dict>
 </plist>

@@ -7,7 +7,7 @@ public class RTMPBroadcaster: RTMPConnection {
 
     public var streamName:String? = nil
 
-    private var stream:RTMPStream!
+    fileprivate var stream:RTMPStream!
     private var connecting:Bool = false
     private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.RTMPBroadcaster.lock")
 
@@ -60,12 +60,38 @@ public class RTMPBroadcaster: RTMPConnection {
 }
 
 @available(iOS 10.0, *)
-open class RTMPMP4ClipHandler: RPBroadcastMP4ClipHandler {
-
-    deinit {
-        logger.info("deinit: \(self)")
+open class RTMPSampleHandler: RPBroadcastSampleHandler {
+    override open func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
+        super.broadcastStarted(withSetupInfo: setupInfo)
+        guard
+            let endpointURL:String = setupInfo?["endpointURL"] as? String,
+            let streamName:String = setupInfo?["streamName"] as? String else {
+            return
+        }
+        RTMPBroadcaster.default.streamName = streamName
+        RTMPBroadcaster.default.connect(endpointURL, arguments: nil)
     }
 
+    override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
+        super.processSampleBuffer(sampleBuffer, with: sampleBufferType)
+        print(RTMPBroadcaster.default.stream.readyState)
+        guard RTMPBroadcaster.default.stream.readyState == .publishing else {
+            return
+        }
+        switch sampleBufferType {
+        case .video:
+            RTMPBroadcaster.default.stream.mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+        case .audioApp:
+            // RTMPBroadcaster.default.stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+            break
+        case .audioMic:
+            break
+        }
+    }
+}
+
+@available(iOS 10.0, *)
+open class RTMPMP4ClipHandler: RPBroadcastMP4ClipHandler {
     override open func processMP4Clip(with mp4ClipURL: URL?, setupInfo: [String : NSObject]?, finished: Bool) {
         guard
             let endpointURL:String = setupInfo?["endpointURL"] as? String,
@@ -83,8 +109,5 @@ open class RTMPMP4ClipHandler: RPBroadcastMP4ClipHandler {
             return
         }
         RTMPBroadcaster.default.processMP4Clip(mp4ClipURL: mp4ClipURL)
-    }
-
-    override open func finishedProcessingMP4Clip(withUpdatedBroadcastConfiguration broadcastConfiguration: RPBroadcastConfiguration?, error: Error?) {
     }
 }
