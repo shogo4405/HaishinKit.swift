@@ -307,11 +307,11 @@ open class RTMPConnection: EventDispatcher {
             guard
                 let uri:URL = uri,
                 let user:String = uri.user,
-                let password:String = uri.password else {
+                let password:String = uri.password,
+                let description:String = data["description"] as? String else {
                 break
             }
             socket.deinitConnection(isDisconnected: false)
-            let description:String = data["description"] as! String
             switch true {
             case description.contains("reason=nosuchuser"):
                 break
