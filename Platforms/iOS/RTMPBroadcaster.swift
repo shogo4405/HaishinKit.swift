@@ -7,14 +7,11 @@ public class RTMPBroadcaster: RTMPConnection {
 
     public var streamName:String? = nil
 
-    fileprivate var stream:RTMPStream!
+    fileprivate lazy var stream:RTMPStream = {
+        return RTMPStream(connection: self)
+    }()
     private var connecting:Bool = false
     private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.RTMPBroadcaster.lock")
-
-    override init() {
-        super.init()
-        stream = RTMPStream(connection: self)
-    }
 
     override public func connect(_ command: String, arguments: Any?...) {
         lockQueue.sync {
@@ -74,7 +71,6 @@ open class RTMPSampleHandler: RPBroadcastSampleHandler {
 
     override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         super.processSampleBuffer(sampleBuffer, with: sampleBufferType)
-        print(RTMPBroadcaster.default.stream.readyState)
         guard RTMPBroadcaster.default.stream.readyState == .publishing else {
             return
         }
@@ -82,7 +78,7 @@ open class RTMPSampleHandler: RPBroadcastSampleHandler {
         case .video:
             RTMPBroadcaster.default.stream.mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
         case .audioApp:
-            // RTMPBroadcaster.default.stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+            RTMPBroadcaster.default.stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
             break
         case .audioMic:
             break
