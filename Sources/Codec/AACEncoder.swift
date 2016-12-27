@@ -38,8 +38,7 @@ final class AACEncoder: NSObject {
         AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer)
     ]
     #else
-    static let defaultInClassDescriptions:[AudioClassDescription] = [
-    ]
+    static let defaultInClassDescriptions:[AudioClassDescription] = []
     #endif
 
     var muted:Bool = false
@@ -71,9 +70,7 @@ final class AACEncoder: NSObject {
             }
         }
     }
-    var lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.AACEncoder.lock", attributes: []
-    )
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AACEncoder.lock")
     weak var delegate:AudioEncoderDelegate?
     internal(set) var running:Bool = false
     fileprivate var maximumBuffers:Int = AACEncoder.defaultMaximumBuffers
@@ -159,7 +156,7 @@ final class AACEncoder: NSObject {
     }
 
     func encodeSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
-        guard let format:CMAudioFormatDescription = sampleBuffer.formatDescription , running else {
+        guard let format:CMAudioFormatDescription = sampleBuffer.formatDescription, running else {
             return
         }
 

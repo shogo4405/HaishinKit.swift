@@ -3,9 +3,9 @@ import Foundation
 import ReplayKit
 
 class MovieClipHandler: RTMPMP4ClipHandler {
-    
     override func updateServiceInfo(_ serviceInfo: [String : NSCoding & NSObjectProtocol]) {
         print("updateServiceInfo:\(serviceInfo)")
+        super.updateServiceInfo(serviceInfo)
     }
 
     override func processMP4Clip(with mp4ClipURL: URL?, setupInfo: [String : NSObject]?, finished: Bool) {
