@@ -61,7 +61,22 @@ extension CMSampleBuffer: BytesConvertible {
 }
 
 // MARK: -
+extension CMVideoFormatDescription {
+    var dimensions:CMVideoDimensions {
+        return CMVideoFormatDescriptionGetDimensions(self)
+    }
+}
+
+// MARK: -
+extension CMAudioFormatDescription {
+    var streamBasicDescription:UnsafePointer<AudioStreamBasicDescription>? {
+        return CMAudioFormatDescriptionGetStreamBasicDescription(self)
+    }
+}
+
+// MARK: -
 extension CVPixelBuffer {
+    
     static func create(_ image:CIImage) -> CVPixelBuffer? {
         var buffer:CVPixelBuffer?
         CVPixelBufferCreate(
@@ -79,6 +94,26 @@ extension CVPixelBuffer {
     }
     var height:Int {
         return CVPixelBufferGetHeight(self)
+    }
+}
+
+// MARK: -
+extension CMVideoFormatDescription {
+    static func create(withPixelBuffer:CVPixelBuffer) -> CMVideoFormatDescription? {
+        var formatDescription:CMFormatDescription?
+        let status:OSStatus = CMVideoFormatDescriptionCreate(
+            kCFAllocatorDefault,
+            kCMVideoCodecType_422YpCbCr8,
+            Int32(withPixelBuffer.width),
+            Int32(withPixelBuffer.height),
+            nil,
+            &formatDescription
+        )
+        guard status == noErr else {
+            logger.warning("\(status)")
+            return nil
+        }
+        return formatDescription
     }
 }
 

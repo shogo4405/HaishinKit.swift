@@ -393,14 +393,15 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             self.encoder.height = Int32(size.height)
         }
     }
-    func output(pixelBuffer:CVPixelBuffer, withTimestamp:CMTime) {
+    func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime) {
+        mixer.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
         if (!effects.isEmpty) {
             drawable?.render(image: effect(pixelBuffer), to: pixelBuffer)
         }
         encoder.encodeImageBuffer(
             pixelBuffer,
-            presentationTimeStamp: withTimestamp,
-            duration: withTimestamp
+            presentationTimeStamp: withPresentationTime,
+            duration: kCMTimeInvalid
         )
     }
 }
