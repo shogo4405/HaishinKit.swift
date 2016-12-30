@@ -18,15 +18,12 @@ class TSWriter {
             m3u8.mediaList = files
             return m3u8.description
         }
+        let startIndex = max(0, files.count - TSWriter.defaultSegmentCount)
         m3u8.mediaSequence = sequence - TSWriter.defaultSegmentMaxCount
-        var startIndex = files.count - TSWriter.defaultSegmentCount
-        startIndex = startIndex >= 0 ? startIndex : 0
         m3u8.mediaList = Array(files[startIndex..<files.count])
         return m3u8.description
     }
-    var lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.TSWriter.lock", attributes: []
-    )
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.TSWriter.lock")
     var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration:Double = TSWriter.defaultSegmentDuration
 
@@ -38,7 +35,6 @@ class TSWriter {
     fileprivate(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
     fileprivate(set) var files:[M3UMediaInfo] = []
     fileprivate(set) var running:Bool = false
-
     fileprivate var PCRPID:UInt16 = TSWriter.defaultVideoPID
     fileprivate var sequence:Int = 0
     fileprivate var timestamps:[UInt16:CMTime] = [:]
@@ -49,6 +45,10 @@ class TSWriter {
     fileprivate var rotatedTimestamp:CMTime = kCMTimeZero
     fileprivate var currentFileHandle:FileHandle?
     fileprivate var continuityCounters:[UInt16:UInt8] = [:]
+
+    init() {
+        PMT.PCRPID = PCRPID
+    }
 
     func getFilePath(_ fileName:String) -> String? {
         for info in files {
@@ -67,12 +67,14 @@ class TSWriter {
                 PCRTimestamp = presentationTimeStamp
             }
         }
+
         let config:Any? = streamID == 192 ? audioConfig : videoConfig
         guard var PES:PacketizedElementaryStream = PacketizedElementaryStream.create(
             sampleBuffer, timestamp:timestamps[PID]!, config:config
         ) else {
             return
         }
+
         PES.streamID = streamID
 
         var decodeTimeStamp:CMTime = sampleBuffer.decodeTimeStamp
@@ -81,9 +83,12 @@ class TSWriter {
         }
 
         var packets:[TSPacket] = split(PID, PES: PES, timestamp: decodeTimeStamp)
-        if (PCRPID == PID && rorateFileHandle(decodeTimeStamp)) {
+        let _:Bool = rotateFileHandle(decodeTimeStamp)
+
+        if (streamID == 192) {
             packets[0].adaptationField?.randomAccessIndicator = true
-            packets[0].adaptationField?.discontinuityIndicator = true
+        } else {
+            packets[0].adaptationField?.randomAccessIndicator = !sampleBuffer.dependsOnOthers
         }
 
         var bytes:[UInt8] = []
@@ -103,7 +108,7 @@ class TSWriter {
     func split(_ PID:UInt16, PES:PacketizedElementaryStream, timestamp:CMTime) -> [TSPacket] {
         var PCR:UInt64?
         let duration:Double = timestamp.seconds - PCRTimestamp.seconds
-        if (PCRPID == PID && 0.1 <= duration) {
+        if (PCRPID == PID && 0.02 <= duration) {
             PCR = UInt64((timestamp.seconds - timestamps[PID]!.seconds) * TSTimestamp.resolution)
             PCRTimestamp = timestamp
         }
@@ -114,7 +119,7 @@ class TSWriter {
         return packets
     }
 
-    func rorateFileHandle(_ timestamp:CMTime) -> Bool {
+    func rotateFileHandle(_ timestamp:CMTime) -> Bool {
         let duration:Double = timestamp.seconds - rotatedTimestamp.seconds
         if (duration <= segmentDuration) {
             return false
@@ -190,7 +195,7 @@ extension TSWriter: Runnable {
     // MARK: Runnable
     func startRunning() {
         lockQueue.async {
-            if (!self.running) {
+            guard self.running else {
                 return
             }
             self.running = true
@@ -198,7 +203,7 @@ extension TSWriter: Runnable {
     }
     func stopRunning() {
         lockQueue.async {
-            if (self.running) {
+            guard !self.running else {
                 return
             }
             self.currentFileURL = nil
@@ -231,8 +236,8 @@ extension TSWriter: AudioEncoderDelegate {
 extension TSWriter: VideoEncoderDelegate {
     // MARK: VideoEncoderDelegate
     func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
-        guard let
-            formatDescription:CMFormatDescription = formatDescription,
+        guard
+            let formatDescription:CMFormatDescription = formatDescription,
             let avcC:Data = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
