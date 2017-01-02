@@ -185,6 +185,9 @@ final class ProgramMapSpecific: ProgramSpecific {
     override var data:[UInt8] {
         get {
             var bytes:[UInt8] = []
+            elementaryStreamSpecificData.sort{ (lhs:ElementaryStreamSpecificData, rhs:ElementaryStreamSpecificData) -> Bool in
+                return lhs.elementaryPID < rhs.elementaryPID
+            }
             for data in elementaryStreamSpecificData {
                 bytes += data.bytes
             }

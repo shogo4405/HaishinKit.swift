@@ -3,7 +3,7 @@ import Foundation
 
 class TSWriter {
     static let defaultPATPID:UInt16 = 0
-    static let defaultPMTPID:UInt16 = 4096
+    static let defaultPMTPID:UInt16 = 4095
     static let defaultVideoPID:UInt16 = 256
     static let defaultAudioPID:UInt16 = 257
     static let defaultSegmentCount:Int = 3
@@ -45,10 +45,6 @@ class TSWriter {
     fileprivate var rotatedTimestamp:CMTime = kCMTimeZero
     fileprivate var currentFileHandle:FileHandle?
     fileprivate var continuityCounters:[UInt16:UInt8] = [:]
-
-    init() {
-        PMT.PCRPID = PCRPID
-    }
 
     func getFilePath(_ fileName:String) -> String? {
         for info in files {
@@ -163,6 +159,8 @@ class TSWriter {
         currentFileHandle?.synchronizeFile()
         currentFileHandle?.closeFile()
         currentFileHandle = try? FileHandle(forWritingTo: url)
+
+        PMT.PCRPID = PCRPID
         var bytes:[UInt8] = []
         var packets:[TSPacket] = []
         packets += PAT.arrayOfPackets(TSWriter.defaultPATPID)
