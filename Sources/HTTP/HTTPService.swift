@@ -214,6 +214,7 @@ open class HTTPService: NetService {
                 guard let (mime, resource) = stream.getResource(request.uri) else {
                     break
                 }
+                response.statusCode = HTTPStatusCode.ok.description
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
                 case .VideoMP2T:
