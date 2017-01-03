@@ -23,7 +23,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 
 ### Others
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
-- [x] compatible "Allow app extension API only" option
+- [x] Support "Allow app extension API only" option
 - [ ] Objectiv-C Bridging
 
 ## Requirements
@@ -145,7 +145,7 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
 ### Screen Capture
 ```swift
 // iOS
-rtmpStream.attachScreen(ScreenCaptureSession(shared:UIApplication.shared))
+rtmpStream.attachScreen(ScreenCaptureSession(shared: UIApplication.shared))
 // macOS
 rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```
