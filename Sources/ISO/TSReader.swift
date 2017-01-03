@@ -10,7 +10,6 @@ class TSReader {
 
     private(set) var PAT:ProgramAssociationSpecific? {
         didSet {
-            print(PAT)
             guard let PAT:ProgramAssociationSpecific = PAT else {
                 return
             }
@@ -21,7 +20,6 @@ class TSReader {
     }
     private(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
         didSet {
-            print(PMT)
             for (_, pmt) in PMT {
                 for data in pmt.elementaryStreamSpecificData {
                     dictionaryForESSpecData[data.elementaryPID] = data

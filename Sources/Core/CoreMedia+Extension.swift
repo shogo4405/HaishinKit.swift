@@ -75,6 +75,13 @@ extension CMAudioFormatDescription {
 }
 
 // MARK: -
+extension CMBlockBuffer {
+    var dataLength:Int {
+        return CMBlockBufferGetDataLength(self)
+    }
+}
+
+// MARK: -
 extension CVPixelBuffer {
     
     static func create(_ image:CIImage) -> CVPixelBuffer? {

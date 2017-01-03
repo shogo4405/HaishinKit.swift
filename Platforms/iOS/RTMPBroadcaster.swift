@@ -10,6 +10,11 @@ public class RTMPBroadcaster: RTMPConnection {
     fileprivate lazy var stream:RTMPStream = {
         return RTMPStream(connection: self)
     }()
+    fileprivate lazy var soundMixer:SoundMixer = {
+        var soundMixer:SoundMixer = SoundMixer()
+        soundMixer.delegate = self
+        return soundMixer
+    }()
     private var connecting:Bool = false
     private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.RTMPBroadcaster.lock")
 
@@ -57,6 +62,13 @@ public class RTMPBroadcaster: RTMPConnection {
 }
 
 @available(iOS 10.0, *)
+extension RTMPBroadcaster: SoundMixerDelegate {
+    func outputSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
+        stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+    }
+}
+
+@available(iOS 10.0, *)
 open class RTMPSampleHandler: RPBroadcastSampleHandler {
     override open func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
         super.broadcastStarted(withSetupInfo: setupInfo)
@@ -78,48 +90,9 @@ open class RTMPSampleHandler: RPBroadcastSampleHandler {
         case .video:
             RTMPBroadcaster.default.stream.mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
         case .audioApp:
-            processAudioBuffer(sampleBuffer)
+            RTMPBroadcaster.default.soundMixer.appendSampleBuffer(sampleBuffer, withChannel: 0)
         case .audioMic:
             break
-        }
-    }
-
-    private func processAudioBuffer(_ sampleBuffer: CMSampleBuffer) {
-        var blockBuffer:CMBlockBuffer? = nil
-        let currentBufferList:UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
-        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-            sampleBuffer,
-            nil,
-            currentBufferList.unsafeMutablePointer,
-            AudioBufferList.sizeInBytes(maximumBuffers: 1),
-            nil,
-            nil,
-            0,
-            &blockBuffer
-        )
-
-        let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
-        let length:UInt32 = currentBufferList.unsafePointer.pointee.mBuffers.mDataByteSize
-        for i in 0..<Int(floor(Double(length) / 2048)) {
-            let buffer:UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
-            buffer.unsafeMutablePointer.pointee.mNumberBuffers = 1
-            buffer.unsafeMutablePointer.pointee.mBuffers.mData = malloc(2048)
-            memcpy(
-                buffer.unsafeMutablePointer.pointee.mBuffers.mData,
-                currentBufferList.unsafePointer.pointee.mBuffers.mData!.advanced(by: 2048 * i),
-                2048
-            )
-            buffer.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = 2048
-            var result:CMSampleBuffer?
-            var timing:CMSampleTimingInfo = CMSampleTimingInfo(
-                duration: CMTime(value: 1024, timescale: 44100),
-                presentationTimeStamp: CMTime(seconds: presentationTimeStamp.seconds + (CMTime(value: 1024, timescale: 44100).seconds * Double(i)), preferredTimescale: presentationTimeStamp.timescale),
-                decodeTimeStamp: kCMTimeInvalid
-            )
-            CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, sampleBuffer.formatDescription, 1024, 1, &timing, 0, nil, &result)
-            CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, buffer.unsafePointer)
-            RTMPBroadcaster.default.stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
-            free(buffer.unsafeMutablePointer.pointee.mBuffers.mData)
         }
     }
 }
