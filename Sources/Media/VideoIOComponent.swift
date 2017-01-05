@@ -349,7 +349,6 @@ final class VideoIOComponent: IOComponent {
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
-        mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
         guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
@@ -367,6 +366,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             duration: sampleBuffer.duration
         )
         drawable?.draw(image: image)
+        mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
     }
 }
 
@@ -394,7 +394,6 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
     }
     func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime) {
-        mixer.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
         if (!effects.isEmpty) {
             drawable?.render(image: effect(pixelBuffer), to: pixelBuffer)
         }
@@ -403,6 +402,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             presentationTimeStamp: withPresentationTime,
             duration: kCMTimeInvalid
         )
+        mixer.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
     }
 }
 #endif

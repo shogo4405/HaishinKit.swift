@@ -238,6 +238,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         }
 
         let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
+        input.expectsMediaDataInRealTime = true
         recorder.writerInputs[mediaType] = input
         recorder.writer?.add(input)
 
