@@ -1,4 +1,5 @@
 import ReplayKit
+import VideoToolbox
 import Foundation
 
 @available(iOS 10.0, *)
@@ -83,6 +84,18 @@ open class RTMPSampleHandler: RPBroadcastSampleHandler {
 
     override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         super.processSampleBuffer(sampleBuffer, with: sampleBufferType)
+
+        switch sampleBufferType {
+        case .video:
+            RTMPBroadcaster.default.stream.videoSettings = [
+                "width": sampleBuffer.formatDescription?.dimensions.width ?? AVCEncoder.defaultWidth,
+                "height": sampleBuffer.formatDescription?.dimensions.height ?? AVCEncoder.defaultHeight,
+                "profileLevel": kVTProfileLevel_H264_Baseline_AutoLevel,
+            ]
+        default:
+            break
+        }
+
         guard RTMPBroadcaster.default.stream.readyState == .publishing else {
             return
         }
@@ -92,7 +105,7 @@ open class RTMPSampleHandler: RPBroadcastSampleHandler {
         case .audioApp:
             RTMPBroadcaster.default.soundMixer.appendSampleBuffer(sampleBuffer, withChannel: 0)
         case .audioMic:
-            break
+            RTMPBroadcaster.default.soundMixer.appendSampleBuffer(sampleBuffer, withChannel: 1)
         }
     }
 }
