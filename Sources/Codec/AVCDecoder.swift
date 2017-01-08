@@ -24,8 +24,6 @@ final class AVCDecoder {
     ]
     #endif
 
-    var running:Bool = false
-    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVCDecoder.lock")
     var formatDescription:CMFormatDescription? = nil {
         didSet {
             invalidateSession = true
@@ -33,11 +31,19 @@ final class AVCDecoder {
     }
     weak var delegate:VideoDecoderDelegate?
 
-    fileprivate var attributes:[NSString:AnyObject] {
+    private var buffers:[CMSampleBuffer] = []
+    private var attributes:[NSString:AnyObject] {
         return AVCDecoder.defaultAttributes
     }
-    fileprivate var invalidateSession:Bool = true
-    fileprivate var callback:VTDecompressionOutputCallback = {(
+    private(set) var status:OSStatus = noErr {
+        didSet {
+            if (status != noErr) {
+                logger.warning("\(self.status)")
+            }
+        }
+    }
+    private var invalidateSession:Bool = true
+    private var callback:VTDecompressionOutputCallback = {(
         decompressionOutputRefCon:UnsafeMutableRawPointer?,
         sourceFrameRefCon:UnsafeMutableRawPointer?,
         status:OSStatus,
@@ -49,8 +55,8 @@ final class AVCDecoder {
         decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration)
     }
 
-    fileprivate var _session:VTDecompressionSession? = nil
-    fileprivate var session:VTDecompressionSession! {
+    private var _session:VTDecompressionSession? = nil
+    private var session:VTDecompressionSession! {
         get {
             if (_session == nil)  {
                 guard let formatDescription:CMFormatDescription = formatDescription else {
@@ -85,35 +91,34 @@ final class AVCDecoder {
         guard let session:VTDecompressionSession = session else {
             return kVTInvalidSessionErr
         }
+        var flagsOut:VTDecodeInfoFlags = VTDecodeInfoFlags()
         let decodeFlags:VTDecodeFrameFlags = VTDecodeFrameFlags(rawValue:
             VTDecodeFrameFlags._EnableAsynchronousDecompression.rawValue |
             VTDecodeFrameFlags._EnableTemporalProcessing.rawValue
         )
-        var flagsOut:VTDecodeInfoFlags = VTDecodeInfoFlags()
-        let status:OSStatus = VTDecompressionSessionDecodeFrame(session, sampleBuffer, decodeFlags, nil, &flagsOut)
-        if (status != noErr) {
-            logger.warning("\(status)")
-        }
-        return status
+        return VTDecompressionSessionDecodeFrame(session, sampleBuffer, decodeFlags, nil, &flagsOut)
     }
 
     func didOutputForSession(_ status:OSStatus, infoFlags:VTDecodeInfoFlags, imageBuffer:CVImageBuffer?, presentationTimeStamp:CMTime, duration:CMTime) {
         guard let imageBuffer:CVImageBuffer = imageBuffer, status == noErr else {
             return
         }
+
         var timingInfo:CMSampleTimingInfo = CMSampleTimingInfo(
             duration: duration,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: kCMTimeInvalid
         )
+
         var videoFormatDescription:CMVideoFormatDescription? = nil
-        CMVideoFormatDescriptionCreateForImageBuffer(
+        self.status = CMVideoFormatDescriptionCreateForImageBuffer(
             kCFAllocatorDefault,
             imageBuffer,
             &videoFormatDescription
         )
+
         var sampleBuffer:CMSampleBuffer? = nil
-        CMSampleBufferCreateForImageBuffer(
+        self.status = CMSampleBufferCreateForImageBuffer(
             kCFAllocatorDefault,
             imageBuffer,
             true,
@@ -123,9 +128,13 @@ final class AVCDecoder {
             &timingInfo,
             &sampleBuffer
         )
-        guard let buffer:CMSampleBuffer = sampleBuffer else {
-            return
+
+        if let buffer:CMSampleBuffer = sampleBuffer {
+            delegate?.sampleOutput(video: buffer)
         }
-        delegate?.sampleOutput(video: buffer)
+    }
+
+    func clear() {
+        buffers.removeAll()
     }
 }

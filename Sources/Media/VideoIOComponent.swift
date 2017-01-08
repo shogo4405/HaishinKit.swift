@@ -222,7 +222,6 @@ final class VideoIOComponent: IOComponent {
     override init(mixer: AVMixer) {
         super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
-        decoder.lockQueue = lockQueue
         decoder.delegate = self
     }
 
