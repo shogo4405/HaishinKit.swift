@@ -129,21 +129,6 @@ open class NetStream: NSObject {
         }
     }
 
-    open var recorderDelegate:AVMixerRecorderDelegate? {
-        get {
-            var recorderDelegate:AVMixerRecorderDelegate?
-            lockQueue.sync {
-                recorderDelegate = self.mixer.recorder.delegate
-            }
-            return recorderDelegate
-        }
-        set {
-            lockQueue.async {
-                self.mixer.recorder.delegate = newValue
-            }
-        }
-    }
-
     open func attachCamera(_ camera:AVCaptureDevice?) {
         DispatchQueue.main.async {
             self.mixer.videoIO.attachCamera(camera)
@@ -153,7 +138,8 @@ open class NetStream: NSObject {
 
     open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
         lockQueue.async {
-            self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
+            self.mixer.audioIO.attachAudio(audio,
+                automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
             )
         }
     }

@@ -64,7 +64,7 @@ final public class AVMixer: NSObject {
        return VideoIOComponent(mixer: self)
     }()
 
-    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 }
 
 extension AVMixer {
