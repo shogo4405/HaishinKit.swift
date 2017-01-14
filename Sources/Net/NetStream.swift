@@ -163,6 +163,15 @@ open class NetStream: NSObject {
     }
     #endif
 
+    open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
+        switch withType {
+        case .audio:
+            mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+        case .video:
+            mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+        }
+    }
+
     open func registerEffect(video effect:VisualEffect) -> Bool {
         return mixer.videoIO.registerEffect(effect)
     }

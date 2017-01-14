@@ -1,6 +1,11 @@
 import CoreMedia
 import CoreImage
 
+public enum CMSampleBufferType: String {
+    case video = "video"
+    case audio = "audio"
+}
+
 extension CMSampleBuffer {
     var dependsOnOthers:Bool {
         guard
