@@ -7,8 +7,8 @@ protocol MP4SamplerDelegate: class {
 }
 
 // MARK: -
-class MP4Sampler {
-    typealias Handler = () -> Void
+public class MP4Sampler {
+    public typealias Handler = () -> Void
 
     weak var delegate:MP4SamplerDelegate?
 

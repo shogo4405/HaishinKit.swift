@@ -2,19 +2,26 @@ import lf
 import Foundation
 import ReplayKit
 
-class MovieClipHandler: RTMPMP4ClipHandler {
-    override func updateServiceInfo(_ serviceInfo: [String : NSCoding & NSObjectProtocol]) {
-        print("updateServiceInfo:\(serviceInfo)")
-        super.updateServiceInfo(serviceInfo)
-    }
+class MovieClipHandler: RPBroadcastMP4ClipHandler {
+    private var broadcaster:RTMPBroadcaster = RTMPBroadcaster()
 
-    override func processMP4Clip(with mp4ClipURL: URL?, setupInfo: [String : NSObject]?, finished: Bool) {
-        print("processMP4Clip:\(mp4ClipURL):\(setupInfo):\(finished)")
-        super.processMP4Clip(with: mp4ClipURL, setupInfo: setupInfo, finished: finished)
-    }
-
-    override func finishedProcessingMP4Clip(withUpdatedBroadcastConfiguration broadcastConfiguration: RPBroadcastConfiguration?, error: Error?) {
-        print("finishedProcessingMP4Clip:\(broadcastConfiguration):\(error)")
-        super.finishedProcessingMP4Clip(withUpdatedBroadcastConfiguration: broadcastConfiguration, error: error)
+    override open func processMP4Clip(with mp4ClipURL: URL?, setupInfo: [String : NSObject]?, finished: Bool) {
+        guard
+            let endpointURL:String = setupInfo?["endpointURL"] as? String,
+            let streamName:String = setupInfo?["streamName"] as? String else {
+            return
+        }
+        broadcaster.streamName = streamName
+        broadcaster.connect(endpointURL, arguments: nil)
+        if (finished) {
+            broadcaster.processMP4Clip(mp4ClipURL: mp4ClipURL) {_ in
+                if (finished) {
+                    self.broadcaster.close()
+                }
+            }
+            return
+        }
+        broadcaster.processMP4Clip(mp4ClipURL: mp4ClipURL)
     }
 }
+

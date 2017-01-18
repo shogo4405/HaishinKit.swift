@@ -147,4 +147,10 @@ class SoundMixer {
             buffer.unsafeMutablePointer.pointee.mBuffers.mData?.deallocate(bytes: frameSize, alignedTo: 0)
         }
     }
+
+    func clear() {
+        formatDescription = nil
+        sampleDatas.removeAll()
+        formatDescriptions.removeAll()
+    }
 }
