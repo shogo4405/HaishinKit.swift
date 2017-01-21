@@ -56,6 +56,15 @@ final public class AVMixer: NSObject {
         return _session!
     }
 
+    public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+
+    public var sampleBuffers:[CMSampleBufferType:CMSampleBuffer?] {
+        return [
+            .video: videoIO.sampleBuffer,
+            .audio: audioIO.sampleBuffer,
+        ]
+    }
+
     private(set) lazy var audioIO:AudioIOComponent = {
        return AudioIOComponent(mixer: self)
     }()
@@ -63,8 +72,6 @@ final public class AVMixer: NSObject {
     private(set) lazy var videoIO:VideoIOComponent = {
        return VideoIOComponent(mixer: self)
     }()
-
-    public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 }
 
 extension AVMixer {

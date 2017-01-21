@@ -1,6 +1,6 @@
 import Foundation
 
-protocol TimerDriverDelegate: class {
+public protocol TimerDriverDelegate: class {
     func tick(_ driver:TimerDriver)
 }
 
@@ -12,8 +12,9 @@ final class LoggerTimerDriverDelegate: TimerDriverDelegate {
 }
 
 // MARK: -
-class TimerDriver {
-    var interval:UInt64 = MachUtil.nanosToAbs(10 * MachUtil.nanosPerMsec)
+public class TimerDriver: NSObject {
+    public var interval:UInt64 = MachUtil.nanosToAbs(10 * MachUtil.nanosPerMsec)
+
     var queue:DispatchQueue?
     weak var delegate:TimerDriverDelegate?
 
@@ -30,9 +31,13 @@ class TimerDriver {
         }
     }
 
-    func setDelegate(delegate:TimerDriverDelegate, queue:DispatchQueue) {
+    public override var description:String {
+        return Mirror(reflecting: self).description
+    }
+
+    public func setDelegate(_ delegate:TimerDriverDelegate, withQueue:DispatchQueue? = nil) {
         self.delegate = delegate
-        self.queue = queue
+        self.queue = withQueue
     }
 
     @objc func on(timer:Timer) {
@@ -50,24 +55,18 @@ class TimerDriver {
     }
 }
 
-extension TimerDriver: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description:String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 extension TimerDriver: Runnable {
     // MARK: Runnable
-    var running:Bool {
+    public var running:Bool {
         return runloop != nil
     }
 
-    final func startRunning() {
+    final public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
             if let _:RunLoop = self.runloop {
                 return
             }
+            print("startRunning")
             self.timer = Timer(
                 timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer:)), userInfo: nil, repeats: true
             )
@@ -78,7 +77,7 @@ extension TimerDriver: Runnable {
         }
     }
 
-    final func stopRunning() {
+    final public func stopRunning() {
         guard let runloop:RunLoop = runloop else {
             return
         }

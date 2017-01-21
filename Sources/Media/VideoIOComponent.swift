@@ -348,6 +348,7 @@ final class VideoIOComponent: IOComponent {
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
+        self.sampleBuffer = sampleBuffer
         guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }

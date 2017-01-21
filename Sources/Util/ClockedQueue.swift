@@ -15,7 +15,7 @@ final class ClockedQueue {
     fileprivate var buffers:[CMSampleBuffer] = []
     fileprivate lazy var driver:TimerDriver = {
         var driver:TimerDriver = TimerDriver()
-        driver.setDelegate(delegate: self, queue: self.lockQueue)
+        driver.setDelegate(self, withQueue: self.lockQueue)
         return driver
     }()
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.ClockedQueue.lock")
