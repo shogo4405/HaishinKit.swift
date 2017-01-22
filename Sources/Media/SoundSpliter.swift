@@ -1,14 +1,14 @@
 import CoreMedia
 import Foundation
 
-protocol SoundMixerDelegate: class {
+public protocol SoundSpliterDelegate: class {
     func outputSampleBuffer(_ sampleBuffer:CMSampleBuffer)
 }
 
 // MARK: -
-class SoundMixer {
+public class SoundSpliter: NSObject {
     static let defaultSampleSize:Int = 1024
-    weak var delegate:SoundMixerDelegate?
+    public weak var delegate:SoundSpliterDelegate?
 
     private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.SoundMixer.lock")
     private(set) var status:OSStatus = noErr {
@@ -20,28 +20,21 @@ class SoundMixer {
     }
     private var frameSize:Int = 2048
     private var duration:CMTime = kCMTimeZero
-    private var sampleDatas:[Int:Data] = [:]
-    private var expectCounts:Int = 2
+    private var sampleData:Data = Data()
     private var formatDescription:CMFormatDescription?
-    private var formatDescriptions:[Int:CMFormatDescription] = [:]
     private var presentationTimeStamp:CMTime = kCMTimeZero
 
     private var minimumByteSize:Int {
-        var byteSize:Int = Int.max
-        for data:Data in sampleDatas.values {
-            if (data.count < byteSize) {
-                byteSize = data.count
-            }
-        }
-        return byteSize
+        return min(Int.max, sampleData.count)
     }
 
-    func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withChannel:Int) {
-        if (withChannel == 0 && presentationTimeStamp == kCMTimeZero) {
+    public func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
+        if (presentationTimeStamp == kCMTimeZero) {
             duration = CMTime(value: 1, timescale: 44100)
             formatDescription = sampleBuffer.formatDescription
             presentationTimeStamp = sampleBuffer.presentationTimeStamp
         }
+
         var blockBuffer:CMBlockBuffer? = nil
         let audioBufferList:UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
@@ -55,64 +48,32 @@ class SoundMixer {
             &blockBuffer
         )
 
-        formatDescriptions[withChannel] = sampleBuffer.formatDescription
         if let mData:UnsafeMutableRawPointer = audioBufferList.unsafePointer.pointee.mBuffers.mData {
-            if (sampleDatas[withChannel] == nil) {
-                sampleDatas[withChannel] = Data()
-            }
-            sampleDatas[withChannel]?.append(
+            sampleData.append(
                 mData.assumingMemoryBound(to: UInt8.self),
                 count: Int(audioBufferList.unsafePointer.pointee.mBuffers.mDataByteSize)
             )
         }
 
         lockQueue.async {
-            self.doMixing()
+            self.split()
         }
     }
 
-    func doMixing() {
-        guard expectCounts == sampleDatas.count, frameSize < self.minimumByteSize else {
+    func split() {
+        guard frameSize < self.minimumByteSize else {
             return
         }
 
         let minimumByteSize:Int = self.minimumByteSize
         let remain:Int = minimumByteSize % frameSize
         let length:Int = minimumByteSize - remain
+        let sampleData:Data = self.sampleData
 
-        var buffers:[[Int16]] = []
-        for (key, value) in sampleDatas {
-            buffers.append(value.subdata(in: 0..<length).toArray(type: Int16.self))
-            sampleDatas[key]?.removeAll()
-            sampleDatas[key]?.append(value.subdata(in: length..<value.count))
-        }
+        self.sampleData.removeAll()
+        self.sampleData.append(sampleData.subdata(in: length..<sampleData.count))
 
-        var buffer32:[Int32] = [Int32](repeating: 0, count: length / 2)
-        for i in 0..<buffers.count {
-            guard let asbd:AudioStreamBasicDescription = formatDescriptions[i]?.streamBasicDescription?.pointee else {
-                continue
-            }
-            for j in 0..<buffer32.count {
-                if (asbd.mFormatFlags & kAudioFormatFlagIsBigEndian != 0) {
-                    buffer32[j] += Int32(buffers[i][j])
-                } else {
-                    buffer32[j] += Int32(buffers[i][j].bigEndian)
-                }
-            }
-        }
-
-        var buffer16:[Int16] = [Int16](repeating: 0, count: buffer32.count)
-        for i in 0..<buffer16.count {
-            if (Int32(Int16.max) < buffer32[i]) {
-                buffer32[i] = Int32(Int16.max)
-            }
-            if (buffer32[i] < Int32(Int16.min)) {
-                buffer32[i] = Int32(Int16.min)
-            }
-            buffer16[i] = Int16(buffer32[i])
-        }
-
-        let data:Data = Data(fromArray: buffer16)
+        let data:Data = sampleData.subdata(in: 0..<length)
         for i in 0..<data.count / frameSize {
             let wave:Data = data.subdata(in: i * frameSize..<(i * frameSize) + frameSize)
             var result:CMSampleBuffer?
@@ -130,7 +91,7 @@ class SoundMixer {
                 to: buffer.unsafeMutablePointer.pointee.mBuffers.mData!.assumingMemoryBound(to: UInt8.self),
                 count: Int(buffer.unsafeMutablePointer.pointee.mBuffers.mDataByteSize)
             )
-            status = CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription!, SoundMixer.defaultSampleSize, 1, &timing, 0, nil, &result)
+            status = CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription!, SoundSpliter.defaultSampleSize, 1, &timing, 0, nil, &result)
             if let result:CMSampleBuffer = result {
                 status = CMSampleBufferSetDataBufferFromAudioBufferList(
                     result,
@@ -148,9 +109,7 @@ class SoundMixer {
         }
     }
 
-    func clear() {
-        formatDescription = nil
-        sampleDatas.removeAll()
-        formatDescriptions.removeAll()
+    public func clear() {
+        sampleData.removeAll()
     }
 }

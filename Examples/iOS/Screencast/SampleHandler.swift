@@ -16,6 +16,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
     }
 
     override open func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
+        print("broadcastStarted")
         super.broadcastStarted(withSetupInfo: setupInfo)
         guard
             let endpointURL:String = setupInfo?["endpointURL"] as? String,
@@ -37,12 +38,11 @@ open class SampleHandler: RPBroadcastSampleHandler {
                     "profileLevel": kVTProfileLevel_H264_Baseline_AutoLevel,
                 ]
             }
-
             broadcaster.appendSampleBuffer(sampleBuffer, withType: .video)
         case .audioApp:
-            broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio, options: ["channel" as NSObject: 0 as AnyObject])
+            broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio)
         case .audioMic:
-            broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio, options: ["channel" as NSObject: 1 as AnyObject])
+            break
         }
     }
 }

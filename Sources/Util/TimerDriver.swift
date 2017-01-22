@@ -5,13 +5,6 @@ public protocol TimerDriverDelegate: class {
 }
 
 // MARK: -
-final class LoggerTimerDriverDelegate: TimerDriverDelegate {
-    func tick(_ driver:TimerDriver) {
-        logger.info("-")
-    }
-}
-
-// MARK: -
 public class TimerDriver: NSObject {
     public var interval:UInt64 = MachUtil.nanosToAbs(10 * MachUtil.nanosPerMsec)
 
@@ -66,7 +59,6 @@ extension TimerDriver: Runnable {
             if let _:RunLoop = self.runloop {
                 return
             }
-            print("startRunning")
             self.timer = Timer(
                 timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer:)), userInfo: nil, repeats: true
             )

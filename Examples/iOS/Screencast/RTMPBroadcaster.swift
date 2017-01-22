@@ -1,22 +1,30 @@
-import ReplayKit
-import VideoToolbox
+import lf
 import Foundation
+import CoreMedia
 
-@available(iOS 10.0, *)
-public class RTMPBroadcaster: RTMPConnection {
+public class RTMPBroadcaster : RTMPConnection {
     public var streamName:String? = nil
 
     public lazy var stream:RTMPStream = {
         return RTMPStream(connection: self)
     }()
 
-    fileprivate lazy var soundMixer:SoundMixer = {
-        var soundMixer:SoundMixer = SoundMixer()
-        soundMixer.delegate = self
-        return soundMixer
+    fileprivate lazy var spliter:SoundSpliter = {
+        var spliter:SoundSpliter = SoundSpliter()
+        spliter.delegate = self
+        return spliter
     }()
     private var connecting:Bool = false
     private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.RTMPBroadcaster.lock")
+
+    public override init() {
+        super.init()
+        addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPBroadcaster.rtmpStatusEvent(_:)), observer: self)
+    }
+
+    deinit {
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPBroadcaster.rtmpStatusEvent(_:)), observer: self)
+    }
 
     open override func connect(_ command: String, arguments: Any?...) {
         lockQueue.sync {
@@ -24,23 +32,17 @@ public class RTMPBroadcaster: RTMPConnection {
                 return
             }
             connecting = true
-            soundMixer.clear()
+            spliter.clear()
             super.connect(command, arguments: arguments)
         }
     }
-
+    
     open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
-        guard stream.readyState == .publishing else {
-            return
-        }
         switch withType {
         case .video:
-            stream.mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+            stream.appendSampleBuffer(sampleBuffer, withType: .video)
         case .audio:
-            guard let channel:Int = options?["channel" as NSObject] as? Int else {
-                break
-            }
-            soundMixer.appendSampleBuffer(sampleBuffer, withChannel: channel)
+            spliter.appendSampleBuffer(sampleBuffer)
         }
     }
 
@@ -51,7 +53,7 @@ public class RTMPBroadcaster: RTMPConnection {
         }
         stream.appendFile(url, completionHandler: completionHandler)
     }
-
+    
     open override func close() {
         lockQueue.sync {
             self.connecting = false
@@ -59,8 +61,7 @@ public class RTMPBroadcaster: RTMPConnection {
         }
     }
 
-    open override func on(status:Notification) {
-        super.on(status: status)
+    open func rtmpStatusEvent(_ status:Notification) {
         let e:Event = Event.from(status)
         guard
             let data:ASObject = e.data as? ASObject,
@@ -77,10 +78,8 @@ public class RTMPBroadcaster: RTMPConnection {
     }
 }
 
-@available(iOS 10.0, *)
-extension RTMPBroadcaster: SoundMixerDelegate {
-    func outputSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
-        stream.mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+extension RTMPBroadcaster: SoundSpliterDelegate {
+    public func outputSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
+        stream.appendSampleBuffer(sampleBuffer, withType: .audio)
     }
 }
-
