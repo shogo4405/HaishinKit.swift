@@ -219,6 +219,7 @@ open class RTMPStream: NetStream {
     static let defaultID:UInt32 = 0
     open static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
     open static let defaultVideoBitrate:UInt32 = AVCEncoder.defaultBitrate
+    open var qosStrategy:RTMPStreamQoSStrategy = NoneRTMPStreamQoSStrategy()
     open internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
     open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     open fileprivate(set) dynamic var currentFPS:UInt16 = 0
@@ -235,6 +236,7 @@ open class RTMPStream: NetStream {
                 currentFPS = 0
                 frameCount = 0
                 info.clear()
+                qosStrategy.clear()
             case .playing:
                 audioPlayback.startRunning()
                 mixer.startPlaying()

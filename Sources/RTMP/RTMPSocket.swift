@@ -7,6 +7,7 @@ protocol RTMPSocketCompatible: class {
     var chunkSizeS:Int { get set }
     var totalBytesIn:Int64 { get }
     var totalBytesOut:Int64 { get }
+    var queueBytesOut:Int64 { get }
     var inputBuffer:[UInt8] { get set }
     var securityLevel:StreamSocketSecurityLevel { get set }
     weak var delegate:RTMPSocketDelegate? { get set }

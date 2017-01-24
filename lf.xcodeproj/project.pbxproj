@@ -64,6 +64,7 @@
 		294852571D852499002DE492 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897461CDB01D20074D5F0 /* VisualEffect.swift */; };
 		2957473E1E34F3DB00EF056E /* RTMPBroadcaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */; };
+		295747911E37AC1000EF056E /* RTMPStreamQoSStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */; };
 		2962425E1D8BFC7B00C451A3 /* MovieClipHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292D8A301D8B233C00DBECE2 /* MovieClipHandler.swift */; };
 		296242611D8DB86500C451A3 /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		296242621D8DB86500C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
@@ -345,6 +346,7 @@
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		294852551D84BFAD002DE492 /* RTMPTSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPTSocket.swift; path = Sources/RTMP/RTMPTSocket.swift; sourceTree = SOURCE_ROOT; };
 		2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPBroadcaster.swift; path = Examples/iOS/Screencast/RTMPBroadcaster.swift; sourceTree = "<group>"; };
+		295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPStreamQoSStrategy.swift; path = Sources/RTMP/RTMPStreamQoSStrategy.swift; sourceTree = SOURCE_ROOT; };
 		2962425F1D8DB86500C451A3 /* TSReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TSReader.swift; path = Sources/ISO/TSReader.swift; sourceTree = SOURCE_ROOT; };
 		296242601D8DB86500C451A3 /* TSWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TSWriter.swift; path = Sources/ISO/TSWriter.swift; sourceTree = SOURCE_ROOT; };
 		2965434E1D62FAED00734698 /* RTMPConnectionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RTMPConnectionTests.m; sourceTree = "<group>"; };
@@ -914,6 +916,7 @@
 				29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */,
 				29B876A91CD70B2800FC07DA /* RTMPSocket.swift */,
 				29B876AA1CD70B2800FC07DA /* RTMPStream.swift */,
+				295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */,
 				294852551D84BFAD002DE492 /* RTMPTSocket.swift */,
 			);
 			name = RTMP;
@@ -1380,6 +1383,7 @@
 				29B876791CD70ACE00FC07DA /* HTTPStream.swift in Sources */,
 				292D8A331D8B293300DBECE2 /* MP4Sampler.swift in Sources */,
 				29798E521CE5DF1A00F5CBD0 /* MP4Reader.swift in Sources */,
+				295747911E37AC1000EF056E /* RTMPStreamQoSStrategy.swift in Sources */,
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
 				29B876911CD70AFE00FC07DA /* AudioStreamPlayback.swift in Sources */,

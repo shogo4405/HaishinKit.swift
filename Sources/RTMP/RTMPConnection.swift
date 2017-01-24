@@ -198,9 +198,11 @@ open class RTMPConnection: EventDispatcher {
     fileprivate var messages:[UInt16:RTMPMessage] = [:]
     fileprivate var arguments:[Any?] = []
     fileprivate var currentChunk:RTMPChunk? = nil
+    fileprivate var measureInterval:Int = 3
     fileprivate var fragmentedChunks:[UInt16:RTMPChunk] = [:]
     fileprivate var previousTotalBytesIn:Int64 = 0
     fileprivate var previousTotalBytesOut:Int64 = 0
+    fileprivate var previousQueueBytesOut:[Int64] = []
 
     override public init() {
         super.init()
@@ -382,8 +384,23 @@ open class RTMPConnection: EventDispatcher {
         currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
+        previousQueueBytesOut.append(socket.queueBytesOut)
         for (_, stream) in streams {
             stream.on(timer: timer)
+        }
+        if (measureInterval <= previousQueueBytesOut.count) {
+            var count:Int = 0
+            for i in 0..<previousQueueBytesOut.count - 1 {
+                if (previousQueueBytesOut[i] < previousQueueBytesOut[i + 1]) {
+                    count += 1
+                }
+            }
+            if (count == measureInterval - 1) {
+                for (_, stream) in streams {
+                    stream.qosStrategy.didPublishInsufficientBW(streamCounts: streams.count, queueBytesOut: previousQueueBytesOut, withStream: stream)
+                }
+            }
+            previousQueueBytesOut.removeFirst()
         }
     }
 }
