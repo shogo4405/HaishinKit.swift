@@ -633,12 +633,11 @@ extension RTMPStream: RTMPMuxerDelegate {
             return
         }
         let type:FLVTagType = .audio
-        atomic_flag_test_and_set_explicit(&mixer.audioIO.encoder.locked, memory_order(rawValue: 0))
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
             message: type.message(with: id, timestamp: UInt32(audioTimestamp), buffer: buffer)
-        ), locked: &mixer.audioIO.encoder.locked)
+        ), locked: nil)
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         audioTimestamp = withTimestamp + (audioTimestamp - floor(audioTimestamp))
