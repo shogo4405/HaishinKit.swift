@@ -13,7 +13,7 @@ protocol RTMPSocketCompatible: class {
     weak var delegate:RTMPSocketDelegate? { get set }
 
     @discardableResult
-    func doOutput(chunk:RTMPChunk) -> Int
+    func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<atomic_flag>?) -> Int
     func close(isDisconnected:Bool)
     func connect(withName:String, port:Int)
     func deinitConnection(isDisconnected:Bool)
@@ -27,7 +27,6 @@ protocol RTMPSocketDelegate: IEventDispatcher {
 
 // MARK: -
 final class RTMPSocket: NetSocket, RTMPSocketCompatible {
-
     static let defaultBufferSize:Int = 1024
 
     enum ReadyState: UInt8 {
@@ -70,11 +69,12 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     private var handshake:RTMPHandshake = RTMPHandshake()
 
     @discardableResult
-    func doOutput(chunk:RTMPChunk) -> Int {
+    func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<atomic_flag>? = nil) -> Int {
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
-        for chunk in chunks {
-            doOutput(bytes: chunk)
+        for i in 0..<chunks.count - 1 {
+            doOutput(bytes: chunks[i])
         }
+        doOutput(bytes: chunks.last!, locked: locked)
         if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose(chunk)
         }

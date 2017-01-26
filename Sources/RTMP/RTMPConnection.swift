@@ -235,7 +235,7 @@ open class RTMPConnection: EventDispatcher {
         if (responder != nil) {
             operations[message.transactionId] = responder
         }
-        socket.doOutput(chunk: RTMPChunk(message: message))
+        socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
     }
 
     @available(*, unavailable)
@@ -309,7 +309,7 @@ open class RTMPConnection: EventDispatcher {
                 type: .one,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
-            ))
+            ), locked: nil)
         case Code.connectRejected.rawValue:
             guard
                 let uri:URL = uri,
@@ -419,7 +419,7 @@ extension RTMPConnection: RTMPSocketDelegate {
                 close()
                 break
             }
-            socket.doOutput(chunk: chunk)
+            socket.doOutput(chunk: chunk, locked: nil)
         case .closed:
             connected = false
             currentChunk = nil

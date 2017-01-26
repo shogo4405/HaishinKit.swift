@@ -42,7 +42,8 @@ final class AVCEncoder: NSObject {
     static let defaultDataRateLimits:[Int] = [0, 0]
 
     var muted:Bool = false
-    
+    var locked:atomic_flag = atomic_flag()
+
     var scalingMode:String = AVCEncoder.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
@@ -259,7 +260,7 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard running else {
+        guard running && !atomic_flag_test_and_set(&locked) else {
             return
         }
         if (invalidateSession) {

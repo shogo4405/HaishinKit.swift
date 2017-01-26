@@ -83,7 +83,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     @discardableResult
-    func doOutput(chunk:RTMPChunk) -> Int {
+    func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<atomic_flag>? = nil) -> Int {
         var bytes:[UInt8] = []
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {

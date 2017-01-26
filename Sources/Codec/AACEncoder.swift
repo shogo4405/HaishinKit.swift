@@ -42,6 +42,7 @@ final class AACEncoder: NSObject {
     #endif
 
     var muted:Bool = false
+    var locked:atomic_flag = atomic_flag()
 
     var bitrate:UInt32 = AACEncoder.defaultBitrate {
         didSet {
@@ -156,7 +157,9 @@ final class AACEncoder: NSObject {
     }
 
     func encodeSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
-        guard let format:CMAudioFormatDescription = sampleBuffer.formatDescription, running else {
+        guard
+            let format:CMAudioFormatDescription = sampleBuffer.formatDescription,
+            running && !atomic_flag_test_and_set(&locked) else {
             return
         }
 

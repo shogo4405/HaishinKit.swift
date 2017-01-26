@@ -218,7 +218,7 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
             type: .zero,
             streamId: RTMPChunk.StreamID.control.rawValue,
             message: RTMPWindowAcknowledgementSizeMessage(size: size)
-        ))
+        ), locked: nil)
     }
 }
 
@@ -764,7 +764,7 @@ final class RTMPUserControlMessage: RTMPMessage {
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPUserControlMessage(event: .pong, value: value)
-            ))
+            ), locked: nil)
         case .bufferEmpty, .bufferFull:
             connection.streams[UInt32(value)]?.dispatch("rtmpStatus", bubbles: false, data: [
                 "level": "status",

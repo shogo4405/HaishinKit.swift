@@ -65,6 +65,7 @@
 		2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897461CDB01D20074D5F0 /* VisualEffect.swift */; };
 		2957473E1E34F3DB00EF056E /* RTMPBroadcaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */; };
 		295747911E37AC1000EF056E /* RTMPStreamQoSStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */; };
+		295747921E3A30A400EF056E /* RTMPStreamQoSStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */; };
 		2962425E1D8BFC7B00C451A3 /* MovieClipHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292D8A301D8B233C00DBECE2 /* MovieClipHandler.swift */; };
 		296242611D8DB86500C451A3 /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		296242621D8DB86500C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
@@ -1435,6 +1436,7 @@
 				29B876F11CD70D5900FC07DA /* CoreMedia+Extension.swift in Sources */,
 				29B876F21CD70D5900FC07DA /* Foundation+Extension.swift in Sources */,
 				292AC17C1CF4C871004F5730 /* MD5.swift in Sources */,
+				295747921E3A30A400EF056E /* RTMPStreamQoSStrategy.swift in Sources */,
 				29B876F41CD70D5900FC07DA /* Protocol.swift in Sources */,
 				2976A4821D4902CE00B53EF2 /* IOComponent.swift in Sources */,
 				29B876F51CD70D5900FC07DA /* SiwftCore+Extension.swift in Sources */,

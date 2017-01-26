@@ -297,7 +297,7 @@ open class RTMPStream: NetStream {
                 commandName: "receiveAudio",
                 commandObject: nil,
                 arguments: [flag]
-            )))
+            )), locked: nil)
         }
     }
 
@@ -313,7 +313,7 @@ open class RTMPStream: NetStream {
                 commandName: "receiveVideo",
                 commandObject: nil,
                 arguments: [flag]
-            )))
+            )), locked: nil)
         }
     }
 
@@ -332,7 +332,7 @@ open class RTMPStream: NetStream {
                             commandName: "closeStream",
                             commandObject: nil,
                             arguments: []
-                    )))
+                    )), locked: nil)
                     self.info.resourceName = nil
                 default:
                     break
@@ -350,7 +350,7 @@ open class RTMPStream: NetStream {
                 commandName: "play",
                 commandObject: nil,
                 arguments: arguments
-            )))
+            )), locked: nil)
         }
     }
 
@@ -366,7 +366,7 @@ open class RTMPStream: NetStream {
                 commandName: "seek",
                 commandObject: nil,
                 arguments: [offset]
-            )))
+            )), locked: nil)
         }
     }
 
@@ -413,7 +413,7 @@ open class RTMPStream: NetStream {
                         commandName: "closeStream",
                         commandObject: nil,
                         arguments: []
-                )))
+                )), locked: nil)
                 return
             }
 
@@ -444,7 +444,7 @@ open class RTMPStream: NetStream {
                     commandName: "publish",
                     commandObject: nil,
                     arguments: [name, type == .localRecord ? RTMPStream.HowToPublish.live.rawValue : type.rawValue]
-            )))
+            )), locked: nil)
 
             self.readyState = .publish
         }
@@ -467,7 +467,7 @@ open class RTMPStream: NetStream {
                     commandName: "deleteStream",
                     commandObject: nil,
                     arguments: [self.id]
-            )))
+            )), locked: nil)
             self.readyState = .closed
         }
     }
@@ -482,7 +482,7 @@ open class RTMPStream: NetStream {
                 objectEncoding: self.objectEncoding,
                 handlerName: handlerName,
                 arguments: arguments
-            )))
+            )), locked: nil)
             OSAtomicAdd64(Int64(length), &self.info.byteCount)
         }
     }
@@ -633,11 +633,12 @@ extension RTMPStream: RTMPMuxerDelegate {
             return
         }
         let type:FLVTagType = .audio
+        atomic_flag_test_and_set_explicit(&mixer.audioIO.encoder.locked, memory_order(rawValue: 0))
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
             message: type.message(with: id, timestamp: UInt32(audioTimestamp), buffer: buffer)
-        ))
+        ), locked: &mixer.audioIO.encoder.locked)
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         audioTimestamp = withTimestamp + (audioTimestamp - floor(audioTimestamp))
@@ -648,11 +649,12 @@ extension RTMPStream: RTMPMuxerDelegate {
             return
         }
         let type:FLVTagType = .video
+        atomic_flag_test_and_set_explicit(&mixer.videoIO.encoder.locked, memory_order(rawValue: 0))
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
             message: type.message(with: id, timestamp: UInt32(videoTimestamp), buffer: buffer)
-        ))
+        ), locked: &mixer.videoIO.encoder.locked)
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
