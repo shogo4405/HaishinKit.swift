@@ -98,7 +98,7 @@ final class LiveViewController: UIViewController {
         do {
             try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-            try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
+            try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
         }
@@ -131,6 +131,10 @@ final class LiveViewController: UIViewController {
         rtmpStream.videoSettings = [
             "width": 1280,
             "height": 720,
+        ]
+
+        rtmpStream.audioSettings = [
+            "sampleRate": sampleRate
         ]
 
         publishButton.addTarget(self, action: #selector(LiveViewController.on(publish:)), for: .touchUpInside)
