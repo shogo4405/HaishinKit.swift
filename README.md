@@ -85,7 +85,7 @@ let sampleRate:Double = 44_100
 do {
     try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
     try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-    try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
+    try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
     try AVAudioSession.sharedInstance().setActive(true)
 } catch {
 }
