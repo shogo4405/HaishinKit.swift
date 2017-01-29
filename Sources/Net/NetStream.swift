@@ -78,7 +78,7 @@ open class NetStream: NSObject {
             return  audioSettings
         }
         set {
-            lockQueue.async {
+            lockQueue.sync {
                 self.mixer.audioIO.encoder.setValuesForKeys(newValue)
             }
         }
@@ -93,7 +93,7 @@ open class NetStream: NSObject {
             return videoSettings
         }
         set {
-            lockQueue.async {
+            lockQueue.sync {
                 self.mixer.videoIO.encoder.setValuesForKeys(newValue)
             }
         }
@@ -108,7 +108,7 @@ open class NetStream: NSObject {
             return captureSettings
         }
         set {
-            lockQueue.async {
+            lockQueue.sync {
                 self.mixer.setValuesForKeys(newValue)
             }
         }
@@ -123,7 +123,7 @@ open class NetStream: NSObject {
             return recorderSettings
         }
         set {
-            lockQueue.async {
+            lockQueue.sync {
                 self.mixer.recorder.outputSettings = newValue
             }
         }
