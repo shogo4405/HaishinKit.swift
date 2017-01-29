@@ -58,13 +58,6 @@ final public class AVMixer: NSObject {
 
     public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
-    public var sampleBuffers:[CMSampleBufferType:CMSampleBuffer?] {
-        return [
-            .video: videoIO.sampleBuffer,
-            .audio: audioIO.sampleBuffer,
-        ]
-    }
-
     private(set) lazy var audioIO:AudioIOComponent = {
        return AudioIOComponent(mixer: self)
     }()
