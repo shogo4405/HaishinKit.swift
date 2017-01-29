@@ -223,6 +223,11 @@ final class VideoIOComponent: IOComponent {
         super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
         decoder.delegate = self
+        #if os(iOS)
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
+            self.orientation = orientation
+        }
+        #endif
     }
 
     func attachCamera(_ camera:AVCaptureDevice?) {
