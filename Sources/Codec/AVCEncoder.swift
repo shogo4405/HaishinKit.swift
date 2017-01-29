@@ -42,8 +42,6 @@ final class AVCEncoder: NSObject {
     static let defaultDataRateLimits:[Int] = [0, 0]
 
     var muted:Bool = false
-    var locked:atomic_flag = atomic_flag()
-
     var scalingMode:String = AVCEncoder.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
@@ -94,9 +92,7 @@ final class AVCEncoder: NSObject {
             }
         }
     }
-    var lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.AVCEncoder.lock", attributes: []
-    )
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVCEncoder.lock")
     var expectedFPS:Float64 = AVMixer.defaultFPS {
         didSet {
             guard expectedFPS != oldValue else {
@@ -260,7 +256,7 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard running && !atomic_flag_test_and_set(&locked) else {
+        guard running else {
             return
         }
         if (invalidateSession) {
