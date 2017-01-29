@@ -68,6 +68,10 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     private var events:[Event] = []
     private var handshake:RTMPHandshake = RTMPHandshake()
 
+    deinit {
+        print(self)
+    }
+
     @discardableResult
     func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<atomic_flag>? = nil) -> Int {
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)

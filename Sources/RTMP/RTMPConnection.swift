@@ -215,7 +215,9 @@ open class RTMPConnection: EventDispatcher {
     }
 
     deinit {
+        print(self)
         timer = nil
+        streams.removeAll()
         removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 

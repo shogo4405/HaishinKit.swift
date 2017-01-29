@@ -16,6 +16,10 @@ final class RTMPMuxer {
     fileprivate var audioTimestamp:CMTime = kCMTimeZero
     fileprivate var videoTimestamp:CMTime = kCMTimeZero
 
+    deinit {
+        print(self)
+    }
+
     func dispose() {
         configs.removeAll()
         audioTimestamp = kCMTimeZero

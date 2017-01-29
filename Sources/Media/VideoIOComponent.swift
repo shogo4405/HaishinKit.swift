@@ -183,7 +183,7 @@ final class VideoIOComponent: IOComponent {
             }
             if let output:AVCaptureVideoDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
-                mixer.session.removeOutput(output)
+                mixer?.session.removeOutput(output)
             }
             _output = newValue
         }
@@ -195,10 +195,10 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             if let oldValue:AVCaptureInput = oldValue {
-                mixer.session.removeInput(oldValue)
+                mixer?.session.removeInput(oldValue)
             }
             if let input:AVCaptureInput = input {
-                mixer.session.addInput(input)
+                mixer?.session.addInput(input)
             }
         }
     }
@@ -241,7 +241,7 @@ final class VideoIOComponent: IOComponent {
         #endif
         do {
             input = try AVCaptureDeviceInput(device: camera)
-            mixer.session.addOutput(output)
+            mixer?.session.addOutput(output)
             for connection in output.connections {
                 guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
                     continue
@@ -348,6 +348,11 @@ final class VideoIOComponent: IOComponent {
         }
     }
     #endif
+
+    func dispose() {
+        input = nil
+        output = nil
+    }
 }
 
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
@@ -370,7 +375,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             duration: sampleBuffer.duration
         )
         drawable?.draw(image: image)
-        mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
     }
 }
 
@@ -406,7 +411,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             presentationTimeStamp: withPresentationTime,
             duration: kCMTimeInvalid
         )
-        mixer.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
+        mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
     }
 }
 #endif

@@ -41,6 +41,10 @@ final class AACEncoder: NSObject {
     static let defaultInClassDescriptions:[AudioClassDescription] = []
     #endif
 
+    deinit {
+        print(self)
+    }
+
     var muted:Bool = false
 
     var bitrate:UInt32 = AACEncoder.defaultBitrate {

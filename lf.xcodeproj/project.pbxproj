@@ -58,6 +58,7 @@
 		2931204F1D4529F900B14211 /* RTSPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204B1D4522CF00B14211 /* RTSPRequest.swift */; };
 		293120501D4529FB00B14211 /* RTSPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204D1D4522E400B14211 /* RTSPResponse.swift */; };
 		293C74371D85D56D001ED43C /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 293C74361D85D56D001ED43C /* MainInterface.storyboard */; };
+		2940D8811E3E32950081C5AC /* LfViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2940D87F1E3E32480081C5AC /* LfViewController.swift */; };
 		2942424D1CF4C01300D65DCB /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942EF841DFF4D06008E620C /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
 		2942EF861DFF4D3C008E620C /* lf.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -343,6 +344,7 @@
 		2931204B1D4522CF00B14211 /* RTSPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPRequest.swift; path = Sources/RTSP/RTSPRequest.swift; sourceTree = SOURCE_ROOT; };
 		2931204D1D4522E400B14211 /* RTSPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPResponse.swift; path = Sources/RTSP/RTSPResponse.swift; sourceTree = SOURCE_ROOT; };
 		293C74361D85D56D001ED43C /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainInterface.storyboard; path = Examples/iOS/ScreencastUI/Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		2940D87F1E3E32480081C5AC /* LfViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LfViewController.swift; sourceTree = "<group>"; };
 		2942424C1CF4C01300D65DCB /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Sources/Util/MD5.swift; sourceTree = SOURCE_ROOT; };
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		294852551D84BFAD002DE492 /* RTMPTSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPTSocket.swift; path = Sources/RTMP/RTMPTSocket.swift; sourceTree = SOURCE_ROOT; };
@@ -769,6 +771,7 @@
 				29A39C801D85BEFA007C27E9 /* Screencast */,
 				29A39C811D85BF07007C27E9 /* ScreencastUI */,
 				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
+				2940D87F1E3E32480081C5AC /* LfViewController.swift */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -1519,6 +1522,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */,
+				2940D8811E3E32950081C5AC /* LfViewController.swift in Sources */,
 				296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */,
 				2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */,
 				296897691CDB02940074D5F0 /* PreferenceController.swift in Sources */,
