@@ -161,7 +161,7 @@ final class AACEncoder: NSObject {
         }
 
         if (inSourceFormat == nil) {
-            inSourceFormat = CMAudioFormatDescriptionGetStreamBasicDescription(format)?.pointee
+            inSourceFormat = format.streamBasicDescription?.pointee
         }
 
         var blockBuffer:CMBlockBuffer? = nil
