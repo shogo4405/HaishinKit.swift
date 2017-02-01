@@ -231,9 +231,11 @@ final class VideoIOComponent: IOComponent {
     }
 
     func attachCamera(_ camera:AVCaptureDevice?) {
+        mixer?.session.beginConfiguration()
         output = nil
         guard let camera:AVCaptureDevice = camera else {
             input = nil
+            mixer?.session.commitConfiguration()
             return
         }
         #if os(iOS)
@@ -268,19 +270,24 @@ final class VideoIOComponent: IOComponent {
         } catch let error as NSError {
             logger.error("\(error)")
         }
+        mixer?.session.commitConfiguration()
     }
 
     #if os(OSX)
     func attachScreen(_ screen:AVCaptureScreenInput?) {
+        mixer?.session.beginConfiguration()
         output = nil
         guard let _:AVCaptureScreenInput = screen else {
             input = nil
             return
         }
         input = screen
-        mixer.session.addOutput(output)
+        mixer?.session.addOutput(output)
         output.setSampleBufferDelegate(self, queue: lockQueue)
-        mixer.session.startRunning()
+        mixer?.session.commitConfiguration()
+        if (mixer?.session.isRunning ?? false) {
+            mixer?.session.startRunning()
+        }
     }
     #else
     func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {

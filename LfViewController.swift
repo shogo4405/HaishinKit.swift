@@ -20,11 +20,19 @@ class LfViewController: UIViewController {
         super.viewWillAppear(animated)
         self.setCameraStream()
     }
+
+    /*
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        rtmpStream.dispose()
+    }
+    */
     
     private func setCameraStream() {
         
         rtmpConnection = RTMPConnection()
         rtmpStream = RTMPStream(connection: rtmpConnection)
+        rtmpStream.syncOrientation = true
         let sampleRate:Double = 48_000 // or 44_100
         do {
             try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
@@ -66,9 +74,22 @@ class LfViewController: UIViewController {
         closeButton.setTitle("Close", for: UIControlState.normal)
         closeButton.setTitleColor(UIColor.red, for: UIControlState.normal)
         closeButton.addTarget(self, action: #selector(LfViewController.close), for: UIControlEvents.touchUpInside)
-        
+
+        let tButton = UIButton(frame: CGRect(x: 150, y: 500, width: 100, height: 100))
+        tButton.setTitle("T", for: UIControlState.normal)
+        tButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        tButton.addTarget(self, action: #selector(LfViewController.toggle), for: UIControlEvents.touchUpInside)
+
+        lfView.addSubview(tButton)
         lfView.addSubview(closeButton)
         view.addSubview(lfView)
+    }
+    
+    
+    var cameraPosition:AVCaptureDevicePosition = AVCaptureDevicePosition.back
+    dynamic private func toggle() {
+        cameraPosition = cameraPosition == .back ? .front : .back
+        rtmpStream.attachCamera(DeviceUtil.device(withPosition: cameraPosition))
     }
     
     dynamic private func close() {

@@ -45,10 +45,12 @@ final class AudioIOComponent: IOComponent {
     }
 
     func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
+        mixer?.session.beginConfiguration()
         output = nil
         encoder.invalidate()
         guard let audio:AVCaptureDevice = audio else {
             input = nil
+            mixer?.session.commitConfiguration()
             return
         }
         do {
@@ -61,6 +63,7 @@ final class AudioIOComponent: IOComponent {
         } catch let error as NSError {
             logger.error("\(error)")
         }
+        mixer?.session.commitConfiguration()
     }
 
     func dispose() {

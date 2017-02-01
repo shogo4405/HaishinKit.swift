@@ -45,20 +45,15 @@ final public class AVMixer: NSObject {
         }
     }
 
-    public var session:AVCaptureSession! = nil
+    public lazy var session:AVCaptureSession = {
+        var session = AVCaptureSession()
+        session.sessionPreset = AVMixer.defaultSessionPreset
+        return session
+    }()
 
     public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
-    override init() {
-        session = AVCaptureSession()
-        session.sessionPreset = AVMixer.defaultSessionPreset
-    }
-
     deinit {
-        print(self)
-        if (session.isRunning) {
-            session.stopRunning()
-        }
         dispose()
     }
 
@@ -71,8 +66,12 @@ final public class AVMixer: NSObject {
     }()
 
     public func dispose() {
+        if (session.isRunning) {
+            session.stopRunning()
+        }
         audioIO.dispose()
         videoIO.dispose()
+        print(session)
     }
 }
 
@@ -95,6 +94,7 @@ extension AVMixer: Runnable {
         guard !running else {
             return
         }
+        print("startRunning")
         session.startRunning()
     }
 

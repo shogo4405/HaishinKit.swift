@@ -45,15 +45,27 @@ open class LFView: UIView {
         super.init(coder: aDecoder)
     }
 
+    deinit {
+        attachStream(nil)
+        print(self)
+    }
+
     override open func awakeFromNib() {
         backgroundColor = LFView.defaultBackgroundColor
         layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
     }
 
     open func attachStream(_ stream:NetStream?) {
-        layer.setValue(stream?.mixer.session, forKey: "session")
-        stream?.mixer.videoIO.drawable = self
-        currentStream = stream
+        guard let stream:NetStream = stream else {
+            layer.setValue(nil, forKey: "session")
+            currentStream = nil
+            return
+        }
+        stream.lockQueue.async {
+            self.layer.setValue(stream.mixer.session, forKey: "session")
+            stream.mixer.videoIO.drawable = self
+            self.currentStream = stream
+        }
     }
 }
 
