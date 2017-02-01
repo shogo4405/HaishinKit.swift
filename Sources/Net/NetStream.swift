@@ -19,9 +19,7 @@ open class NetStream: NSObject {
     public let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetStream.lock")
 
     deinit {
-        #if os(iOS)
-        syncOrientation = false
-        #endif
+        NotificationCenter.default.removeObserver(self)
     }
 
     open var torch:Bool {
@@ -53,8 +51,8 @@ open class NetStream: NSObject {
                 self.mixer.videoIO.orientation = newValue
             }
         }
-    }
 
+    }
     open var syncOrientation:Bool = false {
         didSet {
             guard syncOrientation != oldValue else {
@@ -130,14 +128,17 @@ open class NetStream: NSObject {
     }
 
     open func attachCamera(_ camera:AVCaptureDevice?) {
-        DispatchQueue.main.async {
-            self.mixer.videoIO.attachCamera(camera)
+        lockQueue.async {
+            logger.warning("attachCamera")
             self.mixer.startRunning()
+            self.mixer.videoIO.attachCamera(camera)
+            logger.warning("attachCamera-End")
         }
     }
 
     open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
         lockQueue.async {
+            logger.warning("attachAudio")
             self.mixer.audioIO.attachAudio(audio,
                 automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
             )
@@ -183,6 +184,12 @@ open class NetStream: NSObject {
     open func setPointOfInterest(_ focus:CGPoint, exposure:CGPoint) {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
+    }
+
+    open func dispose() {
+        lockQueue.async {
+            self.mixer.dispose()
+        }
     }
 
     #if os(iOS)
