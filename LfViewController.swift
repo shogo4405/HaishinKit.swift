@@ -15,18 +15,41 @@ class LfViewController: UIViewController {
     
     private var rtmpConnection: RTMPConnection!
     private var rtmpStream: RTMPStream!
+
+    private var lfView:LFView?
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        // let lfView = LFView(frame: view.bounds)
+
+        lfView = LFView(frame: view.bounds)
+        lfView?.videoGravity = AVLayerVideoGravityResizeAspectFill
+
+        // add ViewController#view
+        let closeButton = UIButton(frame: CGRect(x: 150, y: 200, width: 100, height: 100))
+        closeButton.setTitle("Close", for: UIControlState.normal)
+        closeButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        closeButton.addTarget(self, action: #selector(LfViewController.close), for: UIControlEvents.touchUpInside)
+        
+        let tButton = UIButton(frame: CGRect(x: 150, y: 500, width: 100, height: 100))
+        tButton.setTitle("T", for: UIControlState.normal)
+        tButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        tButton.addTarget(self, action: #selector(LfViewController.toggle), for: UIControlEvents.touchUpInside)
+        
+        lfView?.addSubview(tButton)
+        lfView?.addSubview(closeButton)
+        view.addSubview(lfView!)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.setCameraStream()
     }
 
-    /*
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         rtmpStream.dispose()
     }
-    */
     
     private func setCameraStream() {
         
@@ -64,25 +87,8 @@ class LfViewController: UIViewController {
         
         rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back))
-        
-        let lfView = LFView(frame: view.bounds)
-        lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
-        lfView.attachStream(rtmpStream)
-        
-        // add ViewController#view
-        let closeButton = UIButton(frame: CGRect(x: 150, y: 200, width: 100, height: 100))
-        closeButton.setTitle("Close", for: UIControlState.normal)
-        closeButton.setTitleColor(UIColor.red, for: UIControlState.normal)
-        closeButton.addTarget(self, action: #selector(LfViewController.close), for: UIControlEvents.touchUpInside)
 
-        let tButton = UIButton(frame: CGRect(x: 150, y: 500, width: 100, height: 100))
-        tButton.setTitle("T", for: UIControlState.normal)
-        tButton.setTitleColor(UIColor.red, for: UIControlState.normal)
-        tButton.addTarget(self, action: #selector(LfViewController.toggle), for: UIControlEvents.touchUpInside)
-
-        lfView.addSubview(tButton)
-        lfView.addSubview(closeButton)
-        view.addSubview(lfView)
+        lfView?.attachStream(rtmpStream)
     }
     
     
