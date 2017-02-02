@@ -40,10 +40,6 @@ open class AVMixerRecorder: NSObject {
     fileprivate(set) var running:Bool = false
     fileprivate(set) var sourceTime:CMTime = kCMTimeZero
 
-    deinit {
-        print(self)
-    }
-
     var isReadyForStartWriting:Bool {
         guard let writer:AVAssetWriter = writer else {
             return false

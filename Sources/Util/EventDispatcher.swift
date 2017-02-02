@@ -69,7 +69,6 @@ open class EventDispatcher: NSObject, IEventDispatcher {
     }
 
     deinit {
-        print(self)
         target = nil
     }
 

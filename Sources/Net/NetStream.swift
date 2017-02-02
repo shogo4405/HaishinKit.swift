@@ -129,16 +129,13 @@ open class NetStream: NSObject {
 
     open func attachCamera(_ camera:AVCaptureDevice?) {
         lockQueue.async {
-            logger.warning("attachCamera")
-            self.mixer.startRunning()
             self.mixer.videoIO.attachCamera(camera)
-            logger.warning("attachCamera-End")
+            self.mixer.startRunning()
         }
     }
 
     open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
         lockQueue.async {
-            logger.warning("attachAudio")
             self.mixer.audioIO.attachAudio(audio,
                 automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
             )

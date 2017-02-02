@@ -9,15 +9,19 @@ open class LFView: UIView {
         return AVCaptureVideoPreviewLayer.self
     }
 
+    open override var layer:AVCaptureVideoPreviewLayer {
+        return super.layer as! AVCaptureVideoPreviewLayer
+    }
+
     public var videoGravity:String = AVLayerVideoGravityResizeAspect {
         didSet {
-            layer.setValue(videoGravity, forKey: "videoGravity")
+            layer.videoGravity = videoGravity
         }
     }
 
     var orientation:AVCaptureVideoOrientation = .portrait {
         didSet {
-            guard let connection:AVCaptureConnection = layer.value(forKey: "connection") as? AVCaptureConnection else {
+            guard let connection:AVCaptureConnection = layer.connection else {
                 return
             }
             if (connection.isVideoOrientationSupported) {
@@ -47,7 +51,6 @@ open class LFView: UIView {
 
     deinit {
         attachStream(nil)
-        print(self)
     }
 
     override open func awakeFromNib() {
@@ -57,12 +60,12 @@ open class LFView: UIView {
 
     open func attachStream(_ stream:NetStream?) {
         guard let stream:NetStream = stream else {
-            layer.setValue(nil, forKey: "session")
+            layer.session = nil
             currentStream = nil
             return
         }
         stream.lockQueue.async {
-            self.layer.setValue(stream.mixer.session, forKey: "session")
+            self.layer.session = stream.mixer.session
             stream.mixer.videoIO.drawable = self
             self.currentStream = stream
         }

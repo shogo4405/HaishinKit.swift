@@ -7,8 +7,5 @@ class IOComponent: NSObject {
     init(mixer: AVMixer) {
         self.mixer = mixer
     }
-
-    deinit {
-        print(self)
-    }
 }
+

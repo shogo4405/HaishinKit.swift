@@ -288,7 +288,6 @@ open class RTMPStream: NetStream {
     deinit {
         mixer.stopRunning()
         rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
-        print(self)
     }
 
     open func receiveAudio(flag:Bool) {

@@ -17,10 +17,6 @@ final class RTMPHandshake {
         return packet.bytes
     }
 
-    deinit {
-        print(self)
-    }
-
     func c2packet(_ s0s1packet:[UInt8]) -> [UInt8] {
         return ByteArray()
             .writeBytes(Array(s0s1packet[1...4]))

@@ -41,11 +41,6 @@ final class AVCEncoder: NSObject {
     #endif
     static let defaultDataRateLimits:[Int] = [0, 0]
 
-    deinit {
-        print(self)
-    }
-
-
     var muted:Bool = false
     var scalingMode:String = AVCEncoder.defaultScalingMode {
         didSet {
