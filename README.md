@@ -55,6 +55,10 @@ target 'Your Target'  do
     import_pods
 end
 ```
+### Carthage
+```
+github "shogo4405/lf.siwft" ~> 0.5.0
+```
 
 ## RTMP Usage
 Real Time Messaging Protocol (RTMP).
