@@ -71,6 +71,7 @@ final public class AVMixer: NSObject {
         }
         audioIO.dispose()
         videoIO.dispose()
+        print(session)
     }
 }
 
@@ -93,6 +94,7 @@ extension AVMixer: Runnable {
         guard !running else {
             return
         }
+        print("startRunning")
         session.startRunning()
     }
 
