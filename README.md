@@ -96,8 +96,6 @@ do {
 #endif
 
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-// 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
 
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
@@ -139,6 +137,10 @@ rtmpStream.recorderSettings = [
         */
     ],
 ]
+
+// 2nd arguemnt set false
+rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
+
 ```
 ### Authentication
 ```swift

@@ -357,6 +357,7 @@ final class VideoIOComponent: IOComponent {
     #endif
 
     func dispose() {
+        drawable?.attachStream(nil)
         input = nil
         output = nil
     }

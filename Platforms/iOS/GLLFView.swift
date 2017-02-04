@@ -4,7 +4,8 @@ import AVFoundation
 
 open class GLLFView: GLKView {
     static let defaultOptions:[String: AnyObject] = [
-        kCIContextWorkingColorSpace: NSNull()
+        kCIContextWorkingColorSpace: NSNull(),
+        kCIContextUseSoftwareRenderer: NSNumber(value: false),
     ]
     open static var defaultBackgroundColor:UIColor = UIColor.black
 
@@ -42,6 +43,7 @@ open class GLLFView: GLKView {
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        self.context = EAGLContext(api: .openGLES2)
     }
 
     open override func awakeFromNib() {

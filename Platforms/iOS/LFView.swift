@@ -67,6 +67,7 @@ open class LFView: UIView {
         stream.lockQueue.async {
             self.layer.session = stream.mixer.session
             stream.mixer.videoIO.drawable = self
+            self.orientation = stream.mixer.videoIO.orientation
             self.currentStream = stream
         }
     }
