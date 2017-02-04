@@ -45,18 +45,17 @@ final public class AVMixer: NSObject {
         }
     }
 
-    private var _session:AVCaptureSession? = nil
-    public var session:AVCaptureSession! {
-        if (_session == nil) {
-            _session = AVCaptureSession()
-            _session?.beginConfiguration()
-            _session?.sessionPreset = AVMixer.defaultSessionPreset
-            _session?.commitConfiguration()
-        }
-        return _session!
-    }
+    public lazy var session:AVCaptureSession = {
+        var session = AVCaptureSession()
+        session.sessionPreset = AVMixer.defaultSessionPreset
+        return session
+    }()
 
     public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+
+    deinit {
+        dispose()
+    }
 
     private(set) lazy var audioIO:AudioIOComponent = {
        return AudioIOComponent(mixer: self)
@@ -65,6 +64,15 @@ final public class AVMixer: NSObject {
     private(set) lazy var videoIO:VideoIOComponent = {
        return VideoIOComponent(mixer: self)
     }()
+
+    public func dispose() {
+        if (session.isRunning) {
+            session.stopRunning()
+        }
+        audioIO.dispose()
+        videoIO.dispose()
+        print(session)
+    }
 }
 
 extension AVMixer {
@@ -86,6 +94,7 @@ extension AVMixer: Runnable {
         guard !running else {
             return
         }
+        print("startRunning")
         session.startRunning()
     }
 

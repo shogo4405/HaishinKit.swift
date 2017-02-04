@@ -278,11 +278,16 @@ open class RTMPStream: NetStream {
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection
         super.init()
-        self.dispatcher = EventDispatcher(target: self)
+        dispatcher = EventDispatcher(target: self)
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
         if (rtmpConnection.connected) {
             rtmpConnection.createStream(self)
         }
+    }
+
+    deinit {
+        mixer.stopRunning()
+        rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPStream.on(status:)), observer: self)
     }
 
     open func receiveAudio(flag:Bool) {

@@ -58,7 +58,7 @@ open class Event: NSObject {
  */
 open class EventDispatcher: NSObject, IEventDispatcher {
 
-    fileprivate var target:AnyObject? = nil
+    fileprivate weak var target:AnyObject? = nil
 
     override public init() {
         super.init()

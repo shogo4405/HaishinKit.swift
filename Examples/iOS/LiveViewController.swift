@@ -10,6 +10,7 @@ struct Preference {
 }
 
 final class LiveViewController: UIViewController {
+    /*
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
     var sharedObject:RTMPSharedObject!
@@ -292,5 +293,21 @@ final class LiveViewController: UIViewController {
         if (Thread.isMainThread) {
             currentFPSLabel.text = "\(rtmpStream.currentFPS)"
         }
+    }
+    */
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        let nextButton = UIButton()
+        nextButton.setTitle("toLfViewController", for: UIControlState.normal)
+        nextButton.frame = CGRect(x: 130, y: 200, width: 180, height: 100)
+        nextButton.setTitleColor(UIColor.red, for: UIControlState.normal)
+        nextButton.addTarget(self, action: #selector(LiveViewController.toLfViewController), for: UIControlEvents.touchUpInside)
+        self.view.addSubview(nextButton)
+    }
+    
+    dynamic private func toLfViewController() {
+        let publisherViewController = LfViewController()
+        self.present(publisherViewController, animated: true, completion: nil)
     }
 }
