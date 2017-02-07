@@ -456,11 +456,17 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
+        DispatchQueue.main.async {
+            self.mixer.stopRunning()
+        }
+        
         if (self.readyState == .closed) {
             return
         }
         play()
         publish(nil)
+        
+        guard rtmpConnection.connected else { return }
         lockQueue.sync {
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .zero,
@@ -632,7 +638,7 @@ extension RTMPStream: RTMPMuxerDelegate {
     func metadata(_ metadata:ASObject) {
         send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
     }
-
+    
     func sampleOutput(audio buffer:Data, withTimestamp:Double, muxer:RTMPMuxer) {
         guard readyState == .publishing else {
             return
