@@ -1,4 +1,5 @@
 import UIKit
+import AVFoundation
 import XCGLogger
 
 let logger:XCGLogger = XCGLogger.default
@@ -21,6 +22,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             writeToFile: nil,
             fileLevel: nil
         )
+
+
+        do {
+            try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+            
+        }
+
         return true
     }
 }
