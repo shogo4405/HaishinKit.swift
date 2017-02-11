@@ -42,8 +42,6 @@ final class LiveViewController: UIViewController {
         rtmpStream.audioSettings = [
             "sampleRate": sampleRate
         ]
-    
-        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
 
         videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1024
@@ -54,12 +52,15 @@ final class LiveViewController: UIViewController {
         super.viewWillAppear(animated)
         rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition))
+        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
         lfView?.attachStream(rtmpStream)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
         super.viewWillDisappear(animated)
+        rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
+        rtmpStream.close()
         rtmpStream.dispose()
     }
 
@@ -90,6 +91,10 @@ final class LiveViewController: UIViewController {
 
     @IBAction func on(pause:UIButton) {
         rtmpStream.togglePause()
+    }
+
+    @IBAction func on(close:UIButton) {
+        self.dismiss(animated: true, completion: nil)
     }
 
     @IBAction func on(publish:UIButton) {

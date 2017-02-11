@@ -456,7 +456,7 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        if (self.readyState == .closed) {
+        if (readyState == .closed || readyState == .initilized) {
             return
         }
         play()

@@ -41,18 +41,11 @@ open class NetStream: NSObject {
     #if os(iOS)
     open var orientation:AVCaptureVideoOrientation {
         get {
-            var orientation:AVCaptureVideoOrientation!
-            DispatchQueue.main.sync {
-                orientation = self.mixer.videoIO.orientation
-            }
-            return orientation
+            return mixer.videoIO.orientation
         }
         set {
-            DispatchQueue.main.async {
-                self.mixer.videoIO.orientation = newValue
-            }
+            self.mixer.videoIO.orientation = newValue
         }
-
     }
     open var syncOrientation:Bool = false {
         didSet {
@@ -131,7 +124,6 @@ open class NetStream: NSObject {
     open func attachCamera(_ camera:AVCaptureDevice?) {
         lockQueue.async {
             self.mixer.videoIO.attachCamera(camera)
-            self.mixer.startRunning()
         }
     }
 
@@ -192,11 +184,7 @@ open class NetStream: NSObject {
 
     #if os(iOS)
     @objc private func on(uiDeviceOrientationDidChange:Notification) {
-        var deviceOrientation:UIDeviceOrientation = .unknown
-        if let device:UIDevice = uiDeviceOrientationDidChange.object as? UIDevice {
-            deviceOrientation = device.orientation
-        }
-        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: deviceOrientation) {
+        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: uiDeviceOrientationDidChange) {
             self.orientation = orientation
         }
     }

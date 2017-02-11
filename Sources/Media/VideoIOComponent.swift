@@ -42,6 +42,8 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
+    var position:AVCaptureDevicePosition = .back
+
     var videoSettings:[NSObject:AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
             output.videoSettings = videoSettings
@@ -53,7 +55,7 @@ final class VideoIOComponent: IOComponent {
             guard orientation != oldValue else {
                 return
             }
-            drawable?.orientation = orientation
+
             for connection in output.connections {
                 if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
                     if (connection.isVideoOrientationSupported) {
@@ -61,6 +63,7 @@ final class VideoIOComponent: IOComponent {
                     }
                 }
             }
+            drawable?.orientation = orientation
         }
     }
 
@@ -223,11 +226,6 @@ final class VideoIOComponent: IOComponent {
         super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
         decoder.delegate = self
-        #if os(iOS)
-        if let orientation:AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
-            self.orientation = orientation
-        }
-        #endif
     }
 
     func attachCamera(_ camera:AVCaptureDevice?) {
@@ -258,6 +256,7 @@ final class VideoIOComponent: IOComponent {
         }
 
         fps = fps * 1
+        position = camera.position
         drawable?.position = camera.position
 
         do {

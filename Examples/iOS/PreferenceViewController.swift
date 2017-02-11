@@ -10,6 +10,12 @@ final class PreferenceViewController: UIViewController {
         urlField?.text = Preference.defaultInstance.uri
         streamNameField?.text = Preference.defaultInstance.streamName
     }
+
+    @IBAction func on(open:UIButton) {
+        let storyboard:UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let controller:UIViewController = storyboard.instantiateViewController(withIdentifier: "PopUpLive")
+        present(controller, animated: true, completion: nil)
+    }
 }
 
 extension PreferenceViewController: UITextFieldDelegate {

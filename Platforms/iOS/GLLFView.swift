@@ -11,8 +11,8 @@ open class GLLFView: GLKView {
 
     open var videoGravity:String = AVLayerVideoGravityResizeAspect
 
+    var position:AVCaptureDevicePosition = .back
     var orientation:AVCaptureVideoOrientation = .portrait
-    var position:AVCaptureDevicePosition = .front
 
     fileprivate var ciContext:CIContext!
     fileprivate var displayImage:CIImage?
@@ -60,7 +60,9 @@ open class GLLFView: GLKView {
     open func attachStream(_ stream:NetStream?) {
         if let stream:NetStream = stream {
             stream.lockQueue.async {
+                self.position = stream.mixer.videoIO.position
                 stream.mixer.videoIO.drawable = self
+                stream.mixer.startRunning()
             }
         }
         currentStream = stream

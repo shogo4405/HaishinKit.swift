@@ -95,7 +95,10 @@ open class GLLFView: NSOpenGLView {
             currentStream.mixer.videoIO.drawable = nil
         }
         if let stream:NetStream = stream {
-            stream.mixer.videoIO.drawable = self
+            stream.lockQueue.async {
+                stream.mixer.videoIO.drawable = self
+                stream.mixer.startRunning()
+            }
         }
         currentStream = stream
     }

@@ -65,10 +65,13 @@ open class LFView: UIView {
             return
         }
         stream.lockQueue.async {
+            stream.mixer.session.beginConfiguration()
             self.layer.session = stream.mixer.session
             stream.mixer.videoIO.drawable = self
             self.orientation = stream.mixer.videoIO.orientation
             self.currentStream = stream
+            stream.mixer.session.commitConfiguration()
+            stream.mixer.startRunning()
         }
     }
 }

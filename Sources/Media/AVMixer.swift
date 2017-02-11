@@ -93,7 +93,9 @@ extension AVMixer: Runnable {
         guard !running else {
             return
         }
-        session.startRunning()
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.session.startRunning()
+        }
     }
 
     final func stopRunning() {

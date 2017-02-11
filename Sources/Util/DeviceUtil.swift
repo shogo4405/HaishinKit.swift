@@ -9,6 +9,13 @@ public final class DeviceUtil {
     }
 
     #if os(iOS)
+    static public func videoOrientation(by notification:Notification) -> AVCaptureVideoOrientation? {
+        guard let device:UIDevice = notification.object as? UIDevice else {
+            return nil
+        }
+        return videoOrientation(by: device.orientation)
+    }
+
     static public func videoOrientation(by orientation:UIDeviceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
         case .portrait:

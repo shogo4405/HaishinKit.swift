@@ -13,7 +13,7 @@
         <!--First-->
         <scene sceneID="hNz-n2-bh7">
             <objects>
-                <viewController id="9pv-A4-QxB" customClass="LiveViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PopUpLive" id="9pv-A4-QxB" customClass="LiveViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="Ia1-K6-d13"/>
                         <viewControllerLayoutGuide type="bottom" id="4ug-Mw-9AY"/>
@@ -32,14 +32,14 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LTk-1V-jZa">
-                                        <rect key="frame" x="266" y="24" width="54" height="30"/>
+                                        <rect key="frame" x="209" y="24" width="54" height="30"/>
                                         <state key="normal" title="Camera"/>
                                         <connections>
                                             <action selector="rotateCamera:" destination="9pv-A4-QxB" eventType="touchDown" id="516-MC-1k2"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVn-9L-n2U">
-                                        <rect key="frame" x="328" y="24" width="39" height="30"/>
+                                        <rect key="frame" x="286" y="24" width="39" height="30"/>
                                         <state key="normal" title="Torch"/>
                                         <connections>
                                             <action selector="toggleTorch:" destination="9pv-A4-QxB" eventType="touchDown" id="gY1-x2-YlF"/>
@@ -125,14 +125,21 @@
                                             <action selector="onSlider:" destination="9pv-A4-QxB" eventType="valueChanged" id="IS3-vj-jFX"/>
                                         </connections>
                                     </slider>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yIo-MW-aK8">
+                                        <rect key="frame" x="337" y="24" width="30" height="30"/>
+                                        <state key="normal" title="❌"/>
+                                        <connections>
+                                            <action selector="onClose:" destination="9pv-A4-QxB" eventType="touchDown" id="d0Y-4e-dGf"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstItem="aKS-oc-LrT" firstAttribute="top" secondItem="4s5-OW-qAO" secondAttribute="bottom" constant="8" symbolic="YES" id="2m5-eb-CoG"/>
                                     <constraint firstItem="gR3-9k-qhK" firstAttribute="top" secondItem="kaV-Nf-KmS" secondAttribute="top" id="3N7-Qc-9t6"/>
                                     <constraint firstItem="gR3-9k-qhK" firstAttribute="top" secondItem="dLf-ee-K3I" secondAttribute="bottom" constant="17" id="68w-uX-tfn"/>
-                                    <constraint firstItem="oVn-9L-n2U" firstAttribute="leading" secondItem="LTk-1V-jZa" secondAttribute="trailing" constant="8" symbolic="YES" id="6Vg-1x-anx"/>
-                                    <constraint firstItem="oVn-9L-n2U" firstAttribute="trailing" secondItem="Gme-VA-sgd" secondAttribute="trailingMargin" id="6rr-bb-7YM"/>
+                                    <constraint firstItem="oVn-9L-n2U" firstAttribute="leading" secondItem="LTk-1V-jZa" secondAttribute="trailing" constant="23" id="6Vg-1x-anx"/>
+                                    <constraint firstItem="oVn-9L-n2U" firstAttribute="trailing" secondItem="Gme-VA-sgd" secondAttribute="trailingMargin" constant="-42" id="6rr-bb-7YM"/>
                                     <constraint firstItem="Qnn-SP-eWm" firstAttribute="leading" secondItem="4s5-OW-qAO" secondAttribute="leading" id="7pQ-g5-nsB"/>
                                     <constraint firstItem="aKS-oc-LrT" firstAttribute="trailing" secondItem="dLf-ee-K3I" secondAttribute="trailing" id="95T-z2-og9"/>
                                     <constraint firstItem="LTk-1V-jZa" firstAttribute="baseline" secondItem="oVn-9L-n2U" secondAttribute="baseline" id="9rQ-Pd-sIs"/>
@@ -147,8 +154,10 @@
                                     <constraint firstItem="2Sy-na-foy" firstAttribute="top" secondItem="LTk-1V-jZa" secondAttribute="bottom" constant="8" symbolic="YES" id="IHI-kR-YLk"/>
                                     <constraint firstItem="aKS-oc-LrT" firstAttribute="leading" secondItem="4s5-OW-qAO" secondAttribute="leading" id="Jn2-73-2k2"/>
                                     <constraint firstItem="aKS-oc-LrT" firstAttribute="trailing" secondItem="gR3-9k-qhK" secondAttribute="trailing" id="NoE-xi-abm"/>
-                                    <constraint firstItem="oVn-9L-n2U" firstAttribute="trailing" secondItem="2Sy-na-foy" secondAttribute="trailing" id="QWk-gv-Pl5"/>
+                                    <constraint firstItem="oVn-9L-n2U" firstAttribute="trailing" secondItem="2Sy-na-foy" secondAttribute="trailing" constant="-42" id="QWk-gv-Pl5"/>
+                                    <constraint firstAttribute="trailing" secondItem="yIo-MW-aK8" secondAttribute="trailing" constant="8" id="Uqv-T7-tDV"/>
                                     <constraint firstItem="2Sy-na-foy" firstAttribute="leading" secondItem="fbC-rC-wNg" secondAttribute="leading" id="XWv-od-GU0"/>
+                                    <constraint firstItem="yIo-MW-aK8" firstAttribute="top" secondItem="Gme-VA-sgd" secondAttribute="top" constant="24" id="ZEM-uL-Va0"/>
                                     <constraint firstItem="gR3-9k-qhK" firstAttribute="leading" secondItem="dLf-ee-K3I" secondAttribute="leading" id="fUu-mz-saR"/>
                                     <constraint firstItem="dLf-ee-K3I" firstAttribute="top" secondItem="Qnn-SP-eWm" secondAttribute="bottom" constant="2" id="jei-Q0-cS1"/>
                                     <constraint firstItem="aKS-oc-LrT" firstAttribute="trailing" secondItem="4s5-OW-qAO" secondAttribute="trailing" id="nd7-Gv-Mns"/>
@@ -216,15 +225,27 @@
                                     <outlet property="delegate" destination="8rJ-Kc-sve" id="LBu-SL-u7B"/>
                                 </connections>
                             </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q77-wA-cY7">
+                                <rect key="frame" x="8" y="580" width="359" height="30"/>
+                                <color key="backgroundColor" red="0.012865800950000001" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <state key="normal" title="Open Window"/>
+                                <connections>
+                                    <action selector="onOpen:" destination="8rJ-Kc-sve" eventType="touchDown" id="MhK-qi-afU"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="Q77-wA-cY7" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailingMargin" constant="8" id="1a0-JV-nZh"/>
                             <constraint firstItem="A5Y-FA-epc" firstAttribute="leading" secondItem="Hiy-yh-Bwn" secondAttribute="leading" id="CJJ-BH-Gde"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="top" secondItem="L7p-HK-0SC" secondAttribute="bottom" constant="8" id="CVs-CB-ZGl"/>
                             <constraint firstItem="A5Y-FA-epc" firstAttribute="top" secondItem="Hiy-yh-Bwn" secondAttribute="bottom" constant="8" symbolic="YES" id="Nvl-et-opI"/>
+                            <constraint firstItem="Djb-ko-YwX" firstAttribute="top" secondItem="Q77-wA-cY7" secondAttribute="bottom" constant="8" symbolic="YES" id="PUC-5i-7iv"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" constant="8" id="UR1-Hr-4D4"/>
                             <constraint firstAttribute="trailing" secondItem="A5Y-FA-epc" secondAttribute="trailing" constant="160" id="buc-rb-JnR"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailingMargin" constant="8" id="kGk-2F-Qtn"/>
+                            <constraint firstItem="Q77-wA-cY7" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" constant="8" id="uKo-hV-Ipd"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Second" image="second" id="cPa-gy-q4n"/>
