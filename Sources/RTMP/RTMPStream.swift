@@ -386,17 +386,6 @@ open class RTMPStream: NetStream {
     open func publish(_ name:String?, type:RTMPStream.HowToPublish = .live) {
         lockQueue.async {
             guard let name:String = name else {
-                guard self.readyState == .publishing else {
-                    self.howToPublish = type
-                    switch type {
-                    case .localRecord:
-                        self.mixer.recorder.fileName = self.info.resourceName
-                        self.mixer.recorder.startRunning()
-                    default:
-                        break
-                    }
-                    return
-                }
                 self.readyState = .open
                 #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
@@ -424,6 +413,18 @@ open class RTMPStream: NetStream {
 
             while (self.readyState == .initilized) {
                 usleep(100)
+            }
+
+            if (self.info.resourceName == name && self.readyState == .publishing) {
+                switch type {
+                case .localRecord:
+                    self.mixer.recorder.fileName = self.info.resourceName
+                    self.mixer.recorder.startRunning()
+                default:
+                    self.mixer.recorder.stopRunning()
+                }
+                self.howToPublish = type
+                return
             }
 
             self.info.resourceName = name
