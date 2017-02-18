@@ -29,6 +29,7 @@
 		290EA8AD1DFB61E700053022 /* TimerDriverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA8A81DFB61E700053022 /* TimerDriverTests.swift */; };
 		2911F9C01DE53F2A007FD1EC /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */; };
 		2911F9C11DE53F39007FD1EC /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */; };
+		291468191E581C8F00E619BA /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		2915EC4D1D85BB8C00621092 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
 		2915EC601D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
@@ -64,7 +65,6 @@
 		294852571D852499002DE492 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		295074301E4620FF007F15A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29205CBD1E461F4E009D3FFF /* Main.storyboard */; };
 		295074311E462105007F15A4 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */; };
-		295074341E462146007F15A4 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295074321E46211D007F15A4 /* Preference.swift */; };
 		2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897461CDB01D20074D5F0 /* VisualEffect.swift */; };
 		2957473E1E34F3DB00EF056E /* RTMPBroadcaster.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */; };
 		295747911E37AC1000EF056E /* RTMPStreamQoSStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */; };
@@ -329,6 +329,7 @@
 		290EA8A71DFB61E700053022 /* MD5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5Tests.swift; path = Util/MD5Tests.swift; sourceTree = "<group>"; };
 		290EA8A81DFB61E700053022 /* TimerDriverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimerDriverTests.swift; path = Util/TimerDriverTests.swift; sourceTree = "<group>"; };
 		2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/Mac/XCGLogger.framework; sourceTree = "<group>"; };
+		291468161E581C7D00E619BA /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Preference.swift; path = Examples/iOS/Preference.swift; sourceTree = "<group>"; };
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		2915EC5F1D85BDF100621092 /* ScreencastUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreencastUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -350,7 +351,6 @@
 		2945CBBD1B4BE66000104112 /* lf.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = lf.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		294852551D84BFAD002DE492 /* RTMPTSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPTSocket.swift; path = Sources/RTMP/RTMPTSocket.swift; sourceTree = SOURCE_ROOT; };
 		2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferenceViewController.swift; path = Examples/iOS/PreferenceViewController.swift; sourceTree = "<group>"; };
-		295074321E46211D007F15A4 /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
 		2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPBroadcaster.swift; path = Examples/iOS/Screencast/RTMPBroadcaster.swift; sourceTree = "<group>"; };
 		295747901E37AC1000EF056E /* RTMPStreamQoSStrategy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPStreamQoSStrategy.swift; path = Sources/RTMP/RTMPStreamQoSStrategy.swift; sourceTree = SOURCE_ROOT; };
 		2962425F1D8DB86500C451A3 /* TSReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TSReader.swift; path = Sources/ISO/TSReader.swift; sourceTree = SOURCE_ROOT; };
@@ -770,7 +770,7 @@
 				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
 				296897441CDB01D20074D5F0 /* LiveViewController.swift */,
 				29205CBD1E461F4E009D3FFF /* Main.storyboard */,
-				295074321E46211D007F15A4 /* Preference.swift */,
+				291468161E581C7D00E619BA /* Preference.swift */,
 				2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */,
 				29A39C801D85BEFA007C27E9 /* Screencast */,
 				29A39C811D85BF07007C27E9 /* ScreencastUI */,
@@ -1525,7 +1525,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				295074341E462146007F15A4 /* Preference.swift in Sources */,
+				291468191E581C8F00E619BA /* Preference.swift in Sources */,
 				296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */,
 				296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */,
 				2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */,
