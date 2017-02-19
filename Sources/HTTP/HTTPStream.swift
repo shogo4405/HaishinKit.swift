@@ -3,7 +3,7 @@ import AVFoundation
 
 open class HTTPStream: NetStream {
     private(set) var name:String?
-    private var tsWriter:TSWriter = TSWriter()
+    private lazy var tsWriter:TSWriter = TSWriter()
 
     open func publish(_ name:String?) {
         lockQueue.async {
@@ -12,10 +12,7 @@ open class HTTPStream: NetStream {
                 #if os(iOS)
                 self.mixer.videoIO.screen?.stopRunning()
                 #endif
-                self.mixer.videoIO.encoder.delegate = nil
-                self.mixer.videoIO.encoder.stopRunning()
-                self.mixer.audioIO.encoder.delegate = nil
-                self.mixer.audioIO.encoder.stopRunning()
+                self.mixer.stopEncoding()
                 self.tsWriter.stopRunning()
                 return
             }
@@ -23,10 +20,8 @@ open class HTTPStream: NetStream {
             #if os(iOS)
             self.mixer.videoIO.screen?.startRunning()
             #endif
-            self.mixer.videoIO.encoder.delegate = self.tsWriter
-            self.mixer.videoIO.encoder.startRunning()
-            self.mixer.audioIO.encoder.delegate = self.tsWriter
-            self.mixer.audioIO.encoder.startRunning()
+            self.mixer.startEncoding(delegate: self.tsWriter)
+            self.mixer.startRunning()
             self.tsWriter.startRunning()
         }
     }

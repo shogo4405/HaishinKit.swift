@@ -75,6 +75,21 @@ final public class AVMixer: NSObject {
 }
 
 extension AVMixer {
+    final func startEncoding(delegate:Any) {
+        videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
+        videoIO.encoder.startRunning()
+        audioIO.encoder.delegate = delegate as? AudioEncoderDelegate
+        audioIO.encoder.startRunning()
+    }
+    final func stopEncoding() {
+        videoIO.encoder.delegate = nil
+        videoIO.encoder.stopRunning()
+        audioIO.encoder.delegate = nil
+        audioIO.encoder.stopRunning()
+    }
+}
+
+extension AVMixer {
     final func startPlaying() {
         videoIO.queue.startRunning()
     }
