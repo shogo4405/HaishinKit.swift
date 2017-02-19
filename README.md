@@ -57,7 +57,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/lf.siwft" ~> 0.5.0
+github "shogo4405/lf.swift" ~> 0.5.0
 ```
 
 ## RTMP Usage
