@@ -263,6 +263,7 @@ final class VideoIOComponent: IOComponent {
         fps = fps * 1
         position = camera.position
         drawable?.position = camera.position
+        mixer?.session.commitConfiguration()
 
         do {
             try camera.lockForConfiguration()
@@ -274,7 +275,6 @@ final class VideoIOComponent: IOComponent {
         } catch let error as NSError {
             logger.error("\(error)")
         }
-        mixer?.session.commitConfiguration()
     }
 
     #if os(OSX)
