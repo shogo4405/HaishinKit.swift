@@ -6,17 +6,6 @@ extension Data {
             [UInt8](UnsafeBufferPointer(start: $0, count: count))
         }
     }
-
-    init<T>(fromArray values:[T]) {
-        var values = values
-        self.init(buffer: UnsafeBufferPointer(start: &values, count: values.count))
-    }
-
-    func toArray<T>(type: T.Type) -> [T] {
-        return withUnsafeBytes {
-            [T](UnsafeBufferPointer(start: $0, count: count / MemoryLayout<T>.stride))
-        }
-    }
 }
 
 extension URL {

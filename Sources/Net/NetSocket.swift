@@ -30,12 +30,12 @@ class NetSocket: NSObject {
     }
 
     @discardableResult
-    final func doOutput(bytes:[UInt8], locked:UnsafeMutablePointer<atomic_flag>? = nil) -> Int {
+    final func doOutput(bytes:[UInt8], locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(bytes.count), &queueBytesOut)
         lockQueue.async {
             self.doOutputProcess(UnsafePointer<UInt8>(bytes), maxLength: bytes.count)
             if (locked != nil) {
-                atomic_flag_clear(locked!)
+                OSAtomicAnd32Barrier(0, locked!)
             }
         }
         return bytes.count

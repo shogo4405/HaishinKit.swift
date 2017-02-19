@@ -92,6 +92,7 @@ final class AVCEncoder: NSObject {
             }
         }
     }
+    var locked:UInt32 = 0
     var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVCEncoder.lock")
     var expectedFPS:Float64 = AVMixer.defaultFPS {
         didSet {
@@ -256,7 +257,7 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard running else {
+        guard running && locked == 0 else {
             return
         }
         if (invalidateSession) {

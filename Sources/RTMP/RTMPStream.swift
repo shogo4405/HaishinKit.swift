@@ -654,11 +654,12 @@ extension RTMPStream: RTMPMuxerDelegate {
             return
         }
         let type:FLVTagType = .video
+        OSAtomicOr32Barrier(1, &mixer.videoIO.encoder.locked)
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
             message: type.message(with: id, timestamp: UInt32(videoTimestamp), buffer: buffer)
-        ), locked: nil)
+        ), locked: &mixer.videoIO.encoder.locked)
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
