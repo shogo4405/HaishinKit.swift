@@ -7,7 +7,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 ### RTMP
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
-- [ ] Playback
+- [ ] _Playback (Technical Preview)_
 - [x] AMF0
 - [ ] AMF3
 - [x] SharedObject
@@ -22,7 +22,8 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] HLS Publish
 
 ### Others
-- [x] Hardware acceleration for H264 video encoding/AAC audio encoding
+- [x] Hardware acceleration for H264 video encoding, AAC audio encoding
+- [x] Support "Allow app extension API only" option
 - [ ] Objectiv-C Bridging
 
 ## Requirements
@@ -54,6 +55,10 @@ target 'Your Target'  do
     import_pods
 end
 ```
+### Carthage
+```
+github "shogo4405/lf.swift" ~> 0.5.0
+```
 
 ## RTMP Usage
 Real Time Messaging Protocol (RTMP).
@@ -84,15 +89,13 @@ let sampleRate:Double = 44_100
 do {
     try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
     try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-    try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeVideoChat)
+    try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
     try AVAudioSession.sharedInstance().setActive(true)
 } catch {
 }
 #endif
 
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-// 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
 
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
@@ -134,6 +137,10 @@ rtmpStream.recorderSettings = [
         */
     ],
 ]
+
+// 2nd arguemnt set false
+rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
+
 ```
 ### Authentication
 ```swift
@@ -144,7 +151,7 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
 ### Screen Capture
 ```swift
 // iOS
-rtmpStream.attachScreen(ScreenCaptureSession())
+rtmpStream.attachScreen(ScreenCaptureSession(shared: UIApplication.shared))
 // macOS
 rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```

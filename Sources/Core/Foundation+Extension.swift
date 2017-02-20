@@ -2,8 +2,8 @@ import Foundation
 
 extension Data {
     var bytes:[UInt8] {
-        return self.withUnsafeBytes {
-            [UInt8](UnsafeBufferPointer(start: $0, count: self.count))
+        return withUnsafeBytes {
+            [UInt8](UnsafeBufferPointer(start: $0, count: count))
         }
     }
 }

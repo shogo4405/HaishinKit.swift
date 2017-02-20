@@ -6,7 +6,7 @@ import AVFoundation
 // MARK: ScreenCaptureOutputPixelBufferDelegate
 public protocol ScreenCaptureOutputPixelBufferDelegate: class {
     func didSet(size:CGSize)
-    func output(pixelBuffer:CVPixelBuffer, withTimestamp:CMTime)
+    func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime)
 }
 
 // MARK: -
@@ -107,7 +107,7 @@ public final class ScreenCaptureSession: NSObject {
         let image:UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         context.render(CIImage(cgImage: image.cgImage!), to: pixelBuffer!)
-        delegate?.output(pixelBuffer: pixelBuffer!, withTimestamp: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
+        delegate?.output(pixelBuffer: pixelBuffer!, withPresentationTime: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
         CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
     }
 }

@@ -38,6 +38,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
     fileprivate(set) var totalBytesIn:Int64 = 0
     fileprivate(set) var totalBytesOut:Int64 = 0
+    fileprivate(set) var queueBytesOut:Int64 = 0
     fileprivate var timer:Timer? {
         didSet {
             if let oldValue:Timer = oldValue {
@@ -82,7 +83,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     @discardableResult
-    func doOutput(chunk:RTMPChunk) -> Int {
+    func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         var bytes:[UInt8] = []
         let chunks:[[UInt8]] = chunk.split(chunkSizeS)
         for chunk in chunks {

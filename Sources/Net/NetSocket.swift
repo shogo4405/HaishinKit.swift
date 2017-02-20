@@ -14,6 +14,7 @@ class NetSocket: NSObject {
     var securityLevel:StreamSocketSecurityLevel = .none
     private(set) var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
+    private(set) var queueBytesOut:Int64 = 0
 
     private var runloop:RunLoop?
     private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetSocket.lock")
@@ -21,6 +22,7 @@ class NetSocket: NSObject {
 
     @discardableResult
     final func doOutput(data:Data) -> Int {
+        OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         lockQueue.async {
             self.doOutputProcess((data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), maxLength: data.count)
         }
@@ -28,9 +30,13 @@ class NetSocket: NSObject {
     }
 
     @discardableResult
-    final func doOutput(bytes:[UInt8]) -> Int {
+    final func doOutput(bytes:[UInt8], locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
+        OSAtomicAdd64(Int64(bytes.count), &queueBytesOut)
         lockQueue.async {
             self.doOutputProcess(UnsafePointer<UInt8>(bytes), maxLength: bytes.count)
+            if (locked != nil) {
+                OSAtomicAnd32Barrier(0, locked!)
+            }
         }
         return bytes.count
     }
@@ -73,6 +79,7 @@ class NetSocket: NSObject {
             }
             total += length
             totalBytesOut += Int64(length)
+            OSAtomicAdd64(-Int64(length), &queueBytesOut)
         }
     }
 
@@ -94,6 +101,7 @@ class NetSocket: NSObject {
     func initConnection() {
         totalBytesIn = 0
         totalBytesOut = 0
+        queueBytesOut = 0
         timeoutHandler = didTimeout
         inputBuffer.removeAll(keepingCapacity: false)
 

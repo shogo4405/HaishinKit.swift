@@ -4,25 +4,15 @@ import AVFoundation
 
 open class GLLFView: GLKView {
     static let defaultOptions:[String: AnyObject] = [
-        kCIContextWorkingColorSpace: NSNull()
+        kCIContextWorkingColorSpace: NSNull(),
+        kCIContextUseSoftwareRenderer: NSNumber(value: false),
     ]
     open static var defaultBackgroundColor:UIColor = UIColor.black
 
     open var videoGravity:String = AVLayerVideoGravityResizeAspect
 
+    var position:AVCaptureDevicePosition = .back
     var orientation:AVCaptureVideoOrientation = .portrait
-    var position:AVCaptureDevicePosition = .front {
-        didSet {
-            switch position {
-            case .front:
-                transform = transform.scaledBy(x: -1, y: 1)
-            case .back:
-                transform = CGAffineTransform.identity
-            default:
-                break
-            }
-        }
-    }
 
     fileprivate var ciContext:CIContext!
     fileprivate var displayImage:CIImage?
@@ -42,6 +32,7 @@ open class GLLFView: GLKView {
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        self.context = EAGLContext(api: .openGLES2)
     }
 
     open override func awakeFromNib() {
@@ -59,12 +50,20 @@ open class GLLFView: GLKView {
         var inRect:CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect:CGRect = displayImage.extent
         VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
-        ciContext.draw(displayImage, in: inRect, from: fromRect)
+        if (position == .front) {
+            ciContext.draw(displayImage.applyingOrientation(2), in: inRect, from: fromRect)
+        } else {
+            ciContext.draw(displayImage, in: inRect, from: fromRect)
+        }
     }
 
     open func attachStream(_ stream:NetStream?) {
         if let stream:NetStream = stream {
-            stream.mixer.videoIO.drawable = self
+            stream.lockQueue.async {
+                self.position = stream.mixer.videoIO.position
+                stream.mixer.videoIO.drawable = self
+                stream.mixer.startRunning()
+            }
         }
         currentStream = stream
     }

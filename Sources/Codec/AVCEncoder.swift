@@ -20,11 +20,13 @@ final class AVCEncoder: NSObject {
         "dataRateLimits",
         "enabledHardwareEncoder", // macOS only
         "maxKeyFrameIntervalDuration",
+        "scalingMode",
     ]
 
     static let defaultWidth:Int32 = 480
     static let defaultHeight:Int32 = 272
     static let defaultBitrate:UInt32 = 160 * 1024
+    static let defaultScalingMode:String = "Trim"
 
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
@@ -40,6 +42,14 @@ final class AVCEncoder: NSObject {
     static let defaultDataRateLimits:[Int] = [0, 0]
 
     var muted:Bool = false
+    var scalingMode:String = AVCEncoder.defaultScalingMode {
+        didSet {
+            guard scalingMode != oldValue else {
+                return
+            }
+            invalidateSession = true
+        }
+    }
 
     var width:Int32 = AVCEncoder.defaultWidth {
         didSet {
@@ -82,9 +92,8 @@ final class AVCEncoder: NSObject {
             }
         }
     }
-    var lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.AVCEncoder.lock", attributes: []
-    )
+    var locked:UInt32 = 0
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVCEncoder.lock")
     var expectedFPS:Float64 = AVMixer.defaultFPS {
         didSet {
             guard expectedFPS != oldValue else {
@@ -179,7 +188,7 @@ final class AVCEncoder: NSObject {
             kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
             kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline as NSObject,
             kVTCompressionPropertyKey_PixelTransferProperties: [
-                "ScalingMode": "Trim"
+                "ScalingMode": scalingMode
             ] as NSObject
         ]
 
@@ -248,7 +257,7 @@ final class AVCEncoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer:CVImageBuffer, presentationTimeStamp:CMTime, duration:CMTime) {
-        guard running else {
+        guard running && locked == 0 else {
             return
         }
         if (invalidateSession) {

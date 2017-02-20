@@ -133,7 +133,7 @@ open class RTMPSharedObject: EventDispatcher {
         }
         rtmpConnection.socket.doOutput(chunk: createChunk([
             RTMPSharedObjectEvent(type: .requestChange, name: name, data: value)
-        ]))
+        ]), locked: nil)
     }
 
     open func connect(_ rtmpConnection:RTMPConnection) {
@@ -144,19 +144,19 @@ open class RTMPSharedObject: EventDispatcher {
         rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
         if (rtmpConnection.connected) {
             timestamp = rtmpConnection.socket.timestamp
-            rtmpConnection.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
+            rtmpConnection.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]), locked: nil)
         }
     }
 
     open func clear() {
         data.removeAll(keepingCapacity: false)
-        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]))
+        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]), locked: nil)
     }
 
     open func close() {
         data.removeAll(keepingCapacity: false)
         rtmpConnection?.removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPSharedObject.rtmpStatusHandler(_:)), observer: self)
-        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
+        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]), locked: nil)
         rtmpConnection = nil
     }
 
@@ -222,7 +222,7 @@ open class RTMPSharedObject: EventDispatcher {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
                 timestamp = rtmpConnection!.socket.timestamp
-                rtmpConnection!.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
+                rtmpConnection!.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]), locked: nil)
             default:
                 break
             }

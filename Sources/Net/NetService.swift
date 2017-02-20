@@ -6,12 +6,8 @@ open class NetService: NSObject {
         return nil
     }
 
-    let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.NetService.lock", attributes: []
-    )
-    var networkQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.NetService.network", attributes: []
-    )
+    let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetService.lock")
+    var networkQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetService.network")
 
     fileprivate(set) var domain:String
     fileprivate(set) var name:String

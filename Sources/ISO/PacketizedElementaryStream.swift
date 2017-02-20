@@ -54,7 +54,7 @@ struct PESOptionalHeader {
         if (presentationTimeStamp != kCMTimeInvalid) {
             PTSDTSIndicator |= 0x02
         }
-        if (decodeTimeStamp != kCMTimeInvalid && presentationTimeStamp != decodeTimeStamp) {
+        if (decodeTimeStamp != kCMTimeInvalid) {
             PTSDTSIndicator |= 0x01
         }
         if (PTSDTSIndicator & 0x02 == 0x02) {
@@ -77,7 +77,8 @@ extension PESOptionalHeader: BytesConvertible {
             bytes[0] |= markerBits << 6
             bytes[0] |= scramblingControl << 4
             bytes[0] |= (priority ? 1 : 0) << 3
-            bytes[0] |= (copyright ? 1 : 0) << 2
+            bytes[0] |= (dataAlignmentIndicator ? 1 : 0) << 2
+            bytes[0] |= (copyright ? 1 : 0) << 1
             bytes[0] |= (originalOrCopy ? 1 : 0)
             bytes[1] |= PTSDTSIndicator << 6
             bytes[1] |= (ESCRFlag ? 1 : 0) << 5
@@ -159,6 +160,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         data += config!.adts(payload.count)
         data += payload
         optionalPESHeader = PESOptionalHeader()
+        optionalPESHeader?.dataAlignmentIndicator = true
         optionalPESHeader?.setTimestamp(
             timestamp,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
@@ -168,13 +170,16 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 
     init?(sampleBuffer:CMSampleBuffer, timestamp:CMTime, config:AVCConfigurationRecord?) {
-        data += [0x00, 0x00, 0x00, 0x01, 0x09, 0xf0]
         if let config:AVCConfigurationRecord = config {
+            data += [0x00, 0x00, 0x00, 0x01, 0x09, 0x10]
             data += [0x00, 0x00, 0x00, 0x01] + config.sequenceParameterSets[0]
             data += [0x00, 0x00, 0x00, 0x01] + config.pictureParameterSets[0]
+        } else {
+            data += [0x00, 0x00, 0x00, 0x01, 0x09, 0x30]
         }
         data += AVCFormatStream(bytes: sampleBuffer.bytes).toByteStream()
         optionalPESHeader = PESOptionalHeader()
+        optionalPESHeader?.dataAlignmentIndicator = true
         optionalPESHeader?.setTimestamp(
             timestamp,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,

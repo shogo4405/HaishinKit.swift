@@ -4,7 +4,7 @@ import UIKit
 import Foundation
 import AVFoundation
 
-final class AVMixer: NSObject {
+final public class AVMixer: NSObject {
 
     static let supportedSettingsKeys:[String] = [
         "fps",
@@ -45,25 +45,56 @@ final class AVMixer: NSObject {
         }
     }
 
-    private var _session:AVCaptureSession? = nil
-    var session:AVCaptureSession! {
-        if (_session == nil) {
-            _session = AVCaptureSession()
-            _session?.beginConfiguration()
-            _session?.sessionPreset = AVMixer.defaultSessionPreset
-            _session?.commitConfiguration()
-        }
-        return _session!
+    public lazy var session:AVCaptureSession = {
+        var session = AVCaptureSession()
+        session.sessionPreset = AVMixer.defaultSessionPreset
+        return session
+    }()
+
+    public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+
+    deinit {
+        dispose()
     }
 
-    private(set) var audioIO:AudioIOComponent!
-    private(set) var videoIO:VideoIOComponent!
-    private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    private(set) lazy var audioIO:AudioIOComponent = {
+       return AudioIOComponent(mixer: self)
+    }()
 
-    override init() {
-        super.init()
-        audioIO = AudioIOComponent(mixer: self)
-        videoIO = VideoIOComponent(mixer: self)
+    private(set) lazy var videoIO:VideoIOComponent = {
+       return VideoIOComponent(mixer: self)
+    }()
+
+    public func dispose() {
+        if (session.isRunning) {
+            session.stopRunning()
+        }
+        audioIO.dispose()
+        videoIO.dispose()
+    }
+}
+
+extension AVMixer {
+    final func startEncoding(delegate:Any) {
+        videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
+        videoIO.encoder.startRunning()
+        audioIO.encoder.delegate = delegate as? AudioEncoderDelegate
+        audioIO.encoder.startRunning()
+    }
+    final func stopEncoding() {
+        videoIO.encoder.delegate = nil
+        videoIO.encoder.stopRunning()
+        audioIO.encoder.delegate = nil
+        audioIO.encoder.stopRunning()
+    }
+}
+
+extension AVMixer {
+    final func startPlaying() {
+        videoIO.queue.startRunning()
+    }
+    final func stopPlaying() {
+        videoIO.queue.stopRunning()
     }
 }
 
@@ -77,7 +108,9 @@ extension AVMixer: Runnable {
         guard !running else {
             return
         }
-        session.startRunning()
+        DispatchQueue.global(qos: .userInteractive).async {
+            self.session.startRunning()
+        }
     }
 
     final func stopRunning() {

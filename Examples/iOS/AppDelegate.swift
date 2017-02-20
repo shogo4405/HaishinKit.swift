@@ -1,22 +1,13 @@
 import UIKit
+import AVFoundation
 import XCGLogger
+
+let logger:XCGLogger = XCGLogger.default
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window:UIWindow?
-    var rootViewController:UINavigationController = {
-        let controller:UINavigationController = UINavigationController()
-        controller.setViewControllers([LiveViewController()], animated: true)
-        controller.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        controller.navigationBar.isTranslucent = true
-        controller.navigationBar.titleTextAttributes = [
-            NSForegroundColorAttributeName: UIColor.white
-        ]
-        controller.navigationBar.tintColor = UIColor.white
-        controller.navigationBar.shadowImage = UIImage()
-        return controller
-    }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
         XCGLogger.default.setup(
@@ -31,10 +22,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             writeToFile: nil,
             fileLevel: nil
         )
-        window = UIWindow(frame: UIScreen.main.bounds)
-        window?.backgroundColor = UIColor.white
-        window?.rootViewController = rootViewController
-        window?.makeKeyAndVisible()
+
+        do {
+            try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+            try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
+            try AVAudioSession.sharedInstance().setActive(true)
+        } catch {
+        }
 
         return true
     }

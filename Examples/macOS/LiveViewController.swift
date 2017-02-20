@@ -80,18 +80,25 @@ final class LiveViewController: NSViewController {
         view.frame = NSMakeRect(0, 0, 640, 360)
     }
 
+    override func viewWillAppear() {
+        super.viewWillAppear()
+        rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
+        rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+        lfView.attachStream(rtmpStream)
+    }
+
+    override func viewWillDisappear() {
+        super.viewWillDisappear()
+        rtmpStream.dispose()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         audioPopUpButton.target = self
         cameraPopUpButton.target = self
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-        rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         publishButton.target = self
-
-        lfView.attachStream(rtmpStream)
-
         view.addSubview(lfView)
         view.addSubview(fpsPopUpButton)
         view.addSubview(cameraPopUpButton)
@@ -206,7 +213,7 @@ final class LiveViewController: NSViewController {
         }
         switch keyPath {
         case "currentFPS":
-            view.window!.title = "lf - lIVE fRAMEWORK(FPS:\(rtmpStream.currentFPS):totalBytesIn:\(rtmpConnection.totalBytesIn):totalBytesOut:\(rtmpConnection.totalBytesOut)"
+            view.window!.title = "HaishinKit(FPS:\(rtmpStream.currentFPS):totalBytesIn:\(rtmpConnection.totalBytesIn):totalBytesOut:\(rtmpConnection.totalBytesOut))"
         default:
             break
         }

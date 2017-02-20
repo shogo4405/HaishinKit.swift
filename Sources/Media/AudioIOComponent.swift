@@ -3,9 +3,7 @@ import AVFoundation
 
 final class AudioIOComponent: IOComponent {
     var encoder:AACEncoder = AACEncoder()
-    let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.AudioIOComponent.lock", attributes: []
-    )
+    let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AudioIOComponent.lock")
 
     var input:AVCaptureDeviceInput? = nil {
         didSet {
@@ -13,10 +11,10 @@ final class AudioIOComponent: IOComponent {
                 return
             }
             if let oldValue:AVCaptureDeviceInput = oldValue {
-                mixer.session.removeInput(oldValue)
+                mixer?.session.removeInput(oldValue)
             }
             if let input:AVCaptureDeviceInput = input {
-                mixer.session.addInput(input)
+                mixer?.session.addInput(input)
             }
         }
     }
@@ -35,7 +33,7 @@ final class AudioIOComponent: IOComponent {
             }
             if let output:AVCaptureAudioDataOutput = _output {
                 output.setSampleBufferDelegate(nil, queue: nil)
-                mixer.session.removeOutput(output)
+                mixer?.session.removeOutput(output)
             }
             _output = newValue
         }
@@ -47,29 +45,37 @@ final class AudioIOComponent: IOComponent {
     }
 
     func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) {
+        mixer?.session.beginConfiguration()
         output = nil
         encoder.invalidate()
         guard let audio:AVCaptureDevice = audio else {
             input = nil
+            mixer?.session.commitConfiguration()
             return
         }
         do {
             input = try AVCaptureDeviceInput(device: audio)
             #if os(iOS)
-            mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
+            mixer?.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
             #endif
-            mixer.session.addOutput(output)
+            mixer?.session.addOutput(output)
             output.setSampleBufferDelegate(self, queue: lockQueue)
         } catch let error as NSError {
             logger.error("\(error)")
         }
+        mixer?.session.commitConfiguration()
+    }
+
+    func dispose() {
+        input = nil
+        output = nil
     }
 }
 
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
-        mixer.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeAudio)
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeAudio)
         encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, from: connection)
     }
 }

@@ -173,6 +173,12 @@ open class RTMPConnection: EventDispatcher {
     open var totalBytesOut:Int64 {
         return socket.totalBytesOut
     }
+    /// The statistics of total RTMPStream counts.
+    open var totalStreamsCount:Int {
+        return streams.count
+    }
+    /// The statistics of outgoing queue bytes per second.
+    dynamic open fileprivate(set) var previousQueueBytesOut:[Int64] = []
     /// The statistics of incoming bytes per second.
     dynamic open fileprivate(set) var currentBytesInPerSecond:Int32 = 0
     /// The statistics of outgoing bytes per second.
@@ -198,6 +204,7 @@ open class RTMPConnection: EventDispatcher {
     fileprivate var messages:[UInt16:RTMPMessage] = [:]
     fileprivate var arguments:[Any?] = []
     fileprivate var currentChunk:RTMPChunk? = nil
+    fileprivate var measureInterval:Int = 3
     fileprivate var fragmentedChunks:[UInt16:RTMPChunk] = [:]
     fileprivate var previousTotalBytesIn:Int64 = 0
     fileprivate var previousTotalBytesOut:Int64 = 0
@@ -209,6 +216,7 @@ open class RTMPConnection: EventDispatcher {
 
     deinit {
         timer = nil
+        streams.removeAll()
         removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 
@@ -228,7 +236,7 @@ open class RTMPConnection: EventDispatcher {
         if (responder != nil) {
             operations[message.transactionId] = responder
         }
-        socket.doOutput(chunk: RTMPChunk(message: message))
+        socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
     }
 
     @available(*, unavailable)
@@ -288,7 +296,9 @@ open class RTMPConnection: EventDispatcher {
     func on(status:Notification) {
         let e:Event = Event.from(status)
 
-        guard let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String else {
+        guard
+            let data:ASObject = e.data as? ASObject,
+            let code:String = data["code"] as? String else {
             return
         }
 
@@ -300,13 +310,16 @@ open class RTMPConnection: EventDispatcher {
                 type: .one,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
-            ))
+            ), locked: nil)
         case Code.connectRejected.rawValue:
-            guard let uri:URL = uri, let user:String = uri.user, let password:String = uri.password else {
+            guard
+                let uri:URL = uri,
+                let user:String = uri.user,
+                let password:String = uri.password,
+                let description:String = data["description"] as? String else {
                 break
             }
             socket.deinitConnection(isDisconnected: false)
-            let description:String = data["description"] as! String
             switch true {
             case description.contains("reason=nosuchuser"):
                 break
@@ -377,8 +390,23 @@ open class RTMPConnection: EventDispatcher {
         currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
+        previousQueueBytesOut.append(socket.queueBytesOut)
         for (_, stream) in streams {
             stream.on(timer: timer)
+        }
+        if (measureInterval <= previousQueueBytesOut.count) {
+            var count:Int = 0
+            for i in 0..<previousQueueBytesOut.count - 1 {
+                if (previousQueueBytesOut[i] < previousQueueBytesOut[i + 1]) {
+                    count += 1
+                }
+            }
+            if (count == measureInterval - 1) {
+                for (_, stream) in streams {
+                    stream.qosStrategy.didPublishInsufficientBW(stream, withConnection: self)
+                }
+            }
+            previousQueueBytesOut.removeFirst()
         }
     }
 }
@@ -392,7 +420,7 @@ extension RTMPConnection: RTMPSocketDelegate {
                 close()
                 break
             }
-            socket.doOutput(chunk: chunk)
+            socket.doOutput(chunk: chunk, locked: nil)
         case .closed:
             connected = false
             currentChunk = nil

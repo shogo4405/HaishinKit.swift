@@ -8,7 +8,7 @@ protocol TSReaderDelegate: class {
 class TSReader {
     weak var delegate:TSReaderDelegate?
 
-    fileprivate(set) var PAT:ProgramAssociationSpecific? {
+    private(set) var PAT:ProgramAssociationSpecific? {
         didSet {
             guard let PAT:ProgramAssociationSpecific = PAT else {
                 return
@@ -18,7 +18,7 @@ class TSReader {
             }
         }
     }
-    fileprivate(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
+    private(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
         didSet {
             for (_, pmt) in PMT {
                 for data in pmt.elementaryStreamSpecificData {

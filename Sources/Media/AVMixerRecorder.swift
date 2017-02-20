@@ -6,7 +6,8 @@ import Photos
 
 public protocol AVMixerRecorderDelegate: class {
     var moviesDirectory:URL { get }
-    func rotateFile(_ recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String)
+    func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:String)
+    func getPixelBufferAdaptor(_ recorder:AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor?
     func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput?
     func didStartRunning(_ recorder: AVMixerRecorder)
     func didStopRunning(_ recorder: AVMixerRecorder)
@@ -34,6 +35,7 @@ open class AVMixerRecorder: NSObject {
     open var delegate:AVMixerRecorderDelegate?
     open var writerInputs:[String:AVAssetWriterInput] = [:]
     open var outputSettings:[String:[String:Any]] = AVMixerRecorder.defaultOutputSettings
+    open var pixelBufferAdaptor:AVAssetWriterInputPixelBufferAdaptor?
     open let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVMixerRecorder.lock")
     fileprivate(set) var running:Bool = false
     fileprivate(set) var sourceTime:CMTime = kCMTimeZero
@@ -56,7 +58,7 @@ open class AVMixerRecorder: NSObject {
                 return
             }
 
-            delegate.rotateFile(self, sampleBuffer: sampleBuffer, mediaType: mediaType)
+            delegate.rotateFile(self, withPresentationTimeStamp: sampleBuffer.presentationTimeStamp, mediaType: mediaType)
 
             guard
                 let writer:AVAssetWriter = self.writer,
@@ -79,6 +81,35 @@ open class AVMixerRecorder: NSObject {
         }
     }
 
+    final func appendPixelBuffer(_ pixelBuffer:CVPixelBuffer,  withPresentationTime:CMTime) {
+        lockQueue.async {
+            guard let delegate:AVMixerRecorderDelegate = self.delegate, self.running else {
+                return
+            }
+
+            delegate.rotateFile(self, withPresentationTimeStamp: withPresentationTime, mediaType: AVMediaTypeVideo)
+            guard
+                let writer:AVAssetWriter = self.writer,
+                let input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: AVMediaTypeVideo, sourceFormatHint: CMVideoFormatDescription.create(withPixelBuffer: pixelBuffer)),
+                let adaptor:AVAssetWriterInputPixelBufferAdaptor = delegate.getPixelBufferAdaptor(self, withWriterInput: input),
+                self.isReadyForStartWriting else {
+                return
+            }
+
+            switch writer.status {
+            case .unknown:
+                writer.startWriting()
+                writer.startSession(atSourceTime: self.sourceTime)
+            default:
+                break
+            }
+
+            if (input.isReadyForMoreMediaData) {
+                adaptor.append(pixelBuffer, withPresentationTime: withPresentationTime)
+            }
+        }
+    }
+
     func finishWriting() {
         for (_, input) in writerInputs {
             input.markAsFinished()
@@ -87,6 +118,7 @@ open class AVMixerRecorder: NSObject {
             self.delegate?.didFinishWriting(self)
             self.writer = nil
             self.writerInputs.removeAll()
+            self.pixelBufferAdaptor = nil
         }
     }
 }
@@ -123,7 +155,7 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     fileprivate var clockReference:String = AVMediaTypeVideo
 
     #if os(OSX)
-    public lazy var moviesDirectory:URL = {
+    open lazy var moviesDirectory:URL = {
         return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #else
@@ -135,9 +167,8 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
 
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     // MARK: AVMixerRecorderDelegate
-    public func rotateFile(_ recorder:AVMixerRecorder, sampleBuffer:CMSampleBuffer, mediaType:String) {
-        let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
-        guard clockReference == mediaType && rotateTime.value < presentationTimeStamp.value else {
+    public func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:String) {
+        guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
             return
         }
         if let _:AVAssetWriter = recorder.writer {
@@ -145,10 +176,22 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         }
         recorder.writer = createWriter(recorder.fileName)
         rotateTime = CMTimeAdd(
-            presentationTimeStamp,
-            CMTimeMake(duration == 0 ? Int64.max : duration * Int64(presentationTimeStamp.timescale), presentationTimeStamp.timescale)
+            withPresentationTimeStamp,
+            CMTimeMake(duration == 0 ? Int64.max : duration * Int64(withPresentationTimeStamp.timescale), withPresentationTimeStamp.timescale)
         )
-        recorder.sourceTime = presentationTimeStamp
+        recorder.sourceTime = withPresentationTimeStamp
+    }
+
+    public func getPixelBufferAdaptor(_ recorder: AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor? {
+        guard recorder.pixelBufferAdaptor == nil else {
+            return recorder.pixelBufferAdaptor
+        }
+        guard let writerInput:AVAssetWriterInput = withWriterInput else {
+            return nil
+        }
+        let adaptor:AVAssetWriterInputPixelBufferAdaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [:])
+        recorder.pixelBufferAdaptor = adaptor
+        return adaptor
     }
 
     public func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
@@ -158,8 +201,13 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
 
         var outputSettings:[String:Any] = [:]
         if let defaultOutputSettings:[String:Any] = recorder.outputSettings[mediaType] {
-            if (mediaType == AVMediaTypeAudio) {
-                let inSourceFormat:AudioStreamBasicDescription = CMAudioFormatDescriptionGetStreamBasicDescription(sourceFormatHint!)!.pointee
+            switch mediaType {
+            case AVMediaTypeAudio:
+                guard
+                    let format:CMAudioFormatDescription = sourceFormatHint,
+                    let inSourceFormat:AudioStreamBasicDescription = format.streamBasicDescription?.pointee else {
+                    break
+                }
                 for (key, value) in defaultOutputSettings {
                     switch key {
                     case AVSampleRateKey:
@@ -170,23 +218,27 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                         outputSettings[key] = value
                     }
                 }
-            }
-            if (mediaType == AVMediaTypeVideo) {
-                let dimensions:CMVideoDimensions = CMVideoFormatDescriptionGetDimensions(sourceFormatHint!)
+            case AVMediaTypeVideo:
+                guard let format:CMVideoFormatDescription = sourceFormatHint else {
+                    break
+                }
                 for (key, value) in defaultOutputSettings {
                     switch key {
                     case AVVideoHeightKey:
-                        outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.height) : value
+                        outputSettings[key] = AnyUtil.isZero(value) ? Int(format.dimensions.height) : value
                     case AVVideoWidthKey:
-                        outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.width) : value
+                        outputSettings[key] = AnyUtil.isZero(value) ? Int(format.dimensions.width) : value
                     default:
                         outputSettings[key] = value
                     }
                 }
+            default:
+                break
             }
         }
 
         let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
+        input.expectsMediaDataInRealTime = true
         recorder.writerInputs[mediaType] = input
         recorder.writer?.add(input)
 
