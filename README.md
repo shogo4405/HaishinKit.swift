@@ -181,7 +181,7 @@ New BSD
 ## Donation
 Bitcoin
 ```txt
-1FXxyfegCfhLcCAHV6jYu2Uska6JaAVux9
+1HtWpaYkRGZMnq253QsJP6xSKZRPoJ8Hrs
 ```
 
 ## Reference
