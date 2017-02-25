@@ -23,6 +23,8 @@ open class NetStream: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
+    open var metadata:[String:NSObject] = [:]
+
     open var torch:Bool {
         get {
             var torch:Bool = false

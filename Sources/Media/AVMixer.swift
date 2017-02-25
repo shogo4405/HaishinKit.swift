@@ -45,12 +45,19 @@ final public class AVMixer: NSObject {
         }
     }
 
-    public lazy var session:AVCaptureSession = {
-        var session = AVCaptureSession()
-        session.sessionPreset = AVMixer.defaultSessionPreset
-        return session
-    }()
-
+    fileprivate var _session:AVCaptureSession?
+    public var session:AVCaptureSession {
+        get {
+            if (_session == nil) {
+                _session = AVCaptureSession()
+                _session!.sessionPreset = AVMixer.defaultSessionPreset
+            }
+            return _session!
+        }
+        set {
+            _session = newValue
+        }
+    }
     public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
     deinit {
