@@ -20,6 +20,7 @@ open class NetStream: NSObject {
     public let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetStream.lock")
 
     deinit {
+        metadata.removeAll()
         NotificationCenter.default.removeObserver(self)
     }
 
