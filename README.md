@@ -62,6 +62,15 @@ end
 github "shogo4405/lf.swift" ~> 0.5.0
 ```
 
+## License
+New BSD
+
+## Donation
+Bitcoin
+```txt
+1HtWpaYkRGZMnq253QsJP6xSKZRPoJ8Hrs
+```
+
 ## RTMP Usage
 Real Time Messaging Protocol (RTMP).
 ```swift
@@ -175,15 +184,6 @@ httpService.addHTTPStream(httpStream)
 
 // add ViewController#view
 view.addSubview(lfView)
-```
-
-## License
-New BSD
-
-## Donation
-Bitcoin
-```txt
-1HtWpaYkRGZMnq253QsJP6xSKZRPoJ8Hrs
 ```
 
 ## Reference
