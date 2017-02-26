@@ -1281,13 +1281,13 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/Mac/XCGLogger.framework",
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			showEnvVarsInLog = 0;
 		};
 		29F5FEA81DE2C76B00D0CCB4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
