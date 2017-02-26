@@ -24,6 +24,8 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 ### Others
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
+- [x] Support GPUImage framework (~> 0.5.12)
+ - https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md
 - [ ] Objectiv-C Bridging
 
 ## Requirements
