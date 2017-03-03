@@ -156,7 +156,13 @@ class TSWriter {
         for (pid, _) in continuityCounters {
             continuityCounters[pid] = 0
         }
-        currentFileHandle?.synchronizeFile()
+        
+        nstry({
+            self.currentFileHandle?.synchronizeFile()
+        }) { exeption in
+            logger.warning("\(exeption)")
+        }
+        
         currentFileHandle?.closeFile()
         currentFileHandle = try? FileHandle(forWritingTo: url)
 
