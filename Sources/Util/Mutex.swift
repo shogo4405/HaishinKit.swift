@@ -1,6 +1,6 @@
 import Foundation
 
-final class Mutex {
+final class Mutex: NSLocking {
 
     enum Error: Swift.Error {
         case inval
@@ -30,7 +30,7 @@ final class Mutex {
         pthread_mutex_destroy(mutex)
     }
 
-    func lock() throws {
+    func tryLock() throws {
         switch pthread_mutex_trylock(mutex) {
         case EBUSY:
             throw Mutex.Error.busy
@@ -39,6 +39,10 @@ final class Mutex {
         default:
             break
         }
+    }
+    
+    func lock() {
+        pthread_mutex_lock(mutex)
     }
 
     func unlock() {

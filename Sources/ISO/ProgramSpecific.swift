@@ -31,6 +31,8 @@ protocol PSITableSyntax {
 class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     static let reservedBits:UInt8 = 0x03
     static let defaultTableIDExtension:UInt16 = 1
+    
+    let mutex:Mutex = Mutex()
 
     // MARK: PSIPointer
     var pointerField:UInt8 = 0
@@ -184,6 +186,9 @@ final class ProgramMapSpecific: ProgramSpecific {
 
     override var data:[UInt8] {
         get {
+            mutex.lock()
+            defer { mutex.unlock() }
+            
             var bytes:[UInt8] = []
             elementaryStreamSpecificData.sort{ (lhs:ElementaryStreamSpecificData, rhs:ElementaryStreamSpecificData) -> Bool in
                 return lhs.elementaryPID < rhs.elementaryPID
@@ -198,6 +203,9 @@ final class ProgramMapSpecific: ProgramSpecific {
                 .bytes
         }
         set {
+            mutex.lock()
+            defer { mutex.unlock() }
+            
             let buffer:ByteArray = ByteArray(bytes: newValue)
             do {
                 PCRPID = try buffer.readUInt16() & 0x1fff
