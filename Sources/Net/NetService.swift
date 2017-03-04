@@ -2,7 +2,7 @@ import Foundation
 
 open class NetService: NSObject {
 
-    var recordData:Data? {
+    open var txtData:Data? {
         return nil
     }
 
@@ -59,7 +59,7 @@ open class NetService: NSObject {
         runloop = RunLoop.current
         service = Foundation.NetService(domain: domain, type: type, name: name, port: port)
         service.delegate = self
-        service.setTXTRecord(recordData)
+        service.setTXTRecord(txtData)
         service.schedule(in: runloop, forMode: RunLoopMode.defaultRunLoopMode)
         if (type.contains("._udp")) {
             service.publish()
