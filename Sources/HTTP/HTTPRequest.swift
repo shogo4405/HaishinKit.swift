@@ -36,7 +36,11 @@ extension HTTPRequestCompatible {
                     break
                 }
             }
-            let first:[String] = lines.first!.components(separatedBy: " ")
+            
+            guard let first:[String] = lines.first?.components(separatedBy: " "), first.count >= 3 else {
+                return
+            }
+            
             method = first[0]
             uri = first[1]
             version = first[2]
