@@ -435,6 +435,10 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         var position:Int = chunk.bytes.count
+        if (chunk.bytes.count >= 4) && (chunk.bytes[1] == 0xFF) && (chunk.bytes[2] == 0xFF) && (chunk.bytes[3] == 0xFF) {
+            position += 4
+        }
+
         if (currentChunk != nil) {
             position = chunk.append(bytes, size: socket.chunkSizeC)
         }
