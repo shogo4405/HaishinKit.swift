@@ -207,13 +207,13 @@ open class RTMPStream: NetStream {
     }
 
     enum ReadyState: UInt8 {
-        case initilized = 0
-        case open       = 1
-        case play       = 2
-        case playing    = 3
-        case publish    = 4
-        case publishing = 5
-        case closed     = 6
+        case initialized = 0
+        case open        = 1
+        case play        = 2
+        case playing     = 3
+        case publish     = 4
+        case publishing  = 5
+        case closed      = 6
     }
 
     static let defaultID:UInt32 = 0
@@ -229,7 +229,7 @@ open class RTMPStream: NetStream {
     }
 
     var id:UInt32 = RTMPStream.defaultID
-    var readyState:ReadyState = .initilized {
+    var readyState:ReadyState = .initialized {
         didSet {
             switch readyState {
             case .open:
@@ -344,7 +344,7 @@ open class RTMPStream: NetStream {
                 }
                 return
             }
-            while (self.readyState == .initilized) {
+            while (self.readyState == .initialized) {
                 usleep(100)
             }
             self.info.resourceName = name
@@ -411,7 +411,7 @@ open class RTMPStream: NetStream {
                 return
             }
 
-            while (self.readyState == .initilized) {
+            while (self.readyState == .initialized) {
                 usleep(100)
             }
 
@@ -457,7 +457,7 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        if (readyState == .closed || readyState == .initilized) {
+        if (readyState == .closed || readyState == .initialized) {
             return
         }
         play()
@@ -584,7 +584,7 @@ open class RTMPStream: NetStream {
         }
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            readyState = .initilized
+            readyState = .initialized
             rtmpConnection.createStream(self)
         case RTMPStream.Code.playStart.rawValue:
             readyState = .playing

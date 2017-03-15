@@ -1,13 +1,5 @@
 import Foundation
 
-extension Data {
-    var bytes:[UInt8] {
-        return withUnsafeBytes {
-            [UInt8](UnsafeBufferPointer(start: $0, count: count))
-        }
-    }
-}
-
 extension URL {
     var absoluteWithoutAuthenticationString:String {
         var target:String = ""
@@ -22,20 +14,20 @@ extension URL {
         }
         return absoluteString.replacingOccurrences(of: target, with: "")
     }
-
+    
     var absoluteWithoutQueryString:String {
         guard let query:String = self.query else {
             return self.absoluteString
         }
         return absoluteString.replacingOccurrences(of: "?" + query, with: "")
     }
-
+    
     func dictionaryFromQuery() -> [String:String] {
         var result:[String:String] = [:]
         guard
             let comonents:URLComponents = URLComponents(string: absoluteString),
             let queryItems = comonents.queryItems else {
-            return result
+                return result
         }
         for item in queryItems {
             if let value:String = item.value {
