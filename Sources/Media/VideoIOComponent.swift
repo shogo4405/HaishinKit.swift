@@ -55,14 +55,19 @@ final class VideoIOComponent: IOComponent {
             guard orientation != oldValue else {
                 return
             }
-
+            let device:AVCaptureDevice! = (input as? AVCaptureDeviceInput)?.device
+            try! device.lockForConfiguration()
             for connection in output.connections {
                 if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
                     if (connection.isVideoOrientationSupported) {
                         connection.videoOrientation = orientation
+                        if (torch) {
+                            setTorchMode(.on)
+                        }
                     }
                 }
             }
+            device.unlockForConfiguration()
             drawable?.orientation = orientation
         }
     }
@@ -72,20 +77,7 @@ final class VideoIOComponent: IOComponent {
             guard torch != oldValue else {
                 return
             }
-            let torchMode:AVCaptureTorchMode = torch ? .on : .off
-            guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                device.isTorchModeSupported(torchMode) else {
-                logger.warning("torchMode(\(torchMode)) is not supported")
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.torchMode = torchMode
-                device.unlockForConfiguration()
-            }
-            catch let error as NSError {
-                logger.error("while setting torch: \(error)")
-            }
+            setTorchMode(torch ? .on : .off)
         }
     }
 
@@ -359,6 +351,20 @@ final class VideoIOComponent: IOComponent {
         }
     }
     #endif
+
+    func setTorchMode(_ torchMode:AVCaptureTorchMode) {
+        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
+            logger.warning("torchMode(\(torchMode)) is not supported")
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.torchMode = torchMode
+            device.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("while setting torch: \(error)")
+        }
+    }
 
     func dispose() {
         drawable?.attachStream(nil)
