@@ -31,8 +31,8 @@
 	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>© 2016 shogo4405</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
+	<key>NSMainStoryboardFile</key>
+	<string>Main</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 </dict>
