@@ -1792,7 +1792,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf.iOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf;
 				PRODUCT_NAME = lf;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -1821,7 +1821,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf.iOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf;
 				PRODUCT_NAME = lf;
 				PROVISIONING_PROFILE = "";
 				SKIP_INSTALL = YES;
@@ -1892,7 +1892,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf.macOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf;
 				PRODUCT_NAME = lf;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -1920,7 +1920,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf.macOS;
+				PRODUCT_BUNDLE_IDENTIFIER = com.github.shogo4405.lf;
 				PRODUCT_NAME = lf;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
