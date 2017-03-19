@@ -83,7 +83,7 @@ open class NetStream: NSObject {
         get {
             var videoSettings:[String:Any]!
             lockQueue.sync {
-                videoSettings = self.mixer.videoIO.encoder.dictionaryWithValues(forKeys: AVCEncoder.supportedSettingsKeys)
+                videoSettings = self.mixer.videoIO.encoder.dictionaryWithValues(forKeys: H264Encoder.supportedSettingsKeys)
             }
             return videoSettings
         }

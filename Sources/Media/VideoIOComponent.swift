@@ -10,8 +10,8 @@ final class VideoIOComponent: IOComponent {
             decoder.formatDescription = formatDescription
         }
     }
-    lazy var encoder:AVCEncoder = AVCEncoder()
-    lazy var decoder:AVCDecoder = AVCDecoder()
+    lazy var encoder:H264Encoder = H264Encoder()
+    lazy var decoder:H264Decoder = H264Decoder()
     lazy var queue:ClockedQueue = {
         let queue:ClockedQueue = ClockedQueue()
         queue.delegate = self
