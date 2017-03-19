@@ -55,8 +55,6 @@ final class VideoIOComponent: IOComponent {
             guard orientation != oldValue else {
                 return
             }
-            let device:AVCaptureDevice! = (input as? AVCaptureDeviceInput)?.device
-            try! device.lockForConfiguration()
             for connection in output.connections {
                 if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
                     if (connection.isVideoOrientationSupported) {
@@ -67,7 +65,6 @@ final class VideoIOComponent: IOComponent {
                     }
                 }
             }
-            device.unlockForConfiguration()
             drawable?.orientation = orientation
         }
     }
