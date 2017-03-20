@@ -311,13 +311,13 @@ extension H264Encoder: Runnable {
 #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(AVCEncoder.didAudioSessionInterruption(_:)),
+                selector: #selector(H264Encoder.didAudioSessionInterruption(_:)),
                 name: NSNotification.Name.AVAudioSessionInterruption,
                 object: nil
             )
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(AVCEncoder.applicationWillEnterForeground(_:)),
+                selector: #selector(H264Encoder.applicationWillEnterForeground(_:)),
                 name: NSNotification.Name.UIApplicationWillEnterForeground,
                 object: nil
             )
