@@ -12,8 +12,8 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [ ] AMF3
 - [x] SharedObject
 - [x] RTMPS
- - [x] Native (RTMP over SSL/TSL)
- - [ ] Tunneled (RTMPT over SSL/TSL)
+  - [x] Native (RTMP over SSL/TSL)
+  - [ ] Tunneled (RTMPT over SSL/TSL)
 - [ ] _RTMPT (Technical Preview)_
 - [ ] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
 
@@ -25,7 +25,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
 - [x] Support GPUImage framework (~> 0.5.12)
- - https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md
+  - https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md
 - [ ] ~~Objectiv-C Bridging~~
 
 ## Requirements
