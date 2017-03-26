@@ -31,12 +31,12 @@ final class H264Encoder: NSObject {
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLESCompatibilityKey: true as AnyObject,
+        kCVPixelBufferOpenGLESCompatibilityKey: NSNumber(booleanLiteral: true),
     ]
     #else
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLCompatibilityKey: true as AnyObject,
+        kCVPixelBufferOpenGLCompatibilityKey: NSNumber(booleanLiteral: true),
     ]
     #endif
     static let defaultDataRateLimits:[Int] = [0, 0]
@@ -195,8 +195,8 @@ final class H264Encoder: NSObject {
 #if os(OSX)
         if (enabledHardwareEncoder) {
             properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva" as NSObject
-            properties["EnableHardwareAcceleratedVideoEncoder"] = true as NSObject
-            properties["RequireHardwareAcceleratedVideoEncoder"] = true as NSObject
+            properties["EnableHardwareAcceleratedVideoEncoder"] = NSNumber(booleanLiteral: true)
+            properties["RequireHardwareAcceleratedVideoEncoder"] = NSNumber(booleanLiteral: true)
         }
 #endif
 

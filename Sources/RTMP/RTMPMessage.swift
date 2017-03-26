@@ -663,9 +663,8 @@ final class RTMPVideoMessage: RTMPMessage {
             decodeTimeStamp: kCMTimeInvalid
         )
 
-        let bytes:[UInt8] = Array(payload[FLVTagType.video.headerSize..<payload.count])
-        var sample:[UInt8] = bytes
-        let sampleSize:Int = bytes.count
+        var sample:[UInt8] = Array<UInt8>(payload[FLVTagType.video.headerSize..<payload.count])
+        let sampleSize:Int = sample.count
         var blockBuffer:CMBlockBuffer?
         guard CMBlockBufferCreateWithMemoryBlock(
             kCFAllocatorDefault, &sample, sampleSize, kCFAllocatorNull, nil, 0, sampleSize, 0, &blockBuffer) == noErr else {
