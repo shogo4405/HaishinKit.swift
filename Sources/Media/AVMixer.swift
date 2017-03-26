@@ -15,8 +15,8 @@ final public class AVMixer: NSObject {
 
     static let defaultFPS:Float64 = 30
     static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
-    static let defaultVideoSettings:[NSObject: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: Int(kCVPixelFormatType_32BGRA) as AnyObject
+    static let defaultVideoSettings:[NSString: AnyObject] = [
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
 
     var fps:Float64 {

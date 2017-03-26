@@ -31,12 +31,12 @@ final class H264Encoder: NSObject {
     #if os(iOS)
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLESCompatibilityKey: NSNumber(booleanLiteral: true),
+        kCVPixelBufferOpenGLESCompatibilityKey: kCFBooleanTrue,
     ]
     #else
     static let defaultAttributes:[NSString: AnyObject] = [
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLCompatibilityKey: NSNumber(booleanLiteral: true),
+        kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue,
     ]
     #endif
     static let defaultDataRateLimits:[Int] = [0, 0]
@@ -93,7 +93,7 @@ final class H264Encoder: NSObject {
         }
     }
     var locked:UInt32 = 0
-    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVCEncoder.lock")
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.H264Encoder.lock")
     var expectedFPS:Float64 = AVMixer.defaultFPS {
         didSet {
             guard expectedFPS != oldValue else {
@@ -195,8 +195,8 @@ final class H264Encoder: NSObject {
 #if os(OSX)
         if (enabledHardwareEncoder) {
             properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva" as NSObject
-            properties["EnableHardwareAcceleratedVideoEncoder"] = NSNumber(booleanLiteral: true)
-            properties["RequireHardwareAcceleratedVideoEncoder"] = NSNumber(booleanLiteral: true)
+            properties["EnableHardwareAcceleratedVideoEncoder"] = kCFBooleanTrue
+            properties["RequireHardwareAcceleratedVideoEncoder"] = kCFBooleanTrue
         }
 #endif
 
@@ -289,9 +289,8 @@ final class H264Encoder: NSObject {
         guard
             let userInfo:[AnyHashable: Any] = notification.userInfo,
             let value:NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
-            let type:AVAudioSessionInterruptionType = AVAudioSessionInterruptionType(rawValue: value.uintValue)
-            else {
-                return
+            let type:AVAudioSessionInterruptionType = AVAudioSessionInterruptionType(rawValue: value.uintValue) else {
+            return
         }
         switch type {
         case .ended:
@@ -331,7 +330,8 @@ extension H264Encoder: Runnable {
             self.lastImageBuffer = nil;
             self.formatDescription = nil
 #if os(iOS)
-            NotificationCenter.default.removeObserver(self)
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVAudioSessionInterruption, object: nil)
+            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
 #endif
             self.running = false
         }
