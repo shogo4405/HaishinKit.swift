@@ -62,6 +62,8 @@ protocol ByteArrayConvertible {
 
 // MARK: -
 open class ByteArray: ByteArrayConvertible {
+    static let fillZero:[UInt8] = [0x00]
+    
     static let sizeOfInt8:Int = 1
     static let sizeOfInt16:Int = 2
     static let sizeOfInt24:Int = 3
@@ -97,7 +99,7 @@ open class ByteArray: ByteArrayConvertible {
             case (bytes.count < newValue):
                 bytes += [UInt8](repeating: 0, count: newValue - bytes.count)
             case (newValue < bytes.count):
-                bytes = Array(bytes[0..<newValue])
+                bytes = Array<UInt8>(bytes[0..<newValue])
             default:
                 break
             }
@@ -154,7 +156,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfInt16
-        return UInt16(bytes: Array(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
+        return UInt16(bytes: Array<UInt8>(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
     }
 
     @discardableResult
@@ -167,7 +169,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfInt16
-        return Int16(bytes: Array(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
+        return Int16(bytes: Array<UInt8>(bytes[position - ByteArray.sizeOfInt16..<position])).bigEndian
     }
 
     @discardableResult
@@ -180,12 +182,12 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfInt24
-        return UInt32(bytes: [0] + Array(bytes[position - ByteArray.sizeOfInt24..<position])).bigEndian
+        return UInt32(bytes: ByteArray.fillZero + Array<UInt8>(bytes[position - ByteArray.sizeOfInt24..<position])).bigEndian
     }
 
     @discardableResult
     open func writeUInt24(_ value:UInt32) -> Self {
-        return writeBytes(Array(value.bigEndian.bytes[1...ByteArray.sizeOfInt24]))
+        return writeBytes(Array<UInt8>(value.bigEndian.bytes[1...ByteArray.sizeOfInt24]))
     }
 
     open func readUInt32() throws -> UInt32 {
@@ -193,7 +195,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfInt32
-        return UInt32(bytes: Array(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
+        return UInt32(bytes: Array<UInt8>(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
     }
 
     @discardableResult
@@ -206,7 +208,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfInt32
-        return Int32(bytes: Array(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
+        return Int32(bytes: Array<UInt8>(bytes[position - ByteArray.sizeOfInt32..<position])).bigEndian
     }
 
     @discardableResult
@@ -219,7 +221,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfDouble
-        return Double(bytes: Array(bytes[position - ByteArray.sizeOfDouble..<position].reversed()))
+        return Double(bytes: Array<UInt8>(bytes[position - ByteArray.sizeOfDouble..<position].reversed()))
     }
 
     @discardableResult
@@ -232,7 +234,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += ByteArray.sizeOfFloat
-        return Float(bytes: Array(bytes[position - ByteArray.sizeOfFloat..<position].reversed()))
+        return Float(bytes: Array<UInt8>(bytes[position - ByteArray.sizeOfFloat..<position].reversed()))
     }
 
     @discardableResult
@@ -255,7 +257,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += length
-        guard let result:String = String(bytes: Array(bytes[position - length..<position]), encoding: String.Encoding.utf8) else {
+        guard let result:String = String(bytes: Array<UInt8>(bytes[position - length..<position]), encoding: String.Encoding.utf8) else {
             throw ByteArray.Error.parse
         }
         return result
@@ -271,7 +273,7 @@ open class ByteArray: ByteArrayConvertible {
             throw ByteArray.Error.eof
         }
         position += length
-        return Array(bytes[position - length..<position])
+        return Array<UInt8>(bytes[position - length..<position])
     }
 
     @discardableResult
@@ -300,10 +302,10 @@ open class ByteArray: ByteArrayConvertible {
     func sequence(_ length:Int, lambda:((ByteArray) -> Void)) {
         let r:Int = (bytes.count - position) % length
         for index in stride(from: bytes.startIndex.advanced(by: position), to: bytes.endIndex.advanced(by: -r), by: length) {
-            lambda(ByteArray(bytes: Array(bytes[index..<index.advanced(by: length)])))
+            lambda(ByteArray(bytes: Array<UInt8>(bytes[index..<index.advanced(by: length)])))
         }
         if (0 < r) {
-            lambda(ByteArray(bytes: Array(bytes[bytes.indices.suffix(from: bytes.endIndex - r)])))
+            lambda(ByteArray(bytes: Array<UInt8>(bytes[bytes.indices.suffix(from: bytes.endIndex - r)])))
         }
     }
 
@@ -314,7 +316,7 @@ open class ByteArray: ByteArrayConvertible {
         }
         var result:[UInt32] = []
         for index in stride(from: bytes.startIndex.advanced(by: position), to: bytes.endIndex, by: size) {
-            result.append(UInt32(bytes: Array(bytes[index..<index.advanced(by: size)])))
+            result.append(UInt32(bytes: Array<UInt8>(bytes[index..<index.advanced(by: size)])))
         }
         return result
     }

@@ -18,11 +18,11 @@ final class RTMPHandshake {
     }
 
     func c2packet(_ s0s1packet:[UInt8]) -> [UInt8] {
-        return ByteArray()
-            .writeBytes(Array(s0s1packet[1...4]))
+        let packet:ByteArray = ByteArray()
+            .writeBytes(Array<UInt8>(s0s1packet[1...4]))
             .writeInt32(Int32(Date().timeIntervalSince1970 - timestamp))
-            .writeBytes(Array(s0s1packet[9...RTMPHandshake.sigSize]))
-            .bytes
+            .writeBytes(Array<UInt8>(s0s1packet[9...RTMPHandshake.sigSize]))
+        return packet.bytes
     }
 
     func clear() {
