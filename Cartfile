@@ -1,1 +1,1 @@
-github "DaveWoodCom/XCGLogger" ~> 4.0.0
+github "DaveWoodCom/XCGLogger" == 4.0.0
