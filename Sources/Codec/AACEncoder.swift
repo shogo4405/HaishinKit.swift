@@ -78,7 +78,7 @@ final class AACEncoder: NSObject {
     fileprivate var currentBufferList:UnsafeMutableAudioBufferListPointer? = nil
     fileprivate var inSourceFormat:AudioStreamBasicDescription? {
         didSet {
-            logger.info("\(self.inSourceFormat)")
+            logger.info("\(String(describing: self.inSourceFormat))")
             guard let inSourceFormat:AudioStreamBasicDescription = self.inSourceFormat else {
                 return
             }

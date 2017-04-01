@@ -120,7 +120,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         lastResponse = Date()
 
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data):\(response):\(error)")
+            logger.verbose("\(String(describing: data)):\(String(describing: response)):\(String(describing: error))")
         }
 
         if let error:Error = error {
@@ -182,7 +182,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         doRequest("/open/1", Data([0x00]), didOpen)
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data?.bytes):\(response)")
+            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -196,7 +196,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data.bytes):\(response)")
+            logger.verbose("\(data.bytes):\(String(describing: response))")
         }
     }
 
@@ -206,7 +206,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         connected = true
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data?.bytes):\(response)")
+            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -216,7 +216,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         connected = false
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data?.bytes):\(response)")
+            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
