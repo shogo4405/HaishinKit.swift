@@ -6,7 +6,7 @@ import Foundation
 }
 
 // MARK: -
-final class NetClient: NetSocket {
+final public class NetClient: NetSocket {
     static let defaultBufferSize:Int = 8192
 
     weak var delegate:NetClientDelegate?

@@ -1,6 +1,6 @@
 import Foundation
 
-class NetSocket: NSObject {
+public class NetSocket: NSObject {
     static let defaultTimeout:Int64 = 15 // sec
     static let defaultWindowSizeC:Int = 1024 * 1
 
@@ -21,7 +21,7 @@ class NetSocket: NSObject {
     fileprivate var timeoutHandler:(() -> Void)?
 
     @discardableResult
-    final func doOutput(data:Data) -> Int {
+    final public func doOutput(data:Data) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         lockQueue.async {
             self.doOutputProcess((data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), maxLength: data.count)
@@ -30,7 +30,7 @@ class NetSocket: NSObject {
     }
 
     @discardableResult
-    final func doOutput(bytes:[UInt8], locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
+    final public func doOutput(bytes:[UInt8], locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(bytes.count), &queueBytesOut)
         lockQueue.async {
             self.doOutputProcess(UnsafePointer<UInt8>(bytes), maxLength: bytes.count)
@@ -165,7 +165,7 @@ class NetSocket: NSObject {
 
 extension NetSocket: StreamDelegate {
     // MARK: StreamDelegate
-    func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
+    public func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         switch eventCode {
         //  1 = 1 << 0
         case Stream.Event.openCompleted:

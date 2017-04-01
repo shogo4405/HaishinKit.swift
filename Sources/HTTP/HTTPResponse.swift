@@ -9,7 +9,7 @@ protocol HTTPResponseCompatible: BytesConvertible, CustomStringConvertible {
 
 extension HTTPResponseCompatible {
 
-    var description:String {
+    public var description:String {
         return Mirror(reflecting: self).description
     }
 
@@ -25,7 +25,7 @@ extension HTTPResponseCompatible {
         set {
             var count:Int = 0
             var lines:[String] = []
-            
+
             let bytes:[ArraySlice<UInt8>] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
@@ -39,26 +39,26 @@ extension HTTPResponseCompatible {
             guard let first:[String] = lines.first?.components(separatedBy: " ") else {
                 return
             }
-            
+
             version = first[0]
             statusCode = first[1]
-            
+
             for i in 1..<lines.count {
                 let pairs:[String] = lines[i].components(separatedBy: ": ")
                 headerFields[pairs[0]] = pairs[1]
             }
             
-            body = Array(newValue[count..<newValue.count])
+            body = Array<UInt8>(newValue[count..<newValue.count])
         }
     }
 }
 
 // MARK: -
-struct HTTPResponse: HTTPResponseCompatible {
+public struct HTTPResponse: HTTPResponseCompatible {
     static let separator:[UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
-    var version:String = HTTPVersion.version11.rawValue
-    var statusCode:String = ""
-    var headerFields:[String: String] = [:]
-    var body:[UInt8] = []
+    public var version:String = HTTPVersion.version11.rawValue
+    public var statusCode:String = ""
+    public var headerFields:[String: String] = [:]
+    public var body:[UInt8] = []
 }

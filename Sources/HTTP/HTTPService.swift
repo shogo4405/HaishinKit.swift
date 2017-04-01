@@ -167,6 +167,30 @@ open class HTTPService: NetService {
     static open let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
 
     var document:String = HTTPService.defaultDocument
+
+    func client(inputBuffer client:NetClient) {
+        guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
+            disconnect(client)
+            return
+        }
+        client.inputBuffer.removeAll()
+        switch request.method {
+        case "GET":
+            get(request, client: client)
+        default:
+            break
+        }
+    }
+
+    open func get(_ request:HTTPRequest, client:NetClient) {
+        logger.verbose("\(request)")
+        var response:HTTPResponse = HTTPResponse()
+        response.statusCode = HTTPStatusCode.notFound.description
+        client.doOutput(bytes: response.bytes)
+    }
+}
+
+open class HLSService: HTTPService {
     fileprivate(set) var streams:[HTTPStream] = []
 
     open func addHTTPStream(_ stream:HTTPStream) {
@@ -187,23 +211,23 @@ open class HTTPService: NetService {
         }
     }
 
-    func get(_ request:HTTPRequest, client:NetClient) {
+    open override func get(_ request:HTTPRequest, client:NetClient) {
         logger.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
-
+        
         // #141
         response.headerFields["Access-Control-Allow-Headers"] = "*"
         response.headerFields["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS"
         response.headerFields["Access-Control-Allow-Origin"] = "*"
         response.headerFields["Access-Control-Expose-Headers"] = "*"
-
+        
         response.headerFields["Connection"] = "close"
-
+        
         defer {
             logger.verbose("\(response)")
             disconnect(client)
         }
-
+        
         switch request.uri {
         case "/":
             response.headerFields["Content-Type"] = "text/html"
@@ -236,18 +260,5 @@ open class HTTPService: NetService {
             client.doOutput(bytes: response.bytes)
         }
     }
-
-    func client(inputBuffer client:NetClient) {
-        guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer) else {
-            disconnect(client)
-            return
-        }
-        client.inputBuffer.removeAll()
-        switch request.method {
-        case "GET":
-            get(request, client: client)
-        default:
-            break
-        }
-    }
 }
+

@@ -7,7 +7,7 @@ final class MainViewController: NSViewController {
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
 
-    var httpService:HTTPService = HTTPService(
+    var httpService:HLSService = HLSService(
         domain: "local", type: HTTPService.type, name: "", port: HTTPService.defaultPort
     )
     var httpStream:HTTPStream = HTTPStream()

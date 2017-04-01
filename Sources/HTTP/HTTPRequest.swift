@@ -1,6 +1,6 @@
 import Foundation
 
-protocol HTTPRequestCompatible: BytesConvertible {
+protocol HTTPRequestCompatible: BytesConvertible, CustomStringConvertible {
     var uri:String { get set }
     var method:String { get set }
     var version:String { get set }
@@ -9,7 +9,7 @@ protocol HTTPRequestCompatible: BytesConvertible {
 
 extension HTTPRequestCompatible {
 
-    var description:String {
+    public var description:String {
         return Mirror(reflecting: self).description
     }
 
@@ -56,16 +56,13 @@ extension HTTPRequestCompatible {
 }
 
 // MARK: -
-struct HTTPRequest: HTTPRequestCompatible {
-    static let separator:UInt8 = 0x0a
+public struct HTTPRequest: HTTPRequestCompatible {
+    public static let separator:UInt8 = 0x0a
 
-    var uri:String = "/"
-    var method:String = ""
-    var version:String = HTTPVersion.version11.description
-    var headerFields:[String: String] = [:]
-
-    init() {
-    }
+    public var uri:String = "/"
+    public var method:String = ""
+    public var version:String = HTTPVersion.version11.description
+    public var headerFields:[String: String] = [:]
 
     init?(bytes:[UInt8]) {
         self.bytes = bytes
