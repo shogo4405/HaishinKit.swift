@@ -183,14 +183,14 @@ final class VideoIOComponent: IOComponent {
 
     fileprivate(set) var input:AVCaptureInput? = nil {
         didSet {
-            guard oldValue != input else {
+            guard let mixer:AVMixer = mixer, oldValue != input else {
                 return
             }
             if let oldValue:AVCaptureInput = oldValue {
-                mixer?.session.removeInput(oldValue)
+                mixer.session.removeInput(oldValue)
             }
-            if let input:AVCaptureInput = input {
-                mixer?.session.addInput(input)
+            if let input:AVCaptureInput = input, mixer.session.canAddInput(input) {
+                mixer.session.addInput(input)
             }
         }
     }
@@ -222,48 +222,43 @@ final class VideoIOComponent: IOComponent {
         #endif
     }
 
-    func attachCamera(_ camera:AVCaptureDevice?) {
-        mixer?.session.beginConfiguration()
+    func attachCamera(_ camera:AVCaptureDevice?) throws {
+        guard let mixer:AVMixer = mixer else {
+            return
+        }
+        
+        mixer.session.beginConfiguration()
+        defer {
+            mixer.session.commitConfiguration()
+            if (torch) {
+                setTorchMode(.on)
+            }
+        }
+
         output = nil
         guard let camera:AVCaptureDevice = camera else {
             input = nil
-            mixer?.session.commitConfiguration()
             return
         }
         #if os(iOS)
         screen = nil
         #endif
-        do {
-            input = try AVCaptureDeviceInput(device: camera)
-            mixer?.session.addOutput(output)
-            for connection in output.connections {
-                guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
-                    continue
-                }
-                if (connection.isVideoOrientationSupported) {
-                    connection.videoOrientation = orientation
-                }
+
+        input = try AVCaptureDeviceInput(device: camera)
+        mixer.session.addOutput(output)
+        for connection in output.connections {
+            guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
+                continue
             }
-            output.setSampleBufferDelegate(self, queue: lockQueue)
-        } catch let error as NSError {
-            logger.error("\(error)")
+            if (connection.isVideoOrientationSupported) {
+                connection.videoOrientation = orientation
+            }
         }
+        output.setSampleBufferDelegate(self, queue: lockQueue)
 
         fps = fps * 1
         position = camera.position
         drawable?.position = camera.position
-        mixer?.session.commitConfiguration()
-
-        do {
-            try camera.lockForConfiguration()
-            let torchMode:AVCaptureTorchMode = torch ? .on : .off
-            if (camera.isTorchModeSupported(torchMode)) {
-                camera.torchMode = torchMode
-            }
-            camera.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("\(error)")
-        }
     }
 
     #if os(OSX)

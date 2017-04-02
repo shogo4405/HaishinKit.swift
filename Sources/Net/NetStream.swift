@@ -124,17 +124,23 @@ open class NetStream: NSObject {
         }
     }
 
-    open func attachCamera(_ camera:AVCaptureDevice?) {
+    open func attachCamera(_ camera:AVCaptureDevice?, onError:((_ error:NSError) -> Void)? = nil) {
         lockQueue.async {
-            self.mixer.videoIO.attachCamera(camera)
+            do {
+                try self.mixer.videoIO.attachCamera(camera)
+            } catch let error as NSError {
+                onError?(error)
+            }
         }
     }
 
-    open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
+    open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = false, onError:((_ error:NSError) -> Void)? = nil) {
         lockQueue.async {
-            self.mixer.audioIO.attachAudio(audio,
-                automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
-            )
+            do {
+                try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
+            } catch let error as NSError {
+                onError?(error)
+            }
         }
     }
 
