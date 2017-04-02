@@ -446,7 +446,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             position = chunk.append(bytes, message: messages[chunk.streamId])
         }
 
-        if let message:RTMPMessage = chunk.message , chunk.ready {
+        if let message:RTMPMessage = chunk.message, chunk.ready {
             if (logger.isEnabledFor(level: .verbose)) {
                 logger.verbose(chunk.description)
             }
@@ -465,7 +465,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             message.execute(self)
             currentChunk = nil
             messages[chunk.streamId] = message
-            listen(bytes: Array(bytes[position..<bytes.count]))
+            listen(bytes: Array<UInt8>(bytes[position..<bytes.count]))
             return
         }
 
@@ -478,7 +478,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         if (position < bytes.count) {
-            listen(bytes: Array(bytes[position..<bytes.count]))
+            listen(bytes: Array<UInt8>(bytes[position..<bytes.count]))
         }
     }
 }

@@ -212,7 +212,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
             var packet:TSPacket = TSPacket()
             packet.PID = PID
             packet.payloadFlag = true
-            packet.payload = Array(payload[index..<index.advanced(by: 184)])
+            packet.payload = Array<UInt8>(payload[index..<index.advanced(by: 184)])
             packets.append(packet)
         }
 
@@ -220,7 +220,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         case 0:
             break
         case 183:
-            let remain:[UInt8] = Array(payload[payload.endIndex - r..<payload.endIndex - 1])
+            let remain:[UInt8] = Array<UInt8>(payload[payload.endIndex - r..<payload.endIndex - 1])
             var packet:TSPacket = TSPacket()
             packet.PID = PID
             packet.adaptationFieldFlag = true
@@ -236,7 +236,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
             let _ = packet.fill([payload[payload.count - 1]], useAdaptationField: true)
             packets.append(packet)
         default:
-            let remain:[UInt8] = Array(payload[payload.indices.suffix(from: payload.endIndex - r)])
+            let remain:[UInt8] = Array<UInt8>(payload[payload.indices.suffix(from: payload.endIndex - r)])
             var packet:TSPacket = TSPacket()
             packet.PID = PID
             packet.adaptationFieldFlag = true

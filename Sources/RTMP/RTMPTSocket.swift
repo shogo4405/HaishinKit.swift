@@ -155,7 +155,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
                 break
             }
             c2packet = handshake.c2packet(inputBuffer)
-            inputBuffer = Array(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
+            inputBuffer = Array<UInt8>(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
             readyState = .ackSent
             fallthrough
         case .ackSent:

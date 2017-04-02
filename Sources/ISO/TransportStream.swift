@@ -47,7 +47,7 @@ struct TSPacket {
         guard TSPacket.size == data.count else {
             return nil
         }
-        bytes = Array(UnsafeBufferPointer(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), count: data.count))
+        bytes = Array<UInt8>(UnsafeBufferPointer(start: (data as NSData).bytes.bindMemory(to: UInt8.self, capacity: data.count), count: data.count))
         if (syncByte != TSPacket.defaultSyncByte) {
             return nil
         }
@@ -60,7 +60,7 @@ struct TSPacket {
         }
         payloadFlag = true
         let length:Int = min(data.count, remain, 182)
-        payload += Array(data[0..<length])
+        payload += Array<UInt8>(data[0..<length])
         if (remain == 0) {
             return length
         }
@@ -362,7 +362,7 @@ extension TSAdaptationExtensionField: BytesConvertible {
                 buffer
                     .writeUInt8(spliceType)
                     .writeUInt8(spliceType << 4 | DTSNextAccessUnit[0])
-                    .writeBytes(Array(DTSNextAccessUnit[1..<DTSNextAccessUnit.count]))
+                    .writeBytes(Array<UInt8>(DTSNextAccessUnit[1..<DTSNextAccessUnit.count]))
             }
             return buffer.bytes
         }

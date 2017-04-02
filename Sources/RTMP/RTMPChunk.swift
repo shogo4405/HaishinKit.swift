@@ -172,7 +172,7 @@ final class RTMPChunk {
         var result:[[UInt8]] = []
         let startIndex:Int = size + headerSize
         let header:[UInt8] = Type.three.toBasicHeader(streamId)
-        result.append(Array(bytes[0..<startIndex]))
+        result.append(Array<UInt8>(bytes[0..<startIndex]))
         for index in stride(from: startIndex, to: bytes.count, by: size) {
             var data:[UInt8] = header
             data.append(contentsOf: bytes[index..<index.advanced(by: index + size < bytes.count ? size : bytes.count - index)])

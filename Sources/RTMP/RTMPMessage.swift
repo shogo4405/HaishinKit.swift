@@ -257,7 +257,7 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
             if (super.payload == newValue) {
                 return
             }
-            size = UInt32(bytes: Array(newValue[0...3])).bigEndian
+            size = UInt32(bytes: Array<UInt8>(newValue[0...3])).bigEndian
             limit = Limit(rawValue: newValue[4]) ?? .unknown
             super.payload = newValue
         }
@@ -541,7 +541,7 @@ final class RTMPAudioMessage: RTMPMessage {
     private(set) var soundType:FLVSoundType = .stereo
 
     var soundData:[UInt8] {
-        let data:[UInt8] = payload.isEmpty ? [] : Array(payload[codec.headerSize..<payload.count])
+        let data:[UInt8] = payload.isEmpty ? [] : Array<UInt8>(payload[codec.headerSize..<payload.count])
         guard let config:AudioSpecificConfig = config else {
             return data
         }
@@ -606,7 +606,7 @@ final class RTMPAudioMessage: RTMPMessage {
         }
 
         if (payload[1] == FLVAACPacketType.seq.rawValue) {
-            if let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array(payload[codec.headerSize..<payload.count])) {
+            if let config:AudioSpecificConfig = AudioSpecificConfig(bytes: Array<UInt8>(payload[codec.headerSize..<payload.count])) {
                 return config
             }
         }
@@ -681,7 +681,7 @@ final class RTMPVideoMessage: RTMPMessage {
 
     func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
-        config.bytes = Array(payload[FLVTagType.video.headerSize..<payload.count])
+        config.bytes = Array<UInt8>(payload[FLVTagType.video.headerSize..<payload.count])
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
     }
 }
@@ -740,7 +740,7 @@ final class RTMPUserControlMessage: RTMPMessage {
                 if let event:Event = Event(rawValue: newValue[1]) {
                     self.event = event
                 }
-                value = Int32(bytes: Array(newValue[2..<newValue.count])).bigEndian
+                value = Int32(bytes: Array<UInt8>(newValue[2..<newValue.count])).bigEndian
             }
             super.payload = newValue
         }
