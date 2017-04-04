@@ -556,7 +556,7 @@ open class RTMPStream: NetStream {
     }
 
     func createMetaData() -> ASObject {
-        var metadata:ASObject = [:]
+        metadata.removeAll()
         if let _:AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width
             metadata["height"] = mixer.videoIO.encoder.height
@@ -567,6 +567,7 @@ open class RTMPStream: NetStream {
         if let _:AVCaptureInput = mixer.audioIO.input {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate
+            
         }
         return metadata
     }
