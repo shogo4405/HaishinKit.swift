@@ -162,9 +162,15 @@ extension HTTPStatusCode: CustomStringConvertible {
 
 // MARK: -
 open class HTTPService: NetService {
-    open static let type:String = "_http._tcp"
-    open static let defaultPort:Int32 = 8080
-    open static let defaultDocument:String = "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
+    open class var type:String{
+        return "_http._tcp"
+    }
+    open class var defaultPort:Int32 {
+        return 8080
+    }
+    open class var defaultDocument:String {
+        return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
+    }
 
     var document:String = HTTPService.defaultDocument
 
