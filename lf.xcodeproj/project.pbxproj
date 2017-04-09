@@ -104,6 +104,8 @@
 		2981B7F71D734A39002FA821 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2981B7F31D7345D5002FA821 /* SessionDescription.swift */; };
 		2989C3B61D69C43000038653 /* RTPPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD70E51D68CF020021904A /* RTPPacket.swift */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
+		298F15C01E9A5A18009226BA /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */; };
+		298F15C21E9A5A2D009226BA /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298F15C11E9A5A2D009226BA /* ObjcExceptionBridging.framework */; };
 		299AE0E31D44E6EE00D26A49 /* RTSPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E21D44E6EE00D26A49 /* RTSPConnection.swift */; };
 		299AE0E51D44EC7800D26A49 /* RTSPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E41D44EC7800D26A49 /* RTSPSocket.swift */; };
 		299AE0E61D45003A00D26A49 /* RTSPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E21D44E6EE00D26A49 /* RTSPConnection.swift */; };
@@ -409,6 +411,8 @@
 		2981B7F31D7345D5002FA821 /* SessionDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionDescription.swift; path = Sources/RTSP/SessionDescription.swift; sourceTree = SOURCE_ROOT; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnyUtil.swift; path = Sources/Util/AnyUtil.swift; sourceTree = SOURCE_ROOT; };
+		298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjcExceptionBridging.framework; path = Carthage/Build/Mac/ObjcExceptionBridging.framework; sourceTree = "<group>"; };
+		298F15C11E9A5A2D009226BA /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjcExceptionBridging.framework; path = Carthage/Build/iOS/ObjcExceptionBridging.framework; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		299AE0E21D44E6EE00D26A49 /* RTSPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPConnection.swift; path = Sources/RTSP/RTSPConnection.swift; sourceTree = SOURCE_ROOT; };
 		299AE0E41D44EC7800D26A49 /* RTSPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPSocket.swift; path = Sources/RTSP/RTSPSocket.swift; sourceTree = SOURCE_ROOT; };
@@ -519,6 +523,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				298F15C01E9A5A18009226BA /* ObjcExceptionBridging.framework in Frameworks */,
 				2911F9C01DE53F2A007FD1EC /* XCGLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -545,6 +550,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				298F15C21E9A5A2D009226BA /* ObjcExceptionBridging.framework in Frameworks */,
 				29F5FEA71DE2C71000D0CCB4 /* XCGLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -555,6 +561,8 @@
 		0ACC00B98D6DB33B5BE87B87 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				298F15C11E9A5A2D009226BA /* ObjcExceptionBridging.framework */,
+				298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */,
 				2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */,
 				29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */,
 				2915EC531D85BDF100621092 /* ReplayKit.framework */,
@@ -1251,6 +1259,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/Mac/XCGLogger.framework",
+				"$(SRCROOT)/Carthage/Build/Mac/ObjcExceptionBridging.framework",
 			);
 			outputPaths = (
 			);
@@ -1292,6 +1301,7 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/Carthage/Build/iOS/XCGLogger.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/ObjcExceptionBridging.framework",
 			);
 			outputPaths = (
 			);
