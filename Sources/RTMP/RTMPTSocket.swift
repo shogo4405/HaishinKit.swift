@@ -58,7 +58,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var request:URLRequest!
     private var c2packet:[UInt8] = []
     private var handshake:RTMPHandshake = RTMPHandshake()
-    private let outputQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.RTMPTSocket.output")
+    private let outputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
     private var connectionID:String?
     private var isRequesting:Bool = false
     private var outputBuffer:[UInt8] = []

@@ -8,8 +8,12 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
 - [ ] _Playback (Technical Preview)_
-- [x] AMF0
-- [ ] AMF3
+- [x] Adaptive bitrate streaming
+  - [x] Handling 
+  - [x] Automatic drop frames
+- [ ] Action Message Format
+  - [x] AMF0
+  - [ ] AMF3
 - [x] SharedObject
 - [x] RTMPS
   - [x] Native (RTMP over SSL/TSL)
@@ -31,6 +35,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 ## Requirements
 |-|iOS|OSX|XCode|Swift|CocoaPods|Carthage|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|0.6.0|8.0+|10.11+|8.3+|3.1|1.2.0|0.20.0+|
 |0.5.0|8.0+|10.11+|8.0+|3.0|1.1.0|0.17.2(0.5.5+)|
 |0.4.0|8.0+|10.11+|7.3+|2.3|1.0.0|0.17.2(0.4.4+)|
 |0.3.0|8.0+|10.11+|7.3+|2.3|1.0.0|-|
@@ -49,7 +54,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'lf', '~> 0.5.0'
+    pod 'lf', '~> 0.6.0'
 end
 
 target 'Your Target'  do
@@ -59,7 +64,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/lf.swift" ~> 0.5.0
+github "shogo4405/lf.swift" ~> 0.6.0
 ```
 
 ## License
@@ -178,7 +183,7 @@ httpStream.publish("hello")
 var lfView:LFView = LFView(frame: view.bounds)
 lfView.attachStream(httpStream)
 
-var httpService:HTTPService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
+var httpService:HLSService = HLSService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
 httpService.startRunning()
 httpService.addHTTPStream(httpStream)
 

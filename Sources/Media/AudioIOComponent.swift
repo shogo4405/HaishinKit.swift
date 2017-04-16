@@ -3,7 +3,7 @@ import AVFoundation
 
 final class AudioIOComponent: IOComponent {
     var encoder:AACEncoder = AACEncoder()
-    let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AudioIOComponent.lock")
+    let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var input:AVCaptureDeviceInput? = nil {
         didSet {

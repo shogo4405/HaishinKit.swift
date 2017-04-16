@@ -10,14 +10,14 @@ public class NetSocket: NSObject {
     var inputStream:InputStream?
     var windowSizeC:Int = NetSocket.defaultWindowSizeC
     var outputStream:OutputStream?
-    var networkQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetSocket.network")
+    var networkQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.network")
     var securityLevel:StreamSocketSecurityLevel = .none
     private(set) var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
     private(set) var queueBytesOut:Int64 = 0
 
     private var runloop:RunLoop?
-    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetSocket.lock")
+    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.lock")
     fileprivate var timeoutHandler:(() -> Void)?
 
     @discardableResult

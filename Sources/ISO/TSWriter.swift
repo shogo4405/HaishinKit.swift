@@ -23,7 +23,7 @@ class TSWriter {
         m3u8.mediaList = Array(files[startIndex..<files.count])
         return m3u8.description
     }
-    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.TSWriter.lock")
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
     var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration:Double = TSWriter.defaultSegmentDuration
 

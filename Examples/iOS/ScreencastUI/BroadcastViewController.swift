@@ -40,7 +40,7 @@ class BroadcastViewController: UIViewController {
     }
 
     func userDidCancelSetup() {
-        let error = NSError(domain: "com.github.shogo4405.lf", code: -1, userInfo: nil)
+        let error = NSError(domain: "com.haishinkit.HaishinKit", code: -1, userInfo: nil)
         self.extensionContext?.cancelRequest(withError: error)
     }
 }

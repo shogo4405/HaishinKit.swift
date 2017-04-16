@@ -15,7 +15,7 @@ public class RTMPBroadcaster : RTMPConnection {
         return spliter
     }()
     private var connecting:Bool = false
-    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.RTMPBroadcaster.lock")
+    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPBroadcaster.lock")
 
     public override init() {
         super.init()

@@ -14,8 +14,8 @@ public class MP4Sampler {
 
     fileprivate var files:[URL] = []
     fileprivate var handlers:[URL:Handler?] = [:]
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.MP4Sampler.lock")
-    fileprivate let loopQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.MP4Sampler.loop")
+    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
+    fileprivate let loopQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
     fileprivate let operations:OperationQueue = OperationQueue()
     fileprivate(set) var running:Bool = false
 

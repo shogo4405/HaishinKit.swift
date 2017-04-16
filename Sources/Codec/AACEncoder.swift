@@ -70,7 +70,7 @@ final class AACEncoder: NSObject {
             }
         }
     }
-    var lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AACEncoder.lock")
+    var lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AACEncoder.lock")
     weak var delegate:AudioEncoderDelegate?
     internal(set) var running:Bool = false
     fileprivate var maximumBuffers:Int = AACEncoder.defaultMaximumBuffers

@@ -3,7 +3,7 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: IOComponent {
-    let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.VideoIOComponent.lock")
+    let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
     var drawable:NetStreamDrawable?
     var formatDescription:CMVideoFormatDescription? {
         didSet {
