@@ -1,4 +1,7 @@
 # HaishinKit (formerly lf)
+[![Platform](https://img.shields.io/cocoapods/p/lf.svg?style=flat)](http://cocoapods.org/pods/lf)
+![Language](https://img.shields.io/badge/language-Swift%203.1-orange.svg)
+[![CocoaPods](https://img.shields.io/cocoapods/v/lf.svg?style=flat)](http://cocoapods.org/pods/lf)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/lf.swift/master/LICENSE.txt)
 
 Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
@@ -81,8 +84,12 @@ Real Time Messaging Protocol (RTMP).
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
-rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back))
+rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)) { error in
+    // print(error)
+}
+rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back)) { error in
+    // print(error)
+}
 
 var lfView:LFView = LFView(frame: view.bounds)
 lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
