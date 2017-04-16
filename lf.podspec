@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.osx.source_files = "Platforms/macOS/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
-  s.dependency 'XCGLogger', '~> 4.0.0'
+  s.dependency 'XCGLogger', '~> 5.0.0'
 
 end
 
