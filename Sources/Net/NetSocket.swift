@@ -2,7 +2,7 @@ import Foundation
 
 public class NetSocket: NSObject {
     static let defaultTimeout:Int64 = 15 // sec
-    static let defaultWindowSizeC:Int = 1024 * 1
+    static let defaultWindowSizeC:Int = 1024
 
     var timeout:Int64 = NetSocket.defaultTimeout
     var connected:Bool = false

@@ -100,6 +100,9 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             doOutput(bytes: handshake.c2packet(inputBuffer))
             inputBuffer = Array<UInt8>(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
             readyState = .ackSent
+            if (RTMPHandshake.sigSize <= inputBuffer.count) {
+                listen()
+            }
         case .ackSent:
             if (inputBuffer.count < RTMPHandshake.sigSize) {
                 break

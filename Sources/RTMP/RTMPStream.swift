@@ -375,39 +375,36 @@ open class RTMPStream: NetStream {
         }
     }
 
-    @available(*, unavailable)
-    open func publish(_ name:String?, type:String = "live") {
-        guard let howToPublish:RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
-            return
-        }
-        publish(name, type: howToPublish)
-    }
-
     open func publish(_ name:String?, type:RTMPStream.HowToPublish = .live) {
         lockQueue.async {
             guard let name:String = name else {
-                self.readyState = .open
-                #if os(iOS)
-                self.mixer.videoIO.screen?.stopRunning()
-                #endif
-                self.mixer.audioIO.encoder.delegate = nil
-                self.mixer.videoIO.encoder.delegate = nil
-                self.mixer.audioIO.encoder.stopRunning()
-                self.mixer.videoIO.encoder.stopRunning()
-                self.sampler?.stopRunning()
-                self.mixer.recorder.stopRunning()
-                self.FCUnpublish()
-                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                    type: .zero,
-                    streamId: RTMPChunk.StreamID.audio.rawValue,
-                    message: RTMPCommandMessage(
-                        streamId: self.id,
-                        transactionId: 0,
-                        objectEncoding: self.objectEncoding,
-                        commandName: "closeStream",
-                        commandObject: nil,
-                        arguments: []
-                )), locked: nil)
+                switch self.readyState {
+                case .publish, .publishing:
+                    self.readyState = .open
+                    #if os(iOS)
+                        self.mixer.videoIO.screen?.stopRunning()
+                    #endif
+                    self.mixer.audioIO.encoder.delegate = nil
+                    self.mixer.videoIO.encoder.delegate = nil
+                    self.mixer.audioIO.encoder.stopRunning()
+                    self.mixer.videoIO.encoder.stopRunning()
+                    self.sampler?.stopRunning()
+                    self.mixer.recorder.stopRunning()
+                    self.FCUnpublish()
+                    self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+                        type: .zero,
+                        streamId: RTMPChunk.StreamID.audio.rawValue,
+                        message: RTMPCommandMessage(
+                            streamId: self.id,
+                            transactionId: 0,
+                            objectEncoding: self.objectEncoding,
+                            commandName: "closeStream",
+                            commandObject: nil,
+                            arguments: []
+                    )), locked: nil)
+                default:
+                    break
+                }
                 return
             }
 
