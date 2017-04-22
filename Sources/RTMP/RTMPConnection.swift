@@ -428,9 +428,9 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    func listen(bytes:[UInt8]) {
-        guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) else {
-            socket.inputBuffer.append(contentsOf: bytes)
+    func listen(_ data:Data) {
+        guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: data.bytes, size: socket.chunkSizeC) else {
+            socket.inputBuffer.append(contentsOf: data.bytes)
             return
         }
 
@@ -440,10 +440,10 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         if (currentChunk != nil) {
-            position = chunk.append(bytes, size: socket.chunkSizeC)
+            position = chunk.append(data.bytes, size: socket.chunkSizeC)
         }
         if (chunk.type == .two) {
-            position = chunk.append(bytes, message: messages[chunk.streamId])
+            position = chunk.append(data.bytes, message: messages[chunk.streamId])
         }
 
         if let message:RTMPMessage = chunk.message, chunk.ready {
@@ -465,7 +465,9 @@ extension RTMPConnection: RTMPSocketDelegate {
             message.execute(self)
             currentChunk = nil
             messages[chunk.streamId] = message
-            listen(bytes: Array<UInt8>(bytes[position..<bytes.count]))
+            if (position < data.count) {
+                listen(data.advanced(by: position))
+            }
             return
         }
 
@@ -477,8 +479,8 @@ extension RTMPConnection: RTMPSocketDelegate {
             fragmentedChunks.removeValue(forKey: chunk.streamId)
         }
 
-        if (position < bytes.count) {
-            listen(bytes: Array<UInt8>(bytes[position..<bytes.count]))
+        if (position < data.count) {
+            listen(data.advanced(by: position))
         }
     }
 }

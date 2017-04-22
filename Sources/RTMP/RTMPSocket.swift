@@ -21,7 +21,7 @@ protocol RTMPSocketCompatible: class {
 
 // MARK: -
 protocol RTMPSocketDelegate: IEventDispatcher {
-    func listen(bytes:[UInt8])
+    func listen(_ data:Data)
     func didSet(readyState:RTMPSocket.ReadyState)
 }
 
@@ -115,7 +115,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             }
             let bytes:[UInt8] = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes: bytes)
+            delegate?.listen(Data(bytes: bytes))
         default:
             break
         }

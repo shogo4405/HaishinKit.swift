@@ -170,7 +170,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             }
             let bytes:[UInt8] = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes: bytes)
+            delegate?.listen(Data(bytes: bytes))
         default:
             break
         }
