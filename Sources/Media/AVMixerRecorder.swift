@@ -167,7 +167,7 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
 
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     // MARK: AVMixerRecorderDelegate
-    public func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:String) {
+    open func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:String) {
         guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
             return
         }
@@ -182,7 +182,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         recorder.sourceTime = withPresentationTimeStamp
     }
 
-    public func getPixelBufferAdaptor(_ recorder: AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor? {
+    open func getPixelBufferAdaptor(_ recorder: AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor? {
         guard recorder.pixelBufferAdaptor == nil else {
             return recorder.pixelBufferAdaptor
         }
@@ -194,7 +194,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         return adaptor
     }
 
-    public func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
+    open func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
         guard recorder.writerInputs[mediaType] == nil else {
             return recorder.writerInputs[mediaType]
         }
@@ -245,7 +245,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         return input
     }
 
-    public func didFinishWriting(_ recorder:AVMixerRecorder) {
+    open func didFinishWriting(_ recorder:AVMixerRecorder) {
     #if os(iOS)
         guard let writer:AVAssetWriter = recorder.writer else {
             return
@@ -262,10 +262,10 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     #endif
     }
 
-    public func didStartRunning(_ recorder: AVMixerRecorder) {
+    open func didStartRunning(_ recorder: AVMixerRecorder) {
     }
 
-    public func didStopRunning(_ recorder: AVMixerRecorder) {
+    open func didStopRunning(_ recorder: AVMixerRecorder) {
         rotateTime = kCMTimeZero
     }
 
