@@ -2,6 +2,7 @@ import lf
 import Cocoa
 import Foundation
 import AVFoundation
+import VideoToolbox
 
 final class MainViewController: NSViewController {
     var rtmpConnection:RTMPConnection = RTMPConnection()

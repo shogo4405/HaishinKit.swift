@@ -70,9 +70,7 @@ struct AVCConfigurationRecord {
     }
 
     init(data: Data) {
-        var bytes:[UInt8] = [UInt8](repeating: 0x00, count: data.count)
-        (data as NSData).getBytes(&bytes, length: bytes.count)
-        self.bytes = bytes
+        self.bytes = data.bytes
     }
 
     func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
