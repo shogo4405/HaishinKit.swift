@@ -32,6 +32,9 @@ open class AVMixerRecorder: NSObject {
 
     open var writer:AVAssetWriter?
     open var fileName:String?
+    #if os(iOS)
+    open var shouldSaveToPhotoLibrary:Bool = true
+    #endif
     open var delegate:AVMixerRecorderDelegate?
     open var writerInputs:[String:AVAssetWriterInput] = [:]
     open var outputSettings:[String:[String:Any]] = AVMixerRecorder.defaultOutputSettings
@@ -247,6 +250,9 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
 
     open func didFinishWriting(_ recorder:AVMixerRecorder) {
     #if os(iOS)
+        guard recorder.shouldSaveToPhotoLibrary else {
+            return
+        }
         guard let writer:AVAssetWriter = recorder.writer else {
             return
         }
