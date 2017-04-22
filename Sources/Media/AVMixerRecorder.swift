@@ -151,16 +151,18 @@ extension AVMixerRecorder: Runnable {
 open class DefaultAVMixerRecorderDelegate: NSObject {
     open var duration:Int64 = 0
     open var dateFormat:String = "-yyyyMMdd-HHmmss"
+
     fileprivate var rotateTime:CMTime = kCMTimeZero
     fileprivate var clockReference:String = AVMediaTypeVideo
 
-    #if os(OSX)
+    #if os(iOS)
+    open var shouldSaveToPhotoLibrary:Bool = true
     open lazy var moviesDirectory:URL = {
-        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
+        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
     }()
     #else
     open lazy var moviesDirectory:URL = {
-        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #endif
 }
@@ -247,7 +249,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
 
     open func didFinishWriting(_ recorder:AVMixerRecorder) {
     #if os(iOS)
-        guard let writer:AVAssetWriter = recorder.writer else {
+        guard let writer:AVAssetWriter = recorder.writer, shouldSaveToPhotoLibrary else {
             return
         }
         PHPhotoLibrary.shared().performChanges({() -> Void in
