@@ -91,10 +91,10 @@ final class ByteArrayTests: XCTestCase {
 
     func testDouble() {
         let bytes:ByteArray = ByteArray()
-        bytes.writeDouble(M_PI)
+        bytes.writeDouble(.pi)
         XCTAssertEqual(bytes.position, ByteArray.sizeOfDouble)
         bytes.position = 0
-        XCTAssertEqual(M_PI, try! bytes.readDouble())
+        XCTAssertEqual(Double.pi, try! bytes.readDouble())
         bytes.clear()
         bytes.writeDouble(Double.infinity)
         bytes.position = 0

@@ -1,8 +1,6 @@
 import Foundation
 
 final class RTMPChunk {
-    static let fillZero:[UInt8] = [0x00]
-
     enum `Type`: UInt8 {
         case zero = 0
         case one = 1
@@ -102,19 +100,24 @@ final class RTMPChunk {
                 return data
             }
             
-            _data.append(Data(type.toBasicHeader(streamId)))
-            _data.append(Data((RTMPChunk.maxTimestamp < message.timestamp) ? [0xFF, 0xFF, 0xFF] : Array<UInt8>(message.timestamp.bigEndian.bytes[1...3])))
-            _data.append(Data(UInt32(message.payload.count).bigEndian.bytes[1...3]))
-            _data.append(message.type.rawValue)
-            
-            if (type == .zero) {
-                _data += message.streamId.littleEndian.bytes
-            }
+            _data.append(type.toBasicHeader(streamId))
             
             if (RTMPChunk.maxTimestamp < message.timestamp) {
-                _data += message.timestamp.bigEndian.bytes
+                _data.append(contentsOf: [0xFF, 0xFF, 0xFF])
+            } else {
+                _data.append(contentsOf: message.timestamp.bigEndian.data[1...3])
             }
-            
+            _data.append(contentsOf: UInt32(message.payload.count).bigEndian.data[1...3])
+            _data.append(message.type.rawValue)
+
+            if (type == .zero) {
+                _data.append(message.streamId.littleEndian.data)
+            }
+
+            if (RTMPChunk.maxTimestamp < message.timestamp) {
+                _data.append(message.timestamp.bigEndian.data)
+            }
+
             var data:Data = Data()
             data.append(_data)
             data.append(message.payload)
@@ -133,7 +136,7 @@ final class RTMPChunk {
                 streamId = UInt16(newValue[1]) + 64
             case 1:
                 pos = 3
-                streamId = UInt16(bytes: Array<UInt8>(newValue[1...2])) + 64
+                streamId = UInt16(data: newValue[1...2]) + 64
             default:
                 pos = 1
                 streamId = UInt16(newValue[0] & 0b00111111)
@@ -152,19 +155,19 @@ final class RTMPChunk {
             
             switch type {
             case .zero:
-                message.timestamp = UInt32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos..<pos + 3])).bigEndian
-                message.length = Int(Int32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos + 3..<pos + 6])).bigEndian)
-                message.streamId = UInt32(bytes: Array<UInt8>(newValue[pos + 7..<pos + headerSize]))
+                message.timestamp = UInt32(data: newValue[pos..<pos + 3]).bigEndian
+                message.length = Int(Int32(data: newValue[pos + 3..<pos + 6]).bigEndian)
+                message.streamId = UInt32(data: newValue[pos + 7..<pos + 11])
             case .one:
-                message.timestamp = UInt32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos..<pos + 3])).bigEndian
-                message.length = Int(Int32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos + 3..<pos + 6])).bigEndian)
+                message.timestamp = UInt32(data: newValue[pos..<pos + 3]).bigEndian
+                message.length = Int(Int32(data: newValue[pos + 3..<pos + 6]).bigEndian)
             default:
                 break
             }
-            
+
             var start:Int = headerSize
             if (message.timestamp == RTMPChunk.maxTimestamp) {
-                message.timestamp = UInt32(bytes: Array<UInt8>(newValue[start..<start + 4])).bigEndian
+                message.timestamp = UInt32(data: newValue[start..<start + 4]).bigEndian
                 start += 4
             }
             

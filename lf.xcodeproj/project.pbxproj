@@ -236,6 +236,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		2913B9581EAE518100F95645 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29C932931CD76FD300283FC5;
+			remoteInfo = "Example macOS";
+		};
 		2915EC6A1D85BDF100621092 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -263,13 +270,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 29B8761A1CD701F900FC07DA;
 			remoteInfo = "lf MacOS";
-		};
-		29798E641CE60E5E00F5CBD0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 29C932931CD76FD300283FC5;
-			remoteInfo = "Example MacOS";
 		};
 		29C932A81CD78B5500283FC5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1048,7 +1048,7 @@
 			);
 			dependencies = (
 				29798E601CE60E5300F5CBD0 /* PBXTargetDependency */,
-				29798E651CE60E5E00F5CBD0 /* PBXTargetDependency */,
+				2913B9591EAE518100F95645 /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = Tests;
@@ -1147,6 +1147,7 @@
 					29798E581CE60E5300F5CBD0 = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
+						TestTargetID = 29C932931CD76FD300283FC5;
 					};
 					29B8761A1CD701F900FC07DA = {
 						CreatedOnToolsVersion = 7.3;
@@ -1560,6 +1561,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2913B9591EAE518100F95645 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29C932931CD76FD300283FC5 /* Example macOS */;
+			targetProxy = 2913B9581EAE518100F95645 /* PBXContainerItemProxy */;
+		};
 		2915EC6B1D85BDF100621092 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2915EC5E1D85BDF100621092 /* ScreencastUI */;
@@ -1579,11 +1585,6 @@
 			isa = PBXTargetDependency;
 			target = 29B8761A1CD701F900FC07DA /* macOS */;
 			targetProxy = 29798E5F1CE60E5300F5CBD0 /* PBXContainerItemProxy */;
-		};
-		29798E651CE60E5E00F5CBD0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 29C932931CD76FD300283FC5 /* Example macOS */;
-			targetProxy = 29798E641CE60E5E00F5CBD0 /* PBXContainerItemProxy */;
 		};
 		29C932A91CD78B5500283FC5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1859,6 +1860,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -1866,6 +1868,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example macOS.app/Contents/MacOS/Example macOS";
 			};
 			name = Debug;
 		};
@@ -1878,6 +1881,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/build/Debug",
+					"$(PROJECT_DIR)/Carthage/Build/Mac",
 				);
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
@@ -1885,6 +1889,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example macOS.app/Contents/MacOS/Example macOS";
 			};
 			name = Release;
 		};
