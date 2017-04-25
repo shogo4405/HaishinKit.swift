@@ -428,22 +428,22 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    func listen(bytes:[UInt8]) {
-        guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(bytes: bytes, size: socket.chunkSizeC) else {
-            socket.inputBuffer.append(contentsOf: bytes)
+    func listen(_ data:Data) {
+        guard let chunk:RTMPChunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
+            socket.inputBuffer.append(data)
             return
         }
 
-        var position:Int = chunk.bytes.count
-        if (chunk.bytes.count >= 4) && (chunk.bytes[1] == 0xFF) && (chunk.bytes[2] == 0xFF) && (chunk.bytes[3] == 0xFF) {
+        var position:Int = chunk.data.count
+        if (chunk.data.count >= 4) && (chunk.data[1] == 0xFF) && (chunk.data[2] == 0xFF) && (chunk.data[3] == 0xFF) {
             position += 4
         }
 
         if (currentChunk != nil) {
-            position = chunk.append(bytes, size: socket.chunkSizeC)
+            position = chunk.append(data, size: socket.chunkSizeC)
         }
         if (chunk.type == .two) {
-            position = chunk.append(bytes, message: messages[chunk.streamId])
+            position = chunk.append(data, message: messages[chunk.streamId])
         }
 
         if let message:RTMPMessage = chunk.message, chunk.ready {
@@ -465,7 +465,9 @@ extension RTMPConnection: RTMPSocketDelegate {
             message.execute(self)
             currentChunk = nil
             messages[chunk.streamId] = message
-            listen(bytes: Array<UInt8>(bytes[position..<bytes.count]))
+            if (position < data.count) {
+                listen(data.advanced(by: position))
+            }
             return
         }
 
@@ -477,8 +479,8 @@ extension RTMPConnection: RTMPSocketDelegate {
             fragmentedChunks.removeValue(forKey: chunk.streamId)
         }
 
-        if (position < bytes.count) {
-            listen(bytes: Array<UInt8>(bytes[position..<bytes.count]))
+        if (position < data.count) {
+            listen(data.advanced(by: position))
         }
     }
 }

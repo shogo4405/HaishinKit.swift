@@ -183,9 +183,9 @@ enum FLVTagType:UInt8 {
     func message(with streamId: UInt32, timestamp: UInt32, buffer:Data) -> RTMPMessage {
         switch self {
         case .audio:
-            return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+            return RTMPAudioMessage(streamId: streamId, timestamp: timestamp, payload: buffer)
         case .video:
-            return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, buffer: buffer)
+            return RTMPVideoMessage(streamId: streamId, timestamp: timestamp, payload: buffer)
         case .data:
             return RTMPDataMessage(objectEncoding: 0x00)
         }

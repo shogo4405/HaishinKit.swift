@@ -84,8 +84,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     init(data:Data) {
-        bytes = [UInt8](repeating: 0x00, count: data.count)
-        (data as NSData).getBytes(&bytes, length: data.count)
+        self.bytes = data.bytes
     }
 
     fileprivate(set) var bytes:[UInt8] = []

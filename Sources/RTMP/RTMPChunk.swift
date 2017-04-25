@@ -1,8 +1,6 @@
 import Foundation
 
 final class RTMPChunk {
-    static let fillZero:[UInt8] = [0x00]
-
     enum `Type`: UInt8 {
         case zero = 0
         case one = 1
@@ -22,18 +20,18 @@ final class RTMPChunk {
             }
         }
 
-        func ready(_ bytes:[UInt8]) -> Bool {
-            return headerSize + RTMPChunk.getStreamIdSize(bytes[0]) < bytes.count
+        func ready(_ data:Data) -> Bool {
+            return headerSize + RTMPChunk.getStreamIdSize(data[0]) < data.count
         }
 
-        func toBasicHeader(_ streamId:UInt16) -> [UInt8] {
+        func toBasicHeader(_ streamId:UInt16) -> Data {
             if (streamId <= 63) {
-                return [rawValue << 6 | UInt8(streamId)]
+                return Data([rawValue << 6 | UInt8(streamId)])
             }
             if (streamId <= 319) {
-                return [rawValue << 6 | 0b0000000, UInt8(streamId - 64)]
+                return Data([rawValue << 6 | 0b0000000, UInt8(streamId - 64)])
             }
-            return [rawValue << 6 | 0b00111111] + (streamId - 64).bigEndian.bytes
+            return Data([rawValue << 6 | 0b00111111] + (streamId - 64).bigEndian.bytes)
         }
     }
 
@@ -89,9 +87,102 @@ final class RTMPChunk {
         return 3
     }
 
+    var data:Data {
+        get {
+            guard let message:RTMPMessage = message else {
+                return _data
+            }
+            
+            guard _data.isEmpty else {
+                var data:Data = Data()
+                data.append(_data)
+                data.append(message.payload)
+                return data
+            }
+            
+            _data.append(type.toBasicHeader(streamId))
+            
+            if (RTMPChunk.maxTimestamp < message.timestamp) {
+                _data.append(contentsOf: [0xFF, 0xFF, 0xFF])
+            } else {
+                _data.append(contentsOf: message.timestamp.bigEndian.data[1...3])
+            }
+            _data.append(contentsOf: UInt32(message.payload.count).bigEndian.data[1...3])
+            _data.append(message.type.rawValue)
+
+            if (type == .zero) {
+                _data.append(message.streamId.littleEndian.data)
+            }
+
+            if (RTMPChunk.maxTimestamp < message.timestamp) {
+                _data.append(message.timestamp.bigEndian.data)
+            }
+
+            var data:Data = Data()
+            data.append(_data)
+            data.append(message.payload)
+            
+            return data
+        }
+        set {
+            if (_data == newValue) {
+                return
+            }
+            
+            var pos:Int = 0
+            switch (newValue[0] & 0b00111111) {
+            case 0:
+                pos = 2
+                streamId = UInt16(newValue[1]) + 64
+            case 1:
+                pos = 3
+                streamId = UInt16(data: newValue[1...2]) + 64
+            default:
+                pos = 1
+                streamId = UInt16(newValue[0] & 0b00111111)
+            }
+            
+            _data.append(newValue[0..<headerSize])
+            
+            if (type == .two || type == .three) {
+                return
+            }
+            
+            guard let message:RTMPMessage = RTMPMessage.create(newValue[pos + 6]) else {
+                logger.error(newValue.description)
+                return
+            }
+            
+            switch type {
+            case .zero:
+                message.timestamp = UInt32(data: newValue[pos..<pos + 3]).bigEndian
+                message.length = Int(Int32(data: newValue[pos + 3..<pos + 6]).bigEndian)
+                message.streamId = UInt32(data: newValue[pos + 7..<pos + 11])
+            case .one:
+                message.timestamp = UInt32(data: newValue[pos..<pos + 3]).bigEndian
+                message.length = Int(Int32(data: newValue[pos + 3..<pos + 6]).bigEndian)
+            default:
+                break
+            }
+
+            var start:Int = headerSize
+            if (message.timestamp == RTMPChunk.maxTimestamp) {
+                message.timestamp = UInt32(data: newValue[start..<start + 4]).bigEndian
+                start += 4
+            }
+            
+            let end:Int = min(message.length + start, newValue.count)
+            fragmented = size + start < end
+            
+            message.payload = newValue.subdata(in: start..<min(size + start, end))
+            
+            self.message = message
+        }
+    }
+
     fileprivate(set) var message:RTMPMessage?
     fileprivate(set) var fragmented:Bool = false
-    fileprivate var _bytes:[UInt8] = []
+    fileprivate var _data:Data = Data()
 
     init(type:Type, streamId:UInt16, message:RTMPMessage) {
         self.type = type
@@ -103,19 +194,19 @@ final class RTMPChunk {
         self.message = message
     }
 
-    init?(bytes:[UInt8], size:Int) {
-        if (bytes.isEmpty) {
+    init?(_ data:Data, size:Int) {
+        if (data.isEmpty) {
             return nil
         }
-        guard let type:Type = Type(rawValue: (bytes[0] & 0b11000000) >> 6) , type.ready(bytes) else {
+        guard let type:Type = Type(rawValue: (data[0] & 0b11000000) >> 6) , type.ready(data) else {
             return nil
         }
         self.size = size
         self.type = type
-        self.bytes = bytes
+        self.data = data
     }
 
-    func append(_ bytes:[UInt8], size:Int) -> Int {
+    func append(_ data:Data, size:Int) -> Int {
         fragmented = false
 
         guard let message:RTMPMessage = message else {
@@ -124,8 +215,8 @@ final class RTMPChunk {
 
         var length:Int = message.length - message.payload.count
 
-        if (bytes.count < length) {
-            length = bytes.count
+        if (data.count < length) {
+            length = data.count
         }
 
         let chunkSize:Int = size - (message.payload.count % size)
@@ -134,7 +225,7 @@ final class RTMPChunk {
         }
 
         if (0 < length) {
-            message.payload.append(contentsOf: bytes[0..<length])
+            message.payload.append(data[0..<length])
         }
 
         fragmented = message.payload.count % size == 0
@@ -142,12 +233,12 @@ final class RTMPChunk {
         return length
     }
 
-    func append(_ bytes:[UInt8], message: RTMPMessage?) -> Int {
+    func append(_ data:Data, message: RTMPMessage?) -> Int {
         guard let message:RTMPMessage = message else {
             return 0
         }
 
-        let buffer:ByteArray = ByteArray(bytes: bytes)
+        let buffer:ByteArray = ByteArray(data: data)
         buffer.position = basicHeaderSize
 
         do {
@@ -155,7 +246,7 @@ final class RTMPChunk {
             self.message?.streamId = message.streamId
             self.message?.timestamp = try buffer.readUInt24()
             self.message?.length = message.length
-            self.message?.payload = try buffer.readBytes(message.length)
+            self.message?.payload = Data(try buffer.readBytes(message.length))
         } catch {
             logger.warning("\(buffer)")
         }
@@ -163,22 +254,21 @@ final class RTMPChunk {
         return headerSize + message.length
     }
 
-    func split(_ size:Int) -> [[UInt8]] {
-        let bytes:[UInt8] = self.bytes
-        message?.length = bytes.count
+    func split(_ size:Int) -> [Data] {
+        let data:Data = self.data
+        message?.length = data.count
         guard let message:RTMPMessage = message, size < message.payload.count else {
-            return [bytes]
+            return [data]
         }
-        var result:[[UInt8]] = []
         let startIndex:Int = size + headerSize
-        let header:[UInt8] = Type.three.toBasicHeader(streamId)
-        result.append(Array<UInt8>(bytes[0..<startIndex]))
-        for index in stride(from: startIndex, to: bytes.count, by: size) {
-            var data:[UInt8] = header
-            data.append(contentsOf: bytes[index..<index.advanced(by: index + size < bytes.count ? size : bytes.count - index)])
-            result.append(data)
+        let header:Data = Type.three.toBasicHeader(streamId)
+        var chunks:[Data] = [data.subdata(in: 0..<startIndex)]
+        for index in stride(from: startIndex, to: data.count, by: size) {
+            var chunk:Data = header
+            chunk.append(contentsOf: data[index..<index.advanced(by: index + size < data.count ? size : data.count - index)])
+            chunks.append(chunk)
         }
-        return result
+        return chunks
     }
 }
 
@@ -186,93 +276,5 @@ extension RTMPChunk: CustomStringConvertible {
     // MARK: CustomStringConvertible
     var description:String {
         return Mirror(reflecting: self).description
-    }
-}
-
-extension RTMPChunk: BytesConvertible {
-    // MARK: BytesConvertible
-    var bytes:[UInt8] {
-        get {
-            guard let message:RTMPMessage = message else {
-                return _bytes
-            }
-
-            guard _bytes.isEmpty else {
-                var bytes:[UInt8] = _bytes
-                bytes.append(contentsOf: message.payload)
-                return bytes
-            }
-
-            _bytes += type.toBasicHeader(streamId)
-            _bytes += (RTMPChunk.maxTimestamp < message.timestamp) ? [0xFF, 0xFF, 0xFF] : Array<UInt8>(message.timestamp.bigEndian.bytes[1...3])
-            _bytes += Array<UInt8>(UInt32(message.payload.count).bigEndian.bytes[1...3])
-            _bytes.append(message.type.rawValue)
-
-            if (type == .zero) {
-                _bytes += message.streamId.littleEndian.bytes
-            }
-
-            if (RTMPChunk.maxTimestamp < message.timestamp) {
-                _bytes += message.timestamp.bigEndian.bytes
-            }
-
-            var bytes:[UInt8] = _bytes
-            bytes.append(contentsOf: message.payload)
-
-            return bytes
-        }
-        set {
-            if (_bytes == newValue) {
-                return
-            }
-
-            var pos:Int = 0
-            switch (newValue[0] & 0b00111111) {
-            case 0:
-                pos = 2
-                streamId = UInt16(newValue[1]) + 64
-            case 1:
-                pos = 3
-                streamId = UInt16(bytes: Array<UInt8>(newValue[1...2])) + 64
-            default:
-                pos = 1
-                streamId = UInt16(newValue[0] & 0b00111111)
-            }
-
-            _bytes += Array<UInt8>(newValue[0..<headerSize])
-
-            if (type == .two || type == .three) {
-                return
-            }
-
-            guard let message:RTMPMessage = RTMPMessage.create(newValue[pos + 6]) else {
-                logger.error(newValue.description)
-                return
-            }
-
-            switch type {
-            case .zero:
-                message.timestamp = UInt32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos..<pos + 3])).bigEndian
-                message.length = Int(Int32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos + 3..<pos + 6])).bigEndian)
-                message.streamId = UInt32(bytes: Array<UInt8>(newValue[pos + 7..<pos + headerSize]))
-            case .one:
-                message.timestamp = UInt32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos..<pos + 3])).bigEndian
-                message.length = Int(Int32(bytes: RTMPChunk.fillZero + Array<UInt8>(newValue[pos + 3..<pos + 6])).bigEndian)
-            default:
-                break
-            }
-
-            var start:Int = headerSize
-            if (message.timestamp == RTMPChunk.maxTimestamp) {
-                message.timestamp = UInt32(bytes: Array<UInt8>(newValue[start..<start + 4])).bigEndian
-                start += 4
-            }
-
-            let end:Int = min(message.length + start, newValue.count)
-            fragmented = size + start < end
-            message.payload = Array<UInt8>(newValue[start..<min(size + start, end)])
-
-            self.message = message
-        }
     }
 }

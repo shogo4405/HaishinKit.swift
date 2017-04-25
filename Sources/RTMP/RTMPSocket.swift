@@ -8,7 +8,7 @@ protocol RTMPSocketCompatible: class {
     var totalBytesIn:Int64 { get }
     var totalBytesOut:Int64 { get }
     var queueBytesOut:Int64 { get }
-    var inputBuffer:[UInt8] { get set }
+    var inputBuffer:Data { get set }
     var securityLevel:StreamSocketSecurityLevel { get set }
     weak var delegate:RTMPSocketDelegate? { get set }
 
@@ -21,7 +21,7 @@ protocol RTMPSocketCompatible: class {
 
 // MARK: -
 protocol RTMPSocketDelegate: IEventDispatcher {
-    func listen(bytes:[UInt8])
+    func listen(_ data:Data)
     func didSet(readyState:RTMPSocket.ReadyState)
 }
 
@@ -68,11 +68,11 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     @discardableResult
     func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
-        let chunks:[[UInt8]] = chunk.split(chunkSizeS)
+        let chunks:[Data] = chunk.split(chunkSizeS)
         for i in 0..<chunks.count - 1 {
-            doOutput(bytes: chunks[i])
+            doOutput(data: chunks[i])
         }
-        doOutput(bytes: chunks.last!, locked: locked)
+        doOutput(data: chunks.last!, locked: locked)
         if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose(chunk)
         }
@@ -97,8 +97,8 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            doOutput(bytes: handshake.c2packet(inputBuffer))
-            inputBuffer = Array<UInt8>(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
+            doOutput(bytes: handshake.c2packet(inputBuffer.bytes))
+            inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
             if (RTMPHandshake.sigSize <= inputBuffer.count) {
                 listen()
@@ -113,9 +113,9 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             if (inputBuffer.isEmpty){
                 break
             }
-            let bytes:[UInt8] = inputBuffer
+            let bytes:Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes: bytes)
+            delegate?.listen(bytes)
         default:
             break
         }

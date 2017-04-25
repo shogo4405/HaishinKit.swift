@@ -30,9 +30,7 @@ open class NetService: NSObject {
             guard let index:Int = clients.index(of: client) else {
                 return
             }
-            
             clients.remove(at: index)
-            
             client.delegate = nil
             client.close(isDisconnected: true)
         }

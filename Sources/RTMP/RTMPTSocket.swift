@@ -6,7 +6,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var timeout:Int64 = 0
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
-    var inputBuffer:[UInt8] = []
+    var inputBuffer:Data = Data()
     var securityLevel:StreamSocketSecurityLevel = .none
     weak var delegate:RTMPSocketDelegate? = nil
     var connected:Bool = false {
@@ -85,7 +85,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     @discardableResult
     func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         var bytes:[UInt8] = []
-        let chunks:[[UInt8]] = chunk.split(chunkSizeS)
+        let chunks:[Data] = chunk.split(chunkSizeS)
         for chunk in chunks {
             bytes.append(contentsOf: chunk)
         }
@@ -154,8 +154,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            c2packet = handshake.c2packet(inputBuffer)
-            inputBuffer = Array<UInt8>(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
+            c2packet = handshake.c2packet(inputBuffer.bytes)
+            inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
             fallthrough
         case .ackSent:
@@ -168,9 +168,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             if (inputBuffer.isEmpty){
                 break
             }
-            let bytes:[UInt8] = inputBuffer
+            let data:Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes: bytes)
+            delegate?.listen(data)
         default:
             break
         }
