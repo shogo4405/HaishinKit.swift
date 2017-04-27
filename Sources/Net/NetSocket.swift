@@ -12,7 +12,7 @@ public class NetSocket: NSObject {
     var outputStream:OutputStream?
     var networkQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.network")
     var securityLevel:StreamSocketSecurityLevel = .none
-    private(set) var totalBytesIn:Int64 = 0
+    var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
     private(set) var queueBytesOut:Int64 = 0
 

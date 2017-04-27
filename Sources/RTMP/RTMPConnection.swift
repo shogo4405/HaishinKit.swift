@@ -30,6 +30,7 @@ open class Responder: NSObject {
  flash.net.NetConnection for Swift
  */
 open class RTMPConnection: EventDispatcher {
+    static public let defaultWindowSizeS:Int64 = 250000
     static public let supportedProtocols:[String] = ["rtmp", "rtmps", "rtmpt"]
     static public let defaultPort:Int = 1935
     static public let defaultFlashVer:String = "FMLE/3.0 (compatible; FMSc/1.0)"
@@ -186,9 +187,23 @@ open class RTMPConnection: EventDispatcher {
 
     var socket:RTMPSocketCompatible!
     var streams:[UInt32: RTMPStream] = [:]
+    var sequence:Int64 = 0
     var bandWidth:UInt32 = 0
     var streamsmap:[UInt16: UInt32] = [:]
     var operations:[Int: Responder] = [:]
+    var windowSizeC:Int64 = RTMPConnection.defaultWindowSizeS {
+        didSet {
+            guard connected else {
+                return
+            }
+            socket.doOutput(chunk: RTMPChunk(
+                type: .zero,
+                streamId: RTMPChunk.StreamID.control.rawValue,
+                message: RTMPWindowAcknowledgementSizeMessage(size: UInt32(windowSizeC))
+            ), locked: nil)
+        }
+    }
+    var windowSizeS:Int64 = RTMPConnection.defaultWindowSizeS
     var currentTransactionId:Int = 0
 
     fileprivate var timer:Timer? {
@@ -197,7 +212,7 @@ open class RTMPConnection: EventDispatcher {
                 oldValue.invalidate()
             }
             if let timer:Timer = timer {
-                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+                RunLoop.main.add(timer, forMode: .commonModes)
             }
         }
     }
@@ -408,7 +423,7 @@ open class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    func didSet(readyState: RTMPSocket.ReadyState) {
+    func didSetReadyState(_ readyState: RTMPSocket.ReadyState) {
         switch readyState {
         case .handshakeDone:
             guard let chunk:RTMPChunk = createConnectionChunk() else {
@@ -418,14 +433,29 @@ extension RTMPConnection: RTMPSocketDelegate {
             socket.doOutput(chunk: chunk, locked: nil)
         case .closed:
             connected = false
+            sequence = 0
             currentChunk = nil
             currentTransactionId = 0
+            previousTotalBytesIn = 0
+            previousTotalBytesOut = 0
             messages.removeAll()
             operations.removeAll()
             fragmentedChunks.removeAll()
         default:
             break
         }
+    }
+
+    func didSetTotalBytesIn(_ totalBytesIn: Int64) {
+        guard windowSizeS * (sequence + 1) <= totalBytesIn else {
+            return
+        }
+        socket.doOutput(chunk: RTMPChunk(
+            type: sequence == 0 ? .zero : .one,
+            streamId: RTMPChunk.StreamID.control.rawValue,
+            message: RTMPAcknowledgementMessage(sequence: UInt32(totalBytesIn))
+        ), locked: nil)
+        sequence += 1
     }
 
     func listen(_ data:Data) {
@@ -435,7 +465,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         var position:Int = chunk.data.count
-        if (chunk.data.count >= 4) && (chunk.data[1] == 0xFF) && (chunk.data[2] == 0xFF) && (chunk.data[3] == 0xFF) {
+        if (4 <= chunk.data.count) && (chunk.data[1] == 0xFF) && (chunk.data[2] == 0xFF) && (chunk.data[3] == 0xFF) {
             position += 4
         }
 

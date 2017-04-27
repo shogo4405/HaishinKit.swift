@@ -178,6 +178,11 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
     init() {
         super.init(type: .ack)
     }
+
+    init(sequence:UInt32) {
+        super.init(type: .ack)
+        self.sequence = sequence
+    }
 }
 
 // MARK: -
@@ -214,11 +219,8 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection) {
-        connection.socket.doOutput(chunk: RTMPChunk(
-            type: .zero,
-            streamId: RTMPChunk.StreamID.control.rawValue,
-            message: RTMPWindowAcknowledgementSizeMessage(size: size)
-        ), locked: nil)
+        connection.windowSizeC = Int64(size)
+        connection.windowSizeS = Int64(size)
     }
 }
 

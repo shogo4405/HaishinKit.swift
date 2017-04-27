@@ -32,7 +32,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
     var readyState:RTMPSocket.ReadyState = .uninitialized {
         didSet {
-            delegate?.didSet(readyState: readyState)
+            delegate?.didSetReadyState(readyState)
         }
     }
 

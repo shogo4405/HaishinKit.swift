@@ -22,7 +22,8 @@ protocol RTMPSocketCompatible: class {
 // MARK: -
 protocol RTMPSocketDelegate: IEventDispatcher {
     func listen(_ data:Data)
-    func didSet(readyState:RTMPSocket.ReadyState)
+    func didSetReadyState(_ readyState:RTMPSocket.ReadyState)
+    func didSetTotalBytesIn(_ totalBytesIn:Int64)
 }
 
 // MARK: -
@@ -38,7 +39,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     var readyState:ReadyState = .uninitialized {
         didSet {
-            delegate?.didSet(readyState: readyState)
+            delegate?.didSetReadyState(readyState)
         }
     }
     var timestamp:TimeInterval {
@@ -47,6 +48,11 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
     weak var delegate:RTMPSocketDelegate? = nil
+    override var totalBytesIn: Int64 {
+        didSet {
+            delegate?.didSetTotalBytesIn(totalBytesIn)
+        }
+    }
 
     override var connected:Bool {
         didSet {
