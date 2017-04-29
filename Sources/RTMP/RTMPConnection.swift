@@ -193,13 +193,13 @@ open class RTMPConnection: EventDispatcher {
     var operations:[Int: Responder] = [:]
     var windowSizeC:Int64 = RTMPConnection.defaultWindowSizeS {
         didSet {
-            guard connected else {
+            guard socket.connected else {
                 return
             }
             socket.doOutput(chunk: RTMPChunk(
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
-                message: RTMPWindowAcknowledgementSizeMessage(size: UInt32(windowSizeC))
+                message: RTMPWindowAcknowledgementSizeMessage(UInt32(windowSizeC))
             ), locked: nil)
         }
     }
@@ -319,7 +319,7 @@ open class RTMPConnection: EventDispatcher {
             socket.doOutput(chunk: RTMPChunk(
                 type: .one,
                 streamId: RTMPChunk.StreamID.control.rawValue,
-                message: RTMPSetChunkSizeMessage(size: UInt32(socket.chunkSizeS))
+                message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
         case Code.connectRejected.rawValue:
             guard
@@ -453,7 +453,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         socket.doOutput(chunk: RTMPChunk(
             type: sequence == 0 ? .zero : .one,
             streamId: RTMPChunk.StreamID.control.rawValue,
-            message: RTMPAcknowledgementMessage(sequence: UInt32(totalBytesIn))
+            message: RTMPAcknowledgementMessage(UInt32(totalBytesIn))
         ), locked: nil)
         sequence += 1
     }

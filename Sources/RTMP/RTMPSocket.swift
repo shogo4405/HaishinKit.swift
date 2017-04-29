@@ -2,6 +2,7 @@ import Foundation
 
 protocol RTMPSocketCompatible: class {
     var timeout:Int64 { get set }
+    var connected:Bool { get }
     var timestamp:TimeInterval { get }
     var chunkSizeC:Int { get set }
     var chunkSizeS:Int { get set }

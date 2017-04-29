@@ -96,14 +96,14 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
-            super.payload = Data(size.bigEndian.bytes)
+            super.payload = size.bigEndian.data
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            size = UInt32(bytes: newValue.bytes).bigEndian
+            size = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
     }
@@ -112,7 +112,7 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
         super.init(type: .chunkSize)
     }
 
-    init(size:UInt32) {
+    init(_ size:UInt32) {
         super.init(type: .chunkSize)
         self.size = size
     }
@@ -134,14 +134,14 @@ final class RTMPAbortMessge: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
-            super.payload = Data(chunkStreamId.bigEndian.bytes)
+            super.payload = chunkStreamId.bigEndian.data
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            chunkStreamId = UInt32(bytes: newValue.bytes).bigEndian
+            chunkStreamId = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
     }
@@ -163,14 +163,14 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
-            super.payload = Data(sequence.bigEndian.bytes)
+            super.payload = sequence.bigEndian.data
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            sequence = UInt32(bytes: newValue.bytes).bigEndian
+            sequence = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
     }
@@ -179,7 +179,7 @@ final class RTMPAcknowledgementMessage: RTMPMessage {
         super.init(type: .ack)
     }
 
-    init(sequence:UInt32) {
+    init(_ sequence:UInt32) {
         super.init(type: .ack)
         self.sequence = sequence
     }
@@ -196,7 +196,7 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
         super.init(type: .windowAck)
     }
 
-    init(size:UInt32) {
+    init(_ size:UInt32) {
         super.init(type: .windowAck)
         self.size = size
     }
@@ -206,14 +206,14 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
-            super.payload = Data(size.bigEndian.bytes)
+            super.payload = size.bigEndian.data
             return super.payload
         }
         set {
             if (super.payload == newValue) {
                 return
             }
-            size = UInt32(bytes: newValue.bytes).bigEndian
+            size = UInt32(data: newValue).bigEndian
             super.payload = newValue
         }
     }
@@ -250,8 +250,8 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
                 return super.payload
             }
             var payload:Data = Data()
-            payload.append(contentsOf: size.bigEndian.bytes)
-            payload.append(contentsOf: [limit.rawValue])
+            payload.append(size.bigEndian.data)
+            payload.append(limit.rawValue)
             super.payload = payload
             return super.payload
         }
@@ -259,7 +259,7 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
             if (super.payload == newValue) {
                 return
             }
-            size = UInt32(bytes: Array<UInt8>(newValue[0...3])).bigEndian
+            size = UInt32(data: newValue[0..<4]).bigEndian
             limit = Limit(rawValue: newValue[4]) ?? .unknown
             super.payload = newValue
         }
