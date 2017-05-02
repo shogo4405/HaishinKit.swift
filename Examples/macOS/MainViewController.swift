@@ -2,12 +2,13 @@ import lf
 import Cocoa
 import Foundation
 import AVFoundation
+import VideoToolbox
 
 final class MainViewController: NSViewController {
     var rtmpConnection:RTMPConnection = RTMPConnection()
     var rtmpStream:RTMPStream!
 
-    var httpService:HTTPService = HTTPService(
+    var httpService:HLSService = HLSService(
         domain: "local", type: HTTPService.type, name: "", port: HTTPService.defaultPort
     )
     var httpStream:HTTPStream = HTTPStream()
@@ -156,7 +157,7 @@ final class MainViewController: NSViewController {
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish("live")
+                rtmpStream!.publish(Preference.defaultInstance.streamName)
             default:
                 break
             }

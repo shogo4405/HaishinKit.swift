@@ -18,7 +18,7 @@ final class ClockedQueue {
         driver.setDelegate(self, withQueue: self.lockQueue)
         return driver
     }()
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.ClockedQueue.lock")
+    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.ClockedQueue.lock")
 
     func enqueue(_ buffer:CMSampleBuffer) {
         lockQueue.async {

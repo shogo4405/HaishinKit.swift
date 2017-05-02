@@ -1,4 +1,7 @@
 # HaishinKit (formerly lf)
+[![Platform](https://img.shields.io/cocoapods/p/lf.svg?style=flat)](http://cocoapods.org/pods/lf)
+![Language](https://img.shields.io/badge/language-Swift%203.1-orange.svg)
+[![CocoaPods](https://img.shields.io/cocoapods/v/lf.svg?style=flat)](http://cocoapods.org/pods/lf)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/lf.swift/master/LICENSE.txt)
 
 Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
@@ -8,8 +11,12 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
 - [ ] _Playback (Technical Preview)_
-- [x] AMF0
-- [ ] AMF3
+- [x] Adaptive bitrate streaming
+  - [x] Handling 
+  - [x] Automatic drop frames
+- [ ] Action Message Format
+  - [x] AMF0
+  - [ ] AMF3
 - [x] SharedObject
 - [x] RTMPS
   - [x] Native (RTMP over SSL/TSL)
@@ -31,6 +38,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 ## Requirements
 |-|iOS|OSX|XCode|Swift|CocoaPods|Carthage|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|0.6.0|8.0+|10.11+|8.3+|3.1|1.2.0|0.20.0+|
 |0.5.0|8.0+|10.11+|8.0+|3.0|1.1.0|0.17.2(0.5.5+)|
 |0.4.0|8.0+|10.11+|7.3+|2.3|1.0.0|0.17.2(0.4.4+)|
 |0.3.0|8.0+|10.11+|7.3+|2.3|1.0.0|-|
@@ -49,7 +57,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'lf', '~> 0.5.0'
+    pod 'lf', '~> 0.6.0'
 end
 
 target 'Your Target'  do
@@ -59,7 +67,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/lf.swift" ~> 0.5.0
+github "shogo4405/lf.swift" ~> 0.6.0
 ```
 
 ## License
@@ -76,8 +84,12 @@ Real Time Messaging Protocol (RTMP).
 ```swift
 var rtmpConnection:RTMPConnection = RTMPConnection()
 var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
-rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back))
+rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)) { error in
+    // print(error)
+}
+rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back)) { error in
+    // print(error)
+}
 
 var lfView:LFView = LFView(frame: view.bounds)
 lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
@@ -178,7 +190,7 @@ httpStream.publish("hello")
 var lfView:LFView = LFView(frame: view.bounds)
 lfView.attachStream(httpStream)
 
-var httpService:HTTPService = HTTPService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
+var httpService:HLSService = HLSService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
 httpService.startRunning()
 httpService.addHTTPStream(httpStream)
 

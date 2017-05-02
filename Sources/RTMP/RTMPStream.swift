@@ -219,7 +219,7 @@ open class RTMPStream: NetStream {
     static let defaultID:UInt32 = 0
     open static let defaultAudioBitrate:UInt32 = AACEncoder.defaultBitrate
     open static let defaultVideoBitrate:UInt32 = H264Encoder.defaultBitrate
-    open var qosStrategy:RTMPStreamQoSStrategy = NoneRTMPStreamQoSStrategy()
+    open var qosDelagate:RTMPStreamQoSDelagate? = nil
     open internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
     open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     open fileprivate(set) dynamic var currentFPS:UInt16 = 0
@@ -236,7 +236,7 @@ open class RTMPStream: NetStream {
                 currentFPS = 0
                 frameCount = 0
                 info.clear()
-                qosStrategy.clear()
+                qosDelagate?.clear()
             case .playing:
                 audioPlayback.startRunning()
                 mixer.startPlaying()
@@ -375,39 +375,36 @@ open class RTMPStream: NetStream {
         }
     }
 
-    @available(*, unavailable)
-    open func publish(_ name:String?, type:String = "live") {
-        guard let howToPublish:RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
-            return
-        }
-        publish(name, type: howToPublish)
-    }
-
     open func publish(_ name:String?, type:RTMPStream.HowToPublish = .live) {
         lockQueue.async {
             guard let name:String = name else {
-                self.readyState = .open
-                #if os(iOS)
-                self.mixer.videoIO.screen?.stopRunning()
-                #endif
-                self.mixer.audioIO.encoder.delegate = nil
-                self.mixer.videoIO.encoder.delegate = nil
-                self.mixer.audioIO.encoder.stopRunning()
-                self.mixer.videoIO.encoder.stopRunning()
-                self.sampler?.stopRunning()
-                self.mixer.recorder.stopRunning()
-                self.FCUnpublish()
-                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                    type: .zero,
-                    streamId: RTMPChunk.StreamID.audio.rawValue,
-                    message: RTMPCommandMessage(
-                        streamId: self.id,
-                        transactionId: 0,
-                        objectEncoding: self.objectEncoding,
-                        commandName: "closeStream",
-                        commandObject: nil,
-                        arguments: []
-                )), locked: nil)
+                switch self.readyState {
+                case .publish, .publishing:
+                    self.readyState = .open
+                    #if os(iOS)
+                        self.mixer.videoIO.screen?.stopRunning()
+                    #endif
+                    self.mixer.audioIO.encoder.delegate = nil
+                    self.mixer.videoIO.encoder.delegate = nil
+                    self.mixer.audioIO.encoder.stopRunning()
+                    self.mixer.videoIO.encoder.stopRunning()
+                    self.sampler?.stopRunning()
+                    self.mixer.recorder.stopRunning()
+                    self.FCUnpublish()
+                    self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+                        type: .zero,
+                        streamId: RTMPChunk.StreamID.audio.rawValue,
+                        message: RTMPCommandMessage(
+                            streamId: self.id,
+                            transactionId: 0,
+                            objectEncoding: self.objectEncoding,
+                            commandName: "closeStream",
+                            commandObject: nil,
+                            arguments: []
+                    )), locked: nil)
+                default:
+                    break
+                }
                 return
             }
 
@@ -556,7 +553,7 @@ open class RTMPStream: NetStream {
     }
 
     func createMetaData() -> ASObject {
-        var metadata:ASObject = [:]
+        metadata.removeAll()
         if let _:AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width
             metadata["height"] = mixer.videoIO.encoder.height
@@ -567,6 +564,7 @@ open class RTMPStream: NetStream {
         if let _:AVCaptureInput = mixer.audioIO.input {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate
+            
         }
         return metadata
     }

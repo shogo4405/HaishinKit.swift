@@ -41,7 +41,7 @@ final class RTSPSocket: NetSocket {
     }
 
     override func listen() {
-        guard let response:RTSPResponse = RTSPResponse(bytes: inputBuffer) else {
+        guard let response:RTSPResponse = RTSPResponse(bytes: inputBuffer.bytes) else {
             return
         }
         if (logger.isEnabledFor(level: .verbose)) {

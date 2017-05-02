@@ -6,7 +6,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var timeout:Int64 = 0
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
-    var inputBuffer:[UInt8] = []
+    var inputBuffer:Data = Data()
     var securityLevel:StreamSocketSecurityLevel = .none
     weak var delegate:RTMPSocketDelegate? = nil
     var connected:Bool = false {
@@ -32,7 +32,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
     var readyState:RTMPSocket.ReadyState = .uninitialized {
         didSet {
-            delegate?.didSet(readyState: readyState)
+            delegate?.didSetReadyState(readyState)
         }
     }
 
@@ -58,7 +58,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var request:URLRequest!
     private var c2packet:[UInt8] = []
     private var handshake:RTMPHandshake = RTMPHandshake()
-    private let outputQueue:DispatchQueue = DispatchQueue(label: "com.github.shgoo4405.lf.RTMPTSocket.output")
+    private let outputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
     private var connectionID:String?
     private var isRequesting:Bool = false
     private var outputBuffer:[UInt8] = []
@@ -85,7 +85,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     @discardableResult
     func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         var bytes:[UInt8] = []
-        let chunks:[[UInt8]] = chunk.split(chunkSizeS)
+        let chunks:[Data] = chunk.split(chunkSizeS)
         for chunk in chunks {
             bytes.append(contentsOf: chunk)
         }
@@ -120,7 +120,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         lastResponse = Date()
 
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data):\(response):\(error)")
+            logger.verbose("\(String(describing: data)):\(String(describing: response)):\(String(describing: error))")
         }
 
         if let error:Error = error {
@@ -154,8 +154,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            c2packet = handshake.c2packet(inputBuffer)
-            inputBuffer = Array(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
+            c2packet = handshake.c2packet(inputBuffer.bytes)
+            inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
             fallthrough
         case .ackSent:
@@ -168,9 +168,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             if (inputBuffer.isEmpty){
                 break
             }
-            let bytes:[UInt8] = inputBuffer
+            let data:Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes: bytes)
+            delegate?.listen(data)
         default:
             break
         }
@@ -182,7 +182,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         doRequest("/open/1", Data([0x00]), didOpen)
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data?.bytes):\(response)")
+            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -196,7 +196,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data.bytes):\(response)")
+            logger.verbose("\(data.bytes):\(String(describing: response))")
         }
     }
 
@@ -206,7 +206,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         connected = true
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data?.bytes):\(response)")
+            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -216,7 +216,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         connected = false
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data?.bytes):\(response)")
+            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 

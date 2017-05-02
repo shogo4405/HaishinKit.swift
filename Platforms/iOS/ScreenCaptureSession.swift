@@ -35,7 +35,7 @@ public final class ScreenCaptureSession: NSObject {
     fileprivate var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
     fileprivate let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(
-        label: "com.github.shogo4405.lf.ScreenCaptureSession.lock", qos: DispatchQoS.userInteractive, attributes: []
+        label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: DispatchQoS.userInteractive, attributes: []
     )
     fileprivate var colorSpace:CGColorSpace!
     fileprivate var displayLink:CADisplayLink!

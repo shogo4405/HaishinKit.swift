@@ -2,13 +2,14 @@ import Foundation
 
 protocol RTMPSocketCompatible: class {
     var timeout:Int64 { get set }
+    var connected:Bool { get }
     var timestamp:TimeInterval { get }
     var chunkSizeC:Int { get set }
     var chunkSizeS:Int { get set }
     var totalBytesIn:Int64 { get }
     var totalBytesOut:Int64 { get }
     var queueBytesOut:Int64 { get }
-    var inputBuffer:[UInt8] { get set }
+    var inputBuffer:Data { get set }
     var securityLevel:StreamSocketSecurityLevel { get set }
     weak var delegate:RTMPSocketDelegate? { get set }
 
@@ -21,14 +22,13 @@ protocol RTMPSocketCompatible: class {
 
 // MARK: -
 protocol RTMPSocketDelegate: IEventDispatcher {
-    func listen(bytes:[UInt8])
-    func didSet(readyState:RTMPSocket.ReadyState)
+    func listen(_ data:Data)
+    func didSetReadyState(_ readyState:RTMPSocket.ReadyState)
+    func didSetTotalBytesIn(_ totalBytesIn:Int64)
 }
 
 // MARK: -
 final class RTMPSocket: NetSocket, RTMPSocketCompatible {
-    static let defaultBufferSize:Int = 1024
-
     enum ReadyState: UInt8 {
         case uninitialized = 0
         case versionSent   = 1
@@ -40,7 +40,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     var readyState:ReadyState = .uninitialized {
         didSet {
-            delegate?.didSet(readyState: readyState)
+            delegate?.didSetReadyState(readyState)
         }
     }
     var timestamp:TimeInterval {
@@ -49,6 +49,11 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     var chunkSizeC:Int = RTMPChunk.defaultSize
     var chunkSizeS:Int = RTMPChunk.defaultSize
     weak var delegate:RTMPSocketDelegate? = nil
+    override var totalBytesIn: Int64 {
+        didSet {
+            delegate?.didSetTotalBytesIn(totalBytesIn)
+        }
+    }
 
     override var connected:Bool {
         didSet {
@@ -70,11 +75,11 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     @discardableResult
     func doOutput(chunk:RTMPChunk, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
-        let chunks:[[UInt8]] = chunk.split(chunkSizeS)
+        let chunks:[Data] = chunk.split(chunkSizeS)
         for i in 0..<chunks.count - 1 {
-            doOutput(bytes: chunks[i])
+            doOutput(data: chunks[i])
         }
-        doOutput(bytes: chunks.last!, locked: locked)
+        doOutput(data: chunks.last!, locked: locked)
         if (logger.isEnabledFor(level: .verbose)) {
             logger.verbose(chunk)
         }
@@ -99,9 +104,12 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            doOutput(bytes: handshake.c2packet(inputBuffer))
-            inputBuffer = Array(inputBuffer[RTMPHandshake.sigSize + 1..<inputBuffer.count])
+            doOutput(bytes: handshake.c2packet(inputBuffer.bytes))
+            inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
+            if (RTMPHandshake.sigSize <= inputBuffer.count) {
+                listen()
+            }
         case .ackSent:
             if (inputBuffer.count < RTMPHandshake.sigSize) {
                 break
@@ -112,9 +120,9 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             if (inputBuffer.isEmpty){
                 break
             }
-            let bytes:[UInt8] = inputBuffer
+            let bytes:Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes: bytes)
+            delegate?.listen(bytes)
         default:
             break
         }

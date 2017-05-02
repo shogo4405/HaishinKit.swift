@@ -50,8 +50,12 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition))
+        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)) { error in
+            logger.warning(error)
+        }
+        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
+            logger.warning(error)
+        }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
         lfView?.attachStream(rtmpStream)
     }
@@ -67,7 +71,9 @@ final class LiveViewController: UIViewController {
     @IBAction func rotateCamera(_ sender:UIButton) {
         logger.info("rotateCamera")
         let position:AVCaptureDevicePosition = currentPosition == .back ? .front : .back
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position))
+        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
+            logger.warning(error)
+        }
         currentPosition = position
     }
 

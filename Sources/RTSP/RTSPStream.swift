@@ -66,7 +66,7 @@ class RTSPStream: NetStream {
 
     func listen() {
         for i in 0..<2 {
-            let service:RTPService = RTPService(domain: "", type: "_rtp._udp", name: "", port: RTSPConnection.defaultRTPPort + i)
+            let service:RTPService = RTPService(domain: "", type: "_rtp._udp", name: "", port: RTSPConnection.defaultRTPPort + Int32(i))
             service.startRunning()
             services.append(service)
         }

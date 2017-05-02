@@ -39,7 +39,7 @@ class AudioStreamPlayback {
             }
         }
     }
-    let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AudioStreamPlayback.lock")
+    let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioStreamPlayback.lock")
     fileprivate var bufferSize:UInt32 = AudioStreamPlayback.defaultBufferSize
     fileprivate var queue:AudioQueueRef? = nil {
         didSet {
@@ -96,16 +96,18 @@ class AudioStreamPlayback {
         playback.onPropertyChangeForFileStream(inAudioFileStream, inPropertyID, ioFlags)
     }
 
-    func parseBytes(_ bytes:[UInt8]) {
+    func parseBytes(_ data:Data) {
         guard let fileStreamID:AudioFileStreamID = fileStreamID, running else {
             return
         }
-        AudioFileStreamParseBytes(
-            fileStreamID,
-            UInt32(bytes.count),
-            bytes,
-            AudioFileStreamParseFlags(rawValue: 0)
-        )
+        data.withUnsafeBytes { (bytes:UnsafePointer<UInt8>) -> Void in
+            AudioFileStreamParseBytes(
+                fileStreamID,
+                UInt32(data.count),
+                bytes,
+                AudioFileStreamParseFlags(rawValue: 0)
+            )
+        }
     }
 
     func isBufferFull(_ packetSize:UInt32) -> Bool {

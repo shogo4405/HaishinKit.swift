@@ -17,14 +17,14 @@ protocol NetStreamDrawable: class {
 // MARK: -
 open class NetStream: NSObject {
     public private(set) var mixer:AVMixer = AVMixer()
-    public let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.NetStream.lock")
+    public let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetStream.lock")
 
     deinit {
         metadata.removeAll()
         NotificationCenter.default.removeObserver(self)
     }
 
-    open var metadata:[String:NSObject] = [:]
+    open var metadata:[String: Any?] = [:]
 
     open var torch:Bool {
         get {
@@ -124,17 +124,23 @@ open class NetStream: NSObject {
         }
     }
 
-    open func attachCamera(_ camera:AVCaptureDevice?) {
+    open func attachCamera(_ camera:AVCaptureDevice?, onError:((_ error:NSError) -> Void)? = nil) {
         lockQueue.async {
-            self.mixer.videoIO.attachCamera(camera)
+            do {
+                try self.mixer.videoIO.attachCamera(camera)
+            } catch let error as NSError {
+                onError?(error)
+            }
         }
     }
 
-    open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = true) {
+    open func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool = false, onError:((_ error:NSError) -> Void)? = nil) {
         lockQueue.async {
-            self.mixer.audioIO.attachAudio(audio,
-                automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession
-            )
+            do {
+                try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
+            } catch let error as NSError {
+                onError?(error)
+            }
         }
     }
 

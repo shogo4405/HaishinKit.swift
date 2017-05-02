@@ -36,7 +36,7 @@ open class AVMixerRecorder: NSObject {
     open var writerInputs:[String:AVAssetWriterInput] = [:]
     open var outputSettings:[String:[String:Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor:AVAssetWriterInputPixelBufferAdaptor?
-    open let lockQueue:DispatchQueue = DispatchQueue(label: "com.github.shogo4405.lf.AVMixerRecorder.lock")
+    open let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     fileprivate(set) var running:Bool = false
     fileprivate(set) var sourceTime:CMTime = kCMTimeZero
 
@@ -151,23 +151,25 @@ extension AVMixerRecorder: Runnable {
 open class DefaultAVMixerRecorderDelegate: NSObject {
     open var duration:Int64 = 0
     open var dateFormat:String = "-yyyyMMdd-HHmmss"
+
     fileprivate var rotateTime:CMTime = kCMTimeZero
     fileprivate var clockReference:String = AVMediaTypeVideo
 
-    #if os(OSX)
+    #if os(iOS)
+    open var shouldSaveToPhotoLibrary:Bool = true
     open lazy var moviesDirectory:URL = {
-        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
+        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
     }()
     #else
     open lazy var moviesDirectory:URL = {
-        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #endif
 }
 
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     // MARK: AVMixerRecorderDelegate
-    public func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:String) {
+    open func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:String) {
         guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
             return
         }
@@ -182,7 +184,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         recorder.sourceTime = withPresentationTimeStamp
     }
 
-    public func getPixelBufferAdaptor(_ recorder: AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor? {
+    open func getPixelBufferAdaptor(_ recorder: AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor? {
         guard recorder.pixelBufferAdaptor == nil else {
             return recorder.pixelBufferAdaptor
         }
@@ -194,7 +196,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         return adaptor
     }
 
-    public func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
+    open func getWriterInput(_ recorder:AVMixerRecorder, mediaType:String, sourceFormatHint:CMFormatDescription?) -> AVAssetWriterInput? {
         guard recorder.writerInputs[mediaType] == nil else {
             return recorder.writerInputs[mediaType]
         }
@@ -245,9 +247,9 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         return input
     }
 
-    public func didFinishWriting(_ recorder:AVMixerRecorder) {
+    open func didFinishWriting(_ recorder:AVMixerRecorder) {
     #if os(iOS)
-        guard let writer:AVAssetWriter = recorder.writer else {
+        guard let writer:AVAssetWriter = recorder.writer, shouldSaveToPhotoLibrary else {
             return
         }
         PHPhotoLibrary.shared().performChanges({() -> Void in
@@ -262,10 +264,10 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     #endif
     }
 
-    public func didStartRunning(_ recorder: AVMixerRecorder) {
+    open func didStartRunning(_ recorder: AVMixerRecorder) {
     }
 
-    public func didStopRunning(_ recorder: AVMixerRecorder) {
+    open func didStopRunning(_ recorder: AVMixerRecorder) {
         rotateTime = kCMTimeZero
     }
 
