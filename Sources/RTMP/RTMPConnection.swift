@@ -90,33 +90,36 @@ open class RTMPConnection: EventDispatcher {
         }
     }
 
-    enum SupportVideo: UInt16 {
-        case unused    = 0x0001
-        case jpeg      = 0x0002
-        case sorenson  = 0x0004
-        case homebrew  = 0x0008
-        case vp6       = 0x0010
-        case vp6Alpha  = 0x0020
-        case homebrewv = 0x0040
-        case h264      = 0x0080
-        case all       = 0x00FF
+    struct Support {
+        enum Video: UInt16 {
+            case unused    = 0x0001
+            case jpeg      = 0x0002
+            case sorenson  = 0x0004
+            case homebrew  = 0x0008
+            case vp6       = 0x0010
+            case vp6Alpha  = 0x0020
+            case homebrewv = 0x0040
+            case h264      = 0x0080
+            case all       = 0x00FF
+        }
+
+        enum Sound: UInt16 {
+            case none    = 0x0001
+            case adpcm   = 0x0002
+            case mp3     = 0x0004
+            case intel   = 0x0008
+            case unused  = 0x0010
+            case nelly8  = 0x0020
+            case nelly   = 0x0040
+            case g711A   = 0x0080
+            case g711U   = 0x0100
+            case nelly16 = 0x0200
+            case aac     = 0x0400
+            case speex   = 0x0800
+            case all     = 0x0FFF
+        }
     }
 
-    enum SupportSound: UInt16 {
-        case none    = 0x0001
-        case adpcm   = 0x0002
-        case mp3     = 0x0004
-        case intel   = 0x0008
-        case unused  = 0x0010
-        case nelly8  = 0x0020
-        case nelly   = 0x0040
-        case g711A   = 0x0080
-        case g711U   = 0x0100
-        case nelly16 = 0x0200
-        case aac     = 0x0400
-        case speex   = 0x0800
-        case all     = 0x0FFF
-    }
 
     enum VideoFunction: UInt8 {
         case clientSeek = 1
@@ -381,8 +384,8 @@ open class RTMPConnection: EventDispatcher {
                 "tcUrl": uri.absoluteWithoutAuthenticationString,
                 "fpad": false,
                 "capabilities": RTMPConnection.defaultCapabilities,
-                "audioCodecs": SupportSound.aac.rawValue,
-                "videoCodecs": SupportVideo.h264.rawValue,
+                "audioCodecs": Support.Sound.aac.rawValue,
+                "videoCodecs": Support.Video.h264.rawValue,
                 "videoFunction": VideoFunction.clientSeek.rawValue,
                 "pageUrl": pageUrl,
                 "objectEncoding": objectEncoding

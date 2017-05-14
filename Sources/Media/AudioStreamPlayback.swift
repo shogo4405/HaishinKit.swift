@@ -8,6 +8,7 @@ class AudioStreamPlayback {
     static let defaultMaxPacketDescriptions:Int = 1
 
     var await:Bool = false
+    var config:AudioSpecificConfig?
     var runloop:CFRunLoop? = nil
     var numberOfBuffers:Int = AudioStreamPlayback.defaultNumberOfBuffers
     var maxPacketDescriptions:Int = AudioStreamPlayback.defaultMaxPacketDescriptions
@@ -159,7 +160,6 @@ class AudioStreamPlayback {
             logger.warning("AudioQueueEnqueueBuffer")
             return
         }
-        startQueueIfNeed()
     }
 
     func startQueueIfNeed() {

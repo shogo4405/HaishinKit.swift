@@ -265,7 +265,7 @@ final class RTMPChunk {
         var chunks:[Data] = [data.subdata(in: 0..<startIndex)]
         for index in stride(from: startIndex, to: data.count, by: size) {
             var chunk:Data = header
-            chunk.append(contentsOf: data[index..<index.advanced(by: index + size < data.count ? size : data.count - index)])
+            chunk.append(data.subdata(in: index..<index.advanced(by: index + size < data.count ? size : data.count - index)))
             chunks.append(chunk)
         }
         return chunks
