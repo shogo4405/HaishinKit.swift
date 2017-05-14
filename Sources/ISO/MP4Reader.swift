@@ -518,6 +518,12 @@ final class MP4EditListBox: MP4Box {
 final class MP4Reader: MP4ContainerBox {
     private(set) var url:URL
 
+    var isEmpty:Bool {
+        return getBoxes(byName: "mdhd").isEmpty
+    }
+
+    private var fileHandle:FileHandle? = nil
+
     init(url:URL) {
         do {
             self.url = url
@@ -527,12 +533,6 @@ final class MP4Reader: MP4ContainerBox {
             logger.error("\(error)")
         }
     }
-
-    var isEmpty:Bool {
-        return getBoxes(byName: "mdhd").isEmpty
-    }
-
-    private var fileHandle:FileHandle? = nil
 
     func seek(toFileOffset: UInt64) {
         return fileHandle!.seek(toFileOffset: toFileOffset)
