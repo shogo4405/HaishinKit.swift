@@ -16,7 +16,7 @@ public final class ScreenCaptureSession: NSObject {
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
         kCVPixelBufferCGBitmapContextCompatibilityKey: true as NSObject
     ]
-
+    
     public var enabledScale:Bool = false
     public var frameInterval:Int = ScreenCaptureSession.defaultFrameInterval
     public var attributes:[NSString:NSObject] {
@@ -29,9 +29,10 @@ public final class ScreenCaptureSession: NSObject {
         }
     }
     public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
-
+    
     internal(set) var running:Bool = false
-    fileprivate var shared:UIApplication
+    fileprivate var shared:UIApplication?
+    fileprivate var viewToCapture:UIView?
     fileprivate var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
     fileprivate let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(
@@ -39,7 +40,7 @@ public final class ScreenCaptureSession: NSObject {
     )
     fileprivate var colorSpace:CGColorSpace!
     fileprivate var displayLink:CADisplayLink!
-
+    
     fileprivate var size:CGSize = CGSize() {
         didSet {
             guard size != oldValue else {
@@ -52,7 +53,7 @@ public final class ScreenCaptureSession: NSObject {
     fileprivate var scale:CGFloat {
         return enabledScale ? UIScreen.main.scale : 1.0
     }
-
+    
     fileprivate var _pixelBufferPool:CVPixelBufferPool?
     fileprivate var pixelBufferPool:CVPixelBufferPool! {
         get {
@@ -67,13 +68,19 @@ public final class ScreenCaptureSession: NSObject {
             _pixelBufferPool = newValue
         }
     }
-
+    
     public init(shared:UIApplication) {
         self.shared = shared
         size = shared.delegate!.window!!.bounds.size
         super.init()
     }
-
+    
+    public init(viewToCapture: UIView) {
+        self.viewToCapture = viewToCapture
+        size = viewToCapture.bounds.size
+        super.init()
+    }
+    
     public func onScreen(_ displayLink:CADisplayLink) {
         guard semaphore.wait(timeout: DispatchTime.now()) == .success else {
             return
@@ -85,21 +92,35 @@ public final class ScreenCaptureSession: NSObject {
             self.semaphore.signal()
         }
     }
-
+    
     fileprivate func onScreenProcess(_ displayLink:CADisplayLink) {
         var pixelBuffer:CVPixelBuffer?
-
-        size = shared.delegate!.window!!.bounds.size
+        
+        if let shared = self.shared {
+            size = shared.delegate!.window!!.bounds.size
+        }
+        if let viewToCapture = self.viewToCapture {
+            size = viewToCapture.bounds.size
+        }
         CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)
         CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         let cgctx:CGContext = UIGraphicsGetCurrentContext()!
         DispatchQueue.main.sync {
             UIGraphicsPushContext(cgctx)
-            for window:UIWindow in shared.windows {
-                window.drawHierarchy(
+            if let shared = shared {
+                for window:UIWindow in shared.windows {
+                    window.drawHierarchy(
+                        in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
+                        afterScreenUpdates: false
+                    )
+                }
+            }
+            
+            if let viewToCapture = viewToCapture {
+                viewToCapture.drawHierarchy(
                     in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
-                    afterScreenUpdates: false
+                    afterScreenUpdates: true
                 )
             }
             UIGraphicsPopContext()
@@ -127,7 +148,7 @@ extension ScreenCaptureSession: Runnable {
             self.displayLink.add(to: .main, forMode: .commonModes)
         }
     }
-
+    
     public func stopRunning() {
         lockQueue.sync {
             guard self.running else {
