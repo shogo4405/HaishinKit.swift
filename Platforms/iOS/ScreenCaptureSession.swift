@@ -9,7 +9,7 @@ public protocol ScreenCaptureOutputPixelBufferDelegate: class {
 }
 
 // MARK: -
-public final class ScreenCaptureSession: NSObject {
+open class ScreenCaptureSession: NSObject {
     static let defaultFrameInterval:Int = 2
     static let defaultAttributes:[NSString:NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
@@ -67,19 +67,19 @@ public final class ScreenCaptureSession: NSObject {
             _pixelBufferPool = newValue
         }
     }
-    
+
     public init(shared:UIApplication) {
         self.shared = shared
         size = shared.delegate!.window!!.bounds.size
         super.init()
     }
-    
+
     public init(viewToCapture: UIView) {
         self.viewToCapture = viewToCapture
         size = viewToCapture.bounds.size
         super.init()
     }
-    
+
     public func onScreen(_ displayLink:CADisplayLink) {
         guard semaphore.wait(timeout: DispatchTime.now()) == .success else {
             return
@@ -91,8 +91,8 @@ public final class ScreenCaptureSession: NSObject {
             self.semaphore.signal()
         }
     }
-    
-    fileprivate func onScreenProcess(_ displayLink:CADisplayLink) {
+
+    open func onScreenProcess(_ displayLink:CADisplayLink) {
         var pixelBuffer:CVPixelBuffer?
         
         if let shared = self.shared {
@@ -107,7 +107,7 @@ public final class ScreenCaptureSession: NSObject {
         let cgctx:CGContext = UIGraphicsGetCurrentContext()!
         DispatchQueue.main.sync {
             UIGraphicsPushContext(cgctx)
-            if let shared = shared {
+            if let shared:UIApplication = shared {
                 for window:UIWindow in shared.windows {
                     window.drawHierarchy(
                         in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
@@ -115,8 +115,7 @@ public final class ScreenCaptureSession: NSObject {
                     )
                 }
             }
-            
-            if let viewToCapture = viewToCapture {
+            if let viewToCapture:UIView = viewToCapture {
                 viewToCapture.drawHierarchy(
                     in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
                     afterScreenUpdates: true
@@ -132,8 +131,9 @@ public final class ScreenCaptureSession: NSObject {
     }
 }
 
-// MARK: Runnable
+
 extension ScreenCaptureSession: Runnable {
+    // MARK: Runnable
     public func startRunning() {
         lockQueue.sync {
             guard !self.running else {
