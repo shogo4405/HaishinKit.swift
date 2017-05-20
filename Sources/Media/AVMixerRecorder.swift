@@ -111,10 +111,13 @@ open class AVMixerRecorder: NSObject {
     }
 
     func finishWriting() {
+        guard let writer:AVAssetWriter = writer, writer.status == .writing else {
+            return
+        }
         for (_, input) in writerInputs {
             input.markAsFinished()
         }
-        writer?.finishWriting {
+        writer.finishWriting {
             self.delegate?.didFinishWriting(self)
             self.writer = nil
             self.writerInputs.removeAll()
