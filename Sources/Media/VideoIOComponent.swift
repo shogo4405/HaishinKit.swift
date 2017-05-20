@@ -17,7 +17,7 @@ final class VideoIOComponent: IOComponent {
         queue.delegate = self
         return queue
     }()
-    fileprivate var effects:[VisualEffect] = []
+    var effects:[VisualEffect] = []
 
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
@@ -181,7 +181,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    fileprivate(set) var input:AVCaptureInput? = nil {
+    var input:AVCaptureInput? = nil {
         didSet {
             guard let mixer:AVMixer = mixer, oldValue != input else {
                 return
@@ -195,8 +195,8 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    #if !os(OSX)
-    fileprivate(set) var screen:ScreenCaptureSession? = nil {
+    #if os(iOS)
+    var screen:ScreenCaptureSession? = nil {
         didSet {
             guard oldValue != screen else {
                 return
@@ -261,41 +261,6 @@ final class VideoIOComponent: IOComponent {
         drawable?.position = camera.position
     }
 
-    #if os(OSX)
-    func attachScreen(_ screen:AVCaptureScreenInput?) {
-        mixer?.session.beginConfiguration()
-        output = nil
-        guard let _:AVCaptureScreenInput = screen else {
-            input = nil
-            return
-        }
-        input = screen
-        mixer?.session.addOutput(output)
-        output.setSampleBufferDelegate(self, queue: lockQueue)
-        mixer?.session.commitConfiguration()
-        if (mixer?.session.isRunning ?? false) {
-            mixer?.session.startRunning()
-        }
-    }
-    #else
-    func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
-        guard let screen:ScreenCaptureSession = screen else {
-            self.screen?.stopRunning()
-            self.screen = nil
-            return
-        }
-        input = nil
-        output = nil
-        if (useScreenSize) {
-            encoder.setValuesForKeys([
-                "width": screen.attributes["Width"]!,
-                "height": screen.attributes["Height"]!,
-            ])
-        }
-        self.screen = screen
-    }
-    #endif
-
     func effect(_ buffer:CVImageBuffer) -> CIImage {
         var image:CIImage = CIImage(cvPixelBuffer: buffer)
         for effect in effects {
@@ -327,22 +292,6 @@ final class VideoIOComponent: IOComponent {
         }
         return false
     }
-
-    #if os(iOS)
-    func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {
-        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-            1 <= toVideoZoomFactor && toVideoZoomFactor < device.activeFormat.videoMaxZoomFactor else {
-            return
-        }
-        do {
-            try device.lockForConfiguration()
-            device.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
-            device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while locking device for ramp: \(error)")
-        }
-    }
-    #endif
 
     func setTorchMode(_ torchMode:AVCaptureTorchMode) {
         guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
@@ -403,26 +352,3 @@ extension VideoIOComponent: ClockedQueueDelegate {
         drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
     }
 }
-
-#if os(iOS)
-extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
-    // MARK: ScreenCaptureOutputPixelBufferDelegate
-    func didSet(size: CGSize) {
-        lockQueue.async {
-            self.encoder.width = Int32(size.width)
-            self.encoder.height = Int32(size.height)
-        }
-    }
-    func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime) {
-        if (!effects.isEmpty) {
-            drawable?.render(image: effect(pixelBuffer), to: pixelBuffer)
-        }
-        encoder.encodeImageBuffer(
-            pixelBuffer,
-            presentationTimeStamp: withPresentationTime,
-            duration: kCMTimeInvalid
-        )
-        mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
-    }
-}
-#endif

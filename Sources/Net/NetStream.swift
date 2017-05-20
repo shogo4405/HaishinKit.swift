@@ -42,14 +42,6 @@ open class NetStream: NSObject {
     }
 
     #if os(iOS)
-    open var orientation:AVCaptureVideoOrientation {
-        get {
-            return mixer.videoIO.orientation
-        }
-        set {
-            self.mixer.videoIO.orientation = newValue
-        }
-    }
     open var syncOrientation:Bool = false {
         didSet {
             guard syncOrientation != oldValue else {
@@ -143,25 +135,6 @@ open class NetStream: NSObject {
             }
         }
     }
-
-    #if os(macOS)
-    open func attachScreen(_ screen:AVCaptureScreenInput?) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen)
-        }
-    }
-    #else
-    open func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
-        }
-    }
-    open func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {
-        lockQueue.async {
-            self.mixer.videoIO.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
-        }
-    }
-    #endif
 
     open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
         switch withType {

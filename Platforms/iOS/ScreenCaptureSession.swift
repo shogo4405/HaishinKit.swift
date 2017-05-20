@@ -3,7 +3,6 @@ import CoreImage
 import Foundation
 import AVFoundation
 
-// MARK: ScreenCaptureOutputPixelBufferDelegate
 public protocol ScreenCaptureOutputPixelBufferDelegate: class {
     func didSet(size:CGSize)
     func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime)
