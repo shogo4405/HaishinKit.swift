@@ -527,12 +527,14 @@ open class RTMPStream: NetStream {
         }
     }
 
+#if os(iOS) || os(macOS)
     open override func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject : AnyObject]? = nil) {
         guard readyState == .publishing else {
             return
         }
         super.appendSampleBuffer(sampleBuffer, withType: withType, options: options)
     }
+#endif
 
     open func appendFile(_ file:URL, completionHandler: MP4Sampler.Handler? = nil) {
         lockQueue.async {
@@ -552,6 +554,7 @@ open class RTMPStream: NetStream {
 
     func createMetaData() -> ASObject {
         metadata.removeAll()
+#if os(iOS) || os(macOS)
         if let _:AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width
             metadata["height"] = mixer.videoIO.encoder.height
@@ -562,8 +565,8 @@ open class RTMPStream: NetStream {
         if let _:AVCaptureInput = mixer.audioIO.input {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate
-            
         }
+#endif
         return metadata
     }
 

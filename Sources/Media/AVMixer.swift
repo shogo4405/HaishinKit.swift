@@ -11,10 +11,11 @@ final public class AVMixer: NSObject {
     ]
 
     static let defaultFPS:Float64 = 30
-    static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
     static let defaultVideoSettings:[NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
+#if os(iOS) || os(macOS)
+    static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
 
     var fps:Float64 {
         get { return videoIO.fps }
@@ -55,6 +56,7 @@ final public class AVMixer: NSObject {
             _session = newValue
         }
     }
+#endif
     public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
 
     deinit {
@@ -70,9 +72,11 @@ final public class AVMixer: NSObject {
     }()
 
     public func dispose() {
+#if os(iOS) || os(macOS)
         if (session.isRunning) {
             session.stopRunning()
         }
+#endif
         audioIO.dispose()
         videoIO.dispose()
     }
@@ -104,6 +108,7 @@ extension AVMixer {
     }
 }
 
+#if os(iOS) || os(macOS)
 extension AVMixer: Runnable {
     // MARK: Runnable
     var running:Bool {
@@ -126,3 +131,15 @@ extension AVMixer: Runnable {
         session.stopRunning()
     }
 }
+#else
+extension AVMixer: Runnable {
+    // MARK: Runnable
+    var running:Bool {
+        return false
+    }
+    final func startRunning() {
+    }
+    final func stopRunning() {
+    }
+}
+#endif

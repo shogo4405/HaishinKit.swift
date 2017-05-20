@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 
+#if os(iOS) || os(macOS)
 public final class DeviceUtil {
     private init() {
     }
@@ -65,3 +66,4 @@ public final class DeviceUtil {
         return nil
     }
 }
+#endif

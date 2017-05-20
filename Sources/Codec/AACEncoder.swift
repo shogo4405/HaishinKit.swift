@@ -267,9 +267,11 @@ extension AACEncoder: Runnable {
     }
 }
 
+#if os(iOS) || os(macOS)
 extension AACEncoder: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
         encodeSampleBuffer(sampleBuffer)
     }
 }
+#endif

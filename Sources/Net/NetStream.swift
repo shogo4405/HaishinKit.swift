@@ -1,13 +1,12 @@
-#if os(iOS)
-import UIKit
-#endif
 import CoreImage
 import Foundation
 import AVFoundation
 
 protocol NetStreamDrawable: class {
+#if os(iOS) || os(macOS)
     var orientation:AVCaptureVideoOrientation { get set }
     var position:AVCaptureDevicePosition { get set }
+#endif
 
     func draw(image:CIImage)
     func attachStream(_ stream:NetStream?)
@@ -26,6 +25,7 @@ open class NetStream: NSObject {
 
     open var metadata:[String: Any?] = [:]
 
+#if os(iOS) || os(macOS)
     open var torch:Bool {
         get {
             var torch:Bool = false
@@ -40,6 +40,7 @@ open class NetStream: NSObject {
             }
         }
     }
+#endif
 
     #if os(iOS)
     open var syncOrientation:Bool = false {
@@ -116,6 +117,7 @@ open class NetStream: NSObject {
         }
     }
 
+#if os(iOS) || os(macOS)
     open func attachCamera(_ camera:AVCaptureDevice?, onError:((_ error:NSError) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -145,17 +147,18 @@ open class NetStream: NSObject {
         }
     }
 
+    open func setPointOfInterest(_ focus:CGPoint, exposure:CGPoint) {
+        mixer.videoIO.focusPointOfInterest = focus
+        mixer.videoIO.exposurePointOfInterest = exposure
+    }
+#endif
+
     open func registerEffect(video effect:VisualEffect) -> Bool {
         return mixer.videoIO.registerEffect(effect)
     }
 
     open func unregisterEffect(video effect:VisualEffect) -> Bool {
         return mixer.videoIO.unregisterEffect(effect)
-    }
-
-    open func setPointOfInterest(_ focus:CGPoint, exposure:CGPoint) {
-        mixer.videoIO.focusPointOfInterest = focus
-        mixer.videoIO.exposurePointOfInterest = exposure
     }
 
     open func dispose() {

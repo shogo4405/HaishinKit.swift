@@ -19,6 +19,7 @@ final class VideoIOComponent: IOComponent {
     }()
     var effects:[VisualEffect] = []
 
+#if os(iOS) || os(macOS)
     var fps:Float64 = AVMixer.defaultFPS {
         didSet {
             guard
@@ -194,6 +195,7 @@ final class VideoIOComponent: IOComponent {
             }
         }
     }
+#endif
 
     #if os(iOS)
     var screen:ScreenCaptureSession? = nil {
@@ -222,6 +224,7 @@ final class VideoIOComponent: IOComponent {
         #endif
     }
 
+#if os(iOS) || os(macOS)
     func attachCamera(_ camera:AVCaptureDevice?) throws {
         guard let mixer:AVMixer = mixer else {
             return
@@ -261,38 +264,6 @@ final class VideoIOComponent: IOComponent {
         drawable?.position = camera.position
     }
 
-    func effect(_ buffer:CVImageBuffer) -> CIImage {
-        var image:CIImage = CIImage(cvPixelBuffer: buffer)
-        for effect in effects {
-            image = effect.execute(image)
-        }
-        return image
-    }
-
-    func registerEffect(_ effect:VisualEffect) -> Bool {
-        objc_sync_enter(effects)
-        defer {
-            objc_sync_exit(effects)
-        }
-        if let _:Int = effects.index(of: effect) {
-            return false
-        }
-        effects.append(effect)
-        return true
-    }
-
-    func unregisterEffect(_ effect:VisualEffect) -> Bool {
-        objc_sync_enter(effects)
-        defer {
-            objc_sync_exit(effects)
-        }
-        if let i:Int = effects.index(of: effect) {
-            effects.remove(at: i)
-            return true
-        }
-        return false
-    }
-
     func setTorchMode(_ torchMode:AVCaptureTorchMode) {
         guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
             logger.warning("torchMode(\(torchMode)) is not supported")
@@ -306,14 +277,53 @@ final class VideoIOComponent: IOComponent {
             logger.error("while setting torch: \(error)")
         }
     }
-
     func dispose() {
         drawable?.attachStream(nil)
         input = nil
         output = nil
     }
+#else
+    func dispose() {
+        drawable?.attachStream(nil)
+    }
+#endif
+
+    func effect(_ buffer:CVImageBuffer) -> CIImage {
+        var image:CIImage = CIImage(cvPixelBuffer: buffer)
+        for effect in effects {
+            image = effect.execute(image)
+        }
+        return image
+    }
+    
+    func registerEffect(_ effect:VisualEffect) -> Bool {
+        objc_sync_enter(effects)
+        defer {
+            objc_sync_exit(effects)
+        }
+        if let _:Int = effects.index(of: effect) {
+            return false
+        }
+        effects.append(effect)
+        return true
+    }
+    
+    func unregisterEffect(_ effect:VisualEffect) -> Bool {
+        objc_sync_enter(effects)
+        defer {
+            objc_sync_exit(effects)
+        }
+        if let i:Int = effects.index(of: effect) {
+            effects.remove(at: i)
+            return true
+        }
+        return false
+    }
+
+
 }
 
+#if os(iOS) || os(macOS)
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
@@ -337,6 +347,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
     }
 }
+#endif
 
 extension VideoIOComponent: VideoDecoderDelegate {
     // MARK: VideoDecoderDelegate

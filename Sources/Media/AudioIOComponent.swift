@@ -6,6 +6,7 @@ final class AudioIOComponent: IOComponent {
     var playback:AudioStreamPlayback = AudioStreamPlayback()
     let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
+#if os(iOS) || os(macOS)
     var input:AVCaptureDeviceInput? = nil {
         didSet {
             guard let mixer:AVMixer = mixer, oldValue != input else {
@@ -39,12 +40,14 @@ final class AudioIOComponent: IOComponent {
             _output = newValue
         }
     }
+#endif
 
     override init(mixer: AVMixer) {
         super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
     }
 
+#if os(iOS) || os(macOS)
     func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) throws {
         guard let mixer:AVMixer = mixer else {
             return
@@ -75,8 +78,13 @@ final class AudioIOComponent: IOComponent {
         input = nil
         output = nil
     }
+#else
+    func dispose() {
+    }
+#endif
 }
 
+#if os(iOS) || os(macOS)
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
@@ -84,3 +92,4 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
         encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, from: connection)
     }
 }
+#endif
