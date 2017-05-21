@@ -154,13 +154,16 @@ final class MainViewController: NSViewController {
 
     func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
-        if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
-            switch code {
-            case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish(Preference.defaultInstance.streamName)
-            default:
-                break
-            }
+        guard
+            let data:ASObject = e.data as? ASObject,
+            let code:String = data["code"] as? String else {
+            return
+        }
+        switch code {
+        case RTMPConnection.Code.connectSuccess.rawValue:
+            rtmpStream!.publish(Preference.defaultInstance.streamName)
+        default:
+            break
         }
     }
 }

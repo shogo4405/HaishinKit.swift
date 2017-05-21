@@ -61,6 +61,7 @@
 		2931204E1D4522E400B14211 /* RTSPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204D1D4522E400B14211 /* RTSPResponse.swift */; };
 		2931204F1D4529F900B14211 /* RTSPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204B1D4522CF00B14211 /* RTSPRequest.swift */; };
 		293120501D4529FB00B14211 /* RTSPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204D1D4522E400B14211 /* RTSPResponse.swift */; };
+		2932D0E91ED1BAB10002D33B /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* lf.framework */; };
 		293C74371D85D56D001ED43C /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 293C74361D85D56D001ED43C /* MainInterface.storyboard */; };
 		2942424D1CF4C01300D65DCB /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942EF841DFF4D06008E620C /* lf.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* lf.framework */; };
@@ -213,6 +214,8 @@
 		29DD70E61D68CF020021904A /* RTPPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD70E51D68CF020021904A /* RTPPacket.swift */; };
 		29DD70E71D68D45E0021904A /* RTSPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD70E31D68CACA0021904A /* RTSPStream.swift */; };
 		29E5C0FE1D05B3B600407208 /* AudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E5C0F91D05B32700407208 /* AudioUtil.swift */; };
+		29E7968D1ED18C5300D75C6C /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
+		29E7969A1ED197A800D75C6C /* GLLFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E796991ED197A800D75C6C /* GLLFView.swift */; };
 		29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */; };
 		29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */; };
 		29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */; };
@@ -584,6 +587,7 @@
 		29DD70E51D68CF020021904A /* RTPPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTPPacket.swift; path = Sources/RTP/RTPPacket.swift; sourceTree = SOURCE_ROOT; };
 		29E258361D7C249B0070DC07 /* lf.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = lf.podspec; sourceTree = "<group>"; };
 		29E5C0F91D05B32700407208 /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AudioUtil.swift; path = Platforms/iOS/AudioUtil.swift; sourceTree = "<group>"; };
+		29E796991ED197A800D75C6C /* GLLFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = GLLFView.swift; path = Platforms/tvOS/GLLFView.swift; sourceTree = "<group>"; };
 		29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ExpressibleByIntegerLiteral+Extension.swift"; path = "Sources/Extension/ExpressibleByIntegerLiteral+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Mirror+Extension.swift"; path = "Sources/Extension/Mirror+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29EA87D71E79A0090043A5F8 /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "URL+Extension.swift"; path = "Sources/Extension/URL+Extension.swift"; sourceTree = SOURCE_ROOT; };
@@ -666,6 +670,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2932D0E91ED1BAB10002D33B /* lf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1082,6 +1087,7 @@
 			children = (
 				29D3D4E51ED0518900DD4AA6 /* Info.plist */,
 				29D3D4E61ED0518900DD4AA6 /* lf.h */,
+				29E796991ED197A800D75C6C /* GLLFView.swift */,
 			);
 			name = tvOS;
 			sourceTree = "<group>";
@@ -1316,6 +1322,7 @@
 				29D3D4EB1ED0531500DD4AA6 /* Sources */,
 				29D3D4EC1ED0531500DD4AA6 /* Frameworks */,
 				29D3D4ED1ED0531500DD4AA6 /* Resources */,
+				2932D0E81ED1BA6C0002D33B /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1488,6 +1495,21 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		2932D0E81ED1BA6C0002D33B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/tvOS/XCGLogger.framework",
+				"$(SRCROOT)/Carthage/Build/tvOS/ObjcExceptionBridging.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
+		};
 		293B521C1DE2C2700092C73C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1811,6 +1833,7 @@
 				29EB3E0A1ED0586F001CAE8B /* TransportStream.swift in Sources */,
 				29EB3DFE1ED05849001CAE8B /* Data+Extension.swift in Sources */,
 				29EB3E321ED05A2C001CAE8B /* ByteArray.swift in Sources */,
+				29E7969A1ED197A800D75C6C /* GLLFView.swift in Sources */,
 				29EB3E191ED05898001CAE8B /* NetSocket.swift in Sources */,
 				29EB3E101ED0587F001CAE8B /* AVMixerRecorder.swift in Sources */,
 				29EB3E0F1ED0587C001CAE8B /* AVMixer.swift in Sources */,
@@ -1889,6 +1912,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				29EB3DEB1ED055B0001CAE8B /* ViewController.swift in Sources */,
+				29E7968D1ED18C5300D75C6C /* Preference.swift in Sources */,
 				29EB3DE91ED055A5001CAE8B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

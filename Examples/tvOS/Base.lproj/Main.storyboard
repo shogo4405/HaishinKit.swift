@@ -20,8 +20,24 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <glkView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" enableSetNeedsDisplay="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nrq-v4-hto" customClass="GLLFView" customModule="lf">
+                                <rect key="frame" x="0.0" y="0.0" width="1920" height="1080"/>
+                            </glkView>
+                        </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="nrq-v4-hto" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" id="0lP-7o-qTx"/>
+                            <constraint firstItem="nrq-v4-hto" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="PZu-Fy-jmm"/>
+                            <constraint firstItem="nrq-v4-hto" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="TNS-vl-8f0"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="nrq-v4-hto" secondAttribute="bottom" id="aqQ-N3-bRC"/>
+                            <constraint firstItem="nrq-v4-hto" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="gHK-VF-1x4"/>
+                            <constraint firstAttribute="trailing" secondItem="nrq-v4-hto" secondAttribute="trailing" id="xAa-xo-TE7"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="lfView" destination="nrq-v4-hto" id="CQd-Eu-2C3"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
