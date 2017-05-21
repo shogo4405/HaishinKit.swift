@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
 
   s.name         = "lf"
-  s.version      = "0.6.1"
-  s.summary      = "Camera and Microphone streaming library via RTMP, HLS for iOS, macOS."
+  s.version      = "0.7.0"
+  s.summary      = "Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS."
 
   s.description  = <<-DESC
-  lf is a lIVE fRAMEWORK. Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
+  HaishinKit (formerly lf). Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
   DESC
 
   s.homepage     = "https://github.com/shogo4405/lf.swift"
@@ -28,3 +28,4 @@ Pod::Spec.new do |s|
   s.dependency 'XCGLogger', '~> 5.0.0'
 
 end
+
