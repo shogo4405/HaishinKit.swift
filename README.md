@@ -4,7 +4,7 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/lf.svg?style=flat)](http://cocoapods.org/pods/lf)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/lf.swift/master/LICENSE.txt)
 
-Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
+Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
 
 ## Features
 ### RTMP
@@ -29,6 +29,8 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [x] HLS Publish
 
 ### Others
+- [ ] _Support tvOS 10.2+  (Technical Preview) _
+  - tvOS can't publish Camera and Microphone. Available playback feature.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
 - [x] Support GPUImage framework (~> 0.5.12)
@@ -36,13 +38,14 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS.
 - [ ] ~~Objectiv-C Bridging~~
 
 ## Requirements
-|-|iOS|OSX|XCode|Swift|CocoaPods|Carthage|
-|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-|0.6.0|8.0+|10.11+|8.3+|3.1|1.2.0|0.20.0+|
-|0.5.0|8.0+|10.11+|8.0+|3.0|1.1.0|0.17.2(0.5.5+)|
-|0.4.0|8.0+|10.11+|7.3+|2.3|1.0.0|0.17.2(0.4.4+)|
-|0.3.0|8.0+|10.11+|7.3+|2.3|1.0.0|-|
-|0.2.0|8.0+|-|?|2.3|0.39.0|-|
+|-|iOS|OSX|tvOS|XCode|Swift|CocoaPods|Carthage|
+|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|0.7.0|8.0+|10.11+|10.2+|8.3+|3.1|1.2.0|0.20.0+|
+|0.6.0|8.0+|10.11+|-|8.3+|3.1|1.2.0|0.20.0+|
+|0.5.0|8.0+|10.11+|-|8.0+|3.0|1.1.0|0.17.2(0.5.5+)|
+|0.4.0|8.0+|10.11+|-|7.3+|2.3|1.0.0|0.17.2(0.4.4+)|
+|0.3.0|8.0+|10.11+|-|7.3+|2.3|1.0.0|-|
+|0.2.0|8.0+|-|-|?|2.3|0.39.0|-|
 
 ## Cocoa Keys
 iOS10.0+
