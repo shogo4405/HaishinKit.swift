@@ -17,11 +17,14 @@ Pod::Spec.new do |s|
 
   s.ios.deployment_target = "8.0"
   s.ios.source_files = "Platforms/iOS/*.{h,swift}"
+
   s.osx.deployment_target = "10.11"
   s.osx.source_files = "Platforms/macOS/*.{h,swift}"
+
+  s.tvos.deployment_target = "10.2"
+  s.tvos.source_files = "Platforms/tvOS/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
   s.dependency 'XCGLogger', '~> 5.0.0'
 
 end
-
