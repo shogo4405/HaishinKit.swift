@@ -44,8 +44,6 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
 |0.6.0|8.0+|10.11+|-|8.3+|3.1|1.2.0|0.20.0+|
 |0.5.0|8.0+|10.11+|-|8.0+|3.0|1.1.0|0.17.2(0.5.5+)|
 |0.4.0|8.0+|10.11+|-|7.3+|2.3|1.0.0|0.17.2(0.4.4+)|
-|0.3.0|8.0+|10.11+|-|7.3+|2.3|1.0.0|-|
-|0.2.0|8.0+|-|-|?|2.3|0.39.0|-|
 
 ## Cocoa Keys
 iOS10.0+
@@ -60,7 +58,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'lf', '~> 0.6.0'
+    pod 'lf', '~> 0.7.0'
 end
 
 target 'Your Target'  do
@@ -70,7 +68,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/lf.swift" ~> 0.6.0
+github "shogo4405/lf.swift" ~> 0.7.0
 ```
 
 ## License
