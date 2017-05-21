@@ -29,7 +29,7 @@ Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
 - [x] HLS Publish
 
 ### Others
-- [ ] _Support tvOS 10.2+  (Technical Preview) _
+- [ ] _Support tvOS 10.2+  (Technical Preview)_
   - tvOS can't publish Camera and Microphone. Available playback feature.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
