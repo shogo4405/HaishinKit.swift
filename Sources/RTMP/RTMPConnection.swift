@@ -320,7 +320,7 @@ open class RTMPConnection: EventDispatcher {
             connected = true
             socket.chunkSizeS = chunkSize
             socket.doOutput(chunk: RTMPChunk(
-                type: .one,
+                type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
@@ -498,7 +498,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             message.execute(self)
             currentChunk = nil
             messages[chunk.streamId] = message
-            if (position < data.count) {
+            if (position > 0 && position < data.count) {
                 listen(data.advanced(by: position))
             }
             return
@@ -512,7 +512,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             fragmentedChunks.removeValue(forKey: chunk.streamId)
         }
 
-        if (position < data.count) {
+        if (position > 0 && position < data.count) {
             listen(data.advanced(by: position))
         }
     }
