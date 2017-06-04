@@ -4,7 +4,8 @@
 [![CocoaPods](https://img.shields.io/cocoapods/v/lf.svg?style=flat)](http://cocoapods.org/pods/lf)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/lf.swift/master/LICENSE.txt)
 
-Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
+* Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
+* Issuesの言語は、英語か、日本語でお願いします！
 
 ## Features
 ### RTMP
