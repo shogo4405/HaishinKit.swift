@@ -89,15 +89,16 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         for chunk in chunks {
             bytes.append(contentsOf: chunk)
         }
-        if (locked != nil) {
-            OSAtomicAnd32Barrier(0, locked!)
-        }
+
         outputQueue.sync {
             self.outputBuffer.append(contentsOf: bytes)
             if (!self.isRequesting) {
                 self.doOutput(bytes: self.outputBuffer)
                 self.outputBuffer.removeAll()
             }
+        }
+        if (locked != nil) {
+            OSAtomicAnd32Barrier(0, locked!)
         }
         return bytes.count
     }
@@ -227,8 +228,10 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         guard let connectionID:String = connectionID, connected else {
             return
         }
-        let index:Int64 = OSAtomicIncrement64(&self.index)
-        doRequest("/idle/\(connectionID)/\(index)", Data([0x00]), didIdle)
+        outputQueue.sync {
+            let index: Int64 = OSAtomicIncrement64(&self.index)
+            doRequest("/idle/\(connectionID)/\(index)", Data([0x00]), didIdle)
+        }
     }
 
     private func didIdle(data:Data?, response:URLResponse?, error:Error?) {
