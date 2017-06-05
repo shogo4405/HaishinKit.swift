@@ -89,6 +89,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         for chunk in chunks {
             bytes.append(contentsOf: chunk)
         }
+        if (locked != nil) {
+            OSAtomicAnd32Barrier(0, locked!)
+        }
         outputQueue.sync {
             self.outputBuffer.append(contentsOf: bytes)
             if (!self.isRequesting) {
