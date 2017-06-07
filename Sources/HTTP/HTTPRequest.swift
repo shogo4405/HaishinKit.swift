@@ -5,6 +5,7 @@ protocol HTTPRequestCompatible: BytesConvertible, CustomStringConvertible {
     var method:String { get set }
     var version:String { get set }
     var headerFields:[String: String] { get set }
+    var body:Data? { get set }
 }
 
 extension HTTPRequestCompatible {
@@ -23,20 +24,20 @@ extension HTTPRequestCompatible {
             return [UInt8](lines.joined(separator: "\r\n").utf8)
         }
         set {
-            var count:Int = 0
             var lines:[String] = []
             let bytes:[ArraySlice<UInt8>] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
-                count += bytes[i].count + 1
-                guard let line:String = String(bytes: Array(bytes[i]), encoding: String.Encoding.utf8) else {
+                guard let line:String = String(bytes: Array<UInt8>(bytes[i]), encoding: .utf8) else {
                     continue
                 }
-                lines.append(line.trimmingCharacters(in: CharacterSet.newlines))
-                if (bytes.last!.isEmpty) {
+                let newLine:String = line.trimmingCharacters(in: .newlines)
+                if newLine == "" {
+                    body = Data(bytes[i+1..<bytes.count].joined(separator: [HTTPRequest.separator]))
                     break
                 }
+                lines.append(newLine)
             }
-            
+
             guard let first:[String] = lines.first?.components(separatedBy: " "), first.count >= 3 else {
                 return
             }
@@ -63,6 +64,7 @@ public struct HTTPRequest: HTTPRequestCompatible {
     public var method:String = ""
     public var version:String = HTTPVersion.version11.description
     public var headerFields:[String: String] = [:]
+    public var body:Data?
 
     init?(bytes:[UInt8]) {
         self.bytes = bytes
