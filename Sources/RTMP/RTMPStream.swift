@@ -373,6 +373,14 @@ open class RTMPStream: NetStream {
         }
     }
 
+    @available(*, unavailable)
+    open func publish(_ name:String?, type:String = "live") {
+        guard let howToPublish:RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
+            return
+        }
+        publish(name, type: howToPublish)
+    }
+
     open func publish(_ name:String?, type:RTMPStream.HowToPublish = .live) {
         lockQueue.async {
             guard let name:String = name else {
