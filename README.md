@@ -200,6 +200,24 @@ httpService.addHTTPStream(httpStream)
 view.addSubview(lfView)
 ```
 
+## Prerequisites
+Make sure you setup and activate your AVAudioSession.
+
+```
+import AVFoundation
+
+...
+
+do {
+   try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
+   try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+   try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
+   try AVAudioSession.sharedInstance().setActive(true)
+   } catch {
+}
+```
+
+
 ## Reference
 * Adobe’s Real Time Messaging Protocol
   * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
