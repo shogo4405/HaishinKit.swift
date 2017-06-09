@@ -181,7 +181,7 @@ open class HTTPService: NetService {
         }
         client.inputBuffer.removeAll()
         if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(request)")
+            logger.verbose("\(request):\(self)")
         }
         switch request.method {
         case "GET":
@@ -240,7 +240,7 @@ open class HTTPService: NetService {
     func notFound(_ request:HTTPRequest, client:NetClient) {
         var response:HTTPResponse = HTTPResponse()
         response.statusCode = HTTPStatusCode.notFound.description
-        client.doOutput(bytes: response.bytes)
+        client.doOutput(data: response.data)
     }
 }
 
@@ -285,8 +285,8 @@ open class HLSService: HTTPService {
         switch request.uri {
         case "/":
             response.headerFields["Content-Type"] = "text/html"
-            response.body = [UInt8](document.utf8)
-            client.doOutput(bytes: response.bytes)
+            response.body = Data(document.utf8)
+            client.doOutput(data: response.data)
         default:
             for stream in streams {
                 guard let (mime, resource) = stream.getResource(request.uri) else {
@@ -301,17 +301,17 @@ open class HLSService: HTTPService {
                             response.headerFields["Content-Length"] = String(describing: length)
                         }
                     }
-                    client.doOutput(bytes: response.bytes)
+                    client.doOutput(data: response.data)
                     client.doOutputFromURL(URL(fileURLWithPath: resource), length: 8 * 1024)
                 default:
                     response.statusCode = HTTPStatusCode.ok.description
-                    response.body = [UInt8](resource.utf8)
-                    client.doOutput(bytes: response.bytes)
+                    response.body = Data(resource.utf8)
+                    client.doOutput(data: response.data)
                 }
                 return
             }
             response.statusCode = HTTPStatusCode.notFound.description
-            client.doOutput(bytes: response.bytes)
+            client.doOutput(data: response.data)
         }
     }
 }

@@ -1,12 +1,13 @@
 import Foundation
 
-struct RTSPRequest: HTTPRequestCompatible {
-    var uri:String = "/"
-    var method:String = ""
-    var version:String = "RTSP/1.0"
-    var headerFields:[String: String] = [:]
+public struct RTSPRequest: HTTPRequestCompatible {
+    public var uri:String = "/"
+    public var method:String = ""
+    public var version:String = "RTSP/1.0"
+    public var headerFields:[String: String] = [:]
+    public var body:Data?
 
-    init() {
+    public init() {
     }
 
     init?(bytes:[UInt8]) {

@@ -1,32 +1,39 @@
 import Foundation
 
-protocol HTTPResponseCompatible: BytesConvertible, CustomStringConvertible {
+protocol HTTPResponseCompatible: CustomStringConvertible {
     var version:String { get set }
     var statusCode:String { get set }
     var headerFields:[String: String] { get set }
-    var body:[UInt8] { get set }
+    var body:Data? { get set }
 }
 
 extension HTTPResponseCompatible {
-
+    // MARK: CustomStringConvertible
     public var description:String {
         return Mirror(reflecting: self).description
     }
+}
 
-    var bytes:[UInt8] {
+extension HTTPResponseCompatible {
+    public var data:Data {
         get {
+            var data:Data = Data()
             var lines:[String] = []
             lines.append("\(version) \(statusCode)")
             for (key, value) in headerFields {
                 lines.append("\(key): \(value)")
             }
-            return [UInt8](lines.joined(separator: "\r\n").utf8) + HTTPResponse.separator + body
+            data.append(contentsOf: lines.joined(separator: "\r\n").utf8)
+            data.append(contentsOf: HTTPResponse.separator)
+            if let body:Data = body {
+                data.append(body)
+            }
+            return data
         }
         set {
             var count:Int = 0
             var lines:[String] = []
-
-            let bytes:[ArraySlice<UInt8>] = newValue.split(separator: HTTPRequest.separator)
+            let bytes:[Data.SubSequence] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
                 guard let line:String = String(bytes: Array(bytes[i]), encoding: String.Encoding.utf8)
@@ -48,7 +55,7 @@ extension HTTPResponseCompatible {
                 headerFields[pairs[0]] = pairs[1]
             }
             
-            body = Array<UInt8>(newValue[count..<newValue.count])
+            body = Data(newValue[count..<newValue.count])
         }
     }
 }
@@ -60,5 +67,5 @@ public struct HTTPResponse: HTTPResponseCompatible {
     public var version:String = HTTPVersion.version11.rawValue
     public var statusCode:String = ""
     public var headerFields:[String: String] = [:]
-    public var body:[UInt8] = []
+    public var body:Data?
 }

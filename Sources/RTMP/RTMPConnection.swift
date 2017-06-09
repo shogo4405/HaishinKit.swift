@@ -238,6 +238,11 @@ open class RTMPConnection: EventDispatcher {
         removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status:)))
     }
 
+    @available(*, unavailable)
+    open func connect(_ command:String) {
+        connect(command, arguments: nil)
+    }
+
     open func call(_ commandName:String, responder:Responder?, arguments:Any?...) {
         guard connected else {
             return
