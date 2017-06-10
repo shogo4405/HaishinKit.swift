@@ -11,9 +11,9 @@
 ### RTMP
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
-- [ ] _Playback (Technical Preview)_
+- [x] _Playback (Technical Preview)_
 - [x] Adaptive bitrate streaming
-  - [x] Handling 
+  - [x] Handling (see also [#126](/../../issues/126))
   - [x] Automatic drop frames
 - [ ] Action Message Format
   - [x] AMF0
@@ -21,16 +21,16 @@
 - [x] SharedObject
 - [x] RTMPS
   - [x] Native (RTMP over SSL/TSL)
-  - [ ] Tunneled (RTMPT over SSL/TSL)
-- [ ] _RTMPT (Technical Preview)_
-- [ ] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
+  - [x] _Tunneled (RTMPT over SSL/TSL) (Technical Preview)_
+- [x] _RTMPT (Technical Preview)_
+- [x] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
 
 ### HLS
 - [x] HTTPService
 - [x] HLS Publish
 
 ### Others
-- [ ] _Support tvOS 10.2+  (Technical Preview)_
+- [x] _Support tvOS 10.2+  (Technical Preview)_
   - tvOS can't publish Camera and Microphone. Available playback feature.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
