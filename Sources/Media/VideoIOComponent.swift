@@ -307,7 +307,7 @@ final class VideoIOComponent: IOComponent {
         effects.append(effect)
         return true
     }
-    
+
     func unregisterEffect(_ effect:VisualEffect) -> Bool {
         objc_sync_enter(effects)
         defer {
@@ -319,17 +319,16 @@ final class VideoIOComponent: IOComponent {
         }
         return false
     }
-
-
 }
 
-#if os(iOS) || os(macOS)
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
         guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
+        CVPixelBufferLockBaseAddress(buffer, .readOnly)
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         let image:CIImage = effect(buffer)
         if (!effects.isEmpty) {
             #if os(macOS)
@@ -347,7 +346,6 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeVideo)
     }
 }
-#endif
 
 extension VideoIOComponent: VideoDecoderDelegate {
     // MARK: VideoDecoderDelegate

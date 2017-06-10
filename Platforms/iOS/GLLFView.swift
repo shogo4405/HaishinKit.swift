@@ -39,7 +39,7 @@ open class GLLFView: GLKView {
         enableSetNeedsDisplay = true
         backgroundColor = GLLFView.defaultBackgroundColor
         layer.backgroundColor = GLLFView.defaultBackgroundColor.cgColor
-        ciContext = CIContext(eaglContext: context, options: GLLFView.defaultOptions)
+        self.ciContext = CIContext(eaglContext: context, options: GLLFView.defaultOptions)
     }
 
     open override func draw(_ rect: CGRect) {

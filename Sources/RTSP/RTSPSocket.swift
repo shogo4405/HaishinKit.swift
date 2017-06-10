@@ -18,7 +18,7 @@ final class RTSPSocket: NetSocket {
                     if (logger.isEnabledFor(level: .verbose)) {
                         logger.verbose("\(request)")
                     }
-                    doOutput(bytes: request.bytes)
+                    doOutput(data: request.data)
                 }
                 requests.removeAll()
             }
@@ -30,7 +30,7 @@ final class RTSPSocket: NetSocket {
             if (logger.isEnabledFor(level: .verbose)) {
                 logger.verbose("\(request)")
             }
-            doOutput(bytes: request.bytes)
+            doOutput(data: request.data)
             return
         }
         requests.append(request)

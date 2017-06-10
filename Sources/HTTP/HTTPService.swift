@@ -175,7 +175,7 @@ open class HTTPService: NetService {
     var document:String = HTTPService.defaultDocument
 
     func client(inputBuffer client:NetClient) {
-        guard let request:HTTPRequest = HTTPRequest(bytes: client.inputBuffer.bytes) else {
+        guard let request:HTTPRequest = HTTPRequest(data: client.inputBuffer) else {
             disconnect(client)
             return
         }

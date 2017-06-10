@@ -1,6 +1,6 @@
 import Foundation
 
-protocol HTTPRequestCompatible: BytesConvertible, CustomStringConvertible {
+protocol HTTPRequestCompatible: CustomStringConvertible {
     var uri:String { get set }
     var method:String { get set }
     var version:String { get set }
@@ -9,23 +9,26 @@ protocol HTTPRequestCompatible: BytesConvertible, CustomStringConvertible {
 }
 
 extension HTTPRequestCompatible {
-
+    // MARK: CustomStringConvertible
     public var description:String {
         return Mirror(reflecting: self).description
     }
+}
 
-    var bytes:[UInt8] {
+extension HTTPRequestCompatible {
+    var data:Data {
         get {
+            var data:Data = Data()
             var lines:[String] = ["\(method) \(uri) \(version)"]
             for (field, value) in headerFields {
                 lines.append("\(field): \(value)")
             }
-            lines.append("\r\n")
-            return [UInt8](lines.joined(separator: "\r\n").utf8)
+            data.append(contentsOf: lines.joined(separator: "\r\n").utf8)
+            return data
         }
         set {
             var lines:[String] = []
-            let bytes:[ArraySlice<UInt8>] = newValue.split(separator: HTTPRequest.separator)
+            let bytes:[Data.SubSequence] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
                 guard let line:String = String(bytes: Array<UInt8>(bytes[i]), encoding: .utf8) else {
                     continue
@@ -66,7 +69,7 @@ public struct HTTPRequest: HTTPRequestCompatible {
     public var headerFields:[String: String] = [:]
     public var body:Data?
 
-    init?(bytes:[UInt8]) {
-        self.bytes = bytes
+    init?(data:Data) {
+        self.data = data
     }
 }

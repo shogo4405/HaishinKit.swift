@@ -1,40 +1,40 @@
 import Foundation
 
-final class RTMPChunk {
-    enum `Type`: UInt8 {
-        case zero = 0
-        case one = 1
-        case two = 2
-        case three = 3
+enum RTMPChunkType: UInt8 {
+    case zero = 0
+    case one = 1
+    case two = 2
+    case three = 3
 
-        var headerSize:Int {
-            switch self {
-            case .zero:
-                return 11
-            case .one:
-                return 7
-            case .two:
-                return 3
-            case .three:
-                return 0
-            }
-        }
-
-        func ready(_ data:Data) -> Bool {
-            return headerSize + RTMPChunk.getStreamIdSize(data[0]) < data.count
-        }
-
-        func toBasicHeader(_ streamId:UInt16) -> Data {
-            if (streamId <= 63) {
-                return Data([rawValue << 6 | UInt8(streamId)])
-            }
-            if (streamId <= 319) {
-                return Data([rawValue << 6 | 0b0000000, UInt8(streamId - 64)])
-            }
-            return Data([rawValue << 6 | 0b00111111] + (streamId - 64).bigEndian.bytes)
+    var headerSize:Int {
+        switch self {
+        case .zero:
+            return 11
+        case .one:
+            return 7
+        case .two:
+            return 3
+        case .three:
+            return 0
         }
     }
 
+    func ready(_ data:Data) -> Bool {
+        return headerSize + RTMPChunk.getStreamIdSize(data[0]) < data.count
+    }
+
+    func toBasicHeader(_ streamId:UInt16) -> Data {
+        if (streamId <= 63) {
+            return Data([rawValue << 6 | UInt8(streamId)])
+        }
+        if (streamId <= 319) {
+            return Data([rawValue << 6 | 0b0000000, UInt8(streamId - 64)])
+        }
+        return Data([rawValue << 6 | 0b00111111] + (streamId - 64).bigEndian.bytes)
+    }
+}
+
+final class RTMPChunk {
     enum StreamID: UInt16 {
         case control = 0x02
         case command = 0x03
@@ -57,7 +57,7 @@ final class RTMPChunk {
     }
 
     var size:Int = 0
-    var type:Type = .zero
+    var type:RTMPChunkType = .zero
     var streamId:UInt16 = RTMPChunk.StreamID.command.rawValue
 
     var ready:Bool {
@@ -184,7 +184,7 @@ final class RTMPChunk {
     fileprivate(set) var fragmented:Bool = false
     fileprivate var _data:Data = Data()
 
-    init(type:Type, streamId:UInt16, message:RTMPMessage) {
+    init(type:RTMPChunkType, streamId:UInt16, message:RTMPMessage) {
         self.type = type
         self.streamId = streamId
         self.message = message
@@ -198,7 +198,7 @@ final class RTMPChunk {
         if (data.isEmpty) {
             return nil
         }
-        guard let type:Type = Type(rawValue: (data[0] & 0b11000000) >> 6) , type.ready(data) else {
+        guard let type:RTMPChunkType = RTMPChunkType(rawValue: (data[0] & 0b11000000) >> 6) , type.ready(data) else {
             return nil
         }
         self.size = size
@@ -261,7 +261,7 @@ final class RTMPChunk {
             return [data]
         }
         let startIndex:Int = size + headerSize
-        let header:Data = Type.three.toBasicHeader(streamId)
+        let header:Data = RTMPChunkType.three.toBasicHeader(streamId)
         var chunks:[Data] = [data.subdata(in: 0..<startIndex)]
         for index in stride(from: startIndex, to: data.count, by: size) {
             var chunk:Data = header

@@ -10,7 +10,7 @@ public struct RTSPRequest: HTTPRequestCompatible {
     public init() {
     }
 
-    init?(bytes:[UInt8]) {
-        self.bytes = bytes
+    init?(data:Data) {
+        self.data = data
     }
 }

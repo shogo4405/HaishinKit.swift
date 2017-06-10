@@ -84,7 +84,6 @@ final class AudioIOComponent: IOComponent {
 #endif
 }
 
-#if os(iOS) || os(macOS)
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
@@ -92,4 +91,4 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
         encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, from: connection)
     }
 }
-#endif
+
