@@ -138,6 +138,12 @@ open class NetStream: NSObject {
         }
     }
 
+    open func setPointOfInterest(_ focus:CGPoint, exposure:CGPoint) {
+        mixer.videoIO.focusPointOfInterest = focus
+        mixer.videoIO.exposurePointOfInterest = exposure
+    }
+#endif
+
     open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
@@ -146,12 +152,6 @@ open class NetStream: NSObject {
             mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
         }
     }
-
-    open func setPointOfInterest(_ focus:CGPoint, exposure:CGPoint) {
-        mixer.videoIO.focusPointOfInterest = focus
-        mixer.videoIO.exposurePointOfInterest = exposure
-    }
-#endif
 
     open func registerEffect(video effect:VisualEffect) -> Bool {
         return mixer.videoIO.registerEffect(effect)
