@@ -88,7 +88,7 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeAudio)
-        encoder.captureOutput(captureOutput, didOutputSampleBuffer: sampleBuffer, from: connection)
+        encoder.encodeSampleBuffer(sampleBuffer)
     }
 }
 
