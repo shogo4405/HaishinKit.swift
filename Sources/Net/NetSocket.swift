@@ -157,6 +157,7 @@ public class NetSocket: NSObject {
         outputStream = nil
         buffer?.deinitialize()
         buffer?.deallocate(capacity: windowSizeC)
+        buffer = nil
     }
 
     func didTimeout() {
