@@ -421,7 +421,7 @@ open class RTMPConnection: EventDispatcher {
             }
             if (count == measureInterval - 1) {
                 for (_, stream) in streams {
-                    stream.qosDelagate?.didPublishInsufficientBW(stream, withConnection: self)
+                    stream.qosDelegate?.didPublishInsufficientBW(stream, withConnection: self)
                 }
             }
             previousQueueBytesOut.removeFirst()
