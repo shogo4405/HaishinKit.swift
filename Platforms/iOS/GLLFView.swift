@@ -75,8 +75,8 @@ extension GLLFView: NetStreamDrawable {
         ciContext.render(image, to: toCVPixelBuffer)
     }
     func draw(image:CIImage) {
-        displayImage = image
         DispatchQueue.main.async {
+            self.displayImage = image
             self.setNeedsDisplay()
         }
     }
