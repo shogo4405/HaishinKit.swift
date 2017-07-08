@@ -58,7 +58,7 @@ final class H264Decoder {
         imageBuffer:CVBuffer?,
         presentationTimeStamp:CMTime,
         duration:CMTime) in
-        let decoder:H264Decoder = unsafeBitCast(decompressionOutputRefCon, to: H264Decoder.self)
+        let decoder:H264Decoder = Unmanaged<H264Decoder>.fromOpaque(decompressionOutputRefCon!).takeUnretainedValue()
         decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration)
     }
 
@@ -71,7 +71,7 @@ final class H264Decoder {
                 }
                 var record:VTDecompressionOutputCallbackRecord = VTDecompressionOutputCallbackRecord(
                     decompressionOutputCallback: callback,
-                    decompressionOutputRefCon: unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
+                    decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
                 )
                 guard VTDecompressionSessionCreate(
                     kCFAllocatorDefault,
