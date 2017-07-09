@@ -35,20 +35,13 @@ extension RTMPMuxer: AudioEncoderDelegate {
     }
 
     func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
-        var blockBuffer:CMBlockBuffer?
-        var audioBufferList:AudioBufferList = AudioBufferList()
-        CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
-            sampleBuffer, nil, &audioBufferList, MemoryLayout<AudioBufferList>.size, nil, nil, 0, &blockBuffer
-        )
         let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
         let delta:Double = (audioTimestamp == kCMTimeZero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
-        guard let _:CMBlockBuffer = blockBuffer , 0 <= delta else {
+        guard let data:Data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
             return
         }
         var buffer:Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
-        if let mData:UnsafeMutableRawPointer = audioBufferList.mBuffers.mData {
-            buffer.append(mData.assumingMemoryBound(to: UInt8.self), count: Int(audioBufferList.mBuffers.mDataByteSize))
-        }
+        buffer.append(data)
         delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
         audioTimestamp = presentationTimeStamp
     }
@@ -68,17 +61,10 @@ extension RTMPMuxer: VideoEncoderDelegate {
     }
 
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        guard let block:CMBlockBuffer = sampleBuffer.dataBuffer else {
+        guard let data:Data = sampleBuffer.dataBuffer?.data else {
             return
         }
-
         let keyframe:Bool = !sampleBuffer.dependsOnOthers
-        var totalLength:Int = 0
-        var dataPointer:UnsafeMutablePointer<Int8>? = nil
-        guard CMBlockBufferGetDataPointer(block, 0, nil, &totalLength, &dataPointer) == noErr else {
-            return
-        }
-
         var compositionTime:Int32 = 0
         let presentationTimeStamp:CMTime = sampleBuffer.presentationTimeStamp
         var decodeTimeStamp:CMTime = sampleBuffer.decodeTimeStamp
@@ -90,9 +76,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
         var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
         buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])
-        if let pointer:UnsafeMutablePointer<Int8> = dataPointer {
-            buffer.append(Data(bytes: pointer, count: totalLength))
-        }
+        buffer.append(data)
         delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
         videoTimestamp = decodeTimeStamp
     }
