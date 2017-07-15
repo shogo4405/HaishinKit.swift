@@ -239,7 +239,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     @objc private func on(timer:Timer) {
-        guard (Double(delay) / 60) < abs(lastResponse.timeIntervalSinceNow), !isRequesting else {
+        guard (Double(delay) / 10) < abs(lastResponse.timeIntervalSinceNow), !isRequesting else {
             return
         }
         idle()
