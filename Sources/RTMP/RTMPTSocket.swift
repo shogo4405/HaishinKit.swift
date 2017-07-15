@@ -63,6 +63,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var isRequesting:Bool = false
     private var outputBuffer:[UInt8] = []
     private var lastResponse:Date = Date()
+    private var lastRequestPathComponent:String?
+    private var lastRequestData:Data?
+    private var isRetryingRequest:Bool = true
 
     override init() {
         super.init()
@@ -129,8 +132,21 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
         if let error:Error = error {
             logger.error("\(error)")
+
+            if let lastRequestPathComponent: String = self.lastRequestPathComponent,
+               let lastRequestData: Data = self.lastRequestData,
+               (error as NSError).code == -1005, !isRetryingRequest {
+                if (logger.isEnabledFor(level: .verbose)) {
+                    logger.verbose("Will retry request for path=\(lastRequestPathComponent)")
+                }
+                isRetryingRequest = true
+                doRequest(lastRequestPathComponent, lastRequestData, listen)
+            }
+
             return
         }
+
+        isRetryingRequest = false
 
         outputQueue.sync {
             if (self.outputBuffer.isEmpty) {
@@ -256,9 +272,11 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         return bytes.count
     }
 
-    private func doRequest(_ pathComonent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
+    private func doRequest(_ pathComponent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
         isRequesting = true
-        request = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
+        lastRequestPathComponent = pathComponent
+        lastRequestData = data
+        request = URLRequest(url: baseURL.appendingPathComponent(pathComponent))
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
         if (logger.isEnabledFor(level: .verbose)) {
