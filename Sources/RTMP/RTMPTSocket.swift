@@ -256,9 +256,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         return bytes.count
     }
 
-    private func doRequest(_ pathComonent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
+    private func doRequest(_ pathComponent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
         isRequesting = true
-        request = URLRequest(url: baseURL.appendingPathComponent(pathComonent))
+        request = URLRequest(url: baseURL.appendingPathComponent(pathComponent))
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
         if (logger.isEnabledFor(level: .verbose)) {
