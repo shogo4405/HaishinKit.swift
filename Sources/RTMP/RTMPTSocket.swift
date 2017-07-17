@@ -134,13 +134,14 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
 
             if let lastRequestPathComponent: String = self.lastRequestPathComponent,
-               let lastRequestData: Data = self.lastRequestData,
-               (error as NSError).code == -1005, !isRetryingRequest {
+               let lastRequestData: Data = self.lastRequestData, !isRetryingRequest {
                 if (logger.isEnabledFor(level: .verbose)) {
                     logger.verbose("Will retry request for path=\(lastRequestPathComponent)")
                 }
-                isRetryingRequest = true
-                doRequest(lastRequestPathComponent, lastRequestData, listen)
+                outputQueue.sync {
+                    isRetryingRequest = true
+                    doRequest(lastRequestPathComponent, lastRequestData, listen)
+                }
             }
 
             return
