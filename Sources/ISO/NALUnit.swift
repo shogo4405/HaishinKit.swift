@@ -22,20 +22,20 @@ enum NALType: UInt8 {
 struct NALUnit {
     var refIdc:UInt8 = 0
     var type:NALType = .unspec
-    var payload:[UInt8] = []
+    var payload:Data = Data()
 }
 
-extension NALUnit: BytesConvertible {
-    // MARK: BytesConvertible
-    var bytes:[UInt8] {
+extension NALUnit: DataConvertible {
+    // MARK: DataConvertible
+    var data:Data {
         get {
             return ByteArray()
                 .writeUInt8(refIdc << 5 | type.rawValue)
                 .writeBytes(payload)
-                .bytes
+                .data
         }
         set {
-            let buffer:ByteArray = ByteArray(bytes: newValue)
+            let buffer:ByteArray = ByteArray(data: newValue)
             do {
                 let byte:UInt8 = try buffer.readUInt8()
                 refIdc = byte & 0x60 >> 5

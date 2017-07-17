@@ -297,13 +297,13 @@ final class RTMPCommandMessage: RTMPMessage {
             for i in arguments {
                 serializer.serialize(i)
             }
-            super.payload = Data(serializer.bytes)
+            super.payload = serializer.data
             serializer.clear()
             return super.payload
         }
         set {
             if (length == newValue.count) {
-                serializer.writeBytes(newValue.bytes)
+                serializer.writeBytes(newValue)
                 serializer.position = 0
                 do {
                     if (type == .amf3Command) {
@@ -390,7 +390,7 @@ final class RTMPDataMessage: RTMPMessage {
             for arg in arguments {
                 serializer.serialize(arg)
             }
-            super.payload = Data(serializer.bytes)
+            super.payload = serializer.data
             serializer.clear()
 
             return super.payload
@@ -401,7 +401,7 @@ final class RTMPDataMessage: RTMPMessage {
             }
 
             if (length == newValue.count) {
-                serializer.writeBytes(newValue.bytes)
+                serializer.writeBytes(newValue)
                 serializer.position = 0
                 if (type == .amf3Data) {
                     serializer.position = 1
@@ -451,7 +451,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
     let objectEncoding:UInt8
     var sharedObjectName:String = ""
     var currentVersion:UInt32 = 0
-    var flags:[UInt8] = [UInt8](repeating: 0x00, count: 8)
+    var flags:Data = Data(count: 8)
     var events:[RTMPSharedObjectEvent] = []
 
     override var payload:Data {
@@ -472,7 +472,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             for event in events {
                 event.serialize(&serializer)
             }
-            super.payload = Data(serializer.bytes)
+            super.payload = serializer.data
             serializer.clear()
 
             return super.payload
@@ -483,7 +483,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
             }
 
             if (length == newValue.count) {
-                serializer.writeBytes(newValue.bytes)
+                serializer.writeBytes(newValue)
                 serializer.position = 0
                 if (type == .amf3Shared) {
                     serializer.position = 1
@@ -514,7 +514,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         super.init(type: objectEncoding == 0x00 ? .amf0Shared : .amf3Shared)
     }
 
-    init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:[UInt8], events:[RTMPSharedObjectEvent]) {
+    init(timestamp:UInt32, objectEncoding:UInt8, sharedObjectName:String, currentVersion:UInt32, flags:Data, events:[RTMPSharedObjectEvent]) {
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
         self.currentVersion = currentVersion
@@ -665,7 +665,7 @@ final class RTMPVideoMessage: RTMPMessage {
     func enqueueSampleBuffer(_ stream: RTMPStream) {
         stream.videoTimestamp += Double(timestamp)
 
-        let compositionTimeoffset:Int32 = Int32(bytes: [0] + payload[2..<5]).bigEndian
+        let compositionTimeoffset:Int32 = Int32(data: [0] + payload[2..<5]).bigEndian
         var timing:CMSampleTimingInfo = CMSampleTimingInfo(
             duration: CMTimeMake(Int64(timestamp), 1000),
             presentationTimeStamp: CMTimeMake(Int64(stream.videoTimestamp) + Int64(compositionTimeoffset), 1000),
@@ -691,7 +691,7 @@ final class RTMPVideoMessage: RTMPMessage {
 
     func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config:AVCConfigurationRecord = AVCConfigurationRecord()
-        config.bytes = Array<UInt8>(payload[FLVTagType.video.headerSize..<payload.count])
+        config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
     }
 }
@@ -739,7 +739,7 @@ final class RTMPUserControlMessage: RTMPMessage {
             }
             super.payload.removeAll()
             super.payload += event.bytes
-            super.payload += value.bigEndian.bytes
+            super.payload += value.bigEndian.data
             return super.payload
         }
         set {
@@ -750,7 +750,7 @@ final class RTMPUserControlMessage: RTMPMessage {
                 if let event:Event = Event(rawValue: newValue[1]) {
                     self.event = event
                 }
-                value = Int32(bytes: Array<UInt8>(newValue[2..<newValue.count])).bigEndian
+                value = Int32(data: newValue[2..<newValue.count]).bigEndian
             }
             super.payload = newValue
         }

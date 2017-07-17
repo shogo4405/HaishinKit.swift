@@ -6,23 +6,23 @@ final class RTMPHandshake {
 
     var timestamp:TimeInterval = 0
 
-    var c0c1packet:[UInt8] {
+    var c0c1packet:Data {
         let packet:ByteArray = ByteArray()
             .writeUInt8(RTMPHandshake.protocolVersion)
             .writeInt32(Int32(timestamp))
-            .writeBytes([0x00, 0x00, 0x00, 0x00])
+            .writeBytes(Data([0x00, 0x00, 0x00, 0x00]))
         for _ in 0..<RTMPHandshake.sigSize - 8 {
             packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
         }
-        return packet.bytes
+        return packet.data
     }
 
-    func c2packet(_ s0s1packet:[UInt8]) -> [UInt8] {
-        let packet:ByteArray = ByteArray()
-            .writeBytes(Array<UInt8>(s0s1packet[1...4]))
+    func c2packet(_ s0s1packet:Data) -> Data {
+        return ByteArray()
+            .writeBytes(s0s1packet.subdata(in: 1..<5))
             .writeInt32(Int32(Date().timeIntervalSince1970 - timestamp))
-            .writeBytes(Array<UInt8>(s0s1packet[9...RTMPHandshake.sigSize]))
-        return packet.bytes
+            .writeBytes(s0s1packet.subdata(in: 9..<RTMPHandshake.sigSize + 1))
+            .data
     }
 
     func clear() {

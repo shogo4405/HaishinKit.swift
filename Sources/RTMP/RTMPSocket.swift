@@ -58,7 +58,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     override var connected:Bool {
         didSet {
             if (connected) {
-                doOutput(bytes: handshake.c0c1packet)
+                doOutput(data: handshake.c0c1packet)
                 readyState = .versionSent
                 return
             }
@@ -104,7 +104,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            doOutput(bytes: handshake.c2packet(inputBuffer.bytes))
+            doOutput(data: handshake.c2packet(inputBuffer))
             inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
             if (RTMPHandshake.sigSize <= inputBuffer.count) {

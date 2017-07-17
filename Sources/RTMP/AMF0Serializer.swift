@@ -215,7 +215,7 @@ extension AMF0Serializer: AMFSerializer {
      * @see 2.3 Boolean Type
      */
     func serialize(_ value:Bool) -> Self {
-        return writeBytes([Type.bool.rawValue, value ? 0x01 : 0x00])
+        return writeBytes(Data([Type.bool.rawValue, value ? 0x01 : 0x00]))
     }
 
     func deserialize() throws -> Bool {
@@ -319,7 +319,7 @@ extension AMF0Serializer: AMFSerializer {
     func serialize(_ value:[Any?]) -> Self {
         writeUInt8(Type.strictArray.rawValue)
         if value.isEmpty {
-            writeBytes([0x00, 0x00, 0x00, 0x00])
+            writeBytes(Data([0x00, 0x00, 0x00, 0x00]))
             return self
         }
         writeUInt32(UInt32(value.count))
@@ -345,7 +345,7 @@ extension AMF0Serializer: AMFSerializer {
      * @see 2.13 Date Type
      */
     func serialize(_ value:Date) -> Self {
-        return writeUInt8(Type.date.rawValue).writeDouble(value.timeIntervalSince1970 * 1000).writeBytes([0x00, 0x00])
+        return writeUInt8(Type.date.rawValue).writeDouble(value.timeIntervalSince1970 * 1000).writeBytes(Data([0x00, 0x00]))
     }
 
     func deserialize() throws -> Date {
@@ -373,7 +373,7 @@ extension AMF0Serializer: AMFSerializer {
 
     @discardableResult
     fileprivate func serializeUTF8(_ value:String, _ isLong: Bool) -> Self {
-        let utf8:[UInt8] = [UInt8](value.utf8)
+        let utf8:Data = Data(value.utf8)
         if (isLong) {
             writeUInt32(UInt32(utf8.count))
         } else {

@@ -3,21 +3,28 @@ import AVFoundation
 import VideoToolbox
 
 struct AVCFormatStream {
-    var bytes:[UInt8] = []
+    let data:Data
 
-    init(bytes:[UInt8]) {
-        self.bytes = bytes
+    init(data:Data) {
+        self.data = data
     }
 
-    func toByteStream() -> [UInt8] {
-        let buffer:ByteArray = ByteArray(bytes: bytes)
-        var result:[UInt8] = []
+    init?(data:Data?) {
+        guard let data:Data = data else {
+            return nil
+        }
+        self.init(data: data)
+    }
+
+    func toByteStream() -> Data {
+        let buffer:ByteArray = ByteArray(data: data)
+        var result:Data = Data()
         while (0 < buffer.bytesAvailable) {
             do {
                 buffer.position += 2
                 let length:Int = try Int(buffer.readUInt16())
                 result.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
-                result.append(contentsOf: try buffer.readBytes(length))
+                result.append(try buffer.readBytes(length))
             } catch {
                 logger.error("\(buffer)")
             }
@@ -70,7 +77,7 @@ struct AVCConfigurationRecord {
     }
 
     init(data: Data) {
-        self.bytes = data.bytes
+        self.data = data
     }
 
     func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) ->  OSStatus {
@@ -93,9 +100,9 @@ struct AVCConfigurationRecord {
     }
 }
 
-extension AVCConfigurationRecord: BytesConvertible {
-    // MARK: BytesConvertible
-    var bytes:[UInt8] {
+extension AVCConfigurationRecord: DataConvertible {
+    // MARK: DataConvertible
+    var data:Data {
         get {
             let buffer:ByteArray = ByteArray()
                 .writeUInt8(configurationVersion)
@@ -107,18 +114,18 @@ extension AVCConfigurationRecord: BytesConvertible {
             for i in 0..<sequenceParameterSets.count {
                 buffer
                     .writeUInt16(UInt16(sequenceParameterSets[i].count))
-                    .writeBytes(sequenceParameterSets[i])
+                    .writeBytes(Data(sequenceParameterSets[i]))
             }
             buffer.writeUInt8(UInt8(pictureParameterSets.count))
             for i in 0..<pictureParameterSets.count {
                 buffer
                     .writeUInt16(UInt16(pictureParameterSets[i].count))
-                    .writeBytes(pictureParameterSets[i])
+                    .writeBytes(Data(pictureParameterSets[i]))
             }
-            return buffer.bytes
+            return buffer.data
         }
         set {
-            let buffer:ByteArray = ByteArray(bytes: newValue)
+            let buffer:ByteArray = ByteArray(data: newValue)
             do {
                 configurationVersion = try buffer.readUInt8()
                 AVCProfileIndication = try buffer.readUInt8()
@@ -129,12 +136,12 @@ extension AVCConfigurationRecord: BytesConvertible {
                 let numOfSequenceParameterSets:UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
                 for _ in 0..<numOfSequenceParameterSets {
                     let length:Int = Int(try buffer.readUInt16())
-                    sequenceParameterSets.append(try buffer.readBytes(length))
+                    sequenceParameterSets.append(try buffer.readBytes(length).bytes)
                 }
                 let numPictureParameterSets:UInt8 = try buffer.readUInt8()
                 for _ in 0..<numPictureParameterSets {
                     let length:Int = Int(try buffer.readUInt16())
-                    pictureParameterSets.append(try buffer.readBytes(length))
+                    pictureParameterSets.append(try buffer.readBytes(length).bytes)
                 }
             } catch {
                 logger.error("\(buffer)")

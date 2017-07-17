@@ -22,18 +22,6 @@ public class NetSocket: NSObject {
     fileprivate var timeoutHandler:(() -> Void)?
 
     @discardableResult
-    final public func doOutput(bytes:[UInt8], locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
-        OSAtomicAdd64(Int64(bytes.count), &queueBytesOut)
-        lockQueue.async {
-            self.doOutputProcess(UnsafePointer<UInt8>(bytes), maxLength: bytes.count)
-            if (locked != nil) {
-                OSAtomicAnd32Barrier(0, locked!)
-            }
-        }
-        return bytes.count
-    }
-
-    @discardableResult
     final public func doOutput(data:Data, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         lockQueue.async {

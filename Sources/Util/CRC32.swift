@@ -17,14 +17,14 @@ final class CRC32 {
         self.table = table
     }
 
-    func calculate(_ bytes:[UInt8]) -> UInt32 {
-        return calculate(bytes, seed: nil)
+    func calculate(_ data:Data) -> UInt32 {
+        return calculate(data, seed: nil)
     }
 
-    func calculate(_ bytes:[UInt8], seed:UInt32?) -> UInt32 {
+    func calculate(_ data:Data, seed:UInt32?) -> UInt32 {
         var crc:UInt32 = seed ?? 0xffffffff
-        for i in 0..<bytes.count {
-            crc = (crc << 8) ^ table[Int((crc >> 24) ^ (UInt32(bytes[i]) & 0xff) & 0xff)]
+        for i in 0..<data.count {
+            crc = (crc << 8) ^ table[Int((crc >> 24) ^ (UInt32(data[i]) & 0xff) & 0xff)]
         }
         return crc
     }

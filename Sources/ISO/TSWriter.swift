@@ -87,16 +87,17 @@ class TSWriter {
             packets[0].adaptationField?.randomAccessIndicator = !sampleBuffer.dependsOnOthers
         }
 
-        var bytes:[UInt8] = []
+        var bytes:Data = Data()
         for var packet in packets {
             packet.continuityCounter = continuityCounters[PID]!
             continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
-            bytes += packet.bytes
+            bytes.append(packet.data)
         }
+
         nstry({
-            self.currentFileHandle?.write(Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count))
+            self.currentFileHandle?.write(bytes)
         }){ exception in
-            self.currentFileHandle?.write(Data(bytes: UnsafePointer<UInt8>(bytes), count: bytes.count))
+            self.currentFileHandle?.write(bytes)
             logger.warning("\(exception)")
         }
     }
@@ -167,16 +168,16 @@ class TSWriter {
         currentFileHandle = try? FileHandle(forWritingTo: url)
 
         PMT.PCRPID = PCRPID
-        var bytes:[UInt8] = []
+        var bytes:Data = Data()
         var packets:[TSPacket] = []
         packets += PAT.arrayOfPackets(TSWriter.defaultPATPID)
         packets += PMT.arrayOfPackets(TSWriter.defaultPMTPID)
         for packet in packets {
-            bytes += packet.bytes
+            bytes.append(packet.data)
         }
 
         nstry({
-            self.currentFileHandle?.write(Data(bytes: bytes, count: bytes.count))
+            self.currentFileHandle?.write(bytes)
         }){ exception in
             logger.warning("\(exception)")
         }
