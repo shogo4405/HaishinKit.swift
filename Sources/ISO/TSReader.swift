@@ -48,11 +48,11 @@ class TSReader {
             }
             numberOfPackets += 1
             if (packet.PID == 0x0000) {
-                PAT = ProgramAssociationSpecific(data: packet.payload)
+                PAT = ProgramAssociationSpecific(packet.payload)
                 continue
             }
             if let channel:UInt16 = dictionaryForPrograms[packet.PID] {
-                PMT[channel] = ProgramMapSpecific(data: packet.payload)
+                PMT[channel] = ProgramMapSpecific(packet.payload)
                 continue
             }
             if let data:ElementaryStreamSpecificData = dictionaryForESSpecData[packet.PID] {

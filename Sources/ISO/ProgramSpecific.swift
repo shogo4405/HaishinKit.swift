@@ -59,9 +59,28 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     }
     var crc32:UInt32 = 0
 
+    init() {
+    }
+
+    init?(_ data:Data) {
+        self.data = data
+    }
+
+    func arrayOfPackets(_ PID:UInt16) -> [TSPacket] {
+        var packets:[TSPacket] = []
+        var packet:TSPacket = TSPacket()
+        packet.payloadUnitStartIndicator = true
+        packet.PID = PID
+        let _ = packet.fill(data, useAdaptationField: false)
+        packets.append(packet)
+        return packets
+    }
+}
+
+extension ProgramSpecific: DataConvertible {
     var data:Data {
         get {
-            let data:Data = self.data
+            let data:Data = tableData
             sectionLength = UInt16(data.count) + 9
             sectionSyntaxIndicator = data.count != 0
             let buffer:ByteArray = ByteArray()
@@ -108,23 +127,6 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
             }
         }
     }
-
-    init() {
-    }
-
-    init?(data:Data) {
-        self.data = data
-    }
-
-    func arrayOfPackets(_ PID:UInt16) -> [TSPacket] {
-        var packets:[TSPacket] = []
-        var packet:TSPacket = TSPacket()
-        packet.payloadUnitStartIndicator = true
-        packet.PID = PID
-        let _ = packet.fill(data, useAdaptationField: false)
-        packets.append(packet)
-        return packets
-    }
 }
 
 extension ProgramSpecific: CustomStringConvertible {
@@ -140,7 +142,7 @@ final class ProgramAssociationSpecific: ProgramSpecific {
 
     var programs:[UInt16:UInt16] = [:]
 
-    override var data:Data {
+    override var tableData:Data {
         get {
             let buffer:ByteArray = ByteArray()
             for (number, programMapPID) in programs {
@@ -175,16 +177,15 @@ final class ProgramMapSpecific: ProgramSpecific {
         tableID = ProgramMapSpecific.tableID
     }
 
-    override init?(data:Data) {
+    override init?(_ data:Data) {
         super.init()
         self.data = data
     }
 
-    override var data:Data {
+    override var tableData:Data {
         get {
             mutex.lock()
             defer { mutex.unlock() }
-            
             var bytes:Data = Data()
             elementaryStreamSpecificData.sort{ (lhs:ElementaryStreamSpecificData, rhs:ElementaryStreamSpecificData) -> Bool in
                 return lhs.elementaryPID < rhs.elementaryPID
@@ -201,7 +202,6 @@ final class ProgramMapSpecific: ProgramSpecific {
         set {
             mutex.lock()
             defer { mutex.unlock() }
-            
             let buffer:ByteArray = ByteArray(data: newValue)
             do {
                 PCRPID = try buffer.readUInt16() & 0x1fff
@@ -210,7 +210,7 @@ final class ProgramMapSpecific: ProgramSpecific {
                 var position:Int = 0
                 while (0 < buffer.bytesAvailable) {
                     position = buffer.position
-                    guard let data:ElementaryStreamSpecificData = ElementaryStreamSpecificData(data: try buffer.readBytes(buffer.bytesAvailable)) else {
+                    guard let data:ElementaryStreamSpecificData = ElementaryStreamSpecificData(try buffer.readBytes(buffer.bytesAvailable)) else {
                         break
                     }
                     buffer.position = position + ElementaryStreamSpecificData.fixedHeaderSize + Int(data.ESInfoLength)
@@ -251,7 +251,7 @@ struct ElementaryStreamSpecificData {
     init() {
     }
 
-    init?(data:Data) {
+    init?(_ data:Data) {
         self.data = data
     }
 }
