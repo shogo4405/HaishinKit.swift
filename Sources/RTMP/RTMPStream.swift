@@ -647,7 +647,7 @@ extension RTMPStream: RTMPMuxerDelegate {
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
-            message: type.message(with: id, timestamp: UInt32(audioTimestamp), buffer: buffer)
+            message: RTMPAudioMessage(streamId: id, timestamp: UInt32(audioTimestamp), payload: buffer)
         ), locked: nil)
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
@@ -663,7 +663,7 @@ extension RTMPStream: RTMPMuxerDelegate {
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: chunkTypes[type] == nil ? .zero : .one,
             streamId: type.streamId,
-            message: type.message(with: id, timestamp: UInt32(videoTimestamp), buffer: buffer)
+            message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
         ), locked: &mixer.videoIO.encoder.locked)
         chunkTypes[type] = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
