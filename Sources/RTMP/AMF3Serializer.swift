@@ -256,7 +256,7 @@ extension AMF3Serializer: AMFSerializer {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        let utf8:[UInt8] = [UInt8](value.description.utf8)
+        let utf8:Data = Data(value.description.utf8)
         return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
@@ -367,7 +367,7 @@ extension AMF3Serializer: AMFSerializer {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        let utf8:[UInt8] = [UInt8](value.description.utf8)
+        let utf8:Data = Data(value.description.utf8)
         return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
@@ -557,7 +557,7 @@ extension AMF3Serializer: AMFSerializer {
         if let index:Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
-        let utf8:[UInt8] = [UInt8](value.utf8)
+        let utf8:Data = Data(value.utf8)
         reference.strings.append(value)
         return serializeU29(utf8.count << 1 | 0x01).writeBytes(utf8)
     }

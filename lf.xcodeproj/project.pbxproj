@@ -151,6 +151,8 @@
 		299AE0E71D45003D00D26A49 /* RTSPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E41D44EC7800D26A49 /* RTSPSocket.swift */; };
 		299B131D1D35272D00A1E8F5 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		299B13271D3B751400A1E8F5 /* LFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* LFView.swift */; };
+		299E044A1F1CE3870020DFBF /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */; };
+		299E044B1F1CE3870020DFBF /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */; };
 		29A39C8E1D85BF6F007C27E9 /* BroadcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
@@ -361,13 +363,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2913B9581EAE518100F95645 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 29C932931CD76FD300283FC5;
-			remoteInfo = "Example macOS";
-		};
 		2915EC6A1D85BDF100621092 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -670,6 +665,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				299E044A1F1CE3870020DFBF /* ObjcExceptionBridging.framework in Frameworks */,
+				299E044B1F1CE3870020DFBF /* XCGLogger.framework in Frameworks */,
 				29798E671CE610F500F5CBD0 /* lf.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1285,12 +1282,12 @@
 				29798E561CE60E5300F5CBD0 /* Frameworks */,
 				29798E571CE60E5300F5CBD0 /* Resources */,
 				29798E551CE60E5300F5CBD0 /* Sources */,
+				299E044F1F1CE3D90020DFBF /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				29798E601CE60E5300F5CBD0 /* PBXTargetDependency */,
-				2913B9591EAE518100F95645 /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = Tests;
@@ -1425,7 +1422,6 @@
 					29798E581CE60E5300F5CBD0 = {
 						CreatedOnToolsVersion = 7.3.1;
 						LastSwiftMigration = 0800;
-						TestTargetID = 29C932931CD76FD300283FC5;
 					};
 					29B8761A1CD701F900FC07DA = {
 						CreatedOnToolsVersion = 7.3;
@@ -1614,6 +1610,21 @@
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
 			showEnvVarsInLog = 0;
+		};
+		299E044F1F1CE3D90020DFBF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/Mac/XCGLogger.framework",
+				"$(SRCROOT)/Carthage/Build/Mac/ObjcExceptionBridging.framework",
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage copy-frameworks";
 		};
 		29F5FEA81DE2C76B00D0CCB4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -2014,11 +2025,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		2913B9591EAE518100F95645 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 29C932931CD76FD300283FC5 /* Example macOS */;
-			targetProxy = 2913B9581EAE518100F95645 /* PBXContainerItemProxy */;
-		};
 		2915EC6B1D85BDF100621092 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2915EC5E1D85BDF100621092 /* ScreencastUI */;
@@ -2329,7 +2335,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example macOS.app/Contents/MacOS/Example macOS";
 			};
 			name = Debug;
 		};
@@ -2350,7 +2355,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 3.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example macOS.app/Contents/MacOS/Example macOS";
 			};
 			name = Release;
 		};

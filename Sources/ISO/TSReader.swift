@@ -48,11 +48,11 @@ class TSReader {
             }
             numberOfPackets += 1
             if (packet.PID == 0x0000) {
-                PAT = ProgramAssociationSpecific(bytes: packet.payload)
+                PAT = ProgramAssociationSpecific(packet.payload)
                 continue
             }
             if let channel:UInt16 = dictionaryForPrograms[packet.PID] {
-                PMT[channel] = ProgramMapSpecific(bytes: packet.payload)
+                PMT[channel] = ProgramMapSpecific(packet.payload)
                 continue
             }
             if let data:ElementaryStreamSpecificData = dictionaryForESSpecData[packet.PID] {
@@ -66,7 +66,7 @@ class TSReader {
             if let PES:PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
                 delegate?.didReadPacketizedElementaryStream(data, PES: PES)
             }
-            packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(bytes: packet.payload)
+            packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(payload: packet.payload)
             return
         }
         let _:Int? = packetizedElementaryStreams[packet.PID]?.append(packet.payload)

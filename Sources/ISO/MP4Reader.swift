@@ -260,7 +260,7 @@ final class MP4SampleSizeBox: MP4Box {
 
 // MARK: -
 final class MP4ElementaryStreamDescriptorBox: MP4ContainerBox {
-    var audioDecorderSpecificConfig:[UInt8] = []
+    var audioDecorderSpecificConfig:Data = Data()
 
     var tag:UInt8 = 0
     var tagSize:UInt8 = 0

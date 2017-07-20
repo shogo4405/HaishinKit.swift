@@ -1,7 +1,7 @@
 import Foundation
 
-protocol BytesConvertible {
-    var bytes:[UInt8] { get set }
+protocol DataConvertible {
+    var data:Data { get set }
 }
 
 // MARK: -

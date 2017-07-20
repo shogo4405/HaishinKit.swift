@@ -77,26 +77,24 @@ final class MD5 {
             return ((x << n) & 0xFFFFFFFF) | (x >> (32 - n))
         }
 
-        var bytes:[UInt8] {
-            return a.bytes + b.bytes + c.bytes + d.bytes
+        var data:Data {
+            return a.data + b.data + c.data + d.data
         }
     }
 
     static func base64(_ message:String) -> String {
-        let result:[UInt8] = calculate(message)
-        let data:Data = Data(bytes: UnsafePointer<UInt8>(result), count: result.count)
-        return data.base64EncodedString(options: .lineLength64Characters)
+        return calculate(message).base64EncodedString(options: .lineLength64Characters)
     }
 
-    static func calculate(_ message:String) -> [UInt8] {
-        return calculate(ByteArray().writeUTF8Bytes(message).bytes)
+    static func calculate(_ message:String) -> Data {
+        return calculate(ByteArray().writeUTF8Bytes(message).data)
     }
 
-    static func calculate(_ bytes:[UInt8]) -> [UInt8] {
+    static func calculate(_ data:Data) -> Data {
         var context:Context = Context()
 
-        let count:[UInt8] = UInt64(bytes.count * 8).bigEndian.bytes
-        let message:ByteArray = ByteArray(bytes: bytes + [0x80])
+        let count:Data = UInt64(data.count * 8).bigEndian.data
+        let message:ByteArray = ByteArray(data: data + [0x80])
         message.length += 64 - (message.length % 64)
         message[message.length - 8] = count[7]
         message[message.length - 7] = count[6]
@@ -198,6 +196,6 @@ final class MD5 {
             context.d = context.d &+ ctx.d
         }
 
-        return context.bytes
+        return context.data
     }
 }

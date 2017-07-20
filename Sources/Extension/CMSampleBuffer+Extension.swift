@@ -39,22 +39,3 @@ extension CMSampleBuffer {
         return CMSampleBufferGetPresentationTimeStamp(self)
     }
 }
-
-extension CMSampleBuffer: BytesConvertible {
-    // MARK: BytesConvertible
-    var bytes:[UInt8] {
-        get {
-            guard let buffer:CMBlockBuffer = dataBuffer else {
-                return []
-            }
-            var bytes:UnsafeMutablePointer<Int8>? = nil
-            var length:Int = 0
-            guard CMBlockBufferGetDataPointer(buffer, 0, nil, &length, &bytes) == noErr else {
-                return []
-            }
-            return Array(Data(bytes: bytes!, count: length))
-        }
-        set {
-        }
-    }
-}

@@ -13,7 +13,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         didSet {
             if (connected) {
                 handshake.timestamp = Date().timeIntervalSince1970
-                doOutput(bytes: handshake.c0c1packet)
+                doOutput(data: handshake.c0c1packet)
                 readyState = .versionSent
                 return
             }
@@ -56,12 +56,12 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var baseURL:URL!
     private var session:URLSession!
     private var request:URLRequest!
-    private var c2packet:[UInt8] = []
+    private var c2packet:Data = Data()
     private var handshake:RTMPHandshake = RTMPHandshake()
     private let outputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
     private var connectionID:String?
     private var isRequesting:Bool = false
-    private var outputBuffer:[UInt8] = []
+    private var outputBuffer:Data = Data()
     private var lastResponse:Date = Date()
     private var lastRequestPathComponent:String?
     private var lastRequestData:Data?
@@ -95,8 +95,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
         outputQueue.sync {
             self.outputBuffer.append(contentsOf: bytes)
-            if (!self.isRequesting) {
-                self.doOutput(bytes: self.outputBuffer)
+            if !self.isRequesting {
+                self.doOutput(data: self.outputBuffer)
                 self.outputBuffer.removeAll()
             }
         }
@@ -153,7 +153,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             if (self.outputBuffer.isEmpty) {
                 self.isRequesting = false
             } else {
-                self.doOutput(bytes: outputBuffer)
+                self.doOutput(data: outputBuffer)
                 self.outputBuffer.removeAll()
             }
         }
@@ -175,7 +175,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             if (inputBuffer.count < RTMPHandshake.sigSize + 1) {
                 break
             }
-            c2packet = handshake.c2packet(inputBuffer.bytes)
+            c2packet = handshake.c2packet(inputBuffer)
             inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
             fallthrough
@@ -263,14 +263,14 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     @discardableResult
-    final private func doOutput(bytes:[UInt8]) -> Int {
+    final private func doOutput(data:Data) -> Int {
         guard let connectionID:String = connectionID, connected else {
             return 0
         }
         let index:Int64 = OSAtomicIncrement64(&self.index)
-        doRequest("/send/\(connectionID)/\(index)", Data(c2packet + bytes), listen)
+        doRequest("/send/\(connectionID)/\(index)", c2packet + data, listen)
         c2packet.removeAll()
-        return bytes.count
+        return data.count
     }
 
     private func doRequest(_ pathComponent: String,_ data:Data,_ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {

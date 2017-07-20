@@ -75,7 +75,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         }
         let delta:Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
         var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
-        buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])
+        buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
         buffer.append(data)
         delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
         videoTimestamp = decodeTimeStamp
@@ -124,7 +124,7 @@ extension RTMPMuxer: MP4SamplerDelegate {
         case 0:
             let compositionTime:Int32 = 0
             var buffer:Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
-            buffer.append(contentsOf: compositionTime.bigEndian.bytes[1..<4])
+            buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
             buffer.append(data)
             delegate?.sampleOutput(video: buffer, withTimestamp: currentTime, muxer: self)
         case 1:
