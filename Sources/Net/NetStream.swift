@@ -10,7 +10,6 @@ protocol NetStreamDrawable: class {
 
     func draw(image:CIImage)
     func attachStream(_ stream:NetStream?)
-    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer)
 }
 
 // MARK: -

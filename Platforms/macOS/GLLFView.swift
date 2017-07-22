@@ -24,21 +24,11 @@ open class GLLFView: NSOpenGLView {
     var orientation:AVCaptureVideoOrientation = .portrait
     var position:AVCaptureDevicePosition = .front
     fileprivate var displayImage:CIImage!
-    fileprivate var ciContext:CIContext!
     fileprivate var originalFrame:CGRect = CGRect.zero
     fileprivate var scale:CGRect = CGRect.zero
     fileprivate weak var currentStream:NetStream?
 
     open override func prepareOpenGL() {
-        if let openGLContext:NSOpenGLContext = openGLContext {
-            ciContext = CIContext(
-                cglContext: openGLContext.cglContextObj!,
-                pixelFormat: openGLContext.pixelFormat.cglPixelFormatObj,
-                colorSpace: nil,
-                options: nil
-            )
-            openGLContext.makeCurrentContext()
-        }
         var param:GLint = 1
         openGLContext?.setValues(&param, for: .swapInterval)
         glDisable(GLenum(GL_ALPHA_TEST))
@@ -74,7 +64,7 @@ open class GLLFView: NSOpenGLView {
 
         glContext.makeCurrentContext()
         glClear(GLenum(GL_COLOR_BUFFER_BIT))
-        ciContext.draw(image, in: inRect.integral, from: fromRect)
+        currentStream?.mixer.videoIO.context?.draw(image, in: inRect.integral, from: fromRect)
 
         glFlush()
     }
@@ -96,6 +86,15 @@ open class GLLFView: NSOpenGLView {
         }
         if let stream:NetStream = stream {
             stream.lockQueue.async {
+                if let openGLContext:NSOpenGLContext = self.openGLContext {
+                    stream.mixer.videoIO.context = CIContext(
+                        cglContext: openGLContext.cglContextObj!,
+                        pixelFormat: openGLContext.pixelFormat.cglPixelFormatObj,
+                        colorSpace: nil,
+                        options: nil
+                    )
+                    openGLContext.makeCurrentContext()
+                }
                 stream.mixer.videoIO.drawable = self
                 stream.mixer.startRunning()
             }
@@ -106,10 +105,6 @@ open class GLLFView: NSOpenGLView {
 
 extension GLLFView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    func render(image: CIImage, to toCVPixelBuffer: CVPixelBuffer) {
-        ciContext.render(image, to: toCVPixelBuffer)
-    }
-
     func draw(image:CIImage) {
         DispatchQueue.main.async {
             self.displayImage = image

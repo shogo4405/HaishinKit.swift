@@ -4,6 +4,7 @@ import AVFoundation
 
 final class VideoIOComponent: IOComponent {
     let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
+    var context:CIContext?
     var drawable:NetStreamDrawable?
     var formatDescription:CMVideoFormatDescription? {
         didSet {
@@ -335,7 +336,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
             // green edge hack for OSX
             buffer = CVPixelBuffer.create(image)!
             #endif
-            drawable?.render(image: image, to: buffer)
+            context?.render(image, to: buffer)
         }
         encoder.encodeImageBuffer(
             buffer,

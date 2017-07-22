@@ -62,6 +62,4 @@ extension LFView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image:CIImage) {
     }
-    func render(image:CIImage, to toCVPixelBuffer:CVPixelBuffer) {
-    }
 }
