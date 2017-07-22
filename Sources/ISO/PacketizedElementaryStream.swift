@@ -177,7 +177,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
-    init?(payload:Data) {
+    init?(_ payload:Data) {
         self.payload = payload
         if (startCode != PacketizedElementaryStream.startCode) {
             return nil
@@ -188,8 +188,8 @@ struct PacketizedElementaryStream: PESPacketHeader {
         guard let payload:Data = sampleBuffer.dataBuffer?.data else {
             return nil
         }
-        data += config!.adts(payload.count)
-        data += payload
+        data.append(contentsOf: config!.adts(payload.count))
+        data.append(payload)
         optionalPESHeader = PESOptionalHeader()
         optionalPESHeader?.dataAlignmentIndicator = true
         optionalPESHeader?.setTimestamp(
@@ -222,7 +222,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 
     func arrayOfPackets(_ PID:UInt16, PCR:UInt64?) -> [TSPacket] {
-        let payload:Data = data
+        let payload:Data = self.payload
         var packets:[TSPacket] = []
 
         // start
@@ -269,7 +269,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
             let _ = packet.fill(Data([payload[payload.count - 1]]), useAdaptationField: true)
             packets.append(packet)
         default:
-            let remain:Data = Data(payload[payload.indices.suffix(payload.endIndex - r)])
+            let remain:Data = payload.subdata(in: payload.count - r..<payload.count)
             var packet:TSPacket = TSPacket()
             packet.PID = PID
             packet.adaptationFieldFlag = true

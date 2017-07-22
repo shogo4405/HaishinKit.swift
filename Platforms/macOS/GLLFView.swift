@@ -111,8 +111,8 @@ extension GLLFView: NetStreamDrawable {
     }
 
     func draw(image:CIImage) {
-        displayImage = image
         DispatchQueue.main.async {
+            self.displayImage = image
             self.needsDisplay = true
         }
     }

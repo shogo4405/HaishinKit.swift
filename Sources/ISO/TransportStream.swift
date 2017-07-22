@@ -45,7 +45,7 @@ struct TSPacket {
 
     mutating func fill(_ data:Data?, useAdaptationField:Bool) -> Int {
         guard let data:Data = data else {
-            payload.append(Data(count: remain))
+            payload.append(Data(repeating: 0xff, count: remain))
             return 0
         }
         payloadFlag = true
@@ -63,7 +63,7 @@ struct TSPacket {
             adaptationField?.compute()
             return length
         }
-        payload.append(Data(count: remain))
+        payload.append(Data(repeating: 0xff, count: remain))
         return length
     }
 }
@@ -230,7 +230,7 @@ struct TSAdaptationField {
     }
 
     mutating func stuffing(_ size:Int) {
-        stuffingBytes = Data(count: size)
+        stuffingBytes = Data(repeating: 0xff, count: size)
         length += UInt8(size)
     }
 }

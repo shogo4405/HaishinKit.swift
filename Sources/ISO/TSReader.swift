@@ -66,7 +66,7 @@ class TSReader {
             if let PES:PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
                 delegate?.didReadPacketizedElementaryStream(data, PES: PES)
             }
-            packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(payload: packet.payload)
+            packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(packet.payload)
             return
         }
         let _:Int? = packetizedElementaryStreams[packet.PID]?.append(packet.payload)

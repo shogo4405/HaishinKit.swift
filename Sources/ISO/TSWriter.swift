@@ -170,8 +170,8 @@ class TSWriter {
         PMT.PCRPID = PCRPID
         var bytes:Data = Data()
         var packets:[TSPacket] = []
-        packets += PAT.arrayOfPackets(TSWriter.defaultPATPID)
-        packets += PMT.arrayOfPackets(TSWriter.defaultPMTPID)
+        packets.append(contentsOf: PAT.arrayOfPackets(TSWriter.defaultPATPID))
+        packets.append(contentsOf: PMT.arrayOfPackets(TSWriter.defaultPMTPID))
         for packet in packets {
             bytes.append(packet.data)
         }

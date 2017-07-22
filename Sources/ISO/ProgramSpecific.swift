@@ -80,9 +80,9 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
 extension ProgramSpecific: DataConvertible {
     var data:Data {
         get {
-            let data:Data = tableData
-            sectionLength = UInt16(data.count) + 9
-            sectionSyntaxIndicator = data.count != 0
+            let tableData:Data = self.tableData
+            sectionLength = UInt16(tableData.count) + 9
+            sectionSyntaxIndicator = tableData.count != 0
             let buffer:ByteArray = ByteArray()
                 .writeUInt8(tableID)
                 .writeUInt16(
@@ -106,11 +106,10 @@ extension ProgramSpecific: DataConvertible {
         set {
             let buffer:ByteArray = ByteArray(data: newValue)
             do {
-                var bytes:Data = Data()
                 pointerField = try buffer.readUInt8()
                 pointerFillerBytes = try buffer.readBytes(Int(pointerField))
                 tableID = try buffer.readUInt8()
-                bytes.append(try buffer.readBytes(2))
+                var bytes:Data = try buffer.readBytes(2)
                 sectionSyntaxIndicator = bytes[0] & 0x80 == 0x80
                 privateBit = bytes[0] & 0x40 == 0x40
                 sectionLength = UInt16(bytes[0] & 0x03) << 8 | UInt16(bytes[1])
