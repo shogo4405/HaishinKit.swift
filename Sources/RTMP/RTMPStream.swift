@@ -268,8 +268,9 @@ open class RTMPStream: NetStream {
     fileprivate var paused:Bool = false
     fileprivate var sampler:MP4Sampler? = nil
     fileprivate var frameCount:UInt16 = 0
-    fileprivate var chunkTypes:[FLVTagType:Bool] = [:]
     fileprivate var dispatcher:IEventDispatcher!
+    fileprivate var audioWasSent:Bool = false
+    fileprivate var videoWasSent:Bool = false
     fileprivate var howToPublish:RTMPStream.HowToPublish = .live
     fileprivate var rtmpConnection:RTMPConnection
 
@@ -441,7 +442,8 @@ open class RTMPStream: NetStream {
             self.mixer.videoIO.encoder.delegate = self.muxer
             self.sampler?.delegate = self.muxer
             self.mixer.startRunning()
-            self.chunkTypes.removeAll()
+            self.videoWasSent = false
+            self.audioWasSent = false
             self.FCPublish()
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .zero,
@@ -645,11 +647,11 @@ extension RTMPStream: RTMPMuxerDelegate {
         }
         let type:FLVTagType = .audio
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-            type: chunkTypes[type] == nil ? .zero : .one,
+            type: audioWasSent ? .one : .zero,
             streamId: type.streamId,
             message: RTMPAudioMessage(streamId: id, timestamp: UInt32(audioTimestamp), payload: buffer)
         ), locked: nil)
-        chunkTypes[type] = true
+        audioWasSent = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         audioTimestamp = withTimestamp + (audioTimestamp - floor(audioTimestamp))
     }
@@ -661,11 +663,11 @@ extension RTMPStream: RTMPMuxerDelegate {
         let type:FLVTagType = .video
         OSAtomicOr32Barrier(1, &mixer.videoIO.encoder.locked)
         let length:Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-            type: chunkTypes[type] == nil ? .zero : .one,
+            type: videoWasSent ? .one : .zero,
             streamId: type.streamId,
             message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
         ), locked: &mixer.videoIO.encoder.locked)
-        chunkTypes[type] = true
+        videoWasSent = true
         OSAtomicAdd64(Int64(length), &info.byteCount)
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
         frameCount += 1
