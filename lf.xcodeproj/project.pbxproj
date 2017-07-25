@@ -360,9 +360,6 @@
 		29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */; };
 		29FB94311E1BECCA005DE4DF /* SoundSpliter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */; };
 		29FB94321E1BF507005DE4DF /* SoundSpliter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */; };
-		BC24D1E81F273D4300BDB44E /* CIContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC24D1E71F273D4300BDB44E /* CIContextFactory.swift */; };
-		BC24D1E91F273D4300BDB44E /* CIContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC24D1E71F273D4300BDB44E /* CIContextFactory.swift */; };
-		BC24D1EA1F273D4300BDB44E /* CIContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC24D1E71F273D4300BDB44E /* CIContextFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -643,7 +640,6 @@
 		29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/iOS/XCGLogger.framework; sourceTree = "<group>"; };
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPHandshake.swift; path = Sources/RTMP/RTMPHandshake.swift; sourceTree = SOURCE_ROOT; };
 		29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundSpliter.swift; path = Sources/Media/SoundSpliter.swift; sourceTree = SOURCE_ROOT; };
-		BC24D1E71F273D4300BDB44E /* CIContextFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CIContextFactory.swift; path = Sources/Media/CIContextFactory.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1114,7 +1110,6 @@
 				29B8768A1CD70AFE00FC07DA /* AudioStreamPlayback.swift */,
 				29B8768B1CD70AFE00FC07DA /* AVMixer.swift */,
 				2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */,
-				BC24D1E71F273D4300BDB44E /* CIContextFactory.swift */,
 				2976A4801D49025B00B53EF2 /* IOComponent.swift */,
 				295891001EEB7A8B00CE51E1 /* ScalingMode.swift */,
 				29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */,
@@ -1761,7 +1756,6 @@
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29BCFFA61D68C75B00F1A726 /* RTPService.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
-				BC24D1E81F273D4300BDB44E /* CIContextFactory.swift in Sources */,
 				29B8767A1CD70ACE00FC07DA /* M3U.swift in Sources */,
 				29245AEF1D32348400AFFB9A /* VideoGravityUtil.swift in Sources */,
 				29B876901CD70AFE00FC07DA /* AudioIOComponent.swift in Sources */,
@@ -1878,7 +1872,6 @@
 				29B877141CD70D5A00FC07DA /* RTMPMessage.swift in Sources */,
 				29B877151CD70D5A00FC07DA /* RTMPMuxer.swift in Sources */,
 				2989C3B61D69C43000038653 /* RTPPacket.swift in Sources */,
-				BC24D1E91F273D4300BDB44E /* CIContextFactory.swift in Sources */,
 				29EA87E31E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
 				29B877171CD70D5A00FC07DA /* RTMPSharedObject.swift in Sources */,
 				29B877181CD70D5A00FC07DA /* RTMPSocket.swift in Sources */,
@@ -1939,7 +1932,6 @@
 				29EB3E101ED0587F001CAE8B /* AVMixerRecorder.swift in Sources */,
 				2958910C1EEB8D1800CE51E1 /* FLVReader.swift in Sources */,
 				29EB3E0F1ED0587C001CAE8B /* AVMixer.swift in Sources */,
-				BC24D1EA1F273D4300BDB44E /* CIContextFactory.swift in Sources */,
 				29EB3E1A1ED0589B001CAE8B /* NetStream.swift in Sources */,
 				29EB3DFB1ED057A3001CAE8B /* CMSampleTimingInfo+Extension.swift in Sources */,
 				29EB3E211ED059FB001CAE8B /* RTMPHandshake.swift in Sources */,

@@ -35,12 +35,27 @@ open class GLLFView: GLKView {
     }
 
     open override func awakeFromNib() {
+        delegate = self
         enableSetNeedsDisplay = true
         backgroundColor = GLLFView.defaultBackgroundColor
         layer.backgroundColor = GLLFView.defaultBackgroundColor.cgColor
     }
 
-    open override func draw(_ rect: CGRect) {
+    open func attachStream(_ stream:NetStream?) {
+        if let stream:NetStream = stream {
+            stream.mixer.videoIO.context = CIContext(eaglContext: context, options: GLLFView.defaultOptions)
+            stream.lockQueue.async {
+                self.position = stream.mixer.videoIO.position
+                stream.mixer.videoIO.drawable = self
+                stream.mixer.startRunning()
+            }
+        }
+        currentStream = stream
+    }
+}
+
+extension GLLFView: GLKViewDelegate {
+    public func glkView(_ view: GLKView, drawIn rect: CGRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
         guard let displayImage:CIImage = displayImage else {
             return
@@ -53,18 +68,6 @@ open class GLLFView: GLKView {
         } else {
             currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
         }
-    }
-
-    open func attachStream(_ stream:NetStream?) {
-        if let stream:NetStream = stream {
-            stream.lockQueue.async {
-                self.position = stream.mixer.videoIO.position
-                stream.mixer.videoIO.context = CIContext(eaglContext: context)
-                stream.mixer.videoIO.drawable = self
-                stream.mixer.startRunning()
-            }
-        }
-        currentStream = stream
     }
 }
 

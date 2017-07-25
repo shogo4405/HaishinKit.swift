@@ -119,6 +119,9 @@ extension AVMixer: Runnable {
         guard !running else {
             return
         }
+        if let factory:CIContextFactory = videoIO.contextFactory {
+            videoIO.context = factory()
+        }
         DispatchQueue.global(qos: .userInteractive).async {
             self.session.startRunning()
         }

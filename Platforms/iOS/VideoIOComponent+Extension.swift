@@ -29,7 +29,7 @@ extension VideoIOComponent {
             encoder.setValuesForKeys([
                 "width": screen.attributes["Width"]!,
                 "height": screen.attributes["Height"]!,
-                ])
+            ])
         }
         self.screen = screen
     }
@@ -44,8 +44,8 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
     }
     func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime) {
-        if (!effects.isEmpty) {
-            drawable?.render(image: effect(pixelBuffer), to: pixelBuffer)
+        if !effects.isEmpty {
+            context?.render(effect(pixelBuffer), to: pixelBuffer)
         }
         encoder.encodeImageBuffer(
             pixelBuffer,

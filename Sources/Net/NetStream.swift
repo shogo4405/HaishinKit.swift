@@ -23,6 +23,14 @@ open class NetStream: NSObject {
     }
 
     open var metadata:[String: Any?] = [:]
+    open var contextFactory:CIContextFactory? {
+        get {
+            return mixer.videoIO.contextFactory
+        }
+        set {
+            mixer.videoIO.contextFactory = contextFactory
+        }
+    }
 
 #if os(iOS) || os(macOS)
     open var torch:Bool {

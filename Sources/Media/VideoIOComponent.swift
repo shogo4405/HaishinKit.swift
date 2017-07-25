@@ -2,6 +2,8 @@ import CoreImage
 import Foundation
 import AVFoundation
 
+public typealias CIContextFactory = () -> CIContext
+
 final class VideoIOComponent: IOComponent {
     let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
     var context:CIContext?
@@ -18,7 +20,9 @@ final class VideoIOComponent: IOComponent {
         queue.delegate = self
         return queue
     }()
+
     var effects:[VisualEffect] = []
+    var contextFactory:CIContextFactory?
 
 #if os(iOS) || os(macOS)
     var fps:Float64 = AVMixer.defaultFPS {
@@ -331,7 +335,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
         let image:CIImage = effect(buffer)
-        if (!effects.isEmpty) {
+        if !effects.isEmpty {
             #if os(macOS)
             // green edge hack for OSX
             buffer = CVPixelBuffer.create(image)!
