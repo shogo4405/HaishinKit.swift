@@ -78,9 +78,22 @@ New BSD
 ## Donation
 Bitcoin
 ```txt
-1HtWpaYkRGZMnq253QsJP6xSKZRPoJ8Hrs
+1CWA9muX36QKBdJiRQJGpu2HvchfEpJbWr
 ```
 
+## Prerequisites
+Make sure you setup and activate your AVAudioSession.
+```swift
+import AVFoundation
+
+do {
+   try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
+   try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
+   try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
+   try AVAudioSession.sharedInstance().setActive(true)
+   } catch {
+}
+```
 ## RTMP Usage
 Real Time Messaging Protocol (RTMP).
 ```swift
@@ -199,24 +212,6 @@ httpService.addHTTPStream(httpStream)
 // add ViewController#view
 view.addSubview(lfView)
 ```
-
-## Prerequisites
-Make sure you setup and activate your AVAudioSession.
-
-```
-import AVFoundation
-
-...
-
-do {
-   try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
-   try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-   try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
-   try AVAudioSession.sharedInstance().setActive(true)
-   } catch {
-}
-```
-
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
