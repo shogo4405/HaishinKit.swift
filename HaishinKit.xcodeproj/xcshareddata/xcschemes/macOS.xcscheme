@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0820"
+   LastUpgradeVersion = "0830"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2945CBBC1B4BE66000104112"
-               BuildableName = "lf.framework"
-               BlueprintName = "iOS"
-               ReferencedContainer = "container:lf.xcodeproj">
+               BlueprintIdentifier = "29B8761A1CD701F900FC07DA"
+               BuildableName = "HaishinKit.framework"
+               BlueprintName = "macOS"
+               ReferencedContainer = "container:HaishinKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2945CBBC1B4BE66000104112"
-            BuildableName = "lf.framework"
-            BlueprintName = "iOS"
-            ReferencedContainer = "container:lf.xcodeproj">
+            BlueprintIdentifier = "29B8761A1CD701F900FC07DA"
+            BuildableName = "HaishinKit.framework"
+            BlueprintName = "macOS"
+            ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +63,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "2945CBBC1B4BE66000104112"
-            BuildableName = "lf.framework"
-            BlueprintName = "iOS"
-            ReferencedContainer = "container:lf.xcodeproj">
+            BlueprintIdentifier = "29B8761A1CD701F900FC07DA"
+            BuildableName = "HaishinKit.framework"
+            BlueprintName = "macOS"
+            ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

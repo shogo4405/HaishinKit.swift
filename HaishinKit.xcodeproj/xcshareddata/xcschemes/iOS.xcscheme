@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
-               BuildableName = "lf.framework"
-               BlueprintName = "tvOS"
-               ReferencedContainer = "container:lf.xcodeproj">
+               BlueprintIdentifier = "2945CBBC1B4BE66000104112"
+               BuildableName = "HaishinKit.framework"
+               BlueprintName = "iOS"
+               ReferencedContainer = "container:HaishinKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,10 +45,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
-            BuildableName = "lf.framework"
-            BlueprintName = "tvOS"
-            ReferencedContainer = "container:lf.xcodeproj">
+            BlueprintIdentifier = "2945CBBC1B4BE66000104112"
+            BuildableName = "HaishinKit.framework"
+            BlueprintName = "iOS"
+            ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -63,10 +63,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
-            BuildableName = "lf.framework"
-            BlueprintName = "tvOS"
-            ReferencedContainer = "container:lf.xcodeproj">
+            BlueprintIdentifier = "2945CBBC1B4BE66000104112"
+            BuildableName = "HaishinKit.framework"
+            BlueprintName = "iOS"
+            ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>
