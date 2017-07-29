@@ -10,7 +10,7 @@ public class NetSocket: NSObject {
     var inputStream:InputStream?
     var windowSizeC:Int = NetSocket.defaultWindowSizeC
     var outputStream:OutputStream?
-    var networkQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.network")
+    var inputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
     var securityLevel:StreamSocketSecurityLevel = .none
     var totalBytesIn:Int64 = 0
     private(set) var totalBytesOut:Int64 = 0
@@ -18,13 +18,13 @@ public class NetSocket: NSObject {
 
     private var buffer:UnsafeMutablePointer<UInt8>? = nil
     private var runloop:RunLoop?
-    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.lock")
+    private let outputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     fileprivate var timeoutHandler:(() -> Void)?
 
     @discardableResult
     final public func doOutput(data:Data, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
-        lockQueue.async {
+        outputQueue.async {
             data.withUnsafeBytes { (buffer:UnsafePointer<UInt8>) -> Void in
                 self.doOutputProcess(buffer, maxLength: data.count)
             }
@@ -36,7 +36,7 @@ public class NetSocket: NSObject {
     }
 
     final func doOutputFromURL(_ url:URL, length:Int) {
-        lockQueue.async {
+        outputQueue.async {
             do {
                 let fileHandle:FileHandle = try FileHandle(forReadingFrom: url)
                 defer {
@@ -80,7 +80,7 @@ public class NetSocket: NSObject {
     }
 
     func close(isDisconnected:Bool) {
-        lockQueue.async {
+        outputQueue.async {
             guard let runloop:RunLoop = self.runloop else {
                 return
             }
@@ -122,7 +122,7 @@ public class NetSocket: NSObject {
         outputStream.open()
 
         if (0 < timeout) {
-            lockQueue.asyncAfter(deadline: DispatchTime.now() + Double(timeout * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
+            outputQueue.asyncAfter(deadline: DispatchTime.now() + Double(timeout * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                 guard let timeoutHandler:(() -> Void) = self.timeoutHandler else {
                     return
                 }

@@ -52,7 +52,7 @@ final class RTSPSocket: NetSocket {
     }
 
     fileprivate func connect(_ hostname:String, port:Int) {
-        networkQueue.async {
+        inputQueue.async {
             Stream.getStreamsToHost(
                 withName: hostname,
                 port: port,

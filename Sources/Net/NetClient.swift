@@ -18,7 +18,7 @@ final public class NetClient: NetSocket {
     }
 
     func acceptConnection() {
-        networkQueue.async {
+        inputQueue.async {
             self.initConnection()
             self.delegate?.client?(didAccepetConnection: self)
         }

@@ -1,4 +1,4 @@
-import lf
+import HaishinKit
 import Cocoa
 import Foundation
 import AVFoundation

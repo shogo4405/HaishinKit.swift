@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
-FOUNDATION_EXPORT double lfVersionNumber;
-FOUNDATION_EXPORT const unsigned char lfVersionString[];
+FOUNDATION_EXPORT double HaishinKitVersionNumber;
+FOUNDATION_EXPORT const unsigned char HaishinKitVersionString[];
 
 // @see http://stackoverflow.com/questions/35119531/catch-objective-c-exception-in-swift
 NS_INLINE void nstry(void(^_Nonnull lambda)(void), void(^_Nullable error)(NSException *_Nonnull exception)) {
