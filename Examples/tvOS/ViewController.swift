@@ -1,4 +1,4 @@
-import lf
+import HaishinKit
 import UIKit
 
 final class ViewController: UIViewController {
