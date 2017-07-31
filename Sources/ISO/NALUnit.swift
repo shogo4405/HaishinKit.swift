@@ -42,7 +42,7 @@ extension NALUnit: DataConvertible {
                 type = NALType(rawValue: byte & 0x31) ?? .unspec
                 payload = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
-                logger.error("\(buffer)")
+                lfLogger?.error("\(buffer)")
             }
         }
     }

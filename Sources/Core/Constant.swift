@@ -1,6 +1,4 @@
-import XCGLogger
-
-let logger:XCGLogger = XCGLogger.default
+public var lfLogger: LFLogger?
 
 public enum CMSampleBufferType: String {
     case video = "video"

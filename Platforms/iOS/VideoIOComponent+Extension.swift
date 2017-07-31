@@ -12,8 +12,8 @@ extension VideoIOComponent {
             try device.lockForConfiguration()
             device.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
             device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while locking device for ramp: \(error)")
+        } catch let error {
+            lfLogger?.error("while locking device for ramp: \(error)")
         }
     }
     

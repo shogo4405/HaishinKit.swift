@@ -529,8 +529,8 @@ final class MP4Reader: MP4ContainerBox {
             self.url = url
             super.init()
             fileHandle = try FileHandle(forReadingFrom: url)
-        } catch let error as NSError {
-            logger.error("\(error)")
+        } catch let error {
+            lfLogger?.error("\(error)")
         }
     }
 
@@ -681,7 +681,7 @@ final class MP4TrakReader {
             }
             timerDriver.startRunning()
         } catch {
-            logger.warning("file open error :\(reader.url)")
+            lfLogger?.warning("file open error :\(reader.url)")
         }
     }
 

@@ -180,9 +180,7 @@ open class HTTPService: NetService {
             return
         }
         client.inputBuffer.removeAll()
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(request):\(self)")
-        }
+        lfLogger?.verbose("\(request):\(self)")
         switch request.method {
         case "GET":
             get(request, client: client)
@@ -266,7 +264,7 @@ open class HLSService: HTTPService {
     }
 
     open override func get(_ request:HTTPRequest, client:NetClient) {
-        logger.verbose("\(request)")
+        lfLogger?.verbose("\(request)")
         var response:HTTPResponse = HTTPResponse()
         
         // #141
@@ -278,7 +276,7 @@ open class HLSService: HTTPService {
         response.headerFields["Connection"] = "close"
         
         defer {
-            logger.verbose("\(response)")
+            lfLogger?.verbose("\(response)")
             disconnect(client)
         }
         
