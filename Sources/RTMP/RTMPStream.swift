@@ -247,7 +247,6 @@ open class RTMPStream: NetStream {
                 sampler?.startRunning()
                 if (howToPublish == .liveAndRecord) {
                     mixer.recorder.fileName = info.resourceName
-                    mixer.recorder.startRunning()
                 }
             case .closed:
                 switch oldValue {
@@ -496,6 +495,13 @@ open class RTMPStream: NetStream {
             )), locked: nil)
             OSAtomicAdd64(Int64(length), &self.info.byteCount)
         }
+    }
+
+    open func startRecording() {
+        guard howToPublish == .liveAndRecord
+            else { return }
+
+        mixer.recorder.startRunning()
     }
 
     open func pause() {

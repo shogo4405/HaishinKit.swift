@@ -123,7 +123,8 @@ final class LiveViewController: UIViewController {
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish(Preference.defaultInstance.streamName!)
+                rtmpStream!.publish(Preference.defaultInstance.streamName!, type: .liveAndRecord)
+                rtmpStream.startRecording()
                 // sharedObject!.connect(rtmpConnection)
             default:
                 break
