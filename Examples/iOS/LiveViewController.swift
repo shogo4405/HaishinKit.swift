@@ -8,19 +8,16 @@ let sampleRate:Double = 44_100
 
 class ExampleRecorderDelegate: DefaultAVMixerRecorderDelegate {
     override func didFinishWriting(_ recorder: AVMixerRecorder) {
-        #if os(iOS)
-            guard let writer:AVAssetWriter = recorder.writer, shouldSaveToPhotoLibrary
-                else { return }
-            PHPhotoLibrary.shared().performChanges({() -> Void in
-                PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-            }, completionHandler: { (isSuccess, error) -> Void in
-                do {
-                    try FileManager.default.removeItem(at: writer.outputURL)
-                } catch let error {
-                    print(error)
-                }
-            })
-        #endif
+        guard let writer:AVAssetWriter = recorder.writer, shouldSaveToPhotoLibrary else { return }
+        PHPhotoLibrary.shared().performChanges({() -> Void in
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
+        }, completionHandler: { (isSuccess, error) -> Void in
+            do {
+                try FileManager.default.removeItem(at: writer.outputURL)
+            } catch let error {
+                print(error)
+            }
+        })
     }
 }
 
@@ -61,7 +58,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.audioSettings = [
             "sampleRate": sampleRate
         ]
-        rtmpStream.recorderDelegate = ExampleRecorderDelegate()
+        rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate()
 
         videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1024
