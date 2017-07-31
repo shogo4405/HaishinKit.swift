@@ -91,7 +91,7 @@ final class LiveViewController: UIViewController {
             rtmpStream.videoSettings["bitrate"] = slider.value * 1024
         }
         if (slider == zoomSlider) {
-            rtmpStream.ramp(toVideoZoomFactor: CGFloat(slider.value), withRate: 5.0)
+            rtmpStream.setZoomFactor(CGFloat(slider.value), ramping: true, withRate: 5.0)
         }
     }
 
