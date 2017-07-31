@@ -124,6 +124,15 @@ open class NetStream: NSObject {
         }
     }
 
+    open var recorderDelegate: AVMixerRecorderDelegate? {
+        get {
+            return self.mixer.recorder.delegate
+        }
+        set {
+            self.mixer.recorder.delegate = newValue
+        }
+    }
+
 #if os(iOS) || os(macOS)
     open func attachCamera(_ camera:AVCaptureDevice?, onError:((_ error:NSError) -> Void)? = nil) {
         lockQueue.async {
