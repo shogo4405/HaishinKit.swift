@@ -16,9 +16,14 @@ extension NetStream {
             self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
         }
     }
-    open func ramp(toVideoZoomFactor:CGFloat, withRate:Float) {
-        lockQueue.async {
-            self.mixer.videoIO.ramp(toVideoZoomFactor: toVideoZoomFactor, withRate: withRate)
+
+    open var zoomFactor: CGFloat {
+        get {
+            return self.mixer.videoIO.zoomFactor
         }
+    }
+
+    open func setZoomFactor(_ zoomFactor: CGFloat, ramping: Bool = false, withRate: Float = 2.0) {
+        self.mixer.videoIO.setZoomFactor(zoomFactor, ramping: ramping, withRate: withRate)
     }
 }
