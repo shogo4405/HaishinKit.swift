@@ -98,7 +98,7 @@ class TSWriter {
             self.currentFileHandle?.write(bytes)
         }){ exception in
             self.currentFileHandle?.write(bytes)
-            logger.warning("\(exception)")
+            lfLogger?.warning("\(exception)")
         }
     }
 
@@ -134,8 +134,8 @@ class TSWriter {
         if !fileManager.fileExists(atPath: temp) {
             do {
                 try fileManager.createDirectory(atPath: temp, withIntermediateDirectories: false, attributes: nil)
-            } catch let error as NSError {
-                logger.warning("\(error)")
+            } catch let error {
+                lfLogger?.warning("\(error)")
             }
         }
 
@@ -151,7 +151,7 @@ class TSWriter {
         if (TSWriter.defaultSegmentMaxCount <= files.count) {
             let info:M3UMediaInfo = files.removeFirst()
             do { try fileManager.removeItem(at: info.url as URL) }
-            catch let e as NSError { logger.warning("\(e)") }
+            catch let e { lfLogger?.warning("\(e)") }
         }
         currentFileURL = url
         for (pid, _) in continuityCounters {
@@ -161,7 +161,7 @@ class TSWriter {
         nstry({
             self.currentFileHandle?.synchronizeFile()
         }) { exeption in
-            logger.warning("\(exeption)")
+            lfLogger?.warning("\(exeption)")
         }
         
         currentFileHandle?.closeFile()
@@ -179,7 +179,7 @@ class TSWriter {
         nstry({
             self.currentFileHandle?.write(bytes)
         }){ exception in
-            logger.warning("\(exception)")
+            lfLogger?.warning("\(exception)")
         }
         rotatedTimestamp = timestamp
 
@@ -190,7 +190,7 @@ class TSWriter {
         let fileManager:FileManager = FileManager.default
         for info in files {
             do { try fileManager.removeItem(at: info.url as URL) }
-            catch let e as NSError { logger.warning("\(e)") }
+            catch let e { lfLogger?.warning("\(e)") }
         }
         files.removeAll()
     }

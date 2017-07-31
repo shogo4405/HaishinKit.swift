@@ -485,9 +485,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
 
         if let message:RTMPMessage = chunk.message, chunk.ready {
-            if (logger.isEnabledFor(level: .verbose)) {
-                logger.verbose(chunk.description)
-            }
+            lfLogger?.verbose(chunk.description)
             switch chunk.type {
             case .zero:
                 streamsmap[chunk.streamId] = message.streamId

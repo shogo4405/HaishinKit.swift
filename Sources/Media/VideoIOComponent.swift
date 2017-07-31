@@ -35,15 +35,15 @@ final class VideoIOComponent: IOComponent {
 
             fps = data.fps
             encoder.expectedFPS = data.fps
-            logger.info("\(data)")
+            lfLogger?.info("\(data)")
 
             do {
                 try device.lockForConfiguration()
                 device.activeVideoMinFrameDuration = data.duration
                 device.activeVideoMaxFrameDuration = data.duration
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for fps: \(error)")
+            } catch let error {
+                lfLogger?.error("while locking device for fps: \(error)")
             }
         }
     }
@@ -92,7 +92,7 @@ final class VideoIOComponent: IOComponent {
             let focusMode:AVCaptureFocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isFocusModeSupported(focusMode) else {
-                logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
+                lfLogger?.warning("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
             do {
@@ -100,8 +100,8 @@ final class VideoIOComponent: IOComponent {
                 device.focusMode = focusMode
                 device.unlockForConfiguration()
             }
-            catch let error as NSError {
-                logger.error("while locking device for autofocus: \(error)")
+            catch let error {
+                lfLogger?.error("while locking device for autofocus: \(error)")
             }
         }
     }
@@ -119,8 +119,8 @@ final class VideoIOComponent: IOComponent {
                 device.focusPointOfInterest = point
                 device.focusMode = .autoFocus
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for focusPointOfInterest: \(error)")
+            } catch let error {
+                lfLogger?.error("while locking device for focusPointOfInterest: \(error)")
             }
         }
     }
@@ -138,8 +138,8 @@ final class VideoIOComponent: IOComponent {
                 device.exposurePointOfInterest = point
                 device.exposureMode = .autoExpose
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for exposurePointOfInterest: \(error)")
+            } catch let error {
+                lfLogger?.error("while locking device for exposurePointOfInterest: \(error)")
             }
         }
     }
@@ -152,15 +152,15 @@ final class VideoIOComponent: IOComponent {
             let exposureMode:AVCaptureExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isExposureModeSupported(exposureMode) else {
-                logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
+                lfLogger?.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }
             do {
                 try device.lockForConfiguration()
                 device.exposureMode = exposureMode
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for autoexpose: \(error)")
+            } catch let error {
+                lfLogger?.error("while locking device for autoexpose: \(error)")
             }
         }
     }
@@ -271,15 +271,15 @@ final class VideoIOComponent: IOComponent {
 
     func setTorchMode(_ torchMode:AVCaptureTorchMode) {
         guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
-            logger.warning("torchMode(\(torchMode)) is not supported")
+            lfLogger?.warning("torchMode(\(torchMode)) is not supported")
             return
         }
         do {
             try device.lockForConfiguration()
             device.torchMode = torchMode
             device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while setting torch: \(error)")
+        } catch let error {
+            lfLogger?.error("while setting torch: \(error)")
         }
     }
     func dispose() {

@@ -1,6 +1,5 @@
 import HaishinKit
 import UIKit
-import XCGLogger
 import AVFoundation
 
 let sampleRate:Double = 44_100
@@ -51,10 +50,10 @@ final class LiveViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)) { error in
-            logger.warning(error)
+            logger.warning(error.localizedDescription)
         }
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
-            logger.warning(error)
+            logger.warning(error.localizedDescription)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: NSKeyValueObservingOptions.new, context: nil)
         lfView?.attachStream(rtmpStream)
@@ -72,7 +71,7 @@ final class LiveViewController: UIViewController {
         logger.info("rotateCamera")
         let position:AVCaptureDevicePosition = currentPosition == .back ? .front : .back
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
-            logger.warning(error)
+            logger.warning(error.localizedDescription)
         }
         currentPosition = position
     }

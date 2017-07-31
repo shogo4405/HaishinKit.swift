@@ -260,8 +260,8 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         }, completionHandler: { (isSuccess, error) -> Void in
             do {
                 try FileManager.default.removeItem(at: writer.outputURL)
-            } catch let error as NSError {
-                logger.error("\(error)")
+            } catch let error {
+                lfLogger?.error("\(error)")
             }
         })
     #endif
@@ -287,10 +287,10 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                 fileComponent = fileName + dateFormatter.string(from: Date())
             }
             let url:URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + ".mp4")
-            logger.info("\(url)")
+            lfLogger?.info("\(url)")
             return try AVAssetWriter(outputURL: url, fileType: AVFileTypeMPEG4)
         } catch {
-            logger.warning("create an AVAssetWriter")
+            lfLogger?.warning("create an AVAssetWriter")
         }
         return nil
     }
