@@ -1,8 +1,5 @@
 import Foundation
 import AVFoundation
-#if os(iOS)
-import Photos
-#endif
 
 public protocol AVMixerRecorderDelegate: class {
     var moviesDirectory:URL { get }
@@ -251,20 +248,6 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     }
 
     open func didFinishWriting(_ recorder:AVMixerRecorder) {
-    #if os(iOS)
-        guard let writer:AVAssetWriter = recorder.writer, shouldSaveToPhotoLibrary else {
-            return
-        }
-        PHPhotoLibrary.shared().performChanges({() -> Void in
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { (isSuccess, error) -> Void in
-            do {
-                try FileManager.default.removeItem(at: writer.outputURL)
-            } catch let error as NSError {
-                logger.error("\(error)")
-            }
-        })
-    #endif
     }
 
     open func didStartRunning(_ recorder: AVMixerRecorder) {
