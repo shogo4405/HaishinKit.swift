@@ -156,7 +156,6 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     fileprivate var clockReference:String = AVMediaTypeVideo
 
     #if os(iOS)
-    open var shouldSaveToPhotoLibrary:Bool = true
     open lazy var moviesDirectory:URL = {
         return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
     }()

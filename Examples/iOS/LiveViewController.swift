@@ -8,7 +8,7 @@ let sampleRate:Double = 44_100
 
 class ExampleRecorderDelegate: DefaultAVMixerRecorderDelegate {
     override func didFinishWriting(_ recorder: AVMixerRecorder) {
-        guard let writer:AVAssetWriter = recorder.writer, shouldSaveToPhotoLibrary else { return }
+        guard let writer:AVAssetWriter = recorder.writer else { return }
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
         }, completionHandler: { (isSuccess, error) -> Void in
