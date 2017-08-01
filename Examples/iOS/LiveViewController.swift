@@ -29,8 +29,9 @@ final class LiveViewController: UIViewController {
 
     @IBOutlet var lfView:GLLFView?
     @IBOutlet var currentFPSLabel:UILabel?
-    @IBOutlet var publishButton:UIButton?
-    @IBOutlet var pauseButton:UIButton?
+    @IBOutlet var pauseButton:UIButton!
+    @IBOutlet var recButton:UIButton!
+    @IBOutlet var streamButton:UIButton!
     @IBOutlet var videoBitrateLabel:UILabel?
     @IBOutlet var videoBitrateSlider:UISlider?
     @IBOutlet var audioBitrateLabel:UILabel?
@@ -112,27 +113,43 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    @IBAction func on(pause:UIButton) {
-        rtmpStream.togglePause()
-    }
-
     @IBAction func on(close:UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
 
-    @IBAction func on(publish:UIButton) {
-        if (publish.isSelected) {
-            UIApplication.shared.isIdleTimerDisabled = false
+    @IBAction func on(pause:UIButton) {
+        rtmpStream.togglePause()
+    }
+
+    @IBAction func on(rec: UIButton) {
+        if (rec.isSelected) {
             rtmpConnection.close()
             rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
-            publish.setTitle("●", for: UIControlState())
+            recButton.isSelected = false
+            streamButton.isSelected = false
+            recButton.setTitle("Start Rec", for: UIControlState())
+            streamButton.setTitle("Start Stream", for: UIControlState())
         } else {
-            UIApplication.shared.isIdleTimerDisabled = true
+            rtmpStream.publish(Preference.defaultInstance.streamName!, whatToDo: .record)
+            recButton.isSelected = true
+            rec.setTitle("Stop", for: UIControlState())
+        }
+    }
+
+    @IBAction func on(stream:UIButton) {
+        if (stream.isSelected) {
+            rtmpConnection.close()
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            recButton.isSelected = false
+            streamButton.isSelected = false
+            recButton.setTitle("Start Rec", for: UIControlState())
+            streamButton.setTitle("Start Stream", for: UIControlState())
+        } else {
             rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
-            publish.setTitle("■", for: UIControlState())
+            streamButton.isSelected = true
+            streamButton.setTitle("Stop", for: UIControlState())
         }
-        publish.isSelected = !publish.isSelected
     }
 
     func rtmpStatusHandler(_ notification:Notification) {
@@ -140,7 +157,7 @@ final class LiveViewController: UIViewController {
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish(Preference.defaultInstance.streamName!)
+                rtmpStream!.publish(Preference.defaultInstance.streamName!, whatToDo: .stream)
                 // sharedObject!.connect(rtmpConnection)
             default:
                 break

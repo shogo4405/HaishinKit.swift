@@ -198,12 +198,17 @@ open class RTMPStream: NetStream {
         }
     }
 
-    public enum HowToPublish: String {
+    public enum WhatToDo {
+        case stream
+        case record
+        case both
+    }
+
+    public enum WhatWillServerDo: String {
+        case live          = "live"
         case record        = "record"
         case append        = "append"
         case appendWithGap = "appendWithGap"
-        case live          = "live"
-        case localRecord   = "localRecord"
     }
 
     enum ReadyState: UInt8 {
@@ -214,6 +219,11 @@ open class RTMPStream: NetStream {
         case publish     = 4
         case publishing  = 5
         case closed      = 6
+    }
+
+    enum RecordingState: UInt8 {
+        case notRecording = 0
+        case recording = 1
     }
 
     static let defaultID:UInt32 = 0
@@ -245,10 +255,6 @@ open class RTMPStream: NetStream {
                 mixer.audioIO.encoder.startRunning()
                 mixer.videoIO.encoder.startRunning()
                 sampler?.startRunning()
-                if (howToPublish == .localRecord) {
-                    mixer.recorder.fileName = info.resourceName
-                    mixer.recorder.startRunning()
-                }
             case .closed:
                 switch oldValue {
                 case .playing:
@@ -261,6 +267,17 @@ open class RTMPStream: NetStream {
             }
         }
     }
+    var recordingState: RecordingState = .notRecording {
+        didSet {
+            switch recordingState {
+            case .notRecording: break
+
+            case .recording: break
+
+            }
+        }
+    }
+
 
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
@@ -271,7 +288,6 @@ open class RTMPStream: NetStream {
     fileprivate var dispatcher:IEventDispatcher!
     fileprivate var audioWasSent:Bool = false
     fileprivate var videoWasSent:Bool = false
-    fileprivate var howToPublish:RTMPStream.HowToPublish = .live
     fileprivate var rtmpConnection:RTMPConnection
 
     public init(connection: RTMPConnection) {
@@ -374,17 +390,15 @@ open class RTMPStream: NetStream {
         }
     }
 
-    @available(*, unavailable)
-    open func publish(_ name:String?, type:String = "live") {
-        guard let howToPublish:RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
-            return
-        }
-        publish(name, type: howToPublish)
-    }
-
-    open func publish(_ name:String?, type:RTMPStream.HowToPublish = .live) {
+    open func publish(_ name: String?, whatToDo: WhatToDo = .stream, whatWillServerDo: WhatWillServerDo = .live) {
         lockQueue.async {
             guard let name:String = name else {
+                // stop publishing
+
+                if (self.recordingState == .recording) {
+                    self.mixer.recorder.stopRunning()
+                    self.recordingState = .notRecording
+                }
                 switch self.readyState {
                 case .publish, .publishing:
                     self.readyState = .open
@@ -396,7 +410,6 @@ open class RTMPStream: NetStream {
                     self.mixer.audioIO.encoder.stopRunning()
                     self.mixer.videoIO.encoder.stopRunning()
                     self.sampler?.stopRunning()
-                    self.mixer.recorder.stopRunning()
                     self.FCUnpublish()
                     self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                         type: .zero,
@@ -415,49 +428,49 @@ open class RTMPStream: NetStream {
                 return
             }
 
-            while (self.readyState == .initialized) {
-                usleep(100)
-            }
+            // start publishing
 
-            if (self.info.resourceName == name && self.readyState == .publishing) {
-                switch type {
-                case .localRecord:
+            if (whatToDo == .record || whatToDo == .both) {
+                if (self.info.resourceName == name) {
                     self.mixer.recorder.fileName = self.info.resourceName
                     self.mixer.recorder.startRunning()
-                default:
-                    self.mixer.recorder.stopRunning()
+                    self.recordingState = .recording
                 }
-                self.howToPublish = type
-                return
             }
 
-            self.info.resourceName = name
-            self.howToPublish = type
-            self.muxer.dispose()
-            self.muxer.delegate = self
-            #if os(iOS)
-            self.mixer.videoIO.screen?.startRunning()
-            #endif
-            self.mixer.audioIO.encoder.delegate = self.muxer
-            self.mixer.videoIO.encoder.delegate = self.muxer
-            self.sampler?.delegate = self.muxer
-            self.mixer.startRunning()
-            self.videoWasSent = false
-            self.audioWasSent = false
-            self.FCPublish()
-            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
-                type: .zero,
-                streamId: RTMPChunk.StreamID.audio.rawValue,
-                message: RTMPCommandMessage(
-                    streamId: self.id,
-                    transactionId: 0,
-                    objectEncoding: self.objectEncoding,
-                    commandName: "publish",
-                    commandObject: nil,
-                    arguments: [name, type == .localRecord ? RTMPStream.HowToPublish.live.rawValue : type.rawValue]
-            )), locked: nil)
+            if (whatToDo == .stream || whatToDo == .both) {
+                while (self.readyState == .initialized) {
+                    usleep(100)
+                }
 
-            self.readyState = .publish
+
+                self.info.resourceName = name
+                self.muxer.dispose()
+                self.muxer.delegate = self
+                #if os(iOS)
+                    self.mixer.videoIO.screen?.startRunning()
+                #endif
+                self.mixer.audioIO.encoder.delegate = self.muxer
+                self.mixer.videoIO.encoder.delegate = self.muxer
+                self.sampler?.delegate = self.muxer
+                self.mixer.startRunning()
+                self.videoWasSent = false
+                self.audioWasSent = false
+                self.FCPublish()
+                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+                    type: .zero,
+                    streamId: RTMPChunk.StreamID.audio.rawValue,
+                    message: RTMPCommandMessage(
+                        streamId: self.id,
+                        transactionId: 0,
+                        objectEncoding: self.objectEncoding,
+                        commandName: "publish",
+                        commandObject: nil,
+                        arguments: [name, whatWillServerDo.rawValue]
+                )), locked: nil)
+
+                self.readyState = .publish
+            }
         }
     }
 
