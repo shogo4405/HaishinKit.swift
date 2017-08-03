@@ -69,7 +69,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/lf.swift" ~> 0.7.0
+github "shogo4405/HaishinKit.swift" ~> 0.7.3
 ```
 
 ## License
