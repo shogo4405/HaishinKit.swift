@@ -60,17 +60,20 @@ open class LFView: UIView {
 
     open func attachStream(_ stream:NetStream?) {
         guard let stream:NetStream = stream else {
+            layer.session?.stopRunning()
             layer.session = nil
             currentStream = nil
             return
         }
+
+        stream.mixer.session.beginConfiguration()
+        layer.session = stream.mixer.session
+        orientation = stream.mixer.videoIO.orientation
+        stream.mixer.session.commitConfiguration()
+
         stream.lockQueue.async {
-            stream.mixer.session.beginConfiguration()
-            self.layer.session = stream.mixer.session
             stream.mixer.videoIO.drawable = self
-            self.orientation = stream.mixer.videoIO.orientation
             self.currentStream = stream
-            stream.mixer.session.commitConfiguration()
             stream.mixer.startRunning()
         }
     }
