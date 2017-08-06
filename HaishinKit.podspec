@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.tvos.source_files = "Platforms/tvOS/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
-  s.dependency 'XCGLogger', '~> 5.0.0'
+  s.dependency 'Logboard', '~> 1.0.0'
 
 end
 

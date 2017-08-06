@@ -32,7 +32,7 @@ public class MP4Sampler {
         do {
             let _:UInt32 = try reader.load()
         } catch {
-            logger.warning("")
+            logger.warn("")
             return
         }
 

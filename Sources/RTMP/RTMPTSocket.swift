@@ -126,8 +126,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
         lastResponse = Date()
 
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(String(describing: data)):\(String(describing: response)):\(String(describing: error))")
+        if (logger.isEnabledFor(level: .trace)) {
+            logger.trace("\(String(describing: data)):\(String(describing: response)):\(String(describing: error))")
         }
 
         if let error:Error = error {
@@ -135,8 +135,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
             if let lastRequestPathComponent: String = self.lastRequestPathComponent,
                let lastRequestData: Data = self.lastRequestData, !isRetryingRequest {
-                if (logger.isEnabledFor(level: .verbose)) {
-                    logger.verbose("Will retry request for path=\(lastRequestPathComponent)")
+                if (logger.isEnabledFor(level: .trace)) {
+                    logger.trace("Will retry request for path=\(lastRequestPathComponent)")
                 }
                 outputQueue.sync {
                     isRetryingRequest = true
@@ -202,8 +202,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         doRequest("/open/1", Data([0x00]), didOpen)
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
+        if (logger.isEnabledFor(level: .trace)) {
+            logger.trace("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -216,8 +216,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
         connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(data.bytes):\(String(describing: response))")
+        if (logger.isEnabledFor(level: .trace)) {
+            logger.trace("\(data.bytes):\(String(describing: response))")
         }
     }
 
@@ -226,8 +226,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         connected = true
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
+        if (logger.isEnabledFor(level: .trace)) {
+            logger.trace("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -236,8 +236,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             logger.error("\(error)")
         }
         connected = false
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(String(describing: data?.bytes)):\(String(describing: response))")
+        if (logger.isEnabledFor(level: .trace)) {
+            logger.trace("\(String(describing: data?.bytes)):\(String(describing: response))")
         }
     }
 
@@ -280,8 +280,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         request = URLRequest(url: baseURL.appendingPathComponent(pathComponent))
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
-        if (logger.isEnabledFor(level: .verbose)) {
-            logger.verbose("\(self.request)")
+        if (logger.isEnabledFor(level: .trace)) {
+            logger.trace("\(self.request)")
         }
     }
 }

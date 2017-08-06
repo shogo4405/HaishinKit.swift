@@ -239,7 +239,7 @@ final class H264Encoder: NSObject {
                     unsafeBitCast(self, to: UnsafeMutableRawPointer.self),
                     &_session
                     ) == noErr else {
-                    logger.warning("create a VTCompressionSessionCreate")
+                    logger.warn("create a VTCompressionSessionCreate")
                     return nil
                 }
                 invalidateSession = false

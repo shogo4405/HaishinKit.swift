@@ -92,7 +92,7 @@ final class VideoIOComponent: IOComponent {
             let focusMode:AVCaptureFocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isFocusModeSupported(focusMode) else {
-                logger.warning("focusMode(\(focusMode.rawValue)) is not supported")
+                logger.warn("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
             do {
@@ -152,7 +152,7 @@ final class VideoIOComponent: IOComponent {
             let exposureMode:AVCaptureExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
             guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isExposureModeSupported(exposureMode) else {
-                logger.warning("exposureMode(\(exposureMode.rawValue)) is not supported")
+                logger.warn("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }
             do {
@@ -271,7 +271,7 @@ final class VideoIOComponent: IOComponent {
 
     func setTorchMode(_ torchMode:AVCaptureTorchMode) {
         guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
-            logger.warning("torchMode(\(torchMode)) is not supported")
+            logger.warn("torchMode(\(torchMode)) is not supported")
             return
         }
         do {

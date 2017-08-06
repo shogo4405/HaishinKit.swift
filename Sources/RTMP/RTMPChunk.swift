@@ -248,7 +248,7 @@ final class RTMPChunk {
             self.message?.length = message.length
             self.message?.payload = Data(try buffer.readBytes(message.length))
         } catch {
-            logger.warning("\(buffer)")
+            logger.warn("\(buffer)")
         }
 
         return headerSize + message.length

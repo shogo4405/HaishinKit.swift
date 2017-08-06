@@ -157,7 +157,7 @@ class AudioStreamPlayback {
             buffer,
             UInt32(packetDescriptions.count),
             &packetDescriptions) == noErr else {
-            logger.warning("AudioQueueEnqueueBuffer")
+            logger.warn("AudioQueueEnqueueBuffer")
             return
         }
     }
@@ -234,7 +234,7 @@ class AudioStreamPlayback {
         var status:OSStatus = noErr
         status = AudioQueueSetProperty(queue, kAudioQueueProperty_MagicCookie, inData, UInt32(inData.count))
         guard status == noErr else {
-            logger.warning("status \(status)")
+            logger.warn("status \(status)")
             return false
         }
         return true
@@ -247,7 +247,7 @@ class AudioStreamPlayback {
         var data:AudioStreamBasicDescription = AudioStreamBasicDescription()
         var size:UInt32 = UInt32(MemoryLayout<AudioStreamBasicDescription>.size)
         guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_DataFormat, &size, &data) == noErr else {
-            logger.warning("kAudioFileStreamProperty_DataFormat")
+            logger.warn("kAudioFileStreamProperty_DataFormat")
             return nil
         }
         return data
@@ -260,12 +260,12 @@ class AudioStreamPlayback {
         var size:UInt32 = 0
         var writable:DarwinBoolean = true
         guard AudioFileStreamGetPropertyInfo(fileStreamID, kAudioFileStreamProperty_MagicCookieData, &size, &writable) == noErr else {
-            logger.warning("info kAudioFileStreamProperty_MagicCookieData")
+            logger.warn("info kAudioFileStreamProperty_MagicCookieData")
             return nil
         }
         var data:[UInt8] = [UInt8](repeating: 0, count: Int(size))
         guard AudioFileStreamGetProperty(fileStreamID, kAudioFileStreamProperty_MagicCookieData, &size, &data) == noErr else {
-            logger.warning("kAudioFileStreamProperty_MagicCookieData")
+            logger.warn("kAudioFileStreamProperty_MagicCookieData")
             return nil
         }
         return data

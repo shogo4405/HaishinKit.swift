@@ -27,8 +27,6 @@
 		290EA8AB1DFB61E700053022 /* EventDispatcherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA8A61DFB61E700053022 /* EventDispatcherTests.swift */; };
 		290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA8A71DFB61E700053022 /* MD5Tests.swift */; };
 		290EA8AD1DFB61E700053022 /* TimerDriverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA8A81DFB61E700053022 /* TimerDriverTests.swift */; };
-		2911F9C01DE53F2A007FD1EC /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */; };
-		2911F9C11DE53F39007FD1EC /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */; };
 		291468191E581C8F00E619BA /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		2915EC4D1D85BB8C00621092 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
@@ -63,6 +61,9 @@
 		2931204F1D4529F900B14211 /* RTSPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204B1D4522CF00B14211 /* RTSPRequest.swift */; };
 		293120501D4529FB00B14211 /* RTSPResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2931204D1D4522E400B14211 /* RTSPResponse.swift */; };
 		2932D0E91ED1BAB10002D33B /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */; };
+		293875DD1F374D4B009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DC1F374D4B009F4B30 /* Logboard.framework */; };
+		293875DF1F374D6E009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DE1F374D6E009F4B30 /* Logboard.framework */; };
+		293875E11F374D80009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875E01F374D80009F4B30 /* Logboard.framework */; };
 		293C74371D85D56D001ED43C /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 293C74361D85D56D001ED43C /* MainInterface.storyboard */; };
 		2942424D1CF4C01300D65DCB /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
@@ -142,8 +143,6 @@
 		2981B7F71D734A39002FA821 /* SessionDescription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2981B7F31D7345D5002FA821 /* SessionDescription.swift */; };
 		2989C3B61D69C43000038653 /* RTPPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DD70E51D68CF020021904A /* RTPPacket.swift */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
-		298F15C01E9A5A18009226BA /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */; };
-		298F15C21E9A5A2D009226BA /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298F15C11E9A5A2D009226BA /* ObjcExceptionBridging.framework */; };
 		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */; };
 		299AE0E31D44E6EE00D26A49 /* RTSPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E21D44E6EE00D26A49 /* RTSPConnection.swift */; };
 		299AE0E51D44EC7800D26A49 /* RTSPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E41D44EC7800D26A49 /* RTSPSocket.swift */; };
@@ -151,8 +150,6 @@
 		299AE0E71D45003D00D26A49 /* RTSPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299AE0E41D44EC7800D26A49 /* RTSPSocket.swift */; };
 		299B131D1D35272D00A1E8F5 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		299B13271D3B751400A1E8F5 /* LFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* LFView.swift */; };
-		299E044A1F1CE3870020DFBF /* ObjcExceptionBridging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */; };
-		299E044B1F1CE3870020DFBF /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */; };
 		29A39C8E1D85BF6F007C27E9 /* BroadcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
@@ -352,10 +349,7 @@
 		29EB3E391ED05A43001CAE8B /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975EF6E1D6096FB00DABA5A /* Mutex.swift */; };
 		29EB3E3A1ED05A45001CAE8B /* TimerDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2926A9F01DE6EAEB0074E3D2 /* TimerDriver.swift */; };
 		29EB3E3B1ED05A48001CAE8B /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245AEC1D3233EB00AFFB9A /* VideoGravityUtil.swift */; };
-		29EB3E3D1ED05AB6001CAE8B /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29EB3E3C1ED05AB6001CAE8B /* XCGLogger.framework */; };
 		29EF03781CD79A5400473D99 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 299F7E3B1CD71A97001E7272 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		29F5FEA61DE2C70A00D0CCB4 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */; };
-		29F5FEA71DE2C71000D0CCB4 /* XCGLogger.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */; };
 		29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */; };
 		29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */; };
 		29FB94311E1BECCA005DE4DF /* SoundSpliter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */; };
@@ -475,7 +469,6 @@
 		290EA8A61DFB61E700053022 /* EventDispatcherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EventDispatcherTests.swift; path = Util/EventDispatcherTests.swift; sourceTree = "<group>"; };
 		290EA8A71DFB61E700053022 /* MD5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5Tests.swift; path = Util/MD5Tests.swift; sourceTree = "<group>"; };
 		290EA8A81DFB61E700053022 /* TimerDriverTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimerDriverTests.swift; path = Util/TimerDriverTests.swift; sourceTree = "<group>"; };
-		2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/Mac/XCGLogger.framework; sourceTree = "<group>"; };
 		291468161E581C7D00E619BA /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Preference.swift; path = Examples/iOS/Preference.swift; sourceTree = "<group>"; };
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
@@ -497,6 +490,9 @@
 		2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SampleHandler.swift; path = Examples/iOS/Screencast/SampleHandler.swift; sourceTree = "<group>"; };
 		2931204B1D4522CF00B14211 /* RTSPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPRequest.swift; path = Sources/RTSP/RTSPRequest.swift; sourceTree = SOURCE_ROOT; };
 		2931204D1D4522E400B14211 /* RTSPResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPResponse.swift; path = Sources/RTSP/RTSPResponse.swift; sourceTree = SOURCE_ROOT; };
+		293875DC1F374D4B009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/iOS/Logboard.framework; sourceTree = "<group>"; };
+		293875DE1F374D6E009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/Mac/Logboard.framework; sourceTree = "<group>"; };
+		293875E01F374D80009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/tvOS/Logboard.framework; sourceTree = "<group>"; };
 		293C74361D85D56D001ED43C /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = MainInterface.storyboard; path = Examples/iOS/ScreencastUI/Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		2942424C1CF4C01300D65DCB /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MD5.swift; path = Sources/Util/MD5.swift; sourceTree = SOURCE_ROOT; };
 		2945CBBD1B4BE66000104112 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -546,8 +542,6 @@
 		2981B7F31D7345D5002FA821 /* SessionDescription.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SessionDescription.swift; path = Sources/RTSP/SessionDescription.swift; sourceTree = SOURCE_ROOT; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnyUtil.swift; path = Sources/Util/AnyUtil.swift; sourceTree = SOURCE_ROOT; };
-		298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjcExceptionBridging.framework; path = Carthage/Build/Mac/ObjcExceptionBridging.framework; sourceTree = "<group>"; };
-		298F15C11E9A5A2D009226BA /* ObjcExceptionBridging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ObjcExceptionBridging.framework; path = Carthage/Build/iOS/ObjcExceptionBridging.framework; sourceTree = "<group>"; };
 		2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "VideoIOComponent+Extension.swift"; path = "Platforms/macOS/VideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		299AE0E21D44E6EE00D26A49 /* RTSPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTSPConnection.swift; path = Sources/RTSP/RTSPConnection.swift; sourceTree = SOURCE_ROOT; };
@@ -635,9 +629,7 @@
 		29EA87E91E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CMBlockBuffer+Extension.swift"; path = "Sources/Extension/CMBlockBuffer+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29EA87EC1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CVPixelBuffer+Extension.swift"; path = "Sources/Extension/CVPixelBuffer+Extension.swift"; sourceTree = SOURCE_ROOT; };
 		29EA87EF1E79A4120043A5F8 /* CMSampleTimingInfo+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "CMSampleTimingInfo+Extension.swift"; path = "Sources/Extension/CMSampleTimingInfo+Extension.swift"; sourceTree = SOURCE_ROOT; };
-		29EB3E3C1ED05AB6001CAE8B /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/tvOS/XCGLogger.framework; sourceTree = "<group>"; };
 		29F04FF21F3388B000172706 /* HaishinKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HaishinKit.podspec; sourceTree = "<group>"; };
-		29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCGLogger.framework; path = Carthage/Build/iOS/XCGLogger.framework; sourceTree = "<group>"; };
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPHandshake.swift; path = Sources/RTMP/RTMPHandshake.swift; sourceTree = SOURCE_ROOT; };
 		29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundSpliter.swift; path = Sources/Media/SoundSpliter.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -665,8 +657,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				299E044A1F1CE3870020DFBF /* ObjcExceptionBridging.framework in Frameworks */,
-				299E044B1F1CE3870020DFBF /* XCGLogger.framework in Frameworks */,
 				29798E671CE610F500F5CBD0 /* HaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -675,8 +665,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				298F15C01E9A5A18009226BA /* ObjcExceptionBridging.framework in Frameworks */,
-				2911F9C01DE53F2A007FD1EC /* XCGLogger.framework in Frameworks */,
+				293875DF1F374D6E009F4B30 /* Logboard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -685,7 +674,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */,
-				29F5FEA61DE2C70A00D0CCB4 /* XCGLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -694,7 +682,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				29562B881E6BFFE000BB940A /* HaishinKit.framework in Frameworks */,
-				2911F9C11DE53F39007FD1EC /* XCGLogger.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -702,7 +689,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				29EB3E3D1ED05AB6001CAE8B /* XCGLogger.framework in Frameworks */,
+				293875E11F374D80009F4B30 /* Logboard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -718,8 +705,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				298F15C21E9A5A2D009226BA /* ObjcExceptionBridging.framework in Frameworks */,
-				29F5FEA71DE2C71000D0CCB4 /* XCGLogger.framework in Frameworks */,
+				293875DD1F374D4B009F4B30 /* Logboard.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -729,11 +715,9 @@
 		0ACC00B98D6DB33B5BE87B87 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				29EB3E3C1ED05AB6001CAE8B /* XCGLogger.framework */,
-				298F15C11E9A5A2D009226BA /* ObjcExceptionBridging.framework */,
-				298F15BF1E9A5A18009226BA /* ObjcExceptionBridging.framework */,
-				2911F9BF1DE53F2A007FD1EC /* XCGLogger.framework */,
-				29F5FEA51DE2C70A00D0CCB4 /* XCGLogger.framework */,
+				293875E01F374D80009F4B30 /* Logboard.framework */,
+				293875DE1F374D6E009F4B30 /* Logboard.framework */,
+				293875DC1F374D4B009F4B30 /* Logboard.framework */,
 				2915EC531D85BDF100621092 /* ReplayKit.framework */,
 				2915EC611D85BDF100621092 /* UIKit.framework */,
 			);
@@ -1263,7 +1247,6 @@
 				2945CBBA1B4BE66000104112 /* Headers */,
 				2945CBBB1B4BE66000104112 /* Resources */,
 				4B380712EE7FC2FF39421F1D /* Frameworks */,
-				2961FF161DE2A0F100A02CD7 /* ShellScript */,
 				2911F98B1DE2D97C007FD1EC /* CopyFiles */,
 			);
 			buildRules = (
@@ -1302,7 +1285,6 @@
 				29B876171CD701F900FC07DA /* Frameworks */,
 				29B876181CD701F900FC07DA /* Headers */,
 				29B876191CD701F900FC07DA /* Resources */,
-				2961FF171DE2A13200A02CD7 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1560,8 +1542,7 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/tvOS/XCGLogger.framework",
-				"$(SRCROOT)/Carthage/Build/tvOS/ObjcExceptionBridging.framework",
+				"$(SRCROOT)/Carthage/Build/tvOS/Logboard.framework",
 			);
 			outputPaths = (
 			);
@@ -1575,41 +1556,13 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/Mac/XCGLogger.framework",
-				"$(SRCROOT)/Carthage/Build/Mac/ObjcExceptionBridging.framework",
+				"$(SRCROOT)/Carthage/Build/Mac/Logboard.framework",
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-		2961FF161DE2A0F100A02CD7 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "";
-		};
-		2961FF171DE2A13200A02CD7 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
-			showEnvVarsInLog = 0;
 		};
 		299E044F1F1CE3D90020DFBF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1632,8 +1585,7 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/XCGLogger.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ObjcExceptionBridging.framework",
+				"$(SRCROOT)/Carthage/Build/iOS/Logboard.framework",
 			);
 			outputPaths = (
 			);

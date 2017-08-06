@@ -272,7 +272,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             logger.info("\(url)")
             return try AVAssetWriter(outputURL: url, fileType: AVFileTypeMPEG4)
         } catch {
-            logger.warning("create an AVAssetWriter")
+            logger.warn("create an AVAssetWriter")
         }
         return nil
     }

@@ -150,7 +150,7 @@ final class AACEncoder: NSObject {
             _converter = converter
         }
         if (status != noErr) {
-            logger.warning("\(status)")
+            logger.warn("\(status)")
         }
         return _converter!
     }

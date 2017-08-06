@@ -50,7 +50,6 @@
 iOS10.0+
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
-* NSPhotoLibraryUsageDescription
 
 ## Installation
 ### CocoaPods
@@ -59,7 +58,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'lf', '~> 0.7.0'
+    pod 'HaishinKit', '~> 0.7.3'
 end
 
 target 'Your Target'  do

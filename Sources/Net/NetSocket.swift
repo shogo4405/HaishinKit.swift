@@ -87,7 +87,7 @@ public class NetSocket: NSObject {
             self.deinitConnection(isDisconnected: isDisconnected)
             self.runloop = nil
             CFRunLoopStop(runloop.getCFRunLoop())
-            logger.verbose("isDisconnected:\(isDisconnected)")
+            logger.trace("isDisconnected:\(isDisconnected)")
         }
     }
 

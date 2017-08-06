@@ -1,6 +1,10 @@
-import XCGLogger
+import Logboard
 
-let logger:XCGLogger = XCGLogger.default
+public struct HaishinKit {
+    public static var identifier:String = "com.haishinkit.HaishinKit"
+}
+
+let logger:Logboard = Logboard.with(HaishinKit.identifier)
 
 public enum CMSampleBufferType: String {
     case video = "video"
