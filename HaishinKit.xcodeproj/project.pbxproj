@@ -1570,8 +1570,7 @@
 			files = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/Mac/XCGLogger.framework",
-				"$(SRCROOT)/Carthage/Build/Mac/ObjcExceptionBridging.framework",
+				"$(SRCROOT)/Carthage/Build/Mac/Logboard.framework",
 			);
 			outputPaths = (
 			);

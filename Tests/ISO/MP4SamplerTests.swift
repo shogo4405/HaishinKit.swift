@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import lf
+@testable import HaishinKit
 
 final class MP4SamplerTests: XCTestCase {
     func testMain() {

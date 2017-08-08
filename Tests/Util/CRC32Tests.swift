@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-@testable import lf
+@testable import HaishinKit
 
 final class CRC32Tests: XCTestCase {
     static let tableOfMpeg2:[UInt32] = [

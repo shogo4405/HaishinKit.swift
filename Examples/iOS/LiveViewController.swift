@@ -2,6 +2,7 @@ import HaishinKit
 import UIKit
 import AVFoundation
 import Photos
+import VideoToolbox
 
 let sampleRate:Double = 44_100
 
@@ -53,6 +54,8 @@ final class LiveViewController: UIViewController {
         rtmpStream.videoSettings = [
             "width": 1280,
             "height": 720,
+            "bitrate": 900 * 1024,
+            "profileLevel": kVTProfileLevel_H264_Baseline_AutoLevel,
         ]
         rtmpStream.audioSettings = [
             "sampleRate": sampleRate
