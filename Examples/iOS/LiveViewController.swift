@@ -52,10 +52,8 @@ final class LiveViewController: UIViewController {
             "continuousExposure": true,
         ]
         rtmpStream.videoSettings = [
-            "width": 1280,
-            "height": 720,
-            "bitrate": 900 * 1024,
-            "profileLevel": kVTProfileLevel_H264_Baseline_AutoLevel,
+            "width": 720,
+            "height": 1280,
         ]
         rtmpStream.audioSettings = [
             "sampleRate": sampleRate
