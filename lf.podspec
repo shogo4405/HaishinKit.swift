@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "lf"
-  s.version      = "0.7.3"
+  s.version      = "0.7.4"
   s.summary      = "Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS."
 
   s.description  = <<-DESC
@@ -25,7 +25,6 @@ Pod::Spec.new do |s|
   s.tvos.source_files = "Platforms/tvOS/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
-  s.dependency 'XCGLogger', '~> 5.0.0'
+  s.dependency 'Logboard', '~> 1.0.1'
 
 end
-

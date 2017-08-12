@@ -358,6 +358,9 @@ open class RTMPConnection: EventDispatcher {
                 break
             }
         case Code.connectClosed.rawValue:
+            if let description:String = data["description"] as? String {
+                logger.warn(description)
+            }
             close(isDisconnected: true)
         default:
             break
