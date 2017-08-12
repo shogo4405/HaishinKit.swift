@@ -1,4 +1,0 @@
-import Foundation
-
-struct RTPPacket {
-}
