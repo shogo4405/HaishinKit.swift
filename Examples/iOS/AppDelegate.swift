@@ -1,6 +1,7 @@
 import UIKit
 import AVFoundation
 import Logboard
+import HaishinKit
 
 let logger:Logboard = Logboard.with("com.haishinkit.Exsample.iOS")
 
@@ -17,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
         }
+        
+        Logboard.with(HaishinKit.identifier).level = .trace
 
         return true
     }

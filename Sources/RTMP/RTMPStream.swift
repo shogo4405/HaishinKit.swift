@@ -455,7 +455,7 @@ open class RTMPStream: NetStream {
             self.info.resourceName = name
             self.howToPublish = type
             self.readyState = .publish
-            self.FCUnpublish()
+            self.FCPublish()
             self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
                 type: .zero,
                 streamId: RTMPChunk.StreamID.audio.rawValue,
