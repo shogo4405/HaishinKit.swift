@@ -49,7 +49,7 @@ open class RTMPConnection: EventDispatcher {
         case connectClosed        = "NetConnection.Connect.Closed"
         case connectFailed        = "NetConnection.Connect.Failed"
         case connectIdleTimeOut   = "NetConnection.Connect.IdleTimeOut"
-        case conenctInvalidApp    = "NetConnection.Connect.InvalidApp"
+        case connectInvalidApp    = "NetConnection.Connect.InvalidApp"
         case connectNetworkChange = "NetConnection.Connect.NetworkChange"
         case connectRejected      = "NetConnection.Connect.Rejected"
         case connectSuccess       = "NetConnection.Connect.Success"
@@ -70,7 +70,7 @@ open class RTMPConnection: EventDispatcher {
                 return "error"
             case .connectIdleTimeOut:
                 return "status"
-            case .conenctInvalidApp:
+            case .connectInvalidApp:
                 return "error"
             case .connectNetworkChange:
                 return "status"
