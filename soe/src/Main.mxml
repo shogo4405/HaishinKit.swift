@@ -17,34 +17,34 @@ import flash.events.SyncEvent;
 import flash.xml.XMLDocument;
 import mx.utils.ObjectUtil;
 
-private var conenction:NetConnection = null;
+private var connection:NetConnection = null;
 private var sharedObject:SharedObject = null;
 
 registerClassAlias("foo.bar.Hoge", Hoge);
 
 private function idConnectButton_clickHandler(e:MouseEvent):void {
-    if (conenction != null) {
+    if (connection != null) {
         if (sharedObject != null) {
             sharedObject.removeEventListener(SyncEvent.SYNC, sharedObject_syncHandler);
             sharedObject = null
         }
-        conenction.removeEventListener(NetStatusEvent.NET_STATUS, connection_netStatusHandler);
-        conenction = null;
+        connection.removeEventListener(NetStatusEvent.NET_STATUS, connection_netStatusHandler);
+        connection = null;
     }
-    conenction = new NetConnection();
-    conenction.objectEncoding = Number(idOjectEncodingRadioButtonGroup.selectedValue)
-	trace(conenction.objectEncoding)
-    conenction.client = new NetClient();
-    conenction.addEventListener(NetStatusEvent.NET_STATUS, connection_netStatusHandler);
-    conenction.connect(idRTMPTextInput.text);
+    connection = new NetConnection();
+    connection.objectEncoding = Number(idOjectEncodingRadioButtonGroup.selectedValue)
+	trace(connection.objectEncoding)
+    connection.client = new NetClient();
+    connection.addEventListener(NetStatusEvent.NET_STATUS, connection_netStatusHandler);
+    connection.connect(idRTMPTextInput.text);
 }
 
 private function connection_netStatusHandler(e:NetStatusEvent):void {
     switch (e.info["code"]) {
     case "NetConnection.Connect.Success":
-        sharedObject = SharedObject.getRemote(idSharedObjectNameTextInput.text, conenction.uri, false);
+        sharedObject = SharedObject.getRemote(idSharedObjectNameTextInput.text, connection.uri, false);
         sharedObject.addEventListener(SyncEvent.SYNC, sharedObject_syncHandler);
-        sharedObject.connect(conenction);
+        sharedObject.connect(connection);
     break;
     default:
     break;
