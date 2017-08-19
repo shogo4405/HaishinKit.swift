@@ -1174,9 +1174,9 @@
 			productReference = 2915EC5F1D85BDF100621092 /* ScreencastUI.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		2945CBBC1B4BE66000104112 /* iOS */ = {
+		2945CBBC1B4BE66000104112 /* HaishinKit iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "iOS" */;
+			buildConfigurationList = 2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "HaishinKit iOS" */;
 			buildPhases = (
 				2945CBB81B4BE66000104112 /* Sources */,
 				2945CBBA1B4BE66000104112 /* Headers */,
@@ -1188,7 +1188,7 @@
 			);
 			dependencies = (
 			);
-			name = iOS;
+			name = "HaishinKit iOS";
 			productName = lf;
 			productReference = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1212,9 +1212,9 @@
 			productReference = 29798E591CE60E5300F5CBD0 /* Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		29B8761A1CD701F900FC07DA /* macOS */ = {
+		29B8761A1CD701F900FC07DA /* HaishinKit macOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 29B876201CD701F900FC07DA /* Build configuration list for PBXNativeTarget "macOS" */;
+			buildConfigurationList = 29B876201CD701F900FC07DA /* Build configuration list for PBXNativeTarget "HaishinKit macOS" */;
 			buildPhases = (
 				29B876161CD701F900FC07DA /* Sources */,
 				29B876171CD701F900FC07DA /* Frameworks */,
@@ -1225,7 +1225,7 @@
 			);
 			dependencies = (
 			);
-			name = macOS;
+			name = "HaishinKit macOS";
 			productName = lfMacOS;
 			productReference = 29B8761B1CD701F900FC07DA /* HaishinKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1274,9 +1274,9 @@
 			productReference = 29C932941CD76FD300283FC5 /* Example macOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		29D3D4DB1ED0509900DD4AA6 /* tvOS */ = {
+		29D3D4DB1ED0509900DD4AA6 /* HaishinKit tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 29D3D4E31ED0509900DD4AA6 /* Build configuration list for PBXNativeTarget "tvOS" */;
+			buildConfigurationList = 29D3D4E31ED0509900DD4AA6 /* Build configuration list for PBXNativeTarget "HaishinKit tvOS" */;
 			buildPhases = (
 				29D3D4D71ED0509900DD4AA6 /* Sources */,
 				29D3D4D81ED0509900DD4AA6 /* Frameworks */,
@@ -1287,7 +1287,7 @@
 			);
 			dependencies = (
 			);
-			name = tvOS;
+			name = "HaishinKit tvOS";
 			productName = lf;
 			productReference = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -1377,9 +1377,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2945CBBC1B4BE66000104112 /* iOS */,
-				29B8761A1CD701F900FC07DA /* macOS */,
-				29D3D4DB1ED0509900DD4AA6 /* tvOS */,
+				2945CBBC1B4BE66000104112 /* HaishinKit iOS */,
+				29B8761A1CD701F900FC07DA /* HaishinKit macOS */,
+				29D3D4DB1ED0509900DD4AA6 /* HaishinKit tvOS */,
 				29C9327D1CD76FB800283FC5 /* Example iOS */,
 				29C932931CD76FD300283FC5 /* Example macOS */,
 				29D3D4EE1ED0531500DD4AA6 /* Example tvOS */,
@@ -1898,17 +1898,17 @@
 		};
 		29562B8B1E6BFFE000BB940A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 29B8761A1CD701F900FC07DA /* macOS */;
+			target = 29B8761A1CD701F900FC07DA /* HaishinKit macOS */;
 			targetProxy = 29562B8A1E6BFFE000BB940A /* PBXContainerItemProxy */;
 		};
 		29798E601CE60E5300F5CBD0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 29B8761A1CD701F900FC07DA /* macOS */;
+			target = 29B8761A1CD701F900FC07DA /* HaishinKit macOS */;
 			targetProxy = 29798E5F1CE60E5300F5CBD0 /* PBXContainerItemProxy */;
 		};
 		29C932A91CD78B5500283FC5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* iOS */;
+			target = 2945CBBC1B4BE66000104112 /* HaishinKit iOS */;
 			targetProxy = 29C932A81CD78B5500283FC5 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -2501,7 +2501,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "iOS" */ = {
+		2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "HaishinKit iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2945CBD41B4BE66000104112 /* Debug */,
@@ -2519,7 +2519,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		29B876201CD701F900FC07DA /* Build configuration list for PBXNativeTarget "macOS" */ = {
+		29B876201CD701F900FC07DA /* Build configuration list for PBXNativeTarget "HaishinKit macOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29B876211CD701F900FC07DA /* Debug */,
@@ -2546,7 +2546,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		29D3D4E31ED0509900DD4AA6 /* Build configuration list for PBXNativeTarget "tvOS" */ = {
+		29D3D4E31ED0509900DD4AA6 /* Build configuration list for PBXNativeTarget "HaishinKit tvOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				29D3D4E11ED0509900DD4AA6 /* Debug */,

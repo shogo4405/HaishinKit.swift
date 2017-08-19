@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "29B8761A1CD701F900FC07DA"
                BuildableName = "HaishinKit.framework"
-               BlueprintName = "macOS"
+               BlueprintName = "HaishinKit macOS"
                ReferencedContainer = "container:HaishinKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "29B8761A1CD701F900FC07DA"
             BuildableName = "HaishinKit.framework"
-            BlueprintName = "macOS"
+            BlueprintName = "HaishinKit macOS"
             ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "29B8761A1CD701F900FC07DA"
             BuildableName = "HaishinKit.framework"
-            BlueprintName = "macOS"
+            BlueprintName = "HaishinKit macOS"
             ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

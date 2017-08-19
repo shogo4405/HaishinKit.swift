@@ -301,12 +301,12 @@ open class RTMPConnection: EventDispatcher {
 
     func createStream(_ stream: RTMPStream) {
         let responder:Responder = Responder(result: { (data) -> Void in
-            let id:Any? = data[0]
-            if let id:Double = id as? Double {
-                stream.id = UInt32(id)
-                self.streams[stream.id] = stream
-                stream.readyState = .open
+            guard let id:Double = data[0] as? Double else {
+                return
             }
+            stream.id = UInt32(id)
+            self.streams[stream.id] = stream
+            stream.readyState = .open
         })
         call("createStream", responder: responder)
     }

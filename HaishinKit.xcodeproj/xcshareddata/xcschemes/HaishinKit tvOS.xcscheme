@@ -16,7 +16,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
                BuildableName = "HaishinKit.framework"
-               BlueprintName = "tvOS"
+               BlueprintName = "HaishinKit tvOS"
                ReferencedContainer = "container:HaishinKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -47,7 +47,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
             BuildableName = "HaishinKit.framework"
-            BlueprintName = "tvOS"
+            BlueprintName = "HaishinKit tvOS"
             ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -65,7 +65,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
             BuildableName = "HaishinKit.framework"
-            BlueprintName = "tvOS"
+            BlueprintName = "HaishinKit tvOS"
             ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
