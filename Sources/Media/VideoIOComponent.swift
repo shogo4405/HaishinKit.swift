@@ -2,8 +2,6 @@ import CoreImage
 import Foundation
 import AVFoundation
 
-public typealias CIContextFactory = () -> CIContext
-
 final class VideoIOComponent: IOComponent {
     let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
     var context:CIContext?
@@ -22,7 +20,6 @@ final class VideoIOComponent: IOComponent {
     }()
 
     var effects:[VisualEffect] = []
-    var contextFactory:CIContextFactory?
 
 #if os(iOS) || os(macOS)
     var fps:Float64 = AVMixer.defaultFPS {
