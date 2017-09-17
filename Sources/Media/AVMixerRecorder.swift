@@ -15,12 +15,12 @@ public protocol AVMixerRecorderDelegate: class {
 open class AVMixerRecorder: NSObject {
 
     open static let defaultOutputSettings:[String:[String:Any]] = [
-        AVMediaTypeAudio: [
+        AVMediaType.audio.rawValue: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
             AVNumberOfChannelsKey: 0,
         ],
-        AVMediaTypeVideo: [
+        AVMediaType.video.rawValue: [
             AVVideoCodecKey: AVVideoCodecH264,
             AVVideoHeightKey: 0,
             AVVideoWidthKey: 0,
@@ -84,10 +84,10 @@ open class AVMixerRecorder: NSObject {
                 return
             }
 
-            delegate.rotateFile(self, withPresentationTimeStamp: withPresentationTime, mediaType: AVMediaTypeVideo)
+            delegate.rotateFile(self, withPresentationTimeStamp: withPresentationTime, mediaType: AVMediaType.video.rawValue)
             guard
                 let writer:AVAssetWriter = self.writer,
-                let input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: AVMediaTypeVideo, sourceFormatHint: CMVideoFormatDescription.create(withPixelBuffer: pixelBuffer)),
+                let input:AVAssetWriterInput = delegate.getWriterInput(self, mediaType: AVMediaType.video.rawValue, sourceFormatHint: CMVideoFormatDescription.create(withPixelBuffer: pixelBuffer)),
                 let adaptor:AVAssetWriterInputPixelBufferAdaptor = delegate.getPixelBufferAdaptor(self, withWriterInput: input),
                 self.isReadyForStartWriting else {
                 return
@@ -153,7 +153,7 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     open var dateFormat:String = "-yyyyMMdd-HHmmss"
 
     fileprivate var rotateTime:CMTime = kCMTimeZero
-    fileprivate var clockReference:String = AVMediaTypeVideo
+    fileprivate var clockReference:String = AVMediaType.video.rawValue
 
     #if os(iOS)
     open lazy var moviesDirectory:URL = {
@@ -203,7 +203,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         var outputSettings:[String:Any] = [:]
         if let defaultOutputSettings:[String:Any] = recorder.outputSettings[mediaType] {
             switch mediaType {
-            case AVMediaTypeAudio:
+            case AVMediaType.audio:
                 guard
                     let format:CMAudioFormatDescription = sourceFormatHint,
                     let inSourceFormat:AudioStreamBasicDescription = format.streamBasicDescription?.pointee else {
@@ -219,7 +219,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
                         outputSettings[key] = value
                     }
                 }
-            case AVMediaTypeVideo:
+            case AVMediaType.video:
                 guard let format:CMVideoFormatDescription = sourceFormatHint else {
                     break
                 }
@@ -238,7 +238,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
         }
 
-        let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
+        let input:AVAssetWriterInput = AVAssetWriterInput(mediaType: AVMediaType(rawValue: mediaType), outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
         input.expectsMediaDataInRealTime = true
         recorder.writerInputs[mediaType] = input
         recorder.writer?.add(input)
@@ -270,7 +270,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
             let url:URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + ".mp4")
             logger.info("\(url)")
-            return try AVAssetWriter(outputURL: url, fileType: AVFileTypeMPEG4)
+            return try AVAssetWriter(outputURL: url, fileType: AVFileType.mp4)
         } catch {
             logger.warn("create an AVAssetWriter")
         }

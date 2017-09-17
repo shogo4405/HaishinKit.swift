@@ -222,7 +222,7 @@ open class RTMPStream: NetStream {
     open var qosDelegate:RTMPStreamQoSDelegate? = nil
     open internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
     open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    open fileprivate(set) dynamic var currentFPS:UInt16 = 0
+    @objc open fileprivate(set) dynamic var currentFPS:UInt16 = 0
     open var soundTransform:SoundTransform {
         get { return mixer.audioIO.playback.soundTransform }
         set { mixer.audioIO.playback.soundTransform = newValue }

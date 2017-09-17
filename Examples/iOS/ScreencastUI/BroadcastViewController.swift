@@ -15,7 +15,7 @@ class BroadcastViewController: UIViewController {
         startButton.addTarget(self, action: #selector(BroadcastViewController.userDidFinishSetup), for: .touchDown)
     }
 
-    func userDidFinishSetup() {
+    @objc func userDidFinishSetup() {
 
         let broadcastURL:URL = URL(string: endpointURLField.text!)!
 

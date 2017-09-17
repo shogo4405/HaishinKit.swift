@@ -182,11 +182,11 @@ open class RTMPConnection: EventDispatcher {
         return streams.count
     }
     /// The statistics of outgoing queue bytes per second.
-    dynamic open fileprivate(set) var previousQueueBytesOut:[Int64] = []
+    @objc dynamic open fileprivate(set) var previousQueueBytesOut:[Int64] = []
     /// The statistics of incoming bytes per second.
-    dynamic open fileprivate(set) var currentBytesInPerSecond:Int32 = 0
+    @objc dynamic open fileprivate(set) var currentBytesInPerSecond:Int32 = 0
     /// The statistics of outgoing bytes per second.
-    dynamic open fileprivate(set) var currentBytesOutPerSecond:Int32 = 0
+    @objc dynamic open fileprivate(set) var currentBytesOutPerSecond:Int32 = 0
 
     var socket:RTMPSocketCompatible!
     var streams:[UInt32: RTMPStream] = [:]
@@ -311,7 +311,7 @@ open class RTMPConnection: EventDispatcher {
         call("createStream", responder: responder)
     }
 
-    func on(status:Notification) {
+    @objc func on(status:Notification) {
         let e:Event = Event.from(status)
 
         guard

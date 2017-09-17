@@ -5,7 +5,7 @@ import AVFoundation
 protocol NetStreamDrawable: class {
 #if os(iOS) || os(macOS)
     var orientation:AVCaptureVideoOrientation { get set }
-    var position:AVCaptureDevicePosition { get set }
+    var position:AVCaptureDevice.Position { get set }
 #endif
 
     func draw(image:CIImage)

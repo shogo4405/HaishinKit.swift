@@ -15,7 +15,7 @@ final public class AVMixer: NSObject {
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
 #if os(iOS) || os(macOS)
-    static let defaultSessionPreset:String = AVCaptureSessionPresetMedium
+    static let defaultSessionPreset:String = AVCaptureSession.Preset.medium.rawValue
 
     var fps:Float64 {
         get { return videoIO.fps }
@@ -38,7 +38,7 @@ final public class AVMixer: NSObject {
                 return
             }
             session.beginConfiguration()
-            session.sessionPreset = sessionPreset
+            session.sessionPreset = AVCaptureSession.Preset(rawValue: sessionPreset)
             session.commitConfiguration()
         }
     }
@@ -48,7 +48,7 @@ final public class AVMixer: NSObject {
         get {
             if (_session == nil) {
                 _session = AVCaptureSession()
-                _session!.sessionPreset = AVMixer.defaultSessionPreset
+                _session!.sessionPreset = AVCaptureSession.Preset(rawValue: AVMixer.defaultSessionPreset)
             }
             return _session!
         }

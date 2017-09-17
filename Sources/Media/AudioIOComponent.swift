@@ -86,8 +86,8 @@ final class AudioIOComponent: IOComponent {
 
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
-    func captureOutput(_ captureOutput:AVCaptureOutput!, didOutputSampleBuffer sampleBuffer:CMSampleBuffer!, from connection:AVCaptureConnection!) {
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaTypeAudio)
+    func captureOutput(captureOutput:AVCaptureOutput, didOutput sampleBuffer:CMSampleBuffer, from connection:AVCaptureConnection) {
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaType.audio.rawValue)
         encoder.encodeSampleBuffer(sampleBuffer)
     }
 }

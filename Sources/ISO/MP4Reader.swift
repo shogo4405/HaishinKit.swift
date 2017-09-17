@@ -669,10 +669,10 @@ final class MP4TrakReader {
             handle = try FileHandle(forReadingFrom: reader.url)
 
             if let avcC:MP4Box = trak.getBoxes(byName: "avcC").first {
-                delegate?.didSet(config: reader.readData(ofBox: avcC), withID: id, type: AVMediaTypeVideo)
+                delegate?.didSet(config: reader.readData(ofBox: avcC), withID: id, type: AVMediaType.video.rawValue)
             }
             if let esds:MP4ElementaryStreamDescriptorBox = trak.getBoxes(byName: "esds").first as? MP4ElementaryStreamDescriptorBox {
-                delegate?.didSet(config: Data(esds.audioDecorderSpecificConfig), withID: id, type: AVMediaTypeAudio)
+                delegate?.didSet(config: Data(esds.audioDecorderSpecificConfig), withID: id, type: AVMediaType.audio.rawValue)
             }
 
             timerDriver.interval = MachUtil.nanosToAbs(UInt64(currentTimeToSample * 1000 * 1000))

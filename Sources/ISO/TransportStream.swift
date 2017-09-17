@@ -132,11 +132,11 @@ struct TSTimestamp {
 
     static func encode(_ b:UInt64, _ m:UInt8) -> Data {
         var data:Data = Data(count: 5)
-        data[0] = UInt8(truncatingBitPattern: b >> 29) | 0x01 | m
-        data[1] = UInt8(truncatingBitPattern: b >> 22)
-        data[2] = UInt8(truncatingBitPattern: b >> 14) | 0x01
-        data[3] = UInt8(truncatingBitPattern: b >> 7)
-        data[4] = UInt8(truncatingBitPattern: b << 1)  | 0x01
+        data[0] = UInt8(truncatingIfNeeded: b >> 29) | 0x01 | m
+        data[1] = UInt8(truncatingIfNeeded: b >> 22)
+        data[2] = UInt8(truncatingIfNeeded: b >> 14) | 0x01
+        data[3] = UInt8(truncatingIfNeeded: b >> 7)
+        data[4] = UInt8(truncatingIfNeeded: b << 1)  | 0x01
         return data
     }
 }
@@ -161,10 +161,10 @@ struct TSProgramClockReference {
 
     static func encode(_ b:UInt64, _ e:UInt16) -> Data {
         var data:Data = Data(count: 6)
-        data[0] = UInt8(truncatingBitPattern: b >> 25)
-        data[1] = UInt8(truncatingBitPattern: b >> 17)
-        data[2] = UInt8(truncatingBitPattern: b >> 9)
-        data[3] = UInt8(truncatingBitPattern: b >> 1)
+        data[0] = UInt8(truncatingIfNeeded: b >> 25)
+        data[1] = UInt8(truncatingIfNeeded: b >> 17)
+        data[2] = UInt8(truncatingIfNeeded: b >> 9)
+        data[3] = UInt8(truncatingIfNeeded: b >> 1)
         data[4] = 0xff
         if (b & 1 == 1) {
             data[4] |= 0x80
@@ -176,7 +176,7 @@ struct TSProgramClockReference {
         } else {
             data[4] &= 0xfe
         }
-        data[5] = UInt8(truncatingBitPattern: e)
+        data[5] = UInt8(truncatingIfNeeded: e)
         return data
     }
 }
@@ -218,14 +218,14 @@ struct TSAdaptationField {
     }
 
     mutating func compute() {
-        length  = UInt8(truncatingBitPattern: TSAdaptationField.fixedSectionSize)
-        length += UInt8(truncatingBitPattern: PCR.count)
-        length += UInt8(truncatingBitPattern: OPCR.count)
-        length += UInt8(truncatingBitPattern: transportPrivateData.count)
+        length  = UInt8(truncatingIfNeeded: TSAdaptationField.fixedSectionSize)
+        length += UInt8(truncatingIfNeeded: PCR.count)
+        length += UInt8(truncatingIfNeeded: OPCR.count)
+        length += UInt8(truncatingIfNeeded: transportPrivateData.count)
         if let adaptationExtension:TSAdaptationExtensionField = adaptationExtension {
             length += adaptationExtension.length + 1
         }
-        length += UInt8(truncatingBitPattern: stuffingBytes.count)
+        length += UInt8(truncatingIfNeeded: stuffingBytes.count)
         length -= 1
     }
 

@@ -6,12 +6,12 @@ public final class DeviceUtil {
     private init() {
     }
 
-    static public func device(withPosition:AVCaptureDevicePosition) -> AVCaptureDevice? {
+    static public func device(withPosition:AVCaptureDevice.Position) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
             guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
                 continue
             }
-            if (device.hasMediaType(AVMediaTypeVideo) && device.position == withPosition) {
+            if (device.hasMediaType(AVMediaType.video) && device.position == withPosition) {
                 return device
             }
         }
@@ -23,7 +23,7 @@ public final class DeviceUtil {
             guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
                 continue
             }
-            if (device.hasMediaType(mediaType) && device.localizedName == withLocalizedName) {
+            if (device.hasMediaType(AVMediaType(rawValue: mediaType)) && device.localizedName == withLocalizedName) {
                 return device
             }
         }
@@ -35,7 +35,7 @@ public final class DeviceUtil {
         var frameRates:[Float64] = []
 
         for object:Any in device.activeFormat.videoSupportedFrameRateRanges {
-            guard let range:AVFrameRateRange = object as? AVFrameRateRange else {
+            guard let range:AVCaptureDevice.Format.FrameRateRange = object as? AVCaptureDevice.Format.FrameRateRange else {
                 continue
             }
             if (range.minFrameRate == range.maxFrameRate) {

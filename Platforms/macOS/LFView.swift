@@ -4,13 +4,13 @@ import AVFoundation
 open class LFView: NSView {
     public static var defaultBackgroundColor:NSColor = NSColor.black
 
-    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
+    public var videoGravity:String = AVLayerVideoGravity.resizeAspect.rawValue {
         didSet {
             layer?.setValue(videoGravity, forKey: "videoGravity")
         }
     }
 
-    var position:AVCaptureDevicePosition = .front {
+    var position:AVCaptureDevice.Position = .front {
         didSet {
             DispatchQueue.main.async {
                 self.layer?.setNeedsLayout()
