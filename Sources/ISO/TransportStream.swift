@@ -23,7 +23,7 @@ struct TSPacket {
 
     fileprivate var remain:Int {
         var adaptationFieldSize:Int = 0
-        if var adaptationField:TSAdaptationField = adaptationField , adaptationFieldFlag {
+        if let adaptationField:TSAdaptationField = adaptationField , adaptationFieldFlag {
             adaptationField.compute()
             adaptationFieldSize = Int(adaptationField.length) + 1
         }
@@ -189,7 +189,7 @@ extension TSPacket: CustomStringConvertible {
 }
 
 // MARK: -
-struct TSAdaptationField {
+class TSAdaptationField {
     static let PCRSize:Int = 6
     static let fixedSectionSize:Int = 2
 
@@ -217,7 +217,7 @@ struct TSAdaptationField {
         self.data = data
     }
 
-    mutating func compute() {
+    func compute() {
         length  = UInt8(truncatingIfNeeded: TSAdaptationField.fixedSectionSize)
         length += UInt8(truncatingIfNeeded: PCR.count)
         length += UInt8(truncatingIfNeeded: OPCR.count)
@@ -229,7 +229,7 @@ struct TSAdaptationField {
         length -= 1
     }
 
-    mutating func stuffing(_ size:Int) {
+    func stuffing(_ size:Int) {
         stuffingBytes = Data(repeating: 0xff, count: size)
         length += UInt8(size)
     }

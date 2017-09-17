@@ -59,12 +59,10 @@ final class VideoIOComponent: IOComponent {
                 return
             }
             for connection in output.connections {
-                if let connection:AVCaptureConnection = connection as? AVCaptureConnection {
-                    if (connection.isVideoOrientationSupported) {
-                        connection.videoOrientation = orientation
-                        if (torch) {
-                            setTorchMode(.on)
-                        }
+                if (connection.isVideoOrientationSupported) {
+                    connection.videoOrientation = orientation
+                    if (torch) {
+                        setTorchMode(.on)
                     }
                 }
             }
@@ -252,9 +250,6 @@ final class VideoIOComponent: IOComponent {
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
         for connection in output.connections {
-            guard let connection:AVCaptureConnection = connection as? AVCaptureConnection else {
-                continue
-            }
             if (connection.isVideoOrientationSupported) {
                 connection.videoOrientation = orientation
             }
@@ -289,6 +284,29 @@ final class VideoIOComponent: IOComponent {
         drawable?.attachStream(nil)
     }
 #endif
+
+    func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
+        guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+        CVPixelBufferLockBaseAddress(buffer, .readOnly)
+        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+        let image:CIImage = effect(buffer)
+        if !effects.isEmpty {
+            #if os(macOS)
+                // green edge hack for OSX
+                buffer = CVPixelBuffer.create(image)!
+            #endif
+            context?.render(image, to: buffer)
+        }
+        encoder.encodeImageBuffer(
+            buffer,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            duration: sampleBuffer.duration
+        )
+        drawable?.draw(image: image)
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
+    }
 
     func effect(_ buffer:CVImageBuffer) -> CIImage {
         var image:CIImage = CIImage(cvPixelBuffer: buffer)
@@ -325,27 +343,8 @@ final class VideoIOComponent: IOComponent {
 
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
-    func captureOutput(captureOutput:AVCaptureOutput, didOutput sampleBuffer:CMSampleBuffer, from connection:AVCaptureConnection) {
-        guard var buffer:CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-        CVPixelBufferLockBaseAddress(buffer, .readOnly)
-        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
-        let image:CIImage = effect(buffer)
-        if !effects.isEmpty {
-            #if os(macOS)
-            // green edge hack for OSX
-            buffer = CVPixelBuffer.create(image)!
-            #endif
-            context?.render(image, to: buffer)
-        }
-        encoder.encodeImageBuffer(
-            buffer,
-            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
-            duration: sampleBuffer.duration
-        )
-        drawable?.draw(image: image)
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaType.video.rawValue)
+    func captureOutput(_ captureOutput:AVCaptureOutput, didOutput sampleBuffer:CMSampleBuffer, from connection:AVCaptureConnection) {
+        appendSampleBuffer(sampleBuffer)
     }
 }
 

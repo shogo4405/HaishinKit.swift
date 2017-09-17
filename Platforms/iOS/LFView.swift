@@ -13,7 +13,7 @@ open class LFView: UIView {
         return super.layer as! AVCaptureVideoPreviewLayer
     }
 
-    public var videoGravity:String = AVLayerVideoGravityResizeAspect {
+    public var videoGravity:AVLayerVideoGravity = .resizeAspect {
         didSet {
             layer.videoGravity = videoGravity
         }
@@ -29,7 +29,7 @@ open class LFView: UIView {
             }
         }
     }
-    var position:AVCaptureDevicePosition = .front
+    var position:AVCaptureDevice.Position = .front
 
     private weak var currentStream:NetStream? {
         didSet {

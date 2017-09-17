@@ -97,17 +97,17 @@ extension RTMPMuxer: MP4SamplerDelegate {
         delegate?.metadata(metadata)
     }
 
-    func didSet(config:Data, withID:Int, type:String) {
+    func didSet(config:Data, withID:Int, type:AVMediaType) {
         guard configs[withID] != config else {
             return
         }
         configs[withID] = config
         switch type {
-        case AVMediaType.video:
+        case .video:
             var buffer:Data = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
             buffer.append(config)
             delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
-        case AVMediaType.audio:
+        case .audio:
             if (withID != 1) {
                 break
             }

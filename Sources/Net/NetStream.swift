@@ -110,9 +110,9 @@ open class NetStream: NSObject {
         }
     }
 
-    open var recorderSettings:[String:[String:Any]] {
+    open var recorderSettings:[AVMediaType:[String:Any]] {
         get {
-            var recorderSettings:[String:[String:Any]]!
+            var recorderSettings:[AVMediaType:[String:Any]]!
             lockQueue.sync {
                 recorderSettings = self.mixer.recorder.outputSettings
             }
@@ -155,9 +155,9 @@ open class NetStream: NSObject {
     open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
-            mixer.audioIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+            mixer.audioIO.appendSampleBuffer(sampleBuffer)
         case .video:
-            mixer.videoIO.captureOutput(nil, didOutputSampleBuffer: sampleBuffer, from: nil)
+            mixer.videoIO.appendSampleBuffer(sampleBuffer)
         }
     }
 

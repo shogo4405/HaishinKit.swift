@@ -47,6 +47,11 @@ final class AudioIOComponent: IOComponent {
         encoder.lockQueue = lockQueue
     }
 
+    func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer) {
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
+        encoder.encodeSampleBuffer(sampleBuffer)
+    }
+
 #if os(iOS) || os(macOS)
     func attachAudio(_ audio:AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession:Bool) throws {
         guard let mixer:AVMixer = mixer else {
@@ -86,9 +91,8 @@ final class AudioIOComponent: IOComponent {
 
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
-    func captureOutput(captureOutput:AVCaptureOutput, didOutput sampleBuffer:CMSampleBuffer, from connection:AVCaptureConnection) {
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: AVMediaType.audio.rawValue)
-        encoder.encodeSampleBuffer(sampleBuffer)
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        appendSampleBuffer(sampleBuffer)
     }
 }
 

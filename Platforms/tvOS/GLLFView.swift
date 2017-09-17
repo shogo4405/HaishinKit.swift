@@ -7,8 +7,8 @@ open class GLLFView: GLKView {
         kCIContextWorkingColorSpace: NSNull(),
         kCIContextUseSoftwareRenderer: NSNumber(value: false),
     ]
-    open static var defaultBackgroundColor:UIColor = UIColor.black
-    open var videoGravity:String = AVLayerVideoGravity.resizeAspect.rawValue
+    open static var defaultBackgroundColor:UIColor = .black
+    open var videoGravity:AVLayerVideoGravity = .resizeAspect
     fileprivate var displayImage:CIImage?
     fileprivate weak var currentStream:NetStream? {
         didSet {

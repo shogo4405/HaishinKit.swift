@@ -39,7 +39,7 @@ final class LiveViewController: UIViewController {
     @IBOutlet var fpsControl:UISegmentedControl?
     @IBOutlet var effectSegmentControl:UISegmentedControl?
 
-    var currentPosition:AVCaptureDevicePosition = AVCaptureDevicePosition.back
+    var currentPosition:AVCaptureDevice.Position = .back
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,7 +47,7 @@ final class LiveViewController: UIViewController {
         rtmpStream = RTMPStream(connection: rtmpConnection)
         rtmpStream.syncOrientation = true
         rtmpStream.captureSettings = [
-            "sessionPreset": AVCaptureSessionPreset1280x720,
+            "sessionPreset": AVCaptureSession.Preset.hd1280x720.rawValue,
             "continuousAutofocus": true,
             "continuousExposure": true,
         ]
@@ -67,7 +67,7 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)) { error in
+        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             logger.warn(error.description)
         }
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
@@ -87,7 +87,7 @@ final class LiveViewController: UIViewController {
 
     @IBAction func rotateCamera(_ sender:UIButton) {
         logger.info("rotateCamera")
-        let position:AVCaptureDevicePosition = currentPosition == .back ? .front : .back
+        let position:AVCaptureDevice.Position = currentPosition == .back ? .front : .back
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
             logger.warn(error.description)
         }
@@ -124,18 +124,18 @@ final class LiveViewController: UIViewController {
         if (publish.isSelected) {
             UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector:#selector(self.rtmpStatusHandler(_:)), observer: self)
             publish.setTitle("●", for: UIControlState())
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(LiveViewController.rtmpStatusHandler(_:)), observer: self)
+            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector:#selector(self.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             publish.setTitle("■", for: UIControlState())
         }
         publish.isSelected = !publish.isSelected
     }
 
-    func rtmpStatusHandler(_ notification:Notification) {
+    @objc func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject , let code:String = data["code"] as? String {
             switch code {

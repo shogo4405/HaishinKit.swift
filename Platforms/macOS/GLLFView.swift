@@ -20,7 +20,7 @@ open class GLLFView: NSOpenGLView {
         return pixelFormat
     }
 
-    public var videoGravity:String! = AVLayerVideoGravity.resizeAspect.rawValue
+    public var videoGravity:AVLayerVideoGravity = .resizeAspect
     var orientation:AVCaptureVideoOrientation = .portrait
     var position:AVCaptureDevice.Position = .front
     fileprivate var displayImage:CIImage!

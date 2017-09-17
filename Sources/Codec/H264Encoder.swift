@@ -282,10 +282,10 @@ final class H264Encoder: NSObject {
     }
 
 #if os(iOS)
-    func applicationWillEnterForeground(_ notification:Notification) {
+    @objc func applicationWillEnterForeground(_ notification:Notification) {
         invalidateSession = true
     }
-    func didAudioSessionInterruption(_ notification:Notification) {
+    @objc func didAudioSessionInterruption(_ notification:Notification) {
         guard
             let userInfo:[AnyHashable: Any] = notification.userInfo,
             let value:NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
@@ -310,14 +310,14 @@ extension H264Encoder: Runnable {
 #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(H264Encoder.didAudioSessionInterruption(_:)),
-                name: NSNotification.Name.AVAudioSessionInterruption,
+                selector: #selector(self.didAudioSessionInterruption(_:)),
+                name: .AVAudioSessionInterruption,
                 object: nil
             )
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(H264Encoder.applicationWillEnterForeground(_:)),
-                name: NSNotification.Name.UIApplicationWillEnterForeground,
+                selector: #selector(self.applicationWillEnterForeground(_:)),
+                name: .UIApplicationWillEnterForeground,
                 object: nil
             )
 #endif
@@ -330,8 +330,8 @@ extension H264Encoder: Runnable {
             self.lastImageBuffer = nil;
             self.formatDescription = nil
 #if os(iOS)
-            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.AVAudioSessionInterruption, object: nil)
-            NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIApplicationWillEnterForeground, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .AVAudioSessionInterruption, object: nil)
+            NotificationCenter.default.removeObserver(self, name: .UIApplicationWillEnterForeground, object: nil)
 #endif
             self.running = false
         }

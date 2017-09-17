@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "HaishinKit"
-  s.version      = "0.7.5"
+  s.version      = "0.8.0"
   s.summary      = "Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS."
 
   s.description  = <<-DESC
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.tvos.source_files = "Platforms/tvOS/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
-  s.dependency 'Logboard', '~> 1.0.1'
+  s.dependency 'Logboard', '~> 1.1.1'
 
 end
 
