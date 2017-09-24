@@ -1,6 +1,6 @@
 # HaishinKit (formerly lf)
 [![Platform](https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
-![Language](https://img.shields.io/badge/language-Swift%203.1-orange.svg)
+![Language](https://img.shields.io/badge/language-Swift%204.0-orange.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
 [![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
@@ -41,10 +41,8 @@
 ## Requirements
 |-|iOS|OSX|tvOS|XCode|Swift|CocoaPods|Carthage|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
+|0.8.0|8.0+|10.11+|10.2+|9.0+|4.0|1.2.0|0.20.0+|
 |0.7.0|8.0+|10.11+|10.2+|8.3+|3.1|1.2.0|0.20.0+|
-|0.6.0|8.0+|10.11+|-|8.3+|3.1|1.2.0|0.20.0+|
-|0.5.0|8.0+|10.11+|-|8.0+|3.0|1.1.0|0.17.2(0.5.5+)|
-|0.4.0|8.0+|10.11+|-|7.3+|2.3|1.0.0|0.17.2(0.4.4+)|
 
 ## Cocoa Keys
 iOS10.0+
@@ -58,7 +56,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 0.7.4'
+    pod 'HaishinKit', '~> 0.8.0'
 end
 
 target 'Your Target'  do
@@ -68,7 +66,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 0.7.4
+github "shogo4405/HaishinKit.swift" ~> 0.8.0
 ```
 
 ## License
