@@ -9,9 +9,9 @@ open class GLLFView: GLKView {
     ]
     open static var defaultBackgroundColor:UIColor = UIColor.black
 
-    open var videoGravity:String = AVLayerVideoGravityResizeAspect
+    open var videoGravity:AVLayerVideoGravity = .resizeAspect
 
-    var position:AVCaptureDevicePosition = .back
+    var position:AVCaptureDevice.Position = .back
     var orientation:AVCaptureVideoOrientation = .portrait
 
     fileprivate var displayImage:CIImage?
@@ -25,13 +25,13 @@ open class GLLFView: GLKView {
     }
 
     public override init(frame: CGRect) {
-        super.init(frame: frame, context: EAGLContext(api: .openGLES2))
+        super.init(frame: frame, context: EAGLContext(api: .openGLES2)!)
         awakeFromNib()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.context = EAGLContext(api: .openGLES2)
+        self.context = EAGLContext(api: .openGLES2)!
     }
 
     open override func awakeFromNib() {
@@ -64,7 +64,7 @@ extension GLLFView: GLKViewDelegate {
         var fromRect:CGRect = displayImage.extent
         VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
         if (position == .front) {
-            currentStream?.mixer.videoIO.context?.draw(displayImage.applyingOrientation(2), in: inRect, from: fromRect)
+            currentStream?.mixer.videoIO.context?.draw(displayImage.oriented(forExifOrientation: 2), in: inRect, from: fromRect)
         } else {
             currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
         }

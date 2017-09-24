@@ -6,12 +6,9 @@ public final class DeviceUtil {
     private init() {
     }
 
-    static public func device(withPosition:AVCaptureDevicePosition) -> AVCaptureDevice? {
+    static public func device(withPosition:AVCaptureDevice.Position) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
-            guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
-                continue
-            }
-            if (device.hasMediaType(AVMediaTypeVideo) && device.position == withPosition) {
+            if (device.hasMediaType(AVMediaType.video) && device.position == withPosition) {
                 return device
             }
         }
@@ -20,10 +17,7 @@ public final class DeviceUtil {
 
     static public func device(withLocalizedName:String, mediaType:String) -> AVCaptureDevice? {
         for device in AVCaptureDevice.devices() {
-            guard let device:AVCaptureDevice = device as? AVCaptureDevice else {
-                continue
-            }
-            if (device.hasMediaType(mediaType) && device.localizedName == withLocalizedName) {
+            if (device.hasMediaType(AVMediaType(rawValue: mediaType)) && device.localizedName == withLocalizedName) {
                 return device
             }
         }

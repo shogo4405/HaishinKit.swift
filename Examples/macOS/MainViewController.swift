@@ -26,14 +26,14 @@ final class MainViewController: NSViewController {
 
         urlField.stringValue = Preference.defaultInstance.uri ?? ""
 
-        let audios:[Any]! = AVCaptureDevice.devices(withMediaType: AVMediaTypeAudio)
+        let audios:[Any]! = AVCaptureDevice.devices(for: AVMediaType.audio)
         for audio in audios {
             if let audio:AVCaptureDevice = audio as? AVCaptureDevice {
                 audioPopUpButton?.addItem(withTitle: audio.localizedName)
             }
         }
 
-        let cameras:[Any]! = AVCaptureDevice.devices(withMediaType: AVMediaTypeVideo)
+        let cameras:[Any]! = AVCaptureDevice.devices(for: AVMediaType.video)
         for camera in cameras {
             if let camera:AVCaptureDevice = camera as? AVCaptureDevice {
                 cameraPopUpButton?.addItem(withTitle: camera.localizedName)
@@ -43,8 +43,8 @@ final class MainViewController: NSViewController {
 
     override func viewWillAppear() {
         super.viewWillAppear()
-        rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-        rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+        rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.audio.rawValue))
+        rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.video.rawValue))
         lfView?.attachStream(rtmpStream)
     }
 
@@ -101,7 +101,7 @@ final class MainViewController: NSViewController {
 
     @IBAction func selectAudio(_ sender:AnyObject) {
         let device:AVCaptureDevice? = DeviceUtil.device(withLocalizedName:
-            audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio
+            audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.audio.rawValue
         )
         switch segmentedControl.selectedSegment {
         case 0:
@@ -117,7 +117,7 @@ final class MainViewController: NSViewController {
     
     @IBAction func selectCamera(_ sender:AnyObject) {
         let device:AVCaptureDevice? = DeviceUtil.device(withLocalizedName:
-            cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo
+            cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.video.rawValue
         )
         switch segmentedControl.selectedSegment {
         case 0:
@@ -136,15 +136,15 @@ final class MainViewController: NSViewController {
         case 0:
             httpStream.attachAudio(nil)
             httpStream.attachCamera(nil)
-            rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.audio.rawValue))
+            rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.video.rawValue))
             lfView.attachStream(rtmpStream)
             urlField.stringValue = Preference.defaultInstance.uri ?? ""
         case 1:
             rtmpStream.attachAudio(nil)
             rtmpStream.attachCamera(nil)
-            httpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeAudio))
-            httpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaTypeVideo))
+            httpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.audio.rawValue))
+            httpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.video.rawValue))
             lfView.attachStream(httpStream)
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
@@ -152,7 +152,7 @@ final class MainViewController: NSViewController {
         }
     }
 
-    func rtmpStatusHandler(_ notification:Notification) {
+    @objc func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
         guard
             let data:ASObject = e.data as? ASObject,

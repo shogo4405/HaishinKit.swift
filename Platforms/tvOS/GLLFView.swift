@@ -7,8 +7,8 @@ open class GLLFView: GLKView {
         kCIContextWorkingColorSpace: NSNull(),
         kCIContextUseSoftwareRenderer: NSNumber(value: false),
     ]
-    open static var defaultBackgroundColor:UIColor = UIColor.black
-    open var videoGravity:String = AVLayerVideoGravityResizeAspect
+    open static var defaultBackgroundColor:UIColor = .black
+    open var videoGravity:AVLayerVideoGravity = .resizeAspect
     fileprivate var displayImage:CIImage?
     fileprivate weak var currentStream:NetStream? {
         didSet {
@@ -20,13 +20,13 @@ open class GLLFView: GLKView {
     }
 
     public override init(frame: CGRect) {
-        super.init(frame: frame, context: EAGLContext(api: .openGLES2))
+        super.init(frame: frame, context: EAGLContext(api: .openGLES2)!)
         awakeFromNib()
     }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.context = EAGLContext(api: .openGLES2)
+        self.context = EAGLContext(api: .openGLES2)!
     }
 
     open override func awakeFromNib() {

@@ -216,7 +216,7 @@ open class RTMPSharedObject: EventDispatcher {
         )
     }
 
-    func rtmpStatusHandler(_ notification:Notification) {
+    @objc func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
         if let data:ASObject = e.data as? ASObject, let code:String = data["code"] as? String {
             switch code {

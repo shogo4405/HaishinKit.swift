@@ -80,7 +80,7 @@ open class ScreenCaptureSession: NSObject {
         super.init()
     }
 
-    public func onScreen(_ displayLink:CADisplayLink) {
+    @objc public func onScreen(_ displayLink:CADisplayLink) {
         guard semaphore.wait(timeout: DispatchTime.now()) == .success else {
             return
         }
