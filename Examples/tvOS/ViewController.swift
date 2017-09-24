@@ -19,7 +19,7 @@ final class ViewController: UIViewController {
         lfView?.attachStream(rtmpStream)
     }
 
-    func rtmpStatusHandler(_ notification:Notification) {
+    @objc func rtmpStatusHandler(_ notification:Notification) {
         let e:Event = Event.from(notification)
 
         guard
