@@ -41,8 +41,8 @@ final class H264Encoder: NSObject {
     #endif
     static let defaultDataRateLimits:[Int] = [0, 0]
 
-    var muted:Bool = false
-    var scalingMode:String = H264Encoder.defaultScalingMode {
+    @objc var muted:Bool = false
+    @objc var scalingMode:String = H264Encoder.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
                 return
@@ -51,7 +51,7 @@ final class H264Encoder: NSObject {
         }
     }
 
-    var width:Int32 = H264Encoder.defaultWidth {
+    @objc var width:Int32 = H264Encoder.defaultWidth {
         didSet {
             guard width != oldValue else {
                 return
@@ -59,7 +59,7 @@ final class H264Encoder: NSObject {
             invalidateSession = true
         }
     }
-    var height:Int32 = H264Encoder.defaultHeight {
+    @objc var height:Int32 = H264Encoder.defaultHeight {
         didSet {
             guard height != oldValue else {
                 return
@@ -67,7 +67,7 @@ final class H264Encoder: NSObject {
             invalidateSession = true
         }
     }
-    var enabledHardwareEncoder:Bool = true {
+    @objc var enabledHardwareEncoder:Bool = true {
         didSet {
             guard enabledHardwareEncoder != oldValue else {
                 return
@@ -75,7 +75,7 @@ final class H264Encoder: NSObject {
             invalidateSession = true
         }
     }
-    var bitrate:UInt32 = H264Encoder.defaultBitrate {
+    @objc var bitrate:UInt32 = H264Encoder.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
                 return
@@ -111,7 +111,7 @@ final class H264Encoder: NSObject {
             }
         }
     }
-    var dataRateLimits:[Int] = H264Encoder.defaultDataRateLimits {
+    @objc var dataRateLimits:[Int] = H264Encoder.defaultDataRateLimits {
         didSet {
             guard dataRateLimits != oldValue else {
                 return
@@ -132,7 +132,7 @@ final class H264Encoder: NSObject {
             }
         }
     }
-    var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
+    @objc var profileLevel:String = kVTProfileLevel_H264_Baseline_3_1 as String {
         didSet {
             guard profileLevel != oldValue else {
                 return
@@ -140,7 +140,7 @@ final class H264Encoder: NSObject {
             invalidateSession = true
         }
     }
-    var maxKeyFrameIntervalDuration:Double = 2.0 {
+    @objc var maxKeyFrameIntervalDuration:Double = 2.0 {
         didSet {
             guard maxKeyFrameIntervalDuration != oldValue else {
                 return

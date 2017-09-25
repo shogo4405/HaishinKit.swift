@@ -41,9 +41,9 @@ final class AACEncoder: NSObject {
     static let defaultInClassDescriptions:[AudioClassDescription] = []
     #endif
 
-    var muted:Bool = false
+    @objc var muted:Bool = false
 
-    var bitrate:UInt32 = AACEncoder.defaultBitrate {
+    @objc var bitrate:UInt32 = AACEncoder.defaultBitrate {
         didSet {
             lockQueue.async {
                 guard let converter:AudioConverterRef = self._converter else {
@@ -59,9 +59,9 @@ final class AACEncoder: NSObject {
         }
     }
 
-    var profile:UInt32 = AACEncoder.defaultProfile
+    @objc var profile:UInt32 = AACEncoder.defaultProfile
     var channels:UInt32 = AACEncoder.defaultChannels
-    var sampleRate:Double = AACEncoder.defaultSampleRate
+    @objc var sampleRate:Double = AACEncoder.defaultSampleRate
     var inClassDescriptions:[AudioClassDescription] = AACEncoder.defaultInClassDescriptions
     var formatDescription:CMFormatDescription? = nil {
         didSet {
