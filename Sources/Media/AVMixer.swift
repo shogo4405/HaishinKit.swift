@@ -17,22 +17,22 @@ final public class AVMixer: NSObject {
 #if os(iOS) || os(macOS)
     static let defaultSessionPreset:String = AVCaptureSession.Preset.medium.rawValue
 
-    var fps:Float64 {
+    @objc var fps:Float64 {
         get { return videoIO.fps }
         set { videoIO.fps = newValue }
     }
 
-    var continuousExposure:Bool {
+    @objc var continuousExposure:Bool {
         get { return videoIO.continuousExposure }
         set { videoIO.continuousExposure = newValue }
     }
 
-    var continuousAutofocus:Bool {
+    @objc var continuousAutofocus:Bool {
         get { return videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
 
-    var sessionPreset:String = AVMixer.defaultSessionPreset {
+    @objc var sessionPreset:String = AVMixer.defaultSessionPreset {
         didSet {
             guard sessionPreset != oldValue else {
                 return
