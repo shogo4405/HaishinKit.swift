@@ -166,6 +166,7 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     #endif
 }
 
+@objc
 extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     // MARK: AVMixerRecorderDelegate
     open func rotateFile(_ recorder:AVMixerRecorder, withPresentationTimeStamp:CMTime, mediaType:AVMediaType) {
