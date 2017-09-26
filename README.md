@@ -94,17 +94,17 @@ do {
 ## RTMP Usage
 Real Time Messaging Protocol (RTMP).
 ```swift
-var rtmpConnection:RTMPConnection = RTMPConnection()
-var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio)) { error in
+let rtmpConnection:RTMPConnection = RTMPConnection()
+let rtmpStream: RTMPStream = RTMPStream(connection: rtmpConnection)
+rtmpStream.attachAudio(AVCaptureDevice.default(for: AVMediaType.audio)) { error in
     // print(error)
 }
 rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back)) { error in
     // print(error)
 }
 
-var lfView:LFView = LFView(frame: view.bounds)
-lfView.videoGravity = AVLayerVideoGravityResizeAspectFill
+let lfView: LFView = LFView(frame: view.bounds)
+lfView.videoGravity = AVLayerVideoGravity.resizeAspectFill
 lfView.attachStream(rtmpStream)
 
 // add ViewController#view
