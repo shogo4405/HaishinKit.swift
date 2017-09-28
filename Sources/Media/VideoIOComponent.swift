@@ -275,13 +275,18 @@ final class VideoIOComponent: IOComponent {
         }
     }
     func dispose() {
-        drawable?.attachStream(nil)
+        DispatchQueue.main.async {
+            self.drawable?.attachStream(nil)
+        }
+
         input = nil
         output = nil
     }
 #else
     func dispose() {
-        drawable?.attachStream(nil)
+        DispatchQueue.main.async {
+            self.drawable?.attachStream(nil)
+        }
     }
 #endif
 
