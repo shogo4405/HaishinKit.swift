@@ -104,7 +104,7 @@ final class LiveViewController: UIViewController {
             rtmpStream.audioSettings["bitrate"] = slider.value * 1024
         }
         if (slider == videoBitrateSlider) {
-            videoBitrateLabel?.text = "video \(Int(slider.value))/kbsp"
+            videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
             rtmpStream.videoSettings["bitrate"] = slider.value * 1024
         }
         if (slider == zoomSlider) {
