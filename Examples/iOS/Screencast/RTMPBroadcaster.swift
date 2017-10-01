@@ -26,7 +26,7 @@ public class RTMPBroadcaster : RTMPConnection {
         removeEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent(_:)), observer: self)
     }
 
-    open override func connect(_ command: String, arguments: Any?...) {
+    override public func connect(_ command: String, arguments: Any?...) {
         lockQueue.sync {
             if (connecting) {
                 return
@@ -37,31 +37,23 @@ public class RTMPBroadcaster : RTMPConnection {
         }
     }
     
-    open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
+    func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
         switch withType {
         case .video:
             stream.appendSampleBuffer(sampleBuffer, withType: .video)
         case .audio:
-            spliter.appendSampleBuffer(sampleBuffer)
+            stream.appendSampleBuffer(sampleBuffer, withType: .audio)
         }
     }
 
-    open func processMP4Clip(mp4ClipURL: URL?, completionHandler: MP4Sampler.Handler? = nil) {
-        guard let url:URL = mp4ClipURL else {
-            completionHandler?()
-            return
-        }
-        stream.appendFile(url, completionHandler: completionHandler)
-    }
-    
-    open override func close() {
+    override public func close() {
         lockQueue.sync {
             self.connecting = false
             super.close()
         }
     }
 
-    @objc open func rtmpStatusEvent(_ status:Notification) {
+    @objc func rtmpStatusEvent(_ status:Notification) {
         let e:Event = Event.from(status)
         guard
             let data:ASObject = e.data as? ASObject,

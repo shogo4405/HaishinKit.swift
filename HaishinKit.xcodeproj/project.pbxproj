@@ -11,6 +11,7 @@
 		2901A4EF1D437662002BBD23 /* ClockedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* ClockedQueue.swift */; };
 		290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */; };
 		290686051DFDC19B008EB7ED /* SampleVideo_360x240_5mb-base.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 290686041DFDC19B008EB7ED /* SampleVideo_360x240_5mb-base.mp4 */; };
+		290AAC261F80F8B500D8C5E9 /* ClipboardAppender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290AAC241F80F08F00D8C5E9 /* ClipboardAppender.swift */; };
 		290EA8901DFB616000053022 /* Foundation+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA88E1DFB616000053022 /* Foundation+ExtensionTests.swift */; };
 		290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA88F1DFB616000053022 /* SwiftCore+ExtensionTests.swift */; };
 		290EA8931DFB617800053022 /* HTTPRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA8921DFB617800053022 /* HTTPRequestTests.swift */; };
@@ -108,6 +109,7 @@
 		2958912E1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2958912D1EEB8F4100CE51E1 /* FLVSoundType.swift */; };
 		2958912F1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2958912D1EEB8F4100CE51E1 /* FLVSoundType.swift */; };
 		295891301EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2958912D1EEB8F4100CE51E1 /* FLVSoundType.swift */; };
+		29619CA91F8109D3005FF462 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DC1F374D4B009F4B30 /* Logboard.framework */; };
 		296242611D8DB86500C451A3 /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		296242621D8DB86500C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
 		296242631D8DBA8C00C451A3 /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
@@ -427,6 +429,7 @@
 		2901A4ED1D437170002BBD23 /* ClockedQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ClockedQueue.swift; path = Sources/Util/ClockedQueue.swift; sourceTree = SOURCE_ROOT; };
 		290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPConnectionTests.swift; path = RTMP/RTMPConnectionTests.swift; sourceTree = "<group>"; };
 		290686041DFDC19B008EB7ED /* SampleVideo_360x240_5mb-base.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SampleVideo_360x240_5mb-base.mp4"; sourceTree = "<group>"; };
+		290AAC241F80F08F00D8C5E9 /* ClipboardAppender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ClipboardAppender.swift; path = Examples/iOS/ClipboardAppender.swift; sourceTree = "<group>"; };
 		290EA88E1DFB616000053022 /* Foundation+ExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Foundation+ExtensionTests.swift"; path = "Core/Foundation+ExtensionTests.swift"; sourceTree = "<group>"; };
 		290EA88F1DFB616000053022 /* SwiftCore+ExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "SwiftCore+ExtensionTests.swift"; path = "Core/SwiftCore+ExtensionTests.swift"; sourceTree = "<group>"; };
 		290EA8921DFB617800053022 /* HTTPRequestTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPRequestTests.swift; path = HTTP/HTTPRequestTests.swift; sourceTree = "<group>"; };
@@ -603,6 +606,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				29619CA91F8109D3005FF462 /* Logboard.framework in Frameworks */,
 				29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */,
 				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
 			);
@@ -929,6 +933,7 @@
 			children = (
 				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
 				296897421CDB01D20074D5F0 /* Assets.xcassets */,
+				290AAC241F80F08F00D8C5E9 /* ClipboardAppender.swift */,
 				291F4E361CF206E200F59C51 /* Icon.png */,
 				296897431CDB01D20074D5F0 /* Info.plist */,
 				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
@@ -1534,6 +1539,7 @@
 			files = (
 				2930D0411E12D35400DA2DC5 /* SampleHandler.swift in Sources */,
 				2957473E1E34F3DB00EF056E /* RTMPBroadcaster.swift in Sources */,
+				290AAC261F80F8B500D8C5E9 /* ClipboardAppender.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1948,8 +1954,12 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Screencast/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.Screencast";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1969,8 +1979,12 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Screencast/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.Screencast";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1991,7 +2005,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/ScreencastUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.ScreencastUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -2012,7 +2026,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/ScreencastUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.ScreencastUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
