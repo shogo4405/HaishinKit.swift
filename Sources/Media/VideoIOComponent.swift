@@ -275,8 +275,13 @@ final class VideoIOComponent: IOComponent {
         }
     }
     func dispose() {
-        DispatchQueue.main.async {
+        if Thread.isMainThread {
             self.drawable?.attachStream(nil)
+        }
+        else {
+          DispatchQueue.main.sync {
+              self.drawable?.attachStream(nil)
+          }
         }
 
         input = nil
@@ -284,8 +289,13 @@ final class VideoIOComponent: IOComponent {
     }
 #else
     func dispose() {
-        DispatchQueue.main.async {
+        if Thread.isMainThread {
             self.drawable?.attachStream(nil)
+        }
+        else {
+          DispatchQueue.main.sync {
+              self.drawable?.attachStream(nil)
+          }
         }
     }
 #endif
