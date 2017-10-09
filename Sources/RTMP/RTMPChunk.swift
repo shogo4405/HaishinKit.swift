@@ -30,7 +30,7 @@ enum RTMPChunkType: UInt8 {
         if (streamId <= 319) {
             return Data([rawValue << 6 | 0b0000000, UInt8(streamId - 64)])
         }
-        return Data([rawValue << 6 | 0b00111111] + (streamId - 64).bigEndian.data)
+        return Data([rawValue << 6 | 0b00000001] + (streamId - 64).bigEndian.data)
     }
 }
 
