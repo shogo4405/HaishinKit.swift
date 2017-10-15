@@ -183,11 +183,6 @@ final class AACEncoder: NSObject {
             }
         }
 
-        if (blockBuffer == nil) {
-            logger.warn("IllegalState for blockBuffer")
-            return
-        }
-
         var ioOutputDataPacketSize:UInt32 = 1
         let dataLength:Int = blockBuffer!.dataLength
         let outOutputData:UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
