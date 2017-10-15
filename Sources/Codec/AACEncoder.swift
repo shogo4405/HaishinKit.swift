@@ -177,6 +177,11 @@ final class AACEncoder: NSObject {
             &blockBuffer
         )
 
+        if (blockBuffer == nil) {
+            logger.warn("IllegalState for blockBuffer")
+            return
+        }
+
         if (muted) {
             for i in 0..<currentBufferList!.count {
                 memset(currentBufferList![i].mData, 0, Int(currentBufferList![i].mDataByteSize))
