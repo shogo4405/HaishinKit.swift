@@ -21,8 +21,7 @@ struct AVCFormatStream {
         var result:Data = Data()
         while (0 < buffer.bytesAvailable) {
             do {
-                buffer.position += 2
-                let length:Int = try Int(buffer.readUInt16())
+                let length:Int = try Int(buffer.readUInt32())
                 result.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
                 result.append(try buffer.readBytes(length))
             } catch {
