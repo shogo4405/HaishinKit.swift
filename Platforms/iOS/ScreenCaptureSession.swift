@@ -86,6 +86,14 @@ open class ScreenCaptureSession: NSObject {
         guard semaphore.wait(timeout: DispatchTime.now()) == .success else {
             return
         }
+        
+        if let shared = self.shared {
+            size = shared.delegate!.window!!.bounds.size
+        }
+        if let viewToCapture = self.viewToCapture {
+            size = viewToCapture.bounds.size
+        }
+        
         lockQueue.async {
             autoreleasepool {
                 self.onScreenProcess(displayLink)
@@ -97,12 +105,6 @@ open class ScreenCaptureSession: NSObject {
     open func onScreenProcess(_ displayLink:CADisplayLink) {
         var pixelBuffer:CVPixelBuffer?
         
-        if let shared = self.shared {
-            size = shared.delegate!.window!!.bounds.size
-        }
-        if let viewToCapture = self.viewToCapture {
-            size = viewToCapture.bounds.size
-        }
         CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)
         CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
