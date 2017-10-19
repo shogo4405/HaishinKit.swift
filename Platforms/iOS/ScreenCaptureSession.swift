@@ -32,6 +32,7 @@ open class ScreenCaptureSession: NSObject {
     internal(set) var running:Bool = false
     fileprivate var shared:UIApplication?
     fileprivate var viewToCapture:UIView?
+    public var afterScreenUpdates: Bool = false
     fileprivate var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
     fileprivate let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
     fileprivate let lockQueue:DispatchQueue = DispatchQueue(
@@ -77,6 +78,7 @@ open class ScreenCaptureSession: NSObject {
     public init(viewToCapture: UIView) {
         self.viewToCapture = viewToCapture
         size = viewToCapture.bounds.size
+        afterScreenUpdates = true
         super.init()
     }
 
@@ -111,14 +113,14 @@ open class ScreenCaptureSession: NSObject {
                 for window:UIWindow in shared.windows {
                     window.drawHierarchy(
                         in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
-                        afterScreenUpdates: false
+                        afterScreenUpdates: self.afterScreenUpdates
                     )
                 }
             }
             if let viewToCapture:UIView = viewToCapture {
                 viewToCapture.drawHierarchy(
                     in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
-                    afterScreenUpdates: true
+                    afterScreenUpdates: self.afterScreenUpdates
                 )
             }
             UIGraphicsPopContext()
