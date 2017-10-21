@@ -155,9 +155,13 @@ open class NetStream: NSObject {
     open func appendSampleBuffer(_ sampleBuffer:CMSampleBuffer, withType: CMSampleBufferType, options:[NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
-            mixer.audioIO.appendSampleBuffer(sampleBuffer)
+            mixer.audioIO.lockQueue.async {
+                self.mixer.audioIO.appendSampleBuffer(sampleBuffer)
+            }
         case .video:
-            mixer.videoIO.appendSampleBuffer(sampleBuffer)
+            mixer.videoIO.lockQueue.async {
+                self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
+            }
         }
     }
 
