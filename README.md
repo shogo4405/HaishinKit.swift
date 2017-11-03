@@ -214,11 +214,14 @@ view.addSubview(lfView)
 
 ## FAQ
 ### How can I run Examples project?
-Please try `carthage update` command. HaishinKit needs Loboard module via Carthage.
+Please hit `carthage update` command. HaishinKit needs Logboard module via Carthage.
 ```sh
 carthage update
 ```
 
+### Do you support me via Email?
+Yes. Consulting fee is $50/1 incident. I don't recommend.
+Please consider to use Issues.
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
