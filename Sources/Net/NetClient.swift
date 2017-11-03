@@ -1,7 +1,7 @@
 import Foundation
 
 @objc protocol NetClientDelegate: class {
-    @objc optional func client(inputBuffer:Data, client:NetClient)
+    @objc optional func client(inputBuffer client:NetClient)
     @objc optional func client(didAccepetConnection client:NetClient)
 }
 
@@ -25,6 +25,6 @@ final public class NetClient: NetSocket {
     }
 
     override func listen() {
-        delegate?.client?(inputBuffer: inputBuffer, client: self)
+        delegate?.client?(inputBuffer: self)
     }
 }
