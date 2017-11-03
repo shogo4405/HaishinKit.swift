@@ -213,7 +213,7 @@ view.addSubview(lfView)
 ```
 
 ## FAQ
-### How can I run Examples project?
+### How can I run example project?
 Please hit `carthage update` command. HaishinKit needs Logboard module via Carthage.
 ```sh
 carthage update
