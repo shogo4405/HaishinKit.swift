@@ -1,20 +1,21 @@
 import Foundation
 
 public class NetSocket: NSObject {
-    static let defaultTimeout:Int64 = 15 // sec
-    static let defaultWindowSizeC:Int = Int(UInt16.max)
+    static public let defaultTimeout:Int64 = 15 // sec
+    static public let defaultWindowSizeC:Int = Int(UInt16.max)
 
-    var timeout:Int64 = NetSocket.defaultTimeout
-    var connected:Bool = false
-    var inputBuffer:Data = Data()
+    public var timeout:Int64 = NetSocket.defaultTimeout
+    public internal(set) var connected:Bool = false
+    public var inputBuffer:Data = Data()
+    public var windowSizeC:Int = NetSocket.defaultWindowSizeC
+    public var securityLevel:StreamSocketSecurityLevel = .none
+    public var totalBytesIn:Int64 = 0
+    public private(set) var totalBytesOut:Int64 = 0
+    public private(set) var queueBytesOut:Int64 = 0
+
     var inputStream:InputStream?
-    var windowSizeC:Int = NetSocket.defaultWindowSizeC
     var outputStream:OutputStream?
     var inputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
-    var securityLevel:StreamSocketSecurityLevel = .none
-    var totalBytesIn:Int64 = 0
-    private(set) var totalBytesOut:Int64 = 0
-    private(set) var queueBytesOut:Int64 = 0
 
     private var buffer:UnsafeMutablePointer<UInt8>? = nil
     private var runloop:RunLoop?
