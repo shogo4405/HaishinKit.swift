@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         } catch {
         }
         
-        Logboard.with(HaishinKit.identifier).level = .trace
+        Logboard.with(HaishinKitIdentifier).level = .trace
 
         return true
     }
