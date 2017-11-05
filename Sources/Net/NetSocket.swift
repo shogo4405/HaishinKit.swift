@@ -20,7 +20,7 @@ public class NetSocket: NSObject {
     private var buffer:UnsafeMutablePointer<UInt8>? = nil
     private var runloop:RunLoop?
     private let outputQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
-    fileprivate var timeoutHandler:(() -> Void)?
+    private var timeoutHandler:(() -> Void)?
 
     @discardableResult
     final public func doOutput(data:Data, locked:UnsafeMutablePointer<UInt32>? = nil) -> Int {
@@ -152,7 +152,7 @@ public class NetSocket: NSObject {
     func didTimeout() {
     }
 
-    fileprivate func doInput() {
+    private func doInput() {
         guard let inputStream:InputStream = inputStream, let buffer:UnsafeMutablePointer<UInt8> = buffer else {
             return
         }

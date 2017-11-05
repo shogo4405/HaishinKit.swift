@@ -11,9 +11,9 @@ public class TimerDriver: NSObject {
     var queue:DispatchQueue?
     weak var delegate:TimerDriverDelegate?
 
-    fileprivate var runloop:RunLoop?
-    fileprivate var nextFire:UInt64 = 0
-    fileprivate weak var timer:Timer? {
+    private var runloop:RunLoop?
+    private var nextFire:UInt64 = 0
+    private weak var timer:Timer? {
         didSet {
             if let oldValue:Timer = oldValue {
                 oldValue.invalidate()

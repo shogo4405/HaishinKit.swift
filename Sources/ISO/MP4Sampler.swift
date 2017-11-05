@@ -13,12 +13,12 @@ public class MP4Sampler {
 
     weak var delegate:MP4SamplerDelegate?
 
-    fileprivate var files:[URL] = []
-    fileprivate var handlers:[URL:Handler?] = [:]
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
-    fileprivate let loopQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
-    fileprivate let operations:OperationQueue = OperationQueue()
-    fileprivate(set) var running:Bool = false
+    private var files:[URL] = []
+    private var handlers:[URL:Handler?] = [:]
+    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
+    private let loopQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
+    private let operations:OperationQueue = OperationQueue()
+    private(set) var running:Bool = false
 
     func appendFile(_ file:URL, completionHandler: Handler? = nil) {
         lockQueue.async {
@@ -27,7 +27,7 @@ public class MP4Sampler {
         }
     }
 
-    fileprivate func execute(url:URL) {
+    private func execute(url:URL) {
         let reader:MP4Reader = MP4Reader(url: url)
 
         do {
@@ -51,7 +51,7 @@ public class MP4Sampler {
         reader.close()
     }
 
-    fileprivate func run() {
+    private func run() {
         if (files.isEmpty) {
             return
         }

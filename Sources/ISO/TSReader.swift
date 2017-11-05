@@ -27,14 +27,14 @@ class TSReader {
             }
         }
     }
-    fileprivate(set) var numberOfPackets:Int = 0
+    private(set) var numberOfPackets:Int = 0
 
-    fileprivate var eof:UInt64 = 0
-    fileprivate var cursor:Int = 0
-    fileprivate var fileHandle:FileHandle?
-    fileprivate var dictionaryForPrograms:[UInt16:UInt16] = [:]
-    fileprivate var dictionaryForESSpecData:[UInt16:ElementaryStreamSpecificData] = [:]
-    fileprivate var packetizedElementaryStreams:[UInt16:PacketizedElementaryStream] = [:]
+    private var eof:UInt64 = 0
+    private var cursor:Int = 0
+    private var fileHandle:FileHandle?
+    private var dictionaryForPrograms:[UInt16:UInt16] = [:]
+    private var dictionaryForESSpecData:[UInt16:ElementaryStreamSpecificData] = [:]
+    private var packetizedElementaryStreams:[UInt16:PacketizedElementaryStream] = [:]
 
     init(url:URL) throws {
         fileHandle = try FileHandle(forReadingFrom: url)

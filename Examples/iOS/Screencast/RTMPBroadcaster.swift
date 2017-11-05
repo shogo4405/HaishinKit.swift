@@ -9,7 +9,7 @@ public class RTMPBroadcaster : RTMPConnection {
         return RTMPStream(connection: self)
     }()
 
-    fileprivate lazy var spliter:SoundSpliter = {
+    private lazy var spliter:SoundSpliter = {
         var spliter:SoundSpliter = SoundSpliter()
         spliter.delegate = self
         return spliter

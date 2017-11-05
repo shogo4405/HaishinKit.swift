@@ -125,7 +125,7 @@ open class RTMPConnection: EventDispatcher {
         case clientSeek = 1
     }
 
-    fileprivate static func createSanJoseAuthCommand(_ url:URL, description:String) -> String {
+    private static func createSanJoseAuthCommand(_ url:URL, description:String) -> String {
         var command:String = url.absoluteString
 
         guard let index:String.CharacterView.Index = description.characters.index(of: "?") else {
@@ -164,9 +164,9 @@ open class RTMPConnection: EventDispatcher {
     /// The outgoing RTMPChunkSize.
     open var chunkSize:Int = RTMPConnection.defaultChunkSizeS
     /// The URI passed to the RTMPConnection.connect() method.
-    open fileprivate(set) var uri:URL? = nil
+    open private(set) var uri:URL? = nil
     /// This instance connected to server(true) or not(false).
-    open fileprivate(set) var connected:Bool = false
+    open private(set) var connected:Bool = false
     /// The object encoding for this RTMPConnection instance.
     open var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
@@ -182,11 +182,11 @@ open class RTMPConnection: EventDispatcher {
         return streams.count
     }
     /// The statistics of outgoing queue bytes per second.
-    @objc dynamic open fileprivate(set) var previousQueueBytesOut:[Int64] = []
+    @objc dynamic open private(set) var previousQueueBytesOut:[Int64] = []
     /// The statistics of incoming bytes per second.
-    @objc dynamic open fileprivate(set) var currentBytesInPerSecond:Int32 = 0
+    @objc dynamic open private(set) var currentBytesInPerSecond:Int32 = 0
     /// The statistics of outgoing bytes per second.
-    @objc dynamic open fileprivate(set) var currentBytesOutPerSecond:Int32 = 0
+    @objc dynamic open private(set) var currentBytesOutPerSecond:Int32 = 0
 
     var socket:RTMPSocketCompatible!
     var streams:[UInt32: RTMPStream] = [:]
@@ -209,7 +209,7 @@ open class RTMPConnection: EventDispatcher {
     var windowSizeS:Int64 = RTMPConnection.defaultWindowSizeS
     var currentTransactionId:Int = 0
 
-    fileprivate var timer:Timer? {
+    private var timer:Timer? {
         didSet {
             if let oldValue:Timer = oldValue {
                 oldValue.invalidate()
@@ -219,13 +219,13 @@ open class RTMPConnection: EventDispatcher {
             }
         }
     }
-    fileprivate var messages:[UInt16:RTMPMessage] = [:]
-    fileprivate var arguments:[Any?] = []
-    fileprivate var currentChunk:RTMPChunk? = nil
-    fileprivate var measureInterval:Int = 3
-    fileprivate var fragmentedChunks:[UInt16:RTMPChunk] = [:]
-    fileprivate var previousTotalBytesIn:Int64 = 0
-    fileprivate var previousTotalBytesOut:Int64 = 0
+    private var messages:[UInt16:RTMPMessage] = [:]
+    private var arguments:[Any?] = []
+    private var currentChunk:RTMPChunk? = nil
+    private var measureInterval:Int = 3
+    private var fragmentedChunks:[UInt16:RTMPChunk] = [:]
+    private var previousTotalBytesIn:Int64 = 0
+    private var previousTotalBytesOut:Int64 = 0
 
     override public init() {
         super.init()
@@ -367,7 +367,7 @@ open class RTMPConnection: EventDispatcher {
         }
     }
 
-    fileprivate func createConnectionChunk() -> RTMPChunk? {
+    private func createConnectionChunk() -> RTMPChunk? {
         guard let uri:URL = uri else {
             return nil
         }

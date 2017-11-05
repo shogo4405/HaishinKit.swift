@@ -30,18 +30,18 @@ open class ScreenCaptureSession: NSObject {
     public weak var delegate:ScreenCaptureOutputPixelBufferDelegate?
     
     internal(set) var running:Bool = false
-    fileprivate var shared:UIApplication?
-    fileprivate var viewToCapture:UIView?
+    private var shared:UIApplication?
+    private var viewToCapture:UIView?
     public var afterScreenUpdates: Bool = false
-    fileprivate var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
-    fileprivate let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(
+    private var context:CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
+    private let semaphore:DispatchSemaphore = DispatchSemaphore(value: 1)
+    private let lockQueue:DispatchQueue = DispatchQueue(
         label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: DispatchQoS.userInteractive, attributes: []
     )
-    fileprivate var colorSpace:CGColorSpace!
-    fileprivate var displayLink:CADisplayLink!
+    private var colorSpace:CGColorSpace!
+    private var displayLink:CADisplayLink!
     
-    fileprivate var size:CGSize = CGSize() {
+    private var size:CGSize = CGSize() {
         didSet {
             guard size != oldValue else {
                 return
@@ -50,12 +50,12 @@ open class ScreenCaptureSession: NSObject {
             pixelBufferPool = nil
         }
     }
-    fileprivate var scale:CGFloat {
+    private var scale:CGFloat {
         return enabledScale ? UIScreen.main.scale : 1.0
     }
     
-    fileprivate var _pixelBufferPool:CVPixelBufferPool?
-    fileprivate var pixelBufferPool:CVPixelBufferPool! {
+    private var _pixelBufferPool:CVPixelBufferPool?
+    private var pixelBufferPool:CVPixelBufferPool! {
         get {
             if (_pixelBufferPool == nil) {
                 var pixelBufferPool:CVPixelBufferPool?

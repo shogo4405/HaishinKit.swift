@@ -325,7 +325,7 @@ final class RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    fileprivate var serializer:AMFSerializer = AMF0Serializer()
+    private var serializer:AMFSerializer = AMF0Serializer()
 
     init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding
@@ -507,7 +507,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         }
     }
 
-    fileprivate var serializer:AMFSerializer = AMF0Serializer()
+    private var serializer:AMFSerializer = AMF0Serializer()
 
     init(objectEncoding:UInt8) {
         self.objectEncoding = objectEncoding

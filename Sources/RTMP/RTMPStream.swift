@@ -221,8 +221,8 @@ open class RTMPStream: NetStream {
     open static let defaultVideoBitrate:UInt32 = H264Encoder.defaultBitrate
     weak open var qosDelegate:RTMPStreamQoSDelegate? = nil
     open internal(set) var info:RTMPStreamInfo = RTMPStreamInfo()
-    open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    @objc open fileprivate(set) dynamic var currentFPS:UInt16 = 0
+    open private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    @objc open private(set) dynamic var currentFPS:UInt16 = 0
     open var soundTransform:SoundTransform {
         get { return mixer.audioIO.playback.soundTransform }
         set { mixer.audioIO.playback.soundTransform = newValue }
@@ -290,15 +290,15 @@ open class RTMPStream: NetStream {
 
     var audioTimestamp:Double = 0
     var videoTimestamp:Double = 0
-    fileprivate(set) var muxer:RTMPMuxer = RTMPMuxer()
-    fileprivate var paused:Bool = false
-    fileprivate var sampler:MP4Sampler? = nil
-    fileprivate var frameCount:UInt16 = 0
-    fileprivate var dispatcher:IEventDispatcher!
-    fileprivate var audioWasSent:Bool = false
-    fileprivate var videoWasSent:Bool = false
-    fileprivate var howToPublish:RTMPStream.HowToPublish = .live
-    fileprivate var rtmpConnection:RTMPConnection
+    private(set) var muxer:RTMPMuxer = RTMPMuxer()
+    private var paused:Bool = false
+    private var sampler:MP4Sampler? = nil
+    private var frameCount:UInt16 = 0
+    private var dispatcher:IEventDispatcher!
+    private var audioWasSent:Bool = false
+    private var videoWasSent:Bool = false
+    private var howToPublish:RTMPStream.HowToPublish = .live
+    private var rtmpConnection:RTMPConnection
 
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection

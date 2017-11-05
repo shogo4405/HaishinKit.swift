@@ -27,24 +27,24 @@ class TSWriter {
     var segmentMaxCount:Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration:Double = TSWriter.defaultSegmentDuration
 
-    fileprivate(set) var PAT:ProgramAssociationSpecific = {
+    private(set) var PAT:ProgramAssociationSpecific = {
         let PAT:ProgramAssociationSpecific = ProgramAssociationSpecific()
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
-    fileprivate(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
-    fileprivate(set) var files:[M3UMediaInfo] = []
-    fileprivate(set) var running:Bool = false
-    fileprivate var PCRPID:UInt16 = TSWriter.defaultVideoPID
-    fileprivate var sequence:Int = 0
-    fileprivate var timestamps:[UInt16:CMTime] = [:]
-    fileprivate var audioConfig:AudioSpecificConfig?
-    fileprivate var videoConfig:AVCConfigurationRecord?
-    fileprivate var PCRTimestamp:CMTime = kCMTimeZero
-    fileprivate var currentFileURL:URL?
-    fileprivate var rotatedTimestamp:CMTime = kCMTimeZero
-    fileprivate var currentFileHandle:FileHandle?
-    fileprivate var continuityCounters:[UInt16:UInt8] = [:]
+    private(set) var PMT:ProgramMapSpecific = ProgramMapSpecific()
+    private(set) var files:[M3UMediaInfo] = []
+    private(set) var running:Bool = false
+    private var PCRPID:UInt16 = TSWriter.defaultVideoPID
+    private var sequence:Int = 0
+    private var timestamps:[UInt16:CMTime] = [:]
+    private var audioConfig:AudioSpecificConfig?
+    private var videoConfig:AVCConfigurationRecord?
+    private var PCRTimestamp:CMTime = kCMTimeZero
+    private var currentFileURL:URL?
+    private var rotatedTimestamp:CMTime = kCMTimeZero
+    private var currentFileHandle:FileHandle?
+    private var continuityCounters:[UInt16:UInt8] = [:]
 
     func getFilePath(_ fileName:String) -> String? {
         for info in files {

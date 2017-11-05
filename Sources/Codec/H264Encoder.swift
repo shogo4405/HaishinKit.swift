@@ -167,18 +167,18 @@ final class H264Encoder: NSObject {
     }
     weak var delegate:VideoEncoderDelegate?
     internal(set) var running:Bool = false
-    fileprivate(set) var status:OSStatus = noErr
-    fileprivate var attributes:[NSString: AnyObject] {
+    private(set) var status:OSStatus = noErr
+    private var attributes:[NSString: AnyObject] {
         var attributes:[NSString: AnyObject] = H264Encoder.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: width)
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: height)
         return attributes
     }
-    fileprivate var invalidateSession:Bool = true
-    fileprivate var lastImageBuffer:CVImageBuffer? = nil;
+    private var invalidateSession:Bool = true
+    private var lastImageBuffer:CVImageBuffer? = nil;
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
-    fileprivate var properties:[NSString: NSObject] {
+    private var properties:[NSString: NSObject] {
         let isBaseline:Bool = profileLevel.contains("Baseline")
         var properties:[NSString: NSObject] = [
             kVTCompressionPropertyKey_RealTime: kCFBooleanTrue,
@@ -209,7 +209,7 @@ final class H264Encoder: NSObject {
         return properties
     }
 
-    fileprivate var callback:VTCompressionOutputCallback = {(
+    private var callback:VTCompressionOutputCallback = {(
         outputCallbackRefCon:UnsafeMutableRawPointer?,
         sourceFrameRefCon:UnsafeMutableRawPointer?,
         status:OSStatus,
@@ -223,8 +223,8 @@ final class H264Encoder: NSObject {
         encoder.delegate?.sampleOutput(video: sampleBuffer)
     }
 
-    fileprivate var _session:VTCompressionSession? = nil
-    fileprivate var session:VTCompressionSession? {
+    private var _session:VTCompressionSession? = nil
+    private var session:VTCompressionSession? {
         get {
             if (_session == nil)  {
                 guard VTCompressionSessionCreate(

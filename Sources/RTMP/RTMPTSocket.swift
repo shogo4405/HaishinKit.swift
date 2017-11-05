@@ -36,10 +36,10 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
-    fileprivate(set) var totalBytesIn:Int64 = 0
-    fileprivate(set) var totalBytesOut:Int64 = 0
-    fileprivate(set) var queueBytesOut:Int64 = 0
-    fileprivate var timer:Timer? {
+    private(set) var totalBytesIn:Int64 = 0
+    private(set) var totalBytesOut:Int64 = 0
+    private(set) var queueBytesOut:Int64 = 0
+    private var timer:Timer? {
         didSet {
             if let oldValue:Timer = oldValue {
                 oldValue.invalidate()

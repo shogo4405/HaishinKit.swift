@@ -34,7 +34,7 @@ open class AVMixerRecorder: NSObject {
     open var outputSettings:[AVMediaType:[String:Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor:AVAssetWriterInputPixelBufferAdaptor?
     open let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
-    fileprivate(set) var running:Bool = false
+    private(set) var running:Bool = false
     fileprivate(set) var sourceTime:CMTime = kCMTimeZero
 
     var isReadyForStartWriting:Bool {
@@ -152,8 +152,8 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     open var duration:Int64 = 0
     open var dateFormat:String = "-yyyyMMdd-HHmmss"
 
-    fileprivate var rotateTime:CMTime = kCMTimeZero
-    fileprivate var clockReference:AVMediaType = .video
+    private var rotateTime:CMTime = kCMTimeZero
+    private var clockReference:AVMediaType = .video
 
     #if os(iOS)
     open lazy var moviesDirectory:URL = {

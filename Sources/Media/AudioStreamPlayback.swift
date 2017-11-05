@@ -22,7 +22,7 @@ class AudioStreamPlayback {
         }
     }
 
-    fileprivate(set) var running:Bool = false
+    private(set) var running:Bool = false
     var formatDescription:AudioStreamBasicDescription? = nil
     var fileTypeHint:AudioFileTypeID? = nil {
         didSet {
@@ -41,8 +41,8 @@ class AudioStreamPlayback {
         }
     }
     let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioStreamPlayback.lock")
-    fileprivate var bufferSize:UInt32 = AudioStreamPlayback.defaultBufferSize
-    fileprivate var queue:AudioQueueRef? = nil {
+    private var bufferSize:UInt32 = AudioStreamPlayback.defaultBufferSize
+    private var queue:AudioQueueRef? = nil {
         didSet {
             guard let oldValue:AudioQueueRef = oldValue else {
                 return
@@ -51,13 +51,13 @@ class AudioStreamPlayback {
             AudioQueueDispose(oldValue, true)
         }
     }
-    fileprivate var inuse:[Bool] = []
-    fileprivate var buffers:[AudioQueueBufferRef] = []
-    fileprivate var current:Int = 0
-    fileprivate var started:Bool = false
-    fileprivate var filledBytes:UInt32 = 0
-    fileprivate var packetDescriptions:[AudioStreamPacketDescription] = []
-    fileprivate var fileStreamID:AudioFileStreamID? = nil {
+    private var inuse:[Bool] = []
+    private var buffers:[AudioQueueBufferRef] = []
+    private var current:Int = 0
+    private var started:Bool = false
+    private var filledBytes:UInt32 = 0
+    private var packetDescriptions:[AudioStreamPacketDescription] = []
+    private var fileStreamID:AudioFileStreamID? = nil {
         didSet {
             guard let oldValue:AudioFileStreamID = oldValue else {
                 return
@@ -65,11 +65,11 @@ class AudioStreamPlayback {
             AudioFileStreamClose(oldValue)
         }
     }
-    fileprivate var isPacketDescriptionsFull:Bool {
+    private var isPacketDescriptionsFull:Bool {
         return packetDescriptions.count == maxPacketDescriptions
     }
 
-    fileprivate var outputCallback:AudioQueueOutputCallback = {(
+    private var outputCallback:AudioQueueOutputCallback = {(
         inUserData: UnsafeMutableRawPointer?,
         inAQ: AudioQueueRef,
         inBuffer:AudioQueueBufferRef) -> Void in
@@ -77,7 +77,7 @@ class AudioStreamPlayback {
         playback.onOutputForQueue(inAQ, inBuffer)
     }
 
-    fileprivate var packetsProc:AudioFileStream_PacketsProc = {(
+    private var packetsProc:AudioFileStream_PacketsProc = {(
         inClientData:UnsafeMutableRawPointer,
         inNumberBytes:UInt32,
         inNumberPackets:UInt32,
@@ -88,7 +88,7 @@ class AudioStreamPlayback {
         playback.onAudioPacketsForFileStream(inNumberBytes, inNumberPackets, inInputData, inPacketDescriptions)
     }
 
-    fileprivate var propertyListenerProc:AudioFileStream_PropertyListenerProc = {(
+    private var propertyListenerProc:AudioFileStream_PropertyListenerProc = {(
         inClientData:UnsafeMutableRawPointer,
         inAudioFileStream:AudioFileStreamID,
         inPropertyID:AudioFileStreamPropertyID,

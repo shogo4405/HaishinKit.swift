@@ -12,9 +12,9 @@ final class RTMPMuxer {
     static let aac:UInt8 = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
 
     weak var delegate:RTMPMuxerDelegate? = nil
-    fileprivate var configs:[Int:Data] = [:]
-    fileprivate var audioTimestamp:CMTime = kCMTimeZero
-    fileprivate var videoTimestamp:CMTime = kCMTimeZero
+    private var configs:[Int:Data] = [:]
+    private var audioTimestamp:CMTime = kCMTimeZero
+    private var videoTimestamp:CMTime = kCMTimeZero
 
     func dispose() {
         configs.removeAll()

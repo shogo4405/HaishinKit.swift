@@ -580,26 +580,26 @@ final class MP4TrakReader {
     var bufferTime:Double = MP4TrakReader.defaultBufferTime
     weak var delegate:MP4SamplerDelegate?
 
-    fileprivate var id:Int = 0
-    fileprivate var handle:FileHandle?
+    private var id:Int = 0
+    private var handle:FileHandle?
     private lazy var timerDriver:TimerDriver = {
         var timerDriver:TimerDriver = TimerDriver()
         timerDriver.delegate = self
         return timerDriver
     }()
-    fileprivate var currentOffset:UInt64 {
+    private var currentOffset:UInt64 {
         return UInt64(offset[cursor])
     }
-    fileprivate var currentIsKeyframe:Bool {
+    private var currentIsKeyframe:Bool {
         return keyframe[cursor] != nil
     }
-    fileprivate var currentDuration:Double {
+    private var currentDuration:Double {
         return Double(totalTimeToSample) * 1000 / Double(timeScale)
     }
-    fileprivate var currentTimeToSample:Double {
+    private var currentTimeToSample:Double {
         return Double(timeToSample[cursor]) * 1000 / Double(timeScale)
     }
-    fileprivate var currentSampleSize:Int {
+    private var currentSampleSize:Int {
         return Int((sampleSize.count == 1) ? sampleSize[0] : sampleSize[cursor])
     }
     private var cursor:Int = 0
@@ -685,11 +685,11 @@ final class MP4TrakReader {
         }
     }
 
-    fileprivate func hasNext() -> Bool {
+    private func hasNext() -> Bool {
         return cursor + 1 < offset.count
     }
 
-    fileprivate func next() {
+    private func next() {
         defer {
             cursor += 1
         }

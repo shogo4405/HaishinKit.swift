@@ -21,7 +21,7 @@ struct TSPacket {
     var adaptationField:TSAdaptationField?
     var payload:Data = Data()
 
-    fileprivate var remain:Int {
+    private var remain:Int {
         var adaptationFieldSize:Int = 0
         if let adaptationField:TSAdaptationField = adaptationField , adaptationFieldFlag {
             adaptationField.compute()

@@ -9,14 +9,14 @@ open class NetService: NSObject {
     let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.lock")
     var networkQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.network")
 
-    fileprivate(set) var domain:String
-    fileprivate(set) var name:String
-    fileprivate(set) var port:Int32
-    fileprivate(set) var type:String
-    fileprivate(set) var running:Bool = false
-    fileprivate(set) var clients:[NetClient] = []
-    fileprivate(set) var service:Foundation.NetService!
-    fileprivate var runloop:RunLoop!
+    private(set) var domain:String
+    private(set) var name:String
+    private(set) var port:Int32
+    private(set) var type:String
+    private(set) var running:Bool = false
+    private(set) var clients:[NetClient] = []
+    private(set) var service:Foundation.NetService!
+    private var runloop:RunLoop!
 
     public init(domain:String, type:String, name:String, port:Int32) {
         self.domain = domain
@@ -53,7 +53,7 @@ open class NetService: NSObject {
         runloop = nil
     }
 
-    fileprivate func initService() {
+    private func initService() {
         runloop = RunLoop.current
         service = Foundation.NetService(domain: domain, type: type, name: name, port: port)
         service.delegate = self

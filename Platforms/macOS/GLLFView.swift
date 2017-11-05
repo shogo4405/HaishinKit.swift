@@ -23,10 +23,10 @@ open class GLLFView: NSOpenGLView {
     public var videoGravity:AVLayerVideoGravity = .resizeAspect
     var orientation:AVCaptureVideoOrientation = .portrait
     var position:AVCaptureDevice.Position = .front
-    fileprivate var displayImage:CIImage!
-    fileprivate var originalFrame:CGRect = CGRect.zero
-    fileprivate var scale:CGRect = CGRect.zero
-    fileprivate weak var currentStream:NetStream?
+    private var displayImage:CIImage!
+    private var originalFrame:CGRect = CGRect.zero
+    private var scale:CGRect = CGRect.zero
+    private weak var currentStream:NetStream?
 
     open override func prepareOpenGL() {
         var param:GLint = 1

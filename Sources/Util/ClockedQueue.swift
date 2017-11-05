@@ -8,17 +8,17 @@ protocol ClockedQueueDelegate:class {
 // MARK: -
 final class ClockedQueue {
     var bufferTime:TimeInterval = 0.1 // sec
-    fileprivate(set) var duration:TimeInterval = 0
+    private(set) var duration:TimeInterval = 0
     weak var delegate:ClockedQueueDelegate?
 
-    fileprivate var isReady:Bool = false
-    fileprivate var buffers:[CMSampleBuffer] = []
-    fileprivate lazy var driver:TimerDriver = {
+    private var isReady:Bool = false
+    private var buffers:[CMSampleBuffer] = []
+    private lazy var driver:TimerDriver = {
         var driver:TimerDriver = TimerDriver()
         driver.setDelegate(self, withQueue: self.lockQueue)
         return driver
     }()
-    fileprivate let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.ClockedQueue.lock")
+    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.ClockedQueue.lock")
 
     func enqueue(_ buffer:CMSampleBuffer) {
         lockQueue.async {

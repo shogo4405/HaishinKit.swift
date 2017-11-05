@@ -14,8 +14,8 @@ public final class ASUndefined: NSObject {
 
 // MARK: -
 public struct ASArray {
-    fileprivate(set) var data:[Any?]
-    fileprivate(set) var dict:[String: Any?] = [:]
+    private(set) var data:[Any?]
+    private(set) var dict:[String: Any?] = [:]
 
     public var length:Int {
         return data.count
@@ -98,7 +98,7 @@ public final class ASXMLDocument: NSObject {
         return data
     }
 
-    fileprivate var data:String
+    private var data:String
 
     public init(data:String) {
         self.data = data
@@ -116,7 +116,7 @@ public final class ASXML: NSObject {
         return data
     }
 
-    fileprivate var data:String
+    private var data:String
 
     public init(data:String) {
         self.data = data

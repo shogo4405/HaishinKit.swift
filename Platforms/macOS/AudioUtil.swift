@@ -4,7 +4,7 @@ import CoreAudio
 
 final class AudioUtil {
 
-    fileprivate static var defaultDeviceID:AudioObjectID {
+    private static var defaultDeviceID:AudioObjectID {
         var deviceID:AudioObjectID = AudioObjectID(0)
         var size:UInt32 = UInt32(MemoryLayout<AudioObjectID>.size)
         var address:AudioObjectPropertyAddress = AudioObjectPropertyAddress()
@@ -15,7 +15,7 @@ final class AudioUtil {
         return deviceID
     }
 
-    fileprivate init() {
+    private init() {
     }
 
     static func setInputGain(_ volume:Float32) -> OSStatus {

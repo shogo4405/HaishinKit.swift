@@ -9,8 +9,8 @@ open class GLLFView: GLKView {
     ]
     open static var defaultBackgroundColor:UIColor = .black
     open var videoGravity:AVLayerVideoGravity = .resizeAspect
-    fileprivate var displayImage:CIImage?
-    fileprivate weak var currentStream:NetStream? {
+    private var displayImage:CIImage?
+    private weak var currentStream:NetStream? {
         didSet {
             guard let oldValue:NetStream = oldValue else {
                 return

@@ -7,8 +7,8 @@ final class FLVReader {
     private(set) var url:URL
     private(set) var hasAudio:Bool = false
     private(set) var hasVideo:Bool = false
-    fileprivate var currentOffSet:UInt64 = 0
-    fileprivate var fileHandle:FileHandle? = nil
+    private var currentOffSet:UInt64 = 0
+    private var fileHandle:FileHandle? = nil
 
     init(url:URL) {
         do {

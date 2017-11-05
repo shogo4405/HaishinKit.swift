@@ -180,9 +180,9 @@ final class RTMPChunk {
         }
     }
 
-    fileprivate(set) var message:RTMPMessage?
-    fileprivate(set) var fragmented:Bool = false
-    fileprivate var _data:Data = Data()
+    private(set) var message:RTMPMessage?
+    private(set) var fragmented:Bool = false
+    private var _data:Data = Data()
 
     init(type:RTMPChunkType, streamId:UInt16, message:RTMPMessage) {
         self.type = type

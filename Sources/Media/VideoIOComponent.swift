@@ -160,7 +160,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    fileprivate var _output:AVCaptureVideoDataOutput? = nil
+    private var _output:AVCaptureVideoDataOutput? = nil
     var output:AVCaptureVideoDataOutput! {
         get {
             if (_output == nil) {

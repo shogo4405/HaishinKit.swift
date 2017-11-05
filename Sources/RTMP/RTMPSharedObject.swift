@@ -82,7 +82,7 @@ extension RTMPSharedObjectEvent: CustomStringConvertible {
  */
 open class RTMPSharedObject: EventDispatcher {
 
-    static fileprivate var remoteSharedObjects:[String: RTMPSharedObject] = [:]
+    static private var remoteSharedObjects:[String: RTMPSharedObject] = [:]
     static open func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
         let key:String = remotePath + "/" + withName + "?persistence=" + persistence.description
         objc_sync_enter(remoteSharedObjects)
@@ -99,10 +99,10 @@ open class RTMPSharedObject: EventDispatcher {
     var persistence:Bool
     var currentVersion:UInt32 = 0
 
-    open fileprivate(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
-    open fileprivate(set) var data:[String: Any?] = [:]
+    open private(set) var objectEncoding:UInt8 = RTMPConnection.defaultObjectEncoding
+    open private(set) var data:[String: Any?] = [:]
 
-    fileprivate var succeeded:Bool = false {
+    private var succeeded:Bool = false {
         didSet {
             guard succeeded else {
                 return
@@ -117,7 +117,7 @@ open class RTMPSharedObject: EventDispatcher {
         return data.description
     }
 
-    fileprivate var rtmpConnection:RTMPConnection? = nil
+    private var rtmpConnection:RTMPConnection? = nil
 
     init(name:String, path:String, persistence:Bool) {
         self.name = name

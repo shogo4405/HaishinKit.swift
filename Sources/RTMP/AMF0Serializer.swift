@@ -1,7 +1,7 @@
 import Foundation
 
 class AMFSerializerUtil {
-    fileprivate static var classes:[String: AnyClass] = [:]
+    private static var classes:[String: AnyClass] = [:]
 
     static func getClassByAlias(_ name:String) -> AnyClass? {
         objc_sync_enter(classes)
@@ -372,7 +372,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     @discardableResult
-    fileprivate func serializeUTF8(_ value:String, _ isLong: Bool) -> Self {
+    private func serializeUTF8(_ value:String, _ isLong: Bool) -> Self {
         let utf8:Data = Data(value.utf8)
         if (isLong) {
             writeUInt32(UInt32(utf8.count))
@@ -382,7 +382,7 @@ extension AMF0Serializer: AMFSerializer {
         return writeBytes(utf8)
     }
 
-    fileprivate func deserializeUTF8(_ isLong:Bool) throws -> String {
+    private func deserializeUTF8(_ isLong:Bool) throws -> String {
         let length:Int = isLong ? Int(try readUInt32()) : Int(try readUInt16())
         return try readUTF8Bytes(length)
     }

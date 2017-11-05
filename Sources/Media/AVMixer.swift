@@ -43,7 +43,7 @@ final public class AVMixer: NSObject {
         }
     }
 
-    fileprivate var _session:AVCaptureSession?
+    private var _session:AVCaptureSession?
     public var session:AVCaptureSession {
         get {
             if (_session == nil) {

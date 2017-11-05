@@ -73,10 +73,10 @@ final class AACEncoder: NSObject {
     var lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AACEncoder.lock")
     weak var delegate:AudioEncoderDelegate?
     internal(set) var running:Bool = false
-    fileprivate var maximumBuffers:Int = AACEncoder.defaultMaximumBuffers
-    fileprivate var bufferListSize:Int = AACEncoder.defaultBufferListSize
-    fileprivate var currentBufferList:UnsafeMutableAudioBufferListPointer? = nil
-    fileprivate var inSourceFormat:AudioStreamBasicDescription? {
+    private var maximumBuffers:Int = AACEncoder.defaultMaximumBuffers
+    private var bufferListSize:Int = AACEncoder.defaultBufferListSize
+    private var currentBufferList:UnsafeMutableAudioBufferListPointer? = nil
+    private var inSourceFormat:AudioStreamBasicDescription? {
         didSet {
             logger.info("\(String(describing: self.inSourceFormat))")
             guard let inSourceFormat:AudioStreamBasicDescription = self.inSourceFormat else {
@@ -87,8 +87,8 @@ final class AACEncoder: NSObject {
             bufferListSize = nonInterleaved ? AudioBufferList.sizeInBytes(maximumBuffers: maximumBuffers) : AACEncoder.defaultBufferListSize
         }
     }
-    fileprivate var _inDestinationFormat:AudioStreamBasicDescription?
-    fileprivate var inDestinationFormat:AudioStreamBasicDescription {
+    private var _inDestinationFormat:AudioStreamBasicDescription?
+    private var inDestinationFormat:AudioStreamBasicDescription {
         get {
             if (_inDestinationFormat == nil) {
                 _inDestinationFormat = AudioStreamBasicDescription()
@@ -113,7 +113,7 @@ final class AACEncoder: NSObject {
         }
     }
 
-    fileprivate var inputDataProc:AudioConverterComplexInputDataProc = {(
+    private var inputDataProc:AudioConverterComplexInputDataProc = {(
         converter:AudioConverterRef,
         ioNumberDataPackets:UnsafeMutablePointer<UInt32>,
         ioData:UnsafeMutablePointer<AudioBufferList>,
@@ -126,8 +126,8 @@ final class AACEncoder: NSObject {
         )
     }
 
-    fileprivate var _converter:AudioConverterRef?
-    fileprivate var converter:AudioConverterRef {
+    private var _converter:AudioConverterRef?
+    private var converter:AudioConverterRef {
         var status:OSStatus = noErr
         if (_converter == nil) {
             var converter:AudioConverterRef? = nil

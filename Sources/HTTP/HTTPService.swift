@@ -245,7 +245,7 @@ open class HTTPService: NetService {
 }
 
 open class HLSService: HTTPService {
-    fileprivate(set) var streams:[HTTPStream] = []
+    private(set) var streams:[HTTPStream] = []
 
     open func addHTTPStream(_ stream:HTTPStream) {
         for i in 0..<streams.count {

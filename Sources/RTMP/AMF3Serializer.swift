@@ -500,7 +500,7 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 1.3.1 Variable Length Unsigned 29-bit Integer Encoding
      */
     @discardableResult
-    fileprivate func serializeU29(_ value:Int) -> Self {
+    private func serializeU29(_ value:Int) -> Self {
         if (value < Int(Int32.min) || Int(Int32.max) < value) {
             return serialize(Double(value))
         }
@@ -523,7 +523,7 @@ extension AMF3Serializer: AMFSerializer {
         }
     }
 
-    fileprivate func deserializeU29() throws -> Int {
+    private func deserializeU29() throws -> Int {
         var count:Int = 1
         var result:Int = 0
         var byte:UInt8 = try readUInt8()
@@ -550,7 +550,7 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 1.3.2 Strings and UTF-8
      */
     @discardableResult
-    fileprivate func serializeUTF8(_ value:String) -> Self {
+    private func serializeUTF8(_ value:String) -> Self {
         if (value.isEmpty) {
             return serializeU29(0x01)
         }
@@ -562,7 +562,7 @@ extension AMF3Serializer: AMFSerializer {
         return serializeU29(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
-    fileprivate func deserializeUTF8() throws -> String {
+    private func deserializeUTF8() throws -> String {
         let ref:Int = try deserializeU29()
         if (ref & 0x01) == 0 {
             return try reference.getString(ref >> 1)

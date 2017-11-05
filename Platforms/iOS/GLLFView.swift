@@ -14,8 +14,8 @@ open class GLLFView: GLKView {
     var position:AVCaptureDevice.Position = .back
     var orientation:AVCaptureVideoOrientation = .portrait
 
-    fileprivate var displayImage:CIImage?
-    fileprivate weak var currentStream:NetStream? {
+    private var displayImage:CIImage?
+    private weak var currentStream:NetStream? {
         didSet {
             guard let oldValue:NetStream = oldValue else {
                 return
