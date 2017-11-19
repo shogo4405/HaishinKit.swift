@@ -264,8 +264,8 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             dateFormatter.dateFormat = dateFormat
             var fileComponent:String? = nil
             if var fileName:String = fileName {
-                if let q:String.CharacterView.Index = fileName.characters.index(of: "?") {
-                    fileName.removeSubrange(q..<fileName.characters.endIndex)
+                if let q:String.Index = fileName.index(of: "?") {
+                    fileName.removeSubrange(q..<fileName.endIndex)
                 }
                 fileComponent = fileName + dateFormatter.string(from: Date())
             }

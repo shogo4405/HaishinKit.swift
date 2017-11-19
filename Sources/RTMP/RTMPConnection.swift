@@ -128,11 +128,11 @@ open class RTMPConnection: EventDispatcher {
     private static func createSanJoseAuthCommand(_ url:URL, description:String) -> String {
         var command:String = url.absoluteString
 
-        guard let index:String.CharacterView.Index = description.characters.index(of: "?") else {
+        guard let index:String.Index = description.index(of: "?") else {
             return command
         }
 
-        let query:String = description.substring(from: description.characters.index(index, offsetBy: 1))
+        let query:String = String(description[description.index(index, offsetBy: 1)...])
         let challenge:String = String(format: "%08x", arc4random())
         let dictionary:[String:String] = URL(string: "http://localhost?" + query)!.dictionaryFromQuery()
 
@@ -372,7 +372,7 @@ open class RTMPConnection: EventDispatcher {
             return nil
         }
 
-        var app:String = uri.path.substring(from: uri.path.characters.index(uri.path.startIndex, offsetBy: 1))
+        var app:String = String(uri.path[uri.path.index(uri.path.startIndex, offsetBy: 1)...])
         if let query:String = uri.query {
             app += "?" + query
         }

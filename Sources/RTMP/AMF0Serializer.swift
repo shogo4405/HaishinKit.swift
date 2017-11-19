@@ -229,7 +229,7 @@ extension AMF0Serializer: AMFSerializer {
      * @see 2.4 String Type
      */
     func serialize(_ value:String) -> Self {
-        let isLong:Bool = UInt32(UInt16.max) < UInt32(value.characters.count)
+        let isLong:Bool = UInt32(UInt16.max) < UInt32(value.count)
         writeUInt8(isLong ? Type.longString.rawValue : Type.string.rawValue)
         return serializeUTF8(value, isLong)
     }
