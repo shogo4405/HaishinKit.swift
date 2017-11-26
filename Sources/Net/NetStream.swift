@@ -23,13 +23,13 @@ open class NetStream: NSObject {
     }
 
     open var metadata:[String: Any?] = [:]
-    
+
     open var context:CIContext? {
         get {
             return mixer.videoIO.context
         }
         set {
-            mixer.videoIO.context = context
+            mixer.videoIO.context = newValue
         }
     }
 
