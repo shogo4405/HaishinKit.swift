@@ -29,7 +29,7 @@ open class NetStream: NSObject {
             return mixer.videoIO.context
         }
         set {
-            mixer.videoIO.context = context
+            mixer.videoIO.context = newValue
         }
     }
 
