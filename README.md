@@ -2,7 +2,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
 ![Language](https://img.shields.io/badge/language-Swift%204.0-orange.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
-[![GitHub license](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
+[![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
 * Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
 * Issuesの言語は、英語か、日本語でお願いします！
@@ -72,7 +72,7 @@ github "shogo4405/HaishinKit.swift" ~> 0.8.0
 ```
 
 ## License
-New BSD
+BSD-3-Clause
 
 ## Donation
 Bitcoin
