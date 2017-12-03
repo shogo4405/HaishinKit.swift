@@ -1,6 +1,7 @@
 import HaishinKit
 import VideoToolbox
 import ReplayKit
+import Logboard
 
 @available(iOS 10.0, *)
 open class SampleHandler: RPBroadcastSampleHandler {
@@ -16,6 +17,13 @@ open class SampleHandler: RPBroadcastSampleHandler {
     }
 
     override open func broadcastStarted(withSetupInfo setupInfo: [String : NSObject]?) {
+        /*
+        let logger = Logboard.with(HaishinKitIdentifier)
+        let socket = SocketAppender()
+        socket.connect("192.168.11.15", port: 22222)
+        logger.level = .debug
+        logger.appender = socket
+        */
         print("broadcastStarted")
         super.broadcastStarted(withSetupInfo: setupInfo)
         guard
