@@ -1,10 +1,10 @@
 import Foundation
 
-enum FLVTagType:UInt8 {
+public enum FLVTagType:UInt8 {
     case audio = 8
     case video = 9
     case data  = 18
-    
+
     var streamId:UInt16 {
         switch self {
         case .audio:
@@ -15,7 +15,7 @@ enum FLVTagType:UInt8 {
             return 0
         }
     }
-    
+
     var headerSize:Int {
         switch self {
         case .audio:
@@ -29,16 +29,25 @@ enum FLVTagType:UInt8 {
 }
 
 // MARK: -
-struct FLVTag {
-    static let headerSize = 11
-    
-    var tagType:FLVTagType = .data
-    var dataSize:UInt32 = 0
-    var timestamp:UInt32 = 0
-    var timestampExtended:UInt8 = 0
-    var streamId:UInt32 = 0
-    
+public protocol FLVTag: CustomStringConvertible {
+    var tagType:FLVTagType { set get }
+    var dataSize:UInt32 { set get }
+    var timestamp:UInt32 { set get }
+    var timestampExtended:UInt8 { set get }
+    var streamId:UInt32 { set get }
+    var offset:UInt64 { set get }
+
+    init()
+    mutating func readData(_ fileHandler: FileHandle)
+}
+
+extension FLVTag {
+    var headerSize:Int {
+        return tagType.headerSize
+    }
+
     init?(data:Data) {
+        self.init()
         let buffer:ByteArray = ByteArray(data: data)
         do {
             tagType = FLVTagType(rawValue: try buffer.readUInt8()) ?? .data
@@ -51,11 +60,74 @@ struct FLVTag {
             return nil
         }
     }
+
+    // MARK: CustomStringConvertible
+    public var description:String {
+        return Mirror(reflecting: self).description
+    }
 }
 
-extension FLVTag: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description:String {
-        return Mirror(reflecting: self).description
+// MARK: -
+public struct FLVDataTag: FLVTag {
+    public var tagType: FLVTagType = .data
+    public var dataSize: UInt32 = 0
+    public var timestamp: UInt32 = 0
+    public var timestampExtended: UInt8 = 0
+    public var streamId: UInt32 = 0
+    public var offset: UInt64 = 0
+
+    public init() {
+    }
+
+    mutating public func readData(_ fileHandler: FileHandle) {
+    }
+}
+
+// MARK: -
+public struct FLVAudioTag: FLVTag {
+    public var tagType: FLVTagType = .audio
+    public var dataSize: UInt32 = 0
+    public var timestamp: UInt32 = 0
+    public var timestampExtended: UInt8 = 0
+    public var streamId: UInt32 = 0
+    public var offset: UInt64 = 0
+    public var codec:FLVAudioCodec = .unknown
+    public var soundRate:FLVSoundRate = .kHz5_5
+    public var soundSize:FLVSoundSize = .snd8bit
+    public var soundType:FLVSoundType = .mono
+
+    public init() {
+    }
+
+    mutating public func readData(_ fileHandler: FileHandle) {
+        let data:Data = fileHandler.readData(ofLength: headerSize)
+        codec = FLVAudioCodec(rawValue: data[0] >> 4) ?? .unknown
+        soundRate = FLVSoundRate(rawValue: (data[0] & 0b00001100) >> 2) ?? .kHz5_5
+        soundSize = FLVSoundSize(rawValue: (data[0] & 0b00000010) >> 1) ?? .snd8bit
+        soundType = FLVSoundType(rawValue: data[0] & 0b00000001) ?? .mono
+    }
+}
+
+// MARK: -
+public struct FLVVideoTag: FLVTag {
+    public var tagType: FLVTagType = .video
+    public var dataSize: UInt32 = 0
+    public var timestamp: UInt32 = 0
+    public var timestampExtended: UInt8 = 0
+    public var streamId: UInt32 = 0
+    public var offset: UInt64 = 0
+    public var frameType:FLVFrameType = .command
+    public var codec:FLVVideoCodec = .unknown
+    public var avcPacketType:FLVAVCPacketType = .eos
+    public var compositionTime:Int32 = 0
+
+    public init() {
+    }
+
+    mutating public func readData(_ fileHandler: FileHandle) {
+        let data:Data = fileHandler.readData(ofLength: headerSize)
+        frameType = FLVFrameType(rawValue: data[0] >> 4) ?? .command
+        codec = FLVVideoCodec(rawValue: data[0] & 0b00001111) ?? .unknown
+        avcPacketType = FLVAVCPacketType(rawValue: data[1]) ?? .eos
     }
 }

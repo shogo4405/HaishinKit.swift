@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-enum FLVAudioCodec:UInt8 {
+public enum FLVAudioCodec:UInt8 {
     case pcm           = 0
     case adpcm         = 1
     case mp3           = 2

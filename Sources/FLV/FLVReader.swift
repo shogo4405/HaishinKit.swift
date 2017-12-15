@@ -1,16 +1,17 @@
 import Foundation
 import AVFoundation
 
-final class FLVReader {
-    static let header:Data = Data([0x46, 0x4C, 0x56, 1])
+open class FLVReader {
+    static public let header:Data = Data([0x46, 0x4C, 0x56, 1])
+    static let headerSize:Int = 11
 
-    private(set) var url:URL
-    private(set) var hasAudio:Bool = false
-    private(set) var hasVideo:Bool = false
+    public private(set) var url:URL
+    public private(set) var hasAudio:Bool = false
+    public private(set) var hasVideo:Bool = false
     private var currentOffSet:UInt64 = 0
     private var fileHandle:FileHandle? = nil
 
-    init(url:URL) {
+    public init(url:URL) {
         do {
             self.url = url
             fileHandle = try FileHandle(forReadingFrom: url)
@@ -20,19 +21,34 @@ final class FLVReader {
             logger.error("\(error)")
         }
     }
+
+    public func getData(_ tag:FLVTag) -> Data? {
+        fileHandle?.seek(toFileOffset: tag.offset)
+        return fileHandle?.readData(ofLength: Int(UInt64(tag.dataSize)))
+    }
 }
 
 extension FLVReader: IteratorProtocol {
-    func next() -> FLVTag? {
+    public func next() -> FLVTag? {
         guard let fileHandle:FileHandle = fileHandle else {
             return nil
         }
-        let data:Data = fileHandle.readData(ofLength: FLVTag.headerSize)
-        guard let tag:FLVTag = FLVTag(data: data) else {
+        var tag:FLVTag! = nil
+        fileHandle.seek(toFileOffset: currentOffSet)
+        let data:Data = fileHandle.readData(ofLength: FLVReader.headerSize)
+        switch data[0] {
+        case 8:
+            tag = FLVAudioTag(data: data)
+        case 9:
+            tag = FLVVideoTag(data: data)
+        case 18:
+            tag = FLVDataTag(data: data)
+        default:
             return nil
         }
-        currentOffSet += UInt64(FLVTag.headerSize) + UInt64(tag.dataSize) + 4
-        fileHandle.seek(toFileOffset: currentOffSet)
+        tag.readData(fileHandle)
+        tag.offset = currentOffSet + UInt64(FLVReader.headerSize)
+        currentOffSet += UInt64(FLVReader.headerSize) + UInt64(tag.dataSize) + 4
         return tag
     }
 }

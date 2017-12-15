@@ -1,12 +1,12 @@
 import Foundation
 
-enum FLVSoundRate:UInt8 {
+public enum FLVSoundRate:UInt8 {
     case kHz5_5 = 0
     case kHz11  = 1
     case kHz22  = 2
     case kHz44  = 3
     
-    var floatValue:Float64 {
+    public var floatValue:Float64 {
         switch self {
         case .kHz5_5:
             return 5500
