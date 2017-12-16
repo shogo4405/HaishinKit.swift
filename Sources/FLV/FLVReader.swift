@@ -36,6 +36,9 @@ extension FLVReader: IteratorProtocol {
         var tag:FLVTag! = nil
         fileHandle.seek(toFileOffset: currentOffSet)
         let data:Data = fileHandle.readData(ofLength: FLVReader.headerSize)
+        guard !data.isEmpty else {
+            return nil
+        }
         switch data[0] {
         case 8:
             tag = FLVAudioTag(data: data)
