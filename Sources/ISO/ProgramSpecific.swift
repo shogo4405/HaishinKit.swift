@@ -71,7 +71,7 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
         var packet: TSPacket = TSPacket()
         packet.payloadUnitStartIndicator = true
         packet.PID = PID
-        let _ = packet.fill(data, useAdaptationField: false)
+        _ = packet.fill(data, useAdaptationField: false)
         packets.append(packet)
         return packets
     }

@@ -3,6 +3,10 @@ disabled_rules:
   - force_cast
   - line_length
   - type_body_length
+  - function_body_length
+  - file_length
+  - cyclomatic_complexity
+  - compiler_protocol_init
 excluded:
   - Carthage
   - Pods

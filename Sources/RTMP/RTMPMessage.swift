@@ -616,7 +616,7 @@ final class RTMPAudioMessage: RTMPMessage {
         }
 
         if payload[1] == FLVAACPacketType.seq.rawValue {
-            if let config: AudioSpecificConfig = AudioSpecificConfig(bytes: Array<UInt8>(payload[codec.headerSize..<payload.count])) {
+            if let config: AudioSpecificConfig = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count])) {
                 return config
             }
         }

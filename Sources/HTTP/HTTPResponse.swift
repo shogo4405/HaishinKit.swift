@@ -36,8 +36,7 @@ extension HTTPResponseCompatible {
             let bytes: [Data.SubSequence] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
-                guard let line: String = String(bytes: Array(bytes[i]), encoding: String.Encoding.utf8)
-                    , line != "\r" else {
+                guard let line: String = String(bytes: Array(bytes[i]), encoding: String.Encoding.utf8), line != "\r" else {
                         break
                 }
                 lines.append(line.trimmingCharacters(in: CharacterSet.newlines))

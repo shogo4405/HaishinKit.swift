@@ -259,14 +259,14 @@ struct PacketizedElementaryStream: PESPacketHeader {
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            let _ = packet.fill(remain, useAdaptationField: true)
+            _ = packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
             packet = TSPacket()
             packet.PID = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            let _ = packet.fill(Data([payload[payload.count - 1]]), useAdaptationField: true)
+            _ = packet.fill(Data([payload[payload.count - 1]]), useAdaptationField: true)
             packets.append(packet)
         default:
             let remain: Data = payload.subdata(in: payload.count - r..<payload.count)
@@ -275,7 +275,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
-            let _ = packet.fill(remain, useAdaptationField: true)
+            _ = packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
         }
 

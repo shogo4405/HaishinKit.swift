@@ -281,7 +281,7 @@ open class ByteArray: ByteArrayConvertible {
         }
         let length: Int = min(data.count, value.count)
         data[position..<position + length] = value[0..<length]
-        if (length == data.count) {
+        if length == data.count {
             data.append(value[length..<value.count])
         }
         position += value.count

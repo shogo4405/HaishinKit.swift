@@ -81,7 +81,7 @@ extension ASArray: Equatable {
     // MARK: Equatable
 }
 
-public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
+public func == (lhs: ASArray, rhs: ASArray) -> Bool {
     return (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
 }
 
