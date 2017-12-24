@@ -414,10 +414,8 @@ open class RTMPConnection: EventDispatcher {
         }
         if measureInterval <= previousQueueBytesOut.count {
             var count: Int = 0
-            for i in 0..<previousQueueBytesOut.count - 1 {
-                if previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
-                    count += 1
-                }
+            for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
+                count += 1
             }
             if count == measureInterval - 1 {
                 for (_, stream) in streams {

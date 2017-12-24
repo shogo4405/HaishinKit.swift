@@ -248,20 +248,16 @@ open class HLSService: HTTPService {
     private(set) var streams: [HTTPStream] = []
 
     open func addHTTPStream(_ stream: HTTPStream) {
-        for i in 0..<streams.count {
-            if stream.name == streams[i].name {
-                return
-            }
+        for i in 0..<streams.count where stream.name == streams[i].name {
+            return
         }
         streams.append(stream)
     }
 
     open func removeHTTPStream(_ stream: HTTPStream) {
-        for i in 0..<streams.count {
-            if stream.name == streams[i].name {
-                streams.remove(at: i)
-                return
-            }
+        for i in 0..<streams.count where stream.name == streams[i].name {
+            streams.remove(at: i)
+            return
         }
     }
 

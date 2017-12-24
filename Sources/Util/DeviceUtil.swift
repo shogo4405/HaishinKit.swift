@@ -50,10 +50,8 @@ public final class DeviceUtil {
             diff.append(abs(frameRate - fps))
         }
         if let minElement: Float64 = diff.min() {
-            for i in 0..<diff.count {
-                if diff[i] == minElement {
-                    return (frameRates[i], durations[i])
-                }
+            for i in 0..<diff.count where diff[i] == minElement {
+                return (frameRates[i], durations[i])
             }
         }
 
