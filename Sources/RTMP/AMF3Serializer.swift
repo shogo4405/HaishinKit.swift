@@ -1,26 +1,26 @@
 import Foundation
 
 class AMFReference {
-    var strings:[String] = []
-    var objects:[Any] = []
-    
-    func getString(_ index:Int) throws -> String {
-        if (strings.count <= index) {
+    var strings: [String] = []
+    var objects: [Any] = []
+
+    func getString(_ index: Int) throws -> String {
+        if strings.count <= index {
             throw AMFSerializerError.outOfIndex
         }
         return strings[index]
     }
-    
-    func getObject(_ index:Int) throws -> Any {
-        if (objects.count <= index) {
+
+    func getObject(_ index: Int) throws -> Any {
+        if objects.count <= index {
             throw AMFSerializerError.outOfIndex
         }
         return objects[index]
     }
-    
-    func indexOf<T:Equatable>(_ value: T) -> Int? {
+
+    func indexOf<T: Equatable>(_ value: T) -> Int? {
         for (index, data) in objects.enumerated() {
-            if let data:T = data as? T , data == value {
+            if let data: T = data as? T, data == value {
                 return index
             }
         }
@@ -42,17 +42,17 @@ class AMFReference {
     func indexOf(_ value: [Any?]) -> Int? {
         return nil
     }
-    
-    func indexOf(_ value:ASObject) -> Int? {
+
+    func indexOf(_ value: ASObject) -> Int? {
         for (index, data) in objects.enumerated() {
-            if let data:ASObject = data as? ASObject , data.description == value.description {
+            if let data: ASObject = data as? ASObject, data.description == value.description {
                 return index
             }
         }
         return nil
     }
-    
-    func indexOf(_ value:String) -> Int? {
+
+    func indexOf(_ value: String) -> Int? {
         return strings.index(of: value)
     }
 }
@@ -61,10 +61,10 @@ class AMFReference {
 /**
  AMF3 Serializer
 
- - seealso: http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
+ - seealso: http: //wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
  */
 class AMF3Serializer: ByteArray {
-    enum `Type`:UInt8 {
+    enum `Type`: UInt8 {
         case undefined    = 0x00
         case null         = 0x01
         case boolFalse    = 0x02
@@ -85,18 +85,16 @@ class AMF3Serializer: ByteArray {
         case dictionary   = 0x11
     }
 
-    var reference:AMFReference = AMFReference()
+    var reference: AMFReference = AMFReference()
 }
 
 extension AMF3Serializer: AMFSerializer {
     // MARK: AMFSerializer
     @discardableResult
-    func serialize(_ value:Any?) -> Self {
-        
+    func serialize(_ value: Any?) -> Self {
         if value == nil {
             return writeUInt8(Type.null.rawValue)
         }
-        
         switch value {
         case let value as Int:
             return serialize(Double(value))
@@ -132,9 +130,9 @@ extension AMF3Serializer: AMFSerializer {
             return writeUInt8(Type.undefined.rawValue)
         }
     }
-    
+
     func deserialize() throws -> Any? {
-        guard let type:Type = Type(rawValue: try readUInt8()) else {
+        guard let type: Type = Type(rawValue: try readUInt8()) else {
             throw AMFSerializerError.deserialize
         }
         position -= 1
@@ -180,13 +178,13 @@ extension AMF3Serializer: AMFSerializer {
             return nil
         }
     }
-    
+
     /**
      - seealso: 3.4 false Type
      - seealso: 3.5 true type
      */
     @discardableResult
-    func serialize(_ value:Bool) -> Self {
+    func serialize(_ value: Bool) -> Self {
         return writeUInt8(value ? Type.boolTrue.rawValue: Type.boolFalse.rawValue)
     }
 
@@ -205,22 +203,22 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 3.6 integer type
      */
     @discardableResult
-    func serialize(_ value:Int) -> Self {
+    func serialize(_ value: Int) -> Self {
         return writeUInt8(Type.integer.rawValue).serializeU29(value)
     }
-    
+
     func deserialize() throws -> Int {
         guard try readUInt8() == Type.integer.rawValue else {
             throw AMFSerializerError.deserialize
         }
         return try deserializeU29()
     }
-    
+
     /**
      - seealso: 3.7 double type
      */
     @discardableResult
-    func serialize(_ value:Double) -> Self {
+    func serialize(_ value: Double) -> Self {
         return writeUInt8(Type.number.rawValue).writeDouble(value)
     }
 
@@ -235,7 +233,7 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 3.8 String type
      */
     @discardableResult
-    func serialize(_ value:String) -> Self {
+    func serialize(_ value: String) -> Self {
         return writeUInt8(Type.string.rawValue).serializeUTF8(value)
     }
 
@@ -252,11 +250,11 @@ extension AMF3Serializer: AMFSerializer {
     @discardableResult
     func serialize(_ value: ASXMLDocument) -> Self {
         writeUInt8(Type.xml.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        let utf8:Data = Data(value.description.utf8)
+        let utf8: Data = Data(value.description.utf8)
         return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
@@ -264,25 +262,25 @@ extension AMF3Serializer: AMFSerializer {
         guard try readUInt8() == Type.xml.rawValue else {
             throw AMFSerializerError.deserialize
         }
-        let refs:Int = try deserializeU29()
+        let refs: Int = try deserializeU29()
         if (refs & 0x01) == 0 {
-            guard let document:ASXMLDocument = try reference.getObject(refs >> 1) as? ASXMLDocument else {
+            guard let document: ASXMLDocument = try reference.getObject(refs >> 1) as? ASXMLDocument else {
                 throw AMFSerializerError.deserialize
             }
             return document
         }
-        let document:ASXMLDocument = ASXMLDocument(data: try readUTF8Bytes(refs >> 1))
+        let document: ASXMLDocument = ASXMLDocument(data: try readUTF8Bytes(refs >> 1))
         reference.objects.append(document)
         return document
     }
-    
+
     /**
      - seealso: 3.10 Date type
      */
     @discardableResult
-    func serialize(_ value:Date) -> Self {
+    func serialize(_ value: Date) -> Self {
         writeUInt8(Type.date.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -293,14 +291,14 @@ extension AMF3Serializer: AMFSerializer {
         guard try readUInt8() == Type.date.rawValue else {
             throw AMFSerializerError.deserialize
         }
-        let refs:Int = try deserializeU29()
+        let refs: Int = try deserializeU29()
         if (refs & 0x01) == 0 {
-            guard let date:Date = try reference.getObject(refs >> 1) as? Date else {
+            guard let date: Date = try reference.getObject(refs >> 1) as? Date else {
                 throw AMFSerializerError.deserialize
             }
             return date
         }
-        let date:Date = Date(timeIntervalSince1970: try readDouble() / 1000)
+        let date: Date = Date(timeIntervalSince1970: try readDouble() / 1000)
         reference.objects.append(date)
         return date
     }
@@ -311,7 +309,7 @@ extension AMF3Serializer: AMFSerializer {
     @discardableResult
     func serialize(_ value: ASArray) -> Self {
         writeUInt8(Type.array.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -340,7 +338,7 @@ extension AMF3Serializer: AMFSerializer {
     @discardableResult
     func serialize(_ value: ASObject) -> Self {
         writeUInt8(Type.object.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -363,11 +361,11 @@ extension AMF3Serializer: AMFSerializer {
     @discardableResult
     func serialize(_ value: ASXML) -> Self {
         writeUInt8(Type.xmlString.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        let utf8:Data = Data(value.description.utf8)
+        let utf8: Data = Data(value.description.utf8)
         return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
@@ -375,14 +373,14 @@ extension AMF3Serializer: AMFSerializer {
         guard try readUInt8() == Type.xml.rawValue else {
             throw AMFSerializerError.deserialize
         }
-        let refs:Int = try deserializeU29()
+        let refs: Int = try deserializeU29()
         if (refs & 0x01) == 0 {
-            guard let xml:ASXML = try reference.getObject(refs >> 1) as? ASXML else {
+            guard let xml: ASXML = try reference.getObject(refs >> 1) as? ASXML else {
                 throw AMFSerializerError.deserialize
             }
             return xml
         }
-        let xml:ASXML = ASXML(data: try readUTF8Bytes(refs >> 1))
+        let xml: ASXML = ASXML(data: try readUTF8Bytes(refs >> 1))
         reference.objects.append(xml)
         return xml
     }
@@ -404,9 +402,9 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 3.15 Vector Type, vector-int-type
      */
     @discardableResult
-    func serialize(_ value:[Int32]) -> Self {
+    func serialize(_ value: [Int32]) -> Self {
         writeUInt8(Type.vectorInt.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -428,9 +426,9 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 3.15 Vector Type, vector-uint-type
      */
     @discardableResult
-    func serialize(_ value:[UInt32]) -> Self {
+    func serialize(_ value: [UInt32]) -> Self {
         writeUInt8(Type.vectorUInt.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -452,9 +450,9 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 3.15 Vector Type, vector-number-type
      */
     @discardableResult
-    func serialize(_ value:[Double]) -> Self {
+    func serialize(_ value: [Double]) -> Self {
         writeUInt8(Type.vectorNumber.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -476,9 +474,9 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 3.15 Vector Type, vector-object-type
      */
     @discardableResult
-    func serialize(_ value:[Any?]) -> Self {
+    func serialize(_ value: [Any?]) -> Self {
         writeUInt8(Type.vectorObject.rawValue)
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
@@ -495,16 +493,16 @@ extension AMF3Serializer: AMFSerializer {
         }
         return []
     }
-    
+
     /**
      - seealso: 1.3.1 Variable Length Unsigned 29-bit Integer Encoding
      */
     @discardableResult
-    private func serializeU29(_ value:Int) -> Self {
-        if (value < Int(Int32.min) || Int(Int32.max) < value) {
+    private func serializeU29(_ value: Int) -> Self {
+        if value < Int(Int32.min) || Int(Int32.max) < value {
             return serialize(Double(value))
         }
-        let value:UInt32 = UInt32(value)
+        let value: UInt32 = UInt32(value)
         switch UInt32(0) {
         case value & 0xFFFFFF80:
             return writeUInt8(UInt8(value & 0x7f))
@@ -524,25 +522,25 @@ extension AMF3Serializer: AMFSerializer {
     }
 
     private func deserializeU29() throws -> Int {
-        var count:Int = 1
-        var result:Int = 0
-        var byte:UInt8 = try readUInt8()
-        
-        while (byte & 0x80 != 0 && count < 4) {
+        var count: Int = 1
+        var result: Int = 0
+        var byte: UInt8 = try readUInt8()
+
+        while byte & 0x80 != 0 && count < 4 {
             result <<= 7
             result |= Int(byte & 0x7F)
             byte = try readUInt8()
             count += 1
         }
-        
-        if (count < 4) {
+
+        if count < 4 {
             result <<= 7
             result |= Int(byte)
         } else {
             result <<= 8
             result |= Int(byte)
         }
-        
+
         return result
     }
 
@@ -550,24 +548,24 @@ extension AMF3Serializer: AMFSerializer {
      - seealso: 1.3.2 Strings and UTF-8
      */
     @discardableResult
-    private func serializeUTF8(_ value:String) -> Self {
-        if (value.isEmpty) {
+    private func serializeUTF8(_ value: String) -> Self {
+        if value.isEmpty {
             return serializeU29(0x01)
         }
-        if let index:Int = reference.indexOf(value) {
+        if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
-        let utf8:Data = Data(value.utf8)
+        let utf8: Data = Data(value.utf8)
         reference.strings.append(value)
         return serializeU29(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
     private func deserializeUTF8() throws -> String {
-        let ref:Int = try deserializeU29()
+        let ref: Int = try deserializeU29()
         if (ref & 0x01) == 0 {
             return try reference.getString(ref >> 1)
         }
-        let string:String = try readUTF8Bytes(length)
+        let string: String = try readUTF8Bytes(length)
         reference.strings.append(string)
         return string
     }

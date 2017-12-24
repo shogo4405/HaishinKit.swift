@@ -1,0 +1,9 @@
+disabled_rules:
+  - identifier_name
+  - force_cast
+  - line_length
+  - type_body_length
+excluded:
+  - Carthage
+  - Pods
+  - Tests

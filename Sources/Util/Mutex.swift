@@ -10,9 +10,9 @@ final class Mutex: NSLocking {
         case perm
     }
 
-    private let mutex:UnsafeMutablePointer<pthread_mutex_t>
-    private let condition:UnsafeMutablePointer<pthread_cond_t>
-    private let attribute:UnsafeMutablePointer<pthread_mutexattr_t>
+    private let mutex: UnsafeMutablePointer<pthread_mutex_t>
+    private let condition: UnsafeMutablePointer<pthread_cond_t>
+    private let attribute: UnsafeMutablePointer<pthread_mutexattr_t>
 
     init() {
         mutex = UnsafeMutablePointer<pthread_mutex_t>.allocate(capacity: MemoryLayout<pthread_mutex_t>.size)
@@ -40,7 +40,7 @@ final class Mutex: NSLocking {
             break
         }
     }
-    
+
     func lock() {
         pthread_mutex_lock(mutex)
     }

@@ -9,7 +9,7 @@ public enum FLVVideoCodec: UInt8 {
     case avc          = 7
     case unknown      = 0xFF
 
-    var isSupported:Bool {
+    var isSupported: Bool {
         switch self {
         case .sorensonH263:
             return false

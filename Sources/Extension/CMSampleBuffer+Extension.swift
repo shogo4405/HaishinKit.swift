@@ -1,41 +1,41 @@
 import CoreMedia
 
 extension CMSampleBuffer {
-    var dependsOnOthers:Bool {
+    var dependsOnOthers: Bool {
         guard
-            let attachments:CFArray = CMSampleBufferGetSampleAttachmentsArray(self, false) else {
+            let attachments: CFArray = CMSampleBufferGetSampleAttachmentsArray(self, false) else {
                 return false
         }
-        let attachment:[NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject : AnyObject]
+        let attachment: [NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject: AnyObject]
         return attachment["DependsOnOthers" as NSObject] as! Bool
     }
-    var dataBuffer:CMBlockBuffer? {
+    var dataBuffer: CMBlockBuffer? {
         get {
             return CMSampleBufferGetDataBuffer(self)
         }
         set {
-            guard let dataBuffer:CMBlockBuffer = newValue else {
+            guard let dataBuffer: CMBlockBuffer = newValue else {
                 return
             }
             CMSampleBufferSetDataBuffer(self, dataBuffer)
         }
     }
-    var imageBuffer:CVImageBuffer? {
+    var imageBuffer: CVImageBuffer? {
         return CMSampleBufferGetImageBuffer(self)
     }
-    var numSamples:CMItemCount {
+    var numSamples: CMItemCount {
         return CMSampleBufferGetNumSamples(self)
     }
-    var duration:CMTime {
+    var duration: CMTime {
         return CMSampleBufferGetDuration(self)
     }
-    var formatDescription:CMFormatDescription? {
+    var formatDescription: CMFormatDescription? {
         return CMSampleBufferGetFormatDescription(self)
     }
-    var decodeTimeStamp:CMTime {
+    var decodeTimeStamp: CMTime {
         return CMSampleBufferGetDecodeTimeStamp(self)
     }
-    var presentationTimeStamp:CMTime {
+    var presentationTimeStamp: CMTime {
         return CMSampleBufferGetPresentationTimeStamp(self)
     }
 }

@@ -3,36 +3,36 @@ import AVFoundation
 
 final public class AVMixer: NSObject {
 
-    static let supportedSettingsKeys:[String] = [
+    static let supportedSettingsKeys: [String] = [
         "fps",
         "sessionPreset",
         "continuousAutofocus",
-        "continuousExposure",
+        "continuousExposure"
     ]
 
-    static let defaultFPS:Float64 = 30
-    static let defaultVideoSettings:[NSString: AnyObject] = [
+    static let defaultFPS: Float64 = 30
+    static let defaultVideoSettings: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
 #if os(iOS) || os(macOS)
-    static let defaultSessionPreset:String = AVCaptureSession.Preset.medium.rawValue
+    static let defaultSessionPreset: String = AVCaptureSession.Preset.medium.rawValue
 
-    @objc var fps:Float64 {
+    @objc var fps: Float64 {
         get { return videoIO.fps }
         set { videoIO.fps = newValue }
     }
 
-    @objc var continuousExposure:Bool {
+    @objc var continuousExposure: Bool {
         get { return videoIO.continuousExposure }
         set { videoIO.continuousExposure = newValue }
     }
 
-    @objc var continuousAutofocus:Bool {
+    @objc var continuousAutofocus: Bool {
         get { return videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
 
-    @objc var sessionPreset:String = AVMixer.defaultSessionPreset {
+    @objc var sessionPreset: String = AVMixer.defaultSessionPreset {
         didSet {
             guard sessionPreset != oldValue else {
                 return
@@ -43,10 +43,10 @@ final public class AVMixer: NSObject {
         }
     }
 
-    private var _session:AVCaptureSession?
-    public var session:AVCaptureSession {
+    private var _session: AVCaptureSession?
+    public var session: AVCaptureSession {
         get {
-            if (_session == nil) {
+            if _session == nil {
                 _session = AVCaptureSession()
                 _session!.sessionPreset = AVCaptureSession.Preset(rawValue: AVMixer.defaultSessionPreset)
             }
@@ -57,23 +57,23 @@ final public class AVMixer: NSObject {
         }
     }
 #endif
-    public private(set) lazy var recorder:AVMixerRecorder = AVMixerRecorder()
+    public private(set) lazy var recorder: AVMixerRecorder = AVMixerRecorder()
 
     deinit {
         dispose()
     }
 
-    private(set) lazy var audioIO:AudioIOComponent = {
+    private(set) lazy var audioIO: AudioIOComponent = {
        return AudioIOComponent(mixer: self)
     }()
 
-    private(set) lazy var videoIO:VideoIOComponent = {
+    private(set) lazy var videoIO: VideoIOComponent = {
        return VideoIOComponent(mixer: self)
     }()
 
     public func dispose() {
 #if os(iOS) || os(macOS)
-        if (session.isRunning) {
+        if session.isRunning {
             session.stopRunning()
         }
 #endif
@@ -83,7 +83,7 @@ final public class AVMixer: NSObject {
 }
 
 extension AVMixer {
-    final func startEncoding(delegate:Any) {
+    final func startEncoding(delegate: Any) {
         videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
         videoIO.encoder.startRunning()
         audioIO.encoder.delegate = delegate as? AudioEncoderDelegate
@@ -111,7 +111,7 @@ extension AVMixer {
 #if os(iOS) || os(macOS)
 extension AVMixer: Runnable {
     // MARK: Runnable
-    var running:Bool {
+    var running: Bool {
         return session.isRunning
     }
 
@@ -134,7 +134,7 @@ extension AVMixer: Runnable {
 #else
 extension AVMixer: Runnable {
     // MARK: Runnable
-    var running:Bool {
+    var running: Bool {
         return false
     }
     final func startRunning() {

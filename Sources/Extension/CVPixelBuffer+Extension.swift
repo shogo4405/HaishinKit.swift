@@ -1,8 +1,8 @@
 import Foundation
 
 extension CVPixelBuffer {
-    static func create(_ image:CIImage) -> CVPixelBuffer? {
-        var buffer:CVPixelBuffer?
+    static func create(_ image: CIImage) -> CVPixelBuffer? {
+        var buffer: CVPixelBuffer?
         CVPixelBufferCreate(
             kCFAllocatorDefault,
             Int(image.extent.width),
@@ -13,10 +13,10 @@ extension CVPixelBuffer {
         )
         return buffer
     }
-    var width:Int {
+    var width: Int {
         return CVPixelBufferGetWidth(self)
     }
-    var height:Int {
+    var height: Int {
         return CVPixelBufferGetHeight(self)
     }
 }

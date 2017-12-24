@@ -1,8 +1,8 @@
 import Logboard
 
-let logger:Logboard = Logboard.with(HaishinKitIdentifier)
+let logger: Logboard = Logboard.with(HaishinKitIdentifier)
 
 public enum CMSampleBufferType: String {
-    case video = "video"
-    case audio = "audio"
+    case video
+    case audio
 }

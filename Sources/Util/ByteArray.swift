@@ -2,59 +2,59 @@ import Foundation
 
 protocol ByteArrayConvertible {
 
-    var data:Data { get }
-    var length:Int { get set }
-    var position:Int { get set }
-    var bytesAvailable:Int { get }
+    var data: Data { get }
+    var length: Int { get set }
+    var position: Int { get set }
+    var bytesAvailable: Int { get }
     subscript(i: Int) -> UInt8 { get set }
 
     @discardableResult
-    func writeUInt8(_ value:UInt8) -> Self
+    func writeUInt8(_ value: UInt8) -> Self
     func readUInt8() throws -> UInt8
 
     @discardableResult
-    func writeInt8(_ value:Int8) -> Self
+    func writeInt8(_ value: Int8) -> Self
     func readInt8() throws -> Int8
 
     @discardableResult
-    func writeUInt16(_ value:UInt16) -> Self
+    func writeUInt16(_ value: UInt16) -> Self
     func readUInt16() throws -> UInt16
 
     @discardableResult
-    func writeInt16(_ value:Int16) -> Self
+    func writeInt16(_ value: Int16) -> Self
     func readInt16() throws -> Int16
 
     @discardableResult
-    func writeUInt24(_ value:UInt32) -> Self
+    func writeUInt24(_ value: UInt32) -> Self
     func readUInt24() throws -> UInt32
 
     @discardableResult
-    func writeUInt32(_ value:UInt32) -> Self
+    func writeUInt32(_ value: UInt32) -> Self
     func readUInt32() throws -> UInt32
 
     @discardableResult
-    func writeInt32(_ value:Int32) -> Self
+    func writeInt32(_ value: Int32) -> Self
     func readInt32() throws -> Int32
 
     @discardableResult
-    func writeDouble(_ value:Double) -> Self
+    func writeDouble(_ value: Double) -> Self
     func readDouble() throws -> Double
 
     @discardableResult
-    func writeFloat(_ value:Float) -> Self
+    func writeFloat(_ value: Float) -> Self
     func readFloat() throws -> Float
 
     @discardableResult
-    func writeUTF8(_ value:String) throws -> Self
+    func writeUTF8(_ value: String) throws -> Self
     func readUTF8() throws -> String
 
     @discardableResult
-    func writeUTF8Bytes(_ value:String) -> Self
-    func readUTF8Bytes(_ length:Int) throws -> String
+    func writeUTF8Bytes(_ value: String) -> Self
+    func readUTF8Bytes(_ length: Int) throws -> String
 
     @discardableResult
-    func writeBytes(_ value:Data) -> Self
-    func readBytes(_ length:Int) throws -> Data
+    func writeBytes(_ value: Data) -> Self
+    func readBytes(_ length: Int) throws -> Data
 
     @discardableResult
     func clear() -> Self
@@ -62,14 +62,14 @@ protocol ByteArrayConvertible {
 
 // MARK: -
 open class ByteArray: ByteArrayConvertible {
-    static let fillZero:[UInt8] = [0x00]
-    
-    static let sizeOfInt8:Int = 1
-    static let sizeOfInt16:Int = 2
-    static let sizeOfInt24:Int = 3
-    static let sizeOfInt32:Int = 4
-    static let sizeOfFloat:Int = 4
-    static let sizeOfDouble:Int = 8
+    static let fillZero: [UInt8] = [0x00]
+
+    static let sizeOfInt8: Int = 1
+    static let sizeOfInt16: Int = 2
+    static let sizeOfInt24: Int = 3
+    static let sizeOfInt32: Int = 4
+    static let sizeOfFloat: Int = 4
+    static let sizeOfDouble: Int = 8
 
     public enum Error: Swift.Error {
         case eof
@@ -79,13 +79,13 @@ open class ByteArray: ByteArrayConvertible {
     init() {
     }
 
-    init(data:Data) {
+    init(data: Data) {
         self.data = data
     }
 
-    private(set) var data:Data = Data()
+    private(set) var data: Data = Data()
 
-    open var length:Int {
+    open var length: Int {
         get {
             return data.count
         }
@@ -101,9 +101,9 @@ open class ByteArray: ByteArrayConvertible {
         }
     }
 
-    open var position:Int = 0
+    open var position: Int = 0
 
-    open var bytesAvailable:Int {
+    open var bytesAvailable: Int {
         return data.count - position
     }
 
@@ -127,7 +127,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt8(_ value:UInt8) -> Self {
+    open func writeUInt8(_ value: UInt8) -> Self {
         return writeBytes(value.data)
     }
 
@@ -142,7 +142,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeInt8(_ value:Int8) -> Self {
+    open func writeInt8(_ value: Int8) -> Self {
         return writeBytes(UInt8(bitPattern: value).data)
     }
 
@@ -155,7 +155,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt16(_ value:UInt16) -> Self {
+    open func writeUInt16(_ value: UInt16) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
@@ -168,7 +168,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeInt16(_ value:Int16) -> Self {
+    open func writeInt16(_ value: Int16) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
@@ -181,7 +181,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt24(_ value:UInt32) -> Self {
+    open func writeUInt24(_ value: UInt32) -> Self {
         return writeBytes(value.bigEndian.data.subdata(in: 1..<ByteArray.sizeOfInt24 + 1))
     }
 
@@ -194,7 +194,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUInt32(_ value:UInt32) -> Self {
+    open func writeUInt32(_ value: UInt32) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
@@ -207,7 +207,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeInt32(_ value:Int32) -> Self {
+    open func writeInt32(_ value: Int32) -> Self {
         return writeBytes(value.bigEndian.data)
     }
 
@@ -220,7 +220,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeDouble(_ value:Double) -> Self {
+    open func writeDouble(_ value: Double) -> Self {
         return writeBytes(Data(value.data.reversed()))
     }
 
@@ -233,7 +233,7 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeFloat(_ value:Float) -> Self {
+    open func writeFloat(_ value: Float) -> Self {
         return writeBytes(Data(value.data.reversed()))
     }
 
@@ -242,29 +242,29 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeUTF8(_ value:String) throws -> Self {
-        let utf8:Data = Data(value.utf8)
+    open func writeUTF8(_ value: String) throws -> Self {
+        let utf8: Data = Data(value.utf8)
         return writeUInt16(UInt16(utf8.count)).writeBytes(utf8)
     }
 
-    open func readUTF8Bytes(_ length:Int) throws -> String {
+    open func readUTF8Bytes(_ length: Int) throws -> String {
         guard length <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
         position += length
-        
-        guard let result:String = String(data: data.subdata(in: position - length..<position), encoding: .utf8) else {
+
+        guard let result: String = String(data: data.subdata(in: position - length..<position), encoding: .utf8) else {
             throw ByteArray.Error.parse
         }
         return result
     }
 
     @discardableResult
-    open func writeUTF8Bytes(_ value:String) -> Self {
+    open func writeUTF8Bytes(_ value: String) -> Self {
         return writeBytes(Data(value.utf8))
     }
 
-    open func readBytes(_ length:Int) throws -> Data {
+    open func readBytes(_ length: Int) throws -> Data {
         guard length <= bytesAvailable else {
             throw ByteArray.Error.eof
         }
@@ -273,13 +273,13 @@ open class ByteArray: ByteArrayConvertible {
     }
 
     @discardableResult
-    open func writeBytes(_ value:Data) -> Self {
-        if (position == data.count) {
+    open func writeBytes(_ value: Data) -> Self {
+        if position == data.count {
             data.append(value)
             position = data.count
             return self
         }
-        let length:Int = min(data.count, value.count)
+        let length: Int = min(data.count, value.count)
         data[position..<position + length] = value[0..<length]
         if (length == data.count) {
             data.append(value[length..<value.count])
@@ -295,22 +295,22 @@ open class ByteArray: ByteArrayConvertible {
         return self
     }
 
-    func sequence(_ length:Int, lambda:((ByteArray) -> Void)) {
-        let r:Int = (data.count - position) % length
+    func sequence(_ length: Int, lambda: ((ByteArray) -> Void)) {
+        let r: Int = (data.count - position) % length
         for index in stride(from: data.startIndex.advanced(by: position), to: data.endIndex.advanced(by: -r), by: length) {
             lambda(ByteArray(data: data.subdata(in: index..<index.advanced(by: length))))
         }
-        if (0 < r) {
+        if 0 < r {
             lambda(ByteArray(data: data.advanced(by: data.endIndex - r)))
         }
     }
 
     func toUInt32() -> [UInt32] {
-        let size:Int = MemoryLayout<UInt32>.size
-        if ((data.endIndex - position) % size != 0) {
+        let size: Int = MemoryLayout<UInt32>.size
+        if (data.endIndex - position) % size != 0 {
             return []
         }
-        var result:[UInt32] = []
+        var result: [UInt32] = []
         for index in stride(from: data.startIndex.advanced(by: position), to: data.endIndex, by: size) {
             result.append(UInt32(data: data[index..<index.advanced(by: size)]))
         }
@@ -320,7 +320,7 @@ open class ByteArray: ByteArrayConvertible {
 
 extension ByteArray: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    public var description:String {
+    public var description: String {
         return Mirror(reflecting: self).description
     }
 }

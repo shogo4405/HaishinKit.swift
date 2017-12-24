@@ -6,7 +6,7 @@ import XCTest
 final class ByteArrayTests: XCTestCase {
 
     func testInt8() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeInt8(Int8.min)
         bytes.writeInt8(0)
         bytes.writeInt8(Int8.max)
@@ -18,7 +18,7 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testUInt8() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeUInt8(UInt8.min)
         bytes.writeUInt8(0)
         bytes.writeUInt8(UInt8.max)
@@ -30,7 +30,7 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testInt16() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeInt16(Int16.min)
         bytes.writeInt16(0)
         bytes.writeInt16(Int16.max)
@@ -42,7 +42,7 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testUInt16() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeUInt16(UInt16.min)
         bytes.writeUInt16(0)
         bytes.writeUInt16(UInt16.max)
@@ -53,14 +53,14 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testUInt24() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeUInt24(0xFFFFFF)
         bytes.position = 0
         XCTAssertEqual(0xFFFFFF, try! bytes.readUInt24())
     }
     
     func testUInt32() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeUInt32(UInt32.min)
         bytes.writeUInt32(0)
         bytes.writeUInt32(UInt32.max)
@@ -71,7 +71,7 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testInt32() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeInt32(Int32.min)
         bytes.writeInt32(0)
         bytes.writeInt32(Int32.max)
@@ -82,7 +82,7 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testFloat() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeFloat(Float.infinity)
         XCTAssertEqual(bytes.position, ByteArray.sizeOfFloat)
         bytes.position = 0
@@ -90,7 +90,7 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testDouble() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         bytes.writeDouble(.pi)
         XCTAssertEqual(bytes.position, ByteArray.sizeOfDouble)
         bytes.position = 0
@@ -102,21 +102,21 @@ final class ByteArrayTests: XCTestCase {
     }
 
     func testUTF8() {
-        let bytes:ByteArray = ByteArray()
+        let bytes: ByteArray = ByteArray()
         do {
             try bytes.writeUTF8("hello world!!")
         } catch {
             XCTFail()
         }
 
-        let length:Int = bytes.position
+        let length: Int = bytes.position
         bytes.position = 0
         XCTAssertEqual("hello world!!", try! bytes.readUTF8())
         bytes.position = 0
 
-        var raiseError:Bool = false
+        var raiseError: Bool = false
         do {
-            let _:String = try bytes.readUTF8Bytes(length + 10)
+            let _: String = try bytes.readUTF8Bytes(length + 10)
         } catch {
             raiseError = true
         }

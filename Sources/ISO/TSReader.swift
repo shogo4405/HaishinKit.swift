@@ -1,16 +1,16 @@
 import Foundation
 
 protocol TSReaderDelegate: class {
-    func didReadPacketizedElementaryStream(_ data:ElementaryStreamSpecificData, PES:PacketizedElementaryStream)
+    func didReadPacketizedElementaryStream(_ data: ElementaryStreamSpecificData, PES: PacketizedElementaryStream)
 }
 
 // MARK: -
 class TSReader {
-    weak var delegate:TSReaderDelegate?
+    weak var delegate: TSReaderDelegate?
 
-    private(set) var PAT:ProgramAssociationSpecific? {
+    private(set) var PAT: ProgramAssociationSpecific? {
         didSet {
-            guard let PAT:ProgramAssociationSpecific = PAT else {
+            guard let PAT: ProgramAssociationSpecific = PAT else {
                 return
             }
             for (channel, PID) in PAT.programs {
@@ -18,7 +18,7 @@ class TSReader {
             }
         }
     }
-    private(set) var PMT:[UInt16: ProgramMapSpecific] = [:] {
+    private(set) var PMT: [UInt16: ProgramMapSpecific] = [: ] {
         didSet {
             for (_, pmt) in PMT {
                 for data in pmt.elementaryStreamSpecificData {
@@ -27,49 +27,49 @@ class TSReader {
             }
         }
     }
-    private(set) var numberOfPackets:Int = 0
+    private(set) var numberOfPackets: Int = 0
 
-    private var eof:UInt64 = 0
-    private var cursor:Int = 0
-    private var fileHandle:FileHandle?
-    private var dictionaryForPrograms:[UInt16:UInt16] = [:]
-    private var dictionaryForESSpecData:[UInt16:ElementaryStreamSpecificData] = [:]
-    private var packetizedElementaryStreams:[UInt16:PacketizedElementaryStream] = [:]
+    private var eof: UInt64 = 0
+    private var cursor: Int = 0
+    private var fileHandle: FileHandle?
+    private var dictionaryForPrograms: [UInt16: UInt16] = [: ]
+    private var dictionaryForESSpecData: [UInt16: ElementaryStreamSpecificData] = [: ]
+    private var packetizedElementaryStreams: [UInt16: PacketizedElementaryStream] = [: ]
 
-    init(url:URL) throws {
+    init(url: URL) throws {
         fileHandle = try FileHandle(forReadingFrom: url)
         eof = fileHandle!.seekToEndOfFile()
     }
 
     func read() {
-        while (hasNext()) {
-            guard let packet:TSPacket = next() else {
+        while hasNext() {
+            guard let packet: TSPacket = next() else {
                 continue
             }
             numberOfPackets += 1
-            if (packet.PID == 0x0000) {
+            if packet.PID == 0x0000 {
                 PAT = ProgramAssociationSpecific(packet.payload)
                 continue
             }
-            if let channel:UInt16 = dictionaryForPrograms[packet.PID] {
+            if let channel: UInt16 = dictionaryForPrograms[packet.PID] {
                 PMT[channel] = ProgramMapSpecific(packet.payload)
                 continue
             }
-            if let data:ElementaryStreamSpecificData = dictionaryForESSpecData[packet.PID] {
+            if let data: ElementaryStreamSpecificData = dictionaryForESSpecData[packet.PID] {
                 readPacketizedElementaryStream(data, packet: packet)
             }
         }
     }
 
-    func readPacketizedElementaryStream(_ data:ElementaryStreamSpecificData, packet: TSPacket) {
-        if (packet.payloadUnitStartIndicator) {
-            if let PES:PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
+    func readPacketizedElementaryStream(_ data: ElementaryStreamSpecificData, packet: TSPacket) {
+        if packet.payloadUnitStartIndicator {
+            if let PES: PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
                 delegate?.didReadPacketizedElementaryStream(data, PES: PES)
             }
             packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(packet.payload)
             return
         }
-        let _:Int? = packetizedElementaryStreams[packet.PID]?.append(packet.payload)
+        let _: Int? = packetizedElementaryStreams[packet.PID]?.append(packet.payload)
     }
 
     func close() {
@@ -99,7 +99,7 @@ extension TSReader: Iterator {
 
 extension TSReader: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    var description:String {
+    var description: String {
         return Mirror(reflecting: self).description
     }
 }

@@ -3,23 +3,20 @@ import Foundation
 import AVFoundation
 
 extension VideoIOComponent {
-    
     var zoomFactor: CGFloat {
-        get {
-            guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device
-                else { return 0 }
-
-            return device.videoZoomFactor
+        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device else {
+            return 0
         }
+        return device.videoZoomFactor
     }
 
     func setZoomFactor(_ zoomFactor: CGFloat, ramping: Bool, withRate: Float) {
-        guard let device:AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
             1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor
             else { return }
         do {
             try device.lockForConfiguration()
-            if (ramping) {
+            if ramping {
                 device.ramp(toVideoZoomFactor: zoomFactor, withRate: withRate)
             } else {
                 device.videoZoomFactor = zoomFactor
@@ -30,18 +27,18 @@ extension VideoIOComponent {
         }
     }
 
-    func attachScreen(_ screen:ScreenCaptureSession?, useScreenSize:Bool = true) {
-        guard let screen:ScreenCaptureSession = screen else {
+    func attachScreen(_ screen: ScreenCaptureSession?, useScreenSize: Bool = true) {
+        guard let screen: ScreenCaptureSession = screen else {
             self.screen?.stopRunning()
             self.screen = nil
             return
         }
         input = nil
         output = nil
-        if (useScreenSize) {
+        if useScreenSize {
             encoder.setValuesForKeys([
                 "width": screen.attributes["Width"]!,
-                "height": screen.attributes["Height"]!,
+                "height": screen.attributes["Height"]!
             ])
         }
         self.screen = screen
@@ -56,7 +53,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             self.encoder.height = Int32(size.height)
         }
     }
-    func output(pixelBuffer:CVPixelBuffer, withPresentationTime:CMTime) {
+    func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
         if !effects.isEmpty {
             context?.render(effect(pixelBuffer), to: pixelBuffer)
         }

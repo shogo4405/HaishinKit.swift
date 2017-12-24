@@ -2,16 +2,16 @@ import Foundation
 import AVFoundation
 
 open class FLVReader {
-    static public let header:Data = Data([0x46, 0x4C, 0x56, 1])
-    static let headerSize:Int = 11
+    static public let header: Data = Data([0x46, 0x4C, 0x56, 1])
+    static let headerSize: Int = 11
 
-    public private(set) var url:URL
-    public private(set) var hasAudio:Bool = false
-    public private(set) var hasVideo:Bool = false
-    private var currentOffSet:UInt64 = 0
-    private var fileHandle:FileHandle? = nil
+    public private(set) var url: URL
+    public private(set) var hasAudio: Bool = false
+    public private(set) var hasVideo: Bool = false
+    private var currentOffSet: UInt64 = 0
+    private var fileHandle: FileHandle?
 
-    public init(url:URL) {
+    public init(url: URL) {
         do {
             self.url = url
             fileHandle = try FileHandle(forReadingFrom: url)
@@ -22,7 +22,7 @@ open class FLVReader {
         }
     }
 
-    public func getData(_ tag:FLVTag) -> Data? {
+    public func getData(_ tag: FLVTag) -> Data? {
         fileHandle?.seek(toFileOffset: tag.offset)
         return fileHandle?.readData(ofLength: Int(UInt64(tag.dataSize)))
     }
@@ -30,12 +30,12 @@ open class FLVReader {
 
 extension FLVReader: IteratorProtocol {
     public func next() -> FLVTag? {
-        guard let fileHandle:FileHandle = fileHandle else {
+        guard let fileHandle: FileHandle = fileHandle else {
             return nil
         }
-        var tag:FLVTag! = nil
+        var tag: FLVTag! = nil
         fileHandle.seek(toFileOffset: currentOffSet)
-        let data:Data = fileHandle.readData(ofLength: FLVReader.headerSize)
+        let data: Data = fileHandle.readData(ofLength: FLVReader.headerSize)
         guard !data.isEmpty else {
             return nil
         }

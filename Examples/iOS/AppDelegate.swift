@@ -3,14 +3,14 @@ import AVFoundation
 import Logboard
 import HaishinKit
 
-let logger:Logboard = Logboard.with("com.haishinkit.Exsample.iOS")
+let logger: Logboard = Logboard.with("com.haishinkit.Exsample.iOS")
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window:UIWindow?
+    var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey : Any]? = nil) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
         do {
             try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
             try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
@@ -18,7 +18,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
         }
-        
         Logboard.with(HaishinKitIdentifier).level = .trace
 
         return true

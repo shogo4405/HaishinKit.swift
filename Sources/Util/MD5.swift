@@ -4,97 +4,97 @@ import Foundation
  Message Digest Algorithm 5
 
  - seealso:
-  - https://ja.wikipedia.org/wiki/MD5
-  - https://www.ietf.org/rfc/rfc1321.txt
+  - https: //ja.wikipedia.org/wiki/MD5
+  - https: //www.ietf.org/rfc/rfc1321.txt
  */
 final class MD5 {
 
-    static let a:UInt32 = 0x67452301
-    static let b:UInt32 = 0xefcdab89
-    static let c:UInt32 = 0x98badcfe
-    static let d:UInt32 = 0x10325476
+    static let a: UInt32 = 0x67452301
+    static let b: UInt32 = 0xefcdab89
+    static let c: UInt32 = 0x98badcfe
+    static let d: UInt32 = 0x10325476
 
-    static let S11:UInt32 = 7
-    static let S12:UInt32 = 12
-    static let S13:UInt32 = 17
-    static let S14:UInt32 = 22
-    static let S21:UInt32 = 5
-    static let S22:UInt32 = 9
-    static let S23:UInt32 = 14
-    static let S24:UInt32 = 20
-    static let S31:UInt32 = 4
-    static let S32:UInt32 = 11
-    static let S33:UInt32 = 16
-    static let S34:UInt32 = 23
-    static let S41:UInt32 = 6
-    static let S42:UInt32 = 10
-    static let S43:UInt32 = 15
-    static let S44:UInt32 = 21
+    static let S11: UInt32 = 7
+    static let S12: UInt32 = 12
+    static let S13: UInt32 = 17
+    static let S14: UInt32 = 22
+    static let S21: UInt32 = 5
+    static let S22: UInt32 = 9
+    static let S23: UInt32 = 14
+    static let S24: UInt32 = 20
+    static let S31: UInt32 = 4
+    static let S32: UInt32 = 11
+    static let S33: UInt32 = 16
+    static let S34: UInt32 = 23
+    static let S41: UInt32 = 6
+    static let S42: UInt32 = 10
+    static let S43: UInt32 = 15
+    static let S44: UInt32 = 21
 
     struct Context {
-        var a:UInt32 = MD5.a
-        var b:UInt32 = MD5.b
-        var c:UInt32 = MD5.c
-        var d:UInt32 = MD5.d
+        var a: UInt32 = MD5.a
+        var b: UInt32 = MD5.b
+        var c: UInt32 = MD5.c
+        var d: UInt32 = MD5.d
 
-        mutating func FF(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
-            let swap:UInt32 = d
-            let F:UInt32 = (b & c) | ((~b) & d)
+        mutating func FF(_ x: UInt32, _ s: UInt32, _ k: UInt32) {
+            let swap: UInt32 = d
+            let F: UInt32 = (b & c) | ((~b) & d)
             d = c
             c = b
             b = b &+ rotateLeft(a &+ F &+ k &+ x, s)
             a = swap
         }
-        
-        mutating func GG(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
-            let swap:UInt32 = d
-            let G:UInt32 = (d & b) | (c & (~d))
+
+        mutating func GG(_ x: UInt32, _ s: UInt32, _ k: UInt32) {
+            let swap: UInt32 = d
+            let G: UInt32 = (d & b) | (c & (~d))
             d = c
             c = b
             b = b &+ rotateLeft(a &+ G &+ k &+ x, s)
             a = swap
         }
-    
-        mutating func HH(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
-            let swap:UInt32 = d
-            let H:UInt32 = b ^ c ^ d
+
+        mutating func HH(_ x: UInt32, _ s: UInt32, _ k: UInt32) {
+            let swap: UInt32 = d
+            let H: UInt32 = b ^ c ^ d
             d = c
             c = b
             b = b &+ rotateLeft(a &+ H &+ k &+ x, s)
             a = swap
         }
 
-        mutating func II(_ x:UInt32, _ s:UInt32, _ k:UInt32) {
-            let swap:UInt32 = d
-            let I:UInt32 =  c ^ (b | (~d))
+        mutating func II(_ x: UInt32, _ s: UInt32, _ k: UInt32) {
+            let swap: UInt32 = d
+            let I: UInt32 =  c ^ (b | (~d))
             d = c
             c = b
             b = b &+ rotateLeft(a &+ I &+ k &+ x, s)
             a = swap
         }
 
-        func rotateLeft(_ x:UInt32, _ n:UInt32) -> UInt32 {
+        func rotateLeft(_ x: UInt32, _ n: UInt32) -> UInt32 {
             return ((x << n) & 0xFFFFFFFF) | (x >> (32 - n))
         }
 
-        var data:Data {
+        var data: Data {
             return a.data + b.data + c.data + d.data
         }
     }
 
-    static func base64(_ message:String) -> String {
+    static func base64(_ message: String) -> String {
         return calculate(message).base64EncodedString(options: .lineLength64Characters)
     }
 
-    static func calculate(_ message:String) -> Data {
+    static func calculate(_ message: String) -> Data {
         return calculate(ByteArray().writeUTF8Bytes(message).data)
     }
 
-    static func calculate(_ data:Data) -> Data {
-        var context:Context = Context()
+    static func calculate(_ data: Data) -> Data {
+        var context: Context = Context()
 
-        let count:Data = UInt64(data.count * 8).bigEndian.data
-        let message:ByteArray = ByteArray(data: data + [0x80])
+        let count: Data = UInt64(data.count * 8).bigEndian.data
+        let message: ByteArray = ByteArray(data: data + [0x80])
         message.length += 64 - (message.length % 64)
         message[message.length - 8] = count[7]
         message[message.length - 7] = count[6]
@@ -106,13 +106,13 @@ final class MD5 {
         message[message.length - 1] = count[0]
 
         message.sequence(64) {
-            let x:[UInt32] = $0.toUInt32()
+            let x: [UInt32] = $0.toUInt32()
 
             guard x.count == 16 else {
                 return
             }
 
-            var ctx:Context = Context()
+            var ctx: Context = Context()
             ctx.a = context.a
             ctx.b = context.b
             ctx.c = context.c
@@ -142,7 +142,7 @@ final class MD5 {
             ctx.GG(x[11], S23, 0x265e5a51)
             ctx.GG(x[ 0], S24, 0xe9b6c7aa)
             ctx.GG(x[ 5], S21, 0xd62f105d)
-            ctx.GG(x[10], S22,  0x2441453)
+            ctx.GG(x[10], S22, 0x2441453)
             ctx.GG(x[15], S23, 0xd8a1e681)
             ctx.GG(x[ 4], S24, 0xe7d3fbc8)
             ctx.GG(x[ 9], S21, 0x21e1cde6)

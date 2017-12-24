@@ -1,74 +1,74 @@
 import Foundation
 
 /**
- - seealso: https://en.wikipedia.org/wiki/Program-specific_information
+ - seealso: https: //en.wikipedia.org/wiki/Program-specific_information
  */
 protocol PSIPointer {
-    var pointerField:UInt8 { get set }
-    var pointerFillerBytes:Data { get set }
+    var pointerField: UInt8 { get set }
+    var pointerFillerBytes: Data { get set }
 }
 
 // MARK: -
 protocol PSITableHeader {
-    var tableID:UInt8 { get set }
-    var sectionSyntaxIndicator:Bool { get set }
-    var privateBit:Bool { get set }
-    var sectionLength:UInt16 { get set }
+    var tableID: UInt8 { get set }
+    var sectionSyntaxIndicator: Bool { get set }
+    var privateBit: Bool { get set }
+    var sectionLength: UInt16 { get set }
 }
 
 // MARK: -
 protocol PSITableSyntax {
-    var tableIDExtension:UInt16 { get set }
-    var versionNumber:UInt8 { get set }
-    var currentNextIndicator:Bool { get set }
-    var sectionNumber:UInt8 { get set }
-    var lastSectionNumber:UInt8 { get set }
-    var tableData:Data { get set }
-    var crc32:UInt32 { get set }
+    var tableIDExtension: UInt16 { get set }
+    var versionNumber: UInt8 { get set }
+    var currentNextIndicator: Bool { get set }
+    var sectionNumber: UInt8 { get set }
+    var lastSectionNumber: UInt8 { get set }
+    var tableData: Data { get set }
+    var crc32: UInt32 { get set }
 }
 
 // MARK: -
 class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
-    static let reservedBits:UInt8 = 0x03
-    static let defaultTableIDExtension:UInt16 = 1
-    
-    let mutex:Mutex = Mutex()
+    static let reservedBits: UInt8 = 0x03
+    static let defaultTableIDExtension: UInt16 = 1
+
+    let mutex: Mutex = Mutex()
 
     // MARK: PSIPointer
-    var pointerField:UInt8 = 0
-    var pointerFillerBytes:Data = Data()
+    var pointerField: UInt8 = 0
+    var pointerFillerBytes: Data = Data()
 
     // MARK: PSITableHeader
-    var tableID:UInt8 = 0
-    var sectionSyntaxIndicator:Bool = false
-    var privateBit:Bool = false
-    var sectionLength:UInt16 = 0
+    var tableID: UInt8 = 0
+    var sectionSyntaxIndicator: Bool = false
+    var privateBit: Bool = false
+    var sectionLength: UInt16 = 0
 
     // MARK: PSITableSyntax
-    var tableIDExtension:UInt16 = ProgramSpecific.defaultTableIDExtension
-    var versionNumber:UInt8 = 0
-    var currentNextIndicator:Bool = true
-    var sectionNumber:UInt8 = 0
-    var lastSectionNumber:UInt8 = 0
-    var tableData:Data {
+    var tableIDExtension: UInt16 = ProgramSpecific.defaultTableIDExtension
+    var versionNumber: UInt8 = 0
+    var currentNextIndicator: Bool = true
+    var sectionNumber: UInt8 = 0
+    var lastSectionNumber: UInt8 = 0
+    var tableData: Data {
         get {
             return Data()
         }
         set {
         }
     }
-    var crc32:UInt32 = 0
+    var crc32: UInt32 = 0
 
     init() {
     }
 
-    init?(_ data:Data) {
+    init?(_ data: Data) {
         self.data = data
     }
 
-    func arrayOfPackets(_ PID:UInt16) -> [TSPacket] {
-        var packets:[TSPacket] = []
-        var packet:TSPacket = TSPacket()
+    func arrayOfPackets(_ PID: UInt16) -> [TSPacket] {
+        var packets: [TSPacket] = []
+        var packet: TSPacket = TSPacket()
         packet.payloadUnitStartIndicator = true
         packet.PID = PID
         let _ = packet.fill(data, useAdaptationField: false)
@@ -78,12 +78,12 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
 }
 
 extension ProgramSpecific: DataConvertible {
-    var data:Data {
+    var data: Data {
         get {
-            let tableData:Data = self.tableData
+            let tableData: Data = self.tableData
             sectionLength = UInt16(tableData.count) + 9
             sectionSyntaxIndicator = tableData.count != 0
-            let buffer:ByteArray = ByteArray()
+            let buffer: ByteArray = ByteArray()
                 .writeUInt8(tableID)
                 .writeUInt16(
                     (sectionSyntaxIndicator ? 0x8000 : 0) |
@@ -104,12 +104,12 @@ extension ProgramSpecific: DataConvertible {
             return Data([pointerField] + pointerFillerBytes) + buffer.writeUInt32(crc32).data
         }
         set {
-            let buffer:ByteArray = ByteArray(data: newValue)
+            let buffer: ByteArray = ByteArray(data: newValue)
             do {
                 pointerField = try buffer.readUInt8()
                 pointerFillerBytes = try buffer.readBytes(Int(pointerField))
                 tableID = try buffer.readUInt8()
-                var bytes:Data = try buffer.readBytes(2)
+                var bytes: Data = try buffer.readBytes(2)
                 sectionSyntaxIndicator = bytes[0] & 0x80 == 0x80
                 privateBit = bytes[0] & 0x40 == 0x40
                 sectionLength = UInt16(bytes[0] & 0x03) << 8 | UInt16(bytes[1])
@@ -130,27 +130,27 @@ extension ProgramSpecific: DataConvertible {
 
 extension ProgramSpecific: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    var description:String {
+    var description: String {
         return Mirror(reflecting: self).description
     }
 }
 
 // MARK: -
 final class ProgramAssociationSpecific: ProgramSpecific {
-    static let tableID:UInt8 = 0
+    static let tableID: UInt8 = 0
 
-    var programs:[UInt16:UInt16] = [:]
+    var programs: [UInt16: UInt16] = [: ]
 
-    override var tableData:Data {
+    override var tableData: Data {
         get {
-            let buffer:ByteArray = ByteArray()
+            let buffer: ByteArray = ByteArray()
             for (number, programMapPID) in programs {
                 buffer.writeUInt16(number).writeUInt16(programMapPID | 0xe000)
             }
             return buffer.data
         }
         set {
-            let buffer:ByteArray = ByteArray(data: newValue)
+            let buffer: ByteArray = ByteArray(data: newValue)
             do {
                 for _ in 0..<newValue.count / 4 {
                     programs[try buffer.readUInt16()] = try buffer.readUInt16() & 0x1fff
@@ -164,29 +164,29 @@ final class ProgramAssociationSpecific: ProgramSpecific {
 
 // MARK: -
 final class ProgramMapSpecific: ProgramSpecific {
-    static let tableID:UInt8 = 2
-    static let unusedPCRID:UInt16 = 0x1fff
+    static let tableID: UInt8 = 2
+    static let unusedPCRID: UInt16 = 0x1fff
 
-    var PCRPID:UInt16 = 0
-    var programInfoLength:UInt16 = 0
-    var elementaryStreamSpecificData:[ElementaryStreamSpecificData] = []
+    var PCRPID: UInt16 = 0
+    var programInfoLength: UInt16 = 0
+    var elementaryStreamSpecificData: [ElementaryStreamSpecificData] = []
 
     override init() {
         super.init()
         tableID = ProgramMapSpecific.tableID
     }
 
-    override init?(_ data:Data) {
+    override init?(_ data: Data) {
         super.init()
         self.data = data
     }
 
-    override var tableData:Data {
+    override var tableData: Data {
         get {
             mutex.lock()
             defer { mutex.unlock() }
-            var bytes:Data = Data()
-            elementaryStreamSpecificData.sort{ (lhs:ElementaryStreamSpecificData, rhs:ElementaryStreamSpecificData) -> Bool in
+            var bytes: Data = Data()
+            elementaryStreamSpecificData.sort { (lhs: ElementaryStreamSpecificData, rhs: ElementaryStreamSpecificData) -> Bool in
                 return lhs.elementaryPID < rhs.elementaryPID
             }
             for essd in elementaryStreamSpecificData {
@@ -201,15 +201,15 @@ final class ProgramMapSpecific: ProgramSpecific {
         set {
             mutex.lock()
             defer { mutex.unlock() }
-            let buffer:ByteArray = ByteArray(data: newValue)
+            let buffer: ByteArray = ByteArray(data: newValue)
             do {
                 PCRPID = try buffer.readUInt16() & 0x1fff
                 programInfoLength = try buffer.readUInt16() & 0x03ff
                 buffer.position += Int(programInfoLength)
-                var position:Int = 0
-                while (0 < buffer.bytesAvailable) {
+                var position: Int = 0
+                while 0 < buffer.bytesAvailable {
                     position = buffer.position
-                    guard let data:ElementaryStreamSpecificData = ElementaryStreamSpecificData(try buffer.readBytes(buffer.bytesAvailable)) else {
+                    guard let data: ElementaryStreamSpecificData = ElementaryStreamSpecificData(try buffer.readBytes(buffer.bytesAvailable)) else {
                         break
                     }
                     buffer.position = position + ElementaryStreamSpecificData.fixedHeaderSize + Int(data.ESInfoLength)
@@ -240,24 +240,24 @@ enum ElementaryStreamType: UInt8 {
 
 // MARK: -
 struct ElementaryStreamSpecificData {
-    static let fixedHeaderSize:Int = 5
+    static let fixedHeaderSize: Int = 5
 
-    var streamType:UInt8 = 0
-    var elementaryPID:UInt16 = 0
-    var ESInfoLength:UInt16 = 0
-    var ESDescriptors:Data = Data()
+    var streamType: UInt8 = 0
+    var elementaryPID: UInt16 = 0
+    var ESInfoLength: UInt16 = 0
+    var ESDescriptors: Data = Data()
 
     init() {
     }
 
-    init?(_ data:Data) {
+    init?(_ data: Data) {
         self.data = data
     }
 }
 
 extension ElementaryStreamSpecificData: DataConvertible {
     // MARK: BytesConvertible
-    var data:Data {
+    var data: Data {
         get {
             return ByteArray()
                 .writeUInt8(streamType)
@@ -267,7 +267,7 @@ extension ElementaryStreamSpecificData: DataConvertible {
                 .data
         }
         set {
-            let buffer:ByteArray = ByteArray(data: newValue)
+            let buffer: ByteArray = ByteArray(data: newValue)
             do {
                 streamType = try buffer.readUInt8()
                 elementaryPID = try buffer.readUInt16() & 0x0fff
@@ -282,7 +282,7 @@ extension ElementaryStreamSpecificData: DataConvertible {
 
 extension ElementaryStreamSpecificData: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    var description:String {
+    var description: String {
         return Mirror(reflecting: self).description
     }
 }

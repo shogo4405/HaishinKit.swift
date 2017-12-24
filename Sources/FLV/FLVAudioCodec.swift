@@ -1,7 +1,7 @@
 import Foundation
 import AVFoundation
 
-public enum FLVAudioCodec:UInt8 {
+public enum FLVAudioCodec: UInt8 {
     case pcm           = 0
     case adpcm         = 1
     case mp3           = 2
@@ -15,8 +15,8 @@ public enum FLVAudioCodec:UInt8 {
     case speex         = 11
     case mp3_8k        = 14
     case unknown       = 0xFF
-    
-    var isSupported:Bool {
+
+    var isSupported: Bool {
         switch self {
         case .pcm:
             return false
@@ -46,8 +46,8 @@ public enum FLVAudioCodec:UInt8 {
             return false
         }
     }
-    
-    var formatID:AudioFormatID {
+
+    var formatID: AudioFormatID {
         switch self {
         case .pcm:
             return kAudioFormatLinearPCM
@@ -63,8 +63,8 @@ public enum FLVAudioCodec:UInt8 {
             return 0
         }
     }
-    
-    var headerSize:Int {
+
+    var headerSize: Int {
         switch self {
         case .aac:
             return 2

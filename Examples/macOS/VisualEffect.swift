@@ -3,10 +3,10 @@ import CoreImage
 import Foundation
 
 final class MonochromeEffect: VisualEffect {
-    let filter:CIFilter? = CIFilter(name: "CIColorMonochrome")
-    
+    let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
+
     override func execute(_ image: CIImage) -> CIImage {
-        guard let filter:CIFilter = filter else {
+        guard let filter: CIFilter = filter else {
             return image
         }
         filter.setValue(image, forKey: "inputImage")

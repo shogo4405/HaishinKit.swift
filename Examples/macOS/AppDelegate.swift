@@ -3,9 +3,8 @@ import Cocoa
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
-    var window:NSWindow!
+    var window: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
     }
 }
-

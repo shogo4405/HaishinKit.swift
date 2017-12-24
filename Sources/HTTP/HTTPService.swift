@@ -7,7 +7,7 @@ enum HTTPVersion: String {
 
 extension HTTPVersion: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    var description:String {
+    var description: String {
         return rawValue
     }
 }
@@ -67,7 +67,7 @@ enum HTTPStatusCode: Int {
     case gatewayTimeOut               = 504
     case httpVersionNotSupported      = 505
 
-    var message:String {
+    var message: String {
         switch self {
         case .continue:
             return "Continue"
@@ -155,33 +155,33 @@ enum HTTPStatusCode: Int {
 
 extension HTTPStatusCode: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    var description:String {
+    var description: String {
         return "\(rawValue) \(message)"
     }
 }
 
 // MARK: -
 open class HTTPService: NetService {
-    open class var type:String{
+    open class var type: String {
         return "_http._tcp"
     }
-    open class var defaultPort:Int32 {
+    open class var defaultPort: Int32 {
         return 8080
     }
-    open class var defaultDocument:String {
+    open class var defaultDocument: String {
         return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
     }
 
-    var document:String = HTTPService.defaultDocument
+    var document: String = HTTPService.defaultDocument
 
-    func client(inputBuffer client:NetClient) {
-        guard let request:HTTPRequest = HTTPRequest(data: client.inputBuffer) else {
+    func client(inputBuffer client: NetClient) {
+        guard let request: HTTPRequest = HTTPRequest(data: client.inputBuffer) else {
             disconnect(client)
             return
         }
         client.inputBuffer.removeAll()
-        if (logger.isEnabledFor(level: .trace)) {
-            logger.trace("\(request):\(self)")
+        if logger.isEnabledFor(level: .trace) {
+            logger.trace("\(request): \(self)")
         }
         switch request.method {
         case "GET":
@@ -205,83 +205,81 @@ open class HTTPService: NetService {
         }
     }
 
-    open func get(_ request:HTTPRequest, client:NetClient) {
+    open func get(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func post(_ request:HTTPRequest, client:NetClient) {
+    open func post(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func put(_ request:HTTPRequest, client:NetClient) {
+    open func put(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func delete(_ request:HTTPRequest, client:NetClient) {
+    open func delete(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func head(_ request:HTTPRequest, client:NetClient) {
+    open func head(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func options(_ requst:HTTPRequest, client: NetClient) {
+    open func options(_ requst: HTTPRequest, client: NetClient) {
         notFound(requst, client: client)
     }
 
-    open func trace(_ request:HTTPRequest, client:NetClient) {
+    open func trace(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    open func connect(_ request:HTTPRequest, client:NetClient) {
+    open func connect(_ request: HTTPRequest, client: NetClient) {
         notFound(request, client: client)
     }
 
-    func notFound(_ request:HTTPRequest, client:NetClient) {
-        var response:HTTPResponse = HTTPResponse()
+    func notFound(_ request: HTTPRequest, client: NetClient) {
+        var response: HTTPResponse = HTTPResponse()
         response.statusCode = HTTPStatusCode.notFound.description
         client.doOutput(data: response.data)
     }
 }
 
 open class HLSService: HTTPService {
-    private(set) var streams:[HTTPStream] = []
+    private(set) var streams: [HTTPStream] = []
 
-    open func addHTTPStream(_ stream:HTTPStream) {
+    open func addHTTPStream(_ stream: HTTPStream) {
         for i in 0..<streams.count {
-            if (stream.name == streams[i].name) {
+            if stream.name == streams[i].name {
                 return
             }
         }
         streams.append(stream)
     }
 
-    open func removeHTTPStream(_ stream:HTTPStream) {
+    open func removeHTTPStream(_ stream: HTTPStream) {
         for i in 0..<streams.count {
-            if (stream.name == streams[i].name) {
+            if stream.name == streams[i].name {
                 streams.remove(at: i)
                 return
             }
         }
     }
 
-    open override func get(_ request:HTTPRequest, client:NetClient) {
+    open override func get(_ request: HTTPRequest, client: NetClient) {
         logger.trace("\(request)")
-        var response:HTTPResponse = HTTPResponse()
-        
+        var response: HTTPResponse = HTTPResponse()
         // #141
         response.headerFields["Access-Control-Allow-Headers"] = "*"
         response.headerFields["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS"
         response.headerFields["Access-Control-Allow-Origin"] = "*"
         response.headerFields["Access-Control-Expose-Headers"] = "*"
-        
         response.headerFields["Connection"] = "close"
-        
+
         defer {
             logger.trace("\(response)")
             disconnect(client)
         }
-        
+
         switch request.uri {
         case "/":
             response.headerFields["Content-Type"] = "text/html"
@@ -296,8 +294,8 @@ open class HLSService: HTTPService {
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
                 case .VideoMP2T:
-                    if let info:[FileAttributeKey:Any] = try? FileManager.default.attributesOfItem(atPath: resource) {
-                        if let length:Any = info[FileAttributeKey.size] {
+                    if let info: [FileAttributeKey: Any] = try? FileManager.default.attributesOfItem(atPath: resource) {
+                        if let length: Any = info[FileAttributeKey.size] {
                             response.headerFields["Content-Length"] = String(describing: length)
                         }
                     }
@@ -315,4 +313,3 @@ open class HLSService: HTTPService {
         }
     }
 }
-

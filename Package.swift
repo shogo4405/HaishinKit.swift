@@ -6,4 +6,3 @@ let package = Package(
         .Package(url: "https://github.com/shogo4405/Logboard.git", majorVersion: 1)
     ]
 )
-

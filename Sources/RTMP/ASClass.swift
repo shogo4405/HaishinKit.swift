@@ -1,10 +1,10 @@
 import Foundation
 
-public let kASUndefined:ASUndefined = ASUndefined()
+public let kASUndefined: ASUndefined = ASUndefined()
 public typealias ASObject = [String: Any?]
 
 public final class ASUndefined: NSObject {
-    public override var description:String {
+    public override var description: String {
         return "undefined"
     }
     fileprivate override init() {
@@ -14,18 +14,18 @@ public final class ASUndefined: NSObject {
 
 // MARK: -
 public struct ASArray {
-    private(set) var data:[Any?]
-    private(set) var dict:[String: Any?] = [:]
+    private(set) var data: [Any?]
+    private(set) var dict: [String: Any?] = [: ]
 
-    public var length:Int {
+    public var length: Int {
         return data.count
     }
 
-    public init(count:Int) {
+    public init(count: Int) {
         self.data = [Any?](repeating: kASUndefined, count: count)
     }
 
-    public init(data:[Any?]) {
+    public init(data: [Any?]) {
         self.data = data
     }
 }
@@ -38,11 +38,11 @@ extension ASArray: ExpressibleByArrayLiteral {
 
     public subscript(i: Any) -> Any? {
         get {
-            if let i:Int = i as? Int {
+            if let i: Int = i as? Int {
                 return i < data.count ? data[i] : kASUndefined
             }
-            if let i:String = i as? String {
-                if let i:Int = Int(i) {
+            if let i: String = i as? String {
+                if let i: Int = Int(i) {
                     return i < data.count ? data[i] : kASUndefined
                 }
                 return dict[i] as Any
@@ -50,15 +50,15 @@ extension ASArray: ExpressibleByArrayLiteral {
             return nil
         }
         set {
-            if let i:Int = i as? Int {
-                if (data.count <= i) {
+            if let i: Int = i as? Int {
+                if data.count <= i {
                     data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
                 }
                 data[i] = newValue
             }
-            if let i:String = i as? String {
-                if let i:Int = Int(i) {
-                    if (data.count <= i) {
+            if let i: String = i as? String {
+                if let i: Int = Int(i) {
+                    if data.count <= i {
                         data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
                     }
                     data[i] = newValue
@@ -72,7 +72,7 @@ extension ASArray: ExpressibleByArrayLiteral {
 
 extension ASArray: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    public var description:String {
+    public var description: String {
         return data.description
     }
 }
@@ -94,13 +94,13 @@ public func ==(lhs: ASArray, rhs: ASArray) -> Bool {
    - 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
 public final class ASXMLDocument: NSObject {
-    public override var description:String {
+    public override var description: String {
         return data
     }
 
-    private var data:String
+    private var data: String
 
-    public init(data:String) {
+    public init(data: String) {
         self.data = data
     }
 }
@@ -112,13 +112,13 @@ public final class ASXMLDocument: NSObject {
  - seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
 public final class ASXML: NSObject {
-    public override var description:String {
+    public override var description: String {
         return data
     }
 
-    private var data:String
+    private var data: String
 
-    public init(data:String) {
+    public init(data: String) {
         self.data = data
     }
 }

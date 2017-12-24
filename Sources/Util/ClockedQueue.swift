@@ -1,30 +1,30 @@
 import Foundation
 import AVFoundation
 
-protocol ClockedQueueDelegate:class {
+protocol ClockedQueueDelegate: class {
     func queue(_ buffer: CMSampleBuffer)
 }
 
 // MARK: -
 final class ClockedQueue {
-    var bufferTime:TimeInterval = 0.1 // sec
-    private(set) var duration:TimeInterval = 0
-    weak var delegate:ClockedQueueDelegate?
+    var bufferTime: TimeInterval = 0.1 // sec
+    private(set) var duration: TimeInterval = 0
+    weak var delegate: ClockedQueueDelegate?
 
-    private var isReady:Bool = false
-    private var buffers:[CMSampleBuffer] = []
-    private lazy var driver:TimerDriver = {
-        var driver:TimerDriver = TimerDriver()
+    private var isReady: Bool = false
+    private var buffers: [CMSampleBuffer] = []
+    private lazy var driver: TimerDriver = {
+        var driver: TimerDriver = TimerDriver()
         driver.setDelegate(self, withQueue: self.lockQueue)
         return driver
     }()
-    private let lockQueue:DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.ClockedQueue.lock")
+    private let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.ClockedQueue.lock")
 
-    func enqueue(_ buffer:CMSampleBuffer) {
+    func enqueue(_ buffer: CMSampleBuffer) {
         lockQueue.async {
             self.duration += buffer.duration.seconds
             self.buffers.append(buffer)
-            if (!self.isReady) {
+            if !self.isReady {
                 self.isReady = self.duration <= self.bufferTime
             }
         }
@@ -33,7 +33,7 @@ final class ClockedQueue {
 
 extension ClockedQueue: Runnable {
     // MARK: Runnable
-    var running:Bool {
+    var running: Bool {
         return driver.running
     }
 
@@ -58,8 +58,8 @@ extension ClockedQueue: Runnable {
 
 extension ClockedQueue: TimerDriverDelegate {
     // MARK: TimerDriverDelegate
-    func tick(_ driver:TimerDriver) {
-        guard let first:CMSampleBuffer = buffers.first, isReady else {
+    func tick(_ driver: TimerDriver) {
+        guard let first: CMSampleBuffer = buffers.first, isReady else {
             return
         }
         delegate?.queue(first)
@@ -71,7 +71,7 @@ extension ClockedQueue: TimerDriverDelegate {
 
 extension ClockedQueue: CustomStringConvertible {
     // MARK: CustomStringConvertible
-    var description:String {
+    var description: String {
         return Mirror(reflecting: self).description
     }
 }
