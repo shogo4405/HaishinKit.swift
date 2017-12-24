@@ -79,7 +79,7 @@ class TSReader {
 
 extension TSReader: Iterator {
     // MARK: Iterator
-    typealias T = TSPacket
+    typealias Element = TSPacket
 
     func next() -> TSPacket? {
         guard let fileHandle = fileHandle else {

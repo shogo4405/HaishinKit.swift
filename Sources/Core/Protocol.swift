@@ -13,7 +13,7 @@ protocol Runnable: class {
 
 // MARK: -
 protocol Iterator {
-    associatedtype T
+    associatedtype Element
     func hasNext() -> Bool
-    func next() -> T?
+    func next() -> Element?
 }

@@ -96,10 +96,10 @@ class TSWriter {
 
         nstry({
             self.currentFileHandle?.write(bytes)
-        }) { exception in
+        }, { exception in
             self.currentFileHandle?.write(bytes)
             logger.warn("\(exception)")
-        }
+        })
     }
 
     func split(_ PID: UInt16, PES: PacketizedElementaryStream, timestamp: CMTime) -> [TSPacket] {
@@ -163,9 +163,9 @@ class TSWriter {
 
         nstry({
             self.currentFileHandle?.synchronizeFile()
-        }) { exeption in
+        }, { exeption in
             logger.warn("\(exeption)")
-        }
+        })
 
         currentFileHandle?.closeFile()
         currentFileHandle = try? FileHandle(forWritingTo: url)
@@ -181,9 +181,9 @@ class TSWriter {
 
         nstry({
             self.currentFileHandle?.write(bytes)
-        }) { exception in
+        }, { exception in
             logger.warn("\(exception)")
-        }
+        })
         rotatedTimestamp = timestamp
 
         return true
