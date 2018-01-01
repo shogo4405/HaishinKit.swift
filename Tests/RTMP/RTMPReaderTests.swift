@@ -12,7 +12,6 @@ final class RTMPReaderTests: XCTestCase {
             guard let tag = reader.next() else {
                 return
             }
-            print(tag)
         }
     }
 }
