@@ -187,7 +187,7 @@ final class AACEncoder: NSObject {
             }
         }
 
-        var finished = false
+        var finished: Bool = false
         while !finished {
             var ioOutputDataPacketSize: UInt32 = 1
             let dataLength: Int = blockBuffer!.dataLength

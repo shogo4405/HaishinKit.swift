@@ -146,7 +146,7 @@ final class MainViewController: NSViewController {
             httpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.itemTitles[audioPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.audio.rawValue))
             httpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.itemTitles[cameraPopUpButton.indexOfSelectedItem], mediaType: AVMediaType.video.rawValue))
             lfView.attachStream(httpStream)
-            urlField.stringValue = "http: //{ipAddress}: 8080/hello/playlist.m3u8"
+            urlField.stringValue = "http: //{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break
         }

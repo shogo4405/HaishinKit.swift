@@ -42,10 +42,7 @@ class TSReader {
     }
 
     func read() {
-        while hasNext() {
-            guard let packet: TSPacket = next() else {
-                continue
-            }
+        while let packet: TSPacket = next() {
             numberOfPackets += 1
             if packet.PID == 0x0000 {
                 PAT = ProgramAssociationSpecific(packet.payload)
@@ -77,12 +74,10 @@ class TSReader {
     }
 }
 
-extension TSReader: Iterator {
-    // MARK: Iterator
-    typealias Element = TSPacket
-
+extension TSReader: IteratorProtocol {
+    // MARK: IteratorProtocol
     func next() -> TSPacket? {
-        guard let fileHandle = fileHandle else {
+        guard let fileHandle = fileHandle, UInt64(cursor * TSPacket.size) < eof else {
             return nil
         }
         defer {
@@ -90,10 +85,6 @@ extension TSReader: Iterator {
         }
         fileHandle.seek(toFileOffset: UInt64(cursor * TSPacket.size))
         return TSPacket(data: fileHandle.readData(ofLength: TSPacket.size))
-    }
-
-    func hasNext() -> Bool {
-        return UInt64(cursor * TSPacket.size) < eof
     }
 }
 
