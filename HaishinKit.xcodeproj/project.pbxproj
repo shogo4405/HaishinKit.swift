@@ -461,7 +461,6 @@
 		2927A2991E7ED2D70044AF91 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		292D8A321D8B293300DBECE2 /* MP4Sampler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MP4Sampler.swift; path = Sources/ISO/MP4Sampler.swift; sourceTree = SOURCE_ROOT; };
 		292F6DB01EEBB2040097EDBE /* AVFoundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AVFoundation.swift; path = Platforms/tvOS/AVFoundation.swift; sourceTree = "<group>"; };
-		2930D03D1E12D12100DA2DC5 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = Examples/iOS/Screencast/README.md; sourceTree = "<group>"; };
 		2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SampleHandler.swift; path = Examples/iOS/Screencast/SampleHandler.swift; sourceTree = "<group>"; };
 		293875DC1F374D4B009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/iOS/Logboard.framework; sourceTree = "<group>"; };
 		293875DE1F374D6E009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/Mac/Logboard.framework; sourceTree = "<group>"; };
@@ -1016,7 +1015,6 @@
 			isa = PBXGroup;
 			children = (
 				29A39C881D85BF30007C27E9 /* Info.plist */,
-				2930D03D1E12D12100DA2DC5 /* README.md */,
 				2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */,
 				2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */,
 			);
