@@ -29,12 +29,12 @@ final class H264Encoder: NSObject {
 
     #if os(iOS)
     static let defaultAttributes: [NSString: AnyObject] = [
-        kCVPixelBufferIOSurfacePropertiesKey: [: ] as AnyObject,
+        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
         kCVPixelBufferOpenGLESCompatibilityKey: kCFBooleanTrue
     ]
     #else
     static let defaultAttributes: [NSString: AnyObject] = [
-        kCVPixelBufferIOSurfacePropertiesKey: [: ] as AnyObject,
+        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
         kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
     ]
     #endif

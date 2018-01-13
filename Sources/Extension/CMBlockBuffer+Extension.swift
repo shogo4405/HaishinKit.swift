@@ -4,9 +4,7 @@ extension CMBlockBuffer {
     var dataLength: Int {
         return CMBlockBufferGetDataLength(self)
     }
-}
 
-extension CMBlockBuffer {
     var data: Data? {
         var length: Int = 0
         var buffer: UnsafeMutablePointer<Int8>? = nil

@@ -124,11 +124,11 @@ final class LiveViewController: UIViewController {
         if publish.isSelected {
             UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusHandler(_: )), observer: self)
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusHandler(_:)), observer: self)
             publish.setTitle("●", for: UIControlState())
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusHandler(_: )), observer: self)
+            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusHandler(_:)), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             publish.setTitle("■", for: UIControlState())
         }

@@ -123,11 +123,12 @@ let sampleRate:Double = 44_100
 
 // see: #58
 #if(iOS)
+let session: AVAudioSession = AVAudioSession.sharedInstance()
 do {
-    try AVAudioSession.sharedInstance().setPreferredSampleRate(sampleRate)
-    try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-    try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
-    try AVAudioSession.sharedInstance().setActive(true)
+    try session.setPreferredSampleRate(44_100)
+    try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
+    try session.setMode(AVAudioSessionModeDefault)
+    try session.setActive(true)
 } catch {
 }
 #endif
