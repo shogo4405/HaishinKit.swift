@@ -84,13 +84,13 @@ Bitcoin
 Make sure you setup and activate your AVAudioSession.
 ```swift
 import AVFoundation
-
+let session: AVAudioSession = AVAudioSession.sharedInstance()
 do {
-   try AVAudioSession.sharedInstance().setPreferredSampleRate(44_100)
-   try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord)
-   try AVAudioSession.sharedInstance().setMode(AVAudioSessionModeDefault)
-   try AVAudioSession.sharedInstance().setActive(true)
-   } catch {
+    try session.setPreferredSampleRate(44_100)
+    try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
+    try session.setMode(AVAudioSessionModeDefault)
+    try session.setActive(true)
+} catch {
 }
 ```
 ## RTMP Usage
