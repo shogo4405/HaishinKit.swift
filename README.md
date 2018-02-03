@@ -77,7 +77,7 @@ BSD-3-Clause
 ## Donation
 Bitcoin
 ```txt
-1CWA9muX36QKBdJiRQJGpu2HvchfEpJbWr
+17N3qWCKjwJrWrDuyeHaqWkZYnJqX7igXN
 ```
 
 ## Prerequisites
