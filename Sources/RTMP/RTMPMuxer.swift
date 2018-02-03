@@ -70,10 +70,10 @@ extension RTMPMuxer: VideoEncoderDelegate {
         } else {
             compositionTime = Int32((decodeTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
         }
+        let delta: Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
         guard let data: Data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
             return
         }
-        let delta: Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
         var buffer: Data = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
         buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
         buffer.append(data)
