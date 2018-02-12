@@ -12,7 +12,7 @@ protocol VideoDecoderDelegate: class {
 final class H264Decoder {
     #if os(iOS)
     static let defaultAttributes: [NSString: AnyObject] = [
-    kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
         kCVPixelBufferOpenGLESCompatibilityKey: NSNumber(booleanLiteral: true)
     ]
