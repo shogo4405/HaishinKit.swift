@@ -13,8 +13,8 @@ final class VideoIOComponent: IOComponent {
     }
     lazy var encoder: H264Encoder = H264Encoder()
     lazy var decoder: H264Decoder = H264Decoder()
-    lazy var queue: ClockedQueue = {
-        let queue: ClockedQueue = ClockedQueue()
+    lazy var queue: DisplayLinkedQueue = {
+        let queue: DisplayLinkedQueue = DisplayLinkedQueue()
         queue.delegate = self
         return queue
     }()
@@ -367,8 +367,8 @@ extension VideoIOComponent: VideoDecoderDelegate {
     }
 }
 
-extension VideoIOComponent: ClockedQueueDelegate {
-    // MARK: ClockedQueueDelegate
+extension VideoIOComponent: DisplayLinkedQueueDelegate {
+    // MARK: DisplayLinkedQueue
     func queue(_ buffer: CMSampleBuffer) {
         mixer?.audioIO.playback.startQueueIfNeed()
         drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
