@@ -123,8 +123,8 @@ open class AVMixerRecorder: NSObject {
     }
 }
 
-extension AVMixerRecorder: Runnable {
-    // MARK: Runnable
+extension AVMixerRecorder: Running {
+    // MARK: Running
     final func startRunning() {
         lockQueue.async {
             guard !self.running else {

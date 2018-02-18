@@ -255,8 +255,8 @@ final class AACEncoder: NSObject {
     }
 }
 
-extension AACEncoder: Runnable {
-    // MARK: Runnable
+extension AACEncoder: Running {
+    // MARK: Running
     func startRunning() {
         lockQueue.async {
             self.running = true

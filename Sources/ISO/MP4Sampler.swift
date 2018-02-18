@@ -64,8 +64,8 @@ public class MP4Sampler {
     }
 }
 
-extension MP4Sampler: Runnable {
-    // MARK: Runnable
+extension MP4Sampler: Running {
+    // MARK: Running
     final func startRunning() {
         loopQueue.async {
             self.running = true

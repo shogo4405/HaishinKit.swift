@@ -109,8 +109,8 @@ extension AVMixer {
 }
 
 #if os(iOS) || os(macOS)
-extension AVMixer: Runnable {
-    // MARK: Runnable
+extension AVMixer: Running {
+    // MARK: Running
     var running: Bool {
         return session.isRunning
     }
@@ -132,8 +132,8 @@ extension AVMixer: Runnable {
     }
 }
 #else
-extension AVMixer: Runnable {
-    // MARK: Runnable
+extension AVMixer: Running {
+    // MARK: Running
     var running: Bool {
         return false
     }

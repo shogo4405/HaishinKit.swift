@@ -5,7 +5,7 @@ protocol DataConvertible {
 }
 
 // MARK: -
-protocol Runnable: class {
+protocol Running: class {
     var running: Bool { get }
     func startRunning()
     func stopRunning()

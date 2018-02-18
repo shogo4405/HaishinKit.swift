@@ -84,7 +84,7 @@ extension NetService: NetClientDelegate {
     // MARK: NetClientDelegate
 }
 
-extension NetService: Runnable {
+extension NetService: Running {
     // MARK: Runnbale
     final public func startRunning() {
         lockQueue.async {

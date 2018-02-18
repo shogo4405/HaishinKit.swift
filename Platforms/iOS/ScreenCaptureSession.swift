@@ -133,8 +133,8 @@ open class ScreenCaptureSession: NSObject {
     }
 }
 
-extension ScreenCaptureSession: Runnable {
-    // MARK: Runnable
+extension ScreenCaptureSession: Running {
+    // MARK: Running
     public func startRunning() {
         lockQueue.sync {
             guard !self.running else {

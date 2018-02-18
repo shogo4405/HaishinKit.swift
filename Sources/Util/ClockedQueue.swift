@@ -31,8 +31,8 @@ final class ClockedQueue {
     }
 }
 
-extension ClockedQueue: Runnable {
-    // MARK: Runnable
+extension ClockedQueue: Running {
+    // MARK: Running
     var running: Bool {
         return driver.running
     }

@@ -301,8 +301,8 @@ final class H264Encoder: NSObject {
 #endif
 }
 
-extension H264Encoder: Runnable {
-    // MARK: Runnable
+extension H264Encoder: Running {
+    // MARK: Running
     func startRunning() {
         lockQueue.async {
             self.running = true

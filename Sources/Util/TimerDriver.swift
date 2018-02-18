@@ -48,8 +48,8 @@ public class TimerDriver: NSObject {
     }
 }
 
-extension TimerDriver: Runnable {
-    // MARK: Runnable
+extension TimerDriver: Running {
+    // MARK: Running
     public var running: Bool {
         return runloop != nil
     }

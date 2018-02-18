@@ -202,8 +202,8 @@ class TSWriter {
     }
 }
 
-extension TSWriter: Runnable {
-    // MARK: Runnable
+extension TSWriter: Running {
+    // MARK: Running
     func startRunning() {
         lockQueue.async {
             guard self.running else {
