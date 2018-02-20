@@ -16,6 +16,14 @@ open class SampleHandler: RPBroadcastSampleHandler {
         print(self)
     }
 
+    var spliter: SoundSpliter?
+
+    init() {
+        super.init()
+        spliter = SoundSpliter()
+        spliter?.delegate = selff
+    }
+
     override open func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         /*
         let logger = Logboard.with(HaishinKitIdentifier)
@@ -48,9 +56,16 @@ open class SampleHandler: RPBroadcastSampleHandler {
             }
             broadcaster.appendSampleBuffer(sampleBuffer, withType: .video)
         case .audioApp:
-            broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio)
-        case .audioMic:
+            // spliter?.appendSampleBuffer(sampleBuffer)
             break
+        case .audioMic:
+            broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio)
         }
+    }
+}
+
+extension SampleHandler: SoundSpliterDelegate {
+    func outputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio)
     }
 }
