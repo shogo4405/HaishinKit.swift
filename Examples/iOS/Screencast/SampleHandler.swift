@@ -7,21 +7,12 @@ import Logboard
 open class SampleHandler: RPBroadcastSampleHandler {
     private var broadcaster: RTMPBroadcaster = RTMPBroadcaster()
 
-    public override init() {
-        super.init()
-        print(self)
-    }
-
-    deinit {
-        print(self)
-    }
-
     var spliter: SoundSpliter?
 
-    init() {
+    override init() {
         super.init()
         spliter = SoundSpliter()
-        spliter?.delegate = selff
+        spliter?.delegate = self
     }
 
     override open func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
@@ -65,7 +56,8 @@ open class SampleHandler: RPBroadcastSampleHandler {
 }
 
 extension SampleHandler: SoundSpliterDelegate {
-    func outputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    // MARK: SoundSpliterDelegate
+    public func outputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         broadcaster.appendSampleBuffer(sampleBuffer, withType: .audio)
     }
 }
