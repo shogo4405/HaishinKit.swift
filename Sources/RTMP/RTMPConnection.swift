@@ -131,7 +131,7 @@ open class RTMPConnection: EventDispatcher {
 
         let query: String = String(description[description.index(index, offsetBy: 1)...])
         let challenge: String = String(format: "%08x", arc4random())
-        let dictionary: [String: String] = URL(string: "http: //localhost?" + query)!.dictionaryFromQuery()
+        let dictionary: [String: String] = URL(string: "http://localhost?" + query)!.dictionaryFromQuery()
 
         var response: String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
         if let opaque: String = dictionary["opaque"] {
