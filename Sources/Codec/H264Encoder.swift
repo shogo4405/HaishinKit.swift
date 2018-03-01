@@ -79,37 +79,10 @@ final class H264Encoder: NSObject {
             guard bitrate != oldValue else {
                 return
             }
-            lockQueue.async {
-                guard let session: VTCompressionSession = self._session else {
-                    return
-                }
-                self.status = VTSessionSetProperty(
-                    session,
-                    kVTCompressionPropertyKey_AverageBitRate,
-                    Int(self.bitrate) as CFTypeRef
-                )
-            }
+            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(bitrate) as CFTypeRef)
         }
     }
-    var locked: UInt32 = 0
-    var lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Encoder.lock")
-    var expectedFPS: Float64 = AVMixer.defaultFPS {
-        didSet {
-            guard expectedFPS != oldValue else {
-                return
-            }
-            lockQueue.async {
-                guard let session: VTCompressionSession = self._session else {
-                    return
-                }
-                self.status = VTSessionSetProperty(
-                    session,
-                    kVTCompressionPropertyKey_ExpectedFrameRate,
-                    NSNumber(value: self.expectedFPS)
-                )
-            }
-        }
-    }
+
     @objc var dataRateLimits: [Int] = H264Encoder.defaultDataRateLimits {
         didSet {
             guard dataRateLimits != oldValue else {
@@ -119,16 +92,7 @@ final class H264Encoder: NSObject {
                 invalidateSession = true
                 return
             }
-            lockQueue.async {
-                guard let session: VTCompressionSession = self._session else {
-                    return
-                }
-                self.status = VTSessionSetProperty(
-                    session,
-                    kVTCompressionPropertyKey_DataRateLimits,
-                    self.dataRateLimits as CFTypeRef
-                )
-            }
+            setProperty(kVTCompressionPropertyKey_DataRateLimits, dataRateLimits as CFTypeRef)
         }
     }
     @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String {
@@ -144,16 +108,18 @@ final class H264Encoder: NSObject {
             guard maxKeyFrameIntervalDuration != oldValue else {
                 return
             }
-            lockQueue.async {
-                guard let session: VTCompressionSession = self._session else {
-                    return
-                }
-                self.status = VTSessionSetProperty(
-                    session,
-                    kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration,
-                    NSNumber(value: self.maxKeyFrameIntervalDuration)
-                )
+            setProperty(kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, NSNumber(value: maxKeyFrameIntervalDuration))
+        }
+    }
+
+    var locked: UInt32 = 0
+    var lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Encoder.lock")
+    var expectedFPS: Float64 = AVMixer.defaultFPS {
+        didSet {
+            guard expectedFPS != oldValue else {
+                return
             }
+            setProperty(kVTCompressionPropertyKey_ExpectedFrameRate, NSNumber(value: expectedFPS))
         }
     }
     var formatDescription: CMFormatDescription? {
@@ -165,7 +131,20 @@ final class H264Encoder: NSObject {
         }
     }
     weak var delegate: VideoEncoderDelegate?
+
     internal(set) var running: Bool = false
+    private var supportedProperty: [AnyHashable: Any]? = nil {
+        didSet {
+            guard logger.isEnabledFor(level: .info) else {
+                return
+            }
+            var keys: [String] = []
+            for (key, _) in supportedProperty ?? [:] {
+                keys.append(key.description)
+            }
+            logger.info(keys.joined(separator: ", "))
+        }
+    }
     private(set) var status: OSStatus = noErr
     private var attributes: [NSString: AnyObject] {
         var attributes: [NSString: AnyObject] = H264Encoder.defaultAttributes
@@ -214,10 +193,12 @@ final class H264Encoder: NSObject {
         status: OSStatus,
         infoFlags: VTEncodeInfoFlags,
         sampleBuffer: CMSampleBuffer?) in
-        guard let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else {
+        guard
+            let refcon: UnsafeMutableRawPointer = outputCallbackRefCon,
+            let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else {
             return
         }
-        let encoder: H264Encoder = unsafeBitCast(outputCallbackRefCon, to: H264Encoder.self)
+        let encoder: H264Encoder = Unmanaged<H264Encoder>.fromOpaque(refcon).takeUnretainedValue()
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
         encoder.delegate?.sampleOutput(video: sampleBuffer)
     }
@@ -235,7 +216,7 @@ final class H264Encoder: NSObject {
                     attributes as CFDictionary?,
                     nil,
                     callback,
-                    unsafeBitCast(self, to: UnsafeMutableRawPointer.self),
+                    Unmanaged.passUnretained(self).toOpaque(),
                     &_session
                     ) == noErr else {
                     logger.warn("create a VTCompressionSessionCreate")
@@ -244,6 +225,7 @@ final class H264Encoder: NSObject {
                 invalidateSession = false
                 status = VTSessionSetProperties(_session!, properties as CFDictionary)
                 status = VTCompressionSessionPrepareToEncodeFrames(_session!)
+                supportedProperty = _session?.copySupportedPropertyDictionary()
             }
             return _session
         }
@@ -277,6 +259,19 @@ final class H264Encoder: NSObject {
         )
         if !muted {
             lastImageBuffer = imageBuffer
+        }
+    }
+
+    private func setProperty(_ key: CFString, _ value: CFTypeRef?) {
+        lockQueue.async {
+            guard let session: VTCompressionSession = self._session else {
+                return
+            }
+            self.status = VTSessionSetProperty(
+                session,
+                key,
+                value
+            )
         }
     }
 

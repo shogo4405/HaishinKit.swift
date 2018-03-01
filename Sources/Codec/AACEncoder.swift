@@ -64,7 +64,7 @@ final class AACEncoder: NSObject {
     var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
-            if (!CMFormatDescriptionEqual(formatDescription, oldValue)) {
+            if !CMFormatDescriptionEqual(formatDescription, oldValue) {
                 delegate?.didSetFormatDescription(audio: formatDescription)
             }
         }
