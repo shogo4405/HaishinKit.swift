@@ -6,7 +6,6 @@ import AVFoundation
 
     final class DisplayLink: NSObject {
         var frameInterval: Int = 0
-        var preferredFramesPerSecond: Int = 0
         private(set) var timestamp: CFTimeInterval = 0
         private var displayLink: CVDisplayLink?
         private weak var delegate: NSObject?
@@ -54,11 +53,11 @@ protocol DisplayLinkedQueueDelegate: class {
 }
 
 final class DisplayLinkedQueue: NSObject {
-    var bufferTime: TimeInterval = 0.1 // sec
-    private(set) var duration: TimeInterval = 0
-    weak var delegate: DisplayLinkedQueueDelegate?
-
     var running: Bool = false
+    var bufferTime: TimeInterval = 0.1 // sec
+    weak var delegate: DisplayLinkedQueueDelegate?
+    private(set) var duration: TimeInterval = 0
+
     private var isReady: Bool = false
     private var buffers: [CMSampleBuffer] = []
     private var mediaTime: CFTimeInterval = 0
@@ -70,11 +69,7 @@ final class DisplayLinkedQueue: NSObject {
             guard let displayLink: DisplayLink = displayLink else {
                 return
             }
-            if #available(iOSApplicationExtension 10.0, *) {
-                displayLink.preferredFramesPerSecond = 0
-            } else {
-                displayLink.frameInterval = 1
-            }
+            displayLink.frameInterval = 1
             displayLink.add(to: .main, forMode: .commonModes)
         }
     }
