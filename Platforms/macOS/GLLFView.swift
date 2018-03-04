@@ -24,8 +24,8 @@ open class GLLFView: NSOpenGLView {
     var orientation: AVCaptureVideoOrientation = .portrait
     var position: AVCaptureDevice.Position = .front
     private var displayImage: CIImage!
-    private var originalFrame: CGRect = CGRect.zero
-    private var scale: CGRect = CGRect.zero
+    private var originalFrame: CGRect = .zero
+    private var scale: CGSize = .zero
     private weak var currentStream: NetStream?
 
     open override func prepareOpenGL() {
@@ -57,10 +57,10 @@ open class GLLFView: NSOpenGLView {
         var fromRect: CGRect = image.extent
         VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
 
-        inRect.origin.x *= scale.size.width
-        inRect.origin.y *= scale.size.height
-        inRect.size.width *= scale.size.width
-        inRect.size.height *= scale.size.height
+        inRect.origin.x *= scale.width
+        inRect.origin.y *= scale.height
+        inRect.size.width *= scale.width
+        inRect.size.height *= scale.height
 
         glContext.makeCurrentContext()
         glClear(GLenum(GL_COLOR_BUFFER_BIT))
@@ -71,7 +71,7 @@ open class GLLFView: NSOpenGLView {
 
     override open func reshape() {
         let rect: CGRect = frame
-        scale = CGRect(x: 0, y: 0, width: originalFrame.size.width / rect.size.width, height: originalFrame.size.height / rect.size.height)
+        scale = CGSize(width: originalFrame.size.width / rect.size.width, height: originalFrame.size.height / rect.size.height)
         glViewport(0, 0, Int32(rect.width), Int32(rect.height))
         glMatrixMode(GLenum(GL_PROJECTION))
         glLoadIdentity()
