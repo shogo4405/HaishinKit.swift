@@ -111,7 +111,7 @@ final class VideoIOComponent: IOComponent {
             do {
                 try device.lockForConfiguration()
                 device.focusPointOfInterest = point
-                device.focusMode = .autoFocus
+                device.focusMode = .continuousAutoFocus
                 device.unlockForConfiguration()
             } catch let error as NSError {
                 logger.error("while locking device for focusPointOfInterest: \(error)")
@@ -130,7 +130,7 @@ final class VideoIOComponent: IOComponent {
             do {
                 try device.lockForConfiguration()
                 device.exposurePointOfInterest = point
-                device.exposureMode = .autoExpose
+                device.exposureMode = .continuousAutoExposure
                 device.unlockForConfiguration()
             } catch let error as NSError {
                 logger.error("while locking device for exposurePointOfInterest: \(error)")
