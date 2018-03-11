@@ -49,6 +49,7 @@ open class GLLFView: GLKView {
     open func attachStream(_ stream: NetStream?) {
         if let stream: NetStream = stream {
             stream.lockQueue.async {
+                stream.mixer.videoIO.context = CIContext(eaglContext: self.context, options: GLLFView.defaultOptions)
                 stream.mixer.videoIO.drawable = self
                 stream.mixer.startRunning()
             }
