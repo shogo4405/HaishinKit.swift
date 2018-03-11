@@ -141,8 +141,8 @@
 		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */; };
 		299B131D1D35272D00A1E8F5 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		299B13271D3B751400A1E8F5 /* LFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* LFView.swift */; };
-		299D6A512051A9720090E10A /* MTLFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTLFView.swift */; };
-		299D6A532051A9920090E10A /* MTLFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTLFView.swift */; };
+		299D6A512051A9720090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTHKView.swift */; };
+		299D6A532051A9920090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTHKView.swift */; };
 		29A39C8E1D85BF6F007C27E9 /* BroadcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
@@ -543,8 +543,8 @@
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScreenCaptureSession.swift; path = Platforms/iOS/ScreenCaptureSession.swift; sourceTree = "<group>"; };
 		299B13261D3B751400A1E8F5 /* LFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LFView.swift; path = Platforms/iOS/LFView.swift; sourceTree = "<group>"; };
-		299D6A502051A9720090E10A /* MTLFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MTLFView.swift; path = Platforms/macOS/MTLFView.swift; sourceTree = "<group>"; };
-		299D6A522051A9920090E10A /* MTLFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MTLFView.swift; path = Platforms/tvOS/MTLFView.swift; sourceTree = "<group>"; };
+		299D6A502051A9720090E10A /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MTHKView.swift; path = Platforms/macOS/MTHKView.swift; sourceTree = "<group>"; };
+		299D6A522051A9920090E10A /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MTHKView.swift; path = Platforms/tvOS/MTHKView.swift; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Platforms/iOS/Info.plist; sourceTree = "<group>"; };
 		299F7E3B1CD71A97001E7272 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HaishinKit.h; path = Platforms/iOS/HaishinKit.h; sourceTree = "<group>"; };
 		29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BroadcastViewController.swift; path = Examples/iOS/ScreencastUI/BroadcastViewController.swift; sourceTree = "<group>"; };
@@ -948,7 +948,7 @@
 				296543591D62FE6200734698 /* HaishinKit.h */,
 				296543581D62FE6200734698 /* Info.plist */,
 				2965435A1D62FE6200734698 /* LFView.swift */,
-				299D6A502051A9720090E10A /* MTLFView.swift */,
+				299D6A502051A9720090E10A /* MTHKView.swift */,
 				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extenstion.swift */,
 				2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */,
 			);
@@ -1104,7 +1104,7 @@
 				29E796991ED197A800D75C6C /* GLLFView.swift */,
 				29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */,
 				29D3D4E51ED0518900DD4AA6 /* Info.plist */,
-				299D6A522051A9920090E10A /* MTLFView.swift */,
+				299D6A522051A9920090E10A /* MTHKView.swift */,
 			);
 			name = tvOS;
 			sourceTree = "<group>";
@@ -1797,7 +1797,7 @@
 				295891131EEB8D7200CE51E1 /* FLVFrameType.swift in Sources */,
 				29B877011CD70D5A00FC07DA /* ProgramSpecific.swift in Sources */,
 				295891271EEB8EF300CE51E1 /* FLVAACPacket.swift in Sources */,
-				299D6A512051A9720090E10A /* MTLFView.swift in Sources */,
+				299D6A512051A9720090E10A /* MTHKView.swift in Sources */,
 				29B877021CD70D5A00FC07DA /* TransportStream.swift in Sources */,
 				296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */,
 				2958912F1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
@@ -1945,7 +1945,7 @@
 				2958912C1EEB8F1D00CE51E1 /* FLVSoundSize.swift in Sources */,
 				295891241EEB8EC500CE51E1 /* FLVAVCPacketType.swift in Sources */,
 				29EB3E0E1ED0587A001CAE8B /* AudioStreamPlayback.swift in Sources */,
-				299D6A532051A9920090E10A /* MTLFView.swift in Sources */,
+				299D6A532051A9920090E10A /* MTHKView.swift in Sources */,
 				29EB3DF31ED05773001CAE8B /* CMAudioFormatDescription+Extension.swift in Sources */,
 				29EB3DFC1ED057AC001CAE8B /* HTTPRequest.swift in Sources */,
 				29EB3E161ED0588F001CAE8B /* MIME.swift in Sources */,

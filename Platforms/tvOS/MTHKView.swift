@@ -2,8 +2,8 @@ import MetalKit
 import Foundation
 import AVFoundation
 
-open class MTLFView: MTKView {
-    open var videoGravity: AVLayerVideoGravity = .resizeAspect
+open class MTHKView: MTKView {
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
@@ -42,11 +42,16 @@ open class MTLFView: MTKView {
     }
 }
 
-extension MTLFView: MTKViewDelegate {
+extension MTHKView: MTKViewDelegate {
     // MARK: MTKViewDelegate
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
     }
 
+#if arch(i386) || arch(x86_64)
+    public func draw(in view: MTKView) {
+        // tvOS Simulator doesn't support currentDrawable as CAMetalDrawable.
+    }
+#else
     public func draw(in view: MTKView) {
         guard
             let drawable: CAMetalDrawable = currentDrawable,
@@ -86,9 +91,10 @@ extension MTLFView: MTKViewDelegate {
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
+#endif
 }
 
-extension MTLFView: NetStreamDrawable {
+extension MTHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
         DispatchQueue.main.async {

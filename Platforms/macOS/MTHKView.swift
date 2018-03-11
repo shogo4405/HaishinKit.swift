@@ -2,8 +2,8 @@ import MetalKit
 import Foundation
 import AVFoundation
 
-open class MTLFView: MTKView {
-    open var videoGravity: AVLayerVideoGravity = .resizeAspect
+open class MTHKView: MTKView {
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
@@ -46,7 +46,7 @@ open class MTLFView: MTKView {
     }
 }
 
-extension MTLFView: MTKViewDelegate {
+extension MTHKView: MTKViewDelegate {
     // MARK: MTKViewDelegate
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
     }
@@ -92,7 +92,7 @@ extension MTLFView: MTKViewDelegate {
     }
 }
 
-extension MTLFView: NetStreamDrawable {
+extension MTHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
         DispatchQueue.main.async {
