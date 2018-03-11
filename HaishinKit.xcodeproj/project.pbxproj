@@ -55,7 +55,8 @@
 		292D8A351D8B294E00DBECE2 /* MP4Reader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29798E511CE5DF1900F5CBD0 /* MP4Reader.swift */; };
 		292F6DB11EEBB2040097EDBE /* AVFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292F6DB01EEBB2040097EDBE /* AVFoundation.swift */; };
 		2930D0411E12D35400DA2DC5 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */; };
-		2932D0E91ED1BAB10002D33B /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */; };
+		29373DB6205524D700099860 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */; };
+		29373DB7205524D700099860 /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		293875DD1F374D4B009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DC1F374D4B009F4B30 /* Logboard.framework */; };
 		293875DF1F374D6E009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DE1F374D6E009F4B30 /* Logboard.framework */; };
 		293875E11F374D80009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875E01F374D80009F4B30 /* Logboard.framework */; };
@@ -140,7 +141,6 @@
 		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */; };
 		299B131D1D35272D00A1E8F5 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		299B13271D3B751400A1E8F5 /* LFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* LFView.swift */; };
-		299D6A472051A7F20090E10A /* MTLFView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A462051A7F20090E10A /* MTLFView+Extension.swift */; };
 		299D6A512051A9720090E10A /* MTLFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTLFView.swift */; };
 		299D6A532051A9920090E10A /* MTLFView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTLFView.swift */; };
 		29A39C8E1D85BF6F007C27E9 /* BroadcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */; };
@@ -354,6 +354,13 @@
 			remoteGlobalIDString = 2915EC511D85BDF100621092;
 			remoteInfo = Screencast;
 		};
+		29373DB8205524D700099860 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 29D3D4DB1ED0509900DD4AA6;
+			remoteInfo = "HaishinKit tvOS";
+		};
 		29562B8A1E6BFFE000BB940A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -406,6 +413,17 @@
 				2915EC6F1D85BDF100621092 /* Screencast.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		29373DBA205524D700099860 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				29373DB7205524D700099860 /* HaishinKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		29562B8C1E6BFFE000BB940A /* Embed Frameworks */ = {
@@ -525,7 +543,6 @@
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScreenCaptureSession.swift; path = Platforms/iOS/ScreenCaptureSession.swift; sourceTree = "<group>"; };
 		299B13261D3B751400A1E8F5 /* LFView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LFView.swift; path = Platforms/iOS/LFView.swift; sourceTree = "<group>"; };
-		299D6A462051A7F20090E10A /* MTLFView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MTLFView+Extension.swift"; path = "Extension/MTLFView+Extension.swift"; sourceTree = "<group>"; };
 		299D6A502051A9720090E10A /* MTLFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MTLFView.swift; path = Platforms/macOS/MTLFView.swift; sourceTree = "<group>"; };
 		299D6A522051A9920090E10A /* MTLFView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MTLFView.swift; path = Platforms/tvOS/MTLFView.swift; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Platforms/iOS/Info.plist; sourceTree = "<group>"; };
@@ -676,7 +693,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2932D0E91ED1BAB10002D33B /* HaishinKit.framework in Frameworks */,
+				29373DB6205524D700099860 /* HaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1126,7 +1143,6 @@
 				29EA87DB1E79A0460043A5F8 /* Data+Extension.swift */,
 				29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */,
 				29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */,
-				299D6A462051A7F20090E10A /* MTLFView+Extension.swift */,
 				29EA87D71E79A0090043A5F8 /* URL+Extension.swift */,
 				29D8067F204828D000F4504D /* VTSession+Extension.swift */,
 			);
@@ -1285,8 +1301,8 @@
 				29C932901CD76FD300283FC5 /* Sources */,
 				29C932911CD76FD300283FC5 /* Frameworks */,
 				29C932921CD76FD300283FC5 /* Resources */,
-				293B521C1DE2C2700092C73C /* ShellScript */,
 				29562B8C1E6BFFE000BB940A /* Embed Frameworks */,
+				293B521C1DE2C2700092C73C /* ShellScript */,
 				29E51F2A1FEFDEB300F839F4 /* ShellScript */,
 			);
 			buildRules = (
@@ -1324,12 +1340,14 @@
 				29D3D4EB1ED0531500DD4AA6 /* Sources */,
 				29D3D4EC1ED0531500DD4AA6 /* Frameworks */,
 				29D3D4ED1ED0531500DD4AA6 /* Resources */,
+				29373DBA205524D700099860 /* Embed Frameworks */,
 				2932D0E81ED1BA6C0002D33B /* ShellScript */,
 				29E51F2B1FEFDEBF00F839F4 /* ShellScript */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				29373DB9205524D700099860 /* PBXTargetDependency */,
 			);
 			name = "Example tvOS";
 			productName = "Example tvOS";
@@ -1766,7 +1784,6 @@
 				29B876FA1CD70D5900FC07DA /* M3U.swift in Sources */,
 				29FB94321E1BF507005DE4DF /* SoundSpliter.swift in Sources */,
 				292D8A341D8B294900DBECE2 /* MP4Sampler.swift in Sources */,
-				299D6A472051A7F20090E10A /* MTLFView+Extension.swift in Sources */,
 				29B876FD1CD70D5A00FC07DA /* AudioSpecificConfig.swift in Sources */,
 				2958911F1EEB8E9600CE51E1 /* FLVSoundRate.swift in Sources */,
 				296242631D8DBA8C00C451A3 /* TSReader.swift in Sources */,
@@ -1970,6 +1987,11 @@
 			isa = PBXTargetDependency;
 			target = 2915EC511D85BDF100621092 /* Screencast */;
 			targetProxy = 2915EC6D1D85BDF100621092 /* PBXContainerItemProxy */;
+		};
+		29373DB9205524D700099860 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 29D3D4DB1ED0509900DD4AA6 /* HaishinKit tvOS */;
+			targetProxy = 29373DB8205524D700099860 /* PBXContainerItemProxy */;
 		};
 		29562B8B1E6BFFE000BB940A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2543,6 +2565,7 @@
 		29D3D4FC1ED0531600DD4AA6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2565,6 +2588,7 @@
 		29D3D4FD1ED0531600DD4AA6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
