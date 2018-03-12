@@ -4,6 +4,15 @@ import Foundation
 import AVFoundation
 import VideoToolbox
 
+extension NSPopUpButton {
+    fileprivate func present(mediaType: AVMediaType) {
+        let devices = AVCaptureDevice.devices(for: mediaType)
+        devices.forEach {
+            self.addItem(withTitle: $0.localizedName)
+        }
+    }
+}
+
 final class MainViewController: NSViewController {
     var rtmpConnection: RTMPConnection = RTMPConnection()
     var rtmpStream: RTMPStream!
@@ -26,14 +35,8 @@ final class MainViewController: NSViewController {
 
         urlField.stringValue = Preference.defaultInstance.uri ?? ""
 
-        let audios = AVCaptureDevice.devices(for: .audio)
-        for audio in audios {
-            audioPopUpButton?.addItem(withTitle: audio.localizedName)
-        }
-        let cameras = AVCaptureDevice.devices(for: .video)
-        for camera in cameras {
-            cameraPopUpButton?.addItem(withTitle: camera.localizedName)
-        }
+        audioPopUpButton?.present(mediaType: .audio)
+        cameraPopUpButton?.present(mediaType: .video)
     }
 
     override func viewWillAppear() {
