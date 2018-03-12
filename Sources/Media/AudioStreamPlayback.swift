@@ -40,7 +40,7 @@ class AudioStreamPlayback {
             }
         }
     }
-    let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioStreamPlayback.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioStreamPlayback.lock")
     private var bufferSize: UInt32 = AudioStreamPlayback.defaultBufferSize
     private var queue: AudioQueueRef? = nil {
         didSet {

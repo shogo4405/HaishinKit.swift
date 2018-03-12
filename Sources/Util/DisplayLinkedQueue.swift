@@ -71,7 +71,7 @@ final class DisplayLinkedQueue: NSObject {
             displayLink.add(to: .main, forMode: .commonModes)
         }
     }
-    private let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")
 
     func enqueue(_ buffer: CMSampleBuffer) {
         lockQueue.async {

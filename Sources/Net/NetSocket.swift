@@ -15,11 +15,11 @@ public class NetSocket: NSObject {
 
     var inputStream: InputStream?
     var outputStream: OutputStream?
-    var inputQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
+    var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
 
     private var buffer: UnsafeMutablePointer<UInt8>?
     private var runloop: RunLoop?
-    private let outputQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
+    private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     private var timeoutHandler: (() -> Void)?
 
     @discardableResult

@@ -113,7 +113,7 @@ final class H264Encoder: NSObject {
     }
 
     var locked: UInt32 = 0
-    var lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Encoder.lock")
+    var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Encoder.lock")
     var expectedFPS: Float64 = AVMixer.defaultFPS {
         didSet {
             guard expectedFPS != oldValue else {

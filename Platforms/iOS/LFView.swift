@@ -3,7 +3,7 @@ import Foundation
 import AVFoundation
 
 open class LFView: UIView {
-    open static var defaultBackgroundColor: UIColor = UIColor.black
+    open static var defaultBackgroundColor: UIColor = .black
 
     open override class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self
@@ -21,11 +21,10 @@ open class LFView: UIView {
 
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
-            guard let connection: AVCaptureConnection = layer.connection else {
-                return
-            }
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = orientation
+            layer.connection.map {
+                $0.isVideoOrientationSupported {
+                    $0.videoOrientation = orientation
+                }
             }
         }
     }

@@ -6,8 +6,8 @@ open class NetService: NSObject {
         return nil
     }
 
-    let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.lock")
-    var networkQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.network")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.lock")
+    var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.network")
 
     private(set) var domain: String
     private(set) var name: String
