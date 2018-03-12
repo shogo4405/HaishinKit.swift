@@ -92,7 +92,7 @@ open class ByteArray: ByteArrayConvertible {
         set {
             switch true {
             case (data.count < newValue):
-                data.append(Data.init(count: newValue - data.count))
+                data.append(Data(count: newValue - data.count))
             case (newValue < data.count):
                 data = data.subdata(in: 0..<newValue)
             default:
