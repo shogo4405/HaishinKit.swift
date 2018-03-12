@@ -1,4 +1,3 @@
-import Foundation
 
 public enum FLVAVCPacketType: UInt8 {
     case seq = 0

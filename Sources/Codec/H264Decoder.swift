@@ -97,7 +97,7 @@ final class H264Decoder {
         guard let session: VTDecompressionSession = session else {
             return kVTInvalidSessionErr
         }
-        var flagsOut: VTDecodeInfoFlags = VTDecodeInfoFlags()
+        var flagsOut: VTDecodeInfoFlags = []
         let decodeFlags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression,
                                                ._EnableTemporalProcessing]
         return VTDecompressionSessionDecodeFrame(session, sampleBuffer, decodeFlags, nil, &flagsOut)
@@ -141,9 +141,9 @@ final class H264Decoder {
             delegate?.sampleOutput(video: buffer)
         } else {
             buffers.append(buffer)
-            buffers.sort(by: { (lhs: CMSampleBuffer, rhs: CMSampleBuffer) -> Bool in
-                return lhs.presentationTimeStamp < rhs.presentationTimeStamp
-            })
+            buffers.sort {
+                $0.presentationTimeStamp < $1.presentationTimeStamp
+            }
             if minimumGroupOfPictures <= buffers.count {
                 delegate?.sampleOutput(video: buffers.removeFirst())
             }
