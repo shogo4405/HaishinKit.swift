@@ -54,7 +54,7 @@ open class NetService: NSObject {
     }
 
     private func initService() {
-        runloop = RunLoop.current
+        runloop = .current
         service = Foundation.NetService(domain: domain, type: type, name: name, port: port)
         service.delegate = self
         service.setTXTRecord(txtData)

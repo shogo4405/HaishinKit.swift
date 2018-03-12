@@ -6,7 +6,7 @@ extension CMVideoFormatDescription {
         return CMVideoFormatDescriptionGetDimensions(self)
     }
 
-    static func create(withPixelBuffer: CVPixelBuffer) -> CMVideoFormatDescription? {
+    init(pixelBuffer: CVPixelBuffer) {
         var formatDescription: CMFormatDescription?
         let status: OSStatus = CMVideoFormatDescriptionCreate(
             kCFAllocatorDefault,
@@ -20,6 +20,6 @@ extension CMVideoFormatDescription {
             logger.warn("\(status)")
             return nil
         }
-        return formatDescription
+        self = formatDescription!
     }
 }

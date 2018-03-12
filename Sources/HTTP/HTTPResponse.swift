@@ -37,7 +37,7 @@ extension HTTPResponseCompatible {
             for i in 0..<bytes.count {
                 count += bytes[i].count + 1
                 guard let line: String = String(bytes: Array(bytes[i]), encoding: .utf8), line != "\r" else {
-                        break
+                    break
                 }
                 lines.append(line.trimmingCharacters(in: .newlines))
             }
