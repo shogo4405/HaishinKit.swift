@@ -1,4 +1,3 @@
-import Foundation
 import AVFoundation
 
 public enum FLVAudioCodec: UInt8 {

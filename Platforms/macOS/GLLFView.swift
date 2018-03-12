@@ -55,7 +55,7 @@ open class GLLFView: NSOpenGLView {
 
         var inRect: CGRect = dirtyRect
         var fromRect: CGRect = image.extent
-        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
+        VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
 
         inRect.origin.x *= scale.width
         inRect.origin.y *= scale.height

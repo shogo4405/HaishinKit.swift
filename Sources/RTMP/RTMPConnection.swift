@@ -226,13 +226,13 @@ open class RTMPConnection: EventDispatcher {
 
     override public init() {
         super.init()
-        addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status: )))
+        addEventListener(Event.RTMP_STATUS, selector: #selector(on))
     }
 
     deinit {
         timer = nil
         streams.removeAll()
-        removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status: )))
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(on))
     }
 
     @available(*, unavailable)

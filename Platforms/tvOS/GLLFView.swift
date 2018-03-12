@@ -42,7 +42,7 @@ open class GLLFView: GLKView {
         }
         var inRect: CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect: CGRect = displayImage.extent
-        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
+        VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
         currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
     }
 
