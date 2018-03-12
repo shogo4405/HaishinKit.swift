@@ -26,7 +26,7 @@ final class VideoIOComponent: IOComponent {
         didSet {
             guard
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let data = DeviceUtil.getActualFPS(fps, device: device) else {
+                let data = device.actualFPS(fps) else {
                 return
             }
 

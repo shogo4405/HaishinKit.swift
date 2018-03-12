@@ -44,11 +44,10 @@ class AudioStreamPlayback {
     private var bufferSize: UInt32 = AudioStreamPlayback.defaultBufferSize
     private var queue: AudioQueueRef? = nil {
         didSet {
-            guard let oldValue: AudioQueueRef = oldValue else {
-                return
+            oldValue.map {
+                AudioQueueStop($0, true)
+                AudioQueueDispose($0, true)
             }
-            AudioQueueStop(oldValue, true)
-            AudioQueueDispose(oldValue, true)
         }
     }
     private var inuse: [Bool] = []
