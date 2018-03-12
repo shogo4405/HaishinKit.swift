@@ -1,6 +1,5 @@
 import UIKit
 import CoreImage
-import Foundation
 import AVFoundation
 
 public protocol ScreenCaptureOutputPixelBufferDelegate: class {

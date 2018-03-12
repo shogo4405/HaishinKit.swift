@@ -1,6 +1,5 @@
 import HaishinKit
 import Cocoa
-import Foundation
 import AVFoundation
 import VideoToolbox
 

@@ -1,5 +1,4 @@
 import UIKit
-import Foundation
 import AVFoundation
 
 open class LFView: UIView {

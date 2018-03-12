@@ -1,6 +1,5 @@
 import HaishinKit
 import UIKit
-import Foundation
 import AVFoundation
 
 final class CurrentTimeEffect: VisualEffect {

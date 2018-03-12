@@ -1,5 +1,4 @@
 import UIKit
-import Foundation
 
 final class PreferenceViewController: UIViewController {
     @IBOutlet var urlField: UITextField?
