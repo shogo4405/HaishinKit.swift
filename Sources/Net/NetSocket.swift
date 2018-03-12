@@ -117,13 +117,13 @@ public class NetSocket: NSObject {
 
         outputStream.delegate = self
         outputStream.schedule(in: runloop!, forMode: .defaultRunLoopMode)
-        outputStream.setProperty(securityLevel.rawValue, forKey: Stream.PropertyKey.socketSecurityLevelKey)
+        outputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
 
         inputStream.open()
         outputStream.open()
 
         if 0 < timeout {
-            outputQueue.asyncAfter(deadline: DispatchTime.now() + Double(timeout * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
+            outputQueue.asyncAfter(deadline: .now() + Double(timeout * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
                 guard let timeoutHandler: (() -> Void) = self.timeoutHandler else {
                     return
                 }
@@ -170,7 +170,7 @@ extension NetSocket: StreamDelegate {
     public func stream(_ aStream: Stream, handle eventCode: Stream.Event) {
         switch eventCode {
         //  1 = 1 << 0
-        case Stream.Event.openCompleted:
+        case .openCompleted:
             guard let inputStream = inputStream, let outputStream = outputStream,
                 inputStream.streamStatus == .open && outputStream.streamStatus == .open else {
                 break
@@ -180,18 +180,18 @@ extension NetSocket: StreamDelegate {
                 connected = true
             }
         //  2 = 1 << 1
-        case Stream.Event.hasBytesAvailable:
+        case .hasBytesAvailable:
             if aStream == inputStream {
                 doInput()
             }
         //  4 = 1 << 2
-        case Stream.Event.hasSpaceAvailable:
+        case .hasSpaceAvailable:
             break
         //  8 = 1 << 3
-        case Stream.Event.errorOccurred:
+        case .errorOccurred:
             close(isDisconnected: true)
         // 16 = 1 << 4
-        case Stream.Event.endEncountered:
+        case .endEncountered:
             close(isDisconnected: true)
         default:
             break
