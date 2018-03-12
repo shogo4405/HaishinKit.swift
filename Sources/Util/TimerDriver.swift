@@ -58,7 +58,7 @@ extension TimerDriver: Running {
                 return
             }
             self.timer = Timer(
-                timeInterval: 0.0001, target: self, selector: #selector(on(timer: )), userInfo: nil, repeats: true
+                timeInterval: 0.0001, target: self, selector: #selector(self.on(timer: )), userInfo: nil, repeats: true
             )
             self.nextFire = mach_absolute_time() + self.interval
             self.delegate?.tick(self)

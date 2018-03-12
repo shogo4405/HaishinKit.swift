@@ -307,7 +307,7 @@ final class VideoIOComponent: IOComponent {
         if !effects.isEmpty {
             #if os(macOS)
                 // green edge hack for OSX
-                buffer = CVPixelBuffer(image: image)!
+                buffer = CVPixelBuffer.create(image)!
             #endif
             context?.render(image, to: buffer)
         }

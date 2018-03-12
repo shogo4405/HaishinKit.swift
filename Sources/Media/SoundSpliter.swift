@@ -25,7 +25,7 @@ public class SoundSpliter: NSObject {
     private var presentationTimeStamp: CMTime = kCMTimeZero
 
     private var minimumByteSize: Int {
-        return min(Int.max, sampleData.count)
+        return min(.max, sampleData.count)
     }
 
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {

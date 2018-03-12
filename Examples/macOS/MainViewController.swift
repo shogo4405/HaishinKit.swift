@@ -26,18 +26,14 @@ final class MainViewController: NSViewController {
 
         urlField.stringValue = Preference.defaultInstance.uri ?? ""
 
-        let audios: [Any]! = AVCaptureDevice.devices(for: .audio)
+        let audios = AVCaptureDevice.devices(for: .audio)
         for audio in audios {
-            if let audio: AVCaptureDevice = audio as? AVCaptureDevice {
-                audioPopUpButton?.addItem(withTitle: audio.localizedName)
-            }
+            audioPopUpButton?.addItem(withTitle: audio.localizedName)
         }
 
-        let cameras: [Any]! = AVCaptureDevice.devices(for: .video)
+        let cameras = AVCaptureDevice.devices(for: .video)
         for camera in cameras {
-            if let camera: AVCaptureDevice = camera as? AVCaptureDevice {
-                cameraPopUpButton?.addItem(withTitle: camera.localizedName)
-            }
+            cameraPopUpButton?.addItem(withTitle: camera.localizedName)
         }
     }
 

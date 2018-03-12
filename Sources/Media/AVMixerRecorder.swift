@@ -87,7 +87,7 @@ open class AVMixerRecorder: NSObject {
             delegate.rotateFile(self, withPresentationTimeStamp: withPresentationTime, mediaType: .video)
             guard
                 let writer: AVAssetWriter = self.writer,
-                let input: AVAssetWriterInput = delegate.getWriterInput(self, mediaType: .video, sourceFormatHint: CMVideoFormatDescription(pixelBuffer: pixelBuffer)),
+                let input: AVAssetWriterInput = delegate.getWriterInput(self, mediaType: .video, sourceFormatHint: CMVideoFormatDescription.create(pixelBuffer: pixelBuffer)),
                 let adaptor: AVAssetWriterInputPixelBufferAdaptor = delegate.getPixelBufferAdaptor(self, withWriterInput: input),
                 self.isReadyForStartWriting else {
                 return
