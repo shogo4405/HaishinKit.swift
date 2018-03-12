@@ -14,7 +14,7 @@ NS_INLINE void nstry(void(^_Nonnull lambda)(void), void(^_Nullable error)(NSExce
             @try {
                 error(exception);
             }@catch(NSException *exception) {
-                
+
             }
         }
     }
