@@ -38,7 +38,7 @@ open class ScreenCaptureSession: NSObject {
     private var viewToCapture: UIView?
     public var afterScreenUpdates: Bool = false
     private var context: CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
-    private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 1)
+    private let semaphore = DispatchSemaphore(value: 1)
     private let lockQueue = DispatchQueue(
         label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: .userInteractive, attributes: []
     )
@@ -110,7 +110,7 @@ open class ScreenCaptureSession: NSObject {
         var pixelBuffer: CVPixelBuffer?
 
         CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)
-        CVPixelBufferLockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
+        CVPixelBufferLockBaseAddress(pixelBuffer!, [])
         UIGraphicsBeginImageContextWithOptions(size, false, scale)
         let cgctx: CGContext = UIGraphicsGetCurrentContext()!
         DispatchQueue.main.sync {
@@ -135,7 +135,7 @@ open class ScreenCaptureSession: NSObject {
         UIGraphicsEndImageContext()
         context.render(CIImage(cgImage: image.cgImage!), to: pixelBuffer!)
         delegate?.output(pixelBuffer: pixelBuffer!, withPresentationTime: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
-        CVPixelBufferUnlockBaseAddress(pixelBuffer!, CVPixelBufferLockFlags(rawValue: CVOptionFlags(0)))
+        CVPixelBufferUnlockBaseAddress(pixelBuffer!, [])
     }
 }
 
