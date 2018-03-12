@@ -7,21 +7,15 @@ public final class DeviceUtil {
     }
 
     static public func device(withPosition: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        for device in AVCaptureDevice.devices() {
-            if device.hasMediaType(AVMediaType.video) && device.position == withPosition {
-                return device
-            }
+        return AVCaptureDevice.devices().first {
+            $0.hasMediaType(.video) && $0.position == withPosition
         }
-        return nil
     }
 
-    static public func device(withLocalizedName: String, mediaType: String) -> AVCaptureDevice? {
-        for device in AVCaptureDevice.devices() {
-            if device.hasMediaType(AVMediaType(rawValue: mediaType)) && device.localizedName == withLocalizedName {
-                return device
-            }
+    static public func device(withLocalizedName: String, mediaType: AVMediaType) -> AVCaptureDevice? {
+        return AVCaptureDevice.devices().first {
+            $0.hasMediaType(mediaType) && $0.localizedName == withLocalizedName
         }
-        return nil
     }
 
     static func getActualFPS(_ fps: Float64, device: AVCaptureDevice) -> (fps: Float64, duration: CMTime)? {
