@@ -63,9 +63,7 @@ final class DisplayLinkedQueue: NSObject {
     private var mediaTime: CFTimeInterval = 0
     private var displayLink: DisplayLink? {
         didSet {
-            if let oldValue: DisplayLink = oldValue {
-                oldValue.invalidate()
-            }
+            oldValue?.invalidate()
             guard let displayLink: DisplayLink = displayLink else {
                 return
             }

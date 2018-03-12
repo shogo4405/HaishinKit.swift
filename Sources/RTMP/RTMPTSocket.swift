@@ -41,11 +41,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private(set) var queueBytesOut: Int64 = 0
     private var timer: Timer? {
         didSet {
-            if let oldValue: Timer = oldValue {
-                oldValue.invalidate()
-            }
+            oldValue?.invalidate()
             if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+                RunLoop.main.add(timer, forMode: .commonModes)
             }
         }
     }

@@ -15,9 +15,7 @@ public class TimerDriver: NSObject {
     private var nextFire: UInt64 = 0
     private weak var timer: Timer? {
         didSet {
-            if let oldValue: Timer = oldValue {
-                oldValue.invalidate()
-            }
+            oldValue?.invalidate()
             if let timer: Timer = timer {
                 RunLoop.current.add(timer, forMode: .commonModes)
             }

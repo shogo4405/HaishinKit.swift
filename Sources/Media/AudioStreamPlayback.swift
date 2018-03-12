@@ -172,7 +172,7 @@ class AudioStreamPlayback {
     }
 
     func initializeForAudioQueue() {
-        guard let _: AudioStreamBasicDescription = formatDescription, self.queue == nil else {
+        guard let _ = formatDescription, self.queue == nil else {
             return
         }
         var queue: AudioQueueRef? = nil

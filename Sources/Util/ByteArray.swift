@@ -253,7 +253,7 @@ open class ByteArray: ByteArrayConvertible {
         }
         position += length
 
-        guard let result: String = String(data: data.subdata(in: position - length..<position), encoding: .utf8) else {
+        guard let result = String(data: data.subdata(in: position - length..<position), encoding: .utf8) else {
             throw ByteArray.Error.parse
         }
         return result
