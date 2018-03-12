@@ -79,11 +79,11 @@ extension ASArray: CustomStringConvertible {
 
 extension ASArray: Equatable {
     // MARK: Equatable
+    public static func == (lhs: ASArray, rhs: ASArray) -> Bool {
+        return (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
+    }
 }
 
-public func == (lhs: ASArray, rhs: ASArray) -> Bool {
-    return (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
-}
 
 // MARK: -
 /**
