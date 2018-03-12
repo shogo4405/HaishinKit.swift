@@ -260,7 +260,7 @@ open class RTMPConnection: EventDispatcher {
     }
 
     open func connect(_ command: String, arguments: Any?...) {
-        guard let uri: URL = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
+        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
             return
         }
         self.uri = uri

@@ -113,7 +113,7 @@ public class NetSocket: NSObject {
 
         inputStream.delegate = self
         inputStream.schedule(in: runloop!, forMode: .defaultRunLoopMode)
-        inputStream.setProperty(securityLevel.rawValue, forKey: Stream.PropertyKey.socketSecurityLevelKey)
+        inputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
 
         outputStream.delegate = self
         outputStream.schedule(in: runloop!, forMode: .defaultRunLoopMode)

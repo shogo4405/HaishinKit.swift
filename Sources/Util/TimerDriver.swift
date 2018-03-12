@@ -56,11 +56,11 @@ extension TimerDriver: Running {
 
     final public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
-            if let _: RunLoop = self.runloop {
+            if let _ = self.runloop {
                 return
             }
             self.timer = Timer(
-                timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer: )), userInfo: nil, repeats: true
+                timeInterval: 0.0001, target: self, selector: #selector(on(timer: )), userInfo: nil, repeats: true
             )
             self.nextFire = mach_absolute_time() + self.interval
             self.delegate?.tick(self)
