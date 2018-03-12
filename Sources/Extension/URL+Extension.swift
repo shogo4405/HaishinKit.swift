@@ -23,13 +23,11 @@ extension URL {
     }
 
     func dictionaryFromQuery() -> [String: String] {
-        var result: [String: String] = [: ]
-        guard
-            let comonents: URLComponents = URLComponents(string: absoluteString),
-            let queryItems = comonents.queryItems else {
-                return result
+        var result: [String: String] = [:]
+        guard let query = URLComponents(string: absoluteString)?.queryItems else {
+            return result
         }
-        for item in queryItems {
+        for item in query {
             if let value: String = item.value {
                 result[item.name] = value
             }
