@@ -31,7 +31,7 @@ open class Responder: NSObject {
  */
 open class RTMPConnection: EventDispatcher {
     static public let defaultWindowSizeS: Int64 = 250000
-    static public let supportedProtocols: [String] = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
+    static public let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
     static public let defaultPort: Int = 1935
     static public let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
     static public let defaultChunkSizeS: Int = 1024 * 8
