@@ -26,14 +26,14 @@ final class MainViewController: NSViewController {
 
         urlField.stringValue = Preference.defaultInstance.uri ?? ""
 
-        let audios: [Any]! = AVCaptureDevice.devices(for: AVMediaType.audio)
+        let audios: [Any]! = AVCaptureDevice.devices(for: .audio)
         for audio in audios {
             if let audio: AVCaptureDevice = audio as? AVCaptureDevice {
                 audioPopUpButton?.addItem(withTitle: audio.localizedName)
             }
         }
 
-        let cameras: [Any]! = AVCaptureDevice.devices(for: AVMediaType.video)
+        let cameras: [Any]! = AVCaptureDevice.devices(for: .video)
         for camera in cameras {
             if let camera: AVCaptureDevice = camera as? AVCaptureDevice {
                 cameraPopUpButton?.addItem(withTitle: camera.localizedName)
@@ -71,7 +71,7 @@ final class MainViewController: NSViewController {
             segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:
-                rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(MainViewController.rtmpStatusHandler(_: )), observer: self)
+                rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
                 rtmpConnection.connect(urlField.stringValue)
             case 1:
                 httpStream.publish("hello")
@@ -87,7 +87,7 @@ final class MainViewController: NSViewController {
         segmentedControl.isEnabled = true
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(MainViewController.rtmpStatusHandler(_: )), observer: self)
+            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
             rtmpConnection.close()
         case 1:
             httpService.removeHTTPStream(httpStream)

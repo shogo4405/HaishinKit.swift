@@ -87,7 +87,7 @@ open class AVMixerRecorder: NSObject {
             delegate.rotateFile(self, withPresentationTimeStamp: withPresentationTime, mediaType: .video)
             guard
                 let writer: AVAssetWriter = self.writer,
-                let input: AVAssetWriterInput = delegate.getWriterInput(self, mediaType: .video, sourceFormatHint: CMVideoFormatDescription.create(withPixelBuffer: pixelBuffer)),
+                let input: AVAssetWriterInput = delegate.getWriterInput(self, mediaType: .video, sourceFormatHint: CMVideoFormatDescription(pixelBuffer: pixelBuffer)),
                 let adaptor: AVAssetWriterInputPixelBufferAdaptor = delegate.getPixelBufferAdaptor(self, withWriterInput: input),
                 self.isReadyForStartWriting else {
                 return
@@ -173,13 +173,13 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
             return
         }
-        if let _: AVAssetWriter = recorder.writer {
+        if let _ = recorder.writer {
             recorder.finishWriting()
         }
         recorder.writer = createWriter(recorder.fileName)
         rotateTime = CMTimeAdd(
             withPresentationTimeStamp,
-            CMTimeMake(duration == 0 ? Int64.max : duration * Int64(withPresentationTimeStamp.timescale), withPresentationTimeStamp.timescale)
+            CMTimeMake(duration == 0 ? .max : duration * Int64(withPresentationTimeStamp.timescale), withPresentationTimeStamp.timescale)
         )
         recorder.sourceTime = withPresentationTimeStamp
     }
@@ -191,7 +191,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard let writerInput: AVAssetWriterInput = withWriterInput else {
             return nil
         }
-        let adaptor: AVAssetWriterInputPixelBufferAdaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [: ])
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [: ])
         recorder.pixelBufferAdaptor = adaptor
         return adaptor
     }
@@ -271,7 +271,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
             let url: URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + ".mp4")
             logger.info("\(url)")
-            return try AVAssetWriter(outputURL: url, fileType: AVFileType.mp4)
+            return try AVAssetWriter(outputURL: url, fileType: .mp4)
         } catch {
             logger.warn("create an AVAssetWriter")
         }

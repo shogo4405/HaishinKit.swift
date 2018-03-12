@@ -12,7 +12,7 @@ class BroadcastViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        startButton.addTarget(self, action: #selector(BroadcastViewController.userDidFinishSetup), for: .touchDown)
+        startButton.addTarget(self, action: #selector(userDidFinishSetup), for: .touchDown)
     }
 
     @objc func userDidFinishSetup() {
