@@ -214,7 +214,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         guard let data: Data = data else {
             return
         }
-        connectionID = String(data: data, encoding: String.Encoding.utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
+        connectionID = String(data: data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines)
         doRequest("/idle/\(connectionID!)/0", Data([0x00]), didIdle0)
         if logger.isEnabledFor(level: .trace) {
             logger.trace("\(data.bytes): \(String(describing: response))")

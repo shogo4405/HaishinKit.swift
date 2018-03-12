@@ -7,7 +7,7 @@ open class GLLFView: GLKView {
         kCIContextWorkingColorSpace: NSNull(),
         kCIContextUseSoftwareRenderer: NSNumber(value: false)
     ]
-    open static var defaultBackgroundColor: UIColor = UIColor.black
+    open static var defaultBackgroundColor: UIColor = .black
 
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
 
@@ -17,10 +17,7 @@ open class GLLFView: GLKView {
     private var displayImage: CIImage?
     private weak var currentStream: NetStream? {
         didSet {
-            guard let oldValue: NetStream = oldValue else {
-                return
-            }
-            oldValue.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.drawable = nil
         }
     }
 

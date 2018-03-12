@@ -58,7 +58,7 @@ final class ByteArrayTests: XCTestCase {
         bytes.position = 0
         XCTAssertEqual(0xFFFFFF, try! bytes.readUInt24())
     }
-    
+
     func testUInt32() {
         let bytes: ByteArray = ByteArray()
         bytes.writeUInt32(UInt32.min)

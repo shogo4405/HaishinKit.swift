@@ -82,7 +82,7 @@ extension MTHKView: MTKViewDelegate {
         default:
             break
         }
-        let bounds: CGRect = CGRect(origin: CGPoint.zero, size: drawableSize)
+        let bounds: CGRect = CGRect(origin: .zero, size: drawableSize)
         let scaledImage: CIImage = image
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))

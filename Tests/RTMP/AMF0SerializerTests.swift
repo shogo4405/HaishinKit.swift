@@ -4,7 +4,7 @@ import XCTest
 @testable import HaishinKit
 
 final class AMF0SerializerTests: XCTestCase {
-    
+
     static let connectionChunk: ASObject = [
         "tcUrl": "rtmp: //localhost: 1935/live",
         "flashVer": "FMLE/3.0 (compatible; FMSc/1.0)",
@@ -18,7 +18,7 @@ final class AMF0SerializerTests: XCTestCase {
         "pageUrl": nil,
         "objectEncoding": Double(0)
     ]
-    
+
     func testConnectionChunk() {
         var amf: AMFSerializer = AMF0Serializer()
         amf.serialize(AMF0SerializerTests.connectionChunk)

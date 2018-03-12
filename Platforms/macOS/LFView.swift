@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 open class LFView: NSView {
-    public static var defaultBackgroundColor: NSColor = NSColor.black
+    public static var defaultBackgroundColor: NSColor = .black
 
     public var videoGravity: String = AVLayerVideoGravity.resizeAspect.rawValue {
         didSet {
@@ -21,10 +21,7 @@ open class LFView: NSView {
 
     private weak var currentStream: NetStream? {
         didSet {
-            guard let oldValue: NetStream = oldValue else {
-                return
-            }
-            oldValue.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.drawable = nil
         }
     }
 

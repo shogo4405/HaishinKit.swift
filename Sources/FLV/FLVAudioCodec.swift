@@ -18,31 +18,9 @@ public enum FLVAudioCodec: UInt8 {
 
     var isSupported: Bool {
         switch self {
-        case .pcm:
-            return false
-        case .adpcm:
-            return false
-        case .mp3:
-            return false
-        case .pcmle:
-            return false
-        case .nellymoser16K:
-            return false
-        case .nellymoser8K:
-            return false
-        case .nellymoser:
-            return false
-        case .g711A:
-            return false
-        case .g711MU:
-            return false
         case .aac:
             return true
-        case .speex:
-            return false
-        case .mp3_8k:
-            return false
-        case .unknown:
+        default:
             return false
         }
     }
