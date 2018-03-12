@@ -81,7 +81,7 @@ open class ScreenCaptureSession: NSObject {
     }
 
     @objc public func onScreen(_ displayLink: CADisplayLink) {
-        guard semaphore.wait(timeout: DispatchTime.now()) == .success else {
+        guard semaphore.wait(timeout: .now()) == .success else {
             return
         }
 

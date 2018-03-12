@@ -44,7 +44,7 @@ open class NetService: NSObject {
 
     func willStopRunning() {
         if let runloop: RunLoop = runloop {
-            service.remove(from: runloop, forMode: RunLoopMode.defaultRunLoopMode)
+            service.remove(from: runloop, forMode: .defaultRunLoopMode)
             CFRunLoopStop(runloop.getCFRunLoop())
         }
         service.stop()
@@ -58,11 +58,11 @@ open class NetService: NSObject {
         service = Foundation.NetService(domain: domain, type: type, name: name, port: port)
         service.delegate = self
         service.setTXTRecord(txtData)
-        service.schedule(in: runloop, forMode: RunLoopMode.defaultRunLoopMode)
+        service.schedule(in: runloop, forMode: .defaultRunLoopMode)
         if type.contains("._udp") {
             service.publish()
         } else {
-            service.publish(options: Foundation.NetService.Options.listenForConnections)
+            service.publish(options: .listenForConnections)
         }
         runloop.run()
     }
