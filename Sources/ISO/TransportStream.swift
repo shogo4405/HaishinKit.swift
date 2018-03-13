@@ -320,7 +320,6 @@ struct TSAdaptationExtensionField {
     var legalTimeWindowFlag: Bool = false
     var piecewiseRateFlag: Bool = false
     var seamlessSpiceFlag: Bool = false
-    var legalTimeWindowValidFlag: Bool = false
     var legalTimeWindowOffset: UInt16 = 0
     var piecewiseRate: UInt32 = 0
     var spliceType: UInt8 = 0

@@ -197,7 +197,7 @@ final class RTMPChunk {
         if data.isEmpty {
             return nil
         }
-        guard let type: RTMPChunkType = RTMPChunkType(rawValue: (data[0] & 0b11000000) >> 6), type.ready(data) else {
+        guard let type = RTMPChunkType(rawValue: (data[0] & 0b11000000) >> 6), type.ready(data) else {
             return nil
         }
         self.size = size
@@ -208,7 +208,7 @@ final class RTMPChunk {
     func append(_ data: Data, size: Int) -> Int {
         fragmented = false
 
-        guard let message: RTMPMessage = message else {
+        guard let message = message else {
             return 0
         }
 
