@@ -173,15 +173,15 @@ final class LiveViewController: UIViewController {
 
     @IBAction func onEffectValueChanged(_ segment: UISegmentedControl) {
         if let currentEffect: VisualEffect = currentEffect {
-            let _: Bool = rtmpStream.unregisterEffect(video: currentEffect)
+            let _ = rtmpStream.unregisterEffect(video: currentEffect)
         }
         switch segment.selectedSegmentIndex {
         case 1:
             currentEffect = MonochromeEffect()
-            let _: Bool = rtmpStream.registerEffect(video: currentEffect!)
+            let _ = rtmpStream.registerEffect(video: currentEffect!)
         case 2:
             currentEffect = PronamaEffect()
-            let _: Bool = rtmpStream.registerEffect(video: currentEffect!)
+            let _ = rtmpStream.registerEffect(video: currentEffect!)
         default:
             break
         }
