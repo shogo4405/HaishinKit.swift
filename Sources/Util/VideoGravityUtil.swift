@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 final class VideoGravityUtil {
-    @inline(__always) static func calclute(_ videoGravity: AVLayerVideoGravity, inRect: inout CGRect, fromRect: inout CGRect) {
+    @inline(__always) static func calculate(_ videoGravity: AVLayerVideoGravity, inRect: inout CGRect, fromRect: inout CGRect) {
         switch videoGravity {
         case .resizeAspect:
             resizeAspect(&inRect, fromRect: &fromRect)

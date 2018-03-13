@@ -19,11 +19,11 @@ public class RTMPBroadcaster: RTMPConnection {
 
     public override init() {
         super.init()
-        addEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent(_: )), observer: self)
+        addEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent), observer: self)
     }
 
     deinit {
-        removeEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent(_: )), observer: self)
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent), observer: self)
     }
 
     override public func connect(_ command: String, arguments: Any?...) {

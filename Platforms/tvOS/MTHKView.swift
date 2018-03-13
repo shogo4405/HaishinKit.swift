@@ -8,10 +8,7 @@ open class MTHKView: MTKView {
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
         didSet {
-            guard let oldValue: NetStream = oldValue else {
-                return
-            }
-            oldValue.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.drawable = nil
         }
     }
     let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()

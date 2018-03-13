@@ -57,9 +57,9 @@ open class NetStream: NSObject {
                 return
             }
             if syncOrientation {
-                NotificationCenter.default.addObserver(self, selector: #selector(NetStream.on(uiDeviceOrientationDidChange: )), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+                NotificationCenter.default.addObserver(self, selector: #selector(on), name: .UIDeviceOrientationDidChange, object: nil)
             } else {
-                NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+                NotificationCenter.default.removeObserver(self, name: .UIDeviceOrientationDidChange, object: nil)
             }
         }
     }

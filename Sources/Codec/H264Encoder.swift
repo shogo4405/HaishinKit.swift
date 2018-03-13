@@ -247,7 +247,7 @@ final class H264Encoder: NSObject {
         guard let session: VTCompressionSession = session else {
             return
         }
-        var flags: VTEncodeInfoFlags = VTEncodeInfoFlags()
+        var flags: VTEncodeInfoFlags = []
         VTCompressionSessionEncodeFrame(
             session,
             muted ? lastImageBuffer ?? imageBuffer : imageBuffer,
@@ -304,13 +304,13 @@ extension H264Encoder: Running {
 #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(self.didAudioSessionInterruption(_: )),
+                selector: #selector(self.didAudioSessionInterruption),
                 name: .AVAudioSessionInterruption,
                 object: nil
             )
             NotificationCenter.default.addObserver(
                 self,
-                selector: #selector(self.applicationWillEnterForeground(_: )),
+                selector: #selector(self.applicationWillEnterForeground),
                 name: .UIApplicationWillEnterForeground,
                 object: nil
             )
@@ -324,8 +324,7 @@ extension H264Encoder: Running {
             self.lastImageBuffer = nil
             self.formatDescription = nil
 #if os(iOS)
-            NotificationCenter.default.removeObserver(self, name: .AVAudioSessionInterruption, object: nil)
-            NotificationCenter.default.removeObserver(self, name: .UIApplicationWillEnterForeground, object: nil)
+            NotificationCenter.default.removeObserver(self)
 #endif
             self.running = false
         }

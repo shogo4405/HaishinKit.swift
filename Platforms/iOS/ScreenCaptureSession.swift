@@ -8,6 +8,12 @@ public protocol ScreenCaptureOutputPixelBufferDelegate: class {
     func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime)
 }
 
+extension CGRect {
+    init(size: CGSize) {
+        self.init(origin: .zero, size: size)
+    }
+}
+
 // MARK: -
 open class ScreenCaptureSession: NSObject {
     static let defaultFrameInterval: Int = 2
@@ -33,13 +39,13 @@ open class ScreenCaptureSession: NSObject {
     public var afterScreenUpdates: Bool = false
     private var context: CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
     private let semaphore: DispatchSemaphore = DispatchSemaphore(value: 1)
-    private let lockQueue: DispatchQueue = DispatchQueue(
-        label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: DispatchQoS.userInteractive, attributes: []
+    private let lockQueue = DispatchQueue(
+        label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: .userInteractive, attributes: []
     )
     private var colorSpace: CGColorSpace!
     private var displayLink: CADisplayLink!
 
-    private var size: CGSize = CGSize() {
+    private var size: CGSize = .zero {
         didSet {
             guard size != oldValue else {
                 return
@@ -81,7 +87,7 @@ open class ScreenCaptureSession: NSObject {
     }
 
     @objc public func onScreen(_ displayLink: CADisplayLink) {
-        guard semaphore.wait(timeout: DispatchTime.now()) == .success else {
+        guard semaphore.wait(timeout: .now()) == .success else {
             return
         }
 
@@ -143,7 +149,7 @@ extension ScreenCaptureSession: Running {
             self.running = true
             self.pixelBufferPool = nil
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
-            self.displayLink = CADisplayLink(target: self, selector: #selector(ScreenCaptureSession.onScreen(_: )))
+            self.displayLink = CADisplayLink(target: self, selector: #selector(onScreen))
             self.displayLink.frameInterval = self.frameInterval
             self.displayLink.add(to: .main, forMode: .commonModes)
         }

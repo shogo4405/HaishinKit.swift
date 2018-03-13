@@ -92,7 +92,7 @@ open class ByteArray: ByteArrayConvertible {
         set {
             switch true {
             case (data.count < newValue):
-                data.append(Data.init(count: newValue - data.count))
+                data.append(Data(count: newValue - data.count))
             case (newValue < data.count):
                 data = data.subdata(in: 0..<newValue)
             default:
@@ -253,7 +253,7 @@ open class ByteArray: ByteArrayConvertible {
         }
         position += length
 
-        guard let result: String = String(data: data.subdata(in: position - length..<position), encoding: .utf8) else {
+        guard let result = String(data: data.subdata(in: position - length..<position), encoding: .utf8) else {
             throw ByteArray.Error.parse
         }
         return result

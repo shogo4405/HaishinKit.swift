@@ -15,9 +15,7 @@ public class TimerDriver: NSObject {
     private var nextFire: UInt64 = 0
     private weak var timer: Timer? {
         didSet {
-            if let oldValue: Timer = oldValue {
-                oldValue.invalidate()
-            }
+            oldValue?.invalidate()
             if let timer: Timer = timer {
                 RunLoop.current.add(timer, forMode: .commonModes)
             }
@@ -56,11 +54,11 @@ extension TimerDriver: Running {
 
     final public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
-            if let _: RunLoop = self.runloop {
+            if let _ = self.runloop {
                 return
             }
             self.timer = Timer(
-                timeInterval: 0.0001, target: self, selector: #selector(TimerDriver.on(timer: )), userInfo: nil, repeats: true
+                timeInterval: 0.0001, target: self, selector: #selector(self.on(timer: )), userInfo: nil, repeats: true
             )
             self.nextFire = mach_absolute_time() + self.interval
             self.delegate?.tick(self)

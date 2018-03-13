@@ -1,4 +1,3 @@
-import Foundation
 
 public enum FLVFrameType: UInt8 {
     case key        = 1

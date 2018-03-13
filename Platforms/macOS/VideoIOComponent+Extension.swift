@@ -5,7 +5,7 @@ extension VideoIOComponent {
     func attachScreen(_ screen: AVCaptureScreenInput?) {
         mixer?.session.beginConfiguration()
         output = nil
-        guard let _: AVCaptureScreenInput = screen else {
+        guard let _  = screen else {
             input = nil
             return
         }

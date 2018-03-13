@@ -1,5 +1,3 @@
-import Foundation
-
 public enum FLVSoundRate: UInt8 {
     case kHz5_5 = 0
     case kHz11  = 1

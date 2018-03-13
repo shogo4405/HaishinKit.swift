@@ -1,4 +1,3 @@
-import Foundation
 
 public enum FLVTagType: UInt8 {
     case audio = 8

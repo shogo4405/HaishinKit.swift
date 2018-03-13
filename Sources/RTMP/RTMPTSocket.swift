@@ -41,11 +41,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private(set) var queueBytesOut: Int64 = 0
     private var timer: Timer? {
         didSet {
-            if let oldValue: Timer = oldValue {
-                oldValue.invalidate()
-            }
+            oldValue?.invalidate()
             if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: RunLoopMode.commonModes)
+                RunLoop.main.add(timer, forMode: .commonModes)
             }
         }
     }
@@ -79,10 +77,10 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             "User-Agent": "Shockwave Flash"
         ]
         let scheme: String = securityLevel == .none ? "http" : "https"
-        session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
+        session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
         baseURL = URL(string: "\(scheme): //\(withName): \(port)")!
         doRequest("/fcs/ident2", Data([0x00]), didIdent2)
-        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(RTMPTSocket.on(timer: )), userInfo: nil, repeats: true)
+        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(on(timer: )), userInfo: nil, repeats: true)
     }
 
     @discardableResult

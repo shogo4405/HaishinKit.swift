@@ -208,9 +208,7 @@ open class RTMPConnection: EventDispatcher {
 
     private var timer: Timer? {
         didSet {
-            if let oldValue: Timer = oldValue {
-                oldValue.invalidate()
-            }
+            oldValue?.invalidate()
             if let timer: Timer = timer {
                 RunLoop.main.add(timer, forMode: .commonModes)
             }
@@ -226,13 +224,13 @@ open class RTMPConnection: EventDispatcher {
 
     override public init() {
         super.init()
-        addEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status: )))
+        addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
     }
 
     deinit {
         timer = nil
         streams.removeAll()
-        removeEventListener(Event.RTMP_STATUS, selector: #selector(RTMPConnection.on(status: )))
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
     }
 
     @available(*, unavailable)
@@ -260,12 +258,12 @@ open class RTMPConnection: EventDispatcher {
     }
 
     open func connect(_ command: String, arguments: Any?...) {
-        guard let uri: URL = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
+        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
             return
         }
         self.uri = uri
         self.arguments = arguments
-        timer = Timer(timeInterval: 1.0, target: self, selector: #selector(RTMPConnection.on(timer: )), userInfo: nil, repeats: true)
+        timer = Timer(timeInterval: 1.0, target: self, selector: #selector(on(timer: )), userInfo: nil, repeats: true)
         switch scheme {
         case "rtmpt", "rtmpts":
             socket = socket is RTMPTSocket ? socket : RTMPTSocket()
