@@ -291,10 +291,9 @@ open class HLSService: HTTPService {
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
                 case .VideoMP2T:
-                    if let info: [FileAttributeKey: Any] = try? FileManager.default.attributesOfItem(atPath: resource) {
-                        if let length: Any = info[FileAttributeKey.size] {
-                            response.headerFields["Content-Length"] = String(describing: length)
-                        }
+                    if let info: [FileAttributeKey: Any] = try? FileManager.default.attributesOfItem(atPath: resource),
+                        let length: Any = info[FileAttributeKey.size] {
+                        response.headerFields["Content-Length"] = String(describing: length)
                     }
                     client.doOutput(data: response.data)
                     client.doOutputFromURL(URL(fileURLWithPath: resource), length: 8 * 1024)
