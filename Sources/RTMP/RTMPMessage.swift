@@ -23,36 +23,36 @@ class RTMPMessage {
     }
 
     static func create(_ value: UInt8) -> RTMPMessage? {
-        switch value {
-        case Type.chunkSize.rawValue:
+        switch `Type`(rawValue: value) {
+        case .chunkSize?:
             return RTMPSetChunkSizeMessage()
-        case Type.abort.rawValue:
+        case .abort?:
             return RTMPAbortMessge()
-        case Type.ack.rawValue:
+        case .ack?:
             return RTMPAcknowledgementMessage()
-        case Type.user.rawValue:
+        case .user?:
             return RTMPUserControlMessage()
-        case Type.windowAck.rawValue:
+        case .windowAck?:
             return RTMPWindowAcknowledgementSizeMessage()
-        case Type.bandwidth.rawValue:
+        case .bandwidth?:
             return RTMPSetPeerBandwidthMessage()
-        case Type.audio.rawValue:
+        case .audio?:
             return RTMPAudioMessage()
-        case Type.video.rawValue:
+        case .video?:
             return RTMPVideoMessage()
-        case Type.amf3Data.rawValue:
+        case .amf3Data?:
             return RTMPDataMessage(objectEncoding: 0x03)
-        case Type.amf3Shared.rawValue:
+        case .amf3Shared?:
             return RTMPSharedObjectMessage(objectEncoding: 0x03)
-        case Type.amf3Command.rawValue:
+        case .amf3Command?:
             return RTMPCommandMessage(objectEncoding: 0x03)
-        case Type.amf0Data.rawValue:
+        case .amf0Data?:
             return RTMPDataMessage(objectEncoding: 0x00)
-        case Type.amf0Shared.rawValue:
+        case .amf0Shared?:
             return RTMPSharedObjectMessage(objectEncoding: 0x00)
-        case Type.amf0Command.rawValue:
+        case .amf0Command?:
             return RTMPCommandMessage(objectEncoding: 0x00)
-        case Type.aggregate.rawValue:
+        case .aggregate?:
             return RTMPAggregateMessage()
         default:
             guard let type: Type = Type(rawValue: value) else {
@@ -349,7 +349,7 @@ final class RTMPCommandMessage: RTMPMessage {
             case "close":
                 connection.close()
             default:
-                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.isEmpty ? nil : arguments[0])
+                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.first)
             }
             return
         }
@@ -607,16 +607,12 @@ final class RTMPAudioMessage: RTMPMessage {
     }
 
     func createAudioSpecificConfig() -> AudioSpecificConfig? {
-        if payload.isEmpty {
-            return nil
-        }
-
-        guard codec == FLVAudioCodec.aac else {
+        if payload.isEmpty, codec != .aac {
             return nil
         }
 
         if payload[1] == FLVAACPacketType.seq.rawValue {
-            if let config: AudioSpecificConfig = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count])) {
+            if let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count])) {
                 return config
             }
         }
