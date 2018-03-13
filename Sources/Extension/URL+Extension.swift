@@ -3,7 +3,7 @@ import Foundation
 extension URL {
     var absoluteWithoutAuthenticationString: String {
         var target: String = ""
-        if let user: String = user {
+        if let user = user {
             target += user
         }
         if let password: String = password {

@@ -315,8 +315,8 @@ open class RTMPConnection: EventDispatcher {
             return
         }
 
-        switch code {
-        case Code.connectSuccess.rawValue:
+        switch Code(rawValue: code) {
+        case .connectSuccess?:
             connected = true
             socket.chunkSizeS = chunkSize
             socket.doOutput(chunk: RTMPChunk(
@@ -324,7 +324,7 @@ open class RTMPConnection: EventDispatcher {
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
-        case Code.connectRejected.rawValue:
+        case .connectRejected?:
             guard
                 let uri: URL = uri,
                 let user: String = uri.user,
@@ -352,7 +352,7 @@ open class RTMPConnection: EventDispatcher {
             default:
                 break
             }
-        case Code.connectClosed.rawValue:
+        case .connectClosed?:
             if let description: String = data["description"] as? String {
                 logger.warn(description)
             }

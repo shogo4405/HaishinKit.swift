@@ -184,7 +184,7 @@ class AudioStreamPlayback {
                 &queue)
         }
         if let cookie: [UInt8] = getMagicCookieForFileStream() {
-            let _: Bool = setMagicCookieForQueue(cookie)
+            let _ = setMagicCookieForQueue(cookie)
         }
         soundTransform.setParameter(queue!)
         for _ in 0..<numberOfBuffers {
