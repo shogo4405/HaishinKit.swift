@@ -11,15 +11,18 @@ final class SinWaveUtil {
             presentationTimeStamp: kCMTimeZero,
             decodeTimeStamp: kCMTimeInvalid
         )
-        var asbd: AudioStreamBasicDescription = AudioStreamBasicDescription()
-        asbd.mSampleRate = sampleRate
-        asbd.mFormatID = kAudioFormatLinearPCM
-        asbd.mFormatFlags = 0xc
-        asbd.mBytesPerPacket = 2
-        asbd.mFramesPerPacket = 1
-        asbd.mBytesPerFrame = 2
-        asbd.mChannelsPerFrame = 1
-        asbd.mBitsPerChannel = 16
+
+        var asbd = AudioStreamBasicDescription(
+            mSampleRate: sampleRate,
+            mFormatID: kAudioFormatLinearPCM,
+            mFormatFlags: 0xc,
+            mBytesPerPacket: 2,
+            mFramesPerPacket: 1,
+            mBytesPerFrame: 2,
+            mChannelsPerFrame: 1,
+            mBitsPerChannel: 16,
+            mReserved: 0
+        )
 
         status = CMAudioFormatDescriptionCreate(
             kCFAllocatorDefault, &asbd, 0, nil, 0, nil, nil, &formatDescription
@@ -48,14 +51,14 @@ final class SinWaveUtil {
             return nil
         }
 
-        let format: AVAudioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription!)
-        let buffer: AVAudioPCMBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(numSamples))!
+        let format = AVAudioFormat(cmAudioFormatDescription: formatDescription!)
+        let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(numSamples))!
         buffer.frameLength = buffer.frameCapacity
         let channels = Int(format.channelCount)
         for ch in (0..<channels) {
             let samples = buffer.int16ChannelData![ch]
             for n in 0..<Int(buffer.frameLength) {
-                samples[n] = Int16(sinf(Float(2.0 * Double.pi) * 440.0 * Float(n) / Float(sampleRate)) * 16383.0)
+                samples[n] = Int16(sinf(Float(2.0 * .pi) * 440.0 * Float(n) / Float(sampleRate)) * 16383.0)
             }
         }
 

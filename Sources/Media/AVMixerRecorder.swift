@@ -33,7 +33,7 @@ open class AVMixerRecorder: NSObject {
     open var writerInputs: [AVMediaType: AVAssetWriterInput] = [: ]
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
-    open let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
+    open let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     private(set) var running: Bool = false
     fileprivate(set) var sourceTime: CMTime = kCMTimeZero
 

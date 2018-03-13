@@ -15,15 +15,15 @@ public class RTMPBroadcaster: RTMPConnection {
         return spliter
     }()
     private var connecting: Bool = false
-    private let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPBroadcaster.lock")
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPBroadcaster.lock")
 
     public override init() {
         super.init()
-        addEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent), observer: self)
+        addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusEvent), observer: self)
     }
 
     deinit {
-        removeEventListener(Event.RTMP_STATUS, selector: #selector(self.rtmpStatusEvent), observer: self)
+        removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusEvent), observer: self)
     }
 
     override public func connect(_ command: String, arguments: Any?...) {
@@ -38,12 +38,7 @@ public class RTMPBroadcaster: RTMPConnection {
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
-        switch withType {
-        case .video:
-            stream.appendSampleBuffer(sampleBuffer, withType: .video)
-        case .audio:
-            stream.appendSampleBuffer(sampleBuffer, withType: .audio)
-        }
+        stream.appendSampleBuffer(sampleBuffer, withType: withType)
     }
 
     override public func close() {

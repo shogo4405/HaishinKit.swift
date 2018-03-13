@@ -4,7 +4,7 @@ import AVFoundation
 final class AudioIOComponent: IOComponent {
     lazy var encoder: AACEncoder = AACEncoder()
     lazy var playback: AudioStreamPlayback = AudioStreamPlayback()
-    let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
 #if os(iOS) || os(macOS)
     var input: AVCaptureDeviceInput? {

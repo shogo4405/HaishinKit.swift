@@ -15,9 +15,9 @@ public class MP4Sampler {
 
     private var files: [URL] = []
     private var handlers: [URL: Handler?] = [: ]
-    private let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
-    private let loopQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
-    private let operations: OperationQueue = OperationQueue()
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
+    private let loopQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
+    private let operations = OperationQueue()
     private(set) var running: Bool = false
 
     func appendFile(_ file: URL, completionHandler: Handler? = nil) {
@@ -31,7 +31,7 @@ public class MP4Sampler {
         let reader: MP4Reader = MP4Reader(url: url)
 
         do {
-            let _: UInt32 = try reader.load()
+            let _ = try reader.load()
         } catch {
             logger.warn("")
             return

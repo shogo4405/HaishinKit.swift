@@ -3,7 +3,7 @@ import Foundation
 import AVFoundation
 
 final class VideoIOComponent: IOComponent {
-    let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
     var context: CIContext?
     var drawable: NetStreamDrawable?
     var formatDescription: CMVideoFormatDescription? {
@@ -26,7 +26,7 @@ final class VideoIOComponent: IOComponent {
         didSet {
             guard
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let data = DeviceUtil.getActualFPS(fps, device: device) else {
+                let data = device.actualFPS(fps) else {
                 return
             }
 

@@ -56,7 +56,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var request: URLRequest!
     private var c2packet: Data = Data()
     private var handshake: RTMPHandshake = RTMPHandshake()
-    private let outputQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
+    private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
     private var connectionID: String?
     private var isRequesting: Bool = false
     private var outputBuffer: Data = Data()
@@ -80,7 +80,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
         baseURL = URL(string: "\(scheme): //\(withName): \(port)")!
         doRequest("/fcs/ident2", Data([0x00]), didIdent2)
-        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(on(timer: )), userInfo: nil, repeats: true)
+        timer = Timer(timeInterval: 0.1, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
     }
 
     @discardableResult

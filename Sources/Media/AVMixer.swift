@@ -1,6 +1,13 @@
 import Foundation
 import AVFoundation
 
+
+#if os(iOS) || os(macOS)
+    extension AVCaptureSession.Preset {
+        static var `default`: AVCaptureSession.Preset = .medium
+    }
+#endif
+
 final public class AVMixer: NSObject {
 
     static let supportedSettingsKeys: [String] = [
@@ -15,7 +22,6 @@ final public class AVMixer: NSObject {
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
 #if os(iOS) || os(macOS)
-    static let defaultSessionPreset: String = AVCaptureSession.Preset.medium.rawValue
 
     @objc var fps: Float64 {
         get { return videoIO.fps }
@@ -32,13 +38,13 @@ final public class AVMixer: NSObject {
         set { videoIO.continuousAutofocus = newValue }
     }
 
-    @objc var sessionPreset: String = AVMixer.defaultSessionPreset {
+    @objc var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
             guard sessionPreset != oldValue else {
                 return
             }
             session.beginConfiguration()
-            session.sessionPreset = AVCaptureSession.Preset(rawValue: sessionPreset)
+            session.sessionPreset = sessionPreset
             session.commitConfiguration()
         }
     }
@@ -48,7 +54,7 @@ final public class AVMixer: NSObject {
         get {
             if _session == nil {
                 _session = AVCaptureSession()
-                _session!.sessionPreset = AVCaptureSession.Preset(rawValue: AVMixer.defaultSessionPreset)
+                _session!.sessionPreset = .default
             }
             return _session!
         }

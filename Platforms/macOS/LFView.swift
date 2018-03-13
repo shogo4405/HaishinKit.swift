@@ -4,9 +4,9 @@ import AVFoundation
 open class LFView: NSView {
     public static var defaultBackgroundColor: NSColor = .black
 
-    public var videoGravity: String = AVLayerVideoGravity.resizeAspect.rawValue {
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect {
         didSet {
-            layer?.setValue(videoGravity, forKey: "videoGravity")
+            layer?.setValue(videoGravity.rawValue, forKey: "videoGravity")
         }
     }
 

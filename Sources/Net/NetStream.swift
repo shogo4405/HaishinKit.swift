@@ -15,7 +15,7 @@ protocol NetStreamDrawable: class {
 // MARK: -
 open class NetStream: NSObject {
     public private(set) var mixer: AVMixer = AVMixer()
-    public let lockQueue: DispatchQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetStream.lock")
+    public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetStream.lock")
 
     deinit {
         metadata.removeAll()
