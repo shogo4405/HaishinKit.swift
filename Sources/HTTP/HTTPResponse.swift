@@ -17,7 +17,7 @@ extension HTTPResponseCompatible {
 extension HTTPResponseCompatible {
     public var data: Data {
         get {
-            var data: Data = Data()
+            var data = Data()
             var lines: [String] = []
             lines.append("\(version) \(statusCode)")
             for (key, value) in headerFields {

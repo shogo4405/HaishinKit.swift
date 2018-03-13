@@ -14,7 +14,7 @@ extension ExpressibleByIntegerLiteral {
     init(data: Data) {
         let diff: Int = MemoryLayout<Self>.size - data.count
         if 0 < diff {
-            var buffer: Data = Data(repeating: 0, count: diff)
+            var buffer = Data(repeating: 0, count: diff)
             buffer.append(data)
             self = buffer.withUnsafeBytes { $0.pointee }
             return

@@ -83,7 +83,7 @@ open class ByteArray: ByteArrayConvertible {
         self.data = data
     }
 
-    private(set) var data: Data = Data()
+    private(set) var data = Data()
 
     open var length: Int {
         get {

@@ -17,8 +17,8 @@ struct AVCFormatStream {
     }
 
     func toByteStream() -> Data {
-        let buffer: ByteArray = ByteArray(data: data)
-        var result: Data = Data()
+        let buffer = ByteArray(data: data)
+        var result = Data()
         while 0 < buffer.bytesAvailable {
             do {
                 let length: Int = try Int(buffer.readUInt32())

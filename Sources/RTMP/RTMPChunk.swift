@@ -94,7 +94,7 @@ final class RTMPChunk {
             }
 
             guard _data.isEmpty else {
-                var data: Data = Data()
+                var data = Data()
                 data.append(_data)
                 data.append(message.payload)
                 return data
@@ -118,7 +118,7 @@ final class RTMPChunk {
                 _data.append(message.timestamp.bigEndian.data)
             }
 
-            var data: Data = Data()
+            var data = Data()
             data.append(_data)
             data.append(message.payload)
 

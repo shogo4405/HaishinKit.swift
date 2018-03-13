@@ -18,7 +18,7 @@ extension HTTPRequestCompatible {
 extension HTTPRequestCompatible {
     var data: Data {
         get {
-            var data: Data = Data()
+            var data = Data()
             var lines: [String] = ["\(method) \(uri) \(version)"]
             for (field, value) in headerFields {
                 lines.append("\(field): \(value)")
