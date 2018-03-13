@@ -6,7 +6,7 @@ extension CMFormatDescription {
         return CMFormatDescriptionGetExtensions(self) as? [String: AnyObject]
     }
 
-    func getExtension(by key: String) -> [String: AnyObject]? {
+    func `extension`(by key: String) -> [String: AnyObject]? {
         return CMFormatDescriptionGetExtension(self, key as CFString) as? [String: AnyObject]
     }
 }

@@ -26,7 +26,7 @@ final class H264Decoder {
 
     var formatDescription: CMFormatDescription? {
         didSet {
-            if let atoms: [String: AnyObject] = formatDescription?.getExtension(by: "SampleDescriptionExtensionAtoms"), let avcC: Data =  atoms["avcC"] as? Data {
+            if let atoms: [String: AnyObject] = formatDescription?.`extension`(by: "SampleDescriptionExtensionAtoms"), let avcC: Data =  atoms["avcC"] as? Data {
                 let config: AVCConfigurationRecord = AVCConfigurationRecord(data: avcC)
                 isBaseline = config.AVCProfileIndication == 66
             }
