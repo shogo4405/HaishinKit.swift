@@ -60,11 +60,20 @@ extension HTTPResponseCompatible {
 }
 
 // MARK: -
-public struct HTTPResponse: HTTPResponseCompatible {
+public struct HTTPResponse: HTTPResponseCompatible, ExpressibleByDictionaryLiteral {
+    public typealias Key = String
+    public typealias Value = String
+
     static let separator: [UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
     public var version: String = HTTPVersion.version11.rawValue
     public var statusCode: String = ""
     public var headerFields: [String: String] = [: ]
     public var body: Data?
+
+    public init(dictionaryLiteral elements: (Key, Value)...) {
+        elements.forEach {
+            headerFields[$0] = $1
+        }
+    }
 }

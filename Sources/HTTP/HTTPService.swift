@@ -263,13 +263,14 @@ open class HLSService: HTTPService {
 
     open override func get(_ request: HTTPRequest, client: NetClient) {
         logger.trace("\(request)")
-        var response: HTTPResponse = HTTPResponse()
-        // #141
-        response.headerFields["Access-Control-Allow-Headers"] = "*"
-        response.headerFields["Access-Control-Allow-Methods"] = "GET,HEAD,OPTIONS"
-        response.headerFields["Access-Control-Allow-Origin"] = "*"
-        response.headerFields["Access-Control-Expose-Headers"] = "*"
-        response.headerFields["Connection"] = "close"
+        var response: HTTPResponse = [
+            // #141
+            "Access-Control-Allow-Headers": "*",
+            "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS",
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Expose-Headers": "*",
+            "Connection": "close"
+        ]
 
         defer {
             logger.trace("\(response)")
