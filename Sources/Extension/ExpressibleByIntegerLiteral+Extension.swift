@@ -3,12 +3,7 @@ import Foundation
 extension ExpressibleByIntegerLiteral {
     var data: Data {
         var value: Self = self
-        let s: Int = MemoryLayout<`Self`>.size
-        return withUnsafeMutablePointer(to: &value) {
-            $0.withMemoryRebound(to: UInt8.self, capacity: s) {
-                Data(UnsafeBufferPointer(start: $0, count: s))
-            }
-        }
+        return Data(bytes: &value, count: MemoryLayout<Self>.size)
     }
 
     init(data: Data) {

@@ -10,7 +10,7 @@ struct AVCFormatStream {
     }
 
     init?(data: Data?) {
-        guard let data: Data = data else {
+        guard let data = data else {
             return nil
         }
         self.init(data: data)
@@ -39,7 +39,7 @@ struct AVCFormatStream {
 struct AVCConfigurationRecord {
 
     static func getData(_ formatDescription: CMFormatDescription?) -> Data? {
-        guard let formatDescription: CMFormatDescription = formatDescription else {
+        guard let formatDescription = formatDescription else {
             return nil
         }
         if let atoms: NSDictionary = CMFormatDescriptionGetExtension(formatDescription, "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
