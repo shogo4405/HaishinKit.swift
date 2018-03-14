@@ -1,6 +1,12 @@
 import Foundation
 import AVFoundation
 
+extension CGRect {
+    var aspectRatio: CGFloat {
+        return width / height
+    }
+}
+
 final class VideoGravityUtil {
     @inline(__always) static func calculate(_ videoGravity: AVLayerVideoGravity, inRect: inout CGRect, fromRect: inout CGRect) {
         switch videoGravity {
@@ -26,8 +32,8 @@ final class VideoGravityUtil {
     }
 
     @inline(__always) static func resizeAspectFill(_ inRect: inout CGRect, fromRect: inout CGRect) {
-        let inRectAspect: CGFloat = inRect.size.width / inRect.size.height
-        let fromRectAspect: CGFloat = fromRect.size.width / fromRect.size.height
+        let inRectAspect: CGFloat = inRect.aspectRatio
+        let fromRectAspect: CGFloat = fromRect.aspectRatio
         if inRectAspect < fromRectAspect {
             inRect.origin.x += (inRect.size.width - inRect.size.height * fromRectAspect) / 2
             inRect.size.width = inRect.size.height * fromRectAspect

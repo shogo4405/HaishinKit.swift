@@ -398,7 +398,7 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
         frameCount = try buffer.readUInt16()
         compressorname = try buffer.readUTF8Bytes(32)
         depth = try buffer.readUInt16()
-        let _: UInt16 = try buffer.readUInt16()
+        let _ = try buffer.readUInt16()
         buffer.clear()
 
         var offset: UInt32 = UInt32(MP4VisualSampleEntryBox.dataSize)

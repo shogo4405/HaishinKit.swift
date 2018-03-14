@@ -146,7 +146,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     var streamID: UInt8 = 0
     var packetLength: UInt16 = 0
     var optionalPESHeader: PESOptionalHeader?
-    var data: Data = Data()
+    var data = Data()
 
     var payload: Data {
         get {

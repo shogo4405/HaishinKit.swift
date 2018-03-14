@@ -22,7 +22,7 @@ enum NALType: UInt8 {
 struct NALUnit {
     var refIdc: UInt8 = 0
     var type: NALType = .unspec
-    var payload: Data = Data()
+    var payload = Data()
 }
 
 extension NALUnit: DataConvertible {
@@ -35,7 +35,7 @@ extension NALUnit: DataConvertible {
                 .data
         }
         set {
-            let buffer: ByteArray = ByteArray(data: newValue)
+            let buffer = ByteArray(data: newValue)
             do {
                 let byte: UInt8 = try buffer.readUInt8()
                 refIdc = byte & 0x60 >> 5

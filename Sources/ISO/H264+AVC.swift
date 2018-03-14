@@ -10,15 +10,15 @@ struct AVCFormatStream {
     }
 
     init?(data: Data?) {
-        guard let data: Data = data else {
+        guard let data = data else {
             return nil
         }
         self.init(data: data)
     }
 
     func toByteStream() -> Data {
-        let buffer: ByteArray = ByteArray(data: data)
-        var result: Data = Data()
+        let buffer = ByteArray(data: data)
+        var result = Data()
         while 0 < buffer.bytesAvailable {
             do {
                 let length: Int = try Int(buffer.readUInt32())
@@ -39,7 +39,7 @@ struct AVCFormatStream {
 struct AVCConfigurationRecord {
 
     static func getData(_ formatDescription: CMFormatDescription?) -> Data? {
-        guard let formatDescription: CMFormatDescription = formatDescription else {
+        guard let formatDescription = formatDescription else {
             return nil
         }
         if let atoms: NSDictionary = CMFormatDescriptionGetExtension(formatDescription, "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {

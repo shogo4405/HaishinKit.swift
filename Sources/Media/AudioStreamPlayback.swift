@@ -58,10 +58,7 @@ class AudioStreamPlayback {
     private var packetDescriptions: [AudioStreamPacketDescription] = []
     private var fileStreamID: AudioFileStreamID? = nil {
         didSet {
-            guard let oldValue: AudioFileStreamID = oldValue else {
-                return
-            }
-            AudioFileStreamClose(oldValue)
+            _ = oldValue.map { AudioFileStreamClose($0) }
         }
     }
     private var isPacketDescriptionsFull: Bool {
@@ -187,7 +184,7 @@ class AudioStreamPlayback {
                 &queue)
         }
         if let cookie: [UInt8] = getMagicCookieForFileStream() {
-            let _: Bool = setMagicCookieForQueue(cookie)
+            let _ = setMagicCookieForQueue(cookie)
         }
         soundTransform.setParameter(queue!)
         for _ in 0..<numberOfBuffers {

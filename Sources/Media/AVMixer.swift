@@ -63,7 +63,7 @@ final public class AVMixer: NSObject {
         }
     }
 #endif
-    public private(set) lazy var recorder: AVMixerRecorder = AVMixerRecorder()
+    public private(set) lazy var recorder = AVMixerRecorder()
 
     deinit {
         dispose()

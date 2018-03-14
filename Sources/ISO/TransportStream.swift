@@ -19,7 +19,7 @@ struct TSPacket {
     var payloadFlag: Bool = false
     var continuityCounter: UInt8 = 0
     var adaptationField: TSAdaptationField?
-    var payload: Data = Data()
+    var payload = Data()
 
     private var remain: Int {
         var adaptationFieldSize: Int = 0
@@ -131,7 +131,7 @@ struct TSTimestamp {
     }
 
     static func encode(_ b: UInt64, _ m: UInt8) -> Data {
-        var data: Data = Data(count: 5)
+        var data = Data(count: 5)
         data[0] = UInt8(truncatingIfNeeded: b >> 29) | 0x01 | m
         data[1] = UInt8(truncatingIfNeeded: b >> 22)
         data[2] = UInt8(truncatingIfNeeded: b >> 14) | 0x01
@@ -320,7 +320,6 @@ struct TSAdaptationExtensionField {
     var legalTimeWindowFlag: Bool = false
     var piecewiseRateFlag: Bool = false
     var seamlessSpiceFlag: Bool = false
-    var legalTimeWindowValidFlag: Bool = false
     var legalTimeWindowOffset: UInt16 = 0
     var piecewiseRate: UInt32 = 0
     var spliceType: UInt8 = 0
