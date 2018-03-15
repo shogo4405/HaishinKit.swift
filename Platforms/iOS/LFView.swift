@@ -21,7 +21,7 @@ open class LFView: UIView {
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             layer.connection.map {
-                $0.isVideoOrientationSupported {
+                if $0.isVideoOrientationSupported {
                     $0.videoOrientation = orientation
                 }
             }

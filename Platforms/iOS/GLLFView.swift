@@ -59,7 +59,7 @@ extension GLLFView: GLKViewDelegate {
         }
         var inRect: CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect: CGRect = displayImage.extent
-        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
+        VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
         if position == .front {
             currentStream?.mixer.videoIO.context?.draw(displayImage.oriented(forExifOrientation: 2), in: inRect, from: fromRect)
         } else {
