@@ -168,7 +168,7 @@ class AudioStreamPlayback {
     }
 
     func initializeForAudioQueue() {
-        guard let _ = formatDescription, self.queue == nil else {
+        guard formatDescription != nil && self.queue == nil else {
             return
         }
         var queue: AudioQueueRef? = nil
@@ -184,7 +184,7 @@ class AudioStreamPlayback {
                 &queue)
         }
         if let cookie: [UInt8] = getMagicCookieForFileStream() {
-            let _ = setMagicCookieForQueue(cookie)
+            _ = setMagicCookieForQueue(cookie)
         }
         soundTransform.setParameter(queue!)
         for _ in 0..<numberOfBuffers {

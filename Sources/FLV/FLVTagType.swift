@@ -1,4 +1,3 @@
-
 public enum FLVTagType: UInt8 {
     case audio = 8
     case video = 9

@@ -271,8 +271,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         return data.count
     }
 
-    private func doRequest(_ pathComponent: String, _
-data: Data, _ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
+    private func doRequest(_ pathComponent: String, _ data: Data, _ completionHandler: @escaping ((Data?, URLResponse?, Error?) -> Void)) {
         isRequesting = true
         lastRequestPathComponent = pathComponent
         lastRequestData = data

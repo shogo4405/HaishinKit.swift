@@ -173,7 +173,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
             return
         }
-        if let _ = recorder.writer {
+        if recorder.writer != nil {
             recorder.finishWriting()
         }
         recorder.writer = createWriter(recorder.fileName)

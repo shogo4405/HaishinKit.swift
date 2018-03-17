@@ -31,7 +31,7 @@ public class MP4Sampler {
         let reader: MP4Reader = MP4Reader(url: url)
 
         do {
-            let _ = try reader.load()
+            _ = try reader.load()
         } catch {
             logger.warn("")
             return

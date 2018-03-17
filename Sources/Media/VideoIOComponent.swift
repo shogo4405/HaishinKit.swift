@@ -333,7 +333,7 @@ final class VideoIOComponent: IOComponent {
         defer {
             objc_sync_exit(effects)
         }
-        if let _ = effects.index(of: effect) {
+        if effects.contains(effect) {
             return false
         }
         effects.append(effect)

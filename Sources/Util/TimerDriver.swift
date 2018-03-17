@@ -54,7 +54,7 @@ extension TimerDriver: Running {
 
     final public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
-            if let _ = self.runloop {
+            guard self.runloop != nil else {
                 return
             }
             self.timer = Timer(

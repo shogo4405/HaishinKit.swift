@@ -11,7 +11,6 @@ extension AVFrameRateRange {
     }
 }
 
-
 #if os(iOS) || os(macOS)
 
 extension AVCaptureDevice {

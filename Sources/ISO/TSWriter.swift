@@ -76,7 +76,7 @@ class TSWriter {
         }
 
         var packets: [TSPacket] = split(PID, PES: PES, timestamp: decodeTimeStamp)
-        let _ = rotateFileHandle(decodeTimeStamp)
+        _ = rotateFileHandle(decodeTimeStamp)
 
         if streamID == 192 {
             packets[0].adaptationField?.randomAccessIndicator = true
