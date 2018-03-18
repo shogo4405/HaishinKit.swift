@@ -31,9 +31,11 @@
 
 ### Rendering
 |-|LFView|GLLFView|
-|-|:-----------:|:------------:|
+|-|:---:|:---:|
 |Engine|AVCaptureVideoPreviewLayer|OpenGL ES|
-|CIFilter|NO|YES|
+|Publish|○|○|
+|Playback|×|○|
+|VIsualEffect|×|○|
 
 ### Others
 - [x] _Support tvOS 10.2+  (Technical Preview)_
