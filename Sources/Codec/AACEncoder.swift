@@ -90,17 +90,17 @@ final class AACEncoder: NSObject {
     private var inDestinationFormat: AudioStreamBasicDescription {
         get {
             if _inDestinationFormat == nil {
-                _inDestinationFormat = AudioStreamBasicDescription()
-                _inDestinationFormat!.mSampleRate = sampleRate == 0 ? inSourceFormat!.mSampleRate : sampleRate
-                _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
-                _inDestinationFormat!.mFormatFlags = profile
-                _inDestinationFormat!.mBytesPerPacket = 0
-                _inDestinationFormat!.mFramesPerPacket = AACEncoder.framesPerPacket
-                _inDestinationFormat!.mBytesPerFrame = 0
-                _inDestinationFormat!.mChannelsPerFrame = (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels
-                _inDestinationFormat!.mBitsPerChannel = 0
-                _inDestinationFormat!.mReserved = 0
-
+                _inDestinationFormat = AudioStreamBasicDescription(
+                    mSampleRate: sampleRate == 0 ? inSourceFormat!.mSampleRate : sampleRate,
+                    mFormatID: kAudioFormatMPEG4AAC,
+                    mFormatFlags: profile,
+                    mBytesPerPacket: 0,
+                    mFramesPerPacket: AACEncoder.framesPerPacket,
+                    mBytesPerFrame: 0,
+                    mChannelsPerFrame: (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels,
+                    mBitsPerChannel: 0,
+                    mReserved: 0
+                )
                 CMAudioFormatDescriptionCreate(
                     kCFAllocatorDefault, &_inDestinationFormat!, 0, nil, 0, nil, nil, &formatDescription
                 )
