@@ -29,6 +29,12 @@
 - [x] HTTPService
 - [x] HLS Publish
 
+### Rendering
+|-|LFView|GLLFView|
+|-|:-----------:|:------------:|
+|Engine|AVCaptureVideoPreviewLayer|OpenGL ES|
+|CIFilter|NO|YES|
+
 ### Others
 - [x] _Support tvOS 10.2+  (Technical Preview)_
   - tvOS can't publish Camera and Microphone. Available playback feature.
