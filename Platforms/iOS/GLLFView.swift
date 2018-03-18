@@ -8,7 +8,6 @@ open class GLLFView: GLKView {
         kCIContextUseSoftwareRenderer: NSNumber(value: false)
     ]
     open static var defaultBackgroundColor: UIColor = .black
-
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     var position: AVCaptureDevice.Position = .back
@@ -52,6 +51,7 @@ open class GLLFView: GLKView {
 }
 
 extension GLLFView: GLKViewDelegate {
+    // MARK: GLKViewDelegate
     public func glkView(_ view: GLKView, drawIn rect: CGRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
         guard let displayImage: CIImage = displayImage else {
