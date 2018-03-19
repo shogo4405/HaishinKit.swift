@@ -20,11 +20,13 @@ final class AACEncoder: NSObject {
         "muted",
         "bitrate",
         "profile",
-        "sampleRate" // down,up sampleRate not supported yet #58
+        "sampleRate", // down,up sampleRate not supported yet #58
+        "actualBitrate"
     ]
 
     static let packetSize: UInt32 = 1
     static let framesPerPacket: UInt32 = 1024
+    static let minimumBitrate: UInt32 = 8 * 1024
 
     static let defaultProfile: UInt32 = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
     static let defaultBitrate: UInt32 = 32 * 1024
@@ -47,14 +49,23 @@ final class AACEncoder: NSObject {
 
     @objc var bitrate: UInt32 = AACEncoder.defaultBitrate {
         didSet {
+            guard bitrate != oldValue else {
+                return
+            }
             lockQueue.async {
-                try? self.setProperty(id: kAudioConverterEncodeBitRate, data: self.bitrate * self.inDestinationFormat.mChannelsPerFrame)
+                if let format = self._inDestinationFormat {
+                    self.setBitrateUntilNoErr(self.bitrate * format.mChannelsPerFrame)
+                }
             }
         }
     }
-
     @objc var profile: UInt32 = AACEncoder.defaultProfile
     @objc var sampleRate: Double = AACEncoder.defaultSampleRate
+    @objc var actualBitrate: UInt32 = AACEncoder.defaultBitrate {
+        didSet {
+            logger.info("\(actualBitrate)")
+        }
+    }
 
     var channels: UInt32 = AACEncoder.defaultChannels
     var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
@@ -132,7 +143,7 @@ final class AACEncoder: NSObject {
                 &inClassDescriptions,
                 &_converter
             )
-            try? setProperty(id: kAudioConverterEncodeBitRate, data: bitrate * inDestinationFormat.mChannelsPerFrame)
+            setBitrateUntilNoErr(bitrate * inDestinationFormat.mChannelsPerFrame)
         }
         if status != noErr {
             logger.warn("\(status)")
@@ -242,6 +253,19 @@ final class AACEncoder: NSObject {
         currentBufferList = nil
 
         return noErr
+    }
+
+    private func setBitrateUntilNoErr(_ bitrate: UInt32) {
+        do {
+            try setProperty(id: kAudioConverterEncodeBitRate, data: bitrate * inDestinationFormat.mChannelsPerFrame)
+            actualBitrate = bitrate
+        } catch {
+            if AACEncoder.minimumBitrate < bitrate {
+                setBitrateUntilNoErr(bitrate - AACEncoder.minimumBitrate)
+            } else {
+                actualBitrate = AACEncoder.minimumBitrate
+            }
+        }
     }
 
     private func setProperty<T>(id: AudioConverterPropertyID, data: T) throws {
