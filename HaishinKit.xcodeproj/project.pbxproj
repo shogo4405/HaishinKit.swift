@@ -69,7 +69,6 @@
 		294637AA1EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv in Resources */ = {isa = PBXBuildFile; fileRef = 294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */; };
 		294852571D852499002DE492 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		295018201FFA1BD700358E10 /* AACEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2950181F1FFA1BD700358E10 /* AACEncoderTests.swift */; };
-		295018221FFA1C9D00358E10 /* SinWaveUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295018211FFA1C9D00358E10 /* SinWaveUtil.swift */; };
 		295074301E4620FF007F15A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29205CBD1E461F4E009D3FFF /* Main.storyboard */; };
 		295074311E462105007F15A4 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */; };
 		2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897461CDB01D20074D5F0 /* VisualEffect.swift */; };
@@ -337,6 +336,10 @@
 		29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */; };
 		29FB94311E1BECCA005DE4DF /* SoundSpliter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */; };
 		29FB94321E1BF507005DE4DF /* SoundSpliter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */; };
+		7F21F370206C363300497A29 /* SinWaveUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F21F36F206C363300497A29 /* SinWaveUtil.swift */; };
+		7F7C9E73206B037700BA0858 /* RTMPSocketFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C9E72206B037700BA0858 /* RTMPSocketFactory.swift */; };
+		7F7C9E74206B037700BA0858 /* RTMPSocketFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C9E72206B037700BA0858 /* RTMPSocketFactory.swift */; };
+		7F7C9E75206B037700BA0858 /* RTMPSocketFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7C9E72206B037700BA0858 /* RTMPSocketFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -497,7 +500,6 @@
 		294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb.flv; sourceTree = "<group>"; };
 		294852551D84BFAD002DE492 /* RTMPTSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPTSocket.swift; path = Sources/RTMP/RTMPTSocket.swift; sourceTree = SOURCE_ROOT; };
 		2950181F1FFA1BD700358E10 /* AACEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AACEncoderTests.swift; sourceTree = "<group>"; };
-		295018211FFA1C9D00358E10 /* SinWaveUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SinWaveUtil.swift; path = Codec/SinWaveUtil.swift; sourceTree = "<group>"; };
 		2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PreferenceViewController.swift; path = Examples/iOS/PreferenceViewController.swift; sourceTree = "<group>"; };
 		2957473B1E34F30300EF056E /* RTMPBroadcaster.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPBroadcaster.swift; path = Examples/iOS/Screencast/RTMPBroadcaster.swift; sourceTree = "<group>"; };
 		295747901E37AC1000EF056E /* RTMPStreamQoSDelagate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPStreamQoSDelagate.swift; path = Sources/RTMP/RTMPStreamQoSDelagate.swift; sourceTree = SOURCE_ROOT; };
@@ -627,6 +629,8 @@
 		29F04FF21F3388B000172706 /* HaishinKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HaishinKit.podspec; sourceTree = "<group>"; };
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RTMPHandshake.swift; path = Sources/RTMP/RTMPHandshake.swift; sourceTree = SOURCE_ROOT; };
 		29FB94301E1BECCA005DE4DF /* SoundSpliter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SoundSpliter.swift; path = Sources/Media/SoundSpliter.swift; sourceTree = SOURCE_ROOT; };
+		7F21F36F206C363300497A29 /* SinWaveUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SinWaveUtil.swift; path = Tests/Codec/SinWaveUtil.swift; sourceTree = SOURCE_ROOT; };
+		7F7C9E72206B037700BA0858 /* RTMPSocketFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = RTMPSocketFactory.swift; path = RTMP/RTMPSocketFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -874,11 +878,11 @@
 		295018191FFA196800358E10 /* Codec */ = {
 			isa = PBXGroup;
 			children = (
+				7F21F36F206C363300497A29 /* SinWaveUtil.swift */,
 				2950181F1FFA1BD700358E10 /* AACEncoderTests.swift */,
 			);
-			name = Codec;
-			path = /Users/shogo/Dropbox/xcode/HaishinKit.swift/Tests/Codec;
-			sourceTree = "<absolute>";
+			path = Codec;
+			sourceTree = "<group>";
 		};
 		295891081EEB8B1D00CE51E1 /* FLV */ = {
 			isa = PBXGroup;
@@ -988,7 +992,6 @@
 			isa = PBXGroup;
 			children = (
 				294637A71EC89BC9008EEC71 /* Config.swift */,
-				295018211FFA1C9D00358E10 /* SinWaveUtil.swift */,
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				295018191FFA196800358E10 /* Codec */,
 				291C2AD11CE9FF3E006F042B /* Asset */,
@@ -1092,6 +1095,7 @@
 				29B876AA1CD70B2800FC07DA /* RTMPStream.swift */,
 				295747901E37AC1000EF056E /* RTMPStreamQoSDelagate.swift */,
 				294852551D84BFAD002DE492 /* RTMPTSocket.swift */,
+				7F7C9E72206B037700BA0858 /* RTMPSocketFactory.swift */,
 			);
 			name = RTMP;
 			sourceTree = "<group>";
@@ -1662,6 +1666,7 @@
 				29D3D4CF1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift in Sources */,
 				29B876841CD70AE800FC07DA /* H264+AVC.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
+				7F7C9E73206B037700BA0858 /* RTMPSocketFactory.swift in Sources */,
 				29B8769B1CD70B1100FC07DA /* MIME.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
 				29B876871CD70AE800FC07DA /* ProgramSpecific.swift in Sources */,
@@ -1736,13 +1741,13 @@
 				294637A41EC8961C008EEC71 /* RTMPReaderTests.swift in Sources */,
 				290EA8AD1DFB61E700053022 /* TimerDriverTests.swift in Sources */,
 				290EA8A91DFB61E700053022 /* ByteArrayTests.swift in Sources */,
-				295018221FFA1C9D00358E10 /* SinWaveUtil.swift in Sources */,
 				294637A81EC89BC9008EEC71 /* Config.swift in Sources */,
 				290EA8981DFB619600053022 /* MP4SamplerTests.swift in Sources */,
 				295018201FFA1BD700358E10 /* AACEncoderTests.swift in Sources */,
 				290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */,
 				290EA8A01DFB61B100053022 /* ASClassTests.swift in Sources */,
 				290EA8AB1DFB61E700053022 /* EventDispatcherTests.swift in Sources */,
+				7F21F370206C363300497A29 /* SinWaveUtil.swift in Sources */,
 				290EA8901DFB616000053022 /* Foundation+ExtensionTests.swift in Sources */,
 				290EA8991DFB619600053022 /* PacketizedElementaryStreamTests.swift in Sources */,
 				290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */,
@@ -1813,6 +1818,7 @@
 				29B8770A1CD70D5A00FC07DA /* MIME.swift in Sources */,
 				29B8770B1CD70D5A00FC07DA /* NetClient.swift in Sources */,
 				29EA87EE1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
+				7F7C9E74206B037700BA0858 /* RTMPSocketFactory.swift in Sources */,
 				29B8770C1CD70D5A00FC07DA /* NetService.swift in Sources */,
 				2958911B1EEB8E3F00CE51E1 /* FLVAudioCodec.swift in Sources */,
 				296543611D62FE7100734698 /* GLLFView.swift in Sources */,
@@ -1895,6 +1901,7 @@
 				29EB3E211ED059FB001CAE8B /* RTMPHandshake.swift in Sources */,
 				29EB3DF41ED05776001CAE8B /* CMBlockBuffer+Extension.swift in Sources */,
 				29EB3DF01ED05768001CAE8B /* H264Encoder.swift in Sources */,
+				7F7C9E75206B037700BA0858 /* RTMPSocketFactory.swift in Sources */,
 				29EB3E351ED05A33001CAE8B /* DeviceUtil.swift in Sources */,
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
 				29EB3E111ED05881001CAE8B /* IOComponent.swift in Sources */,

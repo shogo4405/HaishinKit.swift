@@ -178,6 +178,8 @@ open class RTMPConnection: EventDispatcher {
     open var totalStreamsCount: Int {
         return streams.count
     }
+    /// The factory used to create sockets.
+    open var socketFactory: RTMPSocketFactory = DefaultRTMPSocketFactory.shared
     /// The statistics of outgoing queue bytes per second.
     @objc dynamic open private(set) var previousQueueBytesOut: [Int64] = []
     /// The statistics of incoming bytes per second.
@@ -258,20 +260,14 @@ open class RTMPConnection: EventDispatcher {
     }
 
     open func connect(_ command: String, arguments: Any?...) {
-        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
+        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && socketFactory.supportedSchemes.contains(scheme) else {
             return
         }
         self.uri = uri
         self.arguments = arguments
         timer = Timer(timeInterval: 1.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
-        switch scheme {
-        case "rtmpt", "rtmpts":
-            socket = socket is RTMPTSocket ? socket : RTMPTSocket()
-        default:
-            socket = socket is RTMPSocket ? socket : RTMPSocket()
-        }
+        socket = socketFactory.createSocket(forScheme: scheme)
         socket.delegate = self
-        socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
         socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
     }
 
@@ -427,7 +423,7 @@ open class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    func didSetReadyState(_ readyState: RTMPSocket.ReadyState) {
+    public func didSetReadyState(_ readyState: ReadyState) {
         switch readyState {
         case .handshakeDone:
             guard let chunk: RTMPChunk = createConnectionChunk() else {
@@ -450,7 +446,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    func didSetTotalBytesIn(_ totalBytesIn: Int64) {
+    public func didSetTotalBytesIn(_ totalBytesIn: Int64) {
         guard windowSizeS * (sequence + 1) <= totalBytesIn else {
             return
         }
@@ -462,7 +458,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         sequence += 1
     }
 
-    func listen(_ data: Data) {
+    public func listen(_ data: Data) {
         guard let chunk: RTMPChunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
             socket.inputBuffer.append(data)
             return
