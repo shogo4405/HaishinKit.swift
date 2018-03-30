@@ -65,7 +65,8 @@ struct RTMPSharedObjectEvent {
         let size: Int = serializer.position - position
         serializer.position = position
         serializer.writeUInt32(UInt32(size) - 4)
-        serializer.position = serializer.length
+        let length = serializer.length
+        serializer.position = length
     }
 }
 
