@@ -6,7 +6,7 @@ extension AVFrameRateRange {
     func clamp(rate: Float64) -> Float64 {
         return max(minFrameRate, min(maxFrameRate, rate))
     }
-    
+
     func contains(rate: Float64) -> Bool {
         return (minFrameRate...maxFrameRate) ~= rate
     }
