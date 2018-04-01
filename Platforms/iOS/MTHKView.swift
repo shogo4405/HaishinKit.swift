@@ -52,7 +52,7 @@ extension MTHKView: MTKViewDelegate {
 
     #if arch(i386) || arch(x86_64)
     public func draw(in view: MTKView) {
-        // tvOS Simulator doesn't support currentDrawable as CAMetalDrawable.
+        // iOS Simulator doesn't support currentDrawable as CAMetalDrawable.
     }
     #else
     public func draw(in view: MTKView) {
