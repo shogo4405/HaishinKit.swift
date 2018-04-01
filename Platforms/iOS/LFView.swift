@@ -1,7 +1,7 @@
 import UIKit
 import AVFoundation
 
-open class LFView: UIView {
+open class HKView: UIView {
     open static var defaultBackgroundColor: UIColor = .black
 
     open override class var layerClass: AnyClass {
@@ -49,8 +49,8 @@ open class LFView: UIView {
     }
 
     override open func awakeFromNib() {
-        backgroundColor = LFView.defaultBackgroundColor
-        layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
+        backgroundColor = HKView.defaultBackgroundColor
+        layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
     }
 
     open func attachStream(_ stream: NetStream?) {
@@ -74,7 +74,7 @@ open class LFView: UIView {
     }
 }
 
-extension LFView: NetStreamDrawable {
+extension HKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
     }

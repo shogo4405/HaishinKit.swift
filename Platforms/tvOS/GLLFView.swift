@@ -2,7 +2,7 @@ import GLKit
 import Foundation
 import AVFoundation
 
-open class GLLFView: GLKView {
+open class GLHKView: GLKView {
     static let defaultOptions: [String: AnyObject] = [
         kCIContextWorkingColorSpace: NSNull(),
         kCIContextUseSoftwareRenderer: NSNumber(value: false)
@@ -28,8 +28,8 @@ open class GLLFView: GLKView {
 
     open override func awakeFromNib() {
         enableSetNeedsDisplay = true
-        backgroundColor = GLLFView.defaultBackgroundColor
-        layer.backgroundColor = GLLFView.defaultBackgroundColor.cgColor
+        backgroundColor = GLHKView.defaultBackgroundColor
+        layer.backgroundColor = GLHKView.defaultBackgroundColor.cgColor
     }
 
     open override func draw(_ rect: CGRect) {
@@ -46,7 +46,7 @@ open class GLLFView: GLKView {
     open func attachStream(_ stream: NetStream?) {
         if let stream: NetStream = stream {
             stream.lockQueue.async {
-                stream.mixer.videoIO.context = CIContext(eaglContext: self.context, options: GLLFView.defaultOptions)
+                stream.mixer.videoIO.context = CIContext(eaglContext: self.context, options: GLHKView.defaultOptions)
                 stream.mixer.videoIO.drawable = self
                 stream.mixer.startRunning()
             }
@@ -55,7 +55,7 @@ open class GLLFView: GLKView {
     }
 }
 
-extension GLLFView: NetStreamDrawable {
+extension GLHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
         DispatchQueue.main.async {

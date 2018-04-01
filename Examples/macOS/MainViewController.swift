@@ -21,7 +21,7 @@ final class MainViewController: NSViewController {
     )
     var httpStream: HTTPStream = HTTPStream()
 
-    @IBOutlet var lfView: GLLFView!
+    @IBOutlet var lfView: GLHKView!
     @IBOutlet var audioPopUpButton: NSPopUpButton!
     @IBOutlet var cameraPopUpButton: NSPopUpButton!
     @IBOutlet var urlField: NSTextField!

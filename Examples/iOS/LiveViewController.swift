@@ -27,7 +27,7 @@ final class LiveViewController: UIViewController {
     var sharedObject: RTMPSharedObject!
     var currentEffect: VisualEffect?
 
-    @IBOutlet var lfView: GLLFView?
+    @IBOutlet var lfView: GLHKView?
     @IBOutlet var currentFPSLabel: UILabel?
     @IBOutlet var publishButton: UIButton?
     @IBOutlet var pauseButton: UIButton?
