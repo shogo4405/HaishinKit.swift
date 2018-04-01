@@ -97,7 +97,7 @@ public class NetSocket: NSObject {
 
     func initConnection() {
         buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: windowSizeC)
-        buffer?.initialize(to: 0, count: windowSizeC)
+        buffer?.initialize(repeating: 0, count: windowSizeC)
 
         totalBytesIn = 0
         totalBytesOut = 0
@@ -144,8 +144,8 @@ public class NetSocket: NSObject {
         outputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)
         outputStream?.delegate = nil
         outputStream = nil
-        buffer?.deinitialize()
-        buffer?.deallocate(capacity: windowSizeC)
+        buffer?.deinitialize(count: windowSizeC)
+        buffer?.deallocate()
         buffer = nil
     }
 

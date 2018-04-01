@@ -669,7 +669,8 @@ final class RTMPVideoMessage: RTMPMessage {
         )
 
         var data: Data = payload.advanced(by: FLVTagType.video.headerSize)
-        data.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
+        var localData = data
+        localData.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
             var blockBuffer: CMBlockBuffer?
             guard CMBlockBufferCreateWithMemoryBlock(
                 kCFAllocatorDefault, bytes, data.count, kCFAllocatorNull, nil, 0, data.count, 0, &blockBuffer) == noErr else {

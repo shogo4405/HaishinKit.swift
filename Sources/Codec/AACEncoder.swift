@@ -192,7 +192,7 @@ final class AACEncoder: NSObject {
             let outOutputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
             outOutputData[0].mNumberChannels = inDestinationFormat.mChannelsPerFrame
             outOutputData[0].mDataByteSize = UInt32(dataLength)
-            outOutputData[0].mData = UnsafeMutableRawPointer.allocate(bytes: dataLength, alignedTo: 0)
+            outOutputData[0].mData = UnsafeMutableRawPointer.allocate(byteCount: dataLength, alignment: 0)
 
             let status: OSStatus = AudioConverterFillComplexBuffer(
                 converter,

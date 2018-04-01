@@ -86,7 +86,7 @@ public class SoundSpliter: NSObject {
             buffer.unsafeMutablePointer.pointee.mNumberBuffers = 1
             buffer.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
             buffer.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(frameSize)
-            buffer.unsafeMutablePointer.pointee.mBuffers.mData = UnsafeMutableRawPointer.allocate(bytes: frameSize, alignedTo: 0)
+            buffer.unsafeMutablePointer.pointee.mBuffers.mData = UnsafeMutableRawPointer.allocate(byteCount: frameSize, alignment: 0)
             wave.copyBytes(
                 to: buffer.unsafeMutablePointer.pointee.mBuffers.mData!.assumingMemoryBound(to: UInt8.self),
                 count: Int(buffer.unsafeMutablePointer.pointee.mBuffers.mDataByteSize)
@@ -105,7 +105,7 @@ public class SoundSpliter: NSObject {
                 }
                 presentationTimeStamp = CMTimeAdd(presentationTimeStamp, result.duration)
             }
-            buffer.unsafeMutablePointer.pointee.mBuffers.mData?.deallocate(bytes: frameSize, alignedTo: 0)
+            buffer.unsafeMutablePointer.pointee.mBuffers.mData?.deallocate()
         }
     }
 

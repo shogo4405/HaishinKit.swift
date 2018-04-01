@@ -260,7 +260,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     func createWriter(_ fileName: String?) -> AVAssetWriter? {
         do {
             let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.locale = NSLocale(localeIdentifier: "en_US") as Locale!
+            dateFormatter.locale = Locale(identifier: "en_US")
             dateFormatter.dateFormat = dateFormat
             var fileComponent: String? = nil
             if var fileName: String = fileName {

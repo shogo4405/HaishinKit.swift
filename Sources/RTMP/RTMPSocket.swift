@@ -11,7 +11,7 @@ protocol RTMPSocketCompatible: class {
     var queueBytesOut: Int64 { get }
     var inputBuffer: Data { get set }
     var securityLevel: StreamSocketSecurityLevel { get set }
-    weak var delegate: RTMPSocketDelegate? { get set }
+    var delegate: RTMPSocketDelegate? { get set }
 
     @discardableResult
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>?) -> Int
