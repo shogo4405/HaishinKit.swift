@@ -221,6 +221,20 @@ httpService.addHTTPStream(httpStream)
 view.addSubview(lfView)
 ```
 
+## Local Usage
+Record content locally without streaming to remote server.
+```swift
+var localStream: LocalStream = LocalStream()
+localStream.attachCamera(DeviceUtil.device(withPosition: .back))
+localStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+local.Stream.record("hello")
+
+var lfView: LFView = LFView(frame: view:bounds)
+lfView.attachStream(localStream)
+
+view.addSubview(lfView)
+```
+
 ## FAQ
 ### How can I run example project?
 Please hit `carthage update` command. HaishinKit needs Logboard module via Carthage.
