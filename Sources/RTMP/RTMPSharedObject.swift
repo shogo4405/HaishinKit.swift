@@ -51,22 +51,24 @@ struct RTMPSharedObjectEvent {
     }
 
     func serialize(_ serializer: inout AMFSerializer) {
-        serializer.writeUInt8(type.rawValue)
+        var serializerCopy = serializer
+        serializerCopy.writeUInt8(type.rawValue)
         guard let name: String = name else {
-            serializer.writeUInt32(0)
+            serializerCopy.writeUInt32(0)
             return
         }
-        let position: Int = serializer.position
-        serializer
+        let position: Int = serializerCopy.position
+        serializerCopy
             .writeUInt32(0)
             .writeUInt16(UInt16(name.utf8.count))
             .writeUTF8Bytes(name)
             .serialize(data)
-        let size: Int = serializer.position - position
-        serializer.position = position
-        serializer.writeUInt32(UInt32(size) - 4)
-        let length = serializer.length
-        serializer.position = length
+        let size: Int = serializerCopy.position - position
+        serializerCopy.position = position
+        serializerCopy.writeUInt32(UInt32(size) - 4)
+        let length = serializerCopy.length
+        serializerCopy.position = length
+        serializer = serializerCopy
     }
 }
 
