@@ -200,6 +200,8 @@ struct PacketizedElementaryStream: PESPacketHeader {
         let length = data.count + optionalPESHeader!.data.count
         if length < Int(UInt16.max) {
             packetLength = UInt16(length)
+        } else {
+            return nil
         }
     }
 
