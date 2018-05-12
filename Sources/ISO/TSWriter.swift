@@ -16,20 +16,16 @@ class TSWriter {
         if sequence <= TSWriter.defaultSegmentMaxCount {
             m3u8.mediaSequence = 0
             m3u8.mediaList = files
-            for mediaItem in m3u8.mediaList {
-                if mediaItem.duration > m3u8.targetDuration {
-                    m3u8.targetDuration = mediaItem.duration + 1
-                }
+            for mediaItem in m3u8.mediaList where mediaItem.duration > m3u8.targetDuration {
+                m3u8.targetDuration = mediaItem.duration + 1
             }
             return m3u8.description
         }
         let startIndex = max(0, files.count - TSWriter.defaultSegmentCount)
         m3u8.mediaSequence = sequence - TSWriter.defaultSegmentMaxCount
         m3u8.mediaList = Array(files[startIndex..<files.count])
-        for mediaItem in m3u8.mediaList {
-            if mediaItem.duration > m3u8.targetDuration {
-                m3u8.targetDuration = mediaItem.duration + 1
-            }
+        for mediaItem in m3u8.mediaList where mediaItem.duration > m3u8.targetDuration {
+            m3u8.targetDuration = mediaItem.duration + 1
         }
         return m3u8.description
     }

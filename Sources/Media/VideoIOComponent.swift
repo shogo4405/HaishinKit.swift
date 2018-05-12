@@ -58,12 +58,10 @@ final class VideoIOComponent: IOComponent {
             guard orientation != oldValue else {
                 return
             }
-            for connection in output.connections {
-                if connection.isVideoOrientationSupported {
-                    connection.videoOrientation = orientation
-                    if torch {
-                        setTorchMode(.on)
-                    }
+            for connection in output.connections where connection.isVideoOrientationSupported {
+                connection.videoOrientation = orientation
+                if torch {
+                    setTorchMode(.on)
                 }
             }
             drawable?.orientation = orientation
@@ -159,7 +157,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    private var _output: AVCaptureVideoDataOutput? = nil
+    private var _output: AVCaptureVideoDataOutput?
     var output: AVCaptureVideoDataOutput! {
         get {
             if _output == nil {
@@ -248,10 +246,8 @@ final class VideoIOComponent: IOComponent {
 
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
-        for connection in output.connections {
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = orientation
-            }
+        for connection in output.connections where connection.isVideoOrientationSupported {
+            connection.videoOrientation = orientation
         }
         output.setSampleBufferDelegate(self, queue: lockQueue)
 
