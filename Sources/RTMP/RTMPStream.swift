@@ -219,7 +219,7 @@ open class RTMPStream: NetStream {
     static let defaultID: UInt32 = 0
     open static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
     open static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
-    weak open var qosDelegate: RTMPStreamQoSDelegate?
+    weak open var qosDelegate: RTMPStreamDelegate?
     open internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
