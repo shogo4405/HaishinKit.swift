@@ -126,6 +126,7 @@
 		296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897441CDB01D20074D5F0 /* LiveViewController.swift */; };
 		2975EF6F1D6096FB00DABA5A /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975EF6E1D6096FB00DABA5A /* Mutex.swift */; };
 		2975EF701D60B32600DABA5A /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975EF6E1D6096FB00DABA5A /* Mutex.swift */; };
+		2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */; };
 		2976A47E1D48C5C700B53EF2 /* AVMixerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */; };
 		2976A47F1D48FD6900B53EF2 /* AVMixerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */; };
 		2976A4811D49025B00B53EF2 /* IOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* IOComponent.swift */; };
@@ -532,6 +533,7 @@
 		296897461CDB01D20074D5F0 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
 		2968974E1CDB01DD0074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2975EF6E1D6096FB00DABA5A /* Mutex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mutex.swift; sourceTree = "<group>"; };
+		2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPMessageTests.swift; sourceTree = "<group>"; };
 		2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVMixerRecorder.swift; sourceTree = "<group>"; };
 		2976A4801D49025B00B53EF2 /* IOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOComponent.swift; sourceTree = "<group>"; };
 		2976A4851D4903C300B53EF2 /* DeviceUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtil.swift; sourceTree = "<group>"; };
@@ -766,6 +768,7 @@
 				290EA89D1DFB61B100053022 /* ASClassTests.swift */,
 				290EA89E1DFB61B100053022 /* RTMPChunkTests.swift */,
 				290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */,
+				2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */,
 				294637A31EC8961C008EEC71 /* RTMPReaderTests.swift */,
 			);
 			path = RTMP;
@@ -1750,6 +1753,7 @@
 				290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */,
 				290EA89A1DFB619600053022 /* ProgramSpecificTests.swift in Sources */,
 				290EA8931DFB617800053022 /* HTTPRequestTests.swift in Sources */,
+				2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */,
 				290EA8A11DFB61B100053022 /* RTMPChunkTests.swift in Sources */,
 				290EA89F1DFB61B100053022 /* AMF0SerializerTests.swift in Sources */,
 				290EA8AA1DFB61E700053022 /* CRC32Tests.swift in Sources */,
