@@ -172,7 +172,7 @@ final class RTMPChunk {
             }
 
             let end: Int = min(message.length + start, newValue.count)
-            fragmented = size + start < end
+            fragmented = size + start <= end
             message.payload = newValue.subdata(in: start..<min(size + start, end))
 
             self.message = message
