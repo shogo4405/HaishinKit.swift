@@ -120,7 +120,7 @@ hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
 hkView.attachStream(rtmpStream)
 
 // add ViewController#view
-view.addSubview(lfView)
+view.addSubview(hkView)
 
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
