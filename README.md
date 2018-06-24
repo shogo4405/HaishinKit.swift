@@ -115,9 +115,9 @@ rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back)) { error in
     // print(error)
 }
 
-let lfView: LFView = LFView(frame: view.bounds)
-lfView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-lfView.attachStream(rtmpStream)
+let hkView = HKView(frame: view.bounds)
+hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
+hkView.attachStream(rtmpStream)
 
 // add ViewController#view
 view.addSubview(lfView)
@@ -143,7 +143,7 @@ do {
 }
 #endif
 
-var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
+var rtmpStream = RTMPStream(connection: rtmpConnection)
 
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
