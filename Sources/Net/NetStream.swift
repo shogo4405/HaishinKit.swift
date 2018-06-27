@@ -15,7 +15,13 @@ protocol NetStreamDrawable: class {
 // MARK: -
 open class NetStream: NSObject {
     public private(set) var mixer: AVMixer = AVMixer()
-    public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetStream.lock")
+    private static let queueKey = DispatchSpecificKey<UnsafeMutableRawPointer>()
+    private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
+    public let lockQueue = ({ () -> DispatchQueue in
+        let queue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetStream.lock")
+        queue.setSpecific(key: queueKey, value: queueValue)
+        return queue
+    })()
 
     deinit {
         metadata.removeAll()
@@ -37,7 +43,7 @@ open class NetStream: NSObject {
     open var torch: Bool {
         get {
             var torch: Bool = false
-            lockQueue.sync {
+            ensureLockQueue {
                 torch = self.mixer.videoIO.torch
             }
             return torch
@@ -68,13 +74,13 @@ open class NetStream: NSObject {
     open var audioSettings: [String: Any] {
         get {
             var audioSettings: [String: Any]!
-            lockQueue.sync {
+            ensureLockQueue {
                 audioSettings = self.mixer.audioIO.encoder.dictionaryWithValues(forKeys: AACEncoder.supportedSettingsKeys)
             }
             return  audioSettings
         }
         set {
-            lockQueue.sync {
+            ensureLockQueue {
                 self.mixer.audioIO.encoder.setValuesForKeys(newValue)
             }
         }
@@ -83,14 +89,19 @@ open class NetStream: NSObject {
     open var videoSettings: [String: Any] {
         get {
             var videoSettings: [String: Any]!
-            lockQueue.sync {
+            ensureLockQueue {
                 videoSettings = self.mixer.videoIO.encoder.dictionaryWithValues(forKeys: H264Encoder.supportedSettingsKeys)
             }
             return videoSettings
         }
         set {
-            lockQueue.sync {
+            if (DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue) {
                 self.mixer.videoIO.encoder.setValuesForKeys(newValue)
+            }
+            else {
+                ensureLockQueue {
+                    self.mixer.videoIO.encoder.setValuesForKeys(newValue)
+                }
             }
         }
     }
@@ -98,13 +109,13 @@ open class NetStream: NSObject {
     open var captureSettings: [String: Any] {
         get {
             var captureSettings: [String: Any]!
-            lockQueue.sync {
+            ensureLockQueue {
                 captureSettings = self.mixer.dictionaryWithValues(forKeys: AVMixer.supportedSettingsKeys)
             }
             return captureSettings
         }
         set {
-            lockQueue.sync {
+            ensureLockQueue {
                 self.mixer.setValuesForKeys(newValue)
             }
         }
@@ -113,13 +124,13 @@ open class NetStream: NSObject {
     open var recorderSettings: [AVMediaType: [String: Any]] {
         get {
             var recorderSettings: [AVMediaType: [String: Any]]!
-            lockQueue.sync {
+            ensureLockQueue {
                 recorderSettings = self.mixer.recorder.outputSettings
             }
             return recorderSettings
         }
         set {
-            lockQueue.sync {
+            ensureLockQueue {
                 self.mixer.recorder.outputSettings = newValue
             }
         }
@@ -186,4 +197,15 @@ open class NetStream: NSObject {
         }
     }
     #endif
+    
+    func ensureLockQueue(callback: () -> Void) {
+        if (DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue) {
+            callback()
+        }
+        else {
+            lockQueue.sync {
+                callback()
+            }
+        }
+    }
 }
