@@ -546,13 +546,6 @@ open class RTMPStream: NetStream {
         }
     }
 
-    open override func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
-        guard readyState == .publishing else {
-            return
-        }
-        super.appendSampleBuffer(sampleBuffer, withType: withType, options: options)
-    }
-
     open func appendFile(_ file: URL, completionHandler: MP4Sampler.Handler? = nil) {
         lockQueue.async {
             if self.sampler == nil {
