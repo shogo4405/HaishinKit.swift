@@ -147,7 +147,7 @@ var rtmpStream = RTMPStream(connection: rtmpConnection)
 
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
-    "sessionPreset": AVCaptureSessionPresetMedium, // input video width/height
+    "sessionPreset": AVCaptureSession.Preset.medium.rawValue, // input video width/height
     "continuousAutofocus": false, // use camera autofocus mode
     "continuousExposure": false, //  use camera exposure mode
 ]
@@ -166,13 +166,13 @@ rtmpStream.videoSettings = [
 ]
 // "0" means the same of input
 rtmpStream.recorderSettings = [
-    AVMediaTypeAudio: [
+    AVMediaType.audio: [
         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
         AVSampleRateKey: 0,
         AVNumberOfChannelsKey: 0,
         // AVEncoderBitRateKey: 128000,
     ],
-    AVMediaTypeVideo: [
+    AVMediaType.video: [
         AVVideoCodecKey: AVVideoCodecH264,
         AVVideoHeightKey: 0,
         AVVideoWidthKey: 0,
@@ -187,7 +187,7 @@ rtmpStream.recorderSettings = [
 ]
 
 // 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
+rtmpStream.attachAudio(AVCaptureDevice.default(for: AVMediaType.audio), automaticallyConfiguresApplicationAudioSession: false)
 
 ```
 ### Authentication
