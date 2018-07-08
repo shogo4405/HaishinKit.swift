@@ -97,8 +97,7 @@ open class NetStream: NSObject {
         set {
             if (DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue) {
                 self.mixer.videoIO.encoder.setValuesForKeys(newValue)
-            }
-            else {
+            } else {
                 ensureLockQueue {
                     self.mixer.videoIO.encoder.setValuesForKeys(newValue)
                 }
@@ -197,12 +196,11 @@ open class NetStream: NSObject {
         }
     }
     #endif
-    
+
     func ensureLockQueue(callback: () -> Void) {
         if (DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue) {
             callback()
-        }
-        else {
+        } else {
             lockQueue.sync {
                 callback()
             }
