@@ -24,7 +24,7 @@ final public class NetClient: NetSocket {
         }
     }
 
-    override func listen() {
+    override public func listen() {
         delegate?.client?(inputBuffer: self)
     }
 }

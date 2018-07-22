@@ -9,12 +9,12 @@ open class NetService: NSObject {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.lock")
     var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.network")
 
-    private(set) var domain: String
-    private(set) var name: String
-    private(set) var port: Int32
-    private(set) var type: String
-    private(set) var running: Bool = false
-    private(set) var clients: [NetClient] = []
+    public private(set) var domain: String
+    public private(set) var name: String
+    public private(set) var port: Int32
+    public private(set) var type: String
+    public private(set) var running = false
+    public private(set) var clients: [NetClient] = []
     private(set) var service: Foundation.NetService!
     private var runloop: RunLoop!
 
