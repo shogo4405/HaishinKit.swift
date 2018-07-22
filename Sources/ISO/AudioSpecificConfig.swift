@@ -5,8 +5,8 @@ import AVFoundation
  The Audio Specific Config is the global header for MPEG-4 Audio
  
  - seealse:
-  - http: //wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
-  - http: //wiki.multimedia.cx/?title=Understanding_AAC
+  - http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
+  - http://wiki.multimedia.cx/?title=Understanding_AAC
  */
 struct AudioSpecificConfig {
     static let ADTSHeaderSize: Int = 7
