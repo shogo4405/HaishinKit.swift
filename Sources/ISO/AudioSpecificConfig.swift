@@ -18,7 +18,7 @@ struct AudioSpecificConfig {
 
     var bytes: [UInt8] {
         var bytes: [UInt8] = [UInt8](repeating: 0, count: 2)
-        bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1 & 0x3)
+        bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
     }
