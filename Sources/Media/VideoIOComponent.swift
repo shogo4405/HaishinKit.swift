@@ -299,20 +299,25 @@ final class VideoIOComponent: IOComponent {
         }
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
-        let image: CIImage = effect(buffer)
-        if !effects.isEmpty {
-            #if os(macOS)
+
+        if drawable != nil || !effects.isEmpty {
+            let image: CIImage = effect(buffer)
+            if !effects.isEmpty {
+                #if os(macOS)
                 // green edge hack for OSX
                 buffer = CVPixelBuffer.create(image)!
-            #endif
-            context?.render(image, to: buffer)
+                #endif
+                context?.render(image, to: buffer)
+            }
+            drawable?.draw(image: image)
         }
+
         encoder.encodeImageBuffer(
             buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        drawable?.draw(image: image)
+
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
     }
 
