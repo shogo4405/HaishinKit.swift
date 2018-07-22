@@ -7,7 +7,7 @@ open class GLHKView: GLKView {
         kCIContextWorkingColorSpace: NSNull(),
         kCIContextUseSoftwareRenderer: NSNumber(value: false)
     ]
-    open static var defaultBackgroundColor: UIColor = .black
+    public static var defaultBackgroundColor: UIColor = .black
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     var position: AVCaptureDevice.Position = .back

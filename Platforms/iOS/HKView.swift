@@ -2,7 +2,7 @@ import UIKit
 import AVFoundation
 
 open class HKView: UIView {
-    open static var defaultBackgroundColor: UIColor = .black
+    public static var defaultBackgroundColor: UIColor = .black
 
     open override class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self

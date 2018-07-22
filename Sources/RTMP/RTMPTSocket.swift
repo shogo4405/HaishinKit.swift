@@ -279,7 +279,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         request.httpMethod = "POST"
         session.uploadTask(with: request, from: data, completionHandler: completionHandler).resume()
         if logger.isEnabledFor(level: .trace) {
-            logger.trace("\(self.request)")
+            logger.trace("\(String(describing: self.request))")
         }
     }
 }

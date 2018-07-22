@@ -13,7 +13,7 @@ public class TimerDriver: NSObject {
 
     private var runloop: RunLoop?
     private var nextFire: UInt64 = 0
-    private weak var timer: Timer? {
+    private var timer: Timer? {
         didSet {
             oldValue?.invalidate()
             timer.map {

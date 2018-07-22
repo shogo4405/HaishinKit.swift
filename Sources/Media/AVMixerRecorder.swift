@@ -14,7 +14,7 @@ public protocol AVMixerRecorderDelegate: class {
 // MARK: -
 open class AVMixerRecorder: NSObject {
 
-    open static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
+    public static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -30,10 +30,10 @@ open class AVMixerRecorder: NSObject {
     open var writer: AVAssetWriter?
     open var fileName: String?
     open weak var delegate: AVMixerRecorderDelegate?
-    open var writerInputs: [AVMediaType: AVAssetWriterInput] = [: ]
+    open var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
-    open let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
+    public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     private(set) var running: Bool = false
     fileprivate(set) var sourceTime: CMTime = kCMTimeZero
 

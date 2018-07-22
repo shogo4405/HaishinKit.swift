@@ -49,7 +49,7 @@ final class VideoIOComponent: IOComponent {
 
     var videoSettings: [NSObject: AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
-            output.videoSettings = videoSettings as! [String: Any]
+            output.videoSettings = videoSettings as? [String: Any]
         }
     }
 
@@ -162,8 +162,8 @@ final class VideoIOComponent: IOComponent {
         get {
             if _output == nil {
                 _output = AVCaptureVideoDataOutput()
-                _output!.alwaysDiscardsLateVideoFrames = true
-                _output!.videoSettings = videoSettings as! [String: Any]
+                _output?.alwaysDiscardsLateVideoFrames = true
+                _output?.videoSettings = videoSettings as? [String: Any]
             }
             return _output!
         }
