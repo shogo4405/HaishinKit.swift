@@ -22,12 +22,12 @@ public enum EventPhase: UInt8 {
  flash.events.Event for Swift
  */
 open class Event: NSObject {
-    open static let SYNC: String = "sync"
-    open static let EVENT: String = "event"
-    open static let IO_ERROR: String = "ioError"
-    open static let RTMP_STATUS: String = "rtmpStatus"
+    public static let SYNC: String = "sync"
+    public static let EVENT: String = "event"
+    public static let IO_ERROR: String = "ioError"
+    public static let RTMP_STATUS: String = "rtmpStatus"
 
-    open static func from(_ notification: Notification) -> Event {
+    public static func from(_ notification: Notification) -> Event {
         guard
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let event: Event = userInfo["event"] as? Event else {

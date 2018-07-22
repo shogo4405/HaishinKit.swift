@@ -84,7 +84,7 @@ extension RTMPSharedObjectEvent: CustomStringConvertible {
 open class RTMPSharedObject: EventDispatcher {
 
     static private var remoteSharedObjects: [String: RTMPSharedObject] = [: ]
-    static open func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
+    static public func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
         let key: String = remotePath + "/" + withName + "?persistence=" + persistence.description
         objc_sync_enter(remoteSharedObjects)
         if remoteSharedObjects[key] == nil {
