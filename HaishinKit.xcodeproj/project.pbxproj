@@ -891,8 +891,8 @@
 			isa = PBXGroup;
 			children = (
 				295891251EEB8EF300CE51E1 /* FLVAACPacket.swift */,
-				295891211EEB8EC500CE51E1 /* FLVAVCPacketType.swift */,
 				295891191EEB8E3F00CE51E1 /* FLVAudioCodec.swift */,
+				295891211EEB8EC500CE51E1 /* FLVAVCPacketType.swift */,
 				295891111EEB8D7200CE51E1 /* FLVFrameType.swift */,
 				295891091EEB8D1800CE51E1 /* FLVReader.swift */,
 				2958911D1EEB8E9600CE51E1 /* FLVSoundRate.swift */,
@@ -914,9 +914,9 @@
 				29B8767F1CD70AE800FC07DA /* NALUnit.swift */,
 				29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */,
 				29B876811CD70AE800FC07DA /* ProgramSpecific.swift */,
+				29B876821CD70AE800FC07DA /* TransportStream.swift */,
 				2962425F1D8DB86500C451A3 /* TSReader.swift */,
 				296242601D8DB86500C451A3 /* TSWriter.swift */,
-				29B876821CD70AE800FC07DA /* TransportStream.swift */,
 			);
 			path = ISO;
 			sourceTree = "<group>";

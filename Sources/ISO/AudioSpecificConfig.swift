@@ -24,8 +24,8 @@ struct AudioSpecificConfig {
     }
 
     init?(bytes: [UInt8]) {
-        guard let
-            type: AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
+        guard
+            let type: AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
             let frequency: SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
             let channel: ChannelConfiguration = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
             return nil
@@ -122,7 +122,7 @@ enum AudioObjectType: UInt8 {
 }
 
 // MARK: -
-enum SamplingFrequency: UInt8 {
+public enum SamplingFrequency: UInt8 {
     case hz96000 = 0
     case hz88200 = 1
     case hz64000 = 2
@@ -137,7 +137,7 @@ enum SamplingFrequency: UInt8 {
     case hz8000  = 11
     case hz7350  = 12
 
-    var sampleRate: Float64 {
+    public var sampleRate: Float64 {
         switch self {
         case .hz96000:
             return 96000
@@ -168,7 +168,7 @@ enum SamplingFrequency: UInt8 {
         }
     }
 
-    init(sampleRate: Float64) {
+    public init(sampleRate: Float64) {
         switch Int(sampleRate) {
         case 96000:
             self = .hz96000

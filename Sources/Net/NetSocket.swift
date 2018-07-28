@@ -109,6 +109,10 @@ open class NetSocket: NSObject {
         }
     }
 
+    open func close() {
+        close(isDisconnected: false)
+    }
+
     open func listen() {
     }
 
