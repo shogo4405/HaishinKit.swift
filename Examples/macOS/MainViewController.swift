@@ -21,7 +21,7 @@ final class MainViewController: NSViewController {
     )
     var httpStream: HTTPStream = HTTPStream()
 
-    @IBOutlet var lfView: GLLFView!
+    @IBOutlet var lfView: GLHKView!
     @IBOutlet var audioPopUpButton: NSPopUpButton!
     @IBOutlet var cameraPopUpButton: NSPopUpButton!
     @IBOutlet var urlField: NSTextField!
@@ -143,7 +143,7 @@ final class MainViewController: NSViewController {
             httpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
             httpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
             lfView.attachStream(httpStream)
-            urlField.stringValue = "http: //{ipAddress}:8080/hello/playlist.m3u8"
+            urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break
         }

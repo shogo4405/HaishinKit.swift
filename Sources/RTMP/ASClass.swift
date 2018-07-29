@@ -84,7 +84,6 @@ extension ASArray: Equatable {
     }
 }
 
-
 // MARK: -
 /**
  ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0

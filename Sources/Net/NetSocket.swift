@@ -1,6 +1,6 @@
 import Foundation
 
-public class NetSocket: NSObject {
+open class NetSocket: NSObject {
     static public let defaultTimeout: Int64 = 15 // sec
     static public let defaultWindowSizeC: Int = Int(UInt16.max)
 
@@ -21,6 +21,23 @@ public class NetSocket: NSObject {
     private var runloop: RunLoop?
     private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     private var timeoutHandler: (() -> Void)?
+
+    public func connect(withName: String, port: Int) {
+        inputQueue.async {
+            var readStream: Unmanaged<CFReadStream>?
+            var writeStream: Unmanaged<CFWriteStream>?
+            CFStreamCreatePairWithSocketToHost(
+                kCFAllocatorDefault,
+                withName as CFString,
+                UInt32(port),
+                &readStream,
+                &writeStream
+            )
+            self.inputStream = readStream!.takeRetainedValue()
+            self.outputStream = writeStream!.takeRetainedValue()
+            self.initConnection()
+        }
+    }
 
     @discardableResult
     final public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
@@ -92,12 +109,16 @@ public class NetSocket: NSObject {
         }
     }
 
-    func listen() {
+    open func close() {
+        close(isDisconnected: false)
+    }
+
+    open func listen() {
     }
 
     func initConnection() {
         buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: windowSizeC)
-        buffer?.initialize(to: 0, count: windowSizeC)
+        buffer?.initialize(repeating: 0, count: windowSizeC)
 
         totalBytesIn = 0
         totalBytesOut = 0
@@ -144,8 +165,8 @@ public class NetSocket: NSObject {
         outputStream?.remove(from: runloop!, forMode: .defaultRunLoopMode)
         outputStream?.delegate = nil
         outputStream = nil
-        buffer?.deinitialize()
-        buffer?.deallocate(capacity: windowSizeC)
+        buffer?.deinitialize(count: windowSizeC)
+        buffer?.deallocate()
         buffer = nil
     }
 

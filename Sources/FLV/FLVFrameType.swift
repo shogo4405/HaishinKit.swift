@@ -1,4 +1,3 @@
-
 public enum FLVFrameType: UInt8 {
     case key        = 1
     case inter      = 2

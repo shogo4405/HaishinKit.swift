@@ -1,8 +1,8 @@
 import UIKit
 import AVFoundation
 
-open class LFView: UIView {
-    open static var defaultBackgroundColor: UIColor = .black
+open class HKView: UIView {
+    public static var defaultBackgroundColor: UIColor = .black
 
     open override class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self
@@ -21,7 +21,7 @@ open class LFView: UIView {
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             layer.connection.map {
-                $0.isVideoOrientationSupported {
+                if $0.isVideoOrientationSupported {
                     $0.videoOrientation = orientation
                 }
             }
@@ -49,8 +49,8 @@ open class LFView: UIView {
     }
 
     override open func awakeFromNib() {
-        backgroundColor = LFView.defaultBackgroundColor
-        layer.backgroundColor = LFView.defaultBackgroundColor.cgColor
+        backgroundColor = HKView.defaultBackgroundColor
+        layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
     }
 
     open func attachStream(_ stream: NetStream?) {
@@ -74,7 +74,7 @@ open class LFView: UIView {
     }
 }
 
-extension LFView: NetStreamDrawable {
+extension HKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
     }

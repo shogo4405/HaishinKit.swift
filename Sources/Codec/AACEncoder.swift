@@ -12,16 +12,21 @@ protocol AudioEncoderDelegate: class {
   - https: //developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 final class AACEncoder: NSObject {
+    enum Error: Swift.Error {
+        case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
+    }
+
     static let supportedSettingsKeys: [String] = [
         "muted",
         "bitrate",
         "profile",
-        "sampleRate" // down,up sampleRate not supported yet #58
+        "sampleRate", // down,up sampleRate not supported yet #58
+        "actualBitrate"
     ]
 
     static let packetSize: UInt32 = 1
-    static let sizeOfUInt32: UInt32 = UInt32(MemoryLayout<UInt32>.size)
     static let framesPerPacket: UInt32 = 1024
+    static let minimumBitrate: UInt32 = 8 * 1024
 
     static let defaultProfile: UInt32 = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
     static let defaultBitrate: UInt32 = 32 * 1024
@@ -44,23 +49,25 @@ final class AACEncoder: NSObject {
 
     @objc var bitrate: UInt32 = AACEncoder.defaultBitrate {
         didSet {
+            guard bitrate != oldValue else {
+                return
+            }
             lockQueue.async {
-                guard let converter: AudioConverterRef = self._converter else {
-                    return
+                if let format = self._inDestinationFormat {
+                    self.setBitrateUntilNoErr(self.bitrate * format.mChannelsPerFrame)
                 }
-                var bitrate: UInt32 = self.bitrate * self.inDestinationFormat.mChannelsPerFrame
-                AudioConverterSetProperty(
-                    converter,
-                    kAudioConverterEncodeBitRate,
-                    AACEncoder.sizeOfUInt32, &bitrate
-                )
             }
         }
     }
-
     @objc var profile: UInt32 = AACEncoder.defaultProfile
-    var channels: UInt32 = AACEncoder.defaultChannels
     @objc var sampleRate: Double = AACEncoder.defaultSampleRate
+    @objc var actualBitrate: UInt32 = AACEncoder.defaultBitrate {
+        didSet {
+            logger.info("\(actualBitrate)")
+        }
+    }
+
+    var channels: UInt32 = AACEncoder.defaultChannels
     var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
@@ -90,17 +97,17 @@ final class AACEncoder: NSObject {
     private var inDestinationFormat: AudioStreamBasicDescription {
         get {
             if _inDestinationFormat == nil {
-                _inDestinationFormat = AudioStreamBasicDescription()
-                _inDestinationFormat!.mSampleRate = sampleRate == 0 ? inSourceFormat!.mSampleRate : sampleRate
-                _inDestinationFormat!.mFormatID = kAudioFormatMPEG4AAC
-                _inDestinationFormat!.mFormatFlags = profile
-                _inDestinationFormat!.mBytesPerPacket = 0
-                _inDestinationFormat!.mFramesPerPacket = AACEncoder.framesPerPacket
-                _inDestinationFormat!.mBytesPerFrame = 0
-                _inDestinationFormat!.mChannelsPerFrame = (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels
-                _inDestinationFormat!.mBitsPerChannel = 0
-                _inDestinationFormat!.mReserved = 0
-
+                _inDestinationFormat = AudioStreamBasicDescription(
+                    mSampleRate: sampleRate == 0 ? inSourceFormat!.mSampleRate : sampleRate,
+                    mFormatID: kAudioFormatMPEG4AAC,
+                    mFormatFlags: profile,
+                    mBytesPerPacket: 0,
+                    mFramesPerPacket: AACEncoder.framesPerPacket,
+                    mBytesPerFrame: 0,
+                    mChannelsPerFrame: (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels,
+                    mBitsPerChannel: 0,
+                    mReserved: 0
+                )
                 CMAudioFormatDescriptionCreate(
                     kCFAllocatorDefault, &_inDestinationFormat!, 0, nil, 0, nil, nil, &formatDescription
                 )
@@ -129,24 +136,14 @@ final class AACEncoder: NSObject {
     private var converter: AudioConverterRef {
         var status: OSStatus = noErr
         if _converter == nil {
-            var converter: AudioConverterRef?
             status = AudioConverterNewSpecific(
                 &inSourceFormat!,
                 &inDestinationFormat,
                 UInt32(inClassDescriptions.count),
                 &inClassDescriptions,
-                &converter
+                &_converter
             )
-            if status == noErr {
-                var bitrate: UInt32 = self.bitrate * inDestinationFormat.mChannelsPerFrame
-                AudioConverterSetProperty(
-                    converter!,
-                    kAudioConverterEncodeBitRate,
-                    AACEncoder.sizeOfUInt32,
-                    &bitrate
-                )
-            }
-            _converter = converter
+            setBitrateUntilNoErr(bitrate * inDestinationFormat.mChannelsPerFrame)
         }
         if status != noErr {
             logger.warn("\(status)")
@@ -188,13 +185,14 @@ final class AACEncoder: NSObject {
         }
 
         var finished: Bool = false
-        while !finished {
+        repeat {
             var ioOutputDataPacketSize: UInt32 = 1
             let dataLength: Int = blockBuffer!.dataLength
+
             let outOutputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
             outOutputData[0].mNumberChannels = inDestinationFormat.mChannelsPerFrame
             outOutputData[0].mDataByteSize = UInt32(dataLength)
-            outOutputData[0].mData = UnsafeMutableRawPointer.allocate(bytes: dataLength, alignedTo: 0)
+            outOutputData[0].mData = UnsafeMutableRawPointer.allocate(byteCount: dataLength, alignment: 0)
 
             let status: OSStatus = AudioConverterFillComplexBuffer(
                 converter,
@@ -205,15 +203,18 @@ final class AACEncoder: NSObject {
                 nil
             )
 
-            // XXX: perhaps mistake. but can support macOS BuiltIn Mic #61
-            if 0 <= status && ioOutputDataPacketSize == 1 {
+            switch status {
+            // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
+            case noErr, kAudioConverterErr_InvalidInputSize:
                 var result: CMSampleBuffer?
                 var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
                 let numSamples: CMItemCount = sampleBuffer.numSamples
                 CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
                 CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outOutputData.unsafePointer)
                 delegate?.sampleOutput(audio: result!)
-            } else {
+            case -1:
+                finished = true
+            default:
                 finished = true
             }
 
@@ -222,7 +223,7 @@ final class AACEncoder: NSObject {
             }
 
             free(outOutputData.unsafeMutablePointer)
-        }
+        } while !finished
     }
 
     func invalidate() {
@@ -252,6 +253,31 @@ final class AACEncoder: NSObject {
         currentBufferList = nil
 
         return noErr
+    }
+
+    private func setBitrateUntilNoErr(_ bitrate: UInt32) {
+        do {
+            try setProperty(id: kAudioConverterEncodeBitRate, data: bitrate * inDestinationFormat.mChannelsPerFrame)
+            actualBitrate = bitrate
+        } catch {
+            if AACEncoder.minimumBitrate < bitrate {
+                setBitrateUntilNoErr(bitrate - AACEncoder.minimumBitrate)
+            } else {
+                actualBitrate = AACEncoder.minimumBitrate
+            }
+        }
+    }
+
+    private func setProperty<T>(id: AudioConverterPropertyID, data: T) throws {
+        guard let converter: AudioConverterRef = _converter else {
+            return
+        }
+        let size = UInt32(MemoryLayout<T>.size)
+        var buffer = data
+        let status = AudioConverterSetProperty(converter, id, size, &buffer)
+        guard status == 0 else {
+            throw Error.setPropertyError(id: id, status: status)
+        }
     }
 }
 

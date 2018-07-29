@@ -14,7 +14,7 @@ public protocol AVMixerRecorderDelegate: class {
 // MARK: -
 open class AVMixerRecorder: NSObject {
 
-    open static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
+    public static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -30,10 +30,10 @@ open class AVMixerRecorder: NSObject {
     open var writer: AVAssetWriter?
     open var fileName: String?
     open weak var delegate: AVMixerRecorderDelegate?
-    open var writerInputs: [AVMediaType: AVAssetWriterInput] = [: ]
+    open var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
-    open let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
+    public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     private(set) var running: Bool = false
     fileprivate(set) var sourceTime: CMTime = kCMTimeZero
 
@@ -173,7 +173,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         guard clockReference == mediaType && rotateTime.value < withPresentationTimeStamp.value else {
             return
         }
-        if let _ = recorder.writer {
+        if recorder.writer != nil {
             recorder.finishWriting()
         }
         recorder.writer = createWriter(recorder.fileName)
@@ -260,7 +260,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     func createWriter(_ fileName: String?) -> AVAssetWriter? {
         do {
             let dateFormatter: DateFormatter = DateFormatter()
-            dateFormatter.locale = NSLocale(localeIdentifier: "en_US") as Locale!
+            dateFormatter.locale = Locale(identifier: "en_US")
             dateFormatter.dateFormat = dateFormat
             var fileComponent: String? = nil
             if var fileName: String = fileName {

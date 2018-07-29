@@ -5,4 +5,3 @@ import XCTest
 
 final class TimerDriverTests: XCTestCase {
 }
-

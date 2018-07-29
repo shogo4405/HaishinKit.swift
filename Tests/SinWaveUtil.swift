@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 final class SinWaveUtil {
-    static func createCMSampleBuffer(_ sampleRate:Double = 44100, numSamples:Int = 1024) -> CMSampleBuffer? {
+    static func createCMSampleBuffer(_ sampleRate: Double = 44100, numSamples: Int = 1024) -> CMSampleBuffer? {
         var status: OSStatus = noErr
         var sampleBuffer: CMSampleBuffer?
         var formatDescription: CMAudioFormatDescription? = nil

@@ -169,7 +169,16 @@ open class HTTPService: NetService {
         return 8080
     }
     open class var defaultDocument: String {
-        return "<!DOCTYPE html><html><head><meta charset=\"UTF-8\" /><title>lf</title></head><body>lf</body></html>"
+        return """
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>HaishinKit</title>
+</head>
+<body></body>
+</html>
+"""
     }
 
     var document: String = HTTPService.defaultDocument

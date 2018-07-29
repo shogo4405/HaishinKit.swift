@@ -5,8 +5,8 @@ import AVFoundation
  The Audio Specific Config is the global header for MPEG-4 Audio
  
  - seealse:
-  - http: //wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
-  - http: //wiki.multimedia.cx/?title=Understanding_AAC
+  - http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
+  - http://wiki.multimedia.cx/?title=Understanding_AAC
  */
 struct AudioSpecificConfig {
     static let ADTSHeaderSize: Int = 7
@@ -18,14 +18,14 @@ struct AudioSpecificConfig {
 
     var bytes: [UInt8] {
         var bytes: [UInt8] = [UInt8](repeating: 0, count: 2)
-        bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1 & 0x3)
+        bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
     }
 
     init?(bytes: [UInt8]) {
-        guard let
-            type: AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
+        guard
+            let type: AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
             let frequency: SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
             let channel: ChannelConfiguration = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
             return nil
@@ -122,7 +122,7 @@ enum AudioObjectType: UInt8 {
 }
 
 // MARK: -
-enum SamplingFrequency: UInt8 {
+public enum SamplingFrequency: UInt8 {
     case hz96000 = 0
     case hz88200 = 1
     case hz64000 = 2
@@ -137,7 +137,7 @@ enum SamplingFrequency: UInt8 {
     case hz8000  = 11
     case hz7350  = 12
 
-    var sampleRate: Float64 {
+    public var sampleRate: Float64 {
         switch self {
         case .hz96000:
             return 96000
@@ -168,7 +168,7 @@ enum SamplingFrequency: UInt8 {
         }
     }
 
-    init(sampleRate: Float64) {
+    public init(sampleRate: Float64) {
         switch Int(sampleRate) {
         case 96000:
             self = .hz96000

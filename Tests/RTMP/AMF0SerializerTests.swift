@@ -6,7 +6,7 @@ import XCTest
 final class AMF0SerializerTests: XCTestCase {
 
     static let connectionChunk: ASObject = [
-        "tcUrl": "rtmp: //localhost: 1935/live",
+        "tcUrl": "rtmp://localhost:1935/live",
         "flashVer": "FMLE/3.0 (compatible; FMSc/1.0)",
         "swfUrl": nil,
         "app": "live",
@@ -28,7 +28,7 @@ final class AMF0SerializerTests: XCTestCase {
             let value: Any? = result[key]! as Any?
             switch key {
             case "tcUrl":
-                XCTAssertEqual(value as? String, "rtmp: //localhost: 1935/live")
+                XCTAssertEqual(value as? String, "rtmp://localhost:1935/live")
             case "flashVer":
                 XCTAssertEqual(value as? String, "FMLE/3.0 (compatible; FMSc/1.0)")
             case "swfUrl":

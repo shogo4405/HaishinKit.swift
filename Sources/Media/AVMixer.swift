@@ -1,7 +1,6 @@
 import Foundation
 import AVFoundation
 
-
 #if os(iOS) || os(macOS)
     extension AVCaptureSession.Preset {
         static var `default`: AVCaptureSession.Preset = .medium

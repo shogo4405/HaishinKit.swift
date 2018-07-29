@@ -217,9 +217,9 @@ open class RTMPStream: NetStream {
     }
 
     static let defaultID: UInt32 = 0
-    open static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
-    open static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
-    weak open var qosDelegate: RTMPStreamQoSDelegate?
+    public static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
+    public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
+    weak open var qosDelegate: RTMPStreamDelegate?
     open internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
@@ -544,13 +544,6 @@ open class RTMPStream: NetStream {
                 break
             }
         }
-    }
-
-    open override func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
-        guard readyState == .publishing else {
-            return
-        }
-        super.appendSampleBuffer(sampleBuffer, withType: withType, options: options)
     }
 
     open func appendFile(_ file: URL, completionHandler: MP4Sampler.Handler? = nil) {

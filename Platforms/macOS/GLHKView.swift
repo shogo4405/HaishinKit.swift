@@ -3,7 +3,7 @@ import OpenGL.GL3
 import Foundation
 import AVFoundation
 
-open class GLLFView: NSOpenGLView {
+open class GLHKView: NSOpenGLView {
     static let pixelFormatAttributes: [NSOpenGLPixelFormatAttribute] = [
         UInt32(NSOpenGLPFAAccelerated),
         UInt32(NSOpenGLPFANoRecovery),
@@ -14,7 +14,7 @@ open class GLLFView: NSOpenGLView {
 
     override open class func defaultPixelFormat() -> NSOpenGLPixelFormat {
         guard let pixelFormat: NSOpenGLPixelFormat = NSOpenGLPixelFormat(
-            attributes: GLLFView.pixelFormatAttributes) else {
+            attributes: GLHKView.pixelFormatAttributes) else {
             return NSOpenGLPixelFormat()
         }
         return pixelFormat
@@ -103,7 +103,7 @@ open class GLLFView: NSOpenGLView {
     }
 }
 
-extension GLLFView: NetStreamDrawable {
+extension GLHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
         DispatchQueue.main.async {

@@ -107,7 +107,7 @@ extension DisplayLinkedQueue: Running {
                 return
             }
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
-            self.running = false
+            self.running = true
         }
     }
 

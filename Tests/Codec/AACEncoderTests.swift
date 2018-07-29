@@ -47,7 +47,6 @@ final class AACEncoderTests: XCTestCase {
 
     func testEncoderCMSampleBuffer8000_256() {
         let encoder: AACEncoder = AACEncoder()
-        encoder.bitrate = 8 * 1024
         encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {

@@ -29,6 +29,15 @@
 - [x] HTTPService
 - [x] HLS Publish
 
+### Rendering
+|-|HKView|GLHKView|MTHKView|
+|-|:---:|:---:|:---:|
+|Engine|AVCaptureVideoPreviewLayer|OpenGL ES|Metal|
+|Publish|○|○|◯|
+|Playback|×|○|◯|
+|VIsualEffect|×|○|◯|
+|Condition|Stable|Stable|Beta|
+
 ### Others
 - [x] _Support tvOS 10.2+  (Technical Preview)_
   - tvOS can't publish Camera and Microphone. Available playback feature.
@@ -41,8 +50,9 @@
 ## Requirements
 |-|iOS|OSX|tvOS|XCode|Swift|CocoaPods|Carthage|
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-|0.8.0|8.0+|10.11+|10.2+|9.0+|4.0|1.2.0|0.20.0+|
-|0.7.0|8.0+|10.11+|10.2+|8.3+|3.1|1.2.0|0.20.0+|
+|0.9.0|8.0+|10.11+|10.2+|9.3+|4.1|1.5.0+|0.29.0+|
+|0.8.0|8.0+|10.11+|10.2+|9.0+|4.0+|1.2.0+|0.20.0+|
+|0.7.0|8.0+|10.11+|10.2+|8.3+|3.1|1.2.0+|0.20.0+|
 
 ## Cocoa Keys
 iOS10.0+
@@ -50,7 +60,7 @@ iOS10.0+
 * NSCameraUsageDescription
 
 ## Installation
-*Please set up your project Swift 4.0.*
+*Please set up your project Swift 4.1.*
 
 ### CocoaPods
 ```rb
@@ -58,7 +68,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 0.8.7'
+    pod 'HaishinKit', '~> 0.9.2'
 end
 
 target 'Your Target'  do
@@ -68,7 +78,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 0.8.7
+github "shogo4405/HaishinKit.swift" ~> 0.9.2
 ```
 
 ## License
@@ -105,12 +115,12 @@ rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back)) { error in
     // print(error)
 }
 
-let lfView: LFView = LFView(frame: view.bounds)
-lfView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-lfView.attachStream(rtmpStream)
+let hkView = HKView(frame: view.bounds)
+hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
+hkView.attachStream(rtmpStream)
 
 // add ViewController#view
-view.addSubview(lfView)
+view.addSubview(hkView)
 
 rtmpConnection.connect("rtmp://localhost/appName/instanceName")
 rtmpStream.publish("streamName")
@@ -133,11 +143,11 @@ do {
 }
 #endif
 
-var rtmpStream:RTMPStream = RTMPStream(connection: rtmpConnection)
+var rtmpStream = RTMPStream(connection: rtmpConnection)
 
 rtmpStream.captureSettings = [
     "fps": 30, // FPS
-    "sessionPreset": AVCaptureSessionPresetMedium, // input video width/height
+    "sessionPreset": AVCaptureSession.Preset.medium.rawValue, // input video width/height
     "continuousAutofocus": false, // use camera autofocus mode
     "continuousExposure": false, //  use camera exposure mode
 ]
@@ -156,13 +166,13 @@ rtmpStream.videoSettings = [
 ]
 // "0" means the same of input
 rtmpStream.recorderSettings = [
-    AVMediaTypeAudio: [
+    AVMediaType.audio: [
         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
         AVSampleRateKey: 0,
         AVNumberOfChannelsKey: 0,
         // AVEncoderBitRateKey: 128000,
     ],
-    AVMediaTypeVideo: [
+    AVMediaType.video: [
         AVVideoCodecKey: AVVideoCodecH264,
         AVVideoHeightKey: 0,
         AVVideoWidthKey: 0,
@@ -177,7 +187,7 @@ rtmpStream.recorderSettings = [
 ]
 
 // 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio), automaticallyConfiguresApplicationAudioSession: false)
+rtmpStream.attachAudio(AVCaptureDevice.default(for: AVMediaType.audio), automaticallyConfiguresApplicationAudioSession: false)
 
 ```
 ### Authentication

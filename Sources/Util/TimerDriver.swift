@@ -13,7 +13,7 @@ public class TimerDriver: NSObject {
 
     private var runloop: RunLoop?
     private var nextFire: UInt64 = 0
-    private weak var timer: Timer? {
+    private var timer: Timer? {
         didSet {
             oldValue?.invalidate()
             timer.map {
@@ -54,7 +54,7 @@ extension TimerDriver: Running {
 
     final public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
-            if let _ = self.runloop {
+            guard self.runloop == nil else {
                 return
             }
             self.timer = Timer(

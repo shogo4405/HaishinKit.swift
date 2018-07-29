@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 
+#if os(iOS) || os(macOS)
 extension AVFrameRateRange {
     func clamp(rate: Float64) -> Float64 {
         return max(minFrameRate, min(maxFrameRate, rate))
@@ -10,9 +11,6 @@ extension AVFrameRateRange {
         return (minFrameRate...maxFrameRate) ~= rate
     }
 }
-
-
-#if os(iOS) || os(macOS)
 
 extension AVCaptureDevice {
     func actualFPS(_ fps: Float64) -> (fps: Float64, duration: CMTime)? {

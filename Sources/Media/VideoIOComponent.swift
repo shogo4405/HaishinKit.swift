@@ -49,7 +49,7 @@ final class VideoIOComponent: IOComponent {
 
     var videoSettings: [NSObject: AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
-            output.videoSettings = videoSettings as! [String: Any]
+            output.videoSettings = videoSettings as? [String: Any]
         }
     }
 
@@ -58,12 +58,10 @@ final class VideoIOComponent: IOComponent {
             guard orientation != oldValue else {
                 return
             }
-            for connection in output.connections {
-                if connection.isVideoOrientationSupported {
-                    connection.videoOrientation = orientation
-                    if torch {
-                        setTorchMode(.on)
-                    }
+            for connection in output.connections where connection.isVideoOrientationSupported {
+                connection.videoOrientation = orientation
+                if torch {
+                    setTorchMode(.on)
                 }
             }
             drawable?.orientation = orientation
@@ -159,13 +157,13 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    private var _output: AVCaptureVideoDataOutput? = nil
+    private var _output: AVCaptureVideoDataOutput?
     var output: AVCaptureVideoDataOutput! {
         get {
             if _output == nil {
                 _output = AVCaptureVideoDataOutput()
-                _output!.alwaysDiscardsLateVideoFrames = true
-                _output!.videoSettings = videoSettings as! [String: Any]
+                _output?.alwaysDiscardsLateVideoFrames = true
+                _output?.videoSettings = videoSettings as? [String: Any]
             }
             return _output!
         }
@@ -248,10 +246,8 @@ final class VideoIOComponent: IOComponent {
 
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
-        for connection in output.connections {
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = orientation
-            }
+        for connection in output.connections where connection.isVideoOrientationSupported {
+            connection.videoOrientation = orientation
         }
         output.setSampleBufferDelegate(self, queue: lockQueue)
 
@@ -303,20 +299,25 @@ final class VideoIOComponent: IOComponent {
         }
         CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
-        let image: CIImage = effect(buffer)
-        if !effects.isEmpty {
-            #if os(macOS)
+
+        if drawable != nil || !effects.isEmpty {
+            let image: CIImage = effect(buffer)
+            if !effects.isEmpty {
+                #if os(macOS)
                 // green edge hack for OSX
                 buffer = CVPixelBuffer.create(image)!
-            #endif
-            context?.render(image, to: buffer)
+                #endif
+                context?.render(image, to: buffer)
+            }
+            drawable?.draw(image: image)
         }
+
         encoder.encodeImageBuffer(
             buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        drawable?.draw(image: image)
+
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
     }
 
@@ -333,7 +334,7 @@ final class VideoIOComponent: IOComponent {
         defer {
             objc_sync_exit(effects)
         }
-        if let _ = effects.index(of: effect) {
+        if effects.contains(effect) {
             return false
         }
         effects.append(effect)

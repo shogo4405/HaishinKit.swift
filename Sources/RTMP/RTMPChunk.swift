@@ -172,7 +172,7 @@ final class RTMPChunk {
             }
 
             let end: Int = min(message.length + start, newValue.count)
-            fragmented = size + start < end
+            fragmented = size + start <= end
             message.payload = newValue.subdata(in: start..<min(size + start, end))
 
             self.message = message
@@ -243,7 +243,7 @@ final class RTMPChunk {
         do {
             self.message = RTMPMessage.create(message.type.rawValue)
             self.message?.streamId = message.streamId
-            self.message?.timestamp = try buffer.readUInt24()
+            self.message?.timestamp = self.type == .two ? try buffer.readUInt24() : message.timestamp
             self.message?.length = message.length
             self.message?.payload = Data(try buffer.readBytes(message.length))
         } catch {

@@ -17,7 +17,7 @@ extension ExpressibleByIntegerLiteral {
         self = data.withUnsafeBytes { $0.pointee }
     }
 
-    init(data: MutableRangeReplaceableRandomAccessSlice<Data>) {
+    init(data: Slice<Data>) {
         self.init(data: Data(data))
     }
 }

@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 
 /**
- - seealso: https: //en.wikipedia.org/wiki/Packetized_elementary_stream
+ - seealso: https://en.wikipedia.org/wiki/Packetized_elementary_stream
  */
 protocol PESPacketHeader {
     var startCode: Data { get set }
@@ -197,7 +197,12 @@ struct PacketizedElementaryStream: PESPacketHeader {
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             decodeTimeStamp: sampleBuffer.decodeTimeStamp
         )
-        packetLength = UInt16(data.count + optionalPESHeader!.data.count)
+        let length = data.count + optionalPESHeader!.data.count
+        if length < Int(UInt16.max) {
+            packetLength = UInt16(length)
+        } else {
+            return nil
+        }
     }
 
     init?(sampleBuffer: CMSampleBuffer, timestamp: CMTime, config: AVCConfigurationRecord?) {
@@ -218,7 +223,10 @@ struct PacketizedElementaryStream: PESPacketHeader {
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             decodeTimeStamp: sampleBuffer.decodeTimeStamp
         )
-        packetLength = UInt16(data.count + optionalPESHeader!.data.count)
+        let length = data.count + optionalPESHeader!.data.count
+        if length < Int(UInt16.max) {
+            packetLength = UInt16(length)
+        }
     }
 
     func arrayOfPackets(_ PID: UInt16, PCR: UInt64?) -> [TSPacket] {

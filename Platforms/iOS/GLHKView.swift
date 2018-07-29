@@ -2,13 +2,12 @@ import GLKit
 import Foundation
 import AVFoundation
 
-open class GLLFView: GLKView {
+open class GLHKView: GLKView {
     static let defaultOptions: [String: AnyObject] = [
         kCIContextWorkingColorSpace: NSNull(),
         kCIContextUseSoftwareRenderer: NSNumber(value: false)
     ]
-    open static var defaultBackgroundColor: UIColor = .black
-
+    public static var defaultBackgroundColor: UIColor = .black
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     var position: AVCaptureDevice.Position = .back
@@ -34,13 +33,13 @@ open class GLLFView: GLKView {
     open override func awakeFromNib() {
         delegate = self
         enableSetNeedsDisplay = true
-        backgroundColor = GLLFView.defaultBackgroundColor
-        layer.backgroundColor = GLLFView.defaultBackgroundColor.cgColor
+        backgroundColor = GLHKView.defaultBackgroundColor
+        layer.backgroundColor = GLHKView.defaultBackgroundColor.cgColor
     }
 
     open func attachStream(_ stream: NetStream?) {
         if let stream: NetStream = stream {
-            stream.mixer.videoIO.context = CIContext(eaglContext: context, options: GLLFView.defaultOptions)
+            stream.mixer.videoIO.context = CIContext(eaglContext: context, options: GLHKView.defaultOptions)
             stream.lockQueue.async {
                 self.position = stream.mixer.videoIO.position
                 stream.mixer.videoIO.drawable = self
@@ -51,7 +50,8 @@ open class GLLFView: GLKView {
     }
 }
 
-extension GLLFView: GLKViewDelegate {
+extension GLHKView: GLKViewDelegate {
+    // MARK: GLKViewDelegate
     public func glkView(_ view: GLKView, drawIn rect: CGRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
         guard let displayImage: CIImage = displayImage else {
@@ -59,7 +59,7 @@ extension GLLFView: GLKViewDelegate {
         }
         var inRect: CGRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect: CGRect = displayImage.extent
-        VideoGravityUtil.calclute(videoGravity, inRect: &inRect, fromRect: &fromRect)
+        VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
         if position == .front {
             currentStream?.mixer.videoIO.context?.draw(displayImage.oriented(forExifOrientation: 2), in: inRect, from: fromRect)
         } else {
@@ -68,7 +68,7 @@ extension GLLFView: GLKViewDelegate {
     }
 }
 
-extension GLLFView: NetStreamDrawable {
+extension GLHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     func draw(image: CIImage) {
         DispatchQueue.main.async {

@@ -61,7 +61,7 @@ class AMFReference {
 /**
  AMF3 Serializer
 
- - seealso: http: //wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
+ - seealso: http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
  */
 class AMF3Serializer: ByteArray {
     enum `Type`: UInt8 {

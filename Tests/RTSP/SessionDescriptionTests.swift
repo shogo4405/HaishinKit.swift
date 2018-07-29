@@ -4,7 +4,7 @@ import XCTest
 @testable import HaishinKit
 
 final class SessionDescriptionTests: XCTestCase {
-    static let contents:String =
+    static let contents: String =
     "v=0\n" +
     "o=- 486606654 486606654 IN IP4 127.0.0.1\n" +
     "s=sample.mp4\n" +
@@ -26,7 +26,7 @@ final class SessionDescriptionTests: XCTestCase {
     "a=control:trackID=2"
 
     func testString() {
-        var session:SessionDescription = SessionDescription()
+        var session: SessionDescription = SessionDescription()
         session.description = SessionDescriptionTests.contents
     }
 }

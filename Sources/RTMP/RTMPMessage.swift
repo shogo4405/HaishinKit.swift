@@ -347,9 +347,9 @@ final class RTMPCommandMessage: RTMPMessage {
         guard let responder: Responder = connection.operations.removeValue(forKey: transactionId) else {
             switch commandName {
             case "close":
-                connection.close()
+                connection.close(isDisconnected: true)
             default:
-                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.first)
+                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.first ?? nil)
             }
             return
         }
@@ -669,7 +669,8 @@ final class RTMPVideoMessage: RTMPMessage {
         )
 
         var data: Data = payload.advanced(by: FLVTagType.video.headerSize)
-        data.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
+        var localData = data
+        localData.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
             var blockBuffer: CMBlockBuffer?
             guard CMBlockBufferCreateWithMemoryBlock(
                 kCFAllocatorDefault, bytes, data.count, kCFAllocatorNull, nil, 0, data.count, 0, &blockBuffer) == noErr else {
