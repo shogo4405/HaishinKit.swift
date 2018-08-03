@@ -232,7 +232,7 @@
 		29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		29D3D4CF1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */; };
 		29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */; };
-		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extenstion.swift */; };
+		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */; };
 		29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */; };
 		29D3D4EA1ED0519400DD4AA6 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29D80680204828D000F4504D /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D8067F204828D000F4504D /* VTSession+Extension.swift */; };
@@ -606,7 +606,7 @@
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
-		29D3D4D21ED04D9600DD4AA6 /* NetStream+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extenstion.swift"; sourceTree = "<group>"; };
+		29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceUtil+Extenstion.swift"; sourceTree = "<group>"; };
 		29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4E51ED0518900DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -956,7 +956,7 @@
 				296543591D62FE6200734698 /* HaishinKit.h */,
 				296543581D62FE6200734698 /* Info.plist */,
 				299D6A502051A9720090E10A /* MTHKView.swift */,
-				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extenstion.swift */,
+				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */,
 				2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */,
 			);
 			path = macOS;
@@ -1786,7 +1786,7 @@
 				29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */,
 				29EA87F11E79A4120043A5F8 /* CMSampleTimingInfo+Extension.swift in Sources */,
 				29B876F71CD70D5900FC07DA /* HTTPResponse.swift in Sources */,
-				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extenstion.swift in Sources */,
+				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension.swift in Sources */,
 				29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */,
 				29B876F81CD70D5900FC07DA /* HTTPService.swift in Sources */,
 				29B876F91CD70D5900FC07DA /* HTTPStream.swift in Sources */,
