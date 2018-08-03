@@ -215,9 +215,9 @@ final class VideoIOComponent: IOComponent {
         encoder.lockQueue = lockQueue
         decoder.delegate = self
         #if os(iOS)
-            if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
+            if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
                 self.orientation = orientation
-                }
+            }
         #endif
     }
 

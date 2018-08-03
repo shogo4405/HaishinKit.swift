@@ -23,4 +23,19 @@ extension DeviceUtil {
             return nil
         }
     }
+    
+    static public func videoOrientation(by orientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation? {
+        switch orientation {
+        case .portrait:
+            return .portrait
+        case .portraitUpsideDown:
+            return .portraitUpsideDown
+        case .landscapeLeft:
+            return .landscapeLeft
+        case .landscapeRight:
+            return .landscapeRight
+        default:
+            return nil
+        }
+    }
 }
