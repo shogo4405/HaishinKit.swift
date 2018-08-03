@@ -1,6 +1,4 @@
-import Foundation
 import AVFoundation
-
 /**
  - seealso: https: //en.wikipedia.org/wiki/MPEG_transport_stream#Packet
  */

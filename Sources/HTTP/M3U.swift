@@ -1,5 +1,3 @@
-import Foundation
-
 /**
  - seealso: https: //tools.ietf.org/html/draft-pantos-http-live-streaming-19
  */

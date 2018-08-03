@@ -1,6 +1,4 @@
-import Foundation
 import AVFoundation
-import CoreAudio
 
 final class AudioUtil {
     private static var defaultDeviceID: AudioObjectID {

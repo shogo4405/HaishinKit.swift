@@ -1,5 +1,3 @@
-import CoreImage
-import Foundation
 import AVFoundation
 
 final class VideoIOComponent: IOComponent {

@@ -1,6 +1,4 @@
-import Foundation
 import AVFoundation
-
 /**
  The Audio Specific Config is the global header for MPEG-4 Audio
  
@@ -11,10 +9,10 @@ import AVFoundation
 struct AudioSpecificConfig {
     static let ADTSHeaderSize: Int = 7
 
-    var type: AudioObjectType
-    var frequency: SamplingFrequency
-    var channel: ChannelConfiguration
-    var frameLengthFlag: Bool = false
+    let type: AudioObjectType
+    let frequency: SamplingFrequency
+    let channel: ChannelConfiguration
+    let frameLengthFlag: Bool = false
 
     var bytes: [UInt8] {
         var bytes: [UInt8] = [UInt8](repeating: 0, count: 2)

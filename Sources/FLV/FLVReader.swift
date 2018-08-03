@@ -1,4 +1,3 @@
-import Foundation
 import AVFoundation
 
 open class FLVReader {

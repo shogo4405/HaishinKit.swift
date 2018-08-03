@@ -1,5 +1,3 @@
-import CoreMedia
-import Foundation
 import AVFoundation
 
 extension VideoIOComponent {

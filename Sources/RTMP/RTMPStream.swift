@@ -1,6 +1,4 @@
-import Foundation
 import AVFoundation
-
 /**
  flash.net.NetStreamInfo for Swift
  */

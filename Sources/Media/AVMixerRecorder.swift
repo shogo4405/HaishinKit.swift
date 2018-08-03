@@ -1,4 +1,3 @@
-import Foundation
 import AVFoundation
 
 public protocol AVMixerRecorderDelegate: class {

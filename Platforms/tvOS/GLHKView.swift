@@ -1,5 +1,4 @@
 import GLKit
-import Foundation
 import AVFoundation
 
 open class GLHKView: GLKView {

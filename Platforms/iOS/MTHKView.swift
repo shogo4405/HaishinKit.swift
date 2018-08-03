@@ -1,8 +1,6 @@
 #if canImport(MetalKit)
 import MetalKit
-import Foundation
 import AVFoundation
-
 @available(iOS 9.0, *)
 open class MTHKView: MTKView {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect

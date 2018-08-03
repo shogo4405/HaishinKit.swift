@@ -1,5 +1,4 @@
 import MetalKit
-import Foundation
 import AVFoundation
 
 open class MTHKView: MTKView {

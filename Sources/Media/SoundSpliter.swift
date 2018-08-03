@@ -1,5 +1,4 @@
-import CoreMedia
-import Foundation
+import AVFoundation
 
 public protocol SoundSpliterDelegate: class {
     func outputSampleBuffer(_ sampleBuffer: CMSampleBuffer)
