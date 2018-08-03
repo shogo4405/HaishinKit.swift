@@ -1,5 +1,4 @@
 import HaishinKit
-import Foundation
 import CoreMedia
 
 public class RTMPBroadcaster: RTMPConnection {

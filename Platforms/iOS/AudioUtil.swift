@@ -1,5 +1,3 @@
-import CoreAudio
-import Foundation
 import AVFoundation
 
 final class AudioUtil {

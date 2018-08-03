@@ -29,7 +29,7 @@ class TSWriter {
         }
         return m3u8.description
     }
-    var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
     var segmentMaxCount: Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration: Double = TSWriter.defaultSegmentDuration
 

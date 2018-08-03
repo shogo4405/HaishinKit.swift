@@ -1,6 +1,5 @@
 import GLUT
 import OpenGL.GL3
-import Foundation
 import AVFoundation
 
 open class GLHKView: NSOpenGLView {

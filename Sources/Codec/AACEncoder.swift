@@ -1,4 +1,3 @@
-import Foundation
 import AVFoundation
 
 protocol AudioEncoderDelegate: class {
