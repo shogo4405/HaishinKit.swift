@@ -182,6 +182,28 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
+    init?(bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, timestamp: CMTime, config: AudioSpecificConfig?) {
+        guard let bytes = bytes, let config = config else {
+            return nil
+        }
+        var data = Data()
+        data.append(contentsOf: config.adts(payload.count))
+        data.append(bytes, count: Int(count))
+        optionalPESHeader = PESOptionalHeader()
+        optionalPESHeader?.dataAlignmentIndicator = true
+        optionalPESHeader?.setTimestamp(
+            timestamp,
+            presentationTimeStamp: presentationTimeStamp,
+            decodeTimeStamp: kCMTimeInvalid
+        )
+        let length = data.count + optionalPESHeader!.data.count
+        if length < Int(UInt16.max) {
+            packetLength = UInt16(length)
+        } else {
+            return nil
+        }
+    }
+
     init?(sampleBuffer: CMSampleBuffer, timestamp: CMTime, config: AudioSpecificConfig?) {
         guard let payload: Data = sampleBuffer.dataBuffer?.data else {
             return nil

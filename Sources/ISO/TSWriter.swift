@@ -1,7 +1,7 @@
 import CoreMedia
 import Foundation
 
-class TSWriter {
+final class TSWriter {
     static let defaultPATPID: UInt16 = 0
     static let defaultPMTPID: UInt16 = 4095
     static let defaultVideoPID: UInt16 = 256
@@ -57,6 +57,42 @@ class TSWriter {
             $0.url.absoluteString.contains(fileName)
         }?.url.path
     }
+
+    func writeSampleBuffer(_ PID: UInt16, streamID: UInt8, bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
+        if timestamps[PID] == nil {
+            timestamps[PID] = presentationTimeStamp
+            if PCRPID == PID {
+                PCRTimestamp = presentationTimeStamp
+            }
+        }
+
+        guard var PES = PacketizedElementaryStream(bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp, timestamp: timestamps[PID]!, config: audioConfig) else {
+            return
+        }
+
+        PES.streamID = streamID
+
+        let decodeTimeStamp: CMTime = presentationTimeStamp
+        var packets: [TSPacket] = split(PID, PES: PES, timestamp: decodeTimeStamp)
+        _ = rotateFileHandle(decodeTimeStamp)
+
+        if streamID == 192 {
+            packets[0].adaptationField?.randomAccessIndicator = true
+        }
+
+        var bytes: Data = Data()
+        for var packet in packets {
+            packet.continuityCounter = continuityCounters[PID]!
+            continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
+            bytes.append(packet.data)
+        }
+
+        nstry({
+            self.currentFileHandle?.write(bytes)
+        }, { exception in
+            self.currentFileHandle?.write(bytes)
+            logger.warn("\(exception)")
+        })    }
 
     func writeSampleBuffer(_ PID: UInt16, streamID: UInt8, sampleBuffer: CMSampleBuffer) {
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
@@ -242,8 +278,8 @@ extension TSWriter: AudioEncoderDelegate {
         continuityCounters[TSWriter.defaultAudioPID] = 0
     }
 
-    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
-        writeSampleBuffer(TSWriter.defaultAudioPID, streamID: 192, sampleBuffer: sampleBuffer)
+    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
+        writeSampleBuffer(TSWriter.defaultAudioPID, streamID: 192, bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp)
     }
 }
 

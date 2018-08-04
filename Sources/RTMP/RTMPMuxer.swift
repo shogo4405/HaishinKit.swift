@@ -33,14 +33,13 @@ extension RTMPMuxer: AudioEncoderDelegate {
         delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
     }
 
-    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
-        let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
+    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
         let delta: Double = (audioTimestamp == kCMTimeZero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
-        guard let data: Data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
+        guard let bytes = bytes, 0 <= delta else {
             return
         }
         var buffer: Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
-        buffer.append(data)
+        buffer.append(bytes, count: Int(count))
         delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
         audioTimestamp = presentationTimeStamp
     }
