@@ -61,15 +61,13 @@ extension RTMPMuxer: VideoEncoderDelegate {
 
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         let keyframe: Bool = !sampleBuffer.dependsOnOthers
-        var compositionTime: Int32 = 0
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
         var decodeTimeStamp: CMTime = sampleBuffer.decodeTimeStamp
         if decodeTimeStamp == kCMTimeInvalid {
             decodeTimeStamp = presentationTimeStamp
-        } else {
-            compositionTime = Int32((decodeTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
         }
         let delta: Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
+        let compositionTime = Int32(delta)
         guard let data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
             return
         }
