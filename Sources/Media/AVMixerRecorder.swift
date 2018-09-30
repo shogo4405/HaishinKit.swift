@@ -261,7 +261,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             let dateFormatter: DateFormatter = DateFormatter()
             dateFormatter.locale = Locale(identifier: "en_US")
             dateFormatter.dateFormat = dateFormat
-            var fileComponent: String? = nil
+            var fileComponent: String?
             if var fileName: String = fileName {
                 if let q: String.Index = fileName.index(of: "?") {
                     fileName.removeSubrange(q..<fileName.endIndex)

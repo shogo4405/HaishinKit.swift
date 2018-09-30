@@ -7,7 +7,7 @@ extension CMBlockBuffer {
 
     var data: Data? {
         var length: Int = 0
-        var buffer: UnsafeMutablePointer<Int8>? = nil
+        var buffer: UnsafeMutablePointer<Int8>?
         guard CMBlockBufferGetDataPointer(self, 0, nil, &length, &buffer) == noErr else {
             return nil
         }

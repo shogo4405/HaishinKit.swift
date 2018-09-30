@@ -171,7 +171,7 @@ class AudioStreamPlayback {
         guard formatDescription != nil && self.queue == nil else {
             return
         }
-        var queue: AudioQueueRef? = nil
+        var queue: AudioQueueRef?
         DispatchQueue.global(qos: .background).sync {
             self.runloop = CFRunLoopGetCurrent()
             AudioQueueNewOutput(
@@ -188,7 +188,7 @@ class AudioStreamPlayback {
         }
         soundTransform.setParameter(queue!)
         for _ in 0..<numberOfBuffers {
-            var buffer: AudioQueueBufferRef? = nil
+            var buffer: AudioQueueBufferRef?
             AudioQueueAllocateBuffer(queue!, bufferSize, &buffer)
             if let buffer: AudioQueueBufferRef = buffer {
                 buffers.append(buffer)

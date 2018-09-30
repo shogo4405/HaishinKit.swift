@@ -34,7 +34,7 @@ public class SoundSpliter: NSObject {
             presentationTimeStamp = sampleBuffer.presentationTimeStamp
         }
 
-        var blockBuffer: CMBlockBuffer? = nil
+        var blockBuffer: CMBlockBuffer?
         let audioBufferList: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer,
