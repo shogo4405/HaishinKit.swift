@@ -2,7 +2,7 @@ import AVFoundation
 
 protocol AudioEncoderDelegate: class {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
-    func sampleOutput(audio sampleBuffer: CMSampleBuffer)
+    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime)
 }
 
 // MARK: -
@@ -205,12 +205,11 @@ final class AACEncoder: NSObject {
             switch status {
             // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
             case noErr, kAudioConverterErr_InvalidInputSize:
-                var result: CMSampleBuffer?
-                var timing: CMSampleTimingInfo = CMSampleTimingInfo(sampleBuffer: sampleBuffer)
-                let numSamples: CMItemCount = sampleBuffer.numSamples
-                CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription, numSamples, 1, &timing, 0, nil, &result)
-                CMSampleBufferSetDataBufferFromAudioBufferList(result!, kCFAllocatorDefault, kCFAllocatorDefault, 0, outOutputData.unsafePointer)
-                delegate?.sampleOutput(audio: result!)
+                delegate?.sampleOutput(
+                    audio: outOutputData[0].mData?.assumingMemoryBound(to: UInt8.self),
+                    count: outOutputData[0].mDataByteSize,
+                    presentationTimeStamp: sampleBuffer.presentationTimeStamp
+                )
             case -1:
                 finished = true
             default:
