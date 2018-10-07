@@ -59,10 +59,10 @@ final class AACEncoderTests: XCTestCase {
 
 extension AACEncoderTests: AudioEncoderDelegate {
     // MARK: AudioEncoderDelegate
-    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
+        
     }
 
-    func sampleOutput(audio sampleBuffer: CMSampleBuffer) {
-        // print(sampleBuffer.dataBuffer?.data)
+    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
     }
 }

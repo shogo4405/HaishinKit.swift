@@ -7,8 +7,8 @@ final class SinWaveUtil {
         var formatDescription: CMAudioFormatDescription? = nil
         var timing: CMSampleTimingInfo = CMSampleTimingInfo(
             duration: CMTime(value: 1, timescale: Int32(sampleRate)),
-            presentationTimeStamp: kCMTimeZero,
-            decodeTimeStamp: kCMTimeInvalid
+            presentationTimeStamp: CMTime.zero,
+            decodeTimeStamp: CMTime.invalid
         )
 
         var asbd = AudioStreamBasicDescription(
@@ -24,7 +24,7 @@ final class SinWaveUtil {
         )
 
         status = CMAudioFormatDescriptionCreate(
-            kCFAllocatorDefault, &asbd, 0, nil, 0, nil, nil, &formatDescription
+            allocator: kCFAllocatorDefault, asbd: &asbd, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &formatDescription
         )
 
         guard status == noErr else {
@@ -32,18 +32,18 @@ final class SinWaveUtil {
         }
 
         status = CMSampleBufferCreate(
-            kCFAllocatorDefault,
-            nil,
-            false,
-            nil,
-            nil,
-            formatDescription,
-            numSamples,
-            1,
-            &timing,
-            0,
-            nil,
-            &sampleBuffer
+            allocator: kCFAllocatorDefault,
+            dataBuffer: nil,
+            dataReady: false,
+            makeDataReadyCallback: nil,
+            refcon: nil,
+            formatDescription: formatDescription,
+            sampleCount: numSamples,
+            sampleTimingEntryCount: 1,
+            sampleTimingArray: &timing,
+            sampleSizeEntryCount: 0,
+            sampleSizeArray: nil,
+            sampleBufferOut: &sampleBuffer
         )
 
         guard status == noErr else {
@@ -63,10 +63,10 @@ final class SinWaveUtil {
 
         status = CMSampleBufferSetDataBufferFromAudioBufferList(
             sampleBuffer!,
-            kCFAllocatorDefault,
-            kCFAllocatorDefault,
-            0,
-            buffer.audioBufferList
+            blockBufferAllocator: kCFAllocatorDefault,
+            blockBufferMemoryAllocator: kCFAllocatorDefault,
+            flags: 0,
+            bufferList: buffer.audioBufferList
         )
 
         guard status == noErr else {
