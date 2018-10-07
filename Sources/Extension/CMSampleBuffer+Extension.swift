@@ -3,7 +3,7 @@ import CoreMedia
 extension CMSampleBuffer {
     var dependsOnOthers: Bool {
         guard
-            let attachments = CMSampleBufferGetSampleAttachmentsArray(self, false) else {
+            let attachments = CMSampleBufferGetSampleAttachmentsArray(self, createIfNecessary: false) else {
                 return false
         }
         let attachment: [NSObject: AnyObject] = unsafeBitCast(CFArrayGetValueAtIndex(attachments, 0), to: CFDictionary.self) as [NSObject: AnyObject]
@@ -15,7 +15,7 @@ extension CMSampleBuffer {
         }
         set {
             _ = newValue.map {
-                CMSampleBufferSetDataBuffer(self, $0)
+                CMSampleBufferSetDataBuffer(self, newValue: $0)
             }
         }
     }

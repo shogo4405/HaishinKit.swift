@@ -34,7 +34,7 @@ open class AVMixerRecorder: NSObject {
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
     private(set) var running: Bool = false
-    fileprivate(set) var sourceTime: CMTime = kCMTimeZero
+    fileprivate(set) var sourceTime: CMTime = CMTime.zero
 
     var isReadyForStartWriting: Bool {
         guard let writer: AVAssetWriter = writer else {
@@ -151,7 +151,7 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     open var duration: Int64 = 0
     open var dateFormat: String = "-yyyyMMdd-HHmmss"
 
-    private var rotateTime: CMTime = kCMTimeZero
+    private var rotateTime: CMTime = CMTime.zero
     private var clockReference: AVMediaType = .video
 
     #if os(iOS)
@@ -178,7 +178,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
         recorder.writer = createWriter(recorder.fileName)
         rotateTime = CMTimeAdd(
             withPresentationTimeStamp,
-            CMTimeMake(duration == 0 ? .max : duration * Int64(withPresentationTimeStamp.timescale), withPresentationTimeStamp.timescale)
+            CMTimeMake(value: duration == 0 ? .max : duration * Int64(withPresentationTimeStamp.timescale), timescale: withPresentationTimeStamp.timescale)
         )
         recorder.sourceTime = withPresentationTimeStamp
     }
@@ -253,7 +253,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
     }
 
     open func didStopRunning(_ recorder: AVMixerRecorder) {
-        rotateTime = kCMTimeZero
+        rotateTime = CMTime.zero
     }
 
     func createWriter(_ fileName: String?) -> AVAssetWriter? {

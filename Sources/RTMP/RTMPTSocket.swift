@@ -43,7 +43,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         didSet {
             oldValue?.invalidate()
             if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: .commonModes)
+                RunLoop.main.add(timer, forMode: RunLoop.Mode.common)
             }
         }
     }

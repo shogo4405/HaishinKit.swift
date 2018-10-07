@@ -29,7 +29,7 @@ import AVFoundation
             CVDisplayLinkSetOutputCallback(displayLink, callback, Unmanaged.passUnretained(self).toOpaque())
         }
 
-        func add(to runloop: RunLoop, forMode mode: RunLoopMode) {
+        func add(to runloop: RunLoop, forMode mode: RunLoop.Mode) {
             guard let displayLink: CVDisplayLink = displayLink else {
                 return
             }
@@ -67,7 +67,7 @@ final class DisplayLinkedQueue: NSObject {
                 return
             }
             displayLink.frameInterval = 1
-            displayLink.add(to: .main, forMode: .commonModes)
+            displayLink.add(to: .main, forMode: RunLoop.Mode.common)
         }
     }
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")

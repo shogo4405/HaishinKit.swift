@@ -12,13 +12,13 @@ final class RTMPMuxer {
 
     weak var delegate: RTMPMuxerDelegate?
     private var configs: [Int: Data] = [:]
-    private var audioTimestamp: CMTime = kCMTimeZero
-    private var videoTimestamp: CMTime = kCMTimeZero
+    private var audioTimestamp: CMTime = CMTime.zero
+    private var videoTimestamp: CMTime = CMTime.zero
 
     func dispose() {
         configs.removeAll()
-        audioTimestamp = kCMTimeZero
-        videoTimestamp = kCMTimeZero
+        audioTimestamp = CMTime.zero
+        videoTimestamp = CMTime.zero
     }
 }
 
@@ -34,7 +34,7 @@ extension RTMPMuxer: AudioEncoderDelegate {
     }
 
     func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
-        let delta: Double = (audioTimestamp == kCMTimeZero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
+        let delta: Double = (audioTimestamp == CMTime.zero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
         guard let bytes = bytes, 0 <= delta else {
             return
         }
@@ -63,12 +63,12 @@ extension RTMPMuxer: VideoEncoderDelegate {
         var compositionTime: Int32 = 0
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
         var decodeTimeStamp: CMTime = sampleBuffer.decodeTimeStamp
-        if decodeTimeStamp == kCMTimeInvalid {
+        if decodeTimeStamp == CMTime.invalid {
             decodeTimeStamp = presentationTimeStamp
         } else {
             compositionTime = Int32((decodeTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
         }
-        let delta: Double = (videoTimestamp == kCMTimeZero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
+        let delta: Double = (videoTimestamp == CMTime.zero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
         guard let data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
             return
         }

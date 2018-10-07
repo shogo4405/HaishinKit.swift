@@ -36,7 +36,7 @@ open class ScreenCaptureSession: NSObject {
     private var shared: UIApplication?
     private var viewToCapture: UIView?
     public var afterScreenUpdates: Bool = false
-    private var context: CIContext = CIContext(options: [kCIContextUseSoftwareRenderer: NSNumber(value: false)])
+    private var context: CIContext = CIContext(options: convertToOptionalCIContextOptionDictionary([convertFromCIContextOption(CIContextOption.useSoftwareRenderer): NSNumber(value: false)]))
     private let semaphore = DispatchSemaphore(value: 1)
     private let lockQueue = DispatchQueue(
         label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: .userInteractive, attributes: []
@@ -133,7 +133,7 @@ open class ScreenCaptureSession: NSObject {
         let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         context.render(CIImage(cgImage: image.cgImage!), to: pixelBuffer!)
-        delegate?.output(pixelBuffer: pixelBuffer!, withPresentationTime: CMTimeMakeWithSeconds(displayLink.timestamp, 1000))
+        delegate?.output(pixelBuffer: pixelBuffer!, withPresentationTime: CMTimeMakeWithSeconds(displayLink.timestamp, preferredTimescale: 1000))
         CVPixelBufferUnlockBaseAddress(pixelBuffer!, [])
     }
 }
@@ -150,7 +150,7 @@ extension ScreenCaptureSession: Running {
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: #selector(onScreen))
             self.displayLink.frameInterval = self.frameInterval
-            self.displayLink.add(to: .main, forMode: .commonModes)
+            self.displayLink.add(to: .main, forMode: RunLoop.Mode.common)
         }
     }
 
@@ -159,11 +159,22 @@ extension ScreenCaptureSession: Running {
             guard self.running else {
                 return
             }
-            self.displayLink.remove(from: .main, forMode: .commonModes)
+            self.displayLink.remove(from: .main, forMode: RunLoop.Mode.common)
             self.displayLink.invalidate()
             self.colorSpace = nil
             self.displayLink = nil
             self.running = false
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+private func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
+	guard let input = input else { return nil }
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+private func convertFromCIContextOption(_ input: CIContextOption) -> String {
+	return input.rawValue
 }

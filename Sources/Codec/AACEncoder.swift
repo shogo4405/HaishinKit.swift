@@ -70,7 +70,7 @@ final class AACEncoder: NSObject {
     var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
-            if !CMFormatDescriptionEqual(formatDescription, oldValue) {
+            if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
                 delegate?.didSetFormatDescription(audio: formatDescription)
             }
         }
@@ -108,7 +108,7 @@ final class AACEncoder: NSObject {
                     mReserved: 0
                 )
                 CMAudioFormatDescriptionCreate(
-                    kCFAllocatorDefault, &_inDestinationFormat!, 0, nil, 0, nil, nil, &formatDescription
+                    allocator: kCFAllocatorDefault, asbd: &_inDestinationFormat!, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &formatDescription
                 )
             }
             return _inDestinationFormat!
@@ -163,13 +163,13 @@ final class AACEncoder: NSObject {
         currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer,
-            nil,
-            currentBufferList!.unsafeMutablePointer,
-            bufferListSize,
-            kCFAllocatorDefault,
-            kCFAllocatorDefault,
-            0,
-            &blockBuffer
+            bufferListSizeNeededOut: nil,
+            bufferListOut: currentBufferList!.unsafeMutablePointer,
+            bufferListSize: bufferListSize,
+            blockBufferAllocator: kCFAllocatorDefault,
+            blockBufferMemoryAllocator: kCFAllocatorDefault,
+            flags: 0,
+            blockBufferOut: &blockBuffer
         )
 
         if blockBuffer == nil {

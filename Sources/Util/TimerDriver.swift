@@ -17,7 +17,7 @@ public class TimerDriver: NSObject {
         didSet {
             oldValue?.invalidate()
             timer.map {
-                RunLoop.current.add($0, forMode: .commonModes)
+                RunLoop.current.add($0, forMode: RunLoop.Mode.common)
             }
         }
     }

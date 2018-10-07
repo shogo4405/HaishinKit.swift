@@ -41,7 +41,7 @@ struct AVCConfigurationRecord {
         guard let formatDescription = formatDescription else {
             return nil
         }
-        if let atoms: NSDictionary = CMFormatDescriptionGetExtension(formatDescription, "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
+        if let atoms: NSDictionary = CMFormatDescriptionGetExtension(formatDescription, extensionKey: "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
             return atoms["avcC"] as? Data
         }
         return nil
@@ -88,12 +88,12 @@ struct AVCConfigurationRecord {
             pictureParameterSets[0].count
         ]
         return CMVideoFormatDescriptionCreateFromH264ParameterSets(
-            kCFAllocatorDefault,
-            2,
-            &parameterSetPointers,
-            &parameterSetSizes,
-            naluLength,
-            formatDescriptionOut
+            allocator: kCFAllocatorDefault,
+            parameterSetCount: 2,
+            parameterSetPointers: &parameterSetPointers,
+            parameterSetSizes: &parameterSetSizes,
+            nalUnitHeaderLength: naluLength,
+            formatDescriptionOut: formatDescriptionOut
         )
     }
 }
