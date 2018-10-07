@@ -66,12 +66,12 @@ extension GLHKView: NetStreamDrawable {
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertFromCIContextOption(_ input: CIContextOption) -> String {
+private func convertFromCIContextOption(_ input: CIContextOption) -> String {
     return input.rawValue
 }
 
 // Helper function inserted by Swift 4.2 migrator.
-fileprivate func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
+private func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
     guard let input = input else { return nil }
     return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value)})
 }
