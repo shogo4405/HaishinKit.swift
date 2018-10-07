@@ -72,12 +72,12 @@ final class H264Decoder {
                     decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
                 )
                 guard VTDecompressionSessionCreate(
-                    kCFAllocatorDefault,
-                    formatDescription,
-                    nil,
-                    attributes as CFDictionary?,
-                    &record,
-                    &_session ) == noErr else {
+                    allocator: kCFAllocatorDefault,
+                    formatDescription: formatDescription,
+                    decoderSpecification: nil,
+                    imageBufferAttributes: attributes as CFDictionary?,
+                    outputCallback: &record,
+                    decompressionSessionOut: &_session ) == noErr else {
                     return nil
                 }
                 invalidateSession = false
@@ -99,7 +99,7 @@ final class H264Decoder {
         var flagsOut: VTDecodeInfoFlags = []
         let decodeFlags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression,
                                                ._EnableTemporalProcessing]
-        return VTDecompressionSessionDecodeFrame(session, sampleBuffer, decodeFlags, nil, &flagsOut)
+        return VTDecompressionSessionDecodeFrame(session, sampleBuffer: sampleBuffer, flags: decodeFlags, frameRefcon: nil, infoFlagsOut: &flagsOut)
     }
 
     func didOutputForSession(_ status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, duration: CMTime) {
@@ -110,26 +110,26 @@ final class H264Decoder {
         var timingInfo: CMSampleTimingInfo = CMSampleTimingInfo(
             duration: duration,
             presentationTimeStamp: presentationTimeStamp,
-            decodeTimeStamp: kCMTimeInvalid
+            decodeTimeStamp: CMTime.invalid
         )
 
         var videoFormatDescription: CMVideoFormatDescription?
         self.status = CMVideoFormatDescriptionCreateForImageBuffer(
-            kCFAllocatorDefault,
-            imageBuffer,
-            &videoFormatDescription
+            allocator: kCFAllocatorDefault,
+            imageBuffer: imageBuffer,
+            formatDescriptionOut: &videoFormatDescription
         )
 
         var sampleBuffer: CMSampleBuffer?
         self.status = CMSampleBufferCreateForImageBuffer(
-            kCFAllocatorDefault,
-            imageBuffer,
-            true,
-            nil,
-            nil,
-            videoFormatDescription!,
-            &timingInfo,
-            &sampleBuffer
+            allocator: kCFAllocatorDefault,
+            imageBuffer: imageBuffer,
+            dataReady: true,
+            makeDataReadyCallback: nil,
+            refcon: nil,
+            formatDescription: videoFormatDescription!,
+            sampleTiming: &timingInfo,
+            sampleBufferOut: &sampleBuffer
         )
 
         guard let buffer: CMSampleBuffer = sampleBuffer else {

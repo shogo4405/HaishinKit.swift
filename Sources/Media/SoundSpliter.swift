@@ -18,17 +18,17 @@ public class SoundSpliter: NSObject {
         }
     }
     private var frameSize: Int = 2048
-    private var duration: CMTime = kCMTimeZero
+    private var duration: CMTime = CMTime.zero
     private var sampleData: Data = Data()
     private var formatDescription: CMFormatDescription?
-    private var presentationTimeStamp: CMTime = kCMTimeZero
+    private var presentationTimeStamp: CMTime = CMTime.zero
 
     private var minimumByteSize: Int {
         return min(.max, sampleData.count)
     }
 
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        if presentationTimeStamp == kCMTimeZero {
+        if presentationTimeStamp == CMTime.zero {
             duration = CMTime(value: 1, timescale: 44100)
             formatDescription = sampleBuffer.formatDescription
             presentationTimeStamp = sampleBuffer.presentationTimeStamp
@@ -38,13 +38,13 @@ public class SoundSpliter: NSObject {
         let audioBufferList: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer,
-            nil,
-            audioBufferList.unsafeMutablePointer,
-            AudioBufferList.sizeInBytes(maximumBuffers: 1),
-            nil,
-            nil,
-            0,
-            &blockBuffer
+            bufferListSizeNeededOut: nil,
+            bufferListOut: audioBufferList.unsafeMutablePointer,
+            bufferListSize: AudioBufferList.sizeInBytes(maximumBuffers: 1),
+            blockBufferAllocator: nil,
+            blockBufferMemoryAllocator: nil,
+            flags: 0,
+            blockBufferOut: &blockBuffer
         )
 
         if let mData: UnsafeMutableRawPointer = audioBufferList.unsafePointer.pointee.mBuffers.mData {
@@ -80,7 +80,7 @@ public class SoundSpliter: NSObject {
             var timing: CMSampleTimingInfo = CMSampleTimingInfo(
                 duration: duration,
                 presentationTimeStamp: presentationTimeStamp,
-                decodeTimeStamp: kCMTimeInvalid
+                decodeTimeStamp: CMTime.invalid
             )
             buffer.unsafeMutablePointer.pointee.mNumberBuffers = 1
             buffer.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
@@ -90,14 +90,14 @@ public class SoundSpliter: NSObject {
                 to: buffer.unsafeMutablePointer.pointee.mBuffers.mData!.assumingMemoryBound(to: UInt8.self),
                 count: Int(buffer.unsafeMutablePointer.pointee.mBuffers.mDataByteSize)
             )
-            status = CMSampleBufferCreate(kCFAllocatorDefault, nil, false, nil, nil, formatDescription!, SoundSpliter.defaultSampleSize, 1, &timing, 0, nil, &result)
+            status = CMSampleBufferCreate(allocator: kCFAllocatorDefault, dataBuffer: nil, dataReady: false, makeDataReadyCallback: nil, refcon: nil, formatDescription: formatDescription!, sampleCount: SoundSpliter.defaultSampleSize, sampleTimingEntryCount: 1, sampleTimingArray: &timing, sampleSizeEntryCount: 0, sampleSizeArray: nil, sampleBufferOut: &result)
             if let result: CMSampleBuffer = result {
                 status = CMSampleBufferSetDataBufferFromAudioBufferList(
                     result,
-                    kCFAllocatorDefault,
-                    kCFAllocatorDefault,
-                    kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
-                    buffer.unsafePointer
+                    blockBufferAllocator: kCFAllocatorDefault,
+                    blockBufferMemoryAllocator: kCFAllocatorDefault,
+                    flags: kCMSampleBufferFlag_AudioBufferList_Assure16ByteAlignment,
+                    bufferList: buffer.unsafePointer
                 )
                 if status == 0 {
                     delegate?.outputSampleBuffer(result)

@@ -58,7 +58,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         encoder.encodeImageBuffer(
             pixelBuffer,
             presentationTimeStamp: withPresentationTime,
-            duration: kCMTimeInvalid
+            duration: CMTime.invalid
         )
         mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
     }

@@ -49,10 +49,10 @@ struct PESOptionalHeader {
 
     mutating func setTimestamp(_ timestamp: CMTime, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime) {
         let base: Double = Double(timestamp.seconds)
-        if presentationTimeStamp != kCMTimeInvalid {
+        if presentationTimeStamp != CMTime.invalid {
             PTSDTSIndicator |= 0x02
         }
-        if decodeTimeStamp != kCMTimeInvalid {
+        if decodeTimeStamp != CMTime.invalid {
             PTSDTSIndicator |= 0x01
         }
         if PTSDTSIndicator & 0x02 == 0x02 {
@@ -194,7 +194,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         optionalPESHeader?.setTimestamp(
             timestamp,
             presentationTimeStamp: presentationTimeStamp,
-            decodeTimeStamp: kCMTimeInvalid
+            decodeTimeStamp: CMTime.invalid
         )
         let length = data.count + optionalPESHeader!.data.count
         if length < Int(UInt16.max) {

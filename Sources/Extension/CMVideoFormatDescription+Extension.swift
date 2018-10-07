@@ -9,12 +9,12 @@ extension CMVideoFormatDescription {
     static func create(pixelBuffer: CVPixelBuffer) -> CMVideoFormatDescription? {
         var formatDescription: CMFormatDescription?
         let status: OSStatus = CMVideoFormatDescriptionCreate(
-            kCFAllocatorDefault,
-            kCMVideoCodecType_422YpCbCr8,
-            Int32(pixelBuffer.width),
-            Int32(pixelBuffer.height),
-            nil,
-            &formatDescription
+            allocator: kCFAllocatorDefault,
+            codecType: kCMVideoCodecType_422YpCbCr8,
+            width: Int32(pixelBuffer.width),
+            height: Int32(pixelBuffer.height),
+            extensions: nil,
+            formatDescriptionOut: &formatDescription
         )
         guard status == noErr else {
             logger.warn("\(status)")

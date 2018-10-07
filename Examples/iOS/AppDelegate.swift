@@ -9,16 +9,21 @@ let logger: Logboard = Logboard.with("com.haishinkit.Exsample.iOS")
 final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]? = nil) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Logboard.with(HaishinKitIdentifier).level = .trace
         let session: AVAudioSession = AVAudioSession.sharedInstance()
         do {
             try session.setPreferredSampleRate(44_100)
-            try session.setCategory(AVAudioSessionCategoryPlayAndRecord, with: .allowBluetooth)
-            try session.setMode(AVAudioSessionModeDefault)
+            try session.setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.playAndRecord), with: .allowBluetooth)
+            try session.setMode(AVAudioSession.Mode.default)
             try session.setActive(true)
         } catch {
         }
         return true
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
 }

@@ -46,9 +46,9 @@ final class TSWriter {
     private var timestamps: [UInt16: CMTime] = [: ]
     private var audioConfig: AudioSpecificConfig?
     private var videoConfig: AVCConfigurationRecord?
-    private var PCRTimestamp: CMTime = kCMTimeZero
+    private var PCRTimestamp: CMTime = CMTime.zero
     private var currentFileURL: URL?
-    private var rotatedTimestamp: CMTime = kCMTimeZero
+    private var rotatedTimestamp: CMTime = CMTime.zero
     private var currentFileHandle: FileHandle?
     private var continuityCounters: [UInt16: UInt8] = [: ]
 
@@ -113,7 +113,7 @@ final class TSWriter {
         PES.streamID = streamID
 
         var decodeTimeStamp: CMTime = sampleBuffer.decodeTimeStamp
-        if decodeTimeStamp == kCMTimeInvalid {
+        if decodeTimeStamp == CMTime.invalid {
             decodeTimeStamp = presentationTimeStamp
         }
 

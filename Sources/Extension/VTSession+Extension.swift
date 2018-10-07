@@ -4,7 +4,7 @@ import VideoToolbox
 extension VTCompressionSession {
     func copySupportedPropertyDictionary() -> [AnyHashable: Any] {
         var support: CFDictionary?
-        guard VTSessionCopySupportedPropertyDictionary(self, &support) == noErr else {
+        guard VTSessionCopySupportedPropertyDictionary(self, supportedPropertyDictionaryOut: &support) == noErr else {
             return [:]
         }
         guard let result: [AnyHashable: Any] = support as? [AnyHashable: Any] else {

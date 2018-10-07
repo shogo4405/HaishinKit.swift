@@ -24,11 +24,11 @@ extension AVCaptureDevice {
             }
 
             if range.contains(rate: fps) {
-                return (fps, CMTimeMake(100, Int32(100 * fps)))
+                return (fps, CMTimeMake(value: 100, timescale: Int32(100 * fps)))
             }
 
             let actualFPS: Float64 = range.clamp(rate: fps)
-            return (actualFPS, CMTimeMake(100, Int32(100 * actualFPS)))
+            return (actualFPS, CMTimeMake(value: 100, timescale: Int32(100 * actualFPS)))
         }
 
         let diff = frameRates.map { abs($0 - fps) }
