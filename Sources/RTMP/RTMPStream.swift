@@ -217,7 +217,7 @@ open class RTMPStream: NetStream {
     static let defaultID: UInt32 = 0
     public static let defaultAudioBitrate: UInt32 = AACEncoder.defaultBitrate
     public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
-    weak open var qosDelegate: RTMPStreamDelegate?
+    weak open var delegate: RTMPStreamDelegate?
     open internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
@@ -255,7 +255,7 @@ open class RTMPStream: NetStream {
                 currentFPS = 0
                 frameCount = 0
                 info.clear()
-                qosDelegate?.clear()
+                delegate?.clear()
             case .playing:
                 mixer.audioIO.playback.startRunning()
                 mixer.startPlaying()
