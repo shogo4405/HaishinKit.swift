@@ -55,7 +55,13 @@
 |0.7.0|8.0+|10.11+|10.2+|8.3+|3.1|1.2.0+|0.20.0+|
 
 ## Cocoa Keys
-iOS10.0+
+Please contains Info.plist.
+
+iOS 10.0+
+* NSMicrophoneUsageDescription
+* NSCameraUsageDescription
+
+macOS 10.14+
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
 
