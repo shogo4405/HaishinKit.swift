@@ -21,3 +21,5 @@ Cartfile.resolved
 Carthage/*
 
 Package.resolved
+HaishinKit.xcodeproj/project.xcworkspace/xcuserdata/shogo.xcuserdatad/WorkspaceSettings.xcsettings
+*.xcsettings
