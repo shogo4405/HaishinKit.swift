@@ -8,11 +8,6 @@ public class RTMPBroadcaster: RTMPConnection {
         return RTMPStream(connection: self)
     }()
 
-    private lazy var spliter: SoundSpliter = {
-        var spliter: SoundSpliter = SoundSpliter()
-        spliter.delegate = self
-        return spliter
-    }()
     private var connecting: Bool = false
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPBroadcaster.lock")
 
@@ -31,7 +26,6 @@ public class RTMPBroadcaster: RTMPConnection {
                 return
             }
             connecting = true
-            spliter.clear()
             super.connect(command, arguments: arguments)
         }
     }
@@ -61,11 +55,5 @@ public class RTMPBroadcaster: RTMPConnection {
         default:
             break
         }
-    }
-}
-
-extension RTMPBroadcaster: SoundSpliterDelegate {
-    public func outputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        stream.appendSampleBuffer(sampleBuffer, withType: .audio)
     }
 }

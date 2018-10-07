@@ -14,16 +14,16 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         let session: AVAudioSession = AVAudioSession.sharedInstance()
         do {
             try session.setPreferredSampleRate(44_100)
-            try session.setCategory(convertFromAVAudioSessionCategory(AVAudioSession.Category.playAndRecord), with: .allowBluetooth)
-            try session.setMode(AVAudioSession.Mode.default)
+            // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
+            if #available(iOS 10.0, *) {
+                try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
+            } else {
+                session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [AVAudioSession.CategoryOptions.allowBluetooth])
+                try? session.setMode(.default)
+            }
             try session.setActive(true)
         } catch {
         }
         return true
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-private func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
-	return input.rawValue
 }
