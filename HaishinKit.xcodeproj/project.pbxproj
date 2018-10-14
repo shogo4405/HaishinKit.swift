@@ -948,8 +948,8 @@
 			children = (
 				296543561D62FE6200734698 /* AudioUtil.swift */,
 				296543571D62FE6200734698 /* GLHKView.swift */,
-				2965435A1D62FE6200734698 /* HKView.swift */,
 				296543591D62FE6200734698 /* HaishinKit.h */,
+				2965435A1D62FE6200734698 /* HKView.swift */,
 				296543581D62FE6200734698 /* Info.plist */,
 				299D6A502051A9720090E10A /* MTHKView.swift */,
 				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */,
@@ -1032,8 +1032,8 @@
 				29E5C0F91D05B32700407208 /* AudioUtil.swift */,
 				29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */,
 				29C263171D00804A0098D4EF /* GLHKView.swift */,
-				299B13261D3B751400A1E8F5 /* HKView.swift */,
 				299F7E3B1CD71A97001E7272 /* HaishinKit.h */,
+				299B13261D3B751400A1E8F5 /* HKView.swift */,
 				299F7E3A1CD71A97001E7272 /* Info.plist */,
 				2999C3742071138F00892E55 /* MTHKView.swift */,
 				29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */,
@@ -1102,8 +1102,8 @@
 		29D3D4E41ED050F700DD4AA6 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				292F6DB01EEBB2040097EDBE /* AVFoundation.swift */,
 				29C3E9EF1ED1DDC800B7EA5B /* AudioUtil.swift */,
+				292F6DB01EEBB2040097EDBE /* AVFoundation.swift */,
 				29E796991ED197A800D75C6C /* GLHKView.swift */,
 				29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */,
 				29D3D4E51ED0518900DD4AA6 /* Info.plist */,
