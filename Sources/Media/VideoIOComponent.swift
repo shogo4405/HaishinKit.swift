@@ -299,11 +299,15 @@ final class VideoIOComponent: IOComponent {
         defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
 
         if drawable != nil || !effects.isEmpty {
-            let image: CIImage = effect(buffer)
+            let image: CIImage = effect(buffer, info: sampleBuffer)
             if !effects.isEmpty {
                 #if os(macOS)
                 // green edge hack for OSX
-                buffer = CVPixelBuffer.create(image)!
+                buffer = CVPixelBuffer.create(image) ?? buffer
+                #else
+                if buffer.width != Int(image.extent.width) || buffer.height != Int(image.extent.height) {
+                    buffer = CVPixelBuffer.create(image) ?? buffer
+                }
                 #endif
                 context?.render(image, to: buffer)
             }
@@ -319,10 +323,10 @@ final class VideoIOComponent: IOComponent {
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
     }
 
-    func effect(_ buffer: CVImageBuffer) -> CIImage {
+    func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
         var image: CIImage = CIImage(cvPixelBuffer: buffer)
         for effect in effects {
-            image = effect.execute(image)
+            image = effect.execute(image, info: info)
         }
         return image
     }
