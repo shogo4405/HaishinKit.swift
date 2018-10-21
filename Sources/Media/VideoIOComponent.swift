@@ -16,7 +16,17 @@ final class VideoIOComponent: IOComponent {
     #endif
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
-    var context: CIContext?
+    var context: CIContext? {
+        didSet {
+            objc_sync_enter(effects)
+            defer {
+                objc_sync_exit(effects)
+            }
+            for effect in effects {
+                effect.ciContext = context
+            }
+        }
+    }
     var drawable: NetStreamDrawable?
     var formatDescription: CMVideoFormatDescription? {
         didSet {
@@ -390,6 +400,7 @@ final class VideoIOComponent: IOComponent {
         defer {
             objc_sync_exit(effects)
         }
+        effect.ciContext = context
         return effects.insert(effect).inserted
     }
 
@@ -398,6 +409,7 @@ final class VideoIOComponent: IOComponent {
         defer {
             objc_sync_exit(effects)
         }
+        effect.ciContext = nil
         return effects.remove(effect) != nil
     }
 }
