@@ -1,6 +1,20 @@
 import AVFoundation
 
 final class VideoIOComponent: IOComponent {
+    #if os(macOS)
+    static let defaultAttributes: [NSString: NSObject] = [
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue,
+        kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
+    ]
+    #else
+    static let defaultAttributes: [NSString: NSObject] = [
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
+        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue,
+        kCVPixelBufferOpenGLESCompatibilityKey: kCFBooleanTrue
+    ]
+    #endif
+
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
     var context: CIContext?
     var drawable: NetStreamDrawable?
@@ -19,13 +33,44 @@ final class VideoIOComponent: IOComponent {
 
     private(set) var effects: Set<VisualEffect> = []
 
-#if os(iOS) || os(macOS)
+    private var extent: CGRect = CGRect.zero {
+        didSet {
+            guard extent != oldValue else {
+                return
+            }
+            pixelBufferPool = nil
+        }
+    }
+
+    private var attributes: [NSString: NSObject] {
+        var attributes: [NSString: NSObject] = VideoIOComponent.defaultAttributes
+        attributes[kCVPixelBufferWidthKey] = NSNumber(value: Int(extent.width))
+        attributes[kCVPixelBufferHeightKey] = NSNumber(value: Int(extent.height))
+        return attributes
+    }
+
+    private var _pixelBufferPool: CVPixelBufferPool?
+    private var pixelBufferPool: CVPixelBufferPool! {
+        get {
+            if _pixelBufferPool == nil {
+                var pixelBufferPool: CVPixelBufferPool?
+                CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
+                _pixelBufferPool = pixelBufferPool
+            }
+            return _pixelBufferPool!
+        }
+        set {
+            _pixelBufferPool = newValue
+        }
+    }
+
+    #if os(iOS) || os(macOS)
     var fps: Float64 = AVMixer.defaultFPS {
         didSet {
             guard
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 let data = device.actualFPS(fps) else {
-                return
+                    return
             }
 
             fps = data.fps
@@ -83,8 +128,8 @@ final class VideoIOComponent: IOComponent {
             let focusMode: AVCaptureDevice.FocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
             guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isFocusModeSupported(focusMode) else {
-                logger.warn("focusMode(\(focusMode.rawValue)) is not supported")
-                return
+                    logger.warn("focusMode(\(focusMode.rawValue)) is not supported")
+                    return
             }
             do {
                 try device.lockForConfiguration()
@@ -102,7 +147,7 @@ final class VideoIOComponent: IOComponent {
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 let point: CGPoint = focusPointOfInterest,
                 device.isFocusPointOfInterestSupported else {
-                return
+                    return
             }
             do {
                 try device.lockForConfiguration()
@@ -121,7 +166,7 @@ final class VideoIOComponent: IOComponent {
                 let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 let point: CGPoint = exposurePointOfInterest,
                 device.isExposurePointOfInterestSupported else {
-                return
+                    return
             }
             do {
                 try device.lockForConfiguration()
@@ -142,8 +187,8 @@ final class VideoIOComponent: IOComponent {
             let exposureMode: AVCaptureDevice.ExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
             guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
                 device.isExposureModeSupported(exposureMode) else {
-                logger.warn("exposureMode(\(exposureMode.rawValue)) is not supported")
-                return
+                    logger.warn("exposureMode(\(exposureMode.rawValue)) is not supported")
+                    return
             }
             do {
                 try device.lockForConfiguration()
@@ -190,7 +235,7 @@ final class VideoIOComponent: IOComponent {
             }
         }
     }
-#endif
+    #endif
 
     #if os(iOS)
     var screen: ScreenCaptureSession? = nil {
@@ -213,13 +258,13 @@ final class VideoIOComponent: IOComponent {
         encoder.lockQueue = lockQueue
         decoder.delegate = self
         #if os(iOS)
-            if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
-                self.orientation = orientation
-                }
+        if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
+            self.orientation = orientation
+        }
         #endif
     }
 
-#if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS)
     func attachCamera(_ camera: AVCaptureDevice?) throws {
         guard let mixer: AVMixer = mixer else {
             return
@@ -271,51 +316,60 @@ final class VideoIOComponent: IOComponent {
         if Thread.isMainThread {
             self.drawable?.attachStream(nil)
         } else {
-          DispatchQueue.main.sync {
-              self.drawable?.attachStream(nil)
-          }
+            DispatchQueue.main.sync {
+                self.drawable?.attachStream(nil)
+            }
         }
 
         input = nil
         output = nil
     }
-#else
+    #else
     func dispose() {
         if Thread.isMainThread {
             self.drawable?.attachStream(nil)
         } else {
-          DispatchQueue.main.sync {
-              self.drawable?.attachStream(nil)
-          }
+            DispatchQueue.main.sync {
+                self.drawable?.attachStream(nil)
+            }
         }
     }
-#endif
+    #endif
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard var buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
-        CVPixelBufferLockBaseAddress(buffer, .readOnly)
-        defer { CVPixelBufferUnlockBaseAddress(buffer, .readOnly) }
+
+        CVPixelBufferLockBaseAddress(buffer, [])
+        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
+
+        var imageBuffer: CVImageBuffer?
 
         if drawable != nil || !effects.isEmpty {
             let image: CIImage = effect(buffer, info: sampleBuffer)
+            extent = image.extent
             if !effects.isEmpty {
                 #if os(macOS)
-                // green edge hack for OSX
-                buffer = CVPixelBuffer.create(image) ?? buffer
+                CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &imageBuffer)
                 #else
-                if buffer.width != Int(image.extent.width) || buffer.height != Int(image.extent.height) {
-                    buffer = CVPixelBuffer.create(image) ?? buffer
+                if buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
+                    CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &imageBuffer)
                 }
                 #endif
-                context?.render(image, to: buffer)
+                if let imageBuffer = imageBuffer {
+                    CVPixelBufferLockBaseAddress(imageBuffer, [])
+                    defer {
+                        CVPixelBufferUnlockBaseAddress(imageBuffer, [])
+                    }
+                }
+                context?.render(image, to: imageBuffer ?? buffer)
             }
             drawable?.draw(image: image)
         }
 
         encoder.encodeImageBuffer(
-            buffer,
+            imageBuffer ?? buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
