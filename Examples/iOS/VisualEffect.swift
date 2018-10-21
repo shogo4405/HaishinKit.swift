@@ -12,7 +12,7 @@ final class CurrentTimeEffect: VisualEffect {
         return label
     }()
 
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         let now: Date = Date()
         label.text = now.description
 
@@ -49,7 +49,7 @@ final class PronamaEffect: VisualEffect {
         super.init()
     }
 
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         guard let filter: CIFilter = filter else {
             return image
         }
@@ -63,7 +63,7 @@ final class PronamaEffect: VisualEffect {
 final class MonochromeEffect: VisualEffect {
     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
 
-    override func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
         guard let filter: CIFilter = filter else {
             return image
         }
