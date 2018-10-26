@@ -2,17 +2,10 @@ import Foundation
 
 extension URL {
     var absoluteWithoutAuthenticationString: String {
-        var target: String = ""
-        if let user = user {
-            target += user
-        }
-        if let password: String = password {
-            target += ": " + password
-        }
-        if target != "" {
-            target += "@"
-        }
-        return absoluteString.replacingOccurrences(of: target, with: "")
+        guard var components = URLComponents(string: absoluteString) else { return absoluteString }
+        components.password = nil
+        components.user = nil
+        return components.url?.absoluteString ?? absoluteString
     }
 
     var absoluteWithoutQueryString: String {
