@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>NetStream Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/NetStream" class="dashAnchor"></a>
+    <a title="NetStream Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">HaishinKit Docs</a> (8% documented)</p>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">HaishinKit Reference</a>
+        <img id="carat" src="../img/carat.png" />
+        NetStream Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/ASUndefined.html">ASUndefined</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ASXML.html">ASXML</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ASXMLDocument.html">ASXMLDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AVMixer.html">AVMixer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/AVMixerRecorder.html">AVMixerRecorder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ByteArray.html">ByteArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ByteArray/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DefaultAVMixerRecorderDelegate.html">DefaultAVMixerRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/DeviceUtil.html">DeviceUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EventDispatcher.html">EventDispatcher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/FLVReader.html">FLVReader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/GLHKView.html">GLHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HKView.html">HKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HLSService.html">HLSService</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPService.html">HTTPService</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/HTTPStream.html">HTTPStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MP4Sampler.html">MP4Sampler</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MTHKView.html">MTHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetClient.html">NetClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetService.html">NetService</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetSocket.html">NetSocket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetStream.html">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPConnection.html">RTMPConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPConnection/Code.html">– Code</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPSharedObject.html">RTMPSharedObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream.html">RTMPStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream/Code.html">– Code</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream/PlayTransition.html">– PlayTransition</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream/PlayOption.html">– PlayOption</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream/HowToPublish.html">– HowToPublish</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Responder.html">Responder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TimerDriver.html">TimerDriver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/VisualEffect.html">VisualEffect</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Global Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Global Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Cvp">kASUndefined</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/CMSampleBufferType.html">CMSampleBufferType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/EventPhase.html">EventPhase</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVAACPacketType.html">FLVAACPacketType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVAVCPacketType.html">FLVAVCPacketType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVAudioCodec.html">FLVAudioCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVFrameType.html">FLVFrameType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVSoundRate.html">FLVSoundRate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVSoundSize.html">FLVSoundSize</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVSoundType.html">FLVSoundType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVTagType.html">FLVTagType</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SamplingFrequency.html">SamplingFrequency</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ScalingMode.html">ScalingMode</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/HTTPRequestCompatible.html">HTTPRequestCompatible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/HTTPResponseCompatible.html">HTTPResponseCompatible</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/AVMixerRecorderDelegate.html">AVMixerRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/FLVTag.html">FLVTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IEventDispatcher.html">IEventDispatcher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/RTMPStreamDelegate.html">RTMPStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ScreenCaptureOutputPixelBufferDelegate.html">ScreenCaptureOutputPixelBufferDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/TimerDriverDelegate.html">TimerDriverDelegate</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/ASArray.html">ASArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FLVAudioTag.html">FLVAudioTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FLVDataTag.html">FLVDataTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/FLVVideoTag.html">FLVVideoTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HTTPRequest.html">HTTPRequest</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/HTTPResponse.html">HTTPResponse</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MachUtil.html">MachUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SoundTransform.html">SoundTransform</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>NetStream</h1>
+              <div class="declaration">
+                <div class="language">
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">NetStream</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                </div>
+              </div>
+            <p>Undocumented</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC5mixerAA7AVMixerCvp"></a>
+                    <a name="//apple_ref/swift/Property/mixer" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC5mixerAA7AVMixerCvp">mixer</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">mixer</span><span class="p">:</span> <span class="kt"><a href="../Classes/AVMixer.html">AVMixer</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC9lockQueueSo17OS_dispatch_queueCvp"></a>
+                    <a name="//apple_ref/swift/Property/lockQueue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC9lockQueueSo17OS_dispatch_queueCvp">lockQueue</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">lockQueue</span><span class="p">:</span> <span class="kt">DispatchQueue</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC8metadataSDySSypSgGvp"></a>
+                    <a name="//apple_ref/swift/Property/metadata" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC8metadataSDySSypSgGvp">metadata</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">metadata</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">?]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC7contextSo9CIContextCSgvp"></a>
+                    <a name="//apple_ref/swift/Property/context" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC7contextSo9CIContextCSgvp">context</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">context</span><span class="p">:</span> <span class="kt">CIContext</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC5torchSbvp"></a>
+                    <a name="//apple_ref/swift/Property/torch" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC5torchSbvp">torch</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">torch</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC15syncOrientationSbvp"></a>
+                    <a name="//apple_ref/swift/Property/syncOrientation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC15syncOrientationSbvp">syncOrientation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">syncOrientation</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC13audioSettingsSDySSypGvp"></a>
+                    <a name="//apple_ref/swift/Property/audioSettings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC13audioSettingsSDySSypGvp">audioSettings</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">audioSettings</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC13videoSettingsSDySSypGvp"></a>
+                    <a name="//apple_ref/swift/Property/videoSettings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC13videoSettingsSDySSypGvp">videoSettings</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">videoSettings</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC15captureSettingsSDySSypGvp"></a>
+                    <a name="//apple_ref/swift/Property/captureSettings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC15captureSettingsSDySSypGvp">captureSettings</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">captureSettings</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC16recorderSettingsSDySo11AVMediaTypeaSDySSypGGvp"></a>
+                    <a name="//apple_ref/swift/Property/recorderSettings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC16recorderSettingsSDySo11AVMediaTypeaSDySSypGGvp">recorderSettings</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">recorderSettings</span><span class="p">:</span> <span class="p">[</span><span class="kt">AVMediaType</span> <span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">]]</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC12attachCamera_7onErrorySo15AVCaptureDeviceCSg_ySo7NSErrorCcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/attachCamera(_:onError:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC12attachCamera_7onErrorySo15AVCaptureDeviceCSg_ySo7NSErrorCcSgtF">attachCamera(_:onError:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">attachCamera</span><span class="p">(</span><span class="n">_</span> <span class="nv">camera</span><span class="p">:</span> <span class="kt">AVCaptureDevice</span><span class="p">?,</span> <span class="nv">onError</span><span class="p">:</span> <span class="p">((</span><span class="n">_</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">NSError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC11attachAudio_034automaticallyConfiguresApplicationF7Session7onErrorySo15AVCaptureDeviceCSg_SbySo7NSErrorCcSgtF"></a>
+                    <a name="//apple_ref/swift/Method/attachAudio(_:automaticallyConfiguresApplicationAudioSession:onError:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC11attachAudio_034automaticallyConfiguresApplicationF7Session7onErrorySo15AVCaptureDeviceCSg_SbySo7NSErrorCcSgtF">attachAudio(_:automaticallyConfiguresApplicationAudioSession:onError:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">attachAudio</span><span class="p">(</span><span class="n">_</span> <span class="nv">audio</span><span class="p">:</span> <span class="kt">AVCaptureDevice</span><span class="p">?,</span> <span class="nv">automaticallyConfiguresApplicationAudioSession</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">onError</span><span class="p">:</span> <span class="p">((</span><span class="n">_</span> <span class="nv">error</span><span class="p">:</span> <span class="kt">NSError</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC18setPointOfInterest_8exposureySo7CGPointV_AGtF"></a>
+                    <a name="//apple_ref/swift/Method/setPointOfInterest(_:exposure:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC18setPointOfInterest_8exposureySo7CGPointV_AGtF">setPointOfInterest(_:exposure:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">setPointOfInterest</span><span class="p">(</span><span class="n">_</span> <span class="nv">focus</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">,</span> <span class="nv">exposure</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC18appendSampleBuffer_8withType7optionsySo08CMSampleG3Refa_AA0kgI0OSDySo8NSObjectCyXlALSH10ObjectiveCg_GSgtF"></a>
+                    <a name="//apple_ref/swift/Method/appendSampleBuffer(_:withType:options:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC18appendSampleBuffer_8withType7optionsySo08CMSampleG3Refa_AA0kgI0OSDySo8NSObjectCyXlALSH10ObjectiveCg_GSgtF">appendSampleBuffer(_:withType:options:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">appendSampleBuffer</span><span class="p">(</span><span class="n">_</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">,</span> <span class="nv">withType</span><span class="p">:</span> <span class="kt"><a href="../Enums/CMSampleBufferType.html">CMSampleBufferType</a></span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="p">[</span><span class="kt">NSObject</span><span class="p">:</span> <span class="kt">AnyObject</span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC14registerEffect5videoSbAA06VisualF0C_tF"></a>
+                    <a name="//apple_ref/swift/Method/registerEffect(video:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC14registerEffect5videoSbAA06VisualF0C_tF">registerEffect(video:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">registerEffect</span><span class="p">(</span><span class="n">video</span> <span class="nv">effect</span><span class="p">:</span> <span class="kt"><a href="../Classes/VisualEffect.html">VisualEffect</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC16unregisterEffect5videoSbAA06VisualF0C_tF"></a>
+                    <a name="//apple_ref/swift/Method/unregisterEffect(video:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC16unregisterEffect5videoSbAA06VisualF0C_tF">unregisterEffect(video:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">unregisterEffect</span><span class="p">(</span><span class="n">video</span> <span class="nv">effect</span><span class="p">:</span> <span class="kt"><a href="../Classes/VisualEffect.html">VisualEffect</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC7disposeyyF"></a>
+                    <a name="//apple_ref/swift/Method/dispose()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC7disposeyyF">dispose()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">dispose</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC11orientationSo25AVCaptureVideoOrientationVvp"></a>
+                    <a name="//apple_ref/swift/Property/orientation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC11orientationSo25AVCaptureVideoOrientationVvp">orientation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">orientation</span><span class="p">:</span> <span class="kt">AVCaptureVideoOrientation</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC12attachScreen_03useF4SizeyAA0F14CaptureSessionCSg_SbtF"></a>
+                    <a name="//apple_ref/swift/Method/attachScreen(_:useScreenSize:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC12attachScreen_03useF4SizeyAA0F14CaptureSessionCSg_SbtF">attachScreen(_:useScreenSize:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">attachScreen</span><span class="p">(</span><span class="n">_</span> <span class="nv">screen</span><span class="p">:</span> <span class="kt"><a href="../Classes/ScreenCaptureSession.html">ScreenCaptureSession</a></span><span class="p">?,</span> <span class="nv">useScreenSize</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC10zoomFactor12CoreGraphics7CGFloatVvp"></a>
+                    <a name="//apple_ref/swift/Property/zoomFactor" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC10zoomFactor12CoreGraphics7CGFloatVvp">zoomFactor</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">zoomFactor</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC13setZoomFactor_7ramping8withRatey12CoreGraphics7CGFloatV_SbSftF"></a>
+                    <a name="//apple_ref/swift/Method/setZoomFactor(_:ramping:withRate:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC13setZoomFactor_7ramping8withRatey12CoreGraphics7CGFloatV_SbSftF">setZoomFactor(_:ramping:withRate:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">setZoomFactor</span><span class="p">(</span><span class="n">_</span> <span class="nv">zoomFactor</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span> <span class="nv">ramping</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span> <span class="nv">withRate</span><span class="p">:</span> <span class="kt">Float</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2018 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2018-10-27)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</div>
+</html>
