@@ -1,6 +1,6 @@
 import Foundation
 
-protocol RTMPSocketCompatible: class {
+public protocol RTMPSocketCompatible: class {
     var timeout: Int64 { get set }
     var connected: Bool { get }
     var timestamp: TimeInterval { get }
@@ -21,22 +21,24 @@ protocol RTMPSocketCompatible: class {
 }
 
 // MARK: -
-protocol RTMPSocketDelegate: IEventDispatcher {
+public enum ReadyState: UInt8 {
+    case uninitialized = 0
+    case versionSent   = 1
+    case ackSent       = 2
+    case handshakeDone = 3
+    case closing       = 4
+    case closed        = 5
+}
+
+// MARK: -
+public protocol RTMPSocketDelegate: IEventDispatcher {
     func listen(_ data: Data)
-    func didSetReadyState(_ readyState: RTMPSocket.ReadyState)
+    func didSetReadyState(_ readyState: ReadyState)
     func didSetTotalBytesIn(_ totalBytesIn: Int64)
 }
 
 // MARK: -
 final class RTMPSocket: NetSocket, RTMPSocketCompatible {
-    enum ReadyState: UInt8 {
-        case uninitialized = 0
-        case versionSent   = 1
-        case ackSent       = 2
-        case handshakeDone = 3
-        case closing       = 4
-        case closed        = 5
-    }
 
     var readyState: ReadyState = .uninitialized {
         didSet {

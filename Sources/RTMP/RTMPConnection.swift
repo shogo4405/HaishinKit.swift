@@ -31,13 +31,15 @@ open class Responder: NSObject {
  */
 open class RTMPConnection: EventDispatcher {
     static public let defaultWindowSizeS: Int64 = 250000
-    static public let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
     static public let defaultPort: Int = 1935
     static public let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
     static public let defaultChunkSizeS: Int = 1024 * 8
     static public let defaultCapabilities: Int = 239
     static public let defaultObjectEncoding: UInt8 = 0x00
 
+    /// The factory used to create sockets.
+    static public var socketFactory: RTMPSocketFactory = DefaultRTMPSocketFactory.shared
+    
     /**
      NetStatusEvent#info.code for NetConnection
      */
@@ -258,20 +260,15 @@ open class RTMPConnection: EventDispatcher {
     }
 
     open func connect(_ command: String, arguments: Any?...) {
-        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
+        let factory = RTMPConnection.socketFactory
+        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && factory.supportedSchemes.contains(scheme) else {
             return
         }
         self.uri = uri
         self.arguments = arguments
         timer = Timer(timeInterval: 1.0, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
-        switch scheme {
-        case "rtmpt", "rtmpts":
-            socket = socket is RTMPTSocket ? socket : RTMPTSocket()
-        default:
-            socket = socket is RTMPSocket ? socket : RTMPSocket()
-        }
+        socket = factory.createSocket(forScheme: scheme)
         socket.delegate = self
-        socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
         socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
     }
 
@@ -427,7 +424,7 @@ open class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    func didSetReadyState(_ readyState: RTMPSocket.ReadyState) {
+    public func didSetReadyState(_ readyState: ReadyState) {
         switch readyState {
         case .handshakeDone:
             guard let chunk: RTMPChunk = createConnectionChunk() else {
@@ -450,7 +447,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    func didSetTotalBytesIn(_ totalBytesIn: Int64) {
+    public func didSetTotalBytesIn(_ totalBytesIn: Int64) {
         guard windowSizeS * (sequence + 1) <= totalBytesIn else {
             return
         }
@@ -462,7 +459,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         sequence += 1
     }
 
-    func listen(_ data: Data) {
+    public func listen(_ data: Data) {
         guard let chunk: RTMPChunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
             socket.inputBuffer.append(data)
             return
