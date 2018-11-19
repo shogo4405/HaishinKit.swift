@@ -400,17 +400,13 @@ final class MP4VisualSampleEntryBox: MP4ContainerBox {
         _ = try buffer.readUInt16()
         buffer.clear()
 
-        var offset: UInt32 = UInt32(MP4VisualSampleEntryBox.dataSize)
-        let child: MP4Box = try MP4Box.create(fileHandle.readData(ofLength: 8))
-        child.parent = self
-        child.offset = self.offset + UInt64(offset) + 8
-        offset += try child.load(fileHandle)
-        children.append(child)
-
-        // skip
-        fileHandle.seek(toFileOffset: self.offset + UInt64(size))
-
-        return size
+        var offset: UInt32 = UInt32(MP4VisualSampleEntryBox.dataSize + 8)
+        while size > offset {
+            let child: MP4Box = try create(fileHandle.readData(ofLength: 8), offset: offset)
+            offset += try child.load(fileHandle)
+            children.append(child)
+        }
+        return offset
     }
 }
 
