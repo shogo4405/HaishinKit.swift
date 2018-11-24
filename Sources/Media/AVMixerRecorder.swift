@@ -33,7 +33,7 @@ open class AVMixerRecorder: NSObject {
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
-    private(set) public var running: Bool = false
+    private(set) public var isRunning: Bool = false
     fileprivate(set) var sourceTime: CMTime = CMTime.zero
 
     var isReadyForStartWriting: Bool {
@@ -50,7 +50,7 @@ open class AVMixerRecorder: NSObject {
 
     final func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) {
         lockQueue.async {
-            guard let delegate: AVMixerRecorderDelegate = self.delegate, self.running else {
+            guard let delegate: AVMixerRecorderDelegate = self.delegate, self.isRunning else {
                 return
             }
 
@@ -79,7 +79,7 @@ open class AVMixerRecorder: NSObject {
 
     final func appendPixelBuffer(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
         lockQueue.async {
-            guard let delegate: AVMixerRecorderDelegate = self.delegate, self.running else {
+            guard let delegate: AVMixerRecorderDelegate = self.delegate, self.isRunning else {
                 return
             }
 
@@ -126,21 +126,21 @@ extension AVMixerRecorder: Running {
     // MARK: Running
     final public func startRunning() {
         lockQueue.async {
-            guard !self.running else {
+            guard !self.isRunning else {
                 return
             }
-            self.running = true
+            self.isRunning = true
             self.delegate?.didStartRunning(self)
         }
     }
 
     final public func stopRunning() {
         lockQueue.async {
-            guard self.running else {
+            guard self.isRunning else {
                 return
             }
             self.finishWriting()
-            self.running = false
+            self.isRunning = false
             self.delegate?.didStopRunning(self)
         }
     }

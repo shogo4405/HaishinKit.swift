@@ -1,7 +1,7 @@
 import Foundation
 
 public protocol Running: class {
-    var running: Bool { get }
+    var isRunning: Bool { get }
 
     func startRunning()
     func stopRunning()

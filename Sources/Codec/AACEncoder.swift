@@ -77,7 +77,7 @@ final class AACEncoder: NSObject {
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AACEncoder.lock")
     weak var delegate: AudioEncoderDelegate?
-    internal(set) var running: Bool = false
+    internal(set) var isRunning: Bool = false
     private var maximumBuffers: Int = AACEncoder.defaultMaximumBuffers
     private var bufferListSize: Int = AACEncoder.defaultBufferListSize
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
@@ -151,7 +151,7 @@ final class AACEncoder: NSObject {
     }
 
     func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, running else {
+        guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, isRunning else {
             return
         }
 
@@ -283,7 +283,7 @@ extension AACEncoder: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            self.running = true
+            self.isRunning = true
         }
     }
     func stopRunning() {
@@ -296,7 +296,7 @@ extension AACEncoder: Running {
             self.formatDescription = nil
             self._inDestinationFormat = nil
             self.currentBufferList = nil
-            self.running = false
+            self.isRunning = false
         }
     }
 }

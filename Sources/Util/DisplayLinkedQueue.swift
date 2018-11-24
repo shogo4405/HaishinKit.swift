@@ -52,7 +52,7 @@ protocol DisplayLinkedQueueDelegate: class {
 }
 
 final class DisplayLinkedQueue: NSObject {
-    var running: Bool = false
+    var isRunning: Bool = false
     var bufferTime: TimeInterval = 0.1 // sec
     weak var delegate: DisplayLinkedQueueDelegate?
     private(set) var duration: TimeInterval = 0
@@ -102,22 +102,22 @@ extension DisplayLinkedQueue: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            guard !self.running else {
+            guard !self.isRunning else {
                 return
             }
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
-            self.running = true
+            self.isRunning = true
         }
     }
 
     func stopRunning() {
         lockQueue.async {
-            guard self.running else {
+            guard self.isRunning else {
                 return
             }
             self.displayLink = nil
             self.buffers.removeAll()
-            self.running = false
+            self.isRunning = false
         }
     }
 }

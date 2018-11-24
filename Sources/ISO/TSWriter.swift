@@ -47,7 +47,7 @@ public class TSWriter {
 
     private(set) var PMT: ProgramMapSpecific = ProgramMapSpecific()
     private(set) var files: [M3UMediaInfo] = []
-    private(set) public var running: Bool = false
+    private(set) public var isRunning: Bool = false
     private var PCRPID: UInt16 = TSWriter.defaultVideoPID
     private var sequence: Int = 0
     private var timestamps: [UInt16: CMTime] = [: ]
@@ -58,6 +58,9 @@ public class TSWriter {
     private var rotatedTimestamp: CMTime = CMTime.zero
     private var currentFileHandle: FileHandle?
     private var continuityCounters: [UInt16: UInt8] = [: ]
+
+    public init() {
+    }
 
     func getFilePath(_ fileName: String) -> String? {
         return files.first {
@@ -256,22 +259,22 @@ extension TSWriter: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
-            guard self.running else {
+            guard self.isRunning else {
                 return
             }
-            self.running = true
+            self.isRunning = true
         }
     }
 
     public func stopRunning() {
         lockQueue.async {
-            guard !self.running else {
+            guard !self.isRunning else {
                 return
             }
             self.currentFileURL = nil
             self.currentFileHandle = nil
             self.removeFiles()
-            self.running = false
+            self.isRunning = false
         }
     }
 }

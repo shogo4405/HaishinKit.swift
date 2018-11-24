@@ -15,14 +15,14 @@ class AudioStreamPlayback {
 
     var soundTransform: SoundTransform = SoundTransform() {
         didSet {
-            guard let queue: AudioQueueRef = queue, running else {
+            guard let queue: AudioQueueRef = queue, isRunning else {
                 return
             }
             soundTransform.setParameter(queue)
         }
     }
 
-    private(set) var running: Bool = false
+    private(set) var isRunning: Bool = false
     var formatDescription: AudioStreamBasicDescription?
     var fileTypeHint: AudioFileTypeID? {
         didSet {
@@ -94,7 +94,7 @@ class AudioStreamPlayback {
     }
 
     func parseBytes(_ data: Data) {
-        guard let fileStreamID: AudioFileStreamID = fileStreamID, running else {
+        guard let fileStreamID: AudioFileStreamID = fileStreamID, isRunning else {
             return
         }
         data.withUnsafeBytes { (bytes: UnsafePointer<UInt8>) -> Void in
@@ -142,7 +142,7 @@ class AudioStreamPlayback {
     }
 
     func enqueueBuffer() {
-        guard let queue: AudioQueueRef = queue, running else {
+        guard let queue: AudioQueueRef = queue, isRunning else {
             return
         }
         inuse[current] = true
@@ -272,7 +272,7 @@ extension AudioStreamPlayback: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            guard !self.running else {
+            guard !self.isRunning else {
                 return
             }
             self.inuse = [Bool](repeating: false, count: self.numberOfBuffers)
@@ -281,14 +281,14 @@ extension AudioStreamPlayback: Running {
             self.filledBytes = 0
             self.fileTypeHint = nil
             self.packetDescriptions.removeAll()
-            self.running = true
+            self.isRunning = true
             AudioUtil.startRunning()
         }
     }
 
     func stopRunning() {
         lockQueue.async {
-            guard self.running else {
+            guard self.isRunning else {
                 return
             }
             self.queue = nil
@@ -301,7 +301,7 @@ extension AudioStreamPlayback: Running {
             self.started = false
             self.fileStreamID = nil
             self.packetDescriptions.removeAll()
-            self.running = false
+            self.isRunning = false
             AudioUtil.stopRunning()
         }
     }

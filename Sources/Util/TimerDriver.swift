@@ -48,7 +48,7 @@ public class TimerDriver: NSObject {
 
 extension TimerDriver: Running {
     // MARK: Running
-    public var running: Bool {
+    public var isRunning: Bool {
         return runloop != nil
     }
 
