@@ -131,8 +131,6 @@
 		296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */; };
 		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
 		296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897441CDB01D20074D5F0 /* LiveViewController.swift */; };
-		2975EF6F1D6096FB00DABA5A /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975EF6E1D6096FB00DABA5A /* Mutex.swift */; };
-		2975EF701D60B32600DABA5A /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975EF6E1D6096FB00DABA5A /* Mutex.swift */; };
 		2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */; };
 		2976A47E1D48C5C700B53EF2 /* AVMixerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */; };
 		2976A47F1D48FD6900B53EF2 /* AVMixerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */; };
@@ -337,7 +335,6 @@
 		29EB3E361ED05A35001CAE8B /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876BA1CD70B3900FC07DA /* EventDispatcher.swift */; };
 		29EB3E371ED05A38001CAE8B /* MachUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2926A9EB1DE6B71D0074E3D2 /* MachUtil.swift */; };
 		29EB3E381ED05A41001CAE8B /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
-		29EB3E391ED05A43001CAE8B /* Mutex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2975EF6E1D6096FB00DABA5A /* Mutex.swift */; };
 		29EB3E3A1ED05A45001CAE8B /* TimerDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2926A9F01DE6EAEB0074E3D2 /* TimerDriver.swift */; };
 		29EB3E3B1ED05A48001CAE8B /* VideoGravityUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29245AEC1D3233EB00AFFB9A /* VideoGravityUtil.swift */; };
 		29EF03781CD79A5400473D99 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 299F7E3B1CD71A97001E7272 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -539,7 +536,6 @@
 		296897441CDB01D20074D5F0 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
 		296897461CDB01D20074D5F0 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
 		2968974E1CDB01DD0074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		2975EF6E1D6096FB00DABA5A /* Mutex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mutex.swift; sourceTree = "<group>"; };
 		2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPMessageTests.swift; sourceTree = "<group>"; };
 		2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVMixerRecorder.swift; sourceTree = "<group>"; };
 		2976A4801D49025B00B53EF2 /* IOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOComponent.swift; sourceTree = "<group>"; };
@@ -754,7 +750,6 @@
 				29B876BA1CD70B3900FC07DA /* EventDispatcher.swift */,
 				2926A9EB1DE6B71D0074E3D2 /* MachUtil.swift */,
 				2942424C1CF4C01300D65DCB /* MD5.swift */,
-				2975EF6E1D6096FB00DABA5A /* Mutex.swift */,
 				2942A4F721A9418A004E1BEE /* Running.swift */,
 				2926A9F01DE6EAEB0074E3D2 /* TimerDriver.swift */,
 				29245AEC1D3233EB00AFFB9A /* VideoGravityUtil.swift */,
@@ -1723,7 +1718,6 @@
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
 				29B876911CD70AFE00FC07DA /* AudioStreamPlayback.swift in Sources */,
 				29D80680204828D000F4504D /* VTSession+Extension.swift in Sources */,
-				2975EF6F1D6096FB00DABA5A /* Mutex.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
 				29B8767A1CD70ACE00FC07DA /* M3U.swift in Sources */,
@@ -1832,7 +1826,6 @@
 				29B877101CD70D5A00FC07DA /* ASClass.swift in Sources */,
 				29B877121CD70D5A00FC07DA /* RTMPChunk.swift in Sources */,
 				29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */,
-				2975EF701D60B32600DABA5A /* Mutex.swift in Sources */,
 				29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */,
 				29B877131CD70D5A00FC07DA /* RTMPConnection.swift in Sources */,
 				2958910F1EEB8D3C00CE51E1 /* FLVVideoCodec.swift in Sources */,
@@ -1961,7 +1954,6 @@
 				295891301EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
 				295891201EEB8E9600CE51E1 /* FLVSoundRate.swift in Sources */,
 				2942A4F621A94124004E1BEE /* AtomicBool.swift in Sources */,
-				29EB3E391ED05A43001CAE8B /* Mutex.swift in Sources */,
 				29EB3DF21ED05770001CAE8B /* DataConvertible.swift in Sources */,
 				29EB3E361ED05A35001CAE8B /* EventDispatcher.swift in Sources */,
 				29EB3E341ED05A30001CAE8B /* CRC32.swift in Sources */,
