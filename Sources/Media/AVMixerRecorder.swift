@@ -33,7 +33,7 @@ open class AVMixerRecorder: NSObject {
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
-    private(set) var running: Bool = false
+    private(set) public var running: Bool = false
     fileprivate(set) var sourceTime: CMTime = CMTime.zero
 
     var isReadyForStartWriting: Bool {
@@ -124,7 +124,7 @@ open class AVMixerRecorder: NSObject {
 
 extension AVMixerRecorder: Running {
     // MARK: Running
-    final func startRunning() {
+    final public func startRunning() {
         lockQueue.async {
             guard !self.running else {
                 return
@@ -134,7 +134,7 @@ extension AVMixerRecorder: Running {
         }
     }
 
-    final func stopRunning() {
+    final public func stopRunning() {
         lockQueue.async {
             guard self.running else {
                 return

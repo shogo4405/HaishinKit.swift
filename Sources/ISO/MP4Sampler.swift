@@ -17,7 +17,7 @@ public class MP4Sampler {
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
     private let loopQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
     private let operations = OperationQueue()
-    private(set) var running: Bool = false
+    private(set) public var running: Bool = false
 
     func appendFile(_ file: URL, completionHandler: Handler? = nil) {
         lockQueue.async {
@@ -65,7 +65,7 @@ public class MP4Sampler {
 
 extension MP4Sampler: Running {
     // MARK: Running
-    final func startRunning() {
+    final public func startRunning() {
         loopQueue.async {
             self.running = true
             while self.running {
@@ -79,7 +79,7 @@ extension MP4Sampler: Running {
         }
     }
 
-    final func stopRunning() {
+    final public func stopRunning() {
         lockQueue.async {
             self.running = false
         }

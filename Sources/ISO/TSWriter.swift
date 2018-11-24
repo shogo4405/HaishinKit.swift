@@ -1,7 +1,10 @@
 import CoreMedia
 import Foundation
 
-final class TSWriter {
+protocol TSWriterDelegate: class {
+}
+
+public class TSWriter {
     static let defaultPATPID: UInt16 = 0
     static let defaultPMTPID: UInt16 = 4095
     static let defaultVideoPID: UInt16 = 256
@@ -38,9 +41,10 @@ final class TSWriter {
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
+
     private(set) var PMT: ProgramMapSpecific = ProgramMapSpecific()
     private(set) var files: [M3UMediaInfo] = []
-    private(set) var running: Bool = false
+    private(set) public var running: Bool = false
     private var PCRPID: UInt16 = TSWriter.defaultVideoPID
     private var sequence: Int = 0
     private var timestamps: [UInt16: CMTime] = [: ]
@@ -92,7 +96,8 @@ final class TSWriter {
         }, { exception in
             self.currentFileHandle?.write(bytes)
             logger.warn("\(exception)")
-        })    }
+        })
+    }
 
     func writeSampleBuffer(_ PID: UInt16, streamID: UInt8, sampleBuffer: CMSampleBuffer) {
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
@@ -243,7 +248,7 @@ final class TSWriter {
 
 extension TSWriter: Running {
     // MARK: Running
-    func startRunning() {
+    public func startRunning() {
         lockQueue.async {
             guard self.running else {
                 return
@@ -251,7 +256,8 @@ extension TSWriter: Running {
             self.running = true
         }
     }
-    func stopRunning() {
+
+    public func stopRunning() {
         lockQueue.async {
             guard !self.running else {
                 return

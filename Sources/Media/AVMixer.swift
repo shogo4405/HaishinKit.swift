@@ -115,11 +115,11 @@ extension AVMixer {
 #if os(iOS) || os(macOS)
 extension AVMixer: Running {
     // MARK: Running
-    var running: Bool {
+    public var running: Bool {
         return session.isRunning
     }
 
-    final func startRunning() {
+    final public func startRunning() {
         guard !running else {
             return
         }
@@ -128,7 +128,7 @@ extension AVMixer: Running {
         }
     }
 
-    final func stopRunning() {
+    final public func stopRunning() {
         guard running else {
             return
         }
@@ -138,12 +138,14 @@ extension AVMixer: Running {
 #else
 extension AVMixer: Running {
     // MARK: Running
-    var running: Bool {
+    public var running: Bool {
         return false
     }
-    final func startRunning() {
+
+    final public func startRunning() {
     }
-    final func stopRunning() {
+
+    final public func stopRunning() {
     }
 }
 #endif
