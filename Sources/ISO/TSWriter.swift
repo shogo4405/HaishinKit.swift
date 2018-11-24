@@ -1,7 +1,8 @@
 import CoreMedia
 import Foundation
 
-protocol TSWriterDelegate: class {
+public protocol TSWriterDelegate: class {
+    func didOutput(_ data: Data)
 }
 
 public class TSWriter {
@@ -35,6 +36,8 @@ public class TSWriter {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
     var segmentMaxCount: Int = TSWriter.defaultSegmentMaxCount
     var segmentDuration: Double = TSWriter.defaultSegmentDuration
+
+    public weak var delegate: TSWriterDelegate?
 
     private(set) var PAT: ProgramAssociationSpecific = {
         let PAT: ProgramAssociationSpecific = ProgramAssociationSpecific()
@@ -92,6 +95,7 @@ public class TSWriter {
         }
 
         nstry({
+            self.delegate?.didOutput(bytes)
             self.currentFileHandle?.write(bytes)
         }, { exception in
             self.currentFileHandle?.write(bytes)
@@ -139,6 +143,7 @@ public class TSWriter {
         }
 
         nstry({
+            self.delegate?.didOutput(bytes)
             self.currentFileHandle?.write(bytes)
         }, { exception in
             self.currentFileHandle?.write(bytes)
@@ -224,6 +229,7 @@ public class TSWriter {
         }
 
         nstry({
+            self.delegate?.didOutput(bytes)
             self.currentFileHandle?.write(bytes)
         }, { exception in
             logger.warn("\(exception)")

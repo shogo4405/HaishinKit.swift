@@ -8,7 +8,7 @@ protocol AudioEncoderDelegate: class {
 // MARK: -
 /**
  - seealse:
-  - https: //developer.apple.com/library/ios/technotes/tn2236/_index.html
+  - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 final class AACEncoder: NSObject {
     enum Error: Swift.Error {

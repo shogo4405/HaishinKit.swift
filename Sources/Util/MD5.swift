@@ -4,8 +4,8 @@ import Foundation
  Message Digest Algorithm 5
 
  - seealso:
-  - https: //ja.wikipedia.org/wiki/MD5
-  - https: //www.ietf.org/rfc/rfc1321.txt
+  - https://ja.wikipedia.org/wiki/MD5
+  - https://www.ietf.org/rfc/rfc1321.txt
  */
 final class MD5 {
 

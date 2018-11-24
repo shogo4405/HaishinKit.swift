@@ -1,5 +1,5 @@
 /**
- - seealso: https: //tools.ietf.org/html/draft-pantos-http-live-streaming-19
+ - seealso: https://tools.ietf.org/html/draft-pantos-http-live-streaming-19
  */
 struct M3U {
     static let header: String = "#EXTM3U"

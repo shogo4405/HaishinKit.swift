@@ -1,7 +1,7 @@
 import Foundation
 
 /**
- - seealso: https: //en.wikipedia.org/wiki/Program-specific_information
+ - seealso: https://en.wikipedia.org/wiki/Program-specific_information
  */
 protocol PSIPointer {
     var pointerField: UInt8 { get set }

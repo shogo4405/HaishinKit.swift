@@ -1,6 +1,6 @@
 import AVFoundation
 /**
- - seealso: https: //en.wikipedia.org/wiki/MPEG_transport_stream#Packet
+ - seealso: https://en.wikipedia.org/wiki/MPEG_transport_stream#Packet
  */
 struct TSPacket {
     static let size: Int = 188
