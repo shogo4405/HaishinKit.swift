@@ -8,6 +8,10 @@ struct AVCFormatStream {
         self.data = data
     }
 
+    init?(bytes: UnsafePointer<UInt8>, count: UInt32) {
+        self.init(data: Data(bytes: bytes, count: Int(count)))
+    }
+
     init?(data: Data?) {
         guard let data = data else {
             return nil
