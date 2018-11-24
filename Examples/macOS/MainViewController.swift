@@ -21,11 +21,11 @@ final class MainViewController: NSViewController {
     )
     var httpStream: HTTPStream = HTTPStream()
 
-    @IBOutlet var lfView: GLHKView!
-    @IBOutlet var audioPopUpButton: NSPopUpButton!
-    @IBOutlet var cameraPopUpButton: NSPopUpButton!
-    @IBOutlet var urlField: NSTextField!
-    @IBOutlet var segmentedControl: NSSegmentedControl!
+    @IBOutlet private weak var lfView: GLHKView!
+    @IBOutlet private weak var audioPopUpButton: NSPopUpButton!
+    @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
+    @IBOutlet private weak var urlField: NSTextField!
+    @IBOutlet private weak var segmentedControl: NSSegmentedControl!
 
     override func viewDidLoad() {
         super.viewDidLoad()

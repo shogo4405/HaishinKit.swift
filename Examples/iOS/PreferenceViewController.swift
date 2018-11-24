@@ -1,8 +1,8 @@
 import UIKit
 
 final class PreferenceViewController: UIViewController {
-    @IBOutlet var urlField: UITextField?
-    @IBOutlet var streamNameField: UITextField?
+    @IBOutlet private weak var urlField: UITextField?
+    @IBOutlet private weak var streamNameField: UITextField?
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

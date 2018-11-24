@@ -27,17 +27,17 @@ final class LiveViewController: UIViewController {
     var sharedObject: RTMPSharedObject!
     var currentEffect: VisualEffect?
 
-    @IBOutlet var lfView: GLHKView?
-    @IBOutlet var currentFPSLabel: UILabel?
-    @IBOutlet var publishButton: UIButton?
-    @IBOutlet var pauseButton: UIButton?
-    @IBOutlet var videoBitrateLabel: UILabel?
-    @IBOutlet var videoBitrateSlider: UISlider?
-    @IBOutlet var audioBitrateLabel: UILabel?
-    @IBOutlet var zoomSlider: UISlider?
-    @IBOutlet var audioBitrateSlider: UISlider?
-    @IBOutlet var fpsControl: UISegmentedControl?
-    @IBOutlet var effectSegmentControl: UISegmentedControl?
+    @IBOutlet private weak var lfView: GLHKView?
+    @IBOutlet private weak var currentFPSLabel: UILabel?
+    @IBOutlet private weak var publishButton: UIButton?
+    @IBOutlet private weak var pauseButton: UIButton?
+    @IBOutlet private weak var videoBitrateLabel: UILabel?
+    @IBOutlet private weak var videoBitrateSlider: UISlider?
+    @IBOutlet private weak var audioBitrateLabel: UILabel?
+    @IBOutlet private weak var zoomSlider: UISlider?
+    @IBOutlet private weak var audioBitrateSlider: UISlider?
+    @IBOutlet private weak var fpsControl: UISegmentedControl?
+    @IBOutlet private weak var effectSegmentControl: UISegmentedControl?
 
     var currentPosition: AVCaptureDevice.Position = .back
 

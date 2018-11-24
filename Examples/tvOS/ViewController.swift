@@ -2,7 +2,7 @@ import HaishinKit
 import UIKit
 
 final class ViewController: UIViewController {
-    @IBOutlet var lfView: GLHKView!
+    @IBOutlet private weak var lfView: GLHKView!
 
     var rtmpConnection: RTMPConnection = RTMPConnection()
     var rtmpStream: RTMPStream!
