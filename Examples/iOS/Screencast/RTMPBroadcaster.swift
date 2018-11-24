@@ -1,5 +1,6 @@
-import HaishinKit
 import CoreMedia
+import HaishinKit
+import AVFoundation
 
 public class RTMPBroadcaster: RTMPConnection {
     public var streamName: String?
@@ -30,7 +31,7 @@ public class RTMPBroadcaster: RTMPConnection {
         }
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: CMSampleBufferType, options: [NSObject: AnyObject]? = nil) {
+    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {
         stream.appendSampleBuffer(sampleBuffer, withType: withType)
     }
 
