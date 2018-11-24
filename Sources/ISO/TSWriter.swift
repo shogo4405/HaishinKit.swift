@@ -14,6 +14,9 @@ public class TSWriter: Running {
     public weak var delegate: TSWriterDelegate?
     public internal(set) var isRunning: Bool = false
 
+    var audioContinuityCounter: UInt8 = 0
+    var videoContinuityCounter: UInt8 = 0
+    var PCRPID: UInt16 = TSWriter.defaultVideoPID
     private(set) var PAT: ProgramAssociationSpecific = {
         let PAT: ProgramAssociationSpecific = ProgramAssociationSpecific()
         PAT.programs = [1: TSWriter.defaultPMTPID]
@@ -22,23 +25,29 @@ public class TSWriter: Running {
 
     private(set) var PMT: ProgramMapSpecific = ProgramMapSpecific()
 
-    var PCRPID: UInt16 = TSWriter.defaultVideoPID
-    private var timestamps: [UInt16: CMTime] = [:]
     private var audioConfig: AudioSpecificConfig?
+    private var audioTimestmap: CMTime = CMTime.invalid
     private var videoConfig: AVCConfigurationRecord?
-    private var PCRTimestamp: CMTime = CMTime.zero
-    var continuityCounters: [UInt16: UInt8] = [:]
+    private var videoTimestamp: CMTime = CMTime.invalid
+    private var PCRTimestamp: CMTime = CMTime.invalid
 
     public init() {
     }
 
     final func writeSampleBuffer(_ PID: UInt16, streamID: UInt8, bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, randomAccessIndicator: Bool) {
+        switch PID {
+        case TSWriter.defaultAudioPID:
+            guard audioTimestmap == .invalid else { break }
+            audioTimestmap = presentationTimeStamp
+        case TSWriter.defaultVideoPID:
+            guard audioTimestmap == .invalid else { break }
+            videoTimestamp = presentationTimeStamp
+        default:
+            break
+        }
 
-        if timestamps[PID] == nil {
-            timestamps[PID] = presentationTimeStamp
-            if PCRPID == PID {
-                PCRTimestamp = presentationTimeStamp
-            }
+        if PCRPID == PID {
+            PCRTimestamp = presentationTimeStamp
         }
 
         guard var PES = PacketizedElementaryStream.create(
@@ -46,7 +55,7 @@ public class TSWriter: Running {
             count: count,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: decodeTimeStamp,
-            timestamp: timestamps[PID]!,
+            timestamp: PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestmap,
             config: streamID == 192 ? audioConfig : videoConfig,
             randomAccessIndicator: randomAccessIndicator) else {
             return
@@ -64,8 +73,16 @@ public class TSWriter: Running {
 
         var bytes: Data = Data()
         for var packet in packets {
-            packet.continuityCounter = continuityCounters[PID]!
-            continuityCounters[PID] = (continuityCounters[PID]! + 1) & 0x0f
+            switch PID {
+            case TSWriter.defaultAudioPID:
+                packet.continuityCounter = audioContinuityCounter
+                audioContinuityCounter = (audioContinuityCounter + 1) & 0x0f
+            case TSWriter.defaultVideoPID:
+                packet.continuityCounter = videoContinuityCounter
+                videoContinuityCounter = (videoContinuityCounter + 1) & 0x0f
+            default:
+                break
+            }
             bytes.append(packet.data)
         }
 
@@ -102,14 +119,26 @@ public class TSWriter: Running {
         guard !isRunning else {
             return
         }
+        audioContinuityCounter = 0
+        videoContinuityCounter = 0
+        PCRPID = TSWriter.defaultVideoPID
+        PAT.programs.removeAll()
+        PAT.programs = [1: TSWriter.defaultPMTPID]
+        PMT = ProgramMapSpecific()
+        audioConfig = nil
+        videoConfig = nil
+        videoTimestamp = .invalid
+        audioTimestmap = .invalid
+        PCRTimestamp = .invalid
         isRunning = false
     }
 
     private func split(_ PID: UInt16, PES: PacketizedElementaryStream, timestamp: CMTime) -> [TSPacket] {
+        let timestamp = PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestmap
         var PCR: UInt64?
         let duration: Double = timestamp.seconds - PCRTimestamp.seconds
         if PCRPID == PID && 0.02 <= duration {
-            PCR = UInt64((timestamp.seconds - timestamps[PID]!.seconds) * TSTimestamp.resolution)
+            PCR = UInt64((timestamp.seconds - timestamp.seconds) * TSTimestamp.resolution)
             PCRTimestamp = timestamp
         }
         var packets: [TSPacket] = []
@@ -130,7 +159,7 @@ extension TSWriter: AudioEncoderDelegate {
         data.streamType = ElementaryStreamType.adtsaac.rawValue
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
-        continuityCounters[TSWriter.defaultAudioPID] = 0
+        audioContinuityCounter = 0
         audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
     }
 
@@ -159,7 +188,7 @@ extension TSWriter: VideoEncoderDelegate {
         data.streamType = ElementaryStreamType.h264.rawValue
         data.elementaryPID = TSWriter.defaultVideoPID
         PMT.elementaryStreamSpecificData.append(data)
-        continuityCounters[TSWriter.defaultVideoPID] = 0
+        videoContinuityCounter = 0
         videoConfig = AVCConfigurationRecord(data: avcC)
     }
 
@@ -263,9 +292,8 @@ class TSFileWriter: TSWriter {
             }
         }
         currentFileURL = url
-        for (pid, _) in continuityCounters {
-            continuityCounters[pid] = 0
-        }
+        audioContinuityCounter = 0
+        videoContinuityCounter = 0
 
         nstry({
             self.currentFileHandle?.synchronizeFile()
