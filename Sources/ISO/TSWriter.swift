@@ -10,26 +10,26 @@ public class TSWriter: Running {
     static public let defaultPMTPID: UInt16 = 4095
     static public let defaultVideoPID: UInt16 = 256
     static public let defaultAudioPID: UInt16 = 257
+    static let defaultSegmentDuration: Double = 2
 
     public weak var delegate: TSWriterDelegate?
     public internal(set) var isRunning: Bool = false
-
     var audioContinuityCounter: UInt8 = 0
     var videoContinuityCounter: UInt8 = 0
     var PCRPID: UInt16 = TSWriter.defaultVideoPID
+    var rotatedTimestamp: CMTime = CMTime.zero
+    var segmentDuration: Double = TSWriter.defaultSegmentDuration
     private(set) var PAT: ProgramAssociationSpecific = {
-        let PAT: ProgramAssociationSpecific = ProgramAssociationSpecific()
+        let PAT: ProgramAssociationSpecific = .init()
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
-
-    private(set) var PMT: ProgramMapSpecific = ProgramMapSpecific()
-
+    private(set) var PMT: ProgramMapSpecific = .init()
     private var audioConfig: AudioSpecificConfig?
-    private var audioTimestmap: CMTime = CMTime.invalid
+    private var audioTimestamp: CMTime = .invalid
     private var videoConfig: AVCConfigurationRecord?
-    private var videoTimestamp: CMTime = CMTime.invalid
-    private var PCRTimestamp: CMTime = CMTime.invalid
+    private var videoTimestamp: CMTime = .invalid
+    private var PCRTimestamp: CMTime = .invalid
 
     public init() {
     }
@@ -37,10 +37,10 @@ public class TSWriter: Running {
     final func writeSampleBuffer(_ PID: UInt16, streamID: UInt8, bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, randomAccessIndicator: Bool) {
         switch PID {
         case TSWriter.defaultAudioPID:
-            guard audioTimestmap == .invalid else { break }
-            audioTimestmap = presentationTimeStamp
+            guard audioTimestamp == .invalid else { break }
+            audioTimestamp = presentationTimeStamp
         case TSWriter.defaultVideoPID:
-            guard audioTimestmap == .invalid else { break }
+            guard videoTimestamp == .invalid else { break }
             videoTimestamp = presentationTimeStamp
         default:
             break
@@ -55,7 +55,7 @@ public class TSWriter: Running {
             count: count,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: decodeTimeStamp,
-            timestamp: PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestmap,
+            timestamp: PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestamp,
             config: streamID == 192 ? audioConfig : videoConfig,
             randomAccessIndicator: randomAccessIndicator) else {
             return
@@ -90,6 +90,12 @@ public class TSWriter: Running {
     }
 
     func rotateFileHandle(_ timestamp: CMTime) {
+        let duration: Double = timestamp.seconds - rotatedTimestamp.seconds
+        if duration <= segmentDuration {
+            return
+        }
+        writeProgram()
+        rotatedTimestamp = timestamp
     }
 
     func write(_ data: Data) {
@@ -128,13 +134,13 @@ public class TSWriter: Running {
         audioConfig = nil
         videoConfig = nil
         videoTimestamp = .invalid
-        audioTimestmap = .invalid
+        audioTimestamp = .invalid
         PCRTimestamp = .invalid
         isRunning = false
     }
 
     private func split(_ PID: UInt16, PES: PacketizedElementaryStream, timestamp: CMTime) -> [TSPacket] {
-        let timestamp = PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestmap
+        let timestamp = PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestamp
         var PCR: UInt64?
         let duration: Double = timestamp.seconds - PCRTimestamp.seconds
         if PCRPID == PID && 0.02 <= duration {
@@ -219,15 +225,12 @@ extension TSWriter: VideoEncoderDelegate {
 class TSFileWriter: TSWriter {
     static let defaultSegmentCount: Int = 3
     static let defaultSegmentMaxCount: Int = 12
-    static let defaultSegmentDuration: Double = 2
 
     var segmentMaxCount: Int = TSFileWriter.defaultSegmentMaxCount
-    var segmentDuration: Double = TSFileWriter.defaultSegmentDuration
     private(set) var files: [M3UMediaInfo] = []
     private var currentFileHandle: FileHandle?
     private var currentFileURL: URL?
     private var sequence: Int = 0
-    private var rotatedTimestamp: CMTime = CMTime.zero
 
     var playlist: String {
         var m3u8: M3U = M3U()
@@ -250,8 +253,6 @@ class TSFileWriter: TSWriter {
     }
 
     override func rotateFileHandle(_ timestamp: CMTime) {
-        super.rotateFileHandle(timestamp)
-
         let duration: Double = timestamp.seconds - rotatedTimestamp.seconds
         if duration <= segmentDuration {
             return
