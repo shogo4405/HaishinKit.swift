@@ -63,13 +63,8 @@ public class TSWriter: Running {
 
         PES.streamID = streamID
         var packets: [TSPacket] = split(PID, PES: PES, timestamp: decodeTimeStamp)
+        packets[0].adaptationField?.randomAccessIndicator = randomAccessIndicator
         rotateFileHandle(decodeTimeStamp == CMTime.invalid ? presentationTimeStamp : decodeTimeStamp)
-
-        if streamID == 192 {
-            packets[0].adaptationField?.randomAccessIndicator = true
-        } else {
-            packets[0].adaptationField?.randomAccessIndicator = randomAccessIndicator
-        }
 
         var bytes: Data = Data()
         for var packet in packets {
@@ -177,7 +172,7 @@ extension TSWriter: AudioEncoderDelegate {
             count: count,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: CMTime.invalid,
-            randomAccessIndicator: false
+            randomAccessIndicator: true
         )
     }
 }
@@ -319,13 +314,6 @@ class TSFileWriter: TSWriter {
         super.write(data)
     }
 
-    override func startRunning() {
-        guard isRunning else {
-            return
-        }
-        isRunning = true
-    }
-
     override func stopRunning() {
         guard !isRunning else {
             return
@@ -333,7 +321,7 @@ class TSFileWriter: TSWriter {
         currentFileURL = nil
         currentFileHandle = nil
         removeFiles()
-        isRunning = false
+        super.stopRunning()
     }
 
     func getFilePath(_ fileName: String) -> String? {

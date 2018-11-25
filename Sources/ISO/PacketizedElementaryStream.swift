@@ -186,8 +186,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         guard let bytes = bytes, let config = config else {
             return nil
         }
-        var data = Data()
-        data.append(contentsOf: config.adts(payload.count))
+        data.append(contentsOf: config.adts(Int(count)))
         data.append(bytes, count: Int(count))
         optionalPESHeader = PESOptionalHeader()
         optionalPESHeader?.dataAlignmentIndicator = true
@@ -209,11 +208,13 @@ struct PacketizedElementaryStream: PESPacketHeader {
             return nil
         }
         if let config: AVCConfigurationRecord = config {
-            data += [0x00, 0x00, 0x00, 0x01, 0x09, 0x10]
-            data += [0x00, 0x00, 0x00, 0x01] + config.sequenceParameterSets[0]
-            data += [0x00, 0x00, 0x00, 0x01] + config.pictureParameterSets[0]
+            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x10])
+            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
+            data.append(contentsOf: config.sequenceParameterSets[0])
+            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
+            data.append(contentsOf: config.pictureParameterSets[0])
         } else {
-            data += [0x00, 0x00, 0x00, 0x01, 0x09, 0x30]
+            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x30])
         }
         if let stream: AVCFormatStream = AVCFormatStream(bytes: bytes, count: count) {
             data.append(stream.toByteStream())
