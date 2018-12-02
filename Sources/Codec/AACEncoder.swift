@@ -2,7 +2,7 @@ import AVFoundation
 
 protocol AudioEncoderDelegate: class {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
-    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime)
+    func sampleOutput(audio bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime)
 }
 
 // MARK: -

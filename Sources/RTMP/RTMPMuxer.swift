@@ -33,7 +33,7 @@ extension RTMPMuxer: AudioEncoderDelegate {
         delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
     }
 
-    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
+    func sampleOutput(audio bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
         let delta: Double = (audioTimestamp == CMTime.zero ? 0 : presentationTimeStamp.seconds - audioTimestamp.seconds) * 1000
         guard let bytes = bytes, 0 <= delta else {
             return
