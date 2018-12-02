@@ -1,10 +1,13 @@
 import CoreMedia
 import Foundation
+import AVFoundation
 
+/// MPEG-2 TS (Transport Stream) Writer delegate
 public protocol TSWriterDelegate: class {
     func didOutput(_ data: Data)
 }
 
+/// MPEG-2 TS (Transport Stream) Writer Foundation class
 public class TSWriter: Running {
     static public let defaultPATPID: UInt16 = 0
     static public let defaultPMTPID: UInt16 = 4095
@@ -12,8 +15,13 @@ public class TSWriter: Running {
     static public let defaultAudioPID: UInt16 = 257
     static let defaultSegmentDuration: Double = 2
 
+    /// The delegate instance.
     public weak var delegate: TSWriterDelegate?
+    /// This instance is running to process(true) or not(false).
     public internal(set) var isRunning: Bool = false
+    /// The exptected medias = [.video, .audio].
+    public var expectedMedias: Set<AVMediaType> = []
+
     var audioContinuityCounter: UInt8 = 0
     var videoContinuityCounter: UInt8 = 0
     var PCRPID: UInt16 = TSWriter.defaultVideoPID
@@ -25,16 +33,40 @@ public class TSWriter: Running {
         return PAT
     }()
     private(set) var PMT: ProgramMapSpecific = .init()
-    private var audioConfig: AudioSpecificConfig?
+    private var audioConfig: AudioSpecificConfig? {
+        didSet {
+            writeProgram()
+        }
+    }
     private var audioTimestamp: CMTime = .invalid
-    private var videoConfig: AVCConfigurationRecord?
+    private var videoConfig: AVCConfigurationRecord? {
+        didSet {
+            writeProgram()
+        }
+    }
     private var videoTimestamp: CMTime = .invalid
     private var PCRTimestamp: CMTime = .invalid
+    private var canWriteFor: Bool {
+        guard expectedMedias.isEmpty else { return true }
+        if expectedMedias.contains(.audio) && expectedMedias.contains(.video) {
+            return audioConfig != nil && videoConfig != nil
+        }
+        if expectedMedias.contains(.video) {
+            return videoConfig != nil
+        }
+        if expectedMedias.contains(.audio) {
+            return audioConfig != nil
+        }
+        return false
+    }
 
     public init() {
     }
 
+    // swiftlint:disable function_parameter_count
     final func writeSampleBuffer(_ PID: UInt16, streamID: UInt8, bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, randomAccessIndicator: Bool) {
+        guard canWriteFor else { return }
+
         switch PID {
         case TSWriter.defaultAudioPID:
             guard audioTimestamp == .invalid else { break }
@@ -107,6 +139,12 @@ public class TSWriter: Running {
             bytes.append(packet.data)
         }
         write(bytes)
+    }
+
+    func writeProgramIfNeeded() {
+        guard !expectedMedias.isEmpty else { return }
+        guard canWriteFor else { return }
+        writeProgram()
     }
 
     public func startRunning() {
