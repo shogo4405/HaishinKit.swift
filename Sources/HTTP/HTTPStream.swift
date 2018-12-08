@@ -25,6 +25,24 @@ open class HTTPStream: NetStream {
         }
     }
 
+    override open func attachCamera(_ camera: AVCaptureDevice?, onError: ((NSError) -> Void)? = nil) {
+        if camera == nil {
+            tsWriter.expectedMedias.remove(.video)
+        } else {
+            tsWriter.expectedMedias.insert(.video)
+        }
+        super.attachCamera(camera, onError: onError)
+    }
+
+    override open func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = true, onError: ((NSError) -> Void)? = nil) {
+        if audio == nil {
+            tsWriter.expectedMedias.remove(.audio)
+        } else {
+            tsWriter.expectedMedias.insert(.audio)
+        }
+        super.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession, onError: onError)
+    }
+
     func getResource(_ resourceName: String) -> (MIME, String)? {
         let url: URL = URL(fileURLWithPath: resourceName)
         guard let name: String = name, 2 <= url.pathComponents.count && url.pathComponents[1] == name else {
