@@ -230,15 +230,15 @@ httpStream.attachCamera(DeviceUtil.device(withPosition: .back))
 httpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
 httpStream.publish("hello")
 
-var lfView:LFView = LFView(frame: view.bounds)
-lfView.attachStream(httpStream)
+var hjView = HKView(frame: view.bounds)
+hkView.attachStream(httpStream)
 
 var httpService:HLSService = HLSService(domain: "", type: "_http._tcp", name: "lf", port: 8080)
 httpService.startRunning()
 httpService.addHTTPStream(httpStream)
 
 // add ViewController#view
-view.addSubview(lfView)
+view.addSubview(hkView)
 ```
 
 ## FAQ
