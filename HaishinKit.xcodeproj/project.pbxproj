@@ -58,6 +58,12 @@
 		2930D0411E12D35400DA2DC5 /* SampleHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */; };
 		29373DB6205524D700099860 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */; };
 		29373DB7205524D700099860 /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		2938700F21BD4AA00040079C /* AtomicInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938700E21BD4AA00040079C /* AtomicInteger.swift */; };
+		2938701021BD4AA00040079C /* AtomicInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938700E21BD4AA00040079C /* AtomicInteger.swift */; };
+		2938701121BD4AA00040079C /* AtomicInteger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938700E21BD4AA00040079C /* AtomicInteger.swift */; };
+		2938701421BD4B560040079C /* AtomicInteger64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938701321BD4B560040079C /* AtomicInteger64.swift */; };
+		2938701521BD4B560040079C /* AtomicInteger64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938701321BD4B560040079C /* AtomicInteger64.swift */; };
+		2938701621BD4B560040079C /* AtomicInteger64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2938701321BD4B560040079C /* AtomicInteger64.swift */; };
 		293875DD1F374D4B009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DC1F374D4B009F4B30 /* Logboard.framework */; };
 		293875DF1F374D6E009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DE1F374D6E009F4B30 /* Logboard.framework */; };
 		293875E11F374D80009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875E01F374D80009F4B30 /* Logboard.framework */; };
@@ -490,6 +496,8 @@
 		292D8A321D8B293300DBECE2 /* MP4Sampler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP4Sampler.swift; sourceTree = "<group>"; };
 		292F6DB01EEBB2040097EDBE /* AVFoundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundation.swift; sourceTree = "<group>"; };
 		2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
+		2938700E21BD4AA00040079C /* AtomicInteger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInteger.swift; sourceTree = "<group>"; };
+		2938701321BD4B560040079C /* AtomicInteger64.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AtomicInteger64.swift; sourceTree = "<group>"; };
 		293875DC1F374D4B009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/iOS/Logboard.framework; sourceTree = "<group>"; };
 		293875DE1F374D6E009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/Mac/Logboard.framework; sourceTree = "<group>"; };
 		293875E01F374D80009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/tvOS/Logboard.framework; sourceTree = "<group>"; };
@@ -740,7 +748,6 @@
 			isa = PBXGroup;
 			children = (
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
-				2942A4F321A94124004E1BEE /* AtomicBool.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				29B876B91CD70B3900FC07DA /* CRC32.swift */,
@@ -823,6 +830,16 @@
 			path = HTTP;
 			sourceTree = "<group>";
 		};
+		2938700D21BD4A780040079C /* Atomic */ = {
+			isa = PBXGroup;
+			children = (
+				2942A4F321A94124004E1BEE /* AtomicBool.swift */,
+				2938700E21BD4AA00040079C /* AtomicInteger.swift */,
+				2938701321BD4B560040079C /* AtomicInteger64.swift */,
+			);
+			path = Atomic;
+			sourceTree = "<group>";
+		};
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
@@ -859,6 +876,7 @@
 		2945CBBF1B4BE66000104112 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				2938700D21BD4A780040079C /* Atomic */,
 				290907CD1C3961AD00F2E80C /* Codec */,
 				29EA87D11E799EFF0043A5F8 /* Extension */,
 				295891081EEB8B1D00CE51E1 /* FLV */,
@@ -1703,6 +1721,7 @@
 				29B876781CD70ACE00FC07DA /* HTTPService.swift in Sources */,
 				2976A4861D4903C300B53EF2 /* DeviceUtil.swift in Sources */,
 				29C263181D00804A0098D4EF /* GLHKView.swift in Sources */,
+				2938700F21BD4AA00040079C /* AtomicInteger.swift in Sources */,
 				29B876881CD70AE800FC07DA /* TransportStream.swift in Sources */,
 				29B876BE1CD70B3900FC07DA /* EventDispatcher.swift in Sources */,
 				29B8769D1CD70B1100FC07DA /* NetService.swift in Sources */,
@@ -1719,6 +1738,7 @@
 				29B876911CD70AFE00FC07DA /* AudioStreamPlayback.swift in Sources */,
 				29D80680204828D000F4504D /* VTSession+Extension.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
+				2938701421BD4B560040079C /* AtomicInteger64.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
 				29B8767A1CD70ACE00FC07DA /* M3U.swift in Sources */,
 				29245AEF1D32348400AFFB9A /* VideoGravityUtil.swift in Sources */,
@@ -1772,6 +1792,7 @@
 				2958910B1EEB8D1800CE51E1 /* FLVReader.swift in Sources */,
 				295747921E3A30A400EF056E /* RTMPStreamDelegate.swift in Sources */,
 				29B876F41CD70D5900FC07DA /* DataConvertible.swift in Sources */,
+				2938701521BD4B560040079C /* AtomicInteger64.swift in Sources */,
 				2916196D1E7F0777009FB344 /* CMFormatDescription+Extension.swift in Sources */,
 				2976A4821D4902CE00B53EF2 /* IOComponent.swift in Sources */,
 				29EA87E71E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
@@ -1818,6 +1839,7 @@
 				29B8770C1CD70D5A00FC07DA /* NetService.swift in Sources */,
 				2958911B1EEB8E3F00CE51E1 /* FLVAudioCodec.swift in Sources */,
 				296543611D62FE7100734698 /* GLHKView.swift in Sources */,
+				2938701021BD4AA00040079C /* AtomicInteger.swift in Sources */,
 				29EA87E01E79A0810043A5F8 /* CMSampleBuffer+Extension.swift in Sources */,
 				29B8770D1CD70D5A00FC07DA /* NetSocket.swift in Sources */,
 				29B8770E1CD70D5A00FC07DA /* AMF0Serializer.swift in Sources */,
@@ -1903,6 +1925,7 @@
 				29EB3E3A1ED05A45001CAE8B /* TimerDriver.swift in Sources */,
 				29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */,
 				29EB3DF81ED05799001CAE8B /* Mirror+Extension.swift in Sources */,
+				2938701621BD4B560040079C /* AtomicInteger64.swift in Sources */,
 				29EB3E031ED0585D001CAE8B /* AudioSpecificConfig.swift in Sources */,
 				29EB3E3B1ED05A48001CAE8B /* VideoGravityUtil.swift in Sources */,
 				29EB3E141ED05889001CAE8B /* VideoIOComponent.swift in Sources */,
@@ -1954,6 +1977,7 @@
 				295891301EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
 				295891201EEB8E9600CE51E1 /* FLVSoundRate.swift in Sources */,
 				2942A4F621A94124004E1BEE /* AtomicBool.swift in Sources */,
+				2938701121BD4AA00040079C /* AtomicInteger.swift in Sources */,
 				29EB3DF21ED05770001CAE8B /* DataConvertible.swift in Sources */,
 				29EB3E361ED05A35001CAE8B /* EventDispatcher.swift in Sources */,
 				29EB3E341ED05A30001CAE8B /* CRC32.swift in Sources */,
