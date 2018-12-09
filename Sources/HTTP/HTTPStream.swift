@@ -25,6 +25,7 @@ open class HTTPStream: NetStream {
         }
     }
 
+    #if os(iOS) || os(macOS)
     override open func attachCamera(_ camera: AVCaptureDevice?, onError: ((NSError) -> Void)? = nil) {
         if camera == nil {
             tsWriter.expectedMedias.remove(.video)
@@ -42,6 +43,7 @@ open class HTTPStream: NetStream {
         }
         super.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession, onError: onError)
     }
+    #endif
 
     func getResource(_ resourceName: String) -> (MIME, String)? {
         let url: URL = URL(fileURLWithPath: resourceName)
@@ -62,3 +64,4 @@ open class HTTPStream: NetStream {
         }
     }
 }
+
