@@ -1,6 +1,6 @@
 import AVFoundation
 
-protocol AudioEncoderDelegate: class {
+protocol AudioConverterDelegate: class {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
     func sampleOutput(audio bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime)
 }
@@ -10,7 +10,7 @@ protocol AudioEncoderDelegate: class {
  - seealse:
   - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
-final class AACEncoder: NSObject {
+final class AudioConverter: NSObject {
     enum Error: Swift.Error {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
@@ -46,7 +46,7 @@ final class AACEncoder: NSObject {
 
     @objc var muted: Bool = false
 
-    @objc var bitrate: UInt32 = AACEncoder.defaultBitrate {
+    @objc var bitrate: UInt32 = AudioConverter.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
                 return
@@ -58,16 +58,16 @@ final class AACEncoder: NSObject {
             }
         }
     }
-    @objc var profile: UInt32 = AACEncoder.defaultProfile
-    @objc var sampleRate: Double = AACEncoder.defaultSampleRate
-    @objc var actualBitrate: UInt32 = AACEncoder.defaultBitrate {
+    @objc var profile: UInt32 = AudioConverter.defaultProfile
+    @objc var sampleRate: Double = AudioConverter.defaultSampleRate
+    @objc var actualBitrate: UInt32 = AudioConverter.defaultBitrate {
         didSet {
             logger.info("\(actualBitrate)")
         }
     }
 
-    var channels: UInt32 = AACEncoder.defaultChannels
-    var inClassDescriptions: [AudioClassDescription] = AACEncoder.defaultInClassDescriptions
+    var channels: UInt32 = AudioConverter.defaultChannels
+    var inClassDescriptions: [AudioClassDescription] = AudioConverter.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
             if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
@@ -75,11 +75,11 @@ final class AACEncoder: NSObject {
             }
         }
     }
-    var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AACEncoder.lock")
-    weak var delegate: AudioEncoderDelegate?
+    var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioConverter.lock")
+    weak var delegate: AudioConverterDelegate?
     internal(set) var isRunning: Bool = false
-    private var maximumBuffers: Int = AACEncoder.defaultMaximumBuffers
-    private var bufferListSize: Int = AACEncoder.defaultBufferListSize
+    private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
+    private var bufferListSize: Int = AudioConverter.defaultBufferListSize
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
     private var inSourceFormat: AudioStreamBasicDescription? {
         didSet {
@@ -88,8 +88,8 @@ final class AACEncoder: NSObject {
                 return
             }
             let nonInterleaved: Bool = inSourceFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved != 0
-            maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AACEncoder.defaultMaximumBuffers
-            bufferListSize = nonInterleaved ? AudioBufferList.sizeInBytes(maximumBuffers: maximumBuffers) : AACEncoder.defaultBufferListSize
+            maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AudioConverter.defaultMaximumBuffers
+            bufferListSize = nonInterleaved ? AudioBufferList.sizeInBytes(maximumBuffers: maximumBuffers) : AudioConverter.defaultBufferListSize
         }
     }
     private var _inDestinationFormat: AudioStreamBasicDescription?
@@ -101,7 +101,7 @@ final class AACEncoder: NSObject {
                     mFormatID: kAudioFormatMPEG4AAC,
                     mFormatFlags: profile,
                     mBytesPerPacket: 0,
-                    mFramesPerPacket: AACEncoder.framesPerPacket,
+                    mFramesPerPacket: AudioConverter.framesPerPacket,
                     mBytesPerFrame: 0,
                     mChannelsPerFrame: (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels,
                     mBitsPerChannel: 0,
@@ -124,7 +124,7 @@ final class AACEncoder: NSObject {
         ioData: UnsafeMutablePointer<AudioBufferList>,
         outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?,
         inUserData: UnsafeMutableRawPointer?) in
-        return Unmanaged<AACEncoder>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
+        return Unmanaged<AudioConverter>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
             ioNumberDataPackets,
             ioData: ioData,
             outDataPacketDescription: outDataPacketDescription
@@ -258,10 +258,10 @@ final class AACEncoder: NSObject {
             try setProperty(id: kAudioConverterEncodeBitRate, data: bitrate * inDestinationFormat.mChannelsPerFrame)
             actualBitrate = bitrate
         } catch {
-            if AACEncoder.minimumBitrate < bitrate {
-                setBitrateUntilNoErr(bitrate - AACEncoder.minimumBitrate)
+            if AudioConverter.minimumBitrate < bitrate {
+                setBitrateUntilNoErr(bitrate - AudioConverter.minimumBitrate)
             } else {
-                actualBitrate = AACEncoder.minimumBitrate
+                actualBitrate = AudioConverter.minimumBitrate
             }
         }
     }
@@ -279,7 +279,7 @@ final class AACEncoder: NSObject {
     }
 }
 
-extension AACEncoder: Running {
+extension AudioConverter: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {

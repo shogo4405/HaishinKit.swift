@@ -4,9 +4,9 @@ import AVFoundation
 
 @testable import HaishinKit
 
-final class AACEncoderTests: XCTestCase {
+final class AudioConverterTests: XCTestCase {
     func testEncoderCMSampleBuffer44100_1024() {
-        let encoder: AACEncoder = AACEncoder()
+        let encoder: AudioConverter = AudioConverter()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 1024) {
@@ -16,7 +16,7 @@ final class AACEncoderTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer48000_1024() {
-        let encoder: AACEncoder = AACEncoder()
+        let encoder: AudioConverter = AudioConverter()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(48000.0, numSamples: 1024) {
@@ -26,7 +26,7 @@ final class AACEncoderTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer24000_1024() {
-        let encoder: AACEncoder = AACEncoder()
+        let encoder: AudioConverter = AudioConverter()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(24000.0, numSamples: 1024) {
@@ -36,7 +36,7 @@ final class AACEncoderTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer16000_1024() {
-        let encoder: AACEncoder = AACEncoder()
+        let encoder: AudioConverter = AudioConverter()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(16000.0, numSamples: 1024) {
@@ -46,7 +46,7 @@ final class AACEncoderTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer8000_256() {
-        let encoder: AACEncoder = AACEncoder()
+        let encoder: AudioConverter = AudioConverter()
         encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
@@ -57,8 +57,8 @@ final class AACEncoderTests: XCTestCase {
     }
 }
 
-extension AACEncoderTests: AudioEncoderDelegate {
-    // MARK: AudioEncoderDelegate
+extension AudioConverterTests: AudioConverterDelegate {
+    // MARK: AudioConverterDelegate
     func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
         
     }
