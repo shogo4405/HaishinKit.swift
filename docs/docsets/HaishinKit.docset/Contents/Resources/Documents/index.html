@@ -45,6 +45,15 @@
                 <a href="Classes/AVMixerRecorder.html">AVMixerRecorder</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AtomicBool.html">AtomicBool</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AtomicInteger.html">AtomicInteger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AtomicInteger64.html">AtomicInteger64</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/ByteArray.html">ByteArray</a>
               </li>
               <li class="nav-group-task">
@@ -129,6 +138,9 @@
                 <a href="Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/TSWriter.html">TSWriter</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/TimerDriver.html">TimerDriver</a>
               </li>
               <li class="nav-group-task">
@@ -147,9 +159,6 @@
           <li class="nav-group-name">
             <a href="Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="Enums/CMSampleBufferType.html">CMSampleBufferType</a>
-              </li>
               <li class="nav-group-task">
                 <a href="Enums/EventPhase.html">EventPhase</a>
               </li>
@@ -192,6 +201,9 @@
             <a href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
+                <a href="Extensions/AVMixer.html">AVMixer</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Extensions/HTTPRequestCompatible.html">HTTPRequestCompatible</a>
               </li>
               <li class="nav-group-task">
@@ -215,7 +227,13 @@
                 <a href="Protocols/RTMPStreamDelegate.html">RTMPStreamDelegate</a>
               </li>
               <li class="nav-group-task">
+                <a href="Protocols/Running.html">Running</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/ScreenCaptureOutputPixelBufferDelegate.html">ScreenCaptureOutputPixelBufferDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/TSWriterDelegate.html">TSWriterDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/TimerDriverDelegate.html">TimerDriverDelegate</a>
@@ -432,7 +450,7 @@
 <span class="n">use_frameworks!</span>
 
 <span class="k">def</span> <span class="nf">import_pods</span>
-    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.10.1'</span>
+    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.10.3'</span>
 <span class="k">end</span>
 
 <span class="n">target</span> <span class="s1">'Your Target'</span>  <span class="k">do</span>
@@ -441,7 +459,7 @@
 <span class="k">end</span>
 </code></pre>
 <h3 id='carthage' class='heading'>Carthage</h3>
-<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.10.1
+<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.10.3
 </code></pre>
 <h2 id='license' class='heading'>License</h2>
 
@@ -583,15 +601,15 @@
 <span class="n">httpStream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">defaultDevice</span><span class="p">(</span><span class="nv">withMediaType</span><span class="p">:</span> <span class="kt">AVMediaTypeAudio</span><span class="p">))</span>
 <span class="n">httpStream</span><span class="o">.</span><span class="nf">publish</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span>
 
-<span class="k">var</span> <span class="nv">lfView</span><span class="p">:</span><span class="kt">LFView</span> <span class="o">=</span> <span class="kt">LFView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
-<span class="n">lfView</span><span class="o">.</span><span class="nf">attachStream</span><span class="p">(</span><span class="n">httpStream</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">hjView</span> <span class="o">=</span> <span class="kt">HKView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+<span class="n">hkView</span><span class="o">.</span><span class="nf">attachStream</span><span class="p">(</span><span class="n">httpStream</span><span class="p">)</span>
 
 <span class="k">var</span> <span class="nv">httpService</span><span class="p">:</span><span class="kt">HLSService</span> <span class="o">=</span> <span class="kt">HLSService</span><span class="p">(</span><span class="nv">domain</span><span class="p">:</span> <span class="s">""</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="s">"_http._tcp"</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"lf"</span><span class="p">,</span> <span class="nv">port</span><span class="p">:</span> <span class="mi">8080</span><span class="p">)</span>
 <span class="n">httpService</span><span class="o">.</span><span class="nf">startRunning</span><span class="p">()</span>
 <span class="n">httpService</span><span class="o">.</span><span class="nf">addHTTPStream</span><span class="p">(</span><span class="n">httpStream</span><span class="p">)</span>
 
 <span class="c1">// add ViewController#view</span>
-<span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">lfView</span><span class="p">)</span>
+<span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">hkView</span><span class="p">)</span>
 </code></pre>
 <h2 id='faq' class='heading'>FAQ</h2>
 <h3 id='how-can-i-run-example-project' class='heading'>How can I run example project?</h3>
@@ -636,7 +654,7 @@ Please consider to use Issues.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2018-10-27)</p>
+          <p>&copy; 2018 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2018-12-09)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
