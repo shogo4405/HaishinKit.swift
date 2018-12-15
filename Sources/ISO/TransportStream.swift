@@ -179,13 +179,6 @@ struct TSProgramClockReference {
     }
 }
 
-extension TSPacket: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 class TSAdaptationField {
     static let PCRSize: Int = 6
@@ -305,13 +298,6 @@ extension TSAdaptationField: DataConvertible {
     }
 }
 
-extension TSAdaptationField: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 struct TSAdaptationExtensionField {
     var length: UInt8 = 0
@@ -378,12 +364,5 @@ extension TSAdaptationExtensionField: DataConvertible {
                 logger.error("\(buffer)")
             }
         }
-    }
-}
-
-extension TSAdaptationExtensionField: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

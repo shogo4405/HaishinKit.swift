@@ -29,10 +29,3 @@ final class CRC32 {
         return crc
     }
 }
-
-extension CRC32: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}

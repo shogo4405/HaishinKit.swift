@@ -126,13 +126,6 @@ extension ProgramSpecific: DataConvertible {
     }
 }
 
-extension ProgramSpecific: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 final class ProgramAssociationSpecific: ProgramSpecific {
     static let tableID: UInt8 = 0
@@ -271,12 +264,5 @@ extension ElementaryStreamSpecificData: DataConvertible {
                 logger.error("\(buffer)")
             }
         }
-    }
-}
-
-extension ElementaryStreamSpecificData: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

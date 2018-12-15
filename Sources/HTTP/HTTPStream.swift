@@ -64,4 +64,3 @@ open class HTTPStream: NetStream {
         }
     }
 }
-

@@ -22,10 +22,6 @@ public class TimerDriver: NSObject {
         }
     }
 
-    public override var description: String {
-        return Mirror(reflecting: self).description
-    }
-
     public func setDelegate(_ delegate: TimerDriverDelegate, withQueue: DispatchQueue? = nil) {
         self.delegate = delegate
         self.queue = withQueue

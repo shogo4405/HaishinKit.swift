@@ -22,13 +22,6 @@ public struct RTMPStreamInfo {
     }
 }
 
-extension RTMPStreamInfo: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    public var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 /**
  flash.net.NetStream for Swift
@@ -183,17 +176,13 @@ open class RTMPStream: NetStream {
         case `switch`
     }
 
-    public struct PlayOption: CustomStringConvertible {
+    public struct PlayOption {
         public var len: Double = 0
         public var offset: Double = 0
         public var oldStreamName: String = ""
         public var start: Double = 0
         public var streamName: String = ""
         public var transition: PlayTransition = .switch
-
-        public var description: String {
-            return Mirror(reflecting: self).description
-        }
     }
 
     public enum HowToPublish: String {

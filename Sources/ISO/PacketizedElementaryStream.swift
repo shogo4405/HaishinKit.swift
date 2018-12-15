@@ -118,13 +118,6 @@ extension PESOptionalHeader: DataConvertible {
     }
 }
 
-extension PESOptionalHeader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize: Int = 6
@@ -297,12 +290,5 @@ struct PacketizedElementaryStream: PESPacketHeader {
     mutating func append(_ data: Data) -> Int {
         self.data.append(data)
         return data.count
-    }
-}
-
-extension PacketizedElementaryStream: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
     }
 }

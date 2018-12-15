@@ -76,13 +76,6 @@ class RTMPMessage {
     }
 }
 
-extension RTMPMessage: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
-
 // MARK: -
 /**
  5.4.1. Set Chunk Size (1)

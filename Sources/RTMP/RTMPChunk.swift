@@ -270,10 +270,3 @@ final class RTMPChunk {
         return chunks
     }
 }
-
-extension RTMPChunk: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
-        return Mirror(reflecting: self).description
-    }
-}
