@@ -15,19 +15,96 @@ final class AudioConverter: NSObject {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
 
+    enum Destination {
+        case AAC
+        case PCM
+
+        var formatID: AudioFormatID {
+            switch self {
+            case .AAC:
+                return kAudioFormatMPEG4AAC
+            case .PCM:
+                return kAudioFormatLinearPCM
+            }
+        }
+
+        var formatFlags: UInt32 {
+            switch self {
+            case .AAC:
+                return UInt32(MPEG4ObjectID.AAC_LC.rawValue)
+            case .PCM:
+                return kAudioFormatFlagIsPacked | kAudioFormatFlagIsSignedInteger
+            }
+        }
+
+        var framesPerPacket: UInt32 {
+            switch self {
+            case .AAC:
+                return 1024
+            case .PCM:
+                return 1
+            }
+        }
+
+        var bitsPerChannel: UInt32 {
+            switch self {
+            case .AAC:
+                return 0
+            case .PCM:
+                return 16
+            }
+        }
+
+        var inClassDescriptions: [AudioClassDescription] {
+            switch self {
+            case .AAC:
+                #if os(iOS)
+                return [
+                    AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
+                    AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer)
+                ]
+                #else
+                return []
+                #endif
+            case .PCM:
+                return []
+            }
+        }
+
+        func bytePerFrame(_ channel: UInt32) -> UInt32 {
+            switch self {
+            case .AAC:
+                return 0
+            case .PCM:
+                return channel * 2
+            }
+        }
+
+        func audioStreamBasicDescription(_ inSourceFormat: AudioStreamBasicDescription?, sampleRate: Double, channels: UInt32) -> AudioStreamBasicDescription? {
+            guard let inSourceFormat = inSourceFormat else { return nil }
+            let destinationChannels: UInt32 = (channels == 0) ? inSourceFormat.mChannelsPerFrame : channels
+            return AudioStreamBasicDescription(
+                mSampleRate: sampleRate == 0 ? inSourceFormat.mSampleRate : sampleRate,
+                mFormatID: formatID,
+                mFormatFlags: formatFlags,
+                mBytesPerPacket: bytePerFrame(destinationChannels),
+                mFramesPerPacket: framesPerPacket,
+                mBytesPerFrame: bytePerFrame(destinationChannels),
+                mChannelsPerFrame: destinationChannels,
+                mBitsPerChannel: bitsPerChannel,
+                mReserved: 0
+            )
+        }
+    }
+
     static let supportedSettingsKeys: [String] = [
         "muted",
         "bitrate",
-        "profile",
         "sampleRate", // down,up sampleRate not supported yet #58
         "actualBitrate"
     ]
 
-    static let packetSize: UInt32 = 1
-    static let framesPerPacket: UInt32 = 1024
     static let minimumBitrate: UInt32 = 8 * 1024
-
-    static let defaultProfile: UInt32 = UInt32(MPEG4ObjectID.AAC_LC.rawValue)
     static let defaultBitrate: UInt32 = 32 * 1024
     // 0 means according to a input source
     static let defaultChannels: UInt32 = 0
@@ -35,14 +112,8 @@ final class AudioConverter: NSObject {
     static let defaultSampleRate: Double = 0
     static let defaultMaximumBuffers: Int = 1
     static let defaultBufferListSize: Int = AudioBufferList.sizeInBytes(maximumBuffers: 1)
-    #if os(iOS)
-    static let defaultInClassDescriptions: [AudioClassDescription] = [
-        AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
-        AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer)
-    ]
-    #else
-    static let defaultInClassDescriptions: [AudioClassDescription] = []
-    #endif
+
+    var destination: Destination = .AAC
 
     @objc var muted: Bool = false
 
@@ -58,7 +129,6 @@ final class AudioConverter: NSObject {
             }
         }
     }
-    @objc var profile: UInt32 = AudioConverter.defaultProfile
     @objc var sampleRate: Double = AudioConverter.defaultSampleRate
     @objc var actualBitrate: UInt32 = AudioConverter.defaultBitrate {
         didSet {
@@ -67,7 +137,6 @@ final class AudioConverter: NSObject {
     }
 
     var channels: UInt32 = AudioConverter.defaultChannels
-    var inClassDescriptions: [AudioClassDescription] = AudioConverter.defaultInClassDescriptions
     var formatDescription: CMFormatDescription? {
         didSet {
             if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
@@ -96,17 +165,7 @@ final class AudioConverter: NSObject {
     private var inDestinationFormat: AudioStreamBasicDescription {
         get {
             if _inDestinationFormat == nil {
-                _inDestinationFormat = AudioStreamBasicDescription(
-                    mSampleRate: sampleRate == 0 ? inSourceFormat!.mSampleRate : sampleRate,
-                    mFormatID: kAudioFormatMPEG4AAC,
-                    mFormatFlags: profile,
-                    mBytesPerPacket: 0,
-                    mFramesPerPacket: AudioConverter.framesPerPacket,
-                    mBytesPerFrame: 0,
-                    mChannelsPerFrame: (channels == 0) ? inSourceFormat!.mChannelsPerFrame : channels,
-                    mBitsPerChannel: 0,
-                    mReserved: 0
-                )
+                _inDestinationFormat = destination.audioStreamBasicDescription(inSourceFormat, sampleRate: sampleRate, channels: channels)
                 CMAudioFormatDescriptionCreate(
                     allocator: kCFAllocatorDefault, asbd: &_inDestinationFormat!, layoutSize: 0, layout: nil, magicCookieSize: 0, magicCookie: nil, extensions: nil, formatDescriptionOut: &formatDescription
                 )
@@ -135,6 +194,7 @@ final class AudioConverter: NSObject {
     private var converter: AudioConverterRef {
         var status: OSStatus = noErr
         if _converter == nil {
+            var inClassDescriptions = destination.inClassDescriptions
             status = AudioConverterNewSpecific(
                 &inSourceFormat!,
                 &inDestinationFormat,

@@ -1,6 +1,6 @@
 import Foundation
 
-public final class AtomicBool {
+final public class AtomicBool {
     private let lock = DispatchSemaphore(value: 1)
     private var _value: Bool
 

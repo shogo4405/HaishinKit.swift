@@ -766,7 +766,6 @@ final class RTMPUserControlMessage: RTMPMessage {
         case .bufferEmpty, .bufferFull:
             connection.streams[UInt32(value)]?.dispatch("rtmpStatus", bubbles: false, data: [
                 "level": "status",
-                "code": description,
                 "description": ""
             ])
         default:

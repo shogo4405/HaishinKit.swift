@@ -485,7 +485,7 @@ extension RTMPConnection: RTMPSocketDelegate {
 
         if let message: RTMPMessage = chunk.message, chunk.ready {
             if logger.isEnabledFor(level: .trace) {
-                logger.trace(chunk.description)
+                logger.trace(chunk)
             }
             switch chunk.type {
             case .zero:
