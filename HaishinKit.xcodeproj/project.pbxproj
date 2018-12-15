@@ -129,7 +129,6 @@
 		296242621D8DB86500C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
 		296242631D8DBA8C00C451A3 /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
-		296543601D62FE6A00734698 /* AudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543561D62FE6200734698 /* AudioUtil.swift */; };
 		296543611D62FE7100734698 /* GLHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543571D62FE6200734698 /* GLHKView.swift */; };
 		296543621D62FE8100734698 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 296543591D62FE6200734698 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		296543631D62FE9000734698 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2965435A1D62FE6200734698 /* HKView.swift */; };
@@ -176,7 +175,6 @@
 		29B876871CD70AE800FC07DA /* ProgramSpecific.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876811CD70AE800FC07DA /* ProgramSpecific.swift */; };
 		29B876881CD70AE800FC07DA /* TransportStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876821CD70AE800FC07DA /* TransportStream.swift */; };
 		29B876901CD70AFE00FC07DA /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */; };
-		29B876911CD70AFE00FC07DA /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768A1CD70AFE00FC07DA /* AudioStreamPlayback.swift */; };
 		29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* AVMixer.swift */; };
 		29B876941CD70AFE00FC07DA /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */; };
 		29B876961CD70AFE00FC07DA /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768F1CD70AFE00FC07DA /* VisualEffect.swift */; };
@@ -214,7 +212,6 @@
 		29B877011CD70D5A00FC07DA /* ProgramSpecific.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876811CD70AE800FC07DA /* ProgramSpecific.swift */; };
 		29B877021CD70D5A00FC07DA /* TransportStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876821CD70AE800FC07DA /* TransportStream.swift */; };
 		29B877031CD70D5A00FC07DA /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */; };
-		29B877041CD70D5A00FC07DA /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768A1CD70AFE00FC07DA /* AudioStreamPlayback.swift */; };
 		29B877051CD70D5A00FC07DA /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* AVMixer.swift */; };
 		29B877071CD70D5A00FC07DA /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */; };
 		29B877081CD70D5A00FC07DA /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */; };
@@ -238,7 +235,6 @@
 		29B8771D1CD70D5A00FC07DA /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876BA1CD70B3900FC07DA /* EventDispatcher.swift */; };
 		29C263181D00804A0098D4EF /* GLHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C263171D00804A0098D4EF /* GLHKView.swift */; };
 		29C2631C1D0083B50098D4EF /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */; };
-		29C3E9F01ED1DDC800B7EA5B /* AudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C3E9EF1ED1DDC800B7EA5B /* AudioUtil.swift */; };
 		29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		29D3D4CF1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */; };
 		29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */; };
@@ -249,7 +245,6 @@
 		29D80681204828D000F4504D /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D8067F204828D000F4504D /* VTSession+Extension.swift */; };
 		29D80682204828D000F4504D /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D8067F204828D000F4504D /* VTSession+Extension.swift */; };
 		29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		29E5C0FE1D05B3B600407208 /* AudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E5C0F91D05B32700407208 /* AudioUtil.swift */; };
 		29E7968D1ED18C5300D75C6C /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		29E7969A1ED197A800D75C6C /* GLHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29E796991ED197A800D75C6C /* GLHKView.swift */; };
 		29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */; };
@@ -305,7 +300,6 @@
 		29EB3E0B1ED05871001CAE8B /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		29EB3E0C1ED05874001CAE8B /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
 		29EB3E0D1ED05877001CAE8B /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */; };
-		29EB3E0E1ED0587A001CAE8B /* AudioStreamPlayback.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768A1CD70AFE00FC07DA /* AudioStreamPlayback.swift */; };
 		29EB3E0F1ED0587C001CAE8B /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* AVMixer.swift */; };
 		29EB3E101ED0587F001CAE8B /* AVMixerRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */; };
 		29EB3E111ED05881001CAE8B /* IOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* IOComponent.swift */; };
@@ -525,7 +519,6 @@
 		2958912D1EEB8F4100CE51E1 /* FLVSoundType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FLVSoundType.swift; sourceTree = "<group>"; };
 		2962425F1D8DB86500C451A3 /* TSReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSReader.swift; sourceTree = "<group>"; };
 		296242601D8DB86500C451A3 /* TSWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSWriter.swift; sourceTree = "<group>"; };
-		296543561D62FE6200734698 /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUtil.swift; sourceTree = "<group>"; };
 		296543571D62FE6200734698 /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
 		296543581D62FE6200734698 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		296543591D62FE6200734698 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HaishinKit.h; sourceTree = "<group>"; };
@@ -581,7 +574,6 @@
 		29B876811CD70AE800FC07DA /* ProgramSpecific.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramSpecific.swift; sourceTree = "<group>"; };
 		29B876821CD70AE800FC07DA /* TransportStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransportStream.swift; sourceTree = "<group>"; };
 		29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioIOComponent.swift; sourceTree = "<group>"; };
-		29B8768A1CD70AFE00FC07DA /* AudioStreamPlayback.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioStreamPlayback.swift; sourceTree = "<group>"; };
 		29B8768B1CD70AFE00FC07DA /* AVMixer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVMixer.swift; sourceTree = "<group>"; };
 		29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundTransform.swift; sourceTree = "<group>"; };
 		29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoIOComponent.swift; sourceTree = "<group>"; };
@@ -607,7 +599,6 @@
 		29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SampleVideo_360x240_5mb.m3u8; sourceTree = "<group>"; };
 		29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb.mp4; sourceTree = "<group>"; };
 		29C263171D00804A0098D4EF /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
-		29C3E9EF1ED1DDC800B7EA5B /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUtil.swift; sourceTree = "<group>"; };
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
@@ -624,7 +615,6 @@
 		29D3D5041ED053C000DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29D3D5051ED053C000DD4AA6 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		29D8067F204828D000F4504D /* VTSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTSession+Extension.swift"; sourceTree = "<group>"; };
-		29E5C0F91D05B32700407208 /* AudioUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioUtil.swift; sourceTree = "<group>"; };
 		29E796991ED197A800D75C6C /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
 		29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ExpressibleByIntegerLiteral+Extension.swift"; sourceTree = "<group>"; };
 		29EA87D71E79A0090043A5F8 /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
@@ -957,7 +947,6 @@
 		296543551D62FE4A00734698 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				296543561D62FE6200734698 /* AudioUtil.swift */,
 				296543571D62FE6200734698 /* GLHKView.swift */,
 				296543591D62FE6200734698 /* HaishinKit.h */,
 				2965435A1D62FE6200734698 /* HKView.swift */,
@@ -1040,7 +1029,6 @@
 		299F7E391CD71A86001E7272 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				29E5C0F91D05B32700407208 /* AudioUtil.swift */,
 				29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */,
 				29C263171D00804A0098D4EF /* GLHKView.swift */,
 				299F7E3B1CD71A97001E7272 /* HaishinKit.h */,
@@ -1078,7 +1066,6 @@
 			isa = PBXGroup;
 			children = (
 				29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */,
-				29B8768A1CD70AFE00FC07DA /* AudioStreamPlayback.swift */,
 				29B8768B1CD70AFE00FC07DA /* AVMixer.swift */,
 				2976A47D1D48C5C700B53EF2 /* AVMixerRecorder.swift */,
 				2976A4801D49025B00B53EF2 /* IOComponent.swift */,
@@ -1113,7 +1100,6 @@
 		29D3D4E41ED050F700DD4AA6 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				29C3E9EF1ED1DDC800B7EA5B /* AudioUtil.swift */,
 				292F6DB01EEBB2040097EDBE /* AVFoundation.swift */,
 				29E796991ED197A800D75C6C /* GLHKView.swift */,
 				29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */,
@@ -1711,7 +1697,6 @@
 				29EA87F01E79A4120043A5F8 /* CMSampleTimingInfo+Extension.swift in Sources */,
 				29B876691CD70AB300FC07DA /* Constants.swift in Sources */,
 				29B8766D1CD70AB300FC07DA /* DataConvertible.swift in Sources */,
-				29E5C0FE1D05B3B600407208 /* AudioUtil.swift in Sources */,
 				29B876781CD70ACE00FC07DA /* HTTPService.swift in Sources */,
 				2976A4861D4903C300B53EF2 /* DeviceUtil.swift in Sources */,
 				29C263181D00804A0098D4EF /* GLHKView.swift in Sources */,
@@ -1729,7 +1714,6 @@
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				2916196C1E7F0768009FB344 /* CMFormatDescription+Extension.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
-				29B876911CD70AFE00FC07DA /* AudioStreamPlayback.swift in Sources */,
 				29D80680204828D000F4504D /* VTSession+Extension.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				2938701421BD4B560040079C /* AtomicInteger64.swift in Sources */,
@@ -1775,7 +1759,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				296543601D62FE6A00734698 /* AudioUtil.swift in Sources */,
 				29B876EC1CD70D5900FC07DA /* AudioConverter.swift in Sources */,
 				29B876ED1CD70D5900FC07DA /* H264Decoder.swift in Sources */,
 				29B876EE1CD70D5900FC07DA /* H264Encoder.swift in Sources */,
@@ -1818,7 +1801,6 @@
 				296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */,
 				2958912F1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
 				29B877031CD70D5A00FC07DA /* AudioIOComponent.swift in Sources */,
-				29B877041CD70D5A00FC07DA /* AudioStreamPlayback.swift in Sources */,
 				29B877051CD70D5A00FC07DA /* AVMixer.swift in Sources */,
 				2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension.swift in Sources */,
 				2926A9EF1DE6B83F0074E3D2 /* MachUtil.swift in Sources */,
@@ -1961,7 +1943,6 @@
 				29EB3E171ED05893001CAE8B /* NetClient.swift in Sources */,
 				2958912C1EEB8F1D00CE51E1 /* FLVSoundSize.swift in Sources */,
 				295891241EEB8EC500CE51E1 /* FLVAVCPacketType.swift in Sources */,
-				29EB3E0E1ED0587A001CAE8B /* AudioStreamPlayback.swift in Sources */,
 				299D6A532051A9920090E10A /* MTHKView.swift in Sources */,
 				29EB3DF31ED05773001CAE8B /* CMAudioFormatDescription+Extension.swift in Sources */,
 				29EB3DFC1ED057AC001CAE8B /* HTTPRequest.swift in Sources */,
@@ -1973,7 +1954,6 @@
 				29EB3DF21ED05770001CAE8B /* DataConvertible.swift in Sources */,
 				29EB3E361ED05A35001CAE8B /* EventDispatcher.swift in Sources */,
 				29EB3E341ED05A30001CAE8B /* CRC32.swift in Sources */,
-				29C3E9F01ED1DDC800B7EA5B /* AudioUtil.swift in Sources */,
 				29EB3E181ED05896001CAE8B /* NetService.swift in Sources */,
 				295891281EEB8EF300CE51E1 /* FLVAACPacket.swift in Sources */,
 				29EB3E051ED05862001CAE8B /* MP4Reader.swift in Sources */,

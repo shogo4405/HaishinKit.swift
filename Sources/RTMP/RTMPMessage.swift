@@ -589,13 +589,6 @@ final class RTMPAudioMessage: RTMPMessage {
         guard codec.isSupported else {
             return
         }
-        if let config: AudioSpecificConfig = createAudioSpecificConfig() {
-            stream.mixer.audioIO.playback.fileTypeHint = kAudioFileAAC_ADTSType
-            stream.mixer.audioIO.playback.config = config
-            return
-        }
-        self.config = stream.mixer.audioIO.playback.config
-        stream.mixer.audioIO.playback.parseBytes(soundData)
     }
 
     func createAudioSpecificConfig() -> AudioSpecificConfig? {

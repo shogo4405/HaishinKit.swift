@@ -431,7 +431,6 @@ extension VideoIOComponent: VideoDecoderDelegate {
 extension VideoIOComponent: DisplayLinkedQueueDelegate {
     // MARK: DisplayLinkedQueue
     func queue(_ buffer: CMSampleBuffer) {
-        mixer?.audioIO.playback.startQueueIfNeed()
         drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
     }
 }
