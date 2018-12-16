@@ -209,11 +209,11 @@ extension TSWriter: AudioConverterDelegate {
         audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
     }
 
-    func sampleOutput(audio bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
+    func sampleOutput(audio bytes: UnsafeMutableRawPointer?, count: UInt32, presentationTimeStamp: CMTime) {
         writeSampleBuffer(
             TSWriter.defaultAudioPID,
             streamID: 192,
-            bytes: bytes,
+            bytes: bytes?.assumingMemoryBound(to: UInt8.self),
             count: count,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: .invalid,

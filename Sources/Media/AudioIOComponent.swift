@@ -4,6 +4,49 @@ final class AudioIOComponent: IOComponent {
     lazy var encoder: AudioConverter = AudioConverter()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
+    private var _audioEngine: AVAudioEngine?
+    private var audioEngine: AVAudioEngine! {
+        get {
+            if _audioEngine == nil {
+                _audioEngine = AVAudioEngine()
+            }
+            return _audioEngine
+        }
+        set {
+            if _audioEngine == newValue {
+                return
+            }
+            _audioEngine = nil
+        }
+    }
+    private var _playerNode: AVAudioPlayerNode?
+    private var playerNode: AVAudioPlayerNode! {
+        get {
+            if _playerNode == nil {
+                _playerNode = AVAudioPlayerNode()
+            }
+            return _playerNode
+        }
+        set {
+            if _playerNode == newValue {
+                return
+            }
+            _playerNode = nil
+        }
+    }
+    private var audioFormat: AVAudioFormat? {
+        didSet {
+            guard let audioEngine = audioEngine else { return }
+            audioEngine.attach(playerNode)
+            nstry({
+                self.audioEngine.connect(self.playerNode, to: audioEngine.outputNode, format: self.audioFormat)
+            }, { exeption in
+                logger.warn("\(exeption)")
+            })
+            try? audioEngine.start()
+        }
+    }
+
 #if os(iOS) || os(macOS)
     var input: AVCaptureDeviceInput? {
         didSet {
@@ -80,9 +123,13 @@ final class AudioIOComponent: IOComponent {
     func dispose() {
         input = nil
         output = nil
+        playerNode = nil
+        audioFormat = nil
     }
 #else
     func dispose() {
+        playerNode = nil
+        audioFormat = nil
     }
 #endif
 }
@@ -91,5 +138,40 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         appendSampleBuffer(sampleBuffer)
+    }
+}
+
+extension AudioIOComponent: AudioConverterDelegate {
+    // MARK: AudioConverterDelegate
+    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+        guard let formatDescription = formatDescription else { return }
+        if #available(iOSApplicationExtension 9.0, *) {
+            audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
+        } else {
+        }
+    }
+
+    func sampleOutput(audio bytes: UnsafeMutableRawPointer?, count: UInt32, presentationTimeStamp: CMTime) {
+        guard
+            let bytes = bytes,
+            let audioFormat = audioFormat,
+            let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: count / 4) else {
+            return
+        }
+
+        buffer.frameLength = buffer.frameCapacity
+        memcpy(buffer.mutableAudioBufferList.pointee.mBuffers.mData, bytes, Int(count))
+        buffer.mutableAudioBufferList.pointee.mBuffers.mDataByteSize = count
+        buffer.mutableAudioBufferList.pointee.mBuffers.mNumberChannels = 1
+
+        nstry({
+            self.playerNode.scheduleBuffer(buffer, completionHandler: {
+            })
+            if !self.playerNode.isPlaying {
+                self.playerNode.play()
+            }
+        }, { exeption in
+            logger.warn("\(exeption)")
+        })
     }
 }

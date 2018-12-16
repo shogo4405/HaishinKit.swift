@@ -104,10 +104,12 @@ extension AVMixer {
 
 extension AVMixer {
     final public func startPlaying() {
+        audioIO.encoder.delegate = audioIO
         videoIO.queue.startRunning()
     }
 
     final public func stopPlaying() {
+        audioIO.encoder.delegate = nil
         videoIO.queue.stopRunning()
     }
 }

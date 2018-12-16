@@ -527,22 +527,10 @@ final class RTMPSharedObjectMessage: RTMPMessage {
  7.1.5. Audio Message (9)
  */
 final class RTMPAudioMessage: RTMPMessage {
-    var config: AudioSpecificConfig?
-
     private(set) var codec: FLVAudioCodec = .unknown
     private(set) var soundRate: FLVSoundRate = .kHz44
     private(set) var soundSize: FLVSoundSize = .snd8bit
     private(set) var soundType: FLVSoundType = .stereo
-
-    var soundData: Data {
-        let data: Data = payload.isEmpty ? Data() : payload.advanced(by: codec.headerSize)
-        guard let config: AudioSpecificConfig = config else {
-            return data
-        }
-        var adts: Data = Data(config.adts(data.count))
-        adts.append(data)
-        return adts
-    }
 
     override var payload: Data {
         get {
@@ -589,20 +577,20 @@ final class RTMPAudioMessage: RTMPMessage {
         guard codec.isSupported else {
             return
         }
-    }
-
-    func createAudioSpecificConfig() -> AudioSpecificConfig? {
-        if payload.isEmpty, codec != .aac {
-            return nil
-        }
-
-        if payload[1] == FLVAACPacketType.seq.rawValue {
-            if let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count])) {
-                return config
+        switch FLVAACPacketType(rawValue: payload[1]) {
+        case .seq?:
+            let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
+            stream.mixer.audioIO.encoder.destination = .PCM
+            stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
+        case .raw?:
+            let computedSoundData = payload.advanced(by: codec.headerSize)
+            var data: Data = computedSoundData
+            data.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
+                stream.mixer.audioIO.encoder.encodeBytes(bytes, count: computedSoundData.count, presentationTimeStamp: .invalid)
             }
+        case .none:
+            break
         }
-
-        return nil
     }
 }
 
