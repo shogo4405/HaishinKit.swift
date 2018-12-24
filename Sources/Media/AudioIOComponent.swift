@@ -4,46 +4,46 @@ final class AudioIOComponent: IOComponent {
     lazy var encoder: AudioConverter = AudioConverter()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
-    private var _audioEngine: AVAudioEngine?
-    private var audioEngine: AVAudioEngine! {
-        get {
-            if _audioEngine == nil {
-                _audioEngine = AVAudioEngine()
-            }
-            return _audioEngine
-        }
-        set {
-            if _audioEngine == newValue {
-                return
-            }
-            _audioEngine = nil
+    var audioEngine: AVAudioEngine?
+
+    var soundTransform: SoundTransform = .init() {
+        didSet {
+            soundTransform.apply(playerNode)
         }
     }
+
     private var _playerNode: AVAudioPlayerNode?
     private var playerNode: AVAudioPlayerNode! {
         get {
             if _playerNode == nil {
                 _playerNode = AVAudioPlayerNode()
+                audioEngine?.attach(_playerNode!)
             }
             return _playerNode
         }
         set {
-            if _playerNode == newValue {
-                return
+            if let playerNode = _playerNode {
+                audioEngine?.detach(playerNode)
             }
-            _playerNode = nil
+            _playerNode = newValue
         }
     }
+
     private var audioFormat: AVAudioFormat? {
         didSet {
-            guard let audioEngine = audioEngine else { return }
-            audioEngine.attach(playerNode)
+            guard let audioFormat = audioFormat, let audioEngine = audioEngine else {
+                return
+            }
             nstry({
-                self.audioEngine.connect(self.playerNode, to: audioEngine.outputNode, format: self.audioFormat)
+                audioEngine.connect(self.playerNode, to: audioEngine.outputNode, format: audioFormat)
             }, { exeption in
-                logger.warn("\(exeption)")
+                logger.warn(exeption)
             })
-            try? audioEngine.start()
+            do {
+                try audioEngine.start()
+            } catch let error {
+                logger.warn(error)
+            }
         }
     }
 
@@ -148,25 +148,33 @@ extension AudioIOComponent: AudioConverterDelegate {
         if #available(iOSApplicationExtension 9.0, *) {
             audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
         } else {
+            guard let asbd = formatDescription.streamBasicDescription?.pointee else {
+                return
+            }
+            audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: asbd.mSampleRate, channels: asbd.mChannelsPerFrame, interleaved: false)
         }
     }
 
-    func sampleOutput(audio bytes: UnsafeMutableRawPointer?, count: UInt32, presentationTimeStamp: CMTime) {
+    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
+        guard !data.isEmpty else { return }
+
         guard
-            let bytes = bytes,
             let audioFormat = audioFormat,
-            let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: count / 4) else {
+            let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: data[0].mDataByteSize / 4) else {
             return
         }
 
         buffer.frameLength = buffer.frameCapacity
-        memcpy(buffer.mutableAudioBufferList.pointee.mBuffers.mData, bytes, Int(count))
-        buffer.mutableAudioBufferList.pointee.mBuffers.mDataByteSize = count
-        buffer.mutableAudioBufferList.pointee.mBuffers.mNumberChannels = 1
+        let bufferList = UnsafeMutableAudioBufferListPointer(buffer.mutableAudioBufferList)
+        for i in 0..<bufferList.count {
+            guard let mData = data[i].mData else { continue }
+            memcpy(bufferList[i].mData, mData, Int(data[i].mDataByteSize))
+            bufferList[i].mDataByteSize = data[i].mDataByteSize
+            bufferList[i].mNumberChannels = 1
+        }
 
         nstry({
-            self.playerNode.scheduleBuffer(buffer, completionHandler: {
-            })
+            self.playerNode.scheduleBuffer(buffer, completionHandler: nil)
             if !self.playerNode.isPlaying {
                 self.playerNode.play()
             }

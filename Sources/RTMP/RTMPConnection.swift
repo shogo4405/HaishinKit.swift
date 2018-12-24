@@ -1,4 +1,5 @@
 import Foundation
+import AVFoundation
 
 /**
  flash.net.Responder for Swift
@@ -205,6 +206,19 @@ open class RTMPConnection: EventDispatcher {
     }
     var windowSizeS: Int64 = RTMPConnection.defaultWindowSizeS
     var currentTransactionId: Int = 0
+
+    private var _audioEngine: AVAudioEngine?
+    var audioEngine: AVAudioEngine! {
+        get {
+            if _audioEngine == nil {
+                _audioEngine = AVAudioEngine()
+            }
+            return _audioEngine
+        }
+        set {
+            _audioEngine = newValue
+        }
+    }
 
     private var timer: Timer? {
         didSet {

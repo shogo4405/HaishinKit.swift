@@ -67,14 +67,12 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        /*
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             logger.warn(error.description)
         }
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
             logger.warn(error.description)
         }
-        */
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
     }
@@ -142,7 +140,7 @@ final class LiveViewController: UIViewController {
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.play(Preference.defaultInstance.streamName!)
+                rtmpStream!.publish(Preference.defaultInstance.streamName!)
                 // sharedObject!.connect(rtmpConnection)
             default:
                 break

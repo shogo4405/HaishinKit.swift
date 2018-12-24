@@ -210,6 +210,10 @@ open class RTMPStream: NetStream {
     open internal(set) var info: RTMPStreamInfo = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
+    open var soundTransform: SoundTransform {
+        get { return mixer.audioIO.soundTransform }
+        set { mixer.audioIO.soundTransform = newValue }
+    }
 
     var id: UInt32 = RTMPStream.defaultID
     var readyState: ReadyState = .initialized {
@@ -242,7 +246,7 @@ open class RTMPStream: NetStream {
                 info.clear()
                 delegate?.clear()
             case .playing:
-                mixer.startPlaying()
+                mixer.startPlaying(rtmpConnection.audioEngine)
             case .publish:
                 muxer.dispose()
                 muxer.delegate = self

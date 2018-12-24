@@ -2,7 +2,7 @@ import AVFoundation
 
 protocol AudioConverterDelegate: class {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
-    func sampleOutput(audio bytes: UnsafeMutableRawPointer?, count: UInt32, presentationTimeStamp: CMTime)
+    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
 }
 
 // MARK: -
@@ -33,7 +33,7 @@ final class AudioConverter: NSObject {
             case .AAC:
                 return UInt32(MPEG4ObjectID.AAC_LC.rawValue)
             case .PCM:
-                return kAudioFormatFlagsNativeFloatPacked
+                return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat
             }
         }
 
@@ -46,12 +46,30 @@ final class AudioConverter: NSObject {
             }
         }
 
+        var packetSize: UInt32 {
+            switch self {
+            case .AAC:
+                return 1
+            case .PCM:
+                return 1024
+            }
+        }
+
         var bitsPerChannel: UInt32 {
             switch self {
             case .AAC:
                 return 0
             case .PCM:
                 return 32
+            }
+        }
+
+        var bytePerFrame: UInt32 {
+            switch self {
+            case .AAC:
+                return 0
+            case .PCM:
+                return (bitsPerChannel / 8)
             }
         }
 
@@ -71,12 +89,12 @@ final class AudioConverter: NSObject {
             }
         }
 
-        func bytePerFrame(_ channel: UInt32) -> UInt32 {
+        func mamimumBuffers(_ channel: UInt32) -> Int {
             switch self {
             case .AAC:
-                return 0
+                return 1
             case .PCM:
-                return (bitsPerChannel / 8) * channel
+                return Int(channel)
             }
         }
 
@@ -87,9 +105,9 @@ final class AudioConverter: NSObject {
                 mSampleRate: sampleRate == 0 ? inSourceFormat.mSampleRate : sampleRate,
                 mFormatID: formatID,
                 mFormatFlags: formatFlags,
-                mBytesPerPacket: bytePerFrame(destinationChannels),
+                mBytesPerPacket: bytePerFrame,
                 mFramesPerPacket: framesPerPacket,
-                mBytesPerFrame: bytePerFrame(destinationChannels),
+                mBytesPerFrame: bytePerFrame,
                 mChannelsPerFrame: destinationChannels,
                 mBitsPerChannel: bitsPerChannel,
                 mReserved: 0
@@ -223,7 +241,7 @@ final class AudioConverter: NSObject {
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mData = UnsafeMutableRawPointer(mutating: bytes)
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
-        convert(Int(1024 * destination.bytePerFrame(1)), presentationTimeStamp: presentationTimeStamp)
+        convert(Int(1024 * destination.bytePerFrame), presentationTimeStamp: presentationTimeStamp)
     }
 
     func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
@@ -266,12 +284,15 @@ final class AudioConverter: NSObject {
     private func convert(_ dataBytesSize: Int = 0, presentationTimeStamp: CMTime) {
         var finished: Bool = false
         repeat {
-            var ioOutputDataPacketSize: UInt32 = 1024
+            var ioOutputDataPacketSize: UInt32 = destination.packetSize
 
-            let outOutputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
-            outOutputData[0].mNumberChannels = inDestinationFormat.mChannelsPerFrame
-            outOutputData[0].mDataByteSize = UInt32(dataBytesSize)
-            outOutputData[0].mData = UnsafeMutableRawPointer.allocate(byteCount: dataBytesSize, alignment: 0)
+            let mamimumBuffers = destination.mamimumBuffers((channels == 0) ? inSourceFormat?.mChannelsPerFrame ?? 1 : channels)
+            let outOutputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: mamimumBuffers)
+            for i in 0..<mamimumBuffers {
+                outOutputData[i].mNumberChannels = inDestinationFormat.mChannelsPerFrame
+                outOutputData[i].mDataByteSize = UInt32(dataBytesSize)
+                outOutputData[i].mData = UnsafeMutableRawPointer.allocate(byteCount: dataBytesSize, alignment: 0)
+            }
 
             let status: OSStatus = AudioConverterFillComplexBuffer(
                 converter,
@@ -286,16 +307,16 @@ final class AudioConverter: NSObject {
             // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
             case noErr, kAudioConverterErr_InvalidInputSize:
                 delegate?.sampleOutput(
-                    audio: outOutputData[0].mData,
-                    count: outOutputData[0].mDataByteSize,
+                    audio: outOutputData,
                     presentationTimeStamp: presentationTimeStamp
                 )
             case -1:
-                delegate?.sampleOutput(
-                    audio: outOutputData[0].mData,
-                    count: outOutputData[0].mDataByteSize,
-                    presentationTimeStamp: presentationTimeStamp
-                )
+                if destination == .PCM {
+                    delegate?.sampleOutput(
+                        audio: outOutputData,
+                        presentationTimeStamp: presentationTimeStamp
+                    )
+                }
                 finished = true
             default:
                 finished = true
@@ -332,7 +353,8 @@ final class AudioConverter: NSObject {
 
         memcpy(ioData, bufferList.unsafePointer, bufferListSize)
         ioNumberDataPackets.pointee = 1
-        if outDataPacketDescription != nil {
+
+        if destination == .PCM && outDataPacketDescription != nil {
             audioStreamPacketDescription.mStartOffset = 0
             audioStreamPacketDescription.mDataByteSize = currentBufferList?.unsafePointer.pointee.mBuffers.mDataByteSize ?? 0
             audioStreamPacketDescription.mVariableFramesInPacket = 0
