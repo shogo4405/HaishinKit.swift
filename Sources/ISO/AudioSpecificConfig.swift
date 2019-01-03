@@ -60,18 +60,18 @@ struct AudioSpecificConfig {
         return adts
     }
 
-    func createAudioStreamBasicDescription() -> AudioStreamBasicDescription {
-        var asbd: AudioStreamBasicDescription = AudioStreamBasicDescription()
-        asbd.mSampleRate = frequency.sampleRate
-        asbd.mFormatID = kAudioFormatMPEG4AAC
-        asbd.mFormatFlags = UInt32(type.rawValue)
-        asbd.mBytesPerPacket = 0
-        asbd.mFramesPerPacket = frameLengthFlag ? 960 : 1024
-        asbd.mBytesPerFrame = 0
-        asbd.mChannelsPerFrame = UInt32(channel.rawValue)
-        asbd.mBitsPerChannel = 0
-        asbd.mReserved = 0
-        return asbd
+    func audioStreamBasicDescription() -> AudioStreamBasicDescription {
+        return AudioStreamBasicDescription(
+            mSampleRate: frequency.sampleRate,
+            mFormatID: kAudioFormatMPEG4AAC,
+            mFormatFlags: UInt32(type.rawValue),
+            mBytesPerPacket: 0,
+            mFramesPerPacket: frameLengthFlag ? 960 : 1024,
+            mBytesPerFrame: 0,
+            mChannelsPerFrame: UInt32(channel.rawValue),
+            mBitsPerChannel: 0,
+            mReserved: 0
+        )
     }
 }
 

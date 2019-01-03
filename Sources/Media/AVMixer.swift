@@ -103,13 +103,15 @@ extension AVMixer {
 }
 
 extension AVMixer {
-    final public func startPlaying() {
-        audioIO.playback.startRunning()
+    final public func startPlaying(_ audioEngine: AVAudioEngine?) {
+        audioIO.audioEngine = audioEngine
+        audioIO.encoder.delegate = audioIO
         videoIO.queue.startRunning()
     }
 
     final public func stopPlaying() {
-        audioIO.playback.stopRunning()
+        audioIO.audioEngine = nil
+        audioIO.encoder.delegate = nil
         videoIO.queue.stopRunning()
     }
 }
