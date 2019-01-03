@@ -59,8 +59,7 @@ final class AudioConverterTests: XCTestCase {
 
 extension AudioConverterTests: AudioConverterDelegate {
     // MARK: AudioConverterDelegate
-    func sampleOutput(audio bytes: UnsafeMutablePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime) {
-        
+    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
     }
 
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
