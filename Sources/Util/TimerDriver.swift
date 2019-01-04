@@ -49,7 +49,7 @@ extension TimerDriver: Running {
         return runloop != nil
     }
 
-    public final func startRunning() {
+    public func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
             guard self.runloop == nil else {
                 return
@@ -64,7 +64,7 @@ extension TimerDriver: Running {
         }
     }
 
-    public final func stopRunning() {
+    public func stopRunning() {
         guard let runloop: RunLoop = runloop else {
             return
         }

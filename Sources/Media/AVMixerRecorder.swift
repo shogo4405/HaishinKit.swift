@@ -125,7 +125,7 @@ open class AVMixerRecorder: NSObject {
 
 extension AVMixerRecorder: Running {
     // MARK: Running
-    public final func startRunning() {
+    public func startRunning() {
         lockQueue.async {
             guard !self.isRunning else {
                 return
@@ -135,7 +135,7 @@ extension AVMixerRecorder: Running {
         }
     }
 
-    public final func stopRunning() {
+    public func stopRunning() {
         lockQueue.async {
             guard self.isRunning else {
                 return

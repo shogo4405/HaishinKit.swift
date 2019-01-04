@@ -86,7 +86,7 @@ extension NetService: NetClientDelegate {
 
 extension NetService: Running {
     // MARK: Runnbale
-    public final func startRunning() {
+    public func startRunning() {
         lockQueue.async {
             if self.isRunning {
                 return
@@ -96,7 +96,7 @@ extension NetService: Running {
         }
     }
 
-    public final func stopRunning() {
+    public func stopRunning() {
         lockQueue.async {
             if !self.isRunning {
                 return

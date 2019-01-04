@@ -65,7 +65,7 @@ public class MP4Sampler {
 
 extension MP4Sampler: Running {
     // MARK: Running
-    public final func startRunning() {
+    public func startRunning() {
         loopQueue.async {
             self.isRunning = true
             while self.isRunning {
@@ -79,7 +79,7 @@ extension MP4Sampler: Running {
         }
     }
 
-    public final func stopRunning() {
+    public func stopRunning() {
         lockQueue.async {
             self.isRunning = false
         }

@@ -40,7 +40,7 @@ open class NetSocket: NSObject {
     }
 
     @discardableResult
-    public final func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
+    public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         outputQueue.async {
             data.withUnsafeBytes { (buffer: UnsafePointer<UInt8>) -> Void in
