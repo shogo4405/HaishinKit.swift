@@ -387,6 +387,7 @@ final class VideoIOComponent: IOComponent {
         mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
     }
 
+    @inline(__always)
     func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
         var image = CIImage(cvPixelBuffer: buffer)
         for effect in effects {

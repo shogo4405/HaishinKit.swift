@@ -197,7 +197,7 @@ public class TSWriter: Running {
 
 extension TSWriter: AudioConverterDelegate {
     // MARK: AudioConverterDelegate
-    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    public func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription: CMAudioFormatDescription = formatDescription else {
             return
         }
@@ -209,7 +209,7 @@ extension TSWriter: AudioConverterDelegate {
         audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
     }
 
-    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
+    public func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
         guard !data.isEmpty else { return }
         writeSampleBuffer(
             TSWriter.defaultAudioPID,

@@ -1,6 +1,6 @@
 import AVFoundation
 
-protocol AudioConverterDelegate: class {
+public protocol AudioConverterDelegate: class {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
 }
@@ -10,12 +10,12 @@ protocol AudioConverterDelegate: class {
  - seealse:
   - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
-final class AudioConverter: NSObject {
+public class AudioConverter: NSObject {
     enum Error: Swift.Error {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
 
-    enum Destination {
+    public enum Destination {
         case AAC
         case PCM
 
@@ -122,16 +122,18 @@ final class AudioConverter: NSObject {
         "actualBitrate"
     ]
 
-    static let minimumBitrate: UInt32 = 8 * 1024
-    static let defaultBitrate: UInt32 = 32 * 1024
+    public static let minimumBitrate: UInt32 = 8 * 1024
+    public static let defaultBitrate: UInt32 = 32 * 1024
     // 0 means according to a input source
-    static let defaultChannels: UInt32 = 0
+    public static let defaultChannels: UInt32 = 0
     // 0 means according to a input source
-    static let defaultSampleRate: Double = 0
-    static let defaultMaximumBuffers: Int = 1
-    static let defaultBufferListSize: Int = AudioBufferList.sizeInBytes(maximumBuffers: 1)
+    public static let defaultSampleRate: Double = 0
+    public static let defaultMaximumBuffers: Int = 1
+    public static let defaultBufferListSize: Int = AudioBufferList.sizeInBytes(maximumBuffers: 1)
 
-    var destination: Destination = .AAC
+    public var destination: Destination = .AAC
+    public weak var delegate: AudioConverterDelegate?
+    public private(set) var isRunning: Bool = false
 
     @objc var muted: Bool = false
 
@@ -163,8 +165,6 @@ final class AudioConverter: NSObject {
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioConverter.lock")
-    weak var delegate: AudioConverterDelegate?
-    private(set) var isRunning: Bool = false
     private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
     private var bufferListSize: Int = AudioConverter.defaultBufferListSize
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
@@ -236,7 +236,7 @@ final class AudioConverter: NSObject {
         return _converter!
     }
 
-    func encodeBytes(_ bytes: UnsafeMutablePointer<UInt8>, count: Int, presentationTimeStamp: CMTime) {
+    public func encodeBytes(_ bytes: UnsafeMutablePointer<UInt8>, count: Int, presentationTimeStamp: CMTime) {
         currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mData = UnsafeMutableRawPointer(mutating: bytes)
@@ -244,7 +244,7 @@ final class AudioConverter: NSObject {
         convert(Int(1024 * destination.bytePerFrame), presentationTimeStamp: presentationTimeStamp)
     }
 
-    func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    public func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, isRunning else {
             return
         }
@@ -395,12 +395,13 @@ final class AudioConverter: NSObject {
 
 extension AudioConverter: Running {
     // MARK: Running
-    func startRunning() {
+    public func startRunning() {
         lockQueue.async {
             self.isRunning = true
         }
     }
-    func stopRunning() {
+
+    public func stopRunning() {
         lockQueue.async {
             if let convert: AudioQueueRef = self._converter {
                 AudioConverterDispose(convert)
