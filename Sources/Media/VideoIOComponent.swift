@@ -384,7 +384,7 @@ final class VideoIOComponent: IOComponent {
             duration: sampleBuffer.duration
         )
 
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .video)
+        mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
     }
 
     func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {

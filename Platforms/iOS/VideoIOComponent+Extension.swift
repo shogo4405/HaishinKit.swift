@@ -51,6 +51,7 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             self.encoder.height = Int32(size.height)
         }
     }
+
     func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
         if !effects.isEmpty {
             context?.render(effect(pixelBuffer, info: nil), to: pixelBuffer)
