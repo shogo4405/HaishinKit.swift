@@ -145,7 +145,8 @@ extension AudioIOComponent: AudioConverterDelegate {
     // MARK: AudioConverterDelegate
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription = formatDescription else { return }
-        if #available(iOSApplicationExtension 9.0, *) {
+        #if os(iOS)
+        if #available(iOS 9.0, *) {
             audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
         } else {
             guard let asbd = formatDescription.streamBasicDescription?.pointee else {
@@ -153,6 +154,9 @@ extension AudioIOComponent: AudioConverterDelegate {
             }
             audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: asbd.mSampleRate, channels: asbd.mChannelsPerFrame, interleaved: false)
         }
+        #else
+            audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
+        #endif
     }
 
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
