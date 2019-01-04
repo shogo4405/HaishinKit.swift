@@ -131,7 +131,7 @@ final class H264Encoder: NSObject {
     }
     weak var delegate: VideoEncoderDelegate?
 
-    internal(set) var isRunning: Bool = false
+    private(set) var isRunning: Bool = false
     private var supportedProperty: [AnyHashable: Any]? {
         didSet {
             guard logger.isEnabledFor(level: .info) else {

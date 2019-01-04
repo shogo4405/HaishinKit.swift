@@ -6,8 +6,8 @@ import VideoToolbox
 
 let sampleRate: Double = 44_100
 
-class ExampleRecorderDelegate: DefaultAVMixerRecorderDelegate {
-    override func didFinishWriting(_ recorder: AVMixerRecorder) {
+class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
+    override func didFinishWriting(_ recorder: AVRecorder) {
         guard let writer: AVAssetWriter = recorder.writer else { return }
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)

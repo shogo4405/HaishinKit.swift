@@ -61,11 +61,11 @@ public class AVMixer: NSObject {
         }
     }
 #endif
-    private var _recorder: AVMixerRecorder?
+    private var _recorder: AVRecorder?
     /// The recorder instance.
-    public var recorder: AVMixerRecorder! {
+    public var recorder: AVRecorder! {
         if _recorder == nil {
-            _recorder = AVMixerRecorder()
+            _recorder = AVRecorder()
         }
         return _recorder
     }

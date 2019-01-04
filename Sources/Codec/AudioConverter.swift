@@ -164,7 +164,7 @@ final class AudioConverter: NSObject {
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioConverter.lock")
     weak var delegate: AudioConverterDelegate?
-    internal(set) var isRunning: Bool = false
+    private(set) var isRunning: Bool = false
     private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
     private var bufferListSize: Int = AudioConverter.defaultBufferListSize
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
