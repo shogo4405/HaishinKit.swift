@@ -1,7 +1,7 @@
 public enum FLVTagType: UInt8 {
     case audio = 8
     case video = 9
-    case data  = 18
+    case data = 18
 
     var streamId: UInt16 {
         switch self {
@@ -44,7 +44,7 @@ extension FLVTag {
 
     init?(data: Data) {
         self.init()
-        let buffer: ByteArray = ByteArray(data: data)
+        let buffer = ByteArray(data: data)
         do {
             tagType = FLVTagType(rawValue: try buffer.readUInt8()) ?? .data
             dataSize = try buffer.readUInt24()
@@ -70,7 +70,7 @@ public struct FLVDataTag: FLVTag {
     public init() {
     }
 
-    mutating public func readData(_ fileHandler: FileHandle) {
+    public mutating func readData(_ fileHandler: FileHandle) {
     }
 }
 
@@ -90,7 +90,7 @@ public struct FLVAudioTag: FLVTag {
     public init() {
     }
 
-    mutating public func readData(_ fileHandler: FileHandle) {
+    public mutating func readData(_ fileHandler: FileHandle) {
         let data: Data = fileHandler.readData(ofLength: headerSize)
         codec = FLVAudioCodec(rawValue: data[0] >> 4) ?? .unknown
         soundRate = FLVSoundRate(rawValue: (data[0] & 0b00001100) >> 2) ?? .kHz5_5
@@ -115,7 +115,7 @@ public struct FLVVideoTag: FLVTag {
     public init() {
     }
 
-    mutating public func readData(_ fileHandler: FileHandle) {
+    public mutating func readData(_ fileHandler: FileHandle) {
         let data: Data = fileHandler.readData(ofLength: headerSize)
         frameType = FLVFrameType(rawValue: data[0] >> 4) ?? .command
         codec = FLVVideoCodec(rawValue: data[0] & 0b00001111) ?? .unknown

@@ -1,12 +1,15 @@
 import Foundation
 
 @objc protocol NetClientDelegate: class {
-    @objc optional func client(inputBuffer client: NetClient)
-    @objc optional func client(didAccepetConnection client: NetClient)
+    @objc
+    optional func client(inputBuffer client: NetClient)
+
+    @objc
+    optional func client(didAccepetConnection client: NetClient)
 }
 
 // MARK: -
-final public class NetClient: NetSocket {
+public final class NetClient: NetSocket {
     weak var delegate: NetClientDelegate?
     private(set) var service: Foundation.NetService?
 

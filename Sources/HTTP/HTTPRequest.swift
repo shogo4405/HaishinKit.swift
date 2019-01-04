@@ -23,12 +23,12 @@ extension HTTPRequestCompatible {
             var lines: [String] = []
             let bytes: [Data.SubSequence] = newValue.split(separator: HTTPRequest.separator)
             for i in 0..<bytes.count {
-                guard let line: String = String(bytes: [UInt8](bytes[i]), encoding: .utf8) else {
+                guard let line = String(bytes: [UInt8](bytes[i]), encoding: .utf8) else {
                     continue
                 }
                 let newLine: String = line.trimmingCharacters(in: .newlines)
-                if newLine == "" {
-                    body = Data(bytes[i+1..<bytes.count].joined(separator: [HTTPRequest.separator]))
+                if newLine.isEmpty {
+                    body = Data(bytes[i + 1..<bytes.count].joined(separator: [HTTPRequest.separator]))
                     break
                 }
                 lines.append(newLine)

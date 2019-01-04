@@ -3,22 +3,22 @@ import AVFoundation
 class RTMPMessage {
 
     enum `Type`: UInt8 {
-        case chunkSize   = 0x01
-        case abort       = 0x02
-        case ack         = 0x03
-        case user        = 0x04
-        case windowAck   = 0x05
-        case bandwidth   = 0x06
-        case audio       = 0x08
-        case video       = 0x09
-        case amf3Data    = 0x0F
-        case amf3Shared  = 0x10
+        case chunkSize = 0x01
+        case abort = 0x02
+        case ack = 0x03
+        case user = 0x04
+        case windowAck = 0x05
+        case bandwidth = 0x06
+        case audio = 0x08
+        case video = 0x09
+        case amf3Data = 0x0F
+        case amf3Shared = 0x10
         case amf3Command = 0x11
-        case amf0Data    = 0x12
-        case amf0Shared  = 0x13
+        case amf0Data = 0x12
+        case amf0Shared = 0x13
         case amf0Command = 0x14
-        case aggregate   = 0x16
-        case unknown     = 0xFF
+        case aggregate = 0x16
+        case unknown = 0xFF
     }
 
     static func create(_ value: UInt8) -> RTMPMessage? {
@@ -54,7 +54,7 @@ class RTMPMessage {
         case .aggregate?:
             return RTMPAggregateMessage()
         default:
-            guard let type: Type = Type(rawValue: value) else {
+            guard let type = Type(rawValue: value) else {
                 logger.error("\(value)")
                 return nil
             }
@@ -66,7 +66,7 @@ class RTMPMessage {
     var length: Int = 0
     var streamId: UInt32 = 0
     var timestamp: UInt32 = 0
-    var payload: Data = Data()
+    var payload = Data()
 
     init(type: Type) {
         self.type = type
@@ -223,8 +223,8 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
 final class RTMPSetPeerBandwidthMessage: RTMPMessage {
 
     enum Limit: UInt8 {
-        case hard    = 0x00
-        case soft    = 0x01
+        case hard = 0x00
+        case soft = 0x01
         case dynamic = 0x02
         case unknown = 0xFF
     }
@@ -241,7 +241,7 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
             guard super.payload.isEmpty else {
                 return super.payload
             }
-            var payload: Data = Data()
+            var payload = Data()
             payload.append(size.bigEndian.data)
             payload.append(limit.rawValue)
             super.payload = payload
@@ -341,7 +341,7 @@ final class RTMPCommandMessage: RTMPMessage {
             case "close":
                 connection.close(isDisconnected: true)
             default:
-                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.first ?? nil)
+                connection.dispatch(Event.RTMP_STATUS, bubbles: false, data: arguments.first)
             }
             return
         }
@@ -443,7 +443,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
     let objectEncoding: UInt8
     var sharedObjectName: String = ""
     var currentVersion: UInt32 = 0
-    var flags: Data = Data(count: 8)
+    var flags = Data(count: 8)
     var events: [RTMPSharedObjectEvent] = []
 
     override var payload: Data {
@@ -544,10 +544,10 @@ final class RTMPAudioMessage: RTMPMessage {
             super.payload = newValue
 
             if length == newValue.count && !newValue.isEmpty {
-                guard let codec: FLVAudioCodec = FLVAudioCodec(rawValue: newValue[0] >> 4),
-                    let soundRate: FLVSoundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
-                    let soundSize: FLVSoundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
-                    let soundType: FLVSoundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
+                guard let codec = FLVAudioCodec(rawValue: newValue[0] >> 4),
+                    let soundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
+                    let soundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
+                    let soundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
                     return
                 }
                 self.codec = codec
@@ -634,8 +634,8 @@ final class RTMPVideoMessage: RTMPMessage {
     func enqueueSampleBuffer(_ stream: RTMPStream) {
         stream.videoTimestamp += Double(timestamp)
 
-        let compositionTimeoffset: Int32 = Int32(data: [0] + payload[2..<5]).bigEndian
-        var timing: CMSampleTimingInfo = CMSampleTimingInfo(
+        let compositionTimeoffset = Int32(data: [0] + payload[2..<5]).bigEndian
+        var timing = CMSampleTimingInfo(
             duration: CMTimeMake(value: Int64(timestamp), timescale: 1000),
             presentationTimeStamp: CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(compositionTimeoffset), timescale: 1000),
             decodeTimeStamp: CMTime.invalid
@@ -660,7 +660,7 @@ final class RTMPVideoMessage: RTMPMessage {
     }
 
     func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
-        var config: AVCConfigurationRecord = AVCConfigurationRecord()
+        var config = AVCConfigurationRecord()
         config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
     }
@@ -684,15 +684,15 @@ final class RTMPUserControlMessage: RTMPMessage {
 
     enum Event: UInt8 {
         case streamBegin = 0x00
-        case streamEof   = 0x01
-        case streamDry   = 0x02
-        case setBuffer   = 0x03
-        case recorded    = 0x04
-        case ping        = 0x06
-        case pong        = 0x07
+        case streamEof = 0x01
+        case streamDry = 0x02
+        case setBuffer = 0x03
+        case recorded = 0x04
+        case ping = 0x06
+        case pong = 0x07
         case bufferEmpty = 0x1F
-        case bufferFull  = 0x20
-        case unknown     = 0xFF
+        case bufferFull = 0x20
+        case unknown = 0xFF
 
         var bytes: [UInt8] {
             return [0x00, rawValue]
@@ -717,7 +717,7 @@ final class RTMPUserControlMessage: RTMPMessage {
                 return
             }
             if length == newValue.count {
-                if let event: Event = Event(rawValue: newValue[1]) {
+                if let event = Event(rawValue: newValue[1]) {
                     self.event = event
                 }
                 value = Int32(data: newValue[2..<newValue.count]).bigEndian

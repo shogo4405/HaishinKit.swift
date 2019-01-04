@@ -209,7 +209,7 @@ final class AudioConverter: NSObject {
         ioData: UnsafeMutablePointer<AudioBufferList>,
         outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?,
         inUserData: UnsafeMutableRawPointer?) in
-        return Unmanaged<AudioConverter>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
+        Unmanaged<AudioConverter>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
             ioNumberDataPackets,
             ioData: ioData,
             outDataPacketDescription: outDataPacketDescription
@@ -281,7 +281,7 @@ final class AudioConverter: NSObject {
     }
 
     @inline(__always)
-    private func convert(_ dataBytesSize: Int = 0, presentationTimeStamp: CMTime) {
+    private func convert(_ dataBytesSize: Int, presentationTimeStamp: CMTime) {
         var finished: Bool = false
         repeat {
             var ioOutputDataPacketSize: UInt32 = destination.packetSize

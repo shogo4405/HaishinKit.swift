@@ -6,7 +6,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var timeout: Int64 = 0
     var chunkSizeC: Int = RTMPChunk.defaultSize
     var chunkSizeS: Int = RTMPChunk.defaultSize
-    var inputBuffer: Data = Data()
+    var inputBuffer = Data()
     var securityLevel: StreamSocketSecurityLevel = .none
     weak var delegate: RTMPSocketDelegate?
     var connected: Bool = false {
@@ -54,13 +54,13 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var baseURL: URL!
     private var session: URLSession!
     private var request: URLRequest!
-    private var c2packet: Data = Data()
-    private var handshake: RTMPHandshake = RTMPHandshake()
+    private var c2packet = Data()
+    private var handshake = RTMPHandshake()
     private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
     private var connectionID: String?
     private var isRequesting: Bool = false
-    private var outputBuffer: Data = Data()
-    private var lastResponse: Date = Date()
+    private var outputBuffer = Data()
+    private var lastResponse = Date()
     private var lastRequestPathComponent: String?
     private var lastRequestData: Data?
     private var isRetryingRequest: Bool = true
@@ -70,7 +70,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     func connect(withName: String, port: Int) {
-        let config: URLSessionConfiguration = URLSessionConfiguration.default
+        let config = URLSessionConfiguration.default
         config.httpShouldUsePipelining = true
         config.httpAdditionalHeaders = [
             "Content-Type": RTMPTSocket.contentType,
@@ -253,7 +253,8 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         listen(data: data, response: response, error: error)
     }
 
-    @objc private func on(timer: Timer) {
+    @objc
+    private func on(timer: Timer) {
         guard (Double(delay) / 10) < abs(lastResponse.timeIntervalSinceNow), !isRequesting else {
             return
         }
@@ -261,7 +262,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     @discardableResult
-    final private func doOutput(data: Data) -> Int {
+    private func doOutput(data: Data) -> Int {
         guard let connectionID: String = connectionID, connected else {
             return 0
         }

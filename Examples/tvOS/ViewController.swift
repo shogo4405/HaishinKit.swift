@@ -4,7 +4,7 @@ import UIKit
 final class ViewController: UIViewController {
     @IBOutlet private weak var lfView: GLHKView!
 
-    var rtmpConnection: RTMPConnection = RTMPConnection()
+    var rtmpConnection = RTMPConnection()
     var rtmpStream: RTMPStream!
 
     override func viewDidLoad() {
@@ -19,8 +19,9 @@ final class ViewController: UIViewController {
         lfView?.attachStream(rtmpStream)
     }
 
-    @objc func rtmpStatusHandler(_ notification: Notification) {
-        let e: Event = Event.from(notification)
+    @objc
+    func rtmpStatusHandler(_ notification: Notification) {
+        let e = Event.from(notification)
 
         guard
             let data: ASObject = e.data as? ASObject,

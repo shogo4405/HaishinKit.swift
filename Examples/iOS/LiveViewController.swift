@@ -1,7 +1,7 @@
-import HaishinKit
-import UIKit
 import AVFoundation
+import HaishinKit
 import Photos
+import UIKit
 import VideoToolbox
 
 let sampleRate: Double = 44_100
@@ -11,10 +11,10 @@ class ExampleRecorderDelegate: DefaultAVMixerRecorderDelegate {
         guard let writer: AVAssetWriter = recorder.writer else { return }
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { (_, error) -> Void in
+        }, completionHandler: { _, error -> Void in
             do {
                 try FileManager.default.removeItem(at: writer.outputURL)
-            } catch let error {
+            } catch {
                 print(error)
             }
         })
@@ -22,7 +22,7 @@ class ExampleRecorderDelegate: DefaultAVMixerRecorderDelegate {
 }
 
 final class LiveViewController: UIViewController {
-    var rtmpConnection: RTMPConnection = RTMPConnection()
+    var rtmpConnection = RTMPConnection()
     var rtmpStream: RTMPStream!
     var sharedObject: RTMPSharedObject!
     var currentEffect: VisualEffect?
@@ -135,8 +135,9 @@ final class LiveViewController: UIViewController {
         publish.isSelected = !publish.isSelected
     }
 
-    @objc func rtmpStatusHandler(_ notification: Notification) {
-        let e: Event = Event.from(notification)
+    @objc
+    func rtmpStatusHandler(_ notification: Notification) {
+        let e = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:
@@ -151,8 +152,7 @@ final class LiveViewController: UIViewController {
     func tapScreen(_ gesture: UIGestureRecognizer) {
         if let gestureView = gesture.view, gesture.state == .ended {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
-            let pointOfInterest: CGPoint = CGPoint(x: touchPoint.x/gestureView.bounds.size.width,
-                y: touchPoint.y/gestureView.bounds.size.height)
+            let pointOfInterest = CGPoint(x: touchPoint.x / gestureView.bounds.size.width, y: touchPoint.y / gestureView.bounds.size.height)
             print("pointOfInterest: \(pointOfInterest)")
             rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
         }

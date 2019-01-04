@@ -2,7 +2,7 @@ import Foundation
 
 /// Atomic<T> class
 /// @see https://www.objc.io/blog/2018/12/18/atomic-variables/
-final public class Atomic<A> {
+public final class Atomic<A> {
     private let queue = DispatchQueue(label: "com.haishinkit.HaishinKit.Atomic")
     private var _value: A
 

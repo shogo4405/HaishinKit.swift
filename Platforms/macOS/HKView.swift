@@ -29,11 +29,12 @@ open class HKView: NSView {
         awakeFromNib()
     }
 
-    required public init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
-    open override func awakeFromNib() {
+    override open func awakeFromNib() {
+        super.awakeFromNib()
         wantsLayer = true
         layer = AVCaptureVideoPreviewLayer()
         layer?.backgroundColor = HKView.defaultBackgroundColor.cgColor

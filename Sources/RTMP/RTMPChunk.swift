@@ -38,8 +38,8 @@ final class RTMPChunk {
     enum StreamID: UInt16 {
         case control = 0x02
         case command = 0x03
-        case audio   = 0x04
-        case video   = 0x05
+        case audio = 0x04
+        case video = 0x05
     }
 
     static let defaultSize: Int = 128
@@ -148,7 +148,7 @@ final class RTMPChunk {
                 return
             }
 
-            guard let message: RTMPMessage = RTMPMessage.create(newValue[pos + 6]) else {
+            guard let message = RTMPMessage.create(newValue[pos + 6]) else {
                 logger.error(newValue.description)
                 return
             }
@@ -181,7 +181,7 @@ final class RTMPChunk {
 
     private(set) var message: RTMPMessage?
     private(set) var fragmented: Bool = false
-    private var _data: Data = Data()
+    private var _data = Data()
 
     init(type: RTMPChunkType, streamId: UInt16, message: RTMPMessage) {
         self.type = type
@@ -237,7 +237,7 @@ final class RTMPChunk {
             return 0
         }
 
-        let buffer: ByteArray = ByteArray(data: data)
+        let buffer = ByteArray(data: data)
         buffer.position = basicHeaderSize
 
         do {

@@ -1,10 +1,10 @@
-import Foundation
 import AVFoundation
+import Foundation
 
 /// The SoundTransform class
 public struct SoundTransform {
-    static public let defaultVolume: Float = 1.0
-    static public let defaultPan: Float = 0
+    public static let defaultVolume: Float = 1.0
+    public static let defaultPan: Float = 0
 
     /// The volume, ranging from 0 (silent) to 1 (full volume)
     public var volume = SoundTransform.defaultVolume

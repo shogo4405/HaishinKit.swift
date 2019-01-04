@@ -1,5 +1,5 @@
-import MetalKit
 import AVFoundation
+import MetalKit
 
 open class MTHKView: MTKView {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
@@ -16,12 +16,13 @@ open class MTHKView: MTKView {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
     }
 
-    required public init(coder aDecoder: NSCoder) {
+    public required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.device = MTLCreateSystemDefaultDevice()
     }
 
-    open override func awakeFromNib() {
+    override open func awakeFromNib() {
+        super.awakeFromNib()
         delegate = self
         enableSetNeedsDisplay = true
     }
@@ -79,7 +80,7 @@ extension MTHKView: MTKViewDelegate {
         default:
             break
         }
-        let bounds: CGRect = CGRect(origin: .zero, size: drawableSize)
+        let bounds = CGRect(origin: .zero, size: drawableSize)
         let scaledImage: CIImage = image
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))

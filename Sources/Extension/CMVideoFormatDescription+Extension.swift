@@ -1,5 +1,5 @@
-import CoreMedia
 import CoreImage
+import CoreMedia
 
 extension CMVideoFormatDescription {
     var dimensions: CMVideoDimensions {

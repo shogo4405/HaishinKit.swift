@@ -18,10 +18,10 @@ public class SoundSpliter: NSObject {
         }
     }
     private var frameSize: Int = 2048
-    private var duration: CMTime = CMTime.zero
-    private var sampleData: Data = Data()
+    private var duration = CMTime.zero
+    private var sampleData = Data()
     private var formatDescription: CMFormatDescription?
-    private var presentationTimeStamp: CMTime = CMTime.zero
+    private var presentationTimeStamp = CMTime.zero
 
     private var minimumByteSize: Int {
         return min(.max, sampleData.count)
@@ -77,7 +77,7 @@ public class SoundSpliter: NSObject {
             let wave: Data = data.subdata(in: i * frameSize..<(i * frameSize) + frameSize)
             var result: CMSampleBuffer?
             let buffer: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: 1)
-            var timing: CMSampleTimingInfo = CMSampleTimingInfo(
+            var timing = CMSampleTimingInfo(
                 duration: duration,
                 presentationTimeStamp: presentationTimeStamp,
                 decodeTimeStamp: CMTime.invalid

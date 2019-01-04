@@ -1,7 +1,7 @@
-import CoreVideo
 import AVFoundation
-import VideoToolbox
 import CoreFoundation
+import CoreVideo
+import VideoToolbox
 
 protocol VideoDecoderDelegate: class {
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
@@ -26,7 +26,7 @@ final class H264Decoder {
     var formatDescription: CMFormatDescription? {
         didSet {
             if let atoms: [String: AnyObject] = formatDescription?.`extension`(by: "SampleDescriptionExtensionAtoms"), let avcC: Data = atoms["avcC"] as? Data {
-                let config: AVCConfigurationRecord = AVCConfigurationRecord(data: avcC)
+                let config = AVCConfigurationRecord(data: avcC)
                 isBaseline = config.AVCProfileIndication == 66
             }
             invalidateSession = true
@@ -67,7 +67,7 @@ final class H264Decoder {
                 guard let formatDescription: CMFormatDescription = formatDescription else {
                     return nil
                 }
-                var record: VTDecompressionOutputCallbackRecord = VTDecompressionOutputCallbackRecord(
+                var record = VTDecompressionOutputCallbackRecord(
                     decompressionOutputCallback: callback,
                     decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
                 )
@@ -107,7 +107,7 @@ final class H264Decoder {
             return
         }
 
-        var timingInfo: CMSampleTimingInfo = CMSampleTimingInfo(
+        var timingInfo = CMSampleTimingInfo(
             duration: duration,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: CMTime.invalid

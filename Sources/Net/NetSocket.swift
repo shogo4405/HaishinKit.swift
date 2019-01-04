@@ -1,10 +1,10 @@
 import Foundation
 
 open class NetSocket: NSObject {
-    static public let defaultTimeout: Int64 = 15 // sec
-    static public let defaultWindowSizeC: Int = Int(UInt16.max)
+    public static let defaultTimeout: Int64 = 15 // sec
+    public static let defaultWindowSizeC = Int(UInt16.max)
 
-    public var inputBuffer: Data = Data()
+    public var inputBuffer = Data()
     public var timeout: Int64 = NetSocket.defaultTimeout
     public internal(set) var connected: Bool = false
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
@@ -40,7 +40,7 @@ open class NetSocket: NSObject {
     }
 
     @discardableResult
-    final public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
+    public final func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         outputQueue.async {
             data.withUnsafeBytes { (buffer: UnsafePointer<UInt8>) -> Void in
@@ -60,7 +60,7 @@ open class NetSocket: NSObject {
                 defer {
                     fileHandle.closeFile()
                 }
-                let endOfFile: Int = Int(fileHandle.seekToEndOfFile())
+                let endOfFile = Int(fileHandle.seekToEndOfFile())
                 for i in 0..<Int(endOfFile / length) {
                     fileHandle.seek(toFileOffset: UInt64(i * length))
                     self.doOutputProcess(fileHandle.readData(ofLength: length))

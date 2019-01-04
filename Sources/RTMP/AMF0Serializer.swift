@@ -75,27 +75,27 @@ protocol AMFSerializer: ByteArrayConvertible {
  */
 class AMF0Serializer: ByteArray {
     enum `Type`: UInt8 {
-        case number      = 0x00
-        case bool        = 0x01
-        case string      = 0x02
-        case object      = 0x03
+        case number = 0x00
+        case bool = 0x01
+        case string = 0x02
+        case object = 0x03
         // case MovieClip   = 0x04
-        case null        = 0x05
-        case undefined   = 0x06
-        case reference   = 0x07
-        case ecmaArray   = 0x08
-        case objectEnd   = 0x09
+        case null = 0x05
+        case undefined = 0x06
+        case reference = 0x07
+        case ecmaArray = 0x08
+        case objectEnd = 0x09
         case strictArray = 0x0a
-        case date        = 0x0b
-        case longString  = 0x0c
+        case date = 0x0b
+        case longString = 0x0c
         case unsupported = 0x0d
         // case RecordSet   = 0x0e
         case xmlDocument = 0x0f
         case typedObject = 0x10
-        case avmplush    = 0x11
+        case avmplush = 0x11
     }
 
-    var reference: AMFReference = AMFReference()
+    var reference = AMFReference()
 }
 
 extension AMF0Serializer: AMFSerializer {
@@ -142,7 +142,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     func deserialize() throws -> Any? {
-        guard let type: Type = Type(rawValue: try readUInt8()) else {
+        guard let type = Type(rawValue: try readUInt8()) else {
             return nil
         }
         position -= 1
@@ -259,7 +259,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     func deserialize() throws -> ASObject {
-        var result: ASObject = ASObject()
+        var result = ASObject()
 
         switch try readUInt8() {
         case Type.null.rawValue:
@@ -272,7 +272,7 @@ extension AMF0Serializer: AMFSerializer {
 
         while true {
             let key: String = try deserializeUTF8(false)
-            guard key != "" else {
+            guard !key.isEmpty else {
                 position += 1
                 break
             }
@@ -300,10 +300,10 @@ extension AMF0Serializer: AMFSerializer {
             throw AMFSerializerError.deserialize
         }
 
-        var result: ASArray = ASArray(count: Int(try readUInt32()))
+        var result = ASArray(count: Int(try readUInt32()))
         while true {
             let key: String = try deserializeUTF8(false)
-            guard key != "" else {
+            guard !key.isEmpty else {
                 position += 1
                 break
             }
@@ -334,7 +334,7 @@ extension AMF0Serializer: AMFSerializer {
             throw AMFSerializerError.deserialize
         }
         var result: [Any?] = []
-        let count: Int = Int(try readUInt32())
+        let count = Int(try readUInt32())
         for _ in 0..<count {
             result.append(try deserialize())
         }
@@ -352,7 +352,7 @@ extension AMF0Serializer: AMFSerializer {
         guard try readUInt8() == Type.date.rawValue else {
             throw AMFSerializerError.deserialize
         }
-        let date: Date = Date(timeIntervalSince1970: try readDouble() / 1000)
+        let date = Date(timeIntervalSince1970: try readDouble() / 1000)
         position += 2 // timezone offset
         return date
     }
@@ -373,7 +373,7 @@ extension AMF0Serializer: AMFSerializer {
 
     @discardableResult
     private func serializeUTF8(_ value: String, _ isLong: Bool) -> Self {
-        let utf8: Data = Data(value.utf8)
+        let utf8 = Data(value.utf8)
         if isLong {
             writeUInt32(UInt32(utf8.count))
         } else {

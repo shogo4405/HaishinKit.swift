@@ -65,27 +65,27 @@ class AMFReference {
  */
 class AMF3Serializer: ByteArray {
     enum `Type`: UInt8 {
-        case undefined    = 0x00
-        case null         = 0x01
-        case boolFalse    = 0x02
-        case boolTrue     = 0x03
-        case integer      = 0x04
-        case number       = 0x05
-        case string       = 0x06
-        case xml          = 0x07
-        case date         = 0x08
-        case array        = 0x09
-        case object       = 0x0A
-        case xmlString    = 0x0B
-        case byteArray    = 0x0C
-        case vectorInt    = 0x0D
-        case vectorUInt   = 0x0E
+        case undefined = 0x00
+        case null = 0x01
+        case boolFalse = 0x02
+        case boolTrue = 0x03
+        case integer = 0x04
+        case number = 0x05
+        case string = 0x06
+        case xml = 0x07
+        case date = 0x08
+        case array = 0x09
+        case object = 0x0A
+        case xmlString = 0x0B
+        case byteArray = 0x0C
+        case vectorInt = 0x0D
+        case vectorUInt = 0x0E
         case vectorNumber = 0x0F
         case vectorObject = 0x10
-        case dictionary   = 0x11
+        case dictionary = 0x11
     }
 
-    var reference: AMFReference = AMFReference()
+    var reference = AMFReference()
 }
 
 extension AMF3Serializer: AMFSerializer {
@@ -132,7 +132,7 @@ extension AMF3Serializer: AMFSerializer {
     }
 
     func deserialize() throws -> Any? {
-        guard let type: Type = Type(rawValue: try readUInt8()) else {
+        guard let type = Type(rawValue: try readUInt8()) else {
             throw AMFSerializerError.deserialize
         }
         position -= 1
@@ -254,7 +254,7 @@ extension AMF3Serializer: AMFSerializer {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        let utf8: Data = Data(value.description.utf8)
+        let utf8 = Data(value.description.utf8)
         return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
@@ -269,7 +269,7 @@ extension AMF3Serializer: AMFSerializer {
             }
             return document
         }
-        let document: ASXMLDocument = ASXMLDocument(data: try readUTF8Bytes(refs >> 1))
+        let document = ASXMLDocument(data: try readUTF8Bytes(refs >> 1))
         reference.objects.append(document)
         return document
     }
@@ -298,7 +298,7 @@ extension AMF3Serializer: AMFSerializer {
             }
             return date
         }
-        let date: Date = Date(timeIntervalSince1970: try readDouble() / 1000)
+        let date = Date(timeIntervalSince1970: try readDouble() / 1000)
         reference.objects.append(date)
         return date
     }
@@ -365,7 +365,7 @@ extension AMF3Serializer: AMFSerializer {
             return serializeU29(index << 1)
         }
         reference.objects.append(value)
-        let utf8: Data = Data(value.description.utf8)
+        let utf8 = Data(value.description.utf8)
         return serialize(utf8.count << 1 | 0x01).writeBytes(utf8)
     }
 
@@ -380,7 +380,7 @@ extension AMF3Serializer: AMFSerializer {
             }
             return xml
         }
-        let xml: ASXML = ASXML(data: try readUTF8Bytes(refs >> 1))
+        let xml = ASXML(data: try readUTF8Bytes(refs >> 1))
         reference.objects.append(xml)
         return xml
     }
@@ -502,7 +502,7 @@ extension AMF3Serializer: AMFSerializer {
         if value < Int(Int32.min) || Int(Int32.max) < value {
             return serialize(Double(value))
         }
-        let value: UInt32 = UInt32(value)
+        let value = UInt32(value)
         switch UInt32(0) {
         case value & 0xFFFFFF80:
             return writeUInt8(UInt8(value & 0x7f))
@@ -555,7 +555,7 @@ extension AMF3Serializer: AMFSerializer {
         if let index: Int = reference.indexOf(value) {
             return serializeU29(index << 1)
         }
-        let utf8: Data = Data(value.utf8)
+        let utf8 = Data(value.utf8)
         reference.strings.append(value)
         return serializeU29(utf8.count << 1 | 0x01).writeBytes(utf8)
     }

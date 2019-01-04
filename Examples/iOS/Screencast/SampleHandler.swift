@@ -1,11 +1,11 @@
 import HaishinKit
-import VideoToolbox
-import ReplayKit
 import Logboard
+import ReplayKit
+import VideoToolbox
 
 @available(iOS 10.0, *)
 open class SampleHandler: RPBroadcastSampleHandler {
-    private var broadcaster: RTMPBroadcaster = RTMPBroadcaster()
+    private var broadcaster = RTMPBroadcaster()
 
     override open func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         /*

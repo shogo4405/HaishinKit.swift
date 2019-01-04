@@ -2,18 +2,18 @@ import Foundation
 
 struct RTMPSharedObjectEvent {
     enum `Type`: UInt8 {
-        case use           = 1
-        case release       = 2
+        case use = 1
+        case release = 2
         case requestChange = 3
-        case change        = 4
-        case success       = 5
-        case sendMessage   = 6
-        case status        = 7
-        case clear         = 8
-        case remove        = 9
+        case change = 4
+        case success = 5
+        case sendMessage = 6
+        case status = 7
+        case clear = 8
+        case remove = 9
         case requestRemove = 10
-        case useSuccess    = 11
-        case unknown       = 255
+        case useSuccess = 11
+        case unknown = 255
     }
 
     var type: Type = .unknown
@@ -31,11 +31,11 @@ struct RTMPSharedObjectEvent {
     }
 
     init?(serializer: inout AMFSerializer) throws {
-        guard let byte: UInt8 = try? serializer.readUInt8(), let type: Type = Type(rawValue: byte) else {
+        guard let byte: UInt8 = try? serializer.readUInt8(), let type = Type(rawValue: byte) else {
             return nil
         }
         self.type = type
-        let length: Int = Int(try serializer.readUInt32())
+        let length = Int(try serializer.readUInt32())
         let position: Int = serializer.position
         if 0 < length {
             name = try serializer.readUTF8()
@@ -75,9 +75,9 @@ struct RTMPSharedObjectEvent {
  flash.net.SharedObject for Swift
  */
 open class RTMPSharedObject: EventDispatcher {
+    private static var remoteSharedObjects: [String: RTMPSharedObject] = [:]
 
-    static private var remoteSharedObjects: [String: RTMPSharedObject] = [: ]
-    static public func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
+    public static func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
         let key: String = remotePath + "/" + withName + "?persistence=" + persistence.description
         objc_sync_enter(remoteSharedObjects)
         if remoteSharedObjects[key] == nil {
@@ -190,7 +190,7 @@ open class RTMPSharedObject: EventDispatcher {
     }
 
     func createChunk(_ events: [RTMPSharedObjectEvent]) -> RTMPChunk {
-        let now: Date = Date()
+        let now = Date()
         let timestamp: TimeInterval = now.timeIntervalSince1970 - self.timestamp
         self.timestamp = now.timeIntervalSince1970
         defer {
@@ -210,8 +210,9 @@ open class RTMPSharedObject: EventDispatcher {
         )
     }
 
-    @objc func rtmpStatusHandler(_ notification: Notification) {
-        let e: Event = Event.from(notification)
+    @objc
+    func rtmpStatusHandler(_ notification: Notification) {
+        let e = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             switch code {
             case RTMPConnection.Code.connectSuccess.rawValue:

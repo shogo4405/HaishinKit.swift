@@ -1,7 +1,7 @@
 import AVFoundation
 
 open class FLVReader {
-    static public let header: Data = Data([0x46, 0x4C, 0x56, 1])
+    public static let header = Data([0x46, 0x4C, 0x56, 1])
     static let headerSize: Int = 11
 
     public let url: URL

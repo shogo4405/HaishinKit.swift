@@ -12,9 +12,9 @@ public protocol IEventDispatcher: class {
 
 public enum EventPhase: UInt8 {
     case capturing = 0
-    case atTarget  = 1
-    case bubbling  = 2
-    case dispose   = 3
+    case atTarget = 1
+    case bubbling = 2
+    case dispose = 3
 }
 
 // MARK: -

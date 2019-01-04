@@ -12,8 +12,8 @@ final class RTMPMuxer {
 
     weak var delegate: RTMPMuxerDelegate?
     private var configs: [Int: Data] = [:]
-    private var audioTimestamp: CMTime = CMTime.zero
-    private var videoTimestamp: CMTime = CMTime.zero
+    private var audioTimestamp = CMTime.zero
+    private var videoTimestamp = CMTime.zero
 
     func dispose() {
         configs.removeAll()
@@ -28,7 +28,7 @@ extension RTMPMuxer: AudioConverterDelegate {
         guard let formatDescription: CMFormatDescription = formatDescription else {
             return
         }
-        var buffer: Data = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
+        var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
         buffer.append(contentsOf: AudioSpecificConfig(formatDescription: formatDescription).bytes)
         delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
     }
@@ -38,7 +38,7 @@ extension RTMPMuxer: AudioConverterDelegate {
         guard let bytes = data[0].mData, 0 <= delta else {
             return
         }
-        var buffer: Data = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
+        var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
         buffer.append(bytes.assumingMemoryBound(to: UInt8.self), count: Int(data[0].mDataByteSize))
         delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
         audioTimestamp = presentationTimeStamp
@@ -83,7 +83,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
 extension RTMPMuxer: MP4SamplerDelegate {
     // MARK: MP4SampleDelegate
     func didOpen(_ reader: MP4Reader) {
-        var metadata: ASObject = ASObject()
+        var metadata = ASObject()
         if let avc1: MP4VisualSampleEntryBox = reader.getBoxes(byName: "avc1").first as? MP4VisualSampleEntryBox {
             metadata["width"] = avc1.width
             metadata["height"] = avc1.height

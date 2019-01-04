@@ -6,6 +6,7 @@ protocol ByteArrayConvertible {
     var length: Int { get set }
     var position: Int { get set }
     var bytesAvailable: Int { get }
+
     subscript(i: Int) -> UInt8 { get set }
 
     @discardableResult
@@ -243,7 +244,7 @@ open class ByteArray: ByteArrayConvertible {
 
     @discardableResult
     open func writeUTF8(_ value: String) throws -> Self {
-        let utf8: Data = Data(value.utf8)
+        let utf8 = Data(value.utf8)
         return writeUInt16(UInt16(utf8.count)).writeBytes(utf8)
     }
 

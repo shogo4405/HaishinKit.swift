@@ -70,7 +70,7 @@ extension TSPacket: DataConvertible {
     // MARK: DataConvertible
     var data: Data {
         get {
-            var bytes: Data = Data([syncByte, 0x00, 0x00, 0x00])
+            var bytes = Data([syncByte, 0x00, 0x00, 0x00])
             bytes[1] |= transportErrorIndicator ? 0x80 : 0
             bytes[1] |= payloadUnitStartIndicator ? 0x40 : 0
             bytes[1] |= transportPriority ? 0x20 : 0
@@ -87,7 +87,7 @@ extension TSPacket: DataConvertible {
                 .data
         }
         set {
-            let buffer: ByteArray = ByteArray(data: newValue)
+            let buffer = ByteArray(data: newValue)
             do {
                 var data: Data = try buffer.readBytes(4)
                 syncByte = data[0]
@@ -100,7 +100,7 @@ extension TSPacket: DataConvertible {
                 payloadFlag = data[3] & 0x10 == 0x10
                 continuityCounter = UInt8(data[3] & 0xf)
                 if adaptationFieldFlag {
-                    let length: Int = Int(try buffer.readUInt8())
+                    let length = Int(try buffer.readUInt8())
                     buffer.position -= 1
                     adaptationField = TSAdaptationField(data: try buffer.readBytes(length + 1))
                 }
@@ -124,7 +124,7 @@ struct TSTimestamp {
         var result: UInt64 = 0
         result |= UInt64(data[0] & 0x0e) << 29
         result |= UInt64(data[1]) << 22 | UInt64(data[2] & 0xfe) << 14
-        result |= UInt64(data[3]) << 7  | UInt64(data[3] & 0xfe) << 1
+        result |= UInt64(data[3]) << 7 | UInt64(data[3] & 0xfe) << 1
         return result
     }
 
@@ -134,7 +134,7 @@ struct TSTimestamp {
         data[1] = UInt8(truncatingIfNeeded: b >> 22)
         data[2] = UInt8(truncatingIfNeeded: b >> 14) | 0x01
         data[3] = UInt8(truncatingIfNeeded: b >> 7)
-        data[4] = UInt8(truncatingIfNeeded: b << 1)  | 0x01
+        data[4] = UInt8(truncatingIfNeeded: b << 1) | 0x01
         return data
     }
 }
@@ -158,7 +158,7 @@ struct TSProgramClockReference {
     }
 
     static func encode(_ b: UInt64, _ e: UInt16) -> Data {
-        var data: Data = Data(count: 6)
+        var data = Data(count: 6)
         data[0] = UInt8(truncatingIfNeeded: b >> 25)
         data[1] = UInt8(truncatingIfNeeded: b >> 17)
         data[2] = UInt8(truncatingIfNeeded: b >> 9)
@@ -193,13 +193,13 @@ class TSAdaptationField {
     var splicingPointFlag: Bool = false
     var transportPrivateDataFlag: Bool = false
     var adaptationFieldExtensionFlag: Bool = false
-    var PCR: Data = Data()
-    var OPCR: Data = Data()
+    var PCR = Data()
+    var OPCR = Data()
     var spliceCountdown: UInt8 = 0
     var transportPrivateDataLength: UInt8 = 0
-    var transportPrivateData: Data = Data()
+    var transportPrivateData = Data()
     var adaptationExtension: TSAdaptationExtensionField?
-    var stuffingBytes: Data = Data()
+    var stuffingBytes = Data()
 
     init() {
     }
@@ -209,7 +209,7 @@ class TSAdaptationField {
     }
 
     func compute() {
-        length  = UInt8(truncatingIfNeeded: TSAdaptationField.fixedSectionSize)
+        length = UInt8(truncatingIfNeeded: TSAdaptationField.fixedSectionSize)
         length += UInt8(truncatingIfNeeded: PCR.count)
         length += UInt8(truncatingIfNeeded: OPCR.count)
         length += UInt8(truncatingIfNeeded: transportPrivateData.count)
@@ -239,7 +239,7 @@ extension TSAdaptationField: DataConvertible {
             byte |= splicingPointFlag ? 0x04 : 0
             byte |= transportPrivateDataFlag ? 0x02 : 0
             byte |= adaptationFieldExtensionFlag ? 0x01 : 0
-            let buffer: ByteArray = ByteArray()
+            let buffer = ByteArray()
                 .writeUInt8(length)
                 .writeUInt8(byte)
             if PCRFlag {
@@ -260,7 +260,7 @@ extension TSAdaptationField: DataConvertible {
             return buffer.writeBytes(stuffingBytes).data
         }
         set {
-            let buffer: ByteArray = ByteArray(data: newValue)
+            let buffer = ByteArray(data: newValue)
             do {
                 length = try buffer.readUInt8()
                 let byte: UInt8 = try buffer.readUInt8()
@@ -286,7 +286,7 @@ extension TSAdaptationField: DataConvertible {
                     transportPrivateData = try buffer.readBytes(Int(transportPrivateDataLength))
                 }
                 if adaptationFieldExtensionFlag {
-                    let length: Int = Int(try buffer.readUInt8())
+                    let length = Int(try buffer.readUInt8())
                     buffer.position -= 1
                     adaptationExtension = TSAdaptationExtensionField(data: try buffer.readBytes(length + 1))
                 }
@@ -307,7 +307,7 @@ struct TSAdaptationExtensionField {
     var legalTimeWindowOffset: UInt16 = 0
     var piecewiseRate: UInt32 = 0
     var spliceType: UInt8 = 0
-    var DTSNextAccessUnit: Data = Data(count: 5)
+    var DTSNextAccessUnit = Data(count: 5)
 
     init?(data: Data) {
         self.data = data
@@ -318,7 +318,7 @@ extension TSAdaptationExtensionField: DataConvertible {
     // MARK: DataConvertible
     var data: Data {
         get {
-            let buffer: ByteArray = ByteArray()
+            let buffer = ByteArray()
                 .writeUInt8(length)
                 .writeUInt8(
                     (legalTimeWindowFlag ? 0x80 : 0) |
@@ -340,7 +340,7 @@ extension TSAdaptationExtensionField: DataConvertible {
             return buffer.data
         }
         set {
-            let buffer: ByteArray = ByteArray(data: newValue)
+            let buffer = ByteArray(data: newValue)
             do {
                 var byte: UInt8 = 0
                 length = try buffer.readUInt8()

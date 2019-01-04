@@ -1,6 +1,6 @@
+import AVFoundation
 import GLUT
 import OpenGL.GL3
-import AVFoundation
 
 open class GLHKView: NSOpenGLView {
     static let pixelFormatAttributes: [NSOpenGLPixelFormatAttribute] = [
@@ -12,7 +12,7 @@ open class GLHKView: NSOpenGLView {
     ]
 
     override open class func defaultPixelFormat() -> NSOpenGLPixelFormat {
-        guard let pixelFormat: NSOpenGLPixelFormat = NSOpenGLPixelFormat(
+        guard let pixelFormat = NSOpenGLPixelFormat(
             attributes: GLHKView.pixelFormatAttributes) else {
             return NSOpenGLPixelFormat()
         }
@@ -27,7 +27,7 @@ open class GLHKView: NSOpenGLView {
     private var scale: CGSize = .zero
     private weak var currentStream: NetStream?
 
-    open override func prepareOpenGL() {
+    override open func prepareOpenGL() {
         var param: GLint = 1
         openGLContext?.setValues(&param, for: .swapInterval)
         glDisable(GLenum(GL_ALPHA_TEST))
@@ -45,7 +45,7 @@ open class GLHKView: NSOpenGLView {
         originalFrame = frame
     }
 
-    open override func draw(_ dirtyRect: NSRect) {
+    override open func draw(_ dirtyRect: NSRect) {
         guard
             let image: CIImage = displayImage,
             let glContext: NSOpenGLContext = openGLContext else {

@@ -1,9 +1,9 @@
-import UIKit
 import AVFoundation
-import Logboard
 import HaishinKit
+import Logboard
+import UIKit
 
-let logger: Logboard = Logboard.with("com.haishinkit.Exsample.iOS")
+let logger = Logboard.with("com.haishinkit.Exsample.iOS")
 
 @UIApplicationMain
 final class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -11,7 +11,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
         // Logboard.with(HaishinKitIdentifier).level = .trace
-        let session: AVAudioSession = AVAudioSession.sharedInstance()
+        let session = AVAudioSession.sharedInstance()
         do {
             try session.setPreferredSampleRate(44_100)
             // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent

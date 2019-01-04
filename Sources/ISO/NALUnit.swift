@@ -2,19 +2,19 @@ import AVFoundation
 import VideoToolbox
 
 enum NALType: UInt8 {
-    case unspec   = 0
-    case slice    = 1 // P frame
-    case dpa      = 2
-    case dpb      = 3
-    case dpc      = 4
-    case idr      = 5 // I frame
-    case sei      = 6
-    case sps      = 7
-    case pps      = 8
-    case aud      = 9
-    case eoseq    = 10
+    case unspec = 0
+    case slice = 1 // P frame
+    case dpa = 2
+    case dpb = 3
+    case dpc = 4
+    case idr = 5 // I frame
+    case sei = 6
+    case sps = 7
+    case pps = 8
+    case aud = 9
+    case eoseq = 10
     case eostream = 11
-    case fill     = 12
+    case fill = 12
 }
 
 // MARK: -

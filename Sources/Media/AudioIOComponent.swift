@@ -1,7 +1,7 @@
 import AVFoundation
 
 final class AudioIOComponent: IOComponent {
-    lazy var encoder: AudioConverter = AudioConverter()
+    lazy var encoder = AudioConverter()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
@@ -41,7 +41,7 @@ final class AudioIOComponent: IOComponent {
             })
             do {
                 try audioEngine.start()
-            } catch let error {
+            } catch {
                 logger.warn(error)
             }
         }

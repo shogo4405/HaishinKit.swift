@@ -23,9 +23,9 @@ struct AudioSpecificConfig {
 
     init?(bytes: [UInt8]) {
         guard
-            let type: AudioObjectType = AudioObjectType(rawValue: bytes[0] >> 3),
-            let frequency: SamplingFrequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
-            let channel: ChannelConfiguration = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
+            let type = AudioObjectType(rawValue: bytes[0] >> 3),
+            let frequency = SamplingFrequency(rawValue: (bytes[0] & 0b00000111) << 1 | (bytes[1] >> 7)),
+            let channel = ChannelConfiguration(rawValue: (bytes[1] & 0b01111000) >> 3) else {
             return nil
         }
         self.type = type
@@ -77,16 +77,16 @@ struct AudioSpecificConfig {
 
 // MARK: -
 enum AudioObjectType: UInt8 {
-    case unknown     = 0
-    case aacMain     = 1
-    case aaclc       = 2
-    case aacssr      = 3
-    case aacltp      = 4
-    case aacsbr      = 5
+    case unknown = 0
+    case aacMain = 1
+    case aaclc = 2
+    case aacssr = 3
+    case aacltp = 4
+    case aacsbr = 5
     case aacScalable = 6
-    case twinqVQ     = 7
-    case celp        = 8
-    case hxvc        = 9
+    case twinqVQ = 7
+    case celp = 8
+    case hxvc = 9
 
     init(objectID: MPEG4ObjectID) {
         switch objectID {
@@ -125,8 +125,8 @@ public enum SamplingFrequency: UInt8 {
     case hz16000 = 8
     case hz12000 = 9
     case hz11025 = 10
-    case hz8000  = 11
-    case hz7350  = 12
+    case hz8000 = 11
+    case hz7350 = 12
 
     public var sampleRate: Float64 {
         switch self {

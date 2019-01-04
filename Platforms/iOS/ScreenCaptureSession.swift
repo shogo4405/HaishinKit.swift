@@ -1,6 +1,6 @@
-import UIKit
-import CoreImage
 import AVFoundation
+import CoreImage
+import UIKit
 
 public protocol ScreenCaptureOutputPixelBufferDelegate: class {
     func didSet(size: CGSize)
@@ -31,12 +31,12 @@ open class ScreenCaptureSession: NSObject {
         return attributes
     }
     public weak var delegate: ScreenCaptureOutputPixelBufferDelegate?
+    public internal(set) var isRunning: Bool = false
 
-    internal(set) public var isRunning: Bool = false
     private var shared: UIApplication?
     private var viewToCapture: UIView?
     public var afterScreenUpdates: Bool = false
-    private var context: CIContext = CIContext(options: convertToOptionalCIContextOptionDictionary([convertFromCIContextOption(CIContextOption.useSoftwareRenderer): NSNumber(value: false)]))
+    private var context = CIContext(options: convertToOptionalCIContextOptionDictionary([convertFromCIContextOption(CIContextOption.useSoftwareRenderer): NSNumber(value: false)]))
     private let semaphore = DispatchSemaphore(value: 1)
     private let lockQueue = DispatchQueue(
         label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: .userInteractive, attributes: []
@@ -85,7 +85,8 @@ open class ScreenCaptureSession: NSObject {
         super.init()
     }
 
-    @objc public func onScreen(_ displayLink: CADisplayLink) {
+    @objc
+    public func onScreen(_ displayLink: CADisplayLink) {
         guard semaphore.wait(timeout: .now()) == .success else {
             return
         }
@@ -171,7 +172,7 @@ extension ScreenCaptureSession: Running {
 // Helper function inserted by Swift 4.2 migrator.
 private func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
 	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value)})
+	return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value) })
 }
 
 // Helper function inserted by Swift 4.2 migrator.

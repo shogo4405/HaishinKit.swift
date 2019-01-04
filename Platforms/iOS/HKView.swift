@@ -1,14 +1,14 @@
-import UIKit
 import AVFoundation
+import UIKit
 
 open class HKView: UIView {
     public static var defaultBackgroundColor: UIColor = .black
 
-    open override class var layerClass: AnyClass {
+    override open class var layerClass: AnyClass {
         return AVCaptureVideoPreviewLayer.self
     }
 
-    open override var layer: AVCaptureVideoPreviewLayer {
+    override open var layer: AVCaptureVideoPreviewLayer {
         return super.layer as! AVCaptureVideoPreviewLayer
     }
 
@@ -35,7 +35,7 @@ open class HKView: UIView {
         }
     }
 
-    public override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         awakeFromNib()
     }
@@ -49,6 +49,7 @@ open class HKView: UIView {
     }
 
     override open func awakeFromNib() {
+        super.awakeFromNib()
         backgroundColor = HKView.defaultBackgroundColor
         layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
     }

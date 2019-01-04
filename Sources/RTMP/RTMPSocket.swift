@@ -31,11 +31,11 @@ protocol RTMPSocketDelegate: IEventDispatcher {
 final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     enum ReadyState: UInt8 {
         case uninitialized = 0
-        case versionSent   = 1
-        case ackSent       = 2
+        case versionSent = 1
+        case ackSent = 2
         case handshakeDone = 3
-        case closing       = 4
-        case closed        = 5
+        case closing = 4
+        case closed = 5
     }
 
     var readyState: ReadyState = .uninitialized {
@@ -71,7 +71,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
 
     private var events: [Event] = []
-    private var handshake: RTMPHandshake = RTMPHandshake()
+    private var handshake = RTMPHandshake()
 
     @discardableResult
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {

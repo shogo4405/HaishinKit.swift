@@ -1,6 +1,6 @@
-import HaishinKit
-import Cocoa
 import AVFoundation
+import Cocoa
+import HaishinKit
 import VideoToolbox
 
 extension NSPopUpButton {
@@ -13,13 +13,13 @@ extension NSPopUpButton {
 }
 
 final class MainViewController: NSViewController {
-    var rtmpConnection: RTMPConnection = RTMPConnection()
+    var rtmpConnection = RTMPConnection()
     var rtmpStream: RTMPStream!
 
-    var httpService: HLSService = HLSService(
+    var httpService = HLSService(
         domain: "local", type: HTTPService.type, name: "", port: HTTPService.defaultPort
     )
-    var httpStream: HTTPStream = HTTPStream()
+    var httpStream = HTTPStream()
 
     @IBOutlet private weak var lfView: GLHKView!
     @IBOutlet private weak var audioPopUpButton: NSPopUpButton!
@@ -97,9 +97,7 @@ final class MainViewController: NSViewController {
     }
 
     @IBAction func selectAudio(_ sender: AnyObject) {
-        let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName:
-            audioPopUpButton.titleOfSelectedItem!, mediaType: .audio
-        )
+        let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)
         switch segmentedControl.selectedSegment {
         case 0:
             rtmpStream.attachAudio(device)
@@ -113,9 +111,7 @@ final class MainViewController: NSViewController {
     }
 
     @IBAction func selectCamera(_ sender: AnyObject) {
-        let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName:
-            cameraPopUpButton.titleOfSelectedItem!, mediaType: .video
-        )
+        let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
         switch segmentedControl.selectedSegment {
         case 0:
             rtmpStream.attachCamera(device)
@@ -149,8 +145,9 @@ final class MainViewController: NSViewController {
         }
     }
 
-    @objc func rtmpStatusHandler(_ notification: Notification) {
-        let e: Event = Event.from(notification)
+    @objc
+    func rtmpStatusHandler(_ notification: Notification) {
+        let e = Event.from(notification)
         guard
             let data: ASObject = e.data as? ASObject,
             let code: String = data["code"] as? String else {

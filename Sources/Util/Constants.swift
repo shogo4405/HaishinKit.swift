@@ -1,3 +1,3 @@
 import Logboard
 
-let logger: Logboard = Logboard.with(HaishinKitIdentifier)
+let logger = Logboard.with(HaishinKitIdentifier)

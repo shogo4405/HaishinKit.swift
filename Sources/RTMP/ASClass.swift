@@ -1,13 +1,15 @@
 import Foundation
 
-public let kASUndefined: ASUndefined = ASUndefined()
+public let kASUndefined = ASUndefined()
+
 public typealias ASObject = [String: Any?]
 
 public final class ASUndefined: NSObject {
-    public override var description: String {
+    override public var description: String {
         return "undefined"
     }
-    fileprivate override init() {
+
+    override fileprivate init() {
         super.init()
     }
 }
@@ -42,7 +44,7 @@ extension ASArray: ExpressibleByArrayLiteral {
                 return i < data.count ? data[i] : kASUndefined
             }
             if let i: String = i as? String {
-                if let i: Int = Int(i) {
+                if let i = Int(i) {
                     return i < data.count ? data[i] : kASUndefined
                 }
                 return dict[i] as Any
@@ -57,7 +59,7 @@ extension ASArray: ExpressibleByArrayLiteral {
                 data[i] = newValue
             }
             if let i: String = i as? String {
-                if let i: Int = Int(i) {
+                if let i = Int(i) {
                     if data.count <= i {
                         data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
                     }
@@ -93,7 +95,7 @@ extension ASArray: Equatable {
    - 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
 public final class ASXMLDocument: NSObject {
-    public override var description: String {
+    override public var description: String {
         return data
     }
 
@@ -111,7 +113,7 @@ public final class ASXMLDocument: NSObject {
  - seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
 public final class ASXML: NSObject {
-    public override var description: String {
+    override public var description: String {
         return data
     }
 

@@ -1,19 +1,19 @@
 import AVFoundation
 
 public enum FLVAudioCodec: UInt8 {
-    case pcm           = 0
-    case adpcm         = 1
-    case mp3           = 2
-    case pcmle         = 3
+    case pcm = 0
+    case adpcm = 1
+    case mp3 = 2
+    case pcmle = 3
     case nellymoser16K = 4
-    case nellymoser8K  = 5
-    case nellymoser    = 6
-    case g711A         = 7
-    case g711MU        = 8
-    case aac           = 10
-    case speex         = 11
-    case mp3_8k        = 14
-    case unknown       = 0xFF
+    case nellymoser8K = 5
+    case nellymoser = 6
+    case g711A = 7
+    case g711MU = 8
+    case aac = 10
+    case speex = 11
+    case mp3_8k = 14
+    case unknown = 0xFF
 
     var isSupported: Bool {
         switch self {

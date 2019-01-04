@@ -7,7 +7,7 @@ final class RTMPHandshake {
     var timestamp: TimeInterval = 0
 
     var c0c1packet: Data {
-        let packet: ByteArray = ByteArray()
+        let packet = ByteArray()
             .writeUInt8(RTMPHandshake.protocolVersion)
             .writeInt32(Int32(timestamp))
             .writeBytes(Data([0x00, 0x00, 0x00, 0x00]))

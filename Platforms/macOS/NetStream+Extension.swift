@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 
 extension NetStream {
     open func attachScreen(_ screen: AVCaptureScreenInput?) {

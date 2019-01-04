@@ -27,7 +27,8 @@ public class TimerDriver: NSObject {
         self.queue = withQueue
     }
 
-    @objc func on(timer: Timer) {
+    @objc
+    func on(timer: Timer) {
         guard nextFire <= mach_absolute_time() else {
             return
         }
@@ -48,7 +49,7 @@ extension TimerDriver: Running {
         return runloop != nil
     }
 
-    final public func startRunning() {
+    public final func startRunning() {
         DispatchQueue.global(qos: .userInteractive).async {
             guard self.runloop == nil else {
                 return
@@ -63,7 +64,7 @@ extension TimerDriver: Running {
         }
     }
 
-    final public func stopRunning() {
+    public final func stopRunning() {
         guard let runloop: RunLoop = runloop else {
             return
         }

@@ -1,5 +1,5 @@
-import Foundation
 import CoreMedia
+import Foundation
 
 extension CMFormatDescription {
     var extensions: [String: AnyObject]? {

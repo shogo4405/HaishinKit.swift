@@ -11,7 +11,7 @@ final class PreferenceViewController: UIViewController {
     }
 
     @IBAction func on(open: UIButton) {
-        let storyboard: UIStoryboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
         let controller: UIViewController = storyboard.instantiateViewController(withIdentifier: "PopUpLive")
         present(controller, animated: true, completion: nil)
     }

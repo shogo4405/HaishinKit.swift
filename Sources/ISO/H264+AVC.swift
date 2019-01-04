@@ -106,7 +106,7 @@ extension AVCConfigurationRecord: DataConvertible {
     // MARK: DataConvertible
     var data: Data {
         get {
-            let buffer: ByteArray = ByteArray()
+            let buffer = ByteArray()
                 .writeUInt8(configurationVersion)
                 .writeUInt8(AVCProfileIndication)
                 .writeUInt8(profileCompatibility)
@@ -127,7 +127,7 @@ extension AVCConfigurationRecord: DataConvertible {
             return buffer.data
         }
         set {
-            let buffer: ByteArray = ByteArray(data: newValue)
+            let buffer = ByteArray(data: newValue)
             do {
                 configurationVersion = try buffer.readUInt8()
                 AVCProfileIndication = try buffer.readUInt8()
@@ -137,12 +137,12 @@ extension AVCConfigurationRecord: DataConvertible {
                 numOfSequenceParameterSetsWithReserved = try buffer.readUInt8()
                 let numOfSequenceParameterSets: UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
                 for _ in 0..<numOfSequenceParameterSets {
-                    let length: Int = Int(try buffer.readUInt16())
+                    let length = Int(try buffer.readUInt16())
                     sequenceParameterSets.append(try buffer.readBytes(length).bytes)
                 }
                 let numPictureParameterSets: UInt8 = try buffer.readUInt8()
                 for _ in 0..<numPictureParameterSets {
-                    let length: Int = Int(try buffer.readUInt16())
+                    let length = Int(try buffer.readUInt16())
                     pictureParameterSets.append(try buffer.readBytes(length).bytes)
                 }
             } catch {

@@ -1,6 +1,6 @@
+import AVFoundation
 import CoreMedia
 import Foundation
-import AVFoundation
 
 /// MPEG-2 TS (Transport Stream) Writer delegate
 public protocol TSWriterDelegate: class {
@@ -9,10 +9,10 @@ public protocol TSWriterDelegate: class {
 
 /// MPEG-2 TS (Transport Stream) Writer Foundation class
 public class TSWriter: Running {
-    static public let defaultPATPID: UInt16 = 0
-    static public let defaultPMTPID: UInt16 = 4095
-    static public let defaultVideoPID: UInt16 = 256
-    static public let defaultAudioPID: UInt16 = 257
+    public static let defaultPATPID: UInt16 = 0
+    public static let defaultPMTPID: UInt16 = 4095
+    public static let defaultVideoPID: UInt16 = 256
+    public static let defaultAudioPID: UInt16 = 257
 
     static let defaultSegmentDuration: Double = 2
 
@@ -26,7 +26,7 @@ public class TSWriter: Running {
     var audioContinuityCounter: UInt8 = 0
     var videoContinuityCounter: UInt8 = 0
     var PCRPID: UInt16 = TSWriter.defaultVideoPID
-    var rotatedTimestamp: CMTime = CMTime.zero
+    var rotatedTimestamp = CMTime.zero
     var segmentDuration: Double = TSWriter.defaultSegmentDuration
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
 
@@ -48,7 +48,7 @@ public class TSWriter: Running {
     }
     private var videoTimestamp: CMTime = .invalid
     private var audioTimestamp: CMTime = .invalid
-    private var PCRTimestamp: CMTime = CMTime.zero
+    private var PCRTimestamp = CMTime.zero
     private var canWriteFor: Bool {
         guard expectedMedias.isEmpty else { return true }
         if expectedMedias.contains(.audio) && expectedMedias.contains(.video) {
@@ -131,7 +131,7 @@ public class TSWriter: Running {
 
         packets[0].adaptationField?.randomAccessIndicator = randomAccessIndicator
 
-        var bytes: Data = Data()
+        var bytes = Data()
         for var packet in packets {
             switch PID {
             case TSWriter.defaultAudioPID:
@@ -164,7 +164,7 @@ public class TSWriter: Running {
 
     final func writeProgram() {
         PMT.PCRPID = PCRPID
-        var bytes: Data = Data()
+        var bytes = Data()
         var packets: [TSPacket] = []
         packets.append(contentsOf: PAT.arrayOfPackets(TSWriter.defaultPATPID))
         packets.append(contentsOf: PMT.arrayOfPackets(TSWriter.defaultPMTPID))
@@ -201,7 +201,7 @@ extension TSWriter: AudioConverterDelegate {
         guard let formatDescription: CMAudioFormatDescription = formatDescription else {
             return
         }
-        var data: ElementaryStreamSpecificData = ElementaryStreamSpecificData()
+        var data = ElementaryStreamSpecificData()
         data.streamType = ElementaryStreamType.adtsaac.rawValue
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
@@ -231,7 +231,7 @@ extension TSWriter: VideoEncoderDelegate {
             let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
-        var data: ElementaryStreamSpecificData = ElementaryStreamSpecificData()
+        var data = ElementaryStreamSpecificData()
         data.streamType = ElementaryStreamType.h264.rawValue
         data.elementaryPID = TSWriter.defaultVideoPID
         PMT.elementaryStreamSpecificData.append(data)
@@ -274,7 +274,7 @@ class TSFileWriter: TSWriter {
     private var sequence: Int = 0
 
     var playlist: String {
-        var m3u8: M3U = M3U()
+        var m3u8 = M3U()
         m3u8.targetDuration = segmentDuration
         if sequence <= TSFileWriter.defaultSegmentMaxCount {
             m3u8.mediaSequence = 0
@@ -298,7 +298,7 @@ class TSFileWriter: TSWriter {
         if duration <= segmentDuration {
             return
         }
-        let fileManager: FileManager = FileManager.default
+        let fileManager = FileManager.default
 
         #if os(OSX)
         let bundleIdentifier: String? = Bundle.main.bundleIdentifier
@@ -316,7 +316,7 @@ class TSFileWriter: TSWriter {
         }
 
         let filename: String = Int(timestamp.seconds).description + ".ts"
-        let url: URL = URL(fileURLWithPath: temp + filename)
+        let url = URL(fileURLWithPath: temp + filename)
 
         if let currentFileURL: URL = currentFileURL {
             files.append(M3UMediaInfo(url: currentFileURL, duration: duration))
@@ -374,7 +374,7 @@ class TSFileWriter: TSWriter {
     }
 
     private func removeFiles() {
-        let fileManager: FileManager = FileManager.default
+        let fileManager = FileManager.default
         for info in files {
             do {
                 try fileManager.removeItem(at: info.url as URL)

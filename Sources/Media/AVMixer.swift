@@ -6,7 +6,7 @@ import AVFoundation
     }
 #endif
 
-final public class AVMixer: NSObject {
+public final class AVMixer: NSObject {
 
     static let supportedSettingsKeys: [String] = [
         "fps",
@@ -68,11 +68,11 @@ final public class AVMixer: NSObject {
     }
 
     private(set) lazy var audioIO: AudioIOComponent = {
-       return AudioIOComponent(mixer: self)
+       AudioIOComponent(mixer: self)
     }()
 
     private(set) lazy var videoIO: VideoIOComponent = {
-       return VideoIOComponent(mixer: self)
+       VideoIOComponent(mixer: self)
     }()
 
     public func dispose() {
@@ -87,14 +87,14 @@ final public class AVMixer: NSObject {
 }
 
 extension AVMixer {
-    final public func startEncoding(delegate: Any) {
+    public final func startEncoding(delegate: Any) {
         videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
         videoIO.encoder.startRunning()
         audioIO.encoder.delegate = delegate as? AudioConverterDelegate
         audioIO.encoder.startRunning()
     }
 
-    final public func stopEncoding() {
+    public final func stopEncoding() {
         videoIO.encoder.delegate = nil
         videoIO.encoder.stopRunning()
         audioIO.encoder.delegate = nil
@@ -103,13 +103,13 @@ extension AVMixer {
 }
 
 extension AVMixer {
-    final public func startPlaying(_ audioEngine: AVAudioEngine?) {
+    public final func startPlaying(_ audioEngine: AVAudioEngine?) {
         audioIO.audioEngine = audioEngine
         audioIO.encoder.delegate = audioIO
         videoIO.queue.startRunning()
     }
 
-    final public func stopPlaying() {
+    public final func stopPlaying() {
         audioIO.audioEngine = nil
         audioIO.encoder.delegate = nil
         videoIO.queue.stopRunning()
@@ -123,7 +123,7 @@ extension AVMixer: Running {
         return session.isRunning
     }
 
-    final public func startRunning() {
+    public final func startRunning() {
         guard !isRunning else {
             return
         }
@@ -132,7 +132,7 @@ extension AVMixer: Running {
         }
     }
 
-    final public func stopRunning() {
+    public final func stopRunning() {
         guard isRunning else {
             return
         }
@@ -146,10 +146,10 @@ extension AVMixer: Running {
         return false
     }
 
-    final public func startRunning() {
+    public final func startRunning() {
     }
 
-    final public func stopRunning() {
+    public final func stopRunning() {
     }
 }
 #endif

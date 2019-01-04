@@ -33,17 +33,17 @@ final class VideoIOComponent: IOComponent {
             decoder.formatDescription = formatDescription
         }
     }
-    lazy var encoder: H264Encoder = H264Encoder()
-    lazy var decoder: H264Decoder = H264Decoder()
+    lazy var encoder = H264Encoder()
+    lazy var decoder = H264Decoder()
     lazy var queue: DisplayLinkedQueue = {
-        let queue: DisplayLinkedQueue = DisplayLinkedQueue()
+        let queue = DisplayLinkedQueue()
         queue.delegate = self
         return queue
     }()
 
     private(set) var effects: Set<VisualEffect> = []
 
-    private var extent: CGRect = CGRect.zero {
+    private var extent = CGRect.zero {
         didSet {
             guard extent != oldValue else {
                 return
@@ -388,7 +388,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
-        var image: CIImage = CIImage(cvPixelBuffer: buffer)
+        var image = CIImage(cvPixelBuffer: buffer)
         for effect in effects {
             image = effect.execute(image, info: info)
         }

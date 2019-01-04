@@ -2,6 +2,7 @@ import AVFoundation
 
 public protocol AVMixerRecorderDelegate: class {
     var moviesDirectory: URL { get }
+
     func rotateFile(_ recorder: AVMixerRecorder, withPresentationTimeStamp: CMTime, mediaType: AVMediaType)
     func getPixelBufferAdaptor(_ recorder: AVMixerRecorder, withWriterInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor?
     func getWriterInput(_ recorder: AVMixerRecorder, mediaType: AVMediaType, sourceFormatHint: CMFormatDescription?) -> AVAssetWriterInput?
@@ -33,8 +34,8 @@ open class AVMixerRecorder: NSObject {
     open var outputSettings: [AVMediaType: [String: Any]] = AVMixerRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVMixerRecorder.lock")
-    private(set) public var isRunning: Bool = false
-    fileprivate(set) var sourceTime: CMTime = CMTime.zero
+    public private(set) var isRunning: Bool = false
+    fileprivate(set) var sourceTime = CMTime.zero
 
     var isReadyForStartWriting: Bool {
         guard let writer: AVAssetWriter = writer else {
@@ -43,7 +44,7 @@ open class AVMixerRecorder: NSObject {
         return outputSettings.count == writer.inputs.count
     }
 
-    public override init() {
+    override public init() {
         super.init()
         delegate = DefaultAVMixerRecorderDelegate()
     }
@@ -124,7 +125,7 @@ open class AVMixerRecorder: NSObject {
 
 extension AVMixerRecorder: Running {
     // MARK: Running
-    final public func startRunning() {
+    public final func startRunning() {
         lockQueue.async {
             guard !self.isRunning else {
                 return
@@ -134,7 +135,7 @@ extension AVMixerRecorder: Running {
         }
     }
 
-    final public func stopRunning() {
+    public final func stopRunning() {
         lockQueue.async {
             guard self.isRunning else {
                 return
@@ -151,16 +152,16 @@ open class DefaultAVMixerRecorderDelegate: NSObject {
     open var duration: Int64 = 0
     open var dateFormat: String = "-yyyyMMdd-HHmmss"
 
-    private var rotateTime: CMTime = CMTime.zero
+    private var rotateTime = CMTime.zero
     private var clockReference: AVMediaType = .video
 
     #if os(iOS)
     open lazy var moviesDirectory: URL = {
-        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
     }()
     #else
     open lazy var moviesDirectory: URL = {
-        return URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
+        URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #endif
 }
@@ -238,7 +239,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
             }
         }
 
-        let input: AVAssetWriterInput = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
+        let input = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
         input.expectsMediaDataInRealTime = true
         recorder.writerInputs[mediaType] = input
         recorder.writer?.add(input)
@@ -258,7 +259,7 @@ extension DefaultAVMixerRecorderDelegate: AVMixerRecorderDelegate {
 
     func createWriter(_ fileName: String?) -> AVAssetWriter? {
         do {
-            let dateFormatter: DateFormatter = DateFormatter()
+            let dateFormatter = DateFormatter()
             dateFormatter.locale = Locale(identifier: "en_US")
             dateFormatter.dateFormat = dateFormat
             var fileComponent: String?

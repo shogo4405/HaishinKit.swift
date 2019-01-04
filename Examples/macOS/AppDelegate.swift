@@ -1,6 +1,6 @@
 import Cocoa
-import Logboard
 import HaishinKit
+import Logboard
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {

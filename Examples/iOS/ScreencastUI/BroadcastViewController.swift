@@ -1,23 +1,19 @@
 import ReplayKit
 
-class BroadcastViewController: UIViewController {
-    @IBOutlet
-    var startButton: UIButton!
-
-    @IBOutlet
-    var endpointURLField: UITextField!
-
-    @IBOutlet
-    var streamNameField: UITextField!
+final class BroadcastViewController: UIViewController {
+    @IBOutlet private weak var startButton: UIButton!
+    @IBOutlet private weak var var endpointURLField: UITextField!
+    @IBOutlet private weak var var streamNameField: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         startButton.addTarget(self, action: #selector(userDidFinishSetup), for: .touchDown)
     }
 
-    @objc func userDidFinishSetup() {
+    @objc
+    func userDidFinishSetup() {
 
-        let broadcastURL: URL = URL(string: endpointURLField.text!)!
+        let broadcastURL = URL(string: endpointURLField.text!)!
 
         let streamName: String = streamNameField.text!
         let endpointURL: String = endpointURLField.text!
@@ -26,7 +22,7 @@ class BroadcastViewController: UIViewController {
             "streamName": streamName as NSString
         ]
 
-        let broadcastConfiguration: RPBroadcastConfiguration = RPBroadcastConfiguration()
+        let broadcastConfiguration = RPBroadcastConfiguration()
         broadcastConfiguration.clipDuration = 2
         broadcastConfiguration.videoCompressionProperties = [
             AVVideoProfileLevelKey: AVVideoProfileLevelH264BaselineAutoLevel as NSSecureCoding & NSObjectProtocol

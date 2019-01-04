@@ -7,7 +7,8 @@ extension CGRect {
 }
 
 final class VideoGravityUtil {
-    @inline(__always) static func calculate(_ videoGravity: AVLayerVideoGravity, inRect: inout CGRect, fromRect: inout CGRect) {
+    @inline(__always)
+    static func calculate(_ videoGravity: AVLayerVideoGravity, inRect: inout CGRect, fromRect: inout CGRect) {
         switch videoGravity {
         case .resizeAspect:
             resizeAspect(&inRect, fromRect: &fromRect)
@@ -18,7 +19,8 @@ final class VideoGravityUtil {
         }
     }
 
-    @inline(__always) static func resizeAspect(_ inRect: inout CGRect, fromRect: inout CGRect) {
+    @inline(__always)
+    static func resizeAspect(_ inRect: inout CGRect, fromRect: inout CGRect) {
         let xRatio: CGFloat = inRect.width / fromRect.width
         let yRatio: CGFloat = inRect.height / fromRect.height
         if yRatio < xRatio {
@@ -30,7 +32,8 @@ final class VideoGravityUtil {
         }
     }
 
-    @inline(__always) static func resizeAspectFill(_ inRect: inout CGRect, fromRect: inout CGRect) {
+    @inline(__always)
+    static func resizeAspectFill(_ inRect: inout CGRect, fromRect: inout CGRect) {
         let inRectAspect: CGFloat = inRect.aspectRatio
         let fromRectAspect: CGFloat = fromRect.aspectRatio
         if inRectAspect < fromRectAspect {

@@ -12,7 +12,7 @@ protocol NetStreamDrawable: class {
 
 // MARK: -
 open class NetStream: NSObject {
-    public private(set) var mixer: AVMixer = AVMixer()
+    public private(set) var mixer = AVMixer()
     private static let queueKey = DispatchSpecificKey<UnsafeMutableRawPointer>()
     private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
     public let lockQueue = ({ () -> DispatchQueue in
@@ -190,7 +190,8 @@ open class NetStream: NSObject {
     }
 
     #if os(iOS)
-    @objc private func on(uiDeviceOrientationDidChange: Notification) {
+    @objc
+    private func on(uiDeviceOrientationDidChange: Notification) {
         if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: uiDeviceOrientationDidChange) {
             self.orientation = orientation
         }

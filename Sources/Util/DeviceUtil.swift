@@ -47,13 +47,13 @@ public final class DeviceUtil {
     private init() {
     }
 
-    static public func device(withPosition: AVCaptureDevice.Position) -> AVCaptureDevice? {
+    public static func device(withPosition: AVCaptureDevice.Position) -> AVCaptureDevice? {
         return AVCaptureDevice.devices().first {
             $0.hasMediaType(.video) && $0.position == withPosition
         }
     }
 
-    static public func device(withLocalizedName: String, mediaType: AVMediaType) -> AVCaptureDevice? {
+    public static func device(withLocalizedName: String, mediaType: AVMediaType) -> AVCaptureDevice? {
         return AVCaptureDevice.devices().first {
             $0.hasMediaType(mediaType) && $0.localizedName == withLocalizedName
         }
