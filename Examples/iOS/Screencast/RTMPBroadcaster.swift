@@ -31,7 +31,7 @@ public class RTMPBroadcaster: RTMPConnection {
         }
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]?) {
+    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {
         stream.appendSampleBuffer(sampleBuffer, withType: withType)
     }
 

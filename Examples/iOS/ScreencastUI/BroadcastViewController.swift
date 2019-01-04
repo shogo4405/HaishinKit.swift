@@ -2,8 +2,8 @@ import ReplayKit
 
 final class BroadcastViewController: UIViewController {
     @IBOutlet private weak var startButton: UIButton!
-    @IBOutlet private weak var var endpointURLField: UITextField!
-    @IBOutlet private weak var var streamNameField: UITextField!
+    @IBOutlet private weak var endpointURLField: UITextField!
+    @IBOutlet private weak var streamNameField: UITextField!
 
     override func viewDidLoad() {
         super.viewDidLoad()
