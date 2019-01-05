@@ -42,16 +42,16 @@
                 <a href="Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/AVMixerRecorder.html">AVMixerRecorder</a>
+                <a href="Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/AtomicBool.html">AtomicBool</a>
+                <a href="Classes/Atomic.html">Atomic</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/AtomicInteger.html">AtomicInteger</a>
+                <a href="Classes/AudioConverter.html">AudioConverter</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/AtomicInteger64.html">AtomicInteger64</a>
+                <a href="Classes/AudioConverter/Destination.html">– Destination</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/ByteArray.html">ByteArray</a>
@@ -60,7 +60,7 @@
                 <a href="Classes/ByteArray/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/DefaultAVMixerRecorderDelegate.html">DefaultAVMixerRecorderDelegate</a>
+                <a href="Classes/DefaultAVRecorderDelegate.html">DefaultAVRecorderDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/DeviceUtil.html">DeviceUtil</a>
@@ -204,9 +204,6 @@
                 <a href="Extensions/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
-                <a href="Extensions/HTTPRequestCompatible.html">HTTPRequestCompatible</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Extensions/HTTPResponseCompatible.html">HTTPResponseCompatible</a>
               </li>
             </ul>
@@ -215,7 +212,10 @@
             <a href="Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Protocols/AVMixerRecorderDelegate.html">AVMixerRecorderDelegate</a>
+                <a href="Protocols/AVRecorderDelegate.html">AVRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/AudioConverterDelegate.html">AudioConverterDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/FLVTag.html">FLVTag</a>
@@ -450,7 +450,7 @@
 <span class="n">use_frameworks!</span>
 
 <span class="k">def</span> <span class="nf">import_pods</span>
-    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.10.3'</span>
+    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.10.5'</span>
 <span class="k">end</span>
 
 <span class="n">target</span> <span class="s1">'Your Target'</span>  <span class="k">do</span>
@@ -459,7 +459,7 @@
 <span class="k">end</span>
 </code></pre>
 <h3 id='carthage' class='heading'>Carthage</h3>
-<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.10.3
+<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.10.5
 </code></pre>
 <h2 id='license' class='heading'>License</h2>
 
@@ -479,12 +479,12 @@
 
 <p>Make sure you setup and activate your AVAudioSession.</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">AVFoundation</span>
-<span class="k">let</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">AVAudioSession</span> <span class="o">=</span> <span class="kt">AVAudioSession</span><span class="o">.</span><span class="nf">sharedInstance</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">session</span> <span class="o">=</span> <span class="kt">AVAudioSession</span><span class="o">.</span><span class="nf">sharedInstance</span><span class="p">()</span>
 <span class="k">do</span> <span class="p">{</span>
     <span class="k">try</span> <span class="n">session</span><span class="o">.</span><span class="nf">setPreferredSampleRate</span><span class="p">(</span><span class="mi">44_100</span><span class="p">)</span>
     <span class="c1">// https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent</span>
     <span class="k">if</span> <span class="kd">#available(iOS 10.0, *)</span> <span class="p">{</span>
-        <span class="k">try</span> <span class="n">session</span><span class="o">.</span><span class="nf">setCategory</span><span class="p">(</span><span class="o">.</span><span class="n">playAndRecord</span><span class="p">,</span> <span class="nv">mode</span><span class="p">:</span> <span class="o">.</span><span class="k">default</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="n">allowBluetooth</span><span class="p">])</span>
+        <span class="k">try</span> <span class="n">session</span><span class="o">.</span><span class="nf">setCategory</span><span class="p">(</span><span class="o">.</span><span class="n">playAndRecord</span><span class="p">,</span> <span class="nv">mode</span><span class="p">:</span> <span class="o">.</span><span class="k">default</span><span class="p">,</span> <span class="nv">options</span><span class="p">:</span> <span class="p">[</span><span class="o">.</span><span class="n">defaultToSpeaker</span><span class="p">,</span> <span class="o">.</span><span class="n">allowBluetooth</span><span class="p">])</span>
     <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
         <span class="n">session</span><span class="o">.</span><span class="nf">perform</span><span class="p">(</span><span class="kt">NSSelectorFromString</span><span class="p">(</span><span class="s">"setCategory:withOptions:error:"</span><span class="p">),</span> <span class="nv">with</span><span class="p">:</span> <span class="kt">AVAudioSession</span><span class="o">.</span><span class="kt">Category</span><span class="o">.</span><span class="n">playAndRecord</span><span class="p">,</span> <span class="nv">with</span><span class="p">:</span>  <span class="p">[</span><span class="kt">AVAudioSession</span><span class="o">.</span><span class="kt">CategoryOptions</span><span class="o">.</span><span class="n">allowBluetooth</span><span class="p">])</span>
     <span class="p">}</span>
@@ -496,8 +496,8 @@
 <h2 id='rtmp-usage' class='heading'>RTMP Usage</h2>
 
 <p>Real Time Messaging Protocol (RTMP).</p>
-<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">rtmpConnection</span><span class="p">:</span><span class="kt">RTMPConnection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
-<span class="k">let</span> <span class="nv">rtmpStream</span><span class="p">:</span> <span class="kt">RTMPStream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">rtmpConnection</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">rtmpConnection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">rtmpStream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">rtmpConnection</span><span class="p">)</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="kt">AVMediaType</span><span class="o">.</span><span class="n">audio</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
     <span class="c1">// print(error)</span>
 <span class="p">}</span>
@@ -522,7 +522,7 @@
 
 <span class="c1">// see: #58</span>
 <span class="cp">#if(iOS)</span>
-<span class="k">let</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">AVAudioSession</span> <span class="o">=</span> <span class="kt">AVAudioSession</span><span class="o">.</span><span class="nf">sharedInstance</span><span class="p">()</span>
+<span class="k">let</span> <span class="nv">session</span> <span class="o">=</span> <span class="kt">AVAudioSession</span><span class="o">.</span><span class="nf">sharedInstance</span><span class="p">()</span>
 <span class="k">do</span> <span class="p">{</span>
     <span class="k">try</span> <span class="n">session</span><span class="o">.</span><span class="nf">setPreferredSampleRate</span><span class="p">(</span><span class="mi">44_100</span><span class="p">)</span>
     <span class="c1">// https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent</span>
@@ -584,7 +584,7 @@
 
 </code></pre>
 <h3 id='authentication' class='heading'>Authentication</h3>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">rtmpConnection</span><span class="p">:</span><span class="kt">RTMPConnection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">rtmpConnection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
 <span class="n">rtmpConnection</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="s">"rtmp://username:password@localhost/appName/instanceName"</span><span class="p">)</span>
 </code></pre>
 <h3 id='screen-capture' class='heading'>Screen Capture</h3>
@@ -596,15 +596,15 @@
 <h2 id='http-usage' class='heading'>HTTP Usage</h2>
 
 <p>HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see <a href="http://ip.address:8080/hello/playlist.m3u8">http://ip.address:8080/hello/playlist.m3u8</a> </p>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">httpStream</span><span class="p">:</span><span class="kt">HTTPStream</span> <span class="o">=</span> <span class="kt">HTTPStream</span><span class="p">()</span>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">httpStream</span> <span class="o">=</span> <span class="kt">HTTPStream</span><span class="p">()</span>
 <span class="n">httpStream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">DeviceUtil</span><span class="o">.</span><span class="nf">device</span><span class="p">(</span><span class="nv">withPosition</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">))</span>
 <span class="n">httpStream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">defaultDevice</span><span class="p">(</span><span class="nv">withMediaType</span><span class="p">:</span> <span class="kt">AVMediaTypeAudio</span><span class="p">))</span>
 <span class="n">httpStream</span><span class="o">.</span><span class="nf">publish</span><span class="p">(</span><span class="s">"hello"</span><span class="p">)</span>
 
-<span class="k">var</span> <span class="nv">hjView</span> <span class="o">=</span> <span class="kt">HKView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">hkView</span> <span class="o">=</span> <span class="kt">HKView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
 <span class="n">hkView</span><span class="o">.</span><span class="nf">attachStream</span><span class="p">(</span><span class="n">httpStream</span><span class="p">)</span>
 
-<span class="k">var</span> <span class="nv">httpService</span><span class="p">:</span><span class="kt">HLSService</span> <span class="o">=</span> <span class="kt">HLSService</span><span class="p">(</span><span class="nv">domain</span><span class="p">:</span> <span class="s">""</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="s">"_http._tcp"</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"lf"</span><span class="p">,</span> <span class="nv">port</span><span class="p">:</span> <span class="mi">8080</span><span class="p">)</span>
+<span class="k">var</span> <span class="nv">httpService</span> <span class="o">=</span> <span class="kt">HLSService</span><span class="p">(</span><span class="nv">domain</span><span class="p">:</span> <span class="s">""</span><span class="p">,</span> <span class="nv">type</span><span class="p">:</span> <span class="s">"_http._tcp"</span><span class="p">,</span> <span class="nv">name</span><span class="p">:</span> <span class="s">"HaishinKit"</span><span class="p">,</span> <span class="nv">port</span><span class="p">:</span> <span class="mi">8080</span><span class="p">)</span>
 <span class="n">httpService</span><span class="o">.</span><span class="nf">startRunning</span><span class="p">()</span>
 <span class="n">httpService</span><span class="o">.</span><span class="nf">addHTTPStream</span><span class="p">(</span><span class="n">httpStream</span><span class="p">)</span>
 
@@ -654,8 +654,8 @@ Please consider to use Issues.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2018-12-09)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-01-05)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

@@ -43,16 +43,16 @@
                 <a href="../Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AVMixerRecorder.html">AVMixerRecorder</a>
+                <a href="../Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AtomicBool.html">AtomicBool</a>
+                <a href="../Classes/Atomic.html">Atomic</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AtomicInteger.html">AtomicInteger</a>
+                <a href="../Classes/AudioConverter.html">AudioConverter</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AtomicInteger64.html">AtomicInteger64</a>
+                <a href="../Classes/AudioConverter/Destination.html">– Destination</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/ByteArray.html">ByteArray</a>
@@ -61,7 +61,7 @@
                 <a href="../Classes/ByteArray/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/DefaultAVMixerRecorderDelegate.html">DefaultAVMixerRecorderDelegate</a>
+                <a href="../Classes/DefaultAVRecorderDelegate.html">DefaultAVRecorderDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/DeviceUtil.html">DeviceUtil</a>
@@ -205,9 +205,6 @@
                 <a href="../Extensions/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/HTTPRequestCompatible.html">HTTPRequestCompatible</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Extensions/HTTPResponseCompatible.html">HTTPResponseCompatible</a>
               </li>
             </ul>
@@ -216,7 +213,10 @@
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/AVMixerRecorderDelegate.html">AVMixerRecorderDelegate</a>
+                <a href="../Protocols/AVRecorderDelegate.html">AVRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AudioConverterDelegate.html">AudioConverterDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
@@ -289,7 +289,7 @@
             <h1>AVMixer</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">class</span> <span class="kt">AVMixer</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">AVMixer</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
 
                 </div>
               </div>
@@ -299,6 +299,60 @@
           <section class="section task-group-section">
             <div class="task-group">
               <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit7AVMixerC10defaultFPSSdvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultFPS" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit7AVMixerC10defaultFPSSdvpZ">defaultFPS</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultFPS</span><span class="p">:</span> <span class="kt">Float64</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit7AVMixerC20defaultVideoSettingsSDySo8NSStringCyXlSo8NSObjectCSH10ObjectiveCg_GvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultVideoSettings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit7AVMixerC20defaultVideoSettingsSDySo8NSStringCyXlSo8NSObjectCSH10ObjectiveCg_GvpZ">defaultVideoSettings</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultVideoSettings</span><span class="p">:</span> <span class="p">[</span><span class="kt">NSString</span> <span class="p">:</span> <span class="kt">AnyObject</span><span class="p">]</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
                 <li class="item">
                   <div>
                     <code>
@@ -329,9 +383,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7AVMixerC8recorderAA0C8RecorderCvp"></a>
+                    <a name="/s:10HaishinKit7AVMixerC8recorderAA10AVRecorderCSgvp"></a>
                     <a name="//apple_ref/swift/Property/recorder" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7AVMixerC8recorderAA0C8RecorderCvp">recorder</a>
+                    <a class="token" href="#/s:10HaishinKit7AVMixerC8recorderAA10AVRecorderCSgvp">recorder</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -339,14 +393,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The recorder instance.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">recorder</span><span class="p">:</span> <span class="kt"><a href="../Classes/AVMixerRecorder.html">AVMixerRecorder</a></span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">recorder</span><span class="p">:</span> <span class="kt"><a href="../Classes/AVRecorder.html">AVRecorder</a></span><span class="o">!</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -404,7 +458,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">startEncoding</span><span class="p">(</span><span class="nv">delegate</span><span class="p">:</span> <span class="kt">Any</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startEncoding</span><span class="p">(</span><span class="nv">delegate</span><span class="p">:</span> <span class="kt">Any</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -431,7 +485,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopEncoding</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopEncoding</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -445,9 +499,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7AVMixerC12startPlayingyyF"></a>
-                    <a name="//apple_ref/swift/Method/startPlaying()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7AVMixerC12startPlayingyyF">startPlaying()</a>
+                    <a name="/s:10HaishinKit7AVMixerC12startPlayingyySo13AVAudioEngineCSgF"></a>
+                    <a name="//apple_ref/swift/Method/startPlaying(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit7AVMixerC12startPlayingyySo13AVAudioEngineCSgF">startPlaying(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -462,7 +516,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">startPlaying</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startPlaying</span><span class="p">(</span><span class="n">_</span> <span class="nv">audioEngine</span><span class="p">:</span> <span class="kt">AVAudioEngine</span><span class="p">?)</span></code></pre>
 
                         </div>
                       </div>
@@ -489,7 +543,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopPlaying</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopPlaying</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -554,7 +608,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">startRunning</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startRunning</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -581,7 +635,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopRunning</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopRunning</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -593,8 +647,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2018-12-09)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-01-05)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

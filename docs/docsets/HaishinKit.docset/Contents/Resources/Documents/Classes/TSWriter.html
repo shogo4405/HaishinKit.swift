@@ -43,16 +43,16 @@
                 <a href="../Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AVMixerRecorder.html">AVMixerRecorder</a>
+                <a href="../Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AtomicBool.html">AtomicBool</a>
+                <a href="../Classes/Atomic.html">Atomic</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AtomicInteger.html">AtomicInteger</a>
+                <a href="../Classes/AudioConverter.html">AudioConverter</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AtomicInteger64.html">AtomicInteger64</a>
+                <a href="../Classes/AudioConverter/Destination.html">– Destination</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/ByteArray.html">ByteArray</a>
@@ -61,7 +61,7 @@
                 <a href="../Classes/ByteArray/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/DefaultAVMixerRecorderDelegate.html">DefaultAVMixerRecorderDelegate</a>
+                <a href="../Classes/DefaultAVRecorderDelegate.html">DefaultAVRecorderDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/DeviceUtil.html">DeviceUtil</a>
@@ -205,9 +205,6 @@
                 <a href="../Extensions/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/HTTPRequestCompatible.html">HTTPRequestCompatible</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Extensions/HTTPResponseCompatible.html">HTTPResponseCompatible</a>
               </li>
             </ul>
@@ -216,7 +213,10 @@
             <a href="../Protocols.html">Protocols</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Protocols/AVMixerRecorderDelegate.html">AVMixerRecorderDelegate</a>
+                <a href="../Protocols/AVRecorderDelegate.html">AVRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/AudioConverterDelegate.html">AudioConverterDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
@@ -571,11 +571,76 @@
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/AudioConverterDelegate"></a>
+                <a name="//apple_ref/swift/Section/AudioConverterDelegate" class="dashAnchor"></a>
+                <a href="#/AudioConverterDelegate">
+                  <h3 class="section-name">AudioConverterDelegate</h3>
+                </a>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSWriterC23didSetFormatDescription5audioySo08CMFormatG3RefaSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/didSetFormatDescription(audio:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC23didSetFormatDescription5audioySo08CMFormatG3RefaSg_tF">didSetFormatDescription(audio:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">didSetFormatDescription</span><span class="p">(</span><span class="n">audio</span> <span class="nv">formatDescription</span><span class="p">:</span> <span class="kt">CMFormatDescription</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSWriterC12sampleOutput5audio21presentationTimeStampy9CoreAudio013UnsafeMutableK17BufferListPointerV_So6CMTimeatF"></a>
+                    <a name="//apple_ref/swift/Method/sampleOutput(audio:presentationTimeStamp:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC12sampleOutput5audio21presentationTimeStampy9CoreAudio013UnsafeMutableK17BufferListPointerV_So6CMTimeatF">sampleOutput(audio:presentationTimeStamp:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sampleOutput</span><span class="p">(</span><span class="n">audio</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">UnsafeMutableAudioBufferListPointer</span><span class="p">,</span> <span class="nv">presentationTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2018 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2018-12-09)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-01-05)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
