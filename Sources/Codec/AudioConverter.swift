@@ -124,9 +124,9 @@ public class AudioConverter: NSObject {
 
     public static let minimumBitrate: UInt32 = 8 * 1024
     public static let defaultBitrate: UInt32 = 32 * 1024
-    // 0 means according to a input source
+    /// 0 means according to a input source
     public static let defaultChannels: UInt32 = 0
-    // 0 means according to a input source
+    /// 0 means according to a input source
     public static let defaultSampleRate: Double = 0
     public static let defaultMaximumBuffers: Int = 1
     public static let defaultBufferListSize: Int = AudioBufferList.sizeInBytes(maximumBuffers: 1)
@@ -165,9 +165,6 @@ public class AudioConverter: NSObject {
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioConverter.lock")
-    private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
-    private var bufferListSize: Int = AudioConverter.defaultBufferListSize
-    private var currentBufferList: UnsafeMutableAudioBufferListPointer?
     var inSourceFormat: AudioStreamBasicDescription? {
         didSet {
             logger.info("\(String(describing: self.inSourceFormat))")
@@ -179,6 +176,9 @@ public class AudioConverter: NSObject {
             bufferListSize = nonInterleaved ? AudioBufferList.sizeInBytes(maximumBuffers: maximumBuffers) : AudioConverter.defaultBufferListSize
         }
     }
+    private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
+    private var bufferListSize: Int = AudioConverter.defaultBufferListSize
+    private var currentBufferList: UnsafeMutableAudioBufferListPointer?
     private var _inDestinationFormat: AudioStreamBasicDescription?
     private var inDestinationFormat: AudioStreamBasicDescription {
         get {

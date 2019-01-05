@@ -53,10 +53,10 @@ open class HTTPStream: NetStream {
         let fileName: String = url.pathComponents.last!
         switch true {
         case fileName == "playlist.m3u8":
-            return (.ApplicationXMpegURL, tsWriter.playlist)
+            return (.applicationXMpegURL, tsWriter.playlist)
         case fileName.contains(".ts"):
             if let mediaFile: String = tsWriter.getFilePath(fileName) {
-                return (.VideoMP2T, mediaFile)
+                return (.videoMP2T, mediaFile)
             }
             return nil
         default:

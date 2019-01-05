@@ -83,7 +83,7 @@ final class DisplayLinkedQueue: NSObject {
     }
 
     @objc
-    func update(displayLink: DisplayLink) {
+    private func update(displayLink: DisplayLink) {
         guard let first: CMSampleBuffer = buffers.first, isReady else {
             return
         }

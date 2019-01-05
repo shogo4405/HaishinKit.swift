@@ -276,12 +276,12 @@ final class H264Encoder: NSObject {
 
 #if os(iOS)
     @objc
-    func applicationWillEnterForeground(_ notification: Notification) {
+    private func applicationWillEnterForeground(_ notification: Notification) {
         invalidateSession = true
     }
 
     @objc
-    func didAudioSessionInterruption(_ notification: Notification) {
+    private func didAudioSessionInterruption(_ notification: Notification) {
         guard
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let value: NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,

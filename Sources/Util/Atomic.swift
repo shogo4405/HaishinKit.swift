@@ -15,7 +15,7 @@ public final class Atomic<A> {
         self._value = value
     }
 
-    // Setter for the value.
+    /// Setter for the value.
     public func mutate(_ transform: (inout A) -> Void) {
         queue.sync {
             transform(&self._value)

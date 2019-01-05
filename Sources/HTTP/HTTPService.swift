@@ -299,7 +299,7 @@ open class HLSService: HTTPService {
                 response.statusCode = HTTPStatusCode.ok.description
                 response.headerFields["Content-Type"] = mime.rawValue
                 switch mime {
-                case .VideoMP2T:
+                case .videoMP2T:
                     if let info: [FileAttributeKey: Any] = try? FileManager.default.attributesOfItem(atPath: resource),
                         let length: Any = info[FileAttributeKey.size] {
                         response.headerFields["Content-Length"] = String(describing: length)

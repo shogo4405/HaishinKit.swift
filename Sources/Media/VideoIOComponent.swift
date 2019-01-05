@@ -322,6 +322,7 @@ final class VideoIOComponent: IOComponent {
             logger.error("while setting torch: \(error)")
         }
     }
+
     func dispose() {
         if Thread.isMainThread {
             self.drawable?.attachStream(nil)
