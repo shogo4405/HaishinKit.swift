@@ -30,6 +30,7 @@ open class AVRecorder: NSObject {
     open var writer: AVAssetWriter?
     open var fileName: String?
     open weak var delegate: AVRecorderDelegate?
+    private var defaultDelegate = DefaultAVRecorderDelegate()
     open var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     open var outputSettings: [AVMediaType: [String: Any]] = AVRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
@@ -46,7 +47,7 @@ open class AVRecorder: NSObject {
 
     override public init() {
         super.init()
-        delegate = DefaultAVRecorderDelegate()
+        delegate = defaultDelegate
     }
 
     final func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) {
