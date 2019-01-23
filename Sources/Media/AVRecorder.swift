@@ -30,7 +30,7 @@ open class AVRecorder: NSObject {
     open var writer: AVAssetWriter?
     open var fileName: String?
     open weak var delegate: AVRecorderDelegate?
-    private var defaultDelegate = DefaultAVRecorderDelegate()
+    private let defaultDelegate = DefaultAVRecorderDelegate()
     open var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     open var outputSettings: [AVMediaType: [String: Any]] = AVRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
