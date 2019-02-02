@@ -81,6 +81,9 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
+    private let semaphore = DispatchSemaphore(value: 1)
+    private let lockFlags = CVPixelBufferLockFlags(rawValue: 0)
+
     #if os(iOS) || os(macOS)
     var fps: Float64 = AVMixer.defaultFPS {
         didSet {
@@ -354,59 +357,44 @@ final class VideoIOComponent: IOComponent {
             logger.error("while setting torch: \(error)")
         }
     }
-
-    func dispose() {
-        if Thread.isMainThread {
-            self.drawable?.attachStream(nil)
-        } else {
-            DispatchQueue.main.sync {
-                self.drawable?.attachStream(nil)
-            }
-        }
-
-        input = nil
-        output = nil
-    }
-    #else
-    func dispose() {
-        if Thread.isMainThread {
-            self.drawable?.attachStream(nil)
-        } else {
-            DispatchQueue.main.sync {
-                self.drawable?.attachStream(nil)
-            }
-        }
-    }
     #endif
 
+    func dispose() {
+        if Thread.isMainThread {
+            self.drawable?.attachStream(nil)
+        } else {
+            DispatchQueue.main.sync {
+                self.drawable?.attachStream(nil)
+            }
+        }
+        #if !os(tvOS)
+        input = nil
+        output = nil
+        #endif
+    }
+
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+        guard let buffer = sampleBuffer.imageBuffer, semaphore.wait(timeout: .now()) == .success else {
             return
         }
 
         var imageBuffer: CVImageBuffer?
-
-        CVPixelBufferLockBaseAddress(buffer, [])
+        CVPixelBufferLockBaseAddress(buffer, .readOnly)
         defer {
-            CVPixelBufferUnlockBaseAddress(buffer, [])
+            CVPixelBufferUnlockBaseAddress(buffer, .readOnly)
             if let imageBuffer = imageBuffer {
-                CVPixelBufferUnlockBaseAddress(imageBuffer, [])
+                CVPixelBufferUnlockBaseAddress(imageBuffer, lockFlags)
             }
+            semaphore.signal()
         }
 
         if drawable != nil || !effects.isEmpty {
             let image: CIImage = effect(buffer, info: sampleBuffer)
             extent = image.extent
             if !effects.isEmpty {
-                #if os(macOS)
                 CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &imageBuffer)
-                #else
-                if buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
-                    CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &imageBuffer)
-                }
-                #endif
                 if let imageBuffer = imageBuffer {
-                    CVPixelBufferLockBaseAddress(imageBuffer, [])
+                    CVPixelBufferLockBaseAddress(imageBuffer, lockFlags)
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
