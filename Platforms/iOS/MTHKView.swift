@@ -8,6 +8,8 @@ open class MTHKView: MTKView {
 
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
+    
+    var didConfigureDrawing = false
 
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
@@ -19,6 +21,7 @@ open class MTHKView: MTKView {
 
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
+        configureDrawingIfNeded()
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -28,8 +31,7 @@ open class MTHKView: MTKView {
 
     override open func awakeFromNib() {
         super.awakeFromNib()
-        delegate = self
-        enableSetNeedsDisplay = true
+        configureDrawingIfNeded()
     }
 
     open func attachStream(_ stream: NetStream?) {
@@ -42,7 +44,18 @@ open class MTHKView: MTKView {
         }
         currentStream = stream
     }
+    
+    func configureDrawingIfNeded() {
+        guard !didConfigureDrawing else {
+            return
+        }
+        delegate = self
+        isPaused = true
+        enableSetNeedsDisplay = true
+        didConfigureDrawing = true
+    }
 }
+
 
 @available(iOS 9.0, *)
 extension MTHKView: MTKViewDelegate {
