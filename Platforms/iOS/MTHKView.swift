@@ -19,6 +19,7 @@ open class MTHKView: MTKView {
 
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
+        awakeFromNib()
     }
 
     public required init(coder aDecoder: NSCoder) {
