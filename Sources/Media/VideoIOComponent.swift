@@ -27,7 +27,11 @@ final class VideoIOComponent: IOComponent {
             }
         }
     }
-    var drawable: NetStreamDrawable?
+    var drawable: NetStreamDrawable? = nil {
+        didSet {
+            drawable?.orientation = orientation
+        }
+    }
     var formatDescription: CMVideoFormatDescription? {
         didSet {
             decoder.formatDescription = formatDescription
