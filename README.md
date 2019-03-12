@@ -1,4 +1,4 @@
-# HaishinKit (formerly lf)
+﻿# HaishinKit (formerly lf)
 [![Platform](https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
 ![Language](https://img.shields.io/badge/language-Swift%204.0-orange.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
@@ -20,8 +20,8 @@
   - [ ] AMF3
 - [x] SharedObject
 - [x] RTMPS
-  - [x] Native (RTMP over SSL/TSL)
-  - [x] _Tunneled (RTMPT over SSL/TSL) (Technical Preview)_
+  - [x] Native (RTMP over SSL/TLS)
+  - [x] _Tunneled (RTMPT over SSL/TLS) (Technical Preview)_
 - [x] _RTMPT (Technical Preview)_
 - [x] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
 
