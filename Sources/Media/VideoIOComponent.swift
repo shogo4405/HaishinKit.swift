@@ -120,6 +120,9 @@ final class VideoIOComponent: IOComponent {
                 if torch {
                     setTorchMode(.on)
                 }
+                if !stabilization {
+                    connection.preferredVideoStabilizationMode = .off
+                }
             }
             drawable?.orientation = orientation
         }
@@ -210,6 +213,19 @@ final class VideoIOComponent: IOComponent {
                 device.unlockForConfiguration()
             } catch let error as NSError {
                 logger.error("while locking device for autoexpose: \(error)")
+            }
+        }
+    }
+    
+    var stabilization: Bool = true {
+        didSet {
+            guard stabilization != oldValue else {
+                return
+            }
+            if !newValue {
+                for connection in output.connections {
+                    connection.preferredVideoStabilizationMode = .off
+                }
             }
         }
     }
@@ -305,6 +321,11 @@ final class VideoIOComponent: IOComponent {
         mixer.session.addOutput(output)
         for connection in output.connections where connection.isVideoOrientationSupported {
             connection.videoOrientation = orientation
+        }
+        if !stabilization {
+            for connection in output.connections {
+                connection.preferredVideoStabilizationMode = .off
+            }
         }
         output.setSampleBufferDelegate(self, queue: lockQueue)
 
