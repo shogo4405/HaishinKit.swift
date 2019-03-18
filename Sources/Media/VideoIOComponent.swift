@@ -112,6 +112,7 @@ final class VideoIOComponent: IOComponent {
 
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
+            drawable?.orientation = orientation
             guard orientation != oldValue else {
                 return
             }
@@ -121,7 +122,6 @@ final class VideoIOComponent: IOComponent {
                     setTorchMode(.on)
                 }
             }
-            drawable?.orientation = orientation
         }
     }
 
@@ -274,6 +274,8 @@ final class VideoIOComponent: IOComponent {
         #if os(iOS)
         if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
             self.orientation = orientation
+        } else if let defaultOrientation = RTMPStream.defaultOrientation {
+            self.orientation = defaultOrientation
         }
         #endif
     }
