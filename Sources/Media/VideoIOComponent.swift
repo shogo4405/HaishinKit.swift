@@ -23,11 +23,17 @@ final class VideoIOComponent: IOComponent {
             }
         }
     }
+
+    #if os(iOS) || os(macOS)
     var drawable: NetStreamDrawable? = nil {
         didSet {
             drawable?.orientation = orientation
         }
     }
+    #else
+    var drawable: NetStreamDrawable? = nil
+    #endif
+
     var formatDescription: CMVideoFormatDescription? {
         didSet {
             decoder.formatDescription = formatDescription
