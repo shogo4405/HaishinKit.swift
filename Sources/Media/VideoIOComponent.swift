@@ -18,20 +18,22 @@ final class VideoIOComponent: IOComponent {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
     var context: CIContext? {
         didSet {
-            objc_sync_enter(effects)
-            defer {
-                objc_sync_exit(effects)
-            }
             for effect in effects {
                 effect.ciContext = context
             }
         }
     }
+
+    #if os(iOS) || os(macOS)
     var drawable: NetStreamDrawable? = nil {
         didSet {
             drawable?.orientation = orientation
         }
     }
+    #else
+    var drawable: NetStreamDrawable? = nil
+    #endif
+
     var formatDescription: CMVideoFormatDescription? {
         didSet {
             decoder.formatDescription = formatDescription
@@ -404,19 +406,11 @@ final class VideoIOComponent: IOComponent {
     }
 
     func registerEffect(_ effect: VisualEffect) -> Bool {
-        objc_sync_enter(effects)
-        defer {
-            objc_sync_exit(effects)
-        }
         effect.ciContext = context
         return effects.insert(effect).inserted
     }
 
     func unregisterEffect(_ effect: VisualEffect) -> Bool {
-        objc_sync_enter(effects)
-        defer {
-            objc_sync_exit(effects)
-        }
         effect.ciContext = nil
         return effects.remove(effect) != nil
     }
