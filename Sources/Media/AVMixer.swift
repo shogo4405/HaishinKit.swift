@@ -35,11 +35,6 @@ public class AVMixer: NSObject {
         get { return videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
-    
-    @objc var stabilization: Bool {
-        get { return videoIO.stabilization }
-        set { videoIO.stabilization = newValue }
-    }
 
     @objc var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
