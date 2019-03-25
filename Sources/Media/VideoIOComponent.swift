@@ -224,7 +224,7 @@ final class VideoIOComponent: IOComponent {
             guard stabilization != oldValue else {
                 return
             }
-            if !newValue {
+            if !stabilization {
                 for connection in output.connections {
                     connection.preferredVideoStabilizationMode = .off
                 }
