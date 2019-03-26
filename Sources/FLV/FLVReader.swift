@@ -30,7 +30,7 @@ extension FLVReader: IteratorProtocol {
         guard let fileHandle: FileHandle = fileHandle else {
             return nil
         }
-        let tag: FLVTag!
+        var tag: FLVTag!
         fileHandle.seek(toFileOffset: currentOffSet)
         let data: Data = fileHandle.readData(ofLength: FLVReader.headerSize)
         guard !data.isEmpty else {
