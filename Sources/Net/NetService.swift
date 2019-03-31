@@ -27,7 +27,7 @@ open class NetService: NSObject {
 
     func disconnect(_ client: NetClient) {
         lockQueue.sync {
-            guard let index: Int = clients.index(of: client) else {
+            guard let index: Int = clients.firstIndex(of: client) else {
                 return
             }
             clients.remove(at: index)

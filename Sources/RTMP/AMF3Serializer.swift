@@ -53,7 +53,7 @@ class AMFReference {
     }
 
     func indexOf(_ value: String) -> Int? {
-        return strings.index(of: value)
+        return strings.firstIndex(of: value)
     }
 }
 
