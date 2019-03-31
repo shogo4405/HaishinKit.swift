@@ -1,4 +1,4 @@
-﻿# HaishinKit (formerly lf)
+# HaishinKit (formerly lf)
 [![Platform](https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
 ![Language](https://img.shields.io/badge/language-Swift%204.0-orange.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
@@ -73,7 +73,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 0.10.5'
+    pod 'HaishinKit', '~> 0.10.7'
 end
 
 target 'Your Target'  do
@@ -83,7 +83,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 0.10.5
+github "shogo4405/HaishinKit.swift" ~> 0.10.7
 ```
 
 ## License
