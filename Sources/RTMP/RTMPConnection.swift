@@ -126,7 +126,7 @@ open class RTMPConnection: EventDispatcher {
     private static func createSanJoseAuthCommand(_ url: URL, description: String) -> String {
         var command: String = url.absoluteString
 
-        guard let index: String.Index = description.index(of: "?") else {
+        guard let index: String.Index = description.firstIndex(of: "?") else {
             return command
         }
 

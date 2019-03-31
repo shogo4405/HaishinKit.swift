@@ -264,7 +264,7 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
             dateFormatter.dateFormat = dateFormat
             var fileComponent: String?
             if var fileName: String = fileName {
-                if let q: String.Index = fileName.index(of: "?") {
+                if let q: String.Index = fileName.firstIndex(of: "?") {
                     fileName.removeSubrange(q..<fileName.endIndex)
                 }
                 fileComponent = fileName + dateFormatter.string(from: Date())
