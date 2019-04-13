@@ -14,4 +14,15 @@ final class RTMPConnectionTests: XCTestCase {
         stream.publish("live")
         sleep(10000)
     }
+
+    func testReleaseWhenClose() {
+        weak var weakConnection: RTMPConnection?
+        _ = {
+            let connection = RTMPConnection()
+            connection.connect("rtmp://localhost:1935/live")
+            connection.close()
+            weakConnection = connection
+        }()
+        XCTAssertNil(weakConnection)
+    }
 }

@@ -295,6 +295,7 @@ open class RTMPConnection: EventDispatcher {
 
     func close(isDisconnected: Bool) {
         guard connected || isDisconnected else {
+            timer = nil
             return
         }
         if !isDisconnected {
