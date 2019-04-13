@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035AFA032263868E009DD0BB /* RTMPStreamTests.swift */; };
 		2901A4EE1D437170002BBD23 /* DisplayLinkedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* DisplayLinkedQueue.swift */; };
 		2901A4EF1D437662002BBD23 /* DisplayLinkedQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* DisplayLinkedQueue.swift */; };
 		290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */; };
@@ -445,6 +446,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		035AFA032263868E009DD0BB /* RTMPStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStreamTests.swift; sourceTree = "<group>"; };
 		2901A4ED1D437170002BBD23 /* DisplayLinkedQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DisplayLinkedQueue.swift; sourceTree = "<group>"; };
 		290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPConnectionTests.swift; sourceTree = "<group>"; };
 		290686041DFDC19B008EB7ED /* SampleVideo_360x240_5mb-base.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SampleVideo_360x240_5mb-base.mp4"; sourceTree = "<group>"; };
@@ -752,6 +754,7 @@
 				290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */,
 				2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */,
 				294637A31EC8961C008EEC71 /* RTMPReaderTests.swift */,
+				035AFA032263868E009DD0BB /* RTMPStreamTests.swift */,
 			);
 			path = RTMP;
 			sourceTree = "<group>";
@@ -1731,6 +1734,7 @@
 				290EA8A11DFB61B100053022 /* RTMPChunkTests.swift in Sources */,
 				290EA89F1DFB61B100053022 /* AMF0SerializerTests.swift in Sources */,
 				290EA8AA1DFB61E700053022 /* CRC32Tests.swift in Sources */,
+				035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */,
 				290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

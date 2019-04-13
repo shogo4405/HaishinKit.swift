@@ -276,6 +276,7 @@ open class RTMPStream: NetStream {
             }
         }
     }
+    private var isBeingClosed: Bool = false
 
     var audioTimestamp: Double = 0
     var videoTimestamp: Double = 0
@@ -361,7 +362,7 @@ open class RTMPStream: NetStream {
                 return
             }
 
-            while self.readyState == .initialized {
+            while self.readyState == .initialized && !self.isBeingClosed {
                 usleep(100)
             }
 
@@ -425,7 +426,7 @@ open class RTMPStream: NetStream {
                 return
             }
 
-            while self.readyState == .initialized {
+            while self.readyState == .initialized && !self.isBeingClosed {
                 usleep(100)
             }
 
@@ -460,9 +461,10 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        if readyState == .closed || readyState == .initialized {
+        if readyState == .closed {
             return
         }
+        isBeingClosed = true
         play()
         publish(nil)
         lockQueue.sync {
@@ -478,6 +480,7 @@ open class RTMPStream: NetStream {
                     commandObject: nil,
                     arguments: [self.id]
             )), locked: nil)
+            self.isBeingClosed = false
         }
     }
 
