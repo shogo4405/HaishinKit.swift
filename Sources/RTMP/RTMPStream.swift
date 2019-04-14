@@ -469,7 +469,7 @@ open class RTMPStream: NetStream {
         publish(nil)
         lockQueue.sync {
             self.readyState = .closed
-            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(
+            self.rtmpConnection.socket?.doOutput(chunk: RTMPChunk(
                 type: .zero,
                 streamId: RTMPChunk.StreamID.command.rawValue,
                 message: RTMPCommandMessage(
