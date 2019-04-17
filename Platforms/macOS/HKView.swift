@@ -48,9 +48,11 @@ open class HKView: NSView {
             return
         }
         stream.lockQueue.async {
-            self.layer?.setValue(stream.mixer.session, forKey: "session")
-            stream.mixer.videoIO.drawable = self
-            stream.mixer.startRunning()
+            DispatchQueue.main.async {
+                self.layer?.setValue(stream.mixer.session, forKey: "session")
+                stream.mixer.videoIO.drawable = self
+                stream.mixer.startRunning()
+            }
         }
     }
 }

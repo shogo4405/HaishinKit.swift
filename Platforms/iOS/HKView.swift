@@ -68,9 +68,11 @@ open class HKView: UIView {
         stream.mixer.session.commitConfiguration()
 
         stream.lockQueue.async {
-            stream.mixer.videoIO.drawable = self
-            self.currentStream = stream
-            stream.mixer.startRunning()
+            DispatchQueue.main.async {
+                stream.mixer.videoIO.drawable = self
+                self.currentStream = stream
+                stream.mixer.startRunning()
+            }
         }
     }
 }
