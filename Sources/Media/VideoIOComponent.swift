@@ -31,7 +31,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
     #else
-    var drawable: NetStreamDrawable? = nil
+    var drawable: NetStreamDrawable?
     #endif
 
     var formatDescription: CMVideoFormatDescription? {
@@ -218,7 +218,7 @@ final class VideoIOComponent: IOComponent {
             }
         }
     }
-    
+
     var stabilization: Bool = true {
         didSet {
             guard stabilization != oldValue else {

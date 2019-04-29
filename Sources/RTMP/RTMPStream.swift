@@ -207,7 +207,7 @@ open class RTMPStream: NetStream {
     public static let defaultAudioBitrate: UInt32 = AudioConverter.defaultBitrate
     public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
     #if !os(tvOS)
-    public static var defaultOrientation: AVCaptureVideoOrientation? = nil
+    public static var defaultOrientation: AVCaptureVideoOrientation?
     #endif
     open weak var delegate: RTMPStreamDelegate?
     open internal(set) var info = RTMPStreamInfo()
