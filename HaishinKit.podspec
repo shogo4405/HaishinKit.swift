@@ -27,4 +27,6 @@ Pod::Spec.new do |s|
   s.source_files = "Sources/**/*.swift"
   s.dependency 'Logboard', '~> 2.1.0'
 
+  # fix GL deprecation warning
+  s.pod_target_xcconfig = { "SWIFT_ACTIVE_COMPILATION_CONDITIONS" => "GLES_SILENCE_DEPRECATION" }
 end
