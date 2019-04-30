@@ -30,9 +30,6 @@
 		291468191E581C8F00E619BA /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		2915EC4D1D85BB8C00621092 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
-		2915EC601D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
-		2915EC621D85BDF100621092 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC611D85BDF100621092 /* UIKit.framework */; };
-		2915EC6C1D85BDF100621092 /* ScreencastUI.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC5F1D85BDF100621092 /* ScreencastUI.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2915EC6F1D85BDF100621092 /* Screencast.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		291619661E7EFB09009FB344 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 291619621E7EFA2A009FB344 /* Main.storyboard */; };
 		291619691E7EFEA8009FB344 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291619671E7EFE4E009FB344 /* MainViewController.swift */; };
@@ -62,7 +59,6 @@
 		293875DD1F374D4B009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DC1F374D4B009F4B30 /* Logboard.framework */; };
 		293875DF1F374D6E009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875DE1F374D6E009F4B30 /* Logboard.framework */; };
 		293875E11F374D80009F4B30 /* Logboard.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 293875E01F374D80009F4B30 /* Logboard.framework */; };
-		293C74371D85D56D001ED43C /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 293C74361D85D56D001ED43C /* MainInterface.storyboard */; };
 		2942424D1CF4C01300D65DCB /* MD5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942424C1CF4C01300D65DCB /* MD5.swift */; };
 		2942A4F821A9418A004E1BEE /* Running.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942A4F721A9418A004E1BEE /* Running.swift */; };
 		2942A4F921A9418A004E1BEE /* Running.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942A4F721A9418A004E1BEE /* Running.swift */; };
@@ -147,7 +143,6 @@
 		299B13271D3B751400A1E8F5 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* HKView.swift */; };
 		299D6A512051A9720090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTHKView.swift */; };
 		299D6A532051A9920090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTHKView.swift */; };
-		29A39C8E1D85BF6F007C27E9 /* BroadcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29B8765B1CD70A7900FC07DA /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioConverter.swift */; };
@@ -335,13 +330,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2915EC6A1D85BDF100621092 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2915EC5E1D85BDF100621092;
-			remoteInfo = ScreencastUI;
-		};
 		2915EC6D1D85BDF100621092 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -404,7 +392,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				2915EC6C1D85BDF100621092 /* ScreencastUI.appex in Embed App Extensions */,
 				2915EC6F1D85BDF100621092 /* Screencast.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
@@ -468,7 +455,6 @@
 		291468161E581C7D00E619BA /* Preference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
-		2915EC5F1D85BDF100621092 /* ScreencastUI.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ScreencastUI.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC611D85BDF100621092 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		291619631E7EFA2A009FB344 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		291619671E7EFE4E009FB344 /* MainViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -486,7 +472,6 @@
 		293875DC1F374D4B009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/iOS/Logboard.framework; sourceTree = "<group>"; };
 		293875DE1F374D6E009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/Mac/Logboard.framework; sourceTree = "<group>"; };
 		293875E01F374D80009F4B30 /* Logboard.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Logboard.framework; path = Carthage/Build/tvOS/Logboard.framework; sourceTree = "<group>"; };
-		293C74361D85D56D001ED43C /* MainInterface.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = MainInterface.storyboard; sourceTree = "<group>"; };
 		2942424C1CF4C01300D65DCB /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
 		2942A4F721A9418A004E1BEE /* Running.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Running.swift; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -545,8 +530,6 @@
 		299D6A522051A9920090E10A /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		299F7E3B1CD71A97001E7272 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HaishinKit.h; sourceTree = "<group>"; };
-		29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BroadcastViewController.swift; sourceTree = "<group>"; };
-		29A39C841D85BF21007C27E9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29A39C881D85BF30007C27E9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29AF3FCE1D7C744C00E41212 /* NetStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetStream.swift; sourceTree = "<group>"; };
 		29B8761B1CD701F900FC07DA /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -631,15 +614,6 @@
 				29619CA91F8109D3005FF462 /* Logboard.framework in Frameworks */,
 				29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */,
 				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2915EC5C1D85BDF100621092 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				2915EC601D85BDF100621092 /* ReplayKit.framework in Frameworks */,
-				2915EC621D85BDF100621092 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -838,7 +812,6 @@
 				29C932941CD76FD300283FC5 /* Example macOS.app */,
 				29798E591CE60E5300F5CBD0 /* Tests.xctest */,
 				2915EC521D85BDF100621092 /* Screencast.appex */,
-				2915EC5F1D85BDF100621092 /* ScreencastUI.appex */,
 				29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */,
 				29D3D4EF1ED0531500DD4AA6 /* Example tvOS.app */,
 			);
@@ -957,7 +930,6 @@
 			isa = PBXGroup;
 			children = (
 				29A39C801D85BEFA007C27E9 /* Screencast */,
-				29A39C811D85BF07007C27E9 /* ScreencastUI */,
 				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
 				296897421CDB01D20074D5F0 /* Assets.xcassets */,
 				291F4E361CF206E200F59C51 /* Icon.png */,
@@ -1035,16 +1007,6 @@
 				2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */,
 			);
 			path = Screencast;
-			sourceTree = "<group>";
-		};
-		29A39C811D85BF07007C27E9 /* ScreencastUI */ = {
-			isa = PBXGroup;
-			children = (
-				29A39C831D85BF21007C27E9 /* BroadcastViewController.swift */,
-				29A39C841D85BF21007C27E9 /* Info.plist */,
-				293C74361D85D56D001ED43C /* MainInterface.storyboard */,
-			);
-			path = ScreencastUI;
 			sourceTree = "<group>";
 		};
 		29BDE0BD1C65BC2400D6A768 /* Media */ = {
@@ -1179,23 +1141,6 @@
 			productReference = 2915EC521D85BDF100621092 /* Screencast.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
-		2915EC5E1D85BDF100621092 /* ScreencastUI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2915EC741D85BDF200621092 /* Build configuration list for PBXNativeTarget "ScreencastUI" */;
-			buildPhases = (
-				2915EC5B1D85BDF100621092 /* Sources */,
-				2915EC5C1D85BDF100621092 /* Frameworks */,
-				2915EC5D1D85BDF100621092 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = ScreencastUI;
-			productName = ScreencastUI;
-			productReference = 2915EC5F1D85BDF100621092 /* ScreencastUI.appex */;
-			productType = "com.apple.product-type.app-extension";
-		};
 		2945CBBC1B4BE66000104112 /* HaishinKit iOS */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "HaishinKit iOS" */;
@@ -1269,7 +1214,6 @@
 			);
 			dependencies = (
 				29C932A91CD78B5500283FC5 /* PBXTargetDependency */,
-				2915EC6B1D85BDF100621092 /* PBXTargetDependency */,
 				2915EC6E1D85BDF100621092 /* PBXTargetDependency */,
 			);
 			name = "Example iOS";
@@ -1354,12 +1298,6 @@
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
 					};
-					2915EC5E1D85BDF100621092 = {
-						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = SUEQ2SZ2L5;
-						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
-					};
 					2945CBBC1B4BE66000104112 = {
 						CreatedOnToolsVersion = 6.4;
 						DevelopmentTeam = SUEQ2SZ2L5;
@@ -1414,7 +1352,6 @@
 				29C932931CD76FD300283FC5 /* Example macOS */,
 				29D3D4EE1ED0531500DD4AA6 /* Example tvOS */,
 				2915EC511D85BDF100621092 /* Screencast */,
-				2915EC5E1D85BDF100621092 /* ScreencastUI */,
 				29798E581CE60E5300F5CBD0 /* Tests */,
 			);
 		};
@@ -1425,14 +1362,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2915EC5D1D85BDF100621092 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				293C74371D85D56D001ED43C /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1605,14 +1534,6 @@
 			files = (
 				2930D0411E12D35400DA2DC5 /* SampleHandler.swift in Sources */,
 				2957473E1E34F3DB00EF056E /* RTMPBroadcaster.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2915EC5B1D85BDF100621092 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				29A39C8E1D85BF6F007C27E9 /* BroadcastViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1956,11 +1877,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		2915EC6B1D85BDF100621092 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2915EC5E1D85BDF100621092 /* ScreencastUI */;
-			targetProxy = 2915EC6A1D85BDF100621092 /* PBXContainerItemProxy */;
-		};
 		2915EC6E1D85BDF100621092 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2915EC511D85BDF100621092 /* Screencast */;
@@ -2061,46 +1977,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.Screencast";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Release;
-		};
-		2915EC721D85BDF200621092 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/ScreencastUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.ScreencastUI";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		2915EC731D85BDF200621092 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_SUSPICIOUS_MOVES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/ScreencastUI/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS.ScreencastUI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -2578,15 +2454,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2915EC741D85BDF200621092 /* Build configuration list for PBXNativeTarget "ScreencastUI" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2915EC721D85BDF200621092 /* Debug */,
-				2915EC731D85BDF200621092 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		2915EC751D85BDF200621092 /* Build configuration list for PBXNativeTarget "Screencast" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

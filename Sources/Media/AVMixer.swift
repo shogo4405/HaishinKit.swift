@@ -20,8 +20,7 @@ public class AVMixer: NSObject {
         "preferredVideoStabilizationMode"
     ]
 
-#if os(iOS) || os(macOS)
-
+    #if os(iOS) || os(macOS)
     @objc var fps: Float64 {
         get { return videoIO.fps }
         set { videoIO.fps = newValue }
@@ -61,7 +60,7 @@ public class AVMixer: NSObject {
             _session = newValue
         }
     }
-#endif
+    #endif
 
     #if os(iOS)
     @objc var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
