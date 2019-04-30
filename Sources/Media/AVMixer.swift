@@ -20,12 +20,17 @@ public class AVMixer: NSObject {
         "continuousExposure",
         "preferredVideoStabilizationMode"
     ]
+
+    @objc var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
+        get { return videoIO.preferredVideoStabilizationMode }
+        set { videoIO.preferredVideoStabilizationMode = newValue }
+    }
     #elseif os(macOS)
     static let supportedSettingsKeys: [String] = [
         "fps",
         "sessionPreset",
         "continuousAutofocus",
-        "continuousExposure",
+        "continuousExposure"
     ]
     #else
     static let supportedSettingsKeys: [String] = [

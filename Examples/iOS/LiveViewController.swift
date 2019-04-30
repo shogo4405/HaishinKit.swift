@@ -6,7 +6,9 @@ import VideoToolbox
 
 let sampleRate: Double = 44_100
 
-class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
+final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
+    static let `default` = ExampleRecorderDelegate()
+
     override func didFinishWriting(_ recorder: AVRecorder) {
         guard let writer: AVAssetWriter = recorder.writer else { return }
         PHPhotoLibrary.shared().performChanges({() -> Void in
@@ -49,7 +51,8 @@ final class LiveViewController: UIViewController {
         rtmpStream.captureSettings = [
             "sessionPreset": AVCaptureSession.Preset.hd1280x720.rawValue,
             "continuousAutofocus": true,
-            "continuousExposure": true
+            "continuousExposure": true,
+            "preferredVideoStabilizationMode": AVCaptureVideoStabilizationMode.auto.rawValue
         ]
         rtmpStream.videoSettings = [
             "width": 720,
@@ -58,7 +61,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.audioSettings = [
             "sampleRate": sampleRate
         ]
-        rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate()
+        rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 
         videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1024
