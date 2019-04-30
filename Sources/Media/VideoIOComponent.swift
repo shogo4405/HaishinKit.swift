@@ -16,6 +16,7 @@ final class VideoIOComponent: IOComponent {
     #endif
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
+
     var context: CIContext? {
         didSet {
             for effect in effects {
@@ -383,10 +384,15 @@ final class VideoIOComponent: IOComponent {
             return
         }
 
-        CVPixelBufferLockBaseAddress(buffer, [])
-        defer { CVPixelBufferUnlockBaseAddress(buffer, []) }
-
         var imageBuffer: CVImageBuffer?
+
+        CVPixelBufferLockBaseAddress(buffer, [])
+        defer {
+            CVPixelBufferUnlockBaseAddress(buffer, [])
+            if let imageBuffer = imageBuffer {
+                CVPixelBufferUnlockBaseAddress(imageBuffer, [])
+            }
+        }
 
         if drawable != nil || !effects.isEmpty {
             let image: CIImage = effect(buffer, info: sampleBuffer)
@@ -401,9 +407,6 @@ final class VideoIOComponent: IOComponent {
                 #endif
                 if let imageBuffer = imageBuffer {
                     CVPixelBufferLockBaseAddress(imageBuffer, [])
-                    defer {
-                        CVPixelBufferUnlockBaseAddress(imageBuffer, [])
-                    }
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
