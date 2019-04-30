@@ -12,6 +12,7 @@ public class AVMixer: NSObject {
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
 
+    #if os(iOS)
     static let supportedSettingsKeys: [String] = [
         "fps",
         "sessionPreset",
@@ -19,6 +20,17 @@ public class AVMixer: NSObject {
         "continuousExposure",
         "preferredVideoStabilizationMode"
     ]
+    #elseif os(macOS)
+    static let supportedSettingsKeys: [String] = [
+        "fps",
+        "sessionPreset",
+        "continuousAutofocus",
+        "continuousExposure",
+    ]
+    #else
+    static let supportedSettingsKeys: [String] = [
+    ]
+    #endif
 
     #if os(iOS) || os(macOS)
     @objc var fps: Float64 {
@@ -59,13 +71,6 @@ public class AVMixer: NSObject {
         set {
             _session = newValue
         }
-    }
-    #endif
-
-    #if os(iOS)
-    @objc var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
-        get { return videoIO.preferredVideoStabilizationMode }
-        set { videoIO.preferredVideoStabilizationMode = newValue }
     }
     #endif
 
