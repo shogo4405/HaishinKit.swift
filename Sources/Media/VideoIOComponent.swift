@@ -123,9 +123,9 @@ final class VideoIOComponent: IOComponent {
                 if torch {
                     setTorchMode(.on)
                 }
-                if !stabilization {
-                    connection.preferredVideoStabilizationMode = .off
-                }
+                #if os(iOS)
+                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+                #endif
             }
         }
     }
@@ -219,18 +219,18 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    var stabilization: Bool = true {
+    #if os(iOS)
+    var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .auto {
         didSet {
-            guard stabilization != oldValue else {
+            guard preferredVideoStabilizationMode != oldValue else {
                 return
             }
-            if !stabilization {
-                for connection in output.connections {
-                    connection.preferredVideoStabilizationMode = .off
-                }
+            for connection in output.connections {
+                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
             }
         }
     }
+    #endif
 
     private var _output: AVCaptureVideoDataOutput?
     var output: AVCaptureVideoDataOutput! {
@@ -323,14 +323,16 @@ final class VideoIOComponent: IOComponent {
 
         input = try AVCaptureDeviceInput(device: camera)
         mixer.session.addOutput(output)
-        for connection in output.connections where connection.isVideoOrientationSupported {
-            connection.videoOrientation = orientation
-        }
-        if !stabilization {
-            for connection in output.connections {
-                connection.preferredVideoStabilizationMode = .off
+
+        for connection in output.connections {
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = orientation
             }
+            #if os(iOS)
+            connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            #endif
         }
+
         output.setSampleBufferDelegate(self, queue: lockQueue)
 
         fps *= 1

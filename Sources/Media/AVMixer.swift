@@ -16,7 +16,8 @@ public class AVMixer: NSObject {
         "fps",
         "sessionPreset",
         "continuousAutofocus",
-        "continuousExposure"
+        "continuousExposure",
+        "preferredVideoStabilizationMode"
     ]
 
 #if os(iOS) || os(macOS)
@@ -34,11 +35,6 @@ public class AVMixer: NSObject {
     @objc var continuousAutofocus: Bool {
         get { return videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
-    }
-
-    @objc var stabilization: Bool {
-        get { return videoIO.stabilization }
-        set { videoIO.stabilization = newValue }
     }
 
     @objc var sessionPreset: AVCaptureSession.Preset = .default {
@@ -66,6 +62,14 @@ public class AVMixer: NSObject {
         }
     }
 #endif
+
+    #if os(iOS)
+    @objc var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
+        get { return videoIO.preferredVideoStabilizationMode }
+        set { videoIO.preferredVideoStabilizationMode = newValue }
+    }
+    #endif
+
     private var _recorder: AVRecorder?
     /// The recorder instance.
     public var recorder: AVRecorder! {
