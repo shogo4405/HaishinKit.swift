@@ -26,7 +26,7 @@ open class NetStream: NSObject {
         NotificationCenter.default.removeObserver(self)
     }
 
-    open var metadata: [String: Any?] = [: ]
+    open var metadata: [String: Any?] = [:]
 
     open var context: CIContext? {
         get {
