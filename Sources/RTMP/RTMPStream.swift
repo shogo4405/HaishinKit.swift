@@ -461,7 +461,7 @@ open class RTMPStream: NetStream {
     }
 
     open func close() {
-        if readyState == .closed {
+        if readyState == .closed || readyState == .initialized {
             return
         }
         isBeingClosed = true
