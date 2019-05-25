@@ -70,6 +70,13 @@ struct RTMPSharedObjectEvent {
     }
 }
 
+extension RTMPSharedObjectEvent: CustomStringConvertible {
+    // MARK: CustomStringConvertible
+    var description: String {
+        return Mirror(reflecting: self).description
+    }
+}
+
 // MARK: -
 /**
  flash.net.SharedObject for Swift

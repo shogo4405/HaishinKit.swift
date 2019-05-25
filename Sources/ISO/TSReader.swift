@@ -87,3 +87,10 @@ extension TSReader: IteratorProtocol {
         return TSPacket(data: fileHandle.readData(ofLength: TSPacket.size))
     }
 }
+
+extension TSReader: CustomStringConvertible {
+    // MARK: CustomStringConvertible
+    var description: String {
+        return Mirror(reflecting: self).description
+    }
+}

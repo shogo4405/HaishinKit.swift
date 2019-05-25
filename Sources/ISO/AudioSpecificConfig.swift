@@ -75,6 +75,13 @@ struct AudioSpecificConfig {
     }
 }
 
+extension AudioSpecificConfig: CustomStringConvertible {
+    // MARK: CustomStringConvertible
+    var description: String {
+        return Mirror(reflecting: self).description
+    }
+}
+
 // MARK: -
 enum AudioObjectType: UInt8 {
     case unknown = 0

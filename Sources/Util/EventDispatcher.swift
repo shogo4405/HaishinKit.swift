@@ -41,6 +41,10 @@ open class Event: NSObject {
     open fileprivate(set) var data: Any?
     open fileprivate(set) var target: AnyObject?
 
+    open override var description: String {
+        return Mirror(reflecting: self).description
+    }
+
     public init(type: String, bubbles: Bool = false, data: Any? = nil) {
         self.type = type
         self.bubbles = bubbles

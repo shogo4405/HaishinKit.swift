@@ -1,10 +1,17 @@
 import Foundation
 
-protocol HTTPResponseCompatible {
+protocol HTTPResponseCompatible: CustomStringConvertible {
     var version: String { get set }
     var statusCode: String { get set }
     var headerFields: [String: String] { get set }
     var body: Data? { get set }
+}
+
+extension HTTPResponseCompatible {
+    // MARK: CustomStringConvertible
+    public var description: String {
+        return Mirror(reflecting: self).description
+    }
 }
 
 extension HTTPResponseCompatible {

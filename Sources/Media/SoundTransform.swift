@@ -16,3 +16,10 @@ public struct SoundTransform {
         playerNode?.pan = pan
     }
 }
+
+extension SoundTransform: CustomStringConvertible {
+    // MARK: CustomStringConvertible
+    public var description: String {
+        return Mirror(reflecting: self).description
+    }
+}
