@@ -210,7 +210,7 @@ extension TSWriter: AudioConverterDelegate {
     }
 
     public func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !data.isEmpty else { return }
+        guard !data.isEmpty && 0 < data[0].mDataByteSize else { return }
         writeSampleBuffer(
             TSWriter.defaultAudioPID,
             streamID: 192,
