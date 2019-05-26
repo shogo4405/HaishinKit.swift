@@ -64,7 +64,16 @@ public class AudioConverter: NSObject {
             }
         }
 
-        var bytePerFrame: UInt32 {
+        var bytesPerPacket: UInt32 {
+            switch self {
+            case .AAC:
+                return 0
+            case .PCM:
+                return (bitsPerChannel / 8)
+            }
+        }
+
+        var bytesPerFrame: UInt32 {
             switch self {
             case .AAC:
                 return 0
@@ -105,9 +114,9 @@ public class AudioConverter: NSObject {
                 mSampleRate: sampleRate == 0 ? inSourceFormat.mSampleRate : sampleRate,
                 mFormatID: formatID,
                 mFormatFlags: formatFlags,
-                mBytesPerPacket: bytePerFrame,
+                mBytesPerPacket: bytesPerPacket,
                 mFramesPerPacket: framesPerPacket,
-                mBytesPerFrame: bytePerFrame,
+                mBytesPerFrame: bytesPerFrame,
                 mChannelsPerFrame: destinationChannels,
                 mBitsPerChannel: bitsPerChannel,
                 mReserved: 0
@@ -241,7 +250,7 @@ public class AudioConverter: NSObject {
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mData = UnsafeMutableRawPointer(mutating: bytes)
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
-        convert(Int(1024 * destination.bytePerFrame), presentationTimeStamp: presentationTimeStamp)
+        convert(Int(1024 * destination.bytesPerFrame), presentationTimeStamp: presentationTimeStamp)
     }
 
     public func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
