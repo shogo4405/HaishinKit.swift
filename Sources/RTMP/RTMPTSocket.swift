@@ -78,7 +78,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         ]
         let scheme: String = securityLevel == .none ? "http" : "https"
         session = URLSession(configuration: config, delegate: self, delegateQueue: .main)
-        baseURL = URL(string: "\(scheme): //\(withName): \(port)")!
+        baseURL = URL(string: "\(scheme)://\(withName):\(port)")!
         doRequest("/fcs/ident2", Data([0x00]), didIdent2)
         timer = Timer(timeInterval: 0.1, target: self, selector: #selector(on(timer:)), userInfo: nil, repeats: true)
     }
