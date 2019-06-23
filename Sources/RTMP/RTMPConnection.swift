@@ -516,7 +516,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             case .three:
                 break
             }
-            message.execute(self)
+            message.execute(self, type: chunk.type)
             currentChunk = nil
             messages[chunk.streamId] = message
             if 0 < position && position < data.count {
