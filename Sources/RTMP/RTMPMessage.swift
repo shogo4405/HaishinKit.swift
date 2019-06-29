@@ -673,6 +673,11 @@ final class RTMPVideoMessage: RTMPMessage {
                 return
             }
             status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer!)
+            if stream.mixer.videoIO.queue.locked.value {
+                stream.mixer.videoIO.queue.locked.mutate { value in
+                    value = timestamp != 0
+                }
+            }
         }
     }
 

@@ -35,7 +35,7 @@ final class AudioIOComponent: IOComponent {
                 return
             }
             nstry({
-                audioEngine.connect(self.playerNode, to: audioEngine.outputNode, format: audioFormat)
+                audioEngine.connect(self.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
             }, { exeption in
                 logger.warn(exeption)
             })
