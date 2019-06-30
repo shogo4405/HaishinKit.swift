@@ -584,6 +584,12 @@ final class RTMPAudioMessage: RTMPMessage {
         guard codec.isSupported else {
             return
         }
+        switch type {
+        case .zero:
+            stream.audioTimestamp = Double(timestamp)
+        default:
+            stream.audioTimestamp += Double(timestamp)
+        }
         switch FLVAACPacketType(rawValue: payload[1]) {
         case .seq?:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
@@ -593,7 +599,7 @@ final class RTMPAudioMessage: RTMPMessage {
             let computedSoundData = payload.advanced(by: codec.headerSize)
             var data: Data = computedSoundData
             data.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
-                stream.mixer.audioIO.encoder.encodeBytes(bytes, count: computedSoundData.count, presentationTimeStamp: .invalid)
+                stream.mixer.audioIO.encoder.encodeBytes(bytes, count: computedSoundData.count, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
             }
         case .none:
             break

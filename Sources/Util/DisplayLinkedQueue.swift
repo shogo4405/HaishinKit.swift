@@ -75,6 +75,9 @@ final class DisplayLinkedQueue: NSObject {
 
     func enqueue(_ buffer: CMSampleBuffer) {
         lockQueue.async {
+            if self.mediaTime == 0 && self.clockTime == 0 && self.buffers.isEmpty {
+                self.delegate?.queue(buffer)
+            }
             self.duration += buffer.duration.seconds
             self.buffers.append(buffer)
             if !self.isReady {
