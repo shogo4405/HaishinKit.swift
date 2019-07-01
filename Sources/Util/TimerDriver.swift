@@ -22,7 +22,7 @@ public class TimerDriver: NSObject {
         }
     }
 
-    public override var description: String {
+    override public var description: String {
         return Mirror(reflecting: self).description
     }
 

@@ -5,7 +5,12 @@ final class AudioIOComponent: IOComponent {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
-
+    var currentPresentationTimeStamp: CMTime = .zero {
+        didSet {
+            print(currentPresentationTimeStamp.seconds)
+        }
+    }
+    var currentBuffers: Atomic<Int> = .init(0)
     var soundTransform: SoundTransform = .init() {
         didSet {
             soundTransform.apply(playerNode)
@@ -35,7 +40,7 @@ final class AudioIOComponent: IOComponent {
                 return
             }
             nstry({
-                audioEngine.connect(self.playerNode, to: audioEngine.outputNode, format: audioFormat)
+                audioEngine.connect(self.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
             }, { exeption in
                 logger.warn(exeption)
             })
@@ -160,7 +165,7 @@ extension AudioIOComponent: AudioConverterDelegate {
     }
 
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !data.isEmpty else { return }
+        guard !data.isEmpty, data[0].mDataByteSize != 0 else { return }
 
         guard
             let audioFormat = audioFormat,
@@ -177,10 +182,20 @@ extension AudioIOComponent: AudioConverterDelegate {
             bufferList[i].mNumberChannels = 1
         }
 
+        currentBuffers.mutate { value in
+            value += 1
+        }
+
         nstry({
-            self.playerNode.scheduleBuffer(buffer, completionHandler: nil)
             if !self.playerNode.isPlaying {
                 self.playerNode.play()
+            }
+            self.playerNode.scheduleBuffer(buffer) { [weak self] in
+                guard let self = self else { return }
+                self.currentPresentationTimeStamp = presentationTimeStamp
+                self.currentBuffers.mutate { value in
+                    value -= 1
+                }
             }
         }, { exeption in
             logger.warn("\(exeption)")

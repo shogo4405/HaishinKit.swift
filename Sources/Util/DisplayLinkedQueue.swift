@@ -52,6 +52,7 @@ protocol DisplayLinkedQueueDelegate: class {
 }
 
 final class DisplayLinkedQueue: NSObject {
+    var locked: Atomic<Bool> = .init(true)
     var isRunning: Bool = false
     var bufferTime: TimeInterval = 0.1 // sec
     weak var delegate: DisplayLinkedQueueDelegate?
@@ -74,10 +75,13 @@ final class DisplayLinkedQueue: NSObject {
 
     func enqueue(_ buffer: CMSampleBuffer) {
         lockQueue.async {
+            if self.mediaTime == 0 && self.clockTime == 0 && self.buffers.isEmpty {
+                self.delegate?.queue(buffer)
+            }
             self.duration += buffer.duration.seconds
             self.buffers.append(buffer)
             if !self.isReady {
-                self.isReady = self.duration <= self.bufferTime
+                self.isReady = self.duration <= self.bufferTime && !self.locked.value
             }
         }
     }
