@@ -279,7 +279,11 @@ open class RTMPStream: NetStream {
                 mixer.videoIO.encoder.startRunning()
                 sampler?.startRunning()
                 if howToPublish == .localRecord {
-                    mixer.recorder.fileName = info.resourceName
+                    var fileNameValid = "videoName"
+                    if let fileName = self.info.resourceName, fileName.count < FILENAME_MAX {
+                        fileNameValid = fileName
+                    }
+                    mixer.recorder.fileName = fileNameValid
                     mixer.recorder.startRunning()
                 }
             default:
@@ -440,11 +444,14 @@ open class RTMPStream: NetStream {
             while self.readyState == .initialized && !self.isBeingClosed {
                 usleep(100)
             }
-
+            var fileNameValid: String = "videoName"
             if self.info.resourceName == name && self.readyState == .publishing {
                 switch type {
                 case .localRecord:
-                    self.mixer.recorder.fileName = self.info.resourceName
+                    if let fileName = self.info.resourceName, fileName.count < FILENAME_MAX {
+                        fileNameValid = fileName
+                    }
+                    self.mixer.recorder.fileName = fileNameValid
                     self.mixer.recorder.startRunning()
                 default:
                     self.mixer.recorder.stopRunning()
@@ -453,7 +460,7 @@ open class RTMPStream: NetStream {
                 return
             }
 
-            self.info.resourceName = name
+            self.info.resourceName = fileNameValid
             self.howToPublish = type
             self.readyState = .publish
             self.FCPublish()
