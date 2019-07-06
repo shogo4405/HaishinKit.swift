@@ -137,6 +137,14 @@ final class AudioIOComponent: IOComponent {
         audioFormat = nil
     }
 #endif
+
+    func registerEffect(_ effect: AudioEffect) -> Bool {
+        return encoder.effects.insert(effect).inserted
+    }
+
+    func unregisterEffect(_ effect: AudioEffect) -> Bool {
+        return encoder.effects.remove(effect) != nil
+    }
 }
 
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {

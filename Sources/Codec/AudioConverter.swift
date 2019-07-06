@@ -15,6 +15,8 @@ public class AudioConverter: NSObject {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
 
+    var effects: Set<AudioEffect> = []
+
     public enum Destination {
         case AAC
         case PCM
@@ -278,6 +280,12 @@ public class AudioConverter: NSObject {
         if blockBuffer == nil {
             logger.warn("IllegalState for blockBuffer")
             return
+        }
+
+        if !effects.isEmpty {
+            for effect in effects {
+                effect.execute(currentBufferList, format: inSourceFormat)
+            }
         }
 
         if muted {

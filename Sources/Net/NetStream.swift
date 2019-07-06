@@ -175,15 +175,27 @@ open class NetStream: NSObject {
         }
     }
 
-    open func registerEffect(video effect: VisualEffect) -> Bool {
+    open func registerVideoEffect(_ effect: VideoEffect) -> Bool {
         return mixer.videoIO.lockQueue.sync {
             self.mixer.videoIO.registerEffect(effect)
         }
     }
 
-    open func unregisterEffect(video effect: VisualEffect) -> Bool {
+    open func unregisterVideoEffect(_ effect: VideoEffect) -> Bool {
         return mixer.videoIO.lockQueue.sync {
             self.mixer.videoIO.unregisterEffect(effect)
+        }
+    }
+
+    open func registerAudioEffect(_ effect: AudioEffect) -> Bool {
+        return mixer.audioIO.lockQueue.sync {
+            self.mixer.audioIO.registerEffect(effect)
+        }
+    }
+
+    open func unregisterAudioEffect(_ effect: AudioEffect) -> Bool {
+        return mixer.audioIO.lockQueue.sync {
+            self.mixer.audioIO.unregisterEffect(effect)
         }
     }
 

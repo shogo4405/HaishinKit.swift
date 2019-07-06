@@ -27,7 +27,7 @@ final class LiveViewController: UIViewController {
     var rtmpConnection = RTMPConnection()
     var rtmpStream: RTMPStream!
     var sharedObject: RTMPSharedObject!
-    var currentEffect: VisualEffect?
+    var currentEffect: VideoEffect?
 
     @IBOutlet private weak var lfView: GLHKView?
     @IBOutlet private weak var currentFPSLabel: UILabel?
@@ -175,16 +175,16 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction func onEffectValueChanged(_ segment: UISegmentedControl) {
-        if let currentEffect: VisualEffect = currentEffect {
-            _ = rtmpStream.unregisterEffect(video: currentEffect)
+        if let currentEffect: VideoEffect = currentEffect {
+            _ = rtmpStream.unregisterVideoEffect(currentEffect)
         }
         switch segment.selectedSegmentIndex {
         case 1:
             currentEffect = MonochromeEffect()
-            _ = rtmpStream.registerEffect(video: currentEffect!)
+            _ = rtmpStream.registerVideoEffect(currentEffect!)
         case 2:
             currentEffect = PronamaEffect()
-            _ = rtmpStream.registerEffect(video: currentEffect!)
+            _ = rtmpStream.registerVideoEffect(currentEffect!)
         default:
             break
         }

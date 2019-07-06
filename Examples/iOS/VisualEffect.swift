@@ -2,7 +2,7 @@ import AVFoundation
 import HaishinKit
 import UIKit
 
-final class CurrentTimeEffect: VisualEffect {
+final class CurrentTimeEffect: VideoEffect {
 
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
@@ -28,7 +28,7 @@ final class CurrentTimeEffect: VisualEffect {
     }
 }
 
-final class PronamaEffect: VisualEffect {
+final class PronamaEffect: VideoEffect {
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
     var extent = CGRect.zero {
@@ -60,7 +60,7 @@ final class PronamaEffect: VisualEffect {
     }
 }
 
-final class MonochromeEffect: VisualEffect {
+final class MonochromeEffect: VideoEffect {
     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
 
     override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
