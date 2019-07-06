@@ -13,7 +13,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit Docs</a> (8% documented)</p>
+        <p><a href="index.html">HaishinKit Docs</a> (10% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -52,6 +52,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AudioConverter/Destination.html">– Destination</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AudioEffect.html">AudioEffect</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/ByteArray.html">ByteArray</a>
@@ -144,7 +147,7 @@
                 <a href="Classes/TimerDriver.html">TimerDriver</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/VisualEffect.html">VisualEffect</a>
+                <a href="Classes/VideoEffect.html">VideoEffect</a>
               </li>
             </ul>
           </li>
@@ -202,6 +205,9 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Extensions/AVMixer.html">AVMixer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/HTTPRequestCompatible.html">HTTPRequestCompatible</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/HTTPResponseCompatible.html">HTTPResponseCompatible</a>
@@ -303,7 +309,7 @@
 <ul>
 <li>[x] Authentication</li>
 <li>[x] Publish and Recording (H264/AAC)</li>
-<li>[x] <em>Playback (Technical Preview)</em></li>
+<li>[x] <em>Playback (Beta)</em></li>
 <li>[x] Adaptive bitrate streaming
 
 <ul>
@@ -320,8 +326,8 @@
 <li>[x] RTMPS
 
 <ul>
-<li>[x] Native (RTMP over SSL/TSL)</li>
-<li>[x] <em>Tunneled (RTMPT over SSL/TSL) (Technical Preview)</em></li>
+<li>[x] Native (RTMP over SSL/TLS)</li>
+<li>[x] <em>Tunneled (RTMPT over SSL/TLS) (Technical Preview)</em></li>
 </ul></li>
 <li>[x] <em>RTMPT (Technical Preview)</em></li>
 <li>[x] <em>ReplayKit Live as a Broadcast Upload Extension (Technical Preview)</em></li>
@@ -405,22 +411,22 @@
 </tr>
 </thead><tbody>
 <tr>
-<td style="text-align: center">0.10.0</td>
+<td style="text-align: center">0.11.0+</td>
+<td style="text-align: center">8.0+</td>
+<td style="text-align: center">10.11+</td>
+<td style="text-align: center">10.2+</td>
+<td style="text-align: center">10.0+</td>
+<td style="text-align: center">5.0</td>
+<td style="text-align: center">1.5.0+</td>
+<td style="text-align: center">0.29.0+</td>
+</tr>
+<tr>
+<td style="text-align: center">0.10.0+</td>
 <td style="text-align: center">8.0+</td>
 <td style="text-align: center">10.11+</td>
 <td style="text-align: center">10.2+</td>
 <td style="text-align: center">10.0+</td>
 <td style="text-align: center">4.2</td>
-<td style="text-align: center">1.5.0+</td>
-<td style="text-align: center">0.29.0+</td>
-</tr>
-<tr>
-<td style="text-align: center">0.9.0</td>
-<td style="text-align: center">8.0+</td>
-<td style="text-align: center">10.11+</td>
-<td style="text-align: center">10.2+</td>
-<td style="text-align: center">9.3</td>
-<td style="text-align: center">4.1</td>
 <td style="text-align: center">1.5.0+</td>
 <td style="text-align: center">0.29.0+</td>
 </tr>
@@ -444,13 +450,13 @@
 </ul>
 <h2 id='installation' class='heading'>Installation</h2>
 
-<p><em>Please set up your project Swift 4.2.</em></p>
+<p>*Please set up your project Swift 5.0. *</p>
 <h3 id='cocoapods' class='heading'>CocoaPods</h3>
 <pre class="highlight ruby"><code><span class="n">source</span> <span class="s1">'https://github.com/CocoaPods/Specs.git'</span>
 <span class="n">use_frameworks!</span>
 
 <span class="k">def</span> <span class="nf">import_pods</span>
-    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.10.5'</span>
+    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.11.3'</span>
 <span class="k">end</span>
 
 <span class="n">target</span> <span class="s1">'Your Target'</span>  <span class="k">do</span>
@@ -459,7 +465,7 @@
 <span class="k">end</span>
 </code></pre>
 <h3 id='carthage' class='heading'>Carthage</h3>
-<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.10.5
+<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.11.3
 </code></pre>
 <h2 id='license' class='heading'>License</h2>
 
@@ -543,6 +549,7 @@
     <span class="s">"sessionPreset"</span><span class="p">:</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span><span class="o">.</span><span class="n">rawValue</span><span class="p">,</span> <span class="c1">// input video width/height</span>
     <span class="s">"continuousAutofocus"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// use camera autofocus mode</span>
     <span class="s">"continuousExposure"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">//  use camera exposure mode</span>
+    <span class="c1">// "preferredVideoStabilizationMode": AVCaptureVideoStabilizationMode.auto.rawValue</span>
 <span class="p">]</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="n">audioSettings</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s">"muted"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// mute audio</span>
@@ -654,7 +661,7 @@ Please consider to use Issues.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-01-05)</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-07-06)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

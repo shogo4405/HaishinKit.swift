@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>HTTPResponse Structure Reference</title>
+    <title>AudioEffect Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/HTTPResponse" class="dashAnchor"></a>
-    <a title="HTTPResponse Structure Reference"></a>
+    <a name="//apple_ref/swift/Class/AudioEffect" class="dashAnchor"></a>
+    <a title="AudioEffect Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">HaishinKit Docs</a> (10% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" />
-        HTTPResponse Structure Reference
+        AudioEffect Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -292,10 +292,10 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>HTTPResponse</h1>
+            <h1>AudioEffect</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">HTTPResponse</span> <span class="p">:</span> <span class="kt">HTTPResponseCompatible</span><span class="p">,</span> <span class="kt">ExpressibleByDictionaryLiteral</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">AudioEffect</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
 
                 </div>
               </div>
@@ -308,61 +308,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s30ExpressibleByDictionaryLiteralP3KeyQa"></a>
-                    <a name="//apple_ref/swift/Alias/Key" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s30ExpressibleByDictionaryLiteralP3KeyQa">Key</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Key</span> <span class="o">=</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:s30ExpressibleByDictionaryLiteralP5ValueQa"></a>
-                    <a name="//apple_ref/swift/Alias/Value" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s30ExpressibleByDictionaryLiteralP5ValueQa">Value</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">Value</span> <span class="o">=</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit12HTTPResponseV7versionSSvp"></a>
-                    <a name="//apple_ref/swift/Property/version" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit12HTTPResponseV7versionSSvp">version</a>
+                    <a name="/s:10HaishinKit11AudioEffectC7execute_6formaty04CoreC0013UnsafeMutableC17BufferListPointerVSg_So0C22StreamBasicDescriptionVSgtF"></a>
+                    <a name="//apple_ref/swift/Method/execute(_:format:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11AudioEffectC7execute_6formaty04CoreC0013UnsafeMutableC17BufferListPointerVSg_So0C22StreamBasicDescriptionVSgtF">execute(_:format:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -377,114 +325,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">version</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit12HTTPResponseV10statusCodeSSvp"></a>
-                    <a name="//apple_ref/swift/Property/statusCode" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit12HTTPResponseV10statusCodeSSvp">statusCode</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">statusCode</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit12HTTPResponseV12headerFieldsSDyS2SGvp"></a>
-                    <a name="//apple_ref/swift/Property/headerFields" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit12HTTPResponseV12headerFieldsSDyS2SGvp">headerFields</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">headerFields</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">String</span><span class="p">]</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit12HTTPResponseV4body10Foundation4DataVSgvp"></a>
-                    <a name="//apple_ref/swift/Property/body" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit12HTTPResponseV4body10Foundation4DataVSgvp">body</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kt">Data</span><span class="p">?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:s30ExpressibleByDictionaryLiteralP010dictionaryD0x3KeyQz_5ValueQztd_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(dictionaryLiteral:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s30ExpressibleByDictionaryLiteralP010dictionaryD0x3KeyQz_5ValueQztd_tcfc">init(dictionaryLiteral:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">dictionaryLiteral</span> <span class="nv">elements</span><span class="p">:</span> <span class="p">(</span><span class="kt"><a href="../Structs/HTTPResponse.html#/s:s30ExpressibleByDictionaryLiteralP3KeyQa">Key</a></span><span class="p">,</span> <span class="kt"><a href="../Structs/HTTPResponse.html#/s:s30ExpressibleByDictionaryLiteralP5ValueQa">Value</a></span><span class="p">)</span><span class="o">...</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">execute</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">UnsafeMutableAudioBufferListPointer</span><span class="p">?,</span> <span class="nv">format</span><span class="p">:</span> <span class="kt">AudioStreamBasicDescription</span><span class="p">?)</span></code></pre>
 
                         </div>
                       </div>
