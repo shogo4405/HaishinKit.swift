@@ -11,7 +11,7 @@
 ### RTMP
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
-- [x] _Playback (Technical Preview)_
+- [x] _Playback (Beta)_
 - [x] Adaptive bitrate streaming
   - [x] Handling (see also [#126](/../../issues/126))
   - [x] Automatic drop frames
@@ -73,7 +73,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 0.11.2'
+    pod 'HaishinKit', '~> 0.11.3'
 end
 
 target 'Your Target'  do
@@ -83,7 +83,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 0.11.2
+github "shogo4405/HaishinKit.swift" ~> 0.11.3
 ```
 
 ## License
