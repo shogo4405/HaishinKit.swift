@@ -7,6 +7,7 @@ import AVFoundation
 
 protocol DisplayLinkedQueueDelegate: class {
     func queue(_ buffer: CMSampleBuffer)
+    func empty()
 }
 
 final class DisplayLinkedQueue: NSObject {
@@ -59,7 +60,7 @@ final class DisplayLinkedQueue: NSObject {
             lockQueue.async {
                 self.buffers.removeFirst()
                 if self.buffers.isEmpty {
-                    NotificationCenter.default.post(.init(name: NetStream.netStreamBufferEmpty))
+                    self.delegate?.empty()
                 }
             }
             delegate?.queue(first)

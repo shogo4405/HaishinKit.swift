@@ -12,8 +12,6 @@ protocol NetStreamDrawable: class {
 
 // MARK: -
 open class NetStream: NSObject {
-    public static let netStreamBufferEmpty: Notification.Name = .init("NetStreamBufferEmpty")
-
     public private(set) var mixer = AVMixer()
     private static let queueKey = DispatchSpecificKey<UnsafeMutableRawPointer>()
     private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)

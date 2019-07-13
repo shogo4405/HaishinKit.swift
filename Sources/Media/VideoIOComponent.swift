@@ -461,4 +461,8 @@ extension VideoIOComponent: DisplayLinkedQueueDelegate {
     func queue(_ buffer: CMSampleBuffer) {
         drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
     }
+
+    func empty() {
+        mixer?.didBufferEmpty(self)
+    }
 }

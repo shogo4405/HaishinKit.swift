@@ -204,7 +204,7 @@ extension AudioIOComponent: AudioConverterDelegate {
                 self.currentBuffers.mutate { value in
                     value -= 1
                     if value == 0 {
-                        NotificationCenter.default.post(.init(name: NetStream.netStreamBufferEmpty))
+                        self.mixer?.didBufferEmpty(self)
                     }
                 }
             }

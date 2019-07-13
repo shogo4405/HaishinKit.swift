@@ -7,6 +7,8 @@ import AVFoundation
 #endif
 
 public class AVMixer: NSObject {
+    public static let bufferEmpty: Notification.Name = .init("AVMixerBufferEmpty")
+
     public static let defaultFPS: Float64 = 30
     public static let defaultVideoSettings: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
@@ -118,6 +120,10 @@ public class AVMixer: NSObject {
         _audioIO = nil
         _videoIO?.dispose()
         _videoIO = nil
+    }
+
+    func didBufferEmpty(_ component: IOComponent) {
+        NotificationCenter.default.post(.init(name: AVMixer.bufferEmpty))
     }
 }
 
