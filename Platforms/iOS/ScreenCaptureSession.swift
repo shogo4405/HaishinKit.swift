@@ -31,7 +31,7 @@ open class ScreenCaptureSession: NSObject {
         return attributes
     }
     public weak var delegate: ScreenCaptureOutputPixelBufferDelegate?
-    public internal(set) var isRunning: Bool = false
+    public internal(set) var isRunning: Atomic<Bool> = .init(false)
 
     private var shared: UIApplication?
     private var viewToCapture: UIView?
@@ -143,10 +143,12 @@ extension ScreenCaptureSession: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.sync {
-            guard !self.isRunning else {
+            guard !self.isRunning.value else {
                 return
             }
-            self.isRunning = true
+            self.isRunning.mutate { value in
+                value = true
+            }
             self.pixelBufferPool = nil
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: #selector(onScreen))
@@ -157,14 +159,16 @@ extension ScreenCaptureSession: Running {
 
     public func stopRunning() {
         lockQueue.sync {
-            guard self.isRunning else {
+            guard self.isRunning.value else {
                 return
             }
             self.displayLink.remove(from: .main, forMode: RunLoop.Mode.common)
             self.displayLink.invalidate()
             self.colorSpace = nil
             self.displayLink = nil
-            self.isRunning = false
+            self.isRunning.mutate { value in
+                value = false
+            }
         }
     }
 }

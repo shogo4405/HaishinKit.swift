@@ -11,7 +11,7 @@ protocol DisplayLinkedQueueDelegate: class {
 
 final class DisplayLinkedQueue: NSObject {
     var locked: Atomic<Bool> = .init(true)
-    var isRunning: Bool = false
+    var isRunning: Atomic<Bool> = .init(false)
     var bufferTime: TimeInterval = 0.1 // sec
     weak var delegate: DisplayLinkedQueueDelegate?
     private(set) var duration: TimeInterval = 0
@@ -71,24 +71,28 @@ extension DisplayLinkedQueue: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            guard !self.isRunning else {
+            guard !self.isRunning.value else {
                 return
             }
             self.mediaTime = 0
             self.clockTime = 0
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
-            self.isRunning = true
+            self.isRunning.mutate { value in
+                value = true
+            }
         }
     }
 
     func stopRunning() {
         lockQueue.async {
-            guard self.isRunning else {
+            guard self.isRunning.value else {
                 return
             }
             self.displayLink = nil
             self.buffers.removeAll()
-            self.isRunning = false
+            self.isRunning.mutate { value in
+                value = false
+            }
         }
     }
 }

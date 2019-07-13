@@ -144,7 +144,7 @@ public class AudioConverter: NSObject {
 
     public var destination: Destination = .AAC
     public weak var delegate: AudioConverterDelegate?
-    public private(set) var isRunning: Bool = false
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     @objc var muted: Bool = false
 
@@ -256,7 +256,7 @@ public class AudioConverter: NSObject {
     }
 
     public func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, isRunning else {
+        guard let format: CMAudioFormatDescription = sampleBuffer.formatDescription, isRunning.value else {
             return
         }
 
@@ -414,7 +414,9 @@ extension AudioConverter: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
-            self.isRunning = true
+            self.isRunning.mutate { value in
+                value = true
+            }
         }
     }
 
@@ -428,7 +430,9 @@ extension AudioConverter: Running {
             self.formatDescription = nil
             self._inDestinationFormat = nil
             self.currentBufferList = nil
-            self.isRunning = false
+            self.isRunning.mutate { value in
+                value = false
+            }
         }
     }
 }

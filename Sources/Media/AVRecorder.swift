@@ -34,7 +34,7 @@ open class AVRecorder: NSObject {
     open var outputSettings: [AVMediaType: [String: Any]] = AVRecorder.defaultOutputSettings
     open var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVRecorder.lock")
-    public private(set) var isRunning: Bool = false
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
     fileprivate(set) var sourceTime = CMTime.zero
 
     var isReadyForStartWriting: Bool {
@@ -46,7 +46,7 @@ open class AVRecorder: NSObject {
 
     final func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) {
         lockQueue.async {
-            guard let delegate: AVRecorderDelegate = self.delegate, self.isRunning else {
+            guard let delegate: AVRecorderDelegate = self.delegate, self.isRunning.value else {
                 return
             }
 
@@ -75,7 +75,7 @@ open class AVRecorder: NSObject {
 
     final func appendPixelBuffer(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
         lockQueue.async {
-            guard let delegate: AVRecorderDelegate = self.delegate, self.isRunning else {
+            guard let delegate: AVRecorderDelegate = self.delegate, self.isRunning.value else {
                 return
             }
 
@@ -122,21 +122,25 @@ extension AVRecorder: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
-            guard !self.isRunning else {
+            guard !self.isRunning.value else {
                 return
             }
-            self.isRunning = true
+            self.isRunning.mutate { value in
+                value = true
+            }
             self.delegate?.didStartRunning(self)
         }
     }
 
     public func stopRunning() {
         lockQueue.async {
-            guard self.isRunning else {
+            guard self.isRunning.value else {
                 return
             }
             self.finishWriting()
-            self.isRunning = false
+            self.isRunning.mutate { value in
+                value = false
+            }
             self.delegate?.didStopRunning(self)
         }
     }
