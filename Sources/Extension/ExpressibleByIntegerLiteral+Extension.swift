@@ -11,10 +11,10 @@ extension ExpressibleByIntegerLiteral {
         if 0 < diff {
             var buffer = Data(repeating: 0, count: diff)
             buffer.append(data)
-            self = buffer.withUnsafeBytes { $0.pointee }
+            self = buffer.withUnsafeBytes { $0.baseAddress!.assumingMemoryBound(to: Self.self).pointee }
             return
         }
-        self = data.withUnsafeBytes { $0.pointee }
+        self = data.withUnsafeBytes { $0.baseAddress!.assumingMemoryBound(to: Self.self).pointee }
     }
 
     init(data: Slice<Data>) {
