@@ -100,6 +100,9 @@ final class DisplayLinkedQueue: NSObject {
         if first.presentationTimeStamp.seconds - clockTime <= displayLink.timestamp - mediaTime {
             lockQueue.async {
                 self.buffers.removeFirst()
+                if self.buffers.isEmpty {
+                    NotificationCenter.default.post(.init(name: NetStream.netStreamBufferEmpty))
+                }
             }
             delegate?.queue(first)
         }
