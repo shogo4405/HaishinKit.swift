@@ -598,8 +598,8 @@ final class RTMPAudioMessage: RTMPMessage {
         case .raw?:
             let computedSoundData = payload.advanced(by: codec.headerSize)
             var data: Data = computedSoundData
-            data.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
-                stream.mixer.audioIO.encoder.encodeBytes(bytes, count: computedSoundData.count, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
+            data.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
+                stream.mixer.audioIO.encoder.encodeBytes(buffer, count: computedSoundData.count, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
             }
         case .none:
             break
@@ -666,10 +666,10 @@ final class RTMPVideoMessage: RTMPMessage {
 
         var data: Data = payload.advanced(by: FLVTagType.video.headerSize)
         var localData = data
-        localData.withUnsafeMutableBytes { (bytes: UnsafeMutablePointer<UInt8>) -> Void in
+        localData.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
             var blockBuffer: CMBlockBuffer?
             guard CMBlockBufferCreateWithMemoryBlock(
-                allocator: kCFAllocatorDefault, memoryBlock: bytes, blockLength: data.count, blockAllocator: kCFAllocatorNull, customBlockSource: nil, offsetToData: 0, dataLength: data.count, flags: 0, blockBufferOut: &blockBuffer) == noErr else {
+                allocator: kCFAllocatorDefault, memoryBlock: buffer.baseAddress, blockLength: data.count, blockAllocator: kCFAllocatorNull, customBlockSource: nil, offsetToData: 0, dataLength: data.count, flags: 0, blockBufferOut: &blockBuffer) == noErr else {
                 return
             }
             var sampleBuffer: CMSampleBuffer?

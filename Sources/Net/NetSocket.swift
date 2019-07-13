@@ -43,8 +43,8 @@ open class NetSocket: NSObject {
     public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         outputQueue.async {
-            data.withUnsafeBytes { (buffer: UnsafePointer<UInt8>) -> Void in
-                self.doOutputProcess(buffer, maxLength: data.count)
+            data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
+                self.doOutputProcess(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), maxLength: data.count)
             }
             if locked != nil {
                 OSAtomicAnd32Barrier(0, locked!)
@@ -76,13 +76,13 @@ open class NetSocket: NSObject {
     }
 
     final func doOutputProcess(_ data: Data) {
-        data.withUnsafeBytes { (buffer: UnsafePointer<UInt8>) -> Void in
-            doOutputProcess(buffer, maxLength: data.count)
+        data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
+            doOutputProcess(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), maxLength: data.count)
         }
     }
 
-    final func doOutputProcess(_ buffer: UnsafePointer<UInt8>, maxLength: Int) {
-        guard let outputStream: OutputStream = outputStream else {
+    final func doOutputProcess(_ buffer: UnsafePointer<UInt8>?, maxLength: Int) {
+        guard let outputStream: OutputStream = outputStream, let buffer = buffer else {
             return
         }
         var total: Int = 0
