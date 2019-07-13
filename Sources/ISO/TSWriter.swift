@@ -19,7 +19,7 @@ public class TSWriter: Running {
     /// The delegate instance.
     public weak var delegate: TSWriterDelegate?
     /// This instance is running to process(true) or not(false).
-    public internal(set) var isRunning: Bool = false
+    public internal(set) var isRunning: Atomic<Bool> = .init(false)
     /// The exptected medias = [.video, .audio].
     public var expectedMedias: Set<AVMediaType> = []
 
@@ -67,14 +67,16 @@ public class TSWriter: Running {
     }
 
     public func startRunning() {
-        guard isRunning else {
+        guard isRunning.value else {
             return
         }
-        isRunning = true
+        isRunning.mutate { value in
+            value = true
+        }
     }
 
     public func stopRunning() {
-        guard !isRunning else {
+        guard !isRunning.value else {
             return
         }
         audioContinuityCounter = 0
@@ -88,7 +90,9 @@ public class TSWriter: Running {
         videoTimestamp = .invalid
         audioTimestamp = .invalid
         PCRTimestamp = .invalid
-        isRunning = false
+        isRunning.mutate { value in
+            value = false
+        }
     }
 
     // swiftlint:disable function_parameter_count
@@ -360,7 +364,7 @@ class TSFileWriter: TSWriter {
     }
 
     override func stopRunning() {
-        guard !isRunning else {
+        guard !isRunning.value else {
             return
         }
         currentFileURL = nil

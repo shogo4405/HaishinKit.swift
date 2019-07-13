@@ -13,7 +13,7 @@ open class NetService: NSObject {
     public private(set) var name: String
     public private(set) var port: Int32
     public private(set) var type: String
-    public private(set) var isRunning = false
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
     public private(set) var clients: [NetClient] = []
     private(set) var service: Foundation.NetService!
     private var runloop: RunLoop!
@@ -88,21 +88,25 @@ extension NetService: Running {
     // MARK: Runnbale
     public func startRunning() {
         lockQueue.async {
-            if self.isRunning {
+            if self.isRunning.value {
                 return
             }
             self.willStartRunning()
-            self.isRunning = true
+            self.isRunning.mutate { value in
+                value = true
+            }
         }
     }
 
     public func stopRunning() {
         lockQueue.async {
-            if !self.isRunning {
+            if !self.isRunning.value {
                 return
             }
             self.willStopRunning()
-            self.isRunning = false
+            self.isRunning.mutate { value in
+                value = false
+            }
         }
     }
 }

@@ -131,7 +131,7 @@ final class H264Encoder: NSObject {
     }
     weak var delegate: VideoEncoderDelegate?
 
-    private(set) var isRunning: Bool = false
+    private(set) var isRunning: Atomic<Bool> = .init(false)
     private var supportedProperty: [AnyHashable: Any]? {
         didSet {
             guard logger.isEnabledFor(level: .info) else {
@@ -237,7 +237,7 @@ final class H264Encoder: NSObject {
     }
 
     func encodeImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard isRunning && locked == 0 else {
+        guard isRunning.value && locked == 0 else {
             return
         }
         if invalidateSession {
@@ -302,7 +302,9 @@ extension H264Encoder: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            self.isRunning = true
+            self.isRunning.mutate { value in
+                value = true
+            }
 #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
@@ -328,7 +330,9 @@ extension H264Encoder: Running {
 #if os(iOS)
             NotificationCenter.default.removeObserver(self)
 #endif
-            self.isRunning = false
+            self.isRunning.mutate { value in
+                value = false
+            }
         }
     }
 }

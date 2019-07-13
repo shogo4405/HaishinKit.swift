@@ -154,12 +154,12 @@ extension AVMixer {
 #if os(iOS) || os(macOS)
 extension AVMixer: Running {
     // MARK: Running
-    public var isRunning: Bool {
-        return session.isRunning
+    public var isRunning: Atomic<Bool> {
+        return .init(session.isRunning)
     }
 
     public func startRunning() {
-        guard !isRunning else {
+        guard !isRunning.value else {
             return
         }
         DispatchQueue.global(qos: .userInteractive).async {
@@ -168,7 +168,7 @@ extension AVMixer: Running {
     }
 
     public func stopRunning() {
-        guard isRunning else {
+        guard isRunning.value else {
             return
         }
         session.stopRunning()
@@ -177,8 +177,8 @@ extension AVMixer: Running {
 #else
 extension AVMixer: Running {
     // MARK: Running
-    public var isRunning: Bool {
-        return false
+    public var isRunning: Atomic<Bool> {
+        return .init(false)
     }
 
     public func startRunning() {

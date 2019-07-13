@@ -49,8 +49,8 @@ public class TimerDriver: NSObject {
 
 extension TimerDriver: Running {
     // MARK: Running
-    public var isRunning: Bool {
-        return runloop != nil
+    public var isRunning: Atomic<Bool> {
+        return .init(runloop != nil)
     }
 
     public func startRunning() {
