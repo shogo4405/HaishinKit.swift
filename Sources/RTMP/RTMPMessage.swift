@@ -596,10 +596,8 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.encoder.destination = .PCM
             stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
-            let computedSoundData = payload.advanced(by: codec.headerSize)
-            var data: Data = computedSoundData
-            data.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
-                stream.mixer.audioIO.encoder.encodeBytes(buffer, count: computedSoundData.count, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
+            payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
+                stream.mixer.audioIO.encoder.encodeBytes(buffer.baseAddress?.advanced(by: codec.headerSize), count: payload.count - codec.headerSize, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
             }
         case .none:
             break
@@ -664,18 +662,43 @@ final class RTMPVideoMessage: RTMPMessage {
             decodeTimeStamp: CMTime.invalid
         )
 
-        var data: Data = payload.advanced(by: FLVTagType.video.headerSize)
-        var localData = data
-        localData.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
+        payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
             var blockBuffer: CMBlockBuffer?
+            let length: Int = payload.count - FLVTagType.video.headerSize
             guard CMBlockBufferCreateWithMemoryBlock(
-                allocator: kCFAllocatorDefault, memoryBlock: buffer.baseAddress, blockLength: data.count, blockAllocator: kCFAllocatorNull, customBlockSource: nil, offsetToData: 0, dataLength: data.count, flags: 0, blockBufferOut: &blockBuffer) == noErr else {
+                allocator: kCFAllocatorDefault,
+                memoryBlock: nil,
+                blockLength: length,
+                blockAllocator: nil,
+                customBlockSource: nil,
+                offsetToData: 0,
+                dataLength: length,
+                flags: 0,
+                blockBufferOut: &blockBuffer) == noErr else {
+                return
+            }
+            guard CMBlockBufferReplaceDataBytes(
+                with: buffer.baseAddress!.advanced(by: FLVTagType.video.headerSize),
+                blockBuffer: blockBuffer!,
+                offsetIntoDestination: 0,
+                dataLength: length) == noErr else {
                 return
             }
             var sampleBuffer: CMSampleBuffer?
-            var sampleSizes: [Int] = [data.count]
+            var sampleSizes: [Int] = [length]
             guard CMSampleBufferCreate(
-                allocator: kCFAllocatorDefault, dataBuffer: blockBuffer!, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: stream.mixer.videoIO.formatDescription, sampleCount: 1, sampleTimingEntryCount: 1, sampleTimingArray: &timing, sampleSizeEntryCount: 1, sampleSizeArray: &sampleSizes, sampleBufferOut: &sampleBuffer) == noErr else {
+                allocator: kCFAllocatorDefault,
+                dataBuffer: blockBuffer!,
+                dataReady: true,
+                makeDataReadyCallback: nil,
+                refcon: nil,
+                formatDescription: stream.mixer.videoIO.formatDescription,
+                sampleCount: 1,
+                sampleTimingEntryCount: 1,
+                sampleTimingArray: &timing,
+                sampleSizeEntryCount: 1,
+                sampleSizeArray: &sampleSizes,
+                sampleBufferOut: &sampleBuffer) == noErr else {
                 return
             }
             status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer!)

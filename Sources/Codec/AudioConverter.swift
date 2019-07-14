@@ -247,10 +247,10 @@ public class AudioConverter: NSObject {
         return _converter!
     }
 
-    public func encodeBytes(_ bytes: UnsafeMutableRawBufferPointer, count: Int, presentationTimeStamp: CMTime) {
+    public func encodeBytes(_ bytes: UnsafeMutableRawPointer?, count: Int, presentationTimeStamp: CMTime) {
         currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
-        currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mData = bytes.baseAddress
+        currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mData = bytes
         currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
         convert(Int(1024 * destination.bytesPerFrame), presentationTimeStamp: presentationTimeStamp)
     }

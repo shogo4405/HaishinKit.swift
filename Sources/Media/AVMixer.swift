@@ -6,8 +6,9 @@ import AVFoundation
     }
 #endif
 
-public protocol AVMixerDelegate: class {
+protocol AVMixerDelegate: class {
     func outputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    func outputVideo(_ buffer: CMSampleBuffer)
 }
 
 public class AVMixer: NSObject {
@@ -85,7 +86,7 @@ public class AVMixer: NSObject {
     }
     #endif
 
-    public weak var delegate: AVMixerDelegate?
+    weak var delegate: AVMixerDelegate?
 
     private var _recorder: AVRecorder?
     /// The recorder instance.
@@ -154,12 +155,14 @@ extension AVMixer {
         audioIO.audioEngine = audioEngine
         audioIO.encoder.delegate = audioIO
         videoIO.queue.startRunning()
+        videoIO.decoder.startRunning()
     }
 
     public func stopPlaying() {
         audioIO.audioEngine = nil
         audioIO.encoder.delegate = nil
         videoIO.queue.stopRunning()
+        videoIO.decoder.stopRunning()
     }
 }
 

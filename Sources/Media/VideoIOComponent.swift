@@ -460,6 +460,7 @@ extension VideoIOComponent: DisplayLinkedQueueDelegate {
     // MARK: DisplayLinkedQueue
     func queue(_ buffer: CMSampleBuffer) {
         drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
+        mixer?.delegate?.outputVideo(buffer)
     }
 
     func empty() {
