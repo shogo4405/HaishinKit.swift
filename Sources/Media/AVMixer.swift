@@ -6,6 +6,10 @@ import AVFoundation
     }
 #endif
 
+public protocol AVMixerDelegate: class {
+    func outputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+}
+
 public class AVMixer: NSObject {
     public static let bufferEmpty: Notification.Name = .init("AVMixerBufferEmpty")
 
@@ -80,6 +84,8 @@ public class AVMixer: NSObject {
         }
     }
     #endif
+
+    public weak var delegate: AVMixerDelegate?
 
     private var _recorder: AVRecorder?
     /// The recorder instance.

@@ -186,6 +186,8 @@ extension AudioIOComponent: AudioConverterDelegate {
             bufferList[i].mNumberChannels = 1
         }
 
+        mixer?.delegate?.outputAudio(buffer, presentationTimeStamp: presentationTimeStamp)
+
         currentBuffers.mutate { value in
             value += 1
         }
