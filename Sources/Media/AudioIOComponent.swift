@@ -5,11 +5,7 @@ final class AudioIOComponent: IOComponent {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
-    var currentPresentationTimeStamp: CMTime = .zero {
-        didSet {
-            print(currentPresentationTimeStamp.seconds)
-        }
-    }
+    var currentPresentationTimeStamp: CMTime = .zero
     var currentBuffers: Atomic<Int> = .init(0)
     var soundTransform: SoundTransform = .init() {
         didSet {

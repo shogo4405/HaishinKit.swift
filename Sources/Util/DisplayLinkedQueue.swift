@@ -13,7 +13,7 @@ protocol DisplayLinkedQueueDelegate: class {
 final class DisplayLinkedQueue: NSObject {
     var locked: Atomic<Bool> = .init(true)
     var isRunning: Atomic<Bool> = .init(false)
-    var bufferTime: TimeInterval = 0.1 // sec
+    var bufferTime: TimeInterval = 0.0 // sec
     weak var delegate: DisplayLinkedQueueDelegate?
     private(set) var duration: TimeInterval = 0
     private var isReady: Bool = false
