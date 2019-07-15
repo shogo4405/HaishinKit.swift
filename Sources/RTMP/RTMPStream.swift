@@ -220,6 +220,7 @@ open class RTMPStream: NetStream {
     #if !os(tvOS)
     public static var defaultOrientation: AVCaptureVideoOrientation?
     #endif
+
     open weak var delegate: RTMPStreamDelegate?
     open internal(set) var info = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
@@ -227,6 +228,40 @@ open class RTMPStream: NetStream {
     open var soundTransform: SoundTransform {
         get { return mixer.audioIO.soundTransform }
         set { mixer.audioIO.soundTransform = newValue }
+    }
+    open var receiveAudio: Bool = true {
+        didSet {
+            lockQueue.async {
+                guard self.readyState == .playing else {
+                    return
+                }
+                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                    streamId: self.id,
+                    transactionId: 0,
+                    objectEncoding: self.objectEncoding,
+                    commandName: "receiveAudio",
+                    commandObject: nil,
+                    arguments: [self.receiveAudio]
+                )), locked: nil)
+            }
+        }
+    }
+    open var receiveVideo: Bool = true {
+        didSet {
+            lockQueue.async {
+                guard self.readyState == .playing else {
+                    return
+                }
+                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                    streamId: self.id,
+                    transactionId: 0,
+                    objectEncoding: self.objectEncoding,
+                    commandName: "receiveVideo",
+                    commandObject: nil,
+                    arguments: [self.receiveVideo]
+                )), locked: nil)
+            }
+        }
     }
 
     var id: UInt32 = RTMPStream.defaultID
@@ -319,38 +354,6 @@ open class RTMPStream: NetStream {
     deinit {
         mixer.stopRunning()
         rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)), observer: self)
-    }
-
-    open func receiveAudio(_ flag: Bool) {
-        lockQueue.async {
-            guard self.readyState == .playing else {
-                return
-            }
-            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
-                streamId: self.id,
-                transactionId: 0,
-                objectEncoding: self.objectEncoding,
-                commandName: "receiveAudio",
-                commandObject: nil,
-                arguments: [flag]
-            )), locked: nil)
-        }
-    }
-
-    open func receiveVideo(_ flag: Bool) {
-        lockQueue.async {
-            guard self.readyState == .playing else {
-                return
-            }
-            self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
-                streamId: self.id,
-                transactionId: 0,
-                objectEncoding: self.objectEncoding,
-                commandName: "receiveVideo",
-                commandObject: nil,
-                arguments: [flag]
-            )), locked: nil)
-        }
     }
 
     open func play(_ arguments: Any?...) {
