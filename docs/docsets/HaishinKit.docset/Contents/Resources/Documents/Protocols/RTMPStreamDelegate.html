@@ -139,9 +139,6 @@
                 <a href="../Classes/Responder.html">Responder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/TSWriter.html">TSWriter</a>
               </li>
               <li class="nav-group-task">
@@ -237,9 +234,6 @@
                 <a href="../Protocols/Running.html">Running</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/ScreenCaptureOutputPixelBufferDelegate.html">ScreenCaptureOutputPixelBufferDelegate</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Protocols/TSWriterDelegate.html">TSWriterDelegate</a>
               </li>
               <li class="nav-group-task">
@@ -295,7 +289,8 @@
             <h1>RTMPStreamDelegate</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RTMPStreamDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RTMPStreamDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
 
                 </div>
               </div>
@@ -308,9 +303,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit18RTMPStreamDelegateP24didPublishInsufficientBW_14withConnectionyAA0C0C_AA14RTMPConnectionCtF"></a>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didPublishInsufficientBW:withConnection:"></a>
                     <a name="//apple_ref/swift/Method/didPublishInsufficientBW(_:withConnection:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit18RTMPStreamDelegateP24didPublishInsufficientBW_14withConnectionyAA0C0C_AA14RTMPConnectionCtF">didPublishInsufficientBW(_:withConnection:)</a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didPublishInsufficientBW:withConnection:">didPublishInsufficientBW(_:withConnection:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -335,9 +330,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit18RTMPStreamDelegateP22didPublishSufficientBW_14withConnectionyAA0C0C_AA14RTMPConnectionCtF"></a>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didPublishSufficientBW:withConnection:"></a>
                     <a name="//apple_ref/swift/Method/didPublishSufficientBW(_:withConnection:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit18RTMPStreamDelegateP22didPublishSufficientBW_14withConnectionyAA0C0C_AA14RTMPConnectionCtF">didPublishSufficientBW(_:withConnection:)</a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didPublishSufficientBW:withConnection:">didPublishSufficientBW(_:withConnection:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -362,9 +357,65 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit18RTMPStreamDelegateP5clearyyF"></a>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputAudio:presentationTimeStamp:"></a>
+                    <a name="//apple_ref/swift/Method/outputAudio(_:presentationTimeStamp:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputAudio:presentationTimeStamp:">outputAudio(_:presentationTimeStamp:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">optional</span> <span class="kd">func</span> <span class="nf">outputAudio</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">AVAudioPCMBuffer</span><span class="p">,</span> <span class="nv">presentationTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputVideo:"></a>
+                    <a name="//apple_ref/swift/Method/outputVideo(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputVideo:">outputVideo(_:)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@objc</span>
+<span class="kd">optional</span> <span class="kd">func</span> <span class="nf">outputVideo</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)clear"></a>
                     <a name="//apple_ref/swift/Method/clear()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit18RTMPStreamDelegateP5clearyyF">clear()</a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)clear">clear()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -391,8 +442,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-07-06)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.9.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-07-15)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.10.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

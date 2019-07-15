@@ -1,5 +1,5 @@
-import CoreMedia
 import AVFoundation
+import CoreMedia
 
 @objc
 public protocol RTMPStreamDelegate: class {
