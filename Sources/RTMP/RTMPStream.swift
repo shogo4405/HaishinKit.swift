@@ -327,8 +327,6 @@ open class RTMPStream: NetStream {
             }
         }
     }
-    private var isBeingClosed: Bool = false
-
     var audioTimestamp: Double = 0
     var videoTimestamp: Double = 0
     private(set) var muxer = RTMPMuxer()
@@ -339,6 +337,7 @@ open class RTMPStream: NetStream {
     private var audioWasSent: Bool = false
     private var videoWasSent: Bool = false
     private var howToPublish: RTMPStream.HowToPublish = .live
+    private var isBeingClosed: Bool = false
     private var rtmpConnection: RTMPConnection
 
     public init(connection: RTMPConnection) {
