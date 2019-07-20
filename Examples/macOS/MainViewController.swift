@@ -45,10 +45,6 @@ final class MainViewController: NSViewController {
         lfView?.attachStream(rtmpStream)
     }
 
-    override func viewWillDisappear() {
-        super.viewWillDisappear()
-    }
-
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath: String = keyPath, Thread.isMainThread else {
             return
@@ -61,7 +57,7 @@ final class MainViewController: NSViewController {
         }
     }
 
-    @IBAction func publishOrStop(_ sender: NSButton) {
+    @IBAction private func publishOrStop(_ sender: NSButton) {
         // Publish
         if sender.title == "Publish" {
             sender.title = "Stop"
@@ -96,7 +92,11 @@ final class MainViewController: NSViewController {
         return
     }
 
-    @IBAction func selectAudio(_ sender: AnyObject) {
+    @IBAction private func orientation(_ sender: AnyObject) {
+        lfView.rotate(byDegrees: 90)
+    }
+
+    @IBAction private func selectAudio(_ sender: AnyObject) {
         let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)
         switch segmentedControl.selectedSegment {
         case 0:
@@ -110,7 +110,7 @@ final class MainViewController: NSViewController {
         }
     }
 
-    @IBAction func selectCamera(_ sender: AnyObject) {
+    @IBAction private func selectCamera(_ sender: AnyObject) {
         let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
         switch segmentedControl.selectedSegment {
         case 0:
@@ -124,7 +124,7 @@ final class MainViewController: NSViewController {
         }
     }
 
-    @IBAction func modeChanged(_ sender: NSSegmentedControl) {
+    @IBAction private func modeChanged(_ sender: NSSegmentedControl) {
         switch sender.selectedSegment {
         case 0:
             httpStream.attachAudio(nil)
@@ -146,7 +146,7 @@ final class MainViewController: NSViewController {
     }
 
     @objc
-    func rtmpStatusHandler(_ notification: Notification) {
+    private func rtmpStatusHandler(_ notification: Notification) {
         let e = Event.from(notification)
         guard
             let data: ASObject = e.data as? ASObject,

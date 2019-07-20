@@ -64,7 +64,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
-                            <openGLView useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9g2-aW-5KE" customClass="MTHKView" customModule="HaishinKit">
+                            <openGLView wantsLayer="YES" useAuxiliaryDepthBufferStencil="NO" allowOffline="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9g2-aW-5KE" customClass="MTHKView" customModule="HaishinKit">
                                 <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
                             </openGLView>
                             <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="8aC-9s-bew">
@@ -132,11 +132,22 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
+                            <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="CIE-H2-55S">
+                                <rect key="frame" x="375" y="44" width="91" height="32"/>
+                                <buttonCell key="cell" type="push" title="Rotation" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9Ib-Ti-qPL">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <connections>
+                                        <action selector="orientation:" target="XfG-lQ-9wD" id="Pv2-Fh-f7e"/>
+                                    </connections>
+                                </buttonCell>
+                            </button>
                         </subviews>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="8aC-9s-bew" secondAttribute="bottom" constant="20" id="0Cc-JK-ooG"/>
                             <constraint firstAttribute="trailing" secondItem="vfl-SO-iw0" secondAttribute="trailing" constant="20" id="9IB-O9-pG4"/>
                             <constraint firstItem="9g2-aW-5KE" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="GEH-yz-mrh"/>
+                            <constraint firstAttribute="trailing" secondItem="CIE-H2-55S" secondAttribute="trailing" constant="20" id="HAA-kt-OKg"/>
                             <constraint firstItem="Wuc-0E-MpH" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="RBg-L3-2bO"/>
                             <constraint firstItem="Hjj-Fo-QAo" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="bUT-0e-MAJ"/>
                             <constraint firstItem="Wuc-0E-MpH" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" constant="20" id="cJf-Im-eBM"/>
@@ -145,6 +156,7 @@
                             <constraint firstAttribute="trailing" secondItem="8aC-9s-bew" secondAttribute="trailing" constant="20" id="i6i-9B-SkI"/>
                             <constraint firstAttribute="bottom" secondItem="lB9-7R-daQ" secondAttribute="bottom" constant="20" id="j60-Ve-mht"/>
                             <constraint firstItem="9g2-aW-5KE" firstAttribute="width" secondItem="m2S-Jp-Qdl" secondAttribute="width" id="nXs-El-9Z1"/>
+                            <constraint firstItem="8aC-9s-bew" firstAttribute="top" secondItem="CIE-H2-55S" secondAttribute="bottom" constant="10" id="oNA-aB-zP0"/>
                             <constraint firstItem="9g2-aW-5KE" firstAttribute="height" secondItem="m2S-Jp-Qdl" secondAttribute="height" id="p40-XI-4o1"/>
                             <constraint firstItem="lB9-7R-daQ" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" constant="20" id="sLw-PG-Hgd"/>
                             <constraint firstAttribute="trailing" secondItem="Hjj-Fo-QAo" secondAttribute="trailing" constant="20" id="vzC-3x-4nE"/>
