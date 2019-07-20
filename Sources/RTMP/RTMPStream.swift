@@ -693,12 +693,12 @@ extension RTMPStream: RTMPMuxerDelegate {
 
 extension RTMPStream: AVMixerDelegate {
     // MARK: AVMixerDelegate
-    func outputVideo(_ buffer: CMSampleBuffer) {
+    func didOutputVideo(_ buffer: CMSampleBuffer) {
         frameCount += 1
-        delegate?.outputVideo?(buffer)
+        delegate?.didOutputVideo?(buffer)
     }
 
-    func outputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        delegate?.outputAudio?(buffer, presentationTimeStamp: presentationTimeStamp)
+    func didOutputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+        delegate?.didOutputAudio?(buffer, presentationTimeStamp: presentationTimeStamp)
     }
 }

@@ -7,10 +7,10 @@ public protocol RTMPStreamDelegate: class {
     func didPublishSufficientBW(_ stream: RTMPStream, withConnection: RTMPConnection)
 
     @objc
-    optional func outputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    optional func didOutputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
 
     @objc
-    optional func outputVideo(_ buffer: CMSampleBuffer)
+    optional func didOutputVideo(_ buffer: CMSampleBuffer)
 
     func clear()
 }
