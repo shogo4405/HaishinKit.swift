@@ -45,7 +45,7 @@
 - [x] Support "Allow app extension API only" option
 - [x] Support GPUImage framework (~> 0.5.12)
   - https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md
-- [ ] ~~Objectiv-C Bridging~~
+- [ ] ~~Objective-C Bridging~~
 
 ## Requirements
 |-|iOS|OSX|tvOS|XCode|Swift|CocoaPods|Carthage|
