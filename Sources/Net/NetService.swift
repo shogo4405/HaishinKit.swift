@@ -92,9 +92,7 @@ extension NetService: Running {
                 return
             }
             self.willStartRunning()
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
         }
     }
 
@@ -104,9 +102,7 @@ extension NetService: Running {
                 return
             }
             self.willStopRunning()
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
         }
     }
 }

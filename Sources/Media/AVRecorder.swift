@@ -125,9 +125,7 @@ extension AVRecorder: Running {
             guard !self.isRunning.value else {
                 return
             }
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
             self.delegate?.didStartRunning(self)
         }
     }
@@ -138,9 +136,7 @@ extension AVRecorder: Running {
                 return
             }
             self.finishWriting()
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
             self.delegate?.didStopRunning(self)
         }
     }

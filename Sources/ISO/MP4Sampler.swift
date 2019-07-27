@@ -67,9 +67,7 @@ extension MP4Sampler: Running {
     // MARK: Running
     public func startRunning() {
         loopQueue.async {
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
             while self.isRunning.value {
                 self.lockQueue.sync {
                     self.run()
@@ -83,9 +81,7 @@ extension MP4Sampler: Running {
 
     public func stopRunning() {
         lockQueue.async {
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
         }
     }
 }

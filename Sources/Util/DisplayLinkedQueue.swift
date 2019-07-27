@@ -82,9 +82,7 @@ extension DisplayLinkedQueue: Running {
             self.mediaTime = 0
             self.clockTime = 0
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
         }
     }
 
@@ -95,9 +93,7 @@ extension DisplayLinkedQueue: Running {
             }
             self.displayLink = nil
             self.buffers.removeAll()
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
         }
     }
 }

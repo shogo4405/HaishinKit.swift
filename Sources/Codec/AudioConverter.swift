@@ -414,9 +414,7 @@ extension AudioConverter: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
         }
     }
 
@@ -430,9 +428,7 @@ extension AudioConverter: Running {
             self.formatDescription = nil
             self._inDestinationFormat = nil
             self.currentBufferList = nil
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
         }
     }
 }

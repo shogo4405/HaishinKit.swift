@@ -103,9 +103,7 @@ final class H264Decoder {
             needsSync.mutate { $0 = true }
         }
         if !sampleBuffer.isNotSync {
-            needsSync.mutate { value in
-                value = false
-            }
+            needsSync.mutate { $0 = false }
         }
         guard let session: VTDecompressionSession = session, !needsSync.value else {
             return kVTInvalidSessionErr
@@ -191,9 +189,7 @@ extension H264Decoder: Running {
     // MARK: Running
     func startRunning() {
         lockQueue.async {
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
             #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
@@ -220,9 +216,7 @@ extension H264Decoder: Running {
             #if os(iOS)
             NotificationCenter.default.removeObserver(self)
             #endif
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
         }
     }
 }

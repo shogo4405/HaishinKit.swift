@@ -146,9 +146,7 @@ extension ScreenCaptureSession: Running {
             guard !self.isRunning.value else {
                 return
             }
-            self.isRunning.mutate { value in
-                value = true
-            }
+            self.isRunning.mutate { $0 = true }
             self.pixelBufferPool = nil
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: #selector(onScreen))
@@ -166,9 +164,7 @@ extension ScreenCaptureSession: Running {
             self.displayLink.invalidate()
             self.colorSpace = nil
             self.displayLink = nil
-            self.isRunning.mutate { value in
-                value = false
-            }
+            self.isRunning.mutate { $0 = false }
         }
     }
 }
