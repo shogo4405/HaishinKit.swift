@@ -59,7 +59,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
     }
 
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        let keyframe: Bool = !sampleBuffer.dependsOnOthers
+        let keyframe: Bool = !sampleBuffer.isNotSync
         var compositionTime: Int32 = 0
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
         var decodeTimeStamp: CMTime = sampleBuffer.decodeTimeStamp

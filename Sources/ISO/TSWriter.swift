@@ -262,7 +262,7 @@ extension TSWriter: VideoEncoderDelegate {
             count: UInt32(length),
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             decodeTimeStamp: sampleBuffer.decodeTimeStamp,
-            randomAccessIndicator: !sampleBuffer.dependsOnOthers
+            randomAccessIndicator: !sampleBuffer.isNotSync
         )
     }
 }

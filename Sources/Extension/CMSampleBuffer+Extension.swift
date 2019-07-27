@@ -10,15 +10,6 @@ extension CMSampleBuffer {
         }
     }
 
-    var dependsOnOthers: Bool {
-        get {
-            return getAttachmentValue(for: kCMSampleAttachmentKey_DependsOnOthers) ?? true
-        }
-        set {
-            setAttachmentValue(for: kCMSampleAttachmentKey_DependsOnOthers, value: newValue)
-        }
-    }
-
     var dataBuffer: CMBlockBuffer? {
         get {
             return CMSampleBufferGetDataBuffer(self)
