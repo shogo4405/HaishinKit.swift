@@ -675,6 +675,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 dataLength: length,
                 flags: 0,
                 blockBufferOut: &blockBuffer) == noErr else {
+                stream.mixer.videoIO.decoder.needsSync.mutate { $0 = true }
                 return
             }
             guard CMBlockBufferReplaceDataBytes(
@@ -702,6 +703,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 return
             }
             if let sampleBuffer = sampleBuffer {
+                sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
                 status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer)
             }
             if stream.mixer.videoIO.queue.locked.value {

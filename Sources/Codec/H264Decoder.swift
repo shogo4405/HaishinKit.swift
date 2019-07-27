@@ -38,6 +38,7 @@ final class H264Decoder {
     weak var delegate: VideoDecoderDelegate?
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Decoder.lock")
 
+    var needsSync: Atomic<Bool> = .init(true)
     private var isBaseline: Bool = true
     private var buffers: [CMSampleBuffer] = []
     private var attributes: [NSString: AnyObject] {
@@ -99,8 +100,14 @@ final class H264Decoder {
     func decodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) -> OSStatus {
         if invalidateSession {
             session = nil
+            needsSync.mutate { $0 = true }
         }
-        guard let session: VTDecompressionSession = session else {
+        if !sampleBuffer.isNotSync {
+            needsSync.mutate { value in
+                value = false
+            }
+        }
+        guard let session: VTDecompressionSession = session, !needsSync.value else {
             return kVTInvalidSessionErr
         }
         var flagsOut: VTDecodeInfoFlags = []
