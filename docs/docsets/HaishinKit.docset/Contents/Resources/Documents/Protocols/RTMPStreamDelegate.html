@@ -139,6 +139,9 @@
                 <a href="../Classes/Responder.html">Responder</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/TSWriter.html">TSWriter</a>
               </li>
               <li class="nav-group-task">
@@ -232,6 +235,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/Running.html">Running</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/ScreenCaptureOutputPixelBufferDelegate.html">ScreenCaptureOutputPixelBufferDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/TSWriterDelegate.html">TSWriterDelegate</a>
@@ -357,9 +363,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputAudio:presentationTimeStamp:"></a>
-                    <a name="//apple_ref/swift/Method/outputAudio(_:presentationTimeStamp:)" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputAudio:presentationTimeStamp:">outputAudio(_:presentationTimeStamp:)</a>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didOutputAudio:presentationTimeStamp:"></a>
+                    <a name="//apple_ref/swift/Method/didOutputAudio(_:presentationTimeStamp:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didOutputAudio:presentationTimeStamp:">didOutputAudio(_:presentationTimeStamp:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -375,7 +381,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">optional</span> <span class="kd">func</span> <span class="nf">outputAudio</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">AVAudioPCMBuffer</span><span class="p">,</span> <span class="nv">presentationTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span><span class="p">)</span></code></pre>
+<span class="kd">optional</span> <span class="kd">func</span> <span class="nf">didOutputAudio</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">AVAudioPCMBuffer</span><span class="p">,</span> <span class="nv">presentationTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -385,9 +391,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputVideo:"></a>
-                    <a name="//apple_ref/swift/Method/outputVideo(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)outputVideo:">outputVideo(_:)</a>
+                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didOutputVideo:"></a>
+                    <a name="//apple_ref/swift/Method/didOutputVideo(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate(im)didOutputVideo:">didOutputVideo(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -403,7 +409,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">optional</span> <span class="kd">func</span> <span class="nf">outputVideo</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span></code></pre>
+<span class="kd">optional</span> <span class="kd">func</span> <span class="nf">didOutputVideo</span><span class="p">(</span><span class="n">_</span> <span class="nv">buffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -442,7 +448,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-07-15)</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-07-28)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.10.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
