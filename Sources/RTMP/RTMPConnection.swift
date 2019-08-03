@@ -322,7 +322,7 @@ open class RTMPConnection: EventDispatcher {
     }
 
     @objc
-    func on(status: Notification) {
+    private func on(status: Notification) {
         let e = Event.from(status)
 
         guard
@@ -332,7 +332,7 @@ open class RTMPConnection: EventDispatcher {
         }
 
         switch Code(rawValue: code) {
-        case .connectSuccess?:
+        case .some(.connectSuccess):
             connected = true
             socket.chunkSizeS = chunkSize
             socket.doOutput(chunk: RTMPChunk(
@@ -340,7 +340,7 @@ open class RTMPConnection: EventDispatcher {
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
-        case .connectRejected?:
+        case .some(.connectRejected):
             guard
                 let uri: URL = uri,
                 let user: String = uri.user,
@@ -368,7 +368,7 @@ open class RTMPConnection: EventDispatcher {
             default:
                 break
             }
-        case .connectClosed?:
+        case .some(.connectClosed):
             if let description: String = data["description"] as? String {
                 logger.warn(description)
             }
