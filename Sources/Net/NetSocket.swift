@@ -1,11 +1,11 @@
 import Foundation
 
 open class NetSocket: NSObject {
-    public static let defaultTimeout: Int64 = 15 // sec
+    public static let defaultTimeout: Int = 15 // sec
     public static let defaultWindowSizeC = Int(UInt16.max)
 
     public var inputBuffer = Data()
-    public var timeout: Int64 = NetSocket.defaultTimeout
+    public var timeout: Int = NetSocket.defaultTimeout
     public internal(set) var connected: Bool = false
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
     public var securityLevel: StreamSocketSecurityLevel = .none
@@ -144,7 +144,7 @@ open class NetSocket: NSObject {
         outputStream.open()
 
         if 0 < timeout {
-            outputQueue.asyncAfter(deadline: .now() + Double(timeout * Int64(NSEC_PER_SEC)) / Double(NSEC_PER_SEC)) {
+            outputQueue.asyncAfter(deadline: .now() + .seconds(timeout)) {
                 guard let timeoutHandler: (() -> Void) = self.timeoutHandler else {
                     return
                 }

@@ -153,7 +153,7 @@ open class RTMPConnection: EventDispatcher {
     /// The URL of an HTTP referer.
     open var pageUrl: String?
     /// The time to wait for TCP/IP Handshake done.
-    open var timeout: Int64 {
+    open var timeout: Int {
         get { return socket.timeout }
         set { socket.timeout = newValue }
     }
