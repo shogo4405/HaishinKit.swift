@@ -17,7 +17,7 @@ open class NetSocket: NSObject {
     var outputStream: OutputStream?
     var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
 
-    private var buffer: UnsafeMutablePointer<UInt8>?
+    private var buffer = [UInt8](repeating: 0, count: 0)
     private var runloop: RunLoop?
     private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     private var timeoutHandler: (() -> Void)?
@@ -51,6 +51,13 @@ open class NetSocket: NSObject {
             }
         }
         return data.count
+    }
+
+    open func close() {
+        close(isDisconnected: false)
+    }
+
+    open func listen() {
     }
 
     final func doOutputFromURL(_ url: URL, length: Int) {
@@ -109,16 +116,8 @@ open class NetSocket: NSObject {
         }
     }
 
-    open func close() {
-        close(isDisconnected: false)
-    }
-
-    open func listen() {
-    }
-
     func initConnection() {
-        buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: windowSizeC)
-        buffer?.initialize(repeating: 0, count: windowSizeC)
+        buffer = [UInt8](repeating: 0, count: windowSizeC)
 
         totalBytesIn = 0
         totalBytesOut = 0
@@ -165,19 +164,17 @@ open class NetSocket: NSObject {
         outputStream?.remove(from: runloop!, forMode: .default)
         outputStream?.delegate = nil
         outputStream = nil
-        buffer?.deinitialize(count: windowSizeC)
-        buffer?.deallocate()
-        buffer = nil
+        buffer.removeAll()
     }
 
     func didTimeout() {
     }
 
     private func doInput() {
-        guard let inputStream: InputStream = inputStream, let buffer: UnsafeMutablePointer<UInt8> = buffer else {
+        guard let inputStream: InputStream = inputStream else {
             return
         }
-        let length: Int = inputStream.read(buffer, maxLength: windowSizeC)
+        let length: Int = inputStream.read(&buffer, maxLength: windowSizeC)
         if 0 < length {
             totalBytesIn += Int64(length)
             inputBuffer.append(buffer, count: length)

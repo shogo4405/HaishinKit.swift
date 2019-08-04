@@ -24,10 +24,7 @@ final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
 }
 
 final class LiveViewController: UIViewController {
-    var rtmpConnection = RTMPConnection()
-    var rtmpStream: RTMPStream!
-    var sharedObject: RTMPSharedObject!
-    var currentEffect: VideoEffect?
+    private static let maxRetryCount: Int = 5
 
     @IBOutlet private weak var lfView: GLHKView?
     @IBOutlet private weak var currentFPSLabel: UILabel?
@@ -41,7 +38,12 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var fpsControl: UISegmentedControl?
     @IBOutlet private weak var effectSegmentControl: UISegmentedControl?
 
-    var currentPosition: AVCaptureDevice.Position = .back
+    private var rtmpConnection = RTMPConnection()
+    private var rtmpStream: RTMPStream!
+    private var sharedObject: RTMPSharedObject!
+    private var currentEffect: VideoEffect?
+    private var currentPosition: AVCaptureDevice.Position = .back
+    private var retryCount: Int = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -139,16 +141,24 @@ final class LiveViewController: UIViewController {
     }
 
     @objc
-    func rtmpStatusHandler(_ notification: Notification) {
+    private func rtmpStatusHandler(_ notification: Notification) {
         let e = Event.from(notification)
-        if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
-            switch code {
-            case RTMPConnection.Code.connectSuccess.rawValue:
-                rtmpStream!.publish(Preference.defaultInstance.streamName!)
-                // sharedObject!.connect(rtmpConnection)
-            default:
-                break
+        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
+            return
+        }
+        switch code {
+        case RTMPConnection.Code.connectSuccess.rawValue:
+            retryCount = 0
+            rtmpStream!.publish(Preference.defaultInstance.streamName!)
+            // sharedObject!.connect(rtmpConnection)
+        case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
+            guard retryCount <= LiveViewController.maxRetryCount else {
+                return
             }
+            rtmpConnection.connect(Preference.defaultInstance.uri!)
+            retryCount += 1
+        default:
+            break
         }
     }
 
