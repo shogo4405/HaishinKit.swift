@@ -328,6 +328,7 @@ extension H264Encoder: Running {
 #if os(iOS)
             NotificationCenter.default.removeObserver(self)
 #endif
+            OSAtomicAnd32Barrier(0, &self.locked)
             self.isRunning.mutate { $0 = false }
         }
     }
