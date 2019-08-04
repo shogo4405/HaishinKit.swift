@@ -155,6 +155,7 @@ final class LiveViewController: UIViewController {
             guard retryCount <= LiveViewController.maxRetryCount else {
                 return
             }
+            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             retryCount += 1
         default:
