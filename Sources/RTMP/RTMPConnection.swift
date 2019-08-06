@@ -449,6 +449,7 @@ open class RTMPConnection: EventDispatcher {
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
     func didSetReadyState(_ readyState: RTMPSocket.ReadyState) {
+        logger.debug(readyState)
         switch readyState {
         case .handshakeDone:
             guard let chunk: RTMPChunk = createConnectionChunk() else {

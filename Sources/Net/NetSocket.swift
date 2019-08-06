@@ -19,7 +19,7 @@ open class NetSocket: NSObject {
 
     private var buffer = [UInt8](repeating: 0, count: 0)
     private var runloop: RunLoop?
-    private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
+    private var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     private var timeoutHandler: (() -> Void)?
 
     public func connect(withName: String, port: Int) {
@@ -105,15 +105,13 @@ open class NetSocket: NSObject {
     }
 
     func close(isDisconnected: Bool) {
-        outputQueue.async {
-            guard let runloop: RunLoop = self.runloop else {
-                return
-            }
-            self.deinitConnection(isDisconnected: isDisconnected)
-            self.runloop = nil
-            CFRunLoopStop(runloop.getCFRunLoop())
-            logger.trace("isDisconnected: \(isDisconnected)")
+        guard let runloop: RunLoop = self.runloop else {
+            return
         }
+        deinitConnection(isDisconnected: isDisconnected)
+        self.runloop = nil
+        CFRunLoopStop(runloop.getCFRunLoop())
+        logger.trace("isDisconnected: \(isDisconnected)")
     }
 
     func initConnection() {
@@ -157,6 +155,7 @@ open class NetSocket: NSObject {
 
     func deinitConnection(isDisconnected: Bool) {
         timeoutHandler = nil
+        outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output")
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .default)
         inputStream?.delegate = nil
@@ -208,9 +207,15 @@ extension NetSocket: StreamDelegate {
             break
         //  8 = 1 << 3
         case .errorOccurred:
+            guard aStream == inputStream else {
+                return
+            }
             close(isDisconnected: true)
         // 16 = 1 << 4
         case .endEncountered:
+            guard aStream == inputStream else {
+                return
+            }
             close(isDisconnected: true)
         default:
             break
