@@ -157,6 +157,10 @@ open class RTMPConnection: EventDispatcher {
         get { return socket.timeout }
         set { socket.timeout = newValue }
     }
+    open var qualityOfService: DispatchQoS {
+        get { return socket.qualityOfService }
+        set { socket.qualityOfService = newValue }
+    }
     /// The name of application.
     open var flashVer: String = RTMPConnection.defaultFlashVer
     /// The outgoing RTMPChunkSize.
