@@ -156,6 +156,7 @@ open class NetSocket: NSObject {
     }
 
     func deinitConnection(isDisconnected: Bool) {
+        timeoutHandler = nil
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .default)
         inputStream?.delegate = nil
