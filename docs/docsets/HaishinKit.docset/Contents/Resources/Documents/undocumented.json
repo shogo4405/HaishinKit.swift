@@ -1,170 +1,352 @@
 {
   "warnings": [
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 5,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/DeviceUtil+Extenstion.swift",
+      "line": 4,
+      "symbol": "DeviceUtil.videoOrientation(by:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/DeviceUtil+Extenstion.swift",
+      "line": 11,
+      "symbol": "DeviceUtil.videoOrientation(by:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 4,
       "symbol": "GLHKView",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 14,
-      "symbol": "GLHKView.defaultPixelFormat()",
-      "symbol_kind": "source.lang.swift.decl.function.method.class",
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 9,
+      "symbol": "GLHKView.defaultBackgroundColor",
+      "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 22,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 10,
       "symbol": "GLHKView.videoGravity",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 30,
-      "symbol": "GLHKView.prepareOpenGL()",
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 22,
+      "symbol": "GLHKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 48,
-      "symbol": "GLHKView.draw(_:)",
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 27,
+      "symbol": "GLHKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 71,
-      "symbol": "GLHKView.reshape()",
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 32,
+      "symbol": "GLHKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/GLHKView.swift",
-      "line": 82,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 40,
       "symbol": "GLHKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 3,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 53,
+      "symbol": "GLHKView",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 55,
+      "symbol": "GLHKView.glkView(_:drawIn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 4,
       "symbol": "HKView",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 4,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 5,
       "symbol": "HKView.defaultBackgroundColor",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 6,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 7,
+      "symbol": "HKView.layerClass",
+      "symbol_kind": "source.lang.swift.decl.var.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 11,
+      "symbol": "HKView.layer",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 15,
       "symbol": "HKView.videoGravity",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 27,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 38,
       "symbol": "HKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 32,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 43,
       "symbol": "HKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 36,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 51,
       "symbol": "HKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/HKView.swift",
-      "line": 44,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 57,
       "symbol": "HKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 4,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 6,
       "symbol": "MTHKView",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 5,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 7,
       "symbol": "MTHKView.videoGravity",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 18,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 20,
       "symbol": "MTHKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 22,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 25,
       "symbol": "MTHKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 27,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 30,
       "symbol": "MTHKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 33,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 36,
       "symbol": "MTHKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 46,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 49,
       "symbol": "MTHKView",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 48,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 51,
       "symbol": "MTHKView.mtkView(_:drawableSizeWillChange:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/MTHKView.swift",
-      "line": 51,
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 59,
       "symbol": "MTHKView.draw(in:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/macOS/NetStream+Extension.swift",
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
       "line": 5,
-      "symbol": "NetStream.attachScreen(_:)",
+      "symbol": "NetStream.orientation",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
+      "line": 14,
+      "symbol": "NetStream.attachScreen(_:useScreenSize:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
+      "line": 20,
+      "symbol": "NetStream.zoomFactor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
+      "line": 24,
+      "symbol": "NetStream.setZoomFactor(_:ramping:withRate:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 5,
+      "symbol": "ScreenCaptureOutputPixelBufferDelegate",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 6,
+      "symbol": "ScreenCaptureOutputPixelBufferDelegate.didSet(size:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 7,
+      "symbol": "ScreenCaptureOutputPixelBufferDelegate.output(pixelBuffer:withPresentationTime:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 17,
+      "symbol": "ScreenCaptureSession",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 24,
+      "symbol": "ScreenCaptureSession.enabledScale",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 25,
+      "symbol": "ScreenCaptureSession.frameInterval",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 26,
+      "symbol": "ScreenCaptureSession.attributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 33,
+      "symbol": "ScreenCaptureSession.delegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 34,
+      "symbol": "ScreenCaptureSession.isRunning",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 38,
+      "symbol": "ScreenCaptureSession.afterScreenUpdates",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 75,
+      "symbol": "ScreenCaptureSession.init(shared:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 81,
+      "symbol": "ScreenCaptureSession.init(viewToCapture:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 89,
+      "symbol": "ScreenCaptureSession.onScreen(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 109,
+      "symbol": "ScreenCaptureSession.onScreenProcess(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 142,
+      "symbol": "ScreenCaptureSession",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 144,
+      "symbol": "ScreenCaptureSession.startRunning()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 158,
+      "symbol": "ScreenCaptureSession.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -282,7 +464,7 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
-      "line": 423,
+      "line": 421,
       "symbol": "AudioConverter.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -1416,7 +1598,7 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/ISO/MP4Sampler.swift",
-      "line": 84,
+      "line": 82,
       "symbol": "MP4Sampler.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -1787,91 +1969,91 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 135,
+      "line": 133,
       "symbol": "AVRecorder.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 150,
+      "line": 146,
       "symbol": "DefaultAVRecorderDelegate",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 151,
+      "line": 147,
       "symbol": "DefaultAVRecorderDelegate.shared",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 153,
+      "line": 149,
       "symbol": "DefaultAVRecorderDelegate.duration",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 154,
+      "line": 150,
       "symbol": "DefaultAVRecorderDelegate.dateFormat",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 164,
+      "line": 156,
       "symbol": "DefaultAVRecorderDelegate.moviesDirectory",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 171,
+      "line": 167,
       "symbol": "DefaultAVRecorderDelegate",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 173,
+      "line": 169,
       "symbol": "DefaultAVRecorderDelegate.rotateFile(_:withPresentationTimeStamp:mediaType:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 188,
+      "line": 184,
       "symbol": "DefaultAVRecorderDelegate.getPixelBufferAdaptor(_:withWriterInput:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 200,
+      "line": 196,
       "symbol": "DefaultAVRecorderDelegate.getWriterInput(_:mediaType:sourceFormatHint:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 251,
+      "line": 247,
       "symbol": "DefaultAVRecorderDelegate.didFinishWriting(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 254,
+      "line": 250,
       "symbol": "DefaultAVRecorderDelegate.didStartRunning(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 257,
+      "line": 253,
       "symbol": "DefaultAVRecorderDelegate.didStopRunning(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -2067,7 +2249,7 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetService.swift",
-      "line": 101,
+      "line": 99,
       "symbol": "NetService.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -2102,91 +2284,70 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 8,
-      "symbol": "NetSocket.timeout",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 9,
-      "symbol": "NetSocket.connected",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 10,
+      "line": 12,
       "symbol": "NetSocket.windowSizeC",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 11,
+      "line": 15,
+      "symbol": "NetSocket.qualityOfService",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
+      "line": 16,
       "symbol": "NetSocket.securityLevel",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 12,
-      "symbol": "NetSocket.totalBytesIn",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 13,
-      "symbol": "NetSocket.totalBytesOut",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 14,
+      "line": 19,
       "symbol": "NetSocket.queueBytesOut",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 25,
+      "line": 30,
       "symbol": "NetSocket.connect(withName:port:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 43,
+      "line": 48,
       "symbol": "NetSocket.doOutput(data:locked:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 112,
+      "line": 61,
       "symbol": "NetSocket.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 116,
+      "line": 65,
       "symbol": "NetSocket.listen()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 189,
+      "line": 191,
       "symbol": "NetSocket",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 191,
+      "line": 193,
       "symbol": "NetSocket.stream(_:handle:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -2237,6 +2398,13 @@
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetStream.swift",
       "line": 41,
       "symbol": "NetStream.torch",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetStream.swift",
+      "line": 58,
+      "symbol": "NetStream.syncOrientation",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
@@ -2592,28 +2760,35 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 239,
+      "line": 160,
+      "symbol": "RTMPConnection.qualityOfService",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
+      "line": 243,
       "symbol": "RTMPConnection.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 255,
+      "line": 259,
       "symbol": "RTMPConnection.call(_:responder:arguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 274,
+      "line": 278,
       "symbol": "RTMPConnection.connect(_:arguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 292,
+      "line": 296,
       "symbol": "RTMPConnection.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -3187,98 +3362,98 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 344,
+      "line": 343,
       "symbol": "RTMPStream.init(connection:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 359,
+      "line": 358,
       "symbol": "RTMPStream.play(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 401,
+      "line": 400,
       "symbol": "RTMPStream.seek(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 425,
+      "line": 424,
       "symbol": "RTMPStream.publish(_:type:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 485,
+      "line": 484,
       "symbol": "RTMPStream.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 509,
+      "line": 508,
       "symbol": "RTMPStream.send(handlerName:arguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 524,
+      "line": 523,
       "symbol": "RTMPStream.pause()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 537,
+      "line": 536,
       "symbol": "RTMPStream.resume()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 550,
+      "line": 549,
       "symbol": "RTMPStream.togglePause()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 563,
+      "line": 562,
       "symbol": "RTMPStream.appendFile(_:completionHandler:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 641,
+      "line": 640,
       "symbol": "RTMPStream.addEventListener(_:selector:observer:useCapture:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 644,
+      "line": 643,
       "symbol": "RTMPStream.removeEventListener(_:selector:observer:useCapture:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 647,
+      "line": 646,
       "symbol": "RTMPStream.dispatch(event:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 650,
+      "line": 649,
       "symbol": "RTMPStream.dispatch(_:bubbles:data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -3307,14 +3482,14 @@
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStreamDelegate.swift",
       "line": 10,
-      "symbol": "RTMPStreamDelegate.outputAudio(_:presentationTimeStamp:)",
+      "symbol": "RTMPStreamDelegate.didOutputAudio(_:presentationTimeStamp:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPStreamDelegate.swift",
       "line": 13,
-      "symbol": "RTMPStreamDelegate.outputVideo(_:)",
+      "symbol": "RTMPStreamDelegate.didOutputVideo(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -3567,6 +3742,13 @@
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Util/ByteArray.swift",
       "line": 322,
       "symbol": "ByteArray",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Util/DeviceUtil.swift",
+      "line": 3,
+      "symbol": "DeviceUtil",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
