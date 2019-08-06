@@ -132,18 +132,6 @@ final class H264Encoder: NSObject {
     weak var delegate: VideoEncoderDelegate?
 
     private(set) var isRunning: Atomic<Bool> = .init(false)
-    private var supportedProperty: [AnyHashable: Any]? {
-        didSet {
-            guard logger.isEnabledFor(level: .info) else {
-                return
-            }
-            var keys: [String] = []
-            for (key, _) in supportedProperty ?? [:] {
-                keys.append(key.description)
-            }
-            logger.info(keys.joined(separator: ", "))
-        }
-    }
     private(set) var status: OSStatus = noErr
     private var attributes: [NSString: AnyObject] {
         var attributes: [NSString: AnyObject] = H264Encoder.defaultAttributes
@@ -224,7 +212,6 @@ final class H264Encoder: NSObject {
                 invalidateSession = false
                 status = VTSessionSetProperties(_session!, propertyDictionary: properties as CFDictionary)
                 status = VTCompressionSessionPrepareToEncodeFrames(_session!)
-                supportedProperty = _session?.copySupportedPropertyDictionary()
             }
             return _session
         }

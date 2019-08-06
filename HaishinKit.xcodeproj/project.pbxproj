@@ -232,9 +232,6 @@
 		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */; };
 		29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */; };
 		29D3D4EA1ED0519400DD4AA6 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		29D80680204828D000F4504D /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D8067F204828D000F4504D /* VTSession+Extension.swift */; };
-		29D80681204828D000F4504D /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D8067F204828D000F4504D /* VTSession+Extension.swift */; };
-		29D80682204828D000F4504D /* VTSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D8067F204828D000F4504D /* VTSession+Extension.swift */; };
 		29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
 		29DC17B421D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
 		29DC17B521D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
@@ -596,7 +593,6 @@
 		29D3D5031ED053C000DD4AA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		29D3D5041ED053C000DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29D3D5051ED053C000DD4AA6 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		29D8067F204828D000F4504D /* VTSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTSession+Extension.swift"; sourceTree = "<group>"; };
 		29DC17B221D0CC0600E26CED /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
 		29E796991ED197A800D75C6C /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
 		29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ExpressibleByIntegerLiteral+Extension.swift"; sourceTree = "<group>"; };
@@ -1097,7 +1093,6 @@
 				29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */,
 				29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */,
 				29EA87D71E79A0090043A5F8 /* URL+Extension.swift */,
-				29D8067F204828D000F4504D /* VTSession+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1633,7 +1628,6 @@
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				2916196C1E7F0768009FB344 /* CMFormatDescription+Extension.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
-				29D80680204828D000F4504D /* VTSession+Extension.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
@@ -1752,7 +1746,6 @@
 				29B877151CD70D5A00FC07DA /* RTMPMuxer.swift in Sources */,
 				29EA87E31E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
 				29B877171CD70D5A00FC07DA /* RTMPSharedObject.swift in Sources */,
-				29D80681204828D000F4504D /* VTSession+Extension.swift in Sources */,
 				29B877181CD70D5A00FC07DA /* RTMPSocket.swift in Sources */,
 				29EA87DD1E79A0460043A5F8 /* Data+Extension.swift in Sources */,
 				29B877191CD70D5A00FC07DA /* RTMPStream.swift in Sources */,
@@ -1852,7 +1845,6 @@
 				29EB3E331ED05A2E001CAE8B /* DisplayLinkedQueue.swift in Sources */,
 				29EB3E1D1ED058A5001CAE8B /* ASClass.swift in Sources */,
 				29EB3E251ED05A04001CAE8B /* RTMPSocket.swift in Sources */,
-				29D80682204828D000F4504D /* VTSession+Extension.swift in Sources */,
 				29EB3E311ED05A29001CAE8B /* AnyUtil.swift in Sources */,
 				29EB3E1C1ED058A2001CAE8B /* AMF3Serializer.swift in Sources */,
 				29EB3DEE1ED05763001CAE8B /* AudioConverter.swift in Sources */,
