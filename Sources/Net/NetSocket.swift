@@ -5,22 +5,27 @@ open class NetSocket: NSObject {
     public static let defaultWindowSizeC = Int(UInt16.max)
 
     public var inputBuffer = Data()
+    /// The time to wait for TCP/IP Handshake done.
     public var timeout: Int = NetSocket.defaultTimeout
+    /// This instance connected to server(true) or not(false).
     public internal(set) var connected: Bool = false
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
-    public var securityLevel: StreamSocketSecurityLevel = .none
+    /// The statistics of total incoming bytes.
     public var totalBytesIn: Int64 = 0
+    public var qualityOfService: DispatchQoS = .default
+    public var securityLevel: StreamSocketSecurityLevel = .none
+    /// The statistics of total outgoing bytes.
     public private(set) var totalBytesOut: Int64 = 0
     public private(set) var queueBytesOut: Int64 = 0
 
     var inputStream: InputStream?
     var outputStream: OutputStream?
-    var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input")
+    lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
 
     private var buffer = [UInt8](repeating: 0, count: 0)
     private var runloop: RunLoop?
-    private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output")
     private var timeoutHandler: (() -> Void)?
+    private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     public func connect(withName: String, port: Int) {
         inputQueue.async {
@@ -105,15 +110,13 @@ open class NetSocket: NSObject {
     }
 
     func close(isDisconnected: Bool) {
-        outputQueue.async {
-            guard let runloop: RunLoop = self.runloop else {
-                return
-            }
-            self.deinitConnection(isDisconnected: isDisconnected)
-            self.runloop = nil
-            CFRunLoopStop(runloop.getCFRunLoop())
-            logger.trace("isDisconnected: \(isDisconnected)")
+        guard let runloop: RunLoop = self.runloop else {
+            return
         }
+        deinitConnection(isDisconnected: isDisconnected)
+        self.runloop = nil
+        CFRunLoopStop(runloop.getCFRunLoop())
+        logger.trace("isDisconnected: \(isDisconnected)")
     }
 
     func initConnection() {
@@ -157,6 +160,7 @@ open class NetSocket: NSObject {
 
     func deinitConnection(isDisconnected: Bool) {
         timeoutHandler = nil
+        outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .default)
         inputStream?.delegate = nil
@@ -208,9 +212,15 @@ extension NetSocket: StreamDelegate {
             break
         //  8 = 1 << 3
         case .errorOccurred:
+            guard aStream == inputStream else {
+                return
+            }
             close(isDisconnected: true)
         // 16 = 1 << 4
         case .endEncountered:
+            guard aStream == inputStream else {
+                return
+            }
             close(isDisconnected: true)
         default:
             break

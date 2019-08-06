@@ -7,6 +7,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var chunkSizeC: Int = RTMPChunk.defaultSize
     var chunkSizeS: Int = RTMPChunk.defaultSize
     var inputBuffer = Data()
+    var qualityOfService: DispatchQoS = .default
     var securityLevel: StreamSocketSecurityLevel = .none
     weak var delegate: RTMPSocketDelegate?
     var connected: Bool = false {
