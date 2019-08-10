@@ -87,18 +87,6 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         return chunk.message!.length
     }
 
-    override func connect(withName: String, port: Int) {
-        inputQueue.async {
-            Stream.getStreamsToHost(
-                withName: withName,
-                port: port,
-                inputStream: &self.inputStream,
-                outputStream: &self.outputStream
-            )
-            self.initConnection()
-        }
-    }
-
     override func listen() {
         switch readyState {
         case .versionSent:

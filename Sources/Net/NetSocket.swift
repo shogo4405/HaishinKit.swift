@@ -4,19 +4,19 @@ open class NetSocket: NSObject {
     public static let defaultTimeout: Int = 15 // sec
     public static let defaultWindowSizeC = Int(UInt16.max)
 
-    public var inputBuffer = Data()
+    open var inputBuffer = Data()
     /// The time to wait for TCP/IP Handshake done.
-    public var timeout: Int = NetSocket.defaultTimeout
+    open var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
-    public internal(set) var connected: Bool = false
+    open internal(set) var connected: Bool = false
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
     /// The statistics of total incoming bytes.
-    public var totalBytesIn: Int64 = 0
-    public var qualityOfService: DispatchQoS = .default
-    public var securityLevel: StreamSocketSecurityLevel = .none
+    open var totalBytesIn: Int64 = 0
+    open var qualityOfService: DispatchQoS = .default
+    open var securityLevel: StreamSocketSecurityLevel = .none
     /// The statistics of total outgoing bytes.
-    public private(set) var totalBytesOut: Int64 = 0
-    public private(set) var queueBytesOut: Int64 = 0
+    open private(set) var totalBytesOut: Int64 = 0
+    open private(set) var queueBytesOut: Int64 = 0
 
     var inputStream: InputStream?
     var outputStream: OutputStream?
@@ -29,17 +29,12 @@ open class NetSocket: NSObject {
 
     public func connect(withName: String, port: Int) {
         inputQueue.async {
-            var readStream: Unmanaged<CFReadStream>?
-            var writeStream: Unmanaged<CFWriteStream>?
-            CFStreamCreatePairWithSocketToHost(
-                kCFAllocatorDefault,
-                withName as CFString,
-                UInt32(port),
-                &readStream,
-                &writeStream
+            Stream.getStreamsToHost(
+                withName: withName,
+                port: port,
+                inputStream: &self.inputStream,
+                outputStream: &self.outputStream
             )
-            self.inputStream = readStream?.takeRetainedValue()
-            self.outputStream = writeStream?.takeRetainedValue()
             self.initConnection()
         }
     }
