@@ -78,7 +78,7 @@ final class H264Encoder: NSObject {
             guard bitrate != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(bitrate) as CFTypeRef)
+            _ = VTCompressionSessionPropertyKey.averageBitRate.setProperty(_session, Int(bitrate) as CFTypeRef)
         }
     }
 
@@ -91,7 +91,7 @@ final class H264Encoder: NSObject {
                 invalidateSession = true
                 return
             }
-            setProperty(kVTCompressionPropertyKey_DataRateLimits, dataRateLimits as CFTypeRef)
+            _ = VTCompressionSessionPropertyKey.dataRateLimits.setProperty(_session, dataRateLimits as CFTypeRef)
         }
     }
     @objc var profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String {
@@ -107,7 +107,7 @@ final class H264Encoder: NSObject {
             guard maxKeyFrameIntervalDuration != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, NSNumber(value: maxKeyFrameIntervalDuration))
+            _ = VTCompressionSessionPropertyKey.maxKeyFrameIntervalDuration.setProperty(_session, NSNumber(value: maxKeyFrameIntervalDuration))
         }
     }
 
@@ -118,7 +118,7 @@ final class H264Encoder: NSObject {
             guard expectedFPS != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_ExpectedFrameRate, NSNumber(value: expectedFPS))
+            _ = VTCompressionSessionPropertyKey.expectedFrameRate.setProperty(_session, NSNumber(value: expectedFPS))
         }
     }
     var formatDescription: CMFormatDescription? {
@@ -245,19 +245,6 @@ final class H264Encoder: NSObject {
         )
         if !muted {
             lastImageBuffer = imageBuffer
-        }
-    }
-
-    private func setProperty(_ key: CFString, _ value: CFTypeRef?) {
-        lockQueue.async {
-            guard let session: VTCompressionSession = self._session else {
-                return
-            }
-            self.status = VTSessionSetProperty(
-                session,
-                key: key,
-                value: value
-            )
         }
     }
 
