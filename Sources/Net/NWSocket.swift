@@ -75,6 +75,7 @@ open class NWSocket: NetSocketCompatible {
         guard let nwPort = self.nwPort else {
             return
         }
+        self.connected = false
         let conn = NWConnection(to: NWEndpoint.hostPort(host: nwHost, port: nwPort), using: nwParams)
         conn.stateUpdateHandler = self.stateDidChange(to:)
         conn.start(queue: queue)
