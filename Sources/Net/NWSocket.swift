@@ -7,7 +7,9 @@
 //
 
 import Foundation
-import Network
+#if canImport(Network)
+    import Network
+#endif
 
 @available(iOS 12.0, *)
 open class NWSocket: NetSocketCompatible {

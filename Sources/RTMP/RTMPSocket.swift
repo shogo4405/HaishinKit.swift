@@ -1,5 +1,7 @@
 import Foundation
-import Network
+#if canImport(Network)
+    import Network
+#endif
 
 protocol RTMPSocketCompatible: class {
     var timeout: Int { get set }
