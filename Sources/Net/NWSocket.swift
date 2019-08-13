@@ -13,7 +13,6 @@ import Foundation
 
 @available(iOS 12.0, *)
 open class NWSocket: NetSocketCompatible {
-    var inputBuffer: Data = Data()
     var windowSizeC: Int = 1024
     var timeout: Int = NetSocket.defaultTimeout
 
@@ -38,11 +37,12 @@ open class NWSocket: NetSocketCompatible {
 
     var securityLevel: StreamSocketSecurityLevel = .none
     var qualityOfService: DispatchQoS = .default
-    var inputHandler: (() -> Void)?
-    var timeoutHandler: (() -> Void)?
-    var didSetTotalBytesIn: ((Int64) -> Void)?
-    var didSetTotalBytesOut: ((Int64) -> Void)?
-    var didSetConnected: ((Bool) -> Void)?
+    open var inputHandler: (() -> Void)?
+    open var timeoutHandler: (() -> Void)?
+    open var didSetTotalBytesIn: ((Int64) -> Void)?
+    open var didSetTotalBytesOut: ((Int64) -> Void)?
+    open var didSetConnected: ((Bool) -> Void)?
+    open var inputBuffer: Data = Data()
 
     private var nwParams: NWParameters = .tcp
     private var nwHost: NWEndpoint.Host?

@@ -4,7 +4,6 @@ open class NetSocket: NSObject, NetSocketCompatible {
     public static let defaultTimeout: Int = 15 // sec
     public static let defaultWindowSizeC = Int(UInt16.max)
 
-    var inputBuffer = Data()
     /// The time to wait for TCP/IP Handshake done.
     var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
@@ -33,11 +32,12 @@ open class NetSocket: NSObject, NetSocketCompatible {
     var inputStream: InputStream?
     var outputStream: OutputStream?
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
-    var inputHandler: (() -> Void)?
-    var timeoutHandler: (() -> Void)?
-    var didSetTotalBytesIn: ((Int64) -> Void)?
-    var didSetTotalBytesOut: ((Int64) -> Void)?
-    var didSetConnected: ((Bool) -> Void)?
+    open var inputHandler: (() -> Void)?
+    open var timeoutHandler: (() -> Void)?
+    open var didSetTotalBytesIn: ((Int64) -> Void)?
+    open var didSetTotalBytesOut: ((Int64) -> Void)?
+    open var didSetConnected: ((Bool) -> Void)?
+    open var inputBuffer = Data()
 
     private var buffer = [UInt8](repeating: 0, count: 0)
     private var runloop: RunLoop?
