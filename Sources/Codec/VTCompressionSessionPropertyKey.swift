@@ -37,10 +37,12 @@ enum VTCompressionSessionPropertyKey: VTSessionPropertyKey {
     case maxKeyFrameInterval
     case maxKeyFrameIntervalDuration
 
+#if os(macOS)
     // Hardware Acceleration
     case usingHardwareAcceleratedVideoEncoder
     case requireHardwareAcceleratedVideoEncoder
     case enableHardwareAcceleratedVideoEncoder
+#endif
 
     // Multipass Storage
     case multiPassStorage
@@ -114,12 +116,14 @@ enum VTCompressionSessionPropertyKey: VTSessionPropertyKey {
             return kVTCompressionPropertyKey_MaxKeyFrameInterval
         case .maxKeyFrameIntervalDuration:
             return kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration
+#if os(macOS)
         case .usingHardwareAcceleratedVideoEncoder:
             return kVTCompressionPropertyKey_UsingHardwareAcceleratedVideoEncoder
         case .requireHardwareAcceleratedVideoEncoder:
             return kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder
         case .enableHardwareAcceleratedVideoEncoder:
             return kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder
+#endif
         case .multiPassStorage:
             return kVTCompressionPropertyKey_MultiPassStorage
         case .forceKeyFrame:
