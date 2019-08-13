@@ -1,6 +1,8 @@
 import AVFoundation
 import Foundation
-import Network
+#if canImport(Network)
+    import Network
+#endif
 
 /**
  flash.net.Responder for Swift
@@ -241,7 +243,19 @@ open class RTMPConnection: EventDispatcher {
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
 
-    open var nwParams: NWParameters? = nil
+    // avoid: Stored properties cannot be marked potentially unavailable with '@available'
+    // NWParameters' is only available on iOS application extension 12.0
+    @available(iOS, introduced: 12.0)
+    var _nwParams: NWParameters? {
+        if nwParams == nil {
+            return nil
+        }
+        if nwParams is NWParameters {
+            return nwParams as? NWParameters
+        }
+        return nil
+    }
+    open var nwParams: Any? = nil
 
     override public init() {
         super.init()
@@ -294,7 +308,7 @@ open class RTMPConnection: EventDispatcher {
                     return socket
                 }
                 if #available(iOS 12.0, *) {
-                    if let params = self.nwParams {
+                    if let params = self._nwParams {
                         return RTMPSocket(params)
                     }
                 }
