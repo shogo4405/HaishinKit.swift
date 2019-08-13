@@ -148,6 +148,7 @@ open class NWSocket: NetSocketCompatible {
 
     func receive(_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) {
         if error != nil {
+            close(isDisconnected: true)
             return
         }
         guard let d = data else {
@@ -164,6 +165,7 @@ open class NWSocket: NetSocketCompatible {
         outputQueue.async {
             let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
                 if error != nil {
+                    self.close(isDisconnected: true)
                     return
                 }
                 self.totalBytesOut += Int64(data.count)
