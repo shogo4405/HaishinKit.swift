@@ -335,6 +335,7 @@
 		29FD1B5522FF1C2D0095A0BE /* VTCompressionSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */; };
 		29FD1B5622FF1C2D0095A0BE /* VTCompressionSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */; };
 		29FD1B5722FF24660095A0BE /* VTCompressionSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */; };
+		ED104024230256DA002FD528 /* NetSocketCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED104023230256DA002FD528 /* NetSocketCompatible.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -615,6 +616,7 @@
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPHandshake.swift; sourceTree = "<group>"; };
 		29FD1B4F22FF13190095A0BE /* VTSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOption.swift; sourceTree = "<group>"; };
 		29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTCompressionSessionOption.swift; sourceTree = "<group>"; };
+		ED104023230256DA002FD528 /* NetSocketCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocketCompatible.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -983,6 +985,7 @@
 				29B876991CD70B1100FC07DA /* NetService.swift */,
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
 				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
+				ED104023230256DA002FD528 /* NetSocketCompatible.swift */,
 			);
 			path = Net;
 			sourceTree = "<group>";
@@ -1578,6 +1581,7 @@
 				29B876761CD70ACE00FC07DA /* HTTPRequest.swift in Sources */,
 				29B876AD1CD70B2800FC07DA /* ASClass.swift in Sources */,
 				296242611D8DB86500C451A3 /* TSReader.swift in Sources */,
+				ED104024230256DA002FD528 /* NetSocketCompatible.swift in Sources */,
 				29B8765D1CD70A7900FC07DA /* H264Encoder.swift in Sources */,
 				2999C3752071138F00892E55 /* MTHKView.swift in Sources */,
 				29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */,
