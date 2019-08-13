@@ -1,11 +1,3 @@
-//
-//  NetSocketCompatible.swift
-//  HaishinKit iOS
-//
-//  Created by Yusuke Hata on 2019/08/13.
-//  Copyright © 2019 Shogo Endo. All rights reserved.
-//
-
 import Foundation
 
 protocol NetSocketCompatible {
