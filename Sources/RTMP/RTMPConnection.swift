@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import Network
 
 /**
  flash.net.Responder for Swift
@@ -240,6 +241,8 @@ open class RTMPConnection: EventDispatcher {
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
 
+    open var nwParams: NWParameters? = nil
+
     override public init() {
         super.init()
         addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
@@ -286,7 +289,17 @@ open class RTMPConnection: EventDispatcher {
         case "rtmpt", "rtmpts":
             socket = socket is RTMPTSocket ? socket : RTMPTSocket()
         default:
-            socket = socket is RTMPSocket ? socket : RTMPSocket()
+            socket = { () -> RTMPSocketCompatible in
+                if socket is RTMPSocket {
+                    return socket
+                }
+                if #available(iOS 12.0, *) {
+                    if let params = self.nwParams {
+                        return RTMPSocket(params)
+                    }
+                }
+                return RTMPSocket()
+            }()
         }
         socket.delegate = self
         socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
