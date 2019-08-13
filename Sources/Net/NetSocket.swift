@@ -33,6 +33,7 @@ open class NetSocket: NSObject, NetSocketCompatible {
     var inputStream: InputStream?
     var outputStream: OutputStream?
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
+    var inputHandler: (() -> Void)?
     var timeoutHandler: (() -> Void)?
     var didSetTotalBytesIn: ((Int64) -> Void)?
     var didSetTotalBytesOut: ((Int64) -> Void)?
@@ -70,9 +71,6 @@ open class NetSocket: NSObject, NetSocketCompatible {
 
     open func close() {
         close(isDisconnected: false)
-    }
-
-    open func listen() {
     }
 
     final func doOutputFromURL(_ url: URL, length: Int) {
@@ -169,6 +167,10 @@ open class NetSocket: NSObject, NetSocketCompatible {
 
     func deinitConnection(isDisconnected: Bool) {
         timeoutHandler = nil
+        inputHandler = nil
+        didSetTotalBytesIn = nil
+        didSetTotalBytesOut = nil
+        didSetConnected = nil
         outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .default)
@@ -189,7 +191,7 @@ open class NetSocket: NSObject, NetSocketCompatible {
         if 0 < length {
             totalBytesIn += Int64(length)
             inputBuffer.append(buffer, count: length)
-            listen()
+            inputHandler?()
         }
     }
 }

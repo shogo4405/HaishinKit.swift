@@ -336,6 +336,7 @@
 		29FD1B5622FF1C2D0095A0BE /* VTCompressionSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */; };
 		29FD1B5722FF24660095A0BE /* VTCompressionSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */; };
 		ED104024230256DA002FD528 /* NetSocketCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED104023230256DA002FD528 /* NetSocketCompatible.swift */; };
+		ED10402623026E2A002FD528 /* NWSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED10402523026E2A002FD528 /* NWSocket.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -617,6 +618,7 @@
 		29FD1B4F22FF13190095A0BE /* VTSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOption.swift; sourceTree = "<group>"; };
 		29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTCompressionSessionOption.swift; sourceTree = "<group>"; };
 		ED104023230256DA002FD528 /* NetSocketCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocketCompatible.swift; sourceTree = "<group>"; };
+		ED10402523026E2A002FD528 /* NWSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWSocket.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -986,6 +988,7 @@
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
 				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
 				ED104023230256DA002FD528 /* NetSocketCompatible.swift */,
+				ED10402523026E2A002FD528 /* NWSocket.swift */,
 			);
 			path = Net;
 			sourceTree = "<group>";
@@ -1609,6 +1612,7 @@
 				29B876851CD70AE800FC07DA /* NALUnit.swift in Sources */,
 				29EA87ED1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
 				2958912A1EEB8F1D00CE51E1 /* FLVSoundSize.swift in Sources */,
+				ED10402623026E2A002FD528 /* NWSocket.swift in Sources */,
 				29EA87DC1E79A0460043A5F8 /* Data+Extension.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				29EA87E61E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,

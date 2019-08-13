@@ -1,4 +1,5 @@
 import Foundation
+import Network
 
 protocol RTMPSocketCompatible: class {
     var timeout: Int { get set }
@@ -97,9 +98,16 @@ final class RTMPSocket: RTMPSocketCompatible {
         self.init(NetSocket())
     }
 
+    @available(iOS 12.0, *)
+    convenience init(_ nwParams: NWParameters) {
+        let nwSocket = NWSocket(nwParams)
+        self.init(nwSocket)
+    }
+
     private init(_ socket: NetSocketCompatible) {
         self.socket = socket
         self.socket.timeoutHandler = didTimeout
+        self.socket.inputHandler = didInputData
         self.socket.didSetTotalBytesIn = didSetTotalBytesIn
         self.socket.didSetTotalBytesOut = didSetTotalBytesOut
         self.socket.didSetConnected = didSetConnected
@@ -127,6 +135,10 @@ final class RTMPSocket: RTMPSocketCompatible {
 
     func connect(withName: String, port: Int) {
         socket.connect(withName: withName, port: port)
+        handshake.clear()
+        readyState = .uninitialized
+        chunkSizeS = RTMPChunk.defaultSize
+        chunkSizeC = RTMPChunk.defaultSize
     }
 
     func close(isDisconnected: Bool) {
@@ -146,7 +158,7 @@ final class RTMPSocket: RTMPSocketCompatible {
         return chunk.message!.length
     }
 
-    func listen() {
+    func didInputData() {
         switch readyState {
         case .versionSent:
             if socket.inputBuffer.count < RTMPHandshake.sigSize + 1 {
@@ -156,7 +168,7 @@ final class RTMPSocket: RTMPSocketCompatible {
             socket.inputBuffer.removeSubrange(0...RTMPHandshake.sigSize)
             readyState = .ackSent
             if RTMPHandshake.sigSize <= socket.inputBuffer.count {
-                listen()
+                didInputData()
             }
         case .ackSent:
             if socket.inputBuffer.count < RTMPHandshake.sigSize {
@@ -174,14 +186,6 @@ final class RTMPSocket: RTMPSocketCompatible {
         default:
             break
         }
-    }
-
-    func initConnection() {
-        handshake.clear()
-        readyState = .uninitialized
-        chunkSizeS = RTMPChunk.defaultSize
-        chunkSizeC = RTMPChunk.defaultSize
-        socket.initConnection()
     }
 
     func deinitConnection(isDisconnected: Bool) {

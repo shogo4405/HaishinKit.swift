@@ -17,12 +17,12 @@ protocol NetSocketCompatible {
     var connected: Bool { get }
     var securityLevel: StreamSocketSecurityLevel { get set }
     var qualityOfService: DispatchQoS { get set }
+    var inputHandler: (() -> Void)? { get set }
     var timeoutHandler: (() -> Void)? { get set }
     var didSetTotalBytesIn: ((Int64) -> Void)? { get set }
     var didSetTotalBytesOut: ((Int64) -> Void)? { get set }
     var didSetConnected: ((Bool) -> Void)? { get set }
 
-    func initConnection()
     func deinitConnection(isDisconnected: Bool)
     func connect(withName: String, port: Int)
     func close(isDisconnected: Bool)

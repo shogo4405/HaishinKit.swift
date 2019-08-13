@@ -1,0 +1,168 @@
+//
+//  NWSocket.swift
+//  HaishinKit iOS
+//
+//  Created by Yusuke Hata on 2019/08/13.
+//  Copyright © 2019 Shogo Endo. All rights reserved.
+//
+
+import Foundation
+import Network
+
+@available(iOS 12.0, *)
+open class NWSocket: NetSocketCompatible {
+    var inputBuffer: Data = Data()
+    var windowSizeC: Int = 1024
+    var timeout: Int = NetSocket.defaultTimeout
+
+    var queueBytesOut: Int64 = 0
+    var totalBytesIn: Int64 = 0 {
+        didSet {
+            didSetTotalBytesIn?(totalBytesIn)
+        }
+    }
+
+    var totalBytesOut: Int64 = 0 {
+        didSet {
+            didSetTotalBytesOut?(totalBytesOut)
+        }
+    }
+
+    var connected: Bool = false {
+        didSet {
+            didSetConnected?(connected)
+        }
+    }
+
+    var securityLevel: StreamSocketSecurityLevel = .none
+    var qualityOfService: DispatchQoS = .default
+    var inputHandler: (() -> Void)?
+    var timeoutHandler: (() -> Void)?
+    var didSetTotalBytesIn: ((Int64) -> Void)?
+    var didSetTotalBytesOut: ((Int64) -> Void)?
+    var didSetConnected: ((Bool) -> Void)?
+
+    private var nwParams: NWParameters = .tcp
+    private var nwHost: NWEndpoint.Host?
+    private var nwPort: NWEndpoint.Port?
+    private var conn: NWConnection?
+    private lazy var queue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.queue", qos: qualityOfService)
+    private lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.input", qos: qualityOfService)
+    private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.output", qos: qualityOfService)
+
+    init(_ nwParams: NWParameters) {
+        self.nwParams = nwParams
+    }
+    deinit {
+        conn?.forceCancel()
+        conn = nil
+    }
+
+    public func connect(withName: String, port: Int) {
+        nwHost = NWEndpoint.Host(withName)
+        nwPort = NWEndpoint.Port(integerLiteral: UInt16(port))
+        initConnection()
+    }
+
+    func initConnection() {
+        if conn != nil {
+            conn?.cancel()
+            conn = nil
+        }
+        guard let nwHost = self.nwHost else {
+            return
+        }
+        guard let nwPort = self.nwPort else {
+            return
+        }
+        let conn = NWConnection(to: NWEndpoint.hostPort(host: nwHost, port: nwPort), using: nwParams)
+        conn.stateUpdateHandler = self.stateDidChange(to:)
+        conn.start(queue: queue)
+        receiveLoop(conn)
+        self.conn = conn
+    }
+
+    public func close(isDisconnected: Bool) {
+        outputQueue.async {
+            self.deinitConnection(isDisconnected: isDisconnected)
+            self.conn?.cancel()
+            self.conn = nil
+            self.connected = false
+        }
+    }
+
+    func deinitConnection(isDisconnected: Bool) {
+        timeoutHandler = nil
+        inputHandler = nil
+        didSetTotalBytesIn = nil
+        didSetTotalBytesOut = nil
+        didSetConnected = nil
+        outputQueue = .init(label: outputQueue.label, qos: qualityOfService)
+        inputBuffer.removeAll()
+    }
+
+    func stateDidChange(to state: NWConnection.State) {
+        switch state {
+        case .ready:
+            timeoutHandler = nil
+            connected = true
+        case .failed(_):
+            close(isDisconnected: true)
+        case .cancelled:
+            close(isDisconnected: true)
+        default:
+            break
+        }
+    }
+
+    func receiveLoop(_ conn: NWConnection) {
+        let receiveCompletion = { [weak self] (_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) -> Void in
+            guard let me = self else {
+                return
+            }
+            me.receive(data, ctx, isComplete, error)
+            if me.connected {
+                me.inputQueue.async { [weak me] () -> Void in
+                    me?.receiveLoop(conn)
+                }
+            }
+        }
+        inputQueue.async { [weak self] () -> Void in
+            guard let windowSizeC = self?.windowSizeC else {
+                return
+            }
+            conn.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC + 1, completion: receiveCompletion)
+        }
+    }
+
+    func receive(_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) {
+        if error != nil {
+            return
+        }
+        guard let d = data else {
+            return
+        }
+        inputBuffer.append(d)
+        totalBytesIn += Int64(d.count)
+        inputHandler?()
+    }
+
+    @discardableResult
+    public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
+        OSAtomicAdd64(Int64(data.count), &queueBytesOut)
+        outputQueue.async {
+            let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
+                if error != nil {
+                    return
+                }
+                self.totalBytesOut += Int64(data.count)
+                OSAtomicAdd64(Int64(data.count), &self.queueBytesOut)
+                if locked != nil {
+                    OSAtomicAnd32Barrier(0, locked!)
+                }
+            }
+            self.conn?.send(content: data, completion: sendCompletion)
+        }
+        return data.count
+    }
+}
