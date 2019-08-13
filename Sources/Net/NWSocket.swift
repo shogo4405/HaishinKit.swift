@@ -79,6 +79,14 @@ open class NWSocket: NetSocketCompatible {
         conn.stateUpdateHandler = self.stateDidChange(to:)
         conn.start(queue: queue)
         receiveLoop(conn)
+        if 0 < timeout {
+            outputQueue.asyncAfter(deadline: .now() + .seconds(timeout)) {
+                guard let timeoutHandler = self.timeoutHandler else {
+                    return
+                }
+                timeoutHandler()
+            }
+        }
         self.conn = conn
     }
 
