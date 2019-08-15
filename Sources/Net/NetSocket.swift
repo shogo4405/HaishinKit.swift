@@ -5,29 +5,29 @@ open class NetSocket: NSObject, NetSocketCompatible {
     public static let defaultWindowSizeC = Int(UInt16.max)
 
     /// The time to wait for TCP/IP Handshake done.
-    var timeout: Int = NetSocket.defaultTimeout
+    open var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
-    var connected: Bool = false {
+    open internal(set) var connected: Bool = false {
         didSet {
             didSetConnected?(connected)
         }
     }
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
-    var qualityOfService: DispatchQoS = .default
-    var securityLevel: StreamSocketSecurityLevel = .none
+    open var qualityOfService: DispatchQoS = .default
+    open var securityLevel: StreamSocketSecurityLevel = .none
     /// The statistics of total incoming bytes.
-    var totalBytesIn: Int64 = 0 {
+    open private(set) var totalBytesIn: Int64 = 0 {
         didSet {
             didSetTotalBytesIn?(totalBytesIn)
         }
     }
     /// The statistics of total outgoing bytes.
-    var totalBytesOut: Int64 = 0 {
+    open private(set) var totalBytesOut: Int64 = 0 {
         didSet {
             didSetTotalBytesOut?(totalBytesOut)
         }
     }
-    var queueBytesOut: Int64 = 0
+    open private(set) var queueBytesOut: Int64 = 0
 
     var inputStream: InputStream?
     var outputStream: OutputStream?

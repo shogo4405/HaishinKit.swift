@@ -5,30 +5,30 @@ import Foundation
 
 @available(iOS 12.0, *)
 open class NWSocket: NetSocketCompatible {
-    var windowSizeC: Int = 1024
-    var timeout: Int = NetSocket.defaultTimeout
+    var windowSizeC: Int = Int(UInt8.max)
+    open var timeout: Int = NetSocket.defaultTimeout
 
-    var queueBytesOut: Int64 = 0
-    var totalBytesIn: Int64 = 0 {
+    open private(set) var queueBytesOut: Int64 = 0
+    open private(set) var totalBytesIn: Int64 = 0 {
         didSet {
             didSetTotalBytesIn?(totalBytesIn)
         }
     }
 
-    var totalBytesOut: Int64 = 0 {
+    open private(set) var totalBytesOut: Int64 = 0 {
         didSet {
             didSetTotalBytesOut?(totalBytesOut)
         }
     }
 
-    var connected: Bool = false {
+    open internal(set) var connected: Bool = false {
         didSet {
             didSetConnected?(connected)
         }
     }
 
-    var securityLevel: StreamSocketSecurityLevel = .none
-    var qualityOfService: DispatchQoS = .default
+    open var securityLevel: StreamSocketSecurityLevel = .none
+    open var qualityOfService: DispatchQoS = .default
     open var inputHandler: (() -> Void)?
     open var timeoutHandler: (() -> Void)?
     open var didSetTotalBytesIn: ((Int64) -> Void)?
@@ -134,7 +134,7 @@ open class NWSocket: NetSocketCompatible {
             guard let windowSizeC = self?.windowSizeC else {
                 return
             }
-            conn.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC + 1, completion: receiveCompletion)
+            conn.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC, completion: receiveCompletion)
         }
     }
 
