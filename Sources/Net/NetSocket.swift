@@ -8,7 +8,7 @@ open class NetSocket: NSObject {
     /// The time to wait for TCP/IP Handshake done.
     open var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
-    open internal(set) var connected: Bool = false
+    open var connected: Bool = false
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Int64 = 0
@@ -22,9 +22,9 @@ open class NetSocket: NSObject {
     var outputStream: OutputStream?
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
 
-    private var buffer = [UInt8](repeating: 0, count: 0)
     private var runloop: RunLoop?
     private var timeoutHandler: (() -> Void)?
+    private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     public func connect(withName: String, port: Int) {
@@ -115,8 +115,6 @@ open class NetSocket: NSObject {
     }
 
     func initConnection() {
-        buffer = [UInt8](repeating: 0, count: windowSizeC)
-
         totalBytesIn = 0
         totalBytesOut = 0
         queueBytesOut = 0
