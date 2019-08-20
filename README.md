@@ -73,7 +73,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 0.11.6'
+    pod 'HaishinKit', '~> 0.11.7'
 end
 
 target 'Your Target'  do
@@ -83,7 +83,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 0.11.6
+github "shogo4405/HaishinKit.swift" ~> 0.11.7
 ```
 
 ## License

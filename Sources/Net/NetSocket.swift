@@ -39,8 +39,9 @@ open class NetSocket: NSObject, NetSocketCompatible {
     open var didSetConnected: ((Bool) -> Void)?
     open var inputBuffer = Data()
 
-    private var buffer = [UInt8](repeating: 0, count: 0)
     private var runloop: RunLoop?
+    private var timeoutHandler: (() -> Void)?
+    private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     public func connect(withName: String, port: Int) {
@@ -128,8 +129,6 @@ open class NetSocket: NSObject, NetSocketCompatible {
     }
 
     func initConnection() {
-        buffer = [UInt8](repeating: 0, count: windowSizeC)
-
         totalBytesIn = 0
         totalBytesOut = 0
         queueBytesOut = 0
