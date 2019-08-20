@@ -40,7 +40,6 @@ open class NetSocket: NSObject, NetSocketCompatible {
     open var inputBuffer = Data()
 
     private var runloop: RunLoop?
-    private var timeoutHandler: (() -> Void)?
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 

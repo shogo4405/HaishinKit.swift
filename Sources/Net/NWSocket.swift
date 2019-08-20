@@ -3,7 +3,7 @@ import Foundation
     import Network
 #endif
 
-@available(iOS 12.0, *)
+@available(iOS 12.0, macOS 10.14, tvOS 12.0, *)
 open class NWSocket: NetSocketCompatible {
     var windowSizeC: Int = Int(UInt8.max)
     open var timeout: Int = NetSocket.defaultTimeout

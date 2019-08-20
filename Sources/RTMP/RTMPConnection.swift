@@ -245,7 +245,7 @@ open class RTMPConnection: EventDispatcher {
 
     // avoid: Stored properties cannot be marked potentially unavailable with '@available'
     // NWParameters' is only available on iOS application extension 12.0
-    @available(iOS, introduced: 12.0)
+    @available(iOS 12, macOS 10.14, tvOS 12, *)
     var _nwParams: NWParameters? {
         if nwParams == nil {
             return nil
@@ -307,7 +307,7 @@ open class RTMPConnection: EventDispatcher {
                 if socket is RTMPSocket {
                     return socket
                 }
-                if #available(iOS 12.0, *) {
+                if #available(iOS 12.0, macOS 10.14, tvOS 12, *) {
                     if let params = self._nwParams {
                         return RTMPSocket(params)
                     }

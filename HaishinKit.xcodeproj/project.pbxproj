@@ -149,6 +149,10 @@
 		299D6A532051A9920090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTHKView.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
+		29B3DF7E230C2DC700957C62 /* NetSocketCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED104023230256DA002FD528 /* NetSocketCompatible.swift */; };
+		29B3DF7F230C2DC800957C62 /* NetSocketCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED104023230256DA002FD528 /* NetSocketCompatible.swift */; };
+		29B3DF80230C2DCF00957C62 /* NWSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED10402523026E2A002FD528 /* NWSocket.swift */; };
+		29B3DF81230C2DD000957C62 /* NWSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED10402523026E2A002FD528 /* NWSocket.swift */; };
 		29B8765B1CD70A7900FC07DA /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioConverter.swift */; };
 		29B8765C1CD70A7900FC07DA /* H264Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876581CD70A7900FC07DA /* H264Decoder.swift */; };
 		29B8765D1CD70A7900FC07DA /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* H264Encoder.swift */; };
@@ -985,8 +989,8 @@
 				29B876981CD70B1100FC07DA /* NetClient.swift */,
 				29B876991CD70B1100FC07DA /* NetService.swift */,
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
-				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
 				ED104023230256DA002FD528 /* NetSocketCompatible.swift */,
+				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
 				ED10402523026E2A002FD528 /* NWSocket.swift */,
 			);
 			path = Net;
@@ -1704,6 +1708,7 @@
 				295747921E3A30A400EF056E /* RTMPStreamDelegate.swift in Sources */,
 				29B876F41CD70D5900FC07DA /* DataConvertible.swift in Sources */,
 				2916196D1E7F0777009FB344 /* CMFormatDescription+Extension.swift in Sources */,
+				29B3DF81230C2DD000957C62 /* NWSocket.swift in Sources */,
 				2976A4821D4902CE00B53EF2 /* IOComponent.swift in Sources */,
 				29EA87E71E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
 				29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
@@ -1745,6 +1750,7 @@
 				29B877081CD70D5A00FC07DA /* VideoIOComponent.swift in Sources */,
 				294CC9B422D9BEC000F9DD5C /* DisplayLink.swift in Sources */,
 				29B877091CD70D5A00FC07DA /* VideoEffect.swift in Sources */,
+				29B3DF7E230C2DC700957C62 /* NetSocketCompatible.swift in Sources */,
 				29B8770A1CD70D5A00FC07DA /* MIME.swift in Sources */,
 				29B8770B1CD70D5A00FC07DA /* NetClient.swift in Sources */,
 				29EA87EE1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
@@ -1832,6 +1838,7 @@
 				29EB3E351ED05A33001CAE8B /* DeviceUtil.swift in Sources */,
 				29DC17B521D0CC0600E26CED /* Atomic.swift in Sources */,
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
+				29B3DF80230C2DCF00957C62 /* NWSocket.swift in Sources */,
 				29EB3E111ED05881001CAE8B /* IOComponent.swift in Sources */,
 				29EB3E3A1ED05A45001CAE8B /* TimerDriver.swift in Sources */,
 				29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */,
@@ -1843,6 +1850,7 @@
 				29EB3E371ED05A38001CAE8B /* MachUtil.swift in Sources */,
 				29EB3E001ED05854001CAE8B /* HTTPService.swift in Sources */,
 				29EB3DFF1ED05852001CAE8B /* HTTPResponse.swift in Sources */,
+				29B3DF7F230C2DC800957C62 /* NetSocketCompatible.swift in Sources */,
 				29EB3E021ED05858001CAE8B /* M3U.swift in Sources */,
 				29EB3E0D1ED05877001CAE8B /* AudioIOComponent.swift in Sources */,
 				2942A4FA21A9418A004E1BEE /* Running.swift in Sources */,
