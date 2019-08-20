@@ -1,5 +1,8 @@
 import AVFoundation
 import Foundation
+#if canImport(Network)
+    import Network
+#endif
 
 /**
  flash.net.Responder for Swift
@@ -240,6 +243,20 @@ open class RTMPConnection: EventDispatcher {
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
 
+    // avoid: Stored properties cannot be marked potentially unavailable with '@available'
+    // NWParameters' is only available on iOS application extension 12.0
+    @available(iOS, introduced: 12.0)
+    var _nwParams: NWParameters? {
+        if nwParams == nil {
+            return nil
+        }
+        if nwParams is NWParameters {
+            return nwParams as? NWParameters
+        }
+        return nil
+    }
+    open var nwParams: Any? = nil
+
     override public init() {
         super.init()
         addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
@@ -286,7 +303,17 @@ open class RTMPConnection: EventDispatcher {
         case "rtmpt", "rtmpts":
             socket = socket is RTMPTSocket ? socket : RTMPTSocket()
         default:
-            socket = socket is RTMPSocket ? socket : RTMPSocket()
+            socket = { () -> RTMPSocketCompatible in
+                if socket is RTMPSocket {
+                    return socket
+                }
+                if #available(iOS 12.0, *) {
+                    if let params = self._nwParams {
+                        return RTMPSocket(params)
+                    }
+                }
+                return RTMPSocket()
+            }()
         }
         socket.delegate = self
         socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none

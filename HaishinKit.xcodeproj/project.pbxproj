@@ -334,6 +334,8 @@
 		29FD1B5422FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */; };
 		29FD1B5522FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */; };
 		29FD1B5622FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */; };
+		ED104024230256DA002FD528 /* NetSocketCompatible.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED104023230256DA002FD528 /* NetSocketCompatible.swift */; };
+		ED10402623026E2A002FD528 /* NWSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED10402523026E2A002FD528 /* NWSocket.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -614,6 +616,8 @@
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPHandshake.swift; sourceTree = "<group>"; };
 		29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionPropertyKey.swift; sourceTree = "<group>"; };
 		29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTCompressionSessionPropertyKey.swift; sourceTree = "<group>"; };
+		ED104023230256DA002FD528 /* NetSocketCompatible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocketCompatible.swift; sourceTree = "<group>"; };
+		ED10402523026E2A002FD528 /* NWSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NWSocket.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -982,6 +986,8 @@
 				29B876991CD70B1100FC07DA /* NetService.swift */,
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
 				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
+				ED104023230256DA002FD528 /* NetSocketCompatible.swift */,
+				ED10402523026E2A002FD528 /* NWSocket.swift */,
 			);
 			path = Net;
 			sourceTree = "<group>";
@@ -1577,6 +1583,7 @@
 				29B876761CD70ACE00FC07DA /* HTTPRequest.swift in Sources */,
 				29B876AD1CD70B2800FC07DA /* ASClass.swift in Sources */,
 				296242611D8DB86500C451A3 /* TSReader.swift in Sources */,
+				ED104024230256DA002FD528 /* NetSocketCompatible.swift in Sources */,
 				29B8765D1CD70A7900FC07DA /* H264Encoder.swift in Sources */,
 				2999C3752071138F00892E55 /* MTHKView.swift in Sources */,
 				29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */,
@@ -1604,6 +1611,7 @@
 				29B876851CD70AE800FC07DA /* NALUnit.swift in Sources */,
 				29EA87ED1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
 				2958912A1EEB8F1D00CE51E1 /* FLVSoundSize.swift in Sources */,
+				ED10402623026E2A002FD528 /* NWSocket.swift in Sources */,
 				29EA87DC1E79A0460043A5F8 /* Data+Extension.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				29EA87E61E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,

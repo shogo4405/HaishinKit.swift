@@ -1,26 +1,43 @@
 import Foundation
 
-open class NetSocket: NSObject {
+open class NetSocket: NSObject, NetSocketCompatible {
     public static let defaultTimeout: Int = 15 // sec
     public static let defaultWindowSizeC = Int(UInt16.max)
 
-    open var inputBuffer = Data()
     /// The time to wait for TCP/IP Handshake done.
     open var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
-    open var connected: Bool = false
+    open internal(set) var connected: Bool = false {
+        didSet {
+            didSetConnected?(connected)
+        }
+    }
     public var windowSizeC: Int = NetSocket.defaultWindowSizeC
-    /// The statistics of total incoming bytes.
-    open var totalBytesIn: Int64 = 0
     open var qualityOfService: DispatchQoS = .default
     open var securityLevel: StreamSocketSecurityLevel = .none
+    /// The statistics of total incoming bytes.
+    open private(set) var totalBytesIn: Int64 = 0 {
+        didSet {
+            didSetTotalBytesIn?(totalBytesIn)
+        }
+    }
     /// The statistics of total outgoing bytes.
-    open private(set) var totalBytesOut: Int64 = 0
+    open private(set) var totalBytesOut: Int64 = 0 {
+        didSet {
+            didSetTotalBytesOut?(totalBytesOut)
+        }
+    }
     open private(set) var queueBytesOut: Int64 = 0
 
     var inputStream: InputStream?
     var outputStream: OutputStream?
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
+    open var inputHandler: (() -> Void)?
+    open var timeoutHandler: (() -> Void)?
+    open var didSetTotalBytesIn: ((Int64) -> Void)?
+    open var didSetTotalBytesOut: ((Int64) -> Void)?
+    open var didSetConnected: ((Bool) -> Void)?
+    open var inputBuffer = Data()
 
     private var runloop: RunLoop?
     private var timeoutHandler: (() -> Void)?
@@ -55,9 +72,6 @@ open class NetSocket: NSObject {
 
     open func close() {
         close(isDisconnected: false)
-    }
-
-    open func listen() {
     }
 
     final func doOutputFromURL(_ url: URL, length: Int) {
@@ -118,7 +132,6 @@ open class NetSocket: NSObject {
         totalBytesIn = 0
         totalBytesOut = 0
         queueBytesOut = 0
-        timeoutHandler = didTimeout
         inputBuffer.removeAll(keepingCapacity: false)
 
         guard let inputStream: InputStream = inputStream, let outputStream: OutputStream = outputStream else {
@@ -153,6 +166,10 @@ open class NetSocket: NSObject {
 
     func deinitConnection(isDisconnected: Bool) {
         timeoutHandler = nil
+        inputHandler = nil
+        didSetTotalBytesIn = nil
+        didSetTotalBytesOut = nil
+        didSetConnected = nil
         outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .default)
@@ -165,9 +182,6 @@ open class NetSocket: NSObject {
         buffer.removeAll()
     }
 
-    func didTimeout() {
-    }
-
     private func doInput() {
         guard let inputStream: InputStream = inputStream else {
             return
@@ -176,7 +190,7 @@ open class NetSocket: NSObject {
         if 0 < length {
             totalBytesIn += Int64(length)
             inputBuffer.append(buffer, count: length)
-            listen()
+            inputHandler?()
         }
     }
 }
