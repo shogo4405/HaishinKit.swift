@@ -5,7 +5,7 @@ import Foundation
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, *)
 open class NWSocket: NetSocketCompatible {
-    var windowSizeC: Int = Int(UInt8.max)
+    var windowSizeC = Int(UInt8.max)
     open var timeout: Int = NetSocket.defaultTimeout
 
     open private(set) var queueBytesOut: Int64 = 0
@@ -34,7 +34,7 @@ open class NWSocket: NetSocketCompatible {
     open var didSetTotalBytesIn: ((Int64) -> Void)?
     open var didSetTotalBytesOut: ((Int64) -> Void)?
     open var didSetConnected: ((Bool) -> Void)?
-    open var inputBuffer: Data = Data()
+    open var inputBuffer = Data()
 
     private var nwParams: NWParameters = .tcp
     private var nwHost: NWEndpoint.Host?
@@ -109,7 +109,7 @@ open class NWSocket: NetSocketCompatible {
         case .ready:
             timeoutHandler = nil
             connected = true
-        case .failed(_):
+        case .failed:
             close(isDisconnected: true)
         case .cancelled:
             close(isDisconnected: true)

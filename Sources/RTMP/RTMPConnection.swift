@@ -255,7 +255,7 @@ open class RTMPConnection: EventDispatcher {
         }
         return nil
     }
-    open var nwParams: Any? = nil
+    open var nwParams: Any?
 
     override public init() {
         super.init()
