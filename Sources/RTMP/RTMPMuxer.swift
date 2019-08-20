@@ -66,7 +66,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         if decodeTimeStamp == CMTime.invalid {
             decodeTimeStamp = presentationTimeStamp
         } else {
-            compositionTime = Int32((decodeTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
+            compositionTime = Int32((presentationTimeStamp.seconds - decodeTimeStamp.seconds) * 1000)
         }
         let delta: Double = (videoTimestamp == CMTime.zero ? 0 : decodeTimeStamp.seconds - videoTimestamp.seconds) * 1000
         guard let data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
