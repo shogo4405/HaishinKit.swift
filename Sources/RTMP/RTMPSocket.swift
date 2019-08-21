@@ -108,11 +108,6 @@ final class RTMPSocket: RTMPSocketCompatible {
 
     private init(_ socket: NetSocketCompatible) {
         self.socket = socket
-        self.socket.timeoutHandler = didTimeout
-        self.socket.inputHandler = didInputData
-        self.socket.didSetTotalBytesIn = didSetTotalBytesIn
-        self.socket.didSetTotalBytesOut = didSetTotalBytesOut
-        self.socket.didSetConnected = didSetConnected
     }
 
     func didSetTotalBytesIn(_ totalbytesIn: Int64) {
@@ -136,6 +131,12 @@ final class RTMPSocket: RTMPSocketCompatible {
     }
 
     func connect(withName: String, port: Int) {
+        socket.timeoutHandler = didTimeout
+        socket.inputHandler = didInputData
+        socket.didSetTotalBytesIn = didSetTotalBytesIn
+        socket.didSetTotalBytesOut = didSetTotalBytesOut
+        socket.didSetConnected = didSetConnected
+        
         socket.connect(withName: withName, port: port)
         handshake.clear()
         readyState = .uninitialized
