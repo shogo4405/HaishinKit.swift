@@ -23,7 +23,9 @@ open class NetSocket: NSObject {
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
 
     private var runloop: RunLoop?
-    private var timeoutHandler: (() -> Void)?
+    private lazy var timeoutHandler = DispatchWorkItem { [weak self] in
+        self?.didTimeout()
+    }
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
@@ -89,11 +91,14 @@ open class NetSocket: NSObject {
     }
 
     final func doOutputProcess(_ buffer: UnsafePointer<UInt8>?, maxLength: Int) {
-        guard let outputStream: OutputStream = outputStream, let buffer = buffer else {
+        guard let buffer = buffer else {
             return
         }
         var total: Int = 0
         while total < maxLength {
+            guard let outputStream = outputStream else {
+                return
+            }
             let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
             if length <= 0 {
                 break
@@ -118,7 +123,6 @@ open class NetSocket: NSObject {
         totalBytesIn = 0
         totalBytesOut = 0
         queueBytesOut = 0
-        timeoutHandler = didTimeout
         inputBuffer.removeAll(keepingCapacity: false)
 
         guard let inputStream: InputStream = inputStream, let outputStream: OutputStream = outputStream else {
@@ -139,12 +143,7 @@ open class NetSocket: NSObject {
         outputStream.open()
 
         if 0 < timeout {
-            outputQueue.asyncAfter(deadline: .now() + .seconds(timeout)) {
-                guard let timeoutHandler: (() -> Void) = self.timeoutHandler else {
-                    return
-                }
-                timeoutHandler()
-            }
+            outputQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
         }
 
         runloop?.run()
@@ -152,7 +151,7 @@ open class NetSocket: NSObject {
     }
 
     func deinitConnection(isDisconnected: Bool) {
-        timeoutHandler = nil
+        timeoutHandler.cancel()
         outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop!, forMode: .default)
@@ -162,7 +161,6 @@ open class NetSocket: NSObject {
         outputStream?.remove(from: runloop!, forMode: .default)
         outputStream?.delegate = nil
         outputStream = nil
-        buffer.removeAll()
     }
 
     func didTimeout() {
@@ -192,7 +190,7 @@ extension NetSocket: StreamDelegate {
                     break
             }
             if aStream == inputStream {
-                timeoutHandler = nil
+                timeoutHandler.cancel()
                 connected = true
             }
         //  2 = 1 << 1

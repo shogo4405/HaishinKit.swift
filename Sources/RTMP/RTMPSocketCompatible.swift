@@ -30,11 +30,17 @@ protocol RTMPSocketCompatible: class {
     func connect(withName: String, port: Int)
     func deinitConnection(isDisconnected: Bool)
     func setProperty(_ value: Any?, forKey: String)
+    func didTimeout()
 }
 
 extension RTMPSocketCompatible {
-    // MARK: RTMPSocketCompatible
     func setProperty(_ value: Any?, forKey: String) {
+    }
+
+    func didTimeout() {
+        deinitConnection(isDisconnected: false)
+        delegate?.dispatch(Event.IO_ERROR, bubbles: false, data: nil)
+        logger.warn("connection timedout")
     }
 }
 
