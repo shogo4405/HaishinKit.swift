@@ -36,7 +36,7 @@ open class ScreenCaptureSession: NSObject {
     private var shared: UIApplication?
     private var viewToCapture: UIView?
     public var afterScreenUpdates: Bool = false
-    private var context = CIContext(options: convertToOptionalCIContextOptionDictionary([convertFromCIContextOption(CIContextOption.useSoftwareRenderer): NSNumber(value: false)]))
+    private var context = CIContext(options: [.useSoftwareRenderer: NSNumber(value: false)])
     private let semaphore = DispatchSemaphore(value: 1)
     private let lockQueue = DispatchQueue(
         label: "com.haishinkit.HaishinKit.ScreenCaptureSession.lock", qos: .userInteractive, attributes: []
@@ -167,15 +167,4 @@ extension ScreenCaptureSession: Running {
             self.isRunning.mutate { $0 = false }
         }
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-private func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
-	guard let input = input else { return nil }
-	return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value) })
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-private func convertFromCIContextOption(_ input: CIContextOption) -> String {
-	return input.rawValue
 }

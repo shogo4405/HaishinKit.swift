@@ -137,7 +137,7 @@ final class RTMPSocket: RTMPSocketCompatible {
         socket.didSetTotalBytesIn = didSetTotalBytesIn
         socket.didSetTotalBytesOut = didSetTotalBytesOut
         socket.didSetConnected = didSetConnected
-        
+
         socket.connect(withName: withName, port: port)
         handshake.clear()
         readyState = .uninitialized

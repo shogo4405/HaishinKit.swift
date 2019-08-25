@@ -2,9 +2,9 @@ import AVFoundation
 import GLKit
 
 open class GLHKView: GLKView {
-    static let defaultOptions: [String: AnyObject] = [
-        convertFromCIContextOption(CIContextOption.workingColorSpace): NSNull(),
-        convertFromCIContextOption(CIContextOption.useSoftwareRenderer): NSNumber(value: false)
+    static let defaultOptions: [CIContextOption: Any] = [
+        .workingColorSpace: NSNull(),
+        .useSoftwareRenderer: NSNumber(value: false)
     ]
     public static var defaultBackgroundColor: UIColor = .black
 
@@ -47,7 +47,7 @@ open class GLHKView: GLKView {
     open func attachStream(_ stream: NetStream?) {
         if let stream: NetStream = stream {
             stream.lockQueue.async {
-                stream.mixer.videoIO.context = CIContext(eaglContext: self.context, options: convertToOptionalCIContextOptionDictionary(GLHKView.defaultOptions))
+                stream.mixer.videoIO.context = CIContext(eaglContext: self.context, options: GLHKView.defaultOptions)
                 stream.mixer.videoIO.drawable = self
                 stream.mixer.startRunning()
             }
@@ -64,15 +64,4 @@ extension GLHKView: NetStreamDrawable {
             self.setNeedsDisplay()
         }
     }
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-private func convertFromCIContextOption(_ input: CIContextOption) -> String {
-    return input.rawValue
-}
-
-// Helper function inserted by Swift 4.2 migrator.
-private func convertToOptionalCIContextOptionDictionary(_ input: [String: Any]?) -> [CIContextOption: Any]? {
-    guard let input = input else { return nil }
-    return Dictionary(uniqueKeysWithValues: input.map { key, value in (CIContextOption(rawValue: key), value) })
 }

@@ -136,9 +136,7 @@ final class LiveViewController: UIViewController {
             UIApplication.shared.isIdleTimerDisabled = true
             rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
             rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpErrorHandler), observer: self)
-            /*rtmpConnection.connect(Preference.defaultInstance.uri!)*/
-            // FIXME: Remove
-            rtmpConnection.connect("rtmp://fake.tv")
+            rtmpConnection.connect(Preference.defaultInstance.uri!)
             publish.setTitle("■", for: [])
         }
         publish.isSelected = !publish.isSelected
@@ -166,17 +164,17 @@ final class LiveViewController: UIViewController {
             break
         }
     }
-    
+
     @objc
     private func rtmpErrorHandler(_ notification: Notification) {
         let e = Event.from(notification)
         print("rtmpErrorHandler: \(e.description)")
-    
+
         DispatchQueue.main.async {
             self.rtmpConnection.connect(Preference.defaultInstance.uri!)
         }
     }
-    
+
     func tapScreen(_ gesture: UIGestureRecognizer) {
         if let gestureView = gesture.view, gesture.state == .ended {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
