@@ -2319,35 +2319,35 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 48,
+      "line": 43,
       "symbol": "NetSocket.doOutput(data:locked:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 61,
+      "line": 56,
       "symbol": "NetSocket.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 65,
+      "line": 60,
       "symbol": "NetSocket.listen()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 191,
+      "line": 184,
       "symbol": "NetSocket",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 193,
+      "line": 186,
       "symbol": "NetSocket.stream(_:handle:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
