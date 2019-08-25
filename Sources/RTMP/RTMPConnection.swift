@@ -1,8 +1,5 @@
 import AVFoundation
 import Foundation
-#if canImport(Network)
-    import Network
-#endif
 
 /**
  flash.net.Responder for Swift
@@ -171,7 +168,11 @@ open class RTMPConnection: EventDispatcher {
     /// The URI passed to the RTMPConnection.connect() method.
     open private(set) var uri: URL?
     /// This instance connected to server(true) or not(false).
-    open private(set) var connected: Bool = false
+    open private(set) var connected = false
+    /// This instance requires Network.framework if possible.
+    open var requireNetworkFramework = false
+    /// The socket optional parameters.
+    open var parameters: Any?
     /// The object encoding for this RTMPConnection instance.
     open var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
@@ -231,7 +232,7 @@ open class RTMPConnection: EventDispatcher {
         didSet {
             oldValue?.invalidate()
             if let timer: Timer = timer {
-                RunLoop.main.add(timer, forMode: RunLoop.Mode.common)
+                RunLoop.main.add(timer, forMode: .common)
             }
         }
     }
@@ -242,20 +243,6 @@ open class RTMPConnection: EventDispatcher {
     private var fragmentedChunks: [UInt16: RTMPChunk] = [: ]
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
-
-    // avoid: Stored properties cannot be marked potentially unavailable with '@available'
-    // NWParameters' is only available on iOS application extension 12.0
-    @available(iOS 12, macOS 10.14, tvOS 12, *)
-    var _nwParams: NWParameters? {
-        if nwParams == nil {
-            return nil
-        }
-        if nwParams is NWParameters {
-            return nwParams as? NWParameters
-        }
-        return nil
-    }
-    open var nwParams: Any?
 
     override public init() {
         super.init()
@@ -303,19 +290,14 @@ open class RTMPConnection: EventDispatcher {
         case "rtmpt", "rtmpts":
             socket = socket is RTMPTSocket ? socket : RTMPTSocket()
         default:
-            socket = { () -> RTMPSocketCompatible in
-                if socket is RTMPSocket {
-                    return socket
-                }
-                if #available(iOS 12.0, macOS 10.14, tvOS 12, *) {
-                    if let params = self._nwParams {
-                        return RTMPSocket(params)
-                    }
-                }
-                return RTMPSocket()
-            }()
+            if #available(iOS 12.0, macOS 10.14, tvOS 12.0, *), requireNetworkFramework {
+                socket = socket is RTMPNWSocket ? socket : RTMPNWSocket()
+            } else {
+                socket = socket is RTMPSocket ? socket : RTMPSocket()
+            }
         }
         socket.delegate = self
+        socket.setProperty(parameters, forKey: "parameters")
         socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
         socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
     }
@@ -479,7 +461,7 @@ open class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    func didSetReadyState(_ readyState: RTMPSocket.ReadyState) {
+    func didSetReadyState(_ readyState: RTMPSocketReadyState) {
         logger.debug(readyState)
         switch readyState {
         case .handshakeDone:

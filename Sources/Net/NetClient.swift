@@ -18,7 +18,6 @@ public final class NetClient: NetSocket {
         self.service = service
         self.inputStream = inputStream
         self.outputStream = outputStream
-        self.inputHandler = listen
     }
 
     func acceptConnection() {
@@ -28,7 +27,7 @@ public final class NetClient: NetSocket {
         }
     }
 
-    public func listen() {
+    override public func listen() {
         delegate?.client?(inputBuffer: self)
     }
 }
