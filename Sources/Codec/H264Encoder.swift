@@ -107,7 +107,7 @@ final class H264Encoder: NSObject {
             guard maxKeyFrameIntervalDuration != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration, NSNumber(value: maxKeyFrameIntervalDuration))
+            invalidateSession = true
         }
     }
 
