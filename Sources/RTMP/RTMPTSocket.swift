@@ -31,7 +31,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         return handshake.timestamp
     }
 
-    var readyState: RTMPSocket.ReadyState = .uninitialized {
+    var readyState: RTMPSocketReadyState = .uninitialized {
         didSet {
             delegate?.didSetReadyState(readyState)
         }
