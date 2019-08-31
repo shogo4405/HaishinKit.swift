@@ -645,21 +645,23 @@ final class RTMPVideoMessage: RTMPMessage {
     func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
         let compositionTimeoffset = Int32(data: [0] + payload[2..<5]).bigEndian
 
-        if timestamp == 0 && compositionTimeoffset != 0 {
-            timestamp = UInt32(Double(compositionTimeoffset) - stream.videoTimestamp)
-        }
-
+        var pts: CMTime = .invalid
+        var dts: CMTime = .invalid
         switch type {
         case .zero:
-            stream.videoTimestamp = Double(timestamp)
+            pts = CMTimeMake(value: Int64(timestamp) + Int64(compositionTimeoffset), timescale: 1000)
+            dts = CMTimeMake(value: Int64(timestamp), timescale: 1000)
+            stream.videoTimestamp = Double(dts.value)
         default:
-            stream.videoTimestamp += Double(timestamp)
+            pts = CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(timestamp) + Int64(compositionTimeoffset), timescale: 1000)
+            dts = CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(timestamp), timescale: 1000)
+            stream.videoTimestamp = Double(dts.value)
         }
 
         var timing = CMSampleTimingInfo(
             duration: CMTimeMake(value: Int64(timestamp), timescale: 1000),
-            presentationTimeStamp: CMTimeMake(value: Int64(stream.videoTimestamp), timescale: 1000),
-            decodeTimeStamp: CMTime.invalid
+            presentationTimeStamp: pts,
+            decodeTimeStamp: compositionTimeoffset == 0 ? CMTime.invalid : dts
         )
 
         payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
