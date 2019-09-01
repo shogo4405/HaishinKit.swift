@@ -1,74 +1,66 @@
 import AVFoundation
 
-class RTMPMessage {
+enum RTMPMessageType: UInt8 {
+    case chunkSize = 0x01
+    case abort = 0x02
+    case ack = 0x03
+    case user = 0x04
+    case windowAck = 0x05
+    case bandwidth = 0x06
+    case audio = 0x08
+    case video = 0x09
+    case amf3Data = 0x0F
+    case amf3Shared = 0x10
+    case amf3Command = 0x11
+    case amf0Data = 0x12
+    case amf0Shared = 0x13
+    case amf0Command = 0x14
+    case aggregate = 0x16
 
-    enum `Type`: UInt8 {
-        case chunkSize = 0x01
-        case abort = 0x02
-        case ack = 0x03
-        case user = 0x04
-        case windowAck = 0x05
-        case bandwidth = 0x06
-        case audio = 0x08
-        case video = 0x09
-        case amf3Data = 0x0F
-        case amf3Shared = 0x10
-        case amf3Command = 0x11
-        case amf0Data = 0x12
-        case amf0Shared = 0x13
-        case amf0Command = 0x14
-        case aggregate = 0x16
-        case unknown = 0xFF
-    }
-
-    static func create(_ value: UInt8) -> RTMPMessage? {
-        switch `Type`(rawValue: value) {
-        case .chunkSize?:
+    func message() -> RTMPMessage {
+        switch self {
+        case .chunkSize:
             return RTMPSetChunkSizeMessage()
-        case .abort?:
+        case .abort:
             return RTMPAbortMessge()
-        case .ack?:
+        case .ack:
             return RTMPAcknowledgementMessage()
-        case .user?:
+        case .user:
             return RTMPUserControlMessage()
-        case .windowAck?:
+        case .windowAck:
             return RTMPWindowAcknowledgementSizeMessage()
-        case .bandwidth?:
+        case .bandwidth:
             return RTMPSetPeerBandwidthMessage()
-        case .audio?:
+        case .audio:
             return RTMPAudioMessage()
-        case .video?:
+        case .video:
             return RTMPVideoMessage()
-        case .amf3Data?:
+        case .amf3Data:
             return RTMPDataMessage(objectEncoding: 0x03)
-        case .amf3Shared?:
+        case .amf3Shared:
             return RTMPSharedObjectMessage(objectEncoding: 0x03)
-        case .amf3Command?:
+        case .amf3Command:
             return RTMPCommandMessage(objectEncoding: 0x03)
-        case .amf0Data?:
+        case .amf0Data:
             return RTMPDataMessage(objectEncoding: 0x00)
-        case .amf0Shared?:
+        case .amf0Shared:
             return RTMPSharedObjectMessage(objectEncoding: 0x00)
-        case .amf0Command?:
+        case .amf0Command:
             return RTMPCommandMessage(objectEncoding: 0x00)
-        case .aggregate?:
+        case .aggregate:
             return RTMPAggregateMessage()
-        default:
-            guard let type = Type(rawValue: value) else {
-                logger.error("\(value)")
-                return nil
-            }
-            return RTMPMessage(type: type)
         }
     }
+}
 
-    let type: Type
+class RTMPMessage {
+    let type: RTMPMessageType
     var length: Int = 0
     var streamId: UInt32 = 0
     var timestamp: UInt32 = 0
     var payload = Data()
 
-    init(type: Type) {
+    init(type: RTMPMessageType) {
         self.type = type
     }
 
