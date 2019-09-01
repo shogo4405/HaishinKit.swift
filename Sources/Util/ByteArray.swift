@@ -1,7 +1,6 @@
 import Foundation
 
 protocol ByteArrayConvertible {
-
     var data: Data { get }
     var length: Int { get set }
     var position: Int { get set }

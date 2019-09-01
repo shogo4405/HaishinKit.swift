@@ -362,7 +362,6 @@ public class AudioConverter: NSObject {
         _ ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
         ioData: UnsafeMutablePointer<AudioBufferList>,
         outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?) -> OSStatus {
-
         guard let bufferList: UnsafeMutableAudioBufferListPointer = currentBufferList else {
             ioNumberDataPackets.pointee = 0
             return -1

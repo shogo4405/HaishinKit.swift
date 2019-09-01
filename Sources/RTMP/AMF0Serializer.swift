@@ -290,7 +290,6 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     func deserialize() throws -> ASArray {
-
         switch try readUInt8() {
         case Type.null.rawValue:
             return ASArray()

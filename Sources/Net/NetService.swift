@@ -1,7 +1,6 @@
 import Foundation
 
 open class NetService: NSObject {
-
     open var txtData: Data? {
         return nil
     }

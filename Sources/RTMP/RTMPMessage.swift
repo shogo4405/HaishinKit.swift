@@ -220,7 +220,6 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
  5.4.5. Set Peer Bandwidth (6)
  */
 final class RTMPSetPeerBandwidthMessage: RTMPMessage {
-
     enum Limit: UInt8 {
         case hard = 0x00
         case soft = 0x01
@@ -266,7 +265,6 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
  7.1.1. Command Message (20, 17)
  */
 final class RTMPCommandMessage: RTMPMessage {
-
     let objectEncoding: UInt8
     var commandName: String = ""
     var transactionId: Int = 0
@@ -334,7 +332,6 @@ final class RTMPCommandMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-
         guard let responder: Responder = connection.operations.removeValue(forKey: transactionId) else {
             switch commandName {
             case "close":
@@ -361,7 +358,6 @@ final class RTMPCommandMessage: RTMPMessage {
  7.1.2. Data Message (18, 15)
  */
 final class RTMPDataMessage: RTMPMessage {
-
     let objectEncoding: UInt8
     var handlerName: String = ""
     var arguments: [Any?] = []
@@ -438,7 +434,6 @@ final class RTMPDataMessage: RTMPMessage {
  7.1.3. Shared Object Message (19, 16)
  */
 final class RTMPSharedObjectMessage: RTMPMessage {
-
     let objectEncoding: UInt8
     var sharedObjectName: String = ""
     var currentVersion: UInt32 = 0
@@ -730,7 +725,6 @@ final class RTMPAggregateMessage: RTMPMessage {
  7.1.7. User Control Message Events
  */
 final class RTMPUserControlMessage: RTMPMessage {
-
     enum Event: UInt8 {
         case streamBegin = 0x00
         case streamEof = 0x01

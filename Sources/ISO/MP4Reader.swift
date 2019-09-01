@@ -88,7 +88,6 @@ extension MP4Box: CustomStringConvertible {
 
 // MARK: -
 class MP4ContainerBox: MP4Box {
-
     fileprivate var children: [MP4Box] = []
 
     override var leafNode: Bool {

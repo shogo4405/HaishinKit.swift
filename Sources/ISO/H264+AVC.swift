@@ -40,7 +40,6 @@ struct AVCFormatStream {
  - seealso: ISO/IEC 14496-15 2010
  */
 struct AVCConfigurationRecord {
-
     static func getData(_ formatDescription: CMFormatDescription?) -> Data? {
         guard let formatDescription = formatDescription else {
             return nil

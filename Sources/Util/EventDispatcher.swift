@@ -57,7 +57,6 @@ open class Event: NSObject {
  flash.events.EventDispatcher for Swift
  */
 open class EventDispatcher: NSObject, IEventDispatcher {
-
     private weak var target: AnyObject?
 
     override public init() {

@@ -5,7 +5,6 @@ import Foundation
  flash.net.Responder for Swift
  */
 open class Responder: NSObject {
-
     public typealias Handler = (_ data: [Any?]) -> Void
 
     private var result: Handler
@@ -188,11 +187,11 @@ open class RTMPConnection: EventDispatcher {
         return streams.count
     }
     /// The statistics of outgoing queue bytes per second.
-    @objc open dynamic private(set) var previousQueueBytesOut: [Int64] = []
+    @objc open private(set) dynamic var previousQueueBytesOut: [Int64] = []
     /// The statistics of incoming bytes per second.
-    @objc open dynamic private(set) var currentBytesInPerSecond: Int32 = 0
+    @objc open private(set) dynamic var currentBytesInPerSecond: Int32 = 0
     /// The statistics of outgoing bytes per second.
-    @objc open dynamic private(set) var currentBytesOutPerSecond: Int32 = 0
+    @objc open private(set) dynamic var currentBytesOutPerSecond: Int32 = 0
 
     var socket: RTMPSocketCompatible!
     var streams: [UInt32: RTMPStream] = [: ]

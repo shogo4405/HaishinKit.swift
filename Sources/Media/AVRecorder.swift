@@ -13,7 +13,6 @@ public protocol AVRecorderDelegate: class {
 
 // MARK: -
 open class AVRecorder: NSObject {
-
     public static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),

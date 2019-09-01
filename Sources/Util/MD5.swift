@@ -8,7 +8,6 @@ import Foundation
   - https://www.ietf.org/rfc/rfc1321.txt
  */
 final class MD5 {
-
     static let a: UInt32 = 0x67452301
     static let b: UInt32 = 0xefcdab89
     static let c: UInt32 = 0x98badcfe

@@ -3,7 +3,6 @@ import HaishinKit
 import UIKit
 
 final class CurrentTimeEffect: VideoEffect {
-
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
     let label: UILabel = {
