@@ -100,7 +100,7 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction func toggleTorch(_ sender: UIButton) {
-        rtmpStream.torch = !rtmpStream.torch
+        rtmpStream.torch.toggle()
     }
 
     @IBAction func on(slider: UISlider) {
@@ -118,7 +118,7 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction func on(pause: UIButton) {
-        rtmpStream.togglePause()
+        rtmpStream.paused.toggle()
     }
 
     @IBAction func on(close: UIButton) {
@@ -139,7 +139,7 @@ final class LiveViewController: UIViewController {
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             publish.setTitle("■", for: [])
         }
-        publish.isSelected = !publish.isSelected
+        publish.isSelected.toggle()
     }
 
     @objc

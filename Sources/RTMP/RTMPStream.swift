@@ -229,7 +229,7 @@ open class RTMPStream: NetStream {
         get { return mixer.audioIO.soundTransform }
         set { mixer.audioIO.soundTransform = newValue }
     }
-    open var receiveAudio: Bool = true {
+    open var receiveAudio = true {
         didSet {
             lockQueue.async {
                 guard self.readyState == .playing else {
@@ -246,7 +246,8 @@ open class RTMPStream: NetStream {
             }
         }
     }
-    open var receiveVideo: Bool = true {
+
+    open var receiveVideo = true {
         didSet {
             lockQueue.async {
                 guard self.readyState == .playing else {
@@ -260,6 +261,20 @@ open class RTMPStream: NetStream {
                     commandObject: nil,
                     arguments: [self.receiveVideo]
                 )), locked: nil)
+            }
+        }
+    }
+
+    open var paused = false {
+        didSet {
+            lockQueue.async {
+                switch self.readyState {
+                case .publish, .publishing:
+                    self.mixer.audioIO.encoder.muted = self.paused
+                    self.mixer.videoIO.encoder.muted = self.paused
+                default:
+                    break
+                }
             }
         }
     }
@@ -330,14 +345,13 @@ open class RTMPStream: NetStream {
     var audioTimestamp: Double = 0
     var videoTimestamp: Double = 0
     private(set) var muxer = RTMPMuxer()
-    private var paused: Bool = false
     private var sampler: MP4Sampler?
     private var frameCount: UInt16 = 0
     private var dispatcher: IEventDispatcher!
-    private var audioWasSent: Bool = false
-    private var videoWasSent: Bool = false
+    private var audioWasSent = false
+    private var videoWasSent = false
     private var howToPublish: RTMPStream.HowToPublish = .live
-    private var isBeingClosed: Bool = false
+    private var isBeingClosed = false
     private var rtmpConnection: RTMPConnection
 
     public init(connection: RTMPConnection) {
@@ -517,45 +531,6 @@ open class RTMPStream: NetStream {
                 arguments: arguments
             )), locked: nil)
             OSAtomicAdd64(Int64(length), &self.info.byteCount)
-        }
-    }
-
-    open func pause() {
-        lockQueue.async {
-            self.paused = true
-            switch self.readyState {
-            case .publish, .publishing:
-                self.mixer.audioIO.encoder.muted = true
-                self.mixer.videoIO.encoder.muted = true
-            default:
-                break
-            }
-        }
-    }
-
-    open func resume() {
-        lockQueue.async {
-            self.paused = false
-            switch self.readyState {
-            case .publish, .publishing:
-                self.mixer.audioIO.encoder.muted = false
-                self.mixer.videoIO.encoder.muted = false
-            default:
-                break
-            }
-        }
-    }
-
-    open func togglePause() {
-        lockQueue.async {
-            switch self.readyState {
-            case .publish, .publishing:
-                self.paused = !self.paused
-                self.mixer.audioIO.encoder.muted = self.paused
-                self.mixer.videoIO.encoder.muted = self.paused
-            default:
-                break
-            }
         }
     }
 
