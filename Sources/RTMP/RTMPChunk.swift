@@ -148,7 +148,7 @@ final class RTMPChunk {
                 return
             }
 
-            guard let message = RTMPMessageType(rawValue: newValue[pos + 6])?.message() else {
+            guard let message = RTMPMessageType(rawValue: newValue[pos + 6])?.makeMessage() else {
                 logger.error(newValue.description)
                 return
             }
@@ -241,7 +241,7 @@ final class RTMPChunk {
         buffer.position = basicHeaderSize
 
         do {
-            self.message = message.type.message()
+            self.message = message.type.makeMessage()
             self.message?.streamId = message.streamId
             self.message?.timestamp = self.type == .two ? try buffer.readUInt24() : message.timestamp
             self.message?.length = message.length

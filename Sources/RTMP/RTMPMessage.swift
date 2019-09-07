@@ -17,7 +17,7 @@ enum RTMPMessageType: UInt8 {
     case amf0Command = 0x14
     case aggregate = 0x16
 
-    func message() -> RTMPMessage {
+    func makeMessage() -> RTMPMessage {
         switch self {
         case .chunkSize:
             return RTMPSetChunkSizeMessage()
