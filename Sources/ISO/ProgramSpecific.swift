@@ -108,12 +108,12 @@ extension ProgramSpecific: DataConvertible {
                 pointerFillerBytes = try buffer.readBytes(Int(pointerField))
                 tableID = try buffer.readUInt8()
                 var bytes: Data = try buffer.readBytes(2)
-                sectionSyntaxIndicator = bytes[0] & 0x80 == 0x80
-                privateBit = bytes[0] & 0x40 == 0x40
+                sectionSyntaxIndicator = (bytes[0] & 0x80) == 0x80
+                privateBit = (bytes[0] & 0x40) == 0x40
                 sectionLength = UInt16(bytes[0] & 0x03) << 8 | UInt16(bytes[1])
                 tableIDExtension = try buffer.readUInt16()
                 versionNumber = try buffer.readUInt8()
-                currentNextIndicator = versionNumber & 0x01 == 0x01
+                currentNextIndicator = (versionNumber & 0x01) == 0x01
                 versionNumber = (versionNumber & 0b00111110) >> 1
                 sectionNumber = try buffer.readUInt8()
                 lastSectionNumber = try buffer.readUInt8()

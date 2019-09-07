@@ -109,8 +109,7 @@ final class H264Decoder {
             return kVTInvalidSessionErr
         }
         var flagsOut: VTDecodeInfoFlags = []
-        let decodeFlags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression,
-                                               ._EnableTemporalProcessing]
+        let decodeFlags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression, ._EnableTemporalProcessing]
         return VTDecompressionSessionDecodeFrame(session, sampleBuffer: sampleBuffer, flags: decodeFlags, frameRefcon: nil, infoFlagsOut: &flagsOut)
     }
 
