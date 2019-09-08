@@ -12,7 +12,7 @@ final class RTMPHandshake {
             .writeInt32(Int32(timestamp))
             .writeBytes(Data([0x00, 0x00, 0x00, 0x00]))
         for _ in 0..<RTMPHandshake.sigSize - 8 {
-            packet.writeUInt8(UInt8(arc4random_uniform(0xff)))
+            packet.writeUInt8(UInt8.random(in: 0...UInt8.max))
         }
         return packet.data
     }

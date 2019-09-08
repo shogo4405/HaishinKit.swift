@@ -130,7 +130,7 @@ open class RTMPConnection: EventDispatcher {
         }
 
         let query = String(description[description.index(index, offsetBy: 1)...])
-        let challenge = String(format: "%08x", arc4random())
+        let challenge = String(format: "%08x", UInt32.random(in: 0...UInt32.max))
         let dictionary: [String: String] = URL(string: "http://localhost?" + query)!.dictionaryFromQuery()
 
         var response: String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
