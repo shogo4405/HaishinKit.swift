@@ -14,7 +14,7 @@ public class TSWriter: Running {
     public static let defaultVideoPID: UInt16 = 256
     public static let defaultAudioPID: UInt16 = 257
 
-    static let defaultSegmentDuration: Double = 2
+    public static let defaultSegmentDuration: Double = 2
 
     /// The delegate instance.
     public weak var delegate: TSWriterDelegate?
@@ -63,7 +63,8 @@ public class TSWriter: Running {
         return false
     }
 
-    public init() {
+    public init(segmentDuration: Double = TSWriter.defaultSegmentDuration) {
+        self.segmentDuration = segmentDuration
     }
 
     public func startRunning() {
