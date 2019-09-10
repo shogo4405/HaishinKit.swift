@@ -103,9 +103,15 @@ public class AudioConverter: NSObject {
             _inDestinationFormat = newValue
         }
     }
-    private var audioStreamPacketDescription = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: 0)
 
-    private var inputDataProc: AudioConverterComplexInputDataProc = {(
+    private var audioStreamPacketDescription = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: 0) {
+        didSet {
+            audioStreamPacketDescriptionPointer = UnsafeMutablePointer<AudioStreamPacketDescription>(mutating: &audioStreamPacketDescription)
+        }
+    }
+    private var audioStreamPacketDescriptionPointer: UnsafeMutablePointer<AudioStreamPacketDescription>?
+
+    private let inputDataProc: AudioConverterComplexInputDataProc = {(
         converter: AudioConverterRef,
         ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
         ioData: UnsafeMutablePointer<AudioBufferList>,
@@ -262,10 +268,8 @@ public class AudioConverter: NSObject {
         ioNumberDataPackets.pointee = 1
 
         if destination == .PCM && outDataPacketDescription != nil {
-            audioStreamPacketDescription.mStartOffset = 0
             audioStreamPacketDescription.mDataByteSize = currentBufferList?.unsafePointer.pointee.mBuffers.mDataByteSize ?? 0
-            audioStreamPacketDescription.mVariableFramesInPacket = 0
-            outDataPacketDescription?.pointee = UnsafeMutablePointer<AudioStreamPacketDescription>(mutating: &audioStreamPacketDescription)
+            outDataPacketDescription?.pointee = audioStreamPacketDescriptionPointer
         }
 
         free(bufferList.unsafeMutablePointer)
