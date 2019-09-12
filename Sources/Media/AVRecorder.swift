@@ -143,27 +143,25 @@ extension AVRecorder: Running {
 
 // MARK: -
 open class DefaultAVRecorderDelegate: NSObject {
-    
     public enum FileType {
         case mp4
         case mov
-        
+
         public var AVFileType: AVFileType {
             switch self {
             case .mp4: return .mp4
             case .mov: return .mov
             }
         }
-        
-        public var fileExtension: String
-        {
+
+        public var fileExtension: String {
             switch self {
             case .mp4: return ".mp4"
             case .mov: return ".mov"
             }
         }
     }
-    
+
     public static let shared = DefaultAVRecorderDelegate()
 
     open var duration: Int64 = 0
@@ -182,7 +180,7 @@ open class DefaultAVRecorderDelegate: NSObject {
         URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #endif
-    
+
     public init(fileType: FileType = .mp4)
     {
         self.fileType = fileType
@@ -279,7 +277,7 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
     open func didStopRunning(_ recorder: AVRecorder) {
         rotateTime = CMTime.zero
     }
-    
+
     func createWriter(_ fileName: String?) -> AVAssetWriter? {
         do {
             let dateFormatter = DateFormatter()
