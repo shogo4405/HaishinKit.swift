@@ -66,7 +66,7 @@ GEM
       http-cookie (~> 1.0.0)
     faraday_middleware (0.13.1)
       faraday (>= 0.7.4, < 1.0)
-    fastimage (2.1.5)
+    fastimage (2.1.7)
     fastlane (2.130.0)
       CFPropertyList (>= 2.3, < 4.0.0)
       addressable (>= 2.3, < 3.0.0)
@@ -151,9 +151,9 @@ GEM
     jwt (2.1.0)
     liferaft (0.0.6)
     memoist (0.16.0)
-    mime-types (3.2.2)
+    mime-types (3.3)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2019.0331)
+    mime-types-data (3.2019.0904)
     mini_magick (4.9.5)
     minitest (5.11.3)
     molinillo (0.6.6)
@@ -180,7 +180,7 @@ GEM
     retriable (3.1.2)
     rouge (2.0.7)
     ruby-macho (1.4.0)
-    rubyzip (1.2.3)
+    rubyzip (1.2.4)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -235,7 +235,7 @@ DEPENDENCIES
   jazzy
 
 RUBY VERSION
-   ruby 2.5.1p57
+   ruby 2.6.3p62
 
 BUNDLED WITH
-   1.16.2
+   1.17.2
