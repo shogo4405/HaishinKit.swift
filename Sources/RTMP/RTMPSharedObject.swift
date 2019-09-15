@@ -211,7 +211,7 @@ open class RTMPSharedObject: EventDispatcher {
                 objectEncoding: objectEncoding,
                 sharedObjectName: name,
                 currentVersion: succeeded ? 0 : currentVersion,
-                flags: Data([persistence ? 0x01 : 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+                flags: Data([0x00, 0x00, 0x00, persistence ? 0x02 : 0x00, 0x00, 0x00, 0x00, 0x00]),
                 events: events
             )
         )
