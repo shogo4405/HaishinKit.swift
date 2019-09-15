@@ -511,7 +511,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        let persistence: Bool = flags[0] == 0x01
+        let persistence: Bool = (flags[3] & 2) != 0
         RTMPSharedObject.getRemote(withName: sharedObjectName, remotePath: connection.uri!.absoluteWithoutQueryString, persistence: persistence).on(message: self)
     }
 }
