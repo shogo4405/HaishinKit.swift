@@ -89,7 +89,7 @@ extension TSPacket: DataConvertible {
         set {
             let buffer = ByteArray(data: newValue)
             do {
-                var data: Data = try buffer.readBytes(4)
+                let data: Data = try buffer.readBytes(4)
                 syncByte = data[0]
                 transportErrorIndicator = (data[1] & 0x80) == 0x80
                 payloadUnitStartIndicator = (data[1] & 0x40) == 0x40

@@ -149,15 +149,19 @@ open class DefaultAVRecorderDelegate: NSObject {
 
         public var AVFileType: AVFileType {
             switch self {
-            case .mp4: return .mp4
-            case .mov: return .mov
+            case .mp4:
+                return .mp4
+            case .mov:
+                return .mov
             }
         }
 
         public var fileExtension: String {
             switch self {
-            case .mp4: return ".mp4"
-            case .mov: return ".mov"
+            case .mp4:
+                return ".mp4"
+            case .mov:
+                return ".mov"
             }
         }
     }

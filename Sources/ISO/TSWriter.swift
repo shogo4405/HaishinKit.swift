@@ -131,7 +131,7 @@ public class TSWriter: Running {
         PES.streamID = streamID
 
         let timestamp = decodeTimeStamp == .invalid ? presentationTimeStamp : decodeTimeStamp
-        var packets: [TSPacket] = split(PID, PES: PES, timestamp: timestamp)
+        let packets: [TSPacket] = split(PID, PES: PES, timestamp: timestamp)
         rotateFileHandle(timestamp)
 
         packets[0].adaptationField?.randomAccessIndicator = randomAccessIndicator

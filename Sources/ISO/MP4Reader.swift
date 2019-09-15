@@ -614,7 +614,7 @@ final class MP4TrakReader {
 
         let stss: MP4Box? = trak.getBoxes(byName: "stss").first
         if let stss: MP4SyncSampleBox = stss as? MP4SyncSampleBox {
-            var keyframes: [UInt32] = stss.entries
+            let keyframes: [UInt32] = stss.entries
             for i in 0..<keyframes.count {
                 keyframe[Int(keyframes[i]) - 1] = true
             }
@@ -622,7 +622,7 @@ final class MP4TrakReader {
 
         let stts: MP4Box? = trak.getBoxes(byName: "stts").first
         if let stts: MP4TimeToSampleBox = stts as? MP4TimeToSampleBox {
-            var timeToSample: [MP4TimeToSampleBox.Entry] = stts.entries
+            let timeToSample: [MP4TimeToSampleBox.Entry] = stts.entries
             for i in 0..<timeToSample.count {
                 let entry: MP4TimeToSampleBox.Entry = timeToSample[i]
                 for _ in 0..<entry.sampleCount {
@@ -638,8 +638,8 @@ final class MP4TrakReader {
 
         let stco: MP4Box = trak.getBoxes(byName: "stco").first!
         let stsc: MP4Box = trak.getBoxes(byName: "stsc").first!
-        var offsets: [UInt32] = (stco as! MP4ChunkOffsetBox).entries
-        var sampleToChunk: [MP4SampleToChunkBox.Entry] = (stsc as! MP4SampleToChunkBox).entries
+        let offsets: [UInt32] = (stco as! MP4ChunkOffsetBox).entries
+        let sampleToChunk: [MP4SampleToChunkBox.Entry] = (stsc as! MP4SampleToChunkBox).entries
 
         var index: Int = 0
         let count: Int = sampleToChunk.count

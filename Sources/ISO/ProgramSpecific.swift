@@ -107,7 +107,7 @@ extension ProgramSpecific: DataConvertible {
                 pointerField = try buffer.readUInt8()
                 pointerFillerBytes = try buffer.readBytes(Int(pointerField))
                 tableID = try buffer.readUInt8()
-                var bytes: Data = try buffer.readBytes(2)
+                let bytes: Data = try buffer.readBytes(2)
                 sectionSyntaxIndicator = (bytes[0] & 0x80) == 0x80
                 privateBit = (bytes[0] & 0x40) == 0x40
                 sectionLength = UInt16(bytes[0] & 0x03) << 8 | UInt16(bytes[1])
