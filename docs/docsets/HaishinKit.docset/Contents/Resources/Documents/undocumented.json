@@ -2767,28 +2767,28 @@
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 243,
+      "line": 247,
       "symbol": "RTMPConnection.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 259,
+      "line": 263,
       "symbol": "RTMPConnection.call(_:responder:arguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 278,
+      "line": 282,
       "symbol": "RTMPConnection.connect(_:arguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo/Dropbox/xcode/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 296,
+      "line": 305,
       "symbol": "RTMPConnection.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
