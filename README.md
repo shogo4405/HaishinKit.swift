@@ -164,24 +164,24 @@ do {
 var rtmpStream = RTMPStream(connection: rtmpConnection)
 
 rtmpStream.captureSettings = [
-    "fps": 30, // FPS
-    "sessionPreset": AVCaptureSession.Preset.medium.rawValue, // input video width/height
-    "continuousAutofocus": false, // use camera autofocus mode
-    "continuousExposure": false, //  use camera exposure mode
-    // "preferredVideoStabilizationMode": AVCaptureVideoStabilizationMode.auto.rawValue
+    .fps: 30, // FPS
+    .sessionPreset: AVCaptureSession.Preset.medium, // input video width/height
+    .continuousAutofocus: false, // use camera autofocus mode
+    .continuousExposure: false, //  use camera exposure mode
+    // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto.rawValue
 ]
 rtmpStream.audioSettings = [
-    "muted": false, // mute audio
-    "bitrate": 32 * 1024,
-    "sampleRate": sampleRate, 
+    .muted: false, // mute audio
+    .bitrate: 32 * 1000,
+    .sampleRate: sampleRate, 
 ]
 rtmpStream.videoSettings = [
-    "width": 640, // video output width
-    "height": 360, // video output height
-    "bitrate": 160 * 1024, // video output bitrate
-    // "dataRateLimits": [160 * 1024 / 8, 1], optional kVTCompressionPropertyKey_DataRateLimits property
-    "profileLevel": kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
-    "maxKeyFrameIntervalDuration": 2, // key frame / sec
+    .width: 640, // video output width
+    .height: 360, // video output height
+    .bitrate: 160 * 1000, // video output bitrate
+    // .dataRateLimits: [160 * 1000 / 8, 1], optional kVTCompressionPropertyKey_DataRateLimits property
+    .profileLevel: kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
+    .maxKeyFrameIntervalDuration: 2, // key frame / sec
 ]
 // "0" means the same of input
 rtmpStream.recorderSettings = [

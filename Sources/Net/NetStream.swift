@@ -69,52 +69,30 @@ open class NetStream: NSObject {
     }
     #endif
 
-    open var audioSettings: [String: Any] {
+    open var audioSettings: Setting<AudioConverter, AudioConverter.Option> {
         get {
-            var audioSettings: [String: Any]!
-            ensureLockQueue {
-                audioSettings = self.mixer.audioIO.encoder.dictionaryWithValues(forKeys: AudioConverter.supportedSettingsKeys)
-            }
-            return  audioSettings
+            return mixer.audioIO.encoder.settings
         }
         set {
-            ensureLockQueue {
-                self.mixer.audioIO.encoder.setValuesForKeys(newValue)
-            }
+            mixer.audioIO.encoder.settings = newValue
         }
     }
 
-    open var videoSettings: [String: Any] {
+    open var videoSettings: Setting<H264Encoder, H264Encoder.Option> {
         get {
-            var videoSettings: [String: Any]!
-            ensureLockQueue {
-                videoSettings = self.mixer.videoIO.encoder.dictionaryWithValues(forKeys: H264Encoder.supportedSettingsKeys)
-            }
-            return videoSettings
+            return mixer.videoIO.encoder.settings
         }
         set {
-            if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
-                self.mixer.videoIO.encoder.setValuesForKeys(newValue)
-            } else {
-                ensureLockQueue {
-                    self.mixer.videoIO.encoder.setValuesForKeys(newValue)
-                }
-            }
+            mixer.videoIO.encoder.settings = newValue
         }
     }
 
-    open var captureSettings: [String: Any] {
+    open var captureSettings: Setting<AVMixer, AVMixer.Option> {
         get {
-            var captureSettings: [String: Any]!
-            ensureLockQueue {
-                captureSettings = self.mixer.dictionaryWithValues(forKeys: AVMixer.supportedSettingsKeys)
-            }
-            return captureSettings
+            return mixer.settings
         }
         set {
-            ensureLockQueue {
-                self.mixer.setValuesForKeys(newValue)
-            }
+            mixer.settings = newValue
         }
     }
 

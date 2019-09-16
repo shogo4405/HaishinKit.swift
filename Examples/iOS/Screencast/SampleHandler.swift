@@ -32,9 +32,9 @@ open class SampleHandler: RPBroadcastSampleHandler {
             if let description: CMVideoFormatDescription = CMSampleBufferGetFormatDescription(sampleBuffer) {
                 let dimensions: CMVideoDimensions = CMVideoFormatDescriptionGetDimensions(description)
                 broadcaster.stream.videoSettings = [
-                    "width": dimensions.width,
-                    "height": dimensions.height ,
-                    "profileLevel": kVTProfileLevel_H264_Baseline_AutoLevel
+                    .width: dimensions.width,
+                    .height: dimensions.height ,
+                    .profileLevel: kVTProfileLevel_H264_Baseline_AutoLevel
                 ]
             }
             broadcaster.appendSampleBuffer(sampleBuffer, withType: .video)

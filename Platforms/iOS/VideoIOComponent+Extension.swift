@@ -34,10 +34,8 @@ extension VideoIOComponent {
         input = nil
         output = nil
         if useScreenSize {
-            encoder.setValuesForKeys([
-                "width": screen.attributes["Width"]!,
-                "height": screen.attributes["Height"]!
-            ])
+            encoder.width = screen.attributes["Width"] as! Int32
+            encoder.height = screen.attributes["Height"] as! Int32
         }
         self.screen = screen
     }
