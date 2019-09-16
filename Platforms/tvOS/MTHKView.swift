@@ -14,6 +14,7 @@ open class MTHKView: MTKView {
 
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
+        awakeFromNib()
     }
 
     public required init(coder aDecoder: NSCoder) {
@@ -23,6 +24,7 @@ open class MTHKView: MTKView {
 
     override open func awakeFromNib() {
         super.awakeFromNib()
+        framebufferOnly = false
         delegate = self
         enableSetNeedsDisplay = true
     }

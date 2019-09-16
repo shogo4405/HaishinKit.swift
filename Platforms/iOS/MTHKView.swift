@@ -30,6 +30,7 @@ open class MTHKView: MTKView {
     override open func awakeFromNib() {
         super.awakeFromNib()
         delegate = self
+        framebufferOnly = false
         enableSetNeedsDisplay = true
     }
 
