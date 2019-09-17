@@ -14,6 +14,35 @@ public final class ASUndefined: NSObject {
     }
 }
 
+public struct ASTypedObject {
+    public typealias TypedObjectDecoder = (_ type: String, _ data: ASObject) throws -> Any
+
+    static var decoders: [String: TypedObjectDecoder] = [:]
+
+    static func decode(typeName: String, data: ASObject) throws -> Any {
+        let decoder = decoders[typeName] ?? { ASTypedObject(typeName: $0, data: $1) }
+        return try decoder(typeName, data)
+    }
+
+    var typeName: String
+    var data: ASObject
+
+    public static func register(typeNamed name: String, decoder: @escaping TypedObjectDecoder) {
+        decoders[name] = decoder
+    }
+
+    public static func register<T:Decodable>(type: T.Type, named name: String) {
+        decoders[name] = {
+            let jsonData = try JSONSerialization.data(withJSONObject: $1, options: [])
+            return try JSONDecoder().decode(type, from: jsonData)
+        }
+    }
+
+    public static func unregister(typeNamed name: String) {
+        decoders.removeValue(forKey: name)
+    }
+}
+
 // MARK: -
 public struct ASArray {
     private(set) var data: [Any?]

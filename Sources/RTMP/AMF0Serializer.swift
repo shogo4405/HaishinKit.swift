@@ -181,8 +181,7 @@ extension AMF0Serializer: AMFSerializer {
         case .xmlDocument:
             return try deserialize() as ASXMLDocument
         case .typedObject:
-            assertionFailure("TODO")
-            return nil
+            return try deserialize() as Any
         case .avmplush:
             assertionFailure("TODO")
             return nil
@@ -368,6 +367,25 @@ extension AMF0Serializer: AMFSerializer {
             throw AMFSerializerError.deserialize
         }
         return ASXMLDocument(data: try deserializeUTF8(true))
+    }
+
+    func deserialize() throws -> Any {
+        guard try readUInt8() == Type.typedObject.rawValue else {
+            throw AMFSerializerError.deserialize
+        }
+
+        let typeName = try deserializeUTF8(false)
+        var result = ASObject()
+        while true {
+            let key: String = try deserializeUTF8(false)
+            guard !key.isEmpty else {
+                position += 1
+                break
+            }
+            result[key] = try deserialize()
+        }
+
+        return try ASTypedObject.decode(typeName: typeName, data: result)
     }
 
     @discardableResult
