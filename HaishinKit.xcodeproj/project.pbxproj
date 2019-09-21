@@ -622,6 +622,7 @@
 		29EA87E91E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CMBlockBuffer+Extension.swift"; sourceTree = "<group>"; };
 		29EA87EC1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CVPixelBuffer+Extension.swift"; sourceTree = "<group>"; };
 		29F04FF21F3388B000172706 /* HaishinKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HaishinKit.podspec; sourceTree = "<group>"; };
+		29F39BE72335F8010055F9BB /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPHandshake.swift; sourceTree = "<group>"; };
 		29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionPropertyKey.swift; sourceTree = "<group>"; };
 		29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTCompressionSessionPropertyKey.swift; sourceTree = "<group>"; };
@@ -816,6 +817,7 @@
 				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
 				2997BDD31D50D31B000AF900 /* README.md */,
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
+				29F39BE72335F8010055F9BB /* Package.swift */,
 				2968973E1CDB01920074D5F0 /* Examples */,
 				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
 				299F7E371CD71A76001E7272 /* Platforms */,
@@ -1502,7 +1504,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 		29E51F291FEFDEA200F839F4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
