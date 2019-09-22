@@ -92,7 +92,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         if isDisconnected {
             let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
-            events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
+            events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         readyState = .closing
         super.deinitConnection(isDisconnected: isDisconnected)
@@ -100,7 +100,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     override func didTimeout() {
         deinitConnection(isDisconnected: false)
-        delegate?.dispatch(Event.IO_ERROR, bubbles: false, data: nil)
+        delegate?.dispatch(.ioError, bubbles: false, data: nil)
         logger.warn("connection timedout")
     }
 }

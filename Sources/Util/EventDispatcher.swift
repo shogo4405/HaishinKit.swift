@@ -4,10 +4,10 @@ import Foundation
  flash.events.IEventDispatcher for Swift
  */
 public protocol IEventDispatcher: class {
-    func addEventListener(_ type: String, selector: Selector, observer: AnyObject?, useCapture: Bool)
-    func removeEventListener(_ type: String, selector: Selector, observer: AnyObject?, useCapture: Bool)
+    func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
+    func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
     func dispatch(event: Event)
-    func dispatch(_ type: String, bubbles: Bool, data: Any?)
+    func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?)
 }
 
 public enum EventPhase: UInt8 {
@@ -22,26 +22,41 @@ public enum EventPhase: UInt8 {
  flash.events.Event for Swift
  */
 open class Event {
-    public static let SYNC: String = "sync"
-    public static let EVENT: String = "event"
-    public static let IO_ERROR: String = "ioError"
-    public static let RTMP_STATUS: String = "rtmpStatus"
+    public struct Name: RawRepresentable, ExpressibleByStringLiteral {
+        public typealias RawValue = String
+        public typealias StringLiteralType = String
+
+        public static let sync: Name = "sync"
+        public static let event: Name = "event"
+        public static let ioError: Name = "ioError"
+        public static let rtmpStatus: Name = "rtmpStatus"
+
+        public let rawValue: String
+
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+
+        public init(stringLiteral value: String) {
+            self.rawValue = value
+        }
+    }
 
     public static func from(_ notification: Notification) -> Event {
         guard
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let event: Event = userInfo["event"] as? Event else {
-            return Event(type: Event.EVENT)
+            return Event(type: .event)
         }
         return event
     }
 
-    open fileprivate(set) var type: String
+    open fileprivate(set) var type: Name
     open fileprivate(set) var bubbles: Bool
     open fileprivate(set) var data: Any?
     open fileprivate(set) var target: AnyObject?
 
-    public init(type: String, bubbles: Bool = false, data: Any? = nil) {
+    public init(type: Name, bubbles: Bool = false, data: Any? = nil) {
         self.type = type
         self.bubbles = bubbles
         self.data = data
@@ -73,15 +88,15 @@ open class EventDispatcher: IEventDispatcher {
         target = nil
     }
 
-    public func addEventListener(_ type: String, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
+    public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         NotificationCenter.default.addObserver(
-            observer ?? target ?? self, selector: selector, name: Notification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
+            observer ?? target ?? self, selector: selector, name: Notification.Name(rawValue: "\(type.rawValue)/\(useCapture)"), object: target ?? self
         )
     }
 
-    public func removeEventListener(_ type: String, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
+    public func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         NotificationCenter.default.removeObserver(
-            observer ?? target ?? self, name: Notification.Name(rawValue: "\(type)/\(useCapture)"), object: target ?? self
+            observer ?? target ?? self, name: Notification.Name(rawValue: "\(type.rawValue)/\(useCapture)"), object: target ?? self
         )
     }
 
@@ -93,7 +108,7 @@ open class EventDispatcher: IEventDispatcher {
         event.target = nil
     }
 
-    public func dispatch(_ type: String, bubbles: Bool, data: Any?) {
+    public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) {
         dispatch(event: Event(type: type, bubbles: bubbles, data: data))
     }
 }

@@ -245,13 +245,13 @@ open class RTMPConnection: EventDispatcher {
 
     override public init() {
         super.init()
-        addEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
+        addEventListener(.rtmpStatus, selector: #selector(on(status:)))
     }
 
     deinit {
         timer = nil
         streams.removeAll()
-        removeEventListener(Event.RTMP_STATUS, selector: #selector(on(status:)))
+        removeEventListener(.rtmpStatus, selector: #selector(on(status:)))
     }
 
     open func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
