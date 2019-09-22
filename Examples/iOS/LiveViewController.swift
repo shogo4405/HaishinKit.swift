@@ -129,13 +129,13 @@ final class LiveViewController: UIViewController {
         if publish.isSelected {
             UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
-            rtmpConnection.removeEventListener(Event.IO_ERROR, selector: #selector(rtmpErrorHandler), observer: self)
+            rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
+            rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             publish.setTitle("●", for: [])
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            rtmpConnection.addEventListener(Event.RTMP_STATUS, selector: #selector(rtmpStatusHandler), observer: self)
-            rtmpConnection.addEventListener(Event.IO_ERROR, selector: #selector(rtmpErrorHandler), observer: self)
+            rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
+            rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             publish.setTitle("■", for: [])
         }
@@ -168,7 +168,7 @@ final class LiveViewController: UIViewController {
     @objc
     private func rtmpErrorHandler(_ notification: Notification) {
         let e = Event.from(notification)
-        print("rtmpErrorHandler: \(e.description)")
+        print("rtmpErrorHandler: \(e)")
 
         DispatchQueue.main.async {
             self.rtmpConnection.connect(Preference.defaultInstance.uri!)

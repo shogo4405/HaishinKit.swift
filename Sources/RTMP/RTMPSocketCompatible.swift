@@ -39,7 +39,7 @@ extension RTMPSocketCompatible {
 
     func didTimeout() {
         deinitConnection(isDisconnected: false)
-        delegate?.dispatch(Event.IO_ERROR, bubbles: false, data: nil)
+        delegate?.dispatch(.ioError, bubbles: false, data: nil)
         logger.warn("connection timedout")
     }
 }

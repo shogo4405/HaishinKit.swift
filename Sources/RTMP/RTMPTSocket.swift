@@ -113,7 +113,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         if isDisconnected {
             let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
-            events.append(Event(type: Event.RTMP_STATUS, bubbles: false, data: data))
+            events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         guard let connectionID: String = connectionID else {
             return
