@@ -5,7 +5,7 @@ public protocol TimerDriverDelegate: class {
 }
 
 // MARK: -
-public class TimerDriver: NSObject {
+public class TimerDriver {
     public var interval: UInt64 = MachUtil.nanosToAbs(10 * MachUtil.nanosPerMsec)
 
     var queue: DispatchQueue?
@@ -22,17 +22,13 @@ public class TimerDriver: NSObject {
         }
     }
 
-    override public var description: String {
-        return Mirror(reflecting: self).description
-    }
-
     public func setDelegate(_ delegate: TimerDriverDelegate, withQueue: DispatchQueue? = nil) {
         self.delegate = delegate
         self.queue = withQueue
     }
 
     @objc
-    func on(timer: Timer) {
+    private func on(timer: Timer) {
         guard nextFire <= mach_absolute_time() else {
             return
         }

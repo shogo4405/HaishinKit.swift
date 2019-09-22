@@ -151,9 +151,9 @@ extension AVCConfigurationRecord: DataConvertible {
     }
 }
 
-extension AVCConfigurationRecord: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension AVCConfigurationRecord: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

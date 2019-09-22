@@ -6,7 +6,7 @@ let package = Package(
     name: "HaishinKit",
     products: [
         .library(name: "RTMP", targets: ["HTTP"]),
-        .library(name: "HTTP", targets: ["RTMP"]),
+        .library(name: "HTTP", targets: ["RTMP"])
     ],
     dependencies: [
         .Package(url: "https://github.com/shogo4405/Logboard.git", from: "2.2.3")

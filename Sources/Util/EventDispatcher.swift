@@ -21,7 +21,7 @@ public enum EventPhase: UInt8 {
 /**
  flash.events.Event for Swift
  */
-open class Event: NSObject {
+open class Event {
     public static let SYNC: String = "sync"
     public static let EVENT: String = "event"
     public static let IO_ERROR: String = "ioError"
@@ -41,10 +41,6 @@ open class Event: NSObject {
     open fileprivate(set) var data: Any?
     open fileprivate(set) var target: AnyObject?
 
-    override open var description: String {
-        return Mirror(reflecting: self).description
-    }
-
     public init(type: String, bubbles: Bool = false, data: Any? = nil) {
         self.type = type
         self.bubbles = bubbles
@@ -52,15 +48,21 @@ open class Event: NSObject {
     }
 }
 
+extension Event: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    public var debugDescription: String {
+        return Mirror(reflecting: self).description
+    }
+}
+
 // MARK: -
 /**
  flash.events.EventDispatcher for Swift
  */
-open class EventDispatcher: NSObject, IEventDispatcher {
+open class EventDispatcher: IEventDispatcher {
     private weak var target: AnyObject?
 
-    override public init() {
-        super.init()
+    public init() {
     }
 
     public init(target: AnyObject) {

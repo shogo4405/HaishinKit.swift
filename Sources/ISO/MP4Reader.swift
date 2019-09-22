@@ -79,9 +79,9 @@ class MP4Box {
     }
 }
 
-extension MP4Box: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension MP4Box: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -195,11 +195,11 @@ final class MP4SyncSampleBox: MP4Box {
 
 // MARK: -
 final class MP4TimeToSampleBox: MP4Box {
-    struct Entry: CustomStringConvertible {
+    struct Entry: CustomDebugStringConvertible {
         var sampleCount: UInt32 = 0
         var sampleDuration: UInt32 = 0
 
-        var description: String {
+        var debugDescription: String {
             return Mirror(reflecting: self).description
         }
 
@@ -431,12 +431,12 @@ final class MP4SampleDescriptionBox: MP4ContainerBox {
 
 // MARK: -
 final class MP4SampleToChunkBox: MP4Box {
-    struct Entry: CustomStringConvertible {
+    struct Entry: CustomDebugStringConvertible {
         var firstChunk: UInt32 = 0
         var samplesPerChunk: UInt32 = 0
         var sampleDescriptionIndex: UInt32 = 0
 
-        var description: String {
+        var debugDescription: String {
             return Mirror(reflecting: self).description
         }
 
@@ -469,12 +469,12 @@ final class MP4SampleToChunkBox: MP4Box {
 
 // MARK: -
 final class MP4EditListBox: MP4Box {
-    struct Entry: CustomStringConvertible {
+    struct Entry: CustomDebugStringConvertible {
         var segmentDuration: UInt32 = 0
         var mediaTime: UInt32 = 0
         var mediaRate: UInt32 = 0
 
-        var description: String {
+        var debugDescription: String {
             return Mirror(reflecting: self).description
         }
 
@@ -715,9 +715,9 @@ extension MP4TrakReader: TimerDriverDelegate {
     }
 }
 
-extension MP4TrakReader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension MP4TrakReader: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

@@ -88,9 +88,9 @@ extension TSReader: IteratorProtocol {
     }
 }
 
-extension TSReader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension TSReader: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

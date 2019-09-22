@@ -179,9 +179,9 @@ struct TSProgramClockReference {
     }
 }
 
-extension TSPacket: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension TSPacket: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -305,9 +305,9 @@ extension TSAdaptationField: DataConvertible {
     }
 }
 
-extension TSAdaptationField: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension TSAdaptationField: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -381,9 +381,9 @@ extension TSAdaptationExtensionField: DataConvertible {
     }
 }
 
-extension TSAdaptationExtensionField: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension TSAdaptationExtensionField: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

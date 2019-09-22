@@ -1,6 +1,6 @@
 import Foundation
 
-protocol HTTPResponseCompatible: CustomStringConvertible {
+protocol HTTPResponseCompatible: CustomDebugStringConvertible {
     var version: String { get set }
     var statusCode: String { get set }
     var headerFields: [String: String] { get set }
@@ -8,8 +8,8 @@ protocol HTTPResponseCompatible: CustomStringConvertible {
 }
 
 extension HTTPResponseCompatible {
-    // MARK: CustomStringConvertible
-    public var description: String {
+    // MARK: CustomDebugStringConvertible
+    public var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

@@ -271,9 +271,9 @@ final class RTMPChunk {
     }
 }
 
-extension RTMPChunk: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension RTMPChunk: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

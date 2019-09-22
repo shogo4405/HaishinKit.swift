@@ -68,9 +68,9 @@ class RTMPMessage {
     }
 }
 
-extension RTMPMessage: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension RTMPMessage: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

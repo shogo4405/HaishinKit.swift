@@ -1,6 +1,6 @@
 import Foundation
 
-class AMFReference {
+final class AMFReference {
     var strings: [String] = []
     var objects: [Any] = []
 
@@ -63,7 +63,7 @@ class AMFReference {
 
  - seealso: http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
  */
-class AMF3Serializer: ByteArray {
+final class AMF3Serializer: ByteArray {
     enum `Type`: UInt8 {
         case undefined = 0x00
         case null = 0x01
