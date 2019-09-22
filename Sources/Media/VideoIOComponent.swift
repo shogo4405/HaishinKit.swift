@@ -221,7 +221,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if os(iOS)
-    var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .auto {
+    var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
         didSet {
             guard preferredVideoStabilizationMode != oldValue else {
                 return
