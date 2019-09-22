@@ -10,19 +10,30 @@ public protocol AudioConverterDelegate: class {
  - seealse:
   - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
-public class AudioConverter: NSObject {
+public class AudioConverter {
     enum Error: Swift.Error {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
 
-    var effects: Set<AudioEffect> = []
+    public enum Option: String, KeyPathRepresentable {
+        case muted
+        case bitrate
+        case sampleRate
+        case actualBitrate
 
-    static let supportedSettingsKeys: [String] = [
-        "muted",
-        "bitrate",
-        "sampleRate", // down,up sampleRate not supported yet #58
-        "actualBitrate"
-    ]
+        public var keyPath: AnyKeyPath {
+            switch self {
+            case .muted:
+                return \AudioConverter.muted
+            case .bitrate:
+                return \AudioConverter.bitrate
+            case .sampleRate:
+                return \AudioConverter.sampleRate
+            case .actualBitrate:
+                return \AudioConverter.actualBitrate
+            }
+        }
+    }
 
     public static let minimumBitrate: UInt32 = 8 * 1024
     public static let defaultBitrate: UInt32 = 32 * 1024
@@ -36,10 +47,14 @@ public class AudioConverter: NSObject {
     public var destination: Destination = .AAC
     public weak var delegate: AudioConverterDelegate?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
+    public var settings: Setting<AudioConverter, Option> = [:] {
+        didSet {
+            settings.observer = self
+        }
+    }
 
-    @objc var muted: Bool = false
-
-    @objc var bitrate: UInt32 = AudioConverter.defaultBitrate {
+    var muted: Bool = false
+    var bitrate: UInt32 = AudioConverter.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
                 return
@@ -51,13 +66,12 @@ public class AudioConverter: NSObject {
             }
         }
     }
-    @objc var sampleRate: Double = AudioConverter.defaultSampleRate
-    @objc var actualBitrate: UInt32 = AudioConverter.defaultBitrate {
+    var sampleRate: Double = AudioConverter.defaultSampleRate
+    var actualBitrate: UInt32 = AudioConverter.defaultBitrate {
         didSet {
             logger.info(actualBitrate)
         }
     }
-
     var channels: UInt32 = AudioConverter.defaultChannels
     var formatDescription: CMFormatDescription? {
         didSet {
@@ -78,6 +92,7 @@ public class AudioConverter: NSObject {
             bufferListSize = nonInterleaved ? AudioBufferList.sizeInBytes(maximumBuffers: maximumBuffers) : AudioConverter.defaultBufferListSize
         }
     }
+    var effects: Set<AudioEffect> = []
     private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
     private var bufferListSize: Int = AudioConverter.defaultBufferListSize
     private var currentBufferList: UnsafeMutableAudioBufferListPointer?
@@ -122,6 +137,10 @@ public class AudioConverter: NSObject {
             ioData: ioData,
             outDataPacketDescription: outDataPacketDescription
         )
+    }
+
+    public init() {
+        settings.observer = self
     }
 
     private var _converter: AudioConverterRef?
