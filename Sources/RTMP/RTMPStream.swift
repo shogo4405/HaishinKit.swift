@@ -224,11 +224,13 @@ open class RTMPStream: NetStream {
     open weak var delegate: RTMPStreamDelegate?
     open internal(set) var info = RTMPStreamInfo()
     open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
+    /// The number of frames per second being displayed.
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
     open var soundTransform: SoundTransform {
         get { return mixer.audioIO.soundTransform }
         set { mixer.audioIO.soundTransform = newValue }
     }
+    /// Incoming audio plays on the stream or not.
     open var receiveAudio = true {
         didSet {
             lockQueue.async {
@@ -246,7 +248,7 @@ open class RTMPStream: NetStream {
             }
         }
     }
-
+    /// Incoming video plays on the stream or not.
     open var receiveVideo = true {
         didSet {
             lockQueue.async {
@@ -264,7 +266,7 @@ open class RTMPStream: NetStream {
             }
         }
     }
-
+    /// Pauses playback or publish of a video stream or not.
     open var paused = false {
         didSet {
             lockQueue.async {
@@ -425,14 +427,6 @@ open class RTMPStream: NetStream {
                 arguments: [offset]
             )), locked: nil)
         }
-    }
-
-    @available(*, unavailable)
-    open func publish(_ name: String?, type: String = "live") {
-        guard let howToPublish: RTMPStream.HowToPublish = RTMPStream.HowToPublish(rawValue: type) else {
-            return
-        }
-        publish(name, type: howToPublish)
     }
 
     open func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
