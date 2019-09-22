@@ -126,9 +126,9 @@ extension ProgramSpecific: DataConvertible {
     }
 }
 
-extension ProgramSpecific: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension ProgramSpecific: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -274,9 +274,9 @@ extension ElementaryStreamSpecificData: DataConvertible {
     }
 }
 
-extension ElementaryStreamSpecificData: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension ElementaryStreamSpecificData: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

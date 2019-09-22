@@ -31,7 +31,7 @@ public struct ASTypedObject {
         decoders[name] = decoder
     }
 
-    public static func register<T:Decodable>(type: T.Type, named name: String) {
+    public static func register<T: Decodable>(type: T.Type, named name: String) {
         decoders[name] = {
             let jsonData = try JSONSerialization.data(withJSONObject: $1, options: [])
             return try JSONDecoder().decode(type, from: jsonData)
@@ -101,9 +101,9 @@ extension ASArray: ExpressibleByArrayLiteral {
     }
 }
 
-extension ASArray: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    public var description: String {
+extension ASArray: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    public var debugDescription: String {
         return data.description
     }
 }

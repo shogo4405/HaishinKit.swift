@@ -22,9 +22,9 @@ public struct RTMPStreamInfo {
     }
 }
 
-extension RTMPStreamInfo: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    public var description: String {
+extension RTMPStreamInfo: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    public var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -183,7 +183,7 @@ open class RTMPStream: NetStream {
         case `switch`
     }
 
-    public struct PlayOption: CustomStringConvertible {
+    public struct PlayOption: CustomDebugStringConvertible {
         public var len: Double = 0
         public var offset: Double = 0
         public var oldStreamName: String = ""
@@ -191,7 +191,7 @@ open class RTMPStream: NetStream {
         public var streamName: String = ""
         public var transition: PlayTransition = .switch
 
-        public var description: String {
+        public var debugDescription: String {
             return Mirror(reflecting: self).description
         }
     }
@@ -669,10 +669,10 @@ extension RTMPStream: AVMixerDelegate {
     // MARK: AVMixerDelegate
     func didOutputVideo(_ buffer: CMSampleBuffer) {
         frameCount += 1
-        delegate?.didOutputVideo?(buffer)
+        delegate?.didOutputVideo(buffer)
     }
 
     func didOutputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        delegate?.didOutputAudio?(buffer, presentationTimeStamp: presentationTimeStamp)
+        delegate?.didOutputAudio(buffer, presentationTimeStamp: presentationTimeStamp)
     }
 }

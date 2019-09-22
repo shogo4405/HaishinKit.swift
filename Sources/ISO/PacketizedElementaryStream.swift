@@ -118,9 +118,9 @@ extension PESOptionalHeader: DataConvertible {
     }
 }
 
-extension PESOptionalHeader: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension PESOptionalHeader: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -300,9 +300,9 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 }
 
-extension PacketizedElementaryStream: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension PacketizedElementaryStream: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

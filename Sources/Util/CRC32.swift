@@ -30,9 +30,9 @@ final class CRC32 {
     }
 }
 
-extension CRC32: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension CRC32: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }

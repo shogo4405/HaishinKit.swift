@@ -70,9 +70,9 @@ struct RTMPSharedObjectEvent {
     }
 }
 
-extension RTMPSharedObjectEvent: CustomStringConvertible {
-    // MARK: CustomStringConvertible
-    var description: String {
+extension RTMPSharedObjectEvent: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
         return Mirror(reflecting: self).description
     }
 }
@@ -112,10 +112,6 @@ open class RTMPSharedObject: EventDispatcher {
                 setProperty(key, value)
             }
         }
-    }
-
-    override open var description: String {
-        return data.description
     }
 
     private var rtmpConnection: RTMPConnection?
@@ -218,7 +214,7 @@ open class RTMPSharedObject: EventDispatcher {
     }
 
     @objc
-    func rtmpStatusHandler(_ notification: Notification) {
+    private func rtmpStatusHandler(_ notification: Notification) {
         let e = Event.from(notification)
         if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
             switch code {
@@ -229,5 +225,12 @@ open class RTMPSharedObject: EventDispatcher {
                 break
             }
         }
+    }
+}
+
+extension RTMPSharedObject: CustomDebugStringConvertible {
+    // MARK: CustomDebugStringConvertible
+    public var debugDescription: String {
+        return data.debugDescription
     }
 }

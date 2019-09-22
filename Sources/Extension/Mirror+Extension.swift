@@ -1,7 +1,7 @@
 import Foundation
 
 extension Mirror {
-    var description: String {
+    var debugDescription: String {
         var data: [String] = []
 
         if let superclassMirror: Mirror = superclassMirror {
