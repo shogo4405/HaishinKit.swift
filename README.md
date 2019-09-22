@@ -43,8 +43,8 @@
   - tvOS can't publish Camera and Microphone. Available playback feature.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
-- [x] Support GPUImage framework (~> 0.5.12)
-  - https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md
+- [ ] ~~Support GPUImage framework (~> 0.5.12)~~
+  - ~~https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md~~
 - [ ] ~~Objective-C Bridging~~
 
 ## Requirements
@@ -73,7 +73,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 0.11.7'
+    pod 'HaishinKit', '~> 0.11.9'
 end
 
 target 'Your Target'  do
@@ -168,7 +168,7 @@ rtmpStream.captureSettings = [
     .sessionPreset: AVCaptureSession.Preset.medium, // input video width/height
     .continuousAutofocus: false, // use camera autofocus mode
     .continuousExposure: false, //  use camera exposure mode
-    // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto.rawValue
+    // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
 ]
 rtmpStream.audioSettings = [
     .muted: false, // mute audio
@@ -179,7 +179,6 @@ rtmpStream.videoSettings = [
     .width: 640, // video output width
     .height: 360, // video output height
     .bitrate: 160 * 1000, // video output bitrate
-    // .dataRateLimits: [160 * 1000 / 8, 1], optional kVTCompressionPropertyKey_DataRateLimits property
     .profileLevel: kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
     .maxKeyFrameIntervalDuration: 2, // key frame / sec
 ]
