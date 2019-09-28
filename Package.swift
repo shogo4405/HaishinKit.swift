@@ -9,7 +9,7 @@ let package = Package(
         .library(name: "HTTP", targets: ["RTMP"])
     ],
     dependencies: [
-        .Package(url: "https://github.com/shogo4405/Logboard.git", from: "2.2.3")
+        .Package(url: "https://github.com/shogo4405/Logboard.git", from: "2.1.2")
     ],
     targets: [
         .target(name: "Codec", dependencies: [])

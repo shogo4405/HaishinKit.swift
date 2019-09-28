@@ -26,6 +26,7 @@ open class FLVReader {
 }
 
 extension FLVReader: IteratorProtocol {
+    // MARK: IteratorProtocol
     public func next() -> FLVTag? {
         guard let fileHandle: FileHandle = fileHandle else {
             return nil
