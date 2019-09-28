@@ -78,7 +78,7 @@ struct AudioSpecificConfig {
 extension AudioSpecificConfig: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }
 

@@ -129,7 +129,7 @@ extension ProgramSpecific: DataConvertible {
 extension ProgramSpecific: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -277,6 +277,6 @@ extension ElementaryStreamSpecificData: DataConvertible {
 extension ElementaryStreamSpecificData: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }

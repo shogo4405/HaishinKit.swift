@@ -25,7 +25,7 @@ public struct RTMPStreamInfo {
 extension RTMPStreamInfo: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -192,7 +192,7 @@ open class RTMPStream: NetStream {
         public var transition: PlayTransition = .switch
 
         public var debugDescription: String {
-            return Mirror(reflecting: self).description
+            return Mirror(reflecting: self).debugDescription
         }
     }
 

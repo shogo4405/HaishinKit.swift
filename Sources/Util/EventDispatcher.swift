@@ -66,7 +66,7 @@ open class Event {
 extension Event: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }
 

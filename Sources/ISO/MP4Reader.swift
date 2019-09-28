@@ -82,7 +82,7 @@ class MP4Box {
 extension MP4Box: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -200,7 +200,7 @@ final class MP4TimeToSampleBox: MP4Box {
         var sampleDuration: UInt32 = 0
 
         var debugDescription: String {
-            return Mirror(reflecting: self).description
+            return Mirror(reflecting: self).debugDescription
         }
 
         init(sampleCount: UInt32, sampleDuration: UInt32) {
@@ -437,7 +437,7 @@ final class MP4SampleToChunkBox: MP4Box {
         var sampleDescriptionIndex: UInt32 = 0
 
         var debugDescription: String {
-            return Mirror(reflecting: self).description
+            return Mirror(reflecting: self).debugDescription
         }
 
         init(firstChunk: UInt32, samplesPerChunk: UInt32, sampleDescriptionIndex: UInt32) {
@@ -475,7 +475,7 @@ final class MP4EditListBox: MP4Box {
         var mediaRate: UInt32 = 0
 
         var debugDescription: String {
-            return Mirror(reflecting: self).description
+            return Mirror(reflecting: self).debugDescription
         }
 
         init(segmentDuration: UInt32, mediaTime: UInt32, mediaRate: UInt32) {
@@ -718,6 +718,6 @@ extension MP4TrakReader: TimerDriverDelegate {
 extension MP4TrakReader: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }

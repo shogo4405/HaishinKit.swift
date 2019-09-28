@@ -11,7 +11,7 @@ protocol HTTPRequestCompatible: CustomStringConvertible {
 extension HTTPRequestCompatible {
     // MARK: CustomStringConvertible
     public var description: String {
-        return Mirror(reflecting: self).description
+        return Mirror(reflecting: self).debugDescription
     }
 }
 
