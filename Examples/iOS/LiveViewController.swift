@@ -49,12 +49,14 @@ final class LiveViewController: UIViewController {
         super.viewDidLoad()
 
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        rtmpStream.syncOrientation = true
+        if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
+            rtmpStream.orientation = orientation
+        }
         rtmpStream.captureSettings = [
             .sessionPreset: AVCaptureSession.Preset.hd1280x720,
             .continuousAutofocus: true,
             .continuousExposure: true,
-            .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
+            // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
         ]
         rtmpStream.videoSettings = [
             .width: 720,
@@ -67,6 +69,8 @@ final class LiveViewController: UIViewController {
 
         videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1024
         audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1024
+
+        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -184,7 +188,7 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    @IBAction func onFPSValueChanged(_ segment: UISegmentedControl) {
+    @IBAction private func onFPSValueChanged(_ segment: UISegmentedControl) {
         switch segment.selectedSegmentIndex {
         case 0:
             rtmpStream.captureSettings[.fps] = 15.0
@@ -197,7 +201,7 @@ final class LiveViewController: UIViewController {
         }
     }
 
-    @IBAction func onEffectValueChanged(_ segment: UISegmentedControl) {
+    @IBAction private func onEffectValueChanged(_ segment: UISegmentedControl) {
         if let currentEffect: VideoEffect = currentEffect {
             _ = rtmpStream.unregisterVideoEffect(currentEffect)
         }
@@ -211,6 +215,14 @@ final class LiveViewController: UIViewController {
         default:
             break
         }
+    }
+
+    @objc
+    private func on(_ notification: Notification) {
+        guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
+            return
+        }
+        rtmpStream.orientation = orientation
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
