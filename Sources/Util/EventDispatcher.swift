@@ -23,7 +23,9 @@ public enum EventPhase: UInt8 {
  */
 open class Event {
     public struct Name: RawRepresentable, ExpressibleByStringLiteral {
+        // swiftlint:disable nesting
         public typealias RawValue = String
+        // swiftlint:disable nesting
         public typealias StringLiteralType = String
 
         public static let sync: Name = "sync"
@@ -103,7 +105,7 @@ open class EventDispatcher: IEventDispatcher {
     open func dispatch(event: Event) {
         event.target = target ?? self
         NotificationCenter.default.post(
-            name: Notification.Name(rawValue: "\(event.type)/false"), object: target ?? self, userInfo: ["event": event]
+            name: Notification.Name(rawValue: "\(event.type.rawValue)/false"), object: target ?? self, userInfo: ["event": event]
         )
         event.target = nil
     }

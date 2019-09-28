@@ -51,6 +51,7 @@ public class AVMixer {
     public struct Option: KeyPathRepresentable {
         public static var allCases: [AVMixer.Option] = []
         public var keyPath: AnyKeyPath
+        // swiftlint:disable nesting
         public typealias AllCases = [Option]
     }
     #endif
