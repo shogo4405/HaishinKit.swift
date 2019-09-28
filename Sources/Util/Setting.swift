@@ -105,6 +105,10 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
             return value
         case let value as UInt64:
             return numericCast(value)
+        case let value as Double:
+            return UInt32(value)
+        case let value as Float:
+            return UInt32(value)
         default:
             return nil
         }
@@ -132,6 +136,10 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
             return numericCast(value)
         case let value as UInt64:
             return numericCast(value)
+        case let value as Double:
+            return Int32(value)
+        case let value as Float:
+            return Int32(value)
         default:
             return nil
         }
