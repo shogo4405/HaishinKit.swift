@@ -13,7 +13,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit Docs</a> (10% documented)</p>
+        <p><a href="index.html">HaishinKit Docs</a> (12% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -42,6 +42,12 @@
                 <a href="Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AVMixer/Option.html">– Option</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AVMixer/Option.html">– Option</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
@@ -49,6 +55,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AudioConverter.html">AudioConverter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AudioConverter/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AudioConverter/Destination.html">– Destination</a>
@@ -69,10 +78,10 @@
                 <a href="Classes/DefaultAVRecorderDelegate/FileType.html">– FileType</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/DeviceUtil.html">DeviceUtil</a>
+                <a href="Classes/Event.html">Event</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/Event.html">Event</a>
+                <a href="Classes/Event/Name.html">– Name</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/EventDispatcher.html">EventDispatcher</a>
@@ -82,6 +91,12 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/GLHKView.html">GLHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/H264Encoder.html">H264Encoder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/H264Encoder/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/HKView.html">HKView</a>
@@ -142,6 +157,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Setting.html">Setting</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/TSWriter.html">TSWriter</a>
@@ -233,6 +251,9 @@
                 <a href="Protocols/IEventDispatcher.html">IEventDispatcher</a>
               </li>
               <li class="nav-group-task">
+                <a href="Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/RTMPStreamDelegate.html">RTMPStreamDelegate</a>
               </li>
               <li class="nav-group-task">
@@ -254,6 +275,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/ASArray.html">ASArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ASTypedObject.html">ASTypedObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/FLVAudioTag.html">FLVAudioTag</a>
@@ -392,10 +419,10 @@
 </ul></li>
 <li>[x] Hardware acceleration for H264 video encoding, AAC audio encoding</li>
 <li>[x] Support <q>Allow app extension API only</q> option</li>
-<li>[x] Support GPUImage framework (~&gt; 0.5.12)
+<li>[ ] <del>Support GPUImage framework (~&gt; 0.5.12)</del>
 
 <ul>
-<li><a href="https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md">https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md</a></li>
+<li><del><a href="https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md">https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md</a></del></li>
 </ul></li>
 <li>[ ] <del>Objective-C Bridging</del></li>
 </ul>
@@ -459,7 +486,7 @@
 <span class="n">use_frameworks!</span>
 
 <span class="k">def</span> <span class="nf">import_pods</span>
-    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 0.11.7'</span>
+    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 1.0.0'</span>
 <span class="k">end</span>
 
 <span class="n">target</span> <span class="s1">'Your Target'</span>  <span class="k">do</span>
@@ -468,7 +495,7 @@
 <span class="k">end</span>
 </code></pre>
 <h3 id='carthage' class='heading'>Carthage</h3>
-<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 0.11.9
+<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 1.0.0
 </code></pre>
 <h2 id='license' class='heading'>License</h2>
 
@@ -548,24 +575,23 @@
 <span class="k">var</span> <span class="nv">rtmpStream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">rtmpConnection</span><span class="p">)</span>
 
 <span class="n">rtmpStream</span><span class="o">.</span><span class="n">captureSettings</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">"fps"</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="c1">// FPS</span>
-    <span class="s">"sessionPreset"</span><span class="p">:</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span><span class="o">.</span><span class="n">rawValue</span><span class="p">,</span> <span class="c1">// input video width/height</span>
-    <span class="s">"continuousAutofocus"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// use camera autofocus mode</span>
-    <span class="s">"continuousExposure"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">//  use camera exposure mode</span>
-    <span class="c1">// "preferredVideoStabilizationMode": AVCaptureVideoStabilizationMode.auto.rawValue</span>
+    <span class="o">.</span><span class="nv">fps</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="c1">// FPS</span>
+    <span class="o">.</span><span class="nv">sessionPreset</span><span class="p">:</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span><span class="p">,</span> <span class="c1">// input video width/height</span>
+    <span class="o">.</span><span class="nv">continuousAutofocus</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// use camera autofocus mode</span>
+    <span class="o">.</span><span class="nv">continuousExposure</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">//  use camera exposure mode</span>
+    <span class="c1">// .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto</span>
 <span class="p">]</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="n">audioSettings</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">"muted"</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// mute audio</span>
-    <span class="s">"bitrate"</span><span class="p">:</span> <span class="mi">32</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span>
-    <span class="s">"sampleRate"</span><span class="p">:</span> <span class="n">sampleRate</span><span class="p">,</span> 
+    <span class="o">.</span><span class="nv">muted</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span> <span class="c1">// mute audio</span>
+    <span class="o">.</span><span class="nv">bitrate</span><span class="p">:</span> <span class="mi">32</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="o">.</span><span class="nv">sampleRate</span><span class="p">:</span> <span class="n">sampleRate</span><span class="p">,</span> 
 <span class="p">]</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s">"width"</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="c1">// video output width</span>
-    <span class="s">"height"</span><span class="p">:</span> <span class="mi">360</span><span class="p">,</span> <span class="c1">// video output height</span>
-    <span class="s">"bitrate"</span><span class="p">:</span> <span class="mi">160</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">,</span> <span class="c1">// video output bitrate</span>
-    <span class="c1">// "dataRateLimits": [160 * 1024 / 8, 1], optional kVTCompressionPropertyKey_DataRateLimits property</span>
-    <span class="s">"profileLevel"</span><span class="p">:</span> <span class="n">kVTProfileLevel_H264_Baseline_3_1</span><span class="p">,</span> <span class="c1">// H264 Profile require "import VideoToolbox"</span>
-    <span class="s">"maxKeyFrameIntervalDuration"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// key frame / sec</span>
+    <span class="o">.</span><span class="nv">width</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="c1">// video output width</span>
+    <span class="o">.</span><span class="nv">height</span><span class="p">:</span> <span class="mi">360</span><span class="p">,</span> <span class="c1">// video output height</span>
+    <span class="o">.</span><span class="nv">bitrate</span><span class="p">:</span> <span class="mi">160</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span> <span class="c1">// video output bitrate</span>
+    <span class="o">.</span><span class="nv">profileLevel</span><span class="p">:</span> <span class="n">kVTProfileLevel_H264_Baseline_3_1</span><span class="p">,</span> <span class="c1">// H264 Profile require "import VideoToolbox"</span>
+    <span class="o">.</span><span class="nv">maxKeyFrameIntervalDuration</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="c1">// key frame / sec</span>
 <span class="p">]</span>
 <span class="c1">// "0" means the same of input</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="n">recorderSettings</span> <span class="o">=</span> <span class="p">[</span>
@@ -664,8 +690,8 @@ Please consider to use Issues.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-09-15)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-09-29)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

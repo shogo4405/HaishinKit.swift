@@ -14,7 +14,7 @@
     <a title="Protocols  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit Docs</a> (10% documented)</p>
+        <p><a href="index.html">HaishinKit Docs</a> (12% documented)</p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -43,6 +43,12 @@
                 <a href="Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/AVMixer/Option.html">– Option</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AVMixer/Option.html">– Option</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
@@ -50,6 +56,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AudioConverter.html">AudioConverter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/AudioConverter/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AudioConverter/Destination.html">– Destination</a>
@@ -70,10 +79,10 @@
                 <a href="Classes/DefaultAVRecorderDelegate/FileType.html">– FileType</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/DeviceUtil.html">DeviceUtil</a>
+                <a href="Classes/Event.html">Event</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/Event.html">Event</a>
+                <a href="Classes/Event/Name.html">– Name</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/EventDispatcher.html">EventDispatcher</a>
@@ -83,6 +92,12 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/GLHKView.html">GLHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/H264Encoder.html">H264Encoder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/H264Encoder/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/HKView.html">HKView</a>
@@ -143,6 +158,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Setting.html">Setting</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/TSWriter.html">TSWriter</a>
@@ -234,6 +252,9 @@
                 <a href="Protocols/IEventDispatcher.html">IEventDispatcher</a>
               </li>
               <li class="nav-group-task">
+                <a href="Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/RTMPStreamDelegate.html">RTMPStreamDelegate</a>
               </li>
               <li class="nav-group-task">
@@ -255,6 +276,12 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Structs/ASArray.html">ASArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ASTypedObject.html">ASTypedObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/FLVAudioTag.html">FLVAudioTag</a>
@@ -387,7 +414,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">FLVTag</span> <span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">FLVTag</span> <span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
 
                         </div>
                       </div>
@@ -465,9 +492,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate"></a>
+                    <a name="/s:10HaishinKit18RTMPStreamDelegateP"></a>
                     <a name="//apple_ref/swift/Protocol/RTMPStreamDelegate" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(pl)RTMPStreamDelegate">RTMPStreamDelegate</a>
+                    <a class="token" href="#/s:10HaishinKit18RTMPStreamDelegateP">RTMPStreamDelegate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -483,8 +510,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@objc</span>
-<span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RTMPStreamDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">RTMPStreamDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
 
                         </div>
                       </div>
@@ -562,6 +588,38 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:10HaishinKit20KeyPathRepresentableP"></a>
+                    <a name="//apple_ref/swift/Protocol/KeyPathRepresentable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit20KeyPathRepresentableP">KeyPathRepresentable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="Protocols/KeyPathRepresentable.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">KeyPathRepresentable</span> <span class="p">:</span> <span class="kt">CaseIterable</span><span class="p">,</span> <span class="kt">Hashable</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:10HaishinKit19TimerDriverDelegateP"></a>
                     <a name="//apple_ref/swift/Protocol/TimerDriverDelegate" class="dashAnchor"></a>
                     <a class="token" href="#/s:10HaishinKit19TimerDriverDelegateP">TimerDriverDelegate</a>
@@ -592,8 +650,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-09-15)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2019 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2019-09-29)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.11.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
