@@ -36,7 +36,7 @@ open class RTMPConnection: EventDispatcher {
     public static let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
     public static let defaultChunkSizeS: Int = 1024 * 8
     public static let defaultCapabilities: Int = 239
-    public static let defaultObjectEncoding: UInt8 = 0x00
+    public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
 
     /**
      NetStatusEvent#info.code for NetConnection
@@ -173,7 +173,7 @@ open class RTMPConnection: EventDispatcher {
     /// The socket optional parameters.
     open var parameters: Any?
     /// The object encoding for this RTMPConnection instance.
-    open var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
+    open var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Int64 {
         return socket.totalBytesIn
@@ -401,7 +401,7 @@ open class RTMPConnection: EventDispatcher {
             streamId: 0,
             transactionId: currentTransactionId,
             // "connect" must be a objectEncoding = 0
-            objectEncoding: 0,
+            objectEncoding: .amf0,
             commandName: "connect",
             commandObject: [
                 "app": app,

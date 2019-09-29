@@ -36,17 +36,17 @@ enum RTMPMessageType: UInt8 {
         case .video:
             return RTMPVideoMessage()
         case .amf3Data:
-            return RTMPDataMessage(objectEncoding: 0x03)
+            return RTMPDataMessage(objectEncoding: .amf3)
         case .amf3Shared:
-            return RTMPSharedObjectMessage(objectEncoding: 0x03)
+            return RTMPSharedObjectMessage(objectEncoding: .amf3)
         case .amf3Command:
-            return RTMPCommandMessage(objectEncoding: 0x03)
+            return RTMPCommandMessage(objectEncoding: .amf3)
         case .amf0Data:
-            return RTMPDataMessage(objectEncoding: 0x00)
+            return RTMPDataMessage(objectEncoding: .amf0)
         case .amf0Shared:
-            return RTMPSharedObjectMessage(objectEncoding: 0x00)
+            return RTMPSharedObjectMessage(objectEncoding: .amf0)
         case .amf0Command:
-            return RTMPCommandMessage(objectEncoding: 0x00)
+            return RTMPCommandMessage(objectEncoding: .amf0)
         case .aggregate:
             return RTMPAggregateMessage()
         }
@@ -265,7 +265,7 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
  7.1.1. Command Message (20, 17)
  */
 final class RTMPCommandMessage: RTMPMessage {
-    let objectEncoding: UInt8
+    let objectEncoding: RTMPObjectEncoding
     var commandName: String = ""
     var transactionId: Int = 0
     var commandObject: ASObject?
@@ -316,18 +316,18 @@ final class RTMPCommandMessage: RTMPMessage {
 
     private var serializer: AMFSerializer = AMF0Serializer()
 
-    init(objectEncoding: UInt8) {
+    init(objectEncoding: RTMPObjectEncoding) {
         self.objectEncoding = objectEncoding
-        super.init(type: objectEncoding == 0x00 ? .amf0Command : .amf3Command)
+        super.init(type: objectEncoding.commandType)
     }
 
-    init(streamId: UInt32, transactionId: Int, objectEncoding: UInt8, commandName: String, commandObject: ASObject?, arguments: [Any?]) {
+    init(streamId: UInt32, transactionId: Int, objectEncoding: RTMPObjectEncoding, commandName: String, commandObject: ASObject?, arguments: [Any?]) {
         self.transactionId = transactionId
         self.objectEncoding = objectEncoding
         self.commandName = commandName
         self.commandObject = commandObject
         self.arguments = arguments
-        super.init(type: objectEncoding == 0x00 ? .amf0Command : .amf3Command)
+        super.init(type: objectEncoding.commandType)
         self.streamId = streamId
     }
 
@@ -358,7 +358,7 @@ final class RTMPCommandMessage: RTMPMessage {
  7.1.2. Data Message (18, 15)
  */
 final class RTMPDataMessage: RTMPMessage {
-    let objectEncoding: UInt8
+    let objectEncoding: RTMPObjectEncoding
     var handlerName: String = ""
     var arguments: [Any?] = []
 
@@ -408,16 +408,16 @@ final class RTMPDataMessage: RTMPMessage {
         }
     }
 
-    init(objectEncoding: UInt8) {
+    init(objectEncoding: RTMPObjectEncoding) {
         self.objectEncoding = objectEncoding
-        super.init(type: objectEncoding == 0x00 ? .amf0Data : .amf3Data)
+        super.init(type: objectEncoding.commandType)
     }
 
-    init(streamId: UInt32, objectEncoding: UInt8, handlerName: String, arguments: [Any?] = []) {
+    init(streamId: UInt32, objectEncoding: RTMPObjectEncoding, handlerName: String, arguments: [Any?] = []) {
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
-        super.init(type: objectEncoding == 0x00 ? .amf0Data : .amf3Data)
+        super.init(type: objectEncoding.commandType)
         self.streamId = streamId
     }
 
@@ -434,7 +434,7 @@ final class RTMPDataMessage: RTMPMessage {
  7.1.3. Shared Object Message (19, 16)
  */
 final class RTMPSharedObjectMessage: RTMPMessage {
-    let objectEncoding: UInt8
+    let objectEncoding: RTMPObjectEncoding
     var sharedObjectName: String = ""
     var currentVersion: UInt32 = 0
     var flags = Data(count: 8)
@@ -495,18 +495,18 @@ final class RTMPSharedObjectMessage: RTMPMessage {
 
     private var serializer: AMFSerializer = AMF0Serializer()
 
-    init(objectEncoding: UInt8) {
+    init(objectEncoding: RTMPObjectEncoding) {
         self.objectEncoding = objectEncoding
-        super.init(type: objectEncoding == 0x00 ? .amf0Shared : .amf3Shared)
+        super.init(type: objectEncoding.sharedObjectType)
     }
 
-    init(timestamp: UInt32, objectEncoding: UInt8, sharedObjectName: String, currentVersion: UInt32, flags: Data, events: [RTMPSharedObjectEvent]) {
+    init(timestamp: UInt32, objectEncoding: RTMPObjectEncoding, sharedObjectName: String, currentVersion: UInt32, flags: Data, events: [RTMPSharedObjectEvent]) {
         self.objectEncoding = objectEncoding
         self.sharedObjectName = sharedObjectName
         self.currentVersion = currentVersion
         self.flags = flags
         self.events = events
-        super.init(type: objectEncoding == 0x00 ? .amf0Shared : .amf3Shared)
+        super.init(type: objectEncoding.sharedObjectType)
         self.timestamp = timestamp
     }
 

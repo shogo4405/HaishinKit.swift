@@ -220,7 +220,7 @@ open class RTMPStream: NetStream {
 
     open weak var delegate: RTMPStreamDelegate?
     open internal(set) var info = RTMPStreamInfo()
-    open private(set) var objectEncoding: UInt8 = RTMPConnection.defaultObjectEncoding
+    open private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The number of frames per second being displayed.
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
     open var soundTransform: SoundTransform {
