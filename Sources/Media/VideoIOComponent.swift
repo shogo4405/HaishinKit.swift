@@ -290,13 +290,6 @@ final class VideoIOComponent: IOComponent {
         super.init(mixer: mixer)
         encoder.lockQueue = lockQueue
         decoder.delegate = self
-        #if os(iOS)
-        if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
-            self.orientation = orientation
-        } else if let defaultOrientation = RTMPStream.defaultOrientation {
-            self.orientation = defaultOrientation
-        }
-        #endif
     }
 
     #if os(iOS) || os(macOS)

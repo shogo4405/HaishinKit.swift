@@ -23,7 +23,6 @@ open class NetStream: NSObject {
 
     deinit {
         metadata.removeAll()
-        NotificationCenter.default.removeObserver(self)
     }
 
     open var metadata: [String: Any?] = [:]
@@ -53,21 +52,6 @@ open class NetStream: NSObject {
         }
     }
 #endif
-
-    #if os(iOS)
-    open var syncOrientation: Bool = false {
-        didSet {
-            guard syncOrientation != oldValue else {
-                return
-            }
-            if syncOrientation {
-                NotificationCenter.default.addObserver(self, selector: #selector(on), name: UIDevice.orientationDidChangeNotification, object: nil)
-            } else {
-                NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
-            }
-        }
-    }
-    #endif
 
     open var audioSettings: Setting<AudioConverter, AudioConverter.Option> {
         get {
@@ -182,15 +166,6 @@ open class NetStream: NSObject {
             self.mixer.dispose()
         }
     }
-
-    #if os(iOS)
-    @objc
-    private func on(uiDeviceOrientationDidChange: Notification) {
-        if let orientation: AVCaptureVideoOrientation = DeviceUtil.videoOrientation(by: uiDeviceOrientationDidChange) {
-            self.orientation = orientation
-        }
-    }
-    #endif
 
     func ensureLockQueue(callback: () -> Void) {
         if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
