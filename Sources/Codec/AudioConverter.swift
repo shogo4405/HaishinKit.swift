@@ -93,9 +93,20 @@ public class AudioConverter {
         }
     }
     var effects: Set<AudioEffect> = []
-    private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
+    private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers {
+        didSet {
+            guard oldValue != maximumBuffers else {
+                return
+            }
+            currentBufferList.unsafeMutablePointer.deallocate()
+            currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
+        }
+    }
+    private var filled = false
     private var bufferListSize: Int = AudioConverter.defaultBufferListSize
-    private var currentBufferList: UnsafeMutableAudioBufferListPointer?
+    private lazy var currentBufferList: UnsafeMutableAudioBufferListPointer = {
+        AudioBufferList.allocate(maximumBuffers: maximumBuffers)
+    }()
     private var _inDestinationFormat: AudioStreamBasicDescription?
     private var inDestinationFormat: AudioStreamBasicDescription {
         get {
@@ -143,6 +154,10 @@ public class AudioConverter {
         settings.observer = self
     }
 
+    deinit {
+        currentBufferList.unsafeMutablePointer.deallocate()
+    }
+
     private var _converter: AudioConverterRef?
     private var converter: AudioConverterRef {
         var status: OSStatus = noErr
@@ -164,10 +179,9 @@ public class AudioConverter {
     }
 
     public func encodeBytes(_ bytes: UnsafeMutableRawPointer?, count: Int, presentationTimeStamp: CMTime) {
-        currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
-        currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
-        currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mData = bytes
-        currentBufferList?.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
+        currentBufferList.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
+        currentBufferList.unsafeMutablePointer.pointee.mBuffers.mData = bytes
+        currentBufferList.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
         convert(Int(1024 * destination.bytesPerFrame), presentationTimeStamp: presentationTimeStamp)
     }
 
@@ -181,11 +195,10 @@ public class AudioConverter {
         }
 
         var blockBuffer: CMBlockBuffer?
-        currentBufferList = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
         CMSampleBufferGetAudioBufferListWithRetainedBlockBuffer(
             sampleBuffer,
             bufferListSizeNeededOut: nil,
-            bufferListOut: currentBufferList!.unsafeMutablePointer,
+            bufferListOut: currentBufferList.unsafeMutablePointer,
             bufferListSize: bufferListSize,
             blockBufferAllocator: kCFAllocatorDefault,
             blockBufferMemoryAllocator: kCFAllocatorDefault,
@@ -205,8 +218,8 @@ public class AudioConverter {
         }
 
         if muted {
-            for i in 0..<currentBufferList!.count {
-                memset(currentBufferList![i].mData, 0, Int(currentBufferList![i].mDataByteSize))
+            for i in 0..<currentBufferList.count {
+                memset(currentBufferList[i].mData, 0, Int(currentBufferList[i].mDataByteSize))
             }
         }
 
@@ -215,6 +228,7 @@ public class AudioConverter {
 
     @inline(__always)
     private func convert(_ dataBytesSize: Int, presentationTimeStamp: CMTime) {
+        filled = false
         var finished: Bool = false
         repeat {
             var ioOutputDataPacketSize: UInt32 = destination.packetSize
@@ -278,21 +292,20 @@ public class AudioConverter {
         _ ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
         ioData: UnsafeMutablePointer<AudioBufferList>,
         outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?) -> OSStatus {
-        guard let bufferList: UnsafeMutableAudioBufferListPointer = currentBufferList else {
+
+        guard !filled else {
             ioNumberDataPackets.pointee = 0
             return -1
         }
 
-        memcpy(ioData, bufferList.unsafePointer, bufferListSize)
+        memcpy(ioData, currentBufferList.unsafePointer, bufferListSize)
         ioNumberDataPackets.pointee = 1
 
         if destination == .PCM && outDataPacketDescription != nil {
-            audioStreamPacketDescription.mDataByteSize = currentBufferList?.unsafePointer.pointee.mBuffers.mDataByteSize ?? 0
+            audioStreamPacketDescription.mDataByteSize = currentBufferList.unsafePointer.pointee.mBuffers.mDataByteSize
             outDataPacketDescription?.pointee = audioStreamPacketDescriptionPointer
         }
-
-        free(bufferList.unsafeMutablePointer)
-        currentBufferList = nil
+        filled = true
 
         return noErr
     }
@@ -340,7 +353,6 @@ extension AudioConverter: Running {
             self.inSourceFormat = nil
             self.formatDescription = nil
             self._inDestinationFormat = nil
-            self.currentBufferList = nil
             self.isRunning.mutate { $0 = false }
         }
     }
