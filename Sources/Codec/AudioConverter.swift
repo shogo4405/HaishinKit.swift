@@ -292,7 +292,6 @@ public class AudioConverter {
         _ ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
         ioData: UnsafeMutablePointer<AudioBufferList>,
         outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?) -> OSStatus {
-
         guard !filled else {
             ioNumberDataPackets.pointee = 0
             return -1

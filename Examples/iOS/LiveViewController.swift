@@ -55,7 +55,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.captureSettings = [
             .sessionPreset: AVCaptureSession.Preset.hd1280x720,
             .continuousAutofocus: true,
-            .continuousExposure: true,
+            .continuousExposure: true
             // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
         ]
         rtmpStream.videoSettings = [
