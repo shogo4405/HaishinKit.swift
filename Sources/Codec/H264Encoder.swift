@@ -15,7 +15,9 @@ public final class H264Encoder {
         case height
         case bitrate
         case profileLevel
+        #if os(macOS)
         case enabledHardwareEncoder
+        #endif
         case maxKeyFrameIntervalDuration
         case scalingMode
 
@@ -29,8 +31,10 @@ public final class H264Encoder {
                 return \H264Encoder.height
             case .bitrate:
                 return \H264Encoder.bitrate
+            #if os(macOS)
             case .enabledHardwareEncoder:
                 return \H264Encoder.enabledHardwareEncoder
+            #endif
             case .maxKeyFrameIntervalDuration:
                 return \H264Encoder.maxKeyFrameIntervalDuration
             case .scalingMode:
@@ -90,6 +94,7 @@ public final class H264Encoder {
             invalidateSession = true
         }
     }
+    #if os(macOS)
     var enabledHardwareEncoder: Bool = true {
         didSet {
             guard enabledHardwareEncoder != oldValue else {
@@ -98,6 +103,7 @@ public final class H264Encoder {
             invalidateSession = true
         }
     }
+    #endif
     var bitrate: UInt32 = H264Encoder.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
