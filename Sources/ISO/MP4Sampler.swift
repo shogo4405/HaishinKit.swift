@@ -13,7 +13,7 @@ public class MP4Sampler {
     weak var delegate: MP4SamplerDelegate?
 
     private var files: [URL] = []
-    private var handlers: [URL: Handler?] = [: ]
+    private var handlers: [URL: Handler?] = [:]
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.lock")
     private let loopQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MP4Sampler.loop")
     private let operations = OperationQueue()

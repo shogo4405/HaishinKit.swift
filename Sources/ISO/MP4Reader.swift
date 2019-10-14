@@ -597,7 +597,7 @@ final class MP4TrakReader {
     }
     private var cursor: Int = 0
     private var offset: [UInt32] = []
-    private var keyframe: [Int: Bool] = [: ]
+    private var keyframe: [Int: Bool] = [:]
     private var timeScale: UInt32 = 0
     private var sampleSize: [UInt32] = []
     private var timeToSample: [UInt32] = []

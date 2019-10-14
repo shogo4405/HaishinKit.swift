@@ -216,7 +216,7 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
         guard let writerInput: AVAssetWriterInput = withWriterInput else {
             return nil
         }
-        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [: ])
+        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [:])
         recorder.pixelBufferAdaptor = adaptor
         return adaptor
     }
@@ -226,7 +226,7 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
             return recorder.writerInputs[mediaType]
         }
 
-        var outputSettings: [String: Any] = [: ]
+        var outputSettings: [String: Any] = [:]
         if let defaultOutputSettings: [String: Any] = recorder.outputSettings[mediaType] {
             switch mediaType {
             case .audio:

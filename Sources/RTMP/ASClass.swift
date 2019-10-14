@@ -46,7 +46,7 @@ public struct ASTypedObject {
 // MARK: -
 public struct ASArray {
     private(set) var data: [Any?]
-    private(set) var dict: [String: Any?] = [: ]
+    private(set) var dict: [String: Any?] = [:]
 
     public var length: Int {
         return data.count

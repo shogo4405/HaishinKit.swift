@@ -68,7 +68,7 @@ public struct HTTPResponse: HTTPResponseCompatible, ExpressibleByDictionaryLiter
 
     public var version: String = HTTPVersion.version11.rawValue
     public var statusCode: String = ""
-    public var headerFields: [String: String] = [: ]
+    public var headerFields: [String: String] = [:]
     public var body: Data?
 
     public init(dictionaryLiteral elements: (Key, Value)...) {

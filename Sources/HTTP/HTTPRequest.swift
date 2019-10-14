@@ -66,7 +66,7 @@ public struct HTTPRequest: HTTPRequestCompatible {
     public var uri: String = "/"
     public var method: String = ""
     public var version: String = HTTPVersion.version11.description
-    public var headerFields: [String: String] = [: ]
+    public var headerFields: [String: String] = [:]
     public var body: Data?
 
     init?(data: Data) {

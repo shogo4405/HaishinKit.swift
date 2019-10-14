@@ -1,7 +1,7 @@
 import Foundation
 
 final class AMFSerializerUtil {
-    private static var classes: [String: AnyClass] = [: ]
+    private static var classes: [String: AnyClass] = [:]
 
     static func getClassByAlias(_ name: String) -> AnyClass? {
         objc_sync_enter(classes)

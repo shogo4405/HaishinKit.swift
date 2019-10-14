@@ -137,7 +137,7 @@ extension ProgramSpecific: CustomDebugStringConvertible {
 final class ProgramAssociationSpecific: ProgramSpecific {
     static let tableID: UInt8 = 0
 
-    var programs: [UInt16: UInt16] = [: ]
+    var programs: [UInt16: UInt16] = [:]
 
     override var tableData: Data {
         get {
