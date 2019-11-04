@@ -410,7 +410,7 @@ final class RTMPDataMessage: RTMPMessage {
 
     init(objectEncoding: RTMPObjectEncoding) {
         self.objectEncoding = objectEncoding
-        super.init(type: objectEncoding.commandType)
+        super.init(type: objectEncoding.dataType)
     }
 
     init(streamId: UInt32, objectEncoding: RTMPObjectEncoding, handlerName: String, arguments: [Any?] = []) {
