@@ -417,7 +417,7 @@ final class RTMPDataMessage: RTMPMessage {
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
-        super.init(type: objectEncoding.commandType)
+        super.init(type: objectEncoding.dataType)
         self.streamId = streamId
     }
 
