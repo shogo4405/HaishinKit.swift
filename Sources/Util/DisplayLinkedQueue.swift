@@ -17,7 +17,7 @@ final class DisplayLinkedQueue: NSObject {
     weak var delegate: DisplayLinkedQueueDelegate?
     private(set) var duration: TimeInterval = 0
     private var isReady: Bool = false
-    private var buffers: [CMSampleBuffer] = []
+    private var buffer: CircularBuffer<CMSampleBuffer> = .init(256)
     private var mediaTime: CFTimeInterval = 0
     private var clockTime: Double = 0.0
     private var displayLink: DisplayLink? {
@@ -33,38 +33,30 @@ final class DisplayLinkedQueue: NSObject {
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")
 
     func enqueue(_ buffer: CMSampleBuffer) {
-        lockQueue.async {
-            if self.mediaTime == 0 && self.clockTime == 0 && self.buffers.isEmpty {
-                self.delegate?.queue(buffer)
-            }
-            self.duration += buffer.duration.seconds
-            self.buffers.append(buffer)
-            if !self.isReady {
-                self.isReady = self.duration <= self.bufferTime && !self.locked.value
-            }
+        if mediaTime == 0 && clockTime == 0 && self.buffer.isEmpty {
+            delegate?.queue(buffer)
+        }
+        duration += buffer.duration.seconds
+        self.buffer.append(buffer)
+        if !isReady {
+            isReady = duration <= bufferTime && !locked.value
         }
     }
 
     @objc
     private func update(displayLink: DisplayLink) {
-        lockQueue.async { [weak self] in
-            self?.execute(displayLink: displayLink)
-        }
-    }
-
-    private func execute(displayLink: DisplayLink) {
-        guard let first: CMSampleBuffer = buffers.first, isReady else {
+        guard let first: CMSampleBuffer = buffer.first, isReady else {
             return
         }
         if mediaTime == 0 {
             mediaTime = displayLink.timestamp
         }
-        if clockTime == 0 {
+        if clockTime == 0 || first.presentationTimeStamp.seconds - clockTime < 0 {
             clockTime = first.presentationTimeStamp.seconds
         }
         if first.presentationTimeStamp.seconds - clockTime <= displayLink.timestamp - mediaTime {
-            buffers.removeFirst()
-            if buffers.isEmpty {
+            buffer.removeFirst()
+            if buffer.isEmpty {
                 delegate?.empty()
             }
             delegate?.queue(first)
@@ -92,7 +84,7 @@ extension DisplayLinkedQueue: Running {
                 return
             }
             self.displayLink = nil
-            self.buffers.removeAll()
+            self.buffer.removeAll()
             self.isRunning.mutate { $0 = false }
         }
     }
