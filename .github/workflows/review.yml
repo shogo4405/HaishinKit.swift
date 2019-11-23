@@ -9,5 +9,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: review
-      run: bundle exec fastlane review
+    - name: bundle install
+      run: |
+        bundle install
+        bundle exec fastlane review
