@@ -40,8 +40,8 @@ final class MainViewController: NSViewController {
 
     override func viewWillAppear() {
         super.viewWillAppear()
-        rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
-        rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
+        //rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
+        //rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
         lfView?.attachStream(rtmpStream)
     }
 
@@ -155,7 +155,7 @@ final class MainViewController: NSViewController {
         }
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream!.publish(Preference.defaultInstance.streamName)
+            rtmpStream!.play(Preference.defaultInstance.streamName)
         default:
             break
         }

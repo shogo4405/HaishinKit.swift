@@ -39,7 +39,7 @@ final class H264Decoder {
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Decoder.lock")
 
     var needsSync: Atomic<Bool> = .init(true)
-    private var isBaseline: Bool = true
+    var isBaseline: Bool = true
     private var buffers: [CMSampleBuffer] = []
     private var attributes: [NSString: AnyObject] {
         return H264Decoder.defaultAttributes
@@ -172,7 +172,7 @@ final class H264Decoder {
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let value: NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
             let type: AVAudioSession.InterruptionType = AVAudioSession.InterruptionType(rawValue: value.uintValue) else {
-                return
+            return
         }
         switch type {
         case .ended:

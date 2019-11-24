@@ -16,7 +16,6 @@ final class DisplayLinkedQueue: NSObject {
     var bufferTime: TimeInterval = 0.0 // sec
     weak var delegate: DisplayLinkedQueueDelegate?
     private(set) var duration: TimeInterval = 0
-    private var isReady: Bool = false
     private var buffer: CircularBuffer<CMSampleBuffer> = .init(256)
     private var mediaTime: CFTimeInterval = 0
     private var clockTime: Double = 0.0
@@ -27,31 +26,29 @@ final class DisplayLinkedQueue: NSObject {
                 return
             }
             displayLink.frameInterval = 1
-            displayLink.add(to: .main, forMode: RunLoop.Mode.common)
+            displayLink.add(to: .main, forMode: .common)
         }
     }
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")
 
     func enqueue(_ buffer: CMSampleBuffer) {
+        guard buffer.presentationTimeStamp != .invalid else { return }
         if mediaTime == 0 && clockTime == 0 && self.buffer.isEmpty {
             delegate?.queue(buffer)
         }
         duration += buffer.duration.seconds
         self.buffer.append(buffer)
-        if !isReady {
-            isReady = duration <= bufferTime && !locked.value
-        }
     }
 
     @objc
     private func update(displayLink: DisplayLink) {
-        guard let first: CMSampleBuffer = buffer.first, isReady else {
+        guard let first: CMSampleBuffer = buffer.first, !locked.value else {
             return
         }
         if mediaTime == 0 {
             mediaTime = displayLink.timestamp
         }
-        if clockTime == 0 || first.presentationTimeStamp.seconds - clockTime < 0 {
+        if clockTime == 0 {
             clockTime = first.presentationTimeStamp.seconds
         }
         if first.presentationTimeStamp.seconds - clockTime <= displayLink.timestamp - mediaTime {

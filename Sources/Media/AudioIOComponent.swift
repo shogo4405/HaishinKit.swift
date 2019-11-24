@@ -188,13 +188,12 @@ extension AudioIOComponent: AudioConverterDelegate {
 
         mixer?.delegate?.didOutputAudio(buffer, presentationTimeStamp: presentationTimeStamp)
 
-        currentBuffers.mutate { value in
-            value += 1
-        }
+        currentBuffers.mutate { $0 += 1 }
 
         nstry({
             if !self.playerNode.isPlaying {
                 self.playerNode.play()
+                self.mixer?.videoIO?.queue.locked.mutate { $0 = false }
             }
             self.playerNode.scheduleBuffer(buffer) { [weak self] in
                 guard let self = self else { return }

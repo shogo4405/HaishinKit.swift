@@ -630,25 +630,24 @@ final class RTMPVideoMessage: RTMPMessage {
     }
 
     func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
+        let isBaseline = stream.mixer.videoIO.decoder.isBaseline
         let compositionTimeoffset = Int32(data: [0] + payload[2..<5]).bigEndian
 
-        var pts: CMTime = .invalid
-        var dts: CMTime = .invalid
+        if timestamp == 0 && compositionTimeoffset != 0 && !isBaseline {
+            timestamp = UInt32(Double(compositionTimeoffset) - stream.videoTimestamp)
+        }
+
         switch type {
         case .zero:
-            pts = CMTimeMake(value: Int64(timestamp) + Int64(compositionTimeoffset), timescale: 1000)
-            dts = CMTimeMake(value: Int64(timestamp), timescale: 1000)
-            stream.videoTimestamp = Double(dts.value)
+            stream.videoTimestamp = Double(timestamp)
         default:
-            pts = CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(timestamp) + Int64(compositionTimeoffset), timescale: 1000)
-            dts = CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(timestamp), timescale: 1000)
-            stream.videoTimestamp = Double(dts.value)
+            stream.videoTimestamp += Double(timestamp)
         }
 
         var timing = CMSampleTimingInfo(
             duration: CMTimeMake(value: Int64(timestamp), timescale: 1000),
-            presentationTimeStamp: pts,
-            decodeTimeStamp: compositionTimeoffset == 0 ? CMTime.invalid : dts
+            presentationTimeStamp: compositionTimeoffset != 0 && isBaseline ? .invalid : CMTimeMake(value: Int64(stream.videoTimestamp), timescale: 1000),
+            decodeTimeStamp: .invalid
         )
 
         payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
@@ -694,11 +693,6 @@ final class RTMPVideoMessage: RTMPMessage {
             if let sampleBuffer = sampleBuffer {
                 sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
                 status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer)
-            }
-            if stream.mixer.videoIO.queue.locked.value {
-                stream.mixer.videoIO.queue.locked.mutate { value in
-                    value = timestamp != 0
-                }
             }
         }
     }
