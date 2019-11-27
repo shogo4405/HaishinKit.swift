@@ -1,8 +1,13 @@
+#if os(macOS)
+
 import AVFoundation
 import MetalKit
 
 open class MTHKView: MTKView {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
+
+    var position: AVCaptureDevice.Position = .back
+    var orientation: AVCaptureVideoOrientation = .portrait
 
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
@@ -24,8 +29,8 @@ open class MTHKView: MTKView {
 
     override open func awakeFromNib() {
         super.awakeFromNib()
-        framebufferOnly = false
         delegate = self
+        framebufferOnly = false
         enableSetNeedsDisplay = true
     }
 
@@ -33,6 +38,7 @@ open class MTHKView: MTKView {
         if let stream: NetStream = stream {
             stream.mixer.videoIO.context = CIContext(mtlDevice: device!)
             stream.lockQueue.async {
+                self.position = stream.mixer.videoIO.position
                 stream.mixer.videoIO.drawable = self
                 stream.mixer.startRunning()
             }
@@ -46,18 +52,13 @@ extension MTHKView: MTKViewDelegate {
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
     }
 
-#if arch(i386) || arch(x86_64)
-    public func draw(in view: MTKView) {
-        // tvOS Simulator doesn't support currentDrawable as CAMetalDrawable.
-    }
-#else
     public func draw(in view: MTKView) {
         guard
             let drawable: CAMetalDrawable = currentDrawable,
             let image: CIImage = displayImage,
             let commandBuffer: MTLCommandBuffer = device?.makeCommandQueue()?.makeCommandBuffer(),
             let context: CIContext = currentStream?.mixer.videoIO.context else {
-                return
+            return
         }
         var scaleX: CGFloat = 0
         var scaleY: CGFloat = 0
@@ -90,7 +91,6 @@ extension MTHKView: MTKViewDelegate {
         commandBuffer.present(drawable)
         commandBuffer.commit()
     }
-#endif
 }
 
 extension MTHKView: NetStreamDrawable {
@@ -98,7 +98,9 @@ extension MTHKView: NetStreamDrawable {
     func draw(image: CIImage) {
         DispatchQueue.main.async {
             self.displayImage = image
-            self.setNeedsDisplay()
+            self.needsDisplay = true
         }
     }
 }
+
+#endif

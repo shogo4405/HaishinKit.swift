@@ -1,4 +1,5 @@
 import Foundation
+import CoreVideo
 
 extension CVPixelBuffer {
     var width: Int {

@@ -1,6 +1,11 @@
+#if os(iOS)
+
 import AVFoundation
 import CoreImage
+
+#if os(iOS)
 import UIKit
+#endif
 
 public protocol ScreenCaptureOutputPixelBufferDelegate: class {
     func didSet(size: CGSize)
@@ -168,3 +173,5 @@ extension ScreenCaptureSession: Running {
         }
     }
 }
+
+#endif

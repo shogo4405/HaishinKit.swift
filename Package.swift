@@ -5,21 +5,26 @@ import PackageDescription
 let package = Package(
     name: "HaishinKit",
     products: [
-        .library(name: "RTMP", targets: ["HTTP"]),
-        .library(name: "HTTP", targets: ["RTMP"])
+        .library(name: "HaishinKit", targets: ["HaishinKit"])
     ],
     dependencies: [
-        .Package(url: "https://github.com/shogo4405/Logboard.git", from: "2.1.2")
+        .package(url: "https://github.com/shogo4405/Logboard.git", from: "2.1.2")
     ],
     targets: [
-        .target(name: "Codec", dependencies: [])
-        .target(name: "Extension", dependencied: [])
-        .target(name: "HTTP", dependencies: [])
-        .target(name: "ISO", dependencies: [])
-        .target(name: "Media", dependencies: [])
-        .target(name: "Util", dependencies: [])
-        .target(name: "Net", dependencies: ["Codec", "Extension", "ISO", "Media", "Util"])
-        .target(name: "HTTP", dependencies: ["Net"])
-        .target(name: "RTMP", dependencies: ["Net", "FLV"])
+        .target(name: "SwiftPMSupport"),
+        .target(name: "HaishinKit", dependencies: ["Logboard", "SwiftPMSupport"],
+                path: "Sources",
+                sources: [
+                    "Codec",
+                    "Extension",
+                    "FLV",
+                    "ISO",
+                    "Media",
+                    "Net",
+                    "Util",
+                    "RTMP",
+                    "HTTP",
+                    "Platforms"
+                ])
     ]
 )

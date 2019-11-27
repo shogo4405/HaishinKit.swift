@@ -1,5 +1,9 @@
 import AVFoundation
 
+#if canImport(SwiftPMSupport)
+import SwiftPMSupport
+#endif
+
 final class AudioIOComponent: IOComponent {
     lazy var encoder = AudioConverter()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")

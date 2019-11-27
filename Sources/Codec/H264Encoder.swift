@@ -2,6 +2,10 @@ import AVFoundation
 import CoreFoundation
 import VideoToolbox
 
+#if os(iOS)
+import UIKit
+#endif
+
 protocol VideoEncoderDelegate: class {
     func didSetFormatDescription(video formatDescription: CMFormatDescription?)
     func sampleOutput(video sampleBuffer: CMSampleBuffer)

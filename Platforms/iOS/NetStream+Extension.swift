@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import AVFoundation
 import Foundation
 
@@ -25,3 +27,5 @@ extension NetStream {
         self.mixer.videoIO.setZoomFactor(zoomFactor, ramping: ramping, withRate: withRate)
     }
 }
+
+#endif

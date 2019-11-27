@@ -1,3 +1,5 @@
+#if os(macOS)
+
 import AVFoundation
 
 extension VideoIOComponent {
@@ -17,3 +19,5 @@ extension VideoIOComponent {
         }
     }
 }
+
+#endif

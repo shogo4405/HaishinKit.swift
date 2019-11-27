@@ -1,4 +1,5 @@
 import AVFoundation
+import CoreImage
 
 final class VideoIOComponent: IOComponent {
     #if os(macOS)
