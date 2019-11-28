@@ -9,7 +9,13 @@ final class AudioIOComponent: IOComponent {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
-    var currentPresentationTimeStamp: CMTime = .zero
+    var currentPresentationTimeStamp: CMTime = .zero {
+        didSet {
+            if currentPresentationTimeStamp.seconds == 0 {
+                mixer?.videoIO?.queue.locked.mutate { $0 = false }
+            }
+        }
+    }
     var currentBuffers: Atomic<Int> = .init(0)
     var soundTransform: SoundTransform = .init() {
         didSet {
@@ -197,7 +203,6 @@ extension AudioIOComponent: AudioConverterDelegate {
         nstry({
             if !self.playerNode.isPlaying {
                 self.playerNode.play()
-                self.mixer?.videoIO?.queue.locked.mutate { $0 = false }
             }
             self.playerNode.scheduleBuffer(buffer) { [weak self] in
                 guard let self = self else { return }

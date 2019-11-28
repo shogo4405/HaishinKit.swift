@@ -631,11 +631,11 @@ final class RTMPVideoMessage: RTMPMessage {
 
     func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
         let isBaseline = stream.mixer.videoIO.decoder.isBaseline
-        let compositionTimeoffset = Int32(data: [0] + payload[2..<5]).bigEndian
 
-        if timestamp == 0 && compositionTimeoffset != 0 && !isBaseline {
-            timestamp = UInt32(Double(compositionTimeoffset) - stream.videoTimestamp)
-        }
+        // compositionTime -> SI24
+        var compositionTime = isBaseline ? 0 : Int32(data: [0] + payload[2..<5]).bigEndian
+        compositionTime <<= 8
+        compositionTime /= 256
 
         switch type {
         case .zero:
@@ -646,7 +646,7 @@ final class RTMPVideoMessage: RTMPMessage {
 
         var timing = CMSampleTimingInfo(
             duration: CMTimeMake(value: Int64(timestamp), timescale: 1000),
-            presentationTimeStamp: compositionTimeoffset != 0 && isBaseline ? .invalid : CMTimeMake(value: Int64(stream.videoTimestamp), timescale: 1000),
+            presentationTimeStamp: CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(compositionTime), timescale: 1000),
             decodeTimeStamp: .invalid
         )
 
