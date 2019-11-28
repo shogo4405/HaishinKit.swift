@@ -1,3 +1,5 @@
+#if os(macOS)
+
 import AVFoundation
 import GLUT
 import OpenGL.GL3
@@ -111,3 +113,5 @@ extension GLHKView: NetStreamDrawable {
         }
     }
 }
+
+#endif

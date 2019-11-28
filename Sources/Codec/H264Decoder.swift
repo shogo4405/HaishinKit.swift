@@ -3,6 +3,10 @@ import CoreFoundation
 import CoreVideo
 import VideoToolbox
 
+#if os(iOS)
+import UIKit
+#endif
+
 protocol VideoDecoderDelegate: class {
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
 }

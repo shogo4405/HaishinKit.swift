@@ -1,3 +1,5 @@
+#if os(iOS)
+
 import AVFoundation
 
 extension VideoIOComponent {
@@ -62,3 +64,5 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
     }
 }
+
+#endif

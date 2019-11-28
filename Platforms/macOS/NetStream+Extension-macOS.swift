@@ -1,3 +1,5 @@
+#if os(macOS)
+
 import AVFoundation
 import Foundation
 
@@ -8,3 +10,5 @@ extension NetStream {
         }
     }
 }
+
+#endif

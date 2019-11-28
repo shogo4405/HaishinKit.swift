@@ -1,3 +1,5 @@
+#if os(tvOS)
+
 import CoreMedia
 import Foundation
 
@@ -11,3 +13,5 @@ protocol AVCaptureVideoDataOutputSampleBufferDelegate: class {
 protocol AVCaptureAudioDataOutputSampleBufferDelegate: class {
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
+
+#endif

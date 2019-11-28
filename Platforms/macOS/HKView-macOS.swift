@@ -1,3 +1,5 @@
+#if os(macOS)
+
 import AVFoundation
 
 open class HKView: NSView {
@@ -60,3 +62,5 @@ extension HKView: NetStreamDrawable {
     func draw(image: CIImage) {
     }
 }
+
+#endif

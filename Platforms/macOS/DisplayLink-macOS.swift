@@ -1,3 +1,5 @@
+#if os(macOS)
+
 import CoreVideo
 import Foundation
 
@@ -41,3 +43,5 @@ final class DisplayLink: NSObject {
         status = CVDisplayLinkStop(displayLink)
     }
 }
+
+#endif

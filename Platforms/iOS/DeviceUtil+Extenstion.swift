@@ -1,4 +1,7 @@
+#if os(iOS)
+
 import AVFoundation
+import UIKit
 
 extension DeviceUtil {
     public static func videoOrientation(by notification: Notification) -> AVCaptureVideoOrientation? {
@@ -38,3 +41,5 @@ extension DeviceUtil {
         }
     }
 }
+
+#endif

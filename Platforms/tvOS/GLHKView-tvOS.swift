@@ -1,3 +1,5 @@
+#if os(tvOS)
+
 import AVFoundation
 import GLKit
 
@@ -65,3 +67,5 @@ extension GLHKView: NetStreamDrawable {
         }
     }
 }
+
+#endif

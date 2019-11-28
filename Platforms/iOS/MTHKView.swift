@@ -1,3 +1,5 @@
+#if os(iOS)
+
 #if canImport(MetalKit)
 import AVFoundation
 import MetalKit
@@ -109,4 +111,6 @@ extension MTHKView: NetStreamDrawable {
         }
     }
 }
+#endif
+
 #endif

@@ -2,6 +2,10 @@ import AVFoundation
 import CoreMedia
 import Foundation
 
+#if canImport(SwiftPMSupport)
+import SwiftPMSupport
+#endif
+
 /// MPEG-2 TS (Transport Stream) Writer delegate
 public protocol TSWriterDelegate: class {
     func didOutput(_ data: Data)
