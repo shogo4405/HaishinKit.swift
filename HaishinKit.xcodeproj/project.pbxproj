@@ -82,7 +82,7 @@
 		294B2D3223785E3800CE7BDC /* CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294B2D3123785E3800CE7BDC /* CircularBuffer.swift */; };
 		294B2D3323785E3800CE7BDC /* CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294B2D3123785E3800CE7BDC /* CircularBuffer.swift */; };
 		294B2D3423785E3800CE7BDC /* CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294B2D3123785E3800CE7BDC /* CircularBuffer.swift */; };
-		294CC9B422D9BEC000F9DD5C /* DisplayLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294CC9B322D9BEC000F9DD5C /* DisplayLink.swift */; };
+		294CC9B422D9BEC000F9DD5C /* DisplayLink-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294CC9B322D9BEC000F9DD5C /* DisplayLink-macOS.swift */; };
 		295018201FFA1BD700358E10 /* AudioConverterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2950181F1FFA1BD700358E10 /* AudioConverterTests.swift */; };
 		295018221FFA1C9D00358E10 /* SinWaveUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295018211FFA1C9D00358E10 /* SinWaveUtil.swift */; };
 		295074301E4620FF007F15A4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29205CBD1E461F4E009D3FFF /* Main.storyboard */; };
@@ -131,9 +131,9 @@
 		296242621D8DB86500C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
 		296242631D8DBA8C00C451A3 /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
-		296543611D62FE7100734698 /* GLHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543571D62FE6200734698 /* GLHKView.swift */; };
+		296543611D62FE7100734698 /* GLHKView-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296543571D62FE6200734698 /* GLHKView-macOS.swift */; };
 		296543621D62FE8100734698 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 296543591D62FE6200734698 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		296543631D62FE9000734698 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2965435A1D62FE6200734698 /* HKView.swift */; };
+		296543631D62FE9000734698 /* HKView-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2965435A1D62FE6200734698 /* HKView-macOS.swift */; };
 		296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897421CDB01D20074D5F0 /* Assets.xcassets */; };
 		296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */; };
 		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
@@ -154,11 +154,11 @@
 		297E69132324E38800D418AB /* AudioConverter.Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioConverter.Destination.swift */; };
 		297E69142324E38800D418AB /* AudioConverter.Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioConverter.Destination.swift */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
-		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */; };
+		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		299B131D1D35272D00A1E8F5 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		299B13271D3B751400A1E8F5 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* HKView.swift */; };
-		299D6A512051A9720090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTHKView.swift */; };
+		299D6A512051A9720090E10A /* MTHKView-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTHKView-macOS.swift */; };
 		299D6A532051A9920090E10A /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTHKView.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
@@ -242,7 +242,7 @@
 		29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		29D3D4CF1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */; };
 		29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */; };
-		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */; };
+		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */; };
 		29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */; };
 		29D3D4EA1ED0519400DD4AA6 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
@@ -510,7 +510,7 @@
 		294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb.flv; sourceTree = "<group>"; };
 		294852551D84BFAD002DE492 /* RTMPTSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPTSocket.swift; sourceTree = "<group>"; };
 		294B2D3123785E3800CE7BDC /* CircularBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularBuffer.swift; sourceTree = "<group>"; };
-		294CC9B322D9BEC000F9DD5C /* DisplayLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayLink.swift; sourceTree = "<group>"; };
+		294CC9B322D9BEC000F9DD5C /* DisplayLink-macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DisplayLink-macOS.swift"; sourceTree = "<group>"; };
 		2950181F1FFA1BD700358E10 /* AudioConverterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverterTests.swift; sourceTree = "<group>"; };
 		295018211FFA1C9D00358E10 /* SinWaveUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinWaveUtil.swift; sourceTree = "<group>"; };
 		2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
@@ -529,10 +529,10 @@
 		2958912D1EEB8F4100CE51E1 /* FLVSoundType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FLVSoundType.swift; sourceTree = "<group>"; };
 		2962425F1D8DB86500C451A3 /* TSReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSReader.swift; sourceTree = "<group>"; };
 		296242601D8DB86500C451A3 /* TSWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSWriter.swift; sourceTree = "<group>"; };
-		296543571D62FE6200734698 /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
+		296543571D62FE6200734698 /* GLHKView-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "GLHKView-macOS.swift"; sourceTree = "<group>"; };
 		296543581D62FE6200734698 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		296543591D62FE6200734698 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HaishinKit.h; sourceTree = "<group>"; };
-		2965435A1D62FE6200734698 /* HKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HKView.swift; sourceTree = "<group>"; };
+		2965435A1D62FE6200734698 /* HKView-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HKView-macOS.swift"; sourceTree = "<group>"; };
 		296543641D62FEB700734698 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		296543651D62FEB700734698 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		296543671D62FEB700734698 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -554,12 +554,12 @@
 		297E69112324E38800D418AB /* AudioConverter.Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverter.Destination.swift; sourceTree = "<group>"; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
-		2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
+		2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension-macOS.swift"; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenCaptureSession.swift; sourceTree = "<group>"; };
 		299B13261D3B751400A1E8F5 /* HKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HKView.swift; sourceTree = "<group>"; };
-		299D6A502051A9720090E10A /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
+		299D6A502051A9720090E10A /* MTHKView-macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTHKView-macOS.swift"; sourceTree = "<group>"; };
 		299D6A522051A9920090E10A /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		299F7E3B1CD71A97001E7272 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HaishinKit.h; sourceTree = "<group>"; };
@@ -612,7 +612,7 @@
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
-		29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
+		29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension-macOS.swift"; sourceTree = "<group>"; };
 		29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceUtil+Extenstion.swift"; sourceTree = "<group>"; };
 		29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4E51ED0518900DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -950,14 +950,14 @@
 		296543551D62FE4A00734698 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				294CC9B322D9BEC000F9DD5C /* DisplayLink.swift */,
-				296543571D62FE6200734698 /* GLHKView.swift */,
+				294CC9B322D9BEC000F9DD5C /* DisplayLink-macOS.swift */,
+				296543571D62FE6200734698 /* GLHKView-macOS.swift */,
 				296543591D62FE6200734698 /* HaishinKit.h */,
-				2965435A1D62FE6200734698 /* HKView.swift */,
+				2965435A1D62FE6200734698 /* HKView-macOS.swift */,
 				296543581D62FE6200734698 /* Info.plist */,
-				299D6A502051A9720090E10A /* MTHKView.swift */,
-				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension.swift */,
-				2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension.swift */,
+				299D6A502051A9720090E10A /* MTHKView-macOS.swift */,
+				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */,
+				2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -1748,12 +1748,12 @@
 				29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */,
 				29B876F71CD70D5900FC07DA /* HTTPResponse.swift in Sources */,
 				2942A4F921A9418A004E1BEE /* Running.swift in Sources */,
-				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension.swift in Sources */,
+				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */,
 				29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */,
 				297E69132324E38800D418AB /* AudioConverter.Destination.swift in Sources */,
 				29B876F81CD70D5900FC07DA /* HTTPService.swift in Sources */,
 				29B876F91CD70D5900FC07DA /* HTTPStream.swift in Sources */,
-				296543631D62FE9000734698 /* HKView.swift in Sources */,
+				296543631D62FE9000734698 /* HKView-macOS.swift in Sources */,
 				29B876FA1CD70D5900FC07DA /* M3U.swift in Sources */,
 				292D8A341D8B294900DBECE2 /* MP4Sampler.swift in Sources */,
 				29B876FD1CD70D5A00FC07DA /* AudioSpecificConfig.swift in Sources */,
@@ -1771,26 +1771,26 @@
 				295891131EEB8D7200CE51E1 /* FLVFrameType.swift in Sources */,
 				29B877011CD70D5A00FC07DA /* ProgramSpecific.swift in Sources */,
 				295891271EEB8EF300CE51E1 /* FLVAACPacket.swift in Sources */,
-				299D6A512051A9720090E10A /* MTHKView.swift in Sources */,
+				299D6A512051A9720090E10A /* MTHKView-macOS.swift in Sources */,
 				29B877021CD70D5A00FC07DA /* TransportStream.swift in Sources */,
 				296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */,
 				2958912F1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
 				29B877031CD70D5A00FC07DA /* AudioIOComponent.swift in Sources */,
 				29B877051CD70D5A00FC07DA /* AVMixer.swift in Sources */,
 				294B2D3323785E3800CE7BDC /* CircularBuffer.swift in Sources */,
-				2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension.swift in Sources */,
+				2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension-macOS.swift in Sources */,
 				2926A9EF1DE6B83F0074E3D2 /* MachUtil.swift in Sources */,
 				2976A47F1D48FD6900B53EF2 /* AVRecorder.swift in Sources */,
 				29B877071CD70D5A00FC07DA /* SoundTransform.swift in Sources */,
 				29B877081CD70D5A00FC07DA /* VideoIOComponent.swift in Sources */,
-				294CC9B422D9BEC000F9DD5C /* DisplayLink.swift in Sources */,
+				294CC9B422D9BEC000F9DD5C /* DisplayLink-macOS.swift in Sources */,
 				29B877091CD70D5A00FC07DA /* VideoEffect.swift in Sources */,
 				29B8770A1CD70D5A00FC07DA /* MIME.swift in Sources */,
 				29B8770B1CD70D5A00FC07DA /* NetClient.swift in Sources */,
 				29EA87EE1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
 				29B8770C1CD70D5A00FC07DA /* NetService.swift in Sources */,
 				2958911B1EEB8E3F00CE51E1 /* FLVAudioCodec.swift in Sources */,
-				296543611D62FE7100734698 /* GLHKView.swift in Sources */,
+				296543611D62FE7100734698 /* GLHKView-macOS.swift in Sources */,
 				293B42EA2340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
 				29DC17B421D0CC0600E26CED /* Atomic.swift in Sources */,
 				29EA87E01E79A0810043A5F8 /* CMSampleBuffer+Extension.swift in Sources */,
