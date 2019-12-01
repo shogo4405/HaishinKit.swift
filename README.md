@@ -83,7 +83,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.0.0
+github "shogo4405/HaishinKit.swift" ~> 1.0.1
 ```
 
 ## License
