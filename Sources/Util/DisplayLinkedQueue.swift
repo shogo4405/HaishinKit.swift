@@ -12,10 +12,9 @@ protocol DisplayLinkedQueueDelegate: class {
 
 final class DisplayLinkedQueue: NSObject {
     var locked: Atomic<Bool> = .init(true)
-    var isRunning: Atomic<Bool> = .init(false)
-    var bufferTime: TimeInterval = 0.0 // sec
+    var audioDuration: Atomic<Double> = .init(0.0)
     weak var delegate: DisplayLinkedQueueDelegate?
-    private(set) var duration: TimeInterval = 0
+    private(set) var isRunning: Atomic<Bool> = .init(false)
     private var buffer: CircularBuffer<CMSampleBuffer> = .init(256)
     private var mediaTime: CFTimeInterval = 0
     private var clockTime: Double = 0.0
@@ -38,7 +37,6 @@ final class DisplayLinkedQueue: NSObject {
         } else {
             guard 0 < buffer.duration.seconds else { return }
         }
-        duration += buffer.duration.seconds
         self.buffer.append(buffer)
     }
 
@@ -53,13 +51,24 @@ final class DisplayLinkedQueue: NSObject {
         if clockTime == 0 {
             clockTime = first.presentationTimeStamp.seconds
         }
-        if first.presentationTimeStamp.seconds - clockTime <= displayLink.timestamp - mediaTime {
+        if first.presentationTimeStamp.seconds - clockTime <= max(displayLink.timestamp - mediaTime, audioDuration.value) {
             buffer.removeFirst()
             if buffer.isEmpty {
                 delegate?.empty()
             }
-            delegate?.queue(first)
+            if hasNext(displayLink) {
+                update(displayLink: displayLink)
+            } else {
+                delegate?.queue(first)
+            }
         }
+    }
+
+    private func hasNext(_ displayLink: DisplayLink) -> Bool {
+        guard let first: CMSampleBuffer = buffer.first else {
+            return false
+        }
+        return first.presentationTimeStamp.seconds - clockTime <= max(displayLink.timestamp - mediaTime, audioDuration.value)
     }
 }
 

@@ -95,7 +95,7 @@ public class AVMixer {
         get {
             if _session == nil {
                 _session = AVCaptureSession()
-                _session!.sessionPreset = .default
+                _session?.sessionPreset = .default
             }
             return _session!
         }
