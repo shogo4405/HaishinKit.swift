@@ -583,12 +583,30 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.encoder.destination = .pcm
             stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
+            if stream.mixer.audioIO.encoder.inSourceFormat == nil {
+                stream.mixer.audioIO.encoder.destination = .pcm
+                stream.mixer.audioIO.encoder.inSourceFormat = createFormatDescription()
+            }
             payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
                 stream.mixer.audioIO.encoder.encodeBytes(buffer.baseAddress?.advanced(by: codec.headerSize), count: payload.count - codec.headerSize, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
             }
         case .none:
             break
         }
+    }
+
+    private func createFormatDescription() -> AudioStreamBasicDescription {
+        return AudioStreamBasicDescription(
+            mSampleRate: soundRate.floatValue,
+            mFormatID: kAudioFormatMPEG4AAC,
+            mFormatFlags: AudioFormatFlags(AudioObjectType.aacMain.rawValue),
+            mBytesPerPacket: 0,
+            mFramesPerPacket: 1024,
+            mBytesPerFrame: 0,
+            mChannelsPerFrame: soundType == .stereo ? 2 : 1,
+            mBitsPerChannel: 0,
+            mReserved: 0
+        )
     }
 }
 
