@@ -580,7 +580,7 @@ final class RTMPAudioMessage: RTMPMessage {
         switch FLVAACPacketType(rawValue: payload[1]) {
         case .seq?:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
-            stream.mixer.audioIO.encoder.destination = .PCM
+            stream.mixer.audioIO.encoder.destination = .pcm
             stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
             payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
@@ -693,6 +693,9 @@ final class RTMPVideoMessage: RTMPMessage {
             if let sampleBuffer = sampleBuffer {
                 sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
                 status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer)
+                if stream.mixer.videoIO.queue.locked.value && stream.mixer.audioIO.encoder.inSourceFormat == nil {
+                    stream.mixer.videoIO.queue.locked.mutate { $0 = timestamp != 0 }
+                }
             }
         }
     }

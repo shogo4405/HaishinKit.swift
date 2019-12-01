@@ -44,7 +44,7 @@ public class AudioConverter {
     public static let defaultMaximumBuffers: Int = 1
     public static let defaultBufferListSize: Int = AudioBufferList.sizeInBytes(maximumBuffers: 1)
 
-    public var destination: Destination = .AAC
+    public var destination: Destination = .aac
     public weak var delegate: AudioConverterDelegate?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
     public var settings: Setting<AudioConverter, Option> = [:] {
@@ -258,7 +258,7 @@ public class AudioConverter {
                     presentationTimeStamp: presentationTimeStamp
                 )
             case -1:
-                if destination == .PCM {
+                if destination == .pcm {
                     delegate?.sampleOutput(
                         audio: outOutputData,
                         presentationTimeStamp: presentationTimeStamp
@@ -300,7 +300,7 @@ public class AudioConverter {
         memcpy(ioData, currentBufferList.unsafePointer, bufferListSize)
         ioNumberDataPackets.pointee = 1
 
-        if destination == .PCM && outDataPacketDescription != nil {
+        if destination == .pcm && outDataPacketDescription != nil {
             audioStreamPacketDescription.mDataByteSize = currentBufferList.unsafePointer.pointee.mBuffers.mDataByteSize
             outDataPacketDescription?.pointee = audioStreamPacketDescriptionPointer
         }

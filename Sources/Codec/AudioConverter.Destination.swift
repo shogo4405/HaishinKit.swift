@@ -2,75 +2,75 @@ import AudioToolbox
 
 extension AudioConverter {
     public enum Destination {
-        case AAC
-        case PCM
+        case aac
+        case pcm
 
         var formatID: AudioFormatID {
             switch self {
-            case .AAC:
+            case .aac:
                 return kAudioFormatMPEG4AAC
-            case .PCM:
+            case .pcm:
                 return kAudioFormatLinearPCM
             }
         }
 
         var formatFlags: UInt32 {
             switch self {
-            case .AAC:
+            case .aac:
                 return UInt32(MPEG4ObjectID.AAC_LC.rawValue)
-            case .PCM:
+            case .pcm:
                 return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat
             }
         }
 
         var framesPerPacket: UInt32 {
             switch self {
-            case .AAC:
+            case .aac:
                 return 1024
-            case .PCM:
+            case .pcm:
                 return 1
             }
         }
 
         var packetSize: UInt32 {
             switch self {
-            case .AAC:
+            case .aac:
                 return 1
-            case .PCM:
+            case .pcm:
                 return 1024
             }
         }
 
         var bitsPerChannel: UInt32 {
             switch self {
-            case .AAC:
+            case .aac:
                 return 0
-            case .PCM:
+            case .pcm:
                 return 32
             }
         }
 
         var bytesPerPacket: UInt32 {
             switch self {
-            case .AAC:
+            case .aac:
                 return 0
-            case .PCM:
+            case .pcm:
                 return (bitsPerChannel / 8)
             }
         }
 
         var bytesPerFrame: UInt32 {
             switch self {
-            case .AAC:
+            case .aac:
                 return 0
-            case .PCM:
+            case .pcm:
                 return (bitsPerChannel / 8)
             }
         }
 
         var inClassDescriptions: [AudioClassDescription] {
             switch self {
-            case .AAC:
+            case .aac:
                 #if os(iOS)
                 return [
                     AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
@@ -79,16 +79,16 @@ extension AudioConverter {
                 #else
                 return []
                 #endif
-            case .PCM:
+            case .pcm:
                 return []
             }
         }
 
         func mamimumBuffers(_ channel: UInt32) -> Int {
             switch self {
-            case .AAC:
+            case .aac:
                 return 1
-            case .PCM:
+            case .pcm:
                 return Int(channel)
             }
         }

@@ -75,9 +75,7 @@ public class TSWriter: Running {
         guard isRunning.value else {
             return
         }
-        isRunning.mutate { value in
-            value = true
-        }
+        isRunning.mutate { $0 = true }
     }
 
     public func stopRunning() {
@@ -95,9 +93,7 @@ public class TSWriter: Running {
         videoTimestamp = .invalid
         audioTimestamp = .invalid
         PCRTimestamp = .invalid
-        isRunning.mutate { value in
-            value = false
-        }
+        isRunning.mutate { $0 = false }
     }
 
     // swiftlint:disable function_parameter_count

@@ -35,6 +35,8 @@ final class DisplayLinkedQueue: NSObject {
         guard buffer.presentationTimeStamp != .invalid else { return }
         if mediaTime == 0 && clockTime == 0 && self.buffer.isEmpty {
             delegate?.queue(buffer)
+        } else {
+            guard 0 < buffer.duration.seconds else { return }
         }
         duration += buffer.duration.seconds
         self.buffer.append(buffer)
