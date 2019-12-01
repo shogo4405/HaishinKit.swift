@@ -10,6 +10,9 @@ extension CMSampleBuffer {
         }
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var dataBuffer: CMBlockBuffer? {
         get {
             return CMSampleBufferGetDataBuffer(self)
@@ -21,26 +24,44 @@ extension CMSampleBuffer {
         }
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var imageBuffer: CVImageBuffer? {
         return CMSampleBufferGetImageBuffer(self)
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var numSamples: CMItemCount {
         return CMSampleBufferGetNumSamples(self)
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var duration: CMTime {
         return CMSampleBufferGetDuration(self)
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var formatDescription: CMFormatDescription? {
         return CMSampleBufferGetFormatDescription(self)
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var decodeTimeStamp: CMTime {
         return CMSampleBufferGetDecodeTimeStamp(self)
     }
 
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var presentationTimeStamp: CMTime {
         return CMSampleBufferGetPresentationTimeStamp(self)
     }
