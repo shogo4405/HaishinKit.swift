@@ -583,8 +583,16 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.encoder.destination = .pcm
             stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
+            if stream.mixer.audioIO.encoder.inSourceFormat == nil {
+                stream.mixer.audioIO.encoder.destination = .pcm
+                stream.mixer.audioIO.encoder.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
+            }
             payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
-                stream.mixer.audioIO.encoder.encodeBytes(buffer.baseAddress?.advanced(by: codec.headerSize), count: payload.count - codec.headerSize, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
+                stream.mixer.audioIO.encoder.encodeBytes(
+                    buffer.baseAddress?.advanced(by: codec.headerSize),
+                    count: payload.count - codec.headerSize,
+                    presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000)
+                )
             }
         case .none:
             break
