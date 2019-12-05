@@ -41,6 +41,15 @@ public enum FLVAudioCodec: UInt8 {
         }
     }
 
+    var formatFlags: AudioFormatFlags {
+        switch self {
+        case .aac:
+            return AudioFormatFlags(AudioObjectType.aacMain.rawValue)
+        default:
+            return 0
+        }
+    }
+
     var headerSize: Int {
         switch self {
         case .aac:
@@ -48,5 +57,22 @@ public enum FLVAudioCodec: UInt8 {
         default:
             return 1
         }
+    }
+
+    func audioStreamBasicDescription(_ rate: FLVSoundRate, size: FLVSoundSize, type: FLVSoundType) -> AudioStreamBasicDescription? {
+        guard isSupported else {
+            return nil
+        }
+        return AudioStreamBasicDescription(
+            mSampleRate: rate.floatValue,
+            mFormatID: formatID,
+            mFormatFlags: formatFlags,
+            mBytesPerPacket: 0,
+            mFramesPerPacket: 1024,
+            mBytesPerFrame: 0,
+            mChannelsPerFrame: type == .stereo ? 2 : 1,
+            mBitsPerChannel: 0,
+            mReserved: 0
+        )
     }
 }
