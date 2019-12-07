@@ -355,7 +355,7 @@ open class RTMPConnection: EventDispatcher {
                 let description: String = data["description"] as? String else {
                 break
             }
-            socket.deinitConnection(isDisconnected: false)
+            socket.close(isDisconnected: false)
             switch true {
             case description.contains("reason=nosuchuser"):
                 break

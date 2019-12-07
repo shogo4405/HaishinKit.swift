@@ -28,7 +28,6 @@ protocol RTMPSocketCompatible: class {
     func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>?) -> Int
     func close(isDisconnected: Bool)
     func connect(withName: String, port: Int)
-    func deinitConnection(isDisconnected: Bool)
     func setProperty(_ value: Any?, forKey: String)
     func didTimeout()
 }
@@ -38,7 +37,7 @@ extension RTMPSocketCompatible {
     }
 
     func didTimeout() {
-        deinitConnection(isDisconnected: false)
+        close(isDisconnected: false)
         delegate?.dispatch(.ioError, bubbles: false, data: nil)
         logger.warn("connection timedout")
     }

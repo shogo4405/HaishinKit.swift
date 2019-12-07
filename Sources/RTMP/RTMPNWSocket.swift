@@ -19,6 +19,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     var qualityOfService: DispatchQoS = .default
     var inputBuffer = Data()
     weak var delegate: RTMPSocketDelegate?
+
     private(set) var queueBytesOut: Int64 = 0
     private(set) var totalBytesIn: Int64 = 0
     private(set) var totalBytesOut: Int64 = 0
@@ -37,8 +38,17 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
     private var events: [Event] = []
-    private var conn: NWConnection?
     private var handshake = RTMPHandshake()
+    private var connection: NWConnection? = nil {
+        didSet {
+            if let oldValue = oldValue {
+                oldValue.cancel()
+            }
+            if connection == nil {
+                connected = false
+            }
+        }
+    }
     private var parameters: NWParameters = .tcp
     private lazy var queue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.queue", qos: qualityOfService)
     private lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.input", qos: qualityOfService)
@@ -48,30 +58,31 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
 
     deinit {
-        conn?.forceCancel()
-        conn = nil
+        connection?.forceCancel()
+        connection = nil
     }
 
     func connect(withName: String, port: Int) {
-        conn = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
-        conn?.stateUpdateHandler = self.stateDidChange(to:)
-        conn?.start(queue: queue)
-        receiveLoop(conn!)
+        connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
+        connection?.stateUpdateHandler = self.stateDidChange(to:)
+        connection?.start(queue: queue)
+        receiveLoop(connection!)
         if 0 < timeout {
             outputQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
         }
     }
 
     func close(isDisconnected: Bool) {
+        if isDisconnected {
+            let data: ASObject = (readyState == .handshakeDone) ?
+                RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
+            events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
+        }
+        readyState = .closing
         timeoutHandler.cancel()
         outputQueue = .init(label: outputQueue.label, qos: qualityOfService)
         inputBuffer.removeAll()
-        conn?.cancel()
-        conn = nil
-        connected = false
-    }
-
-    func deinitConnection(isDisconnected: Bool) {
+        connection = nil
     }
 
     @discardableResult
@@ -102,7 +113,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
                     OSAtomicAnd32Barrier(0, locked!)
                 }
             }
-            self.conn?.send(content: data, completion: sendCompletion)
+            self.connection?.send(content: data, completion: sendCompletion)
         }
         return data.count
     }
@@ -133,7 +144,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
 
-    private func receiveLoop(_ conn: NWConnection) {
+    private func receiveLoop(_ connection: NWConnection) {
         let receiveCompletion = { [weak self] (_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) -> Void in
             guard let self = self else {
                 return
@@ -142,15 +153,15 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             guard self.connected else {
                 return
             }
-            self.inputQueue.async { [weak me] () -> Void in
-                self.receiveLoop(conn)
+            self.inputQueue.async { [weak self] () -> Void in
+                self?.receiveLoop(connection)
             }
         }
         inputQueue.async { [weak self] () -> Void in
             guard let windowSizeC = self?.windowSizeC else {
                 return
             }
-            conn.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC, completion: receiveCompletion)
+            connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC, completion: receiveCompletion)
         }
     }
 
