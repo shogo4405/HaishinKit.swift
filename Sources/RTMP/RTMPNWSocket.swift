@@ -4,7 +4,7 @@ import Foundation
 #endif
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, *)
-class RTMPNWSocket: RTMPSocketCompatible {
+final class RTMPNWSocket: RTMPSocketCompatible {
     var timestamp: TimeInterval = 0.0
     var chunkSizeC: Int = RTMPChunk.defaultSize
     var chunkSizeS: Int = RTMPChunk.defaultSize
@@ -15,6 +15,9 @@ class RTMPNWSocket: RTMPSocketCompatible {
             delegate?.didSetReadyState(readyState)
         }
     }
+    var securityLevel: StreamSocketSecurityLevel = .none
+    var qualityOfService: DispatchQoS = .default
+    var inputBuffer = Data()
     weak var delegate: RTMPSocketDelegate?
     private(set) var queueBytesOut: Int64 = 0
     private(set) var totalBytesIn: Int64 = 0
@@ -34,11 +37,6 @@ class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
     private var events: [Event] = []
-
-    var securityLevel: StreamSocketSecurityLevel = .none
-    var qualityOfService: DispatchQoS = .default
-    var inputBuffer = Data()
-
     private var conn: NWConnection?
     private var handshake = RTMPHandshake()
     private var parameters: NWParameters = .tcp
@@ -137,14 +135,15 @@ class RTMPNWSocket: RTMPSocketCompatible {
 
     private func receiveLoop(_ conn: NWConnection) {
         let receiveCompletion = { [weak self] (_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) -> Void in
-            guard let me = self else {
+            guard let self = self else {
                 return
             }
-            me.receive(data, ctx, isComplete, error)
-            if me.connected {
-                me.inputQueue.async { [weak me] () -> Void in
-                    me?.receiveLoop(conn)
-                }
+            self.receive(data, ctx, isComplete, error)
+            guard self.connected else {
+                return
+            }
+            self.inputQueue.async { [weak me] () -> Void in
+                self.receiveLoop(conn)
             }
         }
         inputQueue.async { [weak self] () -> Void in
@@ -165,7 +164,6 @@ class RTMPNWSocket: RTMPSocketCompatible {
         }
         inputBuffer.append(d)
         totalBytesIn += Int64(d.count)
-
         listen()
     }
 
