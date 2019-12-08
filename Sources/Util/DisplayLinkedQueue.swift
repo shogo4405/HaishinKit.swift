@@ -56,19 +56,8 @@ final class DisplayLinkedQueue: NSObject {
             if buffer.isEmpty {
                 delegate?.empty()
             }
-            if hasNext(displayLink) {
-                update(displayLink: displayLink)
-            } else {
-                delegate?.queue(first)
-            }
+            delegate?.queue(first)
         }
-    }
-
-    private func hasNext(_ displayLink: DisplayLink) -> Bool {
-        guard let first: CMSampleBuffer = buffer.first else {
-            return false
-        }
-        return first.presentationTimeStamp.seconds - clockTime <= max(displayLink.timestamp - mediaTime, audioDuration.value)
     }
 }
 
