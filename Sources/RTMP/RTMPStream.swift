@@ -357,6 +357,7 @@ open class RTMPStream: NetStream {
         self.rtmpConnection = connection
         super.init()
         dispatcher = EventDispatcher(target: self)
+        addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         if rtmpConnection.connected {
             rtmpConnection.createStream(self)
@@ -365,6 +366,7 @@ open class RTMPStream: NetStream {
 
     deinit {
         mixer.stopRunning()
+        removeEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
     }
 
@@ -579,6 +581,10 @@ open class RTMPStream: NetStream {
             readyState = .playing
         case RTMPStream.Code.publishStart.rawValue:
             readyState = .publishing
+        case RTMPStream.Code.bufferEmpty.rawValue:
+            if mixer.audioIO.encoder.formatDescription == nil {
+                mixer.videoIO.queue.locked.mutate { $0 = false }
+            }
         default:
             break
         }
@@ -606,12 +612,15 @@ extension RTMPStream: IEventDispatcher {
     public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }
+
     public func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         dispatcher.removeEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }
+
     public func dispatch(event: Event) {
         dispatcher.dispatch(event: event)
     }
+
     public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) {
         dispatcher.dispatch(type, bubbles: bubbles, data: data)
     }

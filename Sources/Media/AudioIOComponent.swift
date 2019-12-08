@@ -9,11 +9,12 @@ final class AudioIOComponent: IOComponent {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
-    var currentPresentationTimeStamp: CMTime = .zero {
+    var duration: Double = 0 {
         didSet {
-            if currentPresentationTimeStamp.seconds == 0 {
+            if oldValue == 0 {
                 mixer?.videoIO?.queue.locked.mutate { $0 = false }
             }
+            mixer?.videoIO?.queue.audioDuration.mutate { $0 = duration }
         }
     }
     var currentBuffers: Atomic<Int> = .init(0)
@@ -52,6 +53,9 @@ final class AudioIOComponent: IOComponent {
             })
             do {
                 try audioEngine.start()
+                if !playerNode.isPlaying {
+                    playerNode.play()
+                }
             } catch {
                 logger.warn(error)
             }
@@ -201,12 +205,15 @@ extension AudioIOComponent: AudioConverterDelegate {
         currentBuffers.mutate { $0 += 1 }
 
         nstry({
-            if !self.playerNode.isPlaying {
-                self.playerNode.play()
-            }
             self.playerNode.scheduleBuffer(buffer) { [weak self] in
                 guard let self = self else { return }
-                self.currentPresentationTimeStamp = presentationTimeStamp
+
+                if
+                    let nodeTime = self.playerNode.lastRenderTime,
+                    let playerTime = self.playerNode.playerTime(forNodeTime: nodeTime) {
+                    self.duration = Double(playerTime.sampleTime) / playerTime.sampleRate
+                }
+
                 self.currentBuffers.mutate { value in
                     value -= 1
                     if value == 0 {

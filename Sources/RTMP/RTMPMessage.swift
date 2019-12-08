@@ -789,11 +789,10 @@ final class RTMPUserControlMessage: RTMPMessage {
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPUserControlMessage(event: .pong, value: value)
             ), locked: nil)
-        case .bufferEmpty, .bufferFull:
-            connection.streams[UInt32(value)]?.dispatch("rtmpStatus", bubbles: false, data: [
-                "level": "status",
-                "description": ""
-            ])
+        case .bufferEmpty:
+            connection.streams[UInt32(value)]?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferEmpty.data(""))
+        case .bufferFull:
+            connection.streams[UInt32(value)]?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferFull.data(""))
         default:
             break
         }
