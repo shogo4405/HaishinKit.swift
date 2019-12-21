@@ -11,20 +11,36 @@ protocol DisplayLinkedQueueDelegate: class {
 }
 
 final class DisplayLinkedQueue: NSObject {
+    static let defaultPreferredFramesPerSecond: Int = 0
+
     var locked: Atomic<Bool> = .init(true)
     var audioDuration: Atomic<Double> = .init(0.0)
+    var audioVideoLatency: TimeInterval {
+        return audioDuration.value - videoDuration
+    }
     weak var delegate: DisplayLinkedQueueDelegate?
+    private(set) var videoDuration: TimeInterval = 0.0 {
+        didSet {
+            if displayLinkTime == 0.0 {
+                displayLinkTime = videoDuration
+            }
+            videoDuration -= displayLinkTime
+        }
+    }
+    private var displayLinkTime: TimeInterval = 0.0
     private(set) var isRunning: Atomic<Bool> = .init(false)
     private var buffer: CircularBuffer<CMSampleBuffer> = .init(256)
-    private var mediaTime: CFTimeInterval = 0
-    private var clockTime: Double = 0.0
     private var displayLink: DisplayLink? {
         didSet {
             oldValue?.invalidate()
             guard let displayLink: DisplayLink = displayLink else {
                 return
             }
-            displayLink.frameInterval = 1
+            if #available(iOS 10.0, tvOS 10.0, *) {
+                displayLink.preferredFramesPerSecond = DisplayLinkedQueue.defaultPreferredFramesPerSecond
+            } else {
+                displayLink.frameInterval = 1
+            }
             displayLink.add(to: .main, forMode: .common)
         }
     }
@@ -32,7 +48,7 @@ final class DisplayLinkedQueue: NSObject {
 
     func enqueue(_ buffer: CMSampleBuffer) {
         guard buffer.presentationTimeStamp != .invalid else { return }
-        if mediaTime == 0 && clockTime == 0 && self.buffer.isEmpty {
+        if self.buffer.isEmpty {
             delegate?.queue(buffer)
         } else {
             guard 0 < buffer.duration.seconds else { return }
@@ -42,22 +58,18 @@ final class DisplayLinkedQueue: NSObject {
 
     @objc
     private func update(displayLink: DisplayLink) {
-        guard let first: CMSampleBuffer = buffer.first, !locked.value else {
+        guard !locked.value else {
             return
         }
-        if mediaTime == 0 {
-            mediaTime = displayLink.timestamp
+        videoDuration = displayLink.timestamp
+        guard let first = buffer.first, first.presentationTimeStamp.seconds <= videoDuration else {
+            return
         }
-        if clockTime == 0 {
-            clockTime = first.presentationTimeStamp.seconds
+        buffer.removeFirst()
+        if buffer.isEmpty {
+            delegate?.empty()
         }
-        if first.presentationTimeStamp.seconds - clockTime <= max(displayLink.timestamp - mediaTime, audioDuration.value) {
-            buffer.removeFirst()
-            if buffer.isEmpty {
-                delegate?.empty()
-            }
-            delegate?.queue(first)
-        }
+        delegate?.queue(first)
     }
 }
 
@@ -68,8 +80,9 @@ extension DisplayLinkedQueue: Running {
             guard !self.isRunning.value else {
                 return
             }
-            self.mediaTime = 0
-            self.clockTime = 0
+            self.videoDuration = 0.0
+            self.audioDuration.mutate { $0 = 0.0 }
+            self.displayLinkTime = 0.0
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
             self.isRunning.mutate { $0 = true }
         }
