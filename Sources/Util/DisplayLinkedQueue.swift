@@ -10,32 +10,32 @@ protocol DisplayLinkedQueueDelegate: class {
     func empty()
 }
 
-final class DisplayLinkedQueue: NSObject {
-    static let defaultPreferredFramesPerSecond: Int = 0
+protocol DisplayLinkedQueueClockReference: class {
+    var duration: TimeInterval { get }
+}
 
-    var locked: Atomic<Bool> = .init(true)
-    var audioDuration: Atomic<Double> = .init(0.0)
-    var audioVideoLatency: TimeInterval {
-        return audioDuration.value - videoDuration
+final class DisplayLinkedQueue: NSObject {
+    static let defaultPreferredFramesPerSecond = 0
+
+    var isPaused: Bool {
+        get { return displayLink?.isPaused ?? false }
+        set { displayLink?.isPaused = newValue }
+    }
+    var duration: TimeInterval {
+        (displayLink?.timestamp ?? 0.0) - displayLinkTime
     }
     weak var delegate: DisplayLinkedQueueDelegate?
-    private(set) var videoDuration: TimeInterval = 0.0 {
-        didSet {
-            if displayLinkTime == 0.0 {
-                displayLinkTime = videoDuration
-            }
-            videoDuration -= displayLinkTime
-        }
-    }
+    weak var clockReference: DisplayLinkedQueueClockReference?
     private var displayLinkTime: TimeInterval = 0.0
     private(set) var isRunning: Atomic<Bool> = .init(false)
     private var buffer: CircularBuffer<CMSampleBuffer> = .init(256)
     private var displayLink: DisplayLink? {
         didSet {
             oldValue?.invalidate()
-            guard let displayLink: DisplayLink = displayLink else {
+            guard let displayLink = displayLink else {
                 return
             }
+            displayLink.isPaused = true
             if #available(iOS 10.0, tvOS 10.0, *) {
                 displayLink.preferredFramesPerSecond = DisplayLinkedQueue.defaultPreferredFramesPerSecond
             } else {
@@ -58,11 +58,10 @@ final class DisplayLinkedQueue: NSObject {
 
     @objc
     private func update(displayLink: DisplayLink) {
-        guard !locked.value else {
-            return
+        if displayLinkTime == 0.0 {
+            displayLinkTime = displayLink.timestamp
         }
-        videoDuration = displayLink.timestamp
-        guard let first = buffer.first, first.presentationTimeStamp.seconds <= videoDuration else {
+        guard let first = buffer.first, first.presentationTimeStamp.seconds <= duration else {
             return
         }
         buffer.removeFirst()
@@ -80,8 +79,6 @@ extension DisplayLinkedQueue: Running {
             guard !self.isRunning.value else {
                 return
             }
-            self.videoDuration = 0.0
-            self.audioDuration.mutate { $0 = 0.0 }
             self.displayLinkTime = 0.0
             self.displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
             self.isRunning.mutate { $0 = true }

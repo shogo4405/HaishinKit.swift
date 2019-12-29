@@ -4,18 +4,16 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
-final class AudioIOComponent: IOComponent {
+final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
     lazy var encoder = AudioConverter()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
-    var duration: Double = 0 {
-        didSet {
-            if oldValue == 0 {
-                mixer?.videoIO?.queue.locked.mutate { $0 = false }
-            }
-            mixer?.videoIO?.queue.audioDuration.mutate { $0 = duration }
+    var duration: TimeInterval {
+        guard let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) else {
+            return 0.0
         }
+        return TimeInterval(playerTime.sampleTime) / playerTime.sampleRate
     }
     var currentBuffers: Atomic<Int> = .init(0)
     var soundTransform: SoundTransform = .init() {
@@ -191,6 +189,11 @@ extension AudioIOComponent: AudioConverterDelegate {
             return
         }
 
+        if let queue = mixer?.videoIO.queue, queue.isPaused {
+            queue.clockReference = self
+            queue.isPaused = false
+        }
+
         buffer.frameLength = buffer.frameCapacity
         let bufferList = UnsafeMutableAudioBufferListPointer(buffer.mutableAudioBufferList)
         for i in 0..<bufferList.count {
@@ -201,28 +204,21 @@ extension AudioIOComponent: AudioConverterDelegate {
         }
 
         mixer?.delegate?.didOutputAudio(buffer, presentationTimeStamp: presentationTimeStamp)
-
         currentBuffers.mutate { $0 += 1 }
 
         nstry({
-            self.playerNode.scheduleBuffer(buffer) { [weak self] in
-                guard let self = self else { return }
-
-                if
-                    let nodeTime = self.playerNode.lastRenderTime,
-                    let playerTime = self.playerNode.playerTime(forNodeTime: nodeTime) {
-                    self.duration = Double(playerTime.sampleTime) / playerTime.sampleRate
-                }
-
-                self.currentBuffers.mutate { value in
-                    value -= 1
-                    if value == 0 {
-                        self.mixer?.didBufferEmpty(self)
-                    }
-                }
-            }
+            self.playerNode.scheduleBuffer(buffer, completionHandler: self.didAVAudioNodeCompletion)
         }, { exeption in
-            logger.warn("\(exeption)")
+            logger.warn(exeption)
         })
+    }
+
+    private func didAVAudioNodeCompletion() {
+        currentBuffers.mutate { value in
+            value -= 1
+            if value == 0 {
+                self.mixer?.didBufferEmpty(self)
+            }
+        }
     }
 }
