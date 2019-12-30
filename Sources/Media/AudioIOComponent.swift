@@ -208,6 +208,9 @@ extension AudioIOComponent: AudioConverterDelegate {
 
         nstry({
             self.playerNode.scheduleBuffer(buffer, completionHandler: self.didAVAudioNodeCompletion)
+            if !self.playerNode.isPlaying {
+                self.playerNode.play()
+            }
         }, { exeption in
             logger.warn(exeption)
         })
@@ -217,6 +220,7 @@ extension AudioIOComponent: AudioConverterDelegate {
         currentBuffers.mutate { value in
             value -= 1
             if value == 0 {
+                self.playerNode.pause()
                 self.mixer?.didBufferEmpty(self)
             }
         }
