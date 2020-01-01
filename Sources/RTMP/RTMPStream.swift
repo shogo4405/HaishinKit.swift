@@ -581,10 +581,6 @@ open class RTMPStream: NetStream {
             readyState = .playing
         case RTMPStream.Code.publishStart.rawValue:
             readyState = .publishing
-        case RTMPStream.Code.bufferEmpty.rawValue:
-            if mixer.audioIO.encoder.formatDescription == nil {
-                mixer.videoIO.queue.isPaused = false
-            }
         default:
             break
         }

@@ -702,6 +702,9 @@ final class RTMPVideoMessage: RTMPMessage {
                 sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
                 status = stream.mixer.videoIO.decoder.decodeSampleBuffer(sampleBuffer)
             }
+            if stream.mixer.videoIO.queue.isPaused && stream.mixer.audioIO.encoder.formatDescription == nil {
+                stream.mixer.videoIO.queue.isPaused = false
+            }
         }
     }
 
