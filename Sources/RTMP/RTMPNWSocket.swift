@@ -108,7 +108,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
                     return
                 }
                 self.totalBytesOut += Int64(data.count)
-                OSAtomicAdd64(Int64(data.count), &self.queueBytesOut)
+                OSAtomicAdd64(-Int64(data.count), &self.queueBytesOut)
                 if locked != nil {
                     OSAtomicAnd32Barrier(0, locked!)
                 }
