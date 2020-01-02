@@ -341,8 +341,8 @@ open class RTMPStream: NetStream {
             }
         }
     }
-    var audioTimestamp: Double = 0
-    var videoTimestamp: Double = 0
+    var audioTimestamp: Double = 0.0
+    var videoTimestamp: Double = 0.0
     private(set) var muxer = RTMPMuxer()
     private var sampler: MP4Sampler?
     private var frameCount: UInt16 = 0

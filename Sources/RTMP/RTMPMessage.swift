@@ -630,6 +630,7 @@ final class RTMPVideoMessage: RTMPMessage {
         switch payload[1] {
         case FLVAVCPacketType.seq.rawValue:
             status = createFormatDescription(stream)
+            stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         case FLVAVCPacketType.nal.rawValue:
             enqueueSampleBuffer(stream, type: type)
         default:
