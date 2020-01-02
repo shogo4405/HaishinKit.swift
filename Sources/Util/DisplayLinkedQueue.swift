@@ -50,8 +50,6 @@ final class DisplayLinkedQueue: NSObject {
         guard buffer.presentationTimeStamp != .invalid else { return }
         if self.buffer.isEmpty {
             delegate?.queue(buffer)
-        } else {
-            guard 0 < buffer.duration.seconds else { return }
         }
         self.buffer.append(buffer)
     }
@@ -61,14 +59,25 @@ final class DisplayLinkedQueue: NSObject {
         if displayLinkTime == 0.0 {
             displayLinkTime = displayLink.timestamp
         }
-        guard let first = buffer.first, first.presentationTimeStamp.seconds <= clockReference?.duration ?? duration else {
+        guard let first = buffer.first else {
             return
         }
-        buffer.removeFirst()
-        if buffer.isEmpty {
-            delegate?.empty()
+        defer {
+            if buffer.isEmpty {
+                delegate?.empty()
+            }
         }
-        delegate?.queue(first)
+        let current = clockReference?.duration ?? duration
+        let targetTimestamp = first.presentationTimeStamp.seconds + first.duration.seconds
+        if targetTimestamp < current {
+            buffer.removeFirst()
+            update(displayLink: displayLink)
+            return
+        }
+        if first.presentationTimeStamp.seconds <= current && current <= targetTimestamp {
+            buffer.removeFirst()
+            delegate?.queue(first)
+        }
     }
 }
 
