@@ -1,16 +1,6 @@
 import AVFoundation
 import CoreImage
 
-protocol NetStreamDrawable: class {
-#if os(iOS) || os(macOS)
-    var orientation: AVCaptureVideoOrientation { get set }
-    var position: AVCaptureDevice.Position { get set }
-#endif
-
-    func draw(image: CIImage)
-    func attachStream(_ stream: NetStream?)
-}
-
 // MARK: -
 open class NetStream: NSObject {
     public private(set) var mixer = AVMixer()

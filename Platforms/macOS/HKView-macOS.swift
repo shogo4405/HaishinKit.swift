@@ -10,6 +10,9 @@ open class HKView: NSView {
             layer?.setValue(videoGravity.rawValue, forKey: "videoGravity")
         }
     }
+    public var videoFormatDescription: CMVideoFormatDescription? {
+        return currentStream?.mixer.videoIO.formatDescription
+    }
 
     var position: AVCaptureDevice.Position = .front {
         didSet {
@@ -22,7 +25,7 @@ open class HKView: NSView {
 
     private weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.renderer = nil
         }
     }
 
@@ -51,14 +54,14 @@ open class HKView: NSView {
         }
         stream.lockQueue.async {
             self.layer?.setValue(stream.mixer.session, forKey: "session")
-            stream.mixer.videoIO.drawable = self
+            stream.mixer.videoIO.renderer = self
             stream.mixer.startRunning()
         }
     }
 }
 
-extension HKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
+extension HKView: NetStreamRenderer {
+    // MARK: NetStreamRenderer
     func draw(image: CIImage) {
     }
 }

@@ -27,13 +27,13 @@ final class VideoIOComponent: IOComponent {
     }
 
     #if os(iOS) || os(macOS)
-    var drawable: NetStreamDrawable? = nil {
+    var renderer: NetStreamRenderer? = nil {
         didSet {
-            drawable?.orientation = orientation
+            renderer?.orientation = orientation
         }
     }
     #else
-    var drawable: NetStreamDrawable?
+    var renderer: NetStreamRenderer?
     #endif
 
     var formatDescription: CMVideoFormatDescription? {
@@ -116,7 +116,7 @@ final class VideoIOComponent: IOComponent {
 
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
-            drawable?.orientation = orientation
+            renderer?.orientation = orientation
             guard orientation != oldValue else {
                 return
             }
@@ -332,7 +332,7 @@ final class VideoIOComponent: IOComponent {
 
         fps *= 1
         position = camera.position
-        drawable?.position = camera.position
+        renderer?.position = camera.position
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
@@ -351,10 +351,10 @@ final class VideoIOComponent: IOComponent {
 
     func dispose() {
         if Thread.isMainThread {
-            self.drawable?.attachStream(nil)
+            self.renderer?.attachStream(nil)
         } else {
             DispatchQueue.main.sync {
-                self.drawable?.attachStream(nil)
+                self.renderer?.attachStream(nil)
             }
         }
 
@@ -364,10 +364,10 @@ final class VideoIOComponent: IOComponent {
     #else
     func dispose() {
         if Thread.isMainThread {
-            self.drawable?.attachStream(nil)
+            self.renderer?.attachStream(nil)
         } else {
             DispatchQueue.main.sync {
-                self.drawable?.attachStream(nil)
+                self.renderer?.attachStream(nil)
             }
         }
     }
@@ -388,7 +388,7 @@ final class VideoIOComponent: IOComponent {
             }
         }
 
-        if drawable != nil || !effects.isEmpty {
+        if renderer != nil || !effects.isEmpty {
             let image: CIImage = effect(buffer, info: sampleBuffer)
             extent = image.extent
             if !effects.isEmpty {
@@ -404,7 +404,7 @@ final class VideoIOComponent: IOComponent {
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
-            drawable?.draw(image: image)
+            renderer?.draw(image: image)
         }
 
         encoder.encodeImageBuffer(
@@ -453,7 +453,7 @@ extension VideoIOComponent: VideoDecoderDelegate {
 extension VideoIOComponent: DisplayLinkedQueueDelegate {
     // MARK: DisplayLinkedQueue
     func queue(_ buffer: CMSampleBuffer) {
-        drawable?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
+        renderer?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
         mixer?.delegate?.didOutputVideo(buffer)
     }
 

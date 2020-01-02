@@ -7,6 +7,9 @@ import MetalKit
 @available(iOS 9.0, *)
 open class MTHKView: MTKView {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
+    public var videoFormatDescription: CMVideoFormatDescription? {
+        return currentStream?.mixer.videoIO.formatDescription
+    }
 
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
@@ -14,7 +17,7 @@ open class MTHKView: MTKView {
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.renderer = nil
         }
     }
     let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -40,7 +43,7 @@ open class MTHKView: MTKView {
         if let stream: NetStream = stream {
             stream.mixer.videoIO.context = CIContext(mtlDevice: device!)
             stream.lockQueue.async {
-                stream.mixer.videoIO.drawable = self
+                stream.mixer.videoIO.renderer = self
                 stream.mixer.startRunning()
             }
         }
@@ -102,8 +105,8 @@ extension MTHKView: MTKViewDelegate {
 }
 
 @available(iOS 9.0, *)
-extension MTHKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
+extension MTHKView: NetStreamRenderer {
+    // MARK: NetStreamRenderer
     func draw(image: CIImage) {
         DispatchQueue.main.async {
             self.displayImage = image

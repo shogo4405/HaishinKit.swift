@@ -22,6 +22,9 @@ open class GLHKView: NSOpenGLView {
     }
 
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
+    public var videoFormatDescription: CMVideoFormatDescription? {
+        return currentStream?.mixer.videoIO.formatDescription
+    }
     var orientation: AVCaptureVideoOrientation = .portrait
     var position: AVCaptureDevice.Position = .front
     private var displayImage: CIImage!
@@ -83,7 +86,7 @@ open class GLHKView: NSOpenGLView {
 
     open func attachStream(_ stream: NetStream?) {
         if let currentStream: NetStream = currentStream {
-            currentStream.mixer.videoIO.drawable = nil
+            currentStream.mixer.videoIO.renderer = nil
         }
         if let stream: NetStream = stream {
             stream.lockQueue.async {
@@ -96,7 +99,7 @@ open class GLHKView: NSOpenGLView {
                     )
                     openGLContext.makeCurrentContext()
                 }
-                stream.mixer.videoIO.drawable = self
+                stream.mixer.videoIO.renderer = self
                 stream.mixer.startRunning()
             }
         }
@@ -104,8 +107,8 @@ open class GLHKView: NSOpenGLView {
     }
 }
 
-extension GLHKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
+extension GLHKView: NetStreamRenderer {
+    // MARK: NetStreamRenderer
     func draw(image: CIImage) {
         DispatchQueue.main.async {
             self.displayImage = image

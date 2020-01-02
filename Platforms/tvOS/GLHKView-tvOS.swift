@@ -11,10 +11,13 @@ open class GLHKView: GLKView {
     public static var defaultBackgroundColor: UIColor = .black
 
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
+    public var videoFormatDescription: CMVideoFormatDescription? {
+        return currentStream?.mixer.videoIO.formatDescription
+    }
     private var displayImage: CIImage?
     private weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.renderer = nil
         }
     }
 
@@ -50,7 +53,7 @@ open class GLHKView: GLKView {
         if let stream: NetStream = stream {
             stream.lockQueue.async {
                 stream.mixer.videoIO.context = CIContext(eaglContext: self.context, options: GLHKView.defaultOptions)
-                stream.mixer.videoIO.drawable = self
+                stream.mixer.videoIO.renderer = self
                 stream.mixer.startRunning()
             }
         }
@@ -58,8 +61,8 @@ open class GLHKView: GLKView {
     }
 }
 
-extension GLHKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
+extension GLHKView: NetStreamRenderer {
+    // MARK: NetStreamRenderer
     func draw(image: CIImage) {
         DispatchQueue.main.async {
             self.displayImage = image

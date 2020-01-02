@@ -20,6 +20,10 @@ open class HKView: UIView {
         }
     }
 
+    public var videoFormatDescription: CMVideoFormatDescription? {
+        return currentStream?.mixer.videoIO.formatDescription
+    }
+
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             layer.connection.map {
@@ -33,7 +37,7 @@ open class HKView: UIView {
 
     private weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
+            oldValue?.mixer.videoIO.renderer = nil
         }
     }
 
@@ -70,15 +74,15 @@ open class HKView: UIView {
         stream.mixer.session.commitConfiguration()
 
         stream.lockQueue.async {
-            stream.mixer.videoIO.drawable = self
+            stream.mixer.videoIO.renderer = self
             self.currentStream = stream
             stream.mixer.startRunning()
         }
     }
 }
 
-extension HKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
+extension HKView: NetStreamRenderer {
+    // MARK: NetStreamRenderer
     func draw(image: CIImage) {
     }
 }
