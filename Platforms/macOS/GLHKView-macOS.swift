@@ -4,7 +4,7 @@ import AVFoundation
 import GLUT
 import OpenGL.GL3
 
-open class GLHKView: NSOpenGLView {
+open class GLHKView: NSOpenGLView, NetStreamRenderer {
     static let pixelFormatAttributes: [NSOpenGLPixelFormatAttribute] = [
         UInt32(NSOpenGLPFAAccelerated),
         UInt32(NSOpenGLPFANoRecovery),
@@ -25,9 +25,9 @@ open class GLHKView: NSOpenGLView {
     public var videoFormatDescription: CMVideoFormatDescription? {
         return currentStream?.mixer.videoIO.formatDescription
     }
-    var orientation: AVCaptureVideoOrientation = .portrait
     var position: AVCaptureDevice.Position = .front
-    private var displayImage: CIImage!
+    var orientation: AVCaptureVideoOrientation = .portrait
+    var displayImage: CIImage?
     private var originalFrame: CGRect = .zero
     private var scale: CGSize = .zero
     private weak var currentStream: NetStream?
@@ -104,16 +104,6 @@ open class GLHKView: NSOpenGLView {
             }
         }
         currentStream = stream
-    }
-}
-
-extension GLHKView: NetStreamRenderer {
-    // MARK: NetStreamRenderer
-    func draw(image: CIImage) {
-        DispatchQueue.main.async {
-            self.displayImage = image
-            self.needsDisplay = true
-        }
     }
 }
 

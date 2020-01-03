@@ -5,7 +5,7 @@ import AVFoundation
 import MetalKit
 
 @available(iOS 9.0, *)
-open class MTHKView: MTKView {
+open class MTHKView: MTKView, NetStreamRenderer {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoFormatDescription: CMVideoFormatDescription? {
         return currentStream?.mixer.videoIO.formatDescription
@@ -104,16 +104,5 @@ extension MTHKView: MTKViewDelegate {
     #endif
 }
 
-@available(iOS 9.0, *)
-extension MTHKView: NetStreamRenderer {
-    // MARK: NetStreamRenderer
-    func draw(image: CIImage) {
-        DispatchQueue.main.async {
-            self.displayImage = image
-            self.setNeedsDisplay()
-        }
-    }
-}
 #endif
-
 #endif

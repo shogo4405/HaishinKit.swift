@@ -34,6 +34,7 @@ open class HKView: UIView {
         }
     }
     var position: AVCaptureDevice.Position = .front
+    var displayImage: CIImage?
 
     private weak var currentStream: NetStream? {
         didSet {
@@ -83,7 +84,7 @@ open class HKView: UIView {
 
 extension HKView: NetStreamRenderer {
     // MARK: NetStreamRenderer
-    func draw(image: CIImage) {
+    func draw(image: CIImage?) {
     }
 }
 

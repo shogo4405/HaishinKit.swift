@@ -192,6 +192,7 @@ extension AVMixer {
         audioIO.encoder.delegate = nil
         videoIO.queue.stopRunning()
         videoIO.decoder.stopRunning()
+        videoIO.renderer?.render(image: nil)
     }
 }
 

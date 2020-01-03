@@ -3,7 +3,7 @@
 import AVFoundation
 import MetalKit
 
-open class MTHKView: MTKView {
+open class MTHKView: MTKView, NetStreamRenderer {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoFormatDescription: CMVideoFormatDescription? {
         return currentStream?.mixer.videoIO.formatDescription
@@ -11,7 +11,6 @@ open class MTHKView: MTKView {
 
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
-
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
         didSet {
@@ -93,16 +92,6 @@ extension MTHKView: MTKViewDelegate {
         context.render(scaledImage, to: drawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
         commandBuffer.present(drawable)
         commandBuffer.commit()
-    }
-}
-
-extension MTHKView: NetStreamRenderer {
-    // MARK: NetStreamRenderer
-    func draw(image: CIImage) {
-        DispatchQueue.main.async {
-            self.displayImage = image
-            self.needsDisplay = true
-        }
     }
 }
 

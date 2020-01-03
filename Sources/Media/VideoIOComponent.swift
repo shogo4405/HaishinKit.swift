@@ -404,7 +404,7 @@ final class VideoIOComponent: IOComponent {
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
-            renderer?.draw(image: image)
+            renderer?.render(image: image)
         }
 
         encoder.encodeImageBuffer(
@@ -453,7 +453,7 @@ extension VideoIOComponent: VideoDecoderDelegate {
 extension VideoIOComponent: DisplayLinkedQueueDelegate {
     // MARK: DisplayLinkedQueue
     func queue(_ buffer: CMSampleBuffer) {
-        renderer?.draw(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
+        renderer?.render(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
         mixer?.delegate?.didOutputVideo(buffer)
     }
 

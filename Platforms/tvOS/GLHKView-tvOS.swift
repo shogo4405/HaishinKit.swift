@@ -3,7 +3,7 @@
 import AVFoundation
 import GLKit
 
-open class GLHKView: GLKView {
+open class GLHKView: GLKView, NetStreamRenderer {
     static let defaultOptions: [CIContextOption: Any] = [
         .workingColorSpace: NSNull(),
         .useSoftwareRenderer: NSNumber(value: false)
@@ -14,7 +14,7 @@ open class GLHKView: GLKView {
     public var videoFormatDescription: CMVideoFormatDescription? {
         return currentStream?.mixer.videoIO.formatDescription
     }
-    private var displayImage: CIImage?
+    var displayImage: CIImage?
     private weak var currentStream: NetStream? {
         didSet {
             oldValue?.mixer.videoIO.renderer = nil
@@ -58,16 +58,6 @@ open class GLHKView: GLKView {
             }
         }
         currentStream = stream
-    }
-}
-
-extension GLHKView: NetStreamRenderer {
-    // MARK: NetStreamRenderer
-    func draw(image: CIImage) {
-        DispatchQueue.main.async {
-            self.displayImage = image
-            self.setNeedsDisplay()
-        }
     }
 }
 
