@@ -434,6 +434,17 @@ final class VideoIOComponent: IOComponent {
         effect.ciContext = nil
         return effects.remove(effect) != nil
     }
+
+    func startPlaying() {
+        queue.startRunning()
+        decoder.startRunning()
+    }
+
+    func stopPlaying() {
+        decoder.stopRunning()
+        queue.stopRunning()
+        renderer?.render(image: nil)
+    }
 }
 
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {

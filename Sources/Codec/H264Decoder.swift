@@ -43,7 +43,7 @@ final class H264Decoder {
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.H264Decoder.lock")
 
     var needsSync: Atomic<Bool> = .init(true)
-    var isBaseline: Bool = true
+    var isBaseline = true
     private var buffers: [CMSampleBuffer] = []
     private var attributes: [NSString: AnyObject] {
         return H264Decoder.defaultAttributes
@@ -213,6 +213,7 @@ extension H264Decoder: Running {
     func stopRunning() {
         lockQueue.async {
             self.session = nil
+            self.needsSync.mutate { $0 = true }
             self.invalidateSession = true
             self.buffers.removeAll()
             self.formatDescription = nil

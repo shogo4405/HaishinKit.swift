@@ -153,6 +153,20 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
     func unregisterEffect(_ effect: AudioEffect) -> Bool {
         return encoder.effects.remove(effect) != nil
     }
+
+    func startPlaying(_ audioEngine: AVAudioEngine?) {
+        self.audioEngine = audioEngine
+        encoder.delegate = self
+        encoder.startRunning()
+    }
+
+    func stopPlaying() {
+        playerNode.reset()
+        audioEngine = nil
+        encoder.delegate = nil
+        encoder.stopRunning()
+        currentBuffers.mutate { $0 = 0 }
+    }
 }
 
 extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
@@ -165,7 +179,10 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
 extension AudioIOComponent: AudioConverterDelegate {
     // MARK: AudioConverterDelegate
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
-        guard let formatDescription = formatDescription else { return }
+        guard let formatDescription = formatDescription else {
+            mixer?.videoIO.queue.clockReference = nil
+            return
+        }
         #if os(iOS)
         if #available(iOS 9.0, *) {
             audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
@@ -178,6 +195,7 @@ extension AudioIOComponent: AudioConverterDelegate {
         #else
             audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
         #endif
+        mixer?.videoIO.queue.clockReference = self
     }
 
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
@@ -190,7 +208,6 @@ extension AudioIOComponent: AudioConverterDelegate {
         }
 
         if let queue = mixer?.videoIO.queue, queue.isPaused {
-            queue.clockReference = self
             queue.isPaused = false
         }
 

@@ -629,7 +629,7 @@ final class RTMPVideoMessage: RTMPMessage {
         }
         switch payload[1] {
         case FLVAVCPacketType.seq.rawValue:
-            status = createFormatDescription(stream)
+            status = makeFormatDescription(stream)
             stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         case FLVAVCPacketType.nal.rawValue:
             enqueueSampleBuffer(stream, type: type)
@@ -709,7 +709,7 @@ final class RTMPVideoMessage: RTMPMessage {
         }
     }
 
-    func createFormatDescription(_ stream: RTMPStream) -> OSStatus {
+    func makeFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config = AVCConfigurationRecord()
         config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)

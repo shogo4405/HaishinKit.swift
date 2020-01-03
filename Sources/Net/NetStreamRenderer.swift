@@ -21,13 +21,17 @@ protocol NetStreamRenderer: class {
 
 extension NetStreamRenderer where Self: NetStreamRendererView {
     func render(image: CIImage?) {
-        DispatchQueue.main.async {
-            self.displayImage = image
+        if Thread.isMainThread {
+            displayImage = image
             #if os(macOS)
             self.needsDisplay = true
             #else
             self.setNeedsDisplay()
             #endif
+        } else {
+            DispatchQueue.main.async {
+                self.render(image: image)
+            }
         }
     }
 }
