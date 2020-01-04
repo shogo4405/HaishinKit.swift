@@ -287,7 +287,7 @@ open class RTMPStream: NetStream {
 
             switch oldValue {
             case .playing:
-                mixer.stopPlaying()
+                mixer.stopDecoding()
             case .publishing:
                 #if os(iOS)
                     mixer.videoIO.screen?.stopRunning()
@@ -310,7 +310,7 @@ open class RTMPStream: NetStream {
                 delegate?.clear()
             case .playing:
                 mixer.delegate = self
-                mixer.startPlaying(rtmpConnection.audioEngine)
+                mixer.startDecoding(rtmpConnection.audioEngine)
             case .publish:
                 muxer.dispose()
                 muxer.delegate = self

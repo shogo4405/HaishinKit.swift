@@ -154,13 +154,13 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
         return encoder.effects.remove(effect) != nil
     }
 
-    func startPlaying(_ audioEngine: AVAudioEngine?) {
+    func startDecoding(_ audioEngine: AVAudioEngine?) {
         self.audioEngine = audioEngine
         encoder.delegate = self
         encoder.startRunning()
     }
 
-    func stopPlaying() {
+    func stopDecoding() {
         playerNode.reset()
         audioEngine = nil
         encoder.delegate = nil

@@ -180,14 +180,14 @@ extension AVMixer {
 }
 
 extension AVMixer {
-    public func startPlaying(_ audioEngine: AVAudioEngine?) {
-        audioIO.startPlaying(audioEngine)
-        videoIO.startPlaying()
+    public func startDecoding(_ audioEngine: AVAudioEngine?) {
+        audioIO.startDecoding(audioEngine)
+        videoIO.startDecoding()
     }
 
-    public func stopPlaying() {
-        audioIO.stopPlaying()
-        videoIO.stopPlaying()
+    public func stopDecoding() {
+        audioIO.stopDecoding()
+        videoIO.stopDecoding()
     }
 }
 

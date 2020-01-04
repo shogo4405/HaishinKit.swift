@@ -434,13 +434,15 @@ final class VideoIOComponent: IOComponent {
         effect.ciContext = nil
         return effects.remove(effect) != nil
     }
+}
 
-    func startPlaying() {
+extension VideoIOComponent {
+    func startDecoding() {
         queue.startRunning()
         decoder.startRunning()
     }
 
-    func stopPlaying() {
+    func stopDecoding() {
         decoder.stopRunning()
         queue.stopRunning()
         renderer?.render(image: nil)
