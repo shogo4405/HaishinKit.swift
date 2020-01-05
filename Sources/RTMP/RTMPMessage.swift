@@ -583,19 +583,23 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.encoder.destination = .pcm
             stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
-            if stream.mixer.audioIO.encoder.inSourceFormat == nil {
-                stream.mixer.audioIO.encoder.destination = .pcm
-                stream.mixer.audioIO.encoder.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
-            }
-            payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
-                stream.mixer.audioIO.encoder.encodeBytes(
-                    buffer.baseAddress?.advanced(by: codec.headerSize),
-                    count: payload.count - codec.headerSize,
-                    presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000)
-                )
-            }
+            enqueueSampleBuffer(stream, type: type)
         case .none:
             break
+        }
+    }
+
+    private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
+        if stream.mixer.audioIO.encoder.inSourceFormat == nil {
+            stream.mixer.audioIO.encoder.destination = .pcm
+            stream.mixer.audioIO.encoder.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
+        }
+        payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
+            stream.mixer.audioIO.encoder.encodeBytes(
+                buffer.baseAddress?.advanced(by: codec.headerSize),
+                count: payload.count - codec.headerSize,
+                presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000)
+            )
         }
     }
 }
@@ -638,7 +642,7 @@ final class RTMPVideoMessage: RTMPMessage {
         }
     }
 
-    func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
+    private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
         let isBaseline = stream.mixer.videoIO.decoder.isBaseline
 
         // compositionTime -> SI24
@@ -709,7 +713,7 @@ final class RTMPVideoMessage: RTMPMessage {
         }
     }
 
-    func makeFormatDescription(_ stream: RTMPStream) -> OSStatus {
+    private func makeFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config = AVCConfigurationRecord()
         config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
         return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
