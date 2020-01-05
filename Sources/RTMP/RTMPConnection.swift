@@ -385,7 +385,7 @@ open class RTMPConnection: EventDispatcher {
         }
     }
 
-    private func createConnectionChunk() -> RTMPChunk? {
+    private func makeConnectionChunk() -> RTMPChunk? {
         guard let uri: URL = uri else {
             return nil
         }
@@ -459,7 +459,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         logger.debug(readyState)
         switch readyState {
         case .handshakeDone:
-            guard let chunk: RTMPChunk = createConnectionChunk() else {
+            guard let chunk: RTMPChunk = makeConnectionChunk() else {
                 close()
                 break
             }
@@ -489,10 +489,6 @@ extension RTMPConnection: RTMPSocketDelegate {
             message: RTMPAcknowledgementMessage(UInt32(totalBytesIn))
         ), locked: nil)
         sequence += 1
-    }
-
-    func didReceiveTimeout() {
-        self.close(isDisconnected: true)
     }
 
     func listen(_ data: Data) {

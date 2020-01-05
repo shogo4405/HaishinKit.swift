@@ -13,6 +13,10 @@ protocol VideoDecoderDelegate: class {
 
 // MARK: -
 final class H264Decoder {
+    static let defaultDecodeFlags: VTDecodeFrameFlags = [
+        ._EnableAsynchronousDecompression,
+        ._EnableTemporalProcessing
+    ]
     static let defaultMinimumGroupOfPictures: Int = 12
 
     #if os(iOS)
@@ -113,8 +117,13 @@ final class H264Decoder {
             return kVTInvalidSessionErr
         }
         var flagsOut: VTDecodeInfoFlags = []
-        let decodeFlags: VTDecodeFrameFlags = [._EnableAsynchronousDecompression, ._EnableTemporalProcessing]
-        return VTDecompressionSessionDecodeFrame(session, sampleBuffer: sampleBuffer, flags: decodeFlags, frameRefcon: nil, infoFlagsOut: &flagsOut)
+        return VTDecompressionSessionDecodeFrame(
+            session,
+            sampleBuffer: sampleBuffer,
+            flags: H264Decoder.defaultDecodeFlags,
+            frameRefcon: nil,
+            infoFlagsOut: &flagsOut
+        )
     }
 
     func didOutputForSession(_ status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, duration: CMTime) {
