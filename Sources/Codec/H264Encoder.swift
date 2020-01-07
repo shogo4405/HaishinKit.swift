@@ -253,6 +253,18 @@ public final class H264Encoder {
         guard let session: VTCompressionSession = session else {
             return
         }
+        if lastImageBuffer == nil {
+            var pixelBuffer: CVPixelBuffer?
+            CVPixelBufferCreate(
+                kCFAllocatorDefault,
+                imageBuffer.width,
+                imageBuffer.height,
+                kCVPixelFormatType_32BGRA,
+                nil,
+                &pixelBuffer
+            )
+            lastImageBuffer = pixelBuffer
+        }
         var flags: VTEncodeInfoFlags = []
         VTCompressionSessionEncodeFrame(
             session,
