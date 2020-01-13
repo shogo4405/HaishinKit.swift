@@ -19,7 +19,7 @@ struct CircularBuffer<Element> {
     }
 
     var isFull: Bool {
-        return count == mask + 1 
+        count == mask + 1
     }
 
     private var top: Int = 0
@@ -72,8 +72,7 @@ struct CircularBuffer<Element> {
         bottom = count
         buffer.append(contentsOf: [Element?](repeating: nil, count: buffer.count))
         mask = buffer.count - 1
-        buffer.append(newElement)
-        return true
+        return append(newElement)
     }
 }
 
