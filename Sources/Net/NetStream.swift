@@ -121,7 +121,7 @@ open class NetStream: NSObject {
             }
         case .video:
             mixer.videoIO.lockQueue.async {
-                self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
+                self.mixer.videoIO.encodeSampleBuffer(sampleBuffer)
             }
         default:
             break

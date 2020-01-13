@@ -373,7 +373,28 @@ final class VideoIOComponent: IOComponent {
     }
     #endif
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    @inline(__always)
+    func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
+        var image = CIImage(cvPixelBuffer: buffer)
+        for effect in effects {
+            image = effect.execute(image, info: info)
+        }
+        return image
+    }
+
+    func registerEffect(_ effect: VideoEffect) -> Bool {
+        effect.ciContext = context
+        return effects.insert(effect).inserted
+    }
+
+    func unregisterEffect(_ effect: VideoEffect) -> Bool {
+        effect.ciContext = nil
+        return effects.remove(effect) != nil
+    }
+}
+
+extension VideoIOComponent {
+    func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
         }
@@ -415,25 +436,6 @@ final class VideoIOComponent: IOComponent {
 
         mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
     }
-
-    @inline(__always)
-    func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
-        var image = CIImage(cvPixelBuffer: buffer)
-        for effect in effects {
-            image = effect.execute(image, info: info)
-        }
-        return image
-    }
-
-    func registerEffect(_ effect: VideoEffect) -> Bool {
-        effect.ciContext = context
-        return effects.insert(effect).inserted
-    }
-
-    func unregisterEffect(_ effect: VideoEffect) -> Bool {
-        effect.ciContext = nil
-        return effects.remove(effect) != nil
-    }
 }
 
 extension VideoIOComponent {
@@ -447,12 +449,16 @@ extension VideoIOComponent {
         queue.stopRunning()
         renderer?.render(image: nil)
     }
+
+    func decodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        _ = decoder.decodeSampleBuffer(sampleBuffer)
+    }
 }
 
 extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        appendSampleBuffer(sampleBuffer)
+        encodeSampleBuffer(sampleBuffer)
     }
 }
 
