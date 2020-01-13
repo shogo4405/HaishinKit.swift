@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>HKView Class Reference</title>
+    <title>Atomic Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -10,8 +10,8 @@
     
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/HKView" class="dashAnchor"></a>
-    <a title="HKView Class Reference"></a>
+    <a name="//apple_ref/swift/Struct/Atomic" class="dashAnchor"></a>
+    <a title="Atomic Structure Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">HaishinKit Docs</a> (13% documented)</p>
@@ -21,7 +21,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" />
-        HKView Class Reference
+        Atomic Structure Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -319,14 +319,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>HKView</h1>
+            <h1>Atomic</h1>
               <div class="declaration">
                 <div class="language">
-                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">HKView</span> <span class="p">:</span> <span class="kt">UIView</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Atomic</span><span class="o">&lt;</span><span class="kt">A</span><span class="o">&gt;</span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>Atomic<T> class
+@see <a href="https://www.objc.io/blog/2018/12/18/atomic-variables/">https://www.objc.io/blog/2018/12/18/atomic-variables/</a></p>
 
           </section>
           <section class="section task-group-section">
@@ -335,9 +336,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit6HKViewC22defaultBackgroundColorSo7UIColorCvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultBackgroundColor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit6HKViewC22defaultBackgroundColorSo7UIColorCvpZ">defaultBackgroundColor</a>
+                    <a name="/s:10HaishinKit6AtomicV5valuexvp"></a>
+                    <a name="//apple_ref/swift/Property/value" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit6AtomicV5valuexvp">value</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -345,14 +346,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Getter for the value.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">defaultBackgroundColor</span><span class="p">:</span> <span class="kt">UIColor</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">A</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -362,9 +363,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)HKView(cpy)layerClass"></a>
-                    <a name="//apple_ref/swift/Variable/layerClass" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)HKView(cpy)layerClass">layerClass</a>
+                    <a name="/s:10HaishinKit6AtomicVyACyxGxcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit6AtomicVyACyxGxcfc">init(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -379,7 +380,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">class</span> <span class="k">var</span> <span class="nv">layerClass</span><span class="p">:</span> <span class="kt">AnyClass</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">A</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -389,9 +390,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)HKView(py)layer"></a>
-                    <a name="//apple_ref/swift/Property/layer" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)HKView(py)layer">layer</a>
+                    <a name="/s:10HaishinKit6AtomicV6mutateyyyxzXEF"></a>
+                    <a name="//apple_ref/swift/Method/mutate(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit6AtomicV6mutateyyyxzXEF">mutate(_:)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -399,176 +400,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Setter for the value.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="k">var</span> <span class="nv">layer</span><span class="p">:</span> <span class="kt">AVCaptureVideoPreviewLayer</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit6HKViewC12videoGravitySo012AVLayerVideoE0avp"></a>
-                    <a name="//apple_ref/swift/Property/videoGravity" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit6HKViewC12videoGravitySo012AVLayerVideoE0avp">videoGravity</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">videoGravity</span><span class="p">:</span> <span class="kt">AVLayerVideoGravity</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit6HKViewC22videoFormatDescriptionSo08CMFormatF3RefaSgvp"></a>
-                    <a name="//apple_ref/swift/Property/videoFormatDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit6HKViewC22videoFormatDescriptionSo08CMFormatF3RefaSgvp">videoFormatDescription</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">videoFormatDescription</span><span class="p">:</span> <span class="kt">CMVideoFormatDescription</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)HKView(im)initWithFrame:"></a>
-                    <a name="//apple_ref/swift/Method/init(frame:)" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)HKView(im)initWithFrame:">init(frame:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)HKView(im)initWithCoder:"></a>
-                    <a name="//apple_ref/swift/Method/init(coder:)" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)HKView(im)initWithCoder:">init(coder:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)HKView(im)awakeFromNib"></a>
-                    <a name="//apple_ref/swift/Method/awakeFromNib()" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)HKView(im)awakeFromNib">awakeFromNib()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">awakeFromNib</span><span class="p">()</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit6HKViewC12attachStreamyyAA03NetE0CSgF"></a>
-                    <a name="//apple_ref/swift/Method/attachStream(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit6HKViewC12attachStreamyyAA03NetE0CSgF">attachStream(_:)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">attachStream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/NetStream.html">NetStream</a></span><span class="p">?)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">mutating</span> <span class="kd">func</span> <span class="nf">mutate</span><span class="p">(</span><span class="n">_</span> <span class="nv">transform</span><span class="p">:</span> <span class="p">(</span><span class="k">inout</span> <span class="kt">A</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
