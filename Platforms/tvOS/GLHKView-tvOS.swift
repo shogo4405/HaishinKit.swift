@@ -12,7 +12,7 @@ open class GLHKView: GLKView, NetStreamRenderer {
 
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoFormatDescription: CMVideoFormatDescription? {
-        return currentStream?.mixer.videoIO.formatDescription
+        currentStream?.mixer.videoIO.formatDescription
     }
     var displayImage: CIImage?
     private weak var currentStream: NetStream? {

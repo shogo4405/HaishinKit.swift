@@ -46,7 +46,7 @@ public class TimerDriver {
 extension TimerDriver: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
-        return .init(runloop != nil)
+        .init(runloop != nil)
     }
 
     public func startRunning() {

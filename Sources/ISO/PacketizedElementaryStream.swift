@@ -121,7 +121,7 @@ extension PESOptionalHeader: DataConvertible {
 extension PESOptionalHeader: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -149,7 +149,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
 
     var payload: Data {
         get {
-            return ByteArray()
+            ByteArray()
                 .writeBytes(startCode)
                 .writeUInt8(streamID)
                 .writeUInt16(packetLength)
@@ -303,6 +303,6 @@ struct PacketizedElementaryStream: PESPacketHeader {
 extension PacketizedElementaryStream: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }

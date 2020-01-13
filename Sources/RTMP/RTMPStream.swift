@@ -25,7 +25,7 @@ public struct RTMPStreamInfo {
 extension RTMPStreamInfo: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -162,7 +162,7 @@ open class RTMPStream: NetStream {
         }
 
         func data(_ description: String) -> ASObject {
-            return [
+            [
                 "code": rawValue,
                 "level": level,
                 "description": description
@@ -192,7 +192,7 @@ open class RTMPStream: NetStream {
         public var transition: PlayTransition = .switch
 
         public var debugDescription: String {
-            return Mirror(reflecting: self).debugDescription
+            Mirror(reflecting: self).debugDescription
         }
     }
 
@@ -224,7 +224,7 @@ open class RTMPStream: NetStream {
     /// The number of frames per second being displayed.
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
     open var soundTransform: SoundTransform {
-        get { return mixer.audioIO.soundTransform }
+        get { mixer.audioIO.soundTransform }
         set { mixer.audioIO.soundTransform = newValue }
     }
     /// Incoming audio plays on the stream or not.

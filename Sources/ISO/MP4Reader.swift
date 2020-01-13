@@ -38,7 +38,7 @@ class MP4Box {
     }
 
     var leafNode: Bool {
-        return false
+        false
     }
 
     fileprivate(set) var type: String = "undf"
@@ -64,7 +64,7 @@ class MP4Box {
     }
 
     func getBoxes(byName: String) -> [MP4Box] {
-        return []
+        []
     }
 
     func clear() {
@@ -82,7 +82,7 @@ class MP4Box {
 extension MP4Box: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -91,7 +91,7 @@ class MP4ContainerBox: MP4Box {
     fileprivate var children: [MP4Box] = []
 
     override var leafNode: Bool {
-        return false
+        false
     }
 
     override func load(_ file: FileHandle) throws -> UInt32 {
@@ -200,7 +200,7 @@ final class MP4TimeToSampleBox: MP4Box {
         var sampleDuration: UInt32 = 0
 
         var debugDescription: String {
-            return Mirror(reflecting: self).debugDescription
+            Mirror(reflecting: self).debugDescription
         }
 
         init(sampleCount: UInt32, sampleDuration: UInt32) {
@@ -437,7 +437,7 @@ final class MP4SampleToChunkBox: MP4Box {
         var sampleDescriptionIndex: UInt32 = 0
 
         var debugDescription: String {
-            return Mirror(reflecting: self).debugDescription
+            Mirror(reflecting: self).debugDescription
         }
 
         init(firstChunk: UInt32, samplesPerChunk: UInt32, sampleDescriptionIndex: UInt32) {
@@ -475,7 +475,7 @@ final class MP4EditListBox: MP4Box {
         var mediaRate: UInt32 = 0
 
         var debugDescription: String {
-            return Mirror(reflecting: self).debugDescription
+            Mirror(reflecting: self).debugDescription
         }
 
         init(segmentDuration: UInt32, mediaTime: UInt32, mediaRate: UInt32) {
@@ -512,7 +512,7 @@ final class MP4Reader: MP4ContainerBox {
     private(set) var url: URL
 
     var isEmpty: Bool {
-        return getBoxes(byName: "mdhd").isEmpty
+        getBoxes(byName: "mdhd").isEmpty
     }
 
     private var fileHandle: FileHandle?
@@ -528,11 +528,11 @@ final class MP4Reader: MP4ContainerBox {
     }
 
     func seek(toFileOffset: UInt64) {
-        return fileHandle!.seek(toFileOffset: toFileOffset)
+        fileHandle!.seek(toFileOffset: toFileOffset)
     }
 
     func readData(ofLength: Int) -> Data {
-        return fileHandle!.readData(ofLength: ofLength)
+        fileHandle!.readData(ofLength: ofLength)
     }
 
     func readData(ofBox: MP4Box) -> Data {
@@ -581,19 +581,19 @@ final class MP4TrakReader {
         return timerDriver
     }()
     private var currentOffset: UInt64 {
-        return UInt64(offset[cursor])
+        UInt64(offset[cursor])
     }
     private var currentIsKeyframe: Bool {
-        return keyframe[cursor] != nil
+        keyframe[cursor] != nil
     }
     private var currentDuration: Double {
-        return Double(totalTimeToSample) * 1000 / Double(timeScale)
+        Double(totalTimeToSample) * 1000 / Double(timeScale)
     }
     private var currentTimeToSample: Double {
-        return Double(timeToSample[cursor]) * 1000 / Double(timeScale)
+        Double(timeToSample[cursor]) * 1000 / Double(timeScale)
     }
     private var currentSampleSize: Int {
-        return Int((sampleSize.count == 1) ? sampleSize[0] : sampleSize[cursor])
+        Int((sampleSize.count == 1) ? sampleSize[0] : sampleSize[cursor])
     }
     private var cursor: Int = 0
     private var offset: [UInt32] = []
@@ -679,7 +679,7 @@ final class MP4TrakReader {
     }
 
     private func hasNext() -> Bool {
-        return cursor + 1 < offset.count
+        cursor + 1 < offset.count
     }
 
     private func next() {
@@ -718,6 +718,6 @@ extension MP4TrakReader: TimerDriverDelegate {
 extension MP4TrakReader: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }

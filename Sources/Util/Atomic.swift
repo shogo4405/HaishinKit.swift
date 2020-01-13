@@ -8,7 +8,7 @@ public struct Atomic<A> {
 
     /// Getter for the value.
     public var value: A {
-        return queue.sync { self._value }
+        queue.sync { self._value }
     }
 
     public init(_ value: A) {

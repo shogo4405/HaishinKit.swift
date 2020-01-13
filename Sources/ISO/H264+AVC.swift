@@ -71,7 +71,7 @@ struct AVCConfigurationRecord {
     var sequenceParameterSetExt: [[UInt8]] = []
 
     var naluLength: Int32 {
-        return Int32((lengthSizeMinusOneWithReserved >> 6) + 1)
+        Int32((lengthSizeMinusOneWithReserved >> 6) + 1)
     }
 
     init() {
@@ -154,6 +154,6 @@ extension AVCConfigurationRecord: DataConvertible {
 extension AVCConfigurationRecord: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }

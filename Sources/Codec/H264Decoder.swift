@@ -50,7 +50,7 @@ final class H264Decoder {
     var isBaseline = true
     private var buffers: [CMSampleBuffer] = []
     private var attributes: [NSString: AnyObject] {
-        return H264Decoder.defaultAttributes
+        H264Decoder.defaultAttributes
     }
     private var minimumGroupOfPictures: Int = H264Decoder.defaultMinimumGroupOfPictures
     private(set) var status: OSStatus = noErr {

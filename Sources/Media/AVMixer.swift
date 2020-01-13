@@ -58,24 +58,24 @@ public class AVMixer {
 
     #if os(iOS)
     var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
-        get { return videoIO.preferredVideoStabilizationMode }
+        get { videoIO.preferredVideoStabilizationMode }
         set { videoIO.preferredVideoStabilizationMode = newValue }
     }
     #endif
 
     #if os(iOS) || os(macOS)
     var fps: Float64 {
-        get { return videoIO.fps }
+        get { videoIO.fps }
         set { videoIO.fps = newValue }
     }
 
     var continuousExposure: Bool {
-        get { return videoIO.continuousExposure }
+        get { videoIO.continuousExposure }
         set { videoIO.continuousExposure = newValue }
     }
 
     var continuousAutofocus: Bool {
-        get { return videoIO.continuousAutofocus }
+        get { videoIO.continuousAutofocus }
         set { videoIO.continuousAutofocus = newValue }
     }
 
@@ -195,7 +195,7 @@ extension AVMixer {
 extension AVMixer: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
-        return .init(session.isRunning)
+        .init(session.isRunning)
     }
 
     public func startRunning() {
@@ -218,7 +218,7 @@ extension AVMixer: Running {
 extension AVMixer: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
-        return .init(false)
+        .init(false)
     }
 
     public func startRunning() {

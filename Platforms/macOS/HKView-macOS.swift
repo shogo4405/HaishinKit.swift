@@ -11,7 +11,7 @@ open class HKView: NSView {
         }
     }
     public var videoFormatDescription: CMVideoFormatDescription? {
-        return currentStream?.mixer.videoIO.formatDescription
+        currentStream?.mixer.videoIO.formatDescription
     }
 
     var position: AVCaptureDevice.Position = .front {

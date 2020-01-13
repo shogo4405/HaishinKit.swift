@@ -7,11 +7,11 @@ open class HKView: UIView {
     public static var defaultBackgroundColor: UIColor = .black
 
     override open class var layerClass: AnyClass {
-        return AVCaptureVideoPreviewLayer.self
+        AVCaptureVideoPreviewLayer.self
     }
 
     override open var layer: AVCaptureVideoPreviewLayer {
-        return super.layer as! AVCaptureVideoPreviewLayer
+        super.layer as! AVCaptureVideoPreviewLayer
     }
 
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
@@ -21,7 +21,7 @@ open class HKView: UIView {
     }
 
     public var videoFormatDescription: CMVideoFormatDescription? {
-        return currentStream?.mixer.videoIO.formatDescription
+        currentStream?.mixer.videoIO.formatDescription
     }
 
     var orientation: AVCaptureVideoOrientation = .portrait {

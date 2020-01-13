@@ -28,19 +28,19 @@ final class AMFReference {
     }
 
     func indexOf(_ value: [Int32]) -> Int? {
-        return nil
+        nil
     }
 
     func indexOf(_ value: [UInt32]) -> Int? {
-        return nil
+        nil
     }
 
     func indexOf(_ value: [Double]) -> Int? {
-        return nil
+        nil
     }
 
     func indexOf(_ value: [Any?]) -> Int? {
-        return nil
+        nil
     }
 
     func indexOf(_ value: ASObject) -> Int? {
@@ -53,7 +53,7 @@ final class AMFReference {
     }
 
     func indexOf(_ value: String) -> Int? {
-        return strings.firstIndex(of: value)
+        strings.firstIndex(of: value)
     }
 }
 
@@ -185,7 +185,7 @@ extension AMF3Serializer: AMFSerializer {
      */
     @discardableResult
     func serialize(_ value: Bool) -> Self {
-        return writeUInt8(value ? Type.boolTrue.rawValue: Type.boolFalse.rawValue)
+        writeUInt8(value ? Type.boolTrue.rawValue: Type.boolFalse.rawValue)
     }
 
     func deserialize() throws -> Bool {
@@ -204,7 +204,7 @@ extension AMF3Serializer: AMFSerializer {
      */
     @discardableResult
     func serialize(_ value: Int) -> Self {
-        return writeUInt8(Type.integer.rawValue).serializeU29(value)
+        writeUInt8(Type.integer.rawValue).serializeU29(value)
     }
 
     func deserialize() throws -> Int {
@@ -219,7 +219,7 @@ extension AMF3Serializer: AMFSerializer {
      */
     @discardableResult
     func serialize(_ value: Double) -> Self {
-        return writeUInt8(Type.number.rawValue).writeDouble(value)
+        writeUInt8(Type.number.rawValue).writeDouble(value)
     }
 
     func deserialize() throws -> Double {
@@ -234,7 +234,7 @@ extension AMF3Serializer: AMFSerializer {
      */
     @discardableResult
     func serialize(_ value: String) -> Self {
-        return writeUInt8(Type.string.rawValue).serializeUTF8(value)
+        writeUInt8(Type.string.rawValue).serializeUTF8(value)
     }
 
     func deserialize() throws -> String {
@@ -391,11 +391,11 @@ extension AMF3Serializer: AMFSerializer {
      */
     @discardableResult
     func serialize(_ value: ByteArray) -> Self {
-        return self
+        self
     }
 
     func deserialize() throws -> ByteArray {
-        return ByteArray()
+        ByteArray()
     }
 
     /**

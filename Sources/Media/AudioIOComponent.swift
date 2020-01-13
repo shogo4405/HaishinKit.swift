@@ -147,11 +147,11 @@ final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
 #endif
 
     func registerEffect(_ effect: AudioEffect) -> Bool {
-        return encoder.effects.insert(effect).inserted
+        encoder.effects.insert(effect).inserted
     }
 
     func unregisterEffect(_ effect: AudioEffect) -> Bool {
-        return encoder.effects.remove(effect) != nil
+        encoder.effects.remove(effect) != nil
     }
 
     func startDecoding(_ audioEngine: AVAudioEngine?) {

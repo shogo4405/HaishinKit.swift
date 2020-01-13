@@ -23,7 +23,7 @@ open class GLHKView: NSOpenGLView, NetStreamRenderer {
 
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoFormatDescription: CMVideoFormatDescription? {
-        return currentStream?.mixer.videoIO.formatDescription
+        currentStream?.mixer.videoIO.formatDescription
     }
     var position: AVCaptureDevice.Position = .front
     var orientation: AVCaptureVideoOrientation = .portrait

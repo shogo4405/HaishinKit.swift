@@ -82,7 +82,7 @@ open class RTMPConnection: EventDispatcher {
         }
 
         func data(_ description: String) -> ASObject {
-            return [
+            [
                 "code": rawValue,
                 "level": level,
                 "description": description
@@ -153,11 +153,11 @@ open class RTMPConnection: EventDispatcher {
     open var pageUrl: String?
     /// The time to wait for TCP/IP Handshake done.
     open var timeout: Int {
-        get { return socket.timeout }
+        get { socket.timeout }
         set { socket.timeout = newValue }
     }
     open var qualityOfService: DispatchQoS {
-        get { return socket.qualityOfService }
+        get { socket.qualityOfService }
         set { socket.qualityOfService = newValue }
     }
     /// The name of application.
@@ -176,15 +176,15 @@ open class RTMPConnection: EventDispatcher {
     open var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Int64 {
-        return socket.totalBytesIn
+        socket.totalBytesIn
     }
     /// The statistics of total outgoing bytes.
     open var totalBytesOut: Int64 {
-        return socket.totalBytesOut
+        socket.totalBytesOut
     }
     /// The statistics of total RTMPStream counts.
     open var totalStreamsCount: Int {
-        return streams.count
+        streams.count
     }
     /// The statistics of outgoing queue bytes per second.
     @objc open private(set) dynamic var previousQueueBytesOut: [Int64] = []

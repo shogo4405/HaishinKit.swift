@@ -375,7 +375,7 @@ class TSFileWriter: TSWriter {
     }
 
     func getFilePath(_ fileName: String) -> String? {
-        return files.first { $0.url.absoluteString.contains(fileName) }?.url.path
+        files.first { $0.url.absoluteString.contains(fileName) }?.url.path
     }
 
     private func removeFiles() {

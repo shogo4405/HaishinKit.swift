@@ -8,7 +8,7 @@ enum HTTPVersion: String {
 extension HTTPVersion: CustomStringConvertible {
     // MARK: CustomStringConvertible
     var description: String {
-        return rawValue
+        rawValue
     }
 }
 
@@ -156,20 +156,20 @@ enum HTTPStatusCode: Int {
 extension HTTPStatusCode: CustomStringConvertible {
     // MARK: CustomStringConvertible
     var description: String {
-        return "\(rawValue) \(message)"
+        "\(rawValue) \(message)"
     }
 }
 
 // MARK: -
 open class HTTPService: NetService {
     open class var type: String {
-        return "_http._tcp"
+        "_http._tcp"
     }
     open class var defaultPort: Int32 {
-        return 8080
+        8080
     }
     open class var defaultDocument: String {
-        return """
+        """
 <!DOCTYPE html>
 <html>
 <head>

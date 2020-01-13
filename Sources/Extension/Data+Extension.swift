@@ -2,7 +2,7 @@ import Foundation
 
 extension Data {
     var bytes: [UInt8] {
-        return withUnsafeBytes {
+        withUnsafeBytes {
             guard let pointer = $0.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
                 return []
             }

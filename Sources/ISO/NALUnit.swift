@@ -28,7 +28,7 @@ extension NALUnit: DataConvertible {
     // MARK: DataConvertible
     var data: Data {
         get {
-            return ByteArray()
+            ByteArray()
                 .writeUInt8(refIdc << 5 | type.rawValue)
                 .writeBytes(payload)
                 .data

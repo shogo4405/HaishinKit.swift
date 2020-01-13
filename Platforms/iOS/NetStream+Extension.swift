@@ -6,7 +6,7 @@ import Foundation
 extension NetStream {
     open var orientation: AVCaptureVideoOrientation {
         get {
-            return mixer.videoIO.orientation
+            mixer.videoIO.orientation
         }
         set {
             self.mixer.videoIO.orientation = newValue
@@ -20,7 +20,7 @@ extension NetStream {
     }
 
     open var zoomFactor: CGFloat {
-        return self.mixer.videoIO.zoomFactor
+        self.mixer.videoIO.zoomFactor
     }
 
     open func setZoomFactor(_ zoomFactor: CGFloat, ramping: Bool = false, withRate: Float = 2.0) {

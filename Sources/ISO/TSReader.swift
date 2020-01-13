@@ -91,6 +91,6 @@ extension TSReader: IteratorProtocol {
 extension TSReader: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }

@@ -20,7 +20,7 @@ enum RTMPChunkType: UInt8 {
     }
 
     func ready(_ data: Data) -> Bool {
-        return headerSize + RTMPChunk.getStreamIdSize(data[0]) < data.count
+        headerSize + RTMPChunk.getStreamIdSize(data[0]) < data.count
     }
 
     func toBasicHeader(_ streamId: UInt16) -> Data {
@@ -274,6 +274,6 @@ final class RTMPChunk {
 extension RTMPChunk: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }

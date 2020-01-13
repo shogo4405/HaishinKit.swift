@@ -26,7 +26,7 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
 
     public subscript(key: Key) -> Any? {
         get {
-            return observer?[keyPath: key.keyPath]
+            observer?[keyPath: key.keyPath]
         }
         set {
             switch key.keyPath {

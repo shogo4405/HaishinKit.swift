@@ -6,7 +6,7 @@ public typealias ASObject = [String: Any?]
 
 public final class ASUndefined: NSObject {
     override public var description: String {
-        return "undefined"
+        "undefined"
     }
 
     override fileprivate init() {
@@ -49,7 +49,7 @@ public struct ASArray {
     private(set) var dict: [String: Any?] = [:]
 
     public var length: Int {
-        return data.count
+        data.count
     }
 
     public init(count: Int) {
@@ -104,14 +104,14 @@ extension ASArray: ExpressibleByArrayLiteral {
 extension ASArray: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        return data.description
+        data.description
     }
 }
 
 extension ASArray: Equatable {
     // MARK: Equatable
     public static func == (lhs: ASArray, rhs: ASArray) -> Bool {
-        return (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
+        (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
     }
 }
 
@@ -125,7 +125,7 @@ extension ASArray: Equatable {
  */
 public final class ASXMLDocument: NSObject {
     override public var description: String {
-        return data
+        data
     }
 
     private var data: String
@@ -143,7 +143,7 @@ public final class ASXMLDocument: NSObject {
  */
 public final class ASXML: NSObject {
     override public var description: String {
-        return data
+        data
     }
 
     private var data: String

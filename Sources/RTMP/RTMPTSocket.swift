@@ -28,7 +28,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     }
 
     var timestamp: TimeInterval {
-        return handshake.timestamp
+        handshake.timestamp
     }
 
     var readyState: RTMPSocketReadyState = .uninitialized {

@@ -18,7 +18,7 @@ final class RTMPHandshake {
     }
 
     func c2packet(_ s0s1packet: Data) -> Data {
-        return ByteArray()
+        ByteArray()
             .writeBytes(s0s1packet.subdata(in: 1..<5))
             .writeInt32(Int32(Date().timeIntervalSince1970 - timestamp))
             .writeBytes(s0s1packet.subdata(in: 9..<RTMPHandshake.sigSize + 1))

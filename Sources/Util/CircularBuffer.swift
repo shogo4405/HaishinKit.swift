@@ -2,7 +2,7 @@ import Foundation
 
 struct CircularBuffer<Element> {
     var first: Element? {
-        return buffer[top]
+        buffer[top]
     }
 
     var count: Int {
@@ -66,6 +66,6 @@ struct CircularBuffer<Element> {
 extension CircularBuffer: CustomStringConvertible {
     // MARK: CustomStringConvertible
     var description: String {
-        return buffer.description
+        buffer.description
     }
 }

@@ -73,20 +73,20 @@ final class MD5 {
         }
 
         func rotateLeft(_ x: UInt32, _ n: UInt32) -> UInt32 {
-            return ((x << n) & 0xFFFFFFFF) | (x >> (32 - n))
+            ((x << n) & 0xFFFFFFFF) | (x >> (32 - n))
         }
 
         var data: Data {
-            return a.data + b.data + c.data + d.data
+            a.data + b.data + c.data + d.data
         }
     }
 
     static func base64(_ message: String) -> String {
-        return calculate(message).base64EncodedString(options: .lineLength64Characters)
+        calculate(message).base64EncodedString(options: .lineLength64Characters)
     }
 
     static func calculate(_ message: String) -> Data {
-        return calculate(ByteArray().writeUTF8Bytes(message).data)
+        calculate(ByteArray().writeUTF8Bytes(message).data)
     }
 
     static func calculate(_ data: Data) -> Data {

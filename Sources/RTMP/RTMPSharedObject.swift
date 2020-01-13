@@ -73,7 +73,7 @@ struct RTMPSharedObjectEvent {
 extension RTMPSharedObjectEvent: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -231,6 +231,6 @@ open class RTMPSharedObject: EventDispatcher {
 extension RTMPSharedObject: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        return data.debugDescription
+        data.debugDescription
     }
 }

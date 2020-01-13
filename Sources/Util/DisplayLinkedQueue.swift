@@ -18,7 +18,7 @@ final class DisplayLinkedQueue: NSObject {
     static let defaultPreferredFramesPerSecond = 0
 
     var isPaused: Bool {
-        get { return displayLink?.isPaused ?? false }
+        get { displayLink?.isPaused ?? false }
         set { displayLink?.isPaused = newValue }
     }
     var duration: TimeInterval {

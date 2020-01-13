@@ -2,7 +2,7 @@ import Foundation
 
 open class NetService: NSObject {
     open var txtData: Data? {
-        return nil
+        nil
     }
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetService.lock")

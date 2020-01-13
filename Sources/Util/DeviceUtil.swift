@@ -3,11 +3,11 @@ import AVFoundation
 #if os(iOS) || os(macOS)
 extension AVFrameRateRange {
     func clamp(rate: Float64) -> Float64 {
-        return max(minFrameRate, min(maxFrameRate, rate))
+        max(minFrameRate, min(maxFrameRate, rate))
     }
 
     func contains(rate: Float64) -> Bool {
-        return (minFrameRate...maxFrameRate) ~= rate
+        (minFrameRate...maxFrameRate) ~= rate
     }
 }
 
@@ -45,13 +45,13 @@ extension AVCaptureDevice {
 
 public struct DeviceUtil {
     public static func device(withPosition: AVCaptureDevice.Position) -> AVCaptureDevice? {
-        return AVCaptureDevice.devices().first {
+        AVCaptureDevice.devices().first {
             $0.hasMediaType(.video) && $0.position == withPosition
         }
     }
 
     public static func device(withLocalizedName: String, mediaType: AVMediaType) -> AVCaptureDevice? {
-        return AVCaptureDevice.devices().first {
+        AVCaptureDevice.devices().first {
             $0.hasMediaType(mediaType) && $0.localizedName == withLocalizedName
         }
     }

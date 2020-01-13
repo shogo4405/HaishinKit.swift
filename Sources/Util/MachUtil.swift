@@ -12,10 +12,10 @@ public struct MachUtil {
     }()
 
     public static func nanosToAbs(_ nanos: UInt64) -> UInt64 {
-        return nanos * UInt64(timebase.denom) / UInt64(timebase.numer)
+        nanos * UInt64(timebase.denom) / UInt64(timebase.numer)
     }
 
     public static func absToNanos(_ abs: UInt64) -> UInt64 {
-        return abs * UInt64(timebase.numer) / UInt64(timebase.denom)
+        abs * UInt64(timebase.numer) / UInt64(timebase.denom)
     }
 }

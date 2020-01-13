@@ -59,7 +59,7 @@ open class ScreenCaptureSession: NSObject {
         }
     }
     private var scale: CGFloat {
-        return enabledScale ? UIScreen.main.scale : 1.0
+        enabledScale ? UIScreen.main.scale : 1.0
     }
 
     private var _pixelBufferPool: CVPixelBufferPool?

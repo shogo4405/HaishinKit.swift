@@ -11,7 +11,7 @@ open class GLHKView: GLKView, NetStreamRenderer {
     public static var defaultBackgroundColor: UIColor = .black
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoFormatDescription: CMVideoFormatDescription? {
-        return currentStream?.mixer.videoIO.formatDescription
+        currentStream?.mixer.videoIO.formatDescription
     }
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait

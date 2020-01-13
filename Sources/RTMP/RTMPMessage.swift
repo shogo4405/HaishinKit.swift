@@ -71,7 +71,7 @@ class RTMPMessage {
 extension RTMPMessage: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }
 
@@ -528,7 +528,7 @@ final class RTMPAudioMessage: RTMPMessage {
 
     override var payload: Data {
         get {
-            return super.payload
+            super.payload
         }
         set {
             if super.payload == newValue {
@@ -748,7 +748,7 @@ final class RTMPUserControlMessage: RTMPMessage {
         case unknown = 0xFF
 
         var bytes: [UInt8] {
-            return [0x00, rawValue]
+            [0x00, rawValue]
         }
     }
 

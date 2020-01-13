@@ -3,7 +3,7 @@ import CoreMedia
 extension CMSampleBuffer {
     var isNotSync: Bool {
         get {
-            return getAttachmentValue(for: kCMSampleAttachmentKey_NotSync) ?? false
+            getAttachmentValue(for: kCMSampleAttachmentKey_NotSync) ?? false
         }
         set {
             setAttachmentValue(for: kCMSampleAttachmentKey_NotSync, value: newValue)
@@ -15,7 +15,7 @@ extension CMSampleBuffer {
     @available(macOS, obsoleted: 10.15)
     var dataBuffer: CMBlockBuffer? {
         get {
-            return CMSampleBufferGetDataBuffer(self)
+            CMSampleBufferGetDataBuffer(self)
         }
         set {
             _ = newValue.map {
@@ -28,42 +28,42 @@ extension CMSampleBuffer {
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
     var imageBuffer: CVImageBuffer? {
-        return CMSampleBufferGetImageBuffer(self)
+        CMSampleBufferGetImageBuffer(self)
     }
 
     @available(iOS, obsoleted: 13.0)
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
     var numSamples: CMItemCount {
-        return CMSampleBufferGetNumSamples(self)
+        CMSampleBufferGetNumSamples(self)
     }
 
     @available(iOS, obsoleted: 13.0)
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
     var duration: CMTime {
-        return CMSampleBufferGetDuration(self)
+        CMSampleBufferGetDuration(self)
     }
 
     @available(iOS, obsoleted: 13.0)
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
     var formatDescription: CMFormatDescription? {
-        return CMSampleBufferGetFormatDescription(self)
+        CMSampleBufferGetFormatDescription(self)
     }
 
     @available(iOS, obsoleted: 13.0)
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
     var decodeTimeStamp: CMTime {
-        return CMSampleBufferGetDecodeTimeStamp(self)
+        CMSampleBufferGetDecodeTimeStamp(self)
     }
 
     @available(iOS, obsoleted: 13.0)
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
     var presentationTimeStamp: CMTime {
-        return CMSampleBufferGetPresentationTimeStamp(self)
+        CMSampleBufferGetPresentationTimeStamp(self)
     }
 
     // swiftlint:disable discouraged_optional_boolean

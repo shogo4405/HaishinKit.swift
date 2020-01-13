@@ -8,7 +8,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
         }
     }
     var timestamp: TimeInterval {
-        return handshake.timestamp
+        handshake.timestamp
     }
     var chunkSizeC: Int = RTMPChunk.defaultSize
     var chunkSizeS: Int = RTMPChunk.defaultSize

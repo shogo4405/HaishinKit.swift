@@ -41,7 +41,7 @@ public protocol FLVTag: CustomDebugStringConvertible {
 
 extension FLVTag {
     var headerSize: Int {
-        return tagType.headerSize
+        tagType.headerSize
     }
 
     init?(data: Data) {
@@ -61,7 +61,7 @@ extension FLVTag {
 
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        return Mirror(reflecting: self).debugDescription
+        Mirror(reflecting: self).debugDescription
     }
 }
 

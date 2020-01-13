@@ -2,7 +2,7 @@ import AVFoundation
 
 extension CGRect {
     var aspectRatio: CGFloat {
-        return width / height
+        width / height
     }
 }
 
