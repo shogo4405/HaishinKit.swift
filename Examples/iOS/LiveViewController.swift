@@ -4,8 +4,6 @@ import Photos
 import UIKit
 import VideoToolbox
 
-let sampleRate: Double = 44_100
-
 final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
     static let `default` = ExampleRecorderDelegate()
 
@@ -61,9 +59,6 @@ final class LiveViewController: UIViewController {
         rtmpStream.videoSettings = [
             .width: 720,
             .height: 1280
-        ]
-        rtmpStream.audioSettings = [
-            .sampleRate: sampleRate
         ]
         rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 
