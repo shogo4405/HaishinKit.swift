@@ -39,40 +39,46 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
     private var events: [Event] = []
     private var handshake = RTMPHandshake()
-    private var connection: NWConnection? = nil {
+    private var connection: NWConnection? {
         didSet {
-            if let oldValue = oldValue {
-                oldValue.cancel()
-            }
+            oldValue?.stateUpdateHandler = nil
+            oldValue?.forceCancel()
             if connection == nil {
                 connected = false
             }
         }
     }
     private var parameters: NWParameters = .tcp
-    private lazy var queue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.queue", qos: qualityOfService)
     private lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.input", qos: qualityOfService)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.output", qos: qualityOfService)
     private lazy var timeoutHandler = DispatchWorkItem { [weak self] in
         self?.didTimeout()
     }
 
-    deinit {
-        connection?.forceCancel()
-        connection = nil
-    }
-
     func connect(withName: String, port: Int) {
+        handshake.clear()
+        readyState = .uninitialized
+        chunkSizeS = RTMPChunk.defaultSize
+        chunkSizeC = RTMPChunk.defaultSize
+        totalBytesIn = 0
+        totalBytesOut = 0
+        queueBytesOut = 0
+        inputBuffer.removeAll(keepingCapacity: false)
         connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
-        connection?.stateUpdateHandler = self.stateDidChange(to:)
-        connection?.start(queue: queue)
-        receiveLoop(connection!)
+        connection?.stateUpdateHandler = stateDidChange(to:)
+        connection?.start(queue: inputQueue)
+        if let connection = connection {
+            receive(on: connection)
+        }
         if 0 < timeout {
             outputQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
         }
     }
 
     func close(isDisconnected: Bool) {
+        guard connection != nil else {
+            return
+        }
         if isDisconnected {
             let data: ASObject = (readyState == .handshakeDone) ?
                 RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
@@ -81,7 +87,6 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         readyState = .closing
         timeoutHandler.cancel()
         outputQueue = .init(label: outputQueue.label, qos: qualityOfService)
-        inputBuffer.removeAll()
         connection = nil
     }
 
@@ -103,6 +108,9 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         OSAtomicAdd64(Int64(data.count), &queueBytesOut)
         outputQueue.async {
             let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
+                guard self.connected else {
+                    return
+                }
                 if error != nil {
                     self.close(isDisconnected: true)
                     return
@@ -144,38 +152,16 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
 
-    private func receiveLoop(_ connection: NWConnection) {
-        let receiveCompletion = { [weak self] (_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) -> Void in
-            guard let self = self else {
+    private func receive(on connection: NWConnection) {
+        connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC) { [weak self] data, _, _, error in
+            guard let self = self, let data = data, self.connected else {
                 return
             }
-            self.receive(data, ctx, isComplete, error)
-            guard self.connected else {
-                return
-            }
-            self.inputQueue.async { [weak self] () -> Void in
-                self?.receiveLoop(connection)
-            }
+            self.inputBuffer.append(data)
+            self.totalBytesIn += Int64(data.count)
+            self.listen()
+            self.receive(on: connection)
         }
-        inputQueue.async { [weak self] () -> Void in
-            guard let windowSizeC = self?.windowSizeC else {
-                return
-            }
-            connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC, completion: receiveCompletion)
-        }
-    }
-
-    private func receive(_ data: Data?, _ ctx: NWConnection.ContentContext?, _ isComplete: Bool, _ error: NWError?) {
-        if error != nil {
-            close(isDisconnected: true)
-            return
-        }
-        guard let d = data else {
-            return
-        }
-        inputBuffer.append(d)
-        totalBytesIn += Int64(d.count)
-        listen()
     }
 
     private func listen() {
