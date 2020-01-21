@@ -152,6 +152,7 @@ final class LiveViewController: UIViewController {
         guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
             return
         }
+        logger.info(code)
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             retryCount = 0
