@@ -199,6 +199,10 @@ public final class H264Encoder {
         guard
             let refcon: UnsafeMutableRawPointer = outputCallbackRefCon,
             let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else {
+                if status == kVTParameterErr {
+                    // on iphone 11 with size=1792x827 this occurs
+                    logger.error("encoding failed with kVTParameterErr. Perhaps the width x height is too big for the encoder setup?")
+                }
             return
         }
         let encoder: H264Encoder = Unmanaged<H264Encoder>.fromOpaque(refcon).takeUnretainedValue()
@@ -228,6 +232,10 @@ public final class H264Encoder {
                 invalidateSession = false
                 status = VTSessionSetProperties(_session!, propertyDictionary: properties as CFDictionary)
                 status = VTCompressionSessionPrepareToEncodeFrames(_session!)
+                guard status == noErr else {
+                    logger.error("setup failed VTCompressionSessionPrepareToEncodeFrames. Size = \(width)x\(height)")
+                    return nil
+                }
             }
             return _session
         }
