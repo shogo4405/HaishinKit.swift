@@ -18,8 +18,13 @@ extension CGRect {
     }
 }
 
+public protocol CustomCaptureSession: Running {
+    var attributes: [NSString: NSObject] { get }
+    var delegate: ScreenCaptureOutputPixelBufferDelegate? { get set }
+}
+
 // MARK: -
-open class ScreenCaptureSession: NSObject {
+open class ScreenCaptureSession: NSObject, CustomCaptureSession {
     static let defaultFrameInterval: Int = 2
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),

@@ -27,8 +27,8 @@ extension VideoIOComponent {
         }
     }
 
-    func attachScreen(_ screen: ScreenCaptureSession?, useScreenSize: Bool = true) {
-        guard let screen: ScreenCaptureSession = screen else {
+    func attachScreen(_ screen: CustomCaptureSession?, useScreenSize: Bool = true) {
+        guard let screen: CustomCaptureSession = screen else {
             self.screen?.stopRunning()
             self.screen = nil
             return
@@ -54,6 +54,12 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
 
     func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
         if !effects.isEmpty {
+            // usually the context comes from HKView or MTLHKView
+            // but if you have not attached a view then the context is nil
+            if context == nil {
+                logger.info("no ci context, creating one to render effect")
+                context = CIContext()
+            }
             context?.render(effect(pixelBuffer, info: nil), to: pixelBuffer)
         }
         encoder.encodeImageBuffer(
