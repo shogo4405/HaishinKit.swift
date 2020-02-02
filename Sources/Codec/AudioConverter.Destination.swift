@@ -84,7 +84,7 @@ extension AudioConverter {
             }
         }
 
-        func mamimumBuffers(_ channel: UInt32) -> Int {
+        func maximumBuffers(_ channel: UInt32) -> Int {
             switch self {
             case .aac:
                 return 1

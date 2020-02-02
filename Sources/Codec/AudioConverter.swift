@@ -233,9 +233,9 @@ public class AudioConverter {
         repeat {
             var ioOutputDataPacketSize: UInt32 = destination.packetSize
 
-            let mamimumBuffers = destination.mamimumBuffers((channels == 0) ? inSourceFormat?.mChannelsPerFrame ?? 1 : channels)
-            let outOutputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: mamimumBuffers)
-            for i in 0..<mamimumBuffers {
+            let maximumBuffers = destination.maximumBuffers((channels == 0) ? inSourceFormat?.mChannelsPerFrame ?? 1 : channels)
+            let outOutputData: UnsafeMutableAudioBufferListPointer = AudioBufferList.allocate(maximumBuffers: maximumBuffers)
+            for i in 0..<maximumBuffers {
                 outOutputData[i].mNumberChannels = inDestinationFormat.mChannelsPerFrame
                 outOutputData[i].mDataByteSize = UInt32(dataBytesSize)
                 outOutputData[i].mData = UnsafeMutableRawPointer.allocate(byteCount: dataBytesSize, alignment: 0)
