@@ -18,7 +18,7 @@ extension CGRect {
     }
 }
 
-protocol CustomCaptureSession: Running {
+public protocol CustomCaptureSession: Running {
     var attributes: [NSString: NSObject] { get }
     var delegate: ScreenCaptureOutputPixelBufferDelegate? { get set }
 }
