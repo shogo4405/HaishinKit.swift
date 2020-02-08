@@ -153,7 +153,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
 
     private func receive(on connection: NWConnection) {
-        connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC) { [weak self] data, _, _, error in
+        connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC) { [weak self] data, _, _, _ in
             guard let self = self, let data = data, self.connected else {
                 return
             }
