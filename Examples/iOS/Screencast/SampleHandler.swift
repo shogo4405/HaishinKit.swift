@@ -16,7 +16,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
         logger.appender = socket
         */
         broadcaster.streamName = Preference.defaultInstance.streamName
-        broadcaster.connect(Preference.defaultInstance.uri, arguments: nil)
+        broadcaster.connect(Preference.defaultInstance.uri!, arguments: nil)
     }
 
     override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {

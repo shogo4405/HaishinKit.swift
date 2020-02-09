@@ -19,8 +19,8 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
             } else {
                 session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [
                     AVAudioSession.CategoryOptions.allowBluetooth,
-                    AVAudioSession.CategoryOptions.defaultToSpeaker]
-                )
+                    AVAudioSession.CategoryOptions.defaultToSpeaker
+                ])
                 try session.setMode(.default)
             }
             try session.setActive(true)

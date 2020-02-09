@@ -75,18 +75,23 @@ public class AudioConverter {
     var channels: UInt32 = AudioConverter.defaultChannels
     var formatDescription: CMFormatDescription? {
         didSet {
-            if !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) {
-                delegate?.didSetFormatDescription(audio: formatDescription)
+            guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
+                return
             }
+            logger.info(formatDescription.debugDescription)
+            delegate?.didSetFormatDescription(audio: formatDescription)
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioConverter.lock")
     var inSourceFormat: AudioStreamBasicDescription? {
         didSet {
-            guard let inSourceFormat = inSourceFormat else {
+            guard let inSourceFormat = inSourceFormat, inSourceFormat != oldValue else {
                 return
             }
-            logger.info("\(String(describing: self.inSourceFormat))")
+            _converter = nil
+            formatDescription = nil
+            _inDestinationFormat = nil
+            logger.info("\(String(describing: inSourceFormat))")
             let nonInterleaved = inSourceFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved != 0
             maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AudioConverter.defaultMaximumBuffers
             currentAudioBuffer = AudioBuffer(inSourceFormat, numSamples: AudioConverter.numSamples)
@@ -175,14 +180,12 @@ public class AudioConverter {
     }
 
     public func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
-        guard let format = sampleBuffer.formatDescription, sampleBuffer.isValid && isRunning.value else {
+        guard let format = sampleBuffer.formatDescription, CMSampleBufferDataIsReady(sampleBuffer) && isRunning.value else {
             currentAudioBuffer.clear()
             return
         }
 
-        if inSourceFormat == nil {
-            inSourceFormat = format.streamBasicDescription?.pointee
-        }
+        inSourceFormat = format.streamBasicDescription?.pointee
 
         do {
             let numSamples = try currentAudioBuffer.write(sampleBuffer, offset: offset)
@@ -195,8 +198,8 @@ public class AudioConverter {
                 }
                 convert(currentAudioBuffer.maxLength, presentationTimeStamp: currentAudioBuffer.presentationTimeStamp)
             }
-            if numSamples < sampleBuffer.numSamples {
-                encodeSampleBuffer(sampleBuffer, offset: numSamples)
+            if offset + numSamples < sampleBuffer.numSamples {
+                encodeSampleBuffer(sampleBuffer, offset: offset + numSamples)
             }
         } catch {
             logger.error(error)
@@ -227,9 +230,8 @@ public class AudioConverter {
             )
 
             switch status {
-                // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
-                case noErr,
-                     kAudioConverterErr_InvalidInputSize:
+            // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
+            case noErr, kAudioConverterErr_InvalidInputSize:
                 delegate?.sampleOutput(
                     audio: outOutputData,
                     presentationTimeStamp: presentationTimeStamp
@@ -327,6 +329,7 @@ extension AudioConverter: Running {
                 AudioConverterDispose(convert)
                 self._converter = nil
             }
+            self.currentAudioBuffer.clear()
             self.inSourceFormat = nil
             self.formatDescription = nil
             self._inDestinationFormat = nil
