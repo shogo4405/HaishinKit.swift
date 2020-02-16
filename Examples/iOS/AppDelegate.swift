@@ -13,16 +13,19 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         // Logboard.with(HaishinKitIdentifier).level = .trace
         let session = AVAudioSession.sharedInstance()
         do {
-            try session.setPreferredSampleRate(44_100)
             // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
             if #available(iOS 10.0, *) {
                 try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
             } else {
-                session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [AVAudioSession.CategoryOptions.allowBluetooth])
-                try? session.setMode(.default)
+                session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [
+                    AVAudioSession.CategoryOptions.allowBluetooth,
+                    AVAudioSession.CategoryOptions.defaultToSpeaker
+                ])
+                try session.setMode(.default)
             }
             try session.setActive(true)
         } catch {
+            logger.error(error)
         }
         return true
     }

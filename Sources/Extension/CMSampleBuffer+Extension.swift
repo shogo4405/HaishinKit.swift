@@ -13,6 +13,13 @@ extension CMSampleBuffer {
     @available(iOS, obsoleted: 13.0)
     @available(tvOS, obsoleted: 13.0)
     @available(macOS, obsoleted: 10.15)
+    var isValid: Bool {
+        CMSampleBufferIsValid(self)
+    }
+
+    @available(iOS, obsoleted: 13.0)
+    @available(tvOS, obsoleted: 13.0)
+    @available(macOS, obsoleted: 10.15)
     var dataBuffer: CMBlockBuffer? {
         get {
             CMSampleBufferGetDataBuffer(self)

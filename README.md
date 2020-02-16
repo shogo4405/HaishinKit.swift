@@ -104,16 +104,19 @@ Make sure you setup and activate your AVAudioSession.
 import AVFoundation
 let session = AVAudioSession.sharedInstance()
 do {
-    try session.setPreferredSampleRate(44_100)
     // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
     if #available(iOS 10.0, *) {
         try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
     } else {
-        session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with:  [AVAudioSession.CategoryOptions.allowBluetooth])
+        session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [
+            AVAudioSession.CategoryOptions.allowBluetooth,
+            AVAudioSession.CategoryOptions.defaultToSpeaker]
+        )
+        try session.setMode(.default)
     }
-    try session.setMode(AVAudioSessionModeDefault)
     try session.setActive(true)
 } catch {
+    print(error)
 }
 ```
 ## RTMP Usage
@@ -143,24 +146,6 @@ rtmpStream.publish("streamName")
 
 ### Settings
 ```swift
-let sampleRate:Double = 44_100
-
-// see: #58
-#if(iOS)
-let session = AVAudioSession.sharedInstance()
-do {
-    try session.setPreferredSampleRate(44_100)
-    // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
-    if #available(iOS 10.0, *) {
-        try session.setCategory(.playAndRecord, mode: .default, options: [.allowBluetooth])
-    } else {
-        session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with:  [AVAudioSession.CategoryOptions.allowBluetooth])
-    }
-    try session.setActive(true)
-} catch {
-}
-#endif
-
 var rtmpStream = RTMPStream(connection: rtmpConnection)
 
 rtmpStream.captureSettings = [
@@ -173,7 +158,6 @@ rtmpStream.captureSettings = [
 rtmpStream.audioSettings = [
     .muted: false, // mute audio
     .bitrate: 32 * 1000,
-    .sampleRate: sampleRate, 
 ]
 rtmpStream.videoSettings = [
     .width: 640, // video output width

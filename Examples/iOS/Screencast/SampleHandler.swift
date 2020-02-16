@@ -15,15 +15,8 @@ open class SampleHandler: RPBroadcastSampleHandler {
         logger.level = .debug
         logger.appender = socket
         */
-        print("broadcastStarted")
-        super.broadcastStarted(withSetupInfo: setupInfo)
-        guard
-            let endpointURL: String = setupInfo?["endpointURL"] as? String,
-            let streamName: String = setupInfo?["streamName"] as? String else {
-            return
-        }
-        broadcaster.streamName = streamName
-        broadcaster.connect(endpointURL, arguments: nil)
+        broadcaster.streamName = Preference.defaultInstance.streamName
+        broadcaster.connect(Preference.defaultInstance.uri!, arguments: nil)
     }
 
     override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
