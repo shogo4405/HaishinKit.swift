@@ -439,11 +439,15 @@ extension VideoIOComponent {
             renderer?.render(image: image)
         }
 
-        encoder.encodeImageBuffer(
-            imageBuffer ?? buffer,
-            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
-            duration: sampleBuffer.duration
-        )
+        do {
+            try encoder.encodeImageBuffer(
+                imageBuffer ?? buffer,
+                presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+                duration: sampleBuffer.duration
+            )
+        } catch {
+            logger.error(error)
+        }
 
         mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
     }

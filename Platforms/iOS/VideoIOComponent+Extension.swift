@@ -62,11 +62,17 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
             }
             context?.render(effect(pixelBuffer, info: nil), to: pixelBuffer)
         }
-        encoder.encodeImageBuffer(
-            pixelBuffer,
-            presentationTimeStamp: withPresentationTime,
-            duration: CMTime.invalid
-        )
+        
+        do {
+            try encoder.encodeImageBuffer(
+                pixelBuffer,
+                presentationTimeStamp: withPresentationTime,
+                duration: CMTime.invalid
+            )
+        } catch {
+            logger.error(error)
+        }
+
         mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
     }
 }

@@ -153,16 +153,66 @@ enum VTCompressionSessionPropertyKey: VTSessionPropertyKey {
 }
 
 extension VTCompressionSession {
-    func setProperty(_ key: VTCompressionSessionPropertyKey, value: CFTypeRef?) -> OSStatus {
-        VTSessionSetProperty(self, key: key.CFString, value: value)
+    func encodeFrame(_ imageBuffer: CVImageBuffer, presentaionTimeStamp: CMTime, duration: CMTime, frameProperties: CFDictionary? = nil, sourceFrameRefcon: UnsafeMutableRawPointer? = nil, infoFlagsOut: UnsafeMutablePointer<VTEncodeInfoFlags>? = nil) throws {
+        let status = VTCompressionSessionEncodeFrame(
+            self,
+            imageBuffer: imageBuffer,
+            presentationTimeStamp: presentaionTimeStamp,
+            duration: duration,
+            frameProperties: frameProperties,
+            sourceFrameRefcon: sourceFrameRefcon,
+            infoFlagsOut: infoFlagsOut
+        )
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
     }
 
-    func setProperties(_ propertyDictionary: [NSString: NSObject]) -> OSStatus {
-        VTSessionSetProperties(self, propertyDictionary: propertyDictionary as CFDictionary)
+    func timeRangeForNextPass() throws -> CMTimeRange {
+        var itemCount: CMItemCount = 0
+        var timeRange: UnsafePointer<CMTimeRange>?
+        let status = VTCompressionSessionGetTimeRangesForNextPass(self, timeRangeCountOut: &itemCount, timeRangeArrayOut: &timeRange)
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
+        return timeRange?.pointee ?? .invalid
     }
 
-    func prepareToEncodeFrame() -> OSStatus {
-        VTCompressionSessionPrepareToEncodeFrames(self)
+    func setProperty(_ key: VTCompressionSessionPropertyKey, value: CFTypeRef?) throws {
+        let status = VTSessionSetProperty(self, key: key.CFString, value: value)
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
+    }
+
+    func setProperties(_ propertyDictionary: [NSString: NSObject]) throws {
+        let status = VTSessionSetProperties(self, propertyDictionary: propertyDictionary as CFDictionary)
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
+    }
+
+    func prepareToEncodeFrame() throws {
+        let status = VTCompressionSessionPrepareToEncodeFrames(self)
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
+    }
+
+    func beginPass(_ flags: VTCompressionSessionOptionFlags = .init(rawValue: 0)) throws {
+        let status = VTCompressionSessionBeginPass(self, flags: flags, nil)
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
+    }
+
+    func endPass() throws -> DarwinBoolean {
+        var furtherPassesRequestedOut: DarwinBoolean = false
+        let status = VTCompressionSessionEndPass(self, furtherPassesRequestedOut: &furtherPassesRequestedOut, nil)
+        guard status == noErr else {
+            throw OSError.invoke(function: #function, status: status)
+        }
+        return furtherPassesRequestedOut
     }
 
     func invalidate() {

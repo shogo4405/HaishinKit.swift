@@ -46,6 +46,10 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
                 if let newValue = toDouble(value: newValue) {
                     observer?[keyPath: path] = newValue
                 }
+            case let path as ReferenceWritableKeyPath<T, Int>:
+                if let newValue = toInt(value: newValue) {
+                    observer?[keyPath: path] = newValue
+                }
             case let path as ReferenceWritableKeyPath<T, String>:
                 if let newValue = newValue as? String {
                     observer?[keyPath: path] = newValue
@@ -142,6 +146,33 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
             return Int32(value)
         case let value as Float:
             return Int32(value)
+        default:
+            return nil
+        }
+    }
+
+    private func toInt(value: Any?) -> Int? {
+        switch value {
+        case let value as Int:
+            return value
+        case let value as Int8:
+            return numericCast(value)
+        case let value as Int16:
+            return numericCast(value)
+        case let value as Int32:
+            return numericCast(value)
+        case let value as Int64:
+            return numericCast(value)
+        case let value as UInt:
+            return numericCast(value)
+        case let value as UInt8:
+            return numericCast(value)
+        case let value as UInt16:
+            return numericCast(value)
+        case let value as UInt32:
+            return numericCast(value)
+        case let value as UInt64:
+            return numericCast(value)
         default:
             return nil
         }

@@ -58,7 +58,8 @@ final class LiveViewController: UIViewController {
         ]
         rtmpStream.videoSettings = [
             .width: 720,
-            .height: 1280
+            .height: 1280,
+            .multiPassCount: 2
         ]
         rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 

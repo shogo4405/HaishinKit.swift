@@ -24,6 +24,7 @@ public final class H264Encoder {
         #endif
         case maxKeyFrameIntervalDuration
         case scalingMode
+        case multiPassCount
 
         public var keyPath: AnyKeyPath {
             switch self {
@@ -45,8 +46,16 @@ public final class H264Encoder {
                 return \H264Encoder.scalingMode
             case .profileLevel:
                 return \H264Encoder.profileLevel
+            case .multiPassCount:
+                return \H264Encoder.multiPassCount
             }
         }
+    }
+
+    private struct ImageBuffer {
+        let image: CVImageBuffer
+        let presentationTimeStamp: CMTime
+        let duration: CMTime
     }
 
     public static let defaultWidth: Int32 = 480
@@ -82,7 +91,6 @@ public final class H264Encoder {
             invalidateSession = true
         }
     }
-
     var width: Int32 = H264Encoder.defaultWidth {
         didSet {
             guard width != oldValue else {
@@ -114,7 +122,7 @@ public final class H264Encoder {
             guard bitrate != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_AverageBitRate, Int(bitrate) as CFTypeRef)
+            try? session?.setProperty(.averageBitRate, value: Int(bitrate) as CFTypeRef)
         }
     }
     var profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String {
@@ -140,7 +148,7 @@ public final class H264Encoder {
             guard expectedFPS != oldValue else {
                 return
             }
-            setProperty(kVTCompressionPropertyKey_ExpectedFrameRate, NSNumber(value: expectedFPS))
+            try? session?.setProperty(.expectedFrameRate, value: NSNumber(value: expectedFPS))
         }
     }
     var formatDescription: CMFormatDescription? {
@@ -151,16 +159,34 @@ public final class H264Encoder {
             delegate?.didSetFormatDescription(video: formatDescription)
         }
     }
+    var multiPassCount: Int = 1 {
+        didSet {
+            guard multiPassCount != oldValue else {
+                return
+            }
+            invalidateSession = true
+        }
+    }
     weak var delegate: VideoEncoderDelegate?
 
-    private(set) var status: OSStatus = noErr
+    private var frameSilo: VTFrameSilo?
+    private var multiPassStorage: VTMultiPassStorage? {
+        didSet {
+            try? oldValue?.close()
+        }
+    }
+    private var multiPassBuffers: [ImageBuffer] = []
+    private var multiPassDuration: Double = 0.2
+    private var canperformMultiPass: Bool {
+        1 < multiPassCount
+    }
     private var attributes: [NSString: AnyObject] {
         var attributes: [NSString: AnyObject] = H264Encoder.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: width)
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: height)
         return attributes
     }
-    private var invalidateSession: Bool = true
+    private var invalidateSession = true
     private var lastImageBuffer: CVImageBuffer?
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
@@ -207,7 +233,11 @@ public final class H264Encoder {
         }
         let encoder: H264Encoder = Unmanaged<H264Encoder>.fromOpaque(refcon).takeUnretainedValue()
         encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
-        encoder.delegate?.sampleOutput(video: sampleBuffer)
+        if encoder.canperformMultiPass {
+            encoder.performMultiPass(sampleBuffer)
+        } else {
+            encoder.delegate?.sampleOutput(video: sampleBuffer)
+        }
     }
 
     private var _session: VTCompressionSession?
@@ -230,10 +260,19 @@ public final class H264Encoder {
                     return nil
                 }
                 invalidateSession = false
-                status = session.setProperties(properties)
-                status = session.prepareToEncodeFrame()
-                guard status == noErr else {
-                    logger.error("setup failed VTCompressionSessionPrepareToEncodeFrames. Size = \(width)x\(height)")
+                do {
+                    try session.setProperties(properties)
+                    if canperformMultiPass {
+                        VTMultiPassStorageCreate(allocator: kCFAllocatorDefault, fileURL: nil, timeRange: .invalid, options: nil, multiPassStorageOut: &multiPassStorage)
+                        try session.setProperty(.multiPassStorage, value: multiPassStorage)
+                        try session.setProperty(.realTime, value: kCFBooleanFalse)
+                        try session.beginPass()
+                        VTFrameSiloCreate(allocator: kCFAllocatorDefault, fileURL: nil, timeRange: .invalid, options: nil, frameSiloOut: &frameSilo)
+                    } else {
+                        try session.prepareToEncodeFrame()
+                    }
+                } catch {
+                    logger.error(error)
                     return nil
                 }
             }
@@ -249,42 +288,67 @@ public final class H264Encoder {
         settings.observer = self
     }
 
-    func encodeImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
+    func encodeImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) throws {
         guard isRunning.value && locked == 0 else {
             return
         }
         if invalidateSession {
             session = nil
         }
-        guard let session: VTCompressionSession = session else {
+        guard let session = session else {
             return
         }
-        var flags: VTEncodeInfoFlags = []
-        VTCompressionSessionEncodeFrame(
-            session,
-            imageBuffer: muted ? lastImageBuffer ?? imageBuffer : imageBuffer,
-            presentationTimeStamp: presentationTimeStamp,
-            duration: duration,
-            frameProperties: nil,
-            sourceFrameRefcon: nil,
-            infoFlagsOut: &flags
-        )
+        let currentImageBuffer = muted ? lastImageBuffer ?? imageBuffer : imageBuffer
+        if canperformMultiPass {
+            multiPassBuffers.append(ImageBuffer(image: currentImageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration))
+            try multiPassEndOfRoundIfNeeded(session)
+        }
+        try session.encodeFrame(currentImageBuffer, presentaionTimeStamp: presentationTimeStamp, duration: duration)
+
         if !muted || lastImageBuffer == nil {
             lastImageBuffer = imageBuffer
         }
     }
 
-    private func setProperty(_ key: CFString, _ value: CFTypeRef?) {
-        lockQueue.async {
-            guard let session: VTCompressionSession = self._session else {
-                return
-            }
-            self.status = VTSessionSetProperty(
-                session,
-                key: key,
-                value: value
-            )
+    func performMultiPass(_ sampleBuffer: CMSampleBuffer) {
+        do {
+            try frameSilo?.addSampleBuffer(sampleBuffer)
+        } catch {
+            logger.error(error)
         }
+    }
+
+    private func multiPassEndOfRoundIfNeeded(_ session: VTCompressionSession) throws {
+        let timeRange = makeTimeRange()
+        guard multiPassDuration < timeRange.duration.seconds else {
+            return
+        }
+        print(try session.endPass())
+        print(try session.timeRangeForNextPass())
+        for i in 0...multiPassCount {
+            print(i, ":", multiPassCount)
+            try session.beginPass(i == multiPassCount ? .beginFinalPass : .init(rawValue: 0))
+            for buffer in multiPassBuffers {
+                try? session.encodeFrame(buffer.image, presentaionTimeStamp: buffer.presentationTimeStamp, duration: buffer.duration)
+            }
+            guard (try session.endPass()).boolValue else {
+                break
+            }
+            try session.timeRangeForNextPass()
+        }
+        multiPassBuffers.removeAll()
+        try frameSilo?.forEachSampleBuffer(timeRange) { [weak self] sampleBuffer -> OSStatus in
+            self?.delegate?.sampleOutput(video: sampleBuffer)
+            return noErr
+        }
+        try session.beginPass()
+    }
+
+    private func makeTimeRange() -> CMTimeRange {
+        guard let first = multiPassBuffers.first, let last = multiPassBuffers.last else {
+            return .invalid
+        }
+        return CMTimeRange(start: first.presentationTimeStamp, end: last.presentationTimeStamp)
     }
 
 #if os(iOS)
@@ -338,6 +402,9 @@ extension H264Encoder: Running {
             self.session = nil
             self.lastImageBuffer = nil
             self.formatDescription = nil
+            self.frameSilo = nil
+            self.multiPassStorage = nil
+            self.multiPassBuffers.removeAll()
 #if os(iOS)
             NotificationCenter.default.removeObserver(self)
 #endif
