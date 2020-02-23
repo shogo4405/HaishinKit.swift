@@ -66,6 +66,8 @@ final class LiveViewController: UIViewController {
         audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1024
 
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -219,6 +221,16 @@ final class LiveViewController: UIViewController {
             return
         }
         rtmpStream.orientation = orientation
+    }
+
+    @objc
+    private func didEnterBackground(_ notification: Notification) {
+        // rtmpStream.receiveVideo = false
+    }
+
+    @objc
+    private func didBecomeActive(_ notification: Notification) {
+        // rtmpStream.receiveVideo = true
     }
 
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
