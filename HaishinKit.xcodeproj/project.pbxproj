@@ -351,9 +351,6 @@
 		29FD1B5022FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5222FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
-		29FD1B5422FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */; };
-		29FD1B5522FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */; };
-		29FD1B5622FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */; };
 		BC44A1A923D31E92002D4297 /* AudioConverter.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioConverter.AudioBuffer.swift */; };
 		BC44A1AA23D31E92002D4297 /* AudioConverter.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioConverter.AudioBuffer.swift */; };
 		BC44A1AB23D31E92002D4297 /* AudioConverter.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioConverter.AudioBuffer.swift */; };
@@ -361,6 +358,9 @@
 		BC4C9EAF23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */; };
 		BC4C9EB023F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */; };
 		BC4C9EB123F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */; };
+		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
+		BC83A4742403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
+		BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC9CFA9323BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
 		BC9CFA9423BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
 		BC9CFA9523BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
@@ -651,9 +651,9 @@
 		29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPHandshake.swift; sourceTree = "<group>"; };
 		29F97F232336A4FA00A4C317 /* SettingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTests.swift; sourceTree = "<group>"; };
 		29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionPropertyKey.swift; sourceTree = "<group>"; };
-		29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTCompressionSessionPropertyKey.swift; sourceTree = "<group>"; };
 		BC44A1A823D31E92002D4297 /* AudioConverter.AudioBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioConverter.AudioBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+Extension.swift"; sourceTree = "<group>"; };
+		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamRenderer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -746,7 +746,6 @@
 				29B876571CD70A7900FC07DA /* AudioConverter.swift */,
 				29B876581CD70A7900FC07DA /* H264Decoder.swift */,
 				29B876591CD70A7900FC07DA /* H264Encoder.swift */,
-				29FD1B5322FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift */,
 				29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */,
 			);
 			path = Codec;
@@ -1155,6 +1154,7 @@
 				29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */,
 				29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */,
 				29EA87D71E79A0090043A5F8 /* URL+Extension.swift */,
+				BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1617,12 +1617,12 @@
 				29B876B11CD70B2800FC07DA /* RTMPMessage.swift in Sources */,
 				2941746B22D069B300A2944F /* AudioEffect.swift in Sources */,
 				295891011EEB7A8B00CE51E1 /* ScalingMode.swift in Sources */,
+				BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				299B131D1D35272D00A1E8F5 /* ScreenCaptureSession.swift in Sources */,
 				2943ED53232FCA7C00ED6301 /* Setting.swift in Sources */,
 				2915EC4D1D85BB8C00621092 /* RTMPTSocket.swift in Sources */,
 				2958910A1EEB8D1800CE51E1 /* FLVReader.swift in Sources */,
 				29C2631C1D0083B50098D4EF /* VideoIOComponent.swift in Sources */,
-				29FD1B5422FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */,
 				29B876B41CD70B2800FC07DA /* RTMPSharedObject.swift in Sources */,
 				2901A4EE1D437170002BBD23 /* DisplayLinkedQueue.swift in Sources */,
 				2958911E1EEB8E9600CE51E1 /* FLVSoundRate.swift in Sources */,
@@ -1785,7 +1785,7 @@
 				29B876FE1CD70D5A00FC07DA /* H264+AVC.swift in Sources */,
 				295891171EEB8DFC00CE51E1 /* FLVTagType.swift in Sources */,
 				294852571D852499002DE492 /* RTMPTSocket.swift in Sources */,
-				29FD1B5522FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */,
+				BC83A4742403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				29245AEE1D32347E00AFFB9A /* VideoGravityUtil.swift in Sources */,
 				292D8A351D8B294E00DBECE2 /* MP4Reader.swift in Sources */,
 				29B876FF1CD70D5A00FC07DA /* NALUnit.swift in Sources */,
@@ -1893,7 +1893,6 @@
 				29EB3E1A1ED0589B001CAE8B /* NetStream.swift in Sources */,
 				29EB3E211ED059FB001CAE8B /* RTMPHandshake.swift in Sources */,
 				29EB3DF41ED05776001CAE8B /* CMBlockBuffer+Extension.swift in Sources */,
-				29FD1B5622FF1C2D0095A0BE /* VTCompressionSessionPropertyKey.swift in Sources */,
 				29EB3DF01ED05768001CAE8B /* H264Encoder.swift in Sources */,
 				29EB3E351ED05A33001CAE8B /* DeviceUtil.swift in Sources */,
 				29DC17B521D0CC0600E26CED /* Atomic.swift in Sources */,
@@ -1904,6 +1903,7 @@
 				29EB3E3A1ED05A45001CAE8B /* TimerDriver.swift in Sources */,
 				29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */,
 				29EB3DF81ED05799001CAE8B /* Mirror+Extension.swift in Sources */,
+				BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				BC9CFA9523BDE8B700917EEF /* NetStreamRenderer.swift in Sources */,
 				29EB3E031ED0585D001CAE8B /* AudioSpecificConfig.swift in Sources */,
 				29EB3E3B1ED05A48001CAE8B /* VideoGravityUtil.swift in Sources */,

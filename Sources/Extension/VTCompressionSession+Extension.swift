@@ -68,7 +68,7 @@ enum VTCompressionSessionPropertyKey: VTSessionPropertyKey {
     // Others
     case encoderUsage
 
-    var key: CFString {
+    var CFString: CFString {
         switch self {
         case .depth:
             return kVTCompressionPropertyKey_Depth
@@ -149,5 +149,34 @@ enum VTCompressionSessionPropertyKey: VTSessionPropertyKey {
         case .encoderUsage:
             return "EncoderUsage" as CFString
         }
+    }
+}
+
+extension VTCompressionSession {
+    func setProperty(_ key: VTCompressionSessionPropertyKey, value: CFTypeRef?) -> OSStatus {
+        VTSessionSetProperty(self, key: key.CFString, value: value)
+    }
+
+    func setProperties(_ propertyDictionary: [NSString: NSObject]) -> OSStatus {
+        VTSessionSetProperties(self, propertyDictionary: propertyDictionary as CFDictionary)
+    }
+
+    func prepareToEncodeFrame() -> OSStatus {
+        VTCompressionSessionPrepareToEncodeFrames(self)
+    }
+
+    func invalidate() {
+        VTCompressionSessionInvalidate(self)
+    }
+
+    func copySupportedPropertyDictionary() -> [AnyHashable: Any] {
+        var support: CFDictionary?
+        guard VTSessionCopySupportedPropertyDictionary(self, supportedPropertyDictionaryOut: &support) == noErr else {
+            return [:]
+        }
+        guard let result = support as? [AnyHashable: Any] else {
+            return [:]
+        }
+        return result
     }
 }

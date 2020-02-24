@@ -71,6 +71,7 @@ public final class H264Encoder {
             settings.observer = self
         }
     }
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     var muted: Bool = false
     var scalingMode: ScalingMode = H264Encoder.defaultScalingMode {
@@ -152,7 +153,6 @@ public final class H264Encoder {
     }
     weak var delegate: VideoEncoderDelegate?
 
-    public private(set) var isRunning: Atomic<Bool> = .init(false)
     private(set) var status: OSStatus = noErr
     private var attributes: [NSString: AnyObject] {
         var attributes: [NSString: AnyObject] = H264Encoder.defaultAttributes
@@ -225,13 +225,13 @@ public final class H264Encoder {
                     outputCallback: callback,
                     refcon: Unmanaged.passUnretained(self).toOpaque(),
                     compressionSessionOut: &_session
-                    ) == noErr else {
+                    ) == noErr, let session = _session else {
                     logger.warn("create a VTCompressionSessionCreate")
                     return nil
                 }
                 invalidateSession = false
-                status = VTSessionSetProperties(_session!, propertyDictionary: properties as CFDictionary)
-                status = VTCompressionSessionPrepareToEncodeFrames(_session!)
+                status = session.setProperties(properties)
+                status = session.prepareToEncodeFrame()
                 guard status == noErr else {
                     logger.error("setup failed VTCompressionSessionPrepareToEncodeFrames. Size = \(width)x\(height)")
                     return nil
@@ -240,9 +240,7 @@ public final class H264Encoder {
             return _session
         }
         set {
-            if let session: VTCompressionSession = _session {
-                VTCompressionSessionInvalidate(session)
-            }
+            _session?.invalidate()
             _session = newValue
         }
     }
