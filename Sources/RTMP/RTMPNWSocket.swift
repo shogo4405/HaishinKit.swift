@@ -20,9 +20,9 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     var inputBuffer = Data()
     weak var delegate: RTMPSocketDelegate?
 
-    private(set) var queueBytesOut: Int64 = 0
-    private(set) var totalBytesIn: Int64 = 0
-    private(set) var totalBytesOut: Int64 = 0
+    private(set) var queueBytesOut: Atomic<Int64> = .init(0)
+    private(set) var totalBytesIn: Atomic<Int64> = .init(0)
+    private(set) var totalBytesOut: Atomic<Int64> = .init(0)
     private(set) var connected = false {
         didSet {
             if connected {
@@ -60,9 +60,9 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         readyState = .uninitialized
         chunkSizeS = RTMPChunk.defaultSize
         chunkSizeC = RTMPChunk.defaultSize
-        totalBytesIn = 0
-        totalBytesOut = 0
-        queueBytesOut = 0
+        totalBytesIn.mutate { $0 = 0 }
+        totalBytesOut.mutate { $0 = 0 }
+        queueBytesOut.mutate { $0 = 0 }
         inputBuffer.removeAll(keepingCapacity: false)
         connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
         connection?.stateUpdateHandler = stateDidChange(to:)
@@ -105,7 +105,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
 
     @discardableResult
     func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
-        OSAtomicAdd64(Int64(data.count), &queueBytesOut)
+        queueBytesOut.mutate { $0 = Int64(data.count) }
         outputQueue.async {
             let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
                 guard self.connected else {
@@ -115,8 +115,8 @@ final class RTMPNWSocket: RTMPSocketCompatible {
                     self.close(isDisconnected: true)
                     return
                 }
-                self.totalBytesOut += Int64(data.count)
-                OSAtomicAdd64(-Int64(data.count), &self.queueBytesOut)
+                self.totalBytesOut.mutate { $0 += Int64(data.count) }
+                self.queueBytesOut.mutate { $0 -= Int64(data.count) }
                 if locked != nil {
                     OSAtomicAnd32Barrier(0, locked!)
                 }
@@ -158,7 +158,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
                 return
             }
             self.inputBuffer.append(data)
-            self.totalBytesIn += Int64(data.count)
+            self.totalBytesIn.mutate { $0 += Int64(data.count) }
             self.listen()
             self.receive(on: connection)
         }

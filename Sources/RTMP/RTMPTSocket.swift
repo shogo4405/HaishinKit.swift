@@ -37,9 +37,9 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
     }
 
-    private(set) var totalBytesIn: Int64 = 0
-    private(set) var totalBytesOut: Int64 = 0
-    private(set) var queueBytesOut: Int64 = 0
+    private(set) var totalBytesIn: Atomic<Int64> = .init(0)
+    private(set) var totalBytesOut: Atomic<Int64> = .init(0)
+    private(set) var queueBytesOut: Atomic<Int64> = .init(0)
     private var timer: Timer? {
         didSet {
             oldValue?.invalidate()
@@ -164,7 +164,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
         }
 
         var buffer: [UInt8] = data.bytes
-        OSAtomicAdd64(Int64(buffer.count), &totalBytesIn)
+        totalBytesIn.mutate { $0 += Int64(buffer.count) }
         delay = buffer.remove(at: 0)
         inputBuffer.append(contentsOf: buffer)
 
@@ -288,6 +288,6 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 // MARK: -
 extension RTMPTSocket: URLSessionTaskDelegate {
     func urlSession(_ session: URLSession, task: URLSessionTask, didSendBodyData bytesSent: Int64, totalBytesSent: Int64, totalBytesExpectedToSend: Int64) {
-        OSAtomicAdd64(bytesSent, &totalBytesOut)
+        totalBytesOut.mutate { $0 += bytesSent }
     }
 }
