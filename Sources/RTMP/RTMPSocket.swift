@@ -15,9 +15,9 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     weak var delegate: RTMPSocketDelegate?
     private var handshake = RTMPHandshake()
 
-    override var totalBytesIn: Int64 {
+    override var totalBytesIn: Atomic<Int64> {
         didSet {
-            delegate?.didSetTotalBytesIn(totalBytesIn)
+            delegate?.didSetTotalBytesIn(totalBytesIn.value)
         }
     }
 

@@ -18,9 +18,9 @@ protocol RTMPSocketCompatible: class {
     var chunkSizeC: Int { get set }
     var chunkSizeS: Int { get set }
     var inputBuffer: Data { get set }
-    var totalBytesIn: Int64 { get }
-    var totalBytesOut: Int64 { get }
-    var queueBytesOut: Int64 { get }
+    var totalBytesIn: Atomic<Int64> { get }
+    var totalBytesOut: Atomic<Int64> { get }
+    var queueBytesOut: Atomic<Int64> { get }
     var securityLevel: StreamSocketSecurityLevel { get set }
     var qualityOfService: DispatchQoS { get set }
 

@@ -176,11 +176,11 @@ open class RTMPConnection: EventDispatcher {
     open var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Int64 {
-        socket.totalBytesIn
+        socket.totalBytesIn.value
     }
     /// The statistics of total outgoing bytes.
     open var totalBytesOut: Int64 {
-        socket.totalBytesOut
+        socket.totalBytesOut.value
     }
     /// The statistics of total RTMPStream counts.
     open var totalStreamsCount: Int {
@@ -430,7 +430,7 @@ open class RTMPConnection: EventDispatcher {
         currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
-        previousQueueBytesOut.append(socket.queueBytesOut)
+        previousQueueBytesOut.append(socket.queueBytesOut.value)
         for (_, stream) in streams {
             stream.on(timer: timer)
         }
