@@ -445,10 +445,13 @@ open class RTMPConnection: EventDispatcher {
                 }
             } else if total == 0 {
                 for (_, stream) in streams {
-                  stream.delegate?.didPublishSufficientBW(stream, withConnection: self)
+                    stream.delegate?.didPublishSufficientBW(stream, withConnection: self)
                 }
             }
             previousQueueBytesOut.removeFirst()
+        }
+        for (_, stream) in streams {
+            stream.delegate?.didStatics(stream, withConneciton: self)
         }
     }
 }
