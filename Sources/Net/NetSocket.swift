@@ -95,28 +95,28 @@ open class NetSocket: NSObject {
             return
         }
         var total: Int = 0
-        while total < maxLength {
-            guard let outputStream = outputStream else {
+        repeat {
+            guard let outputStream = outputStream, outputStream.streamStatus == .open else {
                 return
             }
-            let length: Int = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
-            if length <= 0 {
-                break
+            let length = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
+            if 0 < length {
+                total += length
+                totalBytesOut.mutate { $0 += Int64(length) }
+                queueBytesOut.mutate { $0 -= Int64(length) }
+            } else {
+                deinitConnection(isDisconnected: true)
             }
-            total += length
-            totalBytesOut.mutate { $0 += Int64(length) }
-            queueBytesOut.mutate { $0 -= Int64(length) }
-        }
+        } while total < maxLength
     }
 
     func close(isDisconnected: Bool) {
-        guard let runloop: RunLoop = self.runloop else {
-            return
+        outputQueue.async {
+            guard self.runloop != nil else {
+                return
+            }
+            self.deinitConnection(isDisconnected: isDisconnected)
         }
-        deinitConnection(isDisconnected: isDisconnected)
-        self.runloop = nil
-        CFRunLoopStop(runloop.getCFRunLoop())
-        logger.trace("isDisconnected: \(isDisconnected)")
     }
 
     func initConnection() {
@@ -125,7 +125,7 @@ open class NetSocket: NSObject {
         queueBytesOut.mutate { $0 = 0 }
         inputBuffer.removeAll(keepingCapacity: false)
 
-        guard let inputStream: InputStream = inputStream, let outputStream: OutputStream = outputStream else {
+        guard let inputStream = inputStream, let outputStream = outputStream else {
             return
         }
 
@@ -151,30 +151,38 @@ open class NetSocket: NSObject {
     }
 
     func deinitConnection(isDisconnected: Bool) {
+        guard let runloop = runloop else {
+            return
+        }
         timeoutHandler.cancel()
         outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
-        inputStream?.remove(from: runloop!, forMode: .default)
+        inputStream?.remove(from: runloop, forMode: .default)
         inputStream?.delegate = nil
         inputStream = nil
         outputStream?.close()
-        outputStream?.remove(from: runloop!, forMode: .default)
+        outputStream?.remove(from: runloop, forMode: .default)
         outputStream?.delegate = nil
         outputStream = nil
+        self.runloop = nil
+        CFRunLoopStop(runloop.getCFRunLoop())
+        logger.trace("isDisconnected: \(isDisconnected)")
     }
 
     func didTimeout() {
     }
 
     private func doInput() {
-        guard let inputStream: InputStream = inputStream else {
+        guard let inputStream = inputStream, inputStream.streamStatus == .open else {
             return
         }
-        let length: Int = inputStream.read(&buffer, maxLength: windowSizeC)
+        let length = inputStream.read(&buffer, maxLength: windowSizeC)
         if 0 < length {
             totalBytesIn.mutate { $0 += Int64(length) }
             inputBuffer.append(buffer, count: length)
             listen()
+        } else {
+            deinitConnection(isDisconnected: true)
         }
     }
 }
@@ -206,13 +214,13 @@ extension NetSocket: StreamDelegate {
             guard aStream == inputStream else {
                 return
             }
-            close(isDisconnected: true)
+            deinitConnection(isDisconnected: true)
         // 16 = 1 << 4
         case .endEncountered:
             guard aStream == inputStream else {
                 return
             }
-            close(isDisconnected: true)
+            deinitConnection(isDisconnected: true)
         default:
             break
         }
