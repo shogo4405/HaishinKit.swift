@@ -78,6 +78,8 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
             return Double(value)
         case let value as Double:
             return value
+        case let value as Int:
+            return Double(value)
         default:
             return nil
         }
