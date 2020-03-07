@@ -94,6 +94,7 @@ final class LiveViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
+        rtmpStream.captureSettings[.isVideoMirrored] = position == .front
         rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
             logger.warn(error.description)
         }

@@ -23,6 +23,7 @@ public class AVMixer {
     public enum Option: String, KeyPathRepresentable, CaseIterable {
         case fps
         case sessionPreset
+        case isVideoMirrored
         case continuousAutofocus
         case continuousExposure
 
@@ -40,6 +41,8 @@ public class AVMixer {
                 return \AVMixer.continuousAutofocus
             case .continuousExposure:
                 return \AVMixer.continuousExposure
+            case .isVideoMirrored:
+                return \AVMixer.isVideoMirrored
             #if os(iOS)
             case .preferredVideoStabilizationMode:
                 return \AVMixer.preferredVideoStabilizationMode
@@ -67,6 +70,11 @@ public class AVMixer {
     var fps: Float64 {
         get { videoIO.fps }
         set { videoIO.fps = newValue }
+    }
+
+    var isVideoMirrored: Bool {
+        get { videoIO.isVideoMirrored }
+        set { videoIO.isVideoMirrored = newValue }
     }
 
     var continuousExposure: Bool {
