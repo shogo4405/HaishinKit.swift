@@ -114,6 +114,17 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
+    var isVideoMirrored = false {
+        didSet {
+            guard isVideoMirrored != oldValue else {
+                return
+            }
+            for connection in output.connections where connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = isVideoMirrored
+            }
+        }
+    }
+
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             renderer?.orientation = orientation
@@ -319,6 +330,9 @@ final class VideoIOComponent: IOComponent {
         for connection in output.connections {
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
+            }
+            if connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = isVideoMirrored
             }
             #if os(iOS)
             connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode

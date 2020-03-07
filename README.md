@@ -152,8 +152,9 @@ var rtmpStream = RTMPStream(connection: rtmpConnection)
 rtmpStream.captureSettings = [
     .fps: 30, // FPS
     .sessionPreset: AVCaptureSession.Preset.medium, // input video width/height
-    .continuousAutofocus: false, // use camera autofocus mode
-    .continuousExposure: false, //  use camera exposure mode
+    // .isVideoMirrored: false,
+    // .continuousAutofocus: false, // use camera autofocus mode
+    // .continuousExposure: false, //  use camera exposure mode
     // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
 ]
 rtmpStream.audioSettings = [
