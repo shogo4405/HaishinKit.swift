@@ -170,12 +170,8 @@ final class LiveViewController: UIViewController {
 
     @objc
     private func rtmpErrorHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        print("rtmpErrorHandler: \(e)")
-
-        DispatchQueue.main.async {
-            self.rtmpConnection.connect(Preference.defaultInstance.uri!)
-        }
+        logger.error(notification)
+        rtmpConnection.connect(Preference.defaultInstance.uri!)
     }
 
     func tapScreen(_ gesture: UIGestureRecognizer) {
