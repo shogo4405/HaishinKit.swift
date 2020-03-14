@@ -91,7 +91,7 @@ open class NetSocket: NSObject {
     }
 
     final func doOutputProcess(_ buffer: UnsafePointer<UInt8>?, maxLength: Int) {
-        guard let buffer = buffer else {
+        guard let buffer = buffer, 0 < maxLength else {
             return
         }
         var total: Int = 0
@@ -104,8 +104,6 @@ open class NetSocket: NSObject {
                 total += length
                 totalBytesOut.mutate { $0 += Int64(length) }
                 queueBytesOut.mutate { $0 -= Int64(length) }
-            } else {
-                deinitConnection(isDisconnected: true)
             }
         } while total < maxLength
     }
@@ -143,7 +141,7 @@ open class NetSocket: NSObject {
         outputStream.open()
 
         if 0 < timeout {
-            outputQueue.asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
+            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
         }
 
         runloop?.run()
@@ -155,7 +153,6 @@ open class NetSocket: NSObject {
             return
         }
         timeoutHandler.cancel()
-        outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop, forMode: .default)
         inputStream?.delegate = nil
@@ -181,8 +178,6 @@ open class NetSocket: NSObject {
             totalBytesIn.mutate { $0 += Int64(length) }
             inputBuffer.append(buffer, count: length)
             listen()
-        } else {
-            deinitConnection(isDisconnected: true)
         }
     }
 }
@@ -195,7 +190,7 @@ extension NetSocket: StreamDelegate {
         case .openCompleted:
             guard let inputStream = inputStream, let outputStream = outputStream,
                 inputStream.streamStatus == .open && outputStream.streamStatus == .open else {
-                    break
+                break
             }
             if aStream == inputStream {
                 timeoutHandler.cancel()
