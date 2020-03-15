@@ -173,9 +173,7 @@ public class AudioConverter {
             currentAudioBuffer.clear()
             return
         }
-        currentAudioBuffer.input.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
-        currentAudioBuffer.input.unsafeMutablePointer.pointee.mBuffers.mData = bytes
-        currentAudioBuffer.input.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
+        currentAudioBuffer.write(bytes, count: count, presentationTimeStamp: presentationTimeStamp)
         convert(numSamples * Int(destination.bytesPerFrame), presentationTimeStamp: presentationTimeStamp)
     }
 

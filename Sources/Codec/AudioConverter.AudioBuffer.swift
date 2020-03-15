@@ -25,7 +25,7 @@ extension AudioConverter {
 
         private var index = 0
         private var buffers: [Data]
-        private let numSamples: Int
+        private var numSamples: Int
         private let bytesPerFrame: Int
         private let maximumBuffers: Int
         private let numberChannels: Int
@@ -56,6 +56,14 @@ extension AudioConverter {
                 }
                 input[i].mDataByteSize = UInt32(dataByteSize)
             }
+        }
+
+        func write(_ bytes: UnsafeMutableRawPointer?, count: Int, presentationTimeStamp: CMTime) {
+            numSamples = count
+            index = count
+            input.unsafeMutablePointer.pointee.mBuffers.mNumberChannels = 1
+            input.unsafeMutablePointer.pointee.mBuffers.mData = bytes
+            input.unsafeMutablePointer.pointee.mBuffers.mDataByteSize = UInt32(count)
         }
 
         func write(_ sampleBuffer: CMSampleBuffer, offset: Int) throws -> Int {
