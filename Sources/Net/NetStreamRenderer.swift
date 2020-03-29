@@ -4,6 +4,7 @@ import Foundation
 #if os(macOS)
 typealias NetStreamRendererView = NSView
 #else
+import UIKit
 typealias NetStreamRendererView = UIView
 #endif
 
