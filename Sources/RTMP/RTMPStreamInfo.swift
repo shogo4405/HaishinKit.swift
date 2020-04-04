@@ -1,3 +1,5 @@
+import Foundation
+
 /**
  flash.net.NetStreamInfo for Swift
  */
