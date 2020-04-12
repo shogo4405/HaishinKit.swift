@@ -153,6 +153,7 @@ open class NetSocket: NSObject {
             return
         }
         timeoutHandler.cancel()
+        outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop, forMode: .default)
         inputStream?.delegate = nil
