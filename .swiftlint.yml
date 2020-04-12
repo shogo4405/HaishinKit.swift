@@ -39,7 +39,7 @@ opt_in_rules:
 #  - force_unwrapping
   - function_default_parameter_at_end
   - identical_operands
-  - implicit_return
+#  - implicit_return
   - joined_default_parameter
   - last_where
   - legacy_random
