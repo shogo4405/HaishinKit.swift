@@ -96,7 +96,7 @@ open class NetSocket: NSObject {
         }
         var total: Int = 0
         repeat {
-            guard let outputStream = outputStream, outputStream.streamStatus == .open else {
+            guard let outputStream = outputStream else {
                 return
             }
             let length = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
