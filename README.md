@@ -86,6 +86,10 @@ end
 ```
 github "shogo4405/HaishinKit.swift" ~> 1.0.7
 ```
+### Swift Package Manager
+```
+https://github.com/shogo4405/HaishinKit.swift
+```
 
 ## License
 BSD-3-Clause
