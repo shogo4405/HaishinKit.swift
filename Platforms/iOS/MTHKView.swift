@@ -103,7 +103,8 @@ extension MTHKView: MTKViewDelegate {
             break
         }
         let bounds = CGRect(origin: .zero, size: drawableSize)
-        let scaledImage: CIImage = displayImage
+        let adjustedImage = position == .front ? image.oriented(forExifOrientation: 2) : image
+        let scaledImage: CIImage = adjustedImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
         context.render(scaledImage, to: currentDrawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
