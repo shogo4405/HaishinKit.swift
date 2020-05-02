@@ -13,8 +13,8 @@ protocol PESPacketHeader {
 // MARK: -
 enum PESPTSDTSIndicator: UInt8 {
     case none = 0
-    case onlyPTS = 1
-    case forbidden = 2
+    case forbidden = 1
+    case onlyPTS = 2
     case bothPresent = 3
 }
 
