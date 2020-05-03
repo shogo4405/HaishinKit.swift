@@ -2,31 +2,6 @@ import AVFoundation
 import HaishinKit
 import UIKit
 
-final class CurrentTimeEffect: VideoEffect {
-    let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
-
-    let label: UILabel = {
-        let label = UILabel()
-        label.frame = CGRect(x: 0, y: 0, width: 300, height: 100)
-        return label
-    }()
-
-    override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
-        let now = Date()
-        label.text = now.description
-
-        UIGraphicsBeginImageContext(image.extent.size)
-        label.drawText(in: CGRect(x: 0, y: 0, width: 200, height: 200))
-        let result = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)!
-        UIGraphicsEndImageContext()
-
-        filter!.setValue(result, forKey: "inputImage")
-        filter!.setValue(image, forKey: "inputBackgroundImage")
-
-        return filter!.outputImage!
-    }
-}
-
 final class PronamaEffect: VideoEffect {
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
@@ -40,7 +15,7 @@ final class PronamaEffect: VideoEffect {
             image.draw(at: CGPoint(x: 50, y: 50))
             pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
             UIGraphicsEndImageContext()
-        }
+        } 
     }
     var pronama: CIImage?
 
