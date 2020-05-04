@@ -15,7 +15,7 @@ final class PronamaEffect: VideoEffect {
             image.draw(at: CGPoint(x: 50, y: 50))
             pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
             UIGraphicsEndImageContext()
-        } 
+        }
     }
     var pronama: CIImage?
 
