@@ -100,7 +100,7 @@ Paypal
 
 Bitcoin
 ```txt
-1LP7Jo4VwAFdEisJSykBAtUyAusZjozSpw
+3FnjC3CmwFLTzNY5WPNz4LjTo1uxGNozUR
 ```
 
 ## Prerequisites
