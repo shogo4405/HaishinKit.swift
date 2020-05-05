@@ -16,6 +16,10 @@ final class SettingTests: XCTestCase {
 
         encoder.settings[.width] = Int8(100)
         XCTAssertEqual(100, encoder.width)
+        
+        let cgfloatHeight: CGFloat = 200
+        encoder.settings[.height] = cgfloatHeight
+        XCTAssertEqual(200, encoder.height)
 
         encoder.settings[.scalingMode] = ScalingMode.letterbox
         XCTAssertEqual(encoder.settings[.scalingMode] as? ScalingMode, ScalingMode.letterbox)
