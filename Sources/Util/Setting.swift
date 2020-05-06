@@ -81,7 +81,7 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
         case let value as Int:
             return Double(value)
         case let value as CGFloat:
-            return value.native
+            return Double(value)
         default:
             return nil
         }
