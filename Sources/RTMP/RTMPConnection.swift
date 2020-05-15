@@ -388,10 +388,10 @@ open class RTMPConnection: EventDispatcher {
             socket.close(isDisconnected: false)
             switch true {
             case description.contains("reason=nosuchuser"):
-                delegate?.connection(self, didDisconnect: .noSuchUser(info: description))
+                delegate?.connection(self, didDisconnectWith: .noSuchUser(info: description))
                 break
             case description.contains("reason=authfailed"):
-                delegate?.connection(self, didDisconnect: .authFailed(info: description))
+                delegate?.connection(self, didDisconnectWith: .authFailed(info: description))
                 break
             case description.contains("reason=needauth"):
                 let command: String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
@@ -405,7 +405,7 @@ open class RTMPConnection: EventDispatcher {
                 let command: String = uri.absoluteString + (query.isEmpty ? "?" : "&") + "authmod=adobe&user=\(user)"
                 connect(command, arguments: arguments)
             default:
-                delegate?.connection(self, didDisconnect: .other(reason: description, code: code))
+                delegate?.connection(self, didDisconnectWith: .other(reason: description, code: code))
                 break
             }
         case .some(.connectClosed):
@@ -415,9 +415,9 @@ open class RTMPConnection: EventDispatcher {
             if let _ = description  {
                 logger.warn(description!)
             }
-            delegate?.connection(self, didDisconnect: .other(reason: description, code: code))
+            delegate?.connection(self, didDisconnectWith: .other(reason: description, code: code))
         case .some(.connectFailed):
-            delegate?.connection(self, didDisconnect: .other(code: code))
+            delegate?.connection(self, didDisconnectWith: .other(code: code))
         default:
             break
         }
@@ -436,7 +436,7 @@ open class RTMPConnection: EventDispatcher {
         let code = Code(rawValue: codeString)
         switch code {
         case .some(.connectIdleTimeOut):
-            delegate?.connection(self, didDisconnect: .timeout())
+            delegate?.connection(self, didDisconnectWith: .timeout())
         default:
             break
         }

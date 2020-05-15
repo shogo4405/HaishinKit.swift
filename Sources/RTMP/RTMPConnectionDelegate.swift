@@ -10,10 +10,10 @@ import Foundation
 
 public protocol RTMPConnectionDelegate: class {
     func connectionDidSucceed(_ connection: RTMPConnection)
-    func connection(_ connection: RTMPConnection, didDisconnect error: RTMPConnection.Error?)
+    func connection(_ connection: RTMPConnection, didDisconnectWith error: RTMPConnection.Error?)
 }
 
 public extension RTMPConnectionDelegate {
     func connectionDidSucceed(_ connection: RTMPConnection) {}
-    func connection(_ connection: RTMPConnection, didDisconnect error: RTMPConnection.Error?) {}
+    func connection(_ connection: RTMPConnection, didDisconnectWith error: RTMPConnection.Error?) {}
 }

@@ -211,7 +211,7 @@ extension LiveViewController: RTMPConnectionDelegate {
         // sharedObject!.connect(rtmpConnection)
     }
     
-    func connection(_ connection: RTMPConnection, didDisconnect error: RTMPConnection.Error?) {
+    func connection(_ connection: RTMPConnection, didDisconnectWith error: RTMPConnection.Error?) {
         guard let err = error else {
             return
         }
