@@ -29,6 +29,7 @@ final class MainViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        rtmpConnection.delegate = self
         rtmpStream = RTMPStream(connection: rtmpConnection)
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
 
@@ -64,7 +65,6 @@ final class MainViewController: NSViewController {
             segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:
-                rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
                 rtmpConnection.connect(urlField.stringValue)
             case 1:
                 httpStream.publish("hello")
@@ -80,7 +80,6 @@ final class MainViewController: NSViewController {
         segmentedControl.isEnabled = true
         switch segmentedControl.selectedSegment {
         case 0:
-            rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
             rtmpConnection.close()
         case 1:
             httpService.removeHTTPStream(httpStream)
@@ -144,20 +143,10 @@ final class MainViewController: NSViewController {
             break
         }
     }
+}
 
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard
-            let data: ASObject = e.data as? ASObject,
-            let code: String = data["code"] as? String else {
-            return
-        }
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream!.publish(Preference.defaultInstance.streamName)
-        default:
-            break
-        }
+extension MainViewController: RTMPConnectionDelegate {
+    func connectionDidSucceed(_ connection: RTMPConnection) {
+        rtmpStream!.publish(Preference.defaultInstance.streamName)
     }
 }

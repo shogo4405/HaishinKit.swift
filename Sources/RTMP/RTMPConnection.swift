@@ -38,6 +38,31 @@ open class RTMPConnection: EventDispatcher {
     public static let defaultCapabilities: Int = 239
     public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
 
+    public enum Error {
+        case noSuchUser(info: String? = nil)
+        case authFailed(info: String? = nil)
+        case timeout(info: String? = nil)
+        case networkChanged(info: String? = nil)
+        case other(reason: String? = nil, code: Code? = nil)
+        
+        public var description: String? {
+            switch self {
+            case .noSuchUser(let info):
+                return info
+            case .authFailed(let info):
+                return info
+            case .timeout(let info):
+                return info
+            case .networkChanged(let info):
+                return info
+            case .other(let reason, let code):
+                guard let mReason = reason else { return code?.rawValue }
+                guard let codeValue = code?.rawValue else { return mReason }
+                return codeValue + ": " + mReason
+            }
+        }
+    }
+    
     /**
      NetStatusEvent#info.code for NetConnection
      */
@@ -193,6 +218,7 @@ open class RTMPConnection: EventDispatcher {
     /// The statistics of outgoing bytes per second.
     @objc open private(set) dynamic var currentBytesOutPerSecond: Int32 = 0
 
+    open weak var delegate: RTMPConnectionDelegate?
     var socket: RTMPSocketCompatible!
     var streams: [UInt32: RTMPStream] = [:]
     var sequence: Int64 = 0
@@ -246,12 +272,14 @@ open class RTMPConnection: EventDispatcher {
     override public init() {
         super.init()
         addEventListener(.rtmpStatus, selector: #selector(on(status:)))
+        addEventListener(.ioError, selector: #selector(on(ioError:)))
     }
 
     deinit {
         timer = nil
         streams.removeAll()
         removeEventListener(.rtmpStatus, selector: #selector(on(status:)))
+        removeEventListener(.ioError, selector: #selector(on(ioError:)))
     }
 
     open func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
@@ -334,11 +362,12 @@ open class RTMPConnection: EventDispatcher {
 
         guard
             let data: ASObject = e.data as? ASObject,
-            let code: String = data["code"] as? String else {
+            let codeString: String = data["code"] as? String else {
             return
         }
-
-        switch Code(rawValue: code) {
+        
+        let code = Code(rawValue: codeString)
+        switch code {
         case .some(.connectSuccess):
             connected = true
             socket.chunkSizeS = chunkSize
@@ -347,6 +376,7 @@ open class RTMPConnection: EventDispatcher {
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
             ), locked: nil)
+            delegate?.connectionDidSucceed(self)
         case .some(.connectRejected):
             guard
                 let uri: URL = uri,
@@ -358,8 +388,10 @@ open class RTMPConnection: EventDispatcher {
             socket.close(isDisconnected: false)
             switch true {
             case description.contains("reason=nosuchuser"):
+                delegate?.connection(self, didDisconnect: .noSuchUser(info: description))
                 break
             case description.contains("reason=authfailed"):
+                delegate?.connection(self, didDisconnect: .authFailed(info: description))
                 break
             case description.contains("reason=needauth"):
                 let command: String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
@@ -373,13 +405,38 @@ open class RTMPConnection: EventDispatcher {
                 let command: String = uri.absoluteString + (query.isEmpty ? "?" : "&") + "authmod=adobe&user=\(user)"
                 connect(command, arguments: arguments)
             default:
+                delegate?.connection(self, didDisconnect: .other(reason: description, code: code))
                 break
             }
         case .some(.connectClosed):
-            if let description: String = data["description"] as? String {
-                logger.warn(description)
-            }
             close(isDisconnected: true)
+            
+            let description = data["description"] as? String
+            if let _ = description  {
+                logger.warn(description!)
+            }
+            delegate?.connection(self, didDisconnect: .other(reason: description, code: code))
+        case .some(.connectFailed):
+            delegate?.connection(self, didDisconnect: .other(code: code))
+        default:
+            break
+        }
+    }
+    
+    @objc
+    private func on(ioError: Notification) {
+        let e = Event.from(ioError)
+
+        guard
+            let data: ASObject = e.data as? ASObject,
+            let codeString: String = data["code"] as? String else {
+            return
+        }
+        
+        let code = Code(rawValue: codeString)
+        switch code {
+        case .some(.connectIdleTimeOut):
+            delegate?.connection(self, didDisconnect: .timeout())
         default:
             break
         }

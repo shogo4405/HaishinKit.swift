@@ -46,6 +46,7 @@ final class LiveViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        rtmpConnection.delegate = self
         rtmpStream = RTMPStream(connection: rtmpConnection)
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.orientation = orientation
@@ -131,47 +132,13 @@ final class LiveViewController: UIViewController {
         if publish.isSelected {
             UIApplication.shared.isIdleTimerDisabled = false
             rtmpConnection.close()
-            rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-            rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             publish.setTitle("●", for: [])
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-            rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             rtmpConnection.connect(Preference.defaultInstance.uri!)
             publish.setTitle("■", for: [])
         }
         publish.isSelected.toggle()
-    }
-
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
-            return
-        }
-        logger.info(code)
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            retryCount = 0
-            rtmpStream!.publish(Preference.defaultInstance.streamName!)
-            // sharedObject!.connect(rtmpConnection)
-        case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
-            guard retryCount <= LiveViewController.maxRetryCount else {
-                return
-            }
-            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
-            rtmpConnection.connect(Preference.defaultInstance.uri!)
-            retryCount += 1
-        default:
-            break
-        }
-    }
-
-    @objc
-    private func rtmpErrorHandler(_ notification: Notification) {
-        logger.error(notification)
-        rtmpConnection.connect(Preference.defaultInstance.uri!)
     }
 
     func tapScreen(_ gesture: UIGestureRecognizer) {
@@ -233,6 +200,34 @@ final class LiveViewController: UIViewController {
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if Thread.isMainThread {
             currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
+        }
+    }
+}
+
+extension LiveViewController: RTMPConnectionDelegate {
+    func connectionDidSucceed(_ connection: RTMPConnection) {
+        retryCount = 0
+        rtmpStream!.publish(Preference.defaultInstance.streamName!)
+        // sharedObject!.connect(rtmpConnection)
+    }
+    
+    func connection(_ connection: RTMPConnection, didDisconnect error: RTMPConnection.Error?) {
+        guard let err = error else {
+            return
+        }
+        
+        logger.info(err.description ?? "")
+        switch err {
+        case .timeout(let info):
+            logger.error(info ?? "")
+            rtmpConnection.connect(Preference.defaultInstance.uri!)
+        default:
+            guard retryCount <= LiveViewController.maxRetryCount else {
+                return
+            }
+            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
+            rtmpConnection.connect(Preference.defaultInstance.uri!)
+            retryCount += 1
         }
     }
 }

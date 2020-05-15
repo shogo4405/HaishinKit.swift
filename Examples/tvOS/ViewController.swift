@@ -9,8 +9,8 @@ final class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        rtmpConnection.delegate = self
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.connect(Preference.defaultInstance.uri!)
     }
 
@@ -18,22 +18,11 @@ final class ViewController: UIViewController {
         super.viewWillAppear(animated)
         lfView?.attachStream(rtmpStream)
     }
+}
 
-    @objc
-    func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
 
-        guard
-            let data: ASObject = e.data as? ASObject,
-            let code: String = data["code"] as? String else {
-            return
-        }
-
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream!.play(Preference.defaultInstance.streamName)
-        default:
-            break
-        }
+extension ViewController: RTMPConnectionDelegate {
+    func connectionDidSucceed(_ connection: RTMPConnection) {
+        rtmpStream!.play(Preference.defaultInstance.streamName)
     }
 }
