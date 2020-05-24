@@ -299,7 +299,7 @@ open class RTMPStream: NetStream {
                 mixer.videoIO.encoder.startRunning()
                 sampler?.startRunning()
                 if howToPublish == .localRecord {
-                    mixer.recorder.fileName = info.resourceName
+                    mixer.recorder.fileName = FilenameUtil.fileName(resourceName: info.resourceName)
                     mixer.recorder.startRunning()
                 }
             default:
@@ -424,7 +424,7 @@ open class RTMPStream: NetStream {
             if self.info.resourceName == name && self.readyState == .publishing {
                 switch type {
                 case .localRecord:
-                    self.mixer.recorder.fileName = self.info.resourceName
+                    self.mixer.recorder.fileName = FilenameUtil.fileName(resourceName: self.info.resourceName)
                     self.mixer.recorder.startRunning()
                 default:
                     self.mixer.recorder.stopRunning()
