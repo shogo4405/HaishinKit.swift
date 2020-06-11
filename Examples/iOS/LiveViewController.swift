@@ -62,8 +62,8 @@ final class LiveViewController: UIViewController {
         ]
         rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
 
-        videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1024
-        audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1024
+        videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1000
+        audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1000
 
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
@@ -108,11 +108,11 @@ final class LiveViewController: UIViewController {
     @IBAction func on(slider: UISlider) {
         if slider == audioBitrateSlider {
             audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
-            rtmpStream.audioSettings[.bitrate] = slider.value * 1024
+            rtmpStream.audioSettings[.bitrate] = slider.value * 1000
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            rtmpStream.videoSettings[.bitrate] = slider.value * 1024
+            rtmpStream.videoSettings[.bitrate] = slider.value * 1000
         }
         if slider == zoomSlider {
             rtmpStream.setZoomFactor(CGFloat(slider.value), ramping: true, withRate: 5.0)
