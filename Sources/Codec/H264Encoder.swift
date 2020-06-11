@@ -316,6 +316,7 @@ extension H264Encoder: Running {
     public func startRunning() {
         lockQueue.async {
             self.isRunning.mutate { $0 = true }
+            OSAtomicAnd32Barrier(0, &self.locked)
 #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
@@ -341,7 +342,6 @@ extension H264Encoder: Running {
 #if os(iOS)
             NotificationCenter.default.removeObserver(self)
 #endif
-            OSAtomicAnd32Barrier(0, &self.locked)
             self.isRunning.mutate { $0 = false }
         }
     }
