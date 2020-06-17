@@ -107,6 +107,11 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         queueBytesOut.mutate { $0 = Int64(data.count) }
         outputQueue.async {
             let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
+                defer {
+                    if locked != nil {
+                        OSAtomicAnd32Barrier(0, locked!)
+                    }
+                }
                 guard self.connected else {
                     return
                 }
@@ -116,9 +121,6 @@ final class RTMPNWSocket: RTMPSocketCompatible {
                 }
                 self.totalBytesOut.mutate { $0 += Int64(data.count) }
                 self.queueBytesOut.mutate { $0 -= Int64(data.count) }
-                if locked != nil {
-                    OSAtomicAnd32Barrier(0, locked!)
-                }
             }
             self.connection?.send(content: data, completion: sendCompletion)
         }
