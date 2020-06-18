@@ -15,7 +15,7 @@ open class GLHKView: GLKView, NetStreamRenderer {
     }
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
-    var isMirrored: Bool = false
+    open var isMirrored: Bool = false
     var displayImage: CIImage?
     private weak var currentStream: NetStream? {
         didSet {

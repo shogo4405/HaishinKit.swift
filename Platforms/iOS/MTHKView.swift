@@ -13,7 +13,7 @@ open class MTHKView: MTKView, NetStreamRenderer {
 
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
-    var isMirrored: Bool = false
+    open var isMirrored: Bool = false
 
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
