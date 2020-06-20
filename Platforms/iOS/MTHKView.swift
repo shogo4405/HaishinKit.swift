@@ -13,6 +13,7 @@ open class MTHKView: MTKView, NetStreamRenderer {
 
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
+    open var isMirrored: Bool = false
 
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
@@ -103,9 +104,18 @@ extension MTHKView: MTKViewDelegate {
             break
         }
         let bounds = CGRect(origin: .zero, size: drawableSize)
-        let scaledImage: CIImage = displayImage
+        var scaledImage: CIImage = displayImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+
+        if isMirrored {
+            if #available(iOS 11.0, *) {
+                scaledImage = scaledImage.oriented(.upMirrored)
+            } else {
+                scaledImage = scaledImage.oriented(forExifOrientation: 2)
+            }
+        }
+
         context.render(scaledImage, to: currentDrawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
