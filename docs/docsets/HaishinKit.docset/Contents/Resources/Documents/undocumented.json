@@ -51,42 +51,49 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
-      "line": 25,
+      "line": 18,
+      "symbol": "GLHKView.isMirrored",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
+      "line": 26,
       "symbol": "GLHKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
-      "line": 30,
+      "line": 31,
       "symbol": "GLHKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
-      "line": 35,
+      "line": 36,
       "symbol": "GLHKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
-      "line": 43,
+      "line": 44,
       "symbol": "GLHKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
-      "line": 56,
+      "line": 57,
       "symbol": "GLHKView",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/GLHKView.swift",
-      "line": 58,
+      "line": 59,
       "symbol": "GLHKView.glkView(_:drawIn:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -135,28 +142,28 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
-      "line": 45,
+      "line": 55,
       "symbol": "HKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
-      "line": 50,
+      "line": 60,
       "symbol": "HKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
-      "line": 58,
+      "line": 68,
       "symbol": "HKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
-      "line": 64,
+      "line": 74,
       "symbol": "HKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -184,49 +191,56 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 25,
+      "line": 16,
+      "symbol": "MTHKView.isMirrored",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
+      "line": 26,
       "symbol": "MTHKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 30,
+      "line": 31,
       "symbol": "MTHKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 35,
+      "line": 36,
       "symbol": "MTHKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 42,
+      "line": 43,
       "symbol": "MTHKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 55,
+      "line": 56,
       "symbol": "MTHKView",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 57,
+      "line": 58,
       "symbol": "MTHKView.mtkView(_:drawableSizeWillChange:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/MTHKView.swift",
-      "line": 65,
+      "line": 66,
       "symbol": "MTHKView.draw(in:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -3593,77 +3607,77 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 326,
+      "line": 322,
       "symbol": "RTMPStream.init(connection:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 343,
+      "line": 339,
       "symbol": "RTMPStream.play(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 385,
+      "line": 381,
       "symbol": "RTMPStream.seek(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 401,
+      "line": 397,
       "symbol": "RTMPStream.publish(_:type:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 461,
+      "line": 454,
       "symbol": "RTMPStream.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 485,
+      "line": 478,
       "symbol": "RTMPStream.send(handlerName:arguments:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 500,
+      "line": 493,
       "symbol": "RTMPStream.appendFile(_:completionHandler:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 578,
+      "line": 571,
       "symbol": "RTMPStream.addEventListener(_:selector:observer:useCapture:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 582,
+      "line": 575,
       "symbol": "RTMPStream.removeEventListener(_:selector:observer:useCapture:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 586,
+      "line": 579,
       "symbol": "RTMPStream.dispatch(event:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 590,
+      "line": 583,
       "symbol": "RTMPStream.dispatch(_:bubbles:data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -4321,7 +4335,7 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Util/Setting.swift",
-      "line": 151,
+      "line": 157,
       "symbol": "Setting",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
