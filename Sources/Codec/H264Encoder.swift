@@ -6,7 +6,7 @@ import VideoToolbox
 import UIKit
 #endif
 
-protocol VideoEncoderDelegate: class {
+public protocol VideoEncoderDelegate: class {
     func didSetFormatDescription(video formatDescription: CMFormatDescription?)
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
 }

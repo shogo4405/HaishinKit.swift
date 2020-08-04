@@ -230,7 +230,7 @@ extension TSWriter: AudioConverterDelegate {
 
 extension TSWriter: VideoEncoderDelegate {
     // MARK: VideoEncoderDelegate
-    func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
+    public func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
         guard
             let formatDescription: CMFormatDescription = formatDescription,
             let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else {
@@ -244,7 +244,7 @@ extension TSWriter: VideoEncoderDelegate {
         videoConfig = AVCConfigurationRecord(data: avcC)
     }
 
-    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+    public func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         guard let dataBuffer = sampleBuffer.dataBuffer else {
             return
         }
