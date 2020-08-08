@@ -1,6 +1,101 @@
 import Foundation
 
 open class NetSocket: NSObject {
+    struct CycleBuffer: CustomDebugStringConvertible {
+        var bytes: UnsafePointer<UInt8>? {
+            data.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> UnsafePointer<UInt8>? in
+                bytes.baseAddress?.assumingMemoryBound(to: UInt8.self).advanced(by: top)
+            }
+        }
+        var maxLength: Int {
+            min(count, capacity - top)
+        }
+        var debugDescription: String {
+            Mirror(reflecting: self).debugDescription
+        }
+        private var count: Int {
+            let value = bottom - top
+            return value < 0 ? value + capacity : value
+        }
+        private var data: Data
+        private var capacity: Int = 0 {
+            didSet {
+                logger.info("extends a buffer size from ", oldValue, " to ", capacity)
+            }
+        }
+        private var top: Int = 0
+        private var bottom: Int = 0
+        private var locked: UnsafeMutablePointer<UInt32>?
+        private var lockedBottom: Int = -1
+
+        init(capacity: Int) {
+            self.capacity = capacity
+            data = .init(repeating: 0, count: capacity)
+        }
+
+        mutating func append(_ data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) {
+            guard data.count + count < capacity else {
+                extend(data)
+                return
+            }
+            let count = data.count
+            if self.locked == nil {
+                self.locked = locked
+            }
+            let length = min(count, capacity - bottom)
+            self.data.replaceSubrange(bottom..<bottom + length, with: data)
+            if length < count {
+                bottom = count - length
+                self.data.replaceSubrange(0..<bottom, with: data.advanced(by: length))
+            } else {
+                bottom += count
+            }
+            if capacity == bottom {
+                bottom = 0
+            }
+            if locked != nil {
+                lockedBottom = bottom
+            }
+        }
+
+        mutating func markAsRead(_ count: Int) {
+            let length = min(count, capacity - top)
+            if length < count {
+                top = count - length
+            } else {
+                top += count
+            }
+            if capacity == top {
+                top = 0
+            }
+            if let locked = locked, -1 < lockedBottom && lockedBottom <= top {
+                OSAtomicAnd32Barrier(0, locked)
+                lockedBottom = -1
+            }
+        }
+
+        mutating func clear() {
+            top = 0
+            bottom = 0
+            locked = nil
+            lockedBottom = 0
+        }
+
+        private mutating func extend(_ data: Data) {
+            if 0 < top {
+                let subdata = self.data.subdata(in: 0..<bottom)
+                self.data.replaceSubrange(0..<capacity - top, with: self.data.advanced(by: top))
+                self.data.replaceSubrange(capacity - top..<capacity - top + subdata.count, with: subdata)
+                bottom = capacity - top + subdata.count
+            }
+            self.data.append(.init(count: capacity))
+            top = 0
+            capacity = self.data.count
+            append(data)
+        }
+    }
+
+    /// The default time to wait for TCP/IP Handshake done.
     public static let defaultTimeout: Int = 15 // sec
     public static let defaultWindowSizeC = Int(UInt16.max)
 
@@ -9,13 +104,14 @@ open class NetSocket: NSObject {
     open var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
     open var connected: Bool = false
-    public var windowSizeC: Int = NetSocket.defaultWindowSizeC
+    open var windowSizeC: Int = NetSocket.defaultWindowSizeC
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Atomic<Int64> = .init(0)
-    open var qualityOfService: DispatchQoS = .default
+    open var qualityOfService: DispatchQoS = .userInitiated
     open var securityLevel: StreamSocketSecurityLevel = .none
     /// The statistics of total outgoing bytes.
     open private(set) var totalBytesOut: Atomic<Int64> = .init(0)
+    /// The statistics of total outgoing queued bytes.
     open private(set) var queueBytesOut: Atomic<Int64> = .init(0)
 
     var inputStream: InputStream?
@@ -27,6 +123,7 @@ open class NetSocket: NSObject {
         self?.didTimeout()
     }
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
+    private lazy var outputBuffer: CycleBuffer = .init(capacity: windowSizeC)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     public func connect(withName: String, port: Int) {
@@ -44,12 +141,13 @@ open class NetSocket: NSObject {
     @discardableResult
     public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         queueBytesOut.mutate { $0 += Int64(data.count) }
-        outputQueue.async {
-            data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
-                self.doOutputProcess(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), maxLength: data.count)
+        outputQueue.async { [weak self] in
+            guard let self = self else {
+                return
             }
-            if locked != nil {
-                OSAtomicAnd32Barrier(0, locked!)
+            self.outputBuffer.append(data, locked: locked)
+            if let outputStream = self.outputStream, outputStream.hasSpaceAvailable {
+                self.doOutput(outputStream)
             }
         }
         return data.count
@@ -63,7 +161,10 @@ open class NetSocket: NSObject {
     }
 
     final func doOutputFromURL(_ url: URL, length: Int) {
-        outputQueue.async {
+        outputQueue.async { [weak self] in
+            guard let self = self else {
+                return
+            }
             do {
                 let fileHandle: FileHandle = try FileHandle(forReadingFrom: url)
                 defer {
@@ -72,40 +173,16 @@ open class NetSocket: NSObject {
                 let endOfFile = Int(fileHandle.seekToEndOfFile())
                 for i in 0..<Int(endOfFile / length) {
                     fileHandle.seek(toFileOffset: UInt64(i * length))
-                    self.doOutputProcess(fileHandle.readData(ofLength: length))
+                    self.doOutput(data: fileHandle.readData(ofLength: length))
                 }
                 let remain: Int = endOfFile % length
                 if 0 < remain {
-                    self.doOutputProcess(fileHandle.readData(ofLength: remain))
+                    self.doOutput(data: fileHandle.readData(ofLength: remain))
                 }
             } catch let error as NSError {
                 logger.error("\(error)")
             }
         }
-    }
-
-    final func doOutputProcess(_ data: Data) {
-        data.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
-            doOutputProcess(buffer.baseAddress?.assumingMemoryBound(to: UInt8.self), maxLength: data.count)
-        }
-    }
-
-    final func doOutputProcess(_ buffer: UnsafePointer<UInt8>?, maxLength: Int) {
-        guard let buffer = buffer, 0 < maxLength else {
-            return
-        }
-        var total: Int = 0
-        repeat {
-            guard let outputStream = outputStream else {
-                return
-            }
-            let length = outputStream.write(buffer.advanced(by: total), maxLength: maxLength - total)
-            if 0 < length {
-                total += length
-                totalBytesOut.mutate { $0 += Int64(length) }
-                queueBytesOut.mutate { $0 -= Int64(length) }
-            }
-        } while total < maxLength
     }
 
     func close(isDisconnected: Bool) {
@@ -118,25 +195,22 @@ open class NetSocket: NSObject {
     }
 
     func initConnection() {
+        outputBuffer.clear()
         totalBytesIn.mutate { $0 = 0 }
         totalBytesOut.mutate { $0 = 0 }
         queueBytesOut.mutate { $0 = 0 }
         inputBuffer.removeAll(keepingCapacity: false)
-
         guard let inputStream = inputStream, let outputStream = outputStream else {
             return
         }
-
         runloop = .current
-
         inputStream.delegate = self
         inputStream.schedule(in: runloop!, forMode: .default)
         inputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
-
         outputStream.delegate = self
         outputStream.schedule(in: runloop!, forMode: .default)
         outputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
-
+        CFWriteStreamSetDispatchQueue(outputStream, outputQueue)
         inputStream.open()
         outputStream.open()
 
@@ -153,7 +227,6 @@ open class NetSocket: NSObject {
             return
         }
         timeoutHandler.cancel()
-        outputQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
         inputStream?.close()
         inputStream?.remove(from: runloop, forMode: .default)
         inputStream?.delegate = nil
@@ -170,15 +243,24 @@ open class NetSocket: NSObject {
     func didTimeout() {
     }
 
-    private func doInput() {
-        guard let inputStream = inputStream, inputStream.streamStatus == .open else {
-            return
-        }
+    private func doInput(_ inputStream: InputStream) {
         let length = inputStream.read(&buffer, maxLength: windowSizeC)
         if 0 < length {
             totalBytesIn.mutate { $0 += Int64(length) }
             inputBuffer.append(buffer, count: length)
             listen()
+        }
+    }
+
+    private func doOutput(_ outputStream: OutputStream) {
+        guard let bytes = outputBuffer.bytes, 0 < outputBuffer.maxLength else {
+            return
+        }
+        let length = outputStream.write(bytes, maxLength: outputBuffer.maxLength)
+        if 0 < length {
+            totalBytesOut.mutate { $0 += Int64(length) }
+            queueBytesOut.mutate { $0 -= Int64(length) }
+            outputBuffer.markAsRead(length)
         }
     }
 }
@@ -199,12 +281,14 @@ extension NetSocket: StreamDelegate {
             }
         //  2 = 1 << 1
         case .hasBytesAvailable:
-            if aStream == inputStream {
-                doInput()
+            if let aStream = aStream as? InputStream {
+                doInput(aStream)
             }
         //  4 = 1 << 2
         case .hasSpaceAvailable:
-            break
+            if let aStream = aStream as? OutputStream {
+                doOutput(aStream)
+            }
         //  8 = 1 << 3
         case .errorOccurred:
             guard aStream == inputStream else {
