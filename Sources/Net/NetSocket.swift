@@ -157,14 +157,16 @@ open class NetSocket: NSObject {
         inputStream?.close()
         inputStream?.remove(from: runloop, forMode: .default)
         inputStream?.delegate = nil
-        inputStream = nil
         outputStream?.close()
         outputStream?.remove(from: runloop, forMode: .default)
         outputStream?.delegate = nil
-        outputStream = nil
         self.runloop = nil
         CFRunLoopStop(runloop.getCFRunLoop())
         logger.trace("isDisconnected: \(isDisconnected)")
+        inputQueue.async {
+            self.inputStream = nil
+            self.outputStream = nil
+        }
     }
 
     func didTimeout() {
