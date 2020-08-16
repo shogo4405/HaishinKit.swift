@@ -186,7 +186,7 @@ open class NetSocket: NSObject {
     }
 
     func close(isDisconnected: Bool) {
-        outputQueue.async {
+        inputQueue.async {
             guard self.runloop != nil else {
                 return
             }
