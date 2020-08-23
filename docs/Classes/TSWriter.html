@@ -8,13 +8,21 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a name="//apple_ref/swift/Class/TSWriter" class="dashAnchor"></a>
     <a title="TSWriter Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.0.10 Docs</a> (13% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.0.11 Docs</a> (14% documented)</p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -269,6 +277,9 @@
               <li class="nav-group-task">
                 <a href="../Protocols/TimerDriverDelegate.html">TimerDriverDelegate</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/VideoEncoderDelegate.html">VideoEncoderDelegate</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -328,8 +339,10 @@
             <h1>TSWriter</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TSWriter</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/Running.html">Running</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/AudioConverterDelegate.html">AudioConverterDelegate</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/VideoEncoderDelegate.html">VideoEncoderDelegate</a></span></code></pre>
 
                 </div>
               </div>
@@ -705,11 +718,78 @@
                 </li>
               </ul>
             </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/VideoEncoderDelegate"></a>
+                <a name="//apple_ref/swift/Section/VideoEncoderDelegate" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/VideoEncoderDelegate"></a>
+                  <h3 class="section-name"><p>VideoEncoderDelegate</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSWriterC23didSetFormatDescription5videoySo08CMFormatG3RefaSg_tF"></a>
+                    <a name="//apple_ref/swift/Method/didSetFormatDescription(video:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC23didSetFormatDescription5videoySo08CMFormatG3RefaSg_tF">didSetFormatDescription(video:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">didSetFormatDescription</span><span class="p">(</span><span class="n">video</span> <span class="nv">formatDescription</span><span class="p">:</span> <span class="kt">CMFormatDescription</span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSWriterC12sampleOutput5videoySo17CMSampleBufferRefa_tF"></a>
+                    <a name="//apple_ref/swift/Method/sampleOutput(video:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC12sampleOutput5videoySo17CMSampleBufferRefa_tF">sampleOutput(video:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sampleOutput</span><span class="p">(</span><span class="n">video</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2020-06-20)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2020 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2020-08-23)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

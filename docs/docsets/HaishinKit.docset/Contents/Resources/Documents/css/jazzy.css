@@ -56,9 +56,14 @@ p code, li code {
   padding: 2px 4px;
   border-radius: 4px; }
 
+pre > code {
+  padding: 0; }
+
 a {
   color: #0088cc;
   text-decoration: none; }
+  a code {
+    color: inherit; }
 
 ul {
   padding-left: 15px; }
@@ -80,11 +85,11 @@ blockquote {
 
 header {
   font-size: 0.85em;
-  line-height: 26px;
+  line-height: 32px;
   background-color: #414141;
   position: fixed;
   width: 100%;
-  z-index: 2; }
+  z-index: 3; }
   header img {
     padding-right: 6px;
     vertical-align: -4px;
@@ -100,12 +105,12 @@ header {
 
 #breadcrumbs {
   background-color: #f2f2f2;
-  height: 27px;
+  height: 21px;
   padding-top: 17px;
   position: fixed;
   width: 100%;
   z-index: 2;
-  margin-top: 26px; }
+  margin-top: 32px; }
   #breadcrumbs #carat {
     height: 10px;
     margin: 0 5px; }
@@ -199,6 +204,7 @@ header {
   margin-left: 18px; }
 
 .task-group-section {
+  margin-top: 10px;
   padding-left: 6px;
   border-top: 1px solid #e2e2e2; }
 
@@ -372,3 +378,46 @@ html.dash .content-wrapper {
 
 html.dash #footer {
   position: static; }
+
+form[role=search] {
+  float: right; }
+  form[role=search] input {
+    font: Helvetica, freesans, Arial, sans-serif;
+    margin-top: 6px;
+    font-size: 13px;
+    line-height: 20px;
+    padding: 0px 10px;
+    border: none;
+    border-radius: 1em; }
+    .loading form[role=search] input {
+      background: white url(../img/spinner.gif) center right 4px no-repeat; }
+  form[role=search] .tt-menu {
+    margin: 0;
+    min-width: 300px;
+    background: #fff;
+    color: #333;
+    border: 1px solid #e2e2e2;
+    z-index: 4; }
+  form[role=search] .tt-highlight {
+    font-weight: bold; }
+  form[role=search] .tt-suggestion {
+    font: Helvetica, freesans, Arial, sans-serif;
+    font-size: 14px;
+    padding: 0 8px; }
+    form[role=search] .tt-suggestion span {
+      display: table-cell;
+      white-space: nowrap; }
+    form[role=search] .tt-suggestion .doc-parent-name {
+      width: 100%;
+      text-align: right;
+      font-weight: normal;
+      font-size: 0.9em;
+      padding-left: 16px; }
+  form[role=search] .tt-suggestion:hover,
+  form[role=search] .tt-suggestion.tt-cursor {
+    cursor: pointer;
+    background-color: #4183c4;
+    color: #fff; }
+  form[role=search] .tt-suggestion:hover .doc-parent-name,
+  form[role=search] .tt-suggestion.tt-cursor .doc-parent-name {
+    color: #fff; }
