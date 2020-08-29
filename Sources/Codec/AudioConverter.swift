@@ -131,12 +131,7 @@ public class AudioConverter {
     }
     private var audioStreamPacketDescriptionPointer: UnsafeMutablePointer<AudioStreamPacketDescription>?
 
-    private let inputDataProc: AudioConverterComplexInputDataProc = {(
-        converter: AudioConverterRef,
-        ioNumberDataPackets: UnsafeMutablePointer<UInt32>,
-        ioData: UnsafeMutablePointer<AudioBufferList>,
-        outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?,
-        inUserData: UnsafeMutableRawPointer?) in
+    private let inputDataProc: AudioConverterComplexInputDataProc = {(converter: AudioConverterRef, ioNumberDataPackets: UnsafeMutablePointer<UInt32>, ioData: UnsafeMutablePointer<AudioBufferList>, outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?, inUserData: UnsafeMutableRawPointer?) in
         Unmanaged<AudioConverter>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
             ioNumberDataPackets,
             ioData: ioData,
