@@ -2,10 +2,11 @@ import Foundation
 import HaishinKit
 import UIKit
 
-final class PlaybackController: UIViewController {
+final class PlaybackViewController: UIViewController, HKPictureInPicureController {
     private static let maxRetryCount: Int = 5
 
     @IBOutlet private weak var lfView: GLHKView?
+    @IBOutlet private weak var playbackButton: UIButton!
 
     private var rtmpConnection = RTMPConnection()
     private var rtmpStream: RTMPStream!
@@ -14,21 +15,20 @@ final class PlaybackController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         rtmpStream = RTMPStream(connection: rtmpConnection)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapped(_:)))
+        tapGesture.numberOfTapsRequired = 2
+        view.addGestureRecognizer(tapGesture)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        lfView?.attachStream(rtmpStream)
+        (view as? GLHKView)?.attachStream(rtmpStream)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
         super.viewWillDisappear(animated)
-        rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
-        rtmpStream.close()
-        rtmpStream.dispose()
     }
 
     @IBAction func didPlaybackButtonTap(_ button: UIButton) {
@@ -60,7 +60,7 @@ final class PlaybackController: UIViewController {
             retryCount = 0
             rtmpStream.play(Preference.defaultInstance.streamName!)
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
-            guard retryCount <= PlaybackController.maxRetryCount else {
+            guard retryCount <= PlaybackViewController.maxRetryCount else {
                 return
             }
             Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
@@ -68,6 +68,17 @@ final class PlaybackController: UIViewController {
             retryCount += 1
         default:
             break
+        }
+    }
+
+    @objc
+    private func didTapped(_ sender: UITapGestureRecognizer) {
+        if isPictureInPictureActive {
+            stopPictureInPicture()
+            playbackButton.isHidden = false
+        } else {
+            startPictureInPicture()
+            playbackButton.isHidden = true
         }
     }
 
@@ -85,11 +96,5 @@ final class PlaybackController: UIViewController {
     @objc
     private func didBecomeActive(_ notification: Notification) {
         rtmpStream.receiveVideo = true
-    }
-
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if Thread.isMainThread {
-            // currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
-        }
     }
 }

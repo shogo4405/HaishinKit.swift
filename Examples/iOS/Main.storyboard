@@ -247,57 +247,6 @@
             </objects>
             <point key="canvasLocation" x="749" y="402"/>
         </scene>
-        <!--Playback-->
-        <scene sceneID="sgb-vK-JUQ">
-            <objects>
-                <viewController id="M6P-U9-OQB" userLabel="Playback" customClass="PlaybackController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="1Nb-68-FWe"/>
-                        <viewControllerLayoutGuide type="bottom" id="xon-CD-cIo"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="Z5m-1T-AfH">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eXp-4i-FnG" customClass="GLHKView" customModule="HaishinKit">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                            </view>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lKf-53-lJb">
-                                <rect key="frame" x="348" y="767" width="30" height="30"/>
-                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="30" id="Abw-7u-gO4"/>
-                                    <constraint firstAttribute="height" constant="30" id="dxX-97-jzH"/>
-                                </constraints>
-                                <state key="normal" title="▶︎">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="didPlaybackButtonTap:" destination="M6P-U9-OQB" eventType="touchUpInside" id="PKd-Aq-bAF"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
-                        <constraints>
-                            <constraint firstAttribute="trailing" secondItem="eXp-4i-FnG" secondAttribute="trailing" id="2Eu-cX-ofs"/>
-                            <constraint firstItem="eXp-4i-FnG" firstAttribute="top" secondItem="Z5m-1T-AfH" secondAttribute="top" id="4kR-wF-kbE"/>
-                            <constraint firstItem="xon-CD-cIo" firstAttribute="top" secondItem="lKf-53-lJb" secondAttribute="bottom" constant="16" id="CaM-6n-hrp"/>
-                            <constraint firstAttribute="bottom" secondItem="eXp-4i-FnG" secondAttribute="bottom" id="Hf1-6l-t8q"/>
-                            <constraint firstItem="eXp-4i-FnG" firstAttribute="leading" secondItem="Z5m-1T-AfH" secondAttribute="leading" id="bbC-24-GqG"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="lKf-53-lJb" secondAttribute="trailing" constant="16" id="o1U-y6-vLF"/>
-                        </constraints>
-                    </view>
-                    <tabBarItem key="tabBarItem" title="Playback" id="cnH-RJ-T8G"/>
-                    <navigationItem key="navigationItem" id="DHF-rz-qM4"/>
-                    <connections>
-                        <outlet property="lfView" destination="eXp-4i-FnG" id="0p8-El-ZPC"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="uoF-Er-2sg" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1602.8985507246377" y="0.0"/>
-        </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
             <objects>
@@ -310,13 +259,86 @@
                     </tabBar>
                     <connections>
                         <segue destination="9pv-A4-QxB" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
-                        <segue destination="M6P-U9-OQB" kind="relationship" relationship="viewControllers" id="pqx-AR-kNX"/>
-                        <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="lzU-1b-eKA"/>
+                        <segue destination="uu9-Wt-Dxt" kind="relationship" relationship="viewControllers" id="KIw-Gf-bHs"/>
+                        <segue destination="8rJ-Kc-sve" kind="relationship" relationship="viewControllers" id="V0f-g5-FP2"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="0.0" y="0.0"/>
+        </scene>
+        <!--Playback-->
+        <scene sceneID="2gE-y3-VQT">
+            <objects>
+                <viewController id="uu9-Wt-Dxt" customClass="PlaybackContainerViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="O2h-r1-E7F"/>
+                        <viewControllerLayoutGuide type="bottom" id="dXy-vE-8ph"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="7NS-AC-cs3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Awa-Nz-XRH">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
+                                <connections>
+                                    <segue destination="S4s-US-fOh" kind="embed" id="ahj-EG-JS5"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="Awa-Nz-XRH" firstAttribute="leading" secondItem="7NS-AC-cs3" secondAttribute="leading" id="3qS-OU-Vri"/>
+                            <constraint firstItem="dXy-vE-8ph" firstAttribute="top" secondItem="Awa-Nz-XRH" secondAttribute="bottom" id="6Zm-KN-92x"/>
+                            <constraint firstAttribute="trailing" secondItem="Awa-Nz-XRH" secondAttribute="trailing" id="lWs-68-EwZ"/>
+                            <constraint firstItem="Awa-Nz-XRH" firstAttribute="top" secondItem="7NS-AC-cs3" secondAttribute="top" id="yAY-Zt-w6U"/>
+                        </constraints>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="Playback" id="Pv0-9w-P0v"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="O4Q-V8-kNz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1463.768115942029" y="-102.45535714285714"/>
+        </scene>
+        <!--Playback View Controller-->
+        <scene sceneID="t76-yU-vlu">
+            <objects>
+                <viewController storyboardIdentifier="PlaybackViewController" id="S4s-US-fOh" customClass="PlaybackViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="vko-dD-pI7"/>
+                        <viewControllerLayoutGuide type="bottom" id="4an-yi-rp6"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="mU9-Qc-s55" customClass="GLHKView">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p4J-1x-O1c">
+                                <rect key="frame" x="368" y="32" width="30" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="9tM-9Y-bwe"/>
+                                    <constraint firstAttribute="width" constant="30" id="Xcd-dW-hq8"/>
+                                </constraints>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <state key="normal" title="●"/>
+                                <connections>
+                                    <action selector="didPlaybackButtonTap:" destination="S4s-US-fOh" eventType="touchDown" id="bAJ-ml-suS"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemGray2Color" red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="p4J-1x-O1c" secondAttribute="trailing" constant="16" id="f5f-rE-eQ2"/>
+                            <constraint firstItem="p4J-1x-O1c" firstAttribute="top" secondItem="mU9-Qc-s55" secondAttribute="top" constant="32" id="tXc-VA-Erm"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="playbackButton" destination="p4J-1x-O1c" id="ZN3-UM-SXt"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="A6d-pe-nwN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2110" y="-102"/>
         </scene>
     </scenes>
     <resources>
