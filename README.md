@@ -247,11 +247,11 @@ Please consider to use Issues.
 * Adobe’s Real Time Messaging Protocol
   * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
 * Action Message Format -- AMF 0
-  * http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
+  * https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf0-file-format-specification.pdf
 * Action Message Format -- AMF 3 
-  * http://wwwimages.adobe.com/www.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf-file-format-spec.pdf
+  * https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf-file-format-spec.pdf
 * Video File Format Specification Version 10
-  * https://www.adobe.com/content/dam/Adobe/en/devnet/flv/pdfs/video_file_format_spec_v10.pdf
+  * https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
 * Adobe Flash Video File Format Specification Version 10.1
   * http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf
 
