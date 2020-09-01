@@ -46,27 +46,6 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
     }
 
     private func toggleWindow() {
-        if viewController.view.window?.rootViewController == viewController {
-            if window == nil {
-                window = viewController.view.window
-                if #available(iOSApplicationExtension 11.0, *) {
-                    transform(parent?.view.window?.safeAreaInsets ?? .zero)
-                } else {
-                    transform()
-                }
-                viewController.view.layer.cornerRadius = pictureInPictureCornerRadius
-            } else {
-                viewController.view.layer.cornerRadius = 0
-                UIView.animate(withDuration: pictureInPictureAnimationDuration) { [weak self] in
-                    guard let self = self else {
-                        return
-                    }
-                    self.window?.frame = UIScreen.main.bounds
-                }
-                window = nil
-            }
-            return
-        }
         if window == nil {
             viewController.removeFromParent()
             viewController.view.removeFromSuperview()
