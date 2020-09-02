@@ -1,6 +1,16 @@
 import AVFoundation
 
+/// The HTTPStream class represents an HLS playlist and .ts files.
 open class HTTPStream: NetStream {
+    /// For appendSampleBuffer, specifies whether media contains types .video or .audio.
+    public var expectedMedias:Set<AVMediaType> {
+        get {
+            tsWriter.expectedMedias
+        }
+        set {
+            tsWriter.expectedMedias = newValue
+        }
+    }
     private(set) var name: String?
     private lazy var tsWriter = TSFileWriter()
 
