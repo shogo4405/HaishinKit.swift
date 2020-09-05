@@ -18,12 +18,13 @@ let package = Package(
                     "Codec",
                     "Extension",
                     "FLV",
+                    "HTTP",
                     "ISO",
                     "Media",
                     "Net",
-                    "Util",
+                    "PiP",
                     "RTMP",
-                    "HTTP",
+                    "Util",
                     "Platforms"
                 ])
     ]

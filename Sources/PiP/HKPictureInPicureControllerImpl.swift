@@ -1,3 +1,5 @@
+#if !os(macOS)
+
 import Foundation
 
 class HKPictureInPicureControllerImpl: HKPictureInPicureController {
@@ -6,7 +8,6 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
     static let cornerRadius: CGFloat = 8
     static let animationDuration: TimeInterval = 0.3
 
-    // MARK: HKPictureInPicureController
     var isPictureInPictureActive: Bool = false
     var pictureInPictureSize: CGSize = .init(width: 160, height: 90)
     var pictureInPictureMargin: CGFloat = HKPictureInPicureControllerImpl.margin
@@ -31,7 +32,9 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
         }
         toggleWindow()
         viewController.view.addGestureRecognizer(panGestureRecognizer)
+        #if os(iOS)
         NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange), name: UIDevice.orientationDidChangeNotification, object: nil)
+        #endif
         isPictureInPictureActive = true
     }
 
@@ -41,7 +44,9 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
         }
         toggleWindow()
         viewController.view.removeGestureRecognizer(panGestureRecognizer)
+        #if os(iOS)
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
+        #endif
         isPictureInPictureActive = false
     }
 
@@ -52,7 +57,7 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
             window = UIWindow(frame: .zero)
             window?.rootViewController = viewController
             window?.makeKeyAndVisible()
-            if #available(iOSApplicationExtension 11.0, *) {
+            if #available(iOSApplicationExtension 11.0, tvOSApplicationExtension 11.0, *) {
                 transform(parent?.view.window?.safeAreaInsets ?? .zero)
             } else {
                 transform()
@@ -86,6 +91,7 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
         }
     }
 
+    #if os(iOS)
     @objc
     private func orientationDidChange() {
         switch UIDevice.current.orientation {
@@ -99,6 +105,7 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
             break
         }
     }
+    #endif
 
     @objc
     private func didPanGestureRecognizer(_ sender: UIPanGestureRecognizer) {
@@ -111,3 +118,5 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
         sender.setTranslation(.zero, in: viewController.view)
     }
 }
+
+#endif
