@@ -1,5 +1,6 @@
 import Foundation
 
+/// The NetSocket class creates a two-way connection  between a client and a server. This class is wrapper for a InputStream and an OutputStream.
 open class NetSocket: NSObject {
     struct CycleBuffer: CustomDebugStringConvertible {
         var bytes: UnsafePointer<UInt8>? {
@@ -107,25 +108,50 @@ open class NetSocket: NSObject {
     open var windowSizeC: Int = NetSocket.defaultWindowSizeC
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Atomic<Int64> = .init(0)
+    /// The instance's quality of service for a Socket IO.
     open var qualityOfService: DispatchQoS = .userInitiated
+    /// The instance determine to use the secure-socket layer (SSL) security level.
     open var securityLevel: StreamSocketSecurityLevel = .none
     /// The statistics of total outgoing bytes.
     open private(set) var totalBytesOut: Atomic<Int64> = .init(0)
     /// The statistics of total outgoing queued bytes.
     open private(set) var queueBytesOut: Atomic<Int64> = .init(0)
 
-    var inputStream: InputStream?
-    var outputStream: OutputStream?
+    var inputStream: InputStream? {
+        didSet {
+            inputStream?.delegate = self
+            inputStream?.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
+            if let inputStream = inputStream {
+                CFReadStreamSetDispatchQueue(inputStream, inputQueue)
+            }
+            if let oldValue = oldValue {
+                oldValue.delegate = nil
+                CFReadStreamSetDispatchQueue(oldValue, nil)
+            }
+        }
+    }
+    var outputStream: OutputStream? {
+        didSet {
+            outputStream?.delegate = self
+            outputStream?.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
+            if let outputStream = outputStream {
+                CFWriteStreamSetDispatchQueue(outputStream, outputQueue)
+            }
+            if let oldValue = oldValue {
+                oldValue.delegate = nil
+                CFWriteStreamSetDispatchQueue(oldValue, nil)
+            }
+        }
+    }
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
-
-    private var runloop: RunLoop?
     private lazy var timeoutHandler = DispatchWorkItem { [weak self] in
         self?.didTimeout()
     }
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
     private lazy var outputBuffer: CycleBuffer = .init(capacity: windowSizeC)
-    private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
+    private lazy var outputQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
+    /// Creates a two-way connection to a server.
     public func connect(withName: String, port: Int) {
         inputQueue.async {
             Stream.getStreamsToHost(
@@ -160,83 +186,38 @@ open class NetSocket: NSObject {
     open func listen() {
     }
 
-    final func doOutputFromURL(_ url: URL, length: Int) {
-        outputQueue.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-            do {
-                let fileHandle: FileHandle = try FileHandle(forReadingFrom: url)
-                defer {
-                    fileHandle.closeFile()
-                }
-                let endOfFile = Int(fileHandle.seekToEndOfFile())
-                for i in 0..<Int(endOfFile / length) {
-                    fileHandle.seek(toFileOffset: UInt64(i * length))
-                    self.doOutput(data: fileHandle.readData(ofLength: length))
-                }
-                let remain: Int = endOfFile % length
-                if 0 < remain {
-                    self.doOutput(data: fileHandle.readData(ofLength: remain))
-                }
-            } catch let error as NSError {
-                logger.error("\(error)")
-            }
-        }
-    }
-
     func close(isDisconnected: Bool) {
-        inputQueue.async {
-            guard self.runloop != nil else {
-                return
-            }
+        outputQueue.async {
             self.deinitConnection(isDisconnected: isDisconnected)
         }
     }
 
     func initConnection() {
+        guard let inputStream = inputStream, let outputStream = outputStream else {
+            return
+        }
         outputBuffer.clear()
         totalBytesIn.mutate { $0 = 0 }
         totalBytesOut.mutate { $0 = 0 }
         queueBytesOut.mutate { $0 = 0 }
         inputBuffer.removeAll(keepingCapacity: false)
-        guard let inputStream = inputStream, let outputStream = outputStream else {
-            return
-        }
-        runloop = .current
-        inputStream.delegate = self
-        inputStream.schedule(in: runloop!, forMode: .default)
-        inputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
-        outputStream.delegate = self
-        outputStream.schedule(in: runloop!, forMode: .default)
-        outputStream.setProperty(securityLevel.rawValue, forKey: .socketSecurityLevelKey)
-        CFWriteStreamSetDispatchQueue(outputStream, outputQueue)
         inputStream.open()
         outputStream.open()
-
         if 0 < timeout {
             DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
         }
-
-        runloop?.run()
-        connected = false
     }
 
     func deinitConnection(isDisconnected: Bool) {
-        guard let runloop = runloop else {
+        guard inputStream != nil && outputStream != nil else {
             return
         }
         timeoutHandler.cancel()
         inputStream?.close()
-        inputStream?.remove(from: runloop, forMode: .default)
-        inputStream?.delegate = nil
         inputStream = nil
         outputStream?.close()
-        outputStream?.remove(from: runloop, forMode: .default)
-        outputStream?.delegate = nil
         outputStream = nil
-        self.runloop = nil
-        CFRunLoopStop(runloop.getCFRunLoop())
+        connected = false
         logger.trace("isDisconnected: \(isDisconnected)")
     }
 
