@@ -1,6 +1,6 @@
 #if !os(macOS)
-
 import Foundation
+import UIKit
 
 class HKPictureInPicureControllerImpl: HKPictureInPicureController {
     static let margin: CGFloat = 16
@@ -57,7 +57,7 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
             window = UIWindow(frame: .zero)
             window?.rootViewController = viewController
             window?.makeKeyAndVisible()
-            if #available(iOSApplicationExtension 11.0, tvOSApplicationExtension 11.0, *) {
+            if #available(iOS 11.0, tvOS 11.0, *) {
                 transform(parent?.view.window?.safeAreaInsets ?? .zero)
             } else {
                 transform()
@@ -96,7 +96,7 @@ class HKPictureInPicureControllerImpl: HKPictureInPicureController {
     private func orientationDidChange() {
         switch UIDevice.current.orientation {
         case .landscapeLeft, .landscapeRight, .portrait, .portraitUpsideDown:
-            if #available(iOSApplicationExtension 11.0, *) {
+            if #available(iOS 11.0, *) {
                 transform(parent?.view.window?.safeAreaInsets ?? .zero)
             } else {
                 transform()

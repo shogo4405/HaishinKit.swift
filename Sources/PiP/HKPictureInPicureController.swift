@@ -1,4 +1,6 @@
+#if !os(macOS)
 import Foundation
+import UIKit
 
 public protocol HKPictureInPicureController: class {
     var isPictureInPictureActive: Bool { get }
@@ -11,3 +13,4 @@ public protocol HKPictureInPicureController: class {
     func startPictureInPicture()
     func stopPictureInPicture()
 }
+#endif

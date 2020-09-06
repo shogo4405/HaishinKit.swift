@@ -1,5 +1,6 @@
 #if !os(macOS)
 import Foundation
+import UIKit
 
 private var HKPictureInPicureControllerImplKey: UInt8 = 0
 
