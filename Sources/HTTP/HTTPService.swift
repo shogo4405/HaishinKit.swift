@@ -305,7 +305,7 @@ open class HLSService: HTTPService {
                         response.headerFields["Content-Length"] = String(describing: length)
                     }
                     client.doOutput(data: response.data)
-                    client.doOutputFromURL(URL(fileURLWithPath: resource), length: 8 * 1024)
+                    doOutputFromURL(client, url: URL(fileURLWithPath: resource), length: 8 * 1024)
                 default:
                     response.statusCode = HTTPStatusCode.ok.description
                     response.body = Data(resource.utf8)
@@ -315,6 +315,26 @@ open class HLSService: HTTPService {
             }
             response.statusCode = HTTPStatusCode.notFound.description
             client.doOutput(data: response.data)
+        }
+    }
+
+    func doOutputFromURL(_ client: NetClient, url: URL, length: Int) {
+        do {
+            let fileHandle: FileHandle = try FileHandle(forReadingFrom: url)
+            defer {
+                fileHandle.closeFile()
+            }
+            let endOfFile = Int(fileHandle.seekToEndOfFile())
+            for i in 0..<Int(endOfFile / length) {
+                fileHandle.seek(toFileOffset: UInt64(i * length))
+                client.doOutput(data: fileHandle.readData(ofLength: length))
+            }
+            let remain: Int = endOfFile % length
+            if 0 < remain {
+                client.doOutput(data: fileHandle.readData(ofLength: remain))
+            }
+        } catch let error as NSError {
+            logger.error("\(error)")
         }
     }
 }
