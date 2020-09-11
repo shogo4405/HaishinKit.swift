@@ -151,6 +151,11 @@ open class NetSocket: NSObject {
     private lazy var outputBuffer: CycleBuffer = .init(capacity: windowSizeC)
     private lazy var outputQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
+    deinit {
+        inputStream?.delegate = nil
+        outputStream?.delegate = nil
+    }
+
     /// Creates a two-way connection to a server.
     public func connect(withName: String, port: Int) {
         inputQueue.async {
