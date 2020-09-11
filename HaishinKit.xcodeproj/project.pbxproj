@@ -2731,7 +2731,7 @@
 			repositoryURL = "https://github.com/shogo4405/Logboard";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 2.1.3;
+				minimumVersion = 2.2.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
