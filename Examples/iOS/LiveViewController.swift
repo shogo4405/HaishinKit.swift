@@ -8,7 +8,9 @@ final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
     static let `default` = ExampleRecorderDelegate()
 
     override func didFinishWriting(_ recorder: AVRecorder) {
-        guard let writer: AVAssetWriter = recorder.writer else { return }
+        guard let writer: AVAssetWriter = recorder.writer else {
+            return
+        }
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
         }, completionHandler: { _, error -> Void in

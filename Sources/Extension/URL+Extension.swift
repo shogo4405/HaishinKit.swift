@@ -2,7 +2,9 @@ import Foundation
 
 extension URL {
     var absoluteWithoutAuthenticationString: String {
-        guard var components = URLComponents(string: absoluteString) else { return absoluteString }
+        guard var components = URLComponents(string: absoluteString) else {
+            return absoluteString
+        }
         components.password = nil
         components.user = nil
         return components.url?.absoluteString ?? absoluteString

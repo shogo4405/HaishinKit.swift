@@ -27,7 +27,9 @@ open class HKView: UIView {
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             let orientationChange = { [weak self] in
-                guard let self = self else { return }
+                guard let self = self else {
+                    return
+                }
                 self.layer.connection.map {
                     if $0.isVideoOrientationSupported {
                         $0.videoOrientation = self.orientation

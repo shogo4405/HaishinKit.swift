@@ -199,8 +199,9 @@ extension AudioIOComponent: AudioConverterDelegate {
     }
 
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !data.isEmpty, data[0].mDataByteSize != 0 else { return }
-
+        guard !data.isEmpty, data[0].mDataByteSize != 0 else {
+            return
+        }
         guard
             let audioFormat = audioFormat,
             let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: data[0].mDataByteSize / 4) else {

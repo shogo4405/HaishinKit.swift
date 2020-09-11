@@ -94,7 +94,9 @@ extension AudioConverter {
         }
 
         func audioStreamBasicDescription(_ inSourceFormat: AudioStreamBasicDescription?, sampleRate: Double, channels: UInt32) -> AudioStreamBasicDescription? {
-            guard let inSourceFormat = inSourceFormat else { return nil }
+            guard let inSourceFormat = inSourceFormat else {
+                return nil
+            }
             let destinationChannels: UInt32 = (channels == 0) ? inSourceFormat.mChannelsPerFrame : channels
             return AudioStreamBasicDescription(
                 mSampleRate: sampleRate == 0 ? inSourceFormat.mSampleRate : sampleRate,
