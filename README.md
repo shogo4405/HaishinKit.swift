@@ -232,12 +232,6 @@ view.addSubview(hkView)
 ```
 
 ## FAQ
-### How can I run example project?
-Please hit `carthage update` command. HaishinKit needs Logboard module via Carthage.
-```sh
-carthage update
-```
-
 ### Do you support me via Email?
 Yes. Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I don't recommend. 
 Please consider to use Issues.
