@@ -53,7 +53,7 @@ final class DisplayLinkedQueue: NSObject {
         if self.buffer.isEmpty {
             delegate?.queue(buffer)
         }
-        self.buffer.append(buffer)
+        _ = self.buffer.append(buffer)
     }
 
     @objc
