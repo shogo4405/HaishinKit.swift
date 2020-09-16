@@ -1,6 +1,7 @@
 *.xcodeproj/xcuserdata/*
 *.xcworkspace/xcuserdata/*
 build
+.build
 *.xccheckout
 *.moved-aside
 *.xcuserstate
@@ -13,8 +14,6 @@ soe/obj/*
 soe/bin/*
 soe/air/*
 soe/AIR_readme.txt
-
-build/lf.build/Release-iphoneos/lf.build/dgph
 
 Cartfile.resolved
 Carthage/*
