@@ -84,7 +84,7 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
 
     public init(shared: UIApplication) {
         self.shared = shared
-        size = shared.delegate!.window!!.bounds.size
+        size = UIScreen.main.bounds.size
         super.init()
     }
 
@@ -101,8 +101,8 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
             return
         }
 
-        if let shared = self.shared {
-            size = UIScreen.main.bounds
+        if let _ = self.shared {
+            size = UIScreen.main.bounds.size
         }
         if let viewToCapture = self.viewToCapture {
             size = viewToCapture.bounds.size
