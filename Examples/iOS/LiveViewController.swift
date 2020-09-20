@@ -26,17 +26,17 @@ final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
 final class LiveViewController: UIViewController {
     private static let maxRetryCount: Int = 5
 
-    @IBOutlet private weak var lfView: GLHKView?
-    @IBOutlet private weak var currentFPSLabel: UILabel?
-    @IBOutlet private weak var publishButton: UIButton?
-    @IBOutlet private weak var pauseButton: UIButton?
-    @IBOutlet private weak var videoBitrateLabel: UILabel?
-    @IBOutlet private weak var videoBitrateSlider: UISlider?
-    @IBOutlet private weak var audioBitrateLabel: UILabel?
-    @IBOutlet private weak var zoomSlider: UISlider?
-    @IBOutlet private weak var audioBitrateSlider: UISlider?
-    @IBOutlet private weak var fpsControl: UISegmentedControl?
-    @IBOutlet private weak var effectSegmentControl: UISegmentedControl?
+    @IBOutlet private weak var lfView: MTHKView!
+    @IBOutlet private weak var currentFPSLabel: UILabel!
+    @IBOutlet private weak var publishButton: UIButton!
+    @IBOutlet private weak var pauseButton: UIButton!
+    @IBOutlet private weak var videoBitrateLabel: UILabel!
+    @IBOutlet private weak var videoBitrateSlider: UISlider!
+    @IBOutlet private weak var audioBitrateLabel: UILabel!
+    @IBOutlet private weak var zoomSlider: UISlider!
+    @IBOutlet private weak var audioBitrateSlider: UISlider!
+    @IBOutlet private weak var fpsControl: UISegmentedControl!
+    @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
 
     private var rtmpConnection = RTMPConnection()
     private var rtmpStream: RTMPStream!

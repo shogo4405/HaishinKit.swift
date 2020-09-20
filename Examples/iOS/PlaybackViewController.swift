@@ -5,9 +5,7 @@ import UIKit
 final class PlaybackViewController: UIViewController, HKPictureInPicureController {
     private static let maxRetryCount: Int = 5
 
-    @IBOutlet private weak var lfView: GLHKView?
     @IBOutlet private weak var playbackButton: UIButton!
-
     private var rtmpConnection = RTMPConnection()
     private var rtmpStream: RTMPStream!
     private var retryCount: Int = 0

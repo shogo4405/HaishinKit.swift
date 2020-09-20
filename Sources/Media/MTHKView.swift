@@ -2,8 +2,9 @@ import AVFoundation
 import MetalKit
 
 open class MTHKView: MTKView, NetStreamRenderer {
-    public var videoGravity: AVLayerVideoGravity = .resizeAspect
-    public var videoFormatDescription: CMVideoFormatDescription? {
+    open var isMirrored: Bool = false
+    open var videoGravity: AVLayerVideoGravity = .resizeAspect
+    open var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
 
@@ -11,7 +12,6 @@ open class MTHKView: MTKView, NetStreamRenderer {
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
     #endif
-    open var isMirrored: Bool = false
 
     var displayImage: CIImage?
     weak var currentStream: NetStream? {
@@ -55,11 +55,6 @@ extension MTHKView: MTKViewDelegate {
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
     }
 
-    #if arch(i386) || arch(x86_64)
-    public func draw(in view: MTKView) {
-        // iOS Simulator doesn't support currentDrawable as CAMetalDrawable.
-    }
-    #else
     public func draw(in view: MTKView) {
         guard
             let currentDrawable = currentDrawable,
@@ -106,7 +101,7 @@ extension MTHKView: MTKViewDelegate {
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
         if isMirrored {
-            if #available(iOS 11.0, tvOS 11.0, *) {
+            if #available(iOS 11.0, tvOS 11.0, macOS 10.13, *) {
                 scaledImage = scaledImage.oriented(.upMirrored)
             } else {
                 scaledImage = scaledImage.oriented(forExifOrientation: 2)
@@ -117,6 +112,4 @@ extension MTHKView: MTKViewDelegate {
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
-    #endif
 }
-
