@@ -1,5 +1,6 @@
 import Foundation
 
+/// The type of flv supports video codecs.
 public enum FLVVideoCodec: UInt8 {
     case sorensonH263 = 2
     case screen1 = 3

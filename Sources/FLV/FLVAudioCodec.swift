@@ -1,5 +1,6 @@
 import AVFoundation
 
+/// The type of flv supports audio codecs.
 public enum FLVAudioCodec: UInt8 {
     case pcm = 0
     case adpcm = 1

@@ -1,6 +1,6 @@
 # HaishinKit (formerly lf)
 [![Platform](https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
-![Language](https://img.shields.io/badge/language-Swift%205.0-orange.svg)
+![Language](https://img.shields.io/badge/language-Swift%205.3-orange.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
@@ -66,7 +66,7 @@ macOS 10.14+
 * NSCameraUsageDescription
 
 ## Installation
-*Please set up your project Swift 5.0. *
+*Please set up your project Swift 5.3. *
 
 ### CocoaPods
 ```rb
