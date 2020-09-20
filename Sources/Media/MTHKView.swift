@@ -1,5 +1,3 @@
-#if os(iOS)
-
 import AVFoundation
 import MetalKit
 
@@ -9,8 +7,10 @@ open class MTHKView: MTKView, NetStreamRenderer {
         currentStream?.mixer.videoIO.formatDescription
     }
 
+    #if !os(tvOS)
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
+    #endif
     open var isMirrored: Bool = false
 
     var displayImage: CIImage?
@@ -106,7 +106,7 @@ extension MTHKView: MTKViewDelegate {
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
         if isMirrored {
-            if #available(iOS 11.0, *) {
+            if #available(iOS 11.0, tvOS 11.0, *) {
                 scaledImage = scaledImage.oriented(.upMirrored)
             } else {
                 scaledImage = scaledImage.oriented(forExifOrientation: 2)
@@ -120,4 +120,3 @@ extension MTHKView: MTKViewDelegate {
     #endif
 }
 
-#endif

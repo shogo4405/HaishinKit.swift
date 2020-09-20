@@ -151,8 +151,6 @@
 		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		299B13271D3B751400A1E8F5 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* HKView.swift */; };
-		299D6A512051A9720090E10A /* MTHKView-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A502051A9720090E10A /* MTHKView-macOS.swift */; };
-		299D6A532051A9920090E10A /* MTHKView-tvOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299D6A522051A9920090E10A /* MTHKView-tvOS.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29B8765B1CD70A7900FC07DA /* AudioConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioConverter.swift */; };
@@ -371,6 +369,8 @@
 		BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC558269240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC55826A240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
+		BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
+		BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7EDAB2250918E9005AC3BD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC7EDAB1250918E9005AC3BD /* Logboard */; };
 		BC7EDAB4250918FB005AC3BD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC7EDAB3250918FB005AC3BD /* Logboard */; };
 		BC7EDAB625091904005AC3BD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC7EDAB525091904005AC3BD /* Logboard */; };
@@ -574,8 +574,6 @@
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenCaptureSession.swift; sourceTree = "<group>"; };
 		299B13261D3B751400A1E8F5 /* HKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HKView.swift; sourceTree = "<group>"; };
-		299D6A502051A9720090E10A /* MTHKView-macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTHKView-macOS.swift"; sourceTree = "<group>"; };
-		299D6A522051A9920090E10A /* MTHKView-tvOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MTHKView-tvOS.swift"; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		299F7E3B1CD71A97001E7272 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HaishinKit.h; sourceTree = "<group>"; };
 		29A39C881D85BF30007C27E9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -981,7 +979,6 @@
 				296543591D62FE6200734698 /* HaishinKit.h */,
 				2965435A1D62FE6200734698 /* HKView-macOS.swift */,
 				296543581D62FE6200734698 /* Info.plist */,
-				299D6A502051A9720090E10A /* MTHKView-macOS.swift */,
 				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */,
 				2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */,
 			);
@@ -1066,7 +1063,6 @@
 				299F7E3B1CD71A97001E7272 /* HaishinKit.h */,
 				299B13261D3B751400A1E8F5 /* HKView.swift */,
 				299F7E3A1CD71A97001E7272 /* Info.plist */,
-				2999C3742071138F00892E55 /* MTHKView.swift */,
 				29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */,
 				299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */,
 				29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */,
@@ -1091,6 +1087,7 @@
 				29B8768B1CD70AFE00FC07DA /* AVMixer.swift */,
 				2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */,
 				2976A4801D49025B00B53EF2 /* IOComponent.swift */,
+				2999C3742071138F00892E55 /* MTHKView.swift */,
 				295891001EEB7A8B00CE51E1 /* ScalingMode.swift */,
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
@@ -1129,7 +1126,6 @@
 				29E796991ED197A800D75C6C /* GLHKView-tvOS.swift */,
 				29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */,
 				29D3D4E51ED0518900DD4AA6 /* Info.plist */,
-				299D6A522051A9920090E10A /* MTHKView-tvOS.swift */,
 			);
 			path = tvOS;
 			sourceTree = "<group>";
@@ -1759,6 +1755,7 @@
 				2942A4F921A9418A004E1BEE /* Running.swift in Sources */,
 				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */,
 				29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */,
+				BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */,
 				297E69132324E38800D418AB /* AudioConverter.Destination.swift in Sources */,
 				29B876F81CD70D5900FC07DA /* HTTPService.swift in Sources */,
 				29B876F91CD70D5900FC07DA /* HTTPStream.swift in Sources */,
@@ -1782,7 +1779,6 @@
 				295891131EEB8D7200CE51E1 /* FLVFrameType.swift in Sources */,
 				29B877011CD70D5A00FC07DA /* ProgramSpecific.swift in Sources */,
 				295891271EEB8EF300CE51E1 /* FLVAACPacket.swift in Sources */,
-				299D6A512051A9720090E10A /* MTHKView-macOS.swift in Sources */,
 				29B877021CD70D5A00FC07DA /* TransportStream.swift in Sources */,
 				296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */,
 				2958912F1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
@@ -1887,6 +1883,7 @@
 				29EB3E101ED0587F001CAE8B /* AVRecorder.swift in Sources */,
 				2958910C1EEB8D1800CE51E1 /* FLVReader.swift in Sources */,
 				29EB3E0F1ED0587C001CAE8B /* AVMixer.swift in Sources */,
+				BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */,
 				29EB3E1A1ED0589B001CAE8B /* NetStream.swift in Sources */,
 				29EB3E211ED059FB001CAE8B /* RTMPHandshake.swift in Sources */,
 				29EB3DF41ED05776001CAE8B /* CMBlockBuffer+Extension.swift in Sources */,
@@ -1951,7 +1948,6 @@
 				2958912C1EEB8F1D00CE51E1 /* FLVSoundSize.swift in Sources */,
 				BC4DAEB32479851D005EFD57 /* FilenameUtil.swift in Sources */,
 				295891241EEB8EC500CE51E1 /* FLVAVCPacketType.swift in Sources */,
-				299D6A532051A9920090E10A /* MTHKView-tvOS.swift in Sources */,
 				2943ED55232FCA7C00ED6301 /* Setting.swift in Sources */,
 				29EB3DF31ED05773001CAE8B /* CMAudioFormatDescription+Extension.swift in Sources */,
 				29EB3DFC1ED057AC001CAE8B /* HTTPRequest.swift in Sources */,
