@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.0.11 Docs</a> (14% documented)</p>
+        <p><a href="index.html">HaishinKit 1.1.0 Docs</a> (15% documented)</p>
         <p class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -98,10 +98,16 @@
                 <a href="Classes/GLHKView.html">GLHKView</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/GLHKView.html">GLHKView</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/H264Encoder.html">H264Encoder</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/H264Encoder/Option.html">– Option</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/HKView.html">HKView</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/HKView.html">HKView</a>
@@ -241,6 +247,15 @@
               <li class="nav-group-task">
                 <a href="Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
               </li>
+              <li class="nav-group-task">
+                <a href="Extensions/DeviceUtil.html">DeviceUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions/NetStream.html">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions.html#/VideoIOComponent">VideoIOComponent</a>
+              </li>
             </ul>
           </li>
           <li class="nav-group-name">
@@ -345,7 +360,7 @@
             <h1 id='haishinkit-formerly-lf' class='heading'>HaishinKit (formerly lf)</h1>
 
 <p><a href="http://cocoapods.org/pods/HaishinKit"><img src="https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat" alt="Platform"></a>
-<img src="https://img.shields.io/badge/language-Swift%204.0-orange.svg" alt="Language">
+<img src="https://img.shields.io/badge/language-Swift%205.0-orange.svg" alt="Language">
 <a href="http://cocoapods.org/pods/HaishinKit"><img src="https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat" alt="CocoaPods"></a>
 <a href="https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md"><img src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" alt="GitHub license"></a></p>
 
@@ -461,6 +476,16 @@
 </tr>
 </thead><tbody>
 <tr>
+<td style="text-align: center">1.1.0+</td>
+<td style="text-align: center">9.0+</td>
+<td style="text-align: center">10.11+</td>
+<td style="text-align: center">10.2+</td>
+<td style="text-align: center">12.0+</td>
+<td style="text-align: center">5.0+</td>
+<td style="text-align: center">1.5.0+</td>
+<td style="text-align: center">0.29.0+</td>
+</tr>
+<tr>
 <td style="text-align: center">1.0.0+</td>
 <td style="text-align: center">8.0+</td>
 <td style="text-align: center">10.11+</td>
@@ -477,16 +502,6 @@
 <td style="text-align: center">10.2+</td>
 <td style="text-align: center">10.0+</td>
 <td style="text-align: center">5.0</td>
-<td style="text-align: center">1.5.0+</td>
-<td style="text-align: center">0.29.0+</td>
-</tr>
-<tr>
-<td style="text-align: center">0.10.0+</td>
-<td style="text-align: center">8.0+</td>
-<td style="text-align: center">10.11+</td>
-<td style="text-align: center">10.2+</td>
-<td style="text-align: center">10.0+</td>
-<td style="text-align: center">4.2</td>
 <td style="text-align: center">1.5.0+</td>
 <td style="text-align: center">0.29.0+</td>
 </tr>
@@ -516,16 +531,16 @@
 <span class="n">use_frameworks!</span>
 
 <span class="k">def</span> <span class="nf">import_pods</span>
-    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 1.0.11'</span>
+    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 1.1.0'</span>
 <span class="k">end</span>
 
 <span class="n">target</span> <span class="s1">'Your Target'</span>  <span class="k">do</span>
-    <span class="n">platform</span> <span class="ss">:ios</span><span class="p">,</span> <span class="s1">'8.0'</span>
+    <span class="n">platform</span> <span class="ss">:ios</span><span class="p">,</span> <span class="s1">'9.0'</span>
     <span class="n">import_pods</span>
 <span class="k">end</span>
 </code></pre>
 <h3 id='carthage' class='heading'>Carthage</h3>
-<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 1.0.11
+<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 1.1.0
 </code></pre>
 <h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
 <pre class="highlight plaintext"><code>https://github.com/shogo4405/HaishinKit.swift
@@ -666,11 +681,6 @@
 <span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">hkView</span><span class="p">)</span>
 </code></pre>
 <h2 id='faq' class='heading'>FAQ</h2>
-<h3 id='how-can-i-run-example-project' class='heading'>How can I run example project?</h3>
-
-<p>Please hit <code>carthage update</code> command. HaishinKit needs Logboard module via Carthage.</p>
-<pre class="highlight shell"><code>carthage update
-</code></pre>
 <h3 id='do-you-support-me-via-email' class='heading'>Do you support me via Email?</h3>
 
 <p>Yes. Consulting fee is <a href="https://www.paypal.me/shogo4405/50USD">$50</a>/1 incident. I don&rsquo;t recommend. 
@@ -708,7 +718,7 @@ Please consider to use Issues.</p>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2020-09-06)</p>
+          <p>&copy; 2020 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2020-09-20)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.5</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>

@@ -4,6 +4,11 @@ import PackageDescription
 
 let package = Package(
     name: "HaishinKit",
+    platforms: [
+        .iOS(.v9),
+        .tvOS(.v10),
+        .macOS(.v10_11)
+    ],
     products: [
         .library(name: "HaishinKit", targets: ["HaishinKit"])
     ],
