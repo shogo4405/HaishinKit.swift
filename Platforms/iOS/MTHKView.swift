@@ -1,10 +1,8 @@
 #if os(iOS)
 
-#if canImport(MetalKit)
 import AVFoundation
 import MetalKit
 
-@available(iOS 9.0, *)
 open class MTHKView: MTKView, NetStreamRenderer {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoFormatDescription: CMVideoFormatDescription? {
@@ -52,7 +50,6 @@ open class MTHKView: MTKView, NetStreamRenderer {
     }
 }
 
-@available(iOS 9.0, *)
 extension MTHKView: MTKViewDelegate {
     // MARK: MTKViewDelegate
     public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
@@ -123,5 +120,4 @@ extension MTHKView: MTKViewDelegate {
     #endif
 }
 
-#endif
 #endif
