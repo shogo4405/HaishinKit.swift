@@ -149,6 +149,18 @@ rtmpStream.publish("streamName")
 // rtmpStream.publish("streamName", type: .localRecord)
 ```
 
+### RTML URL Format
+* rtmp://server-ip-address:[port]/application/[appInstance]/[prefix]:[path1]/[path2]/streamName
+  ```
+  rtmpConneciton.connect("rtmp://[wowza-ip-address]:[port]/[application]/[appInstance]")
+  rtmpStream.publish("[prefix]:[path1]/[path2]/[streamName]")
+  ```
+* rtmp://localhost/live/streamName
+  ```
+  rtmpConneciton.connect("rtmp://localhost/live")
+  rtmpStream.publish("streamName")
+  ```
+
 ### Settings
 ```swift
 var rtmpStream = RTMPStream(connection: rtmpConnection)
