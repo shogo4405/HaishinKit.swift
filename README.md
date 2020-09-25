@@ -150,10 +150,11 @@ rtmpStream.publish("streamName")
 ```
 
 ### RTML URL Format
-* rtmp://server-ip-address:[port]/application/[appInstance]/[prefix]:[path1]/[path2]/streamName
+* rtmp://server-ip-address[:port]/application/[appInstance]/[prefix:[path1[/path2/]]]streamName
+  - [] mark is an Optional.
   ```
-  rtmpConneciton.connect("rtmp://[wowza-ip-address]:[port]/[application]/[appInstance]")
-  rtmpStream.publish("[prefix]:[path1]/[path2]/[streamName]")
+  rtmpConneciton.connect("rtmp://server-ip-address[:port]/application/[appInstance]")
+  rtmpStream.publish("[prefix:[path1[/path2/]]]streamName")
   ```
 * rtmp://localhost/live/streamName
   ```
