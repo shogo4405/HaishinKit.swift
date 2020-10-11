@@ -1,25 +1,45 @@
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 
 import AVFoundation
 import GLKit
 
+/**
+  A view that displays a video content of a NetStream object which uses OpenGL api. This class is deprecated. Please consider to use the MTHKView.
+ */
 open class GLHKView: GLKView, NetStreamRenderer {
     static let defaultOptions: [CIContextOption: Any] = [
         .workingColorSpace: NSNull(),
         .useSoftwareRenderer: NSNumber(value: false)
     ]
     public static var defaultBackgroundColor: UIColor = .black
+
+    open var isMirrored: Bool = false
+    /// A value that specifies how the video is displayed within a player layer’s bounds.
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
-    public var videoFormatDescription: CMVideoFormatDescription? {
+    /// A value that displays a video format.
+    open var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
+
+    var displayImage: CIImage?
+    #if !os(tvOS)
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
-    open var isMirrored: Bool = false
-    var displayImage: CIImage?
+    #endif
+
     private weak var currentStream: NetStream? {
         didSet {
             oldValue?.mixer.videoIO.renderer = nil
+            if let currentStream = currentStream {
+                currentStream.mixer.videoIO.context = CIContext(eaglContext: context, options: GLHKView.defaultOptions)
+                currentStream.lockQueue.async {
+                    #if !os(tvOS)
+                    self.position = currentStream.mixer.videoIO.position
+                    #endif
+                    currentStream.mixer.videoIO.renderer = self
+                    currentStream.mixer.startRunning()
+                }
+            }
         }
     }
 
@@ -41,16 +61,15 @@ open class GLHKView: GLKView, NetStreamRenderer {
         layer.backgroundColor = GLHKView.defaultBackgroundColor.cgColor
     }
 
+    /// Attaches a view to a new NetStream object.
     open func attachStream(_ stream: NetStream?) {
-        if let stream: NetStream = stream {
-            stream.mixer.videoIO.context = CIContext(eaglContext: context, options: GLHKView.defaultOptions)
-            stream.lockQueue.async {
-                self.position = stream.mixer.videoIO.position
-                stream.mixer.videoIO.renderer = self
-                stream.mixer.startRunning()
+        if Thread.isMainThread {
+            currentStream = stream
+        } else {
+            DispatchQueue.main.async {
+                self.currentStream = stream
             }
         }
-        currentStream = stream
     }
 }
 
@@ -65,7 +84,7 @@ extension GLHKView: GLKViewDelegate {
         var fromRect: CGRect = displayImage.extent
 
         if isMirrored {
-            if #available(iOS 11.0, *) {
+            if #available(iOS 11.0, tvOS 11.0, *) {
                 displayImage = displayImage.oriented(.upMirrored)
             } else {
                 displayImage = displayImage.oriented(forExifOrientation: 2)
