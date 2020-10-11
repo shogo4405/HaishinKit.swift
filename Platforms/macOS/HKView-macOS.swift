@@ -1,7 +1,7 @@
 #if os(macOS)
 
-import AVFoundation
 import AppKit
+import AVFoundation
 
 open class HKView: NSView {
     public static var defaultBackgroundColor: NSColor = .black
