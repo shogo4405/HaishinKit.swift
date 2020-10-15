@@ -1,9 +1,14 @@
 import AVFoundation
 import MetalKit
 
+/**
+  A view that displays a video content of a NetStream object which uses Metal api.
+ */
 open class MTHKView: MTKView, NetStreamRenderer {
     open var isMirrored: Bool = false
+    /// A value that specifies how the video is displayed within a player layer’s bounds.
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
+    /// A value that displays a video format.
     open var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
@@ -14,12 +19,19 @@ open class MTHKView: MTKView, NetStreamRenderer {
     #endif
 
     var displayImage: CIImage?
-    weak var currentStream: NetStream? {
+    let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
+    private weak var currentStream: NetStream? {
         didSet {
             oldValue?.mixer.videoIO.renderer = nil
+            if let currentStream = currentStream {
+                currentStream.mixer.videoIO.context = CIContext(mtlDevice: device!)
+                currentStream.lockQueue.async {
+                    currentStream.mixer.videoIO.renderer = self
+                    currentStream.mixer.startRunning()
+                }
+            }
         }
     }
-    let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
 
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
@@ -38,15 +50,15 @@ open class MTHKView: MTKView, NetStreamRenderer {
         enableSetNeedsDisplay = true
     }
 
+    /// Attaches a view to a new NetStream object.
     open func attachStream(_ stream: NetStream?) {
-        if let stream: NetStream = stream {
-            stream.mixer.videoIO.context = CIContext(mtlDevice: device!)
-            stream.lockQueue.async {
-                stream.mixer.videoIO.renderer = self
-                stream.mixer.startRunning()
+        if Thread.isMainThread {
+            currentStream = stream
+        } else {
+            DispatchQueue.main.async {
+                self.currentStream = stream
             }
         }
-        currentStream = stream
     }
 }
 

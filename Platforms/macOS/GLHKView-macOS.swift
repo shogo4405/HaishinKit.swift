@@ -4,6 +4,9 @@ import AVFoundation
 import GLUT
 import OpenGL.GL3
 
+/**
+  A view that displays a video content of a NetStream object which uses OpenGL api. This class is deprecated. Please consider to use the MTHKView.
+ */
 open class GLHKView: NSOpenGLView, NetStreamRenderer {
     static let pixelFormatAttributes: [NSOpenGLPixelFormatAttribute] = [
         UInt32(NSOpenGLPFAAccelerated),
@@ -21,8 +24,10 @@ open class GLHKView: NSOpenGLView, NetStreamRenderer {
         return pixelFormat
     }
 
-    public var videoGravity: AVLayerVideoGravity = .resizeAspect
-    public var videoFormatDescription: CMVideoFormatDescription? {
+    /// A value that specifies how the video is displayed within a player layer’s bounds.
+    open var videoGravity: AVLayerVideoGravity = .resizeAspect
+    /// A value that displays video format.
+    open var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
     var position: AVCaptureDevice.Position = .front
@@ -84,6 +89,7 @@ open class GLHKView: NSOpenGLView, NetStreamRenderer {
         glLoadIdentity()
     }
 
+    /// Attaches a view to a new NetStream object.
     open func attachStream(_ stream: NetStream?) {
         if let currentStream: NetStream = currentStream {
             currentStream.mixer.videoIO.renderer = nil
