@@ -368,6 +368,10 @@
 		BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC558269240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC55826A240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
+		BC5C6D932557F7940073412C /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D922557F7940073412C /* Logboard */; };
+		BC5C6D942557F7940073412C /* Logboard in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D922557F7940073412C /* Logboard */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BC5C6D9F2557F7C70073412C /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D9E2557F7C70073412C /* Logboard */; };
+		BC5C6DA02557F7C70073412C /* Logboard in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D9E2557F7C70073412C /* Logboard */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7EDAB2250918E9005AC3BD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC7EDAB1250918E9005AC3BD /* Logboard */; };
@@ -472,7 +476,19 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BC5C6D942557F7940073412C /* Logboard in Embed Frameworks */,
 				2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC5C6D852557F6FC0073412C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				BC5C6DA02557F7C70073412C /* Logboard in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -674,6 +690,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC5C6D9F2557F7C70073412C /* Logboard in Frameworks */,
 				29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */,
 				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
 			);
@@ -699,6 +716,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC5C6D932557F7940073412C /* Logboard in Frameworks */,
 				2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1217,6 +1235,7 @@
 				2915EC4F1D85BDF100621092 /* Frameworks */,
 				2915EC4E1D85BDF100621092 /* Sources */,
 				2915EC501D85BDF100621092 /* Resources */,
+				BC5C6D852557F6FC0073412C /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1224,6 +1243,7 @@
 			);
 			name = Screencast;
 			packageProductDependencies = (
+				BC5C6D9E2557F7C70073412C /* Logboard */,
 			);
 			productName = Screencast;
 			productReference = 2915EC521D85BDF100621092 /* Screencast.appex */;
@@ -1308,6 +1328,9 @@
 				2915EC6E1D85BDF100621092 /* PBXTargetDependency */,
 			);
 			name = "Example iOS";
+			packageProductDependencies = (
+				BC5C6D922557F7940073412C /* Logboard */,
+			);
 			productName = "Example iOS";
 			productReference = 29C9327E1CD76FB800283FC5 /* Example iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -2684,13 +2707,23 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/shogo4405/Logboard";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 2.2.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BC5C6D922557F7940073412C /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC7EDAB0250918E9005AC3BD /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+		BC5C6D9E2557F7C70073412C /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC7EDAB0250918E9005AC3BD /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
 		BC7EDAB1250918E9005AC3BD /* Logboard */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC7EDAB0250918E9005AC3BD /* XCRemoteSwiftPackageReference "Logboard" */;
