@@ -506,7 +506,7 @@ open class RTMPStream: NetStream {
         }
     }
 
-    func createMetaData() -> ASObject {
+    open func createMetaData() -> ASObject {
         metadata.removeAll()
 #if os(iOS) || os(macOS)
         if let _: AVCaptureInput = mixer.videoIO.input {
