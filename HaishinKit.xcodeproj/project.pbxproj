@@ -372,6 +372,10 @@
 		BC5C6D942557F7940073412C /* Logboard in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D922557F7940073412C /* Logboard */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BC5C6D9F2557F7C70073412C /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D9E2557F7C70073412C /* Logboard */; };
 		BC5C6DA02557F7C70073412C /* Logboard in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BC5C6D9E2557F7C70073412C /* Logboard */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BC6C615E258D48E3005B88FD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC6C615D258D48E3005B88FD /* Logboard */; };
+		BC6C615F258D48E3005B88FD /* Logboard in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BC6C615D258D48E3005B88FD /* Logboard */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BC6C6161258D48E9005B88FD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC6C6160258D48E9005B88FD /* Logboard */; };
+		BC6C6162258D48E9005B88FD /* Logboard in Embed Frameworks */ = {isa = PBXBuildFile; productRef = BC6C6160258D48E9005B88FD /* Logboard */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7EDAB2250918E9005AC3BD /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC7EDAB1250918E9005AC3BD /* Logboard */; };
@@ -454,6 +458,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BC6C6162258D48E9005B88FD /* Logboard in Embed Frameworks */,
 				29373DB7205524D700099860 /* HaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -465,6 +470,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BC6C615F258D48E3005B88FD /* Logboard in Embed Frameworks */,
 				29562B891E6BFFE000BB940A /* HaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -725,6 +731,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC6C615E258D48E3005B88FD /* Logboard in Frameworks */,
 				29562B881E6BFFE000BB940A /* HaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -741,6 +748,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC6C6161258D48E9005B88FD /* Logboard in Frameworks */,
 				29373DB6205524D700099860 /* HaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1351,6 +1359,9 @@
 				29562B8B1E6BFFE000BB940A /* PBXTargetDependency */,
 			);
 			name = "Example macOS";
+			packageProductDependencies = (
+				BC6C615D258D48E3005B88FD /* Logboard */,
+			);
 			productName = "Example MacOS";
 			productReference = 29C932941CD76FD300283FC5 /* Example macOS.app */;
 			productType = "com.apple.product-type.application";
@@ -1392,6 +1403,9 @@
 				29373DB9205524D700099860 /* PBXTargetDependency */,
 			);
 			name = "Example tvOS";
+			packageProductDependencies = (
+				BC6C6160258D48E9005B88FD /* Logboard */,
+			);
 			productName = "Example tvOS";
 			productReference = 29D3D4EF1ED0531500DD4AA6 /* Example tvOS.app */;
 			productType = "com.apple.product-type.application";
@@ -2720,6 +2734,16 @@
 			productName = Logboard;
 		};
 		BC5C6D9E2557F7C70073412C /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC7EDAB0250918E9005AC3BD /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+		BC6C615D258D48E3005B88FD /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC7EDAB0250918E9005AC3BD /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+		BC6C6160258D48E9005B88FD /* Logboard */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC7EDAB0250918E9005AC3BD /* XCRemoteSwiftPackageReference "Logboard" */;
 			productName = Logboard;
