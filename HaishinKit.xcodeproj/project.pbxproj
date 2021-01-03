@@ -341,6 +341,7 @@
 		29FD1B5022FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5222FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
+		BC11D94625A1B01000D710BA /* Screencast.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BC20DF2C2503747E007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */; };
 		BC20DF2D25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */; };
 		BC20DF2E25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */; };
@@ -431,6 +432,13 @@
 			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
 			remoteInfo = iOS;
 		};
+		BC11D94725A1B01000D710BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2915EC511D85BDF100621092;
+			remoteInfo = Screencast;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -486,6 +494,17 @@
 				2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BC11D94925A1B01000D710BA /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				BC11D94625A1B01000D710BA /* Screencast.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BC5C6D852557F6FC0073412C /* Embed Frameworks */ = {
@@ -1328,12 +1347,14 @@
 				29EF037B1CD79B3900473D99 /* Embed Frameworks */,
 				2911F98F1DE2DA04007FD1EC /* CopyFiles */,
 				29E51F291FEFDEA200F839F4 /* ShellScript */,
+				BC11D94925A1B01000D710BA /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				29C932A91CD78B5500283FC5 /* PBXTargetDependency */,
 				2915EC6E1D85BDF100621092 /* PBXTargetDependency */,
+				BC11D94825A1B01000D710BA /* PBXTargetDependency */,
 			);
 			name = "Example iOS";
 			packageProductDependencies = (
@@ -2043,6 +2064,11 @@
 			isa = PBXTargetDependency;
 			target = 2945CBBC1B4BE66000104112 /* HaishinKit iOS */;
 			targetProxy = 29C932A81CD78B5500283FC5 /* PBXContainerItemProxy */;
+		};
+		BC11D94825A1B01000D710BA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2915EC511D85BDF100621092 /* Screencast */;
+			targetProxy = BC11D94725A1B01000D710BA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
