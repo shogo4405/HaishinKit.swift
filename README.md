@@ -249,6 +249,18 @@ view.addSubview(hkView)
 Yes. Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I don't recommend. 
 Please consider to use Issues.
 
+### How can I run example project?
+```sh
+git clone https://github.com/shogo4405/HaishinKit.swift.git
+cd HaishinKit.swift
+
+# If are you using Xcode12
+env XCODE_XCCONFIG_FILE="$(PWD)/xcode12-workaround.xcconfig" carthage bootstrap
+# else
+# carthage bootstrap
+
+open HaishinKit.xcodeproj
+```
 
 ## Reference
 * Adobe’s Real Time Messaging Protocol
