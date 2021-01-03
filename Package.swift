@@ -10,10 +10,10 @@ let package = Package(
         .macOS(.v10_11)
     ],
     products: [
-        .library(name: "HaishinKit", type: .dynamic, targets: ["HaishinKit"])
+        .library(name: "HaishinKit", targets: ["HaishinKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/shogo4405/Logboard.git", from: "2.2.1")
+        .package(url: "https://github.com/shogo4405/Logboard.git", from: "2.2.2")
     ],
     targets: [
         .target(name: "SwiftPMSupport"),
