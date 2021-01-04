@@ -95,6 +95,10 @@ final class MainViewController: NSViewController {
     @IBAction private func orientation(_ sender: AnyObject) {
         lfView.rotate(byDegrees: 90)
     }
+    
+    @IBAction private func mirror(_ sender: AnyObject) {
+        rtmpStream.captureSettings[.isVideoMirrored] = !(rtmpStream.captureSettings[.isVideoMirrored] as! Bool)
+    }
 
     @IBAction private func selectAudio(_ sender: AnyObject) {
         let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)

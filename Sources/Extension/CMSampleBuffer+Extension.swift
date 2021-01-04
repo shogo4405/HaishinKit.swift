@@ -1,5 +1,9 @@
 import CoreMedia
 
+#if os(macOS)
+import Accelerate
+#endif
+
 extension CMSampleBuffer {
     var isNotSync: Bool {
         get {
@@ -97,4 +101,75 @@ extension CMSampleBuffer {
             Unmanaged.passUnretained(value ? kCFBooleanTrue : kCFBooleanFalse).toOpaque()
         )
     }
+    
+    #if os(macOS)
+    
+    /* Used code from the example https://developer.apple.com/documentation/accelerate/vimage/reading_from_and_writing_to_core_video_pixel_buffers */
+    static var format = vImage_CGImageFormat(
+        bitsPerComponent: 8,
+        bitsPerPixel: 32,
+        colorSpace: nil,
+        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
+        version: 0,
+        decode: nil,
+        renderingIntent: .defaultIntent)
+    
+    public func reflectHorizontal() {
+        if let imageBuffer: CVImageBuffer = self.imageBuffer {
+            var sourceBuffer = vImage_Buffer()
+            
+            let inputCVImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(imageBuffer).takeRetainedValue()
+            
+            vImageCVImageFormat_SetColorSpace(inputCVImageFormat, CGColorSpaceCreateDeviceRGB())
+            
+            var error = kvImageNoError
+            
+            error = vImageBuffer_InitWithCVPixelBuffer(&sourceBuffer,
+                                                       &CMSampleBuffer.format,
+                                                       imageBuffer,
+                                                       inputCVImageFormat,
+                                                       nil,
+                                                       vImage_Flags(kvImageNoFlags))
+
+            guard error == kvImageNoError else {
+                return
+            }
+            defer {
+                free(sourceBuffer.data)
+            }
+
+            var destinationBuffer = vImage_Buffer()
+
+            error = vImageBuffer_Init(&destinationBuffer,
+                                      sourceBuffer.height,
+                                      sourceBuffer.width,
+                                      CMSampleBuffer.format.bitsPerPixel,
+                                      vImage_Flags(kvImageNoFlags))
+
+            guard error == kvImageNoError else {
+                return
+            }
+            defer {
+                free(destinationBuffer.data)
+            }
+
+            error = vImageHorizontalReflect_ARGB8888(&sourceBuffer, &destinationBuffer, vImage_Flags(kvImageLeaveAlphaUnchanged))
+
+            guard error == kvImageNoError else {
+                return
+            }
+            
+            let outputCVImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(imageBuffer).takeRetainedValue()
+            vImageCVImageFormat_SetColorSpace(outputCVImageFormat, CGColorSpaceCreateDeviceRGB())
+
+            error = vImageBuffer_CopyToCVPixelBuffer(&destinationBuffer,
+                                                     &CMSampleBuffer.format,
+                                                     imageBuffer,
+                                                     outputCVImageFormat,
+                                                     nil,
+                                                     vImage_Flags(kvImageNoFlags))
+        }
+    }
+
+    #endif
 }
