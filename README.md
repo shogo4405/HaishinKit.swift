@@ -5,7 +5,16 @@
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
 * Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
-* Issuesの言語は、英語か、日本語でお願いします！
+* Issuesの言語は、日本語が分かる方は日本語でお願いします！
+
+## Communicaiton
+* If you need help with making LiveStreaming requests using HaishinKit, use a GitHub issue with **Bug report template**
+  - The trace level log is very useful. Please set `Logboard.with(HaishinKitIdentifier).level = .trace`. 
+  - If you don't use an issue template. I will immediately close the your issue without a comment.
+* If you'd like to discuss a feature request, use a GitHub issue with **Feature request template**.
+* If you want to support e-mail based communication without GitHub issue.
+  - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
+* If you **want to contribute**, submit a pull request!
 
 ## Features
 ### RTMP
@@ -245,10 +254,6 @@ view.addSubview(hkView)
 ```
 
 ## FAQ
-### Do you support me via Email?
-Yes. Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I don't recommend. 
-Please consider to use Issues.
-
 ### How can I run example project?
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
