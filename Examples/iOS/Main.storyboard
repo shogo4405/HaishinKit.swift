@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,16 +13,13 @@
         <scene sceneID="hNz-n2-bh7">
             <objects>
                 <viewController storyboardIdentifier="PopUpLive" id="9pv-A4-QxB" userLabel="Recording" customClass="LiveViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="VpM-IT-Yay"/>
-                        <viewControllerLayoutGuide type="bottom" id="gbF-Qq-sLx"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gme-VA-sgd" customClass="MTHKView" customModule="HaishinKit">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                                <viewLayoutGuide key="safeArea" id="h8f-2Q-C5a"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </view>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="32" minValue="15" maxValue="120" translatesAutoresizingMaskIntoConstraints="NO" id="aKS-oc-LrT">
@@ -132,40 +130,41 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="xxe-Wi-b9E"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="YMl-Xb-JZb" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" constant="8" id="0wk-JQ-9EF"/>
-                            <constraint firstItem="oVn-9L-n2U" firstAttribute="top" secondItem="VpM-IT-Yay" secondAttribute="bottom" id="1zP-ro-N7o"/>
+                            <constraint firstItem="YMl-Xb-JZb" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="8" id="0wk-JQ-9EF"/>
+                            <constraint firstItem="oVn-9L-n2U" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="1zP-ro-N7o"/>
                             <constraint firstItem="4s5-OW-qAO" firstAttribute="top" secondItem="Qnn-SP-eWm" secondAttribute="bottom" constant="8" id="3iz-95-ma6"/>
-                            <constraint firstItem="YMl-Xb-JZb" firstAttribute="top" secondItem="VpM-IT-Yay" secondAttribute="bottom" id="EiW-2l-32g"/>
-                            <constraint firstAttribute="trailing" secondItem="kaV-Nf-KmS" secondAttribute="trailing" constant="16" id="FTV-zN-wI9"/>
-                            <constraint firstAttribute="trailing" secondItem="yIo-MW-aK8" secondAttribute="trailing" id="ImR-m5-b1N"/>
-                            <constraint firstAttribute="trailing" secondItem="2Sy-na-foy" secondAttribute="trailing" constant="8" id="LNX-bz-2rq"/>
+                            <constraint firstItem="YMl-Xb-JZb" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="EiW-2l-32g"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="kaV-Nf-KmS" secondAttribute="trailing" constant="16" id="FTV-zN-wI9"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="yIo-MW-aK8" secondAttribute="trailing" id="ImR-m5-b1N"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="2Sy-na-foy" secondAttribute="trailing" constant="8" id="LNX-bz-2rq"/>
                             <constraint firstItem="kaV-Nf-KmS" firstAttribute="leading" secondItem="4s5-OW-qAO" secondAttribute="trailing" constant="16" id="MhN-Ph-tnl"/>
                             <constraint firstItem="ioi-3B-kK8" firstAttribute="top" secondItem="kaV-Nf-KmS" secondAttribute="bottom" constant="8" id="QdP-Nl-5Tx"/>
                             <constraint firstItem="aKS-oc-LrT" firstAttribute="top" secondItem="4s5-OW-qAO" secondAttribute="bottom" constant="8" id="RXP-Pw-jyc"/>
                             <constraint firstItem="oVn-9L-n2U" firstAttribute="leading" secondItem="LTk-1V-jZa" secondAttribute="trailing" constant="16" id="TIx-vj-Qkh"/>
-                            <constraint firstAttribute="trailing" secondItem="ioi-3B-kK8" secondAttribute="trailing" constant="16" id="Tw6-jv-tFG"/>
-                            <constraint firstItem="gbF-Qq-sLx" firstAttribute="top" secondItem="aKS-oc-LrT" secondAttribute="bottom" constant="8" id="VXV-L1-EAE"/>
-                            <constraint firstAttribute="trailing" secondItem="Gme-VA-sgd" secondAttribute="trailing" id="WGA-8W-z7H"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="ioi-3B-kK8" secondAttribute="trailing" constant="16" id="Tw6-jv-tFG"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="bottom" secondItem="aKS-oc-LrT" secondAttribute="bottom" constant="8" id="VXV-L1-EAE"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="Gme-VA-sgd" secondAttribute="trailing" id="WGA-8W-z7H"/>
                             <constraint firstItem="kaV-Nf-KmS" firstAttribute="leading" secondItem="dLf-ee-K3I" secondAttribute="trailing" constant="16" id="XZC-rZ-A2O"/>
-                            <constraint firstItem="4s5-OW-qAO" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" constant="16" id="bBy-aT-OSg"/>
+                            <constraint firstItem="4s5-OW-qAO" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="16" id="bBy-aT-OSg"/>
                             <constraint firstItem="fbC-rC-wNg" firstAttribute="top" secondItem="2Sy-na-foy" secondAttribute="bottom" constant="8" id="bxt-Jk-DKC"/>
-                            <constraint firstItem="Gme-VA-sgd" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" id="c1b-Eg-nyX"/>
+                            <constraint firstItem="Gme-VA-sgd" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" id="c1b-Eg-nyX"/>
                             <constraint firstItem="yIo-MW-aK8" firstAttribute="leading" secondItem="oVn-9L-n2U" secondAttribute="trailing" constant="16" id="chn-8P-gE4"/>
-                            <constraint firstItem="LTk-1V-jZa" firstAttribute="top" secondItem="VpM-IT-Yay" secondAttribute="bottom" id="evp-pO-uXQ"/>
+                            <constraint firstItem="LTk-1V-jZa" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="evp-pO-uXQ"/>
                             <constraint firstItem="Gme-VA-sgd" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="hUp-G6-TEb"/>
                             <constraint firstItem="2Sy-na-foy" firstAttribute="top" secondItem="yIo-MW-aK8" secondAttribute="bottom" constant="8" id="jY5-kd-Sch"/>
                             <constraint firstItem="4s5-OW-qAO" firstAttribute="top" secondItem="dLf-ee-K3I" secondAttribute="bottom" constant="-16" id="js0-NN-jOe"/>
                             <constraint firstItem="aKS-oc-LrT" firstAttribute="top" secondItem="gR3-9k-qhK" secondAttribute="bottom" constant="-16" id="kaM-Nj-Bti"/>
-                            <constraint firstItem="gbF-Qq-sLx" firstAttribute="top" secondItem="ioi-3B-kK8" secondAttribute="bottom" constant="16" id="mhN-Dj-nSh"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="bottom" secondItem="ioi-3B-kK8" secondAttribute="bottom" constant="16" id="mhN-Dj-nSh"/>
                             <constraint firstAttribute="bottom" secondItem="Gme-VA-sgd" secondAttribute="bottom" id="pWV-nr-agp"/>
-                            <constraint firstItem="aKS-oc-LrT" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" constant="16" id="pnK-uc-yzU"/>
-                            <constraint firstItem="yIo-MW-aK8" firstAttribute="top" secondItem="VpM-IT-Yay" secondAttribute="bottom" id="r3c-6X-KrF"/>
-                            <constraint firstItem="Qnn-SP-eWm" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leading" constant="16" id="rQf-n5-l5u"/>
+                            <constraint firstItem="aKS-oc-LrT" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="16" id="pnK-uc-yzU"/>
+                            <constraint firstItem="yIo-MW-aK8" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="r3c-6X-KrF"/>
+                            <constraint firstItem="Qnn-SP-eWm" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="16" id="rQf-n5-l5u"/>
                             <constraint firstItem="kaV-Nf-KmS" firstAttribute="leading" secondItem="gR3-9k-qhK" secondAttribute="trailing" constant="16" id="sh0-J7-Byw"/>
                             <constraint firstItem="ioi-3B-kK8" firstAttribute="leading" secondItem="aKS-oc-LrT" secondAttribute="trailing" constant="16" id="uU4-Tf-Z5g"/>
-                            <constraint firstAttribute="trailing" secondItem="fbC-rC-wNg" secondAttribute="trailing" constant="8" id="uUT-rF-Ge3"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="fbC-rC-wNg" secondAttribute="trailing" constant="8" id="uUT-rF-Ge3"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Recording" image="first" id="acW-dT-cKf" userLabel="Recording"/>
@@ -191,10 +190,6 @@
         <scene sceneID="wg7-f3-ORb">
             <objects>
                 <viewController id="8rJ-Kc-sve" userLabel="Preference" customClass="PreferenceViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="L5L-Iy-R7u"/>
-                        <viewControllerLayoutGuide type="bottom" id="hsA-DN-Lk9"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW" userLabel="Preference">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -216,7 +211,7 @@
                                 </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q77-wA-cY7">
-                                <rect key="frame" x="8" y="775" width="394" height="30"/>
+                                <rect key="frame" x="8" y="783" width="394" height="30"/>
                                 <color key="backgroundColor" red="0.012865800950000001" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Open Window"/>
@@ -225,17 +220,18 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="ezw-xF-e01"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="Q77-wA-cY7" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailingMargin" constant="8" id="1a0-JV-nZh"/>
                             <constraint firstItem="A5Y-FA-epc" firstAttribute="leading" secondItem="Hiy-yh-Bwn" secondAttribute="leading" id="CJJ-BH-Gde"/>
-                            <constraint firstItem="Hiy-yh-Bwn" firstAttribute="top" secondItem="L5L-Iy-R7u" secondAttribute="bottom" constant="8" id="CVs-CB-ZGl"/>
+                            <constraint firstItem="Hiy-yh-Bwn" firstAttribute="top" secondItem="ezw-xF-e01" secondAttribute="top" constant="8" id="CVs-CB-ZGl"/>
                             <constraint firstItem="A5Y-FA-epc" firstAttribute="top" secondItem="Hiy-yh-Bwn" secondAttribute="bottom" constant="8" symbolic="YES" id="Nvl-et-opI"/>
-                            <constraint firstItem="hsA-DN-Lk9" firstAttribute="top" secondItem="Q77-wA-cY7" secondAttribute="bottom" constant="8" symbolic="YES" id="PUC-5i-7iv"/>
-                            <constraint firstItem="Hiy-yh-Bwn" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" constant="8" id="UR1-Hr-4D4"/>
-                            <constraint firstAttribute="trailing" secondItem="A5Y-FA-epc" secondAttribute="trailing" constant="160" id="buc-rb-JnR"/>
+                            <constraint firstItem="ezw-xF-e01" firstAttribute="bottom" secondItem="Q77-wA-cY7" secondAttribute="bottom" constant="8" symbolic="YES" id="PUC-5i-7iv"/>
+                            <constraint firstItem="Hiy-yh-Bwn" firstAttribute="leading" secondItem="ezw-xF-e01" secondAttribute="leading" constant="8" id="UR1-Hr-4D4"/>
+                            <constraint firstItem="ezw-xF-e01" firstAttribute="trailing" secondItem="A5Y-FA-epc" secondAttribute="trailing" constant="160" id="buc-rb-JnR"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailingMargin" constant="8" id="kGk-2F-Qtn"/>
-                            <constraint firstItem="Q77-wA-cY7" firstAttribute="leading" secondItem="QS5-Rx-YEW" secondAttribute="leading" constant="8" id="uKo-hV-Ipd"/>
+                            <constraint firstItem="Q77-wA-cY7" firstAttribute="leading" secondItem="ezw-xF-e01" secondAttribute="leading" constant="8" id="uKo-hV-Ipd"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Preference" image="second" id="cPa-gy-q4n"/>
@@ -272,10 +268,6 @@
         <scene sceneID="2gE-y3-VQT">
             <objects>
                 <viewController id="uu9-Wt-Dxt" customClass="PlaybackContainerViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="O2h-r1-E7F"/>
-                        <viewControllerLayoutGuide type="bottom" id="dXy-vE-8ph"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="7NS-AC-cs3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -287,11 +279,12 @@
                                 </connections>
                             </containerView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="adY-iy-7jW"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Awa-Nz-XRH" firstAttribute="leading" secondItem="7NS-AC-cs3" secondAttribute="leading" id="3qS-OU-Vri"/>
-                            <constraint firstItem="dXy-vE-8ph" firstAttribute="top" secondItem="Awa-Nz-XRH" secondAttribute="bottom" id="6Zm-KN-92x"/>
-                            <constraint firstAttribute="trailing" secondItem="Awa-Nz-XRH" secondAttribute="trailing" id="lWs-68-EwZ"/>
+                            <constraint firstItem="Awa-Nz-XRH" firstAttribute="leading" secondItem="adY-iy-7jW" secondAttribute="leading" id="3qS-OU-Vri"/>
+                            <constraint firstItem="adY-iy-7jW" firstAttribute="bottom" secondItem="Awa-Nz-XRH" secondAttribute="bottom" id="6Zm-KN-92x"/>
+                            <constraint firstItem="adY-iy-7jW" firstAttribute="trailing" secondItem="Awa-Nz-XRH" secondAttribute="trailing" id="lWs-68-EwZ"/>
                             <constraint firstItem="Awa-Nz-XRH" firstAttribute="top" secondItem="7NS-AC-cs3" secondAttribute="top" id="yAY-Zt-w6U"/>
                         </constraints>
                     </view>
@@ -305,10 +298,6 @@
         <scene sceneID="t76-yU-vlu">
             <objects>
                 <viewController storyboardIdentifier="PlaybackViewController" id="S4s-US-fOh" customClass="PlaybackViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="vko-dD-pI7"/>
-                        <viewControllerLayoutGuide type="bottom" id="4an-yi-rp6"/>
-                    </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="mU9-Qc-s55" customClass="MTHKView" customModule="HaishinKit">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -327,9 +316,10 @@
                                 </connections>
                             </button>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="z9R-Rx-Qeu"/>
                         <color key="backgroundColor" systemColor="systemGray2Color"/>
                         <constraints>
-                            <constraint firstAttribute="trailing" secondItem="p4J-1x-O1c" secondAttribute="trailing" constant="16" id="f5f-rE-eQ2"/>
+                            <constraint firstItem="z9R-Rx-Qeu" firstAttribute="trailing" secondItem="p4J-1x-O1c" secondAttribute="trailing" constant="16" id="f5f-rE-eQ2"/>
                             <constraint firstItem="p4J-1x-O1c" firstAttribute="top" secondItem="mU9-Qc-s55" secondAttribute="top" constant="32" id="tXc-VA-Erm"/>
                         </constraints>
                     </view>
