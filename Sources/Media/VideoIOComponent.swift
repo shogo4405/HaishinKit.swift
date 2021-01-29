@@ -470,7 +470,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         #if os(macOS)
-        if (connection.isVideoMirrored) {
+        if connection.isVideoMirrored {
             sampleBuffer.reflectHorizontal()
         }
         #endif

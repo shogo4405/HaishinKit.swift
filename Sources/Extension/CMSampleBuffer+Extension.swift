@@ -101,9 +101,9 @@ extension CMSampleBuffer {
             Unmanaged.passUnretained(value ? kCFBooleanTrue : kCFBooleanFalse).toOpaque()
         )
     }
-    
+
     #if os(macOS)
-    
+
     /* Used code from the example https://developer.apple.com/documentation/accelerate/vimage/reading_from_and_writing_to_core_video_pixel_buffers */
     static var format = vImage_CGImageFormat(
         bitsPerComponent: 8,
@@ -113,17 +113,17 @@ extension CMSampleBuffer {
         version: 0,
         decode: nil,
         renderingIntent: .defaultIntent)
-    
+
     public func reflectHorizontal() {
         if let imageBuffer: CVImageBuffer = self.imageBuffer {
             var sourceBuffer = vImage_Buffer()
-            
+
             let inputCVImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(imageBuffer).takeRetainedValue()
-            
+
             vImageCVImageFormat_SetColorSpace(inputCVImageFormat, CGColorSpaceCreateDeviceRGB())
-            
+
             var error = kvImageNoError
-            
+
             error = vImageBuffer_InitWithCVPixelBuffer(&sourceBuffer,
                                                        &CMSampleBuffer.format,
                                                        imageBuffer,
@@ -158,7 +158,7 @@ extension CMSampleBuffer {
             guard error == kvImageNoError else {
                 return
             }
-            
+
             let outputCVImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(imageBuffer).takeRetainedValue()
             vImageCVImageFormat_SetColorSpace(outputCVImageFormat, CGColorSpaceCreateDeviceRGB())
 
