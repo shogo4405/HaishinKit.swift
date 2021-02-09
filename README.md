@@ -7,6 +7,15 @@
 * Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
 * Issuesの言語は、日本語が分かる方は日本語でお願いします！
 
+<p align="center">
+<strong>Sponsored with 💖 by</strong><br />
+<a href="https://getstream.io/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">
+<img src="https://stream-blog-v2.imgix.net/blog/wp-content/uploads/f7401112f41742c4e173c30d4f318cb8/stream_logo_white.png?w=350" alt="Stream Chat" style="margin: 8px" />
+</a>
+<br />
+Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/ios-chat/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">Try the iOS Chat tutorial</a> 💬
+</p>
+
 ## Communicaiton
 * If you need help with making LiveStreaming requests using HaishinKit, use a GitHub issue with **Bug report template**
   - The trace level log is very useful. Please set `Logboard.with(HaishinKitIdentifier).level = .trace`. 
