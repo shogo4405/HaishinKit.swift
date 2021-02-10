@@ -71,7 +71,7 @@ extension NetService: NetServiceDelegate {
     // MARK: NSNetServiceDelegate
     public func netService(_ sender: Foundation.NetService, didAcceptConnectionWith inputStream: InputStream, outputStream: OutputStream) {
         lockQueue.sync {
-            let client = NetClient(service: sender, inputStream: inputStream, outputStream: outputStream)
+            let client = NetClient(inputStream: inputStream, outputStream: outputStream)
             clients.append(client)
             client.delegate = self
             client.acceptConnection()
@@ -81,6 +81,9 @@ extension NetService: NetServiceDelegate {
 
 extension NetService: NetClientDelegate {
     // MARK: NetClientDelegate
+    func client(client: NetClient, isDisconnected: Bool) {
+        disconnect(client)
+    }
 }
 
 extension NetService: Running {

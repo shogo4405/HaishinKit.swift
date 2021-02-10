@@ -6,18 +6,23 @@ import Foundation
 
     @objc
     optional func client(didAccepetConnection client: NetClient)
+
+    func client(client: NetClient, isDisconnected: Bool)
 }
 
 // MARK: -
+/// The NetClient class creates a two-way connection  between a NetService.
 public final class NetClient: NetSocket {
     weak var delegate: NetClientDelegate?
-    private(set) var service: Foundation.NetService?
 
-    init(service: Foundation.NetService, inputStream: InputStream, outputStream: OutputStream) {
+    init(inputStream: InputStream, outputStream: OutputStream) {
         super.init()
-        self.service = service
         self.inputStream = inputStream
         self.outputStream = outputStream
+    }
+
+    override public func listen() {
+        delegate?.client?(inputBuffer: self)
     }
 
     func acceptConnection() {
@@ -27,7 +32,8 @@ public final class NetClient: NetSocket {
         }
     }
 
-    override public func listen() {
-        delegate?.client?(inputBuffer: self)
+    override func deinitConnection(isDisconnected: Bool) {
+        super.deinitConnection(isDisconnected: isDisconnected)
+        delegate?.client(client: self, isDisconnected: isDisconnected)
     }
 }

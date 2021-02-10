@@ -161,6 +161,7 @@ extension HTTPStatusCode: CustomStringConvertible {
 }
 
 // MARK: -
+/// The HTTPService class provide a lightweight HTTPServer.
 open class HTTPService: NetService {
     open class var type: String {
         "_http._tcp"
@@ -252,4 +253,3 @@ open class HTTPService: NetService {
         client.doOutput(data: response.data)
     }
 }
-
