@@ -268,10 +268,7 @@ view.addSubview(hkView)
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
 
-# If are you using Xcode12
-env XCODE_XCCONFIG_FILE="$(PWD)/xcode12-workaround.xcconfig" carthage bootstrap
-# else
-# carthage bootstrap
+carthage bootstrap --use-xcframeworks
 
 open HaishinKit.xcodeproj
 ```
