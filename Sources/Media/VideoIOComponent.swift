@@ -143,7 +143,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    var torch: Bool = false {
+    var torch = false {
         didSet {
             guard torch != oldValue else {
                 return
@@ -152,7 +152,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    var continuousAutofocus: Bool = false {
+    var continuousAutofocus = false {
         didSet {
             guard continuousAutofocus != oldValue else {
                 return
@@ -211,7 +211,7 @@ final class VideoIOComponent: IOComponent {
         }
     }
 
-    var continuousExposure: Bool = false {
+    var continuousExposure = false {
         didSet {
             guard continuousExposure != oldValue else {
                 return

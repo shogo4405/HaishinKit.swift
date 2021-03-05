@@ -73,7 +73,7 @@ public final class H264Encoder {
     }
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
-    var muted: Bool = false
+    var muted = false
     var scalingMode: ScalingMode = H264Encoder.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
@@ -100,7 +100,7 @@ public final class H264Encoder {
         }
     }
     #if os(macOS)
-    var enabledHardwareEncoder: Bool = true {
+    var enabledHardwareEncoder = true {
         didSet {
             guard enabledHardwareEncoder != oldValue else {
                 return
@@ -160,7 +160,7 @@ public final class H264Encoder {
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: height)
         return attributes
     }
-    private var invalidateSession: Bool = true
+    private var invalidateSession = true
     private var lastImageBuffer: CVImageBuffer?
 
     // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html

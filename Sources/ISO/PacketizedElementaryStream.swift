@@ -25,17 +25,17 @@ struct PESOptionalHeader {
 
     var markerBits: UInt8 = PESOptionalHeader.defaultMarkerBits
     var scramblingControl: UInt8 = 0
-    var priority: Bool = false
-    var dataAlignmentIndicator: Bool = false
-    var copyright: Bool = false
-    var originalOrCopy: Bool = false
+    var priority = false
+    var dataAlignmentIndicator = false
+    var copyright = false
+    var originalOrCopy = false
     var PTSDTSIndicator: UInt8 = PESPTSDTSIndicator.none.rawValue
-    var ESCRFlag: Bool = false
-    var ESRateFlag: Bool = false
-    var DSMTrickModeFlag: Bool = false
-    var additionalCopyInfoFlag: Bool = false
-    var CRCFlag: Bool = false
-    var extentionFlag: Bool = false
+    var ESCRFlag = false
+    var ESRateFlag = false
+    var DSMTrickModeFlag = false
+    var additionalCopyInfoFlag = false
+    var CRCFlag = false
+    var extentionFlag = false
     var PESHeaderLength: UInt8 = 0
     var optionalFields = Data()
     var stuffingBytes = Data()

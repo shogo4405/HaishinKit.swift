@@ -5,7 +5,7 @@ import MetalKit
   A view that displays a video content of a NetStream object which uses Metal api.
  */
 open class MTHKView: MTKView, NetStreamRenderer {
-    open var isMirrored: Bool = false
+    open var isMirrored = false
     /// A value that specifies how the video is displayed within a player layer’s bounds.
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
     /// A value that displays a video format.

@@ -31,7 +31,7 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
         kCVPixelBufferCGBitmapContextCompatibilityKey: true as NSObject
     ]
 
-    public var enabledScale: Bool = false
+    public var enabledScale = false
     public var frameInterval: Int = ScreenCaptureSession.defaultFrameInterval
     public var attributes: [NSString: NSObject] {
         var attributes: [NSString: NSObject] = ScreenCaptureSession.defaultAttributes
@@ -45,7 +45,7 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
 
     private var shared: UIApplication?
     private var viewToCapture: UIView?
-    public var afterScreenUpdates: Bool = false
+    public var afterScreenUpdates = false
     private var context = CIContext(options: [.useSoftwareRenderer: NSNumber(value: false)])
     private let semaphore = DispatchSemaphore(value: 1)
     private let lockQueue = DispatchQueue(

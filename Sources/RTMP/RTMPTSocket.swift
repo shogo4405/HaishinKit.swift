@@ -10,7 +10,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var qualityOfService: DispatchQoS = .default
     var securityLevel: StreamSocketSecurityLevel = .none
     weak var delegate: RTMPSocketDelegate?
-    var connected: Bool = false {
+    var connected = false {
         didSet {
             if connected {
                 handshake.timestamp = Date().timeIntervalSince1970
@@ -59,12 +59,12 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     private var handshake = RTMPHandshake()
     private let outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPTSocket.output")
     private var connectionID: String?
-    private var isRequesting: Bool = false
+    private var isRequesting = false
     private var outputBuffer = Data()
     private var lastResponse = Date()
     private var lastRequestPathComponent: String?
     private var lastRequestData: Data?
-    private var isRetryingRequest: Bool = true
+    private var isRetryingRequest = true
 
     override init() {
         super.init()

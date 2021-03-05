@@ -12,7 +12,7 @@ struct AudioSpecificConfig {
     let type: AudioObjectType
     let frequency: SamplingFrequency
     let channel: ChannelConfiguration
-    let frameLengthFlag: Bool = false
+    let frameLengthFlag = false
 
     var bytes: [UInt8] {
         var bytes: [UInt8] = [UInt8](repeating: 0, count: 2)

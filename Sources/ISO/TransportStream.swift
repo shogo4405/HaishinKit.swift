@@ -8,13 +8,13 @@ struct TSPacket {
     static let defaultSyncByte: UInt8 = 0x47
 
     var syncByte: UInt8 = TSPacket.defaultSyncByte
-    var transportErrorIndicator: Bool = false
-    var payloadUnitStartIndicator: Bool = false
-    var transportPriority: Bool = false
+    var transportErrorIndicator = false
+    var payloadUnitStartIndicator = false
+    var transportPriority = false
     var PID: UInt16 = 0
     var scramblingControl: UInt8 = 0
-    var adaptationFieldFlag: Bool = false
-    var payloadFlag: Bool = false
+    var adaptationFieldFlag = false
+    var payloadFlag = false
     var continuityCounter: UInt8 = 0
     var adaptationField: TSAdaptationField?
     var payload = Data()
@@ -192,14 +192,14 @@ class TSAdaptationField {
     static let fixedSectionSize: Int = 2
 
     var length: UInt8 = 0
-    var discontinuityIndicator: Bool = false
-    var randomAccessIndicator: Bool = false
+    var discontinuityIndicator = false
+    var randomAccessIndicator = false
     var elementaryStreamPriorityIndicator = false
-    var PCRFlag: Bool = false
-    var OPCRFlag: Bool = false
-    var splicingPointFlag: Bool = false
-    var transportPrivateDataFlag: Bool = false
-    var adaptationFieldExtensionFlag: Bool = false
+    var PCRFlag = false
+    var OPCRFlag = false
+    var splicingPointFlag = false
+    var transportPrivateDataFlag = false
+    var adaptationFieldExtensionFlag = false
     var PCR = Data()
     var OPCR = Data()
     var spliceCountdown: UInt8 = 0
@@ -315,9 +315,9 @@ extension TSAdaptationField: CustomDebugStringConvertible {
 // MARK: -
 struct TSAdaptationExtensionField {
     var length: UInt8 = 0
-    var legalTimeWindowFlag: Bool = false
-    var piecewiseRateFlag: Bool = false
-    var seamlessSpiceFlag: Bool = false
+    var legalTimeWindowFlag = false
+    var piecewiseRateFlag = false
+    var seamlessSpiceFlag = false
     var legalTimeWindowOffset: UInt16 = 0
     var piecewiseRate: UInt32 = 0
     var spliceType: UInt8 = 0

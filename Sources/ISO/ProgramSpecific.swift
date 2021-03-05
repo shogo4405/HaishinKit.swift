@@ -38,14 +38,14 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
 
     // MARK: PSITableHeader
     var tableID: UInt8 = 0
-    var sectionSyntaxIndicator: Bool = false
-    var privateBit: Bool = false
+    var sectionSyntaxIndicator = false
+    var privateBit = false
     var sectionLength: UInt16 = 0
 
     // MARK: PSITableSyntax
     var tableIDExtension: UInt16 = ProgramSpecific.defaultTableIDExtension
     var versionNumber: UInt8 = 0
-    var currentNextIndicator: Bool = true
+    var currentNextIndicator = true
     var sectionNumber: UInt8 = 0
     var lastSectionNumber: UInt8 = 0
     var tableData: Data {

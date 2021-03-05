@@ -180,7 +180,7 @@ final class RTMPChunk {
     }
 
     private(set) var message: RTMPMessage?
-    private(set) var fragmented: Bool = false
+    private(set) var fragmented = false
     private var _data = Data()
 
     init(type: RTMPChunkType, streamId: UInt16, message: RTMPMessage) {

@@ -13,7 +13,7 @@ open class GLHKView: GLKView, NetStreamRenderer {
     ]
     public static var defaultBackgroundColor: UIColor = .black
 
-    open var isMirrored: Bool = false
+    open var isMirrored = false
     /// A value that specifies how the video is displayed within a player layer’s bounds.
     open var videoGravity: AVLayerVideoGravity = .resizeAspect
     /// A value that displays a video format.

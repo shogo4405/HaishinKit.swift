@@ -104,7 +104,7 @@ open class NetSocket: NSObject {
     /// The time to wait for TCP/IP Handshake done.
     open var timeout: Int = NetSocket.defaultTimeout
     /// This instance connected to server(true) or not(false).
-    open var connected: Bool = false
+    open var connected = false
     open var windowSizeC: Int = NetSocket.defaultWindowSizeC
     /// The statistics of total incoming bytes.
     open var totalBytesIn: Atomic<Int64> = .init(0)

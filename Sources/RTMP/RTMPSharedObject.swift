@@ -103,7 +103,7 @@ open class RTMPSharedObject: EventDispatcher {
     open private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     open private(set) var data: [String: Any?] = [:]
 
-    private var succeeded: Bool = false {
+    private var succeeded = false {
         didSet {
             guard succeeded else {
                 return

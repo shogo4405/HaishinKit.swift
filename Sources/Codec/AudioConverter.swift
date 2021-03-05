@@ -53,7 +53,7 @@ public class AudioConverter {
     }
     private static let numSamples: Int = 1024
 
-    var muted: Bool = false
+    var muted = false
     var bitrate: UInt32 = AudioConverter.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
