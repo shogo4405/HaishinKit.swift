@@ -1,5 +1,10 @@
+/**
+ Constans that defines the RTMPObject encoding type.
+ */
 public enum RTMPObjectEncoding: UInt8 {
+    /// The AMF0 Encoding.
     case amf0 = 0x00
+    /// The AMF3 Encoding.
     case amf3 = 0x03
 
     var dataType: RTMPMessageType {

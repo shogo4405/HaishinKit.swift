@@ -1,9 +1,18 @@
 import Foundation
 
+/**
+ The singleton ASUndefined object.
+ */
 public let kASUndefined = ASUndefined()
 
+/**
+ The ASObject class represents an object for AcrionScript.
+ */
 public typealias ASObject = [String: Any?]
 
+/**
+ The ASUndefined class represents an undefined for ActionScript.
+ */
 public final class ASUndefined: NSObject {
     override public var description: String {
         "undefined"
@@ -44,6 +53,9 @@ public struct ASTypedObject {
 }
 
 // MARK: -
+/**
+ The ASArray class represents an array value for ActionScript.
+ */
 public struct ASArray {
     private(set) var data: [Any?]
     private(set) var dict: [String: Any?] = [:]
