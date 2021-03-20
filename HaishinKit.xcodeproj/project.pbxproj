@@ -391,6 +391,7 @@
 		BC9CFA9323BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
 		BC9CFA9423BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
 		BC9CFA9523BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
+		BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFB355C24FAB29B00DC5108 /* HKPictureInPicureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355624FA37F700DC5108 /* HKPictureInPicureController.swift */; };
@@ -432,13 +433,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
 			remoteInfo = iOS;
-		};
-		BC11D94725A1B01000D710BA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2915EC511D85BDF100621092;
-			remoteInfo = Screencast;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -716,6 +710,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1325,7 +1320,6 @@
 				29C9327C1CD76FB800283FC5 /* Resources */,
 				29EF037B1CD79B3900473D99 /* Embed Frameworks */,
 				2911F98F1DE2DA04007FD1EC /* CopyFiles */,
-				29E51F291FEFDEA200F839F4 /* ShellScript */,
 				BC11D94925A1B01000D710BA /* Embed App Extensions */,
 			);
 			buildRules = (
@@ -1333,7 +1327,6 @@
 			dependencies = (
 				29C932A91CD78B5500283FC5 /* PBXTargetDependency */,
 				2915EC6E1D85BDF100621092 /* PBXTargetDependency */,
-				BC11D94825A1B01000D710BA /* PBXTargetDependency */,
 			);
 			name = "Example iOS";
 			packageProductDependencies = (
@@ -1561,19 +1554,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		29E51F291FEFDEA200F839F4 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if which swiftlint >/dev/null; then\nswiftlint\nelse\necho \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
-		};
 		29E51F2A1FEFDEB300F839F4 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -2040,11 +2020,6 @@
 			target = 2945CBBC1B4BE66000104112 /* HaishinKit iOS */;
 			targetProxy = 29C932A81CD78B5500283FC5 /* PBXContainerItemProxy */;
 		};
-		BC11D94825A1B01000D710BA /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2915EC511D85BDF100621092 /* Screencast */;
-			targetProxy = BC11D94725A1B01000D710BA /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -2271,7 +2246,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
@@ -2305,7 +2280,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
@@ -2380,7 +2355,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
@@ -2412,7 +2387,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				SDKROOT = macosx;
@@ -2552,7 +2527,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2588,7 +2563,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.3;
+				MARKETING_VERSION = 1.1.4;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
