@@ -108,8 +108,10 @@ open class AVRecorder: NSObject {
         for (_, input) in writerInputs {
             input.markAsFinished()
         }
+        print("before delete writer \(writer.outputURL.absoluteString)")
         writer.finishWriting {
             self.delegate?.didFinishWriting(self)
+            print("deleting writer \(writer.outputURL.absoluteString)")
             self.writer = nil
             self.writerInputs.removeAll()
             self.pixelBufferAdaptor = nil
@@ -268,7 +270,6 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
         input.expectsMediaDataInRealTime = true
         recorder.writerInputs[mediaType] = input
         recorder.writer?.add(input)
-
         return input
     }
 
