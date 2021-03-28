@@ -22,8 +22,8 @@ final class RTMPMuxer {
     }
 }
 
-extension RTMPMuxer: AudioConverterDelegate {
-    // MARK: AudioConverterDelegate
+extension RTMPMuxer: AudioCodecDelegate {
+    // MARK: AudioCodecDelegate
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription = formatDescription else {
             return

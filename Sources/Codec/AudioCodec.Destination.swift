@@ -1,6 +1,6 @@
 import AudioToolbox
 
-extension AudioConverter {
+extension AudioCodec {
     public enum Destination {
         case aac
         case pcm

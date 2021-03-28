@@ -1,6 +1,6 @@
 import AVFoundation
 
-public protocol AudioConverterDelegate: AnyObject {
+public protocol AudioCodecDelegate: AnyObject {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
 }
@@ -10,7 +10,7 @@ public protocol AudioConverterDelegate: AnyObject {
  - seealse:
   - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
-public class AudioConverter {
+public class AudioCodec {
     enum Error: Swift.Error {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
@@ -24,13 +24,13 @@ public class AudioConverter {
         public var keyPath: AnyKeyPath {
             switch self {
             case .muted:
-                return \AudioConverter.muted
+                return \AudioCodec.muted
             case .bitrate:
-                return \AudioConverter.bitrate
+                return \AudioCodec.bitrate
             case .sampleRate:
-                return \AudioConverter.sampleRate
+                return \AudioCodec.sampleRate
             case .actualBitrate:
-                return \AudioConverter.actualBitrate
+                return \AudioCodec.actualBitrate
             }
         }
     }
@@ -44,9 +44,9 @@ public class AudioConverter {
     public static let defaultMaximumBuffers: Int = 1
 
     public var destination: Destination = .aac
-    public weak var delegate: AudioConverterDelegate?
+    public weak var delegate: AudioCodecDelegate?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
-    public var settings: Setting<AudioConverter, Option> = [:] {
+    public var settings: Setting<AudioCodec, Option> = [:] {
         didSet {
             settings.observer = self
         }
@@ -54,7 +54,7 @@ public class AudioConverter {
     private static let numSamples: Int = 1024
 
     var muted = false
-    var bitrate: UInt32 = AudioConverter.defaultBitrate {
+    var bitrate: UInt32 = AudioCodec.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
                 return
@@ -66,13 +66,13 @@ public class AudioConverter {
             }
         }
     }
-    var sampleRate: Double = AudioConverter.defaultSampleRate
-    var actualBitrate: UInt32 = AudioConverter.defaultBitrate {
+    var sampleRate: Double = AudioCodec.defaultSampleRate
+    var actualBitrate: UInt32 = AudioCodec.defaultBitrate {
         didSet {
             logger.info(actualBitrate)
         }
     }
-    var channels: UInt32 = AudioConverter.defaultChannels
+    var channels: UInt32 = AudioCodec.defaultChannels
     var formatDescription: CMFormatDescription? {
         didSet {
             guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
@@ -93,13 +93,13 @@ public class AudioConverter {
             _inDestinationFormat = nil
             logger.info("\(String(describing: inSourceFormat))")
             let nonInterleaved = inSourceFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved != 0
-            maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AudioConverter.defaultMaximumBuffers
-            currentAudioBuffer = AudioBuffer(inSourceFormat, numSamples: AudioConverter.numSamples)
+            maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AudioCodec.defaultMaximumBuffers
+            currentAudioBuffer = AudioBuffer(inSourceFormat, numSamples: AudioCodec.numSamples)
         }
     }
     var effects: Set<AudioEffect> = []
-    private let numSamples = AudioConverter.numSamples
-    private var maximumBuffers: Int = AudioConverter.defaultMaximumBuffers
+    private let numSamples = AudioCodec.numSamples
+    private var maximumBuffers: Int = AudioCodec.defaultMaximumBuffers
     private var currentAudioBuffer = AudioBuffer(AudioStreamBasicDescription(mSampleRate: 0, mFormatID: 0, mFormatFlags: 0, mBytesPerPacket: 0, mFramesPerPacket: 0, mBytesPerFrame: 0, mChannelsPerFrame: 1, mBitsPerChannel: 0, mReserved: 0))
     private var _inDestinationFormat: AudioStreamBasicDescription?
     private var inDestinationFormat: AudioStreamBasicDescription {
@@ -132,7 +132,7 @@ public class AudioConverter {
     private var audioStreamPacketDescriptionPointer: UnsafeMutablePointer<AudioStreamPacketDescription>?
 
     private let inputDataProc: AudioConverterComplexInputDataProc = {(_: AudioConverterRef, ioNumberDataPackets: UnsafeMutablePointer<UInt32>, ioData: UnsafeMutablePointer<AudioBufferList>, outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?, inUserData: UnsafeMutableRawPointer?) in
-        Unmanaged<AudioConverter>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
+        Unmanaged<AudioCodec>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
             ioNumberDataPackets,
             ioData: ioData,
             outDataPacketDescription: outDataPacketDescription
@@ -287,10 +287,10 @@ public class AudioConverter {
             try setProperty(id: kAudioConverterEncodeBitRate, data: bitrate * inDestinationFormat.mChannelsPerFrame)
             actualBitrate = bitrate
         } catch {
-            if AudioConverter.minimumBitrate < bitrate {
-                setBitrateUntilNoErr(bitrate - AudioConverter.minimumBitrate)
+            if Self.minimumBitrate < bitrate {
+                setBitrateUntilNoErr(bitrate - Self.minimumBitrate)
             } else {
-                actualBitrate = AudioConverter.minimumBitrate
+                actualBitrate = Self.minimumBitrate
             }
         }
     }
@@ -308,7 +308,7 @@ public class AudioConverter {
     }
 }
 
-extension AudioConverter: Running {
+extension AudioCodec: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {

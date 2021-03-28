@@ -175,7 +175,7 @@ extension AVMixer {
     public func startEncoding(delegate: Any) {
         videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
         videoIO.encoder.startRunning()
-        audioIO.encoder.delegate = delegate as? AudioConverterDelegate
+        audioIO.encoder.delegate = delegate as? AudioCodecDelegate
         audioIO.encoder.startRunning()
     }
 

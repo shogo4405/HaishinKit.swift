@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-extension AudioConverter {
+extension AudioCodec {
     final class AudioBuffer {
         // swiftlint:disable nesting
         enum Error: Swift.Error {
@@ -121,7 +121,7 @@ extension AudioConverter {
     }
 }
 
-extension AudioConverter.AudioBuffer: CustomDebugStringConvertible {
+extension AudioCodec.AudioBuffer: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
         Mirror(reflecting: self).debugDescription
