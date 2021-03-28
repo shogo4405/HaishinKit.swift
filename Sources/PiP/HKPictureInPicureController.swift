@@ -2,7 +2,7 @@
 import Foundation
 import UIKit
 
-public protocol HKPictureInPicureController: class {
+public protocol HKPictureInPicureController: AnyObject {
     var isPictureInPictureActive: Bool { get }
     var pictureInPictureSize: CGSize { get set }
     var pictureInPicturePosition: HKPictureInPicureControllerPosition { get set }

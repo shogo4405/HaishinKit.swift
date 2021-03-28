@@ -3,7 +3,7 @@ import Foundation
 /**
  flash.events.IEventDispatcher for Swift
  */
-public protocol IEventDispatcher: class {
+public protocol IEventDispatcher: AnyObject {
     func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
     func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
     func dispatch(event: Event)

@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol TimerDriverDelegate: class {
+public protocol TimerDriverDelegate: AnyObject {
     func tick(_ driver: TimerDriver)
 }
 

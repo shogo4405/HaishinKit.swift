@@ -5,12 +5,12 @@ import AVFoundation
     typealias DisplayLink = CADisplayLink
 #endif
 
-protocol DisplayLinkedQueueDelegate: class {
+protocol DisplayLinkedQueueDelegate: AnyObject {
     func queue(_ buffer: CMSampleBuffer)
     func empty()
 }
 
-protocol DisplayLinkedQueueClockReference: class {
+protocol DisplayLinkedQueueClockReference: AnyObject {
     var duration: TimeInterval { get }
 }
 

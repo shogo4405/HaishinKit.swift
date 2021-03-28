@@ -1,6 +1,6 @@
 import Foundation
 
-protocol TSReaderDelegate: class {
+protocol TSReaderDelegate: AnyObject {
     func didReadPacketizedElementaryStream(_ data: ElementaryStreamSpecificData, PES: PacketizedElementaryStream)
 }
 

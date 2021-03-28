@@ -6,7 +6,7 @@ import AVFoundation
     }
 #endif
 
-protocol AVMixerDelegate: class {
+protocol AVMixerDelegate: AnyObject {
     func didOutputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
     func didOutputVideo(_ buffer: CMSampleBuffer)
 }

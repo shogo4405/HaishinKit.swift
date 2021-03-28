@@ -9,7 +9,7 @@ enum RTMPSocketReadyState: UInt8 {
     case closed = 5
 }
 
-protocol RTMPSocketCompatible: class {
+protocol RTMPSocketCompatible: AnyObject {
     var timeout: Int { get set }
     var delegate: RTMPSocketDelegate? { get set }
     var connected: Bool { get }

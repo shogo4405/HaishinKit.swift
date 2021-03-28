@@ -1,6 +1,6 @@
 import AVFoundation
 
-protocol MP4SamplerDelegate: class {
+protocol MP4SamplerDelegate: AnyObject {
     func didOpen(_ reader: MP4Reader)
     func didSet(config: Data, withID: Int, type: AVMediaType)
     func output(data: Data, withID: Int, currentTime: Double, keyframe: Bool)

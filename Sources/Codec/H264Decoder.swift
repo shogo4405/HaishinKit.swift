@@ -7,7 +7,7 @@ import VideoToolbox
 import UIKit
 #endif
 
-protocol VideoDecoderDelegate: class {
+protocol VideoDecoderDelegate: AnyObject {
     func sampleOutput(video sampleBuffer: CMSampleBuffer)
 }
 
