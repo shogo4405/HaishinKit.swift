@@ -6,7 +6,7 @@ import AVFoundation
 
 final class AudioConverterTests: XCTestCase {
     func testEncoderCMSampleBuffer44100_1024() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 1024) {
@@ -16,7 +16,7 @@ final class AudioConverterTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer48000_1024() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(48000.0, numSamples: 1024) {
@@ -26,7 +26,7 @@ final class AudioConverterTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer24000_1024() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(24000.0, numSamples: 1024) {
@@ -36,7 +36,7 @@ final class AudioConverterTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer16000_1024() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(16000.0, numSamples: 1024) {
@@ -46,7 +46,7 @@ final class AudioConverterTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer8000_256() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
@@ -57,7 +57,7 @@ final class AudioConverterTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer8000_960() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
@@ -68,7 +68,7 @@ final class AudioConverterTests: XCTestCase {
     }
 
     func testEncoderCMSampleBuffer8000_1224() {
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
@@ -80,7 +80,7 @@ final class AudioConverterTests: XCTestCase {
 
     func testEncoderCMSampleBuffer8000_numSamples() {
         let numSamples: [Int] = [1024, 1024, 1028, 1024, 1028, 1028, 962, 962, 960, 2237, 2236]
-        let encoder: AudioConverter = AudioConverter()
+        let encoder = AudioCodec()
         encoder.delegate = self
         encoder.startRunning()
         for numSample in numSamples {
@@ -91,8 +91,8 @@ final class AudioConverterTests: XCTestCase {
     }
 }
 
-extension AudioConverterTests: AudioConverterDelegate {
-    // MARK: AudioConverterDelegate
+extension AudioConverterTests: AudioCodecDelegate {
+    // MARK: AudioCodec
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
     }
 

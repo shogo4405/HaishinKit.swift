@@ -208,8 +208,8 @@ public class TSWriter: Running {
     }
 }
 
-extension TSWriter: AudioConverterDelegate {
-    // MARK: AudioConverterDelegate
+extension TSWriter: AudioCodecDelegate {
+    // MARK: AudioCodecDelegate
     public func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription: CMAudioFormatDescription = formatDescription else {
             return

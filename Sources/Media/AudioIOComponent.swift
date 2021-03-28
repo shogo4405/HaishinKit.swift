@@ -5,7 +5,7 @@ import SwiftPMSupport
 #endif
 
 final class AudioIOComponent: IOComponent, DisplayLinkedQueueClockReference {
-    lazy var encoder = AudioConverter()
+    lazy var encoder = AudioCodec()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
@@ -176,7 +176,7 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
     }
 }
 
-extension AudioIOComponent: AudioConverterDelegate {
+extension AudioIOComponent: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
         guard let formatDescription = formatDescription else {
