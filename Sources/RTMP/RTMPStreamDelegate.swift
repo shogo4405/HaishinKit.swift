@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreMedia
 
-public protocol RTMPStreamDelegate: class {
+public protocol RTMPStreamDelegate: AnyObject {
     func rtmpStream(_ stream: RTMPStream, didPublishInsufficientBW connection: RTMPConnection)
     func rtmpStream(_ stream: RTMPStream, didPublishSufficientBW connection: RTMPConnection)
     func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)

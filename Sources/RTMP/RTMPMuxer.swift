@@ -1,6 +1,6 @@
 import AVFoundation
 
-protocol RTMPMuxerDelegate: class {
+protocol RTMPMuxerDelegate: AnyObject {
     func metadata(_ metadata: ASObject)
     func sampleOutput(audio buffer: Data, withTimestamp: Double, muxer: RTMPMuxer)
     func sampleOutput(video buffer: Data, withTimestamp: Double, muxer: RTMPMuxer)

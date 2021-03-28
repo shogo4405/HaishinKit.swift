@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol Running: class {
+public protocol Running: AnyObject {
     var isRunning: Atomic<Bool> { get }
 
     func startRunning()

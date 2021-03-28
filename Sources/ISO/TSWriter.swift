@@ -7,7 +7,7 @@ import SwiftPMSupport
 #endif
 
 /// MPEG-2 TS (Transport Stream) Writer delegate
-public protocol TSWriterDelegate: class {
+public protocol TSWriterDelegate: AnyObject {
     func didOutput(_ data: Data)
 }
 

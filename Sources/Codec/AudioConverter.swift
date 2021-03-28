@@ -1,6 +1,6 @@
 import AVFoundation
 
-public protocol AudioConverterDelegate: class {
+public protocol AudioConverterDelegate: AnyObject {
     func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
     func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
 }

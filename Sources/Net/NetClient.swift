@@ -1,6 +1,6 @@
 import Foundation
 
-@objc protocol NetClientDelegate: class {
+@objc protocol NetClientDelegate: AnyObject {
     @objc
     optional func client(inputBuffer client: NetClient)
 
