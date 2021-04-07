@@ -60,10 +60,17 @@ public final class H264Encoder {
         kCVPixelBufferOpenGLESCompatibilityKey: kCFBooleanTrue
     ]
     #else
-    static let defaultAttributes: [NSString: AnyObject] = [
-        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
-    ]
+        #if arch(arm64)
+        static var defaultAttributes: [NSString: AnyObject] = [
+            kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+            kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
+        ]
+        #else
+        static var defaultAttributes: [NSString: AnyObject] = [
+            kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+            kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
+        ]
+        #endif
     #endif
 
     public var settings: Setting<H264Encoder, Option> = [:] {
@@ -179,7 +186,11 @@ public final class H264Encoder {
         ]
 #if os(OSX)
         if enabledHardwareEncoder {
+            #if arch(arm64)
+            properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.ave.avc" as NSObject
+            #else
             properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.h264.gva" as NSObject
+            #endif
             properties["EnableHardwareAcceleratedVideoEncoder"] = kCFBooleanTrue
             properties["RequireHardwareAcceleratedVideoEncoder"] = kCFBooleanTrue
         }
