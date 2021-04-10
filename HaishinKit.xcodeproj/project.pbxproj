@@ -397,6 +397,12 @@
 		BCB976DF26107B5600C9A649 /* TSAdaptationField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSAdaptationField.swift */; };
 		BCB976E026107B5600C9A649 /* TSAdaptationField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSAdaptationField.swift */; };
 		BCB976E126107B5600C9A649 /* TSAdaptationField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSAdaptationField.swift */; };
+		BCB9772C26217F4F00C9A649 /* NetSocket.CycleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9772B26217F4F00C9A649 /* NetSocket.CycleBuffer.swift */; };
+		BCB9772D26217F4F00C9A649 /* NetSocket.CycleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9772B26217F4F00C9A649 /* NetSocket.CycleBuffer.swift */; };
+		BCB9772E26217F4F00C9A649 /* NetSocket.CycleBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9772B26217F4F00C9A649 /* NetSocket.CycleBuffer.swift */; };
+		BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
+		BCB977402621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
+		BCB977412621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
 		BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
@@ -689,6 +695,8 @@
 		BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamRenderer.swift; sourceTree = "<group>"; };
 		BCB976D026107B1200C9A649 /* TSAdaptationExtensionField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSAdaptationExtensionField.swift; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSAdaptationField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSAdaptationField.swift; sourceTree = "<group>"; };
+		BCB9772B26217F4F00C9A649 /* NetSocket.CycleBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocket.CycleBuffer.swift; sourceTree = "<group>"; };
+		BCB9773E2621812800C9A649 /* AVCFormatStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStream.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355624FA37F700DC5108 /* HKPictureInPicureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKPictureInPicureController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
@@ -965,8 +973,9 @@
 			children = (
 				29B8767D1CD70AE800FC07DA /* AudioSpecificConfig.swift */,
 				29B8767E1CD70AE800FC07DA /* AVCConfigurationRecord.swift */,
-				292D8A321D8B293300DBECE2 /* MP4Sampler.swift */,
+				BCB9773E2621812800C9A649 /* AVCFormatStream.swift */,
 				29798E511CE5DF1900F5CBD0 /* MP4Reader.swift */,
+				292D8A321D8B293300DBECE2 /* MP4Sampler.swift */,
 				29B8767F1CD70AE800FC07DA /* NALUnit.swift */,
 				29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */,
 				29B876811CD70AE800FC07DA /* ProgramSpecific.swift */,
@@ -1068,6 +1077,7 @@
 				29B876971CD70B1100FC07DA /* MIME.swift */,
 				29B876981CD70B1100FC07DA /* NetClient.swift */,
 				29B876991CD70B1100FC07DA /* NetService.swift */,
+				BCB9772B26217F4F00C9A649 /* NetSocket.CycleBuffer.swift */,
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
 				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
 				BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */,
@@ -1617,6 +1627,7 @@
 				295891161EEB8DFC00CE51E1 /* FLVTagType.swift in Sources */,
 				29B876B11CD70B2800FC07DA /* RTMPMessage.swift in Sources */,
 				2941746B22D069B300A2944F /* AudioEffect.swift in Sources */,
+				BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */,
 				295891011EEB7A8B00CE51E1 /* ScalingMode.swift in Sources */,
 				BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				2943ED53232FCA7C00ED6301 /* Setting.swift in Sources */,
@@ -1652,6 +1663,7 @@
 				BC9CFA9323BDE8B700917EEF /* NetStreamRenderer.swift in Sources */,
 				29B8769B1CD70B1100FC07DA /* MIME.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
+				BCB9772C26217F4F00C9A649 /* NetSocket.CycleBuffer.swift in Sources */,
 				29B876871CD70AE800FC07DA /* ProgramSpecific.swift in Sources */,
 				BC4C9EAF23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
@@ -1764,6 +1776,7 @@
 				29B876EC1CD70D5900FC07DA /* AudioCodec.swift in Sources */,
 				29B876ED1CD70D5900FC07DA /* H264Decoder.swift in Sources */,
 				BC8E32E42532F3700087DF49 /* GLHKView.swift in Sources */,
+				BCB977402621812800C9A649 /* AVCFormatStream.swift in Sources */,
 				29B876EE1CD70D5900FC07DA /* H264Encoder.swift in Sources */,
 				29EA87EB1E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift in Sources */,
 				29B876F01CD70D5900FC07DA /* Constants.swift in Sources */,
@@ -1799,6 +1812,7 @@
 				BC9CFA9423BDE8B700917EEF /* NetStreamRenderer.swift in Sources */,
 				BC20DF31250374A7007BC608 /* HKPictureInPicureController.swift in Sources */,
 				296242631D8DBA8C00C451A3 /* TSReader.swift in Sources */,
+				BCB9772D26217F4F00C9A649 /* NetSocket.CycleBuffer.swift in Sources */,
 				29B876FE1CD70D5A00FC07DA /* AVCConfigurationRecord.swift in Sources */,
 				295891171EEB8DFC00CE51E1 /* FLVTagType.swift in Sources */,
 				294852571D852499002DE492 /* RTMPTSocket.swift in Sources */,
@@ -1980,6 +1994,7 @@
 				29EB3E011ED05856001CAE8B /* HTTPStream.swift in Sources */,
 				29EB3E171ED05893001CAE8B /* NetClient.swift in Sources */,
 				BCB976D326107B1200C9A649 /* TSAdaptationExtensionField.swift in Sources */,
+				BCB977412621812800C9A649 /* AVCFormatStream.swift in Sources */,
 				BC4C9EB123F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				2958912C1EEB8F1D00CE51E1 /* FLVSoundSize.swift in Sources */,
 				BC4DAEB32479851D005EFD57 /* FilenameUtil.swift in Sources */,
@@ -1995,6 +2010,7 @@
 				29EB3E361ED05A35001CAE8B /* EventDispatcher.swift in Sources */,
 				29EB3E341ED05A30001CAE8B /* CRC32.swift in Sources */,
 				BC566F7025D2ECC500573C4C /* HLSService.swift in Sources */,
+				BCB9772E26217F4F00C9A649 /* NetSocket.CycleBuffer.swift in Sources */,
 				29FD1B5222FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
 				29EB3E181ED05896001CAE8B /* NetService.swift in Sources */,
 				295891281EEB8EF300CE51E1 /* FLVAACPacket.swift in Sources */,

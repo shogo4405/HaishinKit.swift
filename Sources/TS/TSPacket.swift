@@ -121,7 +121,6 @@ extension TSPacket: CustomDebugStringConvertible {
     }
 }
 
-
 // MARK: -
 struct TSTimestamp {
     static let resolution: Double = 90 * 1000 // 90kHz
@@ -186,4 +185,3 @@ struct TSProgramClockReference {
         return data
     }
 }
-
