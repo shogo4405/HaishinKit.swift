@@ -336,6 +336,7 @@ open class RTMPStream: NetStream {
         rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
     }
 
+    /// Plays a live stream from RTMPServer.
     open func play(_ arguments: Any?...) {
         lockQueue.async {
             guard let name: String = arguments.first as? String else {
@@ -378,6 +379,7 @@ open class RTMPStream: NetStream {
         }
     }
 
+    /// Seeks the keyframe.
     open func seek(_ offset: Double) {
         lockQueue.async {
             guard self.readyState == .playing else {
@@ -394,6 +396,7 @@ open class RTMPStream: NetStream {
         }
     }
 
+    /// Sends streaming audio, vidoe and data message from client.
     open func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
         lockQueue.async {
             guard let name: String = name else {
@@ -451,6 +454,7 @@ open class RTMPStream: NetStream {
         }
     }
 
+    /// Stops playing or publishing and makes available other uses.
     open func close() {
         if readyState == .closed {
             return
@@ -475,6 +479,7 @@ open class RTMPStream: NetStream {
         }
     }
 
+    /// Sends a message on a published stream to all subscribing clients.
     open func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
             if self.readyState == .closed {

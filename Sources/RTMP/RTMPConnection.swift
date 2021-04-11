@@ -1,9 +1,7 @@
 import AVFoundation
 import Foundation
 
-/**
- flash.net.Responder for Swift
- */
+/// flash.net.Responder for Swift
 open class Responder {
     public typealias Handler = (_ data: [Any?]) -> Void
 
@@ -26,9 +24,7 @@ open class Responder {
 }
 
 // MARK: -
-/**
- flash.net.NetConnection for Swift
- */
+/// flash.net.NetConnection for Swift
 open class RTMPConnection: EventDispatcher {
     public static let defaultWindowSizeS: Int64 = 250000
     public static let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
@@ -255,9 +251,7 @@ open class RTMPConnection: EventDispatcher {
         removeEventListener(.rtmpStatus, selector: #selector(on(status:)))
     }
 
-    /**
-     Calls a command or method on RTMP Server.
-     */
+    /// Calls a command or method on RTMP Server.
     open func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
         guard connected else {
             return
@@ -277,9 +271,7 @@ open class RTMPConnection: EventDispatcher {
         socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
     }
 
-    /**
-     Creates a two-way connection to an application on RTMP Server.
-     */
+    /// Creates a two-way connection to an application on RTMP Server.
     open func connect(_ command: String, arguments: Any?...) {
         guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && Self.supportedProtocols.contains(scheme) else {
             return
@@ -304,9 +296,7 @@ open class RTMPConnection: EventDispatcher {
         socket.connect(withName: uri.host!, port: uri.port ?? (secure ? Self.defaultSecurePort : Self.defaultPort))
     }
 
-    /**
-     Closes the connection from the server.
-     */
+    /// Closes the connection from the server.
     open func close() {
         close(isDisconnected: false)
     }
