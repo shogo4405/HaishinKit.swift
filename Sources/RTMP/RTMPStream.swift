@@ -253,7 +253,6 @@ open class RTMPStream: NetStream {
             guard oldValue != readyState else {
                 return
             }
-
             switch oldValue {
             case .playing:
                 mixer.stopDecoding()
@@ -284,9 +283,9 @@ open class RTMPStream: NetStream {
                     message.transactionId = rtmpConnection.currentTransactionId
                     switch message.commandName {
                     case "play":
-                        readyState = .play
+                        setReadyState(.play)
                     case "publish":
-                        readyState = .publish
+                        setReadyState(.publish)
                     default:
                         break
                     }
@@ -533,6 +532,10 @@ open class RTMPStream: NetStream {
         currentFPS = frameCount
         frameCount = 0
         info.on(timer: timer)
+    }
+
+    private func setReadyState(_ readyState: ReadyState) {
+        self.readyState = readyState
     }
 
     @objc
