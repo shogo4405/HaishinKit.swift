@@ -30,7 +30,8 @@ let package = Package(
                     "PiP",
                     "RTMP",
                     "Util",
-                    "Platforms"
+                    "Platforms",
+                    "TS"
                 ])
     ]
 )
