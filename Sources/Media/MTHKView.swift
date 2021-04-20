@@ -20,6 +20,7 @@ open class MTHKView: MTKView, NetStreamRenderer {
 
     var displayImage: CIImage?
     let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
+
     private weak var currentStream: NetStream? {
         didSet {
             oldValue?.mixer.videoIO.renderer = nil
@@ -32,6 +33,10 @@ open class MTHKView: MTKView, NetStreamRenderer {
             }
         }
     }
+    
+    private lazy var commandQueue: MTLCommandQueue? = {
+        return device?.makeCommandQueue()
+    }()
 
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
@@ -70,7 +75,7 @@ extension MTHKView: MTKViewDelegate {
     public func draw(in view: MTKView) {
         guard
             let currentDrawable = currentDrawable,
-            let commandBuffer = device?.makeCommandQueue()?.makeCommandBuffer(),
+            let commandBuffer = commandQueue?.makeCommandBuffer(),
             let context = currentStream?.mixer.videoIO.context else {
             return
         }

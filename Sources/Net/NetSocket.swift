@@ -54,7 +54,7 @@ open class NetSocket: NSObject {
         self?.didTimeout()
     }
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
-    private lazy var outputBuffer: CycleBuffer = .init(capacity: windowSizeC)
+    private lazy var outputBuffer: CircularBuffer = .init(capacity: windowSizeC)
     private lazy var outputQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     deinit {
