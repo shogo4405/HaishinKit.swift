@@ -50,9 +50,7 @@ open class NetSocket: NSObject {
         }
     }
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
-    private lazy var timeoutHandler = DispatchWorkItem { [weak self] in
-        self?.didTimeout()
-    }
+    private var timeoutHandler: DispatchWorkItem?
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
     private lazy var outputBuffer: CycleBuffer = .init(capacity: windowSizeC)
     private lazy var outputQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
@@ -115,7 +113,11 @@ open class NetSocket: NSObject {
         inputStream.open()
         outputStream.open()
         if 0 < timeout {
-            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
+            let newTimeoutHandler = DispatchWorkItem { [weak self] in
+                self?.didTimeout()
+            }
+            timeoutHandler = newTimeoutHandler
+            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + .seconds(timeout), execute: newTimeoutHandler)
         }
     }
 
@@ -123,7 +125,7 @@ open class NetSocket: NSObject {
         guard inputStream != nil && outputStream != nil else {
             return
         }
-        timeoutHandler.cancel()
+        timeoutHandler?.cancel()
         inputStream?.close()
         inputStream = nil
         outputStream?.close()
@@ -168,7 +170,7 @@ extension NetSocket: StreamDelegate {
                 break
             }
             if aStream == inputStream {
-                timeoutHandler.cancel()
+                timeoutHandler?.cancel()
                 connected = true
             }
         //  2 = 1 << 1
