@@ -20,6 +20,11 @@ open class MTHKView: MTKView, NetStreamRenderer {
 
     var displayImage: CIImage?
     let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
+
+    private lazy var commandQueue: MTLCommandQueue? = {
+        return device?.makeCommandQueue()
+    }()
+
     private weak var currentStream: NetStream? {
         didSet {
             oldValue?.mixer.videoIO.renderer = nil
@@ -70,7 +75,7 @@ extension MTHKView: MTKViewDelegate {
     public func draw(in view: MTKView) {
         guard
             let currentDrawable = currentDrawable,
-            let commandBuffer = device?.makeCommandQueue()?.makeCommandBuffer(),
+            let commandBuffer = commandQueue?.makeCommandBuffer(),
             let context = currentStream?.mixer.videoIO.context else {
             return
         }
