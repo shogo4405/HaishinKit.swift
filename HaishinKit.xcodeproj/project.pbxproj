@@ -403,6 +403,7 @@
 		BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
 		BCB977402621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
 		BCB977412621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
+		BCC9E9092636FF7400948774 /* NetSocketCycleBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */; };
 		BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
@@ -697,6 +698,7 @@
 		BCB976D026107B1200C9A649 /* TSAdaptationExtensionField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSAdaptationExtensionField.swift; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSAdaptationField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSAdaptationField.swift; sourceTree = "<group>"; };
 		BCB9773E2621812800C9A649 /* AVCFormatStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStream.swift; sourceTree = "<group>"; };
+		BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocketCycleBufferTests.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355624FA37F700DC5108 /* HKPictureInPicureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKPictureInPicureController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
@@ -1065,6 +1067,7 @@
 				291C2AD21CE9FF48006F042B /* Core */,
 				291C2AD31CE9FF68006F042B /* HTTP */,
 				291C2ACF1CE9FF2B006F042B /* ISO */,
+				BCC9E9072636FF5300948774 /* Net */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
 				291C2AD01CE9FF33006F042B /* Util */,
 			);
@@ -1218,6 +1221,14 @@
 				BC20DF2B2503747E007BC608 /* HKPictureInPicureControllerPosition.swift */,
 			);
 			path = PiP;
+			sourceTree = "<group>";
+		};
+		BCC9E9072636FF5300948774 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */,
+			);
+			path = Net;
 			sourceTree = "<group>";
 		};
 		BCD1DCF62610751900A1C593 /* TS */ = {
@@ -1765,6 +1776,7 @@
 				290EA8AA1DFB61E700053022 /* CRC32Tests.swift in Sources */,
 				035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */,
 				290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */,
+				BCC9E9092636FF7400948774 /* NetSocketCycleBufferTests.swift in Sources */,
 				2940EF4F2380116500430456 /* CircularBufferTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -18,7 +18,7 @@ extension NetSocket {
             return value < 0 ? value + capacity : value
         }
         private var data: Data
-        private var capacity: Int = 0 {
+        private(set) var capacity: Int = 0 {
             didSet {
                 logger.info("extends a buffer size from ", oldValue, " to ", capacity)
             }
@@ -27,15 +27,18 @@ extension NetSocket {
         private var tail: Int = 0
         private var locked: UnsafeMutablePointer<UInt32>?
         private var lockedTail: Int = -1
+        private let baseCapacity: Int
 
         init(capacity: Int) {
             self.capacity = capacity
+            baseCapacity = capacity
             data = .init(repeating: 0, count: capacity)
         }
 
+        @discardableResult
         mutating func append(_ data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Bool {
             guard data.count + count < capacity else {
-                return extend(data)
+                return resize(data)
             }
             let count = data.count
             if self.locked == nil {
@@ -63,7 +66,7 @@ extension NetSocket {
             }
         }
 
-        mutating func markAsRead(_ count: Int) {
+        mutating func skip(_ count: Int) {
             let length = min(count, capacity - head)
             if length < count {
                 head = count - length
@@ -86,14 +89,14 @@ extension NetSocket {
             lockedTail = 0
         }
 
-        private mutating func extend(_ data: Data) -> Bool {
+        private mutating func resize(_ data: Data) -> Bool {
             if 0 < head {
                 let subdata = self.data.subdata(in: 0..<tail)
                 self.data.replaceSubrange(0..<capacity - head, with: self.data.advanced(by: head))
                 self.data.replaceSubrange(capacity - head..<capacity - head + subdata.count, with: subdata)
                 tail = capacity - head + subdata.count
             }
-            self.data.append(.init(count: capacity))
+            self.data.append(.init(count: baseCapacity))
             head = 0
             capacity = self.data.count
             return append(data)

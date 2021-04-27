@@ -154,7 +154,7 @@ open class NetSocket: NSObject {
         if 0 < length {
             totalBytesOut.mutate { $0 += Int64(length) }
             queueBytesOut.mutate { $0 -= Int64(length) }
-            outputBuffer.markAsRead(length)
+            outputBuffer.skip(length)
         }
     }
 }
