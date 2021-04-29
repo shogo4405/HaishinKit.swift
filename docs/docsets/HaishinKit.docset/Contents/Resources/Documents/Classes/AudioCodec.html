@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>SamplingFrequency Enumeration Reference</title>
+    <title>AudioCodec Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/SamplingFrequency" class="dashAnchor"></a>
-    <a title="SamplingFrequency Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Class/AudioCodec" class="dashAnchor"></a>
+    <a title="AudioCodec Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.1.4 Docs</a> (19% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.1.5 Docs</a> (20% documented)</p>
         <p class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" />
-        SamplingFrequency Enumeration Reference
+        AudioCodec Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -60,13 +60,13 @@
                 <a href="../Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioConverter.html">AudioConverter</a>
+                <a href="../Classes/AudioCodec.html">AudioCodec</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioConverter/Option.html">– Option</a>
+                <a href="../Classes/AudioCodec/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioConverter/Destination.html">– Destination</a>
+                <a href="../Classes/AudioCodec/Destination.html">– Destination</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AudioEffect.html">AudioEffect</a>
@@ -226,9 +226,6 @@
                 <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/SamplingFrequency.html">SamplingFrequency</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Enums/ScalingMode.html">ScalingMode</a>
               </li>
             </ul>
@@ -254,7 +251,7 @@
                 <a href="../Protocols/AVRecorderDelegate.html">AVRecorderDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/AudioConverterDelegate.html">AudioConverterDelegate</a>
+                <a href="../Protocols/AudioCodecDelegate.html">AudioCodecDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/CustomCaptureSession.html">CustomCaptureSession</a>
@@ -345,15 +342,23 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>SamplingFrequency</h1>
+            <h1>AudioCodec</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SamplingFrequency</span> <span class="p">:</span> <span class="kt">UInt8</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">AudioCodec</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AudioCodec</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Running.html">Running</a></span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            
+<ul>
+<li>seealse:
+
+<ul>
+<li><a href="https://developer.apple.com/library/ios/technotes/tn2236/_index.html">https://developer.apple.com/library/ios/technotes/tn2236/_index.html</a></li>
+</ul></li>
+</ul>
 
           </section>
           <section class="section task-group-section">
@@ -362,9 +367,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz96000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz96000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz96000yA2CmF">hz96000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC6OptionO"></a>
+                    <a name="//apple_ref/swift/Enum/Option" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC6OptionO">Option</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -374,12 +379,13 @@
                       <div class="abstract">
                         <p>Undocumented</p>
 
+                        <a href="../Classes/AudioCodec/Option.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz96000</span> <span class="o">=</span> <span class="mi">0</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Option</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt"><a href="../Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -389,9 +395,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz88200yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz88200" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz88200yA2CmF">hz88200</a>
+                    <a name="/s:10HaishinKit10AudioCodecC14minimumBitrates6UInt32VvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/minimumBitrate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC14minimumBitrates6UInt32VvpZ">minimumBitrate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -406,7 +412,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz88200</span> <span class="o">=</span> <span class="mi">1</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">minimumBitrate</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
 
                         </div>
                       </div>
@@ -416,9 +422,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz64000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz64000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz64000yA2CmF">hz64000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC14defaultBitrates6UInt32VvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultBitrate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC14defaultBitrates6UInt32VvpZ">defaultBitrate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -433,7 +439,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz64000</span> <span class="o">=</span> <span class="mi">2</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultBitrate</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
 
                         </div>
                       </div>
@@ -443,9 +449,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz48000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz48000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz48000yA2CmF">hz48000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC15defaultChannelss6UInt32VvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultChannels" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC15defaultChannelss6UInt32VvpZ">defaultChannels</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -453,14 +459,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>0 means according to a input source</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz48000</span> <span class="o">=</span> <span class="mi">3</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultChannels</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
 
                         </div>
                       </div>
@@ -470,9 +476,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz44100yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz44100" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz44100yA2CmF">hz44100</a>
+                    <a name="/s:10HaishinKit10AudioCodecC17defaultSampleRateSdvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultSampleRate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC17defaultSampleRateSdvpZ">defaultSampleRate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -480,14 +486,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>0 means according to a input source</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz44100</span> <span class="o">=</span> <span class="mi">4</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultSampleRate</span><span class="p">:</span> <span class="kt">Double</span></code></pre>
 
                         </div>
                       </div>
@@ -497,9 +503,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz32000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz32000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz32000yA2CmF">hz32000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC21defaultMaximumBuffersSivpZ"></a>
+                    <a name="//apple_ref/swift/Variable/defaultMaximumBuffers" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC21defaultMaximumBuffersSivpZ">defaultMaximumBuffers</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -514,7 +520,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz32000</span> <span class="o">=</span> <span class="mi">5</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultMaximumBuffers</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
@@ -524,9 +530,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz24000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz24000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz24000yA2CmF">hz24000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC11destinationAC11DestinationOvp"></a>
+                    <a name="//apple_ref/swift/Property/destination" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11destinationAC11DestinationOvp">destination</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -541,7 +547,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz24000</span> <span class="o">=</span> <span class="mi">6</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt"><a href="../Classes/AudioCodec/Destination.html">Destination</a></span></code></pre>
 
                         </div>
                       </div>
@@ -551,9 +557,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz22050yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz22050" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz22050yA2CmF">hz22050</a>
+                    <a name="/s:10HaishinKit10AudioCodecC8delegateAA0cD8Delegate_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC8delegateAA0cD8Delegate_pSgvp">delegate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -568,7 +574,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz22050</span> <span class="o">=</span> <span class="mi">7</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt"><a href="../Protocols/AudioCodecDelegate.html">AudioCodecDelegate</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -578,9 +584,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz16000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz16000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz16000yA2CmF">hz16000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC9isRunningAA6AtomicVySbGvp"></a>
+                    <a name="//apple_ref/swift/Property/isRunning" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC9isRunningAA6AtomicVySbGvp">isRunning</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -595,7 +601,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz16000</span> <span class="o">=</span> <span class="mi">8</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isRunning</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Bool</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -605,9 +611,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz12000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz12000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz12000yA2CmF">hz12000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC8settingsAA7SettingCyA2C6OptionOGvp"></a>
+                    <a name="//apple_ref/swift/Property/settings" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC8settingsAA7SettingCyA2C6OptionOGvp">settings</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -622,7 +628,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz12000</span> <span class="o">=</span> <span class="mi">9</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">settings</span><span class="p">:</span> <span class="kt"><a href="../Classes/Setting.html">Setting</a></span><span class="o">&lt;</span><span class="kt">AudioCodec</span><span class="p">,</span> <span class="kt"><a href="../Classes/AudioCodec/Option.html">Option</a></span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -632,9 +638,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO7hz11025yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz11025" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO7hz11025yA2CmF">hz11025</a>
+                    <a name="/s:10HaishinKit10AudioCodecCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecCACycfc">init()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -649,7 +655,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz11025</span> <span class="o">=</span> <span class="mi">10</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -659,9 +665,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO6hz8000yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz8000" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO6hz8000yA2CmF">hz8000</a>
+                    <a name="/s:10HaishinKit10AudioCodecC11encodeBytes_5count21presentationTimeStampySvSg_SiSo6CMTimeatF"></a>
+                    <a name="//apple_ref/swift/Method/encodeBytes(_:count:presentationTimeStamp:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11encodeBytes_5count21presentationTimeStampySvSg_SiSo6CMTimeatF">encodeBytes(_:<wbr>count:<wbr>presentationTimeStamp:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -676,7 +682,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz8000</span> <span class="o">=</span> <span class="mi">11</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encodeBytes</span><span class="p">(</span><span class="n">_</span> <span class="nv">bytes</span><span class="p">:</span> <span class="kt">UnsafeMutableRawPointer</span><span class="p">?,</span> <span class="nv">count</span><span class="p">:</span> <span class="kt">Int</span><span class="p">,</span> <span class="nv">presentationTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -686,9 +692,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO6hz7350yA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/hz7350" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO6hz7350yA2CmF">hz7350</a>
+                    <a name="/s:10HaishinKit10AudioCodecC18encodeSampleBuffer_6offsetySo08CMSampleG3Refa_SitF"></a>
+                    <a name="//apple_ref/swift/Method/encodeSampleBuffer(_:offset:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC18encodeSampleBuffer_6offsetySo08CMSampleG3Refa_SitF">encodeSampleBuffer(_:<wbr>offset:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -703,7 +709,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">hz7350</span> <span class="o">=</span> <span class="mi">12</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">encodeSampleBuffer</span><span class="p">(</span><span class="n">_</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">,</span> <span class="nv">offset</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -713,9 +719,50 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO10sampleRateSdvp"></a>
-                    <a name="//apple_ref/swift/Property/sampleRate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO10sampleRateSdvp">sampleRate</a>
+                    <a name="/s:10HaishinKit10AudioCodecC11DestinationO"></a>
+                    <a name="//apple_ref/swift/Enum/Destination" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11DestinationO">Destination</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Undocumented</p>
+
+                        <a href="../Classes/AudioCodec/Destination.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Destination</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Running"></a>
+                <a name="//apple_ref/swift/Section/Running" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Running"></a>
+                  <h3 class="section-name"><p>Running</p>
+</h3>
+                </div>
+              </div>
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit10AudioCodecC12startRunningyyF"></a>
+                    <a name="//apple_ref/swift/Method/startRunning()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC12startRunningyyF">startRunning()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -730,7 +777,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startRunning</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -740,9 +787,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17SamplingFrequencyO10sampleRateACSd_tcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(sampleRate:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17SamplingFrequencyO10sampleRateACSd_tcfc">init(sampleRate:<wbr>)</a>
+                    <a name="/s:10HaishinKit10AudioCodecC11stopRunningyyF"></a>
+                    <a name="//apple_ref/swift/Method/stopRunning()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11stopRunningyyF">stopRunning()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -757,7 +804,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopRunning</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -769,7 +816,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2021-03-20)</p>
+          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2021-04-29)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
