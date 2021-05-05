@@ -26,6 +26,7 @@ let package = Package(
                     "HTTP",
                     "ISO",
                     "Media",
+                    "MP4",
                     "Net",
                     "PiP",
                     "RTMP",

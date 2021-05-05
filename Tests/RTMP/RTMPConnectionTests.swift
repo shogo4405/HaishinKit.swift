@@ -10,7 +10,7 @@ final class RTMPConnectionTests: XCTestCase {
         let connection: RTMPConnection = RTMPConnection()
         let stream: RTMPStream = RTMPStream(connection: connection)
         connection.connect("rtmp://localhost:1935/live")
-        stream.appendFile(url)
+        // stream.appendFile(url)
         stream.publish("live")
         sleep(10000)
     }
