@@ -1,7 +1,7 @@
 import Foundation
 
 protocol TSReaderDelegate: AnyObject {
-    func didReadPacketizedElementaryStream(_ data: ElementaryStreamSpecificData, PES: PacketizedElementaryStream)
+    func reader(_ reader: TSReader, didReadPacketizedElementaryStream data: ElementaryStreamSpecificData, PES: PacketizedElementaryStream)
 }
 
 // MARK: -
@@ -61,7 +61,7 @@ class TSReader {
     func readPacketizedElementaryStream(_ data: ElementaryStreamSpecificData, packet: TSPacket) {
         if packet.payloadUnitStartIndicator {
             if let PES: PacketizedElementaryStream = packetizedElementaryStreams[packet.PID] {
-                delegate?.didReadPacketizedElementaryStream(data, PES: PES)
+                delegate?.reader(self, didReadPacketizedElementaryStream: data, PES: PES)
             }
             packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(packet.payload)
             return

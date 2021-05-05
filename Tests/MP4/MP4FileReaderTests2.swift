@@ -3,7 +3,7 @@ import XCTest
 
 @testable import HaishinKit
 
-final class MP4FileHandleTests2: XCTestCase {
+final class MP4FileReaderTests2: XCTestCase {
     func testMP4FileTypeBox() {
         let file = makeFMP4File()
         let styp = file.getBoxes(by: .styp).first

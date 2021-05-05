@@ -1,8 +1,8 @@
 import AVFoundation
 
 public protocol AudioCodecDelegate: AnyObject {
-    func didSetFormatDescription(audio formatDescription: CMFormatDescription?)
-    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
+    func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?)
+    func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
 }
 
 // MARK: -
@@ -79,7 +79,7 @@ public class AudioCodec {
                 return
             }
             logger.info(formatDescription.debugDescription)
-            delegate?.didSetFormatDescription(audio: formatDescription)
+            delegate?.audioCodec(self, didSet: formatDescription)
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioConverter.lock")
@@ -225,16 +225,10 @@ public class AudioCodec {
             switch status {
             // kAudioConverterErr_InvalidInputSize: perhaps mistake. but can support macOS BuiltIn Mic #61
             case noErr, kAudioConverterErr_InvalidInputSize:
-                delegate?.sampleOutput(
-                    audio: outOutputData,
-                    presentationTimeStamp: presentationTimeStamp
-                )
+                delegate?.audioCodec(self, didOutput: outOutputData, presentationTimeStamp: presentationTimeStamp)
             case -1:
                 if destination == .pcm {
-                    delegate?.sampleOutput(
-                        audio: outOutputData,
-                        presentationTimeStamp: presentationTimeStamp
-                    )
+                    delegate?.audioCodec(self, didOutput: outOutputData, presentationTimeStamp: presentationTimeStamp)
                 }
                 finished = true
             default:

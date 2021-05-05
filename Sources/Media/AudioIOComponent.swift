@@ -178,7 +178,7 @@ extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
 
 extension AudioIOComponent: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
-    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
         guard let formatDescription = formatDescription else {
             mixer?.videoIO.queue.clockReference = nil
             return
@@ -198,13 +198,13 @@ extension AudioIOComponent: AudioCodecDelegate {
         mixer?.videoIO.queue.clockReference = self
     }
 
-    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !data.isEmpty, data[0].mDataByteSize != 0 else {
+    func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
+        guard !sample.isEmpty, sample[0].mDataByteSize != 0 else {
             return
         }
         guard
             let audioFormat = audioFormat,
-            let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: data[0].mDataByteSize / 4) else {
+            let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: sample[0].mDataByteSize / 4) else {
             return
         }
 
@@ -215,13 +215,14 @@ extension AudioIOComponent: AudioCodecDelegate {
         buffer.frameLength = buffer.frameCapacity
         let bufferList = UnsafeMutableAudioBufferListPointer(buffer.mutableAudioBufferList)
         for i in 0..<bufferList.count {
-            guard let mData = data[i].mData else { continue }
-            memcpy(bufferList[i].mData, mData, Int(data[i].mDataByteSize))
-            bufferList[i].mDataByteSize = data[i].mDataByteSize
+            guard let mData = sample[i].mData else { continue }
+            memcpy(bufferList[i].mData, mData, Int(sample[i].mDataByteSize))
+            bufferList[i].mDataByteSize = sample[i].mDataByteSize
             bufferList[i].mNumberChannels = 1
         }
-
-        mixer?.delegate?.didOutputAudio(buffer, presentationTimeStamp: presentationTimeStamp)
+        if let mixer = mixer {
+            mixer.delegate?.mixer(mixer, didOutput: buffer, presentationTimeStamp: presentationTimeStamp)
+        }
         currentBuffers.mutate { $0 += 1 }
 
         nstry({

@@ -7,8 +7,8 @@ import AVFoundation
 #endif
 
 protocol AVMixerDelegate: AnyObject {
-    func didOutputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
-    func didOutputVideo(_ buffer: CMSampleBuffer)
+    func mixer(_ mixer: AVMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    func mixer(_ mixer: AVMixer, didOutput video: CMSampleBuffer)
 }
 
 public class AVMixer {

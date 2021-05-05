@@ -8,7 +8,7 @@ import SwiftPMSupport
 
 /// MPEG-2 TS (Transport Stream) Writer delegate
 public protocol TSWriterDelegate: AnyObject {
-    func didOutput(_ data: Data)
+    func writer(_ writer: TSWriter, didOutput data: Data)
 }
 
 /// MPEG-2 TS (Transport Stream) Writer Foundation class
@@ -168,7 +168,7 @@ public class TSWriter: Running {
     }
 
     func write(_ data: Data) {
-        delegate?.didOutput(data)
+        delegate?.writer(self, didOutput: data)
     }
 
     final func writeProgram() {
@@ -210,7 +210,7 @@ public class TSWriter: Running {
 
 extension TSWriter: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
-    public func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
+    public func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
         guard let formatDescription: CMAudioFormatDescription = formatDescription else {
             return
         }
@@ -222,15 +222,15 @@ extension TSWriter: AudioCodecDelegate {
         audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
     }
 
-    public func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !data.isEmpty && 0 < data[0].mDataByteSize else {
+    public func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
+        guard !sample.isEmpty && 0 < sample[0].mDataByteSize else {
             return
         }
         writeSampleBuffer(
             TSWriter.defaultAudioPID,
             streamID: 192,
-            bytes: data[0].mData?.assumingMemoryBound(to: UInt8.self),
-            count: data[0].mDataByteSize,
+            bytes: sample[0].mData?.assumingMemoryBound(to: UInt8.self),
+            count: sample[0].mDataByteSize,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: .invalid,
             randomAccessIndicator: true

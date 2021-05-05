@@ -4,7 +4,7 @@ import AVFoundation
 
 @testable import HaishinKit
 
-final class AudioConverterTests: XCTestCase {
+final class AudioCodecTests: XCTestCase {
     func testEncoderCMSampleBuffer44100_1024() {
         let encoder = AudioCodec()
         encoder.startRunning()
@@ -47,7 +47,6 @@ final class AudioConverterTests: XCTestCase {
 
     func testEncoderCMSampleBuffer8000_256() {
         let encoder = AudioCodec()
-        encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(8000.0, numSamples: 256) {
@@ -58,7 +57,6 @@ final class AudioConverterTests: XCTestCase {
 
     func testEncoderCMSampleBuffer8000_960() {
         let encoder = AudioCodec()
-        encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(8000.0, numSamples: 960) {
@@ -69,7 +67,6 @@ final class AudioConverterTests: XCTestCase {
 
     func testEncoderCMSampleBuffer8000_1224() {
         let encoder = AudioCodec()
-        encoder.delegate = self
         encoder.startRunning()
         for _ in 0..<10 {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(44100.0, numSamples: 1224) {
@@ -81,7 +78,6 @@ final class AudioConverterTests: XCTestCase {
     func testEncoderCMSampleBuffer8000_numSamples() {
         let numSamples: [Int] = [1024, 1024, 1028, 1024, 1028, 1028, 962, 962, 960, 2237, 2236]
         let encoder = AudioCodec()
-        encoder.delegate = self
         encoder.startRunning()
         for numSample in numSamples {
             if let sampleBuffer: CMSampleBuffer = SinWaveUtil.createCMSampleBuffer(44100.0, numSamples: numSample) {
@@ -91,11 +87,3 @@ final class AudioConverterTests: XCTestCase {
     }
 }
 
-extension AudioConverterTests: AudioCodecDelegate {
-    // MARK: AudioCodec
-    func sampleOutput(audio data: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-    }
-
-    func didSetFormatDescription(audio formatDescription: CMFormatDescription?) {
-    }
-}
