@@ -1,9 +1,11 @@
 import Foundation
 
-struct MP4MediaHeaderBox: MP4FullBox {
+struct MP4MovieHeaderBox: MP4FullBox {
+    static let rate: Int32 = 0x00010000
+    static let volume: Int16 = 0x0100
     // MARK: MP4FullBox
     var size: UInt32 = 0
-    let type: String = "mdhd"
+    let type: String = "mvhd"
     var offset: UInt64 = 0
     var children: [MP4BoxConvertible] = []
     var version: UInt8 = 0
@@ -13,10 +15,13 @@ struct MP4MediaHeaderBox: MP4FullBox {
     var modificationTime: UInt64 = 0
     var timeScale: UInt32 = 0
     var duration: UInt64 = 0
-    var language: [UInt8] = [0, 0, 0]
+    var rate: Int32 = Self.rate
+    var volume: Int16 = Self.volume
+    var matrix: [Int32] = []
+    var nextTrackID: UInt32 = 0
 }
 
-extension MP4MediaHeaderBox: DataConvertible {
+extension MP4MovieHeaderBox: DataConvertible {
     var data: Data {
         get {
             let buffer = ByteArray()
@@ -38,12 +43,25 @@ extension MP4MediaHeaderBox: DataConvertible {
                     .writeUInt64(duration)
             }
             buffer
-                .writeUInt16(
-                    UInt16(language[0]) << 10 |
-                    UInt16(language[1]) << 5 |
-                    UInt16(language[2])
-                )
-                .writeUInt16(0) // pre_defined = 0
+                .writeInt32(rate)
+                .writeInt16(volume)
+                .writeInt16(0)
+                .writeUInt32(0)
+                .writeUInt32(0)
+            for m in matrix {
+                buffer.writeInt32(m)
+            }
+            buffer
+                .writeInt32(0)
+                .writeInt32(0)
+                .writeInt32(0)
+                .writeInt32(0)
+                .writeInt32(0)
+                .writeInt32(0)
+                .writeUInt32(nextTrackID)
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
             return buffer.data
         }
         set {
@@ -64,12 +82,16 @@ extension MP4MediaHeaderBox: DataConvertible {
                     timeScale = try buffer.readUInt32()
                     duration = try buffer.readUInt64()
                 }
-                let lang = try buffer.readUInt16()
-                language = [
-                    UInt8((lang & 0x7C00) >> 10),
-                    UInt8((lang & 0x3E0) >> 5),
-                    UInt8(lang & 0x1F)
-                ]
+                rate = try buffer.readInt32()
+                volume = try buffer.readInt16()
+                buffer.position += 2 // const bit(16) reserved
+                buffer.position += 8 // const unsigned int(32)[2] reserved
+                matrix.removeAll()
+                for _ in 0..<9 {
+                    matrix.append(try buffer.readInt32())
+                }
+                buffer.position += 24 // bit(32)[6] pre_defined = 0
+                nextTrackID = try buffer.readUInt32()
             } catch {
                 logger.error(error)
             }
@@ -78,5 +100,5 @@ extension MP4MediaHeaderBox: DataConvertible {
 }
 
 extension MP4Box.Names {
-    static let mdhd = MP4Box.Name<MP4MediaHeaderBox>(rawValue: "mdhd")
+    static let mvhd = MP4Box.Name<MP4MovieHeaderBox>(rawValue: "mvhd")
 }

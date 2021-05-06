@@ -21,11 +21,11 @@ struct MP4TrackFragmentHeaderBox: MP4FullBox {
     var flags: UInt32 = 0
     // MARK: MP4TrackFragmentHeaderBox
     var trackId: UInt32 = 0
-    var baseDataOffset: UInt64 = 0
-    var sampleDescriptionIndex: UInt32 = 0
-    var defaultSampleDuration: UInt32 = 0
-    var defaultSampleSize: UInt32 = 0
-    var defaultSampleFlags: UInt32 = 0
+    var baseDataOffset: UInt64?
+    var sampleDescriptionIndex: UInt32?
+    var defaultSampleDuration: UInt32?
+    var defaultSampleSize: UInt32?
+    var defaultSampleFlags: UInt32?
 
     private func contains(_ value: Field) -> Bool {
         return (flags & value.rawValue) != 0
@@ -35,7 +35,39 @@ struct MP4TrackFragmentHeaderBox: MP4FullBox {
 extension MP4TrackFragmentHeaderBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt8(version)
+                .writeUInt24(flags)
+                .writeUInt32(trackId)
+            var flags: UInt32 = 0
+            if let baseDataOffset = baseDataOffset {
+                buffer.writeUInt64(baseDataOffset)
+                flags |= Field.baseDataOffset.rawValue
+            }
+            if let sampleDescriptionIndex = sampleDescriptionIndex {
+                buffer.writeUInt32(sampleDescriptionIndex)
+                flags |= Field.sampleDescriptionIndex.rawValue
+            }
+            if let defaultSampleDuration = defaultSampleDuration {
+                buffer.writeUInt32(defaultSampleDuration)
+                flags |= Field.defaultSampleDuration.rawValue
+            }
+            if let defaultSampleSize = defaultSampleSize {
+                buffer.writeUInt32(defaultSampleSize)
+                flags |= Field.defaultSampleSize.rawValue
+            }
+            if let defaultSampleFlags = defaultSampleFlags {
+                buffer.writeUInt32(defaultSampleFlags)
+                flags |= Field.defaultSampleFlags.rawValue
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            buffer.position = 9
+            buffer.writeUInt24(flags)
+            return buffer.data
         }
         set {
             do {

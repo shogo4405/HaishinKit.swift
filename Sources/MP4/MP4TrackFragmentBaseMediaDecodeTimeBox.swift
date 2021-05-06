@@ -16,7 +16,20 @@ struct MP4TrackFragmentBaseMediaDecodeTimeBox: MP4BoxConvertible {
 extension MP4TrackFragmentBaseMediaDecodeTimeBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt8(version)
+                .writeUInt24(flags)
+            if version == 0 {
+                buffer.writeUInt32(UInt32(baseMediaDecodeTime))
+            } else {
+                buffer.writeUInt64(baseMediaDecodeTime)
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            return buffer.data
         }
         set {
             do {

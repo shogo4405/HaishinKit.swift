@@ -1,20 +1,23 @@
 import Foundation
 
-struct MP4ChunkOffsetBox: MP4FullBox {
+/// ISO/IEC 14496-12 5th 12.2.2.2
+struct MP4VideoMediaHeaderBox: MP4FullBox {
     static let version: UInt8 = 0
     static let flags: UInt32 = 0
     // MARK: MP4FullBox
     var size: UInt32 = 0
-    let type: String = "stco"
+    let type: String = "vmhd"
     var offset: UInt64 = 0
-    var children: [MP4BoxConvertible] = []
     var version: UInt8 = Self.version
     var flags: UInt32 = Self.flags
-    // MARK: MP4ChunkOffsetBox
-    var entries: [UInt32] = []
+    var children: [MP4BoxConvertible] = []
+    // MARK: MP4VideoMediaHeaderBox
+    var graphicsMode: UInt16 = 0
+    var opcolor: [UInt16] = [0, 0, 0]
 }
 
-extension MP4ChunkOffsetBox: DataConvertible {
+extension MP4VideoMediaHeaderBox: DataConvertible {
+    // MARK: DataConvertible
     var data: Data {
         get {
             let buffer = ByteArray()
@@ -22,11 +25,10 @@ extension MP4ChunkOffsetBox: DataConvertible {
                 .writeUTF8Bytes(type)
                 .writeUInt8(version)
                 .writeUInt24(flags)
-                .writeUInt32(UInt32(entries.count))
-            for entry in entries {
-                buffer
-                    .writeUInt32(entry)
-            }
+                .writeUInt16(graphicsMode)
+                .writeUInt16(opcolor[0])
+                .writeUInt16(opcolor[1])
+                .writeUInt16(opcolor[2])
             let size = buffer.position
             buffer.position = 0
             buffer.writeUInt32(UInt32(size))
@@ -39,11 +41,12 @@ extension MP4ChunkOffsetBox: DataConvertible {
                 _ = try buffer.readUTF8Bytes(4)
                 version = try buffer.readUInt8()
                 flags = try buffer.readUInt24()
-                let numberOfEntries = try buffer.readUInt32()
-                entries.removeAll()
-                for _ in 0..<numberOfEntries {
-                    entries.append(try buffer.readUInt32())
-                }
+                graphicsMode = try buffer.readUInt16()
+                opcolor = [
+                    try buffer.readUInt16(),
+                    try buffer.readUInt16(),
+                    try buffer.readUInt16()
+                ]
             } catch {
                 logger.error(error)
             }
@@ -52,5 +55,5 @@ extension MP4ChunkOffsetBox: DataConvertible {
 }
 
 extension MP4Box.Names {
-    static let stco = MP4Box.Name<MP4ChunkOffsetBox>(rawValue: "stco")
+    static let vmhd = MP4Box.Name<MP4VideoMediaHeaderBox>(rawValue: "vmhd")
 }

@@ -2,7 +2,7 @@ import Foundation
 
 struct MP4SegmentIndexBox: MP4FullBox {
     static let flags: UInt32 = 0
-    struct Reference {
+    struct Reference: Equatable {
         var type = false
         var size: UInt32 = 0
         var subsegmentDuration: UInt32 = 0
@@ -28,7 +28,48 @@ struct MP4SegmentIndexBox: MP4FullBox {
 extension MP4SegmentIndexBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt8(version)
+                .writeUInt24(flags)
+                .writeUInt32(referenceID)
+                .writeUInt32(timescale)
+            if version == 0 {
+                buffer
+                    .writeUInt32(UInt32(earliestPresentationTime))
+                    .writeUInt32(UInt32(firstOffset))
+            } else {
+                buffer
+                    .writeUInt64(earliestPresentationTime)
+                    .writeUInt64(firstOffset)
+            }
+            buffer
+                .writeUInt16(0)
+                .writeUInt16(UInt16(references.count))
+            for reference in references {
+                var first: UInt32 = 0
+                let second = reference.subsegmentDuration
+                var third: UInt32 = 0
+                if reference.type {
+                    first |= 1 << 31
+                }
+                first |= reference.size
+
+                if reference.startsWithSap {
+                    third |= 1 << 31
+                }
+                third |= UInt32(reference.sapType) << 28
+                third |= reference.sapDeltaTime
+                buffer
+                    .writeUInt32(first)
+                    .writeUInt32(second)
+                    .writeUInt32(third)
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            return buffer.data
         }
         set {
             do {

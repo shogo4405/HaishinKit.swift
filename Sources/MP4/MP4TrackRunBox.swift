@@ -2,7 +2,7 @@ import Foundation
 
 /// ISO/IEC 14496-12 5th 8.8.8.2
 struct MP4TrackRunBox: MP4FullBox {
-    struct Sample {
+    struct Sample: Equatable {
         var duration: UInt32?
         var size: UInt32?
         var flags: UInt32?
@@ -24,8 +24,8 @@ struct MP4TrackRunBox: MP4FullBox {
     var version: UInt8 = 0
     var flags: UInt32 = 0
     // MARK: MP4TrackRunBox
-    var dataOffset: Int32 = 0
-    var firstSampleFlags: UInt32 = 0
+    var dataOffset: Int32?
+    var firstSampleFlags: UInt32?
     var samples: [Sample] = []
 
     private func contains(_ value: Field) -> Bool {
@@ -36,7 +36,45 @@ struct MP4TrackRunBox: MP4FullBox {
 extension MP4TrackRunBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt8(version)
+                .writeUInt24(flags)
+                .writeUInt32(UInt32(samples.count))
+            var flags: UInt32 = 0
+            if let dataOffset = dataOffset {
+                buffer.writeInt32(dataOffset)
+                flags |= Field.dataOffset.rawValue
+            }
+            if let firstSampleFlags = firstSampleFlags {
+                buffer.writeUInt32(firstSampleFlags)
+                flags |= Field.firstSampleFlags.rawValue
+            }
+            for sample in samples {
+                if let duration = sample.duration {
+                    buffer.writeUInt32(duration)
+                    flags |= Field.sampleDuration.rawValue
+                }
+                if let size = sample.size {
+                    buffer.writeUInt32(size)
+                    flags |= Field.sampleSize.rawValue
+                }
+                if let sampleFlags = sample.flags {
+                    buffer.writeUInt32(sampleFlags)
+                    flags |= Field.sampleFlags.rawValue
+                }
+                if let compositionTimeOffset = sample.compositionTimeOffset {
+                    buffer.writeInt32(compositionTimeOffset)
+                    flags |= Field.sampleCompositionTimeOffset.rawValue
+                }
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            buffer.position = 9
+            buffer.writeUInt24(flags)
+            return buffer.data
         }
         set {
             do {

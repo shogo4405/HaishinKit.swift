@@ -79,4 +79,3 @@ extension RTMPMuxer: VideoEncoderDelegate {
         videoTimeStamp = decodeTimeStamp
     }
 }
-

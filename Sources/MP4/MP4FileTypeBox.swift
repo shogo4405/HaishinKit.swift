@@ -15,7 +15,15 @@ struct MP4FileTypeBox: MP4BoxConvertible {
 extension MP4FileTypeBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt32(majorBrand)
+                .writeUInt32(minorVersion)
+            for brand in compatibleBrands {
+                buffer.writeUInt32(brand)
+            }
+            return buffer.data
         }
         set {
             do {

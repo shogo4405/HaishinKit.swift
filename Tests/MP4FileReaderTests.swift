@@ -10,6 +10,19 @@ final class MP4FileReaderTests: XCTestCase {
         XCTAssertEqual(ftyp?.minorVersion, 512)
     }
 
+    func testMP4MovieHeaderBox() {
+        let file = makeMP4File()
+        let mvhd = file.getBoxes(by: .mvhd).first
+        XCTAssertEqual(mvhd?.creationTime, 2082844800)
+        XCTAssertEqual(mvhd?.modificationTime, 3488636519)
+        XCTAssertEqual(mvhd?.timeScale, 1000)
+        XCTAssertEqual(mvhd?.duration, 64896)
+        XCTAssertEqual(mvhd?.rate, 65536)
+        XCTAssertEqual(mvhd?.volume, MP4MovieHeaderBox.volume)
+        XCTAssertEqual(mvhd?.matrix, [65536, 0, 0, 0, 65536, 0, 0, 0, 1073741824])
+        XCTAssertEqual(mvhd?.nextTrackID, 3)
+    }
+
     func testMP4SampleSizeBox() {
         let file = makeMP4File()
         let stsz: [MP4SampleSizeBox]? = file.getBoxes(by: .stsz)
@@ -36,7 +49,8 @@ final class MP4FileReaderTests: XCTestCase {
     func testMP4EditListBox() {
         let file = makeMP4File()
         let elst = file.getBoxes(by: .elst).first
-        XCTAssertEqual(elst?.entries[0].mediaRate, 65536)
+        XCTAssertEqual(elst?.entries[0].mediaRateFraction, 0)
+        XCTAssertEqual(elst?.entries[0].mediaRateInteger, 1)
         XCTAssertEqual(elst?.entries[0].mediaTime, 0)
         XCTAssertEqual(elst?.entries[0].segmentDuration, 64867)
     }
@@ -56,17 +70,15 @@ final class MP4FileReaderTests: XCTestCase {
         XCTAssertEqual(stss?.entries[1], 127)
         XCTAssertEqual(stss?.entries[2], 196)
     }
-    
+
     func testMP4MediaHeaderBox() {
         let file = makeMP4File()
-        let mvhd = file.getBoxes(by: .mvhd).first
-        XCTAssertEqual(mvhd?.creationTime, 2082844800)
-        XCTAssertEqual(mvhd?.modificationTime, 3488636519)
-        XCTAssertEqual(mvhd?.timeScale, 1000)
         let mdhd = file.getBoxes(by: .mdhd).first
         XCTAssertEqual(mdhd?.creationTime, 2082844800)
         XCTAssertEqual(mdhd?.modificationTime, 2082844800)
         XCTAssertEqual(mdhd?.timeScale, 15360)
+        XCTAssertEqual(mdhd?.duration, 996352)
+        XCTAssertEqual(mdhd?.language, [21, 14, 4])
     }
 
     private func makeMP4File() -> MP4FileReader {
