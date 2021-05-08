@@ -18,14 +18,33 @@ struct MP4AudioSampleEntry: MP4SampleEntry {
 extension MP4AudioSampleEntry: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeBytes(.init(repeating: 0, count: 6)) // const unsigned int(8)[6] reserved = 0
+                .writeUInt16(dataReferenceIndex)
+                .writeUInt32(0).writeUInt32(0) // const unsigned int(32)[2] reserved = 0
+                .writeUInt16(channelCount)
+                .writeUInt16(sampleSize)
+                .writeUInt16(0) // unsigned int(16) pre_defined = 0
+                .writeUInt16(0) // const unsigned int(16) reserved = 0
+                .writeUInt32(sampleRate << 16)
+            for child in children {
+                buffer.writeBytes(child.data)
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            return buffer.data
         }
         set {
             do {
                 let buffer = ByteArray(data: newValue)
                 size = try buffer.readUInt32()
                 type = try buffer.readUTF8Bytes(4)
-                buffer.position += 16
+                buffer.position += 6
+                dataReferenceIndex = try buffer.readUInt16()
+                buffer.position += 8
                 channelCount = try buffer.readUInt16()
                 sampleSize = try buffer.readUInt16()
                 buffer.position += 4

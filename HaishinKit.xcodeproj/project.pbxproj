@@ -396,7 +396,6 @@
 		BC94E52F264146540094C169 /* MP4ReaderConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */; };
 		BC94E530264146540094C169 /* MP4ReaderConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */; };
 		BC94E53A264192B00094C169 /* MP4FileReaderTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD0C10263ED28500ADFB80 /* MP4FileReaderTests2.swift */; };
-		BC94E53B2641984F0094C169 /* MP4FileReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA97BC7263AF8F70027213C /* MP4FileReaderTests.swift */; };
 		BC9CFA9323BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
 		BC9CFA9423BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
 		BC9CFA9523BDE8B700917EEF /* NetStreamRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamRenderer.swift */; };
@@ -518,6 +517,27 @@
 		BCC1A6F72645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A6F62645BFBC00661156 /* MP4AVCConfigurationBox.swift */; };
 		BCC1A6F82645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A6F62645BFBC00661156 /* MP4AVCConfigurationBox.swift */; };
 		BCC1A6F92645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A6F62645BFBC00661156 /* MP4AVCConfigurationBox.swift */; };
+		BCC1A7072647E89300661156 /* BaseDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7062647E89300661156 /* BaseDescriptor.swift */; };
+		BCC1A7082647E89300661156 /* BaseDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7062647E89300661156 /* BaseDescriptor.swift */; };
+		BCC1A7092647E89300661156 /* BaseDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7062647E89300661156 /* BaseDescriptor.swift */; };
+		BCC1A70B2647F23200661156 /* ESDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A70A2647F23200661156 /* ESDescriptor.swift */; };
+		BCC1A70C2647F23200661156 /* ESDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A70A2647F23200661156 /* ESDescriptor.swift */; };
+		BCC1A70D2647F23200661156 /* ESDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A70A2647F23200661156 /* ESDescriptor.swift */; };
+		BCC1A70F2647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A70E2647F25A00661156 /* DecoderConfigDescriptor.swift */; };
+		BCC1A7102647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A70E2647F25A00661156 /* DecoderConfigDescriptor.swift */; };
+		BCC1A7112647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A70E2647F25A00661156 /* DecoderConfigDescriptor.swift */; };
+		BCC1A7132647F28F00661156 /* SLConfigDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7122647F28F00661156 /* SLConfigDescriptor.swift */; };
+		BCC1A7142647F28F00661156 /* SLConfigDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7122647F28F00661156 /* SLConfigDescriptor.swift */; };
+		BCC1A7152647F28F00661156 /* SLConfigDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7122647F28F00661156 /* SLConfigDescriptor.swift */; };
+		BCC1A7172647F3E000661156 /* DecoderSpecificInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7162647F3E000661156 /* DecoderSpecificInfo.swift */; };
+		BCC1A7182647F3E000661156 /* DecoderSpecificInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7162647F3E000661156 /* DecoderSpecificInfo.swift */; };
+		BCC1A7192647F3E000661156 /* DecoderSpecificInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7162647F3E000661156 /* DecoderSpecificInfo.swift */; };
+		BCC1A7212648540800661156 /* RPReplay_Final1620580691.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */; };
+		BCC1A723264854FF00661156 /* MP4FileReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A722264854FF00661156 /* MP4FileReaderTests.swift */; };
+		BCC1A7252648663600661156 /* BaseDescriptorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A7242648663600661156 /* BaseDescriptorTests.swift */; };
+		BCC1A727264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A726264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift */; };
+		BCC1A728264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A726264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift */; };
+		BCC1A729264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A726264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift */; };
 		BCC9E9092636FF7400948774 /* NetSocketCycleBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */; };
 		BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
@@ -823,7 +843,6 @@
 		BCA97BBA263AD0520027213C /* MP4AudioSampleEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4AudioSampleEntry.swift; sourceTree = "<group>"; };
 		BCA97BBE263AD1920027213C /* MP4SampleDescriptionBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4SampleDescriptionBox.swift; sourceTree = "<group>"; };
 		BCA97BC2263AD2280027213C /* MP4VisualSampleEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4VisualSampleEntry.swift; sourceTree = "<group>"; };
-		BCA97BC7263AF8F70027213C /* MP4FileReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MP4FileReaderTests.swift; path = Tests/MP4FileReaderTests.swift; sourceTree = SOURCE_ROOT; };
 		BCA97BDE263BC7770027213C /* MP4FileTypeBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4FileTypeBox.swift; sourceTree = "<group>"; };
 		BCA97BF3263C390E0027213C /* CustomXmlStringConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomXmlStringConvertible.swift; sourceTree = "<group>"; };
 		BCA97C09263D80F40027213C /* MP4SampleEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4SampleEntry.swift; sourceTree = "<group>"; };
@@ -854,6 +873,15 @@
 		BCC1A6EA2644850F00661156 /* MP4TrackHeaderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TrackHeaderBox.swift; sourceTree = "<group>"; };
 		BCC1A6EE2645B5F800661156 /* MP4PixelAspectRatioBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4PixelAspectRatioBox.swift; sourceTree = "<group>"; };
 		BCC1A6F62645BFBC00661156 /* MP4AVCConfigurationBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4AVCConfigurationBox.swift; sourceTree = "<group>"; };
+		BCC1A7062647E89300661156 /* BaseDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDescriptor.swift; sourceTree = "<group>"; };
+		BCC1A70A2647F23200661156 /* ESDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESDescriptor.swift; sourceTree = "<group>"; };
+		BCC1A70E2647F25A00661156 /* DecoderConfigDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderConfigDescriptor.swift; sourceTree = "<group>"; };
+		BCC1A7122647F28F00661156 /* SLConfigDescriptor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SLConfigDescriptor.swift; sourceTree = "<group>"; };
+		BCC1A7162647F3E000661156 /* DecoderSpecificInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecoderSpecificInfo.swift; sourceTree = "<group>"; };
+		BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = RPReplay_Final1620580691.mp4; sourceTree = "<group>"; };
+		BCC1A722264854FF00661156 /* MP4FileReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP4FileReaderTests.swift; sourceTree = "<group>"; };
+		BCC1A7242648663600661156 /* BaseDescriptorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseDescriptorTests.swift; sourceTree = "<group>"; };
+		BCC1A726264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileLevelIndicationIndexDescriptor.swift; sourceTree = "<group>"; };
 		BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocketCycleBufferTests.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355624FA37F700DC5108 /* HKPictureInPicureController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKPictureInPicureController.swift; sourceTree = "<group>"; };
@@ -997,6 +1025,7 @@
 			isa = PBXGroup;
 			children = (
 				2917CB652104CA2800F6823A /* AudioSpecificConfigTests.swift */,
+				BCC1A7242648663600661156 /* BaseDescriptorTests.swift */,
 				290EA8951DFB619600053022 /* PacketizedElementaryStreamTests.swift */,
 				290EA8961DFB619600053022 /* ProgramSpecificTests.swift */,
 				290EA8971DFB619600053022 /* TSTests.swift */,
@@ -1022,6 +1051,7 @@
 		291C2AD11CE9FF3E006F042B /* Asset */ = {
 			isa = PBXGroup;
 			children = (
+				BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */,
 				29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */,
 				294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */,
 				29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */,
@@ -1132,9 +1162,15 @@
 				29B8767D1CD70AE800FC07DA /* AudioSpecificConfig.swift */,
 				29B8767E1CD70AE800FC07DA /* AVCConfigurationRecord.swift */,
 				BCB9773E2621812800C9A649 /* AVCFormatStream.swift */,
+				BCC1A7062647E89300661156 /* BaseDescriptor.swift */,
+				BCC1A70E2647F25A00661156 /* DecoderConfigDescriptor.swift */,
+				BCC1A7162647F3E000661156 /* DecoderSpecificInfo.swift */,
+				BCC1A70A2647F23200661156 /* ESDescriptor.swift */,
 				29B8767F1CD70AE800FC07DA /* NALUnit.swift */,
 				29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */,
+				BCC1A726264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift */,
 				29B876811CD70AE800FC07DA /* ProgramSpecific.swift */,
+				BCC1A7122647F28F00661156 /* SLConfigDescriptor.swift */,
 			);
 			path = ISO;
 			sourceTree = "<group>";
@@ -1428,10 +1464,10 @@
 		BCA97BC6263AF3E20027213C /* MP4 */ = {
 			isa = PBXGroup;
 			children = (
-				BCA97BC7263AF8F70027213C /* MP4FileReaderTests.swift */,
+				BCC1A6C82643F44A00661156 /* MP4BoxTests.swift */,
+				BCC1A722264854FF00661156 /* MP4FileReaderTests.swift */,
 				BCAD0C10263ED28500ADFB80 /* MP4FileReaderTests2.swift */,
 				BCAD0C1E263EE53A00ADFB80 /* MP4UtilTests.swift */,
-				BCC1A6C82643F44A00661156 /* MP4BoxTests.swift */,
 			);
 			path = MP4;
 			sourceTree = "<group>";
@@ -1752,6 +1788,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCC1A7212648540800661156 /* RPReplay_Final1620580691.mp4 in Resources */,
 				BCAD0C19263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v in Resources */,
 				294637AA1EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv in Resources */,
 				29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */,
@@ -1877,6 +1914,7 @@
 				29DF20662312A436004057C3 /* RTMPSocketCompatible.swift in Sources */,
 				29B876861CD70AE800FC07DA /* PacketizedElementaryStream.swift in Sources */,
 				29B876761CD70ACE00FC07DA /* HTTPRequest.swift in Sources */,
+				BCC1A70B2647F23200661156 /* ESDescriptor.swift in Sources */,
 				29B876AD1CD70B2800FC07DA /* ASClass.swift in Sources */,
 				296242611D8DB86500C451A3 /* TSReader.swift in Sources */,
 				29B8765D1CD70A7900FC07DA /* H264Encoder.swift in Sources */,
@@ -1896,6 +1934,7 @@
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* NetStreamRenderer.swift in Sources */,
 				29B8769B1CD70B1100FC07DA /* MIME.swift in Sources */,
+				BCC1A727264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
 				BC94E530264146540094C169 /* MP4ReaderConvertible.swift in Sources */,
 				29B876871CD70AE800FC07DA /* ProgramSpecific.swift in Sources */,
@@ -1931,12 +1970,14 @@
 				29EA87DC1E79A0460043A5F8 /* Data+Extension.swift in Sources */,
 				BCA97C1B263DAD070027213C /* MP4ElementaryStreamDescriptorBox.swift in Sources */,
 				BC94E502263FE8400094C169 /* MP4TrackFragmentHeaderBox.swift in Sources */,
+				BCC1A7132647F28F00661156 /* SLConfigDescriptor.swift in Sources */,
 				29DF20622312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				29EA87E61E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
 				BC94E506263FEA7F0094C169 /* MP4TrackFragmentBaseMediaDecodeTimeBox.swift in Sources */,
 				29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
+				BCC1A7172647F3E000661156 /* DecoderSpecificInfo.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */,
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
 				297E69122324E38800D418AB /* AudioCodec.Destination.swift in Sources */,
@@ -1963,6 +2004,7 @@
 				29B876781CD70ACE00FC07DA /* HTTPService.swift in Sources */,
 				2976A4861D4903C300B53EF2 /* DeviceUtil.swift in Sources */,
 				29C263181D00804A0098D4EF /* GLHKView.swift in Sources */,
+				BCC1A7072647E89300661156 /* BaseDescriptor.swift in Sources */,
 				BCFB355E24FAB2D200DC5108 /* HKPictureInPicureControllerImpl.swift in Sources */,
 				29B876881CD70AE800FC07DA /* TSPacket.swift in Sources */,
 				BCA97BE8263C27070027213C /* MP4SampleSizeBox.swift in Sources */,
@@ -1986,6 +2028,7 @@
 				BCC1A6DF264470F900661156 /* MP4DataEntryUrlBox.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
+				BCC1A70F2647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */,
 				29B8767A1CD70ACE00FC07DA /* M3U.swift in Sources */,
 				29245AEF1D32348400AFFB9A /* VideoGravityUtil.swift in Sources */,
 				29FD1B5022FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
@@ -2009,17 +2052,18 @@
 				295018221FFA1C9D00358E10 /* SinWaveUtil.swift in Sources */,
 				294637A81EC89BC9008EEC71 /* Config.swift in Sources */,
 				295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */,
-				BC94E53B2641984F0094C169 /* MP4FileReaderTests.swift in Sources */,
 				290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */,
 				290EA8A01DFB61B100053022 /* ASClassTests.swift in Sources */,
 				BC94E53A264192B00094C169 /* MP4FileReaderTests2.swift in Sources */,
 				2917CB662104CA2800F6823A /* AudioSpecificConfigTests.swift in Sources */,
 				290EA8AB1DFB61E700053022 /* EventDispatcherTests.swift in Sources */,
+				BCC1A723264854FF00661156 /* MP4FileReaderTests.swift in Sources */,
 				290EA8901DFB616000053022 /* Foundation+ExtensionTests.swift in Sources */,
 				BCAD0C1F263EE53A00ADFB80 /* MP4UtilTests.swift in Sources */,
 				290EA8991DFB619600053022 /* PacketizedElementaryStreamTests.swift in Sources */,
 				29F97F242336A4FA00A4C317 /* SettingTests.swift in Sources */,
 				290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */,
+				BCC1A7252648663600661156 /* BaseDescriptorTests.swift in Sources */,
 				290EA89A1DFB619600053022 /* ProgramSpecificTests.swift in Sources */,
 				BCC1A6C92643F44A00661156 /* MP4BoxTests.swift in Sources */,
 				290EA8931DFB617800053022 /* HTTPRequestTests.swift in Sources */,
@@ -2067,6 +2111,7 @@
 				29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
 				29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */,
 				BC20DF2F2503749C007BC608 /* HKPictureInPicureControllerImpl.swift in Sources */,
+				BCC1A70C2647F23200661156 /* ESDescriptor.swift in Sources */,
 				29B876F71CD70D5900FC07DA /* HTTPResponse.swift in Sources */,
 				BC4C9EB023F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				2942A4F921A9418A004E1BEE /* Running.swift in Sources */,
@@ -2086,6 +2131,7 @@
 				2958911F1EEB8E9600CE51E1 /* FLVSoundRate.swift in Sources */,
 				2941746C22D069B300A2944F /* AudioEffect.swift in Sources */,
 				BC9CFA9423BDE8B700917EEF /* NetStreamRenderer.swift in Sources */,
+				BCC1A728264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */,
 				BC20DF31250374A7007BC608 /* HKPictureInPicureController.swift in Sources */,
 				296242631D8DBA8C00C451A3 /* TSReader.swift in Sources */,
 				BC94E52F264146540094C169 /* MP4ReaderConvertible.swift in Sources */,
@@ -2121,12 +2167,14 @@
 				BCA97BF5263C390E0027213C /* CustomXmlStringConvertible.swift in Sources */,
 				BC44A1AA23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
 				BCA97C1C263DAD070027213C /* MP4ElementaryStreamDescriptorBox.swift in Sources */,
+				BCC1A7142647F28F00661156 /* SLConfigDescriptor.swift in Sources */,
 				BC94E503263FE8400094C169 /* MP4TrackFragmentHeaderBox.swift in Sources */,
 				29B877071CD70D5A00FC07DA /* SoundTransform.swift in Sources */,
 				29B877081CD70D5A00FC07DA /* VideoIOComponent.swift in Sources */,
 				294CC9B422D9BEC000F9DD5C /* DisplayLink-macOS.swift in Sources */,
 				BC94E507263FEA7F0094C169 /* MP4TrackFragmentBaseMediaDecodeTimeBox.swift in Sources */,
 				BC20DF2D25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */,
+				BCC1A7182647F3E000661156 /* DecoderSpecificInfo.swift in Sources */,
 				29B877091CD70D5A00FC07DA /* VideoEffect.swift in Sources */,
 				29B8770A1CD70D5A00FC07DA /* MIME.swift in Sources */,
 				29B8770B1CD70D5A00FC07DA /* NetClient.swift in Sources */,
@@ -2153,6 +2201,7 @@
 				29B8770F1CD70D5A00FC07DA /* AMF3Serializer.swift in Sources */,
 				29B877101CD70D5A00FC07DA /* ASClass.swift in Sources */,
 				29DF20672312A436004057C3 /* RTMPSocketCompatible.swift in Sources */,
+				BCC1A7082647E89300661156 /* BaseDescriptor.swift in Sources */,
 				29B877121CD70D5A00FC07DA /* RTMPChunk.swift in Sources */,
 				29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */,
 				29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */,
@@ -2176,6 +2225,7 @@
 				BCC1A6E0264470F900661156 /* MP4DataEntryUrlBox.swift in Sources */,
 				29B8771B1CD70D5A00FC07DA /* ByteArray.swift in Sources */,
 				295891231EEB8EC500CE51E1 /* FLVAVCPacketType.swift in Sources */,
+				BCC1A7102647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */,
 				29EA87DA1E79A00E0043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
 				29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */,
 				29B8771C1CD70D5A00FC07DA /* CRC32.swift in Sources */,
@@ -2248,6 +2298,7 @@
 				BCC1A6ED2644850F00661156 /* MP4TrackHeaderBox.swift in Sources */,
 				29EB3DF41ED05776001CAE8B /* CMBlockBuffer+Extension.swift in Sources */,
 				29EB3DF01ED05768001CAE8B /* H264Encoder.swift in Sources */,
+				BCC1A7192647F3E000661156 /* DecoderSpecificInfo.swift in Sources */,
 				29EB3E351ED05A33001CAE8B /* DeviceUtil.swift in Sources */,
 				29DC17B521D0CC0600E26CED /* Atomic.swift in Sources */,
 				BC8E32E92532F3710087DF49 /* GLHKView.swift in Sources */,
@@ -2255,6 +2306,7 @@
 				BCC1A6BE2643F41600661156 /* MP4SegmentFile.Builder.swift in Sources */,
 				BCA97B8C263AC1830027213C /* MP4Box.swift in Sources */,
 				BC44A1AB23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
+				BCC1A7092647E89300661156 /* BaseDescriptor.swift in Sources */,
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
 				BCA97BE2263C095B0027213C /* MP4TimeToSampleBox.swift in Sources */,
 				29DF20642312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
@@ -2286,6 +2338,7 @@
 				BC20DF2E25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */,
 				BCB976E126107B5600C9A649 /* TSAdaptationField.swift in Sources */,
 				BCC1A6D5264461FE00661156 /* MP4HandlerBox.swift in Sources */,
+				BCC1A7112647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */,
 				BCC1A6D126445AF500661156 /* MP4TrackExtendsBox.swift in Sources */,
 				BCAD0C02263E968400ADFB80 /* MP4FileReader.swift in Sources */,
 				BCA97C00263C599C0027213C /* MP4SyncSampleBox.swift in Sources */,
@@ -2306,6 +2359,7 @@
 				295891141EEB8D7200CE51E1 /* FLVFrameType.swift in Sources */,
 				BC20DF302503749D007BC608 /* HKPictureInPicureControllerImpl.swift in Sources */,
 				29EB3E1B1ED0589F001CAE8B /* AMF0Serializer.swift in Sources */,
+				BCC1A70D2647F23200661156 /* ESDescriptor.swift in Sources */,
 				BCA97C03263C61930027213C /* MP4MediaHeaderBox.swift in Sources */,
 				29EB3E0C1ED05874001CAE8B /* TSWriter.swift in Sources */,
 				295891181EEB8DFC00CE51E1 /* FLVTagType.swift in Sources */,
@@ -2353,11 +2407,13 @@
 				BCAD0C1D263EE1D000ADFB80 /* MP4Util.swift in Sources */,
 				29EB3E181ED05896001CAE8B /* NetService.swift in Sources */,
 				295891281EEB8EF300CE51E1 /* FLVAACPacket.swift in Sources */,
+				BCC1A7152647F28F00661156 /* SLConfigDescriptor.swift in Sources */,
 				BCA97B88263AC0F30027213C /* MP4BoxConvertible.swift in Sources */,
 				2958911C1EEB8E3F00CE51E1 /* FLVAudioCodec.swift in Sources */,
 				BC94E500263FE6B80094C169 /* MP4MovieFragmentHeaderBox.swift in Sources */,
 				29EB3DF61ED0577C001CAE8B /* CMSampleBuffer+Extension.swift in Sources */,
 				BC20DF36250374EA007BC608 /* HKPictureInPicureController+Extension.swift in Sources */,
+				BCC1A729264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */,
 				29EB3E281ED05A0C001CAE8B /* RTMPTSocket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

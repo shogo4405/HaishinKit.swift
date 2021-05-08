@@ -5,7 +5,6 @@ struct MP4Box: MP4BoxConvertible {
         "cmov",
         "ctts",
         "edts",
-        "esds",
         "iods",
         "junk",
         "mdia",

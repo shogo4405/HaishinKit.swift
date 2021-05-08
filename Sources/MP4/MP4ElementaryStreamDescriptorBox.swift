@@ -1,63 +1,42 @@
 import Foundation
 
-struct MP4ElementaryStreamDescriptorBox: MP4BoxConvertible {
-    // MARK: MP4ContainerBoxConvertible
+/**
+  - seealso: https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/QTFFChap3/qtff3.html#//apple_ref/doc/uid/TP40000939-CH205-124774
+ */
+struct MP4ElementaryStreamDescriptorBox: MP4FullBox {
+    // MARK: MP4FullBox
     var size: UInt32 = 0
     let type: String = "esds"
     var offset: UInt64 = 0
     var children: [MP4BoxConvertible] = []
-    // MARK: MP4ElementaryStreamDescriptorBox
-    var audioDecorderSpecificConfig = Data()
-    var tag: UInt8 = 0
-    var tagSize: UInt8 = 0
-    var id: UInt16 = 0
-    var streamDependenceFlag: UInt8 = 0
-    var urlFlag: UInt8 = 0
-    var ocrStreamFlag: UInt8 = 0
-    var streamPriority: UInt8 = 0
+    var version: UInt8 = 0
+    var flags: UInt32 = 0
+    // MARK: MP4FullBox
+    var descriptor = ESDescriptor()
 }
 
 extension MP4ElementaryStreamDescriptorBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt8(version)
+                .writeUInt24(flags)
+                .writeBytes(descriptor.data)
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            return buffer.data
         }
         set {
             do {
                 let buffer = ByteArray(data: newValue)
                 size = try buffer.readUInt32()
                 _ = try buffer.readUTF8Bytes(4)
-                tag = try buffer.readUInt8()
-                self.tagSize = try buffer.readUInt8()
-                if self.tagSize == 0x80 {
-                    buffer.position += 2
-                    self.tagSize = try buffer.readUInt8()
-                }
-                id = try buffer.readUInt16()
-                let data: UInt8 = try buffer.readUInt8()
-                streamDependenceFlag = data >> 7
-                urlFlag = (data >> 6) & 0x1
-                ocrStreamFlag = (data >> 5) & 0x1
-                streamPriority = data & 0x1f
-                if streamDependenceFlag == 1 {
-                    let _: UInt16 = try buffer.readUInt16()
-                }
-                // Decorder Config Descriptor
-                let _: UInt8 = try buffer.readUInt8()
-                tagSize = try buffer.readUInt8()
-                if tagSize == 0x80 {
-                    buffer.position += 2
-                    tagSize = try buffer.readUInt8()
-                }
-                buffer.position += 13
-                // Audio Decorder Spec Info
-                let _: UInt8 = try buffer.readUInt8()
-                tagSize = try buffer.readUInt8()
-                if tagSize == 0x80 {
-                    buffer.position += 2
-                    tagSize = try buffer.readUInt8()
-                }
-                audioDecorderSpecificConfig = try buffer.readBytes(Int(tagSize))
+                version = try buffer.readUInt8()
+                flags = try buffer.readUInt24()
+                descriptor.data = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
                 logger.error(error)
             }

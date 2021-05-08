@@ -21,15 +21,27 @@ struct MP4SampleDescriptionBox: MP4FullBox {
     let type: String = "stsd"
     var offset: UInt64 = 0
     var version: UInt8 = 0
-    let flags: UInt32 = Self.flags
-    // MARK: 
+    var flags: UInt32 = Self.flags
+    // MARK: MP4SampleDescriptionBox
     var children: [MP4BoxConvertible] = []
 }
 
 extension MP4SampleDescriptionBox: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeUInt8(version)
+                .writeUInt24(flags)
+                .writeUInt32(UInt32(children.count))
+            for child in children {
+                buffer.writeBytes(child.data)
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            return buffer.data
         }
         set {
             do {
@@ -37,6 +49,7 @@ extension MP4SampleDescriptionBox: DataConvertible {
                 size = try buffer.readUInt32()
                 _ = try buffer.readUTF8Bytes(4)
                 version = try buffer.readUInt8()
+                flags = try buffer.readUInt24()
                 let numberOfEntries = try buffer.readUInt32()
                 children.removeAll()
                 for _ in 0..<numberOfEntries {

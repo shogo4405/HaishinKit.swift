@@ -395,7 +395,7 @@ final class MP4BoxTests: XCTestCase {
         XCTAssertEqual(src.entries, dst.entries)
     }
 
-    func testMP4() {
+    func testMP4ChunkOffsetBox() {
         let src = MP4ChunkOffsetBox(
             size: 3912,
             offset: 0,
@@ -412,5 +412,57 @@ final class MP4BoxTests: XCTestCase {
         XCTAssertEqual(src.version, dst.version)
         XCTAssertEqual(src.flags, dst.flags)
         XCTAssertEqual(src.entries, dst.entries)
+    }
+
+    func testMP4AudioSampleEntry() {
+        let src = MP4AudioSampleEntry(
+            size: 36,
+            type: "mp4a",
+            offset: 0,
+            children: [],
+            dataReferenceIndex: 1,
+            channelCount: 2,
+            sampleSize: 16,
+            sampleRate: 48000
+        )
+        
+        var dst = MP4AudioSampleEntry()
+        dst.data = src.data
+
+        XCTAssertEqual(src.size, dst.size)
+        XCTAssertEqual(src.dataReferenceIndex, dst.dataReferenceIndex)
+        XCTAssertEqual(src.channelCount, dst.channelCount)
+        XCTAssertEqual(src.sampleSize, dst.sampleSize)
+        XCTAssertEqual(src.sampleRate, dst.sampleRate)
+    }
+
+    func testMP4VisualSampleEntry() {
+        let src = MP4VisualSampleEntry(
+            size: 54,
+            type: "avc1",
+            offset: 0,
+            children: [],
+            dataReferenceIndex: 1,
+            width: 320,
+            height: 240,
+            hSolution: MP4VisualSampleEntry.hSolution,
+            vSolution: MP4VisualSampleEntry.vSolution,
+            frameCount: 1,
+            compressorname: "",
+            depth: 24
+        )
+    
+        var dst = MP4VisualSampleEntry()
+        dst.data = src.data
+
+        XCTAssertEqual(src.size, dst.size)
+        XCTAssertEqual(src.dataReferenceIndex, dst.dataReferenceIndex)
+        XCTAssertEqual(src.width, dst.width)
+        XCTAssertEqual(src.height, dst.height)
+        XCTAssertEqual(src.hSolution, dst.hSolution)
+        XCTAssertEqual(src.vSolution, dst.vSolution)
+        XCTAssertEqual(src.frameCount, dst.frameCount)
+        XCTAssertEqual(src.compressorname, dst.compressorname)
+        XCTAssertEqual(src.depth, dst.depth)
     }
 }

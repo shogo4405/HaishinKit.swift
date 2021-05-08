@@ -1,5 +1,6 @@
 import Foundation
 
+/// ISO/IEC 14496-12 5th 12.1.3.2
 struct MP4VisualSampleEntry: MP4SampleEntry {
     static let hSolution: UInt32 = 0x00480000
     static let vSolution: UInt32 = 0x00480000
@@ -23,14 +24,39 @@ struct MP4VisualSampleEntry: MP4SampleEntry {
 extension MP4VisualSampleEntry: DataConvertible {
     var data: Data {
         get {
-            Data()
+            let buffer = ByteArray()
+                .writeUInt32(size)
+                .writeUTF8Bytes(type)
+                .writeBytes(.init(repeating: 0, count: 6)) // const unsigned int(8)[6] reserved = 0
+                .writeUInt16(dataReferenceIndex)
+                .writeUInt16(0) // unsigned int(16) pre_defined = 0
+                .writeUInt16(0) // const unsigned int(16) reserved = 0
+                .writeInt32(0).writeInt32(0).writeInt32(0) // unsigned int(32)[3]  pre_defined = 0
+                .writeUInt16(width)
+                .writeUInt16(height)
+                .writeUInt32(hSolution)
+                .writeUInt32(vSolution)
+                .writeUInt32(0) //  const unsigned int(32)  reserved = 0
+                .writeUInt16(frameCount)
+                .writeUTF8Bytes(compressorname)
+                .writeUInt16(depth)
+                .writeInt16(-1) // int(16)  pre_defined = -1
+            for child in children {
+                buffer.writeBytes(child.data)
+            }
+            let size = buffer.position
+            buffer.position = 0
+            buffer.writeUInt32(UInt32(size))
+            return buffer.data
         }
         set {
             do {
                 let buffer = ByteArray(data: newValue)
                 size = try buffer.readUInt32()
                 type = try buffer.readUTF8Bytes(4)
-                buffer.position += 24
+                buffer.position += 6
+                dataReferenceIndex = try buffer.readUInt16()
+                buffer.position += 16
                 width = try buffer.readUInt16()
                 height = try buffer.readUInt16()
                 hSolution = try buffer.readUInt32()
