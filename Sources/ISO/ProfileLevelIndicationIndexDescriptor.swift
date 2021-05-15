@@ -1,8 +1,9 @@
 import Foundation
 
 struct ProfileLevelIndicationIndexDescriptor: BaseDescriptor {
+    static let tag: UInt8 = 0x14
     // MARK: BaseDescriptor
-    let tag: UInt8 = 0x14
+    let tag: UInt8 = Self.tag
     var size: UInt32 = 0
     // MARK: ProfileLevelIndicationIndexDescriptor
     var profileLevelIndicationIndex: UInt8 = 0

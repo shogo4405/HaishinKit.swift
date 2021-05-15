@@ -3,6 +3,7 @@ import Foundation
 /// ISO/IEC 14496-12 5th 8.8.7.2
 struct MP4TrackFragmentHeaderBox: MP4FullBox {
     static let version: UInt8 = 0
+
     enum Field: UInt32 {
         case baseDataOffset = 0x000001
         case sampleDescriptionIndex = 0x000002

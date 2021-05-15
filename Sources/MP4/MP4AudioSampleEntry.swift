@@ -23,7 +23,8 @@ extension MP4AudioSampleEntry: DataConvertible {
                 .writeUTF8Bytes(type)
                 .writeBytes(.init(repeating: 0, count: 6)) // const unsigned int(8)[6] reserved = 0
                 .writeUInt16(dataReferenceIndex)
-                .writeUInt32(0).writeUInt32(0) // const unsigned int(32)[2] reserved = 0
+                .writeUInt32(0)
+                .writeUInt32(0) // const unsigned int(32)[2] reserved = 0
                 .writeUInt16(channelCount)
                 .writeUInt16(sampleSize)
                 .writeUInt16(0) // unsigned int(16) pre_defined = 0

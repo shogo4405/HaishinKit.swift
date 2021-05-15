@@ -31,7 +31,9 @@ extension MP4VisualSampleEntry: DataConvertible {
                 .writeUInt16(dataReferenceIndex)
                 .writeUInt16(0) // unsigned int(16) pre_defined = 0
                 .writeUInt16(0) // const unsigned int(16) reserved = 0
-                .writeInt32(0).writeInt32(0).writeInt32(0) // unsigned int(32)[3]  pre_defined = 0
+                .writeInt32(0)
+                .writeInt32(0)
+                .writeInt32(0) // unsigned int(32)[3]  pre_defined = 0
                 .writeUInt16(width)
                 .writeUInt16(height)
                 .writeUInt32(hSolution)

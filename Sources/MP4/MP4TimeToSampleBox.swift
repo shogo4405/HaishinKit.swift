@@ -4,6 +4,7 @@ import Foundation
 struct MP4TimeToSampleBox: MP4FullBox {
     static let version: UInt8 = 0
     static let flags: UInt32 = 0
+
     struct Entry: Equatable, CustomDebugStringConvertible {
         let sampleCount: UInt32
         let sampleDelta: UInt32

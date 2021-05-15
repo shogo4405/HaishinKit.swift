@@ -1,8 +1,9 @@
 import Foundation
 
 struct ESDescriptor: BaseDescriptor {
+    static let tag: UInt8 = 0x03
     // MARK: BaseDescriptor
-    let tag: UInt8 = 0x03
+    let tag: UInt8 = Self.tag
     var size: UInt32 = 0
     // MARK: ESDescriptor
     var ES_ID: UInt16 = 0
@@ -24,8 +25,7 @@ extension ESDescriptor: DataConvertible {
         get {
             let buffer = ByteArray()
                 .writeUInt8(tag)
-            writeSize(buffer)
-            buffer
+                .writeUInt32(0)
                 .writeUInt16(ES_ID)
                 .writeUInt8((streamDependenceFlag ? 1 : 0) << 7 | (URLFlag ? 1 : 0) << 6 | streamPriority)
             if streamDependenceFlag {
@@ -40,6 +40,8 @@ extension ESDescriptor: DataConvertible {
                 buffer.writeUInt16(OCR_ES_Id)
             }
             buffer.writeBytes(decConfigDescr.data)
+            buffer.writeBytes(slConfigDescr.data)
+            writeSize(buffer)
             return buffer.data
         }
         set {
@@ -62,7 +64,11 @@ extension ESDescriptor: DataConvertible {
                 if OCRstreamFlag {
                     OCR_ES_Id = try buffer.readUInt16()
                 }
+                var position = buffer.position
                 decConfigDescr.data = try buffer.readBytes(buffer.bytesAvailable)
+                position += 5 + Int(decConfigDescr.size)
+                buffer.position = position
+                slConfigDescr.data = try buffer.readBytes(buffer.bytesAvailable)
             } catch {
                 logger.error(error)
             }

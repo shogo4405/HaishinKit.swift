@@ -2,6 +2,7 @@ import Foundation
 
 struct MP4SegmentIndexBox: MP4FullBox {
     static let flags: UInt32 = 0
+
     struct Reference: Equatable {
         var type = false
         var size: UInt32 = 0
@@ -10,6 +11,7 @@ struct MP4SegmentIndexBox: MP4FullBox {
         var sapType: UInt8 = 0
         var sapDeltaTime: UInt32 = 0
     }
+
     // MARK: MP4FullBox
     var size: UInt32 = 0
     let type: String = "sidx"

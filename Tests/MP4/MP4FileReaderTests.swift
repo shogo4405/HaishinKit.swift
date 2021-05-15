@@ -34,19 +34,6 @@ final class MP4FileReaderTests: XCTestCase {
         XCTAssertEqual(stsz?.last?.entries[2], 1030)
     }
 
-    func testMP4SampleDescriptionBox() {
-        let file = makeMP4File()
-        let stsd = file.getBoxes(by: .stsd)
-
-        let mp4a = stsd.last?.getBoxes(by: .mp4a).first
-        XCTAssertEqual(mp4a?.dataReferenceIndex, 1)
-        XCTAssertEqual(mp4a?.channelCount, 2)
-        XCTAssertEqual(mp4a?.sampleSize, 16)
-        XCTAssertEqual(mp4a?.sampleRate, 48000)
-
-        let esds = mp4a?.getBoxes(by: .esds).first
-    }
-
     func testMP4ChunkOffsetBox() {
         let file = makeMP4File()
         let stco = file.getBoxes(by: .stco).first
@@ -87,6 +74,40 @@ final class MP4FileReaderTests: XCTestCase {
         XCTAssertEqual(mdhd?.timeScale, 15360)
         XCTAssertEqual(mdhd?.duration, 996352)
         XCTAssertEqual(mdhd?.language, [21, 14, 4])
+    }
+
+    func testMP4AudioSampleEntryBox() {
+        let file = makeMP4File()
+        let mp4a = file.getBoxes(by: .stsd).last?.getBoxes(by: .mp4a).first
+
+        XCTAssertEqual(mp4a?.dataReferenceIndex, 1)
+        XCTAssertEqual(mp4a?.channelCount, 2)
+        XCTAssertEqual(mp4a?.sampleSize, 16)
+        XCTAssertEqual(mp4a?.sampleRate, 48000)
+
+        let esds = mp4a?.getBoxes(by: .esds).first
+        XCTAssertEqual(esds?.flags, 0)
+        XCTAssertEqual(esds?.version, 0)
+
+        // ESDescriptor
+        XCTAssertEqual(esds?.descriptor.tag, 3)
+        XCTAssertEqual(esds?.descriptor.ES_ID, 2)
+
+        // DecoderConfigDescriptor
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.tag, DecoderConfigDescriptor.tag)
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.objectTypeIndication, 64)
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.streamType, 5)
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.avgBitrate, 383586)
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.maxBitrate, 449032)
+
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.decSpecificInfo.tag, DecoderSpecificInfo.tag)
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.decSpecificInfo.size, 2)
+        
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.profileLevelIndicationIndexDescriptor.tag, ProfileLevelIndicationIndexDescriptor.tag)
+        XCTAssertEqual(esds?.descriptor.decConfigDescr.profileLevelIndicationIndexDescriptor.profileLevelIndicationIndex, 2)
+
+        XCTAssertEqual(esds?.descriptor.slConfigDescr.tag, 6)
+        XCTAssertEqual(esds?.descriptor.slConfigDescr.predefined, 2)
     }
 
     private func makeMP4File() -> MP4FileReader {

@@ -2,6 +2,7 @@ import Foundation
 
 struct MP4EditListBox: MP4FullBox {
     static let flags: UInt32 = 0
+
     struct Entry: Equatable, CustomDebugStringConvertible {
         let segmentDuration: UInt64
         let mediaTime: UInt64
@@ -12,6 +13,7 @@ struct MP4EditListBox: MP4FullBox {
             Mirror(reflecting: self).debugDescription
         }
     }
+
     // MARK: MP4FullBox
     var size: UInt32 = 0
     let type: String = "elst"

@@ -1,8 +1,9 @@
 import Foundation
 
 struct DecoderSpecificInfo: BaseDescriptor {
+    static let tag: UInt8 = 0x05
     // MARK: BaseDescriptor
-    let tag: UInt8 = 0x05
+    let tag: UInt8 = Self.tag
     var size: UInt32 = 0
     // MARK: DecoderConfigDescriptor
     private var _data = Data()

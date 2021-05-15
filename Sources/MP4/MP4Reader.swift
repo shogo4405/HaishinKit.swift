@@ -12,6 +12,7 @@ final class MP4Reader: MP4ReaderConvertible {
 
 final class MP4TrackReader {
     struct MP4SampleIterator: IteratorProtocol {
+        // swiftlint:disable nesting
         typealias Element = UInt8
 
         private var cursor: Int = 0

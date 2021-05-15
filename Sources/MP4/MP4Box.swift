@@ -28,6 +28,7 @@ struct MP4Box: MP4BoxConvertible {
 
     final class Name<T: MP4BoxConvertible>: Names, Hashable, RawRepresentable {
         let rawValue: String
+        // swiftlint:disable nesting
         typealias RawValue = String
 
         init(rawValue: String) {

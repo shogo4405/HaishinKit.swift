@@ -1,6 +1,6 @@
 import Foundation
 
-protocol BaseDescriptor: Equatable, DataConvertible {
+protocol BaseDescriptor: Equatable, DataConvertible, CustomDebugStringConvertible {
     var tag: UInt8 { get }
     var size: UInt32 { get }
 }
@@ -25,5 +25,12 @@ extension BaseDescriptor {
             size += size << 7 | UInt32(length & 0x7F)
         } while ((length & 0x80) != 0)
         return size
+    }
+}
+
+extension BaseDescriptor {
+    // MARK: CustomDebugStringConvertible
+    var debugDescription: String {
+        Mirror(reflecting: self).debugDescription
     }
 }

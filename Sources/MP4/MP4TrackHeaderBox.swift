@@ -48,7 +48,8 @@ extension MP4TrackHeaderBox: DataConvertible {
                     .writeUInt64(duration)
             }
             buffer
-                .writeUInt32(0).writeUInt32(0) // const unsigned int(32)[2]  reserved = 0
+                .writeUInt32(0)
+                .writeUInt32(0) // const unsigned int(32)[2]  reserved = 0
                 .writeInt16(layer)
                 .writeInt16(alternateGroup)
                 .writeInt16(volume)
