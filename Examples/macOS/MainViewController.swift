@@ -61,6 +61,14 @@ final class MainViewController: NSViewController {
         // Publish
         if sender.title == "Publish" {
             sender.title = "Stop"
+
+            // Optional. If you don't specify; the frame size will be the current H264Encoder default of 480x272
+//            rtmpStream.videoSettings = [
+//                .profileLevel: kVTProfileLevel_H264_High_AutoLevel,
+//                .width: 1920,
+//                .height: 1280,
+//            ]
+
             segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:

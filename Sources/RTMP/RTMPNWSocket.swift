@@ -51,9 +51,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     private var parameters: NWParameters = .tcp
     private lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.input", qos: qualityOfService)
     private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NWSocket.output", qos: qualityOfService)
-    private lazy var timeoutHandler = DispatchWorkItem { [weak self] in
-        self?.didTimeout()
-    }
+    private var timeoutHandler: DispatchWorkItem?
 
     func connect(withName: String, port: Int) {
         handshake.clear()
@@ -71,7 +69,11 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             receive(on: connection)
         }
         if 0 < timeout {
-            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + .seconds(timeout), execute: timeoutHandler)
+            let newTimeoutHandler = DispatchWorkItem { [weak self] in
+                self?.didTimeout()
+            }
+            timeoutHandler = newTimeoutHandler
+            DispatchQueue.global(qos: .userInteractive).asyncAfter(deadline: .now() + .seconds(timeout), execute: newTimeoutHandler)
         }
     }
 
@@ -85,7 +87,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         readyState = .closing
-        timeoutHandler.cancel()
+        timeoutHandler?.cancel()
         connection = nil
     }
 
@@ -142,7 +144,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
         case .ready:
-            timeoutHandler.cancel()
+            timeoutHandler?.cancel()
             connected = true
         case .failed:
             close(isDisconnected: true)

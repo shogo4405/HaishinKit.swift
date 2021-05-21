@@ -8,13 +8,21 @@
     <script src="../js/jquery.min.js" defer></script>
     <script src="../js/jazzy.js" defer></script>
     
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
     <a name="//apple_ref/swift/Extension/CMSampleBuffer" class="dashAnchor"></a>
     <a title="CMSampleBuffer Extension Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit Docs</a> (17% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.1.5 Docs</a> (20% documented)</p>
+        <p class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </p>
       </div>
     </header>
     <div class="content-wrapper">
@@ -52,16 +60,13 @@
                 <a href="../Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioConverter.html">AudioConverter</a>
+                <a href="../Classes/AudioCodec.html">AudioCodec</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioConverter/Option.html">– Option</a>
+                <a href="../Classes/AudioCodec/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioConverter/AudioBuffer.html">– AudioBuffer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/AudioConverter/Destination.html">– Destination</a>
+                <a href="../Classes/AudioCodec/Destination.html">– Destination</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AudioEffect.html">AudioEffect</a>
@@ -215,10 +220,10 @@
                 <a href="../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
+                <a href="../Enums/HKPictureInPicureControllerPosition.html">HKPictureInPicureControllerPosition</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/SamplingFrequency.html">SamplingFrequency</a>
+                <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/ScalingMode.html">ScalingMode</a>
@@ -229,58 +234,13 @@
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Extensions/AVCaptureDevice.html">AVCaptureDevice</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AVCaptureSession.html">AVCaptureSession</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AVCaptureSession/Preset.html">– Preset</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AVFrameRateRange.html">AVFrameRateRange</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Extensions/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Extensions/CGRect.html">CGRect</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CMAudioFormatDescription.html">CMAudioFormatDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CMBlockBuffer.html">CMBlockBuffer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CMFormatDescription.html">CMFormatDescription</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Extensions/CMSampleBuffer.html">CMSampleBuffer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CMVideoFormatDescription.html">CMVideoFormatDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CVPixelBuffer.html">CVPixelBuffer</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/Data.html">Data</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/ExpressibleByIntegerLiteral.html">ExpressibleByIntegerLiteral</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/Mirror.html">Mirror</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/URL.html">URL</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/VTCompressionSession.html">VTCompressionSession</a>
               </li>
             </ul>
           </li>
@@ -291,13 +251,16 @@
                 <a href="../Protocols/AVRecorderDelegate.html">AVRecorderDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/AudioConverterDelegate.html">AudioConverterDelegate</a>
+                <a href="../Protocols/AudioCodecDelegate.html">AudioCodecDelegate</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/CustomCaptureSession.html">CustomCaptureSession</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/HKPictureInPicureController.html">HKPictureInPicureController</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/IEventDispatcher.html">IEventDispatcher</a>
@@ -319,6 +282,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/TimerDriverDelegate.html">TimerDriverDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/VideoEncoderDelegate.html">VideoEncoderDelegate</a>
               </li>
             </ul>
           </li>
@@ -379,6 +345,7 @@
             <h1>CMSampleBuffer</h1>
               <div class="declaration">
                 <div class="language">
+                  
                   <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">CMSampleBuffer</span></code></pre>
 
                 </div>
@@ -391,9 +358,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE9isNotSyncSbvp"></a>
-                    <a name="//apple_ref/swift/Property/isNotSync" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE9isNotSyncSbvp">isNotSync</a>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/reflectHorizontal()" class="dashAnchor"></a>
+                    <a class="token" href="#/">reflectHorizontal()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -401,232 +368,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">isNotSync</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE7isValidSbvp"></a>
-                    <a name="//apple_ref/swift/Property/isValid" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE7isValidSbvp">isValid</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">isValid</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE04dataB0So07CMBlockbC0aSgvp"></a>
-                    <a name="//apple_ref/swift/Property/dataBuffer" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE04dataB0So07CMBlockbC0aSgvp">dataBuffer</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">dataBuffer</span><span class="p">:</span> <span class="kt">CMBlockBuffer</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE05imageB0So08CVBufferC0aSgvp"></a>
-                    <a name="//apple_ref/swift/Property/imageBuffer" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE05imageB0So08CVBufferC0aSgvp">imageBuffer</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">imageBuffer</span><span class="p">:</span> <span class="kt">CVImageBuffer</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE10numSamplesSivp"></a>
-                    <a name="//apple_ref/swift/Property/numSamples" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE10numSamplesSivp">numSamples</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">numSamples</span><span class="p">:</span> <span class="kt">CMItemCount</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE8durationSo6CMTimeavp"></a>
-                    <a name="//apple_ref/swift/Property/duration" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE8durationSo6CMTimeavp">duration</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">duration</span><span class="p">:</span> <span class="kt">CMTime</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE17formatDescriptionSo08CMFormatgC0aSgvp"></a>
-                    <a name="//apple_ref/swift/Property/formatDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE17formatDescriptionSo08CMFormatgC0aSgvp">formatDescription</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">formatDescription</span><span class="p">:</span> <span class="kt">CMFormatDescription</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE15decodeTimeStampSo6CMTimeavp"></a>
-                    <a name="//apple_ref/swift/Property/decodeTimeStamp" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE15decodeTimeStampSo6CMTimeavp">decodeTimeStamp</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">decodeTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:So17CMSampleBufferRefa10HaishinKitE21presentationTimeStampSo6CMTimeavp"></a>
-                    <a name="//apple_ref/swift/Property/presentationTimeStamp" class="dashAnchor"></a>
-                    <a class="token" href="#/s:So17CMSampleBufferRefa10HaishinKitE21presentationTimeStampSo6CMTimeavp">presentationTimeStamp</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">presentationTimeStamp</span><span class="p">:</span> <span class="kt">CMTime</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
+                        
                       </div>
                     </section>
                   </div>
@@ -636,8 +378,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2020 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2020-04-18)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2021-04-29)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.6</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>

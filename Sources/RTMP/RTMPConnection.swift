@@ -1,9 +1,7 @@
 import AVFoundation
 import Foundation
 
-/**
- flash.net.Responder for Swift
- */
+/// flash.net.Responder for Swift
 open class Responder {
     public typealias Handler = (_ data: [Any?]) -> Void
 
@@ -26,13 +24,12 @@ open class Responder {
 }
 
 // MARK: -
-/**
- flash.net.NetConnection for Swift
- */
+/// flash.net.NetConnection for Swift
 open class RTMPConnection: EventDispatcher {
     public static let defaultWindowSizeS: Int64 = 250000
     public static let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
     public static let defaultPort: Int = 1935
+    public static let defaultSecurePort: Int = 443
     public static let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
     public static let defaultChunkSizeS: Int = 1024 * 8
     public static let defaultCapabilities: Int = 239
@@ -164,7 +161,7 @@ open class RTMPConnection: EventDispatcher {
     open var flashVer: String = RTMPConnection.defaultFlashVer
     /// The outgoing RTMPChunkSize.
     open var chunkSize: Int = RTMPConnection.defaultChunkSizeS
-    /// The URI passed to the RTMPConnection.connect() method.
+    /// The URI passed to the Self.connect() method.
     open private(set) var uri: URL?
     /// This instance connected to server(true) or not(false).
     open private(set) var connected = false
@@ -254,6 +251,7 @@ open class RTMPConnection: EventDispatcher {
         removeEventListener(.rtmpStatus, selector: #selector(on(status:)))
     }
 
+    /// Calls a command or method on RTMP Server.
     open func call(_ commandName: String, responder: Responder?, arguments: Any?...) {
         guard connected else {
             return
@@ -273,8 +271,9 @@ open class RTMPConnection: EventDispatcher {
         socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
     }
 
+    /// Creates a two-way connection to an application on RTMP Server.
     open func connect(_ command: String, arguments: Any?...) {
-        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && RTMPConnection.supportedProtocols.contains(scheme) else {
+        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && Self.supportedProtocols.contains(scheme) else {
             return
         }
         self.uri = uri
@@ -292,10 +291,12 @@ open class RTMPConnection: EventDispatcher {
         }
         socket.delegate = self
         socket.setProperty(parameters, forKey: "parameters")
-        socket.securityLevel = uri.scheme == "rtmps" || uri.scheme == "rtmpts"  ? .negotiatedSSL : .none
-        socket.connect(withName: uri.host!, port: uri.port ?? RTMPConnection.defaultPort)
+        let secure = uri.scheme == "rtmps" || uri.scheme == "rtmpts"
+        socket.securityLevel = secure ? .negotiatedSSL : .none
+        socket.connect(withName: uri.host!, port: uri.port ?? (secure ? Self.defaultSecurePort : Self.defaultPort))
     }
 
+    /// Closes the connection from the server.
     open func close() {
         close(isDisconnected: false)
     }
@@ -305,15 +306,15 @@ open class RTMPConnection: EventDispatcher {
             timer = nil
             return
         }
+        timer = nil
         if !isDisconnected {
             uri = nil
         }
-        for (id, stream) in streams {
+        for (_, stream) in streams {
             stream.close()
-            streams.removeValue(forKey: id)
         }
         socket.close(isDisconnected: false)
-        timer = nil
+        streams.removeAll()
     }
 
     func createStream(_ stream: RTMPStream) {
@@ -362,7 +363,7 @@ open class RTMPConnection: EventDispatcher {
             case description.contains("reason=authfailed"):
                 break
             case description.contains("reason=needauth"):
-                let command: String = RTMPConnection.createSanJoseAuthCommand(uri, description: description)
+                let command: String = Self.createSanJoseAuthCommand(uri, description: description)
                 connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
                 if user.isEmpty || password.isEmpty {
@@ -409,7 +410,7 @@ open class RTMPConnection: EventDispatcher {
                 "swfUrl": swfUrl,
                 "tcUrl": uri.absoluteWithoutAuthenticationString,
                 "fpad": false,
-                "capabilities": RTMPConnection.defaultCapabilities,
+                "capabilities": Self.defaultCapabilities,
                 "audioCodecs": SupportSound.aac.rawValue,
                 "videoCodecs": SupportVideo.h264.rawValue,
                 "videoFunction": VideoFunction.clientSeek.rawValue,
@@ -459,7 +460,9 @@ open class RTMPConnection: EventDispatcher {
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
     func didSetReadyState(_ readyState: RTMPSocketReadyState) {
-        logger.debug(readyState)
+        if logger.isEnabledFor(level: .debug) {
+            logger.debug(readyState)
+        }
         switch readyState {
         case .handshakeDone:
             guard let chunk: RTMPChunk = makeConnectionChunk() else {

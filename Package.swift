@@ -17,7 +17,8 @@ let package = Package(
     ],
     targets: [
         .target(name: "SwiftPMSupport"),
-        .target(name: "HaishinKit", dependencies: ["Logboard", "SwiftPMSupport"],
+        .target(name: "HaishinKit",
+                dependencies: ["Logboard", "SwiftPMSupport"],
                 path: "Sources",
                 sources: [
                     "Codec",
@@ -26,11 +27,13 @@ let package = Package(
                     "HTTP",
                     "ISO",
                     "Media",
+                    "MP4",
                     "Net",
                     "PiP",
                     "RTMP",
                     "Util",
-                    "Platforms"
+                    "Platforms",
+                    "TS"
                 ])
     ]
 )

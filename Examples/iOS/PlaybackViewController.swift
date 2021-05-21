@@ -21,7 +21,7 @@ final class PlaybackViewController: UIViewController, HKPictureInPicureControlle
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        (view as? GLHKView)?.attachStream(rtmpStream)
+        (view as? MTHKView)?.attachStream(rtmpStream)
     }
 
     override func viewWillDisappear(_ animated: Bool) {

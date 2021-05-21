@@ -1,6 +1,6 @@
 import AVFoundation
 
-public protocol AVRecorderDelegate: class {
+public protocol AVRecorderDelegate: AnyObject {
     var moviesDirectory: URL { get }
 
     func rotateFile(_ recorder: AVRecorder, withPresentationTimeStamp: CMTime, mediaType: AVMediaType)

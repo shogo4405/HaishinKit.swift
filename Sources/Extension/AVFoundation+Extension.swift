@@ -6,11 +6,11 @@ import Foundation
 typealias AVCaptureOutput = Any
 typealias AVCaptureConnection = Any
 
-protocol AVCaptureVideoDataOutputSampleBufferDelegate: class {
+protocol AVCaptureVideoDataOutputSampleBufferDelegate: AnyObject {
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 
-protocol AVCaptureAudioDataOutputSampleBufferDelegate: class {
+protocol AVCaptureAudioDataOutputSampleBufferDelegate: AnyObject {
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
 }
 

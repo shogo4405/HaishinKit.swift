@@ -7,7 +7,7 @@ import CoreImage
 import UIKit
 #endif
 
-public protocol ScreenCaptureOutputPixelBufferDelegate: class {
+public protocol ScreenCaptureOutputPixelBufferDelegate: AnyObject {
     func didSet(size: CGSize)
     func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime)
 }
