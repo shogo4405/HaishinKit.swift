@@ -397,7 +397,6 @@ open class RTMPStream: NetStream {
     open func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
             guard self.readyState == .publishing else {
-                logger.info("skip publishing")
                 return
             }
             let length: Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPDataMessage(
@@ -425,8 +424,6 @@ open class RTMPStream: NetStream {
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate / 1000
         }
 #endif
-        logger.info("metadata")
-        logger.info(metadata)
         return metadata
     }
 
@@ -518,7 +515,6 @@ open class RTMPStream: NetStream {
                 mixer.startRunning()
             }
             FCPublish()
-            logger.info("publishing...");
             videoWasSent = false
             audioWasSent = false
             
@@ -625,9 +621,9 @@ extension RTMPStream: RTMPMuxerDelegate {
             streamId: type.streamId,
             message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
         ), locked: &mixer.videoIO.encoder.locked)
-        if !videoWasSent {
-            logger.info("first video frame was sent")
-        }
+//        if !videoWasSent {
+//            logger.info("first video frame was sent")
+//        }
         videoWasSent = true
         info.byteCount.mutate { $0 += Int64(length) }
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
