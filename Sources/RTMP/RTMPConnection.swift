@@ -298,10 +298,10 @@ open class RTMPConnection: EventDispatcher {
 
     /// Closes the connection from the server.
     open func close() {
-        close(isDisconnected: false)
+        close(isDisconnected: false, keepRecording: false)
     }
 
-    func close(isDisconnected: Bool) {
+    func close(isDisconnected: Bool, keepRecording: Bool = false) {
         guard connected || isDisconnected else {
             timer = nil
             return
@@ -311,7 +311,7 @@ open class RTMPConnection: EventDispatcher {
             uri = nil
         }
         for (_, stream) in streams {
-            stream.close()
+            stream.close(keepRecording: keepRecording)
         }
         socket.close(isDisconnected: false)
         streams.removeAll()
@@ -341,6 +341,7 @@ open class RTMPConnection: EventDispatcher {
 
         switch Code(rawValue: code) {
         case .some(.connectSuccess):
+            logger.info("Connected...")
             connected = true
             socket.chunkSizeS = chunkSize
             socket.doOutput(chunk: RTMPChunk(
@@ -367,7 +368,7 @@ open class RTMPConnection: EventDispatcher {
                 connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
                 if user.isEmpty || password.isEmpty {
-                    close(isDisconnected: true)
+                    close(isDisconnected: true, keepRecording: false)
                     break
                 }
                 let query: String = uri.query ?? ""
@@ -380,7 +381,8 @@ open class RTMPConnection: EventDispatcher {
             if let description: String = data["description"] as? String {
                 logger.warn(description)
             }
-            close(isDisconnected: true)
+            logger.info("Connection closed")
+            close(isDisconnected: true, keepRecording: true)
         default:
             break
         }

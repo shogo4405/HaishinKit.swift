@@ -186,7 +186,7 @@ open class RTMPStream: NetStream {
     static let defaultID: UInt32 = 0
     public static let defaultAudioBitrate: UInt32 = AudioCodec.defaultBitrate
     public static let defaultVideoBitrate: UInt32 = H264Encoder.defaultBitrate
-
+    
     open weak var delegate: RTMPStreamDelegate?
     open internal(set) var info = RTMPStreamInfo()
     open private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
@@ -265,6 +265,7 @@ open class RTMPStream: NetStream {
     private var videoWasSent = false
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var rtmpConnection: RTMPConnection
+    public var keepRecording: Bool = false
 
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection
@@ -387,11 +388,16 @@ open class RTMPStream: NetStream {
     open func close() {
         close(withLockQueue: true)
     }
+    open func close(keepRecording: Bool = false) {
+        self.keepRecording = keepRecording;
+        close(withLockQueue: true);
+    }
 
     /// Sends a message on a published stream to all subscribing clients.
     open func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
             guard self.readyState == .publishing else {
+                logger.info("skip publishing")
                 return
             }
             let length: Int = self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPDataMessage(
@@ -419,6 +425,8 @@ open class RTMPStream: NetStream {
             metadata["audiodatarate"] = mixer.audioIO.encoder.bitrate / 1000
         }
 #endif
+        logger.info("metadata")
+        logger.info(metadata)
         return metadata
     }
 
@@ -465,7 +473,10 @@ open class RTMPStream: NetStream {
             mixer.videoIO.encoder.delegate = nil
             mixer.audioIO.encoder.stopRunning()
             mixer.videoIO.encoder.stopRunning()
-            mixer.recorder.stopRunning()
+            
+            if (!keepRecording) {
+                mixer.recorder.stopRunning()
+            }
         default:
             break
         }
@@ -503,17 +514,24 @@ open class RTMPStream: NetStream {
             mixer.audioIO.encoder.delegate = muxer
             mixer.videoIO.encoder.delegate = muxer
             // sampler?.delegate = muxer
-            mixer.startRunning()
+            if (!keepRecording) {
+                mixer.startRunning()
+            }
+            FCPublish()
+            logger.info("publishing...");
             videoWasSent = false
             audioWasSent = false
-            FCPublish()
+            
         case .publishing:
             send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
             mixer.audioIO.encoder.startRunning()
             mixer.videoIO.encoder.startRunning()
-            if howToPublish == .localRecord {
-                mixer.recorder.fileName = FilenameUtil.fileName(resourceName: info.resourceName)
-                mixer.recorder.startRunning()
+            
+            if (!keepRecording) {
+                if howToPublish == .localRecord {
+                    mixer.recorder.fileName = FilenameUtil.fileName(resourceName: info.resourceName)
+                    mixer.recorder.startRunning()
+                }
             }
         default:
             break
@@ -608,7 +626,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
         ), locked: &mixer.videoIO.encoder.locked)
         if !videoWasSent {
-            logger.debug("first video frame was sent")
+            logger.info("first video frame was sent")
         }
         videoWasSent = true
         info.byteCount.mutate { $0 += Int64(length) }

@@ -296,7 +296,7 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
                 fileComponent = fileName + dateFormatter.string(from: Date())
             }
             let url: URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + fileType.fileExtension)
-            logger.info("\(url)")
+//            logger.info("\(url)")
             return try AVAssetWriter(outputURL: url, fileType: fileType.AVFileType)
         } catch {
             logger.warn("create an AVAssetWriter")
