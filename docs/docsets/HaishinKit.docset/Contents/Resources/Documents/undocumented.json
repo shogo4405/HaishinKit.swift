@@ -1,261 +1,429 @@
 {
   "warnings": [
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/GLHKView-macOS.swift",
-      "line": 19,
-      "symbol": "GLHKView.defaultPixelFormat()",
-      "symbol_kind": "source.lang.swift.decl.function.method.class",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/DeviceUtil+Extenstion.swift",
+      "line": 7,
+      "symbol": "DeviceUtil.videoOrientation(by:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/GLHKView-macOS.swift",
-      "line": 40,
-      "symbol": "GLHKView.prepareOpenGL()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/DeviceUtil+Extenstion.swift",
+      "line": 14,
+      "symbol": "DeviceUtil.videoOrientation(by:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/GLHKView-macOS.swift",
-      "line": 58,
-      "symbol": "GLHKView.draw(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/DeviceUtil+Extenstion.swift",
+      "line": 29,
+      "symbol": "DeviceUtil.videoOrientation(by:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/GLHKView-macOS.swift",
-      "line": 81,
-      "symbol": "GLHKView.reshape()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
       "line": 6,
       "symbol": "HKView",
       "symbol_kind": "source.lang.swift.decl.class",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
       "line": 7,
       "symbol": "HKView.defaultBackgroundColor",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
       "line": 9,
+      "symbol": "HKView.layerClass",
+      "symbol_kind": "source.lang.swift.decl.var.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 13,
+      "symbol": "HKView.layer",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 17,
       "symbol": "HKView.videoGravity",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
-      "line": 14,
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 23,
       "symbol": "HKView.videoFormatDescription",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
-      "line": 34,
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 57,
       "symbol": "HKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
-      "line": 39,
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 62,
       "symbol": "HKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
-      "line": 43,
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 70,
       "symbol": "HKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/HKView-macOS.swift",
-      "line": 51,
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/HKView.swift",
+      "line": 76,
       "symbol": "HKView.attachStream(_:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/macOS/NetStream+Extension-macOS.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
       "line": 7,
-      "symbol": "NetStream.attachScreen(_:)",
+      "symbol": "NetStream.orientation",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
+      "line": 16,
+      "symbol": "NetStream.attachScreen(_:useScreenSize:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.Destination.swift",
-      "line": 4,
-      "symbol": "AudioConverter.Destination",
-      "symbol_kind": "source.lang.swift.decl.enum",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
+      "line": 22,
+      "symbol": "NetStream.zoomFactor",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.Destination.swift",
-      "line": 5,
-      "symbol": "AudioConverter.Destination.aac",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/NetStream+Extension.swift",
+      "line": 26,
+      "symbol": "NetStream.setZoomFactor(_:ramping:withRate:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.Destination.swift",
-      "line": 6,
-      "symbol": "AudioConverter.Destination.pcm",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
-      "line": 3,
-      "symbol": "AudioConverterDelegate",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 10,
+      "symbol": "ScreenCaptureOutputPixelBufferDelegate",
       "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 11,
+      "symbol": "ScreenCaptureOutputPixelBufferDelegate.didSet(size:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 12,
+      "symbol": "ScreenCaptureOutputPixelBufferDelegate.output(pixelBuffer:withPresentationTime:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 21,
+      "symbol": "CustomCaptureSession",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 22,
+      "symbol": "CustomCaptureSession.attributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 23,
+      "symbol": "CustomCaptureSession.delegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 27,
+      "symbol": "ScreenCaptureSession",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 34,
+      "symbol": "ScreenCaptureSession.enabledScale",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 35,
+      "symbol": "ScreenCaptureSession.frameInterval",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 36,
+      "symbol": "ScreenCaptureSession.attributes",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 43,
+      "symbol": "ScreenCaptureSession.delegate",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 44,
+      "symbol": "ScreenCaptureSession.isRunning",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 48,
+      "symbol": "ScreenCaptureSession.afterScreenUpdates",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 85,
+      "symbol": "ScreenCaptureSession.init(shared:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 91,
+      "symbol": "ScreenCaptureSession.init(viewToCapture:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 99,
+      "symbol": "ScreenCaptureSession.onScreen(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 119,
+      "symbol": "ScreenCaptureSession.onScreenProcess(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 152,
+      "symbol": "ScreenCaptureSession",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 154,
+      "symbol": "ScreenCaptureSession.startRunning()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Platforms/iOS/ScreenCaptureSession.swift",
+      "line": 168,
+      "symbol": "ScreenCaptureSession.stopRunning()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.Destination.swift",
       "line": 4,
-      "symbol": "AudioConverterDelegate.didSetFormatDescription(audio:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
-      "line": 5,
-      "symbol": "AudioConverterDelegate.sampleOutput(audio:presentationTimeStamp:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
-      "line": 18,
-      "symbol": "AudioConverter.Option",
+      "symbol": "AudioCodec.Destination",
       "symbol_kind": "source.lang.swift.decl.enum",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.Destination.swift",
+      "line": 5,
+      "symbol": "AudioCodec.Destination.aac",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.Destination.swift",
+      "line": 6,
+      "symbol": "AudioCodec.Destination.pcm",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
+      "line": 3,
+      "symbol": "AudioCodecDelegate",
+      "symbol_kind": "source.lang.swift.decl.protocol",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
+      "line": 4,
+      "symbol": "AudioCodecDelegate.didSetFormatDescription(audio:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
+      "line": 5,
+      "symbol": "AudioCodecDelegate.sampleOutput(audio:presentationTimeStamp:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
+      "line": 18,
+      "symbol": "AudioCodec.Option",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 19,
-      "symbol": "AudioConverter.Option.muted",
+      "symbol": "AudioCodec.Option.muted",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 20,
-      "symbol": "AudioConverter.Option.bitrate",
+      "symbol": "AudioCodec.Option.bitrate",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 21,
-      "symbol": "AudioConverter.Option.sampleRate",
+      "symbol": "AudioCodec.Option.sampleRate",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 22,
-      "symbol": "AudioConverter.Option.actualBitrate",
+      "symbol": "AudioCodec.Option.actualBitrate",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 24,
-      "symbol": "AudioConverter.Option.keyPath",
+      "symbol": "AudioCodec.Option.keyPath",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 38,
-      "symbol": "AudioConverter.minimumBitrate",
+      "symbol": "AudioCodec.minimumBitrate",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 39,
-      "symbol": "AudioConverter.defaultBitrate",
+      "symbol": "AudioCodec.defaultBitrate",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 44,
-      "symbol": "AudioConverter.defaultMaximumBuffers",
+      "symbol": "AudioCodec.defaultMaximumBuffers",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 46,
-      "symbol": "AudioConverter.destination",
+      "symbol": "AudioCodec.destination",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 47,
-      "symbol": "AudioConverter.delegate",
+      "symbol": "AudioCodec.delegate",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 48,
-      "symbol": "AudioConverter.isRunning",
+      "symbol": "AudioCodec.isRunning",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 49,
-      "symbol": "AudioConverter.settings",
+      "symbol": "AudioCodec.settings",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 142,
-      "symbol": "AudioConverter.init()",
+      "symbol": "AudioCodec.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 166,
-      "symbol": "AudioConverter.encodeBytes(_:count:presentationTimeStamp:)",
+      "symbol": "AudioCodec.encodeBytes(_:count:presentationTimeStamp:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 175,
-      "symbol": "AudioConverter.encodeSampleBuffer(_:offset:)",
+      "symbol": "AudioCodec.encodeSampleBuffer(_:offset:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 313,
-      "symbol": "AudioConverter.startRunning()",
+      "symbol": "AudioCodec.startRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioConverter.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/AudioCodec.swift",
       "line": 319,
-      "symbol": "AudioConverter.stopRunning()",
+      "symbol": "AudioCodec.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -331,13 +499,6 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
-      "line": 23,
-      "symbol": "H264Encoder.Option.enabledHardwareEncoder",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
       "line": 25,
       "symbol": "H264Encoder.Option.maxKeyFrameIntervalDuration",
       "symbol_kind": "source.lang.swift.decl.enumelement",
@@ -387,35 +548,35 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
-      "line": 69,
+      "line": 76,
       "symbol": "H264Encoder.settings",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
-      "line": 74,
+      "line": 81,
       "symbol": "H264Encoder.isRunning",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
-      "line": 309,
+      "line": 320,
       "symbol": "H264Encoder",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
-      "line": 311,
+      "line": 322,
       "symbol": "H264Encoder.startRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Codec/H264Encoder.swift",
-      "line": 332,
+      "line": 343,
       "symbol": "H264Encoder.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -1079,6 +1240,34 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HLSService.swift",
+      "line": 3,
+      "symbol": "HLSService",
+      "symbol_kind": "source.lang.swift.decl.class",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HLSService.swift",
+      "line": 6,
+      "symbol": "HLSService.addHTTPStream(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HLSService.swift",
+      "line": 13,
+      "symbol": "HLSService.removeHTTPStream(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HLSService.swift",
+      "line": 20,
+      "symbol": "HLSService.get(_:client:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPRequest.swift",
       "line": 63,
       "symbol": "HTTPRequest",
@@ -1171,113 +1360,78 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 164,
-      "symbol": "HTTPService",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 165,
+      "line": 166,
       "symbol": "HTTPService.type",
       "symbol_kind": "source.lang.swift.decl.var.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 168,
+      "line": 169,
       "symbol": "HTTPService.defaultPort",
       "symbol_kind": "source.lang.swift.decl.var.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 171,
+      "line": 172,
       "symbol": "HTTPService.defaultDocument",
       "symbol_kind": "source.lang.swift.decl.var.class",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 217,
+      "line": 218,
       "symbol": "HTTPService.get(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 221,
+      "line": 222,
       "symbol": "HTTPService.post(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 225,
+      "line": 226,
       "symbol": "HTTPService.put(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 229,
+      "line": 230,
       "symbol": "HTTPService.delete(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 233,
+      "line": 234,
       "symbol": "HTTPService.head(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 237,
+      "line": 238,
       "symbol": "HTTPService.options(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 241,
+      "line": 242,
       "symbol": "HTTPService.trace(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 245,
+      "line": 246,
       "symbol": "HTTPService.connect(_:client:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 256,
-      "symbol": "HLSService",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 259,
-      "symbol": "HLSService.addHTTPStream(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 266,
-      "symbol": "HLSService.removeHTTPStream(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPService.swift",
-      "line": 273,
-      "symbol": "HLSService.get(_:client:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -1299,118 +1453,6 @@
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/HTTP/HTTPStream.swift",
       "line": 48,
       "symbol": "HTTPStream.attachAudio(_:automaticallyConfiguresApplicationAudioSession:onError:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 125,
-      "symbol": "SamplingFrequency",
-      "symbol_kind": "source.lang.swift.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 126,
-      "symbol": "SamplingFrequency.hz96000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 127,
-      "symbol": "SamplingFrequency.hz88200",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 128,
-      "symbol": "SamplingFrequency.hz64000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 129,
-      "symbol": "SamplingFrequency.hz48000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 130,
-      "symbol": "SamplingFrequency.hz44100",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 131,
-      "symbol": "SamplingFrequency.hz32000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 132,
-      "symbol": "SamplingFrequency.hz24000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 133,
-      "symbol": "SamplingFrequency.hz22050",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 134,
-      "symbol": "SamplingFrequency.hz16000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 135,
-      "symbol": "SamplingFrequency.hz12000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 136,
-      "symbol": "SamplingFrequency.hz11025",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 137,
-      "symbol": "SamplingFrequency.hz8000",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 138,
-      "symbol": "SamplingFrequency.hz7350",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 140,
-      "symbol": "SamplingFrequency.sampleRate",
-      "symbol_kind": "source.lang.swift.decl.var.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/AudioSpecificConfig.swift",
-      "line": 171,
-      "symbol": "SamplingFrequency.init(sampleRate:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -1453,97 +1495,6 @@
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/MP4Sampler.swift",
       "line": 82,
       "symbol": "MP4Sampler.stopRunning()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 11,
-      "symbol": "TSWriterDelegate.didOutput(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 16,
-      "symbol": "TSWriter.defaultPATPID",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 17,
-      "symbol": "TSWriter.defaultPMTPID",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 18,
-      "symbol": "TSWriter.defaultVideoPID",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 19,
-      "symbol": "TSWriter.defaultAudioPID",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 21,
-      "symbol": "TSWriter.defaultSegmentDuration",
-      "symbol_kind": "source.lang.swift.decl.var.static",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 72,
-      "symbol": "TSWriter.init(segmentDuration:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 76,
-      "symbol": "TSWriter.startRunning()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 83,
-      "symbol": "TSWriter.stopRunning()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 213,
-      "symbol": "TSWriter.didSetFormatDescription(audio:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 225,
-      "symbol": "TSWriter.sampleOutput(audio:presentationTimeStamp:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 243,
-      "symbol": "TSWriter.didSetFormatDescription(video:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/ISO/TSWriter.swift",
-      "line": 257,
-      "symbol": "TSWriter.sampleOutput(video:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
@@ -1614,6 +1565,13 @@
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/AVMixer.swift",
       "line": 28,
       "symbol": "AVMixer.Option.continuousExposure",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/AVMixer.swift",
+      "line": 31,
+      "symbol": "AVMixer.Option.preferredVideoStabilizationMode",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
@@ -1934,7 +1892,7 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/AVRecorder.swift",
-      "line": 183,
+      "line": 179,
       "symbol": "DefaultAVRecorderDelegate.moviesDirectory",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
@@ -2010,6 +1968,48 @@
       "warning": "undocumented"
     },
     {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/GLHKView.swift",
+      "line": 14,
+      "symbol": "GLHKView.defaultBackgroundColor",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/GLHKView.swift",
+      "line": 16,
+      "symbol": "GLHKView.isMirrored",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/GLHKView.swift",
+      "line": 46,
+      "symbol": "GLHKView.init(frame:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/GLHKView.swift",
+      "line": 51,
+      "symbol": "GLHKView.init(coder:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/GLHKView.swift",
+      "line": 56,
+      "symbol": "GLHKView.awakeFromNib()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/GLHKView.swift",
+      "line": 78,
+      "symbol": "GLHKView.glkView(_:drawIn:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/MTHKView.swift",
       "line": 8,
       "symbol": "MTHKView.isMirrored",
@@ -2018,35 +2018,35 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/MTHKView.swift",
-      "line": 36,
+      "line": 41,
       "symbol": "MTHKView.init(frame:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/MTHKView.swift",
-      "line": 41,
+      "line": 46,
       "symbol": "MTHKView.init(coder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/MTHKView.swift",
-      "line": 46,
+      "line": 51,
       "symbol": "MTHKView.awakeFromNib()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/MTHKView.swift",
-      "line": 67,
+      "line": 72,
       "symbol": "MTHKView.mtkView(_:drawableSizeWillChange:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Media/MTHKView.swift",
-      "line": 70,
+      "line": 75,
       "symbol": "MTHKView.draw(in:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -2123,14 +2123,7 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetClient.swift",
-      "line": 12,
-      "symbol": "NetClient",
-      "symbol_kind": "source.lang.swift.decl.class",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetClient.swift",
-      "line": 30,
+      "line": 24,
       "symbol": "NetClient.listen()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -2214,70 +2207,70 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetService.swift",
-      "line": 86,
+      "line": 89,
       "symbol": "NetService",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetService.swift",
-      "line": 88,
+      "line": 91,
       "symbol": "NetService.startRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetService.swift",
-      "line": 98,
+      "line": 101,
       "symbol": "NetService.stopRunning()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 101,
+      "line": 7,
       "symbol": "NetSocket.defaultWindowSizeC",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 103,
+      "line": 9,
       "symbol": "NetSocket.inputBuffer",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 108,
+      "line": 14,
       "symbol": "NetSocket.windowSizeC",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 173,
+      "line": 77,
       "symbol": "NetSocket.doOutput(data:locked:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 187,
+      "line": 91,
       "symbol": "NetSocket.close()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 191,
+      "line": 95,
       "symbol": "NetSocket.listen()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Net/NetSocket.swift",
-      "line": 256,
+      "line": 164,
       "symbol": "NetSocket.stream(_:handle:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -2388,353 +2381,430 @@
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 3,
-      "symbol": "kASUndefined",
-      "symbol_kind": "source.lang.swift.decl.var.global",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 9,
+      "symbol": "HKPictureInPicureController.isPictureInPictureActive",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 13,
+      "symbol": "HKPictureInPicureController.pictureInPictureSize",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 22,
+      "symbol": "HKPictureInPicureController.pictureInPicturePosition",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 31,
+      "symbol": "HKPictureInPicureController.pictureInPictureMargin",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 40,
+      "symbol": "HKPictureInPicureController.pictureInPictureCornerRadius",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 49,
+      "symbol": "HKPictureInPicureController.pictureInPictureAnimationDuration",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 72,
+      "symbol": "HKPictureInPicureController.startPictureInPicture()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController+Extension.swift",
+      "line": 79,
+      "symbol": "HKPictureInPicureController.stopPictureInPicture()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
       "line": 5,
-      "symbol": "ASObject",
-      "symbol_kind": "source.lang.swift.decl.typealias",
+      "symbol": "HKPictureInPicureController",
+      "symbol_kind": "source.lang.swift.decl.protocol",
       "warning": "undocumented"
     },
     {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 6,
+      "symbol": "HKPictureInPicureController.isPictureInPictureActive",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
       "line": 7,
-      "symbol": "ASUndefined",
-      "symbol_kind": "source.lang.swift.decl.class",
+      "symbol": "HKPictureInPicureController.pictureInPictureSize",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 8,
+      "symbol": "HKPictureInPicureController",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 8,
+      "symbol": "HKPictureInPicureController.pictureInPicturePosition",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 9,
+      "symbol": "HKPictureInPicureController.pictureInPictureMargin",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 10,
+      "symbol": "HKPictureInPicureController.pictureInPictureCornerRadius",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 11,
+      "symbol": "HKPictureInPicureController.pictureInPictureAnimationDuration",
+      "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 13,
+      "symbol": "HKPictureInPicureController.startPictureInPicture()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureController.swift",
+      "line": 14,
+      "symbol": "HKPictureInPicureController.stopPictureInPicture()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureControllerPosition.swift",
+      "line": 4,
+      "symbol": "HKPictureInPicureControllerPosition",
+      "symbol_kind": "source.lang.swift.decl.enum",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureControllerPosition.swift",
+      "line": 5,
+      "symbol": "HKPictureInPicureControllerPosition.topLeft",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureControllerPosition.swift",
+      "line": 6,
+      "symbol": "HKPictureInPicureControllerPosition.topRight",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureControllerPosition.swift",
+      "line": 7,
+      "symbol": "HKPictureInPicureControllerPosition.bottomRight",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/PiP/HKPictureInPicureControllerPosition.swift",
+      "line": 8,
+      "symbol": "HKPictureInPicureControllerPosition.bottomLeft",
+      "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 8,
+      "line": 17,
       "symbol": "ASUndefined.description",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 17,
+      "line": 26,
       "symbol": "ASTypedObject",
       "symbol_kind": "source.lang.swift.decl.struct",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 18,
+      "line": 27,
       "symbol": "ASTypedObject.TypedObjectDecoder",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 30,
+      "line": 39,
       "symbol": "ASTypedObject.register(typeNamed:decoder:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 34,
+      "line": 43,
       "symbol": "ASTypedObject.register(type:named:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 41,
+      "line": 50,
       "symbol": "ASTypedObject.unregister(typeNamed:)",
       "symbol_kind": "source.lang.swift.decl.function.method.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 47,
-      "symbol": "ASArray",
-      "symbol_kind": "source.lang.swift.decl.struct",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 51,
+      "line": 63,
       "symbol": "ASArray.length",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 55,
+      "line": 67,
       "symbol": "ASArray.init(count:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 59,
+      "line": 71,
       "symbol": "ASArray.init(data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 64,
-      "symbol": "ASArray",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 70,
+      "line": 82,
       "symbol": "ASArray.subscript(_:)",
       "symbol_kind": "source.lang.swift.decl.function.subscript",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 104,
-      "symbol": "ASArray",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 111,
-      "symbol": "ASArray",
-      "symbol_kind": "source.lang.swift.decl.extension",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 127,
+      "line": 139,
       "symbol": "ASXMLDocument.description",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 133,
+      "line": 145,
       "symbol": "ASXMLDocument.init(data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 145,
+      "line": 157,
       "symbol": "ASXML.description",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/ASClass.swift",
-      "line": 151,
+      "line": 163,
       "symbol": "ASXML.init(data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 8,
+      "line": 6,
       "symbol": "Responder.Handler",
       "symbol_kind": "source.lang.swift.decl.typealias",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 13,
+      "line": 11,
       "symbol": "Responder.init(result:status:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 33,
+      "line": 29,
       "symbol": "RTMPConnection.defaultWindowSizeS",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 34,
+      "line": 30,
       "symbol": "RTMPConnection.supportedProtocols",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 35,
+      "line": 31,
       "symbol": "RTMPConnection.defaultPort",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 36,
+      "line": 32,
+      "symbol": "RTMPConnection.defaultSecurePort",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
+      "line": 33,
       "symbol": "RTMPConnection.defaultFlashVer",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 37,
+      "line": 34,
       "symbol": "RTMPConnection.defaultChunkSizeS",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 38,
+      "line": 35,
       "symbol": "RTMPConnection.defaultCapabilities",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 39,
+      "line": 36,
       "symbol": "RTMPConnection.defaultObjectEncoding",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 45,
+      "line": 42,
       "symbol": "RTMPConnection.Code.callBadVersion",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 46,
+      "line": 43,
       "symbol": "RTMPConnection.Code.callFailed",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 47,
+      "line": 44,
       "symbol": "RTMPConnection.Code.callProhibited",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 48,
+      "line": 45,
       "symbol": "RTMPConnection.Code.connectAppshutdown",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 49,
+      "line": 46,
       "symbol": "RTMPConnection.Code.connectClosed",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 50,
+      "line": 47,
       "symbol": "RTMPConnection.Code.connectFailed",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 51,
+      "line": 48,
       "symbol": "RTMPConnection.Code.connectIdleTimeOut",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 52,
+      "line": 49,
       "symbol": "RTMPConnection.Code.connectInvalidApp",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 53,
+      "line": 50,
       "symbol": "RTMPConnection.Code.connectNetworkChange",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 54,
+      "line": 51,
       "symbol": "RTMPConnection.Code.connectRejected",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 55,
+      "line": 52,
       "symbol": "RTMPConnection.Code.connectSuccess",
       "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 57,
+      "line": 54,
       "symbol": "RTMPConnection.Code.level",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 159,
+      "line": 156,
       "symbol": "RTMPConnection.qualityOfService",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 246,
+      "line": 243,
       "symbol": "RTMPConnection.init()",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 257,
-      "symbol": "RTMPConnection.call(_:responder:arguments:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 276,
-      "symbol": "RTMPConnection.connect(_:arguments:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPConnection.swift",
-      "line": 299,
-      "symbol": "RTMPConnection.close()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPObjectEncoding.swift",
-      "line": 1,
-      "symbol": "RTMPObjectEncoding",
-      "symbol_kind": "source.lang.swift.decl.enum",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPObjectEncoding.swift",
-      "line": 2,
-      "symbol": "RTMPObjectEncoding.amf0",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPObjectEncoding.swift",
-      "line": 3,
-      "symbol": "RTMPObjectEncoding.amf3",
-      "symbol_kind": "source.lang.swift.decl.enumelement",
       "warning": "undocumented"
     },
     {
@@ -3208,119 +3278,91 @@
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 188,
+      "line": 187,
       "symbol": "RTMPStream.defaultAudioBitrate",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 189,
+      "line": 188,
       "symbol": "RTMPStream.defaultVideoBitrate",
       "symbol_kind": "source.lang.swift.decl.var.static",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 191,
+      "line": 190,
       "symbol": "RTMPStream.delegate",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 192,
+      "line": 191,
       "symbol": "RTMPStream.info",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 193,
+      "line": 192,
       "symbol": "RTMPStream.objectEncoding",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 196,
+      "line": 195,
       "symbol": "RTMPStream.soundTransform",
       "symbol_kind": "source.lang.swift.decl.var.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 322,
+      "line": 270,
       "symbol": "RTMPStream.init(connection:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 339,
-      "symbol": "RTMPStream.play(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 381,
-      "symbol": "RTMPStream.seek(_:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 397,
-      "symbol": "RTMPStream.publish(_:type:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 454,
-      "symbol": "RTMPStream.close()",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 478,
-      "symbol": "RTMPStream.send(handlerName:arguments:)",
-      "symbol_kind": "source.lang.swift.decl.function.method.instance",
-      "warning": "undocumented"
-    },
-    {
-      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 493,
+      "line": 406,
       "symbol": "RTMPStream.appendFile(_:completionHandler:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 571,
+      "line": 422,
+      "symbol": "RTMPStream.createMetaData()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
+      "line": 578,
       "symbol": "RTMPStream.addEventListener(_:selector:observer:useCapture:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 575,
+      "line": 582,
       "symbol": "RTMPStream.removeEventListener(_:selector:observer:useCapture:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 579,
+      "line": 586,
       "symbol": "RTMPStream.dispatch(event:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/RTMP/RTMPStream.swift",
-      "line": 583,
+      "line": 590,
       "symbol": "RTMPStream.dispatch(_:bubbles:data:)",
       "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
@@ -3421,6 +3463,97 @@
       "line": 9,
       "symbol": "RTMPStreamInfo.currentBytesPerSecond",
       "symbol_kind": "source.lang.swift.decl.var.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 11,
+      "symbol": "TSWriterDelegate.didOutput(_:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 16,
+      "symbol": "TSWriter.defaultPATPID",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 17,
+      "symbol": "TSWriter.defaultPMTPID",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 18,
+      "symbol": "TSWriter.defaultVideoPID",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 19,
+      "symbol": "TSWriter.defaultAudioPID",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 21,
+      "symbol": "TSWriter.defaultSegmentDuration",
+      "symbol_kind": "source.lang.swift.decl.var.static",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 72,
+      "symbol": "TSWriter.init(segmentDuration:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 76,
+      "symbol": "TSWriter.startRunning()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 83,
+      "symbol": "TSWriter.stopRunning()",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 213,
+      "symbol": "TSWriter.didSetFormatDescription(audio:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 225,
+      "symbol": "TSWriter.sampleOutput(audio:presentationTimeStamp:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 243,
+      "symbol": "TSWriter.didSetFormatDescription(video:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/TS/TSWriter.swift",
+      "line": 257,
+      "symbol": "TSWriter.sampleOutput(video:)",
+      "symbol_kind": "source.lang.swift.decl.function.method.instance",
       "warning": "undocumented"
     },
     {
@@ -3665,6 +3798,13 @@
       "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Util/ByteArray.swift",
       "line": 321,
       "symbol": "ByteArray",
+      "symbol_kind": "source.lang.swift.decl.extension",
+      "warning": "undocumented"
+    },
+    {
+      "file": "/Users/shogo.endo/Documents/GitHub/HaishinKit.swift/Sources/Util/DeviceUtil.swift",
+      "line": 6,
+      "symbol": "DeviceUtil",
       "symbol_kind": "source.lang.swift.decl.extension",
       "warning": "undocumented"
     },

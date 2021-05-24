@@ -6,9 +6,9 @@ import AVFoundation
     }
 #endif
 
-protocol AVMixerDelegate: class {
-    func didOutputAudio(_ buffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
-    func didOutputVideo(_ buffer: CMSampleBuffer)
+protocol AVMixerDelegate: AnyObject {
+    func mixer(_ mixer: AVMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    func mixer(_ mixer: AVMixer, didOutput video: CMSampleBuffer)
 }
 
 public class AVMixer {
@@ -175,7 +175,7 @@ extension AVMixer {
     public func startEncoding(delegate: Any) {
         videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
         videoIO.encoder.startRunning()
-        audioIO.encoder.delegate = delegate as? AudioConverterDelegate
+        audioIO.encoder.delegate = delegate as? AudioCodecDelegate
         audioIO.encoder.startRunning()
     }
 

@@ -11,7 +11,7 @@ import UIKit
 typealias NetStreamRendererView = UIView
 #endif
 
-protocol NetStreamRenderer: class {
+protocol NetStreamRenderer: AnyObject {
 #if os(iOS) || os(macOS)
     var orientation: AVCaptureVideoOrientation { get set }
     var position: AVCaptureDevice.Position { get set }

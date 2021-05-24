@@ -37,6 +37,14 @@ protocol ByteArrayConvertible {
     func readInt32() throws -> Int32
 
     @discardableResult
+    func writeUInt64(_ value: UInt64) -> Self
+    func readUInt64() throws -> UInt64
+
+    @discardableResult
+    func writeInt64(_ value: Int64) -> Self
+    func readInt64() throws -> Int64
+
+    @discardableResult
     func writeDouble(_ value: Double) -> Self
     func readDouble() throws -> Double
 
@@ -69,6 +77,7 @@ open class ByteArray: ByteArrayConvertible {
     static let sizeOfInt24: Int = 3
     static let sizeOfInt32: Int = 4
     static let sizeOfFloat: Int = 4
+    static let sizeOfInt64: Int = 8
     static let sizeOfDouble: Int = 8
 
     public enum Error: Swift.Error {
@@ -209,6 +218,31 @@ open class ByteArray: ByteArrayConvertible {
     @discardableResult
     open func writeInt32(_ value: Int32) -> Self {
         writeBytes(value.bigEndian.data)
+    }
+
+    @discardableResult
+    open func writeUInt64(_ value: UInt64) -> Self {
+        writeBytes(value.bigEndian.data)
+    }
+
+    open func readUInt64() throws -> UInt64 {
+        guard ByteArray.sizeOfInt64 <= bytesAvailable else {
+            throw ByteArray.Error.eof
+        }
+        position += ByteArray.sizeOfInt64
+        return UInt64(data: data[position - ByteArray.sizeOfInt64..<position]).bigEndian
+    }
+
+    open func writeInt64(_ value: Int64) -> Self {
+        writeBytes(value.bigEndian.data)
+    }
+
+    open func readInt64() throws -> Int64 {
+        guard ByteArray.sizeOfInt64 <= bytesAvailable else {
+            throw ByteArray.Error.eof
+        }
+        position += ByteArray.sizeOfInt64
+        return Int64(data: data[position - ByteArray.sizeOfInt64..<position]).bigEndian
     }
 
     open func readDouble() throws -> Double {

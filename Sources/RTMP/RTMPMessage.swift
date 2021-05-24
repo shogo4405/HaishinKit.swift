@@ -335,7 +335,7 @@ final class RTMPCommandMessage: RTMPMessage {
         guard let responder: Responder = connection.operations.removeValue(forKey: transactionId) else {
             switch commandName {
             case "close":
-                connection.close(isDisconnected: true)
+                connection.close(isDisconnected: true, keepRecording: false)
             default:
                 connection.dispatch(.rtmpStatus, bubbles: false, data: arguments.first)
             }
@@ -663,6 +663,7 @@ final class RTMPVideoMessage: RTMPMessage {
             decodeTimeStamp: .invalid
         )
 
+        // swiftlint:disable closure_body_length
         payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
             var blockBuffer: CMBlockBuffer?
             let length: Int = payload.count - FLVTagType.video.headerSize

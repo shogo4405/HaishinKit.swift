@@ -1,6 +1,6 @@
 import AVFoundation
 
-public protocol AVRecorderDelegate: class {
+public protocol AVRecorderDelegate: AnyObject {
     var moviesDirectory: URL { get }
 
     func rotateFile(_ recorder: AVRecorder, withPresentationTimeStamp: CMTime, mediaType: AVMediaType)
@@ -267,7 +267,6 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
         input.expectsMediaDataInRealTime = true
         recorder.writerInputs[mediaType] = input
         recorder.writer?.add(input)
-
         return input
     }
 
@@ -294,7 +293,7 @@ extension DefaultAVRecorderDelegate: AVRecorderDelegate {
                 fileComponent = fileName + dateFormatter.string(from: Date())
             }
             let url: URL = moviesDirectory.appendingPathComponent((fileComponent ?? UUID().uuidString) + fileType.fileExtension)
-            logger.info("\(url)")
+//            logger.info("\(url)")
             return try AVAssetWriter(outputURL: url, fileType: fileType.AVFileType)
         } catch {
             logger.warn("create an AVAssetWriter")
