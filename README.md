@@ -9,7 +9,7 @@
 
 <p align="center">
 <strong>Sponsored with 💖 by</strong><br />
-<a href="https://getstream.io/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">
+<a href="https://getstream.io/chat/sdk/ios/?utm_source=https://github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_content=developer&utm_term=swift" target="_blank">
 <img src="https://stream-blog-v2.imgix.net/blog/wp-content/uploads/f7401112f41742c4e173c30d4f318cb8/stream_logo_white.png?w=350" alt="Stream Chat" style="margin: 8px" />
 </a>
 <br />
