@@ -45,7 +45,7 @@ extension NetSocket {
                 self.locked = locked
             }
             let length = min(count, capacity - tail)
-            let selfData = self.data
+            var selfData = self.data
             return selfData.withUnsafeMutableBytes { (bytes: UnsafeMutableRawBufferPointer) -> Bool in
                 guard let pointer = bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
                     return false
