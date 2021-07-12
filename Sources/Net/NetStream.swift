@@ -48,6 +48,12 @@ open class NetStream: NSObject {
         set { mixer.videoIO.encoder.settings = newValue }
     }
 
+    /// Specify stream video orientation.
+    open var videoOrientation: AVCaptureVideoOrientation {
+        get { mixer.videoIO.orientation }
+        set { mixer.videoIO.orientation = newValue }
+    }
+
     /// Specify stream avsession properties.
     open var captureSettings: Setting<AVMixer, AVMixer.Option> {
         get { mixer.settings }
