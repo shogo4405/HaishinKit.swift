@@ -28,8 +28,8 @@ extension VideoIOComponent {
         }
     }
 
-    func attachScreen(_ screen: CustomCaptureSession?, useScreenSize: Bool = true) {
-        guard let screen: CustomCaptureSession = screen else {
+    func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {
+        guard let screen = screen else {
             self.screen?.stopRunning()
             self.screen = nil
             return
@@ -44,16 +44,16 @@ extension VideoIOComponent {
     }
 }
 
-extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
-    // MARK: ScreenCaptureOutputPixelBufferDelegate
-    func didSet(size: CGSize) {
+extension VideoIOComponent: CaptureSessionDelegate {
+    // MARK: CaptureSessionDelegate
+    func session(_ session: CaptureSessionConvertible, didSet size: CGSize) {
         lockQueue.async {
             self.encoder.width = Int32(size.width)
             self.encoder.height = Int32(size.height)
         }
     }
 
-    func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
+    func session(_ session: CaptureSessionConvertible, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime) {
         if !effects.isEmpty {
             // usually the context comes from HKView or MTLHKView
             // but if you have not attached a view then the context is nil
@@ -65,10 +65,10 @@ extension VideoIOComponent: ScreenCaptureOutputPixelBufferDelegate {
         }
         encoder.encodeImageBuffer(
             pixelBuffer,
-            presentationTimeStamp: withPresentationTime,
+            presentationTimeStamp: presentationTime,
             duration: CMTime.invalid
         )
-        mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
+        mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: presentationTime)
     }
 }
 

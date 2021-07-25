@@ -2,14 +2,11 @@
 
 import AVFoundation
 import CoreImage
-
-#if os(iOS)
 import UIKit
-#endif
 
-public protocol ScreenCaptureOutputPixelBufferDelegate: AnyObject {
-    func didSet(size: CGSize)
-    func output(pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime)
+public protocol CaptureSessionDelegate: AnyObject {
+    func session(_ session: CaptureSessionConvertible, didSet size: CGSize)
+    func session(_ session: CaptureSessionConvertible, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime)
 }
 
 extension CGRect {
@@ -18,13 +15,13 @@ extension CGRect {
     }
 }
 
-public protocol CustomCaptureSession: Running {
+public protocol CaptureSessionConvertible: Running {
     var attributes: [NSString: NSObject] { get }
-    var delegate: ScreenCaptureOutputPixelBufferDelegate? { get set }
+    var delegate: CaptureSessionDelegate? { get set }
 }
 
 // MARK: -
-open class ScreenCaptureSession: NSObject, CustomCaptureSession {
+open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
     static let defaultFrameInterval: Int = 2
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
@@ -40,7 +37,7 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
         attributes[kCVPixelBufferBytesPerRowAlignmentKey] = NSNumber(value: Float(size.width * scale * 4))
         return attributes
     }
-    public weak var delegate: ScreenCaptureOutputPixelBufferDelegate?
+    public weak var delegate: CaptureSessionDelegate?
     public internal(set) var isRunning: Atomic<Bool> = .init(false)
 
     private var shared: UIApplication?
@@ -59,7 +56,7 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
             guard size != oldValue else {
                 return
             }
-            delegate?.didSet(size: CGSize(width: size.width * scale, height: size.height * scale))
+            delegate?.session(self, didSet: CGSize(width: size.width * scale, height: size.height * scale))
             pixelBufferPool = nil
         }
     }
@@ -144,7 +141,7 @@ open class ScreenCaptureSession: NSObject, CustomCaptureSession {
         let image: UIImage = UIGraphicsGetImageFromCurrentImageContext()!
         UIGraphicsEndImageContext()
         context.render(CIImage(cgImage: image.cgImage!), to: pixelBuffer!)
-        delegate?.output(pixelBuffer: pixelBuffer!, withPresentationTime: CMTimeMakeWithSeconds(displayLink.timestamp, preferredTimescale: 1000))
+        delegate?.session(self, didOutput: pixelBuffer!, presentationTime: CMTimeMakeWithSeconds(displayLink.timestamp, preferredTimescale: 1000))
         CVPixelBufferUnlockBaseAddress(pixelBuffer!, [])
     }
 }
