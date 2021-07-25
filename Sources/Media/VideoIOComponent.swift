@@ -283,12 +283,12 @@ final class VideoIOComponent: IOComponent {
     #endif
 
     #if os(iOS)
-    var screen: CustomCaptureSession? = nil {
+    var screen: CaptureSessionConvertible? = nil {
         didSet {
-            if let oldValue: CustomCaptureSession = oldValue {
+            if let oldValue = oldValue {
                 oldValue.delegate = nil
             }
-            if let screen: CustomCaptureSession = screen {
+            if let screen = screen {
                 screen.delegate = self
             }
         }
