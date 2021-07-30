@@ -34,6 +34,12 @@ open class NetStream: NSObject {
             }
         }
     }
+
+    /// Specify stream video orientation.
+    open var videoOrientation: AVCaptureVideoOrientation {
+        get { mixer.videoIO.orientation }
+        set { mixer.videoIO.orientation = newValue }
+    }
 #endif
 
     /// Specify stream audio compression properties.
