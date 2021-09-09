@@ -45,7 +45,8 @@ extension NetSocket {
                 self.locked = locked
             }
             let length = min(count, capacity - tail)
-            return self.data.withUnsafeMutableBytes { (bytes: UnsafeMutableRawBufferPointer) -> Bool in
+            var copyOfData = self.data
+            let result = copyOfData.withUnsafeMutableBytes { (bytes: UnsafeMutableRawBufferPointer) -> Bool in
                 guard let pointer = bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
                     return false
                 }
@@ -64,6 +65,8 @@ extension NetSocket {
                 }
                 return true
             }
+            self.data = copyOfData
+            return result
         }
 
         mutating func skip(_ count: Int) {

@@ -48,22 +48,29 @@ struct AVCConfigurationRecord {
     }
 
     func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus {
-        var parameterSetPointers: [UnsafePointer<UInt8>] = [
-            UnsafePointer<UInt8>(sequenceParameterSets[0]),
-            UnsafePointer<UInt8>(pictureParameterSets[0])
-        ]
-        var parameterSetSizes: [Int] = [
-            sequenceParameterSets[0].count,
-            pictureParameterSets[0].count
-        ]
-        return CMVideoFormatDescriptionCreateFromH264ParameterSets(
-            allocator: kCFAllocatorDefault,
-            parameterSetCount: 2,
-            parameterSetPointers: &parameterSetPointers,
-            parameterSetSizes: &parameterSetSizes,
-            nalUnitHeaderLength: naluLength,
-            formatDescriptionOut: formatDescriptionOut
-        )
+        sequenceParameterSets[0].withUnsafeBufferPointer { sps -> OSStatus in
+            pictureParameterSets[0].withUnsafeBufferPointer { pps -> OSStatus in
+                let parameterSetPointers: [UnsafePointer<UInt8>] = [
+                    sps.baseAddress!, pps.baseAddress!
+                ]
+                let parameterSetSizes: [Int] = [
+                    sps.count,
+                    pps.count
+                ]
+                return parameterSetPointers.withUnsafeBufferPointer { paramSet in
+                    parameterSetSizes.withUnsafeBufferPointer { paramSizes in
+                        CMVideoFormatDescriptionCreateFromH264ParameterSets(
+                                allocator: kCFAllocatorDefault,
+                                parameterSetCount: 2,
+                                parameterSetPointers: paramSet.baseAddress!,
+                                parameterSetSizes: paramSizes.baseAddress!,
+                                nalUnitHeaderLength: naluLength,
+                                formatDescriptionOut: formatDescriptionOut
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -72,22 +79,22 @@ extension AVCConfigurationRecord: DataConvertible {
     var data: Data {
         get {
             let buffer = ByteArray()
-                .writeUInt8(configurationVersion)
-                .writeUInt8(AVCProfileIndication)
-                .writeUInt8(profileCompatibility)
-                .writeUInt8(AVCLevelIndication)
-                .writeUInt8(lengthSizeMinusOneWithReserved)
-                .writeUInt8(numOfSequenceParameterSetsWithReserved)
+                    .writeUInt8(configurationVersion)
+                    .writeUInt8(AVCProfileIndication)
+                    .writeUInt8(profileCompatibility)
+                    .writeUInt8(AVCLevelIndication)
+                    .writeUInt8(lengthSizeMinusOneWithReserved)
+                    .writeUInt8(numOfSequenceParameterSetsWithReserved)
             for i in 0..<sequenceParameterSets.count {
                 buffer
-                    .writeUInt16(UInt16(sequenceParameterSets[i].count))
-                    .writeBytes(Data(sequenceParameterSets[i]))
+                        .writeUInt16(UInt16(sequenceParameterSets[i].count))
+                        .writeBytes(Data(sequenceParameterSets[i]))
             }
             buffer.writeUInt8(UInt8(pictureParameterSets.count))
             for i in 0..<pictureParameterSets.count {
                 buffer
-                    .writeUInt16(UInt16(pictureParameterSets[i].count))
-                    .writeBytes(Data(pictureParameterSets[i]))
+                        .writeUInt16(UInt16(pictureParameterSets[i].count))
+                        .writeBytes(Data(pictureParameterSets[i]))
             }
             return buffer.data
         }
