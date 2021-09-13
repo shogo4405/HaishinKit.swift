@@ -17,7 +17,7 @@
     <a title="GLHKView Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.1.6 Docs</a> (23% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.1.7 Docs</a> (22% documented)</p>
         <p class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -99,9 +99,6 @@
                 <a href="../Classes/GLHKView.html">GLHKView</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/GLHKView.html">GLHKView</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/H264Encoder.html">H264Encoder</a>
               </li>
               <li class="nav-group-task">
@@ -160,6 +157,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Responder.html">Responder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ScreenCaptureSession.html">ScreenCaptureSession</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Setting.html">Setting</a>
@@ -248,6 +248,12 @@
                 <a href="../Protocols/AudioCodecDelegate.html">AudioCodecDelegate</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Protocols/CaptureSessionConvertible.html">CaptureSessionConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/CaptureSessionDelegate.html">CaptureSessionDelegate</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
               </li>
               <li class="nav-group-task">
@@ -328,7 +334,9 @@
               <div class="declaration">
                 <div class="language">
                   
-                  
+                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">GLHKView</span> <span class="p">:</span> <span class="kt">GLKView</span><span class="p">,</span> <span class="kt">NetStreamRenderer</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">GLHKView</span><span class="p">:</span> <span class="kt">GLKViewDelegate</span></code></pre>
+
                 </div>
               </div>
             <p>A view that displays a video content of a NetStream object which uses OpenGL api. This class is deprecated. Please consider to use the MTHKView.</p>
@@ -340,9 +348,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:10HaishinKit8GLHKViewC22defaultBackgroundColorSo7UIColorCvpZ"></a>
                     <a name="//apple_ref/swift/Variable/defaultBackgroundColor" class="dashAnchor"></a>
-                    <a class="token" href="#/">defaultBackgroundColor</a>
+                    <a class="token" href="#/s:10HaishinKit8GLHKViewC22defaultBackgroundColorSo7UIColorCvpZ">defaultBackgroundColor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -350,7 +358,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">defaultBackgroundColor</span><span class="p">:</span> <span class="kt">UIColor</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -358,9 +375,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:10HaishinKit8GLHKViewC10isMirroredSbvp"></a>
                     <a name="//apple_ref/swift/Property/isMirrored" class="dashAnchor"></a>
-                    <a class="token" href="#/">isMirrored</a>
+                    <a class="token" href="#/s:10HaishinKit8GLHKViewC10isMirroredSbvp">isMirrored</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -368,7 +385,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">isMirrored</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -376,9 +402,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:10HaishinKit8GLHKViewC12videoGravitySo012AVLayerVideoE0avp"></a>
                     <a name="//apple_ref/swift/Property/videoGravity" class="dashAnchor"></a>
-                    <a class="token" href="#/">videoGravity</a>
+                    <a class="token" href="#/s:10HaishinKit8GLHKViewC12videoGravitySo012AVLayerVideoE0avp">videoGravity</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -389,15 +415,23 @@
                         <p>A value that specifies how the video is displayed within a player layer’s bounds.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">videoGravity</span><span class="p">:</span> <span class="kt">AVLayerVideoGravity</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:10HaishinKit8GLHKViewC22videoFormatDescriptionSo08CMFormatF3RefaSgvp"></a>
                     <a name="//apple_ref/swift/Property/videoFormatDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/">videoFormatDescription</a>
+                    <a class="token" href="#/s:10HaishinKit8GLHKViewC22videoFormatDescriptionSo08CMFormatF3RefaSgvp">videoFormatDescription</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -408,15 +442,23 @@
                         <p>A value that displays a video format.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">videoFormatDescription</span><span class="p">:</span> <span class="kt">CMVideoFormatDescription</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/c:@M@HaishinKit@objc(cs)GLHKView(im)initWithFrame:"></a>
                     <a name="//apple_ref/swift/Method/init(frame:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">init(frame:<wbr>)</a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)GLHKView(im)initWithFrame:">init(frame:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -424,7 +466,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">)</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -432,9 +483,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/c:@M@HaishinKit@objc(cs)GLHKView(im)initWithCoder:"></a>
                     <a name="//apple_ref/swift/Method/init(coder:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">init(coder:<wbr>)</a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)GLHKView(im)initWithCoder:">init(coder:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -442,7 +493,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -450,9 +510,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/c:@M@HaishinKit@objc(cs)GLHKView(im)awakeFromNib"></a>
                     <a name="//apple_ref/swift/Method/awakeFromNib()" class="dashAnchor"></a>
-                    <a class="token" href="#/">awakeFromNib()</a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)GLHKView(im)awakeFromNib">awakeFromNib()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -460,7 +520,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">open</span> <span class="kd">func</span> <span class="nf">awakeFromNib</span><span class="p">()</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -468,9 +537,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/s:10HaishinKit8GLHKViewC12attachStreamyyAA03NetE0CSgF"></a>
                     <a name="//apple_ref/swift/Method/attachStream(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">attachStream(_:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit8GLHKViewC12attachStreamyyAA03NetE0CSgF">attachStream(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -480,6 +549,14 @@
                       <div class="abstract">
                         <p>Attaches a view to a new NetStream object.</p>
 
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">attachStream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/NetStream.html">NetStream</a></span><span class="p">?)</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -500,9 +577,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
+                    <a name="/c:@CM@HaishinKit@objc(cs)GLHKView(im)glkView:drawInRect:"></a>
                     <a name="//apple_ref/swift/Method/glkView(_:drawIn:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">glkView(_:<wbr>drawIn:<wbr>)</a>
+                    <a class="token" href="#/c:@CM@HaishinKit@objc(cs)GLHKView(im)glkView:drawInRect:">glkView(_:<wbr>drawIn:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -510,7 +587,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">glkView</span><span class="p">(</span><span class="n">_</span> <span class="nv">view</span><span class="p">:</span> <span class="kt">GLKView</span><span class="p">,</span> <span class="n">drawIn</span> <span class="nv">rect</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">)</span></code></pre>
+
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -520,8 +606,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2021-07-25)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external">jazzy ♪♫ v0.13.7</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external">Realm</a> project.</p>
+          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="noopener" rel="external">shogo4405</a>. All rights reserved. (Last updated: 2021-09-12)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="noopener" rel="external">jazzy ♪♫ v0.14.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="noopener" rel="external">Realm</a> project.</p>
         </section>
       </article>
     </div>
