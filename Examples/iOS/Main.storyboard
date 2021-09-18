@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -211,7 +211,7 @@
                                 </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Q77-wA-cY7">
-                                <rect key="frame" x="8" y="783" width="394" height="30"/>
+                                <rect key="frame" x="10" y="773" width="394" height="30"/>
                                 <color key="backgroundColor" red="0.012865800950000001" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Open Window"/>
@@ -223,15 +223,16 @@
                         <viewLayoutGuide key="safeArea" id="ezw-xF-e01"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="Q77-wA-cY7" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailingMargin" constant="8" id="1a0-JV-nZh"/>
                             <constraint firstItem="A5Y-FA-epc" firstAttribute="leading" secondItem="Hiy-yh-Bwn" secondAttribute="leading" id="CJJ-BH-Gde"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="top" secondItem="ezw-xF-e01" secondAttribute="top" constant="8" id="CVs-CB-ZGl"/>
                             <constraint firstItem="A5Y-FA-epc" firstAttribute="top" secondItem="Hiy-yh-Bwn" secondAttribute="bottom" constant="8" symbolic="YES" id="Nvl-et-opI"/>
-                            <constraint firstItem="ezw-xF-e01" firstAttribute="bottom" secondItem="Q77-wA-cY7" secondAttribute="bottom" constant="8" symbolic="YES" id="PUC-5i-7iv"/>
+                            <constraint firstItem="ezw-xF-e01" firstAttribute="trailing" secondItem="Q77-wA-cY7" secondAttribute="trailing" constant="10" id="QgP-qu-ECi"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="leading" secondItem="ezw-xF-e01" secondAttribute="leading" constant="8" id="UR1-Hr-4D4"/>
                             <constraint firstItem="ezw-xF-e01" firstAttribute="trailing" secondItem="A5Y-FA-epc" secondAttribute="trailing" constant="160" id="buc-rb-JnR"/>
                             <constraint firstItem="Hiy-yh-Bwn" firstAttribute="trailing" secondItem="QS5-Rx-YEW" secondAttribute="trailingMargin" constant="8" id="kGk-2F-Qtn"/>
-                            <constraint firstItem="Q77-wA-cY7" firstAttribute="leading" secondItem="ezw-xF-e01" secondAttribute="leading" constant="8" id="uKo-hV-Ipd"/>
+                            <constraint firstItem="ezw-xF-e01" firstAttribute="bottom" secondItem="Q77-wA-cY7" secondAttribute="bottom" constant="10" id="l5E-h1-Zao"/>
+                            <constraint firstItem="ezw-xF-e01" firstAttribute="trailing" secondItem="Q77-wA-cY7" secondAttribute="trailing" constant="10" id="pEF-EU-cub"/>
+                            <constraint firstItem="Q77-wA-cY7" firstAttribute="leading" secondItem="ezw-xF-e01" secondAttribute="leading" constant="10" id="z5i-tw-8jl"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Preference" image="second" id="cPa-gy-q4n"/>
@@ -303,11 +304,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="p4J-1x-O1c">
-                                <rect key="frame" x="368" y="32" width="30" height="30"/>
+                                <rect key="frame" x="369" y="768" width="30" height="30"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="30" id="9tM-9Y-bwe"/>
-                                    <constraint firstAttribute="width" constant="30" id="Xcd-dW-hq8"/>
+                                    <constraint firstAttribute="width" constant="30" id="8DG-lB-HSj"/>
+                                    <constraint firstAttribute="height" constant="30" id="FcJ-bB-H0R"/>
                                 </constraints>
                                 <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <state key="normal" title="●"/>
@@ -319,8 +320,8 @@
                         <viewLayoutGuide key="safeArea" id="z9R-Rx-Qeu"/>
                         <color key="backgroundColor" systemColor="systemGray2Color"/>
                         <constraints>
-                            <constraint firstItem="z9R-Rx-Qeu" firstAttribute="trailing" secondItem="p4J-1x-O1c" secondAttribute="trailing" constant="16" id="f5f-rE-eQ2"/>
-                            <constraint firstItem="p4J-1x-O1c" firstAttribute="top" secondItem="mU9-Qc-s55" secondAttribute="top" constant="32" id="tXc-VA-Erm"/>
+                            <constraint firstItem="z9R-Rx-Qeu" firstAttribute="bottom" secondItem="p4J-1x-O1c" secondAttribute="bottom" constant="15" id="4Qz-Gj-1rz"/>
+                            <constraint firstItem="z9R-Rx-Qeu" firstAttribute="trailing" secondItem="p4J-1x-O1c" secondAttribute="trailing" constant="15" id="y0c-uc-INm"/>
                         </constraints>
                     </view>
                     <connections>
@@ -329,7 +330,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="A6d-pe-nwN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2110" y="-102"/>
+            <point key="canvasLocation" x="2108.695652173913" y="-102.12053571428571"/>
         </scene>
     </scenes>
     <resources>

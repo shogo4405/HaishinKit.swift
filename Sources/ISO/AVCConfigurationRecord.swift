@@ -47,7 +47,7 @@ struct AVCConfigurationRecord {
         self.data = data
     }
 
-    func createFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus {
+    func makeFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus {
         var parameterSetPointers: [UnsafePointer<UInt8>] = [
             UnsafePointer<UInt8>(sequenceParameterSets[0]),
             UnsafePointer<UInt8>(pictureParameterSets[0])

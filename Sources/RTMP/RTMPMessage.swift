@@ -717,7 +717,7 @@ final class RTMPVideoMessage: RTMPMessage {
     private func makeFormatDescription(_ stream: RTMPStream) -> OSStatus {
         var config = AVCConfigurationRecord()
         config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-        return config.createFormatDescription(&stream.mixer.videoIO.formatDescription)
+        return config.makeFormatDescription(&stream.mixer.videoIO.formatDescription)
     }
 }
 
