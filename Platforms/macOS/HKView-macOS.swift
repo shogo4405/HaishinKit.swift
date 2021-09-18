@@ -23,7 +23,7 @@ open class HKView: NSView {
         }
     }
     var orientation: AVCaptureVideoOrientation = .portrait
-    var displayImage: CIImage?
+    var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
         didSet {
@@ -64,7 +64,7 @@ open class HKView: NSView {
 
 extension HKView: NetStreamRenderer {
     // MARK: NetStreamRenderer
-    func draw(image: CIImage?) {
+    func enqueue(_ sampleBuffer: CMSampleBuffer?) {
     }
 }
 

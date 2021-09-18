@@ -21,7 +21,7 @@ open class GLHKView: GLKView, NetStreamRenderer {
         currentStream?.mixer.videoIO.formatDescription
     }
 
-    var displayImage: CIImage?
+    var currentSampleBuffer: CMSampleBuffer?
     #if !os(tvOS)
     var position: AVCaptureDevice.Position = .back
     var orientation: AVCaptureVideoOrientation = .portrait
@@ -77,12 +77,12 @@ extension GLHKView: GLKViewDelegate {
     // MARK: GLKViewDelegate
     public func glkView(_ view: GLKView, drawIn rect: CGRect) {
         glClear(GLbitfield(GL_COLOR_BUFFER_BIT))
-        guard var displayImage: CIImage = displayImage else {
+        guard let imageBuffer = currentSampleBuffer?.imageBuffer else {
             return
         }
+        var displayImage = CIImage(cvPixelBuffer: imageBuffer)
         var inRect = CGRect(x: 0, y: 0, width: CGFloat(drawableWidth), height: CGFloat(drawableHeight))
         var fromRect: CGRect = displayImage.extent
-
         if isMirrored {
             if #available(iOS 11.0, tvOS 11.0, *) {
                 displayImage = displayImage.oriented(.upMirrored)
@@ -90,7 +90,6 @@ extension GLHKView: GLKViewDelegate {
                 displayImage = displayImage.oriented(forExifOrientation: 2)
             }
         }
-
         VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
         currentStream?.mixer.videoIO.context?.draw(displayImage, in: inRect, from: fromRect)
     }

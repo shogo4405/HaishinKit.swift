@@ -18,7 +18,7 @@ open class MTHKView: MTKView, NetStreamRenderer {
     var orientation: AVCaptureVideoOrientation = .portrait
     #endif
 
-    var displayImage: CIImage?
+    var currentSampleBuffer: CMSampleBuffer?
     let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
 
     private lazy var commandQueue: MTLCommandQueue? = {
@@ -84,11 +84,12 @@ extension MTHKView: MTKViewDelegate {
             let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) {
             renderCommandEncoder.endEncoding()
         }
-        guard let displayImage = displayImage else {
+        guard let imageBuffer = currentSampleBuffer?.imageBuffer else {
             commandBuffer.present(currentDrawable)
             commandBuffer.commit()
             return
         }
+        let displayImage = CIImage(cvPixelBuffer: imageBuffer)
         var scaleX: CGFloat = 0
         var scaleY: CGFloat = 0
         var translationX: CGFloat = 0

@@ -436,7 +436,7 @@ extension VideoIOComponent {
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
-            renderer?.render(image: image)
+            renderer?.enqueue(sampleBuffer)
         }
 
         encoder.encodeImageBuffer(
@@ -458,7 +458,7 @@ extension VideoIOComponent {
     func stopDecoding() {
         decoder.stopRunning()
         queue.stopRunning()
-        renderer?.render(image: nil)
+        renderer?.enqueue(nil)
     }
 
     func decodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
@@ -489,7 +489,7 @@ extension VideoIOComponent: VideoDecoderDelegate {
 extension VideoIOComponent: DisplayLinkedQueueDelegate {
     // MARK: DisplayLinkedQueue
     func queue(_ buffer: CMSampleBuffer) {
-        renderer?.render(image: CIImage(cvPixelBuffer: buffer.imageBuffer!))
+        renderer?.enqueue(buffer)
         if let mixer = mixer {
             mixer.delegate?.mixer(mixer, didOutput: buffer)
         }

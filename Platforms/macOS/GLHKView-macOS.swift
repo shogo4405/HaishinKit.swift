@@ -32,7 +32,7 @@ open class GLHKView: NSOpenGLView, NetStreamRenderer {
     }
     var position: AVCaptureDevice.Position = .front
     var orientation: AVCaptureVideoOrientation = .portrait
-    var displayImage: CIImage?
+    var currentSampleBuffer: CMSampleBuffer?
     private var originalFrame: CGRect = .zero
     private var scale: CGSize = .zero
     private weak var currentStream: NetStream?
@@ -57,11 +57,12 @@ open class GLHKView: NSOpenGLView, NetStreamRenderer {
 
     override open func draw(_ dirtyRect: NSRect) {
         guard
-            let image: CIImage = displayImage,
+            let imageBuffer = currentSampleBuffer?.imageBuffer,
             let glContext: NSOpenGLContext = openGLContext else {
             return
         }
 
+        let image = CIImage(cvImageBuffer: imageBuffer)
         var inRect: CGRect = dirtyRect
         var fromRect: CGRect = image.extent
         VideoGravityUtil.calculate(videoGravity, inRect: &inRect, fromRect: &fromRect)
