@@ -1,6 +1,7 @@
 import Foundation
 import HaishinKit
 import UIKit
+import AVFoundation
 
 final class PlaybackViewController: UIViewController, HKPictureInPicureController {
     private static let maxRetryCount: Int = 5
@@ -22,10 +23,14 @@ final class PlaybackViewController: UIViewController, HKPictureInPicureControlle
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         (view as? MTHKView)?.attachStream(rtmpStream)
+        NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.routeChangeNotification, object: nil)
         super.viewWillDisappear(animated)
     }
 
@@ -94,5 +99,15 @@ final class PlaybackViewController: UIViewController, HKPictureInPicureControlle
     @objc
     private func didBecomeActive(_ notification: Notification) {
         rtmpStream.receiveVideo = true
+    }
+    
+    @objc
+    private func didInterruptionNotification(_ notification: Notification) {
+        logger.info("didInterruptionNotification")
+    }
+
+    @objc
+    private func didRouteChangeNotification(_ notification: Notification) {
+        logger.info("didRouteChangeNotification")
     }
 }
