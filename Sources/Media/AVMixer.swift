@@ -146,6 +146,12 @@ public class AVMixer {
         return _videoIO!
     }
 
+    lazy var mediaLink: MediaLink = {
+        var mediaLink = MediaLink()
+        mediaLink.delegate = self
+        return mediaLink
+    }()
+
     deinit {
         dispose()
     }
@@ -175,27 +181,40 @@ extension AVMixer {
     public func startEncoding(delegate: Any) {
         videoIO.encoder.delegate = delegate as? VideoEncoderDelegate
         videoIO.encoder.startRunning()
-        audioIO.encoder.delegate = delegate as? AudioCodecDelegate
-        audioIO.encoder.startRunning()
+        audioIO.codec.delegate = delegate as? AudioCodecDelegate
+        audioIO.codec.startRunning()
     }
 
     public func stopEncoding() {
         videoIO.encoder.delegate = nil
         videoIO.encoder.stopRunning()
-        audioIO.encoder.delegate = nil
-        audioIO.encoder.stopRunning()
+        audioIO.codec.delegate = nil
+        audioIO.codec.stopRunning()
     }
 }
 
 extension AVMixer {
     public func startDecoding(_ audioEngine: AVAudioEngine?) {
+        mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
         videoIO.startDecoding()
     }
 
     public func stopDecoding() {
+        mediaLink.stopRunning()
         audioIO.stopDecoding()
         videoIO.stopDecoding()
+    }
+}
+
+extension AVMixer: MediaLinkDelegate {
+    // MARK: MediaLinkDelegate
+    func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer) {
+        _ = videoIO.decoder.decodeSampleBuffer(sampleBuffer)
+    }
+
+    func mediaLink(_ mediaLink: MediaLink, didBufferingChanged: Bool) {
+        logger.info(didBufferingChanged)
     }
 }
 

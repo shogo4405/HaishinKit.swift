@@ -9,7 +9,7 @@ final class RTMPReaderTests: XCTestCase {
         let url: URL = URL(fileURLWithPath: bundle.path(forResource: "SampleVideo_360x240_5mb", ofType: "flv")!)
         let reader = FLVReader(url: url)
         while true {
-            guard let tag = reader.next() else {
+            guard let _ = reader.next() else {
                 return
             }
         }

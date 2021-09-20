@@ -44,8 +44,8 @@ open class NetStream: NSObject {
 
     /// Specify stream audio compression properties.
     open var audioSettings: Setting<AudioCodec, AudioCodec.Option> {
-        get { mixer.audioIO.encoder.settings }
-        set { mixer.audioIO.encoder.settings = newValue }
+        get { mixer.audioIO.codec.settings }
+        set { mixer.audioIO.codec.settings = newValue }
     }
 
     /// Specify stream video compression properties.

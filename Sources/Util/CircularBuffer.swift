@@ -6,7 +6,7 @@ struct CircularBuffer<Element> {
     }
 
     var count: Int {
-        if top == 0 && bottom == 0 {
+        if top == bottom {
             return first == nil ? 0 : buffer.count
         }
         let value = bottom - top
@@ -19,7 +19,7 @@ struct CircularBuffer<Element> {
     }
 
     var isFull: Bool {
-        count == mask + 1
+        return count == (mask + 1)
     }
 
     private var top: Int = 0
@@ -68,8 +68,12 @@ struct CircularBuffer<Element> {
         guard extensible else {
             return false
         }
-        top = 0
+        let tail = buffer[0..<top]
+        let head = buffer[top...]
+        buffer.replaceSubrange(top..., with: tail)
+        buffer.replaceSubrange(0..<top, with: head)
         bottom = count
+        top = 0
         buffer.append(contentsOf: [Element?](repeating: nil, count: buffer.count))
         mask = buffer.count - 1
         return append(newElement)

@@ -53,4 +53,30 @@ final class CircularBufferTests: XCTestCase {
         XCTAssertEqual(buffer.removeFirst(), "d")
         print(buffer)
     }
+
+    func testExtensibleCircularBuffer2() {
+        var buffer = CircularBuffer<String>(4, extensible: true)
+        _ = buffer.append("a")
+        _ = buffer.append("b")
+        _ = buffer.append("c")
+        _ = buffer.append("d")
+        XCTAssertEqual(buffer.removeFirst(), "a")
+        XCTAssertEqual(buffer.removeFirst(), "b")
+        XCTAssertEqual(buffer.count, 2)
+        XCTAssertEqual(buffer.isFull, false)
+        _ = buffer.append("e")
+        _ = buffer.append("f")
+        XCTAssertEqual(buffer.count, 4)
+        XCTAssertEqual(buffer.isFull, true)
+        _ = buffer.append("g")
+        _ = buffer.append("h")
+        XCTAssertEqual(buffer.count, 6)
+        XCTAssertEqual("c", buffer.removeFirst())
+        XCTAssertEqual("d", buffer.removeFirst())
+        XCTAssertEqual("e", buffer.removeFirst())
+        XCTAssertEqual("f", buffer.removeFirst())
+        XCTAssertEqual("g", buffer.removeFirst())
+        XCTAssertEqual("h", buffer.removeFirst())
+        XCTAssertEqual(buffer.count, 0)
+    }
 }

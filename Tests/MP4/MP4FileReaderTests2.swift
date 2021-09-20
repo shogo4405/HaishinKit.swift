@@ -46,7 +46,7 @@ final class MP4FileReaderTests2: XCTestCase {
         XCTAssertEqual(tfdt[1].version, 1)
         XCTAssertEqual(tfdt[1].baseMediaDecodeTime, 0)
         
-        let trun = file.getBoxes(by: .trun)
+        let _ = file.getBoxes(by: .trun)
     }
 
     private func makeInitMP4File() -> MP4FileReader {

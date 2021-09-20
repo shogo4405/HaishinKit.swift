@@ -38,5 +38,4 @@ extension NetStreamRenderer where Self: NetStreamRendererView {
             }
         }
     }
-    
 }

@@ -1,7 +1,7 @@
+import AVFoundation
 import Foundation
 import HaishinKit
 import UIKit
-import AVFoundation
 
 final class PlaybackViewController: UIViewController, HKPictureInPicureController {
     private static let maxRetryCount: Int = 5
@@ -100,7 +100,7 @@ final class PlaybackViewController: UIViewController, HKPictureInPicureControlle
     private func didBecomeActive(_ notification: Notification) {
         rtmpStream.receiveVideo = true
     }
-    
+
     @objc
     private func didInterruptionNotification(_ notification: Notification) {
         logger.info("didInterruptionNotification")

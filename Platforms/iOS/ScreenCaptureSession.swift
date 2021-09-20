@@ -98,7 +98,7 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
             return
         }
 
-        if let _ = self.shared {
+        if self.shared != nil {
             size = UIScreen.main.bounds.size
         }
         if let viewToCapture = self.viewToCapture {

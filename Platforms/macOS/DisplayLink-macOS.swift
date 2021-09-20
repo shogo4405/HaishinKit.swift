@@ -6,7 +6,7 @@ import Foundation
 final class DisplayLink: NSObject {
     var isPaused = false {
         didSet {
-            guard let displayLink = displayLink else {
+            guard let displayLink = displayLink, oldValue != isPaused else {
                 return
             }
             if isPaused {
@@ -18,7 +18,7 @@ final class DisplayLink: NSObject {
     }
     var frameInterval = 0
     var preferredFramesPerSecond = 1
-
+    private(set) var duration = 0.0
     private(set) var timestamp: CFTimeInterval = 0
     private var status: CVReturn = 0
     private var displayLink: CVDisplayLink?
@@ -31,6 +31,7 @@ final class DisplayLink: NSObject {
         }
         let displayLink: DisplayLink = Unmanaged<DisplayLink>.fromOpaque(displayLinkContext).takeUnretainedValue()
         displayLink.timestamp = Double(inNow.pointee.videoTime) / Double(inNow.pointee.videoTimeScale)
+        displayLink.duration = Double(inNow.pointee.videoRefreshPeriod) / Double(inNow.pointee.videoTimeScale)
         _ = displayLink.delegate?.perform(displayLink.selector, with: displayLink)
         return 0
     }

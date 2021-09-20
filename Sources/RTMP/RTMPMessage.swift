@@ -580,8 +580,8 @@ final class RTMPAudioMessage: RTMPMessage {
         switch FLVAACPacketType(rawValue: payload[1]) {
         case .seq?:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
-            stream.mixer.audioIO.encoder.destination = .pcm
-            stream.mixer.audioIO.encoder.inSourceFormat = config?.audioStreamBasicDescription()
+            stream.mixer.audioIO.codec.destination = .pcm
+            stream.mixer.audioIO.codec.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
             enqueueSampleBuffer(stream, type: type)
         case .none:
@@ -590,12 +590,12 @@ final class RTMPAudioMessage: RTMPMessage {
     }
 
     private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
-        if stream.mixer.audioIO.encoder.inSourceFormat == nil {
-            stream.mixer.audioIO.encoder.destination = .pcm
-            stream.mixer.audioIO.encoder.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
+        if stream.mixer.audioIO.codec.inSourceFormat == nil {
+            stream.mixer.audioIO.codec.destination = .pcm
+            stream.mixer.audioIO.codec.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
         }
         payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
-            stream.mixer.audioIO.encoder.encodeBytes(
+            stream.mixer.audioIO.codec.encodeBytes(
                 buffer.baseAddress?.advanced(by: codec.headerSize),
                 count: payload.count - codec.headerSize,
                 presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000)
@@ -634,6 +634,7 @@ final class RTMPVideoMessage: RTMPMessage {
         switch payload[1] {
         case FLVAVCPacketType.seq.rawValue:
             status = makeFormatDescription(stream)
+            stream.mixer.mediaLink.hasVideo = true
             stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         case FLVAVCPacketType.nal.rawValue:
             enqueueSampleBuffer(stream, type: type)
@@ -706,10 +707,10 @@ final class RTMPVideoMessage: RTMPMessage {
             }
             if let sampleBuffer = sampleBuffer {
                 sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
-                stream.mixer.videoIO.decodeSampleBuffer(sampleBuffer)
+                stream.mixer.mediaLink.enqueueVideo(sampleBuffer)
             }
-            if stream.mixer.videoIO.queue.isPaused && stream.mixer.audioIO.encoder.formatDescription == nil {
-                stream.mixer.videoIO.queue.isPaused = false
+            if stream.mixer.mediaLink.isPaused && stream.mixer.audioIO.codec.formatDescription == nil {
+                stream.mixer.mediaLink.isPaused = false
             }
         }
     }
