@@ -4,7 +4,7 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
-final class AudioIOComponent: IOComponent {
+final class AVAudioIOUnit: AVIOUnit {
     lazy var codec = AudioCodec()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
@@ -126,14 +126,14 @@ final class AudioIOComponent: IOComponent {
     }
 }
 
-extension AudioIOComponent: AVCaptureAudioDataOutputSampleBufferDelegate {
+extension AVAudioIOUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         appendSampleBuffer(sampleBuffer)
     }
 }
 
-extension AudioIOComponent: AudioCodecDelegate {
+extension AVAudioIOUnit: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
     func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
         guard let formatDescription = formatDescription, let audioEngine = audioEngine else {

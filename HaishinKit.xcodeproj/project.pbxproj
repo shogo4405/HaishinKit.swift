@@ -125,8 +125,8 @@
 		2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */; };
 		2976A47E1D48C5C700B53EF2 /* AVRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */; };
 		2976A47F1D48FD6900B53EF2 /* AVRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */; };
-		2976A4811D49025B00B53EF2 /* IOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* IOComponent.swift */; };
-		2976A4821D4902CE00B53EF2 /* IOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* IOComponent.swift */; };
+		2976A4811D49025B00B53EF2 /* AVIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* AVIOUnit.swift */; };
+		2976A4821D4902CE00B53EF2 /* AVIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* AVIOUnit.swift */; };
 		2976A4861D4903C300B53EF2 /* DeviceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4851D4903C300B53EF2 /* DeviceUtil.swift */; };
 		2976A4871D49045700B53EF2 /* DeviceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4851D4903C300B53EF2 /* DeviceUtil.swift */; };
 		29798E671CE610F500F5CBD0 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29B8761B1CD701F900FC07DA /* HaishinKit.framework */; };
@@ -137,7 +137,7 @@
 		297E69132324E38800D418AB /* AudioCodec.Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodec.Destination.swift */; };
 		297E69142324E38800D418AB /* AudioCodec.Destination.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodec.Destination.swift */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
-		2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */; };
+		2992D1541ED04A2C008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		299B13271D3B751400A1E8F5 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* HKView.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
@@ -158,7 +158,7 @@
 		29B876861CD70AE800FC07DA /* PacketizedElementaryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */; };
 		29B876871CD70AE800FC07DA /* ProgramSpecific.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876811CD70AE800FC07DA /* ProgramSpecific.swift */; };
 		29B876881CD70AE800FC07DA /* TSPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876821CD70AE800FC07DA /* TSPacket.swift */; };
-		29B876901CD70AFE00FC07DA /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */; };
+		29B876901CD70AFE00FC07DA /* AVAudioIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AVAudioIOUnit.swift */; };
 		29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* AVMixer.swift */; };
 		29B876941CD70AFE00FC07DA /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */; };
 		29B876961CD70AFE00FC07DA /* VideoEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */; };
@@ -195,10 +195,10 @@
 		29B877001CD70D5A00FC07DA /* PacketizedElementaryStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */; };
 		29B877011CD70D5A00FC07DA /* ProgramSpecific.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876811CD70AE800FC07DA /* ProgramSpecific.swift */; };
 		29B877021CD70D5A00FC07DA /* TSPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876821CD70AE800FC07DA /* TSPacket.swift */; };
-		29B877031CD70D5A00FC07DA /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */; };
+		29B877031CD70D5A00FC07DA /* AVAudioIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AVAudioIOUnit.swift */; };
 		29B877051CD70D5A00FC07DA /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* AVMixer.swift */; };
 		29B877071CD70D5A00FC07DA /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */; };
-		29B877081CD70D5A00FC07DA /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */; };
+		29B877081CD70D5A00FC07DA /* AVVideoIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* AVVideoIOUnit.swift */; };
 		29B877091CD70D5A00FC07DA /* VideoEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */; };
 		29B8770A1CD70D5A00FC07DA /* MIME.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876971CD70B1100FC07DA /* MIME.swift */; };
 		29B8770B1CD70D5A00FC07DA /* NetClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876981CD70B1100FC07DA /* NetClient.swift */; };
@@ -218,9 +218,9 @@
 		29B8771C1CD70D5A00FC07DA /* CRC32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876B91CD70B3900FC07DA /* CRC32.swift */; };
 		29B8771D1CD70D5A00FC07DA /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876BA1CD70B3900FC07DA /* EventDispatcher.swift */; };
 		29C263181D00804A0098D4EF /* GLHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29C263171D00804A0098D4EF /* GLHKView.swift */; };
-		29C2631C1D0083B50098D4EF /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */; };
+		29C2631C1D0083B50098D4EF /* AVVideoIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* AVVideoIOUnit.swift */; };
 		29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
-		29D3D4CF1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */; };
+		29D3D4CF1ED04C4C00DD4AA6 /* AVVideoIOUnit+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* AVVideoIOUnit+Extension.swift */; };
 		29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */; };
 		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */; };
 		29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */; };
@@ -287,12 +287,12 @@
 		29EB3E0A1ED0586F001CAE8B /* TSPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876821CD70AE800FC07DA /* TSPacket.swift */; };
 		29EB3E0B1ED05871001CAE8B /* TSReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2962425F1D8DB86500C451A3 /* TSReader.swift */; };
 		29EB3E0C1ED05874001CAE8B /* TSWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296242601D8DB86500C451A3 /* TSWriter.swift */; };
-		29EB3E0D1ED05877001CAE8B /* AudioIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */; };
+		29EB3E0D1ED05877001CAE8B /* AVAudioIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876891CD70AFE00FC07DA /* AVAudioIOUnit.swift */; };
 		29EB3E0F1ED0587C001CAE8B /* AVMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* AVMixer.swift */; };
 		29EB3E101ED0587F001CAE8B /* AVRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */; };
-		29EB3E111ED05881001CAE8B /* IOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* IOComponent.swift */; };
+		29EB3E111ED05881001CAE8B /* AVIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4801D49025B00B53EF2 /* AVIOUnit.swift */; };
 		29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */; };
-		29EB3E141ED05889001CAE8B /* VideoIOComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */; };
+		29EB3E141ED05889001CAE8B /* AVVideoIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* AVVideoIOUnit.swift */; };
 		29EB3E151ED0588C001CAE8B /* VideoEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */; };
 		29EB3E161ED0588F001CAE8B /* MIME.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876971CD70B1100FC07DA /* MIME.swift */; };
 		29EB3E171ED05893001CAE8B /* NetClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876981CD70B1100FC07DA /* NetClient.swift */; };
@@ -725,14 +725,14 @@
 		2968974E1CDB01DD0074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPMessageTests.swift; sourceTree = "<group>"; };
 		2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVRecorder.swift; sourceTree = "<group>"; };
-		2976A4801D49025B00B53EF2 /* IOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOComponent.swift; sourceTree = "<group>"; };
+		2976A4801D49025B00B53EF2 /* AVIOUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVIOUnit.swift; sourceTree = "<group>"; };
 		2976A4851D4903C300B53EF2 /* DeviceUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtil.swift; sourceTree = "<group>"; };
 		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29798E5D1CE60E5300F5CBD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		297E69112324E38800D418AB /* AudioCodec.Destination.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodec.Destination.swift; sourceTree = "<group>"; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
-		2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension-macOS.swift"; sourceTree = "<group>"; };
+		2992D1521ED04A1B008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVVideoIOUnit+Extension-macOS.swift"; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenCaptureSession.swift; sourceTree = "<group>"; };
@@ -758,10 +758,10 @@
 		29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PacketizedElementaryStream.swift; sourceTree = "<group>"; };
 		29B876811CD70AE800FC07DA /* ProgramSpecific.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramSpecific.swift; sourceTree = "<group>"; };
 		29B876821CD70AE800FC07DA /* TSPacket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TSPacket.swift; sourceTree = "<group>"; };
-		29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioIOComponent.swift; sourceTree = "<group>"; };
+		29B876891CD70AFE00FC07DA /* AVAudioIOUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAudioIOUnit.swift; sourceTree = "<group>"; };
 		29B8768B1CD70AFE00FC07DA /* AVMixer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVMixer.swift; sourceTree = "<group>"; };
 		29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundTransform.swift; sourceTree = "<group>"; };
-		29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoIOComponent.swift; sourceTree = "<group>"; };
+		29B8768E1CD70AFE00FC07DA /* AVVideoIOUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVVideoIOUnit.swift; sourceTree = "<group>"; };
 		29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoEffect.swift; sourceTree = "<group>"; };
 		29B876971CD70B1100FC07DA /* MIME.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIME.swift; sourceTree = "<group>"; };
 		29B876981CD70B1100FC07DA /* NetClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetClient.swift; sourceTree = "<group>"; };
@@ -786,7 +786,7 @@
 		29C263171D00804A0098D4EF /* GLHKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLHKView.swift; sourceTree = "<group>"; };
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VideoIOComponent+Extension.swift"; sourceTree = "<group>"; };
+		29D3D4CE1ED04C4C00DD4AA6 /* AVVideoIOUnit+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVVideoIOUnit+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension-macOS.swift"; sourceTree = "<group>"; };
 		29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceUtil+Extenstion.swift"; sourceTree = "<group>"; };
@@ -1217,7 +1217,7 @@
 				2965435A1D62FE6200734698 /* HKView-macOS.swift */,
 				296543581D62FE6200734698 /* Info.plist */,
 				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */,
-				2992D1521ED04A1B008D9DC1 /* VideoIOComponent+Extension-macOS.swift */,
+				2992D1521ED04A1B008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -1304,7 +1304,7 @@
 				299F7E3A1CD71A97001E7272 /* Info.plist */,
 				29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */,
 				299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */,
-				29D3D4CE1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift */,
+				29D3D4CE1ED04C4C00DD4AA6 /* AVVideoIOUnit+Extension.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1322,18 +1322,18 @@
 			isa = PBXGroup;
 			children = (
 				2941746A22D069B300A2944F /* AudioEffect.swift */,
-				29B876891CD70AFE00FC07DA /* AudioIOComponent.swift */,
+				29B876891CD70AFE00FC07DA /* AVAudioIOUnit.swift */,
+				2976A4801D49025B00B53EF2 /* AVIOUnit.swift */,
 				29B8768B1CD70AFE00FC07DA /* AVMixer.swift */,
 				2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */,
+				29B8768E1CD70AFE00FC07DA /* AVVideoIOUnit.swift */,
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
 				29C263171D00804A0098D4EF /* GLHKView.swift */,
-				2976A4801D49025B00B53EF2 /* IOComponent.swift */,
 				2901A4ED1D437170002BBD23 /* MediaLink.swift */,
 				2999C3742071138F00892E55 /* MTHKView.swift */,
 				295891001EEB7A8B00CE51E1 /* ScalingMode.swift */,
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
-				29B8768E1CD70AFE00FC07DA /* VideoIOComponent.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1911,7 +1911,7 @@
 				BCFB355C24FAB29B00DC5108 /* HKPictureInPicureController.swift in Sources */,
 				BCC1A6C22643F41600661156 /* MP4FragmentedWriter.swift in Sources */,
 				2958910A1EEB8D1800CE51E1 /* FLVReader.swift in Sources */,
-				29C2631C1D0083B50098D4EF /* VideoIOComponent.swift in Sources */,
+				29C2631C1D0083B50098D4EF /* AVVideoIOUnit.swift in Sources */,
 				29B876B41CD70B2800FC07DA /* RTMPSharedObject.swift in Sources */,
 				BC20DF34250374EA007BC608 /* HKPictureInPicureController+Extension.swift in Sources */,
 				2901A4EE1D437170002BBD23 /* MediaLink.swift in Sources */,
@@ -1936,7 +1936,7 @@
 				BC44A1A923D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
 				BC20DF38250377A3007BC608 /* ScreenCaptureSession.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
-				29D3D4CF1ED04C4C00DD4AA6 /* VideoIOComponent+Extension.swift in Sources */,
+				29D3D4CF1ED04C4C00DD4AA6 /* AVVideoIOUnit+Extension.swift in Sources */,
 				29B876841CD70AE800FC07DA /* AVCConfigurationRecord.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* NetStreamRenderer.swift in Sources */,
@@ -1959,7 +1959,7 @@
 				BCC1A6EF2645B5F800661156 /* MP4PixelAspectRatioBox.swift in Sources */,
 				29EA87EA1E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift in Sources */,
 				BCA97C12263D8C850027213C /* MP4FullBox.swift in Sources */,
-				2976A4811D49025B00B53EF2 /* IOComponent.swift in Sources */,
+				2976A4811D49025B00B53EF2 /* AVIOUnit.swift in Sources */,
 				293B42E92340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
 				2976A47E1D48C5C700B53EF2 /* AVRecorder.swift in Sources */,
 				BCC1A6C52643F41600661156 /* MP4MovieFragmentBox.Builder.swift in Sources */,
@@ -2041,7 +2041,7 @@
 				29B8767A1CD70ACE00FC07DA /* M3U.swift in Sources */,
 				29245AEF1D32348400AFFB9A /* VideoGravityUtil.swift in Sources */,
 				29FD1B5022FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
-				29B876901CD70AFE00FC07DA /* AudioIOComponent.swift in Sources */,
+				29B876901CD70AFE00FC07DA /* AVAudioIOUnit.swift in Sources */,
 				BC94E50A263FEBB60094C169 /* MP4TrackRunBox.swift in Sources */,
 				BCB976D126107B1200C9A649 /* TSAdaptationExtensionField.swift in Sources */,
 				BCA97C05263C61940027213C /* MP4MediaHeaderBox.swift in Sources */,
@@ -2113,7 +2113,7 @@
 				29B876F41CD70D5900FC07DA /* DataConvertible.swift in Sources */,
 				2916196D1E7F0777009FB344 /* CMFormatDescription+Extension.swift in Sources */,
 				29DF20632312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
-				2976A4821D4902CE00B53EF2 /* IOComponent.swift in Sources */,
+				2976A4821D4902CE00B53EF2 /* AVIOUnit.swift in Sources */,
 				29EA87E71E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
 				29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */,
 				29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */,
@@ -2163,14 +2163,14 @@
 				296242641D8DBA9000C451A3 /* TSWriter.swift in Sources */,
 				2958912F1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
 				BC94E4FF263FE6B80094C169 /* MP4MovieFragmentHeaderBox.swift in Sources */,
-				29B877031CD70D5A00FC07DA /* AudioIOComponent.swift in Sources */,
+				29B877031CD70D5A00FC07DA /* AVAudioIOUnit.swift in Sources */,
 				BCC1A6C02643F41600661156 /* MP4TrackFragmentBox.Builder.swift in Sources */,
 				BC0D236E26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */,
 				BCC1A6F82645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */,
 				BCC1A6E826447CCA00661156 /* MP4MovieHeaderBox.swift in Sources */,
 				29B877051CD70D5A00FC07DA /* AVMixer.swift in Sources */,
 				294B2D3323785E3800CE7BDC /* CircularBuffer.swift in Sources */,
-				2992D1541ED04A2C008D9DC1 /* VideoIOComponent+Extension-macOS.swift in Sources */,
+				2992D1541ED04A2C008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift in Sources */,
 				2976A47F1D48FD6900B53EF2 /* AVRecorder.swift in Sources */,
 				BCA97BF5263C390E0027213C /* CustomXmlStringConvertible.swift in Sources */,
 				BC44A1AA23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
@@ -2178,7 +2178,7 @@
 				BCC1A7142647F28F00661156 /* SLConfigDescriptor.swift in Sources */,
 				BC94E503263FE8400094C169 /* MP4TrackFragmentHeaderBox.swift in Sources */,
 				29B877071CD70D5A00FC07DA /* SoundTransform.swift in Sources */,
-				29B877081CD70D5A00FC07DA /* VideoIOComponent.swift in Sources */,
+				29B877081CD70D5A00FC07DA /* AVVideoIOUnit.swift in Sources */,
 				294CC9B422D9BEC000F9DD5C /* DisplayLink-macOS.swift in Sources */,
 				BC94E507263FEA7F0094C169 /* MP4TrackFragmentBaseMediaDecodeTimeBox.swift in Sources */,
 				BC20DF2D25037498007BC608 /* HKPictureInPicureControllerPosition.swift in Sources */,
@@ -2322,7 +2322,7 @@
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
 				BCA97BE2263C095B0027213C /* MP4TimeToSampleBox.swift in Sources */,
 				29DF20642312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
-				29EB3E111ED05881001CAE8B /* IOComponent.swift in Sources */,
+				29EB3E111ED05881001CAE8B /* AVIOUnit.swift in Sources */,
 				BCA97BF2263C31020027213C /* MP4SampleDescriptionBox.swift in Sources */,
 				29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */,
 				29EB3DF81ED05799001CAE8B /* Mirror+Extension.swift in Sources */,
@@ -2332,13 +2332,13 @@
 				BCC1A6E926447CCA00661156 /* MP4MovieHeaderBox.swift in Sources */,
 				29EB3E031ED0585D001CAE8B /* AudioSpecificConfig.swift in Sources */,
 				29EB3E3B1ED05A48001CAE8B /* VideoGravityUtil.swift in Sources */,
-				29EB3E141ED05889001CAE8B /* VideoIOComponent.swift in Sources */,
+				29EB3E141ED05889001CAE8B /* AVVideoIOUnit.swift in Sources */,
 				29EB3E221ED059FD001CAE8B /* RTMPMessage.swift in Sources */,
 				29EB3E001ED05854001CAE8B /* HTTPService.swift in Sources */,
 				BCC1A6DD26446EF600661156 /* MP4VideoMediaHeaderBox.swift in Sources */,
 				29EB3DFF1ED05852001CAE8B /* HTTPResponse.swift in Sources */,
 				29EB3E021ED05858001CAE8B /* M3U.swift in Sources */,
-				29EB3E0D1ED05877001CAE8B /* AudioIOComponent.swift in Sources */,
+				29EB3E0D1ED05877001CAE8B /* AVAudioIOUnit.swift in Sources */,
 				2942A4FA21A9418A004E1BEE /* Running.swift in Sources */,
 				BCC1A6C42643F41600661156 /* MP4FragmentedWriter.swift in Sources */,
 				295891101EEB8D3C00CE51E1 /* FLVVideoCodec.swift in Sources */,
@@ -2694,7 +2694,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				ONLY_ACTIVE_ARCH = YES;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
@@ -2728,7 +2728,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
@@ -2803,7 +2803,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
@@ -2835,7 +2835,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				SDKROOT = macosx;
@@ -2975,7 +2975,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -3011,7 +3011,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.7;
+				MARKETING_VERSION = 1.1.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE_SPECIFIER = "";

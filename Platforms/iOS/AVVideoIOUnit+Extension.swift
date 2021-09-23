@@ -3,7 +3,7 @@
 import AVFoundation
 import CoreImage
 
-extension VideoIOComponent {
+extension AVVideoIOUnit {
     var zoomFactor: CGFloat {
         guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device else {
             return 0
@@ -44,7 +44,7 @@ extension VideoIOComponent {
     }
 }
 
-extension VideoIOComponent: CaptureSessionDelegate {
+extension AVVideoIOUnit: CaptureSessionDelegate {
     // MARK: CaptureSessionDelegate
     func session(_ session: CaptureSessionConvertible, didSet size: CGSize) {
         lockQueue.async {

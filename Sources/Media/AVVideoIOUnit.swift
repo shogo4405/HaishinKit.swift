@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreImage
 
-final class VideoIOComponent: IOComponent {
+final class AVVideoIOUnit: AVIOUnit {
     #if os(macOS)
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
@@ -56,7 +56,7 @@ final class VideoIOComponent: IOComponent {
     }
 
     private var attributes: [NSString: NSObject] {
-        var attributes: [NSString: NSObject] = VideoIOComponent.defaultAttributes
+        var attributes: [NSString: NSObject] = Self.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: Int(extent.width))
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: Int(extent.height))
         return attributes
@@ -399,7 +399,7 @@ final class VideoIOComponent: IOComponent {
     }
 }
 
-extension VideoIOComponent {
+extension AVVideoIOUnit {
     func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
             return
@@ -444,7 +444,7 @@ extension VideoIOComponent {
     }
 }
 
-extension VideoIOComponent {
+extension AVVideoIOUnit {
     func startDecoding() {
         decoder.startRunning()
     }
@@ -455,7 +455,7 @@ extension VideoIOComponent {
     }
 }
 
-extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         #if os(macOS)
@@ -467,7 +467,7 @@ extension VideoIOComponent: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-extension VideoIOComponent: VideoDecoderDelegate {
+extension AVVideoIOUnit: VideoDecoderDelegate {
     // MARK: VideoDecoderDelegate
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
         renderer?.enqueue(sampleBuffer)

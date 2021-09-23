@@ -2,7 +2,7 @@
 
 import AVFoundation
 
-extension VideoIOComponent {
+extension AVVideoIOUnit {
     func attachScreen(_ screen: AVCaptureScreenInput?) {
         mixer?.session.beginConfiguration()
         output = nil

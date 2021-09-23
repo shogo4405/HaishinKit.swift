@@ -130,18 +130,18 @@ public class AVMixer {
         return _recorder
     }
 
-    private var _audioIO: AudioIOComponent?
-    var audioIO: AudioIOComponent! {
+    private var _audioIO: AVAudioIOUnit?
+    var audioIO: AVAudioIOUnit! {
         if _audioIO == nil {
-            _audioIO = AudioIOComponent(mixer: self)
+            _audioIO = AVAudioIOUnit(mixer: self)
         }
         return _audioIO!
     }
 
-    private var _videoIO: VideoIOComponent?
-    var videoIO: VideoIOComponent! {
+    private var _videoIO: AVVideoIOUnit?
+    var videoIO: AVVideoIOUnit! {
         if _videoIO == nil {
-            _videoIO = VideoIOComponent(mixer: self)
+            _videoIO = AVVideoIOUnit(mixer: self)
         }
         return _videoIO!
     }
@@ -170,10 +170,6 @@ public class AVMixer {
         _audioIO = nil
         _videoIO?.dispose()
         _videoIO = nil
-    }
-
-    func didBufferEmpty(_ component: IOComponent) {
-        NotificationCenter.default.post(.init(name: AVMixer.bufferEmpty))
     }
 }
 
