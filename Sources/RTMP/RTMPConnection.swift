@@ -36,7 +36,8 @@ open class RTMPConnection: EventDispatcher {
     public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
 
     /**
-     NetStatusEvent#info.code for NetConnection
+      - NetStatusEvent#info.code for NetConnection
+        - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
      */
     public enum Code: String {
         case callBadVersion       = "NetConnection.Call.BadVersion"
@@ -60,7 +61,7 @@ open class RTMPConnection: EventDispatcher {
             case .callProhibited:
                 return "error"
             case .connectAppshutdown:
-                return "status"
+                return "error"
             case .connectClosed:
                 return "status"
             case .connectFailed:
@@ -72,7 +73,7 @@ open class RTMPConnection: EventDispatcher {
             case .connectNetworkChange:
                 return "status"
             case .connectRejected:
-                return "status"
+                return "error"
             case .connectSuccess:
                 return "status"
             }

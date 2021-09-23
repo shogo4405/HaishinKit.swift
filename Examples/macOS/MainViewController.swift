@@ -165,9 +165,10 @@ final class MainViewController: NSViewController {
             let code: String = data["code"] as? String else {
             return
         }
+        logger.info(data)
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream!.publish(Preference.defaultInstance.streamName)
+            rtmpStream?.publish(Preference.defaultInstance.streamName)
         default:
             break
         }

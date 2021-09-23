@@ -25,7 +25,8 @@ public extension RTMPStreamDelegate {
  */
 open class RTMPStream: NetStream {
     /**
-     NetStatusEvent#info.code for NetStream
+      - NetStatusEvent#info.code for NetStream
+        - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
      */
     public enum Code: String {
         case bufferEmpty               = "NetStream.Buffer.Empty"
@@ -107,7 +108,7 @@ open class RTMPStream: NetStream {
             case .playStop:
                 return "status"
             case .playStreamNotFound:
-                return "status"
+                return "error"
             case .playTransition:
                 return "status"
             case .playUnpublishNotify:
