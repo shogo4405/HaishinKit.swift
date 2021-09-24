@@ -18,20 +18,11 @@ final class H264Decoder {
         ._EnableTemporalProcessing
     ]
     static let defaultMinimumGroupOfPictures: Int = 12
-
-    #if os(iOS)
     static let defaultAttributes: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLESCompatibilityKey: NSNumber(booleanLiteral: true)
+        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
-    #else
-    static let defaultAttributes: [NSString: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
-        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLCompatibilityKey: NSNumber(booleanLiteral: true)
-    ]
-    #endif
 
     var formatDescription: CMFormatDescription? {
         didSet {

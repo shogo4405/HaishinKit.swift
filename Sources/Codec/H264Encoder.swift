@@ -54,24 +54,10 @@ public final class H264Encoder {
     public static let defaultBitrate: UInt32 = 160 * 1000
     public static let defaultScalingMode: ScalingMode = .trim
 
-    #if os(iOS)
     static let defaultAttributes: [NSString: AnyObject] = [
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-        kCVPixelBufferOpenGLESCompatibilityKey: kCFBooleanTrue
+        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
-    #else
-        #if arch(arm64)
-        static var defaultAttributes: [NSString: AnyObject] = [
-            kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-            kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
-        ]
-        #else
-        static var defaultAttributes: [NSString: AnyObject] = [
-            kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
-            kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
-        ]
-        #endif
-    #endif
 
     public var settings: Setting<H264Encoder, Option> = [:] {
         didSet {

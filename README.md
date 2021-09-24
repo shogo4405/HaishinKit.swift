@@ -48,13 +48,13 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 - [x] HLS Publish
 
 ### Rendering
-|-|HKView|GLHKView|MTHKView|
-|-|:---:|:---:|:---:|
-|Engine|AVCaptureVideoPreviewLayer|OpenGL ES|Metal|
-|Publish|○|○|◯|
-|Playback|×|○|◯|
-|VIsualEffect|×|○|◯|
-|Condition|Stable|Stable|Beta|
+|-|HKView|MTHKView|
+|-|:---:|:---:|
+|Engine|AVCaptureVideoPreviewLayer|Metal|
+|Publish|○|◯|
+|Playback|×|◯|
+|VIsualEffect|×|◯|
+|Condition|Stable|Stable|
 
 ### Others
 - [x] _Support tvOS 10.2+  (Technical Preview)_

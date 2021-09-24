@@ -2,19 +2,10 @@ import AVFoundation
 import CoreImage
 
 final class AVVideoIOUnit: AVIOUnit {
-    #if os(macOS)
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
-        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue,
-        kCVPixelBufferOpenGLCompatibilityKey: kCFBooleanTrue
+        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
-    #else
-    static let defaultAttributes: [NSString: NSObject] = [
-        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
-        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue,
-        kCVPixelBufferOpenGLESCompatibilityKey: kCFBooleanTrue
-    ]
-    #endif
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
 
