@@ -23,3 +23,4 @@ HaishinKit.xcodeproj/project.xcworkspace/xcuserdata/shogo.xcuserdatad/WorkspaceS
 *.xcsettings
 docs/undocumented.json
 fastlane/report.xml
+docs/docsets/HaishinKit.docset/Contents/Resources/Documents/undocumented.json

@@ -1,9 +1,9 @@
 Pod::Spec.new do |s|
 
   s.name          = "HaishinKit"
-  s.version       = "1.1.8"
+  s.version       = "1.2.0"
   s.summary       = "Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS."
-  s.swift_version = "5.0"
+  s.swift_version = "5.5"
 
   s.description  = <<-DESC
   HaishinKit. Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.

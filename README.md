@@ -1,4 +1,4 @@
-# HaishinKit (formerly lf)
+# HaishinKit
 [![Platform](https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
 ![Language](https://img.shields.io/badge/language-Swift%205.3-orange.svg)
 [![CocoaPods](https://img.shields.io/cocoapods/v/HaishinKit.svg?style=flat)](http://cocoapods.org/pods/HaishinKit)
@@ -53,7 +53,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 |Engine|AVCaptureVideoPreviewLayer|Metal|
 |Publish|○|◯|
 |Playback|×|◯|
-|VIsualEffect|×|◯|
+|VisualEffect|×|◯|
 |Condition|Stable|Stable|
 
 ### Others
@@ -66,11 +66,11 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 - [ ] ~~Objective-C Bridging~~
 
 ## Requirements
-|-|iOS|OSX|tvOS|XCode|Swift|CocoaPods|Carthage|
-|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
-|1.1.0+|9.0+|10.11+|10.2+|12.0+|5.0+|1.5.0+|0.29.0+|
-|1.0.0+|8.0+|10.11+|10.2+|11.0+|5.0+|1.5.0+|0.29.0+|
-|0.11.0+|8.0+|10.11+|10.2+|10.0+|5.0|1.5.0+|0.29.0+|
+|-|iOS|OSX|tvOS|XCode|Swift|
+|:----:|:----:|:----:|:----:|:----:|:----:|
+|1.2.0+|9.0+|10.11+|10.2+|13.0+|5.5+|
+|1.1.0+|9.0+|10.11+|10.2+|12.0+|5.0+|
+|1.0.0+|8.0+|10.11+|10.2+|11.0+|5.0+|
 
 ## Cocoa Keys
 Please contains Info.plist.
@@ -84,7 +84,7 @@ macOS 10.14+
 * NSCameraUsageDescription
 
 ## Installation
-*Please set up your project Swift 5.3. *
+*Please set up your project Swift 5.5. *
 
 ### CocoaPods
 ```rb
@@ -92,7 +92,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.1.8'
+    pod 'HaishinKit', '~> 1.2.0'
 end
 
 target 'Your Target'  do
@@ -102,7 +102,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.1.8
+github "shogo4405/HaishinKit.swift" ~> 1.2.0
 ```
 ### Swift Package Manager
 ```
