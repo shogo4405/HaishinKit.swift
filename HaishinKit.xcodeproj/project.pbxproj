@@ -139,7 +139,7 @@
 		29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioCodec.swift */; };
 		29B8765C1CD70A7900FC07DA /* H264Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876581CD70A7900FC07DA /* H264Decoder.swift */; };
-		29B8765D1CD70A7900FC07DA /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* H264Encoder.swift */; };
+		29B8765D1CD70A7900FC07DA /* VideoCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* VideoCodec.swift */; };
 		29B876691CD70AB300FC07DA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constants.swift */; };
 		29B8766D1CD70AB300FC07DA /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876671CD70AB300FC07DA /* DataConvertible.swift */; };
 		29B876761CD70ACE00FC07DA /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8766F1CD70ACE00FC07DA /* HTTPRequest.swift */; };
@@ -176,7 +176,7 @@
 		29B876BE1CD70B3900FC07DA /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876BA1CD70B3900FC07DA /* EventDispatcher.swift */; };
 		29B876EC1CD70D5900FC07DA /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioCodec.swift */; };
 		29B876ED1CD70D5900FC07DA /* H264Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876581CD70A7900FC07DA /* H264Decoder.swift */; };
-		29B876EE1CD70D5900FC07DA /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* H264Encoder.swift */; };
+		29B876EE1CD70D5900FC07DA /* VideoCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* VideoCodec.swift */; };
 		29B876F01CD70D5900FC07DA /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constants.swift */; };
 		29B876F41CD70D5900FC07DA /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876671CD70AB300FC07DA /* DataConvertible.swift */; };
 		29B876F61CD70D5900FC07DA /* HTTPRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8766F1CD70ACE00FC07DA /* HTTPRequest.swift */; };
@@ -254,7 +254,7 @@
 		29EB3DED1ED055B4001CAE8B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 29D3D5001ED053C000DD4AA6 /* Assets.xcassets */; };
 		29EB3DEE1ED05763001CAE8B /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioCodec.swift */; };
 		29EB3DEF1ED05766001CAE8B /* H264Decoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876581CD70A7900FC07DA /* H264Decoder.swift */; };
-		29EB3DF01ED05768001CAE8B /* H264Encoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* H264Encoder.swift */; };
+		29EB3DF01ED05768001CAE8B /* VideoCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* VideoCodec.swift */; };
 		29EB3DF11ED0576C001CAE8B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876631CD70AB300FC07DA /* Constants.swift */; };
 		29EB3DF21ED05770001CAE8B /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876671CD70AB300FC07DA /* DataConvertible.swift */; };
 		29EB3DF31ED05773001CAE8B /* CMAudioFormatDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA87E51E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift */; };
@@ -758,7 +758,7 @@
 		29B8761B1CD701F900FC07DA /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		29B876571CD70A7900FC07DA /* AudioCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioCodec.swift; sourceTree = "<group>"; };
 		29B876581CD70A7900FC07DA /* H264Decoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = H264Decoder.swift; sourceTree = "<group>"; };
-		29B876591CD70A7900FC07DA /* H264Encoder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = H264Encoder.swift; sourceTree = "<group>"; };
+		29B876591CD70A7900FC07DA /* VideoCodec.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoCodec.swift; sourceTree = "<group>"; };
 		29B876631CD70AB300FC07DA /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		29B876671CD70AB300FC07DA /* DataConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		29B8766F1CD70ACE00FC07DA /* HTTPRequest.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPRequest.swift; sourceTree = "<group>"; };
@@ -1011,7 +1011,7 @@
 				297E69112324E38800D418AB /* AudioCodec.Destination.swift */,
 				29B876571CD70A7900FC07DA /* AudioCodec.swift */,
 				29B876581CD70A7900FC07DA /* H264Decoder.swift */,
-				29B876591CD70A7900FC07DA /* H264Encoder.swift */,
+				29B876591CD70A7900FC07DA /* VideoCodec.swift */,
 				29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */,
 			);
 			path = Codec;
@@ -1986,7 +1986,7 @@
 				BCC1A70B2647F23200661156 /* ESDescriptor.swift in Sources */,
 				29B876AD1CD70B2800FC07DA /* ASClass.swift in Sources */,
 				296242611D8DB86500C451A3 /* TSReader.swift in Sources */,
-				29B8765D1CD70A7900FC07DA /* H264Encoder.swift in Sources */,
+				29B8765D1CD70A7900FC07DA /* VideoCodec.swift in Sources */,
 				2999C3752071138F00892E55 /* MTHKView.swift in Sources */,
 				29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */,
 				294B2D3223785E3800CE7BDC /* CircularBuffer.swift in Sources */,
@@ -2156,7 +2156,7 @@
 				BCC1A6D826446B2D00661156 /* MP4SoundMediaHeaderBox.swift in Sources */,
 				29B876ED1CD70D5900FC07DA /* H264Decoder.swift in Sources */,
 				BCB977402621812800C9A649 /* AVCFormatStream.swift in Sources */,
-				29B876EE1CD70D5900FC07DA /* H264Encoder.swift in Sources */,
+				29B876EE1CD70D5900FC07DA /* VideoCodec.swift in Sources */,
 				BCA97BF1263C31020027213C /* MP4SampleDescriptionBox.swift in Sources */,
 				29EA87EB1E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift in Sources */,
 				29B876F01CD70D5900FC07DA /* Constants.swift in Sources */,
@@ -2364,7 +2364,7 @@
 				29EB3E211ED059FB001CAE8B /* RTMPHandshake.swift in Sources */,
 				BCC1A6ED2644850F00661156 /* MP4TrackHeaderBox.swift in Sources */,
 				29EB3DF41ED05776001CAE8B /* CMBlockBuffer+Extension.swift in Sources */,
-				29EB3DF01ED05768001CAE8B /* H264Encoder.swift in Sources */,
+				29EB3DF01ED05768001CAE8B /* VideoCodec.swift in Sources */,
 				BCC1A7192647F3E000661156 /* DecoderSpecificInfo.swift in Sources */,
 				29EB3E351ED05A33001CAE8B /* DeviceUtil.swift in Sources */,
 				29DC17B521D0CC0600E26CED /* Atomic.swift in Sources */,

@@ -45,9 +45,9 @@ extension RTMPMuxer: AudioCodecDelegate {
     }
 }
 
-extension RTMPMuxer: VideoEncoderDelegate {
-    // MARK: VideoEncoderDelegate
-    func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
+extension RTMPMuxer: VideoCodecDelegate {
+    // MARK: VideoCodecDelegate
+    func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
         guard
             let formatDescription = formatDescription,
             let avcC = AVCConfigurationRecord.getData(formatDescription) else {
@@ -58,7 +58,7 @@ extension RTMPMuxer: VideoEncoderDelegate {
         delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
     }
 
-    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
         let keyframe: Bool = !sampleBuffer.isNotSync
         var compositionTime: Int32 = 0
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp

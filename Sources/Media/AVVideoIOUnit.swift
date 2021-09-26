@@ -32,8 +32,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             decoder.formatDescription = formatDescription
         }
     }
-    lazy var encoder: H264Encoder = {
-        var encoder = H264Encoder()
+    lazy var encoder: VideoCodec = {
+        var encoder = VideoCodec()
         encoder.lockQueue = lockQueue
         return encoder
     }()

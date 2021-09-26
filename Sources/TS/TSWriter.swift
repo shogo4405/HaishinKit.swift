@@ -238,9 +238,9 @@ extension TSWriter: AudioCodecDelegate {
     }
 }
 
-extension TSWriter: VideoEncoderDelegate {
-    // MARK: VideoEncoderDelegate
-    public func didSetFormatDescription(video formatDescription: CMFormatDescription?) {
+extension TSWriter: VideoCodecDelegate {
+    // MARK: VideoCodecDelegate
+    public func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
         guard
             let formatDescription: CMFormatDescription = formatDescription,
             let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else {
@@ -254,7 +254,7 @@ extension TSWriter: VideoEncoderDelegate {
         videoConfig = AVCConfigurationRecord(data: avcC)
     }
 
-    public func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+    public func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
         guard let dataBuffer = sampleBuffer.dataBuffer else {
             return
         }

@@ -6,13 +6,13 @@ import VideoToolbox
 import UIKit
 #endif
 
-public protocol VideoEncoderDelegate: AnyObject {
-    func didSetFormatDescription(video formatDescription: CMFormatDescription?)
-    func sampleOutput(video sampleBuffer: CMSampleBuffer)
+public protocol VideoCodecDelegate: AnyObject {
+    func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?)
+    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
 }
 
 // MARK: -
-public final class H264Encoder {
+public final class VideoCodec {
     public enum Option: String, KeyPathRepresentable, CaseIterable {
         case muted
         case width
@@ -28,23 +28,23 @@ public final class H264Encoder {
         public var keyPath: AnyKeyPath {
             switch self {
             case .muted:
-                return \H264Encoder.muted
+                return \VideoCodec.muted
             case .width:
-                return \H264Encoder.width
+                return \VideoCodec.width
             case .height:
-                return \H264Encoder.height
+                return \VideoCodec.height
             case .bitrate:
-                return \H264Encoder.bitrate
+                return \VideoCodec.bitrate
             #if os(macOS)
             case .enabledHardwareEncoder:
-                return \H264Encoder.enabledHardwareEncoder
+                return \VideoCodec.enabledHardwareEncoder
             #endif
             case .maxKeyFrameIntervalDuration:
-                return \H264Encoder.maxKeyFrameIntervalDuration
+                return \VideoCodec.maxKeyFrameIntervalDuration
             case .scalingMode:
-                return \H264Encoder.scalingMode
+                return \VideoCodec.scalingMode
             case .profileLevel:
-                return \H264Encoder.profileLevel
+                return \VideoCodec.profileLevel
             }
         }
     }
@@ -59,7 +59,7 @@ public final class H264Encoder {
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
 
-    public var settings: Setting<H264Encoder, Option> = [:] {
+    public var settings: Setting<VideoCodec, Option> = [:] {
         didSet {
             settings.observer = self
         }
@@ -67,7 +67,7 @@ public final class H264Encoder {
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     var muted = false
-    var scalingMode: ScalingMode = H264Encoder.defaultScalingMode {
+    var scalingMode: ScalingMode = VideoCodec.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
                 return
@@ -76,7 +76,7 @@ public final class H264Encoder {
         }
     }
 
-    var width: Int32 = H264Encoder.defaultWidth {
+    var width: Int32 = VideoCodec.defaultWidth {
         didSet {
             guard width != oldValue else {
                 return
@@ -84,7 +84,7 @@ public final class H264Encoder {
             invalidateSession = true
         }
     }
-    var height: Int32 = H264Encoder.defaultHeight {
+    var height: Int32 = VideoCodec.defaultHeight {
         didSet {
             guard height != oldValue else {
                 return
@@ -102,7 +102,7 @@ public final class H264Encoder {
         }
     }
     #endif
-    var bitrate: UInt32 = H264Encoder.defaultBitrate {
+    var bitrate: UInt32 = VideoCodec.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
                 return
@@ -141,14 +141,14 @@ public final class H264Encoder {
             guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
                 return
             }
-            delegate?.didSetFormatDescription(video: formatDescription)
+            delegate?.videoCodec(self, didSet: formatDescription)
         }
     }
-    weak var delegate: VideoEncoderDelegate?
+    weak var delegate: VideoCodecDelegate?
 
     private(set) var status: OSStatus = noErr
     private var attributes: [NSString: AnyObject] {
-        var attributes: [NSString: AnyObject] = H264Encoder.defaultAttributes
+        var attributes: [NSString: AnyObject] = VideoCodec.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: width)
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: height)
         return attributes
@@ -197,9 +197,9 @@ public final class H264Encoder {
                 }
             return
         }
-        let encoder: H264Encoder = Unmanaged<H264Encoder>.fromOpaque(refcon).takeUnretainedValue()
-        encoder.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
-        encoder.delegate?.sampleOutput(video: sampleBuffer)
+        let codec: VideoCodec = Unmanaged<VideoCodec>.fromOpaque(refcon).takeUnretainedValue()
+        codec.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
+        codec.delegate?.videoCodec(codec, didOutput: sampleBuffer)
     }
 
     private var _session: VTCompressionSession?
@@ -303,7 +303,7 @@ public final class H264Encoder {
 #endif
 }
 
-extension H264Encoder: Running {
+extension VideoCodec: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
