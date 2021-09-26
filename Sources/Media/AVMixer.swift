@@ -6,6 +6,10 @@ import AVFoundation
     }
 #endif
 
+protocol AVIOUnit {
+    var mixer: AVMixer? { get set }
+}
+
 protocol AVMixerDelegate: AnyObject {
     func mixer(_ mixer: AVMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
     func mixer(_ mixer: AVMixer, didOutput video: CMSampleBuffer)
@@ -111,6 +115,10 @@ public class AVMixer {
             _session = newValue
         }
     }
+    /// The recorder instance.
+    public lazy var recorder: AVRecorder = {
+        return AVRecorder()
+    }()
     #endif
 
     var settings: Setting<AVMixer, Option> = [:] {
@@ -121,19 +129,11 @@ public class AVMixer {
 
     weak var delegate: AVMixerDelegate?
 
-    private var _recorder: AVRecorder?
-    /// The recorder instance.
-    public var recorder: AVRecorder! {
-        if _recorder == nil {
-            _recorder = AVRecorder()
-        }
-        return _recorder
-    }
-
     private var _audioIO: AVAudioIOUnit?
     var audioIO: AVAudioIOUnit! {
         if _audioIO == nil {
-            _audioIO = AVAudioIOUnit(mixer: self)
+            _audioIO = AVAudioIOUnit()
+            _audioIO?.mixer = self
         }
         return _audioIO!
     }
@@ -141,7 +141,8 @@ public class AVMixer {
     private var _videoIO: AVVideoIOUnit?
     var videoIO: AVVideoIOUnit! {
         if _videoIO == nil {
-            _videoIO = AVVideoIOUnit(mixer: self)
+            _videoIO = AVVideoIOUnit()
+            _videoIO?.mixer = self
         }
         return _videoIO!
     }
