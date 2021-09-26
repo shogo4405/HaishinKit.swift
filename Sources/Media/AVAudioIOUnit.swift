@@ -151,13 +151,9 @@ extension AVAudioIOUnit: AudioCodecDelegate {
         #else
             audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
         #endif
-        nstry({
-            if let plyerNode = self.mixer?.mediaLink.playerNode, let audioFormat = self.audioFormat {
-                audioEngine.connect(plyerNode, to: audioEngine.mainMixerNode, format: audioFormat)
-            }
-        }, { exeption in
-            logger.warn(exeption)
-        })
+        if let plyerNode = self.mixer?.mediaLink.playerNode, let audioFormat = self.audioFormat {
+            audioEngine.connect(plyerNode, to: audioEngine.mainMixerNode, format: audioFormat)
+        }
         do {
             try audioEngine.start()
         } catch {

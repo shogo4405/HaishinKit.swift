@@ -2,6 +2,7 @@ import Foundation
 
 #if os(macOS)
 #else
+    import QuartzCore
     typealias DisplayLink = CADisplayLink
 #endif
 
