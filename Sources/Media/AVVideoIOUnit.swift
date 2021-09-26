@@ -290,6 +290,20 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
     #endif
 
+    deinit {
+        if Thread.isMainThread {
+            self.renderer?.attachStream(nil)
+        } else {
+            DispatchQueue.main.sync {
+                self.renderer?.attachStream(nil)
+            }
+        }
+        #if os(iOS) || os(macOS)
+        input = nil
+        output = nil
+        #endif
+    }
+
     #if os(iOS) || os(macOS)
     func attachCamera(_ camera: AVCaptureDevice?) throws {
         guard let mixer: AVMixer = mixer else {
@@ -346,29 +360,6 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             device.unlockForConfiguration()
         } catch let error as NSError {
             logger.error("while setting torch: \(error)")
-        }
-    }
-
-    func dispose() {
-        if Thread.isMainThread {
-            self.renderer?.attachStream(nil)
-        } else {
-            DispatchQueue.main.sync {
-                self.renderer?.attachStream(nil)
-            }
-        }
-
-        input = nil
-        output = nil
-    }
-    #else
-    func dispose() {
-        if Thread.isMainThread {
-            self.renderer?.attachStream(nil)
-        } else {
-            DispatchQueue.main.sync {
-                self.renderer?.attachStream(nil)
-            }
         }
     }
     #endif

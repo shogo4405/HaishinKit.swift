@@ -88,7 +88,6 @@ final class LiveViewController: UIViewController {
         super.viewWillDisappear(animated)
         rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
         rtmpStream.close()
-        rtmpStream.dispose()
     }
 
     @IBAction func rotateCamera(_ sender: UIButton) {
