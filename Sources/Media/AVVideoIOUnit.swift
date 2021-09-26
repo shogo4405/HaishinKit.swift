@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreImage
 
-final class AVVideoIOUnit: AVIOUnit {
+final class AVVideoIOUnit: NSObject, AVIOUnit {
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
@@ -32,8 +32,17 @@ final class AVVideoIOUnit: AVIOUnit {
             decoder.formatDescription = formatDescription
         }
     }
-    lazy var encoder = H264Encoder()
-    lazy var decoder = H264Decoder()
+    lazy var encoder: H264Encoder = {
+        var encoder = H264Encoder()
+        encoder.lockQueue = lockQueue
+        return encoder
+    }()
+    lazy var decoder: H264Decoder = {
+        var decoder = H264Decoder()
+        decoder.delegate = self
+        return decoder
+    }()
+    weak var mixer: AVMixer?
 
     private(set) var effects: Set<VideoEffect> = []
 
@@ -280,12 +289,6 @@ final class AVVideoIOUnit: AVIOUnit {
         }
     }
     #endif
-
-    override init(mixer: AVMixer) {
-        super.init(mixer: mixer)
-        encoder.lockQueue = lockQueue
-        decoder.delegate = self
-    }
 
     #if os(iOS) || os(macOS)
     func attachCamera(_ camera: AVCaptureDevice?) throws {

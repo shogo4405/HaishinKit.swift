@@ -4,8 +4,12 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
-final class AVAudioIOUnit: AVIOUnit {
-    lazy var codec = AudioCodec()
+final class AVAudioIOUnit: NSObject, AVIOUnit {
+    lazy var codec: AudioCodec = {
+        var codec = AudioCodec()
+        codec.lockQueue = lockQueue
+        return codec
+    }()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
@@ -14,6 +18,7 @@ final class AVAudioIOUnit: AVIOUnit {
             soundTransform.apply(mixer?.mediaLink.playerNode)
         }
     }
+    weak var mixer: AVMixer?
 
 #if os(iOS) || os(macOS)
     var input: AVCaptureDeviceInput? {
@@ -52,11 +57,6 @@ final class AVAudioIOUnit: AVIOUnit {
 #endif
 
     private var audioFormat: AVAudioFormat?
-
-    override init(mixer: AVMixer) {
-        super.init(mixer: mixer)
-        codec.lockQueue = lockQueue
-    }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
