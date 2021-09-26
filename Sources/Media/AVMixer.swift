@@ -115,11 +115,9 @@ public class AVMixer {
             _session = newValue
         }
     }
-    /// The recorder instance.
-    public lazy var recorder: AVRecorder = {
-        return AVRecorder()
-    }()
     #endif
+    /// The recorder instance.
+    public lazy var recorder = AVRecorder()
 
     var settings: Setting<AVMixer, Option> = [:] {
         didSet {
