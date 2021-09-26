@@ -126,24 +126,18 @@ public class AVMixer {
     }
 
     weak var delegate: AVMixerDelegate?
+    
+    lazy var audioIO: AVAudioIOUnit = {
+        var audioIO = AVAudioIOUnit()
+        audioIO.mixer = self
+        return audioIO
+    }()
 
-    private var _audioIO: AVAudioIOUnit?
-    var audioIO: AVAudioIOUnit! {
-        if _audioIO == nil {
-            _audioIO = AVAudioIOUnit()
-            _audioIO?.mixer = self
-        }
-        return _audioIO!
-    }
-
-    private var _videoIO: AVVideoIOUnit?
-    var videoIO: AVVideoIOUnit! {
-        if _videoIO == nil {
-            _videoIO = AVVideoIOUnit()
-            _videoIO?.mixer = self
-        }
-        return _videoIO!
-    }
+    lazy var videoIO: AVVideoIOUnit = {
+        var videoIO = AVVideoIOUnit()
+        videoIO.mixer = self
+        return videoIO
+    }()
 
     lazy var mediaLink: MediaLink = {
         var mediaLink = MediaLink()
@@ -151,24 +145,14 @@ public class AVMixer {
         return mediaLink
     }()
 
-    deinit {
-        dispose()
-    }
-
     public init() {
         settings.observer = self
     }
 
-    public func dispose() {
-#if os(iOS) || os(macOS)
+    deinit {
         if let session = _session, session.isRunning {
             session.stopRunning()
         }
-#endif
-        _audioIO?.dispose()
-        _audioIO = nil
-        _videoIO?.dispose()
-        _videoIO = nil
     }
 }
 

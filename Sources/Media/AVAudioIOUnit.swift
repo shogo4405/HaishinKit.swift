@@ -58,6 +58,13 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
 
     private var audioFormat: AVAudioFormat?
 
+#if os(iOS) || os(macOS)
+    deinit {
+        input = nil
+        output = nil
+    }
+#endif
+
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
         codec.encodeSampleBuffer(sampleBuffer)
@@ -88,14 +95,6 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
         #endif
         mixer.session.addOutput(output)
         output.setSampleBufferDelegate(self, queue: lockQueue)
-    }
-
-    func dispose() {
-        input = nil
-        output = nil
-    }
-#else
-    func dispose() {
     }
 #endif
 

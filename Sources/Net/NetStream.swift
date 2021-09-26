@@ -135,12 +135,6 @@ open class NetStream: NSObject {
         }
     }
 
-    open func dispose() {
-        lockQueue.async {
-            self.mixer.dispose()
-        }
-    }
-
     func ensureLockQueue(callback: () -> Void) {
         if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
             callback()
