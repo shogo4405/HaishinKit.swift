@@ -1,7 +1,7 @@
 import Foundation
 
 extension NetSocket {
-    struct CircularBuffer: CustomDebugStringConvertible {
+    final class CircularBuffer: CustomDebugStringConvertible {
         var bytes: UnsafePointer<UInt8>? {
             data.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> UnsafePointer<UInt8>? in
                 bytes.baseAddress?.assumingMemoryBound(to: UInt8.self).advanced(by: head)
@@ -36,7 +36,7 @@ extension NetSocket {
         }
 
         @discardableResult
-        mutating func append(_ data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Bool {
+        func append(_ data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Bool {
             guard data.count + count < capacity else {
                 return resize(data)
             }
@@ -66,7 +66,7 @@ extension NetSocket {
             }
         }
 
-        mutating func skip(_ count: Int) {
+        func skip(_ count: Int) {
             let length = min(count, capacity - head)
             if length < count {
                 head = count - length
@@ -82,14 +82,14 @@ extension NetSocket {
             }
         }
 
-        mutating func clear() {
+        func clear() {
             head = 0
             tail = 0
             locked = nil
             lockedTail = 0
         }
 
-        private mutating func resize(_ data: Data) -> Bool {
+        private func resize(_ data: Data) -> Bool {
             if 0 < head {
                 let subdata = self.data.subdata(in: 0..<tail)
                 self.data.replaceSubrange(0..<capacity - head, with: self.data.advanced(by: head))
