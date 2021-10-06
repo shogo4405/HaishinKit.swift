@@ -1,5 +1,5 @@
-import SwiftUI
 import HaishinKit
+import SwiftUI
 
 @main
 struct iOSSwiftUIApp: App {

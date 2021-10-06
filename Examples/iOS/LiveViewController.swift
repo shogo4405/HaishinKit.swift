@@ -81,6 +81,8 @@ final class LiveViewController: UIViewController {
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
+        NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -88,6 +90,8 @@ final class LiveViewController: UIViewController {
         super.viewWillDisappear(animated)
         rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
         rtmpStream.close()
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.routeChangeNotification, object: nil)
     }
 
     @IBAction func rotateCamera(_ sender: UIButton) {
@@ -209,6 +213,16 @@ final class LiveViewController: UIViewController {
         default:
             break
         }
+    }
+
+    @objc
+    private func didInterruptionNotification(_ notification: Notification) {
+        logger.info("didInterruptionNotification")
+    }
+
+    @objc
+    private func didRouteChangeNotification(_ notification: Notification) {
+        logger.info("didRouteChangeNotification")
     }
 
     @objc

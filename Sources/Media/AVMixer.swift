@@ -126,7 +126,7 @@ public class AVMixer {
     }
 
     weak var delegate: AVMixerDelegate?
-    
+
     lazy var audioIO: AVAudioIOUnit = {
         var audioIO = AVAudioIOUnit()
         audioIO.mixer = self
