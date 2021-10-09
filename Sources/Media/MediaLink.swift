@@ -1,5 +1,9 @@
 import AVFoundation
 
+#if canImport(SwiftPMSupport)
+import SwiftPMSupport
+#endif
+
 protocol MediaLinkDelegate: AnyObject {
     func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer)
     func mediaLink(_ mediaLink: MediaLink, didBufferingChanged: Bool)

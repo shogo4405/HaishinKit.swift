@@ -2,7 +2,8 @@ import Foundation
 
 #if os(macOS)
 #else
-    typealias DisplayLink = CADisplayLink
+import QuartzCore
+typealias DisplayLink = CADisplayLink
 #endif
 
 protocol ChoreographerDelegate: AnyObject {
