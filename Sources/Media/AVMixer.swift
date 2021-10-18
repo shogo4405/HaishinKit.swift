@@ -150,9 +150,11 @@ public class AVMixer {
     }
 
     deinit {
+#if os(iOS) || os(macOS)
         if let session = _session, session.isRunning {
             session.stopRunning()
         }
+#endif
     }
 }
 
