@@ -2,16 +2,16 @@
 import Foundation
 import UIKit
 
-class HKPictureInPicureControllerImpl: HKPictureInPicureController {
+class HKPictureInPicureControllerImpl: HKPictureInPictureController {
     static let margin: CGFloat = 16
-    static let position: HKPictureInPicureControllerPosition = .bottomRight
+    static let position: HKPictureInPictureControllerPosition = .bottomRight
     static let cornerRadius: CGFloat = 8
     static let animationDuration: TimeInterval = 0.3
 
     var isPictureInPictureActive = false
     var pictureInPictureSize: CGSize = .init(width: 160, height: 90)
     var pictureInPictureMargin: CGFloat = HKPictureInPicureControllerImpl.margin
-    var pictureInPicturePosition: HKPictureInPicureControllerPosition = HKPictureInPicureControllerImpl.position
+    var pictureInPicturePosition: HKPictureInPictureControllerPosition = HKPictureInPicureControllerImpl.position
     var pictureInPictureCornerRadius: CGFloat = HKPictureInPicureControllerImpl.cornerRadius
     var pictureInPictureAnimationDuration: TimeInterval = HKPictureInPicureControllerImpl.animationDuration
 

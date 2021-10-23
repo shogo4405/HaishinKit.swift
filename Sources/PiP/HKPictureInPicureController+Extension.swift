@@ -5,7 +5,7 @@ import UIKit
 private var HKPictureInPicureControllerImplKey: UInt8 = 0
 
 /// HKPictureInPicureController protocol default implementation.
-public extension HKPictureInPicureController where Self: UIViewController {
+public extension HKPictureInPictureController where Self: UIViewController {
     var isPictureInPictureActive: Bool {
         impl.isPictureInPictureActive
     }
@@ -19,7 +19,7 @@ public extension HKPictureInPicureController where Self: UIViewController {
         }
     }
 
-    var pictureInPicturePosition: HKPictureInPicureControllerPosition {
+    var pictureInPicturePosition: HKPictureInPictureControllerPosition {
         get {
             impl.pictureInPicturePosition
         }
