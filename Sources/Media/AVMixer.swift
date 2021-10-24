@@ -15,9 +15,8 @@ protocol AVMixerDelegate: AnyObject {
     func mixer(_ mixer: AVMixer, didOutput video: CMSampleBuffer)
 }
 
+/// An object that mixies audio and video for streaming.
 public class AVMixer {
-    public static let bufferEmpty: Notification.Name = .init("AVMixerBufferEmpty")
-
     public static let defaultFPS: Float64 = 30
     public static let defaultVideoSettings: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
@@ -103,6 +102,7 @@ public class AVMixer {
     }
 
     private var _session: AVCaptureSession?
+    /// The capture session instance.
     public var session: AVCaptureSession {
         get {
             if _session == nil {
@@ -149,13 +149,13 @@ public class AVMixer {
         settings.observer = self
     }
 
-    deinit {
 #if os(iOS) || os(macOS)
+    deinit {
         if let session = _session, session.isRunning {
             session.stopRunning()
         }
-#endif
     }
+#endif
 }
 
 extension AVMixer {
