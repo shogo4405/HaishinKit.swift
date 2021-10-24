@@ -4,7 +4,7 @@ import UIKit
 
 private var HKPictureInPictureControllerImplKey: UInt8 = 0
 
-/// HKPictureInPicureController protocol default implementation.
+/// HKPictureInPictureController protocol default implementation.
 public extension HKPictureInPictureController where Self: UIViewController {
     var isPictureInPictureActive: Bool {
         impl.isPictureInPictureActive
