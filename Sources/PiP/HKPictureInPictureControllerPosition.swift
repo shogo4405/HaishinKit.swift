@@ -1,13 +1,13 @@
 #if !os(macOS)
 import UIKit
 
-public enum HKPictureInPicureControllerPosition {
+public enum HKPictureInPictureControllerPosition {
     case topLeft
     case topRight
     case bottomRight
     case bottomLeft
 
-    func CGPoint(_ controller: HKPictureInPicureController, insets: UIEdgeInsets = .zero) -> CGPoint {
+    func CGPoint(_ controller: HKPictureInPictureController, insets: UIEdgeInsets = .zero) -> CGPoint {
         let margin = controller.pictureInPictureMargin
         switch self {
         case .topLeft:
