@@ -18,7 +18,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
 
     #if os(iOS) || os(macOS)
-    weak var renderer: NetStreamRenderer? = nil {
+    weak var renderer: NetStreamRenderer? {
         didSet {
             renderer?.orientation = orientation
         }
@@ -262,7 +262,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         }
     }
 
-    var input: AVCaptureInput? = nil {
+    var input: AVCaptureInput? {
         didSet {
             guard let mixer: AVMixer = mixer, oldValue != input else {
                 return
@@ -278,7 +278,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     #endif
 
     #if os(iOS)
-    var screen: CaptureSessionConvertible? = nil {
+    var screen: CaptureSessionConvertible? {
         didSet {
             if let oldValue = oldValue {
                 oldValue.delegate = nil
