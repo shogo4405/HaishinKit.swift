@@ -18,6 +18,8 @@ open class SampleHandler: RPBroadcastSampleHandler {
         RTMPStream(connection: rtmpConnection)
     }()
 
+    private var isMirophoneOn = false
+
     deinit {
         rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
         rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusEvent), observer: self)
@@ -48,10 +50,15 @@ open class SampleHandler: RPBroadcastSampleHandler {
                 ]
             }
             rtmpStream.appendSampleBuffer(sampleBuffer, withType: .video)
-        case .audioApp:
-            break
         case .audioMic:
-            rtmpStream.appendSampleBuffer(sampleBuffer, withType: .audio)
+            isMirophoneOn = true
+            if CMSampleBufferDataIsReady(sampleBuffer) {
+                rtmpStream.appendSampleBuffer(sampleBuffer, withType: .audio)
+            }
+        case .audioApp:
+            if !isMirophoneOn && CMSampleBufferDataIsReady(sampleBuffer) {
+                rtmpStream.appendSampleBuffer(sampleBuffer, withType: .audio)
+            }
         @unknown default:
             break
         }
