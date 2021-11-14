@@ -35,6 +35,7 @@ open class HLSService: HTTPService {
 
         switch request.uri {
         case "/":
+            response.statusCode = HTTPStatusCode.ok.description
             response.headerFields["Content-Type"] = "text/html"
             response.body = Data(document.utf8)
             client.doOutput(data: response.data)
