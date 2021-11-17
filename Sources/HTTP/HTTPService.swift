@@ -182,7 +182,9 @@ open class HTTPService: NetService {
 """
     }
 
-    var document: String = HTTPService.defaultDocument
+    var document: String {
+        Self.defaultDocument
+    }
 
     func client(inputBuffer client: NetClient) {
         guard let request = HTTPRequest(data: client.inputBuffer) else {
