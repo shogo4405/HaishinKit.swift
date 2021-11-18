@@ -15,13 +15,13 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
         do {
             // https://stackoverflow.com/questions/51010390/avaudiosession-setcategory-swift-4-2-ios-12-play-sound-on-silent
             if #available(iOS 10.0, *) {
-                try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
+                try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetooth])
             } else {
                 session.perform(NSSelectorFromString("setCategory:withOptions:error:"), with: AVAudioSession.Category.playAndRecord, with: [
                     AVAudioSession.CategoryOptions.allowBluetooth,
                     AVAudioSession.CategoryOptions.defaultToSpeaker
                 ])
-                try session.setMode(.default)
+                try session.setMode(.voiceChat)
             }
             try session.setActive(true)
         } catch {

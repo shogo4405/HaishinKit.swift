@@ -90,8 +90,7 @@ final class LiveViewController: UIViewController {
         super.viewWillDisappear(animated)
         rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
         rtmpStream.close()
-        NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: AVAudioSession.routeChangeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self)
     }
 
     @IBAction func rotateCamera(_ sender: UIButton) {
@@ -157,7 +156,7 @@ final class LiveViewController: UIViewController {
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             retryCount = 0
-            rtmpStream!.publish(Preference.defaultInstance.streamName!)
+            rtmpStream.publish(Preference.defaultInstance.streamName!)
             // sharedObject!.connect(rtmpConnection)
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
             guard retryCount <= LiveViewController.maxRetryCount else {
@@ -217,12 +216,12 @@ final class LiveViewController: UIViewController {
 
     @objc
     private func didInterruptionNotification(_ notification: Notification) {
-        logger.info("didInterruptionNotification")
+        logger.info(notification)
     }
 
     @objc
     private func didRouteChangeNotification(_ notification: Notification) {
-        logger.info("didRouteChangeNotification")
+        logger.info(notification)
     }
 
     @objc
