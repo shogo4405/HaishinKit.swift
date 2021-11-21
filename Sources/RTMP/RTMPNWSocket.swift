@@ -91,7 +91,9 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
         readyState = .closing
         timeoutHandler?.cancel()
+        objc_sync_enter(self)
         connection = nil
+        objc_sync_exit(self)
     }
 
     @discardableResult
@@ -127,7 +129,9 @@ final class RTMPNWSocket: RTMPSocketCompatible {
                 self.totalBytesOut.mutate { $0 += Int64(data.count) }
                 self.queueBytesOut.mutate { $0 -= Int64(data.count) }
             }
+            objc_sync_enter(self)
             self.connection?.send(content: data, completion: sendCompletion)
+            objc_sync_exit(self)
         }
         return data.count
     }
