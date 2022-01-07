@@ -318,6 +318,9 @@
 		29FD1B5022FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5122FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
 		29FD1B5222FF13190095A0BE /* VTSessionPropertyKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */; };
+		2EC97B6927880E9900D8BE32 /* VisualEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897461CDB01D20074D5F0 /* VisualEffect.swift */; };
+		2EC97B6A27880E9C00D8BE32 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
+		2EC97B6B27880EA200D8BE32 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 291F4E361CF206E200F59C51 /* Icon.png */; };
 		BC0D236D26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
 		BC0D236E26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
 		BC0D236F26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
@@ -1918,6 +1921,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EC97B6B27880EA200D8BE32 /* Icon.png in Resources */,
 				BCD63ABC26FDF12A0084842D /* Preview Assets.xcassets in Resources */,
 				BCD63AB926FDF12A0084842D /* Assets.xcassets in Resources */,
 			);
@@ -2496,7 +2500,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2EC97B6927880E9900D8BE32 /* VisualEffect.swift in Sources */,
 				BCD63AB726FDF1250084842D /* ContentView.swift in Sources */,
+				2EC97B6A27880E9C00D8BE32 /* Preference.swift in Sources */,
 				BCD63AB526FDF1250084842D /* iOSSwiftUIApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
