@@ -598,7 +598,7 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.codec.encodeBytes(
                 buffer.baseAddress?.advanced(by: codec.headerSize),
                 count: payload.count - codec.headerSize,
-                presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000)
+                presentationTimeStamp: CMTime(seconds: stream.audioTimestamp, preferredTimescale: 1000)
             )
         }
     }
