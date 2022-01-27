@@ -628,7 +628,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
         ), locked: &mixer.videoIO.encoder.locked)
         if !videoWasSent {
-            logger.debug("first video frame was sent")
+            logger.debug("first video frame was sent111111")
         }
         videoWasSent = true
         info.byteCount.mutate { $0 += Int64(length) }
