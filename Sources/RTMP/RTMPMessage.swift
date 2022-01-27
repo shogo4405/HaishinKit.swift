@@ -590,7 +590,8 @@ final class RTMPAudioMessage: RTMPMessage {
     }
 
     private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
-        print("enqueueSampleBuffer")
+        logger.debug("enqueueSampleBuffer is begun")
+        NSLog("enqueueSampleBuffer")
         if stream.mixer.audioIO.codec.inSourceFormat == nil {
             stream.mixer.audioIO.codec.destination = .pcm
             stream.mixer.audioIO.codec.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
@@ -599,6 +600,7 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.codec.encodeBytes(
                 buffer.baseAddress?.advanced(by: codec.headerSize),
                 count: payload.count - codec.headerSize,
+//                presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000),
                 presentationTimeStamp: CMTime(seconds: stream.audioTimestamp, preferredTimescale: 1000)
             )
         }
