@@ -16,17 +16,17 @@ protocol NetStreamRenderer: AnyObject {
     var orientation: AVCaptureVideoOrientation { get set }
     var position: AVCaptureDevice.Position { get set }
 #endif
-    var currentSampleBuffer: CMSampleBuffer? { get set }
+    var currentImageBuffer: CVImageBuffer? { get set }
     var videoFormatDescription: CMVideoFormatDescription? { get }
 
     func attachStream(_ stream: NetStream?)
-    func enqueue(_ sampleBuffer: CMSampleBuffer?)
+    func enqueue(_ sampleBuffer: CVImageBuffer?)
 }
 
 extension NetStreamRenderer where Self: NetStreamRendererView {
-    func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+    func enqueue(_ sampleBuffer: CVImageBuffer?) {
         if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
+            currentImageBuffer = sampleBuffer
             #if os(macOS)
             self.needsDisplay = true
             #else

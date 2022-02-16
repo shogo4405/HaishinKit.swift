@@ -416,7 +416,7 @@ extension AVVideoIOUnit {
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
-            renderer?.enqueue(sampleBuffer)
+            renderer?.enqueue(imageBuffer ?? buffer)
         }
 
         encoder.encodeImageBuffer(
@@ -455,6 +455,9 @@ extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension AVVideoIOUnit: VideoDecoderDelegate {
     // MARK: VideoDecoderDelegate
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        renderer?.enqueue(sampleBuffer)
+        guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+            return
+        }
+        renderer?.enqueue(buffer)
     }
 }
