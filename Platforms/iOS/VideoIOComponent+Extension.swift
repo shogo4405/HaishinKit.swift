@@ -37,8 +37,8 @@ extension VideoIOComponent {
         input = nil
         output = nil
         if useScreenSize {
-            encoder.width = screen.attributes["Width"] as! Int32
-            encoder.height = screen.attributes["Height"] as! Int32
+            encoder.width = Int32(1920)
+            encoder.height = Int32(1080)
         }
         self.screen = screen
     }
@@ -48,8 +48,8 @@ extension VideoIOComponent: CaptureSessionDelegate {
     // MARK: CaptureSessionDelegate
     func session(_ session: CaptureSessionConvertible, didSet size: CGSize) {
         lockQueue.async {
-            self.encoder.width = Int32(size.width)
-            self.encoder.height = Int32(size.height)
+            self.encoder.width = Int32(1920)
+            self.encoder.height = Int32(1080)
         }
     }
 
