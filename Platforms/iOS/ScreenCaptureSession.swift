@@ -130,11 +130,23 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
                     )
                 }
             }
-            if let viewToCapture: UIView = viewToCapture {
-                viewToCapture.drawHierarchy(
-                    in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
-                    afterScreenUpdates: self.afterScreenUpdates
-                )
+            if self.size.width > 800
+            {
+                if let viewToCapture: UIView = viewToCapture {
+                    viewToCapture.drawHierarchy(
+                        in: CGRect(x: 73, y: 0, width: self.size.width - 147, height: self.size.height),
+                        afterScreenUpdates: self.afterScreenUpdates
+                    )
+                }
+            }
+            else
+            {
+                if let viewToCapture: UIView = viewToCapture {
+                    viewToCapture.drawHierarchy(
+                        in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height),
+                        afterScreenUpdates: self.afterScreenUpdates
+                    )
+                }
             }
             UIGraphicsPopContext()
         }
