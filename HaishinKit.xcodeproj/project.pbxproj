@@ -1627,8 +1627,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "HaishinKit iOS" */;
 			buildPhases = (
-				2945CBB81B4BE66000104112 /* Sources */,
 				2945CBBA1B4BE66000104112 /* Headers */,
+				2945CBB81B4BE66000104112 /* Sources */,
 				2945CBBB1B4BE66000104112 /* Resources */,
 				4B380712EE7FC2FF39421F1D /* Frameworks */,
 			);
@@ -1665,9 +1665,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 29B876201CD701F900FC07DA /* Build configuration list for PBXNativeTarget "HaishinKit macOS" */;
 			buildPhases = (
+				29B876181CD701F900FC07DA /* Headers */,
 				29B876161CD701F900FC07DA /* Sources */,
 				29B876171CD701F900FC07DA /* Frameworks */,
-				29B876181CD701F900FC07DA /* Headers */,
 				29B876191CD701F900FC07DA /* Resources */,
 			);
 			buildRules = (
@@ -1731,9 +1731,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 29D3D4E31ED0509900DD4AA6 /* Build configuration list for PBXNativeTarget "HaishinKit tvOS" */;
 			buildPhases = (
+				29D3D4D91ED0509900DD4AA6 /* Headers */,
 				29D3D4D71ED0509900DD4AA6 /* Sources */,
 				29D3D4D81ED0509900DD4AA6 /* Frameworks */,
-				29D3D4D91ED0509900DD4AA6 /* Headers */,
 				29D3D4DA1ED0509900DD4AA6 /* Resources */,
 			);
 			buildRules = (
