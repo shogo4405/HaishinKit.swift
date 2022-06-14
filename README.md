@@ -5,7 +5,6 @@
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
 * Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
-* Issuesの言語は、日本語が分かる方は日本語でお願いします！
 
 <p align="center">
 <strong>Sponsored with 💖 by</strong><br />
@@ -20,11 +19,12 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 * If you need help with making LiveStreaming requests using HaishinKit, use a GitHub issue with **Bug report template**
   - The trace level log is very useful. Please set `Logboard.with(HaishinKitIdentifier).level = .trace`. 
   - If you don't use an issue template. I will immediately close the your issue without a comment.
+  - Issuesの言語は、日本語が分かる方は日本語でお願いします！
 * If you'd like to discuss a feature request, use a GitHub issue with **Feature request template**.
 * If you want to support e-mail based communication without GitHub issue.
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
 * If you **want to contribute**, submit a pull request!
-* Talking about camera, microphone, graphics and streaming technology. [Discord chatroom.](https://discord.gg/8nkshPnanr)
+* [Discord](https://discord.gg/8nkshPnanr)でCommunityを開設しました。スマートフォンでのカメラ、マイク、ライブストリーミング。グラフィックなどのコミニティになればと思います。
 
 ## Sponsors
 <p align="center">
