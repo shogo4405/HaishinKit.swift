@@ -479,13 +479,7 @@ open class RTMPStream: NetStream {
             mixer.stopDecoding()
         case .publishing:
             FCUnpublish()
-            #if os(iOS)
-                mixer.videoIO.screen?.stopRunning()
-            #endif
-            mixer.audioIO.codec.delegate = nil
-            mixer.videoIO.encoder.delegate = nil
-            mixer.audioIO.codec.stopRunning()
-            mixer.videoIO.encoder.stopRunning()
+            mixer.stopEncoding()
             mixer.recorder.stopRunning()
         default:
             break
@@ -518,19 +512,13 @@ open class RTMPStream: NetStream {
         case .publish:
             muxer.dispose()
             muxer.delegate = self
-            #if os(iOS)
-                mixer.videoIO.screen?.startRunning()
-            #endif
-            mixer.audioIO.codec.delegate = muxer
-            mixer.videoIO.encoder.delegate = muxer
             mixer.startRunning()
             videoWasSent = false
             audioWasSent = false
             FCPublish()
         case .publishing:
             send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
-            mixer.audioIO.codec.startRunning()
-            mixer.videoIO.encoder.startRunning()
+            mixer.startEncoding(delegate: muxer)
             if howToPublish == .localRecord {
                 mixer.recorder.fileName = FilenameUtil.fileName(resourceName: info.resourceName)
                 mixer.recorder.startRunning()

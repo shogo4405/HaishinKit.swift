@@ -61,6 +61,12 @@ public class AVMixer {
         public typealias AllCases = [Option]
     }
     #endif
+    
+    enum MediaSync {
+        case video
+        case audio
+        case passthrough
+    }
 
     #if os(iOS)
     var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
@@ -119,6 +125,8 @@ public class AVMixer {
     /// The recorder instance.
     public lazy var recorder = AVRecorder()
 
+    var mediaSync = MediaSync.video
+
     var settings: Setting<AVMixer, Option> = [:] {
         didSet {
             settings.observer = self
@@ -144,9 +152,35 @@ public class AVMixer {
         mediaLink.delegate = self
         return mediaLink
     }()
+    
+    private var audioTimeStamp = CMTime.zero
+    private var videoTimeStamp = CMTime.zero
 
     public init() {
         settings.observer = self
+    }
+
+    func useSampleBuffer(sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) -> Bool {
+        switch (mediaSync) {
+        case .video:
+            if (mediaType == .audio) {
+                return !videoTimeStamp.seconds.isZero && videoTimeStamp.seconds <= sampleBuffer.presentationTimeStamp.seconds
+            }
+            if (videoTimeStamp == CMTime.zero) {
+                videoTimeStamp = sampleBuffer.presentationTimeStamp
+            }
+            return true
+        case .audio:
+            if (mediaType == .video) {
+                return !audioTimeStamp.seconds.isZero && audioTimeStamp.seconds <= sampleBuffer.presentationTimeStamp.seconds
+            }
+            if (audioTimeStamp == CMTime.zero) {
+                audioTimeStamp = sampleBuffer.presentationTimeStamp
+            }
+            return true
+        default:
+            return true
+        }
     }
 
 #if os(iOS) || os(macOS)
@@ -160,6 +194,9 @@ public class AVMixer {
 
 extension AVMixer {
     public func startEncoding(delegate: Any) {
+#if os(iOS)
+        videoIO.screen?.startRunning()
+#endif
         videoIO.encoder.delegate = delegate as? VideoCodecDelegate
         videoIO.encoder.startRunning()
         audioIO.codec.delegate = delegate as? AudioCodecDelegate
@@ -167,6 +204,11 @@ extension AVMixer {
     }
 
     public func stopEncoding() {
+#if os(iOS)
+        videoIO.screen?.stopRunning()
+#endif
+        videoTimeStamp = CMTime.zero
+        audioTimeStamp = CMTime.zero
         videoIO.encoder.delegate = nil
         videoIO.encoder.stopRunning()
         audioIO.codec.delegate = nil

@@ -128,6 +128,9 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
 extension AVAudioIOUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.audio) == true else {
+            return
+        }
         appendSampleBuffer(sampleBuffer)
     }
 }
