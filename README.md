@@ -5,6 +5,7 @@
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
 * Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
+* [API Documentation](https://shogo4405.github.io/HaishinKit.swift/)
 
 <p align="center">
 <strong>Sponsored with 💖 by</strong><br />
