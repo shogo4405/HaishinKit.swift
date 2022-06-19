@@ -320,9 +320,12 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
         output = nil
         guard let camera: AVCaptureDevice = camera else {
+            mixer.mediaSync = .passthrough
             input = nil
             return
         }
+
+        mixer.mediaSync = .video
         #if os(iOS)
         screen = nil
         #endif
@@ -443,6 +446,9 @@ extension AVVideoIOUnit {
 extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
+            return
+        }
         #if os(macOS)
         if connection.isVideoMirrored {
             sampleBuffer.reflectHorizontal()
