@@ -1,11 +1,11 @@
 import SwiftUI
 
-//reference: https://stackoverflow.com/a/69759653
+// reference: https://stackoverflow.com/a/69759653
 
 struct OnTap: ViewModifier {
     let response: (CGPoint) -> Void
     @State private var location: CGPoint = .zero
-    
+
     func body(content: Content) -> some View {
         content
             .onTapGesture {

@@ -69,12 +69,12 @@ final class H264Decoder {
                     decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
                 )
                 guard VTDecompressionSessionCreate(
-                    allocator: kCFAllocatorDefault,
-                    formatDescription: formatDescription,
-                    decoderSpecification: nil,
-                    imageBufferAttributes: attributes as CFDictionary?,
-                    outputCallback: &record,
-                    decompressionSessionOut: &_session ) == noErr else {
+                        allocator: kCFAllocatorDefault,
+                        formatDescription: formatDescription,
+                        decoderSpecification: nil,
+                        imageBufferAttributes: attributes as CFDictionary?,
+                        outputCallback: &record,
+                        decompressionSessionOut: &_session ) == noErr else {
                     return nil
                 }
                 invalidateSession = false

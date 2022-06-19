@@ -40,8 +40,8 @@ extension MP4MediaHeaderBox: DataConvertible {
             buffer
                 .writeUInt16(
                     UInt16(language[0]) << 10 |
-                    UInt16(language[1]) << 5 |
-                    UInt16(language[2])
+                        UInt16(language[1]) << 5 |
+                        UInt16(language[2])
                 )
                 .writeUInt16(0) // pre_defined = 0
             return buffer.data

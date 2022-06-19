@@ -87,7 +87,7 @@ extension ProgramSpecific: DataConvertible {
                     (sectionSyntaxIndicator ? 0x8000 : 0) |
                         (privateBit ? 0x4000 : 0) |
                         UInt16(ProgramSpecific.reservedBits) << 12 |
-                    sectionLength
+                        sectionLength
                 )
                 .writeUInt16(tableIDExtension)
                 .writeUInt8(

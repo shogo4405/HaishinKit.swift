@@ -170,7 +170,7 @@ public final class VideoCodec {
                 "ScalingMode": scalingMode.rawValue
             ] as NSObject
         ]
-#if os(OSX)
+        #if os(OSX)
         if enabledHardwareEncoder {
             #if arch(arm64)
             properties[kVTVideoEncoderSpecification_EncoderID] = "com.apple.videotoolbox.videoencoder.ave.avc" as NSObject
@@ -180,7 +180,7 @@ public final class VideoCodec {
             properties["EnableHardwareAcceleratedVideoEncoder"] = kCFBooleanTrue
             properties["RequireHardwareAcceleratedVideoEncoder"] = kCFBooleanTrue
         }
-#endif
+        #endif
         if !isBaseline {
             properties[kVTCompressionPropertyKey_H264EntropyMode] = kVTH264EntropyMode_CABAC
         }
@@ -191,10 +191,10 @@ public final class VideoCodec {
         guard
             let refcon: UnsafeMutableRawPointer = outputCallbackRefCon,
             let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else {
-                if status == kVTParameterErr {
-                    // on iphone 11 with size=1792x827 this occurs
-                    logger.error("encoding failed with kVTParameterErr. Perhaps the width x height is too big for the encoder setup?")
-                }
+            if status == kVTParameterErr {
+                // on iphone 11 with size=1792x827 this occurs
+                logger.error("encoding failed with kVTParameterErr. Perhaps the width x height is too big for the encoder setup?")
+            }
             return
         }
         let codec: VideoCodec = Unmanaged<VideoCodec>.fromOpaque(refcon).takeUnretainedValue()
@@ -217,7 +217,7 @@ public final class VideoCodec {
                     outputCallback: callback,
                     refcon: Unmanaged.passUnretained(self).toOpaque(),
                     compressionSessionOut: &_session
-                    ) == noErr, let session = _session else {
+                ) == noErr, let session = _session else {
                     logger.warn("create a VTCompressionSessionCreate")
                     return nil
                 }
@@ -279,7 +279,7 @@ public final class VideoCodec {
         }
     }
 
-#if os(iOS)
+    #if os(iOS)
     @objc
     private func applicationWillEnterForeground(_ notification: Notification) {
         invalidateSession = true
@@ -300,7 +300,7 @@ public final class VideoCodec {
             break
         }
     }
-#endif
+    #endif
 }
 
 extension VideoCodec: Running {
@@ -309,7 +309,7 @@ extension VideoCodec: Running {
         lockQueue.async {
             self.isRunning.mutate { $0 = true }
             OSAtomicAnd32Barrier(0, &self.locked)
-#if os(iOS)
+            #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(self.didAudioSessionInterruption),
@@ -322,7 +322,7 @@ extension VideoCodec: Running {
                 name: UIApplication.willEnterForegroundNotification,
                 object: nil
             )
-#endif
+            #endif
         }
     }
 
@@ -331,9 +331,9 @@ extension VideoCodec: Running {
             self.session = nil
             self.lastImageBuffer = nil
             self.formatDescription = nil
-#if os(iOS)
+            #if os(iOS)
             NotificationCenter.default.removeObserver(self)
-#endif
+            #endif
             self.isRunning.mutate { $0 = false }
         }
     }

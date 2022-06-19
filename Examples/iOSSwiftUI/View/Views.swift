@@ -6,37 +6,37 @@
 //  Copyright © 2022 Shogo Endo. All rights reserved.
 //
 
-import Foundation
 import Combine
+import Foundation
 import SwiftUI
 
 struct TopMenuView: View {
     @ObservedObject var viewModel: ViewModel
-    
+
     var body: some View {
         VStack {
             HStack {
                 Text(viewModel.fps)
                     .foregroundColor(Color.white)
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     self.viewModel.rotateCamera()
                 }, label: {
                     Text("Camera")
                 })
-                
+
                 Button(action: {
                     self.viewModel.toggleTorch()
                 }, label: {
                     Text("Torch")
                 })
             }
-            
-            HStack() {
+
+            HStack {
                 Spacer()
-                
+
                 Picker("Select Video Effect", selection: $viewModel.videoEffect) {
                     ForEach(viewModel.videoEffectData, id: \.self) {
                         Text($0)
@@ -45,10 +45,10 @@ struct TopMenuView: View {
                 .pickerStyle(.segmented)
                 .frame(width: 200)
             }
-            
-            HStack() {
+
+            HStack {
                 Spacer()
-                
+
                 Picker("Select Frame Rate", selection: $viewModel.frameRate) {
                     ForEach(viewModel.frameRateData, id: \.self) {
                         Text($0)
@@ -63,7 +63,7 @@ struct TopMenuView: View {
 
 struct BottomMenuView: View {
     @ObservedObject var viewModel: ViewModel
-    
+
     var body: some View {
         VStack {
             HStack(spacing: 40) {
@@ -78,11 +78,11 @@ struct BottomMenuView: View {
                                 viewModel.changeZoomLevel(level: viewModel.zoomLevel)
                             }
                         )
-                        
+
                         Spacer()
                             .frame(width: 100)
                     }
-                    
+
                     VStack(spacing: -12) {
                         HStack {
                             Spacer()
@@ -90,18 +90,18 @@ struct BottomMenuView: View {
                                 .foregroundColor(Color.white)
                                 .font(.title3)
                         }
-                        
+
                         Slider(
                             value: $viewModel.videoRate,
                             in: 32...1024,
                             step: 1,
-                            onEditingChanged: { value in
+                            onEditingChanged: { _ in
                                 print("videoRate", viewModel.videoRate, "kbps")
-                               viewModel.changeVideoRate(level: viewModel.videoRate)
+                                viewModel.changeVideoRate(level: viewModel.videoRate)
                             }
                         )
                     }
-                    
+
                     VStack(spacing: -12) {
                         HStack {
                             Spacer()
@@ -109,36 +109,35 @@ struct BottomMenuView: View {
                                 .foregroundColor(Color.white)
                                 .font(.title3)
                         }
-                        
+
                         Slider(
                             value: $viewModel.audioRate,
                             in: 15...120,
                             step: 1,
-                            onEditingChanged: { value in
+                            onEditingChanged: { _ in
                                 print("audioRate", viewModel.audioRate, "kbps")
                                 viewModel.changeAudioRate(level: viewModel.audioRate)
                             }
                         )
                     }
                 }
-                
+
                 VStack(alignment: .center) {
                     Button(action: {
                         self.viewModel.published.toggle()
-                        
+
                         if self.viewModel.published {
                             self.viewModel.startPublish()
                         } else {
                             self.viewModel.stopPublish()
                         }
-                        
                     }, label: {
                         let state = self.viewModel.published ? "■" : "●"
                         Text(state)
                             .foregroundColor(Color.red)
                             .font(.title)
                     })
-                    
+
                     Button(action: {
                         self.viewModel.pausePublish()
                     }, label: {
@@ -164,9 +163,9 @@ struct MenuView: View {
     var body: some View {
         VStack {
             TopMenuView(viewModel: viewModel)
-            
+
             Spacer()
-            
+
             BottomMenuView(viewModel: viewModel)
         }
         .padding()

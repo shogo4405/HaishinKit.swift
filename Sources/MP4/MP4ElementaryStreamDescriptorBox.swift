@@ -1,7 +1,7 @@
 import Foundation
 
 /**
-  - seealso: https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/QTFFChap3/qtff3.html#//apple_ref/doc/uid/TP40000939-CH205-124774
+ - seealso: https://developer.apple.com/library/archive/documentation/QuickTime/QTFF/QTFFChap3/qtff3.html#//apple_ref/doc/uid/TP40000939-CH205-124774
  */
 struct MP4ElementaryStreamDescriptorBox: MP4FullBox {
     // MARK: MP4FullBox

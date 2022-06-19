@@ -2,7 +2,7 @@ import AVFoundation
 import MetalKit
 
 /**
-  A view that displays a video content of a NetStream object which uses Metal api.
+ A view that displays a video content of a NetStream object which uses Metal api.
  */
 open class MTHKView: MTKView, NetStreamRenderer {
     open var isMirrored = false

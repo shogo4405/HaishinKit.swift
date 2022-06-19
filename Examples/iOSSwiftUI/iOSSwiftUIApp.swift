@@ -1,7 +1,7 @@
-import HaishinKit
-import SwiftUI
 import AVFoundation
+import HaishinKit
 import Logboard
+import SwiftUI
 
 let logger = Logboard.with("com.haishinkit.HaishinKit.iOSSwiftUI")
 

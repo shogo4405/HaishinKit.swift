@@ -55,7 +55,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.captureSettings = [
             .sessionPreset: AVCaptureSession.Preset.hd1280x720,
             .continuousAutofocus: true,
-            .continuousExposure: true,
+            .continuousExposure: true
             // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.cinematic
         ]
         rtmpStream.videoSettings = [
@@ -157,7 +157,7 @@ final class LiveViewController: UIViewController {
         case RTMPConnection.Code.connectSuccess.rawValue:
             retryCount = 0
             rtmpStream.publish(Preference.defaultInstance.streamName!)
-            // sharedObject!.connect(rtmpConnection)
+        // sharedObject!.connect(rtmpConnection)
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
             guard retryCount <= LiveViewController.maxRetryCount else {
                 return

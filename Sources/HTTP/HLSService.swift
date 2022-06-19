@@ -49,7 +49,7 @@ open class HLSService: HTTPService {
                 switch mime {
                 case .videoMP2T:
                     if let info: [FileAttributeKey: Any] = try? FileManager.default.attributesOfItem(atPath: resource),
-                        let length: Any = info[FileAttributeKey.size] {
+                       let length: Any = info[FileAttributeKey.size] {
                         response.headerFields["Content-Length"] = String(describing: length)
                     }
                     client.doOutput(data: response.data)

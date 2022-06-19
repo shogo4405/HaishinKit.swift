@@ -1,20 +1,20 @@
-import HaishinKit
 import AVFoundation
-import VideoToolbox
+import HaishinKit
 import SwiftUI
+import VideoToolbox
 
 struct ContentView: View {
     @ObservedObject var viewModel = ViewModel()
-    
+
     private var lfView: MTHKSwiftUiView!
     private var menuView: MenuView!
-    
+
     init() {
         viewModel.config()
         lfView = MTHKSwiftUiView(rtmpStream: $viewModel.rtmpStream)
         menuView = MenuView(viewModel: viewModel)
     }
-    
+
     var body: some View {
         ZStack {
             lfView
@@ -22,7 +22,7 @@ struct ContentView: View {
                 .onTapGesture { location in
                     self.viewModel.tapScreen(touchPoint: location)
                 }
-            
+
             menuView
         }
         .onAppear {

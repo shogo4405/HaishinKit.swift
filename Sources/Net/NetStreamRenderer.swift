@@ -12,10 +12,10 @@ typealias NetStreamRendererView = UIView
 #endif
 
 protocol NetStreamRenderer: AnyObject {
-#if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS)
     var orientation: AVCaptureVideoOrientation { get set }
     var position: AVCaptureDevice.Position { get set }
-#endif
+    #endif
     var currentSampleBuffer: CMSampleBuffer? { get set }
     var videoFormatDescription: CMVideoFormatDescription? { get }
 

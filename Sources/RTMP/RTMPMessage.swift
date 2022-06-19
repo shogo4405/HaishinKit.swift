@@ -539,9 +539,9 @@ final class RTMPAudioMessage: RTMPMessage {
 
             if length == newValue.count && !newValue.isEmpty {
                 guard let codec = FLVAudioCodec(rawValue: newValue[0] >> 4),
-                    let soundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
-                    let soundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
-                    let soundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
+                      let soundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
+                      let soundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
+                      let soundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
                     return
                 }
                 self.codec = codec
@@ -669,40 +669,40 @@ final class RTMPVideoMessage: RTMPMessage {
             var blockBuffer: CMBlockBuffer?
             let length: Int = payload.count - FLVTagType.video.headerSize
             guard CMBlockBufferCreateWithMemoryBlock(
-                allocator: kCFAllocatorDefault,
-                memoryBlock: nil,
-                blockLength: length,
-                blockAllocator: nil,
-                customBlockSource: nil,
-                offsetToData: 0,
-                dataLength: length,
-                flags: 0,
-                blockBufferOut: &blockBuffer) == noErr else {
+                    allocator: kCFAllocatorDefault,
+                    memoryBlock: nil,
+                    blockLength: length,
+                    blockAllocator: nil,
+                    customBlockSource: nil,
+                    offsetToData: 0,
+                    dataLength: length,
+                    flags: 0,
+                    blockBufferOut: &blockBuffer) == noErr else {
                 stream.mixer.videoIO.decoder.needsSync.mutate { $0 = true }
                 return
             }
             guard CMBlockBufferReplaceDataBytes(
-                with: buffer.baseAddress!.advanced(by: FLVTagType.video.headerSize),
-                blockBuffer: blockBuffer!,
-                offsetIntoDestination: 0,
-                dataLength: length) == noErr else {
+                    with: buffer.baseAddress!.advanced(by: FLVTagType.video.headerSize),
+                    blockBuffer: blockBuffer!,
+                    offsetIntoDestination: 0,
+                    dataLength: length) == noErr else {
                 return
             }
             var sampleBuffer: CMSampleBuffer?
             var sampleSizes: [Int] = [length]
             guard CMSampleBufferCreate(
-                allocator: kCFAllocatorDefault,
-                dataBuffer: blockBuffer!,
-                dataReady: true,
-                makeDataReadyCallback: nil,
-                refcon: nil,
-                formatDescription: stream.mixer.videoIO.formatDescription,
-                sampleCount: 1,
-                sampleTimingEntryCount: 1,
-                sampleTimingArray: &timing,
-                sampleSizeEntryCount: 1,
-                sampleSizeArray: &sampleSizes,
-                sampleBufferOut: &sampleBuffer) == noErr else {
+                    allocator: kCFAllocatorDefault,
+                    dataBuffer: blockBuffer!,
+                    dataReady: true,
+                    makeDataReadyCallback: nil,
+                    refcon: nil,
+                    formatDescription: stream.mixer.videoIO.formatDescription,
+                    sampleCount: 1,
+                    sampleTimingEntryCount: 1,
+                    sampleTimingArray: &timing,
+                    sampleSizeEntryCount: 1,
+                    sampleSizeArray: &sampleSizes,
+                    sampleBufferOut: &sampleBuffer) == noErr else {
                 return
             }
             if let sampleBuffer = sampleBuffer {

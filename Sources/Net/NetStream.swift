@@ -19,7 +19,7 @@ open class NetStream: NSObject {
         set { mixer.videoIO.context = newValue }
     }
 
-#if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS)
     open var torch: Bool {
         get {
             var torch: Bool = false
@@ -40,7 +40,7 @@ open class NetStream: NSObject {
         get { mixer.videoIO.orientation }
         set { mixer.videoIO.orientation = newValue }
     }
-#endif
+    #endif
 
     /// Specify stream audio compression properties.
     open var audioSettings: Setting<AudioCodec, AudioCodec.Option> {
@@ -69,7 +69,7 @@ open class NetStream: NSObject {
         metadata.removeAll()
     }
 
-#if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS)
     open func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -94,7 +94,7 @@ open class NetStream: NSObject {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
     }
-#endif
+    #endif
 
     open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {
         switch withType {

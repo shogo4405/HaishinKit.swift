@@ -1,9 +1,9 @@
 import AVFoundation
 
 #if os(iOS) || os(macOS)
-    extension AVCaptureSession.Preset {
-        static var `default`: AVCaptureSession.Preset = .medium
-    }
+extension AVCaptureSession.Preset {
+    static var `default`: AVCaptureSession.Preset = .medium
+}
 #endif
 
 protocol AVIOUnit {
@@ -61,7 +61,7 @@ public class AVMixer {
         public typealias AllCases = [Option]
     }
     #endif
-    
+
     enum MediaSync {
         case video
         case audio
@@ -152,7 +152,7 @@ public class AVMixer {
         mediaLink.delegate = self
         return mediaLink
     }()
-    
+
     private var audioTimeStamp = CMTime.zero
     private var videoTimeStamp = CMTime.zero
 
@@ -161,20 +161,20 @@ public class AVMixer {
     }
 
     func useSampleBuffer(sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) -> Bool {
-        switch (mediaSync) {
+        switch mediaSync {
         case .video:
-            if (mediaType == .audio) {
+            if mediaType == .audio {
                 return !videoTimeStamp.seconds.isZero && videoTimeStamp.seconds <= sampleBuffer.presentationTimeStamp.seconds
             }
-            if (videoTimeStamp == CMTime.zero) {
+            if videoTimeStamp == CMTime.zero {
                 videoTimeStamp = sampleBuffer.presentationTimeStamp
             }
             return true
         case .audio:
-            if (mediaType == .video) {
+            if mediaType == .video {
                 return !audioTimeStamp.seconds.isZero && audioTimeStamp.seconds <= sampleBuffer.presentationTimeStamp.seconds
             }
-            if (audioTimeStamp == CMTime.zero) {
+            if audioTimeStamp == CMTime.zero {
                 audioTimeStamp = sampleBuffer.presentationTimeStamp
             }
             return true
@@ -183,20 +183,20 @@ public class AVMixer {
         }
     }
 
-#if os(iOS) || os(macOS)
+    #if os(iOS) || os(macOS)
     deinit {
         if let session = _session, session.isRunning {
             session.stopRunning()
         }
     }
-#endif
+    #endif
 }
 
 extension AVMixer {
     public func startEncoding(delegate: Any) {
-#if os(iOS)
+        #if os(iOS)
         videoIO.screen?.startRunning()
-#endif
+        #endif
         videoIO.encoder.delegate = delegate as? VideoCodecDelegate
         videoIO.encoder.startRunning()
         audioIO.codec.delegate = delegate as? AudioCodecDelegate
@@ -204,9 +204,9 @@ extension AVMixer {
     }
 
     public func stopEncoding() {
-#if os(iOS)
+        #if os(iOS)
         videoIO.screen?.stopRunning()
-#endif
+        #endif
         videoTimeStamp = CMTime.zero
         audioTimeStamp = CMTime.zero
         videoIO.encoder.delegate = nil

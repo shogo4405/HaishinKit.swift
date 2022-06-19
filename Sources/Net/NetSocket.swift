@@ -169,7 +169,7 @@ extension NetSocket: StreamDelegate {
         //  1 = 1 << 0
         case .openCompleted:
             guard let inputStream = inputStream, let outputStream = outputStream,
-                inputStream.streamStatus == .open && outputStream.streamStatus == .open else {
+                  inputStream.streamStatus == .open && outputStream.streamStatus == .open else {
                 break
             }
             if aStream == inputStream {

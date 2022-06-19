@@ -25,8 +25,8 @@ public extension RTMPStreamDelegate {
  */
 open class RTMPStream: NetStream {
     /**
-      - NetStatusEvent#info.code for NetStream
-        - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
+     - NetStatusEvent#info.code for NetStream
+     - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
      */
     public enum Code: String {
         case bufferEmpty               = "NetStream.Buffer.Empty"
@@ -427,7 +427,7 @@ open class RTMPStream: NetStream {
 
     open func createMetaData() -> ASObject {
         metadata.removeAll()
-#if os(iOS) || os(macOS)
+        #if os(iOS) || os(macOS)
         if let _: AVCaptureInput = mixer.videoIO.input {
             metadata["width"] = mixer.videoIO.encoder.width
             metadata["height"] = mixer.videoIO.encoder.height
@@ -439,7 +439,7 @@ open class RTMPStream: NetStream {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.codec.bitrate / 1000
         }
-#endif
+        #endif
         return metadata
     }
 
@@ -455,16 +455,16 @@ open class RTMPStream: NetStream {
         }
         readyState = .open
         rtmpConnection.socket?.doOutput(chunk: RTMPChunk(
-            type: .zero,
-            streamId: RTMPChunk.StreamID.command.rawValue,
-            message: RTMPCommandMessage(
-                streamId: 0,
-                transactionId: 0,
-                objectEncoding: self.objectEncoding,
-                commandName: "closeStream",
-                commandObject: nil,
-                arguments: [self.id]
-        )), locked: nil)
+                                            type: .zero,
+                                            streamId: RTMPChunk.StreamID.command.rawValue,
+                                            message: RTMPCommandMessage(
+                                                streamId: 0,
+                                                transactionId: 0,
+                                                objectEncoding: self.objectEncoding,
+                                                commandName: "closeStream",
+                                                commandObject: nil,
+                                                arguments: [self.id]
+                                            )), locked: nil)
     }
 
     func on(timer: Timer) {

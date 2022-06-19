@@ -36,8 +36,8 @@ open class RTMPConnection: EventDispatcher {
     public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
 
     /**
-      - NetStatusEvent#info.code for NetConnection
-        - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
+     - NetStatusEvent#info.code for NetConnection
+     - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
      */
     public enum Code: String {
         case callBadVersion       = "NetConnection.Call.BadVersion"

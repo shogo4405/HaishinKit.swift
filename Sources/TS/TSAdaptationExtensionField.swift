@@ -23,8 +23,8 @@ extension TSAdaptationExtensionField: DataConvertible {
                 .writeUInt8(length)
                 .writeUInt8(
                     (legalTimeWindowFlag ? 0x80 : 0) |
-                    (piecewiseRateFlag ? 0x40 : 0) |
-                    (seamlessSpiceFlag ? 0x1f : 0)
+                        (piecewiseRateFlag ? 0x40 : 0) |
+                        (seamlessSpiceFlag ? 0x1f : 0)
                 )
             if legalTimeWindowFlag {
                 buffer.writeUInt16((legalTimeWindowFlag ? 0x8000 : 0) | legalTimeWindowOffset)

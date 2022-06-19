@@ -13,8 +13,8 @@ extension AVVideoIOUnit {
 
     func setZoomFactor(_ zoomFactor: CGFloat, ramping: Bool, withRate: Float) {
         guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-            1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor
-            else { return }
+              1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor
+        else { return }
         do {
             try device.lockForConfiguration()
             if ramping {
