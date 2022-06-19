@@ -25,17 +25,6 @@ final class DisplayLink: NSObject {
     private var selector: Selector?
     private weak var delegate: NSObject?
 
-    private var callback: CVDisplayLinkOutputCallback = { (displayLink: CVDisplayLink, inNow: UnsafePointer<CVTimeStamp>, _: UnsafePointer<CVTimeStamp>, _: CVOptionFlags, _: UnsafeMutablePointer<CVOptionFlags>, displayLinkContext: UnsafeMutableRawPointer?) -> CVReturn in
-        guard let displayLinkContext = displayLinkContext else {
-            return 0
-        }
-        let displayLink: DisplayLink = Unmanaged<DisplayLink>.fromOpaque(displayLinkContext).takeUnretainedValue()
-        displayLink.timestamp = Double(inNow.pointee.videoTime) / Double(inNow.pointee.videoTimeScale)
-        displayLink.duration = Double(inNow.pointee.videoRefreshPeriod) / Double(inNow.pointee.videoTimeScale)
-        _ = displayLink.delegate?.perform(displayLink.selector, with: displayLink)
-        return 0
-    }
-
     deinit {
         selector = nil
     }
@@ -48,7 +37,15 @@ final class DisplayLink: NSObject {
         }
         self.delegate = target
         self.selector = sel
-        CVDisplayLinkSetOutputCallback(displayLink, callback, Unmanaged.passUnretained(self).toOpaque())
+        CVDisplayLinkSetOutputHandler(displayLink) { [unowned self]
+            (_, inNow, _, _, _) -> CVReturn in
+
+            self.timestamp = inNow.pointee.timestamp
+            self.duration = inNow.pointee.duration
+            _ = self.delegate?.perform(self.selector, with: self)
+
+            return kCVReturnSuccess
+        }
     }
 
     func add(to runloop: RunLoop, forMode mode: RunLoop.Mode) {
@@ -63,6 +60,18 @@ final class DisplayLink: NSObject {
             return
         }
         status = CVDisplayLinkStop(displayLink)
+    }
+}
+
+extension CVTimeStamp {
+    @inlinable @inline(__always)
+    var timestamp: Double {
+        Double(self.videoTime) / Double(self.videoTimeScale)
+    }
+
+    @inlinable @inline(__always)
+    var duration: Double {
+        Double(self.videoRefreshPeriod) / Double(self.videoTimeScale)
     }
 }
 
