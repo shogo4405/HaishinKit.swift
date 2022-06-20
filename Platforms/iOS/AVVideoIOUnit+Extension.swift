@@ -66,7 +66,7 @@ extension AVVideoIOUnit: CaptureSessionDelegate {
         encoder.encodeImageBuffer(
             pixelBuffer,
             presentationTimeStamp: presentationTime,
-            duration: CMTime.invalid
+            duration: .invalid
         )
         mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: presentationTime)
     }

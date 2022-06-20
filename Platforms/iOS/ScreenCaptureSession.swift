@@ -158,7 +158,7 @@ extension ScreenCaptureSession: Running {
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: #selector(onScreen))
             self.displayLink.frameInterval = self.frameInterval
-            self.displayLink.add(to: .main, forMode: RunLoop.Mode.common)
+            self.displayLink.add(to: .main, forMode: .common)
         }
     }
 
@@ -167,7 +167,7 @@ extension ScreenCaptureSession: Running {
             guard self.isRunning.value else {
                 return
             }
-            self.displayLink.remove(from: .main, forMode: RunLoop.Mode.common)
+            self.displayLink.remove(from: .main, forMode: .common)
             self.displayLink.invalidate()
             self.colorSpace = nil
             self.displayLink = nil

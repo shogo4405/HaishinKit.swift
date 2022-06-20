@@ -7,8 +7,8 @@ final class SinWaveUtil {
         var formatDescription: CMAudioFormatDescription? = nil
         var timing: CMSampleTimingInfo = CMSampleTimingInfo(
             duration: CMTime(value: 1, timescale: Int32(sampleRate)),
-            presentationTimeStamp: CMTime.zero,
-            decodeTimeStamp: CMTime.invalid
+            presentationTimeStamp: .zero,
+            decodeTimeStamp: .invalid
         )
 
         var asbd = AudioStreamBasicDescription(

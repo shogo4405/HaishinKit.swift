@@ -71,7 +71,7 @@ extension AudioCodec {
                 throw Error.isReady
             }
 
-            if presentationTimeStamp == .invalid {
+            if !presentationTimeStamp.isValid {
                 let offsetTimeStamp: CMTime = offset == 0 ? .zero : CMTime(value: CMTimeValue(offset), timescale: sampleBuffer.presentationTimeStamp.timescale)
                 presentationTimeStamp = CMTimeAdd(sampleBuffer.presentationTimeStamp, offsetTimeStamp)
             }
