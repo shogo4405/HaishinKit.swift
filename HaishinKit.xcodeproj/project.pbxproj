@@ -325,6 +325,9 @@
 		2EC97B7227880FF400D8BE32 /* OnTapGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B6E27880FF400D8BE32 /* OnTapGestureView.swift */; };
 		2EC97B7327880FF400D8BE32 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B6F27880FF400D8BE32 /* Views.swift */; };
 		2EC97B7427880FF400D8BE32 /* MTHKSwiftUiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */; };
+		37AC0BB42860E1B6001F3F5D /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = 37AC0BB32860E1B6001F3F5D /* Logboard */; };
+		37AC0BB62860E1EF001F3F5D /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = 37AC0BB52860E1EF001F3F5D /* Logboard */; };
+		37AC0BB82860E1F4001F3F5D /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = 37AC0BB72860E1F4001F3F5D /* Logboard */; };
 		BC0D236D26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
 		BC0D236E26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
 		BC0D236F26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
@@ -340,9 +343,6 @@
 		BC20DF35250374EA007BC608 /* HKPictureInPictureController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF33250374EA007BC608 /* HKPictureInPictureController+Extension.swift */; };
 		BC20DF36250374EA007BC608 /* HKPictureInPictureController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC20DF33250374EA007BC608 /* HKPictureInPictureController+Extension.swift */; };
 		BC20DF38250377A3007BC608 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
-		BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC34E00225EBB59C005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC34E00825EBB716005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC3FA38B2413AEDA009C83D3 /* AVFoundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292F6DB01EEBB2040097EDBE /* AVFoundation+Extension.swift */; };
 		BC3FA38C2413AEDA009C83D3 /* AVFoundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292F6DB01EEBB2040097EDBE /* AVFoundation+Extension.swift */; };
 		BC44A1A923D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */; };
@@ -362,12 +362,6 @@
 		BC566F6E25D2ECC500573C4C /* HLSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC566F6D25D2ECC500573C4C /* HLSService.swift */; };
 		BC566F6F25D2ECC500573C4C /* HLSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC566F6D25D2ECC500573C4C /* HLSService.swift */; };
 		BC566F7025D2ECC500573C4C /* HLSService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC566F6D25D2ECC500573C4C /* HLSService.swift */; };
-		BC72EF1025F24DF80068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC72EF1125F24DF80068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC72EF2C25F24E480068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC72EF3225F24E500068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
@@ -541,15 +535,12 @@
 		BCC1A730264FAC4E00661156 /* ElementaryStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72E264FAC4E00661156 /* ElementaryStreamType.swift */; };
 		BCC1A731264FAC4E00661156 /* ElementaryStreamType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72E264FAC4E00661156 /* ElementaryStreamType.swift */; };
 		BCC9E9092636FF7400948774 /* NetSocketCycleBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */; };
-		BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCD63AB526FDF1250084842D /* iOSSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB426FDF1250084842D /* iOSSwiftUIApp.swift */; };
 		BCD63AB726FDF1250084842D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB626FDF1250084842D /* ContentView.swift */; };
 		BCD63AB926FDF12A0084842D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCD63AB826FDF12A0084842D /* Assets.xcassets */; };
 		BCD63ABC26FDF12A0084842D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCD63ABB26FDF12A0084842D /* Preview Assets.xcassets */; };
 		BCD63ADC26FDF34C0084842D /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BCD63ADD26FDF34C0084842D /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCD63AE126FDF3500084842D /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFB355C24FAB29B00DC5108 /* HKPictureInPictureController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355624FA37F700DC5108 /* HKPictureInPictureController.swift */; };
@@ -618,7 +609,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				29373DB7205524D700099860 /* HaishinKit.framework in Embed Frameworks */,
-				BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -630,7 +620,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				29562B891E6BFFE000BB940A /* HaishinKit.framework in Embed Frameworks */,
-				BC72EF2C25F24E480068F040 /* Logboard.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -642,7 +631,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */,
-				BC72EF1125F24DF80068F040 /* Logboard.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -665,7 +653,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BCD63ADD26FDF34C0084842D /* HaishinKit.framework in Embed Frameworks */,
-				BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -843,7 +830,6 @@
 		BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetSocket.CircularBuffer.swift; sourceTree = "<group>"; };
 		BC20DF2B2503747E007BC608 /* HKPictureInPictureControllerPosition.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKPictureInPictureControllerPosition.swift; sourceTree = "<group>"; };
 		BC20DF33250374EA007BC608 /* HKPictureInPictureController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HKPictureInPictureController+Extension.swift"; sourceTree = "<group>"; };
-		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodec.AudioBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+Extension.swift"; sourceTree = "<group>"; };
 		BC4DAEB02479851D005EFD57 /* FilenameUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilenameUtil.swift; sourceTree = "<group>"; };
@@ -929,7 +915,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */,
 				29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */,
 				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
 			);
@@ -947,7 +932,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */,
+				37AC0BB42860E1B6001F3F5D /* Logboard in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -956,7 +941,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */,
-				BC72EF1025F24DF80068F040 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -965,7 +949,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				29562B881E6BFFE000BB940A /* HaishinKit.framework in Frameworks */,
-				BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -973,7 +956,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC34E00825EBB716005F975A /* Logboard.xcframework in Frameworks */,
+				37AC0BB82860E1F4001F3F5D /* Logboard in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -982,7 +965,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				29373DB6205524D700099860 /* HaishinKit.framework in Frameworks */,
-				BC72EF3225F24E500068F040 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -990,7 +972,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC34E00225EBB59C005F975A /* Logboard.xcframework in Frameworks */,
+				37AC0BB62860E1EF001F3F5D /* Logboard in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -999,7 +981,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCD63ADC26FDF34C0084842D /* HaishinKit.framework in Frameworks */,
-				BCD63AE126FDF3500084842D /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1009,7 +990,6 @@
 		0ACC00B98D6DB33B5BE87B87 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BC34DFD125EBB12C005F975A /* Logboard.xcframework */,
 				2915EC531D85BDF100621092 /* ReplayKit.framework */,
 			);
 			name = Frameworks;
@@ -1638,6 +1618,7 @@
 			);
 			name = "HaishinKit iOS";
 			packageProductDependencies = (
+				37AC0BB52860E1EF001F3F5D /* Logboard */,
 			);
 			productName = lf;
 			productReference = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */;
@@ -1676,6 +1657,7 @@
 			);
 			name = "HaishinKit macOS";
 			packageProductDependencies = (
+				37AC0BB32860E1B6001F3F5D /* Logboard */,
 			);
 			productName = lfMacOS;
 			productReference = 29B8761B1CD701F900FC07DA /* HaishinKit.framework */;
@@ -1742,6 +1724,7 @@
 			);
 			name = "HaishinKit tvOS";
 			packageProductDependencies = (
+				37AC0BB72860E1F4001F3F5D /* Logboard */,
 			);
 			productName = lf;
 			productReference = 29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */;
@@ -1855,6 +1838,7 @@
 			);
 			mainGroup = 2945CBB31B4BE66000104112;
 			packageReferences = (
+				37AC0BB22860E1B6001F3F5D /* XCRemoteSwiftPackageReference "Logboard" */,
 			);
 			productRefGroup = 2945CBBE1B4BE66000104112 /* Products */;
 			projectDirPath = "";
@@ -3346,6 +3330,35 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		37AC0BB22860E1B6001F3F5D /* XCRemoteSwiftPackageReference "Logboard" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/shogo4405/Logboard";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		37AC0BB32860E1B6001F3F5D /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 37AC0BB22860E1B6001F3F5D /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+		37AC0BB52860E1EF001F3F5D /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 37AC0BB22860E1B6001F3F5D /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+		37AC0BB72860E1F4001F3F5D /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 37AC0BB22860E1B6001F3F5D /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2945CBB41B4BE66000104112 /* Project object */;
 }
