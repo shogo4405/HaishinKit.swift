@@ -52,29 +52,21 @@ final class H264Decoder {
         }
     }
     private var invalidateSession = true
-    private var callback: VTDecompressionOutputCallback = {(decompressionOutputRefCon: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?, status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVBuffer?, presentationTimeStamp: CMTime, duration: CMTime) in
-        let decoder: H264Decoder = Unmanaged<H264Decoder>.fromOpaque(decompressionOutputRefCon!).takeUnretainedValue()
-        decoder.didOutputForSession(status, infoFlags: infoFlags, imageBuffer: imageBuffer, presentationTimeStamp: presentationTimeStamp, duration: duration)
-    }
 
     private var _session: VTDecompressionSession?
     private var session: VTDecompressionSession! {
         get {
             if _session == nil {
-                guard let formatDescription: CMFormatDescription = formatDescription else {
+                guard let formatDescription = formatDescription else {
                     return nil
                 }
-                var record = VTDecompressionOutputCallbackRecord(
-                    decompressionOutputCallback: callback,
-                    decompressionOutputRefCon: Unmanaged.passUnretained(self).toOpaque()
-                )
                 guard VTDecompressionSessionCreate(
                         allocator: kCFAllocatorDefault,
                         formatDescription: formatDescription,
                         decoderSpecification: nil,
                         imageBufferAttributes: attributes as CFDictionary?,
-                        outputCallback: &record,
-                        decompressionSessionOut: &_session ) == noErr else {
+                        outputCallback: nil,
+                        decompressionSessionOut: &_session) == noErr else {
                     return nil
                 }
                 invalidateSession = false
@@ -105,54 +97,52 @@ final class H264Decoder {
             session,
             sampleBuffer: sampleBuffer,
             flags: H264Decoder.defaultDecodeFlags,
-            frameRefcon: nil,
             infoFlagsOut: &flagsOut
-        )
-    }
-
-    func didOutputForSession(_ status: OSStatus, infoFlags: VTDecodeInfoFlags, imageBuffer: CVImageBuffer?, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard let imageBuffer: CVImageBuffer = imageBuffer, status == noErr else {
-            return
-        }
-
-        var timingInfo = CMSampleTimingInfo(
-            duration: duration,
-            presentationTimeStamp: presentationTimeStamp,
-            decodeTimeStamp: CMTime.invalid
-        )
-
-        var videoFormatDescription: CMVideoFormatDescription?
-        self.status = CMVideoFormatDescriptionCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: imageBuffer,
-            formatDescriptionOut: &videoFormatDescription
-        )
-
-        var sampleBuffer: CMSampleBuffer?
-        self.status = CMSampleBufferCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: imageBuffer,
-            dataReady: true,
-            makeDataReadyCallback: nil,
-            refcon: nil,
-            formatDescription: videoFormatDescription!,
-            sampleTiming: &timingInfo,
-            sampleBufferOut: &sampleBuffer
-        )
-
-        guard let buffer: CMSampleBuffer = sampleBuffer else {
-            return
-        }
-
-        if isBaseline {
-            delegate?.sampleOutput(video: buffer)
-        } else {
-            buffers.append(buffer)
-            buffers.sort {
-                $0.presentationTimeStamp < $1.presentationTimeStamp
+        ) { [unowned self]
+            (status, infoFlags, imageBuffer, presentationTimeStamp, duration) in
+            guard let imageBuffer = imageBuffer, status == noErr else {
+                return
             }
-            if minimumGroupOfPictures <= buffers.count {
-                delegate?.sampleOutput(video: buffers.removeFirst())
+
+            var timingInfo = CMSampleTimingInfo(
+                duration: duration,
+                presentationTimeStamp: presentationTimeStamp,
+                decodeTimeStamp: .invalid
+            )
+
+            var videoFormatDescription: CMVideoFormatDescription?
+            self.status = CMVideoFormatDescriptionCreateForImageBuffer(
+                allocator: kCFAllocatorDefault,
+                imageBuffer: imageBuffer,
+                formatDescriptionOut: &videoFormatDescription
+            )
+
+            var sampleBuffer: CMSampleBuffer?
+            self.status = CMSampleBufferCreateForImageBuffer(
+                allocator: kCFAllocatorDefault,
+                imageBuffer: imageBuffer,
+                dataReady: true,
+                makeDataReadyCallback: nil,
+                refcon: nil,
+                formatDescription: videoFormatDescription!,
+                sampleTiming: &timingInfo,
+                sampleBufferOut: &sampleBuffer
+            )
+
+            guard let buffer = sampleBuffer else {
+                return
+            }
+
+            if self.isBaseline {
+                self.delegate?.sampleOutput(video: buffer)
+            } else {
+                self.buffers.append(buffer)
+                self.buffers.sort {
+                    $0.presentationTimeStamp < $1.presentationTimeStamp
+                }
+                if self.minimumGroupOfPictures <= buffers.count {
+                    self.delegate?.sampleOutput(video: buffers.removeFirst())
+                }
             }
         }
     }

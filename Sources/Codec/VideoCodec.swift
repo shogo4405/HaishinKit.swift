@@ -187,21 +187,6 @@ public final class VideoCodec {
         return properties
     }
 
-    private var callback: VTCompressionOutputCallback = {(outputCallbackRefCon: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?, status: OSStatus, _: VTEncodeInfoFlags, sampleBuffer: CMSampleBuffer?) in
-        guard
-            let refcon: UnsafeMutableRawPointer = outputCallbackRefCon,
-            let sampleBuffer: CMSampleBuffer = sampleBuffer, status == noErr else {
-            if status == kVTParameterErr {
-                // on iphone 11 with size=1792x827 this occurs
-                logger.error("encoding failed with kVTParameterErr. Perhaps the width x height is too big for the encoder setup?")
-            }
-            return
-        }
-        let codec: VideoCodec = Unmanaged<VideoCodec>.fromOpaque(refcon).takeUnretainedValue()
-        codec.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
-        codec.delegate?.videoCodec(codec, didOutput: sampleBuffer)
-    }
-
     private var _session: VTCompressionSession?
     private var session: VTCompressionSession? {
         get {
@@ -214,8 +199,8 @@ public final class VideoCodec {
                     encoderSpecification: nil,
                     imageBufferAttributes: attributes as CFDictionary?,
                     compressedDataAllocator: nil,
-                    outputCallback: callback,
-                    refcon: Unmanaged.passUnretained(self).toOpaque(),
+                    outputCallback: nil,
+                    refcon: nil,
                     compressionSessionOut: &_session
                 ) == noErr, let session = _session else {
                     logger.warn("create a VTCompressionSessionCreate")
@@ -258,9 +243,21 @@ public final class VideoCodec {
             presentationTimeStamp: presentationTimeStamp,
             duration: duration,
             frameProperties: nil,
-            sourceFrameRefcon: nil,
             infoFlagsOut: &flags
-        )
+        ) { [unowned self]
+            (status, flags, sampleBuffer) in
+
+            guard let sampleBuffer = sampleBuffer, status == noErr else {
+                if status == kVTParameterErr {
+                    // on iphone 11 with size=1792x827 this occurs
+                    logger.error("encoding failed with kVTParameterErr. Perhaps the width x height is too big for the encoder setup?")
+                }
+                return
+            }
+            self.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
+            self.delegate?.videoCodec(self, didOutput: sampleBuffer)
+        }
+
         if !muted || lastImageBuffer == nil {
             lastImageBuffer = imageBuffer
         }
