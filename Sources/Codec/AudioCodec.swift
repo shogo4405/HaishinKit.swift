@@ -266,7 +266,11 @@ public class AudioCodec {
         }
 
         memcpy(ioData, currentAudioBuffer.input.unsafePointer, currentAudioBuffer.listSize)
-        ioNumberDataPackets.pointee = 1
+        if destination == .pcm {
+            ioNumberDataPackets.pointee = 1
+        } else {
+            ioNumberDataPackets.pointee = UInt32(numSamples)
+        }
 
         if destination == .pcm && outDataPacketDescription != nil {
             audioStreamPacketDescription.mDataByteSize = currentAudioBuffer.input.unsafePointer.pointee.mBuffers.mDataByteSize
