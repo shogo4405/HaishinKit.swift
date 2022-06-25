@@ -43,7 +43,7 @@ extension AVCaptureDevice {
     }
 }
 
-public struct DeviceUtil {
+public enum DeviceUtil {
     public static func device(withPosition: AVCaptureDevice.Position) -> AVCaptureDevice? {
         AVCaptureDevice.devices().first {
             $0.hasMediaType(.video) && $0.position == withPosition

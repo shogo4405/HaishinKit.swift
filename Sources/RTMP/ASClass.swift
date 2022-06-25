@@ -13,13 +13,9 @@ public typealias ASObject = [String: Any?]
 /**
  The ASUndefined class represents an undefined for ActionScript.
  */
-public final class ASUndefined: NSObject {
-    override public var description: String {
+public struct ASUndefined: CustomStringConvertible {
+    public var description: String {
         "undefined"
-    }
-
-    override fileprivate init() {
-        super.init()
     }
 }
 
@@ -135,8 +131,8 @@ extension ASArray: Equatable {
  - 2.17 XML Document Type (amf0-file-format-specification.pdf)
  - 3.9 XMLDocument type (amf-file-format-spec.pdf)
  */
-public final class ASXMLDocument: NSObject {
-    override public var description: String {
+public struct ASXMLDocument: CustomStringConvertible {
+    public var description: String {
         data
     }
 
@@ -147,14 +143,21 @@ public final class ASXMLDocument: NSObject {
     }
 }
 
+extension ASXMLDocument: Equatable {
+    // MARK: Equatable
+    public static func == (lhs: ASXMLDocument, rhs: ASXMLDocument) -> Bool {
+        (lhs.description == rhs.description)
+    }
+}
+
 // MARK: -
 /**
  ActionScript 3.0 introduces a new XML type.
 
  - seealso: 3.13 XML type (amf-file-format-spec.pdf)
  */
-public final class ASXML: NSObject {
-    override public var description: String {
+public struct ASXML: CustomStringConvertible {
+    public var description: String {
         data
     }
 
@@ -162,5 +165,12 @@ public final class ASXML: NSObject {
 
     public init(data: String) {
         self.data = data
+    }
+}
+
+extension ASXML: Equatable {
+    // MARK: Equatable
+    public static func == (lhs: ASXML, rhs: ASXML) -> Bool {
+        (lhs.description == rhs.description)
     }
 }

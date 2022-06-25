@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>EventPhase Enumeration Reference</title>
+    <title>ASXML Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/EventPhase" class="dashAnchor"></a>
-    <a title="EventPhase Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Struct/ASXML" class="dashAnchor"></a>
+    <a title="ASXML Structure Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.2.3 Docs</a> (22% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.2.4 Docs</a> (31% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        EventPhase Enumeration Reference
+        ASXML Structure Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -38,15 +38,6 @@
           <li class="nav-group-name">
             <a href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
-              <li class="nav-group-task">
-                <a href="../Classes/ASUndefined.html">ASUndefined</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/ASXML.html">ASXML</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/ASXMLDocument.html">ASXMLDocument</a>
-              </li>
               <li class="nav-group-task">
                 <a href="../Classes/AVMixer.html">AVMixer</a>
               </li>
@@ -66,7 +57,7 @@
                 <a href="../Classes/AudioCodec/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioCodec/Destination.html">– Destination</a>
+                <a href="../Classes/AudioCodec/Format.html">– Format</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AudioEffect.html">AudioEffect</a>
@@ -173,7 +164,7 @@
             <a href="../Global%20Variables.html">Global Variables</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Cvp">kASUndefined</a>
+                <a href="../Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Vvp">kASUndefined</a>
               </li>
             </ul>
           </li>
@@ -181,7 +172,7 @@
             <a href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/EventPhase.html">EventPhase</a>
+                <a href="../Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/FLVAACPacketType.html">FLVAACPacketType</a>
@@ -229,9 +220,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CMSampleBuffer.html">CMSampleBuffer</a>
               </li>
             </ul>
           </li>
@@ -286,10 +274,16 @@
                 <a href="../Structs/ASTypedObject.html">ASTypedObject</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/Atomic.html">Atomic</a>
+                <a href="../Structs/ASUndefined.html">ASUndefined</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/DeviceUtil.html">DeviceUtil</a>
+                <a href="../Structs/ASXML.html">ASXML</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ASXMLDocument.html">ASXMLDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Atomic.html">Atomic</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/FLVAudioTag.html">FLVAudioTag</a>
@@ -327,15 +321,21 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>EventPhase</h1>
+            <h1>ASXML</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">EventPhase</span> <span class="p">:</span> <span class="kt">UInt8</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">ASXML</span> <span class="p">:</span> <span class="kt">CustomStringConvertible</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ASXML</span><span class="p">:</span> <span class="kt">Equatable</span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>ActionScript 3.0 introduces a new XML type.</p>
+<div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    3.13 XML type (amf-file-format-spec.pdf)
+
+</div>
 
           </section>
           <section class="section task-group-section">
@@ -344,9 +344,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10EventPhaseO9capturingyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/capturing" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10EventPhaseO9capturingyA2CmF">capturing</a>
+                    <a name="/s:s23CustomStringConvertibleP11descriptionSSvp"></a>
+                    <a name="//apple_ref/swift/Property/description" class="dashAnchor"></a>
+                    <a class="token" href="#/s:s23CustomStringConvertibleP11descriptionSSvp">description</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -354,14 +354,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">capturing</span> <span class="o">=</span> <span class="mi">0</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">description</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -371,9 +370,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10EventPhaseO8atTargetyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/atTarget" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10EventPhaseO8atTargetyA2CmF">atTarget</a>
+                    <a name="/s:10HaishinKit5ASXMLV4dataACSS_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(data:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit5ASXMLV4dataACSS_tcfc">init(data:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -388,19 +387,32 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">atTarget</span> <span class="o">=</span> <span class="mi">1</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">data</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
                     </section>
                   </div>
                 </li>
+              </ul>
+            </div>
+            <div class="task-group">
+              <div class="task-name-container">
+                <a name="/Equatable"></a>
+                <a name="//apple_ref/swift/Section/Equatable" class="dashAnchor"></a>
+                <div class="section-name-container">
+                  <a class="section-name-link" href="#/Equatable"></a>
+                  <h3 class="section-name"><span>Equatable</span>
+</h3>
+                </div>
+              </div>
+              <ul>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10EventPhaseO8bubblingyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/bubbling" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10EventPhaseO8bubblingyA2CmF">bubbling</a>
+                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
+                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:<wbr>_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -408,41 +420,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">bubbling</span> <span class="o">=</span> <span class="mi">2</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit10EventPhaseO7disposeyA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/dispose" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10EventPhaseO7disposeyA2CmF">dispose</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">dispose</span> <span class="o">=</span> <span class="mi">3</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt">ASXML</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt">ASXML</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
@@ -454,8 +438,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2021-12-26)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-06-26)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>

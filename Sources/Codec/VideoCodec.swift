@@ -13,16 +13,27 @@ public protocol VideoCodecDelegate: AnyObject {
 
 // MARK: -
 public final class VideoCodec {
+    /**
+     * The video encoding or decoding options.
+     */
     public enum Option: String, KeyPathRepresentable, CaseIterable {
+        /// Specifies the muted
         case muted
+        /// Specifies the width of video.
         case width
+        /// Specifies the height of video.
         case height
+        /// Specifies the bitrate.
         case bitrate
+        /// Specifies the H264 profile level.
         case profileLevel
         #if os(macOS)
+        /// Specifies  the HardwareEncoder is enabled(TRUE), or not(FALSE).
         case enabledHardwareEncoder
         #endif
+        /// Specifies the keyframeInterval.
         case maxKeyFrameIntervalDuration
+        /// Specifies the scalingMode.
         case scalingMode
 
         public var keyPath: AnyKeyPath {

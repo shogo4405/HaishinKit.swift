@@ -102,7 +102,7 @@ macOS 10.14+
 * NSCameraUsageDescription
 
 ## 🔧 Installation
-*Please set up your project Swift 5.5. *
+*Please set up your project Swift 5.5.*
 
 ### CocoaPods
 ```rb

@@ -189,7 +189,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.2 Number Type
+     * - seealso: 2.2 Number Type
      */
     func serialize(_ value: Double) -> Self {
         writeUInt8(Type.number.rawValue).writeDouble(value)
@@ -211,7 +211,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.3 Boolean Type
+     * - seealso: 2.3 Boolean Type
      */
     func serialize(_ value: Bool) -> Self {
         writeBytes(Data([Type.bool.rawValue, value ? 0x01 : 0x00]))
@@ -225,7 +225,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.4 String Type
+     * - seealso: 2.4 String Type
      */
     func serialize(_ value: String) -> Self {
         let isLong: Bool = UInt32(UInt16.max) < UInt32(value.count)
@@ -282,7 +282,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.10 ECMA Array Type
+     * - seealso: 2.10 ECMA Array Type
      */
     func serialize(_ value: ASArray) -> Self {
         self
@@ -312,7 +312,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.12 Strict Array Type
+     * - seealso: 2.12 Strict Array Type
      */
     func serialize(_ value: [Any?]) -> Self {
         writeUInt8(Type.strictArray.rawValue)
@@ -340,7 +340,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.13 Date Type
+     * - seealso: 2.13 Date Type
      */
     func serialize(_ value: Date) -> Self {
         writeUInt8(Type.date.rawValue).writeDouble(value.timeIntervalSince1970 * 1000).writeBytes(Data([0x00, 0x00]))
@@ -356,7 +356,7 @@ extension AMF0Serializer: AMFSerializer {
     }
 
     /**
-     * @see 2.17 XML Document Type
+     * - seealso: 2.17 XML Document Type
      */
     func serialize(_ value: ASXMLDocument) -> Self {
         writeUInt8(Type.xmlDocument.rawValue).serializeUTF8(value.description, true)

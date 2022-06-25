@@ -17,7 +17,7 @@
     <a title="AudioCodec Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.2.3 Docs</a> (22% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.2.4 Docs</a> (31% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -39,15 +39,6 @@
             <a href="../Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Classes/ASUndefined.html">ASUndefined</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/ASXML.html">ASXML</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/ASXMLDocument.html">ASXMLDocument</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
@@ -66,7 +57,7 @@
                 <a href="../Classes/AudioCodec/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/AudioCodec/Destination.html">– Destination</a>
+                <a href="../Classes/AudioCodec/Format.html">– Format</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/AudioEffect.html">AudioEffect</a>
@@ -173,7 +164,7 @@
             <a href="../Global%20Variables.html">Global Variables</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Cvp">kASUndefined</a>
+                <a href="../Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Vvp">kASUndefined</a>
               </li>
             </ul>
           </li>
@@ -181,7 +172,7 @@
             <a href="../Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Enums/EventPhase.html">EventPhase</a>
+                <a href="../Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/FLVAACPacketType.html">FLVAACPacketType</a>
@@ -229,9 +220,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/CMSampleBuffer.html">CMSampleBuffer</a>
               </li>
             </ul>
           </li>
@@ -286,10 +274,16 @@
                 <a href="../Structs/ASTypedObject.html">ASTypedObject</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/Atomic.html">Atomic</a>
+                <a href="../Structs/ASUndefined.html">ASUndefined</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/DeviceUtil.html">DeviceUtil</a>
+                <a href="../Structs/ASXML.html">ASXML</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ASXMLDocument.html">ASXMLDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Atomic.html">Atomic</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/FLVAudioTag.html">FLVAudioTag</a>
@@ -336,13 +330,10 @@
 
                 </div>
               </div>
-            
-<ul>
-<li>seealse:
+            <p>The AudioCodec translate audio data to another format.</p>
 
 <ul>
-<li><a href="https://developer.apple.com/library/ios/technotes/tn2236/_index.html">https://developer.apple.com/library/ios/technotes/tn2236/_index.html</a></li>
-</ul></li>
+<li>seealse: <a href="https://developer.apple.com/library/ios/technotes/tn2236/_index.html">https://developer.apple.com/library/ios/technotes/tn2236/_index.html</a></li>
 </ul>
 
           </section>
@@ -362,7 +353,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The audio encoding or decoding options.</p>
 
                         <a href="../Classes/AudioCodec/Option.html" class="slightly-smaller">See more</a>
                       </div>
@@ -515,9 +506,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10AudioCodecC11destinationAC11DestinationOvp"></a>
+                    <a name="/s:10HaishinKit10AudioCodecC11destinationAC6FormatOvp"></a>
                     <a name="//apple_ref/swift/Property/destination" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11destinationAC11DestinationOvp">destination</a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11destinationAC6FormatOvp">destination</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -525,14 +516,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the output format.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt"><a href="../Classes/AudioCodec/Destination.html">Destination</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">destination</span><span class="p">:</span> <span class="kt"><a href="../Classes/AudioCodec/Format.html">Format</a></span></code></pre>
 
                         </div>
                       </div>
@@ -552,7 +543,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the delegate.</p>
 
                       </div>
                       <div class="declaration">
@@ -569,9 +560,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10AudioCodecC9isRunningAA6AtomicVySbGvp"></a>
+                    <a name="/s:10HaishinKit7RunningP02isC0AA6AtomicVySbGvp"></a>
                     <a name="//apple_ref/swift/Property/isRunning" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10AudioCodecC9isRunningAA6AtomicVySbGvp">isRunning</a>
+                    <a class="token" href="#/s:10HaishinKit7RunningP02isC0AA6AtomicVySbGvp">isRunning</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -579,8 +570,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -606,7 +596,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the settings for audio codec.</p>
 
                       </div>
                       <div class="declaration">
@@ -704,9 +694,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10AudioCodecC11DestinationO"></a>
-                    <a name="//apple_ref/swift/Enum/Destination" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11DestinationO">Destination</a>
+                    <a name="/s:10HaishinKit10AudioCodecC6FormatO"></a>
+                    <a name="//apple_ref/swift/Enum/Format" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10AudioCodecC6FormatO">Format</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -716,13 +706,13 @@
                       <div class="abstract">
                         <p>Undocumented</p>
 
-                        <a href="../Classes/AudioCodec/Destination.html" class="slightly-smaller">See more</a>
+                        <a href="../Classes/AudioCodec/Format.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Destination</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Format</span></code></pre>
 
                         </div>
                       </div>
@@ -745,9 +735,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10AudioCodecC12startRunningyyF"></a>
+                    <a name="/s:10HaishinKit7RunningP05startC0yyF"></a>
                     <a name="//apple_ref/swift/Method/startRunning()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10AudioCodecC12startRunningyyF">startRunning()</a>
+                    <a class="token" href="#/s:10HaishinKit7RunningP05startC0yyF">startRunning()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -755,8 +745,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -772,9 +761,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10AudioCodecC11stopRunningyyF"></a>
+                    <a name="/s:10HaishinKit7RunningP04stopC0yyF"></a>
                     <a name="//apple_ref/swift/Method/stopRunning()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10AudioCodecC11stopRunningyyF">stopRunning()</a>
+                    <a class="token" href="#/s:10HaishinKit7RunningP04stopC0yyF">stopRunning()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -782,8 +771,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -801,8 +789,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2021-12-26)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-06-26)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>

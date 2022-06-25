@@ -1,7 +1,7 @@
 import AudioToolbox
 
 extension AudioCodec {
-    public enum Destination {
+    public enum Format {
         case aac
         case pcm
 

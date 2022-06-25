@@ -1,25 +1,22 @@
 import Foundation
 
 /**
- flash.events.IEventDispatcher for Swift
+ * The IEventDispatcher interface is in implementation which supports the DOM Event Model.
  */
 public protocol IEventDispatcher: AnyObject {
+    /// Registers the event listeners on the event target.
     func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
+    /// Unregister the event listeners on the event target.
     func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
+    /// Dispatches the events into the implementations event model.
     func dispatch(event: Event)
+    /// Dispatches the events into the implementations event model.
     func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?)
-}
-
-public enum EventPhase: UInt8 {
-    case capturing = 0
-    case atTarget = 1
-    case bubbling = 2
-    case dispose = 3
 }
 
 // MARK: -
 /**
- flash.events.Event for Swift
+ * The Event interface is used to provide information.
  */
 open class Event {
     public struct Name: RawRepresentable, ExpressibleByStringLiteral {
@@ -53,9 +50,16 @@ open class Event {
         return event
     }
 
+    /// The type represents the event name.
     open fileprivate(set) var type: Name
+
+    /// The isBubbles indicates whether ot not an event is a bubbling event.
     open fileprivate(set) var bubbles: Bool
+
+    /// The data indicates the to provide information.
     open fileprivate(set) var data: Any?
+
+    /// The target indicates the [IEventDispatcher].
     open fileprivate(set) var target: AnyObject?
 
     public init(type: Name, bubbles: Bool = false, data: Any? = nil) {
@@ -74,7 +78,7 @@ extension Event: CustomDebugStringConvertible {
 
 // MARK: -
 /**
- flash.events.EventDispatcher for Swift
+ * The EventDispatcher interface is in implementation which supports the DOM Event Model.
  */
 open class EventDispatcher: IEventDispatcher {
     private weak var target: AnyObject?
@@ -90,18 +94,21 @@ open class EventDispatcher: IEventDispatcher {
         target = nil
     }
 
+    /// Registers the event listeners on the event target.
     public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         NotificationCenter.default.addObserver(
             observer ?? target ?? self, selector: selector, name: Notification.Name(rawValue: "\(type.rawValue)/\(useCapture)"), object: target ?? self
         )
     }
 
+    /// Unregister the event listeners on the event target.
     public func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         NotificationCenter.default.removeObserver(
             observer ?? target ?? self, name: Notification.Name(rawValue: "\(type.rawValue)/\(useCapture)"), object: target ?? self
         )
     }
 
+    /// Dispatches the events into the implementations event model.
     open func dispatch(event: Event) {
         event.target = target ?? self
         NotificationCenter.default.post(
@@ -110,6 +117,7 @@ open class EventDispatcher: IEventDispatcher {
         event.target = nil
     }
 
+    /// Dispatches the events into the implementations event model.
     public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) {
         dispatch(event: Event(type: type, bubbles: bubbles, data: data))
     }

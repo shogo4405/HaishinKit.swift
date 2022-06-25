@@ -7,18 +7,25 @@ public protocol AudioCodecDelegate: AnyObject {
 
 // MARK: -
 /**
- - seealse:
- - https://developer.apple.com/library/ios/technotes/tn2236/_index.html
+ * The AudioCodec translate audio data to another format.
+ * - seealse: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 public class AudioCodec {
     enum Error: Swift.Error {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
 
+    /**
+     * The audio encoding or decoding options.
+     */
     public enum Option: String, KeyPathRepresentable {
+        /// Specifies the muted.
         case muted
+        /// Specifies the bitRate of audio output.
         case bitrate
+        /// Specifies  the sampleRate of audio output.
         case sampleRate
+        /// The bitRate of audio output.
         case actualBitrate
 
         public var keyPath: AnyKeyPath {
@@ -43,9 +50,12 @@ public class AudioCodec {
     public static let defaultSampleRate: Double = 0
     public static let defaultMaximumBuffers: Int = 1
 
-    public var destination: Destination = .aac
+    /// Specifies the output format.
+    public var destination: Format = .aac
+    /// Specifies the delegate.
     public weak var delegate: AudioCodecDelegate?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
+    /// Specifies the settings for audio codec.
     public var settings: Setting<AudioCodec, Option> = [:] {
         didSet {
             settings.observer = self

@@ -114,7 +114,7 @@ extension CMSampleBuffer {
         decode: nil,
         renderingIntent: .defaultIntent)
 
-    public func reflectHorizontal() {
+    func reflectHorizontal() {
         if let imageBuffer: CVImageBuffer = self.imageBuffer {
             var sourceBuffer = vImage_Buffer()
 

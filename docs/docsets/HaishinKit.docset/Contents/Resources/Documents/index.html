@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.2.3 Docs</a> (22% documented)</p>
+        <p><a href="index.html">HaishinKit 1.2.4 Docs</a> (31% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -38,15 +38,6 @@
             <a href="Classes.html">Classes</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Classes/ASUndefined.html">ASUndefined</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ASXML.html">ASXML</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/ASXMLDocument.html">ASXMLDocument</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Classes/AVMixer.html">AVMixer</a>
               </li>
               <li class="nav-group-task">
@@ -65,7 +56,7 @@
                 <a href="Classes/AudioCodec/Option.html">– Option</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/AudioCodec/Destination.html">– Destination</a>
+                <a href="Classes/AudioCodec/Format.html">– Format</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/AudioEffect.html">AudioEffect</a>
@@ -172,7 +163,7 @@
             <a href="Global%20Variables.html">Global Variables</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Cvp">kASUndefined</a>
+                <a href="Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Vvp">kASUndefined</a>
               </li>
             </ul>
           </li>
@@ -180,7 +171,7 @@
             <a href="Enums.html">Enumerations</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Enums/EventPhase.html">EventPhase</a>
+                <a href="Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/FLVAACPacketType.html">FLVAACPacketType</a>
@@ -228,9 +219,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/CMSampleBuffer.html">CMSampleBuffer</a>
               </li>
             </ul>
           </li>
@@ -285,10 +273,16 @@
                 <a href="Structs/ASTypedObject.html">ASTypedObject</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/Atomic.html">Atomic</a>
+                <a href="Structs/ASUndefined.html">ASUndefined</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/DeviceUtil.html">DeviceUtil</a>
+                <a href="Structs/ASXML.html">ASXML</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/ASXMLDocument.html">ASXMLDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/Atomic.html">Atomic</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/FLVAudioTag.html">FLVAudioTag</a>
@@ -327,7 +321,7 @@
         <section>
           <section class="section">
             
-            <h1 id='haishinkit' class='heading'>HaishinKit</h1>
+            <h1 id='haishinkit-for-ios-macos-tvos-and-a-href-https-github-com-shogo4405-haishinkit-kt-android-a' class='heading'>HaishinKit for iOS, macOS, tvOS, and <a href="https://github.com/shogo4405/HaishinKit.kt">Android</a>.</h1>
 
 <p><a href="http://cocoapods.org/pods/HaishinKit"><img src="https://img.shields.io/cocoapods/p/HaishinKit.svg?style=flat" alt="Platform"></a>
 <img src="https://img.shields.io/badge/language-Swift%205.3-orange.svg" alt="Language">
@@ -336,7 +330,7 @@
 
 <ul>
 <li>Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.</li>
-<li>Issuesの言語は、日本語が分かる方は日本語でお願いします！</li>
+<li><a href="https://shogo4405.github.io/HaishinKit.swift/">API Documentation</a></li>
 </ul>
 
 <p align="center">
@@ -347,24 +341,32 @@
 <br />
 Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/ios-chat/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">Try the iOS Chat tutorial</a> 💬
 </p>
-<h2 id='communication' class='heading'>Communication</h2>
+<h2 id='communication' class='heading'>💬 Communication</h2>
 
 <ul>
-<li>If you need help with making LiveStreaming requests using HaishinKit, use a GitHub issue with <strong>Bug report template</strong>
+<li>If you need help with making LiveStreaming requests using HaishinKit, use a <a href="https://github.com/shogo4405/HaishinKit.swift/discussions">GitHub Discussions</a> with <strong>Q&amp;A</strong>.</li>
+<li>If you&rsquo;d like to discuss a feature request, use a <a href="https://github.com/shogo4405/HaishinKit.swift/discussions">GitHub Discussions</a> with <strong>Idea</strong></li>
+<li>If you met a HaishinKit&rsquo;s bug🐛, use a <a href="https://github.com/shogo4405/HaishinKit.swift/issues">GitHub Issue</a> with <strong>Bug report template</strong>
 
 <ul>
 <li>The trace level log is very useful. Please set <code>Logboard.with(HaishinKitIdentifier).level = .trace</code>.</li>
 <li>If you don&rsquo;t use an issue template. I will immediately close the your issue without a comment.</li>
 </ul></li>
-<li>If you&rsquo;d like to discuss a feature request, use a GitHub issue with <strong>Feature request template</strong>.</li>
-<li>If you want to support e-mail based communication without GitHub issue.
+<li>If you <strong>want to contribute</strong>, submit a pull request!</li>
+<li>If you want to support e-mail based communication without GitHub.
 
 <ul>
 <li>Consulting fee is <a href="https://www.paypal.me/shogo4405/50USD">$50</a>/1 incident. I&rsquo;m able to response a few days.</li>
 </ul></li>
-<li>If you <strong>want to contribute</strong>, submit a pull request!</li>
+<li><a href="https://discord.com/invite/8nkshPnanr">Discord chatroom</a>.</li>
+<li>日本語が分かる方は日本語でお願いします！</li>
 </ul>
-<h2 id='features' class='heading'>Features</h2>
+<h2 id='sponsors' class='heading'>💖 Sponsors</h2>
+
+<p align="center">
+<a href="https://streamlabs.com/" target="_blank"><img src="https://user-images.githubusercontent.com/810189/158178478-cd0484eb-76cf-4e4a-92ef-be5e6228769e.png" width="350px" alt="Streamlabs" /></a>
+</p>
+<h2 id='features' class='heading'>🎨 Features</h2>
 <h3 id='rtmp' class='heading'>RTMP</h3>
 
 <ul>
@@ -451,7 +453,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 </ul></li>
 <li>[ ] <del>Objective-C Bridging</del></li>
 </ul>
-<h2 id='requirements' class='heading'>Requirements</h2>
+<h2 id='requirements' class='heading'>🌏 Requirements</h2>
 
 <table><thead>
 <tr>
@@ -479,16 +481,22 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <td style="text-align: center">12.0+</td>
 <td style="text-align: center">5.0+</td>
 </tr>
-<tr>
-<td style="text-align: center">1.0.0+</td>
-<td style="text-align: center">8.0+</td>
-<td style="text-align: center">10.11+</td>
-<td style="text-align: center">10.2+</td>
-<td style="text-align: center">11.0+</td>
-<td style="text-align: center">5.0+</td>
-</tr>
 </tbody></table>
-<h2 id='cocoa-keys' class='heading'>Cocoa Keys</h2>
+<h2 id='examples' class='heading'>🐾 Examples</h2>
+
+<p>Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS.</p>
+
+<ul>
+<li>[x] Camera and microphone publish.</li>
+<li>[x] RTMP Playback<br>
+<code>sh
+git clone https://github.com/shogo4405/HaishinKit.swift.git
+cd HaishinKit.swift
+carthage bootstrap --use-xcframeworks
+open HaishinKit.xcodeproj
+</code></li>
+</ul>
+<h2 id='cocoa-keys' class='heading'>☕ Cocoa Keys</h2>
 
 <p>Please contains Info.plist.</p>
 
@@ -505,9 +513,9 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <li>NSMicrophoneUsageDescription</li>
 <li>NSCameraUsageDescription</li>
 </ul>
-<h2 id='installation' class='heading'>Installation</h2>
+<h2 id='installation' class='heading'>🔧 Installation</h2>
 
-<p>*Please set up your project Swift 5.5. *</p>
+<p><em>Please set up your project Swift 5.5.</em></p>
 <h3 id='cocoapods' class='heading'>CocoaPods</h3>
 <pre class="highlight ruby"><code><span class="n">source</span> <span class="s1">'https://github.com/CocoaPods/Specs.git'</span>
 <span class="n">use_frameworks!</span>
@@ -527,21 +535,21 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
 <pre class="highlight plaintext"><code>https://github.com/shogo4405/HaishinKit.swift
 </code></pre>
-<h2 id='license' class='heading'>License</h2>
+<h2 id='donation' class='heading'>💠 Donation</h2>
 
-<p>BSD-3-Clause</p>
-<h2 id='donation' class='heading'>Donation</h2>
+<ul>
+<li>GitHub Sponsors
 
-<p>Paypal</p>
+<ul>
+<li><a href="https://github.com/sponsors/shogo4405">https://github.com/sponsors/shogo4405</a></li>
+</ul></li>
+<li>Paypal
 
 <ul>
 <li><a href="https://www.paypal.me/shogo4405">https://www.paypal.me/shogo4405</a></li>
+</ul></li>
 </ul>
-
-<p>Bitcoin</p>
-<pre class="highlight plaintext"><code>3FnjC3CmwFLTzNY5WPNz4LjTo1uxGNozUR
-</code></pre>
-<h2 id='prerequisites' class='heading'>Prerequisites</h2>
+<h2 id='prerequisites' class='heading'>🔧 Prerequisites</h2>
 
 <p>Make sure you setup and activate your AVAudioSession.</p>
 <pre class="highlight swift"><code><span class="kd">import</span> <span class="kt">AVFoundation</span>
@@ -562,7 +570,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
     <span class="nf">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre>
-<h2 id='rtmp-usage' class='heading'>RTMP Usage</h2>
+<h2 id='rtmp-usage' class='heading'>📓 RTMP Usage</h2>
 
 <p>Real Time Messaging Protocol (RTMP).</p>
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">rtmpConnection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
@@ -662,7 +670,7 @@ rtmpStream.publish(&quot;streamName&quot;)
 <span class="c1">// macOS</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="nf">attachScreen</span><span class="p">(</span><span class="kt">AVCaptureScreenInput</span><span class="p">(</span><span class="nv">displayID</span><span class="p">:</span> <span class="kt">CGMainDisplayID</span><span class="p">()))</span>
 </code></pre>
-<h2 id='http-usage' class='heading'>HTTP Usage</h2>
+<h2 id='http-usage' class='heading'>📓 HTTP Usage</h2>
 
 <p>HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see <a href="http://ip.address:8080/hello/playlist.m3u8">http://ip.address:8080/hello/playlist.m3u8</a> </p>
 <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">httpStream</span> <span class="o">=</span> <span class="kt">HTTPStream</span><span class="p">()</span>
@@ -680,16 +688,7 @@ rtmpStream.publish(&quot;streamName&quot;)
 <span class="c1">// add ViewController#view</span>
 <span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">hkView</span><span class="p">)</span>
 </code></pre>
-<h2 id='faq' class='heading'>FAQ</h2>
-<h3 id='how-can-i-run-example-project' class='heading'>How can I run example project?</h3>
-<pre class="highlight shell"><code>git clone https://github.com/shogo4405/HaishinKit.swift.git
-<span class="nb">cd </span>HaishinKit.swift
-
-carthage bootstrap --use-xcframeworks
-
-open HaishinKit.xcodeproj
-</code></pre>
-<h2 id='reference' class='heading'>Reference</h2>
+<h2 id='reference' class='heading'>📖 Reference</h2>
 
 <ul>
 <li>Adobe’s Real Time Messaging Protocol
@@ -718,12 +717,15 @@ open HaishinKit.xcodeproj
 <li><a href="http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf">http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf</a></li>
 </ul></li>
 </ul>
+<h2 id='license' class='heading'>📜 License</h2>
+
+<p>BSD-3-Clause</p>
 
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2021 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2021-12-26)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-06-26)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
