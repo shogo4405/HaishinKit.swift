@@ -18,13 +18,13 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
 
     #if os(iOS) || os(macOS)
-    weak var renderer: NetStreamRenderer? {
+    weak var renderer: NetStreamDrawable? {
         didSet {
             renderer?.orientation = orientation
         }
     }
     #else
-    weak var renderer: NetStreamRenderer?
+    weak var renderer: NetStreamDrawable?
     #endif
 
     var formatDescription: CMVideoFormatDescription? {

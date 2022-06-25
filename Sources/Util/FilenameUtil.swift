@@ -1,6 +1,6 @@
 import Foundation
 
-struct FilenameUtil {
+enum FilenameUtil {
     static func fileName(resourceName: String?) -> String? {
         guard var result = resourceName else {
             return nil

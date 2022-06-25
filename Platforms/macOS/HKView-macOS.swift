@@ -62,7 +62,7 @@ open class HKView: NSView {
     }
 }
 
-extension HKView: NetStreamRenderer {
+extension HKView: NetStreamDrawable {
     // MARK: NetStreamRenderer
     func enqueue(_ sampleBuffer: CMSampleBuffer?) {
     }

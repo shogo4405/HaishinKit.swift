@@ -1,6 +1,6 @@
 import Foundation
 
-final class AnyUtil {
+enum AnyUtil {
     static func isZero(_ value: Any) -> Bool {
         if let value: Int = value as? Int {
             return value == 0

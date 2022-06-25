@@ -8,7 +8,7 @@ public protocol AudioCodecDelegate: AnyObject {
 // MARK: -
 /**
  * The AudioCodec translate audio data to another format.
- * - seealse: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
+ * - seealso: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 public class AudioCodec {
     enum Error: Swift.Error {

@@ -5,13 +5,13 @@ import AppKit
 #endif
 
 #if os(macOS)
-typealias NetStreamRendererView = NSView
+typealias NetStreamDrawableView = NSView
 #else
 import UIKit
-typealias NetStreamRendererView = UIView
+typealias NetStreamDrawableView = UIView
 #endif
 
-protocol NetStreamRenderer: AnyObject {
+protocol NetStreamDrawable: AnyObject {
     #if os(iOS) || os(macOS)
     var orientation: AVCaptureVideoOrientation { get set }
     var position: AVCaptureDevice.Position { get set }
@@ -23,7 +23,7 @@ protocol NetStreamRenderer: AnyObject {
     func enqueue(_ sampleBuffer: CMSampleBuffer?)
 }
 
-extension NetStreamRenderer where Self: NetStreamRendererView {
+extension NetStreamDrawable where Self: NetStreamDrawableView {
     func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
             currentSampleBuffer = sampleBuffer

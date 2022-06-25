@@ -2,10 +2,8 @@ import Foundation
 
 /**
  Message Digest Algorithm 5
-
- - seealso:
- - https://ja.wikipedia.org/wiki/MD5
- - https://www.ietf.org/rfc/rfc1321.txt
+ - seealso: https://ja.wikipedia.org/wiki/MD5
+ - seealso: https://www.ietf.org/rfc/rfc1321.txt
  */
 final class MD5 {
     static let a: UInt32 = 0x67452301

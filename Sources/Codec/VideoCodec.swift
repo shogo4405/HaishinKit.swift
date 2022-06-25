@@ -167,7 +167,7 @@ public final class VideoCodec {
     private var invalidateSession = true
     private var lastImageBuffer: CVImageBuffer?
 
-    // @see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
+    // see: https://developer.apple.com/library/mac/releasenotes/General/APIDiffsMacOSX10_8/VideoToolbox.html
     private var properties: [NSString: NSObject] {
         let isBaseline: Bool = profileLevel.contains("Baseline")
         var properties: [NSString: NSObject] = [
