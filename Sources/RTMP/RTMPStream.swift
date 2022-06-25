@@ -6,6 +6,7 @@ public protocol RTMPStreamDelegate: AnyObject {
     func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
     func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer)
     func rtmpStream(_ stream: RTMPStream, didStatics connection: RTMPConnection)
+    func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error)
     func rtmpStreamDidClear(_ stream: RTMPStream)
 }
 
@@ -18,15 +19,18 @@ public extension RTMPStreamDelegate {
 
     func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer) {
     }
+
+    func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred erorr: VideoCodec.Error) {
+    }
 }
 
 /**
- flash.net.NetStream for Swift
+ * flash.net.NetStream for Swift
  */
 open class RTMPStream: NetStream {
     /**
-     - NetStatusEvent#info.code for NetStream
-     - see: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
+     * NetStatusEvent#info.code for NetStream
+     * - seealso: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
      */
     public enum Code: String {
         case bufferEmpty               = "NetStream.Buffer.Empty"
@@ -587,11 +591,11 @@ extension RTMPStream: IEventDispatcher {
 
 extension RTMPStream: RTMPMuxerDelegate {
     // MARK: RTMPMuxerDelegate
-    func metadata(_ metadata: ASObject) {
-        send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
+    func muxer(_ muxer: RTMPMuxer, didSetMetadata: ASObject) {
+        send(handlerName: "@setDataFrame", arguments: "onMetaData", didSetMetadata)
     }
 
-    func sampleOutput(audio buffer: Data, withTimestamp: Double, muxer: RTMPMuxer) {
+    func muxer(_ muxer: RTMPMuxer, didOutputAudio buffer: Data, withTimestamp: Double) {
         guard readyState == .publishing else {
             return
         }
@@ -606,7 +610,7 @@ extension RTMPStream: RTMPMuxerDelegate {
         audioTimestamp = withTimestamp + (audioTimestamp - floor(audioTimestamp))
     }
 
-    func sampleOutput(video buffer: Data, withTimestamp: Double, muxer: RTMPMuxer) {
+    func muxer(_ muxer: RTMPMuxer, didOutputVideo buffer: Data, withTimestamp: Double) {
         guard readyState == .publishing else {
             return
         }
@@ -624,6 +628,10 @@ extension RTMPStream: RTMPMuxerDelegate {
         info.byteCount.mutate { $0 += Int64(length) }
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
         frameCount += 1
+    }
+
+    func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error) {
+        delegate?.rtmpStream(self, videoCodecErrorOccurred: error)
     }
 }
 
