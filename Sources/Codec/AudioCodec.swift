@@ -134,13 +134,7 @@ public class AudioCodec {
         }
     }
 
-    private var audioStreamPacketDescription = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: 0) {
-        didSet {
-            audioStreamPacketDescriptionPointer = UnsafeMutablePointer<AudioStreamPacketDescription>(mutating: &audioStreamPacketDescription)
-        }
-    }
-    private var audioStreamPacketDescriptionPointer: UnsafeMutablePointer<AudioStreamPacketDescription>?
-
+    private var audioStreamPacketDescription = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: 0)
     private let inputDataProc: AudioConverterComplexInputDataProc = {(_: AudioConverterRef, ioNumberDataPackets: UnsafeMutablePointer<UInt32>, ioData: UnsafeMutablePointer<AudioBufferList>, outDataPacketDescription: UnsafeMutablePointer<UnsafeMutablePointer<AudioStreamPacketDescription>?>?, inUserData: UnsafeMutableRawPointer?) in
         Unmanaged<AudioCodec>.fromOpaque(inUserData!).takeUnretainedValue().onInputDataForAudioConverter(
             ioNumberDataPackets,
@@ -284,7 +278,7 @@ public class AudioCodec {
 
         if destination == .pcm && outDataPacketDescription != nil {
             audioStreamPacketDescription.mDataByteSize = currentAudioBuffer.input.unsafePointer.pointee.mBuffers.mDataByteSize
-            outDataPacketDescription?.pointee = audioStreamPacketDescriptionPointer
+            outDataPacketDescription?.pointee = withUnsafeMutablePointer(to: &audioStreamPacketDescription) { $0 }
         }
 
         currentAudioBuffer.clear()

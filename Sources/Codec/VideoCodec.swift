@@ -12,7 +12,7 @@ public protocol VideoCodecDelegate: AnyObject {
 }
 
 // MARK: -
-public final class VideoCodec {
+public class VideoCodec {
     /**
      * The video encoding or decoding options.
      */
