@@ -16,7 +16,7 @@
 Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/ios-chat/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">Try the iOS Chat tutorial</a> 💬
 </p>
 
-## Communication
+## 💬 Communication
 * If you need help with making LiveStreaming requests using HaishinKit, use a [GitHub Discussions](https://github.com/shogo4405/HaishinKit.swift/discussions) with **Q&A**.
 * If you'd like to discuss a feature request, use a [GitHub Discussions](https://github.com/shogo4405/HaishinKit.swift/discussions) with **Idea**
 * If you met a HaishinKit's bug🐛, use a [GitHub Issue](https://github.com/shogo4405/HaishinKit.swift/issues) with **Bug report template**
@@ -25,14 +25,15 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 * If you **want to contribute**, submit a pull request!
 * If you want to support e-mail based communication without GitHub.
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
+* [Discord chatroom](https://discord.com/invite/8nkshPnanr).
 * 日本語が分かる方は日本語でお願いします！
 
-## Sponsors
+## 💖 Sponsors
 <p align="center">
 <a href="https://streamlabs.com/" target="_blank"><img src="https://user-images.githubusercontent.com/810189/158178478-cd0484eb-76cf-4e4a-92ef-be5e6228769e.png" width="350px" alt="Streamlabs" /></a>
 </p>
 
-## Features
+## 🎨 Features
 ### RTMP
 - [x] Authentication
 - [x] Publish and Recording (H264/AAC)
@@ -72,14 +73,24 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
   - ~~https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md~~
 - [ ] ~~Objective-C Bridging~~
 
-## Requirements
+## 🌏 Requirements
 |-|iOS|OSX|tvOS|XCode|Swift|
 |:----:|:----:|:----:|:----:|:----:|:----:|
 |1.2.0+|9.0+|10.11+|10.2+|13.0+|5.5+|
 |1.1.0+|9.0+|10.11+|10.2+|12.0+|5.0+|
-|1.0.0+|8.0+|10.11+|10.2+|11.0+|5.0+|
 
-## Cocoa Keys
+## 🐾 Examples
+Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS.
+- [x] Camera and microphone publish.
+- [x] RTMP Playback  
+```sh
+git clone https://github.com/shogo4405/HaishinKit.swift.git
+cd HaishinKit.swift
+carthage bootstrap --use-xcframeworks
+open HaishinKit.xcodeproj
+```
+
+## ☕ Cocoa Keys
 Please contains Info.plist.
 
 iOS 10.0+
@@ -90,7 +101,7 @@ macOS 10.14+
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
 
-## Installation
+## 🔧 Installation
 *Please set up your project Swift 5.5. *
 
 ### CocoaPods
@@ -116,19 +127,13 @@ github "shogo4405/HaishinKit.swift" ~> 1.2.2
 https://github.com/shogo4405/HaishinKit.swift
 ```
 
-## License
-BSD-3-Clause
+## 💠 Donation
+- GitHub Sponsors
+  - https://github.com/sponsors/shogo4405
+- Paypal
+  - https://www.paypal.me/shogo4405
 
-## Donation
-Paypal
- - https://www.paypal.me/shogo4405
-
-Bitcoin
-```txt
-3FnjC3CmwFLTzNY5WPNz4LjTo1uxGNozUR
-```
-
-## Prerequisites
+## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession.
 ```swift
 import AVFoundation
@@ -149,7 +154,8 @@ do {
     print(error)
 }
 ```
-## RTMP Usage
+
+## 📓 RTMP Usage
 Real Time Messaging Protocol (RTMP).
 ```swift
 let rtmpConnection = RTMPConnection()
@@ -250,7 +256,7 @@ rtmpStream.attachScreen(ScreenCaptureSession(shared: UIApplication.shared))
 rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```
 
-## HTTP Usage
+## 📓 HTTP Usage
 HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
 var httpStream = HTTPStream()
@@ -269,18 +275,7 @@ httpService.addHTTPStream(httpStream)
 view.addSubview(hkView)
 ```
 
-## FAQ
-### How can I run example project?
-```sh
-git clone https://github.com/shogo4405/HaishinKit.swift.git
-cd HaishinKit.swift
-
-carthage bootstrap --use-xcframeworks
-
-open HaishinKit.xcodeproj
-```
-
-## Reference
+## 📖 Reference
 * Adobe’s Real Time Messaging Protocol
   * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
 * Action Message Format -- AMF 0
@@ -292,3 +287,5 @@ open HaishinKit.xcodeproj
 * Adobe Flash Video File Format Specification Version 10.1
   * http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf
 
+## 📜 License
+BSD-3-Clause

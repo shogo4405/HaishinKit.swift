@@ -38,7 +38,7 @@ final class DisplayLink: NSObject {
         self.delegate = target
         self.selector = sel
         CVDisplayLinkSetOutputHandler(displayLink) { [unowned self]
-            (_, inNow, _, _, _) -> CVReturn in
+            _, inNow, _, _, _ -> CVReturn in
 
             self.timestamp = inNow.pointee.timestamp
             self.duration = inNow.pointee.duration
