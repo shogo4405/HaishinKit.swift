@@ -1,9 +1,10 @@
 import AVFoundation
 
 protocol RTMPMuxerDelegate: AnyObject {
-    func metadata(_ metadata: ASObject)
-    func sampleOutput(audio buffer: Data, withTimestamp: Double, muxer: RTMPMuxer)
-    func sampleOutput(video buffer: Data, withTimestamp: Double, muxer: RTMPMuxer)
+    func muxer(_ muxer: RTMPMuxer, didSetMetadata: ASObject)
+    func muxer(_ muxer: RTMPMuxer, didOutputAudio buffer: Data, withTimestamp: Double)
+    func muxer(_ muxer: RTMPMuxer, didOutputVideo buffer: Data, withTimestamp: Double)
+    func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error)
 }
 
 // MARK: -
@@ -30,7 +31,7 @@ extension RTMPMuxer: AudioCodecDelegate {
         }
         var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
         buffer.append(contentsOf: AudioSpecificConfig(formatDescription: formatDescription).bytes)
-        delegate?.sampleOutput(audio: buffer, withTimestamp: 0, muxer: self)
+        delegate?.muxer(self, didOutputAudio: buffer, withTimestamp: 0)
     }
 
     func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
@@ -40,7 +41,7 @@ extension RTMPMuxer: AudioCodecDelegate {
         }
         var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
         buffer.append(bytes.assumingMemoryBound(to: UInt8.self), count: Int(sample[0].mDataByteSize))
-        delegate?.sampleOutput(audio: buffer, withTimestamp: delta, muxer: self)
+        delegate?.muxer(self, didOutputAudio: buffer, withTimestamp: delta)
         audioTimeStamp = presentationTimeStamp
     }
 }
@@ -55,7 +56,7 @@ extension RTMPMuxer: VideoCodecDelegate {
         }
         var buffer = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
         buffer.append(avcC)
-        delegate?.sampleOutput(video: buffer, withTimestamp: 0, muxer: self)
+        delegate?.muxer(self, didOutputVideo: buffer, withTimestamp: 0)
     }
 
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
@@ -75,7 +76,11 @@ extension RTMPMuxer: VideoCodecDelegate {
         var buffer = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
         buffer.append(contentsOf: compositionTime.bigEndian.data[1..<4])
         buffer.append(data)
-        delegate?.sampleOutput(video: buffer, withTimestamp: delta, muxer: self)
+        delegate?.muxer(self, didOutputVideo: buffer, withTimestamp: delta)
         videoTimeStamp = decodeTimeStamp
+    }
+
+    func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+        delegate?.muxer(self, videoCodecErrorOccurred: error)
     }
 }

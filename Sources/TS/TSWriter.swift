@@ -276,6 +276,9 @@ extension TSWriter: VideoCodecDelegate {
             randomAccessIndicator: !sampleBuffer.isNotSync
         )
     }
+
+    public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+    }
 }
 
 class TSFileWriter: TSWriter {
