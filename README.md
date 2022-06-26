@@ -180,7 +180,7 @@ rtmpStream.publish("streamName")
 // rtmpStream.publish("streamName", type: .localRecord)
 ```
 
-### RTML URL Format
+### RTMP URL Format
 * rtmp://server-ip-address[:port]/application/[appInstance]/[prefix:[path1[/path2/]]]streamName
   - [] mark is an Optional.
   ```
