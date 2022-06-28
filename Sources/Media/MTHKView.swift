@@ -2,14 +2,14 @@ import AVFoundation
 import MetalKit
 
 /**
- A view that displays a video content of a NetStream object which uses Metal api.
+ * A view that displays a video content of a NetStream object which uses Metal api.
  */
-open class MTHKView: MTKView, NetStreamDrawable {
-    open var isMirrored = false
+public class MTHKView: MTKView, NetStreamDrawable {
+    public var isMirrored = false
     /// A value that specifies how the video is displayed within a player layer’s bounds.
-    open var videoGravity: AVLayerVideoGravity = .resizeAspect
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect
     /// A value that displays a video format.
-    open var videoFormatDescription: CMVideoFormatDescription? {
+    public var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
 
@@ -56,7 +56,7 @@ open class MTHKView: MTKView, NetStreamDrawable {
     }
 
     /// Attaches a view to a new NetStream object.
-    open func attachStream(_ stream: NetStream?) {
+    public func attachStream(_ stream: NetStream?) {
         if Thread.isMainThread {
             currentStream = stream
         } else {

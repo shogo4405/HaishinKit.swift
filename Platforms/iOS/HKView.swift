@@ -3,23 +3,30 @@
 import AVFoundation
 import UIKit
 
-open class HKView: UIView {
+/**
+ * A view that displays a video content of a NetStream object which uses AVCaptureVideoPreviewLayer.
+ */
+public class HKView: UIView {
     public static var defaultBackgroundColor: UIColor = .black
 
-    override open class var layerClass: AnyClass {
+    /// Returns the class used to create the layer for instances of this class.
+    override public class var layerClass: AnyClass {
         AVCaptureVideoPreviewLayer.self
     }
 
-    override open var layer: AVCaptureVideoPreviewLayer {
+    /// The view’s Core Animation layer used for rendering.
+    override public var layer: AVCaptureVideoPreviewLayer {
         super.layer as! AVCaptureVideoPreviewLayer
     }
 
+    /// A value that specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
         didSet {
             layer.videoGravity = videoGravity
         }
     }
 
+    /// A value that displays a video format.
     public var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
@@ -67,13 +74,14 @@ open class HKView: UIView {
         attachStream(nil)
     }
 
-    override open func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = HKView.defaultBackgroundColor
         layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
     }
 
-    open func attachStream(_ stream: NetStream?) {
+    /// Attaches a view to a new NetStream object.
+    public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
             layer.session?.stopRunning()
             layer.session = nil
