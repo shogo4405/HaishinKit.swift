@@ -1,23 +1,22 @@
-#if os(iOS)
-
+#if os(iOS) || os(tvOS)
 import AVFoundation
-import UIKit
+import Foundation
 
 /**
- * A view that displays a video content of a NetStream object which uses AVCaptureVideoPreviewLayer.
+ * A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.
  */
-public class HKView: UIView {
+public class PiPHKView: UIView {
     /// The view’s background color.
     public static var defaultBackgroundColor: UIColor = .black
 
     /// Returns the class used to create the layer for instances of this class.
     override public class var layerClass: AnyClass {
-        AVCaptureVideoPreviewLayer.self
+        AVSampleBufferDisplayLayer.self
     }
 
     /// The view’s Core Animation layer used for rendering.
-    override public var layer: AVCaptureVideoPreviewLayer {
-        super.layer as! AVCaptureVideoPreviewLayer
+    override public var layer: AVSampleBufferDisplayLayer {
+        super.layer as! AVSampleBufferDisplayLayer
     }
 
     /// A value that specifies how the video is displayed within a player layer’s bounds.
@@ -32,28 +31,20 @@ public class HKView: UIView {
         currentStream?.mixer.videoIO.formatDescription
     }
 
+    #if !os(tvOS)
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
-            let orientationChange = { [weak self] in
-                guard let self = self else {
-                    return
-                }
-                self.layer.connection.map {
-                    if $0.isVideoOrientationSupported {
-                        $0.videoOrientation = self.orientation
-                    }
-                }
-            }
             if Thread.isMainThread {
-                orientationChange()
+                layer.flushAndRemoveImage()
             } else {
                 DispatchQueue.main.sync {
-                    orientationChange()
+                    layer.flushAndRemoveImage()
                 }
             }
         }
     }
     var position: AVCaptureDevice.Position = .front
+    #endif
     var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
@@ -77,24 +68,16 @@ public class HKView: UIView {
 
     override public func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = HKView.defaultBackgroundColor
-        layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
+        backgroundColor = Self.defaultBackgroundColor
+        layer.backgroundColor = Self.defaultBackgroundColor.cgColor
     }
 
     /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
-            layer.session?.stopRunning()
-            layer.session = nil
             currentStream = nil
             return
         }
-
-        stream.mixer.session.beginConfiguration()
-        layer.session = stream.mixer.session
-        orientation = stream.mixer.videoIO.orientation
-        stream.mixer.session.commitConfiguration()
-
         stream.lockQueue.async {
             stream.mixer.videoIO.renderer = self
             self.currentStream = stream
@@ -103,10 +86,21 @@ public class HKView: UIView {
     }
 }
 
-extension HKView: NetStreamDrawable {
-    // MARK: NetStreamRenderer
+extension PiPHKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
     func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+        if Thread.isMainThread {
+            currentSampleBuffer = sampleBuffer
+            if let sampleBuffer = sampleBuffer {
+                layer.enqueue(sampleBuffer)
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.enqueue(sampleBuffer)
+            }
+        }
     }
 }
+#else
 
 #endif

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -299,7 +299,7 @@
         <scene sceneID="t76-yU-vlu">
             <objects>
                 <viewController storyboardIdentifier="PlaybackViewController" id="S4s-US-fOh" customClass="PlaybackViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="mU9-Qc-s55" customClass="MTHKView" customModule="HaishinKit">
+                    <view key="view" contentMode="scaleToFill" id="mU9-Qc-s55" customClass="PiPHKView" customModule="HaishinKit">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -316,11 +316,26 @@
                                     <action selector="didPlaybackButtonTap:" destination="S4s-US-fOh" eventType="touchDown" id="bAJ-ml-suS"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nie-97-pLL">
+                                <rect key="frame" x="369" y="723" width="30" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="6VI-Zc-kOn"/>
+                                    <constraint firstAttribute="width" constant="30" id="aoL-jR-H2u"/>
+                                </constraints>
+                                <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <state key="normal" title=" PiP"/>
+                                <connections>
+                                    <action selector="didEnterPixtureInPicture:" destination="S4s-US-fOh" eventType="touchUpInside" id="df8-Oz-vv8"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="z9R-Rx-Qeu"/>
                         <color key="backgroundColor" systemColor="systemGray2Color"/>
                         <constraints>
                             <constraint firstItem="z9R-Rx-Qeu" firstAttribute="bottom" secondItem="p4J-1x-O1c" secondAttribute="bottom" constant="15" id="4Qz-Gj-1rz"/>
+                            <constraint firstItem="p4J-1x-O1c" firstAttribute="top" secondItem="Nie-97-pLL" secondAttribute="bottom" constant="15" id="Iie-qT-aen"/>
+                            <constraint firstItem="z9R-Rx-Qeu" firstAttribute="trailing" secondItem="Nie-97-pLL" secondAttribute="trailing" constant="15" id="pqr-wR-mX4"/>
                             <constraint firstItem="z9R-Rx-Qeu" firstAttribute="trailing" secondItem="p4J-1x-O1c" secondAttribute="trailing" constant="15" id="y0c-uc-INm"/>
                         </constraints>
                     </view>
