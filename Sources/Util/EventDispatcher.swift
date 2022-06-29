@@ -19,6 +19,9 @@ public protocol IEventDispatcher: AnyObject {
  * The Event interface is used to provide information.
  */
 open class Event {
+    /**
+     *  A structure that defines the name of an event.
+     */
     public struct Name: RawRepresentable, ExpressibleByStringLiteral {
         // swiftlint:disable nesting
         public typealias RawValue = String
@@ -51,16 +54,16 @@ open class Event {
     }
 
     /// The type represents the event name.
-    open fileprivate(set) var type: Name
+    public fileprivate(set) var type: Name
 
     /// The isBubbles indicates whether ot not an event is a bubbling event.
-    open fileprivate(set) var bubbles: Bool
+    public fileprivate(set) var bubbles: Bool
 
     /// The data indicates the to provide information.
-    open fileprivate(set) var data: Any?
+    public fileprivate(set) var data: Any?
 
     /// The target indicates the [IEventDispatcher].
-    open fileprivate(set) var target: AnyObject?
+    public fileprivate(set) var target: AnyObject?
 
     public init(type: Name, bubbles: Bool = false, data: Any? = nil) {
         self.type = type
