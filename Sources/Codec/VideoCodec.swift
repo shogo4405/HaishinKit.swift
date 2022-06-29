@@ -82,21 +82,27 @@ public class VideoCodec {
         }
     }
 
+    /// The videoCodec's width value. The default value is 480.
     public static let defaultWidth: Int32 = 480
+    /// The videoCodec's height value. The default value is 272.
     public static let defaultHeight: Int32 = 272
+    /// The videoCodec's bitrate value. The default value is 160,000.
     public static let defaultBitrate: UInt32 = 160 * 1000
+    /// The videoCodec's scalingMode value. The default value is trim.
     public static let defaultScalingMode: ScalingMode = .trim
-
-    static let defaultAttributes: [NSString: AnyObject] = [
+    /// The videoCodec's attributes value.
+    public static var defaultAttributes: [NSString: AnyObject]? = [
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
 
+    /// Specifies the settings for a VideoCodec.
     public var settings: Setting<VideoCodec, Option> = [:] {
         didSet {
             settings.observer = self
         }
     }
+    /// The running value indicating whether the VideoCodec is running.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     var muted = false
@@ -179,8 +185,14 @@ public class VideoCodec {
     }
     weak var delegate: VideoCodecDelegate?
 
-    private var attributes: [NSString: AnyObject] {
-        var attributes: [NSString: AnyObject] = VideoCodec.defaultAttributes
+    private var attributes: [NSString: AnyObject]? {
+        guard VideoCodec.defaultAttributes != nil else {
+            return nil
+        }
+        var attributes: [NSString: AnyObject] = [:]
+        for (key, value) in VideoCodec.defaultAttributes ?? [:] {
+            attributes[key] = value
+        }
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: width)
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: height)
         return attributes
