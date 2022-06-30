@@ -1,8 +1,12 @@
 import Foundation
 
+/// The type of flv tag.
 public enum FLVTagType: UInt8 {
+    /// The Audio tag,
     case audio = 8
+    /// The Video tag.
     case video = 9
+    /// The Data tag.
     case data = 18
 
     var streamId: UInt16 {
@@ -27,15 +31,24 @@ public enum FLVTagType: UInt8 {
 }
 
 // MARK: -
+/// The interface of FLV tag.
 public protocol FLVTag: CustomDebugStringConvertible {
+    /// The type of this tag.
     var tagType: FLVTagType { get set }
+    /// The length of data int the field.
     var dataSize: UInt32 { get set }
+    /// The timestamp in milliseconds.
     var timestamp: UInt32 { get set }
+    /// The extension of the timestamp.
     var timestampExtended: UInt8 { get set }
+    /// The streamId, always 0.
     var streamId: UInt32 { get set }
+    /// The data offset of a flv file.
     var offset: UInt64 { get set }
 
+    /// Initialize a new object.
     init()
+    /// Read data of fileHandler.
     mutating func readData(_ fileHandler: FileHandle)
 }
 
@@ -66,6 +79,7 @@ extension FLVTag {
 }
 
 // MARK: -
+/// A structure that defines the FLVTag of Data.
 public struct FLVDataTag: FLVTag {
     public var tagType: FLVTagType = .data
     public var dataSize: UInt32 = 0
@@ -82,6 +96,7 @@ public struct FLVDataTag: FLVTag {
 }
 
 // MARK: -
+/// A structure that defines the FLVTag of an audio.
 public struct FLVAudioTag: FLVTag {
     public var tagType: FLVTagType = .audio
     public var dataSize: UInt32 = 0
@@ -89,9 +104,13 @@ public struct FLVAudioTag: FLVTag {
     public var timestampExtended: UInt8 = 0
     public var streamId: UInt32 = 0
     public var offset: UInt64 = 0
+    /// Specifies the codec of audio.
     public var codec: FLVAudioCodec = .unknown
+    /// Specifies the sound of rate.
     public var soundRate: FLVSoundRate = .kHz5_5
+    /// Specifies the sound of size.
     public var soundSize: FLVSoundSize = .snd8bit
+    /// Specifies the sound of type.
     public var soundType: FLVSoundType = .mono
 
     public init() {
@@ -107,6 +126,7 @@ public struct FLVAudioTag: FLVTag {
 }
 
 // MARK: -
+/// A structure that defines the FLVTag of am video.
 public struct FLVVideoTag: FLVTag {
     public var tagType: FLVTagType = .video
     public var dataSize: UInt32 = 0
@@ -114,9 +134,13 @@ public struct FLVVideoTag: FLVTag {
     public var timestampExtended: UInt8 = 0
     public var streamId: UInt32 = 0
     public var offset: UInt64 = 0
+    /// Specifies the frame type of video.
     public var frameType: FLVFrameType = .command
+    /// Specifies the codec of video.
     public var codec: FLVVideoCodec = .unknown
+    /// Specifies the avc packet type.
     public var avcPacketType: FLVAVCPacketType = .eos
+    /// Specifies the composition time.
     public var compositionTime: Int32 = 0
 
     public init() {
