@@ -1,8 +1,11 @@
 import AudioToolbox
 
 extension AudioCodec {
+    /// The type of the AudioCodec supports format.
     public enum Format {
+        /// The AAC format.
         case aac
+        /// The PCM format.
         case pcm
 
         var formatID: AudioFormatID {

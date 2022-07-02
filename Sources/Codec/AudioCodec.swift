@@ -1,7 +1,12 @@
 import AVFoundation
 
+/**
+ * The interface a AudioCodec uses to inform its delegate.
+ */
 public protocol AudioCodecDelegate: AnyObject {
+    /// Tells the receiver to set a formatDescription.
     func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?)
+    /// Tells the receiver to output a encoded or decoded sampleBuffer.
     func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime)
 }
 
@@ -42,12 +47,15 @@ public class AudioCodec {
         }
     }
 
+    /// The default minimum bitrate for an AudioCodec, value is 8000.
     public static let minimumBitrate: UInt32 = 8 * 1000
+    /// The default bitrate for an AudioCidec, the value is 32000.
     public static let defaultBitrate: UInt32 = 32 * 1000
-    /// 0 means according to a input source
+    /// The default channels for an AudioCodec, the value is 0 means  according to a input source.
     public static let defaultChannels: UInt32 = 0
-    /// 0 means according to a input source
+    /// The default sampleRate for an AudioCodec, the value is 0 means according to a input source.
     public static let defaultSampleRate: Double = 0
+    /// The default mamimu buffers for an AudioCodec.
     public static let defaultMaximumBuffers: Int = 1
 
     /// Specifies the output format.
@@ -143,6 +151,7 @@ public class AudioCodec {
         )
     }
 
+    /// Create an AudioCodec instance.
     public init() {
         settings.observer = self
     }
@@ -167,6 +176,7 @@ public class AudioCodec {
         return _converter!
     }
 
+    /// Encodes bytes data.
     public func encodeBytes(_ bytes: UnsafeMutableRawPointer?, count: Int, presentationTimeStamp: CMTime) {
         guard isRunning.value else {
             currentAudioBuffer.clear()
@@ -176,6 +186,7 @@ public class AudioCodec {
         convert(numSamples * Int(destination.bytesPerFrame), presentationTimeStamp: presentationTimeStamp)
     }
 
+    /// Encodes a CMSampleBuffer.
     public func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
         guard let format = sampleBuffer.formatDescription, CMSampleBufferDataIsReady(sampleBuffer) && isRunning.value else {
             currentAudioBuffer.clear()
