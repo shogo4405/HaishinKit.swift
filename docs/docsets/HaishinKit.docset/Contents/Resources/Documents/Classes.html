@@ -17,7 +17,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.2.4 Docs</a> (31% documented)</p>
+        <p><a href="index.html">HaishinKit 1.2.5 Docs</a> (56% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -114,6 +114,9 @@
                 <a href="Classes/NetStream.html">NetStream</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/PiPHKView.html">PiPHKView</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/RTMPConnection.html">RTMPConnection</a>
               </li>
               <li class="nav-group-task">
@@ -151,6 +154,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoCodec.html">VideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/VideoCodec/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoCodec/Option.html">– Option</a>
@@ -251,6 +257,9 @@
                 <a href="Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a>
               </li>
               <li class="nav-group-task">
+                <a href="Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/RTMPStreamDelegate.html">RTMPStreamDelegate</a>
               </li>
               <li class="nav-group-task">
@@ -341,7 +350,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>A view that displays a video content of a NetStream object which uses AVCaptureVideoPreviewLayer.</p>
 
                         <a href="Classes/HKView.html" class="slightly-smaller">See more</a>
                       </div>
@@ -349,7 +358,8 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">HKView</span> <span class="p">:</span> <span class="kt">UIView</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">HKView</span> <span class="p">:</span> <span class="kt">UIView</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">HKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/NetStreamDrawable.html">NetStreamDrawable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -427,10 +437,11 @@
                       <div class="pointer"></div>
                       <div class="abstract">
                         <p>The AudioCodec translate audio data to another format.</p>
+<div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://developer.apple.com/library/ios/technotes/tn2236/_index.html">https://developer.apple.com/library/ios/technotes/tn2236/_index.html</a>
 
-<ul>
-<li>seealse: <a href="https://developer.apple.com/library/ios/technotes/tn2236/_index.html">https://developer.apple.com/library/ios/technotes/tn2236/_index.html</a></li>
-</ul>
+</div>
 
                         <a href="Classes/AudioCodec.html" class="slightly-smaller">See more</a>
                       </div>
@@ -459,7 +470,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The VideoCodec class provides methods for encode or decode for video.</p>
 
                         <a href="Classes/VideoCodec.html" class="slightly-smaller">See more</a>
                       </div>
@@ -467,7 +478,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">VideoCodec</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">VideoCodec</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">VideoCodec</span><span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
 
                         </div>
@@ -496,7 +507,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">FLVReader</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">FLVReader</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">FLVReader</span><span class="p">:</span> <span class="kt">IteratorProtocol</span></code></pre>
 
                         </div>
@@ -724,8 +735,38 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">MTHKView</span> <span class="p">:</span> <span class="kt">MTKView</span><span class="p">,</span> <span class="kt">NetStreamRenderer</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">MTHKView</span> <span class="p">:</span> <span class="kt">MTKView</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MTHKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/NetStreamDrawable.html">NetStreamDrawable</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MTHKView</span><span class="p">:</span> <span class="kt">MTKViewDelegate</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/c:@M@HaishinKit@objc(cs)PiPHKView"></a>
+                    <a name="//apple_ref/swift/Class/PiPHKView" class="dashAnchor"></a>
+                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)PiPHKView">PiPHKView</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.</p>
+
+                        <a href="Classes/PiPHKView.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">PiPHKView</span> <span class="p">:</span> <span class="kt">UIView</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PiPHKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/NetStreamDrawable.html">NetStreamDrawable</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1004,7 +1045,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The ByteArray class provides methods and properties the reading or writing with binary data.</p>
 
                         <a href="Classes/ByteArray.html" class="slightly-smaller">See more</a>
                       </div>
@@ -1111,7 +1152,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-06-26)</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-07-05)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
