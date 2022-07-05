@@ -32,7 +32,7 @@ public class PiPHKView: UIView {
     }
 
     #if !os(tvOS)
-    var orientation: AVCaptureVideoOrientation = .portrait {
+    public var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             if Thread.isMainThread {
                 layer.flushAndRemoveImage()
@@ -43,13 +43,13 @@ public class PiPHKView: UIView {
             }
         }
     }
-    var position: AVCaptureDevice.Position = .front
+    public var position: AVCaptureDevice.Position = .front
     #endif
-    var currentSampleBuffer: CMSampleBuffer?
+    private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.renderer = nil
+            oldValue?.mixer.videoIO.drawable = nil
         }
     }
 
@@ -79,7 +79,7 @@ public class PiPHKView: UIView {
             return
         }
         stream.lockQueue.async {
-            stream.mixer.videoIO.renderer = self
+            stream.mixer.videoIO.drawable = self
             self.currentStream = stream
             stream.mixer.startRunning()
         }
@@ -88,7 +88,7 @@ public class PiPHKView: UIView {
 
 extension PiPHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
             currentSampleBuffer = sampleBuffer
             if let sampleBuffer = sampleBuffer {

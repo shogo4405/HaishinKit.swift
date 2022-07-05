@@ -18,13 +18,13 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
 
     #if os(iOS) || os(macOS)
-    weak var renderer: NetStreamDrawable? {
+    weak var drawable: NetStreamDrawable? {
         didSet {
-            renderer?.orientation = orientation
+            drawable?.orientation = orientation
         }
     }
     #else
-    weak var renderer: NetStreamDrawable?
+    weak var drawable: NetStreamDrawable?
     #endif
 
     var formatDescription: CMVideoFormatDescription? {
@@ -122,7 +122,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
-            renderer?.orientation = orientation
+            drawable?.orientation = orientation
             guard orientation != oldValue else {
                 return
             }
@@ -292,10 +292,10 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
     deinit {
         if Thread.isMainThread {
-            self.renderer?.attachStream(nil)
+            self.drawable?.attachStream(nil)
         } else {
             DispatchQueue.main.sync {
-                self.renderer?.attachStream(nil)
+                self.drawable?.attachStream(nil)
             }
         }
         #if os(iOS) || os(macOS)
@@ -349,7 +349,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
         fps *= 1
         position = camera.position
-        renderer?.position = camera.position
+        drawable?.position = camera.position
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
@@ -403,7 +403,7 @@ extension AVVideoIOUnit {
             }
         }
 
-        if renderer != nil || !effects.isEmpty {
+        if drawable != nil || !effects.isEmpty {
             let image: CIImage = effect(buffer, info: sampleBuffer)
             extent = image.extent
             if !effects.isEmpty {
@@ -419,7 +419,7 @@ extension AVVideoIOUnit {
                 }
                 context?.render(image, to: imageBuffer ?? buffer)
             }
-            renderer?.enqueue(sampleBuffer)
+            drawable?.enqueue(sampleBuffer)
         }
 
         encoder.encodeImageBuffer(
@@ -439,7 +439,7 @@ extension AVVideoIOUnit {
 
     func stopDecoding() {
         decoder.stopRunning()
-        renderer?.enqueue(nil)
+        drawable?.enqueue(nil)
     }
 }
 
@@ -461,6 +461,6 @@ extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension AVVideoIOUnit: VideoDecoderDelegate {
     // MARK: VideoDecoderDelegate
     func sampleOutput(video sampleBuffer: CMSampleBuffer) {
-        renderer?.enqueue(sampleBuffer)
+        drawable?.enqueue(sampleBuffer)
     }
 }

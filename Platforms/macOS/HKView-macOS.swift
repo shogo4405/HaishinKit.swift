@@ -22,19 +22,19 @@ public class HKView: NSView {
         currentStream?.mixer.videoIO.formatDescription
     }
 
-    var position: AVCaptureDevice.Position = .front {
+    public var position: AVCaptureDevice.Position = .front {
         didSet {
             DispatchQueue.main.async {
                 self.layer?.setNeedsLayout()
             }
         }
     }
-    var orientation: AVCaptureVideoOrientation = .portrait
-    var currentSampleBuffer: CMSampleBuffer?
+    public var orientation: AVCaptureVideoOrientation = .portrait
+    private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.renderer = nil
+            oldValue?.mixer.videoIO.drawable = nil
         }
     }
 
@@ -64,7 +64,7 @@ public class HKView: NSView {
         }
         stream.lockQueue.async {
             self.layer?.setValue(stream.mixer.session, forKey: "session")
-            stream.mixer.videoIO.renderer = self
+            stream.mixer.videoIO.drawable = self
             stream.mixer.startRunning()
         }
     }
@@ -72,7 +72,7 @@ public class HKView: NSView {
 
 extension HKView: NetStreamDrawable {
     // MARK: NetStreamRenderer
-    func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
     }
 }
 

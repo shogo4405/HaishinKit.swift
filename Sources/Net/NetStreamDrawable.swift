@@ -1,41 +1,23 @@
 import AVFoundation
 import Foundation
-#if canImport(AppKit)
-import AppKit
-#endif
 
-#if os(macOS)
-typealias NetStreamDrawableView = NSView
-#else
-import UIKit
-typealias NetStreamDrawableView = UIView
-#endif
-
-protocol NetStreamDrawable: AnyObject {
-    #if os(iOS) || os(macOS)
+/// An interface that manages the NetStream content on the screen.
+public protocol NetStreamDrawable: AnyObject {
+    #if !os(tvOS)
+    /// Specifies the orientation of AVCaptureVideoOrientation.
     var orientation: AVCaptureVideoOrientation { get set }
+    
+    /// Specifies the position of AVCaptureDevice.
     var position: AVCaptureDevice.Position { get set }
     #endif
-    var currentSampleBuffer: CMSampleBuffer? { get set }
+    
+    /// The videoFormatDescription which is the current CMSampleBuffer.
     var videoFormatDescription: CMVideoFormatDescription? { get }
 
+    /// Attaches a drawable to a new NetStream object.
     func attachStream(_ stream: NetStream?)
+    
+    /// Enqueue a CMSampleBuffer? to draw.
     func enqueue(_ sampleBuffer: CMSampleBuffer?)
 }
 
-extension NetStreamDrawable where Self: NetStreamDrawableView {
-    func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
-            #if os(macOS)
-            self.needsDisplay = true
-            #else
-            self.setNeedsDisplay()
-            #endif
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
-        }
-    }
-}

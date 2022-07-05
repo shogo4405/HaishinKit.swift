@@ -15,8 +15,12 @@ open class NetStream: NSObject {
     open private(set) var mixer = AVMixer()
     open var metadata: [String: Any?] = [:]
     open var context: CIContext? {
-        get { mixer.videoIO.context }
-        set { mixer.videoIO.context = newValue }
+        get {
+            mixer.videoIO.context
+        }
+        set {
+            mixer.videoIO.context = newValue
+        }
     }
 
     #if os(iOS) || os(macOS)
@@ -37,32 +41,52 @@ open class NetStream: NSObject {
 
     /// Specify stream video orientation.
     open var videoOrientation: AVCaptureVideoOrientation {
-        get { mixer.videoIO.orientation }
-        set { mixer.videoIO.orientation = newValue }
+        get {
+            mixer.videoIO.orientation
+        }
+        set {
+            mixer.videoIO.orientation = newValue
+        }
     }
     #endif
 
     /// Specify stream audio compression properties.
     open var audioSettings: Setting<AudioCodec, AudioCodec.Option> {
-        get { mixer.audioIO.codec.settings }
-        set { mixer.audioIO.codec.settings = newValue }
+        get {
+            mixer.audioIO.codec.settings
+        }
+        set {
+            mixer.audioIO.codec.settings = newValue
+        }
     }
 
     /// Specify stream video compression properties.
     open var videoSettings: Setting<VideoCodec, VideoCodec.Option> {
-        get { mixer.videoIO.encoder.settings }
-        set { mixer.videoIO.encoder.settings = newValue }
+        get {
+            mixer.videoIO.encoder.settings
+        }
+        set {
+            mixer.videoIO.encoder.settings = newValue
+        }
     }
 
     /// Specify stream avsession properties.
     open var captureSettings: Setting<AVMixer, AVMixer.Option> {
-        get { mixer.settings }
-        set { mixer.settings = newValue }
+        get {
+            mixer.settings
+        }
+        set {
+            mixer.settings = newValue
+        }
     }
 
     open var recorderSettings: [AVMediaType: [String: Any]] {
-        get { mixer.recorder.outputSettings }
-        set { mixer.recorder.outputSettings = newValue }
+        get {
+            mixer.recorder.outputSettings
+        }
+        set {
+            mixer.recorder.outputSettings = newValue
+        }
     }
 
     deinit {
@@ -135,7 +159,7 @@ open class NetStream: NSObject {
         }
     }
 
-    func ensureLockQueue(callback: () -> Void) {
+    private func ensureLockQueue(callback: () -> Void) {
         if DispatchQueue.getSpecific(key: NetStream.queueKey) == NetStream.queueValue {
             callback()
         } else {

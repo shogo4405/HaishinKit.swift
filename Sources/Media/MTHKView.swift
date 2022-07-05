@@ -4,22 +4,22 @@ import MetalKit
 /**
  * A view that displays a video content of a NetStream object which uses Metal api.
  */
-public class MTHKView: MTKView, NetStreamDrawable {
+public class MTHKView: MTKView {
     public var isMirrored = false
-    /// A value that specifies how the video is displayed within a player layer’s bounds.
+    /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
-    /// A value that displays a video format.
+
     public var videoFormatDescription: CMVideoFormatDescription? {
         currentStream?.mixer.videoIO.formatDescription
     }
 
     #if !os(tvOS)
-    var position: AVCaptureDevice.Position = .back
-    var orientation: AVCaptureVideoOrientation = .portrait
+    public var position: AVCaptureDevice.Position = .back
+    public var orientation: AVCaptureVideoOrientation = .portrait
     #endif
 
-    var currentSampleBuffer: CMSampleBuffer?
-    let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
+    private var currentSampleBuffer: CMSampleBuffer?
+    private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
 
     private lazy var commandQueue: MTLCommandQueue? = {
         return device?.makeCommandQueue()
@@ -27,11 +27,11 @@ public class MTHKView: MTKView, NetStreamDrawable {
 
     private weak var currentStream: NetStream? {
         didSet {
-            oldValue?.mixer.videoIO.renderer = nil
+            oldValue?.mixer.videoIO.drawable = nil
             if let currentStream = currentStream {
                 currentStream.mixer.videoIO.context = CIContext(mtlDevice: device!)
                 currentStream.lockQueue.async {
-                    currentStream.mixer.videoIO.renderer = self
+                    currentStream.mixer.videoIO.drawable = self
                     currentStream.mixer.startRunning()
                 }
             }
@@ -55,13 +55,30 @@ public class MTHKView: MTKView, NetStreamDrawable {
         enableSetNeedsDisplay = true
     }
 
-    /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         if Thread.isMainThread {
             currentStream = stream
         } else {
             DispatchQueue.main.async {
                 self.currentStream = stream
+            }
+        }
+    }
+}
+
+extension MTHKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
+    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+        if Thread.isMainThread {
+            currentSampleBuffer = sampleBuffer
+            #if os(macOS)
+            self.needsDisplay = true
+            #else
+            self.setNeedsDisplay()
+            #endif
+        } else {
+            DispatchQueue.main.async {
+                self.enqueue(sampleBuffer)
             }
         }
     }
