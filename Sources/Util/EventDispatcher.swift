@@ -1,9 +1,9 @@
 import Foundation
 
 /**
- * The IEventDispatcher interface is in implementation which supports the DOM Event Model.
+ * The EventDispatcherConvertible interface is in implementation which supports the DOM Event Model.
  */
-public protocol IEventDispatcher: AnyObject {
+public protocol EventDispatcherConvertible: AnyObject {
     /// Registers the event listeners on the event target.
     func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
     /// Unregister the event listeners on the event target.
@@ -83,7 +83,7 @@ extension Event: CustomDebugStringConvertible {
 /**
  * The EventDispatcher interface is in implementation which supports the DOM Event Model.
  */
-open class EventDispatcher: IEventDispatcher {
+open class EventDispatcher: EventDispatcherConvertible {
     private weak var target: AnyObject?
 
     public init() {
