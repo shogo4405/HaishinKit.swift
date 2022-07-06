@@ -1,6 +1,7 @@
 #if os(iOS) || os(tvOS)
 import AVFoundation
 import Foundation
+import UIKit
 
 /**
  * A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.
