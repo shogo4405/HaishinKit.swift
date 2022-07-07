@@ -155,7 +155,7 @@ public class AVMixer {
     #endif
     /// The recorder instance.
     public lazy var recorder = AVRecorder()
-    
+
     /// Specifies the drawable object.
     public weak var drawable: NetStreamDrawable? {
         get {

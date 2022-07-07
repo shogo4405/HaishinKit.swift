@@ -1,5 +1,6 @@
 import AVFoundation
 
+/// The interface a RTMPStream uses to inform its delegate.
 public protocol RTMPStreamDelegate: AnyObject {
     func rtmpStream(_ stream: RTMPStream, didPublishInsufficientBW connection: RTMPConnection)
     func rtmpStream(_ stream: RTMPStream, didPublishSufficientBW connection: RTMPConnection)
@@ -24,9 +25,7 @@ public extension RTMPStreamDelegate {
     }
 }
 
-/**
- * flash.net.NetStream for Swift
- */
+/// An object that provides the interface to control a one-way channel over a RtmpConnection.
 open class RTMPStream: NetStream {
     /**
      * NetStatusEvent#info.code for NetStream
@@ -285,7 +284,7 @@ open class RTMPStream: NetStream {
     private let muxer = RTMPMuxer()
     private var messages: [RTMPCommandMessage] = []
     private var frameCount: UInt16 = 0
-    private var dispatcher: IEventDispatcher!
+    private var dispatcher: EventDispatcherConvertible!
     private var audioWasSent = false
     private var videoWasSent = false
     private var howToPublish: RTMPStream.HowToPublish = .live
@@ -570,7 +569,7 @@ extension RTMPStream {
     }
 }
 
-extension RTMPStream: IEventDispatcher {
+extension RTMPStream: EventDispatcherConvertible {
     // MARK: IEventDispatcher
     public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)

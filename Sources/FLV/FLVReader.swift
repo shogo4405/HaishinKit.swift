@@ -1,13 +1,19 @@
 import AVFoundation
 
+/// The FLVReader is used to read the contents of a FLV file.
 public final class FLVReader {
+    /// The header of a FLV.
     public static let header = Data([0x46, 0x4C, 0x56, 1])
+
+    /// The headerSize of a FLV.
     static let headerSize: Int = 11
 
+    /// The url of a FLV file.
     public let url: URL
     private var currentOffSet: UInt64 = 0
     private var fileHandle: FileHandle?
 
+    /// Initializes and returns a newly allocated reader.
     public init(url: URL) {
         do {
             self.url = url
@@ -19,6 +25,7 @@ public final class FLVReader {
         }
     }
 
+    /// Returns data by FLVTag.
     public func getData(_ tag: FLVTag) -> Data? {
         fileHandle?.seek(toFileOffset: tag.offset)
         return fileHandle?.readData(ofLength: Int(UInt64(tag.dataSize)))
@@ -53,3 +60,4 @@ extension FLVReader: IteratorProtocol {
         return tag
     }
 }
+

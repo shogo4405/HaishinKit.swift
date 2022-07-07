@@ -1,7 +1,7 @@
 import Foundation
 
 /// Atomic<T> class
-/// -seealso: https://www.objc.io/blog/2018/12/18/atomic-variables/
+/// - seealso: https://www.objc.io/blog/2018/12/18/atomic-variables/
 public struct Atomic<A> {
     private let queue = DispatchQueue(label: "com.haishinkit.HaishinKit.Atomic", attributes: .concurrent)
     private var _value: A
@@ -11,6 +11,7 @@ public struct Atomic<A> {
         queue.sync { self._value }
     }
 
+    /// Creates an instance of value.
     public init(_ value: A) {
         self._value = value
     }
