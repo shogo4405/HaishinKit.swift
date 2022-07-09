@@ -27,10 +27,8 @@ public extension RTMPStreamDelegate {
 
 /// An object that provides the interface to control a one-way channel over a RtmpConnection.
 open class RTMPStream: NetStream {
-    /**
-     * NetStatusEvent#info.code for NetStream
-     * - seealso: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
-     */
+    /// NetStatusEvent#info.code for NetStream
+    /// - seealso: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
     public enum Code: String {
         case bufferEmpty               = "NetStream.Buffer.Empty"
         case bufferFlush               = "NetStream.Buffer.Flush"
@@ -208,17 +206,27 @@ open class RTMPStream: NetStream {
     }
 
     static let defaultID: UInt32 = 0
+    /// The default audio bitrate for RTMPStream.
     public static let defaultAudioBitrate: UInt32 = AudioCodec.defaultBitrate
+    /// The default  video bitrate for RTMPStream.
     public static let defaultVideoBitrate: UInt32 = VideoCodec.defaultBitrate
 
+    /// Specifies the delegate of the RTMPStream.
     open weak var delegate: RTMPStreamDelegate?
+    /// The NetStreamInfo object whose properties contain data.
     open internal(set) var info = RTMPStreamInfo()
+    /// The object encoding (AMF). Framework supports AMF0 only.
     open private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The number of frames per second being displayed.
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
+    /// Specifies the controls sound.
     open var soundTransform: SoundTransform {
-        get { mixer.audioIO.soundTransform }
-        set { mixer.audioIO.soundTransform = newValue }
+        get {
+            mixer.audioIO.soundTransform
+        }
+        set {
+            mixer.audioIO.soundTransform = newValue
+        }
     }
     /// Incoming audio plays on the stream or not.
     open var receiveAudio = true {

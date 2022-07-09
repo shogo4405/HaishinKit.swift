@@ -60,4 +60,3 @@ extension FLVReader: IteratorProtocol {
         return tag
     }
 }
-

@@ -163,12 +163,17 @@ extension HTTPStatusCode: CustomStringConvertible {
 // MARK: -
 /// The HTTPService class provide a lightweight HTTPServer.
 open class HTTPService: NetService {
+    /// The type of the published service.
     open class var type: String {
         "_http._tcp"
     }
+
+    /// The port on which the service is listening for connections. The default value is 8080.
     open class var defaultPort: Int32 {
         8080
     }
+
+    /// The root document of HTML.
     open class var defaultDocument: String {
         """
 <!DOCTYPE html>
@@ -184,6 +189,46 @@ open class HTTPService: NetService {
 
     var document: String {
         Self.defaultDocument
+    }
+
+    /// Represents the GET method.
+    open func get(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
+    }
+
+    /// Represents the POST method.
+    open func post(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
+    }
+
+    /// Represents the PUT method.
+    open func put(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
+    }
+
+    /// Represents the DELETE method.
+    open func delete(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
+    }
+
+    /// Represents the HEAD method.
+    open func head(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
+    }
+
+    /// Represents the OPTIONS method.
+    open func options(_ requst: HTTPRequest, client: NetClient) {
+        notFound(requst, client: client)
+    }
+
+    /// Represents the TRACE method.
+    open func trace(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
+    }
+
+    /// Represents the CONNECT method.
+    open func connect(_ request: HTTPRequest, client: NetClient) {
+        notFound(request, client: client)
     }
 
     func client(inputBuffer client: NetClient) {
@@ -215,38 +260,6 @@ open class HTTPService: NetService {
         default:
             notFound(request, client: client)
         }
-    }
-
-    open func get(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
-    }
-
-    open func post(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
-    }
-
-    open func put(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
-    }
-
-    open func delete(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
-    }
-
-    open func head(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
-    }
-
-    open func options(_ requst: HTTPRequest, client: NetClient) {
-        notFound(requst, client: client)
-    }
-
-    open func trace(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
-    }
-
-    open func connect(_ request: HTTPRequest, client: NetClient) {
-        notFound(request, client: client)
     }
 
     func notFound(_ request: HTTPRequest, client: NetClient) {
