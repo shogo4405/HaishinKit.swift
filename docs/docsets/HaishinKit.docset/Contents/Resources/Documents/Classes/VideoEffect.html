@@ -17,7 +17,7 @@
     <a title="VideoEffect Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.2.5 Docs</a> (56% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.2.6 Docs</a> (63% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -245,13 +245,13 @@
                 <a href="../Protocols/CaptureSessionDelegate.html">CaptureSessionDelegate</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Protocols/EventDispatcherConvertible.html">EventDispatcherConvertible</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/HKPictureInPictureController.html">HKPictureInPictureController</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/IEventDispatcher.html">IEventDispatcher</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a>
@@ -338,7 +338,27 @@
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>An object that apply a video effect.</p>
+<div class="aside aside-seealso">
+    <p class="aside-title">Seealso</p>
+    <a href="https://developer.apple.com/documentation/coreimage/processing_an_image_using_built-in_filters">https://developer.apple.com/documentation/coreimage/processing_an_image_using_built-in_filters</a>
+
+</div>
+<h2 id='example-code' class='heading'>Example code:</h2>
+<pre class="highlight swift"><code><span class="kd">final</span> <span class="kd">class</span> <span class="kt">MonochromeEffect</span><span class="p">:</span> <span class="kt">VideoEffect</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt">CIFilter</span><span class="p">?</span> <span class="o">=</span> <span class="kt">CIFilter</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"CIColorMonochrome"</span><span class="p">)</span>
+
+    <span class="k">override</span> <span class="kd">func</span> <span class="nf">execute</span><span class="p">(</span><span class="n">_</span> <span class="nv">image</span><span class="p">:</span> <span class="kt">CIImage</span><span class="p">,</span> <span class="nv">info</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">?)</span> <span class="o">-&gt;</span> <span class="kt">CIImage</span> <span class="p">{</span>
+        <span class="k">guard</span> <span class="k">let</span> <span class="nv">filter</span><span class="p">:</span> <span class="kt">CIFilter</span> <span class="o">=</span> <span class="n">filter</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="n">image</span>
+        <span class="p">}</span>
+        <span class="n">filter</span><span class="o">.</span><span class="nf">setValue</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="s">"inputImage"</span><span class="p">)</span>
+        <span class="n">filter</span><span class="o">.</span><span class="nf">setValue</span><span class="p">(</span><span class="kt">CIColor</span><span class="p">(</span><span class="nv">red</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span> <span class="nv">green</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span> <span class="nv">blue</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">),</span> <span class="nv">forKey</span><span class="p">:</span> <span class="s">"inputColor"</span><span class="p">)</span>
+        <span class="n">filter</span><span class="o">.</span><span class="nf">setValue</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="s">"inputIntensity"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filter</span><span class="o">.</span><span class="n">outputImage</span><span class="o">!</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre>
 
           </section>
           <section class="section task-group-section">
@@ -357,14 +377,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the ciContext object.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">ciContext</span><span class="p">:</span> <span class="kt">CIContext</span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">ciContext</span><span class="p">:</span> <span class="kt">CIContext</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -384,7 +404,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Executes to apply a video effect.</p>
 
                       </div>
                       <div class="declaration">
@@ -403,7 +423,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-07-05)</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-07-10)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

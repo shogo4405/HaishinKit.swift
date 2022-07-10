@@ -17,7 +17,7 @@
     <a title="RTMPStream Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.2.5 Docs</a> (56% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.2.6 Docs</a> (63% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -245,13 +245,13 @@
                 <a href="../Protocols/CaptureSessionDelegate.html">CaptureSessionDelegate</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Protocols/EventDispatcherConvertible.html">EventDispatcherConvertible</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/HKPictureInPictureController.html">HKPictureInPictureController</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/IEventDispatcher.html">IEventDispatcher</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a>
@@ -335,11 +335,11 @@
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">RTMPStream</span> <span class="p">:</span> <span class="kt"><a href="../Classes/NetStream.html">NetStream</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">RTMPStream</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IEventDispatcher.html">IEventDispatcher</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">RTMPStream</span><span class="p">:</span> <span class="kt"><a href="../Protocols/EventDispatcherConvertible.html">EventDispatcherConvertible</a></span></code></pre>
 
                 </div>
               </div>
-            <p>flash.net.NetStream for Swift</p>
+            <p>An object that provides the interface to control a one-way channel over a RtmpConnection.</p>
 
           </section>
           <section class="section task-group-section">
@@ -475,7 +475,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The default audio bitrate for RTMPStream.</p>
 
                       </div>
                       <div class="declaration">
@@ -502,7 +502,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The default  video bitrate for RTMPStream.</p>
 
                       </div>
                       <div class="declaration">
@@ -529,7 +529,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the delegate of the RTMPStream.</p>
 
                       </div>
                       <div class="declaration">
@@ -556,7 +556,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The NetStreamInfo object whose properties contain data.</p>
 
                       </div>
                       <div class="declaration">
@@ -583,7 +583,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The object encoding (AMF). Framework supports AMF0 only.</p>
 
                       </div>
                       <div class="declaration">
@@ -638,7 +638,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the controls sound.</p>
 
                       </div>
                       <div class="declaration">
@@ -938,9 +938,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit16IEventDispatcherP16addEventListener_8selector8observer10useCaptureyAA0F0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF"></a>
+                    <a name="/s:10HaishinKit26EventDispatcherConvertibleP03addC8Listener_8selector8observer10useCaptureyAA0C0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF"></a>
                     <a name="//apple_ref/swift/Method/addEventListener(_:selector:observer:useCapture:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit16IEventDispatcherP16addEventListener_8selector8observer10useCaptureyAA0F0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF">addEventListener(_:<wbr>selector:<wbr>observer:<wbr>useCapture:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit26EventDispatcherConvertibleP03addC8Listener_8selector8observer10useCaptureyAA0C0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF">addEventListener(_:<wbr>selector:<wbr>observer:<wbr>useCapture:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -964,9 +964,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit16IEventDispatcherP19removeEventListener_8selector8observer10useCaptureyAA0F0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF"></a>
+                    <a name="/s:10HaishinKit26EventDispatcherConvertibleP06removeC8Listener_8selector8observer10useCaptureyAA0C0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF"></a>
                     <a name="//apple_ref/swift/Method/removeEventListener(_:selector:observer:useCapture:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit16IEventDispatcherP19removeEventListener_8selector8observer10useCaptureyAA0F0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF">removeEventListener(_:<wbr>selector:<wbr>observer:<wbr>useCapture:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit26EventDispatcherConvertibleP06removeC8Listener_8selector8observer10useCaptureyAA0C0C4NameV_10ObjectiveC8SelectorVyXlSgSbtF">removeEventListener(_:<wbr>selector:<wbr>observer:<wbr>useCapture:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -990,9 +990,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit16IEventDispatcherP8dispatch5eventyAA5EventC_tF"></a>
+                    <a name="/s:10HaishinKit26EventDispatcherConvertibleP8dispatch5eventyAA0C0C_tF"></a>
                     <a name="//apple_ref/swift/Method/dispatch(event:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit16IEventDispatcherP8dispatch5eventyAA5EventC_tF">dispatch(event:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit26EventDispatcherConvertibleP8dispatch5eventyAA0C0C_tF">dispatch(event:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1016,9 +1016,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit16IEventDispatcherP8dispatch_7bubbles4datayAA5EventC4NameV_SbypSgtF"></a>
+                    <a name="/s:10HaishinKit26EventDispatcherConvertibleP8dispatch_7bubbles4datayAA0C0C4NameV_SbypSgtF"></a>
                     <a name="//apple_ref/swift/Method/dispatch(_:bubbles:data:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit16IEventDispatcherP8dispatch_7bubbles4datayAA5EventC4NameV_SbypSgtF">dispatch(_:<wbr>bubbles:<wbr>data:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit26EventDispatcherConvertibleP8dispatch_7bubbles4datayAA0C0C4NameV_SbypSgtF">dispatch(_:<wbr>bubbles:<wbr>data:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1044,7 +1044,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-07-05)</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-07-10)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
