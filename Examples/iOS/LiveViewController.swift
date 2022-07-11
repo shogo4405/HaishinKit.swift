@@ -4,25 +4,6 @@ import Photos
 import UIKit
 import VideoToolbox
 
-final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
-    static let `default` = ExampleRecorderDelegate()
-
-    override func didFinishWriting(_ recorder: AVRecorder) {
-        guard let writer: AVAssetWriter = recorder.writer else {
-            return
-        }
-        PHPhotoLibrary.shared().performChanges({() -> Void in
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { _, error -> Void in
-            do {
-                try FileManager.default.removeItem(at: writer.outputURL)
-            } catch {
-                print(error)
-            }
-        })
-    }
-}
-
 final class LiveViewController: UIViewController {
     private static let maxRetryCount: Int = 5
 
@@ -62,7 +43,7 @@ final class LiveViewController: UIViewController {
             .width: 720,
             .height: 1280
         ]
-        rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
+        rtmpStream.mixer.recorder.delegate = self
 
         videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1000
         audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1000
@@ -250,5 +231,24 @@ final class LiveViewController: UIViewController {
         if Thread.isMainThread {
             currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
         }
+    }
+}
+
+extension LiveViewController: AVRecorderDelegate {
+    // MARK: AVRecorderDelegate
+    func recorder(_ recorder: AVRecorder, errorOccured error: AVRecorder.Error) {
+        logger.error(error)
+    }
+
+    func recorder(_ recorder: AVRecorder, finishWriting writer: AVAssetWriter) {
+        PHPhotoLibrary.shared().performChanges({() -> Void in
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
+        }, completionHandler: { _, error -> Void in
+            do {
+                try FileManager.default.removeItem(at: writer.outputURL)
+            } catch {
+                print(error)
+            }
+        })
     }
 }
