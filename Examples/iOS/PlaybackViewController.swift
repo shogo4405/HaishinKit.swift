@@ -29,8 +29,8 @@ final class PlaybackViewController: UIViewController, HKPictureInPictureControll
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
         if let layer = view.layer as? AVSampleBufferDisplayLayer, #available(iOS 15.0, *) {
-                    pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
-                }
+            pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -40,8 +40,8 @@ final class PlaybackViewController: UIViewController, HKPictureInPictureControll
     }
 
     @IBAction func didEnterPixtureInPicture(_ button: UIButton) {
-         pictureInPictureController?.startPictureInPicture()
-     }
+        pictureInPictureController?.startPictureInPicture()
+    }
 
     @IBAction func didPlaybackButtonTap(_ button: UIButton) {
         if button.isSelected {
