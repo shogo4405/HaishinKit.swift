@@ -219,6 +219,7 @@ open class RTMPStream: NetStream {
     open private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The number of frames per second being displayed.
     @objc open private(set) dynamic var currentFPS: UInt16 = 0
+
     /// Specifies the controls sound.
     open var soundTransform: SoundTransform {
         get {
@@ -228,6 +229,7 @@ open class RTMPStream: NetStream {
             mixer.audioIO.soundTransform = newValue
         }
     }
+
     /// Incoming audio plays on the stream or not.
     open var receiveAudio = true {
         didSet {
@@ -246,6 +248,7 @@ open class RTMPStream: NetStream {
             }
         }
     }
+
     /// Incoming video plays on the stream or not.
     open var receiveVideo = true {
         didSet {
@@ -264,20 +267,31 @@ open class RTMPStream: NetStream {
             }
         }
     }
-    /// Pauses playback or publish of a video stream or not.
+
+    /// Pauses  publish of a video stream or not.
     open var paused = false {
         didSet {
             lockQueue.async {
                 switch self.readyState {
                 case .publish, .publishing:
-                    self.mixer.audioIO.codec.muted = self.paused
-                    self.mixer.videoIO.encoder.muted = self.paused
+                    if self.paused {
+                        self.mixer.audioIO.codec.muted = true
+                        self.mixer.videoIO.encoder.muted = true
+                    } else {
+                        if let muted = self.videoSettings[.muted] as? Bool {
+                            self.mixer.videoIO.encoder.muted = muted
+                        }
+                        if let muted = self.audioSettings[.muted] as? Bool {
+                            self.mixer.audioIO.codec.muted = muted
+                        }
+                    }
                 default:
                     break
                 }
             }
         }
     }
+
     var id: UInt32 = RTMPStream.defaultID
     var readyState: ReadyState = .initialized {
         didSet {
