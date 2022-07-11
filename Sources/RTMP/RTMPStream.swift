@@ -2,12 +2,19 @@ import AVFoundation
 
 /// The interface a RTMPStream uses to inform its delegate.
 public protocol RTMPStreamDelegate: AnyObject {
+    /// Tells the receiver to publish insufficient bandwidth occured.
     func rtmpStream(_ stream: RTMPStream, didPublishInsufficientBW connection: RTMPConnection)
+    /// Tells the receiver to publish sufficient bandwidth occured.
     func rtmpStream(_ stream: RTMPStream, didPublishSufficientBW connection: RTMPConnection)
+    /// Tells the receiver to playback an audio packet incoming.
     func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
+    /// Tells the receiver to playback a video packet incoming.
     func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer)
+    /// Tells the receiver to update statistics.
     func rtmpStream(_ stream: RTMPStream, didStatics connection: RTMPConnection)
+    /// Tells the receiver to video codec error occured.
     func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error)
+    /// Tells the receiver to the stream opend.
     func rtmpStreamDidClear(_ stream: RTMPStream)
 }
 
@@ -212,15 +219,15 @@ open class RTMPStream: NetStream {
     public static let defaultVideoBitrate: UInt32 = VideoCodec.defaultBitrate
 
     /// Specifies the delegate of the RTMPStream.
-    open weak var delegate: RTMPStreamDelegate?
+    public weak var delegate: RTMPStreamDelegate?
     /// The NetStreamInfo object whose properties contain data.
-    open internal(set) var info = RTMPStreamInfo()
+    public internal(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
-    open private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
+    public private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The number of frames per second being displayed.
-    @objc open private(set) dynamic var currentFPS: UInt16 = 0
+    @objc public private(set) dynamic var currentFPS: UInt16 = 0
     /// Specifies the controls sound.
-    open var soundTransform: SoundTransform {
+    public var soundTransform: SoundTransform {
         get {
             mixer.audioIO.soundTransform
         }
@@ -298,6 +305,7 @@ open class RTMPStream: NetStream {
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var rtmpConnection: RTMPConnection
 
+    /// Creates a new stream.
     public init(connection: RTMPConnection) {
         self.rtmpConnection = connection
         super.init()

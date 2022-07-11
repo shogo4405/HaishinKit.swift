@@ -24,15 +24,23 @@ open class Responder {
 }
 
 // MARK: -
-/// flash.net.NetConnection for Swift
+/// The RTMPConneciton class create a two-way RTMP connection.
 open class RTMPConnection: EventDispatcher {
+    /// The default network's window size for RTMPConnection.
     public static let defaultWindowSizeS: Int64 = 250000
+    /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
     public static let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
+    /// The default RTMP port is 1935.
     public static let defaultPort: Int = 1935
+    /// The default RTMPS port is 443.
     public static let defaultSecurePort: Int = 443
+    /// The default flashVer is FMLE/3.0 (compatible; FMSc/1.0).
     public static let defaultFlashVer: String = "FMLE/3.0 (compatible; FMSc/1.0)"
+    /// The default chunk size for RTMPConnection.
     public static let defaultChunkSizeS: Int = 1024 * 8
+    /// The default capabilities for RTMPConneciton.
     public static let defaultCapabilities: Int = 239
+    /// The default object encoding for RTMPConnection class.
     public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
 
     /**
@@ -145,43 +153,52 @@ open class RTMPConnection: EventDispatcher {
         return command
     }
 
-    /// The URL of .swf.
-    open var swfUrl: String?
-    /// The URL of an HTTP referer.
-    open var pageUrl: String?
-    /// The time to wait for TCP/IP Handshake done.
-    open var timeout: Int {
-        get { socket.timeout }
-        set { socket.timeout = newValue }
+    /// Specifies the URL of .swf.
+    public var swfUrl: String?
+    /// Specifies the URL of an HTTP referer.
+    public var pageUrl: String?
+    /// Specifies the time to wait for TCP/IP Handshake done.
+    public var timeout: Int {
+        get {
+            socket.timeout
+        }
+        set {
+            socket.timeout = newValue
+        }
     }
-    open var qualityOfService: DispatchQoS {
-        get { socket.qualityOfService }
-        set { socket.qualityOfService = newValue }
+    /// Specifies the dispatchQos for socket.
+    public var qualityOfService: DispatchQoS {
+        get {
+            socket.qualityOfService
+        }
+        set {
+            socket.qualityOfService = newValue
+        }
     }
-    /// The name of application.
-    open var flashVer: String = RTMPConnection.defaultFlashVer
-    /// The outgoing RTMPChunkSize.
-    open var chunkSize: Int = RTMPConnection.defaultChunkSizeS
-    /// The URI passed to the Self.connect() method.
-    open private(set) var uri: URL?
-    /// This instance connected to server(true) or not(false).
-    open private(set) var connected = false
-    /// This instance requires Network.framework if possible.
-    open var requireNetworkFramework = false
-    /// The socket optional parameters.
-    open var parameters: Any?
-    /// The object encoding for this RTMPConnection instance.
-    open var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
+    /// Specifies the name of application.
+    public var flashVer: String = RTMPConnection.defaultFlashVer
+    /// Specifies theoutgoing RTMPChunkSize.
+    public var chunkSize: Int = RTMPConnection.defaultChunkSizeS
+    /// Specifies the URI passed to the Self.connect() method.
+    public private(set) var uri: URL?
+    /// Specifies the instance connected to server(true) or not(false).
+    public private(set) var connected = false
+    /// Specifies the instance requires Network.framework if possible.
+    public var requireNetworkFramework = false
+    /// Specifies the socket optional parameters.
+    public var parameters: Any?
+    /// Specifies the object encoding for this RTMPConnection instance.
+    public var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
-    open var totalBytesIn: Int64 {
+    public var totalBytesIn: Int64 {
         socket.totalBytesIn.value
     }
     /// The statistics of total outgoing bytes.
-    open var totalBytesOut: Int64 {
+    public var totalBytesOut: Int64 {
         socket.totalBytesOut.value
     }
     /// The statistics of total RTMPStream counts.
-    open var totalStreamsCount: Int {
+    public var totalStreamsCount: Int {
         streams.count
     }
     /// The statistics of outgoing queue bytes per second.
@@ -241,6 +258,7 @@ open class RTMPConnection: EventDispatcher {
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
 
+    /// Creates a new connection.
     override public init() {
         super.init()
         addEventListener(.rtmpStatus, selector: #selector(on(status:)))

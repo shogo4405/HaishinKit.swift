@@ -1,8 +1,6 @@
 import Foundation
 
-/**
- * The EventDispatcherConvertible interface is in implementation which supports the DOM Event Model.
- */
+/// The EventDispatcherConvertible interface is in implementation which supports the DOM Event Model.
 public protocol EventDispatcherConvertible: AnyObject {
     /// Registers the event listeners on the event target.
     func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
@@ -15,13 +13,9 @@ public protocol EventDispatcherConvertible: AnyObject {
 }
 
 // MARK: -
-/**
- * The Event interface is used to provide information.
- */
+/// The Event interface is used to provide information.
 open class Event {
-    /**
-     *  A structure that defines the name of an event.
-     */
+    /// A structure that defines the name of an event.
     public struct Name: RawRepresentable, ExpressibleByStringLiteral {
         // swiftlint:disable nesting
         public typealias RawValue = String
@@ -65,6 +59,7 @@ open class Event {
     /// The target indicates the [IEventDispatcher].
     public fileprivate(set) var target: AnyObject?
 
+    /// Creates a new event.
     public init(type: Name, bubbles: Bool = false, data: Any? = nil) {
         self.type = type
         self.bubbles = bubbles
@@ -86,9 +81,11 @@ extension Event: CustomDebugStringConvertible {
 open class EventDispatcher: EventDispatcherConvertible {
     private weak var target: AnyObject?
 
+    /// Creates a new event dispatcher.
     public init() {
     }
 
+    /// Creates a new event dispatcher to proxy target.
     public init(target: AnyObject) {
         self.target = target
     }

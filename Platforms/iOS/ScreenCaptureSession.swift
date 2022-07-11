@@ -4,8 +4,11 @@ import AVFoundation
 import CoreImage
 import UIKit
 
+/// The interface a capture session uses to inform its delegate.
 public protocol CaptureSessionDelegate: AnyObject {
+    /// Tells the receiver to set a size.
     func session(_ session: CaptureSessionConvertible, didSet size: CGSize)
+    /// Tells the receiver to output a pixel buffer.
     func session(_ session: CaptureSessionConvertible, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime)
 }
 
@@ -29,6 +32,7 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
     ]
 
     public var enabledScale = false
+    public var afterScreenUpdates = false
     public var frameInterval: Int = ScreenCaptureSession.defaultFrameInterval
     public var attributes: [NSString: NSObject] {
         var attributes: [NSString: NSObject] = ScreenCaptureSession.defaultAttributes
@@ -42,7 +46,6 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
 
     private var shared: UIApplication?
     private var viewToCapture: UIView?
-    public var afterScreenUpdates = false
     private var context = CIContext(options: [.useSoftwareRenderer: NSNumber(value: false)])
     private let semaphore = DispatchSemaphore(value: 1)
     private let lockQueue = DispatchQueue(
