@@ -75,7 +75,6 @@ public class AVMixer {
 
     enum MediaSync {
         case video
-        case audio
         case passthrough
     }
 
@@ -166,7 +165,7 @@ public class AVMixer {
         }
     }
 
-    var mediaSync = MediaSync.video
+    var mediaSync = MediaSync.passthrough
 
     var settings: Setting<AVMixer, Option> = [:] {
         didSet {
@@ -210,14 +209,6 @@ public class AVMixer {
             }
             if videoTimeStamp == CMTime.zero {
                 videoTimeStamp = sampleBuffer.presentationTimeStamp
-            }
-            return true
-        case .audio:
-            if mediaType == .video {
-                return !audioTimeStamp.seconds.isZero && audioTimeStamp.seconds <= sampleBuffer.presentationTimeStamp.seconds
-            }
-            if audioTimeStamp == CMTime.zero {
-                audioTimeStamp = sampleBuffer.presentationTimeStamp
             }
             return true
         default:
