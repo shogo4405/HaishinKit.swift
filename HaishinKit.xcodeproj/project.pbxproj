@@ -917,7 +917,7 @@
 		BCC1A72A264FAC1800661156 /* ElementaryStreamSpecificData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementaryStreamSpecificData.swift; sourceTree = "<group>"; };
 		BCC1A72E264FAC4E00661156 /* ElementaryStreamType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ElementaryStreamType.swift; sourceTree = "<group>"; };
 		BCC9E9082636FF7400948774 /* NetSocketCycleBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetSocketCycleBufferTests.swift; sourceTree = "<group>"; };
-		BCD63AB226FDF1250084842D /* iOSSwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iOSSwiftUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCD63AB226FDF1250084842D /* Example iOS+SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS+SwiftUI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCD63AB426FDF1250084842D /* iOSSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSSwiftUIApp.swift; sourceTree = "<group>"; };
 		BCD63AB626FDF1250084842D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		BCD63AB826FDF12A0084842D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -1153,7 +1153,7 @@
 				2915EC521D85BDF100621092 /* Screencast.appex */,
 				29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */,
 				29D3D4EF1ED0531500DD4AA6 /* Example tvOS.app */,
-				BCD63AB226FDF1250084842D /* iOSSwiftUI.app */,
+				BCD63AB226FDF1250084842D /* Example iOS+SwiftUI.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1773,9 +1773,9 @@
 			productReference = 29D3D4EF1ED0531500DD4AA6 /* Example tvOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BCD63AB126FDF1250084842D /* iOSSwiftUI */ = {
+		BCD63AB126FDF1250084842D /* Example iOS+SwiftUI */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BCD63AD926FDF12B0084842D /* Build configuration list for PBXNativeTarget "iOSSwiftUI" */;
+			buildConfigurationList = BCD63AD926FDF12B0084842D /* Build configuration list for PBXNativeTarget "Example iOS+SwiftUI" */;
 			buildPhases = (
 				BCD63AAE26FDF1250084842D /* Sources */,
 				BCD63AAF26FDF1250084842D /* Frameworks */,
@@ -1787,9 +1787,9 @@
 			dependencies = (
 				BCD63ADF26FDF34C0084842D /* PBXTargetDependency */,
 			);
-			name = iOSSwiftUI;
+			name = "Example iOS+SwiftUI";
 			productName = iOSSwiftUI;
-			productReference = BCD63AB226FDF1250084842D /* iOSSwiftUI.app */;
+			productReference = BCD63AB226FDF1250084842D /* Example iOS+SwiftUI.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1869,11 +1869,11 @@
 				29B8761A1CD701F900FC07DA /* HaishinKit macOS */,
 				29D3D4DB1ED0509900DD4AA6 /* HaishinKit tvOS */,
 				29C9327D1CD76FB800283FC5 /* Example iOS */,
+				BCD63AB126FDF1250084842D /* Example iOS+SwiftUI */,
 				29C932931CD76FD300283FC5 /* Example macOS */,
 				29D3D4EE1ED0531500DD4AA6 /* Example tvOS */,
 				2915EC511D85BDF100621092 /* Screencast */,
 				29798E581CE60E5300F5CBD0 /* Tests */,
-				BCD63AB126FDF1250084842D /* iOSSwiftUI */,
 			);
 		};
 /* End PBXProject section */
@@ -3200,6 +3200,9 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -3210,11 +3213,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.iOSSwiftUI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS-SwiftUI";
+				PRODUCT_NAME = "Example iOS+SwiftUI";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -3240,6 +3243,9 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -3250,10 +3256,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.iOSSwiftUI;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-iOS-SwiftUI";
+				PRODUCT_NAME = "Example iOS+SwiftUI";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -3344,7 +3350,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BCD63AD926FDF12B0084842D /* Build configuration list for PBXNativeTarget "iOSSwiftUI" */ = {
+		BCD63AD926FDF12B0084842D /* Build configuration list for PBXNativeTarget "Example iOS+SwiftUI" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				BCD63AD326FDF12B0084842D /* Debug */,
