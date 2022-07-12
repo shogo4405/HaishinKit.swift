@@ -1,8 +1,10 @@
 import Foundation
 
+/// The HLSService class provide a simple HTTP Live Streaming service.
 open class HLSService: HTTPService {
     private(set) var streams: [HTTPStream] = []
 
+    /// Add a http stream.
     open func addHTTPStream(_ stream: HTTPStream) {
         for i in 0..<streams.count where stream.name == streams[i].name {
             return
@@ -10,6 +12,7 @@ open class HLSService: HTTPService {
         streams.append(stream)
     }
 
+    /// Remove a http stream.
     open func removeHTTPStream(_ stream: HTTPStream) {
         for i in 0..<streams.count where stream.name == streams[i].name {
             streams.remove(at: i)

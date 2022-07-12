@@ -54,7 +54,10 @@ public class MTHKView: MTKView {
         framebufferOnly = false
         enableSetNeedsDisplay = true
     }
+}
 
+extension MTHKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
     public func attachStream(_ stream: NetStream?) {
         if Thread.isMainThread {
             currentStream = stream
@@ -64,10 +67,7 @@ public class MTHKView: MTKView {
             }
         }
     }
-}
 
-extension MTHKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
             currentSampleBuffer = sampleBuffer

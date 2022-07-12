@@ -60,15 +60,22 @@ extension HTTPRequestCompatible {
 }
 
 // MARK: -
+/// A URL load request.
 public struct HTTPRequest: HTTPRequestCompatible {
+    /// The separator value is 0x0a.
     public static let separator: UInt8 = 0x0a
-
+    /// Specifies the uri to request.
     public var uri: String = "/"
+    /// Specifies the http method.
     public var method: String = ""
+    /// Specifies the version of  the HTTP.
     public var version: String = HTTPVersion.version11.description
+    /// Specifies the header field.
     public var headerFields: [String: String] = [:]
+    /// Specifies the http body.
     public var body: Data?
 
+    /// Creates a new request with body of data.
     init?(data: Data) {
         self.data = data
     }

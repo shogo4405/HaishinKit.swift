@@ -195,11 +195,17 @@ open class RTMPStream: NetStream {
         }
     }
 
+    /// The type of publish options.
     public enum HowToPublish: String {
+        /// Publish with server-side recording.
         case record
+        /// Publish with server-side recording which is to append file if exists.
         case append
+        /// Publish with server-side recording which is to append and ajust time file if exists.
         case appendWithGap
+        /// Publish.
         case live
+        /// Publish with local-side recording.
         case localRecord
     }
 

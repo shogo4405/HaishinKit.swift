@@ -3,9 +3,7 @@ import AVFoundation
 import Foundation
 import UIKit
 
-/**
- * A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.
- */
+/// A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.
 public class PiPHKView: UIView {
     /// The view’s background color.
     public static var defaultBackgroundColor: UIColor = .black
@@ -72,7 +70,10 @@ public class PiPHKView: UIView {
         backgroundColor = Self.defaultBackgroundColor
         layer.backgroundColor = Self.defaultBackgroundColor.cgColor
     }
+}
 
+extension PiPHKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
     /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
@@ -85,10 +86,7 @@ public class PiPHKView: UIView {
             stream.mixer.startRunning()
         }
     }
-}
 
-extension PiPHKView: NetStreamDrawable {
-    // MARK: NetStreamDrawable
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
             currentSampleBuffer = sampleBuffer

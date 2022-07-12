@@ -54,7 +54,10 @@ public class HKView: NSView {
         layer?.backgroundColor = HKView.defaultBackgroundColor.cgColor
         layer?.setValue(videoGravity, forKey: "videoGravity")
     }
+}
 
+extension HKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
     /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         currentStream = stream
@@ -68,10 +71,7 @@ public class HKView: NSView {
             stream.mixer.startRunning()
         }
     }
-}
 
-extension HKView: NetStreamDrawable {
-    // MARK: NetStreamRenderer
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
     }
 }

@@ -11,6 +11,8 @@ open class HTTPStream: NetStream {
             tsWriter.expectedMedias = newValue
         }
     }
+
+    /// The name of stream.
     private(set) var name: String?
     private lazy var tsWriter = TSFileWriter()
 

@@ -80,7 +80,10 @@ public class HKView: UIView {
         backgroundColor = HKView.defaultBackgroundColor
         layer.backgroundColor = HKView.defaultBackgroundColor.cgColor
     }
+}
 
+extension HKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
     /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
@@ -101,10 +104,7 @@ public class HKView: UIView {
             stream.mixer.startRunning()
         }
     }
-}
 
-extension HKView: NetStreamDrawable {
-    // MARK: NetStreamRenderer
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
     }
 }

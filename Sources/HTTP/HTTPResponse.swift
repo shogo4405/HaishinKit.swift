@@ -60,18 +60,22 @@ extension HTTPResponseCompatible {
 }
 
 // MARK: -
+/// A URL load response.
 public struct HTTPResponse: HTTPResponseCompatible, ExpressibleByDictionaryLiteral {
-    public typealias Key = String
-    public typealias Value = String
-
+    /// The boundary for head or body.
     static let separator: [UInt8] = [0x0d, 0x0a, 0x0d, 0x0a]
 
+    /// Specifies the version of the HTTP.
     public var version: String = HTTPVersion.version11.rawValue
+    /// Specifies the status code.
     public var statusCode: String = ""
+    /// Specifies the header fields.
     public var headerFields: [String: String] = [:]
+    /// Specifies the body.
     public var body: Data?
 
-    public init(dictionaryLiteral elements: (Key, Value)...) {
+    /// Creates a new http response with header fields.
+    public init(dictionaryLiteral elements: (String, String)...) {
         elements.forEach {
             headerFields[$0] = $1
         }
