@@ -49,7 +49,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
   - [x] Native (RTMP over SSL/TLS)
   - [x] _Tunneled (RTMPT over SSL/TLS) (Technical Preview)_
 - [x] _RTMPT (Technical Preview)_
-- [x] _ReplayKit Live as a Broadcast Upload Extension (Technical Preview)_
+- [x] ReplayKit Live as a Broadcast Upload Extension
 
 ### HLS
 - [x] HTTPService
@@ -109,7 +109,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.2.6
+    pod 'HaishinKit', '~> 1.2.7
 end
 
 target 'Your Target'  do
@@ -119,7 +119,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.2.6
+github "shogo4405/HaishinKit.swift" ~> 1.2.7
 ```
 ### Swift Package Manager
 ```
