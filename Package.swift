@@ -29,7 +29,6 @@ let package = Package(
                     "Media",
                     "MP4",
                     "Net",
-                    "PiP",
                     "RTMP",
                     "Util",
                     "Platforms",
