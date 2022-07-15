@@ -3,33 +3,19 @@ import AVFoundation
 /// The interface a RTMPStream uses to inform its delegate.
 public protocol RTMPStreamDelegate: AnyObject {
     /// Tells the receiver to publish insufficient bandwidth occured.
-    func rtmpStream(_ stream: RTMPStream, didPublishInsufficientBW connection: RTMPConnection)
+    func rtmpStream(_ stream: RTMPStream, publishInsufficientBWOccured connection: RTMPConnection)
     /// Tells the receiver to publish sufficient bandwidth occured.
-    func rtmpStream(_ stream: RTMPStream, didPublishSufficientBW connection: RTMPConnection)
+    func rtmpStream(_ stream: RTMPStream, publishSufficientBWOccured connection: RTMPConnection)
     /// Tells the receiver to playback an audio packet incoming.
     func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
     /// Tells the receiver to playback a video packet incoming.
     func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer)
     /// Tells the receiver to update statistics.
-    func rtmpStream(_ stream: RTMPStream, didStatics connection: RTMPConnection)
+    func rtmpStream(_ stream: RTMPStream, updatedStats connection: RTMPConnection)
     /// Tells the receiver to video codec error occured.
     func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error)
     /// Tells the receiver to the stream opend.
     func rtmpStreamDidClear(_ stream: RTMPStream)
-}
-
-public extension RTMPStreamDelegate {
-    func rtmpStream(_ stream: RTMPStream, didStatics connection: RTMPConnection) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred erorr: VideoCodec.Error) {
-    }
 }
 
 /// An object that provides the interface to control a one-way channel over a RtmpConnection.

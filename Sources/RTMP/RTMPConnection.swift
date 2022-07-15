@@ -461,17 +461,17 @@ open class RTMPConnection: EventDispatcher {
             }
             if total == measureInterval - 1 {
                 for (_, stream) in streams {
-                    stream.delegate?.rtmpStream(stream, didPublishInsufficientBW: self)
+                    stream.delegate?.rtmpStream(stream, publishInsufficientBWOccured: self)
                 }
             } else if total == 0 {
                 for (_, stream) in streams {
-                    stream.delegate?.rtmpStream(stream, didPublishSufficientBW: self)
+                    stream.delegate?.rtmpStream(stream, publishSufficientBWOccured: self)
                 }
             }
             previousQueueBytesOut.removeFirst()
         }
         for (_, stream) in streams {
-            stream.delegate?.rtmpStream(stream, didStatics: self)
+            stream.delegate?.rtmpStream(stream, updatedStats: self)
         }
     }
 }
