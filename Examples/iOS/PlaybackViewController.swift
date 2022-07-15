@@ -4,7 +4,7 @@ import Foundation
 import HaishinKit
 import UIKit
 
-final class PlaybackViewController: UIViewController, HKPictureInPictureController {
+final class PlaybackViewController: UIViewController {
     private static let maxRetryCount: Int = 5
 
     @IBOutlet private weak var playbackButton: UIButton!
@@ -16,9 +16,6 @@ final class PlaybackViewController: UIViewController, HKPictureInPictureControll
     override func viewDidLoad() {
         super.viewDidLoad()
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(didTapped(_:)))
-        tapGesture.numberOfTapsRequired = 2
-        view.addGestureRecognizer(tapGesture)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -84,17 +81,6 @@ final class PlaybackViewController: UIViewController, HKPictureInPictureControll
     }
 
     @objc
-    private func didTapped(_ sender: UITapGestureRecognizer) {
-        if isPictureInPictureActive {
-            stopPictureInPicture()
-            playbackButton.isHidden = false
-        } else {
-            startPictureInPicture()
-            playbackButton.isHidden = true
-        }
-    }
-
-    @objc
     private func rtmpErrorHandler(_ notification: Notification) {
         logger.error(notification)
         rtmpConnection.connect(Preference.defaultInstance.uri!)
@@ -103,7 +89,7 @@ final class PlaybackViewController: UIViewController, HKPictureInPictureControll
     @objc
     private func didEnterBackground(_ notification: Notification) {
         logger.info(notification)
-        if !isPictureInPictureActive {
+        if (pictureInPictureController?.isPictureInPictureActive == false) {
             rtmpStream.receiveVideo = false
         }
     }
@@ -111,7 +97,7 @@ final class PlaybackViewController: UIViewController, HKPictureInPictureControll
     @objc
     private func didBecomeActive(_ notification: Notification) {
         logger.info(notification)
-        if !isPictureInPictureActive {
+        if (pictureInPictureController?.isPictureInPictureActive == false) {
             rtmpStream.receiveVideo = true
         }
     }
