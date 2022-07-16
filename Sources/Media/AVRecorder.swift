@@ -13,8 +13,12 @@ public protocol AVRecorderDelegate: AnyObject {
 public class AVRecorder {
     /// The AVRecorder error domain codes.
     public enum Error: Swift.Error {
-        /// Failed to create the AVAssetWriter
+        /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: Swift.Error)
+        /// Failed to append the PixelBuffer or SampleBuffer.
+        case failedToAppend(error: Swift.Error?)
+        /// Failed to finish writing the AVAssetWriter.
+        case failedToFinishWriting(error: Swift.Error?)
     }
 
     /// The default output settings for an AVRecorder.
@@ -49,6 +53,9 @@ public class AVRecorder {
     private var writer: AVAssetWriter?
     private var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     private var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
+    private var lastPixelBuffer: CVPixelBuffer?
+    private var audioPresentationTime = CMTime.zero
+    private var videoPresentationTime = CMTime.zero
 
     #if os(iOS)
     private lazy var moviesDirectory: URL = {
@@ -79,7 +86,11 @@ public class AVRecorder {
             }
 
             if input.isReadyForMoreMediaData {
-                input.append(sampleBuffer)
+                if input.append(sampleBuffer) {
+                    self.audioPresentationTime = sampleBuffer.presentationTimeStamp
+                } else {
+                    self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
+                }
             }
         }
     }
@@ -104,19 +115,30 @@ public class AVRecorder {
             }
 
             if input.isReadyForMoreMediaData {
-                adaptor.append(pixelBuffer, withPresentationTime: withPresentationTime)
+                if adaptor.append(pixelBuffer, withPresentationTime: withPresentationTime) {
+                    self.lastPixelBuffer = pixelBuffer
+                    self.videoPresentationTime = withPresentationTime
+                } else {
+                    self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
+                }
             }
         }
     }
 
     func finishWriting() {
         guard let writer = writer, writer.status == .writing else {
+            delegate?.recorder(self, errorOccured: .failedToFinishWriting(error: writer?.error))
             return
         }
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
         for (_, input) in writerInputs {
             input.markAsFinished()
+        }
+        if videoPresentationTime != .zero {
+            writer.endSession(atSourceTime: videoPresentationTime)
+        } else {
+            writer.endSession(atSourceTime: audioPresentationTime)
         }
         writer.finishWriting {
             self.delegate?.recorder(self, finishWriting: writer)
@@ -199,6 +221,9 @@ extension AVRecorder: Running {
                 return
             }
             do {
+                self.lastPixelBuffer = nil
+                self.videoPresentationTime = .zero
+                self.audioPresentationTime = .zero
                 let url = self.moviesDirectory.appendingPathComponent((UUID().uuidString)).appendingPathExtension("mp4")
                 self.writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
                 self.isRunning.mutate { $0 = true }
