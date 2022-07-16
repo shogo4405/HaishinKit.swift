@@ -183,7 +183,7 @@ open class NetStream: NSObject {
         mixer.recorder.startRunning()
     }
 
-    /// Stop recordings.
+    /// Stop recording.
     public func stopRecording() {
         mixer.recorder.stopRunning()
     }

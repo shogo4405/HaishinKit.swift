@@ -252,14 +252,14 @@ extension AVMixer {
 }
 
 extension AVMixer {
-    /// Starts encoding for video and audio data.
+    /// Starts decoding for video and audio data.
     public func startDecoding(_ audioEngine: AVAudioEngine?) {
         mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
         videoIO.startDecoding()
     }
 
-    /// Stop encoding.
+    /// Stop decoding.
     public func stopDecoding() {
         mediaLink.stopRunning()
         audioIO.stopDecoding()
