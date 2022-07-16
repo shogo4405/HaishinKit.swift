@@ -177,4 +177,14 @@ open class NetStream: NSObject {
             self.mixer.audioIO.unregisterEffect(effect)
         }
     }
+
+    /// Starts recording.
+    public func startRecording() {
+        mixer.recorder.startRunning()
+    }
+
+    /// Stop recordings.
+    public func stopRecording() {
+        mixer.recorder.stopRunning()
+    }
 }

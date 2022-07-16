@@ -89,7 +89,7 @@ final class PlaybackViewController: UIViewController {
     @objc
     private func didEnterBackground(_ notification: Notification) {
         logger.info(notification)
-        if (pictureInPictureController?.isPictureInPictureActive == false) {
+        if pictureInPictureController?.isPictureInPictureActive == false {
             rtmpStream.receiveVideo = false
         }
     }
@@ -97,7 +97,7 @@ final class PlaybackViewController: UIViewController {
     @objc
     private func didBecomeActive(_ notification: Notification) {
         logger.info(notification)
-        if (pictureInPictureController?.isPictureInPictureActive == false) {
+        if pictureInPictureController?.isPictureInPictureActive == false {
             rtmpStream.receiveVideo = true
         }
     }

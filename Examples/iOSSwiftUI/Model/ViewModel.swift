@@ -6,25 +6,6 @@ import PhotosUI
 import SwiftUI
 import VideoToolbox
 
-final class ExampleRecorderDelegate: DefaultAVRecorderDelegate {
-    static let `default` = ExampleRecorderDelegate()
-
-    override func didFinishWriting(_ recorder: AVRecorder) {
-        guard let writer: AVAssetWriter = recorder.writer else {
-            return
-        }
-        PHPhotoLibrary.shared().performChanges({() -> Void in
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { _, error -> Void in
-            do {
-                try FileManager.default.removeItem(at: writer.outputURL)
-            } catch {
-                print(error)
-            }
-        })
-    }
-}
-
 final class ViewModel: ObservableObject {
     let maxRetryCount: Int = 5
 
@@ -92,7 +73,7 @@ final class ViewModel: ObservableObject {
             .width: 720,
             .height: 1280
         ]
-        rtmpStream.mixer.recorder.delegate = ExampleRecorderDelegate.shared
+        rtmpStream.mixer.recorder.delegate = self
 
         nc.publisher(for: UIDevice.orientationDidChangeNotification, object: nil)
             .sink { [weak self] _ in
@@ -236,5 +217,24 @@ final class ViewModel: ObservableObject {
     private func rtmpErrorHandler(_ notification: Notification) {
         logger.error(notification)
         rtmpConnection.connect(Preference.defaultInstance.uri!)
+    }
+}
+
+extension ViewModel: AVRecorderDelegate {
+    // MARK: AVRecorderDelegate
+    func recorder(_ recorder: AVRecorder, recorderErrorOccured error: Error) {
+        logger.error(error)
+    }
+
+    func recorder(_ recorder: AVRecorder, finishWriting writer: AVAssetWriter) {
+        PHPhotoLibrary.shared().performChanges({() -> Void in
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
+        }, completionHandler: { _, error -> Void in
+            do {
+                try FileManager.default.removeItem(at: writer.outputURL)
+            } catch {
+                print(error)
+            }
+        })
     }
 }
