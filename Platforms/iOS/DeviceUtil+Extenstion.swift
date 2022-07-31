@@ -4,6 +4,7 @@ import AVFoundation
 import UIKit
 
 extension DeviceUtil {
+    /// Looks up the AVCaptureVideoOrientation by a Notification.
     public static func videoOrientation(by notification: Notification) -> AVCaptureVideoOrientation? {
         guard let device: UIDevice = notification.object as? UIDevice else {
             return nil
@@ -11,6 +12,7 @@ extension DeviceUtil {
         return videoOrientation(by: device.orientation)
     }
 
+    /// Looks up the  AVCaptureVideoOrientation by an UIDeviceOrientation.
     public static func videoOrientation(by orientation: UIDeviceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
         case .portrait:
@@ -26,6 +28,7 @@ extension DeviceUtil {
         }
     }
 
+    /// Looks up the AVCaptureVideoOrientation by an UIInterfaceOrientation.
     public static func videoOrientation(by orientation: UIInterfaceOrientation) -> AVCaptureVideoOrientation? {
         switch orientation {
         case .portrait:
