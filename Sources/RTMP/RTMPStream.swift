@@ -482,7 +482,6 @@ open class RTMPStream: NetStream {
         case .publishing:
             FCUnpublish()
             mixer.stopEncoding()
-            mixer.recorder.stopRunning()
         default:
             break
         }
