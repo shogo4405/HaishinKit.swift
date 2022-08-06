@@ -135,11 +135,6 @@ public class AVRecorder {
         for (_, input) in writerInputs {
             input.markAsFinished()
         }
-        if videoPresentationTime != .zero {
-            writer.endSession(atSourceTime: videoPresentationTime)
-        } else {
-            writer.endSession(atSourceTime: audioPresentationTime)
-        }
         writer.finishWriting {
             self.delegate?.recorder(self, finishWriting: writer)
             self.writer = nil
