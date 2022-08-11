@@ -38,16 +38,19 @@ public class MTHKView: MTKView {
         }
     }
 
+    /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
         awakeFromNib()
     }
 
+    /// Returns an object initialized from data in a given unarchiver.
     public required init(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         self.device = MTLCreateSystemDefaultDevice()
     }
 
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override open func awakeFromNib() {
         super.awakeFromNib()
         delegate = self

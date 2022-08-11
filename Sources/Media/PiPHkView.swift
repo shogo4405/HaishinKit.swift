@@ -52,11 +52,13 @@ public class PiPHKView: UIView {
         }
     }
 
+    /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
         super.init(frame: frame)
         awakeFromNib()
     }
 
+    /// Returns an object initialized from data in a given unarchiver.
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -65,16 +67,17 @@ public class PiPHKView: UIView {
         attachStream(nil)
     }
 
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = Self.defaultBackgroundColor
         layer.backgroundColor = Self.defaultBackgroundColor.cgColor
+        layer.videoGravity = videoGravity
     }
 }
 
 extension PiPHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
             currentStream = nil
@@ -101,5 +104,99 @@ extension PiPHKView: NetStreamDrawable {
     }
 }
 #else
+
+import AppKit
+import AVFoundation
+
+/// A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.
+public class PiPHKView: NSView {
+    /// The view’s background color.
+    public static var defaultBackgroundColor: NSColor = .black
+
+    /// A value that specifies how the video is displayed within a player layer’s bounds.
+    public var videoGravity: AVLayerVideoGravity = .resizeAspect {
+        didSet {
+            layer?.setValue(videoGravity, forKey: "videoGravity")
+        }
+    }
+
+    /// A value that displays a video format.
+    public var videoFormatDescription: CMVideoFormatDescription? {
+        currentStream?.mixer.videoIO.formatDescription
+    }
+
+    public var orientation: AVCaptureVideoOrientation = .portrait {
+        didSet {
+            if Thread.isMainThread {
+                (layer as? AVSampleBufferDisplayLayer)?.flushAndRemoveImage()
+            } else {
+                DispatchQueue.main.sync {
+                    (layer as? AVSampleBufferDisplayLayer)?.flushAndRemoveImage()
+                }
+            }
+        }
+    }
+    public var position: AVCaptureDevice.Position = .front
+
+    private var currentSampleBuffer: CMSampleBuffer?
+
+    private weak var currentStream: NetStream? {
+        didSet {
+            oldValue?.mixer.videoIO.drawable = nil
+        }
+    }
+
+    /// Initializes and returns a newly allocated view object with the specified frame rectangle.
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        awakeFromNib()
+    }
+
+    /// Returns an object initialized from data in a given unarchiver.
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+
+    deinit {
+        attachStream(nil)
+    }
+
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
+    override public func awakeFromNib() {
+        super.awakeFromNib()
+        wantsLayer = true
+        layer = AVSampleBufferDisplayLayer()
+        layer?.backgroundColor = HKView.defaultBackgroundColor.cgColor
+        layer?.setValue(videoGravity, forKey: "videoGravity")
+    }
+}
+
+extension PiPHKView: NetStreamDrawable {
+    // MARK: NetStreamDrawable
+    public func attachStream(_ stream: NetStream?) {
+        guard let stream: NetStream = stream else {
+            currentStream = nil
+            return
+        }
+        stream.lockQueue.async {
+            stream.mixer.videoIO.drawable = self
+            self.currentStream = stream
+            stream.mixer.startRunning()
+        }
+    }
+
+    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+        if Thread.isMainThread {
+            currentSampleBuffer = sampleBuffer
+            if let sampleBuffer = sampleBuffer {
+                (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.enqueue(sampleBuffer)
+            }
+        }
+    }
+}
 
 #endif

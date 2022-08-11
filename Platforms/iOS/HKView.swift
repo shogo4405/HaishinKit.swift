@@ -62,11 +62,13 @@ public class HKView: UIView {
         }
     }
 
+    /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
         super.init(frame: frame)
         awakeFromNib()
     }
 
+    /// Returns an object initialized from data in a given unarchiver.
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
@@ -75,6 +77,7 @@ public class HKView: UIView {
         attachStream(nil)
     }
 
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = HKView.defaultBackgroundColor
@@ -84,7 +87,6 @@ public class HKView: UIView {
 
 extension HKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         guard let stream: NetStream = stream else {
             layer.session?.stopRunning()
