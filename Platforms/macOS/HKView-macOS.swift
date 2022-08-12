@@ -38,15 +38,18 @@ public class HKView: NSView {
         }
     }
 
+    /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: NSRect) {
         super.init(frame: frame)
         awakeFromNib()
     }
 
+    /// Returns an object initialized from data in a given unarchiver.
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
 
+    /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
         wantsLayer = true
@@ -58,7 +61,6 @@ public class HKView: NSView {
 
 extension HKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
-    /// Attaches a view to a new NetStream object.
     public func attachStream(_ stream: NetStream?) {
         currentStream = stream
         guard let stream: NetStream = stream else {

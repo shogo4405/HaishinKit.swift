@@ -49,14 +49,17 @@ public struct ASArray {
     private(set) var data: [Any?]
     private(set) var dict: [String: Any?] = [:]
 
+    /// The length of an array.
     public var length: Int {
         data.count
     }
 
+    /// Creates a new instance containing the specified number of a single.
     public init(count: Int) {
         self.data = [Any?](repeating: kASUndefined, count: count)
     }
 
+    /// Creates a new instance of data.
     public init(data: [Any?]) {
         self.data = data
     }
@@ -68,6 +71,7 @@ extension ASArray: ExpressibleByArrayLiteral {
         self = ASArray(data: elements)
     }
 
+    /// Accesses the element at the specified position.
     public subscript(i: Any) -> Any? {
         get {
             if let i: Int = i as? Int {
@@ -125,8 +129,9 @@ public struct ASXMLDocument: CustomStringConvertible {
         data
     }
 
-    private var data: String
+    private let data: String
 
+    /// Creates a new instance of string.
     public init(data: String) {
         self.data = data
     }
@@ -147,8 +152,9 @@ public struct ASXML: CustomStringConvertible {
         data
     }
 
-    private var data: String
+    private let data: String
 
+    /// Creates a new instance of string.
     public init(data: String) {
         self.data = data
     }
