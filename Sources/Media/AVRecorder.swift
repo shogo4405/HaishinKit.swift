@@ -11,6 +11,8 @@ public protocol AVRecorderDelegate: AnyObject {
 // MARK: -
 /// The AVRecorder class represents video and audio recorder.
 public class AVRecorder {
+    private static let interpolationThreshold = 1024 * 4
+
     /// The AVRecorder error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
@@ -35,8 +37,6 @@ public class AVRecorder {
         ]
     ]
 
-    /// The lockQueue.
-    public let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVRecorder.lock")
     /// Specifies the delegate.
     public weak var delegate: AVRecorderDelegate?
     /// Specifies the recorder settings.
@@ -44,6 +44,7 @@ public class AVRecorder {
     /// The running indicies whether recording or not.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVRecorder.lock")
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
@@ -53,7 +54,6 @@ public class AVRecorder {
     private var writer: AVAssetWriter?
     private var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     private var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
-    private var lastPixelBuffer: CVPixelBuffer?
     private var audioPresentationTime = CMTime.zero
     private var videoPresentationTime = CMTime.zero
 
@@ -85,9 +85,24 @@ public class AVRecorder {
                 break
             }
 
+            // fix Local record audio desynchronization on camera switch
+            if mediaType == .audio && self.audioPresentationTime != .zero {
+                if let sampleBuffer = self.makeAudioCMSampleBuffer(sampleBuffer), input.isReadyForMoreMediaData {
+                    input.append(sampleBuffer)
+                    self.audioPresentationTime = CMTimeAdd(self.audioPresentationTime, sampleBuffer.duration)
+                }
+            }
+
             if input.isReadyForMoreMediaData {
                 if input.append(sampleBuffer) {
-                    self.audioPresentationTime = sampleBuffer.presentationTimeStamp
+                    switch mediaType {
+                    case .audio:
+                        self.audioPresentationTime = sampleBuffer.presentationTimeStamp
+                    case .video:
+                        self.videoPresentationTime = sampleBuffer.presentationTimeStamp
+                    default:
+                        break
+                    }
                 } else {
                     self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
                 }
@@ -102,7 +117,7 @@ public class AVRecorder {
                 let writer = self.writer,
                 let input = self.makeWriterInput(.video, sourceFormatHint: CMVideoFormatDescription.create(pixelBuffer: pixelBuffer)),
                 let adaptor = self.makePixelBufferAdaptor(input),
-                self.isReadyForStartWriting else {
+                self.isReadyForStartWriting && self.videoPresentationTime.seconds < withPresentationTime.seconds else {
                 return
             }
 
@@ -116,7 +131,6 @@ public class AVRecorder {
 
             if input.isReadyForMoreMediaData {
                 if adaptor.append(pixelBuffer, withPresentationTime: withPresentationTime) {
-                    self.lastPixelBuffer = pixelBuffer
                     self.videoPresentationTime = withPresentationTime
                 } else {
                     self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
@@ -206,6 +220,63 @@ public class AVRecorder {
         pixelBufferAdaptor = adaptor
         return adaptor
     }
+
+    private func makeAudioCMSampleBuffer(_ buffer: CMSampleBuffer) -> CMSampleBuffer? {
+        let numSamples = Int((buffer.presentationTimeStamp.seconds - self.audioPresentationTime.seconds) * Double(buffer.presentationTimeStamp.timescale))
+
+        guard Self.interpolationThreshold <= numSamples else {
+            return nil
+        }
+
+        var status: OSStatus = noErr
+        var sampleBuffer: CMSampleBuffer?
+
+        var timing = CMSampleTimingInfo(
+            duration: CMTime(value: 1, timescale: buffer.duration.timescale),
+            presentationTimeStamp: audioPresentationTime,
+            decodeTimeStamp: CMTime.invalid
+        )
+
+        status = CMSampleBufferCreate(
+            allocator: kCFAllocatorDefault,
+            dataBuffer: nil,
+            dataReady: false,
+            makeDataReadyCallback: nil,
+            refcon: nil,
+            formatDescription: buffer.formatDescription,
+            sampleCount: numSamples,
+            sampleTimingEntryCount: 1,
+            sampleTimingArray: &timing,
+            sampleSizeEntryCount: 0,
+            sampleSizeArray: nil,
+            sampleBufferOut: &sampleBuffer
+        )
+
+        guard
+            let sampleBuffer = sampleBuffer,
+            let formatDescription = sampleBuffer.formatDescription, status == noErr else {
+            return nil
+        }
+
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: AVAudioFormat(cmAudioFormatDescription: formatDescription), frameCapacity: AVAudioFrameCount(numSamples)) else {
+            return nil
+        }
+        buffer.frameLength = buffer.frameCapacity
+
+        status = CMSampleBufferSetDataBufferFromAudioBufferList(
+            sampleBuffer,
+            blockBufferAllocator: kCFAllocatorDefault,
+            blockBufferMemoryAllocator: kCFAllocatorDefault,
+            flags: 0,
+            bufferList: buffer.audioBufferList
+        )
+
+        guard status == noErr else {
+            return nil
+        }
+
+        return sampleBuffer
+    }
 }
 
 extension AVRecorder: Running {
@@ -216,7 +287,6 @@ extension AVRecorder: Running {
                 return
             }
             do {
-                self.lastPixelBuffer = nil
                 self.videoPresentationTime = .zero
                 self.audioPresentationTime = .zero
                 let url = self.moviesDirectory.appendingPathComponent((UUID().uuidString)).appendingPathExtension("mp4")
