@@ -57,6 +57,7 @@ public class VideoCodec {
         case maxKeyFrameIntervalDuration
         /// Specifies the scalingMode.
         case scalingMode
+        case keyFrameReordering
 
         public var keyPath: AnyKeyPath {
             switch self {
@@ -78,6 +79,8 @@ public class VideoCodec {
                 return \VideoCodec.scalingMode
             case .profileLevel:
                 return \VideoCodec.profileLevel
+            case .keyFrameReordering:
+                return \VideoCodec.keyFrameReordering
             }
         }
     }
@@ -165,6 +168,14 @@ public class VideoCodec {
             invalidateSession = true
         }
     }
+    var keyFrameReordering: Bool? = false {
+        didSet {
+            guard keyFrameReordering != oldValue else {
+                return
+            }
+            invalidateSession = true
+        }
+    }
     var locked: UInt32 = 0
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
     var expectedFPS: Float64 = AVMixer.defaultFPS {
@@ -209,7 +220,7 @@ public class VideoCodec {
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate) as NSObject,
             kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(value: expectedFPS),
             kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
-            kVTCompressionPropertyKey_AllowFrameReordering: !isBaseline as NSObject,
+            kVTCompressionPropertyKey_AllowFrameReordering: (keyFrameReordering ?? !isBaseline) as NSObject,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": scalingMode.rawValue
             ] as NSObject
