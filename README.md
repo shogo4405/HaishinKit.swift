@@ -64,7 +64,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 |VisualEffect|×|◯|○|
 
 ### Others
-- [x] _Support tvOS 10.2+  (Technical Preview)_
+- [x] _Support tvOS 11.0+  (Technical Preview)_
   - tvOS can't publish Camera and Microphone. Available playback feature.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
@@ -73,10 +73,10 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 - [ ] ~~Objective-C Bridging~~
 
 ## 🌏 Requirements
-|-|iOS|OSX|tvOS|XCode|Swift|
+|-|iOS|OSX|tvOS|Xcode|Swift|
 |:----:|:----:|:----:|:----:|:----:|:----:|
+|1.3.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
 |1.2.0+|9.0+|10.11+|10.2+|13.0+|5.5+|
-|1.1.0+|9.0+|10.11+|10.2+|12.0+|5.0+|
 
 ## 🐾 Examples
 Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS.
