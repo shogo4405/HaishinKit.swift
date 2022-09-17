@@ -31,7 +31,7 @@ public class AVRecorder {
             AVNumberOfChannelsKey: 0
         ],
         .video: [
-            AVVideoCodecKey: AVVideoCodecH264,
+            AVVideoCodecKey: AVVideoCodecType.h264,
             AVVideoHeightKey: 0,
             AVVideoWidthKey: 0
         ]

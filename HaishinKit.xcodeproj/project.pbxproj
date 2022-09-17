@@ -2667,7 +2667,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -2721,7 +2721,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -2862,7 +2862,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.2.6;
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-Xfrontend -debug-time-function-bodies";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
@@ -2894,7 +2894,7 @@
 					"@executable_path/../Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				MARKETING_VERSION = 1.2.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
@@ -2977,6 +2977,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -2998,6 +2999,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.HaishinKit.Example-macOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
