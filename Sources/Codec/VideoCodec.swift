@@ -57,7 +57,7 @@ public class VideoCodec {
         case maxKeyFrameIntervalDuration
         /// Specifies the scalingMode.
         case scalingMode
-        case keyFrameReordering
+        case allowFrameReordering
 
         public var keyPath: AnyKeyPath {
             switch self {
@@ -79,8 +79,8 @@ public class VideoCodec {
                 return \VideoCodec.scalingMode
             case .profileLevel:
                 return \VideoCodec.profileLevel
-            case .keyFrameReordering:
-                return \VideoCodec.keyFrameReordering
+            case .allowFrameReordering:
+                return \VideoCodec.allowFrameReordering
             }
         }
     }
@@ -168,9 +168,9 @@ public class VideoCodec {
             invalidateSession = true
         }
     }
-    var keyFrameReordering: Bool? = false {
+    var allowFrameReordering: Bool? = false {
         didSet {
-            guard keyFrameReordering != oldValue else {
+            guard allowFrameReordering != oldValue else {
                 return
             }
             invalidateSession = true
@@ -220,7 +220,7 @@ public class VideoCodec {
             kVTCompressionPropertyKey_AverageBitRate: Int(bitrate) as NSObject,
             kVTCompressionPropertyKey_ExpectedFrameRate: NSNumber(value: expectedFPS),
             kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration: NSNumber(value: maxKeyFrameIntervalDuration),
-            kVTCompressionPropertyKey_AllowFrameReordering: (keyFrameReordering ?? !isBaseline) as NSObject,
+            kVTCompressionPropertyKey_AllowFrameReordering: (allowFrameReordering ?? !isBaseline) as NSObject,
             kVTCompressionPropertyKey_PixelTransferProperties: [
                 "ScalingMode": scalingMode.rawValue
             ] as NSObject
