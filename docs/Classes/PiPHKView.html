@@ -17,7 +17,7 @@
     <a title="PiPHKView Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.2.7 Docs</a> (69% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.3.0 Docs</a> (79% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -51,6 +51,9 @@
                 <a href="../Classes/AVRecorder.html">AVRecorder</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/AVRecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/AudioCodec.html">AudioCodec</a>
               </li>
               <li class="nav-group-task">
@@ -67,12 +70,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/ByteArray/Error.html">– Error</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/DefaultAVRecorderDelegate.html">DefaultAVRecorderDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/DefaultAVRecorderDelegate/FileType.html">– FileType</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/Event.html">Event</a>
@@ -112,6 +109,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/NetStream.html">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PiPHKView.html">PiPHKView</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/PiPHKView.html">PiPHKView</a>
@@ -208,9 +208,6 @@
                 <a href="../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/HKPictureInPictureControllerPosition.html">HKPictureInPictureControllerPosition</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
               </li>
               <li class="nav-group-task">
@@ -249,9 +246,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/FLVTag.html">FLVTag</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/HKPictureInPictureController.html">HKPictureInPictureController</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/KeyPathRepresentable.html">KeyPathRepresentable</a>
@@ -334,9 +328,7 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">PiPHKView</span> <span class="p">:</span> <span class="kt">UIView</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PiPHKView</span><span class="p">:</span> <span class="kt"><a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a></span></code></pre>
-
+                  
                 </div>
               </div>
             <p>A view that displays a video content of a NetStream object which uses AVSampleBufferDisplayLayer api.</p>
@@ -348,9 +340,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit9PiPHKViewC22defaultBackgroundColorSo7UIColorCvpZ"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Variable/defaultBackgroundColor" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit9PiPHKViewC22defaultBackgroundColorSo7UIColorCvpZ">defaultBackgroundColor</a>
+                    <a class="token" href="#/">defaultBackgroundColor</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -361,77 +353,15 @@
                         <p>The view’s background color.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">var</span> <span class="nv">defaultBackgroundColor</span><span class="p">:</span> <span class="kt">UIColor</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)PiPHKView(cpy)layerClass"></a>
-                    <a name="//apple_ref/swift/Variable/layerClass" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)PiPHKView(cpy)layerClass">layerClass</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Returns the class used to create the layer for instances of this class.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="kd">class</span> <span class="k">var</span> <span class="nv">layerClass</span><span class="p">:</span> <span class="kt">AnyClass</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)PiPHKView(py)layer"></a>
-                    <a name="//apple_ref/swift/Property/layer" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)PiPHKView(py)layer">layer</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The view’s Core Animation layer used for rendering.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="k">var</span> <span class="nv">layer</span><span class="p">:</span> <span class="kt">AVSampleBufferDisplayLayer</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit9PiPHKViewC12videoGravitySo012AVLayerVideoF0avp"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/videoGravity" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit9PiPHKViewC12videoGravitySo012AVLayerVideoF0avp">videoGravity</a>
+                    <a class="token" href="#/">videoGravity</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -442,23 +372,15 @@
                         <p>A value that specifies how the video is displayed within a player layer’s bounds.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">videoGravity</span><span class="p">:</span> <span class="kt">AVLayerVideoGravity</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit9PiPHKViewC22videoFormatDescriptionSo08CMFormatG3RefaSgvp"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/videoFormatDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit9PiPHKViewC22videoFormatDescriptionSo08CMFormatG3RefaSgvp">videoFormatDescription</a>
+                    <a class="token" href="#/">videoFormatDescription</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -469,23 +391,15 @@
                         <p>A value that displays a video format.</p>
 
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">videoFormatDescription</span><span class="p">:</span> <span class="kt">CMVideoFormatDescription</span><span class="p">?</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP11orientationSo25AVCaptureVideoOrientationVvp"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/orientation" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP11orientationSo25AVCaptureVideoOrientationVvp">orientation</a>
+                    <a class="token" href="#/">orientation</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -495,23 +409,15 @@
                       <div class="abstract">
                         
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">orientation</span><span class="p">:</span> <span class="kt">AVCaptureVideoOrientation</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP8positionSo23AVCaptureDevicePositionVvp"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Property/position" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP8positionSo23AVCaptureDevicePositionVvp">position</a>
+                    <a class="token" href="#/">position</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -521,23 +427,15 @@
                       <div class="abstract">
                         
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">position</span><span class="p">:</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="kt">Position</span></code></pre>
-
-                        </div>
-                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)PiPHKView(im)initWithFrame:"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/init(frame:)" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)PiPHKView(im)initWithFrame:">init(frame:<wbr>)</a>
+                    <a class="token" href="#/">init(frame:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -545,16 +443,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Initializes and returns a newly allocated view object with the specified frame rectangle.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">)</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
@@ -562,9 +452,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)PiPHKView(im)initWithCoder:"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/init(coder:)" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)PiPHKView(im)initWithCoder:">init(coder:<wbr>)</a>
+                    <a class="token" href="#/">init(coder:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -572,16 +462,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Returns an object initialized from data in a given unarchiver.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">required</span> <span class="nf">init</span><span class="p">?(</span><span class="n">coder</span> <span class="nv">aDecoder</span><span class="p">:</span> <span class="kt">NSCoder</span><span class="p">)</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
@@ -589,9 +471,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/c:@M@HaishinKit@objc(cs)PiPHKView(im)awakeFromNib"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/awakeFromNib()" class="dashAnchor"></a>
-                    <a class="token" href="#/c:@M@HaishinKit@objc(cs)PiPHKView(im)awakeFromNib">awakeFromNib()</a>
+                    <a class="token" href="#/">awakeFromNib()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -599,16 +481,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.</p>
 
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">override</span> <span class="kd">public</span> <span class="kd">func</span> <span class="nf">awakeFromNib</span><span class="p">()</span></code></pre>
-
-                        </div>
                       </div>
                     </section>
                   </div>
@@ -629,36 +503,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit9PiPHKViewC12attachStreamyyAA03NetF0CSgF"></a>
+                    <a name="/"></a>
                     <a name="//apple_ref/swift/Method/attachStream(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit9PiPHKViewC12attachStreamyyAA03NetF0CSgF">attachStream(_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Attaches a view to a new NetStream object.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">attachStream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/NetStream.html">NetStream</a></span><span class="p">?)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP7enqueueyySo17CMSampleBufferRefaSgF"></a>
-                    <a name="//apple_ref/swift/Method/enqueue(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP7enqueueyySo17CMSampleBufferRefaSgF">enqueue(_:<wbr>)</a>
+                    <a class="token" href="#/">attachStream(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -668,13 +515,23 @@
                       <div class="abstract">
                         
                       </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">enqueue</span><span class="p">(</span><span class="n">_</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">?)</span></code></pre>
-
-                        </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/"></a>
+                    <a name="//apple_ref/swift/Method/enqueue(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/">enqueue(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
                       </div>
                     </section>
                   </div>
@@ -684,8 +541,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-07-14)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.2</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-09-17)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
