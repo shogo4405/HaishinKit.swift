@@ -101,25 +101,23 @@ macOS 10.14+
 * NSCameraUsageDescription
 
 ## 🔧 Installation
-*Please set up your project Swift 5.5.*
-
 ### CocoaPods
 ```rb
 source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.2.7
+    pod 'HaishinKit', '~> 1.3.0
 end
 
 target 'Your Target'  do
-    platform :ios, '9.0'
+    platform :ios, '11.0'
     import_pods
 end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.2.7
+github "shogo4405/HaishinKit.swift" ~> 1.3.0
 ```
 ### Swift Package Manager
 ```
