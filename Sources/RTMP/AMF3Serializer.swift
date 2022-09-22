@@ -185,7 +185,7 @@ extension AMF3Serializer: AMFSerializer {
      */
     @discardableResult
     func serialize(_ value: Bool) -> Self {
-        writeUInt8(value ? Type.boolTrue.rawValue: Type.boolFalse.rawValue)
+        writeUInt8(value ? Type.boolTrue.rawValue : Type.boolFalse.rawValue)
     }
 
     func deserialize() throws -> Bool {

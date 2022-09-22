@@ -93,7 +93,7 @@ extension MP4TrackRunBox: DataConvertible {
                 samples.removeAll()
                 for _ in 0..<sampleCount {
                     samples.append(Sample(
-                        duration: contains(.sampleDuration) ? try buffer.readUInt32() :  nil,
+                        duration: contains(.sampleDuration) ? try buffer.readUInt32() : nil,
                         size: contains(.sampleSize) ? try buffer.readUInt32() : nil,
                         flags: contains(.sampleFlags) ? try buffer.readUInt32() : nil,
                         compositionTimeOffset: contains(.sampleCompositionTimeOffset) ? try buffer.readInt32() : nil

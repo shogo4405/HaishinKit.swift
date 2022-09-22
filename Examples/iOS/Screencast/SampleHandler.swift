@@ -45,7 +45,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
                 let dimensions = CMVideoFormatDescriptionGetDimensions(description)
                 rtmpStream.videoSettings = [
                     .width: dimensions.width,
-                    .height: dimensions.height ,
+                    .height: dimensions.height,
                     .profileLevel: kVTProfileLevel_H264_Baseline_AutoLevel
                 ]
             }

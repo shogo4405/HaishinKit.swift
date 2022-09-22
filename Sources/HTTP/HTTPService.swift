@@ -26,7 +26,7 @@ enum HTTPMethod: String {
 
 // MARK: -
 enum HTTPStatusCode: Int {
-    case `continue`                   = 100
+    case `continue` = 100
     case switchingProtocols = 101
     case ok = 200
     case created = 201
