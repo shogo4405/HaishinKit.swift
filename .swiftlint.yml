@@ -16,7 +16,7 @@ opt_in_rules:
 #  - anyobject_protocol
   - array_init
   - attributes
-  - closure_body_length
+#  - closure_body_length
   - closure_end_indentation
   - closure_spacing
   - collection_alignment

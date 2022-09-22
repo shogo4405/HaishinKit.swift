@@ -3,7 +3,7 @@ import HaishinKit
 import Logboard
 import SwiftUI
 
-let logger = Logboard.with("com.haishinkit.HaishinKit.iOSSwiftUI")
+let logger = LBLogger.with("com.haishinkit.HaishinKit.iOSSwiftUI")
 
 @main
 // swiftlint:disable type_name
