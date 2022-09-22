@@ -20,7 +20,7 @@ struct TSPacket {
     var payload = Data()
 
     private var remain: Int {
-        var adaptationFieldSize: Int = 0
+        var adaptationFieldSize = 0
         if let adaptationField: TSAdaptationField = adaptationField, adaptationFieldFlag {
             adaptationField.compute()
             adaptationFieldSize = Int(adaptationField.length) + 1
@@ -122,7 +122,7 @@ extension TSPacket: CustomDebugStringConvertible {
 }
 
 // MARK: -
-struct TSTimestamp {
+enum TSTimestamp {
     static let resolution: Double = 90 * 1000 // 90kHz
     static let PTSMask: UInt8 = 0x10
     static let PTSDTSMask: UInt8 = 0x30
@@ -147,7 +147,7 @@ struct TSTimestamp {
 }
 
 // MARK: -
-struct TSProgramClockReference {
+enum TSProgramClockReference {
     static let resolutionForBase: Int32 = 90 * 1000 // 90kHz
     static let resolutionForExtension: Int32 = 27 * 1000 * 1000 // 27MHz
 

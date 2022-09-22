@@ -168,7 +168,7 @@ final class H264Decoder {
         guard
             let userInfo: [AnyHashable: Any] = notification.userInfo,
             let value: NSNumber = userInfo[AVAudioSessionInterruptionTypeKey] as? NSNumber,
-            let type: AVAudioSession.InterruptionType = AVAudioSession.InterruptionType(rawValue: value.uintValue) else {
+            let type = AVAudioSession.InterruptionType(rawValue: value.uintValue) else {
             return
         }
         switch type {

@@ -6,7 +6,7 @@ import XCTest
 final class MD5Tests: XCTestCase {
 
     func hex(_ data: Data) -> String {
-        var hash: String = ""
+        var hash = ""
         for i in 0..<data.count {
             hash +=  String(format: "%02x", data[i])
         }

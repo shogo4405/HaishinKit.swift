@@ -5,7 +5,7 @@ final class SinWaveUtil {
         var status: OSStatus = noErr
         var sampleBuffer: CMSampleBuffer?
         var formatDescription: CMAudioFormatDescription? = nil
-        var timing: CMSampleTimingInfo = CMSampleTimingInfo(
+        var timing = CMSampleTimingInfo(
             duration: CMTime(value: 1, timescale: Int32(sampleRate)),
             presentationTimeStamp: CMTime.zero,
             decodeTimeStamp: CMTime.invalid

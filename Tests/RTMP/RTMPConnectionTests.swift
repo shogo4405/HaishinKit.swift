@@ -5,8 +5,8 @@ import XCTest
 
 final class RTMPConnectionTests: XCTestCase {
     func publish() {
-        let connection: RTMPConnection = RTMPConnection()
-        let stream: RTMPStream = RTMPStream(connection: connection)
+        let connection = RTMPConnection()
+        let stream = RTMPStream(connection: connection)
         connection.connect("rtmp://localhost:1935/live")
         stream.publish("live")
         sleep(10000)

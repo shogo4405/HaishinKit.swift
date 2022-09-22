@@ -1,6 +1,6 @@
 import Foundation
 
-struct MP4MovieFragmentBox {
+enum MP4MovieFragmentBox {
     struct Builder {
         private var mfhd: MP4MovieFragmentHeaderBox?
         private var traf: [MP4Box] = []

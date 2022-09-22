@@ -22,7 +22,7 @@ opt_in_rules:
   - collection_alignment
   - conditional_returns_on_newline
   - contains_over_first_not_nil
-#  - convenience_type
+  - convenience_type
 #  - discouraged_object_literal
   - discouraged_optional_boolean
 #  - discouraged_optional_collection

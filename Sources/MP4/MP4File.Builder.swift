@@ -1,6 +1,6 @@
 import Foundation
 
-struct MP4File {
+enum MP4File {
     struct Builder {
         private var ftyp: MP4FileTypeBox?
         private var moov: MP4Box?

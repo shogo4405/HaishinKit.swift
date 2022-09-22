@@ -143,7 +143,7 @@ struct AudioSpecificConfig {
     let frameLengthFlag = false
 
     var bytes: [UInt8] {
-        var bytes: [UInt8] = [UInt8](repeating: 0, count: 2)
+        var bytes = [UInt8](repeating: 0, count: 2)
         bytes[0] = type.rawValue << 3 | (frequency.rawValue >> 1)
         bytes[1] = (frequency.rawValue & 0x1) << 7 | (channel.rawValue & 0xF) << 3
         return bytes
@@ -175,9 +175,9 @@ struct AudioSpecificConfig {
     }
 
     func adts(_ length: Int) -> [UInt8] {
-        let size: Int = 7
+        let size = 7
         let fullSize: Int = size + length
-        var adts: [UInt8] = [UInt8](repeating: 0x00, count: size)
+        var adts = [UInt8](repeating: 0x00, count: size)
         adts[0] = 0xFF
         adts[1] = 0xF9
         adts[2] = (type.rawValue - 1) << 6 | (frequency.rawValue << 2) | (channel.rawValue >> 2)

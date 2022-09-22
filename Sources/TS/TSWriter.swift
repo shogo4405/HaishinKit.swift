@@ -258,7 +258,7 @@ extension TSWriter: VideoCodecDelegate {
         guard let dataBuffer = sampleBuffer.dataBuffer else {
             return
         }
-        var length: Int = 0
+        var length = 0
         var buffer: UnsafeMutablePointer<Int8>?
         guard CMBlockBufferGetDataPointer(dataBuffer, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &buffer) == noErr else {
             return

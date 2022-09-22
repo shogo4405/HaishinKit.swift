@@ -522,8 +522,8 @@ extension AMF3Serializer: AMFSerializer {
     }
 
     private func deserializeU29() throws -> Int {
-        var count: Int = 1
-        var result: Int = 0
+        var count = 1
+        var result = 0
         var byte: UInt8 = try readUInt8()
 
         while byte & 0x80 != 0 && count < 4 {

@@ -1,6 +1,6 @@
 import Foundation
 
-struct MP4SegmentFile {
+enum MP4SegmentFile {
     struct Builder {
         private var styp: MP4FileTypeBox?
         private var sidx: [MP4Box] = []

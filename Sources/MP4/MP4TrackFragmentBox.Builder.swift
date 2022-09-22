@@ -1,6 +1,6 @@
 import Foundation
 
-struct MP4TrackFragmentBox {
+enum MP4TrackFragmentBox {
     struct Builder {
         private var tkhd: MP4TrackFragmentHeaderBox?
         private var trun: MP4TrackRunBox?

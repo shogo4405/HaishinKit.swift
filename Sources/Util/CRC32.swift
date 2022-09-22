@@ -6,7 +6,7 @@ final class CRC32 {
     let table: [UInt32]
 
     init(polynomial: UInt32) {
-        var table: [UInt32] = [UInt32](repeating: 0x00000000, count: 256)
+        var table = [UInt32](repeating: 0x00000000, count: 256)
         for i in 0..<table.count {
             var crc = UInt32(i) << 24
             for _ in 0..<8 {

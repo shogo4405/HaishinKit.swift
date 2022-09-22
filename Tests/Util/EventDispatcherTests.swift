@@ -5,7 +5,7 @@ import XCTest
 
 final class EventDispatcherTest: XCTestCase {
     func testMain() {
-        let eventDispatcher: EventDispatcher = EventDispatcher()
+        let eventDispatcher = EventDispatcher()
         eventDispatcher.addEventListener("test", selector: #selector(onTest), observer: self)
         eventDispatcher.dispatch("type", bubbles: false, data: "Hoge")
         eventDispatcher.removeEventListener("test", selector: #selector(onTest), observer: self)

@@ -194,7 +194,7 @@ final class ProgramMapSpecific: ProgramSpecific {
                 PCRPID = try buffer.readUInt16() & 0x1fff
                 programInfoLength = try buffer.readUInt16() & 0x03ff
                 buffer.position += Int(programInfoLength)
-                var position: Int = 0
+                var position = 0
                 while 0 < buffer.bytesAvailable {
                     position = buffer.position
                     guard let data = ElementaryStreamSpecificData(try buffer.readBytes(buffer.bytesAvailable)) else {

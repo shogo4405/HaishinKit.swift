@@ -1,6 +1,6 @@
 import Foundation
 
-struct MP4Util {
+enum MP4Util {
     static func string(_ value: UInt32) -> String? {
         return String(data: value.bigEndian.data, encoding: .ascii)
     }
