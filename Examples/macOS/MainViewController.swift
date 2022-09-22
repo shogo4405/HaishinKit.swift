@@ -45,6 +45,7 @@ final class MainViewController: NSViewController {
         lfView?.attachStream(rtmpStream)
     }
 
+    // swiftlint:disable block_based_kvo
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         guard let keyPath: String = keyPath, Thread.isMainThread else {
             return

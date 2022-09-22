@@ -32,6 +32,7 @@ final class PlaybackViewController: UIViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
+        // swiftlint:disable notification_center_detachment
         NotificationCenter.default.removeObserver(self)
         super.viewWillDisappear(animated)
     }

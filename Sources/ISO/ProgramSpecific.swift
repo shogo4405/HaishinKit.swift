@@ -48,13 +48,7 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     var currentNextIndicator = true
     var sectionNumber: UInt8 = 0
     var lastSectionNumber: UInt8 = 0
-    var tableData: Data {
-        get {
-            Data()
-        }
-        set {
-        }
-    }
+    var tableData: Data = .init()
     var crc32: UInt32 = 0
 
     init() {

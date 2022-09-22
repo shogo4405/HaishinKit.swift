@@ -37,13 +37,10 @@ final class DisplayLink: NSObject {
         }
         self.delegate = target
         self.selector = sel
-        CVDisplayLinkSetOutputHandler(displayLink) { [unowned self]
-            _, inNow, _, _, _ -> CVReturn in
-
+        CVDisplayLinkSetOutputHandler(displayLink) { [unowned self] _, inNow, _, _, _ -> CVReturn in
             self.timestamp = inNow.pointee.timestamp
             self.duration = inNow.pointee.duration
             _ = self.delegate?.perform(self.selector, with: self)
-
             return kCVReturnSuccess
         }
     }
@@ -64,13 +61,11 @@ final class DisplayLink: NSObject {
 }
 
 extension CVTimeStamp {
-    @inlinable @inline(__always)
-    var timestamp: Double {
+    @inlinable @inline(__always) var timestamp: Double {
         Double(self.videoTime) / Double(self.videoTimeScale)
     }
 
-    @inlinable @inline(__always)
-    var duration: Double {
+    @inlinable @inline(__always) var duration: Double {
         Double(self.videoRefreshPeriod) / Double(self.videoTimeScale)
     }
 }

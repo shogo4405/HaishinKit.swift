@@ -73,6 +73,7 @@ final class LiveViewController: UIViewController {
         super.viewWillDisappear(animated)
         rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
         rtmpStream.close()
+        // swiftlint:disable notification_center_detachment
         NotificationCenter.default.removeObserver(self)
     }
 
@@ -227,6 +228,7 @@ final class LiveViewController: UIViewController {
         }
     }
 
+    // swiftlint:disable block_based_kvo
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if Thread.isMainThread {
             currentFPSLabel?.text = "\(rtmpStream.currentFPS)"

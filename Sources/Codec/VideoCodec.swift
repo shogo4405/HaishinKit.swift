@@ -168,6 +168,7 @@ public class VideoCodec {
             invalidateSession = true
         }
     }
+    // swiftlint:disable discouraged_optional_boolean
     var allowFrameReordering: Bool? = false {
         didSet {
             guard allowFrameReordering != oldValue else {

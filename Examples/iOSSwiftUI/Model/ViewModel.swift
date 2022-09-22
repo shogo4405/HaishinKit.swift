@@ -47,7 +47,8 @@ final class ViewModel: ObservableObject {
                 currentEffect = PronamaEffect()
                 _ = rtmpStream.registerVideoEffect(currentEffect!)
 
-            default: break
+            default:
+                break
             }
 
             objectWillChange.send()
@@ -96,7 +97,6 @@ final class ViewModel: ObservableObject {
             case .authorized:
                 logger.info("authorization granted")
             default:
-                // FIXME: Implement handling for all authorizationStatus
                 logger.info("Unimplemented")
             }
         }
@@ -113,8 +113,9 @@ final class ViewModel: ObservableObject {
 
         rtmpStream.publisher(for: \.currentFPS)
             .sink { [weak self] currentFPS in
-                guard let self = self else { return }
-                logger.info(">>> currentFPS", currentFPS)
+                guard let self = self else {
+                    return
+                }
                 DispatchQueue.main.async {
                     self.fps = self.published == true ? "\(currentFPS)" : "FPS"
                 }
@@ -222,7 +223,7 @@ final class ViewModel: ObservableObject {
 
 extension ViewModel: AVRecorderDelegate {
     // MARK: AVRecorderDelegate
-    func recorder(_ recorder: AVRecorder, recorderErrorOccured error: Error) {
+    func recorder(_ recorder: AVRecorder, errorOccured error: AVRecorder.Error) {
         logger.error(error)
     }
 
