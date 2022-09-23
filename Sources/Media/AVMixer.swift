@@ -231,8 +231,8 @@ extension AVMixer {
         #if os(iOS)
         videoIO.screen?.startRunning()
         #endif
-        videoIO.encoder.delegate = delegate as? VideoCodecDelegate
-        videoIO.encoder.startRunning()
+        videoIO.codec.delegate = delegate as? VideoCodecDelegate
+        videoIO.codec.startRunning()
         audioIO.codec.delegate = delegate as? AudioCodecDelegate
         audioIO.codec.startRunning()
     }
@@ -244,8 +244,8 @@ extension AVMixer {
         #endif
         videoTimeStamp = CMTime.zero
         audioTimeStamp = CMTime.zero
-        videoIO.encoder.delegate = nil
-        videoIO.encoder.stopRunning()
+        videoIO.codec.delegate = nil
+        videoIO.codec.stopRunning()
         audioIO.codec.delegate = nil
         audioIO.codec.stopRunning()
     }

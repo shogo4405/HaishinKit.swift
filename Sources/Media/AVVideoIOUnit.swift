@@ -32,10 +32,10 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             decoder.formatDescription = formatDescription
         }
     }
-    lazy var encoder: VideoCodec = {
-        var encoder = VideoCodec()
-        encoder.lockQueue = lockQueue
-        return encoder
+    lazy var codec: VideoCodec = {
+        var codec = VideoCodec()
+        codec.lockQueue = lockQueue
+        return codec
     }()
     lazy var decoder: H264Decoder = {
         var decoder = H264Decoder()
@@ -87,7 +87,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             }
 
             fps = data.fps
-            encoder.expectedFPS = data.fps
+            codec.expectedFPS = data.fps
             logger.info("\(data)")
 
             do {
@@ -422,7 +422,7 @@ extension AVVideoIOUnit {
             drawable?.enqueue(sampleBuffer)
         }
 
-        encoder.encodeImageBuffer(
+        codec.inputBuffer(
             imageBuffer ?? buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration

@@ -268,7 +268,7 @@ open class RTMPStream: NetStream {
                 switch self.readyState {
                 case .publish, .publishing:
                     self.mixer.audioIO.codec.muted = self.paused
-                    self.mixer.videoIO.encoder.muted = self.paused
+                    self.mixer.videoIO.codec.muted = self.paused
                 default:
                     break
                 }
@@ -431,11 +431,11 @@ open class RTMPStream: NetStream {
         metadata.removeAll()
         #if os(iOS) || os(macOS)
         if let _: AVCaptureInput = mixer.videoIO.input {
-            metadata["width"] = mixer.videoIO.encoder.width
-            metadata["height"] = mixer.videoIO.encoder.height
+            metadata["width"] = mixer.videoIO.codec.width
+            metadata["height"] = mixer.videoIO.codec.height
             metadata["framerate"] = mixer.videoIO.fps
             metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
-            metadata["videodatarate"] = mixer.videoIO.encoder.bitrate / 1000
+            metadata["videodatarate"] = mixer.videoIO.codec.bitrate / 1000
         }
         if let _: AVCaptureInput = mixer.audioIO.input {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
@@ -608,12 +608,12 @@ extension RTMPStream: RTMPMuxerDelegate {
             return
         }
         let type: FLVTagType = .video
-        OSAtomicOr32Barrier(1, &mixer.videoIO.encoder.locked)
+        OSAtomicOr32Barrier(1, &mixer.videoIO.codec.locked)
         let length: Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: videoWasSent ? .one : .zero,
             streamId: type.streamId,
             message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
-        ), locked: &mixer.videoIO.encoder.locked)
+        ), locked: &mixer.videoIO.codec.locked)
         if !videoWasSent {
             logger.debug("first video frame was sent")
         }
