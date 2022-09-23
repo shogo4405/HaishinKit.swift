@@ -128,9 +128,9 @@
 		29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */; };
 		29798E761CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */; };
 		29798E771CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */; };
-		297E69122324E38800D418AB /* AudioCodec.Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodec.Format.swift */; };
-		297E69132324E38800D418AB /* AudioCodec.Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodec.Format.swift */; };
-		297E69142324E38800D418AB /* AudioCodec.Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodec.Format.swift */; };
+		297E69122324E38800D418AB /* AudioCodecFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodecFormat.swift */; };
+		297E69132324E38800D418AB /* AudioCodecFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodecFormat.swift */; };
+		297E69142324E38800D418AB /* AudioCodecFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodecFormat.swift */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		2992D1541ED04A2C008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
@@ -338,9 +338,9 @@
 		BC34FA0F286CBD6F00EFAF27 /* PiPHkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */; };
 		BC3FA38B2413AEDA009C83D3 /* AVFoundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292F6DB01EEBB2040097EDBE /* AVFoundation+Extension.swift */; };
 		BC3FA38C2413AEDA009C83D3 /* AVFoundation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 292F6DB01EEBB2040097EDBE /* AVFoundation+Extension.swift */; };
-		BC44A1A923D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */; };
-		BC44A1AA23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */; };
-		BC44A1AB23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */; };
+		BC44A1A923D31E92002D4297 /* AudioCodecBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */; };
+		BC44A1AA23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */; };
+		BC44A1AB23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */; };
 		BC4C9EAC23F00F3A004A14F2 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		BC4C9EAF23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */; };
 		BC4C9EB023F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */; };
@@ -737,7 +737,7 @@
 		2976A4851D4903C300B53EF2 /* DeviceUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtil.swift; sourceTree = "<group>"; };
 		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29798E5D1CE60E5300F5CBD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		297E69112324E38800D418AB /* AudioCodec.Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodec.Format.swift; sourceTree = "<group>"; };
+		297E69112324E38800D418AB /* AudioCodecFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecFormat.swift; sourceTree = "<group>"; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
 		2992D1521ED04A1B008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVVideoIOUnit+Extension-macOS.swift"; sourceTree = "<group>"; };
@@ -830,7 +830,7 @@
 		BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetSocket.CircularBuffer.swift; sourceTree = "<group>"; };
 		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHkView.swift; sourceTree = "<group>"; };
-		BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodec.AudioBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
+		BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+Extension.swift"; sourceTree = "<group>"; };
 		BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStreamInfo.swift; sourceTree = "<group>"; };
 		BC566F6D25D2ECC500573C4C /* HLSService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HLSService.swift; sourceTree = "<group>"; };
@@ -1000,9 +1000,9 @@
 		290907CD1C3961AD00F2E80C /* Codec */ = {
 			isa = PBXGroup;
 			children = (
-				BC44A1A823D31E92002D4297 /* AudioCodec.AudioBuffer.swift */,
-				297E69112324E38800D418AB /* AudioCodec.Format.swift */,
 				29B876571CD70A7900FC07DA /* AudioCodec.swift */,
+				BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */,
+				297E69112324E38800D418AB /* AudioCodecFormat.swift */,
 				29B876581CD70A7900FC07DA /* H264Decoder.swift */,
 				29B876591CD70A7900FC07DA /* VideoCodec.swift */,
 				29FD1B4F22FF13190095A0BE /* VTSessionPropertyKey.swift */,
@@ -2050,7 +2050,7 @@
 				BCC1A6D3264461FE00661156 /* MP4HandlerBox.swift in Sources */,
 				BCA97C02263C599D0027213C /* MP4SyncSampleBox.swift in Sources */,
 				299B13271D3B751400A1E8F5 /* HKView.swift in Sources */,
-				BC44A1A923D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
+				BC44A1A923D31E92002D4297 /* AudioCodecBuffer.swift in Sources */,
 				BC20DF38250377A3007BC608 /* ScreenCaptureSession.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
 				29D3D4CF1ED04C4C00DD4AA6 /* AVVideoIOUnit+Extension.swift in Sources */,
@@ -2104,7 +2104,7 @@
 				BCC1A7172647F3E000661156 /* DecoderSpecificInfo.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */,
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
-				297E69122324E38800D418AB /* AudioCodec.Format.swift in Sources */,
+				297E69122324E38800D418AB /* AudioCodecFormat.swift in Sources */,
 				2942A4F821A9418A004E1BEE /* Running.swift in Sources */,
 				BCC1A72F264FAC4E00661156 /* ElementaryStreamType.swift in Sources */,
 				29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */,
@@ -2233,7 +2233,7 @@
 				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */,
 				29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */,
 				BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */,
-				297E69132324E38800D418AB /* AudioCodec.Format.swift in Sources */,
+				297E69132324E38800D418AB /* AudioCodecFormat.swift in Sources */,
 				BCA97BFB263C4F980027213C /* MP4EditListBox.swift in Sources */,
 				BCC1A6D4264461FE00661156 /* MP4HandlerBox.swift in Sources */,
 				BCA97C01263C599C0027213C /* MP4SyncSampleBox.swift in Sources */,
@@ -2279,7 +2279,7 @@
 				2992D1541ED04A2C008D9DC1 /* AVVideoIOUnit+Extension-macOS.swift in Sources */,
 				2976A47F1D48FD6900B53EF2 /* AVRecorder.swift in Sources */,
 				BCA97BF5263C390E0027213C /* CustomXmlStringConvertible.swift in Sources */,
-				BC44A1AA23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
+				BC44A1AA23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */,
 				BCA97C1C263DAD070027213C /* MP4ElementaryStreamDescriptorBox.swift in Sources */,
 				BCC1A7142647F28F00661156 /* SLConfigDescriptor.swift in Sources */,
 				BC94E503263FE8400094C169 /* MP4TrackFragmentHeaderBox.swift in Sources */,
@@ -2420,7 +2420,7 @@
 				BCA97BFF263C54560027213C /* MP4SampleToChunkBox.swift in Sources */,
 				BCC1A6BE2643F41600661156 /* MP4SegmentFile.Builder.swift in Sources */,
 				BCA97B8C263AC1830027213C /* MP4Box.swift in Sources */,
-				BC44A1AB23D31E92002D4297 /* AudioCodec.AudioBuffer.swift in Sources */,
+				BC44A1AB23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */,
 				BCC1A7092647E89300661156 /* BaseDescriptor.swift in Sources */,
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
 				BCA97BE2263C095B0027213C /* MP4TimeToSampleBox.swift in Sources */,
@@ -2464,7 +2464,7 @@
 				29EB3DF71ED05797001CAE8B /* URL+Extension.swift in Sources */,
 				29DF20682312A436004057C3 /* RTMPSocketCompatible.swift in Sources */,
 				29EB3E0B1ED05871001CAE8B /* TSReader.swift in Sources */,
-				297E69142324E38800D418AB /* AudioCodec.Format.swift in Sources */,
+				297E69142324E38800D418AB /* AudioCodecFormat.swift in Sources */,
 				29EB3DF51ED05779001CAE8B /* CMFormatDescription+Extension.swift in Sources */,
 				BCA97C0C263D80F40027213C /* MP4SampleEntry.swift in Sources */,
 				29EB3E381ED05A41001CAE8B /* MD5.swift in Sources */,
