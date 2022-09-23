@@ -29,18 +29,13 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
     var formatDescription: CMVideoFormatDescription? {
         didSet {
-            decoder.formatDescription = formatDescription
+            codec.formatDescription = formatDescription
         }
     }
     lazy var codec: VideoCodec = {
         var codec = VideoCodec()
         codec.lockQueue = lockQueue
         return codec
-    }()
-    lazy var decoder: H264Decoder = {
-        var decoder = H264Decoder()
-        decoder.delegate = self
-        return decoder
     }()
     weak var mixer: AVMixer?
 
@@ -87,7 +82,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             }
 
             fps = data.fps
-            codec.expectedFPS = data.fps
+            codec.expectedFrameRate = data.fps
             logger.info("\(data)")
 
             do {
@@ -434,11 +429,11 @@ extension AVVideoIOUnit {
 
 extension AVVideoIOUnit {
     func startDecoding() {
-        decoder.startRunning()
+        codec.startRunning()
     }
 
     func stopDecoding() {
-        decoder.stopRunning()
+        codec.stopRunning()
         drawable?.enqueue(nil)
     }
 }
@@ -458,9 +453,18 @@ extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     }
 }
 
-extension AVVideoIOUnit: VideoDecoderDelegate {
-    // MARK: VideoDecoderDelegate
-    func sampleOutput(video sampleBuffer: CMSampleBuffer) {
+extension AVVideoIOUnit: VideoCodecDelegate {
+    // MARK: VideoCodecDelegate
+    func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
+    }
+
+    func videoCodec(_ codec: VideoCodec, didCompress sampleBuffer: CMSampleBuffer) {
+    }
+
+    func videoCodec(_ codec: VideoCodec, didDecompress sampleBuffer: CMSampleBuffer) {
         drawable?.enqueue(sampleBuffer)
+    }
+
+    func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
     }
 }

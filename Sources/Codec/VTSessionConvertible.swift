@@ -7,6 +7,7 @@ protocol VTSessionConvertible {
     func setOptions(_ options: Set<VTSessionOption>) -> OSStatus
     func copySupportedPropertyDictionary() -> [AnyHashable: Any]
     func inputBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler)
+    func inputBuffer(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping  VTDecompressionOutputHandler)
     func invalidate()
 }
 

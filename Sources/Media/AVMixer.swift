@@ -256,6 +256,7 @@ extension AVMixer {
     public func startDecoding(_ audioEngine: AVAudioEngine?) {
         mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
+        videoIO.codec.delegate = videoIO
         videoIO.startDecoding()
     }
 
@@ -270,7 +271,7 @@ extension AVMixer {
 extension AVMixer: MediaLinkDelegate {
     // MARK: MediaLinkDelegate
     func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer) {
-        _ = videoIO.decoder.decodeSampleBuffer(sampleBuffer)
+        videoIO.codec.inputBuffer(sampleBuffer)
     }
 
     func mediaLink(_ mediaLink: MediaLink, didBufferingChanged: Bool) {

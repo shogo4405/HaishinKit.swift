@@ -1,7 +1,14 @@
 import Foundation
 import VideoToolbox
 
+extension VTCompressionSession {
+    func prepareToEncodeFrames() -> OSStatus {
+        VTCompressionSessionPrepareToEncodeFrames(self)
+    }
+}
+
 extension VTCompressionSession: VTSessionConvertible {
+    // MARK: VTSessionConvertible
     func inputBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) {
         var flags: VTEncodeInfoFlags = []
         VTCompressionSessionEncodeFrame(
@@ -15,13 +22,10 @@ extension VTCompressionSession: VTSessionConvertible {
         )
     }
 
+    func inputBuffer(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) {
+    }
+
     func invalidate() {
         VTCompressionSessionInvalidate(self)
-    }
-}
-
-extension VTCompressionSession {
-    func prepareToEncodeFrame() -> OSStatus {
-        VTCompressionSessionPrepareToEncodeFrames(self)
     }
 }

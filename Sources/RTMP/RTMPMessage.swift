@@ -644,7 +644,7 @@ final class RTMPVideoMessage: RTMPMessage {
     }
 
     private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
-        let isBaseline = stream.mixer.videoIO.decoder.isBaseline
+        let isBaseline = stream.mixer.videoIO.codec.isBaseline
 
         // compositionTime -> SI24
         var compositionTime = isBaseline ? 0 : Int32(data: [0] + payload[2..<5]).bigEndian
@@ -678,7 +678,7 @@ final class RTMPVideoMessage: RTMPMessage {
                     dataLength: length,
                     flags: 0,
                     blockBufferOut: &blockBuffer) == noErr else {
-                stream.mixer.videoIO.decoder.needsSync.mutate { $0 = true }
+                stream.mixer.videoIO.codec.needsSync.mutate { $0 = true }
                 return
             }
             guard CMBlockBufferReplaceDataBytes(

@@ -32,7 +32,7 @@ struct VTSessionOptionKey {
     #endif
     static let multiPassStorage = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_MultiPassStorage)
     static let forceKeyFrame = VTSessionOptionKey(CFString: kVTEncodeFrameOptionKey_ForceKeyFrame)
-    static let fpixelTransferProperties = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_PixelTransferProperties)
+    static let pixelTransferProperties = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_PixelTransferProperties)
     static let averageBitRate = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_AverageBitRate)
     static let dataRateLimits = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_DataRateLimits)
     static let moreFramesAfterEnd = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_MoreFramesAfterEnd)
@@ -41,7 +41,7 @@ struct VTSessionOptionKey {
     static let realTime = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_RealTime)
     static let maxH264SliceBytes = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_MaxH264SliceBytes)
     static let maxFrameDelayCount = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_MaxFrameDelayCount)
-    static let encoderUsage = VTSessionOptionKey(CFString: "EncoderUsage" as CFString)
+    static let encoderID = VTSessionOptionKey(CFString: kVTVideoEncoderSpecification_EncoderID)
 
     let CFString: CFString
 }
