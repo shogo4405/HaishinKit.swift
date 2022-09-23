@@ -59,7 +59,7 @@ public class AudioCodec {
     public static let defaultMaximumBuffers: Int = 1
 
     /// Specifies the output format.
-    public var destination: Format = .aac
+    public var destination: AudioCodecFormat = .aac
     /// Specifies the delegate.
     public weak var delegate: AudioCodecDelegate?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
@@ -112,13 +112,13 @@ public class AudioCodec {
             logger.info("\(String(describing: inSourceFormat))")
             let nonInterleaved = inSourceFormat.mFormatFlags & kAudioFormatFlagIsNonInterleaved != 0
             maximumBuffers = nonInterleaved ? Int(inSourceFormat.mChannelsPerFrame) : AudioCodec.defaultMaximumBuffers
-            currentAudioBuffer = AudioBuffer(inSourceFormat, numSamples: AudioCodec.numSamples)
+            currentAudioBuffer = AudioCodecBuffer(inSourceFormat, numSamples: AudioCodec.numSamples)
         }
     }
     var effects: Set<AudioEffect> = []
     private let numSamples = AudioCodec.numSamples
     private var maximumBuffers: Int = AudioCodec.defaultMaximumBuffers
-    private var currentAudioBuffer = AudioBuffer(AudioStreamBasicDescription(mSampleRate: 0, mFormatID: 0, mFormatFlags: 0, mBytesPerPacket: 0, mFramesPerPacket: 0, mBytesPerFrame: 0, mChannelsPerFrame: 1, mBitsPerChannel: 0, mReserved: 0))
+    private var currentAudioBuffer = AudioCodecBuffer(AudioStreamBasicDescription(mSampleRate: 0, mFormatID: 0, mFormatFlags: 0, mBytesPerPacket: 0, mFramesPerPacket: 0, mBytesPerFrame: 0, mChannelsPerFrame: 1, mBitsPerChannel: 0, mReserved: 0))
     private var _inDestinationFormat: AudioStreamBasicDescription?
     private var inDestinationFormat: AudioStreamBasicDescription {
         get {
