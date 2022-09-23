@@ -1,6 +1,6 @@
 import Foundation
 
-final class AMFSerializerUtil {
+enum AMFSerializerUtil {
     private static var classes: [String: AnyClass] = [:]
 
     static func getClassByAlias(_ name: String) -> AnyClass? {
