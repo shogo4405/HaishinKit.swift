@@ -6,7 +6,7 @@ import AVFoundation
 
 final class SettingTests: XCTestCase {
     func testH264Encoder() {
-        let encoder = H264Encoder()
+        let encoder = VideoCodec()
         XCTAssertEqual(encoder.settings[.muted] as? Bool, encoder.muted)
         XCTAssertEqual(encoder.settings[.width] as? Int32, encoder.width)
         XCTAssertEqual(encoder.settings[.height] as? Int32, encoder.height)
