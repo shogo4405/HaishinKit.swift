@@ -59,7 +59,7 @@ extension RTMPMuxer: VideoCodecDelegate {
         delegate?.muxer(self, didOutputVideo: buffer, withTimestamp: 0)
     }
 
-    func videoCodec(_ codec: VideoCodec, didCompress sampleBuffer: CMSampleBuffer) {
+    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
         let keyframe: Bool = !sampleBuffer.isNotSync
         var compositionTime: Int32 = 0
         let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
@@ -78,9 +78,6 @@ extension RTMPMuxer: VideoCodecDelegate {
         buffer.append(data)
         delegate?.muxer(self, didOutputVideo: buffer, withTimestamp: delta)
         videoTimeStamp = decodeTimeStamp
-    }
-
-    func videoCodec(_ codec: VideoCodec, didDecompress sampleBuffer: CMSampleBuffer) {
     }
 
     func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {

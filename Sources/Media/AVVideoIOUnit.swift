@@ -458,10 +458,7 @@ extension AVVideoIOUnit: VideoCodecDelegate {
     func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
     }
 
-    func videoCodec(_ codec: VideoCodec, didCompress sampleBuffer: CMSampleBuffer) {
-    }
-
-    func videoCodec(_ codec: VideoCodec, didDecompress sampleBuffer: CMSampleBuffer) {
+    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
         drawable?.enqueue(sampleBuffer)
     }
 

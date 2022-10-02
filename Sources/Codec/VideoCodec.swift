@@ -12,10 +12,8 @@ import UIKit
 public protocol VideoCodecDelegate: AnyObject {
     /// Tells the receiver to set a formatDescription.
     func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?)
-    /// Tells the receiver to output an encoded sampleBuffer.
-    func videoCodec(_ codec: VideoCodec, didCompress sampleBuffer: CMSampleBuffer)
-    /// Tells the receiver to output a decodec sampleBuffer.
-    func videoCodec(_ codec: VideoCodec, didDecompress sampleBuffer: CMSampleBuffer)
+    /// Tells the receiver to output an encoded or decoded sampleBuffer.
+    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
     func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error)
 }
@@ -266,7 +264,7 @@ public class VideoCodec {
                 return
             }
             self.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
-            self.delegate?.videoCodec(self, didCompress: sampleBuffer)
+            self.delegate?.videoCodec(self, didOutput: sampleBuffer)
             if !self.muted || self.lastImageBuffer == nil {
                 self.lastImageBuffer = imageBuffer
             }
@@ -323,14 +321,14 @@ public class VideoCodec {
             }
 
             if self.isBaseline {
-                self.delegate?.videoCodec(self, didDecompress: buffer)
+                self.delegate?.videoCodec(self, didOutput: buffer)
             } else {
                 self.buffers.append(buffer)
                 self.buffers.sort {
                     $0.presentationTimeStamp < $1.presentationTimeStamp
                 }
                 if self.minimumGroupOfPictures <= buffers.count {
-                    self.delegate?.videoCodec(self, didDecompress: buffer)
+                    self.delegate?.videoCodec(self, didOutput: buffer)
                 }
             }
         }
