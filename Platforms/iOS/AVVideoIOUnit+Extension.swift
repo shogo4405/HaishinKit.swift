@@ -37,8 +37,8 @@ extension AVVideoIOUnit {
         input = nil
         output = nil
         if useScreenSize {
-            encoder.width = screen.attributes["Width"] as! Int32
-            encoder.height = screen.attributes["Height"] as! Int32
+            codec.width = screen.attributes["Width"] as! Int32
+            codec.height = screen.attributes["Height"] as! Int32
         }
         self.screen = screen
     }
@@ -48,8 +48,8 @@ extension AVVideoIOUnit: CaptureSessionDelegate {
     // MARK: CaptureSessionDelegate
     func session(_ session: CaptureSessionConvertible, didSet size: CGSize) {
         lockQueue.async {
-            self.encoder.width = Int32(size.width)
-            self.encoder.height = Int32(size.height)
+            self.codec.width = Int32(size.width)
+            self.codec.height = Int32(size.height)
         }
     }
 
@@ -63,7 +63,7 @@ extension AVVideoIOUnit: CaptureSessionDelegate {
             }
             context?.render(effect(pixelBuffer, info: nil), to: pixelBuffer)
         }
-        encoder.encodeImageBuffer(
+        codec.inputBuffer(
             pixelBuffer,
             presentationTimeStamp: presentationTime,
             duration: CMTime.invalid
