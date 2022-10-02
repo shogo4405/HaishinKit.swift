@@ -25,7 +25,7 @@ open class HTTPStream: NetStream {
                 return
             }
             self.name = name
-            self.mixer.startEncoding(delegate: self.tsWriter)
+            self.mixer.startEncoding(self.tsWriter)
             self.mixer.startRunning()
             self.tsWriter.startRunning()
         }

@@ -6,10 +6,6 @@ extension AVCaptureSession.Preset {
 }
 #endif
 
-protocol AVIOUnit {
-    var mixer: AVMixer? { get set }
-}
-
 protocol AVMixerDelegate: AnyObject {
     func mixer(_ mixer: AVMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
     func mixer(_ mixer: AVMixer, didOutput video: CMSampleBuffer)
@@ -225,39 +221,28 @@ public class AVMixer {
     #endif
 }
 
-extension AVMixer {
+extension AVMixer: AVIOUnitEncoding {
     /// Starts encoding for video and audio data.
-    public func startEncoding(delegate: Any) {
-        #if os(iOS)
-        videoIO.screen?.startRunning()
-        #endif
-        videoIO.codec.delegate = delegate as? VideoCodecDelegate
-        videoIO.codec.startRunning()
-        audioIO.codec.delegate = delegate as? AudioCodecDelegate
-        audioIO.codec.startRunning()
+    public func startEncoding(_ delegate: AVCodecDelegate) {
+        videoIO.startEncoding(delegate)
+        audioIO.startEncoding(delegate)
     }
 
-    /// Stops encoding.
+    /// Stop encoding.
     public func stopEncoding() {
-        #if os(iOS)
-        videoIO.screen?.stopRunning()
-        #endif
         videoTimeStamp = CMTime.zero
         audioTimeStamp = CMTime.zero
-        videoIO.codec.delegate = nil
-        videoIO.codec.stopRunning()
-        audioIO.codec.delegate = nil
-        audioIO.codec.stopRunning()
+        videoIO.stopEncoding()
+        audioIO.stopEncoding()
     }
 }
 
-extension AVMixer {
+extension AVMixer: AVIOUnitDecoding {
     /// Starts decoding for video and audio data.
-    public func startDecoding(_ audioEngine: AVAudioEngine?) {
+    public func startDecoding(_ audioEngine: AVAudioEngine) {
         mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
-        videoIO.codec.delegate = videoIO
-        videoIO.startDecoding()
+        videoIO.startDecoding(audioEngine)
     }
 
     /// Stop decoding.
