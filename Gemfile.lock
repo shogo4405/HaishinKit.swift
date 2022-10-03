@@ -260,7 +260,7 @@ GEM
     simctl (1.6.8)
       CFPropertyList
       naturally
-    sqlite3 (1.5.0)
+    sqlite3 (1.5.2)
       mini_portile2 (~> 2.8.0)
     synx (0.2.1)
       clamp (~> 0.6)
