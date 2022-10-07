@@ -519,7 +519,7 @@ open class RTMPStream: NetStream {
             FCPublish()
         case .publishing:
             send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
-            mixer.startEncoding(delegate: muxer)
+            mixer.startEncoding(muxer)
         default:
             break
         }

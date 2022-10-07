@@ -427,8 +427,27 @@ extension AVVideoIOUnit {
     }
 }
 
-extension AVVideoIOUnit {
-    func startDecoding() {
+extension AVVideoIOUnit: AVIOUnitEncoding {
+    func startEncoding(_ delegate: AVCodecDelegate) {
+        #if os(iOS)
+        screen?.startRunning()
+        #endif
+        codec.delegate = delegate
+        codec.startRunning()
+    }
+
+    func stopEncoding() {
+        #if os(iOS)
+        screen?.stopRunning()
+        #endif
+        codec.stopRunning()
+        codec.delegate = nil
+    }
+}
+
+extension AVVideoIOUnit: AVIOUnitDecoding {
+    func startDecoding(_ audioEndinge: AVAudioEngine) {
+        codec.delegate = self
         codec.startRunning()
     }
 
