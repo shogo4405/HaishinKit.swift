@@ -553,6 +553,9 @@
 		BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
+		BF5B57E728FDDA7900215DBC /* SampleBufferRTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5B57E628FDDA7900215DBC /* SampleBufferRTMPStream.swift */; };
+		BF5B57E828FDDA7900215DBC /* SampleBufferRTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5B57E628FDDA7900215DBC /* SampleBufferRTMPStream.swift */; };
+		BF5B57E928FDDA7900215DBC /* SampleBufferRTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5B57E628FDDA7900215DBC /* SampleBufferRTMPStream.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -920,6 +923,7 @@
 		BCD63ABB26FDF12A0084842D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
+		BF5B57E628FDDA7900215DBC /* SampleBufferRTMPStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleBufferRTMPStream.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1392,6 +1396,7 @@
 				29B876AA1CD70B2800FC07DA /* RTMPStream.swift */,
 				BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */,
 				294852551D84BFAD002DE492 /* RTMPTSocket.swift */,
+				BF5B57E628FDDA7900215DBC /* SampleBufferRTMPStream.swift */,
 			);
 			path = RTMP;
 			sourceTree = "<group>";
@@ -2099,6 +2104,7 @@
 				BC34FA0B286CB90A00EFAF27 /* PiPHkView.swift in Sources */,
 				BCA97C12263D8C850027213C /* MP4FullBox.swift in Sources */,
 				293B42E92340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
+				BF5B57E728FDDA7900215DBC /* SampleBufferRTMPStream.swift in Sources */,
 				2976A47E1D48C5C700B53EF2 /* AVRecorder.swift in Sources */,
 				BCC1A6C52643F41600661156 /* MP4MovieFragmentBox.Builder.swift in Sources */,
 				BC94E4FE263FE6B80094C169 /* MP4MovieFragmentHeaderBox.swift in Sources */,
@@ -2346,6 +2352,7 @@
 				29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */,
 				29F6F4861DFB862400920A3A /* RTMPHandshake.swift in Sources */,
 				BCA97BE9263C27080027213C /* MP4SampleSizeBox.swift in Sources */,
+				BF5B57E828FDDA7900215DBC /* SampleBufferRTMPStream.swift in Sources */,
 				BCA97C19263DA5070027213C /* MP4AudioSampleEntry.swift in Sources */,
 				29B877131CD70D5A00FC07DA /* RTMPConnection.swift in Sources */,
 				2958910F1EEB8D3C00CE51E1 /* FLVVideoCodec.swift in Sources */,
@@ -2452,6 +2459,7 @@
 				BCC1A7092647E89300661156 /* BaseDescriptor.swift in Sources */,
 				29EB3E261ED05A07001CAE8B /* RTMPStream.swift in Sources */,
 				BCA97BE2263C095B0027213C /* MP4TimeToSampleBox.swift in Sources */,
+				BF5B57E928FDDA7900215DBC /* SampleBufferRTMPStream.swift in Sources */,
 				29DF20642312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
 				BCA97BF2263C31020027213C /* MP4SampleDescriptionBox.swift in Sources */,
 				29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */,
