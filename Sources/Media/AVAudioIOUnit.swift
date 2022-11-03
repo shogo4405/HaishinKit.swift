@@ -105,11 +105,27 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
     func unregisterEffect(_ effect: AudioEffect) -> Bool {
         codec.effects.remove(effect) != nil
     }
+}
 
-    func startDecoding(_ audioEngine: AVAudioEngine?) {
+extension AVAudioIOUnit: AVIOUnitEncoding {
+    // MARK: AVIOUnitEncoding
+    func startEncoding(_ delegate: AVCodecDelegate) {
+        codec.delegate = delegate
+        codec.startRunning()
+    }
+
+    func stopEncoding() {
+        codec.stopRunning()
+        codec.delegate = nil
+    }
+}
+
+extension AVAudioIOUnit: AVIOUnitDecoding {
+    // MARK: AVIOUnitDecoding
+    func startDecoding(_ audioEngine: AVAudioEngine) {
         self.audioEngine = audioEngine
         if let playerNode = mixer?.mediaLink.playerNode {
-            audioEngine?.attach(playerNode)
+            audioEngine.attach(playerNode)
         }
         codec.delegate = self
         codec.startRunning()
@@ -120,8 +136,8 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
             audioEngine?.detach(playerNode)
         }
         audioEngine = nil
-        codec.delegate = nil
         codec.stopRunning()
+        codec.delegate = nil
     }
 }
 
