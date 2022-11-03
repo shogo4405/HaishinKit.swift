@@ -26,6 +26,10 @@ enum VTSessionMode {
                 return nil
             }
             status = session.setOptions(videoCodec.options())
+            guard status == noErr else {
+                videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToPrepare(status: status))
+                return nil
+            }
             status = session.prepareToEncodeFrames()
             guard status == noErr else {
                 videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToPrepare(status: status))
