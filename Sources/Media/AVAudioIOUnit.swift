@@ -121,6 +121,7 @@ extension AVAudioIOUnit: AVIOUnitEncoding {
 }
 
 extension AVAudioIOUnit: AVIOUnitDecoding {
+    // MARK: AVIOUnitDecoding
     func startDecoding(_ audioEngine: AVAudioEngine) {
         self.audioEngine = audioEngine
         if let playerNode = mixer?.mediaLink.playerNode {

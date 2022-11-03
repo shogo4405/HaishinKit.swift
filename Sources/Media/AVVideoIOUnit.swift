@@ -428,6 +428,7 @@ extension AVVideoIOUnit {
 }
 
 extension AVVideoIOUnit: AVIOUnitEncoding {
+    // MARK: AVIOUnitEncoding
     func startEncoding(_ delegate: AVCodecDelegate) {
         #if os(iOS)
         screen?.startRunning()
@@ -446,6 +447,7 @@ extension AVVideoIOUnit: AVIOUnitEncoding {
 }
 
 extension AVVideoIOUnit: AVIOUnitDecoding {
+    // MARK: AVIOUnitDecoding
     func startDecoding(_ audioEndinge: AVAudioEngine) {
         codec.delegate = self
         codec.startRunning()
