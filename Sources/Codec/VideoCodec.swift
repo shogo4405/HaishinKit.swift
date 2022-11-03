@@ -237,6 +237,7 @@ public class VideoCodec {
     private var session: VTSessionConvertible? {
         didSet {
             oldValue?.invalidate()
+            invalidateSession = false
         }
     }
     private var invalidateSession = true
