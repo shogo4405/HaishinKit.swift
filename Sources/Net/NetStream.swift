@@ -57,6 +57,26 @@ open class NetStream: NSObject {
     }
     #endif
 
+    /// Specifies the hasAudio indicies whether no signal audio or not.
+    public var hasAudio: Bool {
+        get {
+            mixer.audioIO.muted
+        }
+        set {
+            mixer.audioIO.muted = newValue
+        }
+    }
+
+    /// Specifies the hasVideo indicies whether freeze video signal or not.
+    public var hasVideo: Bool {
+        get {
+            mixer.videoIO.muted
+        }
+        set {
+            mixer.videoIO.muted = newValue
+        }
+    }
+
     /// Specify the audio compression properties.
     public var audioSettings: Setting<AudioCodec, AudioCodec.Option> {
         get {
@@ -143,7 +163,7 @@ open class NetStream: NSObject {
             }
         case .video:
             mixer.videoIO.lockQueue.async {
-                self.mixer.videoIO.encodeSampleBuffer(sampleBuffer)
+                self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
             }
         default:
             break

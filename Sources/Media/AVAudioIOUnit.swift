@@ -19,6 +19,7 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
         }
     }
     weak var mixer: AVMixer?
+    var muted = false
 
     #if os(iOS) || os(macOS)
     var input: AVCaptureDeviceInput? {
@@ -65,11 +66,6 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
     }
     #endif
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
-        codec.encodeSampleBuffer(sampleBuffer)
-    }
-
     #if os(iOS) || os(macOS)
     func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
         guard let mixer: AVMixer = mixer else {
@@ -104,6 +100,14 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
 
     func unregisterEffect(_ effect: AudioEffect) -> Bool {
         codec.effects.remove(effect) != nil
+    }
+
+    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        guard let sampleBuffer = sampleBuffer.muted(muted) else {
+            return
+        }
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
+        codec.encodeSampleBuffer(sampleBuffer)
     }
 }
 

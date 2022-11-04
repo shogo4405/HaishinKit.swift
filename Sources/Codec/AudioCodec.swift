@@ -24,8 +24,6 @@ public class AudioCodec {
      * The audio encoding or decoding options.
      */
     public enum Option: String, KeyPathRepresentable {
-        /// Specifies the muted.
-        case muted
         /// Specifies the bitRate of audio output.
         case bitrate
         /// Specifies  the sampleRate of audio output.
@@ -35,8 +33,6 @@ public class AudioCodec {
 
         public var keyPath: AnyKeyPath {
             switch self {
-            case .muted:
-                return \AudioCodec.muted
             case .bitrate:
                 return \AudioCodec.bitrate
             case .sampleRate:
@@ -71,7 +67,6 @@ public class AudioCodec {
     }
     private static let numSamples: Int = 1024
 
-    var muted = false
     var bitrate: UInt32 = AudioCodec.defaultBitrate {
         didSet {
             guard bitrate != oldValue else {
@@ -200,9 +195,6 @@ public class AudioCodec {
             if currentAudioBuffer.isReady {
                 for effect in effects {
                     effect.execute(currentAudioBuffer.input, format: inSourceFormat)
-                }
-                if muted {
-                    currentAudioBuffer.muted()
                 }
                 convert(currentAudioBuffer.maxLength, presentationTimeStamp: currentAudioBuffer.presentationTimeStamp)
             }

@@ -38,6 +38,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         return codec
     }()
     weak var mixer: AVMixer?
+    var muted = false
 
     private(set) var effects: Set<VideoEffect> = []
 
@@ -285,6 +286,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
     #endif
 
+    private var lastImageBuffer: CVPixelBuffer?
+
     deinit {
         if Thread.isMainThread {
             self.drawable?.attachStream(nil)
@@ -380,41 +383,41 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         effect.ciContext = nil
         return effects.remove(effect) != nil
     }
-}
 
-extension AVVideoIOUnit {
-    func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let buffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        guard let buffer = sampleBuffer.imageBuffer else {
             return
         }
 
         var imageBuffer: CVImageBuffer?
-
-        CVPixelBufferLockBaseAddress(buffer, [])
+        buffer.lockBaseAddress()
         defer {
-            CVPixelBufferUnlockBaseAddress(buffer, [])
-            if let imageBuffer = imageBuffer {
-                CVPixelBufferUnlockBaseAddress(imageBuffer, [])
-            }
+            buffer.unlockBaseAddress()
+            imageBuffer?.unlockBaseAddress()
         }
 
         if drawable != nil || !effects.isEmpty {
-            let image: CIImage = effect(buffer, info: sampleBuffer)
+            let image = effect(buffer, info: sampleBuffer)
             extent = image.extent
             if !effects.isEmpty {
                 #if os(macOS)
-                CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &imageBuffer)
+                pixelBufferPool.createPixelBuffer(&imageBuffer)
                 #else
                 if buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
-                    CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &imageBuffer)
+                    pixelBufferPool.createPixelBuffer(&imageBuffer)
                 }
                 #endif
-                if let imageBuffer = imageBuffer {
-                    CVPixelBufferLockBaseAddress(imageBuffer, [])
-                }
+                imageBuffer?.lockBaseAddress()
                 context?.render(image, to: imageBuffer ?? buffer)
             }
             drawable?.enqueue(sampleBuffer)
+        }
+
+        if muted {
+            if lastImageBuffer == nil {
+                pixelBufferPool.createPixelBuffer(&lastImageBuffer)
+            }
+            imageBuffer = lastImageBuffer
         }
 
         codec.inputBuffer(
@@ -423,7 +426,14 @@ extension AVVideoIOUnit {
             duration: sampleBuffer.duration
         )
 
-        mixer?.recorder.appendPixelBuffer(imageBuffer ?? buffer, withPresentationTime: sampleBuffer.presentationTimeStamp)
+        mixer?.recorder.appendPixelBuffer(
+            imageBuffer ?? buffer,
+            withPresentationTime: sampleBuffer.presentationTimeStamp
+        )
+
+        if !self.muted {
+            self.lastImageBuffer = buffer
+        }
     }
 }
 
@@ -443,6 +453,7 @@ extension AVVideoIOUnit: AVIOUnitEncoding {
         #endif
         codec.stopRunning()
         codec.delegate = nil
+        lastImageBuffer = nil
     }
 }
 
@@ -456,6 +467,7 @@ extension AVVideoIOUnit: AVIOUnitDecoding {
     func stopDecoding() {
         codec.stopRunning()
         drawable?.enqueue(nil)
+        lastImageBuffer = nil
     }
 }
 
@@ -470,7 +482,7 @@ extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
             sampleBuffer.reflectHorizontal()
         }
         #endif
-        encodeSampleBuffer(sampleBuffer)
+        appendSampleBuffer(sampleBuffer)
     }
 }
 

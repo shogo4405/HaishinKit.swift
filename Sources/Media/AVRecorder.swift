@@ -94,17 +94,21 @@ public class AVRecorder {
             }
 
             if input.isReadyForMoreMediaData {
-                if input.append(sampleBuffer) {
-                    switch mediaType {
-                    case .audio:
+                switch mediaType {
+                case .audio:
+                    if input.append(sampleBuffer) {
                         self.audioPresentationTime = sampleBuffer.presentationTimeStamp
-                    case .video:
-                        self.videoPresentationTime = sampleBuffer.presentationTimeStamp
-                    default:
-                        break
+                    } else {
+                        self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
                     }
-                } else {
-                    self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
+                case .video:
+                    if input.append(sampleBuffer) {
+                        self.videoPresentationTime = sampleBuffer.presentationTimeStamp
+                    } else {
+                        self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
+                    }
+                default:
+                    break
                 }
             }
         }

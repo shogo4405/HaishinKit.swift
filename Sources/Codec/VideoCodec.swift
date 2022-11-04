@@ -51,8 +51,6 @@ public class VideoCodec {
      * The video encoding or decoding options.
      */
     public enum Option: String, KeyPathRepresentable, CaseIterable {
-        /// Specifies the muted
-        case muted
         /// Specifies the width of video.
         case width
         /// Specifies the height of video.
@@ -73,8 +71,6 @@ public class VideoCodec {
 
         public var keyPath: AnyKeyPath {
             switch self {
-            case .muted:
-                return \VideoCodec.muted
             case .width:
                 return \VideoCodec.width
             case .height:
@@ -120,7 +116,6 @@ public class VideoCodec {
     /// The running value indicating whether the VideoCodec is running.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
-    var muted = false
     var scalingMode = VideoCodec.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
@@ -256,7 +251,7 @@ public class VideoCodec {
             session = VTSessionMode.compression.makeSession(self)
         }
         session?.inputBuffer(
-            muted ? lastImageBuffer ?? imageBuffer : imageBuffer,
+            imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
             duration: duration
         ) { [unowned self] status, _, sampleBuffer in
@@ -264,11 +259,8 @@ public class VideoCodec {
                 self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-            self.formatDescription = CMSampleBufferGetFormatDescription(sampleBuffer)
+            self.formatDescription = sampleBuffer.formatDescription
             self.delegate?.videoCodec(self, didOutput: sampleBuffer)
-            if !self.muted || self.lastImageBuffer == nil {
-                self.lastImageBuffer = imageBuffer
-            }
         }
     }
 
