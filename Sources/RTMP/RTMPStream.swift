@@ -267,8 +267,8 @@ open class RTMPStream: NetStream {
             lockQueue.async {
                 switch self.readyState {
                 case .publish, .publishing:
-                    self.mixer.audioIO.codec.muted = self.paused
-                    self.mixer.videoIO.codec.muted = self.paused
+                    self.hasVideo = self.paused
+                    self.hasAudio = self.paused
                 default:
                     break
                 }

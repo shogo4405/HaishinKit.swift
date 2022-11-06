@@ -15,8 +15,6 @@
 
 desc "[CI] Review PullRequest."
 lane :review do
+  sh('xcodebuild', '-version')
   spm()
-
-
-  # sh("cd .. && bundle exec pod lib lint --allow-warnings")
 end
