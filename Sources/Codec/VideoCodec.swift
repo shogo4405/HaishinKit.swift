@@ -335,7 +335,10 @@ public class VideoCodec {
             .init(key: .averageBitRate, value: NSNumber(value: bitrate)),
             .init(key: .expectedFrameRate, value: NSNumber(value: expectedFrameRate)),
             .init(key: .maxKeyFrameIntervalDuration, value: NSNumber(value: maxKeyFrameIntervalDuration)),
-            .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject)
+            .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
+            .init(key: .pixelTransferProperties, value: [
+                "ScalingMode": scalingMode.rawValue
+            ] as NSObject),
         ])
         #if os(OSX)
         if enabledHardwareEncoder {
