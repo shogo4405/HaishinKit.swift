@@ -5,14 +5,14 @@ import CoreImage
 
 extension AVVideoIOUnit {
     var zoomFactor: CGFloat {
-        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device else {
+        guard let device = capture?.device else {
             return 0
         }
         return device.videoZoomFactor
     }
 
     func setZoomFactor(_ zoomFactor: CGFloat, ramping: Bool, withRate: Float) {
-        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
+        guard let device = capture?.device,
               1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor
         else { return }
         do {
@@ -34,8 +34,7 @@ extension AVVideoIOUnit {
             self.screen = nil
             return
         }
-        input = nil
-        output = nil
+        capture = nil
         if useScreenSize {
             codec.width = screen.attributes["Width"] as! Int32
             codec.height = screen.attributes["Height"] as! Int32

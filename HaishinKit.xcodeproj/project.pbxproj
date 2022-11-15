@@ -325,6 +325,9 @@
 		BC11023E2917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
 		BC11023F2917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
 		BC1102402917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
+		BC11024A2925147300D48035 /* AVCaptureIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* AVCaptureIOUnit.swift */; };
+		BC11024B2925147300D48035 /* AVCaptureIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* AVCaptureIOUnit.swift */; };
+		BC11024C2925147300D48035 /* AVCaptureIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* AVCaptureIOUnit.swift */; };
 		BC11D94625A1B01000D710BA /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BC20DF38250377A3007BC608 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
@@ -842,6 +845,7 @@
 		2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTHKSwiftUiView.swift; sourceTree = "<group>"; };
 		BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetSocket.CircularBuffer.swift; sourceTree = "<group>"; };
 		BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBufferPool+Extension.swift"; sourceTree = "<group>"; };
+		BC1102492925147300D48035 /* AVCaptureIOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureIOUnit.swift; sourceTree = "<group>"; };
 		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHkView.swift; sourceTree = "<group>"; };
 		BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
@@ -1362,6 +1366,7 @@
 			children = (
 				2941746A22D069B300A2944F /* AudioEffect.swift */,
 				29B876891CD70AFE00FC07DA /* AVAudioIOUnit.swift */,
+				BC1102492925147300D48035 /* AVCaptureIOUnit.swift */,
 				BC570B4728E9ACC10098A12C /* AVIOUnit.swift */,
 				29B8768B1CD70AFE00FC07DA /* AVMixer.swift */,
 				2976A47D1D48C5C700B53EF2 /* AVRecorder.swift */,
@@ -2179,6 +2184,7 @@
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				2916196C1E7F0768009FB344 /* CMFormatDescription+Extension.swift in Sources */,
 				BCB976DF26107B5600C9A649 /* TSAdaptationField.swift in Sources */,
+				BC11024A2925147300D48035 /* AVCaptureIOUnit.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* AVMixer.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
 				BCC1A6DF264470F900661156 /* MP4DataEntryUrlBox.swift in Sources */,
@@ -2269,6 +2275,7 @@
 				29B876F81CD70D5900FC07DA /* HTTPService.swift in Sources */,
 				29B876F91CD70D5900FC07DA /* HTTPStream.swift in Sources */,
 				296543631D62FE9000734698 /* HKView-macOS.swift in Sources */,
+				BC11024B2925147300D48035 /* AVCaptureIOUnit.swift in Sources */,
 				29B876FA1CD70D5900FC07DA /* M3U.swift in Sources */,
 				292D8A341D8B294900DBECE2 /* MP4Reader.swift in Sources */,
 				29B876FD1CD70D5A00FC07DA /* AudioSpecificConfig.swift in Sources */,
@@ -2565,6 +2572,7 @@
 				29EB3DF61ED0577C001CAE8B /* CMSampleBuffer+Extension.swift in Sources */,
 				BCC1A729264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift in Sources */,
 				29EB3E281ED05A0C001CAE8B /* RTMPTSocket.swift in Sources */,
+				BC11024C2925147300D48035 /* AVCaptureIOUnit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

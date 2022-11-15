@@ -22,37 +22,10 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
     var muted = false
 
     #if os(iOS) || os(macOS)
-    var input: AVCaptureDeviceInput? {
+    var capture: AVCaptureIOUnit<AVCaptureAudioDataOutput>? {
         didSet {
-            guard let mixer: AVMixer = mixer, oldValue != input else {
-                return
-            }
-            if let oldValue: AVCaptureDeviceInput = oldValue {
-                mixer.session.removeInput(oldValue)
-            }
-            if let input: AVCaptureDeviceInput = input, mixer.session.canAddInput(input) {
-                mixer.session.addInput(input)
-            }
-        }
-    }
-
-    private var _output: AVCaptureAudioDataOutput?
-    var output: AVCaptureAudioDataOutput! {
-        get {
-            if _output == nil {
-                _output = AVCaptureAudioDataOutput()
-            }
-            return _output
-        }
-        set {
-            if _output == newValue {
-                return
-            }
-            if let output: AVCaptureAudioDataOutput = _output {
-                output.setSampleBufferDelegate(nil, queue: nil)
-                mixer?.session.removeOutput(output)
-            }
-            _output = newValue
+            oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
+            oldValue?.detach(mixer?.session)
         }
     }
     #endif
@@ -61,36 +34,31 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
 
     #if os(iOS) || os(macOS)
     deinit {
-        input = nil
-        output = nil
+        capture = nil
     }
     #endif
 
     #if os(iOS) || os(macOS)
     func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
-        guard let mixer: AVMixer = mixer else {
+        guard let mixer = mixer else {
             return
         }
-
         mixer.session.beginConfiguration()
         defer {
             mixer.session.commitConfiguration()
         }
-
-        output = nil
         codec.invalidate()
-
         guard let audio: AVCaptureDevice = audio else {
-            input = nil
+            capture = nil
             return
         }
-
-        input = try AVCaptureDeviceInput(device: audio)
+        capture = AVCaptureIOUnit(try AVCaptureDeviceInput(device: audio)) {
+            AVCaptureAudioDataOutput()
+        }
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif
-        mixer.session.addOutput(output)
-        output.setSampleBufferDelegate(self, queue: lockQueue)
+        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
     #endif
 

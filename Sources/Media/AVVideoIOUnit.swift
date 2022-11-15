@@ -76,12 +76,9 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     #if os(iOS) || os(macOS)
     var fps: Float64 = AVMixer.defaultFPS {
         didSet {
-            guard
-                let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let data = device.actualFPS(fps) else {
+            guard let device = capture?.device, let data = device.actualFPS(fps) else {
                 return
             }
-
             fps = data.fps
             codec.expectedFrameRate = data.fps
             logger.info("\(data)")
@@ -101,7 +98,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
     var videoSettings: [NSObject: AnyObject] = AVMixer.defaultVideoSettings {
         didSet {
-            output.videoSettings = videoSettings as? [String: Any]
+            capture?.output.videoSettings = videoSettings as? [String: Any]
         }
     }
 
@@ -110,8 +107,10 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             guard isVideoMirrored != oldValue else {
                 return
             }
-            for connection in output.connections where connection.isVideoMirroringSupported {
-                connection.isVideoMirrored = isVideoMirrored
+            capture?.output.connections.forEach { connection in
+                if connection.isVideoMirroringSupported {
+                    connection.isVideoMirrored = isVideoMirrored
+                }
             }
         }
     }
@@ -122,7 +121,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             guard orientation != oldValue else {
                 return
             }
-            for connection in output.connections where connection.isVideoOrientationSupported {
+            capture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
                 connection.videoOrientation = orientation
                 if torch {
                     setTorchMode(.on)
@@ -149,8 +148,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 return
             }
             let focusMode: AVCaptureDevice.FocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
-            guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                  device.isFocusModeSupported(focusMode) else {
+            guard let device = capture?.device, device.isFocusModeSupported(focusMode) else {
                 logger.warn("focusMode(\(focusMode.rawValue)) is not supported")
                 return
             }
@@ -167,14 +165,14 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     var focusPointOfInterest: CGPoint? {
         didSet {
             guard
-                let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let point: CGPoint = focusPointOfInterest,
+                let device = capture?.device,
+                let focusPointOfInterest,
                 device.isFocusPointOfInterestSupported else {
                 return
             }
             do {
                 try device.lockForConfiguration()
-                device.focusPointOfInterest = point
+                device.focusPointOfInterest = focusPointOfInterest
                 device.focusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
                 device.unlockForConfiguration()
             } catch let error as NSError {
@@ -186,14 +184,14 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     var exposurePointOfInterest: CGPoint? {
         didSet {
             guard
-                let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                let point: CGPoint = exposurePointOfInterest,
+                let device = capture?.device,
+                let exposurePointOfInterest,
                 device.isExposurePointOfInterestSupported else {
                 return
             }
             do {
                 try device.lockForConfiguration()
-                device.exposurePointOfInterest = point
+                device.exposurePointOfInterest = exposurePointOfInterest
                 device.exposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
                 device.unlockForConfiguration()
             } catch let error as NSError {
@@ -208,8 +206,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 return
             }
             let exposureMode: AVCaptureDevice.ExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
-            guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device,
-                  device.isExposureModeSupported(exposureMode) else {
+            guard let device = capture?.device, device.isExposureModeSupported(exposureMode) else {
                 logger.warn("exposureMode(\(exposureMode.rawValue)) is not supported")
                 return
             }
@@ -229,46 +226,16 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             guard preferredVideoStabilizationMode != oldValue else {
                 return
             }
-            for connection in output.connections {
+            capture?.output.connections.forEach { connection in
                 connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
             }
         }
     }
     #endif
-
-    private var _output: AVCaptureVideoDataOutput?
-    var output: AVCaptureVideoDataOutput! {
-        get {
-            if _output == nil {
-                _output = AVCaptureVideoDataOutput()
-                _output?.alwaysDiscardsLateVideoFrames = true
-                _output?.videoSettings = videoSettings as? [String: Any]
-            }
-            return _output!
-        }
-        set {
-            if _output == newValue {
-                return
-            }
-            if let output: AVCaptureVideoDataOutput = _output {
-                output.setSampleBufferDelegate(nil, queue: nil)
-                mixer?.session.removeOutput(output)
-            }
-            _output = newValue
-        }
-    }
-
-    var input: AVCaptureInput? {
+    var capture: AVCaptureIOUnit<AVCaptureVideoDataOutput>? {
         didSet {
-            guard let mixer: AVMixer = mixer, oldValue != input else {
-                return
-            }
-            if let oldValue: AVCaptureInput = oldValue {
-                mixer.session.removeInput(oldValue)
-            }
-            if let input: AVCaptureInput = input, mixer.session.canAddInput(input) {
-                mixer.session.addInput(input)
-            }
+            oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
+            oldValue?.detach(mixer?.session)
         }
     }
     #endif
@@ -297,14 +264,13 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             }
         }
         #if os(iOS) || os(macOS)
-        input = nil
-        output = nil
+        capture = nil
         #endif
     }
 
     #if os(iOS) || os(macOS)
     func attachCamera(_ camera: AVCaptureDevice?) throws {
-        guard let mixer: AVMixer = mixer else {
+        guard let mixer else {
             return
         }
 
@@ -316,10 +282,9 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             }
         }
 
-        output = nil
-        guard let camera: AVCaptureDevice = camera else {
+        guard let camera else {
             mixer.mediaSync = .passthrough
-            input = nil
+            capture = nil
             return
         }
 
@@ -328,10 +293,14 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         screen = nil
         #endif
 
-        input = try AVCaptureDeviceInput(device: camera)
-        mixer.session.addOutput(output)
-
-        for connection in output.connections {
+        capture = AVCaptureIOUnit(try AVCaptureDeviceInput(device: camera)) {
+            let output = AVCaptureVideoDataOutput()
+            output.alwaysDiscardsLateVideoFrames = true
+            output.videoSettings = videoSettings as? [String: Any]
+            return output
+        }
+        capture?.attach(mixer.session)
+        capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
             }
@@ -342,8 +311,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
             #endif
         }
-
-        output.setSampleBufferDelegate(self, queue: lockQueue)
+        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
 
         fps *= 1
         position = camera.position
@@ -351,7 +319,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
-        guard let device: AVCaptureDevice = (input as? AVCaptureDeviceInput)?.device, device.isTorchModeSupported(torchMode) else {
+        guard let device = capture?.device, device.isTorchModeSupported(torchMode) else {
             logger.warn("torchMode(\(torchMode)) is not supported")
             return
         }

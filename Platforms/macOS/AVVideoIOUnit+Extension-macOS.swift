@@ -5,18 +5,20 @@ import AVFoundation
 extension AVVideoIOUnit {
     func attachScreen(_ screen: AVCaptureScreenInput?) {
         mixer?.session.beginConfiguration()
-        output = nil
-        guard screen != nil else {
-            input = nil
+        defer {
+            mixer?.session.commitConfiguration()
+        }
+        guard let screen else {
+            capture = nil
             return
         }
-        input = screen
-        mixer?.session.addOutput(output)
-        output.setSampleBufferDelegate(self, queue: lockQueue)
-        mixer?.session.commitConfiguration()
-        if mixer?.session.isRunning ?? false {
-            mixer?.session.startRunning()
+        capture = AVCaptureIOUnit(screen) {
+            let output = AVCaptureVideoDataOutput()
+            output.alwaysDiscardsLateVideoFrames = true
+            output.videoSettings = videoSettings as? [String: Any]
+            return output
         }
+        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 }
 
