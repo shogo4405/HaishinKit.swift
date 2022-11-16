@@ -338,7 +338,7 @@ public class VideoCodec {
             .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
             .init(key: .pixelTransferProperties, value: [
                 "ScalingMode": scalingMode.rawValue
-            ] as NSObject),
+            ] as NSObject)
         ])
         #if os(OSX)
         if enabledHardwareEncoder {
