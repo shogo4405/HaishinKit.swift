@@ -19,6 +19,7 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var fpsControl: UISegmentedControl!
     @IBOutlet private weak var effectSegmentControl: UISegmentedControl!
 
+    private var pipIntentView = UIView()
     private var rtmpConnection = RTMPConnection()
     private var rtmpStream: RTMPStream!
     private var sharedObject: RTMPSharedObject!
@@ -28,6 +29,12 @@ final class LiveViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        pipIntentView.layer.borderWidth = 1.0
+        pipIntentView.layer.borderColor = UIColor.white.cgColor
+        pipIntentView.bounds = PiPCaptureSetting.default.regionOfInterest
+        pipIntentView.isUserInteractionEnabled = true
+        view.addSubview(pipIntentView)
 
         rtmpStream = RTMPStream(connection: rtmpConnection)
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
@@ -57,10 +64,15 @@ final class LiveViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-            logger.warn(error.description)
+            logger.warn(error)
         }
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
-            logger.warn(error.description)
+        let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
+        rtmpStream.attachCamera(back) { error in
+            logger.warn(error)
+        }
+        if #available(iOS 13.0, *) {
+            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            rtmpStream.attachPiPCamera(front)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
@@ -77,12 +89,36 @@ final class LiveViewController: UIViewController {
         NotificationCenter.default.removeObserver(self)
     }
 
+    // swiftlint:disable block_based_kvo
+    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
+        if Thread.isMainThread {
+            currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
+        }
+    }
+
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard let touch = touches.first else {
+            return
+        }
+        if touch.view == pipIntentView {
+            let destLocation = touch.location(in: view)
+            let prevLocation = touch.previousLocation(in: view)
+            var currentFrame = pipIntentView.frame
+            let deltaX = destLocation.x - prevLocation.x
+            let deltaY = destLocation.y - prevLocation.y
+            currentFrame.origin.x += deltaX
+            currentFrame.origin.y += deltaY
+            pipIntentView.frame = currentFrame
+            rtmpStream.pipCaptureSettings = PiPCaptureSetting(regionOfInterest: currentFrame)
+        }
+    }
+
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
         rtmpStream.captureSettings[.isVideoMirrored] = position == .front
         rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
-            logger.warn(error.description)
+            logger.warn(error)
         }
         currentPosition = position
     }
@@ -224,14 +260,7 @@ final class LiveViewController: UIViewController {
     @objc
     private func didBecomeActive(_ notification: Notification) {
         rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
-            logger.warn(error.description)
-        }
-    }
-
-    // swiftlint:disable block_based_kvo
-    override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
-        if Thread.isMainThread {
-            currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
+            logger.warn(error)
         }
     }
 }

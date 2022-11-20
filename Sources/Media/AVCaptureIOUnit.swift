@@ -5,24 +5,33 @@ import Foundation
 struct AVCaptureIOUnit<T: AVCaptureOutput> {
     let input: AVCaptureInput
     let output: T
+    let connection: AVCaptureConnection?
+
     var device: AVCaptureDevice? {
         (input as? AVCaptureDeviceInput)?.device
-    }
-
-    init(_ input: AVCaptureInput, factory: () -> T) {
-        self.input = input
-        self.output = factory()
     }
 
     func attach(_ session: AVCaptureSession?) {
         guard let session else {
             return
         }
-        if session.canAddInput(input) {
-            session.addInput(input)
-        }
-        if session.canAddOutput(output) {
-            session.addOutput(output)
+        if let connection {
+            if session.canAddInput(input) {
+                session.addInputWithNoConnections(input)
+            }
+            if session.canAddOutput(output) {
+                session.addOutputWithNoConnections(output)
+            }
+            if session.canAddConnection(connection) {
+                session.addConnection(connection)
+            }
+        } else {
+            if session.canAddInput(input) {
+                session.addInput(input)
+            }
+            if session.canAddOutput(output) {
+                session.addOutput(output)
+            }
         }
     }
 
@@ -30,8 +39,17 @@ struct AVCaptureIOUnit<T: AVCaptureOutput> {
         guard let session else {
             return
         }
-        session.removeInput(input)
-        session.removeOutput(output)
+        if let connection {
+            if output.connections.contains(connection) {
+                session.removeConnection(connection)
+            }
+        }
+        if session.inputs.contains(input) {
+            session.removeInput(input)
+        }
+        if session.outputs.contains(output) {
+            session.removeOutput(output)
+        }
     }
 }
 #endif

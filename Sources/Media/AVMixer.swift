@@ -124,7 +124,7 @@ public class AVMixer {
 
     var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
-            guard sessionPreset != oldValue else {
+            guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
                 return
             }
             session.beginConfiguration()
@@ -133,18 +133,25 @@ public class AVMixer {
         }
     }
 
-    private var _session: AVCaptureSession?
     /// The capture session instance.
-    public var session: AVCaptureSession {
-        get {
-            if _session == nil {
-                _session = AVCaptureSession()
-                _session?.sessionPreset = .default
-            }
-            return _session!
+    public internal(set) lazy var session: AVCaptureSession = {
+        let session = AVCaptureSession()
+        if session.canSetSessionPreset(sessionPreset) {
+            session.sessionPreset = sessionPreset
         }
-        set {
-            _session = newValue
+        return session
+    }() {
+        didSet {
+            if oldValue.isRunning {
+                oldValue.stopRunning()
+            }
+            audioIO.capture?.detach(oldValue)
+            videoIO.capture?.detach(oldValue)
+            if session.canSetSessionPreset(sessionPreset) {
+                session.sessionPreset = sessionPreset
+            }
+            audioIO.capture?.attach(session)
+            videoIO.capture?.attach(session)
         }
     }
     #endif
@@ -214,7 +221,7 @@ public class AVMixer {
 
     #if os(iOS) || os(macOS)
     deinit {
-        if let session = _session, session.isRunning {
+        if session.isRunning {
             session.stopRunning()
         }
     }
@@ -275,9 +282,7 @@ extension AVMixer: Running {
         guard !isRunning.value else {
             return
         }
-        DispatchQueue.global(qos: .userInteractive).async {
-            self.session.startRunning()
-        }
+        session.startRunning()
     }
 
     public func stopRunning() {
