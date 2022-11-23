@@ -1,37 +1,37 @@
 import Foundation
 
-struct RTMPSharedObjectEvent {
-    enum `Type`: UInt8 {
-        case use = 1
-        case release = 2
-        case requestChange = 3
-        case change = 4
-        case success = 5
-        case sendMessage = 6
-        case status = 7
-        case clear = 8
-        case remove = 9
-        case requestRemove = 10
-        case useSuccess = 11
-        case unknown = 255
-    }
+enum RTMPSharedObjectType: UInt8 {
+    case use = 1
+    case release = 2
+    case requestChange = 3
+    case change = 4
+    case success = 5
+    case sendMessage = 6
+    case status = 7
+    case clear = 8
+    case remove = 9
+    case requestRemove = 10
+    case useSuccess = 11
+    case unknown = 255
+}
 
-    var type: Type = .unknown
+struct RTMPSharedObjectEvent {
+    var type: RTMPSharedObjectType = .unknown
     var name: String?
     var data: Any?
 
-    init(type: Type) {
+    init(type: RTMPSharedObjectType) {
         self.type = type
     }
 
-    init(type: Type, name: String, data: Any?) {
+    init(type: RTMPSharedObjectType, name: String, data: Any?) {
         self.type = type
         self.name = name
         self.data = data
     }
 
     init?(serializer: inout AMFSerializer) throws {
-        guard let byte: UInt8 = try? serializer.readUInt8(), let type = Type(rawValue: byte) else {
+        guard let byte: UInt8 = try? serializer.readUInt8(), let type = RTMPSharedObjectType(rawValue: byte) else {
             return nil
         }
         self.type = type
