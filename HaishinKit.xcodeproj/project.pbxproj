@@ -328,6 +328,9 @@
 		BC11024A2925147300D48035 /* AVCaptureIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* AVCaptureIOUnit.swift */; };
 		BC11024B2925147300D48035 /* AVCaptureIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* AVCaptureIOUnit.swift */; };
 		BC11024C2925147300D48035 /* AVCaptureIOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* AVCaptureIOUnit.swift */; };
+		BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
+		BC110254292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
+		BC110255292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
 		BC11D94625A1B01000D710BA /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BC20DF38250377A3007BC608 /* ScreenCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */; };
 		BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
@@ -846,6 +849,7 @@
 		BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetSocket.CircularBuffer.swift; sourceTree = "<group>"; };
 		BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBufferPool+Extension.swift"; sourceTree = "<group>"; };
 		BC1102492925147300D48035 /* AVCaptureIOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureIOUnit.swift; sourceTree = "<group>"; };
+		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
 		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHkView.swift; sourceTree = "<group>"; };
 		BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
@@ -1450,6 +1454,7 @@
 				29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */,
 				29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */,
 				29EA87D71E79A0090043A5F8 /* URL+Extension.swift */,
+				BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */,
 				BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */,
 				BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */,
 			);
@@ -2152,6 +2157,7 @@
 				BCA97BE4263C095C0027213C /* MP4TimeToSampleBox.swift in Sources */,
 				BCC1A6B62643F41600661156 /* MP4WriterConvertible.swift in Sources */,
 				BCAD0C21263EFCEF00ADFB80 /* MP4SegmentIndexBox.swift in Sources */,
+				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				BCAD0C1B263EE1D000ADFB80 /* MP4Util.swift in Sources */,
 				29EA87D81E79A0090043A5F8 /* URL+Extension.swift in Sources */,
 				BC9F9C7826F8C16600B01ED0 /* Choreographer.swift in Sources */,
@@ -2265,6 +2271,7 @@
 				29B876F71CD70D5900FC07DA /* HTTPResponse.swift in Sources */,
 				BC4C9EB023F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				2942A4F921A9418A004E1BEE /* Running.swift in Sources */,
+				BC110254292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */,
 				29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */,
 				BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */,
@@ -2511,6 +2518,7 @@
 				29EB3E0B1ED05871001CAE8B /* TSReader.swift in Sources */,
 				297E69142324E38800D418AB /* AudioCodecFormat.swift in Sources */,
 				29EB3DF51ED05779001CAE8B /* CMFormatDescription+Extension.swift in Sources */,
+				BC110255292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				BC570B4A28E9ACC10098A12C /* AVIOUnit.swift in Sources */,
 				BCA97C0C263D80F40027213C /* MP4SampleEntry.swift in Sources */,
 				29EB3E381ED05A41001CAE8B /* MD5.swift in Sources */,
