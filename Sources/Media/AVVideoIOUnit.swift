@@ -439,6 +439,7 @@ extension AVVideoIOUnit: AVIOUnitDecoding {
     }
 }
 
+#if os(iOS) || os(macOS)
 extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -453,6 +454,7 @@ extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
         appendSampleBuffer(sampleBuffer)
     }
 }
+#endif
 
 extension AVVideoIOUnit: VideoCodecDelegate {
     // MARK: VideoCodecDelegate

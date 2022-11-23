@@ -113,6 +113,7 @@ extension AVAudioIOUnit: AVIOUnitDecoding {
     }
 }
 
+#if os(iOS) || os(macOS)
 extension AVAudioIOUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -122,6 +123,7 @@ extension AVAudioIOUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
         appendSampleBuffer(sampleBuffer)
     }
 }
+#endif
 
 extension AVAudioIOUnit: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
