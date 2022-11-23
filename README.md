@@ -157,10 +157,10 @@ Real Time Messaging Protocol (RTMP).
 ```swift
 let rtmpConnection = RTMPConnection()
 let rtmpStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attachAudio(AVCaptureDevice.default(for: AVMediaType.audio)) { error in
+rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
     // print(error)
 }
-rtmpStream.attachCamera(DeviceUtil.device(withPosition: .back)) { error in
+rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
     // print(error)
 }
 
@@ -236,7 +236,7 @@ rtmpStream.recorderSettings = [
 ]
 
 // 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.default(for: AVMediaType.audio), automaticallyConfiguresApplicationAudioSession: false)
+rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false)
 
 ```
 ### Authentication
@@ -257,8 +257,8 @@ rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
 var httpStream = HTTPStream()
-httpStream.attachCamera(DeviceUtil.device(withPosition: .back))
-httpStream.attachAudio(AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio))
+httpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
+httpStream.attachAudio(AVCaptureDevice.default(for: .audio))
 httpStream.publish("hello")
 
 var hkView = HKView(frame: view.bounds)

@@ -59,7 +59,7 @@ final class LiveViewController: UIViewController {
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             logger.warn(error.description)
         }
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
             logger.warn(error.description)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
@@ -81,7 +81,7 @@ final class LiveViewController: UIViewController {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
         rtmpStream.captureSettings[.isVideoMirrored] = position == .front
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
             logger.warn(error.description)
         }
         currentPosition = position
@@ -223,7 +223,7 @@ final class LiveViewController: UIViewController {
 
     @objc
     private func didBecomeActive(_ notification: Notification) {
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
             logger.warn(error.description)
         }
     }
