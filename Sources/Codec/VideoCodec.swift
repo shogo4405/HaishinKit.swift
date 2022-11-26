@@ -409,7 +409,8 @@ extension VideoCodec: Running {
             self.lastImageBuffer = nil
             self.formatDescription = nil
             #if os(iOS)
-            NotificationCenter.default.removeObserver(self)
+            NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
+            NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
             #endif
             self.isRunning.mutate { $0 = false }
         }

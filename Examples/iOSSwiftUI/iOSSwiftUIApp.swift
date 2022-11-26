@@ -5,8 +5,8 @@ import SwiftUI
 
 let logger = LBLogger.with("com.haishinkit.HaishinKit.iOSSwiftUI")
 
-@main
 // swiftlint:disable type_name
+@main
 struct iOSSwiftUIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
