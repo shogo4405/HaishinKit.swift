@@ -23,8 +23,8 @@ extension AVVideoIOUnit {
                 device.videoZoomFactor = zoomFactor
             }
             device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while locking device for ramp: \(error)")
+        } catch {
+            logger.error("while locking device for ramp:", error)
         }
     }
 

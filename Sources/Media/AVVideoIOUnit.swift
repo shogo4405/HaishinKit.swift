@@ -88,8 +88,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 device.activeVideoMinFrameDuration = data.duration
                 device.activeVideoMaxFrameDuration = data.duration
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for fps: \(error)")
+            } catch {
+                logger.error("while locking device for fps:", error)
             }
         }
     }
@@ -156,8 +156,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 try device.lockForConfiguration()
                 device.focusMode = focusMode
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for autofocus: \(error)")
+            } catch {
+                logger.error("while locking device for autofocus:", error)
             }
         }
     }
@@ -175,8 +175,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 device.focusPointOfInterest = focusPointOfInterest
                 device.focusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for focusPointOfInterest: \(error)")
+            } catch {
+                logger.error("while locking device for focusPointOfInterest:", error)
             }
         }
     }
@@ -194,8 +194,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 device.exposurePointOfInterest = exposurePointOfInterest
                 device.exposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for exposurePointOfInterest: \(error)")
+            } catch {
+                logger.error("while locking device for exposurePointOfInterest:", error)
             }
         }
     }
@@ -214,8 +214,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 try device.lockForConfiguration()
                 device.exposureMode = exposureMode
                 device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for autoexpose: \(error)")
+            } catch {
+                logger.error("while locking device for autoexpose:", error)
             }
         }
     }
@@ -327,8 +327,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             try device.lockForConfiguration()
             device.torchMode = torchMode
             device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while setting torch: \(error)")
+        } catch {
+            logger.error("while setting torch:", error)
         }
     }
     #endif

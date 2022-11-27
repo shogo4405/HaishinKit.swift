@@ -84,8 +84,8 @@ open class HLSService: HTTPService {
             if 0 < remain {
                 client.doOutput(data: fileHandle.readData(ofLength: remain))
             }
-        } catch let error as NSError {
-            logger.error("\(error)")
+        } catch {
+            logger.error(error)
         }
     }
 }
