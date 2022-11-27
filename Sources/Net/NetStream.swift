@@ -124,11 +124,11 @@ open class NetStream: NSObject {
     #if os(iOS) || os(macOS)
     /// Attaches the camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    open func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: NSError) -> Void)? = nil) {
+    open func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.videoIO.attachCamera(camera)
-            } catch let error as NSError {
+            } catch {
                 onError?(error)
             }
         }
@@ -136,11 +136,11 @@ open class NetStream: NSObject {
 
     /// Attaches the microphone object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    open func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: NSError) -> Void)? = nil) {
+    open func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
-            } catch let error as NSError {
+            } catch {
                 onError?(error)
             }
         }

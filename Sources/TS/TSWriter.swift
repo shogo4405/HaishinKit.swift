@@ -328,8 +328,8 @@ class TSFileWriter: TSWriter {
         if !fileManager.fileExists(atPath: temp) {
             do {
                 try fileManager.createDirectory(atPath: temp, withIntermediateDirectories: false, attributes: nil)
-            } catch let error as NSError {
-                logger.warn("\(error)")
+            } catch {
+                logger.warn(error)
             }
         }
 
@@ -346,8 +346,8 @@ class TSFileWriter: TSWriter {
             let info: M3UMediaInfo = files.removeFirst()
             do {
                 try fileManager.removeItem(at: info.url as URL)
-            } catch let e as NSError {
-                logger.warn("\(e)")
+            } catch {
+                logger.warn(error)
             }
         }
         currentFileURL = url
@@ -396,8 +396,8 @@ class TSFileWriter: TSWriter {
         for info in files {
             do {
                 try fileManager.removeItem(at: info.url as URL)
-            } catch let e as NSError {
-                logger.warn("\(e)")
+            } catch {
+                logger.warn(error)
             }
         }
         files.removeAll()
