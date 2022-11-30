@@ -2,6 +2,10 @@ import AVFoundation
 import CoreImage
 
 final class AVVideoIOUnit: NSObject, AVIOUnit {
+    enum Error: Swift.Error {
+        case multiCamNotSupported
+    }
+
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
@@ -220,7 +224,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         }
     }
 
-    #if os(iOS)
+    @available(macOS, unavailable)
     var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
         didSet {
             guard preferredVideoStabilizationMode != oldValue else {
@@ -231,8 +235,15 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             }
         }
     }
-    #endif
+
     var capture: AVCaptureIOUnit<AVCaptureVideoDataOutput>? {
+        didSet {
+            oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
+            oldValue?.detach(mixer?.session)
+        }
+    }
+
+    var pipCapture: AVCaptureIOUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detach(mixer?.session)
@@ -253,7 +264,12 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
     #endif
 
+    @available(macOS, unavailable)
+    @available(tvOS, unavailable)
+    var pipCaptureSettings: PiPCaptureSetting = .default
+
     private var lastImageBuffer: CVPixelBuffer?
+    private var pipSampleBuffer: CMSampleBuffer?
 
     deinit {
         if Thread.isMainThread {
@@ -273,7 +289,6 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         guard let mixer else {
             return
         }
-
         mixer.session.beginConfiguration()
         defer {
             mixer.session.commitConfiguration()
@@ -281,24 +296,25 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
                 setTorchMode(.on)
             }
         }
-
         guard let camera else {
             mixer.mediaSync = .passthrough
             capture = nil
             return
         }
-
         mixer.mediaSync = .video
         #if os(iOS)
         screen = nil
         #endif
-
-        capture = AVCaptureIOUnit(try AVCaptureDeviceInput(device: camera)) {
-            let output = AVCaptureVideoDataOutput()
-            output.alwaysDiscardsLateVideoFrames = true
-            output.videoSettings = videoSettings as? [String: Any]
-            return output
-        }
+        let input = try AVCaptureDeviceInput(device: camera)
+        let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = videoSettings as? [String: Any]
+        #if os(iOS)
+        let connection = AVCaptureConnection(inputPorts: input.ports, output: output)
+        #else
+        let connection: AVCaptureConnection? = nil
+        #endif
+        capture = AVCaptureIOUnit(input: input, output: output, connection: connection)
         capture?.attach(mixer.session)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
@@ -312,10 +328,56 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
             #endif
         }
         capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
-
         fps *= 1
         position = camera.position
         drawable?.position = camera.position
+    }
+
+    @available(iOS 13.0, *)
+    @available(macOS, unavailable)
+    func attachPiPCamera(_ camera: AVCaptureDevice?) throws {
+        guard let mixer, AVCaptureMultiCamSession.isMultiCamSupported else {
+            throw Error.multiCamNotSupported
+        }
+        guard let camera else {
+            if mixer.session is AVCaptureMultiCamSession {
+                mixer.session = AVCaptureSession()
+            }
+            mixer.session.beginConfiguration()
+            defer {
+                mixer.session.commitConfiguration()
+            }
+            pipCapture = nil
+            return
+        }
+        if !(mixer.session is AVCaptureMultiCamSession) {
+            mixer.session = AVCaptureMultiCamSession()
+        }
+        mixer.session.beginConfiguration()
+        defer {
+            mixer.session.commitConfiguration()
+        }
+        let input = try AVCaptureDeviceInput(device: camera)
+        let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = videoSettings as? [String: Any]
+        #if os(iOS)
+        let connection = AVCaptureConnection(inputPorts: input.ports, output: output)
+        #else
+        let connection: AVCaptureConnection? = nil
+        #endif
+        pipCapture = AVCaptureIOUnit(input: input, output: output, connection: connection)
+        pipCapture?.attach(mixer.session)
+        pipCapture?.output.connections.forEach { connection in
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = orientation
+            }
+            if connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = isVideoMirrored
+            }
+            connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+        }
+        pipCapture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
@@ -439,18 +501,30 @@ extension AVVideoIOUnit: AVIOUnitDecoding {
     }
 }
 
-#if os(iOS) || os(macOS)
+#if os(iOS)
+extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
+    // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
+    func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        if capture?.output == captureOutput {
+            guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
+                return
+            }
+            appendSampleBuffer(sampleBuffer.over(pipSampleBuffer, regionOfInterest: pipCaptureSettings.regionOfInterest))
+        } else if pipCapture?.output == captureOutput {
+            pipSampleBuffer = sampleBuffer
+        }
+    }
+}
+#elseif os(macOS)
 extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
             return
         }
-        #if os(macOS)
         if connection.isVideoMirrored {
             sampleBuffer.reflectHorizontal()
         }
-        #endif
         appendSampleBuffer(sampleBuffer)
     }
 }

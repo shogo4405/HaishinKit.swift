@@ -52,9 +52,10 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
             capture = nil
             return
         }
-        capture = AVCaptureIOUnit(try AVCaptureDeviceInput(device: audio)) {
-            AVCaptureAudioDataOutput()
-        }
+        let input = try AVCaptureDeviceInput(device: audio)
+        let output = AVCaptureAudioDataOutput()
+        capture = AVCaptureIOUnit(input: input, output: output, connection: nil)
+        capture?.attach(mixer.session)
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif

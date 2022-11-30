@@ -1,10 +1,16 @@
+import Accelerate
 import CoreMedia
 
-#if os(macOS)
-import Accelerate
-#endif
-
 extension CMSampleBuffer {
+    static var format = vImage_CGImageFormat(
+        bitsPerComponent: 8,
+        bitsPerPixel: 32,
+        colorSpace: nil,
+        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
+        version: 0,
+        decode: nil,
+        renderingIntent: .defaultIntent)
+
     var isNotSync: Bool {
         get {
             getAttachmentValue(for: kCMSampleAttachmentKey_NotSync) ?? false
@@ -96,6 +102,31 @@ extension CMSampleBuffer {
         return self
     }
 
+    func over(_ sampleBuffer: CMSampleBuffer?, regionOfInterest roi: CGRect = .zero) -> CMSampleBuffer {
+        guard var inputImageBuffer = vImage_Buffer(cvPixelBuffer: sampleBuffer?.imageBuffer, format: &CMSampleBuffer.format) else {
+            return self
+        }
+        defer {
+            inputImageBuffer.free()
+        }
+        guard let imageBuffer, var srcImageBuffer = vImage_Buffer(cvPixelBuffer: imageBuffer, format: &CMSampleBuffer.format) else {
+            return self
+        }
+        defer {
+            srcImageBuffer.free()
+        }
+        let xScale = Float(roi.width) / Float(inputImageBuffer.width)
+        let yScale = Float(roi.height) / Float(inputImageBuffer.height)
+        let scaleFactor = (xScale < yScale) ? xScale : yScale
+        var scaledInputImageBuffer = inputImageBuffer.scale(scaleFactor )
+        defer {
+            scaledInputImageBuffer.free()
+        }
+        _ = srcImageBuffer.over(&scaledInputImageBuffer, origin: roi.origin)
+        _ = srcImageBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
+        return self
+    }
+
     // swiftlint:disable discouraged_optional_boolean
     @inline(__always)
     private func getAttachmentValue(for key: CFString) -> Bool? {
@@ -123,15 +154,6 @@ extension CMSampleBuffer {
 
     #if os(macOS)
     /* Used code from the example https://developer.apple.com/documentation/accelerate/vimage/reading_from_and_writing_to_core_video_pixel_buffers */
-    static var format = vImage_CGImageFormat(
-        bitsPerComponent: 8,
-        bitsPerPixel: 32,
-        colorSpace: nil,
-        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
-        version: 0,
-        decode: nil,
-        renderingIntent: .defaultIntent)
-
     func reflectHorizontal() {
         guard let imageBuffer, var sourceBuffer = vImage_Buffer(cvPixelBuffer: imageBuffer, format: &CMSampleBuffer.format) else {
             return

@@ -12,12 +12,11 @@ extension AVVideoIOUnit {
             capture = nil
             return
         }
-        capture = AVCaptureIOUnit(screen) {
-            let output = AVCaptureVideoDataOutput()
-            output.alwaysDiscardsLateVideoFrames = true
-            output.videoSettings = videoSettings as? [String: Any]
-            return output
-        }
+        let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = videoSettings as? [String: Any]
+        capture = AVCaptureIOUnit(input: screen, output: output, connection: nil)
+        capture?.attach(mixer?.session)
         capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 }
