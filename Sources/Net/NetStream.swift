@@ -60,20 +60,20 @@ open class NetStream: NSObject {
     /// Specifies the hasAudio indicies whether no signal audio or not.
     public var hasAudio: Bool {
         get {
-            mixer.audioIO.muted
+            !mixer.audioIO.muted
         }
         set {
-            mixer.audioIO.muted = newValue
+            mixer.audioIO.muted = !newValue
         }
     }
 
     /// Specifies the hasVideo indicies whether freeze video signal or not.
     public var hasVideo: Bool {
         get {
-            mixer.videoIO.muted
+            !mixer.videoIO.muted
         }
         set {
-            mixer.videoIO.muted = newValue
+            mixer.videoIO.muted = !newValue
         }
     }
 
