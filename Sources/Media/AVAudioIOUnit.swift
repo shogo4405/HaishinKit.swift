@@ -132,18 +132,7 @@ extension AVAudioIOUnit: AudioCodecDelegate {
         guard let formatDescription = formatDescription, let audioEngine = audioEngine else {
             return
         }
-        #if os(iOS)
-        if #available(iOS 9.0, *) {
-            audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
-        } else {
-            guard let asbd = formatDescription.streamBasicDescription?.pointee else {
-                return
-            }
-            audioFormat = AVAudioFormat(commonFormat: .pcmFormatFloat32, sampleRate: asbd.mSampleRate, channels: asbd.mChannelsPerFrame, interleaved: false)
-        }
-        #else
         audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
-        #endif
         nstry({
             if let plyerNode = self.mixer?.mediaLink.playerNode, let audioFormat = self.audioFormat {
                 audioEngine.connect(plyerNode, to: audioEngine.mainMixerNode, format: audioFormat)

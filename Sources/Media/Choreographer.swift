@@ -38,11 +38,7 @@ final class DisplayLinkChoreographer: NSObject, Choreographer {
                 return
             }
             displayLink.isPaused = true
-            if #available(iOS 10.0, tvOS 10.0, *) {
-                displayLink.preferredFramesPerSecond = Self.defaultPreferredFramesPerSecond
-            } else {
-                displayLink.frameInterval = 1
-            }
+            displayLink.preferredFramesPerSecond = Self.defaultPreferredFramesPerSecond
             displayLink.add(to: .main, forMode: .common)
         }
     }
