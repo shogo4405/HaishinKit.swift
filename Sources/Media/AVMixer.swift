@@ -74,6 +74,27 @@ public class AVMixer {
         case passthrough
     }
 
+    var isMultiCamSessionEnabled = false {
+        didSet {
+            guard oldValue != isMultiCamSessionEnabled else {
+                return
+            }
+            #if os(iOS)
+            if #available(iOS 13.0, *) {
+                if isMultiCamSessionEnabled {
+                    if !(session is AVCaptureMultiCamSession) {
+                        session = AVCaptureMultiCamSession()
+                    }
+                } else {
+                    if session is AVCaptureMultiCamSession {
+                        session = AVCaptureSession()
+                    }
+                }
+            }
+            #endif
+        }
+    }
+
     #if os(iOS)
     var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode {
         get {

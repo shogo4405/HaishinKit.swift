@@ -32,7 +32,7 @@ final class LiveViewController: UIViewController {
 
         pipIntentView.layer.borderWidth = 1.0
         pipIntentView.layer.borderColor = UIColor.white.cgColor
-        pipIntentView.bounds = PiPCaptureSetting.default.regionOfInterest
+        pipIntentView.bounds = MultiCamCaptureSetting.default.regionOfInterest
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
 
@@ -72,7 +72,7 @@ final class LiveViewController: UIViewController {
         }
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            rtmpStream.attachPiPCamera(front)
+            rtmpStream.attachMultiCamera(front)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
@@ -109,7 +109,7 @@ final class LiveViewController: UIViewController {
             currentFrame.origin.x += deltaX
             currentFrame.origin.y += deltaY
             pipIntentView.frame = currentFrame
-            rtmpStream.pipCaptureSettings = PiPCaptureSetting(regionOfInterest: currentFrame)
+            rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(regionOfInterest: currentFrame)
         }
     }
 

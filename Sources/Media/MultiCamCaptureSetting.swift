@@ -1,11 +1,10 @@
+#if os(iOS) || os(macOS)
 import CoreMedia
 import Foundation
 
-/// The PiPCaptureSetting represents the pip capture settings for the video capture.
-@available(macOS, unavailable)
-@available(tvOS, unavailable)
-public struct PiPCaptureSetting {
-    public static let `default` = PiPCaptureSetting(
+/// The MultiCamCaptureSetting represents the pip capture settings for the video capture.
+public struct MultiCamCaptureSetting {
+    public static let `default` = MultiCamCaptureSetting(
         regionOfInterest: .init(
             origin: CGPoint(x: 16, y: 16),
             size: .init(width: 160, height: 160)
@@ -20,3 +19,4 @@ public struct PiPCaptureSetting {
         self.regionOfInterest = regionOfInterest
     }
 }
+#endif
