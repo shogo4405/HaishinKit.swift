@@ -28,8 +28,8 @@ final class SettingTests: XCTestCase {
         XCTAssertEqual(5.0, encoder.maxKeyFrameIntervalDuration)
     }
 
-    func testAVMixer() {
-        let mixier = AVMixer()
+    func testIOMixer() {
+        let mixier = IOMixer()
         XCTAssertEqual(mixier.settings[.fps] as? Float64, mixier.fps)
         XCTAssertEqual(mixier.settings[.continuousAutofocus] as? Bool, mixier.continuousAutofocus)
         XCTAssertEqual(mixier.settings[.continuousExposure] as? Bool, mixier.continuousExposure)

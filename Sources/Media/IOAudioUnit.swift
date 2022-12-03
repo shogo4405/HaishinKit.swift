@@ -4,7 +4,7 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
-final class AVAudioIOUnit: NSObject, AVIOUnit {
+final class IOAudioUnit: NSObject, IOUnit {
     lazy var codec: AudioCodec = {
         var codec = AudioCodec()
         codec.lockQueue = lockQueue
@@ -18,11 +18,11 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
             soundTransform.apply(mixer?.mediaLink.playerNode)
         }
     }
-    weak var mixer: AVMixer?
+    weak var mixer: IOMixer?
     var muted = false
 
     #if os(iOS) || os(macOS)
-    var capture: AVCaptureIOUnit<AVCaptureAudioDataOutput>? {
+    var capture: IOCaptureUnit<AVCaptureAudioDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detach(mixer?.session)
@@ -54,7 +54,7 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
         }
         let input = try AVCaptureDeviceInput(device: audio)
         let output = AVCaptureAudioDataOutput()
-        capture = AVCaptureIOUnit(input: input, output: output, connection: nil)
+        capture = IOCaptureUnit(input: input, output: output, connection: nil)
         capture?.attach(mixer.session)
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
@@ -80,8 +80,8 @@ final class AVAudioIOUnit: NSObject, AVIOUnit {
     }
 }
 
-extension AVAudioIOUnit: AVIOUnitEncoding {
-    // MARK: AVIOUnitEncoding
+extension IOAudioUnit: IOUnitEncoding {
+    // MARK: IOUnitEncoding
     func startEncoding(_ delegate: AVCodecDelegate) {
         codec.delegate = delegate
         codec.startRunning()
@@ -93,8 +93,8 @@ extension AVAudioIOUnit: AVIOUnitEncoding {
     }
 }
 
-extension AVAudioIOUnit: AVIOUnitDecoding {
-    // MARK: AVIOUnitDecoding
+extension IOAudioUnit: IOUnitDecoding {
+    // MARK: IOUnitDecoding
     func startDecoding(_ audioEngine: AVAudioEngine) {
         self.audioEngine = audioEngine
         if let playerNode = mixer?.mediaLink.playerNode {
@@ -115,7 +115,7 @@ extension AVAudioIOUnit: AVIOUnitDecoding {
 }
 
 #if os(iOS) || os(macOS)
-extension AVAudioIOUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
+extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.audio) == true else {
@@ -126,7 +126,7 @@ extension AVAudioIOUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
 }
 #endif
 
-extension AVAudioIOUnit: AudioCodecDelegate {
+extension IOAudioUnit: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
     func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
         guard let formatDescription = formatDescription, let audioEngine = audioEngine else {

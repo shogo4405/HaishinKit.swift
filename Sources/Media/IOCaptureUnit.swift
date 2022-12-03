@@ -2,7 +2,7 @@
 import AVFoundation
 import Foundation
 
-struct AVCaptureIOUnit<T: AVCaptureOutput> {
+struct IOCaptureUnit<T: AVCaptureOutput> {
     let input: AVCaptureInput
     let output: T
     let connection: AVCaptureConnection?

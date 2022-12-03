@@ -1,19 +1,19 @@
 import AVFoundation
 
-/// The interface an AVRecorder uses to inform its delegate.
-public protocol AVRecorderDelegate: AnyObject {
+/// The interface an IORecorder uses to inform its delegate.
+public protocol IORecorderDelegate: AnyObject {
     /// Tells the receiver to recorder error occured.
-    func recorder(_ recorder: AVRecorder, errorOccured error: AVRecorder.Error)
+    func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error)
     /// Tells the receiver to finish writing.
-    func recorder(_ recorder: AVRecorder, finishWriting writer: AVAssetWriter)
+    func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter)
 }
 
 // MARK: -
-/// The AVRecorder class represents video and audio recorder.
-public class AVRecorder {
+/// The IORecorder class represents video and audio recorder.
+public class IORecorder {
     private static let interpolationThreshold = 1024 * 4
 
-    /// The AVRecorder error domain codes.
+    /// The IORecorder error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: Swift.Error)
@@ -23,7 +23,7 @@ public class AVRecorder {
         case failedToFinishWriting(error: Swift.Error?)
     }
 
-    /// The default output settings for an AVRecorder.
+    /// The default output settings for an IORecorder.
     public static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -38,13 +38,13 @@ public class AVRecorder {
     ]
 
     /// Specifies the delegate.
-    public weak var delegate: AVRecorderDelegate?
+    public weak var delegate: IORecorderDelegate?
     /// Specifies the recorder settings.
-    public var outputSettings: [AVMediaType: [String: Any]] = AVRecorder.defaultOutputSettings
+    public var outputSettings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings
     /// The running indicies whether recording or not.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
-    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AVRecorder.lock")
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IORecorder.lock")
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
@@ -283,7 +283,7 @@ public class AVRecorder {
     }
 }
 
-extension AVRecorder: Running {
+extension IORecorder: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
