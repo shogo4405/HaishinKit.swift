@@ -117,15 +117,13 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specifies the picture in picuture capture protperties.
-    @available(macOS, unavailable)
-    @available(tvOS, unavailable)
-    public var pipCaptureSettings: PiPCaptureSetting {
+    /// Specifies the multi camera capture properties.
+    public var multiCamCaptureSettings: MultiCamCaptureSetting {
         get {
-            mixer.videoIO.pipCaptureSettings
+            mixer.videoIO.multiCamCaptureSettings
         }
         set {
-            mixer.videoIO.pipCaptureSettings = newValue
+            mixer.videoIO.multiCamCaptureSettings = newValue
         }
     }
 
@@ -149,11 +147,10 @@ open class NetStream: NSObject {
     /// Attaches the camera object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(iOS 13.0, *)
-    @available(macOS, unavailable)
-    open func attachPiPCamera(_ camera: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachMultiCamera(_ camera: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachPiPCamera(camera)
+                try self.mixer.videoIO.attachMultiCamera(camera)
             } catch {
                 onError?(error)
             }
