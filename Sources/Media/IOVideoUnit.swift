@@ -243,7 +243,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    var pipCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
+    var multiCamCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detach(mixer?.session)
@@ -266,8 +266,8 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
     #endif
 
-    private var lastImageBuffer: CVPixelBuffer?
-    private var pipSampleBuffer: CMSampleBuffer?
+    private var pixelBuffer: CVPixelBuffer?
+    private var multiCamSampleBuffer: CMSampleBuffer?
 
     deinit {
         if Thread.isMainThread {
@@ -348,7 +348,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             defer {
                 mixer.session.commitConfiguration()
             }
-            pipCapture = nil
+            multiCamCapture = nil
             return
         }
         mixer.isMultiCamSessionEnabled = true
@@ -365,9 +365,9 @@ final class IOVideoUnit: NSObject, IOUnit {
         #else
         let connection: AVCaptureConnection? = nil
         #endif
-        pipCapture = IOCaptureUnit(input: input, output: output, connection: connection)
-        pipCapture?.attach(mixer.session)
-        pipCapture?.output.connections.forEach { connection in
+        multiCamCapture = IOCaptureUnit(input: input, output: output, connection: connection)
+        multiCamCapture?.attach(mixer.session)
+        multiCamCapture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
             }
@@ -378,7 +378,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
             #endif
         }
-        pipCapture?.output.setSampleBufferDelegate(self, queue: lockQueue)
+        multiCamCapture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
@@ -419,14 +419,12 @@ final class IOVideoUnit: NSObject, IOUnit {
         guard let buffer = sampleBuffer.imageBuffer else {
             return
         }
-
         var imageBuffer: CVImageBuffer?
         buffer.lockBaseAddress()
         defer {
             buffer.unlockBaseAddress()
             imageBuffer?.unlockBaseAddress()
         }
-
         if drawable != nil || !effects.isEmpty {
             let image = effect(buffer, info: sampleBuffer)
             extent = image.extent
@@ -443,27 +441,23 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
             drawable?.enqueue(sampleBuffer)
         }
-
         if muted {
-            if lastImageBuffer == nil {
-                pixelBufferPool.createPixelBuffer(&lastImageBuffer)
+            if pixelBuffer == nil {
+                pixelBufferPool.createPixelBuffer(&pixelBuffer)
             }
-            imageBuffer = lastImageBuffer
+            imageBuffer = pixelBuffer
         }
-
         codec.inputBuffer(
             imageBuffer ?? buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-
         mixer?.recorder.appendPixelBuffer(
             imageBuffer ?? buffer,
             withPresentationTime: sampleBuffer.presentationTimeStamp
         )
-
-        if !self.muted {
-            self.lastImageBuffer = buffer
+        if !muted {
+            pixelBuffer = buffer
         }
     }
 }
@@ -484,7 +478,7 @@ extension IOVideoUnit: IOUnitEncoding {
         #endif
         codec.stopRunning()
         codec.delegate = nil
-        lastImageBuffer = nil
+        pixelBuffer = nil
     }
 }
 
@@ -498,7 +492,7 @@ extension IOVideoUnit: IOUnitDecoding {
     func stopDecoding() {
         codec.stopRunning()
         drawable?.enqueue(nil)
-        lastImageBuffer = nil
+        pixelBuffer = nil
     }
 }
 
@@ -515,9 +509,9 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
                 sampleBuffer.reflectHorizontal()
             }
             #endif
-            appendSampleBuffer(sampleBuffer.over(pipSampleBuffer, regionOfInterest: multiCamCaptureSettings.regionOfInterest))
-        } else if pipCapture?.output == captureOutput {
-            pipSampleBuffer = sampleBuffer
+            appendSampleBuffer(sampleBuffer.over(multiCamSampleBuffer, regionOfInterest: multiCamCaptureSettings.regionOfInterest))
+        } else if multiCamCapture?.output == captureOutput {
+            multiCamSampleBuffer = sampleBuffer
         }
     }
 }
