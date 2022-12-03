@@ -338,9 +338,9 @@
 		BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC34E00225EBB59C005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC34E00825EBB716005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC34FA0B286CB90A00EFAF27 /* PiPHkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */; };
-		BC34FA0E286CBD6D00EFAF27 /* PiPHkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */; };
-		BC34FA0F286CBD6F00EFAF27 /* PiPHkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */; };
+		BC34FA0B286CB90A00EFAF27 /* PiPHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */; };
+		BC34FA0E286CBD6D00EFAF27 /* PiPHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */; };
+		BC34FA0F286CBD6F00EFAF27 /* PiPHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */; };
 		BC44A1A923D31E92002D4297 /* AudioCodecBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */; };
 		BC44A1AA23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */; };
 		BC44A1AB23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */; };
@@ -851,7 +851,7 @@
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
 		BC110256292E661E00D48035 /* PiPCaptureSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPCaptureSetting.swift; sourceTree = "<group>"; };
 		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
-		BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHkView.swift; sourceTree = "<group>"; };
+		BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHKView.swift; sourceTree = "<group>"; };
 		BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecBuffer.swift; sourceTree = "<group>"; wrapsLines = 1; };
 		BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionConvertible.swift; sourceTree = "<group>"; };
 		BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOption.swift; sourceTree = "<group>"; };
@@ -1379,7 +1379,7 @@
 				2901A4ED1D437170002BBD23 /* MediaLink.swift */,
 				2999C3742071138F00892E55 /* MTHKView.swift */,
 				BC110256292E661E00D48035 /* PiPCaptureSetting.swift */,
-				BC34FA0A286CB90A00EFAF27 /* PiPHkView.swift */,
+				BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */,
 				295891001EEB7A8B00CE51E1 /* ScalingMode.swift */,
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
@@ -2112,7 +2112,7 @@
 				BC566F6E25D2ECC500573C4C /* HLSService.swift in Sources */,
 				BCC1A6EF2645B5F800661156 /* MP4PixelAspectRatioBox.swift in Sources */,
 				29EA87EA1E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift in Sources */,
-				BC34FA0B286CB90A00EFAF27 /* PiPHkView.swift in Sources */,
+				BC34FA0B286CB90A00EFAF27 /* PiPHKView.swift in Sources */,
 				BCA97C12263D8C850027213C /* MP4FullBox.swift in Sources */,
 				293B42E92340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
 				2976A47E1D48C5C700B53EF2 /* AVRecorder.swift in Sources */,
@@ -2363,7 +2363,7 @@
 				29B877101CD70D5A00FC07DA /* ASClass.swift in Sources */,
 				29DF20672312A436004057C3 /* RTMPSocketCompatible.swift in Sources */,
 				BCC1A7082647E89300661156 /* BaseDescriptor.swift in Sources */,
-				BC34FA0E286CBD6D00EFAF27 /* PiPHkView.swift in Sources */,
+				BC34FA0E286CBD6D00EFAF27 /* PiPHKView.swift in Sources */,
 				29B877121CD70D5A00FC07DA /* RTMPChunk.swift in Sources */,
 				BC4914A728DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
 				29AF3FD01D7C745200E41212 /* NetStream.swift in Sources */,
@@ -2454,7 +2454,7 @@
 				2958910C1EEB8D1800CE51E1 /* FLVReader.swift in Sources */,
 				BCC1A6E1264470F900661156 /* MP4DataEntryUrlBox.swift in Sources */,
 				29EB3E0F1ED0587C001CAE8B /* AVMixer.swift in Sources */,
-				BC34FA0F286CBD6F00EFAF27 /* PiPHkView.swift in Sources */,
+				BC34FA0F286CBD6F00EFAF27 /* PiPHKView.swift in Sources */,
 				BC94E50C263FEBB60094C169 /* MP4TrackRunBox.swift in Sources */,
 				BC94E508263FEA7F0094C169 /* MP4TrackFragmentBaseMediaDecodeTimeBox.swift in Sources */,
 				BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */,
