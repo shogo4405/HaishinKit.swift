@@ -14,7 +14,7 @@ open class NetStream: NSObject {
     private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
 
     /// The mixer object.
-    public private(set) var mixer = AVMixer()
+    public private(set) var mixer = IOMixer()
 
     /// Specifies the metadata for the stream.
     public var metadata: [String: Any?] = [:]
@@ -53,6 +53,16 @@ open class NetStream: NSObject {
         }
         set {
             mixer.videoIO.orientation = newValue
+        }
+    }
+
+    /// Specifies the multi camera capture properties.
+    public var multiCamCaptureSettings: MultiCamCaptureSetting {
+        get {
+            mixer.videoIO.multiCamCaptureSettings
+        }
+        set {
+            mixer.videoIO.multiCamCaptureSettings = newValue
         }
     }
     #endif
@@ -98,7 +108,7 @@ open class NetStream: NSObject {
     }
 
     /// Specify the avsession properties.
-    open var captureSettings: Setting<AVMixer, AVMixer.Option> {
+    open var captureSettings: Setting<IOMixer, IOMixer.Option> {
         get {
             mixer.settings
         }
@@ -114,16 +124,6 @@ open class NetStream: NSObject {
         }
         set {
             mixer.recorder.outputSettings = newValue
-        }
-    }
-
-    /// Specifies the multi camera capture properties.
-    public var multiCamCaptureSettings: MultiCamCaptureSetting {
-        get {
-            mixer.videoIO.multiCamCaptureSettings
-        }
-        set {
-            mixer.videoIO.multiCamCaptureSettings = newValue
         }
     }
 

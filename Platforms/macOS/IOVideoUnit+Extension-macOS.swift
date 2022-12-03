@@ -2,7 +2,7 @@
 
 import AVFoundation
 
-extension AVVideoIOUnit {
+extension IOVideoUnit {
     func attachScreen(_ screen: AVCaptureScreenInput?) {
         mixer?.session.beginConfiguration()
         defer {
@@ -15,7 +15,7 @@ extension AVVideoIOUnit {
         let output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
         output.videoSettings = videoSettings as? [String: Any]
-        capture = AVCaptureIOUnit(input: screen, output: output, connection: nil)
+        capture = IOCaptureUnit(input: screen, output: output, connection: nil)
         capture?.attach(mixer?.session)
         capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }

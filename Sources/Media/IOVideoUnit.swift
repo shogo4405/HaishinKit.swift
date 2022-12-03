@@ -1,7 +1,7 @@
 import AVFoundation
 import CoreImage
 
-final class AVVideoIOUnit: NSObject, AVIOUnit {
+final class IOVideoUnit: NSObject, IOUnit {
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
@@ -41,7 +41,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         codec.lockQueue = lockQueue
         return codec
     }()
-    weak var mixer: AVMixer?
+    weak var mixer: IOMixer?
     var muted = false
 
     private(set) var effects: Set<VideoEffect> = []
@@ -78,7 +78,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
 
     #if os(iOS) || os(macOS)
-    var fps: Float64 = AVMixer.defaultFPS {
+    var fps: Float64 = IOMixer.defaultFPS {
         didSet {
             guard let device = capture?.device, let data = device.actualFPS(fps) else {
                 return
@@ -100,7 +100,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
 
     var position: AVCaptureDevice.Position = .back
 
-    var videoSettings: [NSObject: AnyObject] = AVMixer.defaultVideoSettings {
+    var videoSettings: [NSObject: AnyObject] = IOMixer.defaultVideoSettings {
         didSet {
             capture?.output.videoSettings = videoSettings as? [String: Any]
         }
@@ -236,14 +236,14 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         }
     }
 
-    var capture: AVCaptureIOUnit<AVCaptureVideoDataOutput>? {
+    var capture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detach(mixer?.session)
         }
     }
 
-    var pipCapture: AVCaptureIOUnit<AVCaptureVideoDataOutput>? {
+    var pipCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detach(mixer?.session)
@@ -312,7 +312,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         #else
         let connection: AVCaptureConnection? = nil
         #endif
-        capture = AVCaptureIOUnit(input: input, output: output, connection: connection)
+        capture = IOCaptureUnit(input: input, output: output, connection: connection)
         capture?.attach(mixer.session)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
@@ -365,7 +365,7 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
         #else
         let connection: AVCaptureConnection? = nil
         #endif
-        pipCapture = AVCaptureIOUnit(input: input, output: output, connection: connection)
+        pipCapture = IOCaptureUnit(input: input, output: output, connection: connection)
         pipCapture?.attach(mixer.session)
         pipCapture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
@@ -468,8 +468,8 @@ final class AVVideoIOUnit: NSObject, AVIOUnit {
     }
 }
 
-extension AVVideoIOUnit: AVIOUnitEncoding {
-    // MARK: AVIOUnitEncoding
+extension IOVideoUnit: IOUnitEncoding {
+    // MARK: IOUnitEncoding
     func startEncoding(_ delegate: AVCodecDelegate) {
         #if os(iOS)
         screen?.startRunning()
@@ -488,8 +488,8 @@ extension AVVideoIOUnit: AVIOUnitEncoding {
     }
 }
 
-extension AVVideoIOUnit: AVIOUnitDecoding {
-    // MARK: AVIOUnitDecoding
+extension IOVideoUnit: IOUnitDecoding {
+    // MARK: IOUnitDecoding
     func startDecoding(_ audioEndinge: AVAudioEngine) {
         codec.delegate = self
         codec.startRunning()
@@ -502,7 +502,8 @@ extension AVVideoIOUnit: AVIOUnitDecoding {
     }
 }
 
-extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
+#if os(iOS) || os(macOS)
+extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if capture?.output == captureOutput {
@@ -520,8 +521,9 @@ extension AVVideoIOUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 }
+#endif
 
-extension AVVideoIOUnit: VideoCodecDelegate {
+extension IOVideoUnit: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
     func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
     }

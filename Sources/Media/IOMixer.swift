@@ -6,16 +6,16 @@ extension AVCaptureSession.Preset {
 }
 #endif
 
-protocol AVMixerDelegate: AnyObject {
-    func mixer(_ mixer: AVMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
-    func mixer(_ mixer: AVMixer, didOutput video: CMSampleBuffer)
+protocol IOMixerDelegate: AnyObject {
+    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
 }
 
 /// An object that mixies audio and video for streaming.
-public class AVMixer {
-    /// The default fps for an AVMixer, value is 30.
+public class IOMixer {
+    /// The default fps for an IOMixer, value is 30.
     public static let defaultFPS: Float64 = 30
-    /// The default videoSettings for an AVMixer.
+    /// The default videoSettings for an IOMixer.
     public static let defaultVideoSettings: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
@@ -43,18 +43,18 @@ public class AVMixer {
         public var keyPath: AnyKeyPath {
             switch self {
             case .fps:
-                return \AVMixer.fps
+                return \IOMixer.fps
             case .sessionPreset:
-                return \AVMixer.sessionPreset
+                return \IOMixer.sessionPreset
             case .continuousAutofocus:
-                return \AVMixer.continuousAutofocus
+                return \IOMixer.continuousAutofocus
             case .continuousExposure:
-                return \AVMixer.continuousExposure
+                return \IOMixer.continuousExposure
             case .isVideoMirrored:
-                return \AVMixer.isVideoMirrored
+                return \IOMixer.isVideoMirrored
             #if os(iOS)
             case .preferredVideoStabilizationMode:
-                return \AVMixer.preferredVideoStabilizationMode
+                return \IOMixer.preferredVideoStabilizationMode
             #endif
             }
         }
@@ -62,7 +62,7 @@ public class AVMixer {
     #else
     /// The AVCaptureSession options. This is a stub.
     public struct Option: KeyPathRepresentable {
-        public static var allCases: [AVMixer.Option] = []
+        public static var allCases: [IOMixer.Option] = []
         public var keyPath: AnyKeyPath
         // swiftlint:disable nesting
         public typealias AllCases = [Option]
@@ -177,7 +177,7 @@ public class AVMixer {
     }
     #endif
     /// The recorder instance.
-    public lazy var recorder = AVRecorder()
+    public lazy var recorder = IORecorder()
 
     /// Specifies the drawable object.
     public weak var drawable: NetStreamDrawable? {
@@ -191,22 +191,22 @@ public class AVMixer {
 
     var mediaSync = MediaSync.passthrough
 
-    var settings: Setting<AVMixer, Option> = [:] {
+    var settings: Setting<IOMixer, Option> = [:] {
         didSet {
             settings.observer = self
         }
     }
 
-    weak var delegate: AVMixerDelegate?
+    weak var delegate: IOMixerDelegate?
 
-    lazy var audioIO: AVAudioIOUnit = {
-        var audioIO = AVAudioIOUnit()
+    lazy var audioIO: IOAudioUnit = {
+        var audioIO = IOAudioUnit()
         audioIO.mixer = self
         return audioIO
     }()
 
-    lazy var videoIO: AVVideoIOUnit = {
-        var videoIO = AVVideoIOUnit()
+    lazy var videoIO: IOVideoUnit = {
+        var videoIO = IOVideoUnit()
         videoIO.mixer = self
         return videoIO
     }()
@@ -220,7 +220,7 @@ public class AVMixer {
     private var audioTimeStamp = CMTime.zero
     private var videoTimeStamp = CMTime.zero
 
-    /// Create a AVMixer instance.
+    /// Create a IOMixer instance.
     public init() {
         settings.observer = self
     }
@@ -249,7 +249,7 @@ public class AVMixer {
     #endif
 }
 
-extension AVMixer: AVIOUnitEncoding {
+extension IOMixer: IOUnitEncoding {
     /// Starts encoding for video and audio data.
     public func startEncoding(_ delegate: AVCodecDelegate) {
         videoIO.startEncoding(delegate)
@@ -265,7 +265,7 @@ extension AVMixer: AVIOUnitEncoding {
     }
 }
 
-extension AVMixer: AVIOUnitDecoding {
+extension IOMixer: IOUnitDecoding {
     /// Starts decoding for video and audio data.
     public func startDecoding(_ audioEngine: AVAudioEngine) {
         mediaLink.startRunning()
@@ -281,7 +281,7 @@ extension AVMixer: AVIOUnitDecoding {
     }
 }
 
-extension AVMixer: MediaLinkDelegate {
+extension IOMixer: MediaLinkDelegate {
     // MARK: MediaLinkDelegate
     func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer) {
         videoIO.codec.inputBuffer(sampleBuffer)
@@ -293,7 +293,7 @@ extension AVMixer: MediaLinkDelegate {
 }
 
 #if os(iOS) || os(macOS)
-extension AVMixer: Running {
+extension IOMixer: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
         .init(session.isRunning)
@@ -314,7 +314,7 @@ extension AVMixer: Running {
     }
 }
 #else
-extension AVMixer: Running {
+extension IOMixer: Running {
     // MARK: Running
     public var isRunning: Atomic<Bool> {
         .init(false)

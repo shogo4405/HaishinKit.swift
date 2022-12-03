@@ -221,13 +221,13 @@ final class ViewModel: ObservableObject {
     }
 }
 
-extension ViewModel: AVRecorderDelegate {
-    // MARK: AVRecorderDelegate
-    func recorder(_ recorder: AVRecorder, errorOccured error: AVRecorder.Error) {
+extension ViewModel: IORecorderDelegate {
+    // MARK: IORecorderDelegate
+    func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error) {
         logger.error(error)
     }
 
-    func recorder(_ recorder: AVRecorder, finishWriting writer: AVAssetWriter) {
+    func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter) {
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
         }, completionHandler: { _, error -> Void in
