@@ -174,7 +174,21 @@ open class NetStream: NSObject {
         mixer.videoIO.focusPointOfInterest = focus
         mixer.videoIO.exposurePointOfInterest = exposure
     }
+
+    #if os(macOS)
+    public func attachScreen(_ screen: AVCaptureScreenInput?) {
+        lockQueue.async {
+            self.mixer.videoIO.attachScreen(screen)
+        }
+    }
     #endif
+    #endif
+
+    open func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {
+        lockQueue.async {
+            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
+        }
+    }
 
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.

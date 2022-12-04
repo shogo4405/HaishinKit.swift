@@ -131,7 +131,6 @@
 		297E69132324E38800D418AB /* AudioCodecFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodecFormat.swift */; };
 		297E69142324E38800D418AB /* AudioCodecFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 297E69112324E38800D418AB /* AudioCodecFormat.swift */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
-		2992D1541ED04A2C008D9DC1 /* IOVideoUnit+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2992D1521ED04A1B008D9DC1 /* IOVideoUnit+Extension-macOS.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		299B13271D3B751400A1E8F5 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* HKView.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
@@ -213,7 +212,6 @@
 		29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		29D3D4CF1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift */; };
 		29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */; };
-		29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */; };
 		29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */; };
 		29D3D4EA1ED0519400DD4AA6 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
@@ -405,6 +403,9 @@
 		BC9F9C7826F8C16600B01ED0 /* Choreographer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */; };
 		BC9F9C7926F8C16600B01ED0 /* Choreographer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */; };
 		BC9F9C7A26F8C16600B01ED0 /* Choreographer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */; };
+		BCA2252C293CC5B600DD7CB2 /* CaptureSessionConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2252B293CC5B600DD7CB2 /* CaptureSessionConvertible.swift */; };
+		BCA2252D293CC5B600DD7CB2 /* CaptureSessionConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2252B293CC5B600DD7CB2 /* CaptureSessionConvertible.swift */; };
+		BCA2252E293CC5B600DD7CB2 /* CaptureSessionConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2252B293CC5B600DD7CB2 /* CaptureSessionConvertible.swift */; };
 		BCA97B86263AC0F30027213C /* MP4BoxConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA97B85263AC0F30027213C /* MP4BoxConvertible.swift */; };
 		BCA97B87263AC0F30027213C /* MP4BoxConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA97B85263AC0F30027213C /* MP4BoxConvertible.swift */; };
 		BCA97B88263AC0F30027213C /* MP4BoxConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA97B85263AC0F30027213C /* MP4BoxConvertible.swift */; };
@@ -760,7 +761,6 @@
 		297E69112324E38800D418AB /* AudioCodecFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecFormat.swift; sourceTree = "<group>"; };
 		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
-		2992D1521ED04A1B008D9DC1 /* IOVideoUnit+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IOVideoUnit+Extension-macOS.swift"; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenCaptureSession.swift; sourceTree = "<group>"; };
@@ -814,7 +814,6 @@
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4CE1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IOVideoUnit+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
-		29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension-macOS.swift"; sourceTree = "<group>"; };
 		29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceUtil+Extenstion.swift"; sourceTree = "<group>"; };
 		29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4E51ED0518900DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -870,6 +869,7 @@
 		BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4ReaderConvertible.swift; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamDrawable.swift; sourceTree = "<group>"; };
 		BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Choreographer.swift; sourceTree = "<group>"; };
+		BCA2252B293CC5B600DD7CB2 /* CaptureSessionConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureSessionConvertible.swift; sourceTree = "<group>"; };
 		BCA97B85263AC0F30027213C /* MP4BoxConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4BoxConvertible.swift; sourceTree = "<group>"; };
 		BCA97B89263AC1830027213C /* MP4Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4Box.swift; sourceTree = "<group>"; };
 		BCA97B8D263AC49B0027213C /* MP4MediaHeaderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4MediaHeaderBox.swift; sourceTree = "<group>"; };
@@ -1262,8 +1262,6 @@
 				296543591D62FE6200734698 /* HaishinKit.h */,
 				2965435A1D62FE6200734698 /* HKView-macOS.swift */,
 				296543581D62FE6200734698 /* Info.plist */,
-				2992D1521ED04A1B008D9DC1 /* IOVideoUnit+Extension-macOS.swift */,
-				29D3D4D21ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift */,
 			);
 			path = macOS;
 			sourceTree = "<group>";
@@ -1369,6 +1367,7 @@
 			isa = PBXGroup;
 			children = (
 				2941746A22D069B300A2944F /* AudioEffect.swift */,
+				BCA2252B293CC5B600DD7CB2 /* CaptureSessionConvertible.swift */,
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
 				29B876891CD70AFE00FC07DA /* IOAudioUnit.swift */,
 				BC1102492925147300D48035 /* IOCaptureUnit.swift */,
@@ -2136,6 +2135,7 @@
 				BCC1A7132647F28F00661156 /* SLConfigDescriptor.swift in Sources */,
 				29DF20622312A3DD004057C3 /* RTMPNWSocket.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
+				BCA2252C293CC5B600DD7CB2 /* CaptureSessionConvertible.swift in Sources */,
 				BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
 				BC4914B228DDFE31009E2DF6 /* VTSessionOptionKey.swift in Sources */,
 				29EA87E61E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
@@ -2253,6 +2253,7 @@
 				BCB977402621812800C9A649 /* AVCFormatStream.swift in Sources */,
 				29B876EE1CD70D5900FC07DA /* VideoCodec.swift in Sources */,
 				BCA97BF1263C31020027213C /* MP4SampleDescriptionBox.swift in Sources */,
+				BCA2252D293CC5B600DD7CB2 /* CaptureSessionConvertible.swift in Sources */,
 				29EA87EB1E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift in Sources */,
 				29B876F01CD70D5900FC07DA /* Constants.swift in Sources */,
 				29EA87D91E79A0090043A5F8 /* URL+Extension.swift in Sources */,
@@ -2272,7 +2273,6 @@
 				BC4C9EB023F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				2942A4F921A9418A004E1BEE /* Running.swift in Sources */,
 				BC110254292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
-				29D3D4D31ED04D9600DD4AA6 /* NetStream+Extension-macOS.swift in Sources */,
 				29EA87D61E799F6A0043A5F8 /* Mirror+Extension.swift in Sources */,
 				BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */,
 				297E69132324E38800D418AB /* AudioCodecFormat.swift in Sources */,
@@ -2322,7 +2322,6 @@
 				BCC1A6E826447CCA00661156 /* MP4MovieHeaderBox.swift in Sources */,
 				29B877051CD70D5A00FC07DA /* IOMixer.swift in Sources */,
 				294B2D3323785E3800CE7BDC /* CircularBuffer.swift in Sources */,
-				2992D1541ED04A2C008D9DC1 /* IOVideoUnit+Extension-macOS.swift in Sources */,
 				2976A47F1D48FD6900B53EF2 /* IORecorder.swift in Sources */,
 				BCA97BF5263C390E0027213C /* CustomXmlStringConvertible.swift in Sources */,
 				BC44A1AA23D31E92002D4297 /* AudioCodecBuffer.swift in Sources */,
@@ -2479,6 +2478,7 @@
 				29EB3E131ED05887001CAE8B /* SoundTransform.swift in Sources */,
 				29EB3DF81ED05799001CAE8B /* Mirror+Extension.swift in Sources */,
 				BCA97C1A263DA5070027213C /* MP4AudioSampleEntry.swift in Sources */,
+				BCA2252E293CC5B600DD7CB2 /* CaptureSessionConvertible.swift in Sources */,
 				BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				BC9CFA9523BDE8B700917EEF /* NetStreamDrawable.swift in Sources */,
 				BCC1A6E926447CCA00661156 /* MP4MovieHeaderBox.swift in Sources */,

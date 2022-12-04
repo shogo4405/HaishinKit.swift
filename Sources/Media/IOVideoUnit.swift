@@ -240,14 +240,14 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    var capture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
+    private(set) var capture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
         }
     }
 
-    var multiCamCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
+    private(set) var multiCamCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
@@ -257,8 +257,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     var multiCamCaptureSettings: MultiCamCaptureSetting = .default
     #endif
 
-    #if os(iOS)
-    var screen: CaptureSessionConvertible? {
+    private(set) var screen: CaptureSessionConvertible? {
         didSet {
             if let oldValue = oldValue {
                 oldValue.delegate = nil
@@ -268,7 +267,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-    #endif
 
     private var pixelBuffer: CVPixelBuffer?
     private var multiCamSampleBuffer: CMSampleBuffer?
@@ -402,6 +400,41 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
     #endif
 
+    #if os(macOS)
+    func attachScreen(_ screen: AVCaptureScreenInput?) {
+        mixer?.session.beginConfiguration()
+        defer {
+            mixer?.session.commitConfiguration()
+        }
+        guard let screen else {
+            capture = nil
+            return
+        }
+        let output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = videoSettings as? [String: Any]
+        capture = IOCaptureUnit(input: screen, output: output, connection: nil)
+        capture?.attachSession(mixer?.session)
+        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
+    }
+    #endif
+
+    func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {
+        guard let screen = screen else {
+            self.screen?.stopRunning()
+            self.screen = nil
+            return
+        }
+        #if os(iOS) || os(macOS)
+        capture = nil
+        #endif
+        if useScreenSize {
+            codec.width = screen.attributes["Width"] as! Int32
+            codec.height = screen.attributes["Height"] as! Int32
+        }
+        self.screen = screen
+    }
+
     @inline(__always)
     func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
         var image = CIImage(cvPixelBuffer: buffer)
@@ -515,7 +548,7 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
                 sampleBuffer.reflectHorizontal()
             }
             #endif
-            appendSampleBuffer(sampleBuffer.over(multiCamSampleBuffer, regionOfInterest: multiCamCaptureSettings.regionOfInterest))
+            appendSampleBuffer(sampleBuffer.over(multiCamSampleBuffer, regionOfInterest: multiCamCaptureSettings.regionOfInterest, radius: multiCamCaptureSettings.cornerRadius))
         } else if multiCamCapture?.output == captureOutput {
             multiCamSampleBuffer = sampleBuffer
         }
@@ -533,5 +566,33 @@ extension IOVideoUnit: VideoCodecDelegate {
     }
 
     func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+    }
+}
+
+extension IOVideoUnit: CaptureSessionDelegate {
+    // MARK: CaptureSessionDelegate
+    func session(_ session: CaptureSessionConvertible, didSet size: CGSize) {
+        lockQueue.async {
+            self.codec.width = Int32(size.width)
+            self.codec.height = Int32(size.height)
+        }
+    }
+
+    func session(_ session: CaptureSessionConvertible, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime) {
+        if !effects.isEmpty {
+            // usually the context comes from HKView or MTLHKView
+            // but if you have not attached a view then the context is nil
+            if context == nil {
+                logger.info("no ci context, creating one to render effect")
+                context = CIContext()
+            }
+            context?.render(effect(pixelBuffer, info: nil), to: pixelBuffer)
+        }
+        codec.inputBuffer(
+            pixelBuffer,
+            presentationTimeStamp: presentationTime,
+            duration: CMTime.invalid
+        )
+        mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: presentationTime)
     }
 }

@@ -102,7 +102,7 @@ extension CMSampleBuffer {
         return self
     }
 
-    func over(_ sampleBuffer: CMSampleBuffer?, regionOfInterest roi: CGRect = .zero) -> CMSampleBuffer {
+    func over(_ sampleBuffer: CMSampleBuffer?, regionOfInterest roi: CGRect = .zero, radius: CGFloat = 0.0) -> CMSampleBuffer {
         guard var inputImageBuffer = vImage_Buffer(cvPixelBuffer: sampleBuffer?.imageBuffer, format: &CMSampleBuffer.format) else {
             return self
         }
@@ -118,12 +118,13 @@ extension CMSampleBuffer {
         let xScale = Float(roi.width) / Float(inputImageBuffer.width)
         let yScale = Float(roi.height) / Float(inputImageBuffer.height)
         let scaleFactor = (xScale < yScale) ? xScale : yScale
-        var scaledInputImageBuffer = inputImageBuffer.scale(scaleFactor )
+        var scaledInputImageBuffer = inputImageBuffer.scale(scaleFactor)
+        scaledInputImageBuffer.cornerRadius(radius)
         defer {
             scaledInputImageBuffer.free()
         }
-        _ = srcImageBuffer.over(&scaledInputImageBuffer, origin: roi.origin)
-        _ = srcImageBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
+        srcImageBuffer.over(&scaledInputImageBuffer, origin: roi.origin)
+        srcImageBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
         return self
     }
 
@@ -179,7 +180,7 @@ extension CMSampleBuffer {
                 vImage_Flags(kvImageLeaveAlphaUnchanged)) == kvImageNoError else {
             return
         }
-        _ = destinationBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
+        destinationBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
     }
     #endif
 }

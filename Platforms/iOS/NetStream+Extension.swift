@@ -13,12 +13,6 @@ extension NetStream {
         }
     }
 
-    public func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
-        }
-    }
-
     public var zoomFactor: CGFloat {
         self.mixer.videoIO.zoomFactor
     }
