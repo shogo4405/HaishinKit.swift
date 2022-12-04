@@ -166,13 +166,13 @@ public class IOMixer {
             if oldValue.isRunning {
                 oldValue.stopRunning()
             }
-            audioIO.capture?.detach(oldValue)
-            videoIO.capture?.detach(oldValue)
+            audioIO.capture?.detachSession(oldValue)
+            videoIO.capture?.detachSession(oldValue)
             if session.canSetSessionPreset(sessionPreset) {
                 session.sessionPreset = sessionPreset
             }
-            audioIO.capture?.attach(session)
-            videoIO.capture?.attach(session)
+            audioIO.capture?.attachSession(session)
+            videoIO.capture?.attachSession(session)
         }
     }
     #endif

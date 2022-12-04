@@ -10,6 +10,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         codec.lockQueue = lockQueue
         return codec
     }()
+
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
 
     var audioEngine: AVAudioEngine?
@@ -25,7 +26,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     var capture: IOCaptureUnit<AVCaptureAudioDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
-            oldValue?.detach(mixer?.session)
+            oldValue?.detachSession(mixer?.session)
         }
     }
     #endif
@@ -55,7 +56,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         let input = try AVCaptureDeviceInput(device: audio)
         let output = AVCaptureAudioDataOutput()
         capture = IOCaptureUnit(input: input, output: output, connection: nil)
-        capture?.attach(mixer.session)
+        capture?.attachSession(mixer.session)
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif

@@ -21,27 +21,28 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    #if os(iOS) || os(macOS)
     weak var drawable: NetStreamDrawable? {
         didSet {
+            #if os(iOS) || os(macOS)
             drawable?.orientation = orientation
+            #endif
         }
     }
-    #else
-    weak var drawable: NetStreamDrawable?
-    #endif
 
     var formatDescription: CMVideoFormatDescription? {
         didSet {
             codec.formatDescription = formatDescription
         }
     }
+
     lazy var codec: VideoCodec = {
         var codec = VideoCodec()
         codec.lockQueue = lockQueue
         return codec
     }()
+
     weak var mixer: IOMixer?
+
     var muted = false
 
     private(set) var effects: Set<VideoEffect> = []
@@ -85,8 +86,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
             fps = data.fps
             codec.expectedFrameRate = data.fps
-            logger.info("\(data)")
-
             do {
                 try device.lockForConfiguration()
                 device.activeVideoMinFrameDuration = data.duration
@@ -111,28 +110,33 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard isVideoMirrored != oldValue else {
                 return
             }
-            capture?.output.connections.forEach { connection in
-                if connection.isVideoMirroringSupported {
-                    connection.isVideoMirrored = isVideoMirrored
-                }
+            capture?.output.connections.filter({ $0.isVideoMirroringSupported }).forEach { connection in
+                connection.isVideoMirrored = isVideoMirrored
             }
         }
     }
 
     var orientation: AVCaptureVideoOrientation = .portrait {
         didSet {
+            mixer?.session.beginConfiguration()
+            defer {
+                mixer?.session.commitConfiguration()
+                // https://github.com/shogo4405/HaishinKit.swift/issues/190
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    if self.torch {
+                        self.setTorchMode(.on)
+                    }
+                }
+            }
             drawable?.orientation = orientation
             guard orientation != oldValue else {
                 return
             }
             capture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
                 connection.videoOrientation = orientation
-                if torch {
-                    setTorchMode(.on)
-                }
-                #if os(iOS)
-                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
-                #endif
+            }
+            multiCamCapture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
+                connection.videoOrientation = orientation
             }
         }
     }
@@ -230,7 +234,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard preferredVideoStabilizationMode != oldValue else {
                 return
             }
-            capture?.output.connections.forEach { connection in
+            capture?.output.connections.filter({ $0.isVideoStabilizationSupported }).forEach { connection in
                 connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
             }
         }
@@ -239,14 +243,14 @@ final class IOVideoUnit: NSObject, IOUnit {
     var capture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
-            oldValue?.detach(mixer?.session)
+            oldValue?.detachSession(mixer?.session)
         }
     }
 
     var multiCamCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
-            oldValue?.detach(mixer?.session)
+            oldValue?.detachSession(mixer?.session)
         }
     }
 
@@ -313,7 +317,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         let connection: AVCaptureConnection? = nil
         #endif
         capture = IOCaptureUnit(input: input, output: output, connection: connection)
-        capture?.attach(mixer.session)
+        capture?.attachSession(mixer.session)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
@@ -322,7 +326,9 @@ final class IOVideoUnit: NSObject, IOUnit {
                 connection.isVideoMirrored = isVideoMirrored
             }
             #if os(iOS)
-            connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            if connection.isVideoStabilizationSupported {
+                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            }
             #endif
         }
         capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
@@ -366,7 +372,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         let connection: AVCaptureConnection? = nil
         #endif
         multiCamCapture = IOCaptureUnit(input: input, output: output, connection: connection)
-        multiCamCapture?.attach(mixer.session)
+        multiCamCapture?.attachSession(mixer.session)
         multiCamCapture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation

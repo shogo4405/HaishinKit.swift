@@ -11,7 +11,7 @@ struct IOCaptureUnit<T: AVCaptureOutput> {
         (input as? AVCaptureDeviceInput)?.device
     }
 
-    func attach(_ session: AVCaptureSession?) {
+    func attachSession(_ session: AVCaptureSession?) {
         guard let session else {
             return
         }
@@ -35,7 +35,7 @@ struct IOCaptureUnit<T: AVCaptureOutput> {
         }
     }
 
-    func detach(_ session: AVCaptureSession?) {
+    func detachSession(_ session: AVCaptureSession?) {
         guard let session else {
             return
         }
