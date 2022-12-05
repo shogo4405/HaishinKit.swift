@@ -1349,7 +1349,6 @@
 				299F7E3A1CD71A97001E7272 /* Info.plist */,
 				29D3D4CE1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift */,
 				29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */,
-				299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1380,6 +1379,7 @@
 				BC110256292E661E00D48035 /* MultiCamCaptureSetting.swift */,
 				BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */,
 				295891001EEB7A8B00CE51E1 /* ScalingMode.swift */,
+				299B131C1D35272D00A1E8F5 /* ScreenCaptureSession.swift */,
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
 			);
