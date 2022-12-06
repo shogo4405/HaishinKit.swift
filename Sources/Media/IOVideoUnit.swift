@@ -240,14 +240,14 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    private(set) var capture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
+    private(set) var capture: IOVideoCaptureUnit? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
         }
     }
 
-    private(set) var multiCamCapture: IOCaptureUnit<AVCaptureVideoDataOutput>? {
+    private(set) var multiCamCapture: IOVideoCaptureUnit? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
@@ -314,7 +314,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         #else
         let connection: AVCaptureConnection? = nil
         #endif
-        capture = IOCaptureUnit(input: input, output: output, connection: connection)
+        capture = IOVideoCaptureUnit(input: input, output: output, connection: connection)
         capture?.attachSession(mixer.session)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
@@ -369,7 +369,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         #else
         let connection: AVCaptureConnection? = nil
         #endif
-        multiCamCapture = IOCaptureUnit(input: input, output: output, connection: connection)
+        multiCamCapture = IOVideoCaptureUnit(input: input, output: output, connection: connection)
         multiCamCapture?.attachSession(mixer.session)
         multiCamCapture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {

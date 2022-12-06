@@ -23,7 +23,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     var muted = false
 
     #if os(iOS) || os(macOS)
-    var capture: IOCaptureUnit<AVCaptureAudioDataOutput>? {
+    var capture: IOAudioCaptureUnit? {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
@@ -55,7 +55,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
         let input = try AVCaptureDeviceInput(device: audio)
         let output = AVCaptureAudioDataOutput()
-        capture = IOCaptureUnit(input: input, output: output, connection: nil)
+        capture = IOAudioCaptureUnit(input: input, output: output, connection: nil)
         capture?.attachSession(mixer.session)
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession

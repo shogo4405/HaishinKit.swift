@@ -2,15 +2,15 @@
 import AVFoundation
 import Foundation
 
-struct IOCaptureUnit<T: AVCaptureOutput> {
-    let input: AVCaptureInput
-    let output: T
-    let connection: AVCaptureConnection?
+protocol IOCaptureUnit {
+    associatedtype Output: AVCaptureOutput
 
-    var device: AVCaptureDevice? {
-        (input as? AVCaptureDeviceInput)?.device
-    }
+    var input: AVCaptureInput { get }
+    var output: Output { get }
+    var connection: AVCaptureConnection? { get }
+}
 
+extension IOCaptureUnit {
     func attachSession(_ session: AVCaptureSession?) {
         guard let session else {
             return
@@ -51,5 +51,25 @@ struct IOCaptureUnit<T: AVCaptureOutput> {
             session.removeOutput(output)
         }
     }
+}
+
+struct IOVideoCaptureUnit: IOCaptureUnit {
+    typealias Output = AVCaptureVideoDataOutput
+
+    var device: AVCaptureDevice? {
+        (input as? AVCaptureDeviceInput)?.device
+    }
+
+    let input: AVCaptureInput
+    let output: Output
+    let connection: AVCaptureConnection?
+}
+
+struct IOAudioCaptureUnit: IOCaptureUnit {
+    typealias Output = AVCaptureAudioDataOutput
+
+    let input: AVCaptureInput
+    let output: Output
+    let connection: AVCaptureConnection?
 }
 #endif
