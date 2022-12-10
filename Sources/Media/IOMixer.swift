@@ -225,6 +225,14 @@ public class IOMixer {
         settings.observer = self
     }
 
+    #if os(iOS) || os(macOS)
+    deinit {
+        if session.isRunning {
+            session.stopRunning()
+        }
+    }
+    #endif
+
     func useSampleBuffer(sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) -> Bool {
         switch mediaSync {
         case .video:
@@ -240,13 +248,17 @@ public class IOMixer {
         }
     }
 
-    #if os(iOS) || os(macOS)
-    deinit {
-        if session.isRunning {
-            session.stopRunning()
-        }
+    @objc
+    private func didEnterBackground(_ notification: Notification) {
+        videoIO.multiCamCapture?.detachSession(session)
+        videoIO.capture?.detachSession(session)
     }
-    #endif
+
+    @objc
+    private func didBecomeActive(_ notification: Notification) {
+        videoIO.capture?.attachSession(session)
+        videoIO.multiCamCapture?.attachSession(session)
+    }
 }
 
 extension IOMixer: IOUnitEncoding {
@@ -303,6 +315,8 @@ extension IOMixer: Running {
         guard !isRunning.value else {
             return
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
         session.startRunning()
     }
 
@@ -310,6 +324,8 @@ extension IOMixer: Running {
         guard isRunning.value else {
             return
         }
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
         session.stopRunning()
     }
 }
