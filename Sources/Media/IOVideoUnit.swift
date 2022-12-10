@@ -253,9 +253,9 @@ final class IOVideoUnit: NSObject, IOUnit {
             oldValue?.detachSession(mixer?.session)
         }
     }
+    #endif
 
     var multiCamCaptureSettings: MultiCamCaptureSetting = .default
-    #endif
 
     private(set) var screen: CaptureSessionConvertible? {
         didSet {
@@ -464,6 +464,15 @@ final class IOVideoUnit: NSObject, IOUnit {
             buffer.unlockBaseAddress()
             imageBuffer?.unlockBaseAddress()
         }
+        if let multiCamPixelBuffer = multiCamSampleBuffer?.imageBuffer {
+            multiCamPixelBuffer.lockBaseAddress()
+            buffer.over(
+                multiCamPixelBuffer,
+                regionOfInterest: multiCamCaptureSettings.regionOfInterest,
+                radius: multiCamCaptureSettings.cornerRadius
+            )
+            multiCamPixelBuffer.unlockBaseAddress()
+        }
         if drawable != nil || !effects.isEmpty {
             let image = effect(buffer, info: sampleBuffer)
             extent = image.extent
@@ -548,7 +557,7 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
                 sampleBuffer.reflectHorizontal()
             }
             #endif
-            appendSampleBuffer(sampleBuffer.over(multiCamSampleBuffer, regionOfInterest: multiCamCaptureSettings.regionOfInterest, radius: multiCamCaptureSettings.cornerRadius))
+            appendSampleBuffer(sampleBuffer)
         } else if multiCamCapture?.output == captureOutput {
             multiCamSampleBuffer = sampleBuffer
         }

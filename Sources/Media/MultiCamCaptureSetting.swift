@@ -1,4 +1,3 @@
-#if os(iOS) || os(macOS)
 import CoreMedia
 import Foundation
 
@@ -23,4 +22,3 @@ public struct MultiCamCaptureSetting {
         self.regionOfInterest = regionOfInterest
     }
 }
-#endif

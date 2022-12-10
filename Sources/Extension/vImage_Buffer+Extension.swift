@@ -3,24 +3,6 @@ import CoreMedia
 import Foundation
 
 extension vImage_Buffer {
-    init?(cvPixelBuffer: CVPixelBuffer?, format: inout vImage_CGImageFormat) {
-        guard let cvPixelBuffer else {
-            return nil
-        }
-        self.init()
-        let cvImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(cvPixelBuffer).takeRetainedValue()
-        vImageCVImageFormat_SetColorSpace(cvImageFormat, CGColorSpaceCreateDeviceRGB())
-        guard vImageBuffer_InitWithCVPixelBuffer(
-                &self,
-                &format,
-                cvPixelBuffer,
-                cvImageFormat,
-                nil,
-                vImage_Flags(kvImageNoFlags)) == kvImageNoError else {
-            return nil
-        }
-    }
-
     init?(height: vImagePixelCount, width: vImagePixelCount, pixelBits: UInt32, flags: vImage_Flags) {
         self.init()
         guard vImageBuffer_Init(

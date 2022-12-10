@@ -102,32 +102,6 @@ extension CMSampleBuffer {
         return self
     }
 
-    func over(_ sampleBuffer: CMSampleBuffer?, regionOfInterest roi: CGRect = .zero, radius: CGFloat = 0.0) -> CMSampleBuffer {
-        guard var inputImageBuffer = vImage_Buffer(cvPixelBuffer: sampleBuffer?.imageBuffer, format: &CMSampleBuffer.format) else {
-            return self
-        }
-        defer {
-            inputImageBuffer.free()
-        }
-        guard let imageBuffer, var srcImageBuffer = vImage_Buffer(cvPixelBuffer: imageBuffer, format: &CMSampleBuffer.format) else {
-            return self
-        }
-        defer {
-            srcImageBuffer.free()
-        }
-        let xScale = Float(roi.width) / Float(inputImageBuffer.width)
-        let yScale = Float(roi.height) / Float(inputImageBuffer.height)
-        let scaleFactor = (xScale < yScale) ? xScale : yScale
-        var scaledInputImageBuffer = inputImageBuffer.scale(scaleFactor)
-        scaledInputImageBuffer.cornerRadius(radius)
-        defer {
-            scaledInputImageBuffer.free()
-        }
-        srcImageBuffer.over(&scaledInputImageBuffer, origin: roi.origin)
-        srcImageBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
-        return self
-    }
-
     // swiftlint:disable discouraged_optional_boolean
     @inline(__always)
     private func getAttachmentValue(for key: CFString) -> Bool? {

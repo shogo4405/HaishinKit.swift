@@ -250,14 +250,18 @@ public class IOMixer {
 
     @objc
     private func didEnterBackground(_ notification: Notification) {
+        #if os(iOS) || os(macOS)
         videoIO.multiCamCapture?.detachSession(session)
         videoIO.capture?.detachSession(session)
+        #endif
     }
 
     @objc
     private func didBecomeActive(_ notification: Notification) {
+        #if os(iOS) || os(macOS)
         videoIO.capture?.attachSession(session)
         videoIO.multiCamCapture?.attachSession(session)
+        #endif
     }
 }
 
