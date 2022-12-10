@@ -30,7 +30,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 
 ## 💖 Sponsors
 <p align="center">
-<a href="https://streamlabs.com/" target="_blank"><img src="https://user-images.githubusercontent.com/810189/158178478-cd0484eb-76cf-4e4a-92ef-be5e6228769e.png" width="350px" alt="Streamlabs" /></a>
+<a href="https://streamlabs.com/" target="_blank"><img src="https://user-images.githubusercontent.com/810189/206836172-9c360977-ab6b-4eff-860b-82d0e7b06318.png" width="350px" alt="Streamlabs" /></a>
 </p>
 
 ## 🎨 Features
