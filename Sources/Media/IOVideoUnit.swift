@@ -13,7 +13,7 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
 
-    var context: CIContext? {
+    var context: CIContext = .init() {
         didSet {
             for effect in effects {
                 effect.ciContext = context
@@ -52,7 +52,8 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard extent != oldValue else {
                 return
             }
-            pixelBufferPool = nil
+            CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
+            pixelBufferPool?.createPixelBuffer(&pixelBuffer)
         }
     }
 
@@ -63,20 +64,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         return attributes
     }
 
-    private var _pixelBufferPool: CVPixelBufferPool?
-    private var pixelBufferPool: CVPixelBufferPool! {
-        get {
-            if _pixelBufferPool == nil {
-                var pixelBufferPool: CVPixelBufferPool?
-                CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
-                _pixelBufferPool = pixelBufferPool
-            }
-            return _pixelBufferPool!
-        }
-        set {
-            _pixelBufferPool = newValue
-        }
-    }
+    private var pixelBufferPool: CVPixelBufferPool?
 
     #if os(iOS) || os(macOS)
     var fps: Float64 = IOMixer.defaultFPS {
@@ -102,6 +90,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     var videoSettings: [NSObject: AnyObject] = IOMixer.defaultVideoSettings {
         didSet {
             capture?.output.videoSettings = videoSettings as? [String: Any]
+            multiCamCapture?.output.videoSettings = videoSettings as? [String: Any]
         }
     }
 
@@ -244,6 +233,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
+            capture?.attachSession(mixer?.session)
         }
     }
 
@@ -251,6 +241,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         didSet {
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
+            multiCamCapture?.attachSession(mixer?.session)
         }
     }
     #endif
@@ -281,6 +272,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
         #if os(iOS) || os(macOS)
         capture = nil
+        multiCamCapture = nil
         #endif
     }
 
@@ -305,17 +297,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         #if os(iOS)
         screen = nil
         #endif
-        let input = try AVCaptureDeviceInput(device: camera)
-        let output = AVCaptureVideoDataOutput()
-        output.alwaysDiscardsLateVideoFrames = true
-        output.videoSettings = videoSettings as? [String: Any]
-        #if os(iOS)
-        let connection = AVCaptureConnection(inputPorts: input.ports, output: output)
-        #else
-        let connection: AVCaptureConnection? = nil
-        #endif
-        capture = IOVideoCaptureUnit(input: input, output: output, connection: connection)
-        capture?.attachSession(mixer.session)
+        capture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
@@ -360,17 +342,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         defer {
             mixer.session.commitConfiguration()
         }
-        let input = try AVCaptureDeviceInput(device: camera)
-        let output = AVCaptureVideoDataOutput()
-        output.alwaysDiscardsLateVideoFrames = true
-        output.videoSettings = videoSettings as? [String: Any]
-        #if os(iOS)
-        let connection = AVCaptureConnection(inputPorts: input.ports, output: output)
-        #else
-        let connection: AVCaptureConnection? = nil
-        #endif
-        multiCamCapture = IOVideoCaptureUnit(input: input, output: output, connection: connection)
-        multiCamCapture?.attachSession(mixer.session)
+        multiCamCapture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
         multiCamCapture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
                 connection.videoOrientation = orientation
@@ -379,7 +351,9 @@ final class IOVideoUnit: NSObject, IOUnit {
                 connection.isVideoMirrored = isVideoMirrored
             }
             #if os(iOS)
-            connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            if connection.isVideoStabilizationSupported {
+                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            }
             #endif
         }
         multiCamCapture?.output.setSampleBufferDelegate(self, queue: lockQueue)
@@ -410,11 +384,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             capture = nil
             return
         }
-        let output = AVCaptureVideoDataOutput()
-        output.alwaysDiscardsLateVideoFrames = true
-        output.videoSettings = videoSettings as? [String: Any]
-        capture = IOCaptureUnit(input: screen, output: output, connection: nil)
-        capture?.attachSession(mixer?.session)
+        capture = IOVideoCaptureUnit(screen, videoSettings: videoSettings)
         capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
     #endif
@@ -464,6 +434,11 @@ final class IOVideoUnit: NSObject, IOUnit {
             buffer.unlockBaseAddress()
             imageBuffer?.unlockBaseAddress()
         }
+        #if os(macOS)
+        if isVideoMirrored {
+            buffer.reflectHorizontal()
+        }
+        #endif
         if let multiCamPixelBuffer = multiCamSampleBuffer?.imageBuffer {
             multiCamPixelBuffer.lockBaseAddress()
             buffer.over(
@@ -478,21 +453,18 @@ final class IOVideoUnit: NSObject, IOUnit {
             extent = image.extent
             if !effects.isEmpty {
                 #if os(macOS)
-                pixelBufferPool.createPixelBuffer(&imageBuffer)
+                pixelBufferPool?.createPixelBuffer(&imageBuffer)
                 #else
                 if buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
-                    pixelBufferPool.createPixelBuffer(&imageBuffer)
+                    pixelBufferPool?.createPixelBuffer(&imageBuffer)
                 }
                 #endif
                 imageBuffer?.lockBaseAddress()
-                context?.render(image, to: imageBuffer ?? buffer)
+                context.render(image, to: imageBuffer ?? buffer)
             }
             drawable?.enqueue(sampleBuffer)
         }
         if muted {
-            if pixelBuffer == nil {
-                pixelBufferPool.createPixelBuffer(&pixelBuffer)
-            }
             imageBuffer = pixelBuffer
         }
         codec.inputBuffer(
@@ -552,11 +524,6 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
             guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
                 return
             }
-            #if os(macOS)
-            if connection.isVideoMirrored {
-                sampleBuffer.reflectHorizontal()
-            }
-            #endif
             appendSampleBuffer(sampleBuffer)
         } else if multiCamCapture?.output == captureOutput {
             multiCamSampleBuffer = sampleBuffer
@@ -588,20 +555,34 @@ extension IOVideoUnit: CaptureSessionDelegate {
     }
 
     func session(_ session: CaptureSessionConvertible, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime) {
-        if !effects.isEmpty {
-            // usually the context comes from HKView or MTLHKView
-            // but if you have not attached a view then the context is nil
-            if context == nil {
-                logger.info("no ci context, creating one to render effect")
-                context = CIContext()
-            }
-            context?.render(effect(pixelBuffer, info: nil), to: pixelBuffer)
-        }
-        codec.inputBuffer(
-            pixelBuffer,
+        var timingInfo = CMSampleTimingInfo(
+            duration: .invalid,
             presentationTimeStamp: presentationTime,
-            duration: CMTime.invalid
+            decodeTimeStamp: .invalid
         )
-        mixer?.recorder.appendPixelBuffer(pixelBuffer, withPresentationTime: presentationTime)
+        var videoFormatDescription: CMVideoFormatDescription?
+        var status = CMVideoFormatDescriptionCreateForImageBuffer(
+            allocator: kCFAllocatorDefault,
+            imageBuffer: pixelBuffer,
+            formatDescriptionOut: &videoFormatDescription
+        )
+        guard status == noErr else {
+            return
+        }
+        var sampleBuffer: CMSampleBuffer?
+        status = CMSampleBufferCreateForImageBuffer(
+            allocator: kCFAllocatorDefault,
+            imageBuffer: pixelBuffer,
+            dataReady: true,
+            makeDataReadyCallback: nil,
+            refcon: nil,
+            formatDescription: videoFormatDescription!,
+            sampleTiming: &timingInfo,
+            sampleBufferOut: &sampleBuffer
+        )
+        guard let sampleBuffer, status == noErr else {
+            return
+        }
+        appendSampleBuffer(sampleBuffer)
     }
 }

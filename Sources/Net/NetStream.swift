@@ -20,7 +20,7 @@ open class NetStream: NSObject {
     public var metadata: [String: Any?] = [:]
 
     /// Specifies the context object.
-    public var context: CIContext? {
+    public var context: CIContext {
         get {
             mixer.videoIO.context
         }

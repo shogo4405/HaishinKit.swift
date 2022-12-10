@@ -319,8 +319,10 @@ extension IOMixer: Running {
         guard !isRunning.value else {
             return
         }
+        #if os(iOS)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        #endif
         session.startRunning()
     }
 
@@ -328,8 +330,10 @@ extension IOMixer: Running {
         guard isRunning.value else {
             return
         }
+        #if os(iOS)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        #endif
         session.stopRunning()
     }
 }

@@ -2,15 +2,6 @@ import Accelerate
 import CoreMedia
 
 extension CMSampleBuffer {
-    static var format = vImage_CGImageFormat(
-        bitsPerComponent: 8,
-        bitsPerPixel: 32,
-        colorSpace: nil,
-        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
-        version: 0,
-        decode: nil,
-        renderingIntent: .defaultIntent)
-
     var isNotSync: Bool {
         get {
             getAttachmentValue(for: kCMSampleAttachmentKey_NotSync) ?? false
@@ -126,35 +117,4 @@ extension CMSampleBuffer {
             Unmanaged.passUnretained(value ? kCFBooleanTrue : kCFBooleanFalse).toOpaque()
         )
     }
-
-    #if os(macOS)
-    /* Used code from the example https://developer.apple.com/documentation/accelerate/vimage/reading_from_and_writing_to_core_video_pixel_buffers */
-    func reflectHorizontal() {
-        guard let imageBuffer, var sourceBuffer = vImage_Buffer(cvPixelBuffer: imageBuffer, format: &CMSampleBuffer.format) else {
-            return
-        }
-        defer {
-            sourceBuffer.free()
-        }
-        guard
-            var destinationBuffer = vImage_Buffer(
-                height: sourceBuffer.height,
-                width: sourceBuffer.width,
-                pixelBits: CMSampleBuffer.format.bitsPerPixel,
-                flags: vImage_Flags(kvImageNoFlags)) else {
-            return
-        }
-        defer {
-            destinationBuffer.free()
-        }
-        guard
-            vImageHorizontalReflect_ARGB8888(
-                &sourceBuffer,
-                &destinationBuffer,
-                vImage_Flags(kvImageLeaveAlphaUnchanged)) == kvImageNoError else {
-            return
-        }
-        destinationBuffer.copy(to: imageBuffer, format: &CMSampleBuffer.format)
-    }
-    #endif
 }

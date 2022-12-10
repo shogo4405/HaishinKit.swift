@@ -56,13 +56,34 @@ extension IOCaptureUnit {
 struct IOVideoCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureVideoDataOutput
 
-    var device: AVCaptureDevice? {
-        (input as? AVCaptureDeviceInput)?.device
-    }
-
+    let device: AVCaptureDevice?
     let input: AVCaptureInput
     let output: Output
     let connection: AVCaptureConnection?
+
+    init(_ camera: AVCaptureDevice, videoSettings: [NSObject: AnyObject]) throws {
+        device = camera
+        input = try AVCaptureDeviceInput(device: camera)
+        output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = videoSettings as? [String: Any]
+        #if os(iOS)
+        connection = AVCaptureConnection(inputPorts: input.ports, output: output)
+        #else
+        connection = nil
+        #endif
+    }
+
+    #if os(macOS)
+    init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject]) {
+        device = nil
+        input = screen
+        output = AVCaptureVideoDataOutput()
+        output.alwaysDiscardsLateVideoFrames = true
+        output.videoSettings = videoSettings as? [String: Any]
+        connection = nil
+    }
+    #endif
 }
 
 struct IOAudioCaptureUnit: IOCaptureUnit {
