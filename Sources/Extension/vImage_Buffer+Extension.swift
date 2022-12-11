@@ -3,6 +3,52 @@ import CoreMedia
 import Foundation
 
 extension vImage_Buffer {
+    enum TransformDirection {
+        case north
+        case south
+        case east
+        case west
+
+        var opposite: TransformDirection {
+            switch self {
+            case .north:
+                return .south
+            case .south:
+                return .north
+            case .east:
+                return .west
+            case .west:
+                return .east
+            }
+        }
+
+        func tx(_ width: Double) -> Double {
+            switch self {
+            case .north:
+                return 0.0
+            case .south:
+                return Double.leastNonzeroMagnitude
+            case .east:
+                return width / 2
+            case .west:
+                return -(width / 2)
+            }
+        }
+
+        func ty(_ height: Double) -> Double {
+            switch self {
+            case .north:
+                return height / 2
+            case .south:
+                return -(height / 2)
+            case .east:
+                return Double.leastNonzeroMagnitude
+            case .west:
+                return 0.0
+            }
+        }
+    }
+
     init?(height: vImagePixelCount, width: vImagePixelCount, pixelBits: UInt32, flags: vImage_Flags) {
         self.init()
         guard vImageBuffer_Init(
@@ -95,6 +141,41 @@ extension vImage_Buffer {
             return self
         }
         return self
+    }
+
+    @discardableResult
+    mutating func split(_ buffer: inout vImage_Buffer, direction: TransformDirection) -> Self {
+        buffer.transform(direction.opposite)
+        transform(direction)
+        guard vImageAlphaBlend_ARGB8888(
+            &self,
+            &buffer,
+            &self,
+            vImage_Flags(kvImageDoNotTile)
+        ) == kvImageNoError else {
+            return self
+        }
+        return self
+    }
+
+    private mutating func transform(_ direction: TransformDirection) {
+        let backgroundColor: [Pixel_8] = [0, 255, 255, 255]
+        var vImageTransform = vImage_CGAffineTransform(
+            a: 1,
+            b: 0,
+            c: 0,
+            d: 1,
+            tx: direction.tx(Double(width)),
+            ty: direction.ty(Double(height))
+        )
+        vImageAffineWarpCG_ARGB8888(
+            &self,
+            &self,
+            nil,
+            &vImageTransform,
+            backgroundColor,
+            vImage_Flags(kvImageBackgroundColorFill)
+        )
     }
 
     @available(iOS, obsoleted: 13.0)

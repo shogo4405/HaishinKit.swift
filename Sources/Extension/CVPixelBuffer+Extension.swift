@@ -52,6 +52,31 @@ extension CVPixelBuffer {
     }
 
     @discardableResult
+    func split(_ pixelBuffer: CVPixelBuffer?, direction: vImage_Buffer.TransformDirection) -> Self {
+        guard var inputImageBuffer = try? pixelBuffer?.makevImage_Buffer(format: &Self.format) else {
+            return self
+        }
+        defer {
+            inputImageBuffer.free()
+        }
+        guard var sourceImageBuffer = try? makevImage_Buffer(format: &Self.format) else {
+            return self
+        }
+        defer {
+            sourceImageBuffer.free()
+        }
+        let scaleX = Float(width) / Float(inputImageBuffer.width)
+        let scaleY = Float(height) / Float(inputImageBuffer.height)
+        var scaledInputImageBuffer = inputImageBuffer.scale(min(scaleY, scaleX))
+        defer {
+            scaledInputImageBuffer.free()
+        }
+        sourceImageBuffer.split(&scaledInputImageBuffer, direction: direction)
+        sourceImageBuffer.copy(to: self, format: &Self.format)
+        return self
+    }
+
+    @discardableResult
     func reflectHorizontal() -> Self {
         guard var imageBuffer = try? makevImage_Buffer(format: &Self.format) else {
             return self

@@ -441,11 +441,16 @@ final class IOVideoUnit: NSObject, IOUnit {
         #endif
         if let multiCamPixelBuffer = multiCamSampleBuffer?.imageBuffer {
             multiCamPixelBuffer.lockBaseAddress()
-            buffer.over(
-                multiCamPixelBuffer,
-                regionOfInterest: multiCamCaptureSettings.regionOfInterest,
-                radius: multiCamCaptureSettings.cornerRadius
-            )
+            switch multiCamCaptureSettings.mode {
+            case .pip:
+                buffer.over(
+                    multiCamPixelBuffer,
+                    regionOfInterest: multiCamCaptureSettings.regionOfInterest,
+                    radius: multiCamCaptureSettings.cornerRadius
+                )
+            case .split(let direction):
+                buffer.split(multiCamPixelBuffer, direction: direction.transformDirection)
+            }
             multiCamPixelBuffer.unlockBaseAddress()
         }
         if drawable != nil || !effects.isEmpty {

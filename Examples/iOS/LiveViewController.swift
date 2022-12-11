@@ -108,6 +108,7 @@ final class LiveViewController: UIViewController {
             currentFrame.origin.y += deltaY
             pipIntentView.frame = currentFrame
             rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
+                mode: rtmpStream.multiCamCaptureSettings.mode,
                 cornerRadius: 16.0,
                 regionOfInterest: currentFrame
             )
