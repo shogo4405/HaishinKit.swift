@@ -440,6 +440,7 @@ open class RTMPStream: NetStream {
         if mixer.audioIO.capture != nil {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = mixer.audioIO.codec.bitrate / 1000
+            metadata["audiosamplerate"] = mixer.audioIO.codec.sampleRate
         }
         #endif
         return metadata
