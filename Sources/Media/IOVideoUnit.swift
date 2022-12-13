@@ -239,6 +239,7 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     private(set) var multiCamCapture: IOVideoCaptureUnit? {
         didSet {
+            multiCamSampleBuffer = nil
             oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
             oldValue?.detachSession(mixer?.session)
             multiCamCapture?.attachSession(mixer?.session)
@@ -278,7 +279,7 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     #if os(iOS) || os(macOS)
     func attachCamera(_ camera: AVCaptureDevice?) throws {
-        guard let mixer else {
+        guard let mixer, capture?.device != camera else {
             return
         }
         mixer.session.beginConfiguration()
@@ -297,6 +298,9 @@ final class IOVideoUnit: NSObject, IOUnit {
         #if os(iOS)
         screen = nil
         #endif
+        if camera == multiCamCapture?.device {
+            multiCamCapture = nil
+        }
         capture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
@@ -320,14 +324,13 @@ final class IOVideoUnit: NSObject, IOUnit {
     @available(iOS 13.0, *)
     func attachMultiCamera(_ camera: AVCaptureDevice?) throws {
         #if os(iOS)
-        guard let mixer, AVCaptureMultiCamSession.isMultiCamSupported else {
+        guard AVCaptureMultiCamSession.isMultiCamSupported else {
             throw Error.multiCamNotSupported
         }
-        #else
-        guard let mixer else {
+        #endif
+        guard let mixer, multiCamCapture?.device != camera else {
             return
         }
-        #endif
         guard let camera else {
             mixer.isMultiCamSessionEnabled = false
             mixer.session.beginConfiguration()
@@ -341,6 +344,9 @@ final class IOVideoUnit: NSObject, IOUnit {
         mixer.session.beginConfiguration()
         defer {
             mixer.session.commitConfiguration()
+        }
+        if capture?.device == camera {
+            capture = nil
         }
         multiCamCapture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
         multiCamCapture?.output.connections.forEach { connection in

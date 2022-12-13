@@ -122,6 +122,11 @@ final class LiveViewController: UIViewController {
         rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
             logger.warn(error)
         }
+        if #available(iOS 13.0, *) {
+            rtmpStream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
+                logger.warn(error)
+            }
+        }
         currentPosition = position
     }
 
