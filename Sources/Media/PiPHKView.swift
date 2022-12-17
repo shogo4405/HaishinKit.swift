@@ -125,7 +125,7 @@ public class PiPHKView: NSView {
         currentStream?.mixer.videoIO.formatDescription
     }
 
-    public var orientation: AVCaptureVideoOrientation = .portrait {
+    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             if Thread.isMainThread {
                 (layer as? AVSampleBufferDisplayLayer)?.flushAndRemoveImage()

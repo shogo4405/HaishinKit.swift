@@ -15,10 +15,6 @@ protocol IOMixerDelegate: AnyObject {
 public class IOMixer {
     /// The default fps for an IOMixer, value is 30.
     public static let defaultFPS: Float64 = 30
-    /// The default videoSettings for an IOMixer.
-    public static let defaultVideoSettings: [NSString: AnyObject] = [
-        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
-    ]
 
     #if os(iOS) || os(macOS)
     /// The AVCaptureSession options.

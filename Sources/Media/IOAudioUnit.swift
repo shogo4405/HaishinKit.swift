@@ -25,8 +25,10 @@ final class IOAudioUnit: NSObject, IOUnit {
     #if os(iOS) || os(macOS)
     var capture: IOAudioCaptureUnit? {
         didSet {
-            oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
+            oldValue?.setSampleBufferDelegate(nil)
             oldValue?.detachSession(mixer?.session)
+            capture?.attachSession(mixer?.session)
+            capture?.setSampleBufferDelegate(self)
         }
     }
     #endif
@@ -53,14 +55,10 @@ final class IOAudioUnit: NSObject, IOUnit {
             capture = nil
             return
         }
-        let input = try AVCaptureDeviceInput(device: audio)
-        let output = AVCaptureAudioDataOutput()
-        capture = IOAudioCaptureUnit(input: input, output: output, connection: nil)
-        capture?.attachSession(mixer.session)
+        capture = try IOAudioCaptureUnit(audio)
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif
-        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
     #endif
 

@@ -29,7 +29,7 @@ public class HKView: NSView {
             }
         }
     }
-    public var orientation: AVCaptureVideoOrientation = .portrait
+    public var videoOrientation: AVCaptureVideoOrientation = .portrait
     private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {

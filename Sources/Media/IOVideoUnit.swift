@@ -69,23 +69,14 @@ final class IOVideoUnit: NSObject, IOUnit {
     #if os(iOS) || os(macOS)
     var fps: Float64 = IOMixer.defaultFPS {
         didSet {
-            guard let device = capture?.device, let data = device.actualFPS(fps) else {
+            guard fps != oldValue else {
                 return
             }
-            fps = data.fps
-            codec.expectedFrameRate = data.fps
-            do {
-                try device.lockForConfiguration()
-                device.activeVideoMinFrameDuration = data.duration
-                device.activeVideoMaxFrameDuration = data.duration
-                device.unlockForConfiguration()
-            } catch {
-                logger.error("while locking device for fps:", error)
-            }
+            capture?.setFrameRate(fps)
         }
     }
 
-    var videoSettings: [NSObject: AnyObject] = IOMixer.defaultVideoSettings {
+    var videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings {
         didSet {
             capture?.output.videoSettings = videoSettings as? [String: Any]
             multiCamCapture?.output.videoSettings = videoSettings as? [String: Any]
@@ -97,14 +88,16 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard isVideoMirrored != oldValue else {
                 return
             }
-            capture?.output.connections.filter({ $0.isVideoMirroringSupported }).forEach { connection in
-                connection.isVideoMirrored = isVideoMirrored
-            }
+            capture?.isVideoMirrored = isVideoMirrored
+            multiCamCapture?.isVideoMirrored = isVideoMirrored
         }
     }
 
     var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
+            guard videoOrientation != oldValue else {
+                return
+            }
             mixer?.session.beginConfiguration()
             defer {
                 mixer?.session.commitConfiguration()
@@ -116,15 +109,8 @@ final class IOVideoUnit: NSObject, IOUnit {
                 }
             }
             drawable?.videoOrientation = videoOrientation
-            guard videoOrientation != oldValue else {
-                return
-            }
-            capture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
-                connection.videoOrientation = videoOrientation
-            }
-            multiCamCapture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
-                connection.videoOrientation = videoOrientation
-            }
+            capture?.videoOrientation = videoOrientation
+            multiCamCapture?.videoOrientation = videoOrientation
         }
     }
 
@@ -221,26 +207,27 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard preferredVideoStabilizationMode != oldValue else {
                 return
             }
-            capture?.output.connections.filter({ $0.isVideoStabilizationSupported }).forEach { connection in
-                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
-            }
+            capture?.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            multiCamCapture?.preferredVideoStabilizationMode = preferredVideoStabilizationMode
         }
     }
 
     private(set) var capture: IOVideoCaptureUnit? {
         didSet {
-            oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
+            oldValue?.setSampleBufferDelegate(nil)
             oldValue?.detachSession(mixer?.session)
             capture?.attachSession(mixer?.session)
+            capture?.setSampleBufferDelegate(self)
         }
     }
 
     private(set) var multiCamCapture: IOVideoCaptureUnit? {
         didSet {
             multiCamSampleBuffer = nil
-            oldValue?.output.setSampleBufferDelegate(nil, queue: nil)
+            oldValue?.setSampleBufferDelegate(nil)
             oldValue?.detachSession(mixer?.session)
             multiCamCapture?.attachSession(mixer?.session)
+            multiCamCapture?.setSampleBufferDelegate(self)
         }
     }
     #endif
@@ -300,21 +287,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             multiCamCapture = nil
         }
         capture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
-        capture?.output.connections.forEach { connection in
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = videoOrientation
-            }
-            if connection.isVideoMirroringSupported {
-                connection.isVideoMirrored = isVideoMirrored
-            }
-            #if os(iOS)
-            if connection.isVideoStabilizationSupported {
-                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
-            }
-            #endif
-        }
-        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
-        fps *= 1
         drawable?.position = camera.position
     }
 
@@ -346,34 +318,11 @@ final class IOVideoUnit: NSObject, IOUnit {
             capture = nil
         }
         multiCamCapture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
-        multiCamCapture?.output.connections.forEach { connection in
-            if connection.isVideoOrientationSupported {
-                connection.videoOrientation = videoOrientation
-            }
-            if connection.isVideoMirroringSupported {
-                connection.isVideoMirrored = isVideoMirrored
-            }
-            #if os(iOS)
-            if connection.isVideoStabilizationSupported {
-                connection.preferredVideoStabilizationMode = preferredVideoStabilizationMode
-            }
-            #endif
-        }
-        multiCamCapture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
-        guard let device = capture?.device, device.isTorchModeSupported(torchMode) else {
-            logger.warn("torchMode(\(torchMode)) is not supported")
-            return
-        }
-        do {
-            try device.lockForConfiguration()
-            device.torchMode = torchMode
-            device.unlockForConfiguration()
-        } catch {
-            logger.error("while setting torch:", error)
-        }
+        capture?.setTorchMode(torchMode)
+        multiCamCapture?.setTorchMode(torchMode)
     }
     #endif
 
@@ -388,7 +337,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             return
         }
         capture = IOVideoCaptureUnit(screen, videoSettings: videoSettings)
-        capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
     }
     #endif
 

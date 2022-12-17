@@ -53,7 +53,12 @@ extension IOCaptureUnit {
     }
 }
 
-struct IOVideoCaptureUnit: IOCaptureUnit {
+class IOVideoCaptureUnit: IOCaptureUnit {
+    /// The default videoSettings for a device.
+    static let defaultVideoSettings: [NSString: AnyObject] = [
+        kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
+    ]
+
     typealias Output = AVCaptureVideoDataOutput
 
     let device: AVCaptureDevice?
@@ -61,7 +66,32 @@ struct IOVideoCaptureUnit: IOCaptureUnit {
     let output: Output
     let connection: AVCaptureConnection?
 
-    init(_ camera: AVCaptureDevice, videoSettings: [NSObject: AnyObject]) throws {
+    var videoOrientation: AVCaptureVideoOrientation = .portrait {
+        didSet {
+            output.connections.filter { $0.isVideoOrientationSupported }.forEach {
+                $0.videoOrientation = videoOrientation
+            }
+        }
+    }
+
+    var isVideoMirrored = false {
+        didSet {
+            output.connections.filter { $0.isVideoMirroringSupported }.forEach {
+                $0.isVideoMirrored = isVideoMirrored
+            }
+        }
+    }
+
+    @available(macOS, unavailable)
+    var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
+        didSet {
+            output.connections.filter { $0.isVideoStabilizationSupported }.forEach {
+                $0.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            }
+        }
+    }
+
+    init(_ camera: AVCaptureDevice, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) throws {
         device = camera
         input = try AVCaptureDeviceInput(device: camera)
         output = AVCaptureVideoDataOutput()
@@ -74,7 +104,7 @@ struct IOVideoCaptureUnit: IOCaptureUnit {
         #endif
     }
 
-    #if os(macOS)
+    @available(iOS, unavailable)
     init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject]) {
         device = nil
         input = screen
@@ -83,14 +113,62 @@ struct IOVideoCaptureUnit: IOCaptureUnit {
         output.videoSettings = videoSettings as? [String: Any]
         connection = nil
     }
-    #endif
+
+    func setFrameRate(_ frameRate: Float64) {
+        guard let device, let data = device.actualFPS(frameRate) else {
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.activeVideoMinFrameDuration = data.duration
+            device.activeVideoMaxFrameDuration = data.duration
+            device.unlockForConfiguration()
+        } catch {
+            logger.error("while locking device for fps:", error)
+        }
+    }
+
+    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
+        guard let device, device.isTorchModeSupported(torchMode) else {
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.torchMode = torchMode
+            device.unlockForConfiguration()
+        } catch {
+            logger.error("while setting torch:", error)
+        }
+    }
+
+    func setSampleBufferDelegate(_ videoUnit: IOVideoUnit?) {
+        if let videoUnit {
+            videoOrientation = videoUnit.videoOrientation
+            isVideoMirrored = videoUnit.isVideoMirrored
+            #if os(iOS)
+            preferredVideoStabilizationMode = videoUnit.preferredVideoStabilizationMode
+            #endif
+            setFrameRate(videoUnit.fps)
+        }
+        output.setSampleBufferDelegate(videoUnit, queue: videoUnit?.lockQueue)
+    }
 }
 
-struct IOAudioCaptureUnit: IOCaptureUnit {
+class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
 
     let input: AVCaptureInput
     let output: Output
     let connection: AVCaptureConnection?
+
+    init(_ device: AVCaptureDevice) throws {
+        input = try AVCaptureDeviceInput(device: device)
+        output = AVCaptureAudioDataOutput()
+        connection = nil
+    }
+
+    func setSampleBufferDelegate(_ audioUnit: IOAudioUnit?) {
+        output.setSampleBufferDelegate(audioUnit, queue: audioUnit?.lockQueue)
+    }
 }
 #endif
