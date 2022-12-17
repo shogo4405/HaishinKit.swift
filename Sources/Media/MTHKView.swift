@@ -15,7 +15,7 @@ public class MTHKView: MTKView {
 
     #if !os(tvOS)
     public var position: AVCaptureDevice.Position = .back
-    public var orientation: AVCaptureVideoOrientation = .portrait
+    public var videoOrientation: AVCaptureVideoOrientation = .portrait
     #endif
 
     private var currentSampleBuffer: CMSampleBuffer?

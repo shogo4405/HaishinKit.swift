@@ -49,10 +49,10 @@ open class NetStream: NSObject {
     /// Specify the video orientation for stream.
     public var videoOrientation: AVCaptureVideoOrientation {
         get {
-            mixer.videoIO.orientation
+            mixer.videoIO.videoOrientation
         }
         set {
-            mixer.videoIO.orientation = newValue
+            mixer.videoIO.videoOrientation = newValue
         }
     }
 

@@ -31,7 +31,7 @@ public class PiPHKView: UIView {
     }
 
     #if !os(tvOS)
-    public var orientation: AVCaptureVideoOrientation = .portrait {
+    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             if Thread.isMainThread {
                 layer.flushAndRemoveImage()

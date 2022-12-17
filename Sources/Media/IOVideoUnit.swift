@@ -24,7 +24,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     weak var drawable: NetStreamDrawable? {
         didSet {
             #if os(iOS) || os(macOS)
-            drawable?.orientation = orientation
+            drawable?.videoOrientation = videoOrientation
             #endif
         }
     }
@@ -85,8 +85,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    var position: AVCaptureDevice.Position = .back
-
     var videoSettings: [NSObject: AnyObject] = IOMixer.defaultVideoSettings {
         didSet {
             capture?.output.videoSettings = videoSettings as? [String: Any]
@@ -105,7 +103,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    var orientation: AVCaptureVideoOrientation = .portrait {
+    var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             mixer?.session.beginConfiguration()
             defer {
@@ -117,15 +115,15 @@ final class IOVideoUnit: NSObject, IOUnit {
                     }
                 }
             }
-            drawable?.orientation = orientation
-            guard orientation != oldValue else {
+            drawable?.videoOrientation = videoOrientation
+            guard videoOrientation != oldValue else {
                 return
             }
             capture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
-                connection.videoOrientation = orientation
+                connection.videoOrientation = videoOrientation
             }
             multiCamCapture?.output.connections.filter({ $0.isVideoOrientationSupported }).forEach { connection in
-                connection.videoOrientation = orientation
+                connection.videoOrientation = videoOrientation
             }
         }
     }
@@ -304,7 +302,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         capture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
         capture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
-                connection.videoOrientation = orientation
+                connection.videoOrientation = videoOrientation
             }
             if connection.isVideoMirroringSupported {
                 connection.isVideoMirrored = isVideoMirrored
@@ -317,7 +315,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
         capture?.output.setSampleBufferDelegate(self, queue: lockQueue)
         fps *= 1
-        position = camera.position
         drawable?.position = camera.position
     }
 
@@ -351,7 +348,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         multiCamCapture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
         multiCamCapture?.output.connections.forEach { connection in
             if connection.isVideoOrientationSupported {
-                connection.videoOrientation = orientation
+                connection.videoOrientation = videoOrientation
             }
             if connection.isVideoMirroringSupported {
                 connection.isVideoMirrored = isVideoMirrored

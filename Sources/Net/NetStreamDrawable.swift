@@ -5,7 +5,7 @@ import Foundation
 public protocol NetStreamDrawable: AnyObject {
     #if !os(tvOS)
     /// Specifies the orientation of AVCaptureVideoOrientation.
-    var orientation: AVCaptureVideoOrientation { get set }
+    var videoOrientation: AVCaptureVideoOrientation { get set }
 
     /// Specifies the position of AVCaptureDevice.
     var position: AVCaptureDevice.Position { get set }

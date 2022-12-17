@@ -38,7 +38,7 @@ final class LiveViewController: UIViewController {
 
         rtmpStream = RTMPStream(connection: rtmpConnection)
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
-            rtmpStream.orientation = orientation
+            rtmpStream.videoOrientation = orientation
         }
         rtmpStream.captureSettings = [
             .sessionPreset: AVCaptureSession.Preset.hd1280x720,
@@ -256,7 +256,7 @@ final class LiveViewController: UIViewController {
         guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
             return
         }
-        rtmpStream.orientation = orientation
+        rtmpStream.videoOrientation = orientation
     }
 }
 
