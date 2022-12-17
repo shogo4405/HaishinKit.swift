@@ -6,9 +6,6 @@ public protocol NetStreamDrawable: AnyObject {
     #if !os(tvOS)
     /// Specifies the orientation of AVCaptureVideoOrientation.
     var videoOrientation: AVCaptureVideoOrientation { get set }
-
-    /// Specifies the position of AVCaptureDevice.
-    var position: AVCaptureDevice.Position { get set }
     #endif
 
     /// The videoFormatDescription which is the current CMSampleBuffer.

@@ -42,7 +42,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     #endif
 
     #if os(iOS) || os(macOS)
-    func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
+    func attachAudio(_ capture: IOAudioCaptureUnit?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
         guard let mixer else {
             return
         }
@@ -51,11 +51,11 @@ final class IOAudioUnit: NSObject, IOUnit {
             mixer.session.commitConfiguration()
         }
         codec.invalidate()
-        guard let audio else {
-            capture = nil
+        guard let capture else {
+            self.capture = nil
             return
         }
-        capture = try IOAudioCaptureUnit(audio)
+        self.capture = capture
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif

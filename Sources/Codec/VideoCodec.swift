@@ -189,7 +189,7 @@ public class VideoCodec {
     }
     var locked: UInt32 = 0
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
-    var expectedFrameRate = IOMixer.defaultFPS {
+    var expectedFrameRate = IOMixer.defaultFrameRate {
         didSet {
             guard expectedFrameRate != oldValue else {
                 return

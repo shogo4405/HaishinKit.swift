@@ -210,8 +210,6 @@
 		29B8771D1CD70D5A00FC07DA /* EventDispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876BA1CD70B3900FC07DA /* EventDispatcher.swift */; };
 		29C2631C1D0083B50098D4EF /* IOVideoUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* IOVideoUnit.swift */; };
 		29D0E3681DD4CE3700863B3B /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
-		29D3D4CF1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4CE1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift */; };
-		29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */; };
 		29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */; };
 		29D3D4EA1ED0519400DD4AA6 /* HaishinKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 29D3D4E61ED0518900DD4AA6 /* HaishinKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
@@ -812,8 +810,6 @@
 		29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb.mp4; sourceTree = "<group>"; };
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		29D3D4CE1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "IOVideoUnit+Extension.swift"; sourceTree = "<group>"; };
-		29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NetStream+Extension.swift"; sourceTree = "<group>"; };
 		29D3D4D41ED04E7100DD4AA6 /* DeviceUtil+Extenstion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DeviceUtil+Extenstion.swift"; sourceTree = "<group>"; };
 		29D3D4DC1ED0509900DD4AA6 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4E51ED0518900DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1347,8 +1343,6 @@
 				299F7E3B1CD71A97001E7272 /* HaishinKit.h */,
 				299B13261D3B751400A1E8F5 /* HKView.swift */,
 				299F7E3A1CD71A97001E7272 /* Info.plist */,
-				29D3D4CE1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift */,
-				29D3D4D01ED04D1200DD4AA6 /* NetStream+Extension.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -2090,7 +2084,6 @@
 				BC44A1A923D31E92002D4297 /* AudioCodecBuffer.swift in Sources */,
 				BC20DF38250377A3007BC608 /* ScreenCaptureSession.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
-				29D3D4CF1ED04C4C00DD4AA6 /* IOVideoUnit+Extension.swift in Sources */,
 				29B876841CD70AE800FC07DA /* AVCConfigurationRecord.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* NetStreamDrawable.swift in Sources */,
@@ -2153,7 +2146,6 @@
 				BCA97BFD263C54550027213C /* MP4SampleToChunkBox.swift in Sources */,
 				29EA87DF1E79A0810043A5F8 /* CMSampleBuffer+Extension.swift in Sources */,
 				29EA87E21E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
-				29D3D4D11ED04D1200DD4AA6 /* NetStream+Extension.swift in Sources */,
 				BCA97BE4263C095C0027213C /* MP4TimeToSampleBox.swift in Sources */,
 				BCC1A6B62643F41600661156 /* MP4WriterConvertible.swift in Sources */,
 				BCAD0C21263EFCEF00ADFB80 /* MP4SegmentIndexBox.swift in Sources */,

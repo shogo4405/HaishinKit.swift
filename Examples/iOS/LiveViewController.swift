@@ -40,12 +40,6 @@ final class LiveViewController: UIViewController {
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.videoOrientation = orientation
         }
-        rtmpStream.captureSettings = [
-            .sessionPreset: AVCaptureSession.Preset.hd1280x720,
-            .continuousAutofocus: true,
-            .continuousExposure: true
-            // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.cinematic
-        ]
         rtmpStream.videoSettings = [
             .width: 720,
             .height: 1280
@@ -61,16 +55,16 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
+        rtmpStream.attachAudio(try? .init(AVCaptureDevice.default(for: .audio))) { error in
             logger.warn(error)
         }
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-        rtmpStream.attachCamera(back) { error in
+        rtmpStream.attachVideo(try? .init(back)) { error in
             logger.warn(error)
         }
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            rtmpStream.attachMultiCamera(front)
+            rtmpStream.attachMultiCamera(try? .init(front))
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
@@ -118,12 +112,11 @@ final class LiveViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        rtmpStream.captureSettings[.isVideoMirrored] = position == .front
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
+        rtmpStream.attachVideo(try? .init(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position))) { error in
             logger.warn(error)
         }
         if #available(iOS 13.0, *) {
-            rtmpStream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
+            rtmpStream.attachMultiCamera(try? .init(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition))) { error in
                 logger.warn(error)
             }
         }
@@ -144,7 +137,6 @@ final class LiveViewController: UIViewController {
             rtmpStream.videoSettings[.bitrate] = slider.value * 1000
         }
         if slider == zoomSlider {
-            rtmpStream.setZoomFactor(CGFloat(slider.value), ramping: true, withRate: 5.0)
         }
     }
 
@@ -208,18 +200,17 @@ final class LiveViewController: UIViewController {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
             let pointOfInterest = CGPoint(x: touchPoint.x / gestureView.bounds.size.width, y: touchPoint.y / gestureView.bounds.size.height)
             print("pointOfInterest: \(pointOfInterest)")
-            rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
         }
     }
 
     @IBAction private func onFPSValueChanged(_ segment: UISegmentedControl) {
         switch segment.selectedSegmentIndex {
         case 0:
-            rtmpStream.captureSettings[.fps] = 15.0
+            rtmpStream.frameRate = 60
         case 1:
-            rtmpStream.captureSettings[.fps] = 30.0
+            rtmpStream.frameRate = 30
         case 2:
-            rtmpStream.captureSettings[.fps] = 60.0
+            rtmpStream.frameRate = 15
         default:
             break
         }

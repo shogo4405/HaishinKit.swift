@@ -53,7 +53,7 @@ public class HKView: UIView {
             }
         }
     }
-    public var position: AVCaptureDevice.Position = .front
+
     private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
