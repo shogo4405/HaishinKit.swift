@@ -46,7 +46,7 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specifie the frame rate of a device capture.
+    /// Specifies the frame rate of a device capture.
     public var frameRate: Float64 {
         get {
             var frameRate: Float64 = IOMixer.defaultFrameRate
@@ -62,7 +62,7 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specifie the sessionPreset for the AVCaptureSession.
+    /// Specifies the sessionPreset for the AVCaptureSession.
     public var sessionPreset: AVCaptureSession.Preset {
         get {
             var sessionPreset: AVCaptureSession.Preset = .default
@@ -78,7 +78,7 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specify the video orientation for stream.
+    /// Specifies the video orientation for stream.
     public var videoOrientation: AVCaptureVideoOrientation {
         get {
             mixer.videoIO.videoOrientation
@@ -119,7 +119,7 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specify the audio compression properties.
+    /// Specifies the audio compression properties.
     public var audioSettings: Setting<AudioCodec, AudioCodec.Option> {
         get {
             mixer.audioIO.codec.settings
@@ -129,7 +129,7 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specify the video compression properties.
+    /// Specifies the video compression properties.
     public var videoSettings: Setting<VideoCodec, VideoCodec.Option> {
         get {
             mixer.videoIO.codec.settings
