@@ -46,6 +46,38 @@ open class NetStream: NSObject {
         }
     }
 
+    /// Specifie the frame rate of a device capture.
+    public var frameRate: Float64 {
+        get {
+            var frameRate: Float64 = IOMixer.defaultFrameRate
+            lockQueue.sync {
+                frameRate = self.mixer.videoIO.frameRate
+            }
+            return frameRate
+        }
+        set {
+            lockQueue.async {
+                self.mixer.videoIO.frameRate = newValue
+            }
+        }
+    }
+
+    /// Specifie the sessionPreset for the AVCaptureSession.
+    public var sessionPreset: AVCaptureSession.Preset {
+        get {
+            var sessionPreset: AVCaptureSession.Preset = .default
+            lockQueue.sync {
+                sessionPreset = self.mixer.sessionPreset
+            }
+            return sessionPreset
+        }
+        set {
+            lockQueue.async {
+                self.mixer.sessionPreset = newValue
+            }
+        }
+    }
+
     /// Specify the video orientation for stream.
     public var videoOrientation: AVCaptureVideoOrientation {
         get {
@@ -107,16 +139,6 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specify the avsession properties.
-    open var captureSettings: Setting<IOMixer, IOMixer.Option> {
-        get {
-            mixer.settings
-        }
-        set {
-            mixer.settings = newValue
-        }
-    }
-
     /// Specifies the recorder properties.
     public var recorderSettings: [AVMediaType: [String: Any]] {
         get {
@@ -134,20 +156,20 @@ open class NetStream: NSObject {
     #if os(iOS) || os(macOS)
     /// Attaches the camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    open func attachCamera(_ camera: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachVideo(_ camera: IOVideoCaptureUnit?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachCamera(camera)
+                try self.mixer.videoIO.attachVideo(camera)
             } catch {
                 onError?(error)
             }
         }
     }
 
-    /// Attaches the camera object for picture in picture.
+    /// Attaches the video capture object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(iOS 13.0, *)
-    open func attachMultiCamera(_ camera: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachMultiCamera(_ camera: IOVideoCaptureUnit?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.videoIO.attachMultiCamera(camera)
@@ -157,9 +179,9 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Attaches the microphone object.
+    /// Attaches the audio capture object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    open func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachAudio(_ audio: IOAudioCaptureUnit?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
@@ -168,20 +190,6 @@ open class NetStream: NSObject {
             }
         }
     }
-
-    /// Set the point of interest.
-    public func setPointOfInterest(_ focus: CGPoint, exposure: CGPoint) {
-        mixer.videoIO.focusPointOfInterest = focus
-        mixer.videoIO.exposurePointOfInterest = exposure
-    }
-
-    #if os(macOS)
-    public func attachScreen(_ screen: AVCaptureScreenInput?) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen)
-        }
-    }
-    #endif
     #endif
 
     open func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {

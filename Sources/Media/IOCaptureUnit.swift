@@ -2,6 +2,10 @@
 import AVFoundation
 import Foundation
 
+enum IOCaptureUnitError: Error {
+    case noDeviceAvailable
+}
+
 protocol IOCaptureUnit {
     associatedtype Output: AVCaptureOutput
 
@@ -53,9 +57,9 @@ extension IOCaptureUnit {
     }
 }
 
-class IOVideoCaptureUnit: IOCaptureUnit {
+public class IOVideoCaptureUnit: IOCaptureUnit {
     /// The default videoSettings for a device.
-    static let defaultVideoSettings: [NSString: AnyObject] = [
+    public static let defaultVideoSettings: [NSString: AnyObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA)
     ]
 
@@ -66,7 +70,7 @@ class IOVideoCaptureUnit: IOCaptureUnit {
     let output: Output
     let connection: AVCaptureConnection?
 
-    var videoOrientation: AVCaptureVideoOrientation = .portrait {
+    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             output.connections.filter { $0.isVideoOrientationSupported }.forEach {
                 $0.videoOrientation = videoOrientation
@@ -74,7 +78,7 @@ class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
-    var isVideoMirrored = false {
+    public var isVideoMirrored = false {
         didSet {
             output.connections.filter { $0.isVideoMirroringSupported }.forEach {
                 $0.isVideoMirrored = isVideoMirrored
@@ -83,7 +87,7 @@ class IOVideoCaptureUnit: IOCaptureUnit {
     }
 
     @available(macOS, unavailable)
-    var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
+    public var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
         didSet {
             output.connections.filter { $0.isVideoStabilizationSupported }.forEach {
                 $0.preferredVideoStabilizationMode = preferredVideoStabilizationMode
@@ -91,9 +95,12 @@ class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
-    init(_ camera: AVCaptureDevice, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) throws {
-        device = camera
-        input = try AVCaptureDeviceInput(device: camera)
+    public init(_ device: AVCaptureDevice?, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) throws {
+        guard let device else {
+            throw IOCaptureUnitError.noDeviceAvailable
+        }
+        self.device = device
+        input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureVideoDataOutput()
         output.alwaysDiscardsLateVideoFrames = true
         output.videoSettings = videoSettings as? [String: Any]
@@ -105,7 +112,7 @@ class IOVideoCaptureUnit: IOCaptureUnit {
     }
 
     @available(iOS, unavailable)
-    init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject]) {
+    public init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) {
         device = nil
         input = screen
         output = AVCaptureVideoDataOutput()
@@ -144,24 +151,23 @@ class IOVideoCaptureUnit: IOCaptureUnit {
     func setSampleBufferDelegate(_ videoUnit: IOVideoUnit?) {
         if let videoUnit {
             videoOrientation = videoUnit.videoOrientation
-            isVideoMirrored = videoUnit.isVideoMirrored
-            #if os(iOS)
-            preferredVideoStabilizationMode = videoUnit.preferredVideoStabilizationMode
-            #endif
-            setFrameRate(videoUnit.fps)
+            setFrameRate(videoUnit.frameRate)
         }
         output.setSampleBufferDelegate(videoUnit, queue: videoUnit?.lockQueue)
     }
 }
 
-class IOAudioCaptureUnit: IOCaptureUnit {
+public class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
 
     let input: AVCaptureInput
     let output: Output
     let connection: AVCaptureConnection?
 
-    init(_ device: AVCaptureDevice) throws {
+    public init(_ device: AVCaptureDevice?) throws {
+        guard let device else {
+            throw IOCaptureUnitError.noDeviceAvailable
+        }
         input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureAudioDataOutput()
         connection = nil

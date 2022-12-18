@@ -22,14 +22,8 @@ public class HKView: NSView {
         currentStream?.mixer.videoIO.formatDescription
     }
 
-    public var position: AVCaptureDevice.Position = .front {
-        didSet {
-            DispatchQueue.main.async {
-                self.layer?.setNeedsLayout()
-            }
-        }
-    }
     public var videoOrientation: AVCaptureVideoOrientation = .portrait
+
     private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {

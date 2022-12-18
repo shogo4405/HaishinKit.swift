@@ -67,29 +67,14 @@ final class IOVideoUnit: NSObject, IOUnit {
     private var pixelBufferPool: CVPixelBufferPool?
 
     #if os(iOS) || os(macOS)
-    var fps: Float64 = IOMixer.defaultFPS {
+    var frameRate = IOMixer.defaultFrameRate {
         didSet {
-            guard fps != oldValue else {
+            guard frameRate != oldValue else {
                 return
             }
-            capture?.setFrameRate(fps)
-        }
-    }
-
-    var videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings {
-        didSet {
-            capture?.output.videoSettings = videoSettings as? [String: Any]
-            multiCamCapture?.output.videoSettings = videoSettings as? [String: Any]
-        }
-    }
-
-    var isVideoMirrored = false {
-        didSet {
-            guard isVideoMirrored != oldValue else {
-                return
-            }
-            capture?.isVideoMirrored = isVideoMirrored
-            multiCamCapture?.isVideoMirrored = isVideoMirrored
+            codec.expectedFrameRate = frameRate
+            capture?.setFrameRate(frameRate)
+            multiCamCapture?.setFrameRate(frameRate)
         }
     }
 
@@ -120,95 +105,6 @@ final class IOVideoUnit: NSObject, IOUnit {
                 return
             }
             setTorchMode(torch ? .on : .off)
-        }
-    }
-
-    var continuousAutofocus = false {
-        didSet {
-            guard continuousAutofocus != oldValue else {
-                return
-            }
-            let focusMode: AVCaptureDevice.FocusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
-            guard let device = capture?.device, device.isFocusModeSupported(focusMode) else {
-                logger.warn("focusMode(\(focusMode.rawValue)) is not supported")
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.focusMode = focusMode
-                device.unlockForConfiguration()
-            } catch {
-                logger.error("while locking device for autofocus:", error)
-            }
-        }
-    }
-
-    var focusPointOfInterest: CGPoint? {
-        didSet {
-            guard
-                let device = capture?.device,
-                let focusPointOfInterest,
-                device.isFocusPointOfInterestSupported else {
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.focusPointOfInterest = focusPointOfInterest
-                device.focusMode = continuousAutofocus ? .continuousAutoFocus : .autoFocus
-                device.unlockForConfiguration()
-            } catch {
-                logger.error("while locking device for focusPointOfInterest:", error)
-            }
-        }
-    }
-
-    var exposurePointOfInterest: CGPoint? {
-        didSet {
-            guard
-                let device = capture?.device,
-                let exposurePointOfInterest,
-                device.isExposurePointOfInterestSupported else {
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.exposurePointOfInterest = exposurePointOfInterest
-                device.exposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
-                device.unlockForConfiguration()
-            } catch {
-                logger.error("while locking device for exposurePointOfInterest:", error)
-            }
-        }
-    }
-
-    var continuousExposure = false {
-        didSet {
-            guard continuousExposure != oldValue else {
-                return
-            }
-            let exposureMode: AVCaptureDevice.ExposureMode = continuousExposure ? .continuousAutoExposure : .autoExpose
-            guard let device = capture?.device, device.isExposureModeSupported(exposureMode) else {
-                logger.warn("exposureMode(\(exposureMode.rawValue)) is not supported")
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.exposureMode = exposureMode
-                device.unlockForConfiguration()
-            } catch {
-                logger.error("while locking device for autoexpose:", error)
-            }
-        }
-    }
-
-    @available(macOS, unavailable)
-    var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
-        didSet {
-            guard preferredVideoStabilizationMode != oldValue else {
-                return
-            }
-            capture?.preferredVideoStabilizationMode = preferredVideoStabilizationMode
-            multiCamCapture?.preferredVideoStabilizationMode = preferredVideoStabilizationMode
         }
     }
 
@@ -263,8 +159,8 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
 
     #if os(iOS) || os(macOS)
-    func attachCamera(_ camera: AVCaptureDevice?) throws {
-        guard let mixer, capture?.device != camera else {
+    func attachVideo(_ capture: IOVideoCaptureUnit?) throws {
+        guard let mixer, self.capture?.device != capture?.device else {
             return
         }
         mixer.session.beginConfiguration()
@@ -274,39 +170,38 @@ final class IOVideoUnit: NSObject, IOUnit {
                 setTorchMode(.on)
             }
         }
-        guard let camera else {
+        guard let capture else {
             mixer.mediaSync = .passthrough
-            capture = nil
+            self.capture = nil
             return
         }
         mixer.mediaSync = .video
         #if os(iOS)
         screen = nil
         #endif
-        if camera == multiCamCapture?.device {
+        if multiCamCapture?.device == capture.device {
             multiCamCapture = nil
         }
-        capture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
-        drawable?.position = camera.position
+        self.capture = capture
     }
 
     @available(iOS 13.0, *)
-    func attachMultiCamera(_ camera: AVCaptureDevice?) throws {
+    func attachMultiCamera(_ multiCamCapture: IOVideoCaptureUnit?) throws {
         #if os(iOS)
         guard AVCaptureMultiCamSession.isMultiCamSupported else {
             throw Error.multiCamNotSupported
         }
         #endif
-        guard let mixer, multiCamCapture?.device != camera else {
+        guard let mixer, self.multiCamCapture?.device != multiCamCapture?.device else {
             return
         }
-        guard let camera else {
+        guard let multiCamCapture else {
             mixer.isMultiCamSessionEnabled = false
             mixer.session.beginConfiguration()
             defer {
                 mixer.session.commitConfiguration()
             }
-            multiCamCapture = nil
+            self.multiCamCapture = nil
             return
         }
         mixer.isMultiCamSessionEnabled = true
@@ -314,29 +209,15 @@ final class IOVideoUnit: NSObject, IOUnit {
         defer {
             mixer.session.commitConfiguration()
         }
-        if capture?.device == camera {
+        if capture?.device == multiCamCapture.device {
             capture = nil
         }
-        multiCamCapture = try? IOVideoCaptureUnit(camera, videoSettings: videoSettings)
+        self.multiCamCapture = multiCamCapture
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
         capture?.setTorchMode(torchMode)
         multiCamCapture?.setTorchMode(torchMode)
-    }
-    #endif
-
-    #if os(macOS)
-    func attachScreen(_ screen: AVCaptureScreenInput?) {
-        mixer?.session.beginConfiguration()
-        defer {
-            mixer?.session.commitConfiguration()
-        }
-        guard let screen else {
-            capture = nil
-            return
-        }
-        capture = IOVideoCaptureUnit(screen, videoSettings: videoSettings)
     }
     #endif
 
@@ -386,7 +267,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             imageBuffer?.unlockBaseAddress()
         }
         #if os(macOS)
-        if isVideoMirrored {
+        if capture?.isVideoMirrored == true {
             buffer.reflectHorizontal()
         }
         #endif

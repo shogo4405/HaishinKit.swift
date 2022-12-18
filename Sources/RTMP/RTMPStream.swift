@@ -433,7 +433,7 @@ open class RTMPStream: NetStream {
         if mixer.videoIO.capture != nil {
             metadata["width"] = mixer.videoIO.codec.width
             metadata["height"] = mixer.videoIO.codec.height
-            metadata["framerate"] = mixer.videoIO.fps
+            metadata["framerate"] = mixer.videoIO.frameRate
             metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
             metadata["videodatarate"] = mixer.videoIO.codec.bitrate / 1000
         }
