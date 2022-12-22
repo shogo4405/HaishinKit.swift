@@ -7,6 +7,9 @@ disabled_rules:
   - file_length
   - cyclomatic_complexity
   - compiler_protocol_init
+analyzer_rules:
+  - unused_declaration
+  - unused_import
 excluded:
   - Carthage
   - Pods
@@ -79,8 +82,6 @@ opt_in_rules:
   - unavailable_function
   - unneeded_parentheses_in_closure_argument
   - untyped_error_in_catch
-  - unused_import
-  - unused_private_declaration
   - vertical_parameter_alignment_on_call
 #  - vertical_whitespace_between_cases
   - vertical_whitespace_closing_braces

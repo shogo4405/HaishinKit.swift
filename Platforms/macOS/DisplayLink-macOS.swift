@@ -61,10 +61,13 @@ final class DisplayLink: NSObject {
 }
 
 extension CVTimeStamp {
-    @inlinable @inline(__always) var timestamp: Double {
+    // swiftlint:disable attributes
+    @inlinable @inline(__always)
+    var timestamp: Double {
         Double(self.videoTime) / Double(self.videoTimeScale)
     }
 
+    // swiftlint:disable attributes
     @inlinable @inline(__always) var duration: Double {
         Double(self.videoRefreshPeriod) / Double(self.videoTimeScale)
     }
