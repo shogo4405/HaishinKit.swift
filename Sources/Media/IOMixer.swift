@@ -2,7 +2,7 @@ import AVFoundation
 
 #if os(iOS) || os(macOS)
 extension AVCaptureSession.Preset {
-    static var `default`: AVCaptureSession.Preset = AVCaptureSession.Preset.hd1280x720
+    static let `default`: AVCaptureSession.Preset = .hd1280x720
 }
 #endif
 
@@ -21,28 +21,20 @@ public class IOMixer {
         case passthrough
     }
 
+    #if os(iOS) || os(macOS)
+    var isMultitaskingCameraAccessEnabled = true
+
     var isMultiCamSessionEnabled = false {
         didSet {
             guard oldValue != isMultiCamSessionEnabled else {
                 return
             }
             #if os(iOS)
-            if #available(iOS 13.0, *) {
-                if isMultiCamSessionEnabled {
-                    if !(session is AVCaptureMultiCamSession) {
-                        session = AVCaptureMultiCamSession()
-                    }
-                } else {
-                    if session is AVCaptureMultiCamSession {
-                        session = AVCaptureSession()
-                    }
-                }
-            }
+            session = makeSession()
             #endif
         }
     }
 
-    #if os(iOS) || os(macOS)
     var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
             guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
@@ -55,15 +47,10 @@ public class IOMixer {
     }
 
     /// The capture session instance.
-    public internal(set) lazy var session: AVCaptureSession = {
-        let session = AVCaptureSession()
-        if session.canSetSessionPreset(sessionPreset) {
-            session.sessionPreset = sessionPreset
-        }
-        return session
-    }() {
+    public internal(set) lazy var session: AVCaptureSession = makeSession() {
         didSet {
             if oldValue.isRunning {
+                removeSessionObservers(oldValue)
                 oldValue.stopRunning()
             }
             audioIO.capture?.detachSession(oldValue)
@@ -114,14 +101,6 @@ public class IOMixer {
     private var audioTimeStamp = CMTime.zero
     private var videoTimeStamp = CMTime.zero
 
-    #if os(iOS) || os(macOS)
-    deinit {
-        if session.isRunning {
-            session.stopRunning()
-        }
-    }
-    #endif
-
     func useSampleBuffer(sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) -> Bool {
         switch mediaSync {
         case .video:
@@ -137,21 +116,41 @@ public class IOMixer {
         }
     }
 
-    @objc
-    private func didEnterBackground(_ notification: Notification) {
-        #if os(iOS) || os(macOS)
-        videoIO.multiCamCapture?.detachSession(session)
-        videoIO.capture?.detachSession(session)
-        #endif
+    #if os(iOS)
+    private func makeSession() -> AVCaptureSession {
+        let session: AVCaptureSession
+        if isMultiCamSessionEnabled, #available(iOS 13.0, *) {
+            session = AVCaptureMultiCamSession()
+        } else {
+            session = AVCaptureSession()
+        }
+        if session.canSetSessionPreset(sessionPreset) {
+            session.sessionPreset = sessionPreset
+        }
+        if #available(iOS 16.0, *), isMultitaskingCameraAccessEnabled, session.isMultitaskingCameraAccessSupported {
+            session.isMultitaskingCameraAccessEnabled = true
+        }
+        return session
     }
+    #endif
 
-    @objc
-    private func didBecomeActive(_ notification: Notification) {
-        #if os(iOS) || os(macOS)
-        videoIO.capture?.attachSession(session)
-        videoIO.multiCamCapture?.attachSession(session)
-        #endif
+    #if os(macOS)
+    private func makeSession() -> AVCaptureSession {
+        let session = AVCaptureSession()
+        if session.canSetSessionPreset(sessionPreset) {
+            session.sessionPreset = sessionPreset
+        }
+        return session
     }
+    #endif
+
+    #if os(iOS) || os(macOS)
+    deinit {
+        if session.isRunning {
+            session.stopRunning()
+        }
+    }
+    #endif
 }
 
 extension IOMixer: IOUnitEncoding {
@@ -208,10 +207,7 @@ extension IOMixer: Running {
         guard !isRunning.value else {
             return
         }
-        #if os(iOS)
-        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
-        #endif
+        addSessionObservers(session)
         session.startRunning()
     }
 
@@ -219,12 +215,89 @@ extension IOMixer: Running {
         guard isRunning.value else {
             return
         }
-        #if os(iOS)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
-        #endif
+        removeSessionObservers(session)
         session.stopRunning()
     }
+
+    private func addSessionObservers(_ session: AVCaptureSession) {
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError(_:)), name: .AVCaptureSessionRuntimeError, object: session)
+        #if os(iOS)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: session)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: session)
+        #endif
+    }
+
+    private func removeSessionObservers(_ session: AVCaptureSession) {
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
+        #if os(iOS)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: session)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: session)
+        #endif
+    }
+
+    @objc
+    private func sessionRuntimeError(_ notification: NSNotification) {
+        guard
+            let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else {
+            return
+        }
+        let error = AVError(_nsError: errorValue)
+        switch error.code {
+        case .unsupportedDeviceActiveFormat:
+            #if os(iOS)
+            let isMultiCamSupported: Bool
+            if #available(iOS 13.0, *) {
+                isMultiCamSupported = session is AVCaptureMultiCamSession
+            } else {
+                isMultiCamSupported = false
+            }
+            #else
+            let isMultiCamSupported = true
+            #endif
+            guard let device = error.device,
+                  let format = device.videoFormat(
+                    width: sessionPreset.width ?? videoIO.codec.width,
+                    height: sessionPreset.height ?? videoIO.codec.height,
+                    isMultiCamSupported: isMultiCamSupported
+                  ), device.activeFormat != format else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.activeFormat = format
+                device.unlockForConfiguration()
+                session.startRunning()
+            } catch {
+                logger.warn(error)
+            }
+        default:
+            break
+        }
+    }
+
+    #if os(iOS)
+    @objc
+    private func didEnterBackground(_ notification: Notification) {
+        if #available(iOS 16, *) {
+            guard !session.isMultitaskingCameraAccessEnabled else {
+                return
+            }
+        }
+        videoIO.multiCamCapture?.detachSession(session)
+        videoIO.capture?.detachSession(session)
+    }
+
+    @objc
+    private func didBecomeActive(_ notification: Notification) {
+        if #available(iOS 16, *) {
+            guard !session.isMultitaskingCameraAccessEnabled else {
+                return
+            }
+        }
+        videoIO.capture?.attachSession(session)
+        videoIO.multiCamCapture?.attachSession(session)
+    }
+    #endif
 }
 #else
 extension IOMixer: Running {
