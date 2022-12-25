@@ -65,11 +65,12 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
 
     typealias Output = AVCaptureVideoDataOutput
 
-    let device: AVCaptureDevice?
+    public let device: AVCaptureDevice?
     let input: AVCaptureInput
     let output: Output
     let connection: AVCaptureConnection?
 
+    /// Specifies the videoOrientation indicates whether to rotate the video flowing through the connection to a given orientation.
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             output.connections.filter { $0.isVideoOrientationSupported }.forEach {
@@ -78,6 +79,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
+    /// Spcifies the video mirroed indicates whether the video flowing through the connection should be mirrored about its vertical axis.
     public var isVideoMirrored = false {
         didSet {
             output.connections.filter { $0.isVideoMirroringSupported }.forEach {
@@ -86,6 +88,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
+    /// Specifies the preferredVideoStabilizationMode most appropriate for use with the connection.
     @available(macOS, unavailable)
     public var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
         didSet {
@@ -95,7 +98,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
-    public init(_ device: AVCaptureDevice?, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) throws {
+    init(_ device: AVCaptureDevice?, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) throws {
         guard let device else {
             throw IOCaptureUnitError.noDeviceAvailable
         }
@@ -112,7 +115,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     }
 
     @available(iOS, unavailable)
-    public init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) {
+    init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) {
         device = nil
         input = screen
         output = AVCaptureVideoDataOutput()
@@ -157,7 +160,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     }
 }
 
-public class IOAudioCaptureUnit: IOCaptureUnit {
+class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
 
     let input: AVCaptureInput

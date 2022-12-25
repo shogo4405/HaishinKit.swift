@@ -55,16 +55,16 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.attachAudio(try? .init(AVCaptureDevice.default(for: .audio))) { error in
+        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             logger.warn(error)
         }
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-        rtmpStream.attachVideo(try? .init(back)) { error in
+        rtmpStream.attachCamera(back) { error in
             logger.warn(error)
         }
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            rtmpStream.attachMultiCamera(try? .init(front))
+            rtmpStream.attachMultiCamera(front)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
@@ -112,11 +112,11 @@ final class LiveViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        rtmpStream.attachVideo(try? .init(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position))) { error in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
             logger.warn(error)
         }
         if #available(iOS 13.0, *) {
-            rtmpStream.attachMultiCamera(try? .init(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition))) { error in
+            rtmpStream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
                 logger.warn(error)
             }
         }
@@ -137,6 +137,17 @@ final class LiveViewController: UIViewController {
             rtmpStream.videoSettings[.bitrate] = slider.value * 1000
         }
         if slider == zoomSlider {
+            let zoomFactor = CGFloat(slider.value)
+            guard let device = rtmpStream.videoCapture(for: 0)?.device, 1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.ramp(toVideoZoomFactor: zoomFactor, withRate: 5.0)
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for ramp: \(error)")
+            }
         }
     }
 
@@ -199,18 +210,29 @@ final class LiveViewController: UIViewController {
         if let gestureView = gesture.view, gesture.state == .ended {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
             let pointOfInterest = CGPoint(x: touchPoint.x / gestureView.bounds.size.width, y: touchPoint.y / gestureView.bounds.size.height)
-            print("pointOfInterest: \(pointOfInterest)")
+            guard
+                let device = rtmpStream.videoCapture(for: 0)?.device, device.isFocusPointOfInterestSupported else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.focusPointOfInterest = pointOfInterest
+                device.focusMode = .continuousAutoFocus
+                device.unlockForConfiguration()
+            } catch let error as NSError {
+                logger.error("while locking device for focusPointOfInterest: \(error)")
+            }
         }
     }
 
     @IBAction private func onFPSValueChanged(_ segment: UISegmentedControl) {
         switch segment.selectedSegmentIndex {
         case 0:
-            rtmpStream.frameRate = 60
+            rtmpStream.frameRate = 15
         case 1:
             rtmpStream.frameRate = 30
         case 2:
-            rtmpStream.frameRate = 15
+            rtmpStream.frameRate = 60
         default:
             break
         }

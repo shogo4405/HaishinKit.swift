@@ -26,7 +26,7 @@ final class ViewModel: ObservableObject {
 
     var frameRate: String = "30.0" {
         willSet {
-            rtmpStream.captureSettings[.fps] = Float(newValue)
+            rtmpStream.frameRate = Float64(newValue) ?? 30.0
             objectWillChange.send()
         }
     }
@@ -62,14 +62,9 @@ final class ViewModel: ObservableObject {
     func config() {
         rtmpStream = RTMPStream(connection: rtmpConnection)
         if let orientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
-            rtmpStream.orientation = orientation
+            rtmpStream.videoOrientation = orientation
         }
-        rtmpStream.captureSettings = [
-            .sessionPreset: AVCaptureSession.Preset.hd1280x720,
-            .continuousAutofocus: true,
-            .continuousExposure: true
-            // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
-        ]
+        rtmpStream.sessionPreset = .hd1280x720
         rtmpStream.videoSettings = [
             .width: 720,
             .height: 1280
@@ -81,7 +76,7 @@ final class ViewModel: ObservableObject {
                 guard let orientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation), let self = self else {
                     return
                 }
-                self.rtmpStream.orientation = orientation
+                self.rtmpStream.videoOrientation = orientation
             }
             .store(in: &subscriptions)
 
@@ -104,13 +99,11 @@ final class ViewModel: ObservableObject {
 
     func registerForPublishEvent() {
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-            logger.error(error.description)
+            logger.error(error)
         }
-
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: currentPosition)) { error in
-            logger.error(error.description)
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
+            logger.error(error)
         }
-
         rtmpStream.publisher(for: \.currentFPS)
             .sink { [weak self] currentFPS in
                 guard let self = self else {
@@ -166,20 +159,39 @@ final class ViewModel: ObservableObject {
     func tapScreen(touchPoint: CGPoint) {
         let pointOfInterest = CGPoint(x: touchPoint.x / UIScreen.main.bounds.size.width, y: touchPoint.y / UIScreen.main.bounds.size.height)
         logger.info("pointOfInterest: \(pointOfInterest)")
-        rtmpStream.setPointOfInterest(pointOfInterest, exposure: pointOfInterest)
+        guard
+            let device = rtmpStream.videoCapture(for: 0)?.device, device.isFocusPointOfInterestSupported else {
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.focusPointOfInterest = pointOfInterest
+            device.focusMode = .continuousAutoFocus
+            device.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("while locking device for focusPointOfInterest: \(error)")
+        }
     }
 
     func rotateCamera() {
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        rtmpStream.captureSettings[.isVideoMirrored] = position == .front
-        rtmpStream.attachCamera(DeviceUtil.device(withPosition: position)) { error in
-            logger.error(error.description)
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
+            logger.error(error)
         }
         currentPosition = position
     }
 
     func changeZoomLevel(level: CGFloat) {
-        rtmpStream.setZoomFactor(level, ramping: true, withRate: 5.0)
+        guard let device = rtmpStream.videoCapture(for: 0)?.device, 1 <= level && level < device.activeFormat.videoMaxZoomFactor else {
+            return
+        }
+        do {
+            try device.lockForConfiguration()
+            device.ramp(toVideoZoomFactor: level, withRate: 5.0)
+            device.unlockForConfiguration()
+        } catch let error as NSError {
+            logger.error("while locking device for ramp: \(error)")
+        }
     }
 
     func changeVideoRate(level: CGFloat) {

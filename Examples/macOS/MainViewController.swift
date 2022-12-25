@@ -106,7 +106,7 @@ final class MainViewController: NSViewController {
     }
 
     @IBAction private func mirror(_ sender: AnyObject) {
-        rtmpStream.captureSettings[.isVideoMirrored] = !(rtmpStream.captureSettings[.isVideoMirrored] as! Bool)
+        rtmpStream.videoCapture(for: 0)?.isVideoMirrored.toggle()
     }
 
     @IBAction private func selectAudio(_ sender: AnyObject) {

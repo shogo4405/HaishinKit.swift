@@ -156,10 +156,10 @@ open class NetStream: NSObject {
     #if os(iOS) || os(macOS)
     /// Attaches the camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    open func attachVideo(_ camera: IOVideoCaptureUnit?, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachVideo(camera)
+                try self.mixer.videoIO.attachCamera(device)
             } catch {
                 onError?(error)
             }
@@ -169,10 +169,10 @@ open class NetStream: NSObject {
     /// Attaches the video capture object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(iOS 13.0, *)
-    open func attachMultiCamera(_ camera: IOVideoCaptureUnit?, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachMultiCamera(camera)
+                try self.mixer.videoIO.attachMultiCamera(device)
             } catch {
                 onError?(error)
             }
@@ -181,12 +181,32 @@ open class NetStream: NSObject {
 
     /// Attaches the audio capture object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    open func attachAudio(_ audio: IOAudioCaptureUnit?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: Error) -> Void)? = nil) {
+    open func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.audioIO.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
+                try self.mixer.audioIO.attachAudio(device, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
             } catch {
                 onError?(error)
+            }
+        }
+    }
+
+    @available(iOS, unavailable)
+    open func attachScreen(_ input: AVCaptureScreenInput?) {
+        lockQueue.async {
+            self.mixer.videoIO.attachScreen(input)
+        }
+    }
+
+    public func videoCapture(for index: Int) -> IOVideoCaptureUnit? {
+        return mixer.videoIO.lockQueue.sync {
+            switch index {
+            case 0:
+                return self.mixer.videoIO.capture
+            case 1:
+                return self.mixer.videoIO.multiCamCapture
+            default:
+                return nil
             }
         }
     }

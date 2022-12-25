@@ -159,8 +159,8 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
 
     #if os(iOS) || os(macOS)
-    func attachVideo(_ capture: IOVideoCaptureUnit?) throws {
-        guard let mixer, self.capture?.device != capture?.device else {
+    func attachCamera(_ device: AVCaptureDevice?) throws {
+        guard let mixer, self.capture?.device != device else {
             return
         }
         mixer.session.beginConfiguration()
@@ -170,7 +170,7 @@ final class IOVideoUnit: NSObject, IOUnit {
                 setTorchMode(.on)
             }
         }
-        guard let capture else {
+        guard let device else {
             mixer.mediaSync = .passthrough
             self.capture = nil
             return
@@ -179,23 +179,23 @@ final class IOVideoUnit: NSObject, IOUnit {
         #if os(iOS)
         screen = nil
         #endif
-        if multiCamCapture?.device == capture.device {
+        if multiCamCapture?.device == device {
             multiCamCapture = nil
         }
-        self.capture = capture
+        self.capture = try IOVideoCaptureUnit(device)
     }
 
     @available(iOS 13.0, *)
-    func attachMultiCamera(_ multiCamCapture: IOVideoCaptureUnit?) throws {
+    func attachMultiCamera(_ device: AVCaptureDevice?) throws {
         #if os(iOS)
         guard AVCaptureMultiCamSession.isMultiCamSupported else {
             throw Error.multiCamNotSupported
         }
         #endif
-        guard let mixer, self.multiCamCapture?.device != multiCamCapture?.device else {
+        guard let mixer, self.multiCamCapture?.device != device else {
             return
         }
-        guard let multiCamCapture else {
+        guard let device else {
             mixer.isMultiCamSessionEnabled = false
             mixer.session.beginConfiguration()
             defer {
@@ -209,10 +209,28 @@ final class IOVideoUnit: NSObject, IOUnit {
         defer {
             mixer.session.commitConfiguration()
         }
-        if capture?.device == multiCamCapture.device {
+        if capture?.device == device {
             capture = nil
         }
-        self.multiCamCapture = multiCamCapture
+        self.multiCamCapture = try IOVideoCaptureUnit(device)
+    }
+
+    @available(iOS, unavailable)
+    func attachScreen(_ input: AVCaptureScreenInput?) {
+        guard let mixer else {
+            return
+        }
+        mixer.session.beginConfiguration()
+        defer {
+            mixer.session.commitConfiguration()
+        }
+        guard let input else {
+            mixer.mediaSync = .passthrough
+            self.capture = nil
+            return
+        }
+        mixer.mediaSync = .video
+        self.capture = IOVideoCaptureUnit(input)
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
