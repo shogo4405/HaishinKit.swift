@@ -4,14 +4,14 @@ import AVFoundation
 import CoreImage
 import UIKit
 
-extension CGRect {
+private extension CGRect {
     init(size: CGSize) {
         self.init(origin: .zero, size: size)
     }
 }
 
 // MARK: -
-open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
+public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
     static let defaultFrameInterval: Int = 2
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
@@ -20,15 +20,15 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
 
     public var enabledScale = false
     public var afterScreenUpdates = false
-    public var frameInterval: Int = ScreenCaptureSession.defaultFrameInterval
+    public var frameInterval: Int = IOUIScreenCaptureUnit.defaultFrameInterval
     public var attributes: [NSString: NSObject] {
-        var attributes: [NSString: NSObject] = ScreenCaptureSession.defaultAttributes
+        var attributes: [NSString: NSObject] = IOUIScreenCaptureUnit.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: Float(size.width * scale))
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: Float(size.height * scale))
         attributes[kCVPixelBufferBytesPerRowAlignmentKey] = NSNumber(value: Float(size.width * scale * 4))
         return attributes
     }
-    public weak var delegate: CaptureSessionDelegate?
+    public weak var delegate: IOScreenCaptureUnitDelegate?
     public internal(set) var isRunning: Atomic<Bool> = .init(false)
 
     private var shared: UIApplication?
@@ -46,7 +46,6 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
             guard size != oldValue else {
                 return
             }
-            delegate?.session(self, didSet: CGSize(width: size.width * scale, height: size.height * scale))
             pixelBufferPool = nil
         }
     }
@@ -136,7 +135,7 @@ open class ScreenCaptureSession: NSObject, CaptureSessionConvertible {
     }
 }
 
-extension ScreenCaptureSession: Running {
+extension IOUIScreenCaptureUnit: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.sync {
