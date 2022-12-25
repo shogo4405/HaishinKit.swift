@@ -212,12 +212,6 @@ open class NetStream: NSObject {
     }
     #endif
 
-    open func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(screen, useScreenSize: useScreenSize)
-        }
-    }
-
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
     open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {

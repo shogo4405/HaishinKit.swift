@@ -130,17 +130,6 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     var multiCamCaptureSettings: MultiCamCaptureSetting = .default
 
-    private(set) var screen: CaptureSessionConvertible? {
-        didSet {
-            if let oldValue = oldValue {
-                oldValue.delegate = nil
-            }
-            if let screen = screen {
-                screen.delegate = self
-            }
-        }
-    }
-
     private var pixelBuffer: CVPixelBuffer?
     private var multiCamSampleBuffer: CMSampleBuffer?
 
@@ -176,9 +165,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             return
         }
         mixer.mediaSync = .video
-        #if os(iOS)
-        screen = nil
-        #endif
         if multiCamCapture?.device == device {
             multiCamCapture = nil
         }
@@ -238,22 +224,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         multiCamCapture?.setTorchMode(torchMode)
     }
     #endif
-
-    func attachScreen(_ screen: CaptureSessionConvertible?, useScreenSize: Bool = true) {
-        guard let screen = screen else {
-            self.screen?.stopRunning()
-            self.screen = nil
-            return
-        }
-        #if os(iOS) || os(macOS)
-        capture = nil
-        #endif
-        if useScreenSize {
-            codec.width = screen.attributes["Width"] as! Int32
-            codec.height = screen.attributes["Height"] as! Int32
-        }
-        self.screen = screen
-    }
 
     @inline(__always)
     func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
@@ -340,17 +310,11 @@ final class IOVideoUnit: NSObject, IOUnit {
 extension IOVideoUnit: IOUnitEncoding {
     // MARK: IOUnitEncoding
     func startEncoding(_ delegate: AVCodecDelegate) {
-        #if os(iOS)
-        screen?.startRunning()
-        #endif
         codec.delegate = delegate
         codec.startRunning()
     }
 
     func stopEncoding() {
-        #if os(iOS)
-        screen?.stopRunning()
-        #endif
         codec.stopRunning()
         codec.delegate = nil
         pixelBuffer = nil
