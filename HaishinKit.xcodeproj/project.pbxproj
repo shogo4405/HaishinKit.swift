@@ -314,9 +314,9 @@
 		2EC97B7227880FF400D8BE32 /* OnTapGestureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B6E27880FF400D8BE32 /* OnTapGestureView.swift */; };
 		2EC97B7327880FF400D8BE32 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B6F27880FF400D8BE32 /* Views.swift */; };
 		2EC97B7427880FF400D8BE32 /* MTHKSwiftUiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */; };
-		BC0D236D26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
-		BC0D236E26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
-		BC0D236F26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */; };
+		BC0D236D26331BAB001DDA0C /* CircularByteBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* CircularByteBuffer.swift */; };
+		BC0D236E26331BAB001DDA0C /* CircularByteBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* CircularByteBuffer.swift */; };
+		BC0D236F26331BAB001DDA0C /* CircularByteBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* CircularByteBuffer.swift */; };
 		BC11023E2917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
 		BC11023F2917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
 		BC1102402917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
@@ -846,7 +846,7 @@
 		2EC97B6E27880FF400D8BE32 /* OnTapGestureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnTapGestureView.swift; sourceTree = "<group>"; };
 		2EC97B6F27880FF400D8BE32 /* Views.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTHKSwiftUiView.swift; sourceTree = "<group>"; };
-		BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetSocket.CircularBuffer.swift; sourceTree = "<group>"; };
+		BC0D236C26331BAB001DDA0C /* CircularByteBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircularByteBuffer.swift; sourceTree = "<group>"; };
 		BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBufferPool+Extension.swift"; sourceTree = "<group>"; };
 		BC1102492925147300D48035 /* IOCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureUnit.swift; sourceTree = "<group>"; };
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
@@ -1051,6 +1051,7 @@
 				29DC17B221D0CC0600E26CED /* Atomic.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				294B2D3123785E3800CE7BDC /* CircularBuffer.swift */,
+				BC0D236C26331BAB001DDA0C /* CircularByteBuffer.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				29B876B91CD70B3900FC07DA /* CRC32.swift */,
 				BCA97BF3263C390E0027213C /* CustomXmlStringConvertible.swift */,
@@ -1326,7 +1327,6 @@
 				29B876971CD70B1100FC07DA /* MIME.swift */,
 				29B876981CD70B1100FC07DA /* NetClient.swift */,
 				29B876991CD70B1100FC07DA /* NetService.swift */,
-				BC0D236C26331BAB001DDA0C /* NetSocket.CircularBuffer.swift */,
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
 				29AF3FCE1D7C744C00E41212 /* NetStream.swift */,
 				BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */,
@@ -2123,7 +2123,7 @@
 				BC110257292E661E00D48035 /* MultiCamCaptureSetting.swift in Sources */,
 				29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */,
 				2958912E1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
-				BC0D236D26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */,
+				BC0D236D26331BAB001DDA0C /* CircularByteBuffer.swift in Sources */,
 				BCC1A6BF2643F41600661156 /* MP4TrackFragmentBox.Builder.swift in Sources */,
 				29D3D4D61ED04EAE00DD4AA6 /* DeviceUtil+Extenstion.swift in Sources */,
 				BCC1A6F72645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */,
@@ -2322,7 +2322,7 @@
 				BC94E4FF263FE6B80094C169 /* MP4MovieFragmentHeaderBox.swift in Sources */,
 				29B877031CD70D5A00FC07DA /* IOAudioUnit.swift in Sources */,
 				BCC1A6C02643F41600661156 /* MP4TrackFragmentBox.Builder.swift in Sources */,
-				BC0D236E26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */,
+				BC0D236E26331BAB001DDA0C /* CircularByteBuffer.swift in Sources */,
 				BCC1A6F82645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */,
 				BCC1A6E826447CCA00661156 /* MP4MovieHeaderBox.swift in Sources */,
 				29B877051CD70D5A00FC07DA /* IOMixer.swift in Sources */,
@@ -2555,7 +2555,7 @@
 				29EB3DF11ED0576C001CAE8B /* Constants.swift in Sources */,
 				29EB3E011ED05856001CAE8B /* HTTPStream.swift in Sources */,
 				29EB3E171ED05893001CAE8B /* NetClient.swift in Sources */,
-				BC0D236F26331BAB001DDA0C /* NetSocket.CircularBuffer.swift in Sources */,
+				BC0D236F26331BAB001DDA0C /* CircularByteBuffer.swift in Sources */,
 				BCC1A6F92645BFBC00661156 /* MP4AVCConfigurationBox.swift in Sources */,
 				BCB976D326107B1200C9A649 /* TSAdaptationExtensionField.swift in Sources */,
 				BCA97C1D263DAD080027213C /* MP4ElementaryStreamDescriptorBox.swift in Sources */,
