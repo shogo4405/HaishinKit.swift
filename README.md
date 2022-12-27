@@ -75,6 +75,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 ## 🌏 Requirements
 |-|iOS|OSX|tvOS|Xcode|Swift|
 |:----:|:----:|:----:|:----:|:----:|:----:|
+|1.4.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
 |1.3.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
 |1.2.0+|9.0+|10.11+|10.2+|13.0+|5.5+|
 
@@ -107,7 +108,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.3.0
+    pod 'HaishinKit', '~> 1.4.0
 end
 
 target 'Your Target'  do
@@ -117,7 +118,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.3.0
+github "shogo4405/HaishinKit.swift" ~> 1.4.0
 ```
 ### Swift Package Manager
 ```
@@ -239,7 +240,10 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
 ### Screen Capture
 ```swift
 // iOS
-rtmpStream.attachScreen(ScreenCaptureSession(shared: UIApplication.shared))
+let screen = IOUIScreenCaptureUnit(shared: UIApplication.shared)
+screen.delegate = rtmpStream
+screen.startRunning()
+
 // macOS
 rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```

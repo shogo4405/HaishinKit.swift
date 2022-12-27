@@ -140,22 +140,12 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specifies the recorder properties.
-    public var recorderSettings: [AVMediaType: [String: Any]] {
-        get {
-            mixer.recorder.outputSettings
-        }
-        set {
-            mixer.recorder.outputSettings = newValue
-        }
-    }
-
     deinit {
         metadata.removeAll()
     }
 
     #if os(iOS) || os(macOS)
-    /// Attaches the camera object.
+    /// Attaches the primary camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     open func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
         lockQueue.async {
@@ -167,7 +157,7 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Attaches the video capture object for picture in picture.
+    /// Attaches the 2ndary camera  object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(iOS 13.0, *)
     open func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: Error) -> Void)? = nil) {
@@ -192,6 +182,7 @@ open class NetStream: NSObject {
         }
     }
 
+    /// Attaches the screen input object.
     @available(iOS, unavailable)
     open func attachScreen(_ input: AVCaptureScreenInput?) {
         lockQueue.async {
@@ -199,6 +190,7 @@ open class NetStream: NSObject {
         }
     }
 
+    /// Returns the IOVideoCaptureUnit by index.
     public func videoCapture(for index: Int) -> IOVideoCaptureUnit? {
         return mixer.videoIO.lockQueue.sync {
             switch index {
@@ -259,7 +251,8 @@ open class NetStream: NSObject {
     }
 
     /// Starts recording.
-    public func startRecording() {
+    public func startRecording(_ settings: [AVMediaType: [String: Any]]) {
+        mixer.recorder.outputSettings = settings
         mixer.recorder.startRunning()
     }
 
