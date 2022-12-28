@@ -26,7 +26,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 * If you want to support e-mail based communication without GitHub.
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
 * [Discord chatroom](https://discord.com/invite/8nkshPnanr).
-* 日本語が分かる方は日本語でお願いします！
+* 日本語が分かる方は、日本語でのコミニケーションをお願いします！
 
 ## 💖 Sponsors
 <p align="center">
@@ -55,6 +55,23 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 - [x] HTTPService
 - [x] HLS Publish
 
+### Multi Camera
+Supports two camera video sources. A picture-in-picture display that shows the image of the secondary camera of the primary camera. Supports camera split display that displays horizontally and vertically.
+
+|Picture-In-Picture|Split|
+|:-:|:-:|
+|<img width="1382" alt="スクリーンショット 2022-12-30 15 57 38" src="https://user-images.githubusercontent.com/810189/210043421-ceb18cb7-9b50-43fa-a0a2-8b92b78d9df1.png">|<img width="1382" alt="スクリーンショット 2022-12-30 15 55 13" src="https://user-images.githubusercontent.com/810189/210043687-a99f21b6-28b2-4170-96de-6c814debd84d.png">|
+
+```swift
+let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+stream.attachCamera(back)
+
+if #available(iOS 13.0, *) {
+  let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+  stream.attachMultiCamera(front)
+}
+```
+
 ### Rendering
 |-|[HKView](https://shogo4405.github.io/HaishinKit.swift/Classes/HKView.html)|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
 |-|:---:|:---:|:---:|
@@ -64,8 +81,9 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 |VisualEffect|×|◯|○|
 
 ### Others
+- [x] [Support multitasking camera access.](https://developer.apple.com/documentation/avfoundation/capture_setup/accessing_the_camera_while_multitasking)
 - [x] _Support tvOS 11.0+  (Technical Preview)_
-  - tvOS can't publish Camera and Microphone. Available playback feature.
+  - tvOS can't use camera and microphone devices.
 - [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
 - [ ] ~~Support GPUImage framework (~> 0.5.12)~~
@@ -132,7 +150,7 @@ https://github.com/shogo4405/HaishinKit.swift
   - https://www.paypal.me/shogo4405
 
 ## 🔧 Prerequisites
-Make sure you setup and activate your AVAudioSession.
+Make sure you setup and activate your AVAudioSession iOS.
 ```swift
 import AVFoundation
 let session = AVAudioSession.sharedInstance()
@@ -186,49 +204,77 @@ rtmpStream.publish("streamName")
 ```swift
 var rtmpStream = RTMPStream(connection: rtmpConnection)
 
-rtmpStream.captureSettings = [
-    .fps: 30, // FPS
-    .sessionPreset: AVCaptureSession.Preset.medium, // input video width/height
-    // .isVideoMirrored: false,
-    // .continuousAutofocus: false, // use camera autofocus mode
-    // .continuousExposure: false, //  use camera exposure mode
-    // .preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode.auto
-]
+rtmpStream.frameRate = 30
+rtmpStream.sessionPreset = AVCaptureSession.Preset.medium
+
+/// Specifies the video capture settings.
+rtmpStream.videoCapture(for: 0).isVideoMirrored = false
+rtmpStream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
+// rtmpStream.videoCapture(for: 1).isVideoMirrored = false
+
+// Specifies the audio codec settings.
 rtmpStream.audioSettings = [
-    .muted: false, // mute audio
-    .bitrate: 32 * 1000,
+  .bitrate: 32 * 1000,
 ]
+
+// Specifies the video codec settings.
 rtmpStream.videoSettings = [
-    .width: 640, // video output width
-    .height: 360, // video output height
-    .bitrate: 160 * 1000, // video output bitrate
-    .profileLevel: kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
-    .maxKeyFrameIntervalDuration: 2, // key frame / sec
+  .width: 640, // video output width
+  .height: 360, // video output height
+  .bitrate: 160 * 1000, // video output bitrate
+  .profileLevel: kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
+  .maxKeyFrameIntervalDuration: 2, // key frame / sec
 ]
-// "0" means the same of input
-rtmpStream.recorderSettings = [
-    AVMediaType.audio: [
-        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-        AVSampleRateKey: 0,
-        AVNumberOfChannelsKey: 0,
-        // AVEncoderBitRateKey: 128000,
-    ],
-    AVMediaType.video: [
-        AVVideoCodecKey: AVVideoCodecH264,
-        AVVideoHeightKey: 0,
-        AVVideoWidthKey: 0,
-        /*
-        AVVideoCompressionPropertiesKey: [
-            AVVideoMaxKeyFrameIntervalDurationKey: 2,
-            AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
-            AVVideoAverageBitRateKey: 512000
-        ]
-        */
-    ],
-]
+
+// Specifies the recording settings. 0" means the same of input.
+rtmpStream.startRecording([
+  AVMediaType.audio: [
+    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+    AVSampleRateKey: 0,
+    AVNumberOfChannelsKey: 0,
+    // AVEncoderBitRateKey: 128000,
+  ],
+  AVMediaType.video: [
+    AVVideoCodecKey: AVVideoCodecH264,
+    AVVideoHeightKey: 0,
+    AVVideoWidthKey: 0,
+    /*
+    AVVideoCompressionPropertiesKey: [
+      AVVideoMaxKeyFrameIntervalDurationKey: 2,
+      AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
+      AVVideoAverageBitRateKey: 512000
+    ]
+    */
+  ]
+])
 
 // 2nd arguemnt set false
 rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false)
+
+
+```swift
+// picrure in picrure settings.
+rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
+  mode: .pip,
+  cornerRadius: 16.0,
+  regionOfInterest: .init(
+    origin: CGPoint(x: 16, y: 16),
+    size: .init(width: 160, height: 160)
+  )
+)
+```
+
+```swift
+// split settings.
+rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
+  mode: .split(direction: .east),
+  cornerRadius: 0.0,
+  regionOfInterest: .init(
+    origin: .zero,
+    size: .zero
+  )
+)
+```
 
 ```
 ### Authentication
