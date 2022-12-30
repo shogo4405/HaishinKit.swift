@@ -46,6 +46,8 @@ public class IOMixer {
         }
     }
 
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
+
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
         didSet {
@@ -199,16 +201,13 @@ extension IOMixer: MediaLinkDelegate {
 #if os(iOS) || os(macOS)
 extension IOMixer: Running {
     // MARK: Running
-    public var isRunning: Atomic<Bool> {
-        .init(session.isRunning)
-    }
-
     public func startRunning() {
         guard !isRunning.value else {
             return
         }
         addSessionObservers(session)
         session.startRunning()
+        isRunning.mutate { $0 = true }
     }
 
     public func stopRunning() {
@@ -217,6 +216,7 @@ extension IOMixer: Running {
         }
         removeSessionObservers(session)
         session.stopRunning()
+        isRunning.mutate { $0 = false }
     }
 
     private func addSessionObservers(_ session: AVCaptureSession) {
@@ -269,6 +269,13 @@ extension IOMixer: Running {
                 session.startRunning()
             } catch {
                 logger.warn(error)
+            }
+        case .mediaServicesWereReset:
+            guard isRunning.value else {
+                return
+            }
+            if !session.isRunning {
+                session.startRunning()
             }
         default:
             break
