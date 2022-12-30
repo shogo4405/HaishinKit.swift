@@ -1,5 +1,7 @@
 import AVFoundation
-
+#if os(iOS)
+import UIKit
+#endif
 #if os(iOS) || os(macOS)
 extension AVCaptureSession.Preset {
     static let `default`: AVCaptureSession.Preset = .hd1280x720
@@ -270,6 +272,7 @@ extension IOMixer: Running {
             } catch {
                 logger.warn(error)
             }
+        #if os(iOS)
         case .mediaServicesWereReset:
             guard isRunning.value else {
                 return
@@ -277,6 +280,7 @@ extension IOMixer: Running {
             if !session.isRunning {
                 session.startRunning()
             }
+        #endif
         default:
             break
         }
