@@ -12,6 +12,12 @@ public protocol RTMPStreamDelegate: AnyObject {
     func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer)
     /// Tells the receiver to update statistics.
     func rtmpStream(_ stream: RTMPStream, updatedStats connection: RTMPConnection)
+    #if os(iOS)
+    /// Tells the receiver to session was interrupted.
+    func rtmpStream(_ stream: RTMPStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    /// Tells the receiver to session interrupted ended.
+    func rtmpStream(_ stream: RTMPStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    #endif
     /// Tells the receiver to video codec error occured.
     func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error)
     /// Tells the receiver to the stream opend.
@@ -639,4 +645,14 @@ extension RTMPStream: IOMixerDelegate {
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
         delegate?.rtmpStream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
     }
+
+    #if os(iOS)
+    func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+        delegate?.rtmpStream(self, sessionWasInterrupted: session, reason: reason)
+    }
+
+    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+        delegate?.rtmpStream(self, sessionInterruptionEnded: session, reason: reason)
+    }
+    #endif
 }
