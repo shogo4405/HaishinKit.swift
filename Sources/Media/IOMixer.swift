@@ -11,6 +11,10 @@ extension AVCaptureSession.Preset {
 protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
+    #if os(iOS)
+    func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    #endif
 }
 
 /// An object that mixies audio and video for streaming.
@@ -48,8 +52,6 @@ public class IOMixer {
         }
     }
 
-    public private(set) var isRunning: Atomic<Bool> = .init(false)
-
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
         didSet {
@@ -67,6 +69,7 @@ public class IOMixer {
         }
     }
     #endif
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
     /// The recorder instance.
     public lazy var recorder = IORecorder()
 
@@ -209,7 +212,7 @@ extension IOMixer: Running {
         }
         addSessionObservers(session)
         session.startRunning()
-        isRunning.mutate { $0 = true }
+        isRunning.mutate { $0 = session.isRunning }
     }
 
     public func stopRunning() {
@@ -218,12 +221,14 @@ extension IOMixer: Running {
         }
         removeSessionObservers(session)
         session.stopRunning()
-        isRunning.mutate { $0 = false }
+        isRunning.mutate { $0 = session.isRunning }
     }
 
     private func addSessionObservers(_ session: AVCaptureSession) {
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError(_:)), name: .AVCaptureSessionRuntimeError, object: session)
         #if os(iOS)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded(_:)), name: .AVCaptureSessionInterruptionEnded, object: session)
+        NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted(_:)), name: .AVCaptureSessionWasInterrupted, object: session)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: session)
         NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: session)
         #endif
@@ -232,6 +237,8 @@ extension IOMixer: Running {
     private func removeSessionObservers(_ session: AVCaptureSession) {
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
         #if os(iOS)
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
+        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: session)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: session)
         #endif
@@ -279,6 +286,7 @@ extension IOMixer: Running {
             }
             if !session.isRunning {
                 session.startRunning()
+                isRunning.mutate { $0 = session.isRunning }
             }
         #endif
         default:
@@ -287,6 +295,28 @@ extension IOMixer: Running {
     }
 
     #if os(iOS)
+    @objc
+    private func sessionWasInterrupted(_ notification: Notification) {
+        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
+              let reasonIntegerValue = userInfoValue.integerValue,
+              let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue),
+              let session = notification.object as? AVCaptureSession else {
+            return
+        }
+        delegate?.mixer(self, sessionWasInterrupted: session, reason: reason)
+    }
+
+    @objc
+    private func sessionInterruptionEnded(_ notification: Notification) {
+        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
+              let reasonIntegerValue = userInfoValue.integerValue,
+              let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue),
+              let session = notification.object as? AVCaptureSession else {
+            return
+        }
+        delegate?.mixer(self, sessionInterruptionEnded: session, reason: reason)
+    }
+
     @objc
     private func didEnterBackground(_ notification: Notification) {
         if #available(iOS 16, *) {
@@ -312,11 +342,6 @@ extension IOMixer: Running {
 }
 #else
 extension IOMixer: Running {
-    // MARK: Running
-    public var isRunning: Atomic<Bool> {
-        .init(false)
-    }
-
     public func startRunning() {
     }
 
