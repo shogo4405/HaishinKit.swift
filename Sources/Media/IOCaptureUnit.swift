@@ -108,7 +108,11 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
         output.alwaysDiscardsLateVideoFrames = true
         output.videoSettings = videoSettings as? [String: Any]
         #if os(iOS)
-        connection = AVCaptureConnection(inputPorts: input.ports, output: output)
+        if #available(iOS 13, *), let port = input.ports.first(where: { $0.mediaType == .video && $0.sourceDeviceType == device.deviceType && $0.sourceDevicePosition == device.position }) {
+            connection = AVCaptureConnection(inputPorts: [port], output: output)
+        } else {
+            connection = nil
+        }
         #else
         connection = nil
         #endif
