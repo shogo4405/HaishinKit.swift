@@ -96,34 +96,6 @@ extension vImage_Buffer {
     }
 
     @discardableResult
-    mutating func cornerRadius(_ radius: CGFloat) -> Self {
-        guard 0 < radius else {
-            return self
-        }
-        let buffer = data.assumingMemoryBound(to: Pixel_8.self)
-        for x in 0 ..< Int(width) {
-            for y in 0 ..< Int(height) {
-                let index = y * rowBytes + x * 4
-                var dx = CGFloat(min(x, Int(width) - x))
-                var dy = CGFloat(min(y, Int(height) - y))
-                if dx == 0 && dy == 0 {
-                    buffer[index] = 0
-                    continue
-                }
-                if radius < dx || radius < dy {
-                    continue
-                }
-                dx = radius - dx
-                dy = radius - dy
-                if radius < round(sqrt(dx * dx + dy * dy)) {
-                    buffer[index] = 0
-                }
-            }
-        }
-        return self
-    }
-
-    @discardableResult
     mutating func over(_ src: inout vImage_Buffer, origin: CGPoint = .zero) -> Self {
         let start = Int(origin.y) * rowBytes + Int(origin.x) * 4
         var destination = vImage_Buffer(

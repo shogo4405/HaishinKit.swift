@@ -42,7 +42,8 @@ extension CVPixelBuffer {
         let yScale = Float(roi.height) / Float(inputImageBuffer.height)
         let scaleFactor = (xScale < yScale) ? xScale : yScale
         var scaledInputImageBuffer = inputImageBuffer.scale(scaleFactor)
-        scaledInputImageBuffer.cornerRadius(radius)
+        var shape = ShapeFactory.shared.cornerRadius(CGSize(width: CGFloat(scaledInputImageBuffer.width), height: CGFloat(scaledInputImageBuffer.height)), cornerRadius: radius)
+        vImageSelectChannels_ARGB8888(&shape, &scaledInputImageBuffer, &scaledInputImageBuffer, 0x8, vImage_Flags(kvImageNoFlags))
         defer {
             scaledInputImageBuffer.free()
         }
