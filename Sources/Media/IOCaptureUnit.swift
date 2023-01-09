@@ -114,7 +114,11 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
             connection = nil
         }
         #else
-        connection = nil
+        if let port = input.ports.first(where: { $0.mediaType == .video }) {
+            connection = AVCaptureConnection(inputPorts: [port], output: output)
+        } else {
+            connection = nil
+        }
         #endif
     }
 
