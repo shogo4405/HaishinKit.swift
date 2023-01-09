@@ -202,23 +202,23 @@ rtmpStream.publish("streamName")
 
 ### Settings
 ```swift
-var rtmpStream = RTMPStream(connection: rtmpConnection)
+var stream = RTMPStream(connection: rtmpConnection)
 
-rtmpStream.frameRate = 30
-rtmpStream.sessionPreset = AVCaptureSession.Preset.medium
+stream.frameRate = 30
+stream.sessionPreset = AVCaptureSession.Preset.medium
 
 /// Specifies the video capture settings.
-rtmpStream.videoCapture(for: 0).isVideoMirrored = false
-rtmpStream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
+stream.videoCapture(for: 0).isVideoMirrored = false
+stream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
 // rtmpStream.videoCapture(for: 1).isVideoMirrored = false
 
 // Specifies the audio codec settings.
-rtmpStream.audioSettings = [
+stream.audioSettings = [
   .bitrate: 32 * 1000,
 ]
 
 // Specifies the video codec settings.
-rtmpStream.videoSettings = [
+stream.videoSettings = [
   .width: 640, // video output width
   .height: 360, // video output height
   .bitrate: 160 * 1000, // video output bitrate
@@ -227,7 +227,7 @@ rtmpStream.videoSettings = [
 ]
 
 // Specifies the recording settings. 0" means the same of input.
-rtmpStream.startRecording([
+stream.startRecording([
   AVMediaType.audio: [
     AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
     AVSampleRateKey: 0,
@@ -249,12 +249,12 @@ rtmpStream.startRecording([
 ])
 
 // 2nd arguemnt set false
-rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false)
-
+stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false)
+```
 
 ```swift
 // picrure in picrure settings.
-rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
+stream.multiCamCaptureSettings = MultiCamCaptureSetting(
   mode: .pip,
   cornerRadius: 16.0,
   regionOfInterest: .init(
@@ -266,7 +266,7 @@ rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
 
 ```swift
 // split settings.
-rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
+stream.multiCamCaptureSettings = MultiCamCaptureSetting(
   mode: .split(direction: .east),
   cornerRadius: 0.0,
   regionOfInterest: .init(
@@ -274,8 +274,6 @@ rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
     size: .zero
   )
 )
-```
-
 ```
 ### Authentication
 ```swift
