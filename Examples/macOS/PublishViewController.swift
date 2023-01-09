@@ -12,28 +12,38 @@ extension NSPopUpButton {
     }
 }
 
-final class MainViewController: NSViewController {
-    var rtmpConnection = RTMPConnection()
-    var rtmpStream: RTMPStream!
-
-    var httpService = HLSService(
-        domain: "local", type: HTTPService.type, name: "", port: HTTPService.defaultPort
-    )
-    var httpStream = HTTPStream()
-
+final class PublishViewController: NSViewController {
     @IBOutlet private weak var lfView: MTHKView!
     @IBOutlet private weak var audioPopUpButton: NSPopUpButton!
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
     @IBOutlet private weak var urlField: NSTextField!
     @IBOutlet private weak var segmentedControl: NSSegmentedControl!
 
+    private var currentStream: NetStream? {
+        willSet {
+            currentStream?.attachCamera(nil)
+            currentStream?.attachMultiCamera(nil)
+            currentStream?.attachAudio(nil)
+        }
+        didSet {
+            currentStream?.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
+            currentStream?.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
+        }
+    }
+    private var rtmpConnection = RTMPConnection()
+    private lazy var rtmpStream: RTMPStream = {
+        let rtmpStream = RTMPStream(connection: rtmpConnection)
+        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
+        return rtmpStream
+    }()
+    private var httpService = HLSService(
+        domain: "local", type: HTTPService.type, name: "", port: HTTPService.defaultPort
+    )
+    private var httpStream = HTTPStream()
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        rtmpStream = RTMPStream(connection: rtmpConnection)
-        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-
         urlField.stringValue = Preference.defaultInstance.uri ?? ""
-
         audioPopUpButton?.present(mediaType: .audio)
         cameraPopUpButton?.present(mediaType: .video)
     }
@@ -42,7 +52,13 @@ final class MainViewController: NSViewController {
         super.viewWillAppear()
         rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
         rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
+        var devices = AVCaptureDevice.devices(for: .video)
+        devices.removeFirst()
+        if let device = devices.first {
+            rtmpStream.attachMultiCamera(device)
+        }
         lfView?.attachStream(rtmpStream)
+        currentStream = rtmpStream
     }
 
     // swiftlint:disable block_based_kvo
@@ -62,14 +78,12 @@ final class MainViewController: NSViewController {
         // Publish
         if sender.title == "Publish" {
             sender.title = "Stop"
-
             // Optional. If you don't specify; the frame size will be the current H264Encoder default of 480x272
             //            rtmpStream.videoSettings = [
             //                .profileLevel: kVTProfileLevel_H264_High_AutoLevel,
             //                .width: 1920,
             //                .height: 1280,
             //            ]
-
             segmentedControl.isEnabled = false
             switch segmentedControl.selectedSegment {
             case 0:
@@ -106,51 +120,27 @@ final class MainViewController: NSViewController {
     }
 
     @IBAction private func mirror(_ sender: AnyObject) {
-        rtmpStream.videoCapture(for: 0)?.isVideoMirrored.toggle()
+        currentStream?.videoCapture(for: 0)?.isVideoMirrored.toggle()
     }
 
     @IBAction private func selectAudio(_ sender: AnyObject) {
-        let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)
-        switch segmentedControl.selectedSegment {
-        case 0:
-            rtmpStream.attachAudio(device)
-            httpStream.attachAudio(nil)
-        case 1:
-            rtmpStream.attachAudio(nil)
-            httpStream.attachAudio(device)
-        default:
-            break
-        }
+        let device = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)
+        currentStream?.attachAudio(device)
     }
 
     @IBAction private func selectCamera(_ sender: AnyObject) {
-        let device: AVCaptureDevice? = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
-        switch segmentedControl.selectedSegment {
-        case 0:
-            rtmpStream.attachCamera(device)
-            httpStream.attachCamera(nil)
-        case 1:
-            rtmpStream.attachCamera(nil)
-            httpStream.attachCamera(device)
-        default:
-            break
-        }
+        let device = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
+        currentStream?.attachCamera(device)
     }
 
     @IBAction private func modeChanged(_ sender: NSSegmentedControl) {
         switch sender.selectedSegment {
         case 0:
-            httpStream.attachAudio(nil)
-            httpStream.attachCamera(nil)
-            rtmpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
-            rtmpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
+            currentStream = rtmpStream
             lfView.attachStream(rtmpStream)
             urlField.stringValue = Preference.defaultInstance.uri ?? ""
         case 1:
-            rtmpStream.attachAudio(nil)
-            rtmpStream.attachCamera(nil)
-            httpStream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
-            httpStream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video))
+            currentStream = httpStream
             lfView.attachStream(httpStream)
             urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
@@ -169,7 +159,7 @@ final class MainViewController: NSViewController {
         logger.info(data)
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream?.publish(Preference.defaultInstance.streamName)
+            rtmpStream.publish(Preference.defaultInstance.streamName)
         default:
             break
         }
