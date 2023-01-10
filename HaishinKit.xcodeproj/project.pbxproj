@@ -416,6 +416,9 @@
 		BC94E52F264146540094C169 /* MP4ReaderConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */; };
 		BC94E530264146540094C169 /* MP4ReaderConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */; };
 		BC94E53A264192B00094C169 /* MP4FileReaderTests2.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAD0C10263ED28500ADFB80 /* MP4FileReaderTests2.swift */; };
+		BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
+		BC959EF0296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
+		BC959EF1296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC9CFA9323BDE8B700917EEF /* NetStreamDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */; };
 		BC9CFA9423BDE8B700917EEF /* NetStreamDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */; };
 		BC9CFA9523BDE8B700917EEF /* NetStreamDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */; };
@@ -895,6 +898,7 @@
 		BC94E505263FEA7F0094C169 /* MP4TrackFragmentBaseMediaDecodeTimeBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TrackFragmentBaseMediaDecodeTimeBox.swift; sourceTree = "<group>"; };
 		BC94E509263FEBB60094C169 /* MP4TrackRunBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TrackRunBox.swift; sourceTree = "<group>"; };
 		BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4ReaderConvertible.swift; sourceTree = "<group>"; };
+		BC959EEE296EE4190067BA97 /* ImageTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTransform.swift; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamDrawable.swift; sourceTree = "<group>"; };
 		BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Choreographer.swift; sourceTree = "<group>"; };
 		BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOScreenCaptureUnit.swift; sourceTree = "<group>"; };
@@ -1397,6 +1401,7 @@
 			children = (
 				2941746A22D069B300A2944F /* AudioEffect.swift */,
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
+				BC959EEE296EE4190067BA97 /* ImageTransform.swift */,
 				29B876891CD70AFE00FC07DA /* IOAudioUnit.swift */,
 				BC1102492925147300D48035 /* IOCaptureUnit.swift */,
 				29B8768B1CD70AFE00FC07DA /* IOMixer.swift */,
@@ -2241,6 +2246,7 @@
 				BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* IOMixer.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
+				BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */,
 				BCC1A6DF264470F900661156 /* MP4DataEntryUrlBox.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
@@ -2396,6 +2402,7 @@
 				BCA97BFE263C54560027213C /* MP4SampleToChunkBox.swift in Sources */,
 				293B42EA2340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
 				29DC17B421D0CC0600E26CED /* Atomic.swift in Sources */,
+				BC959EF0296EE4190067BA97 /* ImageTransform.swift in Sources */,
 				BCC1A6B72643F41600661156 /* MP4WriterConvertible.swift in Sources */,
 				BCA97BE3263C095C0027213C /* MP4TimeToSampleBox.swift in Sources */,
 				BCAD0C22263EFCEF00ADFB80 /* MP4SegmentIndexBox.swift in Sources */,
@@ -2626,6 +2633,7 @@
 				BC1102402917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */,
 				29EB3E161ED0588F001CAE8B /* MIME.swift in Sources */,
 				293B42EB2340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
+				BC959EF1296EE4190067BA97 /* ImageTransform.swift in Sources */,
 				295891301EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,
 				295891201EEB8E9600CE51E1 /* FLVSoundRate.swift in Sources */,
 				29EB3DF21ED05770001CAE8B /* DataConvertible.swift in Sources */,

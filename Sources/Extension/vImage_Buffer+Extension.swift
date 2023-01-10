@@ -3,52 +3,6 @@ import CoreMedia
 import Foundation
 
 extension vImage_Buffer {
-    enum TransformDirection {
-        case north
-        case south
-        case east
-        case west
-
-        var opposite: TransformDirection {
-            switch self {
-            case .north:
-                return .south
-            case .south:
-                return .north
-            case .east:
-                return .west
-            case .west:
-                return .east
-            }
-        }
-
-        func tx(_ width: Double) -> Double {
-            switch self {
-            case .north:
-                return 0.0
-            case .south:
-                return Double.leastNonzeroMagnitude
-            case .east:
-                return width / 2
-            case .west:
-                return -(width / 2)
-            }
-        }
-
-        func ty(_ height: Double) -> Double {
-            switch self {
-            case .north:
-                return height / 2
-            case .south:
-                return -(height / 2)
-            case .east:
-                return Double.leastNonzeroMagnitude
-            case .west:
-                return 0.0
-            }
-        }
-    }
-
     init?(height: vImagePixelCount, width: vImagePixelCount, pixelBits: UInt32, flags: vImage_Flags) {
         self.init()
         guard vImageBuffer_Init(
@@ -116,12 +70,14 @@ extension vImage_Buffer {
     }
 
     @discardableResult
-    mutating func split(_ buffer: inout vImage_Buffer, direction: TransformDirection) -> Self {
+    mutating func split(_ buffer: inout vImage_Buffer, direction: ImageTransform) -> Self {
         buffer.transform(direction.opposite)
+        var shape = ShapeFactory.shared.split(CGSize(width: CGFloat(width), height: CGFloat(height)), direction: direction.opposite)
+        vImageSelectChannels_ARGB8888(&shape, &buffer, &buffer, 0x8, vImage_Flags(kvImageNoFlags))
         transform(direction)
         guard vImageAlphaBlend_ARGB8888(
-            &self,
             &buffer,
+            &self,
             &self,
             vImage_Flags(kvImageDoNotTile)
         ) == kvImageNoError else {
@@ -130,7 +86,7 @@ extension vImage_Buffer {
         return self
     }
 
-    private mutating func transform(_ direction: TransformDirection) {
+    private mutating func transform(_ direction: ImageTransform) {
         let backgroundColor: [Pixel_8] = [0, 255, 255, 255]
         var vImageTransform = vImage_CGAffineTransform(
             a: 1,

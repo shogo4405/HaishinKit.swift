@@ -268,8 +268,8 @@ final class IOVideoUnit: NSObject, IOUnit {
                     regionOfInterest: multiCamCaptureSettings.regionOfInterest,
                     radius: multiCamCaptureSettings.cornerRadius
                 )
-            case .split(let direction):
-                buffer.split(multiCamPixelBuffer, direction: direction.transformDirection)
+            case .splitView(let direction):
+                buffer.split(multiCamPixelBuffer, direction: direction)
             }
             multiCamPixelBuffer.unlockBaseAddress()
         }
