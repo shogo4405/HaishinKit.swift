@@ -53,7 +53,7 @@ extension CVPixelBuffer {
     }
 
     @discardableResult
-    func split(_ pixelBuffer: CVPixelBuffer?, direction: vImage_Buffer.TransformDirection) -> Self {
+    func split(_ pixelBuffer: CVPixelBuffer?, direction: ImageTransform) -> Self {
         guard var inputImageBuffer = try? pixelBuffer?.makevImage_Buffer(format: &Self.format) else {
             return self
         }

@@ -1,3 +1,4 @@
+import Accelerate
 import Foundation
 
 #if os(macOS)
@@ -19,7 +20,7 @@ class RoundedSquareShape: Shape {
         ) else {
             return nil
         }
-        let path = CGPath.init(roundedRect: rect, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil)
+        let path = CGPath(roundedRect: rect, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil)
         context.setFillColor(NSColor.white.cgColor)
         context.addPath(path)
         context.closePath()
@@ -28,6 +29,28 @@ class RoundedSquareShape: Shape {
     }
 }
 
+class HalfRectShape: Shape {
+    var rect: CGRect = .zero
+    var direction: ImageTransform = .east
+
+    func makeCGImage() -> CGImage? {
+        guard let context = CGContext(
+            data: nil,
+            width: Int(rect.width),
+            height: Int(rect.height),
+            bitsPerComponent: 8,
+            bytesPerRow: Int(rect.width) * 4,
+            space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue).rawValue
+        ) else {
+            return nil
+        }
+        context.setFillColor(NSColor.white.cgColor)
+        context.addRect(direction.makeRect(rect))
+        context.fillPath()
+        return context.makeImage()
+    }
+}
 #else
 import UIKit
 
@@ -51,4 +74,21 @@ class RoundedSquareShape: Shape {
     }
 }
 
+class HalfRectShape: Shape {
+    var rect: CGRect = .zero
+    var direction: ImageTransform = .east
+
+    func makeCGImage() -> CGImage? {
+        UIGraphicsBeginImageContext(rect.size)
+        guard let context = UIGraphicsGetCurrentContext() else {
+            return nil
+        }
+        context.setFillColor(UIColor.white.cgColor)
+        context.addRect(direction.makeRect(rect))
+        context.fillPath()
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return image?.cgImage
+    }
+}
 #endif

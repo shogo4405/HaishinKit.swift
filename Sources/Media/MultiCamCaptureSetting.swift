@@ -4,31 +4,15 @@ import Foundation
 
 /// The MultiCamCaptureSetting represents the pip capture settings for the video capture.
 public struct MultiCamCaptureSetting {
-    public enum TransformDirection {
-        case north
-        case south
-        case east
-        case west
-
-        var transformDirection: vImage_Buffer.TransformDirection {
-            switch self {
-            case .north:
-                return .north
-            case .south:
-                return .south
-            case .east:
-                return .east
-            case .west:
-                return .west
-            }
-        }
-    }
-
+    /// The type of image display mode.
     public enum Mode {
+        /// The picture in picture mode means video stream playing within an inset window, freeing the rest of the screen for other tasks.
         case pip
-        case split(direction: TransformDirection)
+        /// The split view means video stream playing within two individual windows.
+        case splitView(direction: ImageTransform)
     }
 
+    /// The default setting for the stream.
     public static let `default` = MultiCamCaptureSetting(
         mode: .pip,
         cornerRadius: 16.0,
@@ -38,6 +22,7 @@ public struct MultiCamCaptureSetting {
         )
     )
 
+    /// The image display mode.
     public let mode: Mode
     /// The cornerRadius of the picture in picture image.
     public let cornerRadius: CGFloat
