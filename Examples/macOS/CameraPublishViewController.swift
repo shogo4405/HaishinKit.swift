@@ -12,7 +12,7 @@ extension NSPopUpButton {
     }
 }
 
-final class PublishViewController: NSViewController {
+final class CameraPublishViewController: NSViewController {
     @IBOutlet private weak var lfView: MTHKView!
     @IBOutlet private weak var audioPopUpButton: NSPopUpButton!
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
