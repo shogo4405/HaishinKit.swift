@@ -12,14 +12,15 @@ final class MenuViewController: NSViewController {
         let factory: () -> NSViewController
     }
 
-    private let menus: [Menu] = [
-        .init(title: "Publish Test", factory: { PublishViewController.getUIViewController() }),
-        .init(title: "RTMP Playback Test", factory: { RTMPPlaybackViewController.getUIViewController() })
-    ]
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-    }
+    private lazy var menus: [Menu] = {
+        var menus: [Menu] = [
+            .init(title: "Publish Test", factory: { CameraPublishViewController.getUIViewController() }),
+            .init(title: "RTMP Playback Test", factory: { RTMPPlaybackViewController.getUIViewController() })
+        ]
+        menus.append(.init(title: "SCStream Publish Test", factory: { SCStreamPublishViewController.getUIViewController() }))
+        menus.append(.init(title: "Preference", factory: { PreferenceViewController.getUIViewController() }))
+        return menus
+    }()
 
     override func viewDidAppear() {
         super.viewDidAppear()

@@ -28,7 +28,7 @@
 		2915EC4D1D85BB8C00621092 /* RTMPTSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294852551D84BFAD002DE492 /* RTMPTSocket.swift */; };
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
 		291619661E7EFB09009FB344 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 291619621E7EFA2A009FB344 /* Main.storyboard */; };
-		291619691E7EFEA8009FB344 /* PublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291619671E7EFE4E009FB344 /* PublishViewController.swift */; };
+		291619691E7EFEA8009FB344 /* CameraPublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291619671E7EFE4E009FB344 /* CameraPublishViewController.swift */; };
 		2916196A1E7EFF38009FB344 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		2916196C1E7F0768009FB344 /* CMFormatDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916196B1E7F0768009FB344 /* CMFormatDescription+Extension.swift */; };
 		2916196D1E7F0777009FB344 /* CMFormatDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2916196B1E7F0768009FB344 /* CMFormatDescription+Extension.swift */; };
@@ -419,6 +419,8 @@
 		BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959EF0296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959EF1296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
+		BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */; };
+		BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */; };
 		BC9CFA9323BDE8B700917EEF /* NetStreamDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */; };
 		BC9CFA9423BDE8B700917EEF /* NetStreamDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */; };
 		BC9CFA9523BDE8B700917EEF /* NetStreamDrawable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */; };
@@ -724,7 +726,7 @@
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		291619631E7EFA2A009FB344 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		291619671E7EFE4E009FB344 /* PublishViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PublishViewController.swift; sourceTree = "<group>"; };
+		291619671E7EFE4E009FB344 /* CameraPublishViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraPublishViewController.swift; sourceTree = "<group>"; };
 		2916196B1E7F0768009FB344 /* CMFormatDescription+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CMFormatDescription+Extension.swift"; sourceTree = "<group>"; };
 		2917CB652104CA2800F6823A /* AudioSpecificConfigTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSpecificConfigTests.swift; sourceTree = "<group>"; };
 		291F4E361CF206E200F59C51 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
@@ -899,6 +901,8 @@
 		BC94E509263FEBB60094C169 /* MP4TrackRunBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TrackRunBox.swift; sourceTree = "<group>"; };
 		BC94E52C264146120094C169 /* MP4ReaderConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4ReaderConvertible.swift; sourceTree = "<group>"; };
 		BC959EEE296EE4190067BA97 /* ImageTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTransform.swift; sourceTree = "<group>"; };
+		BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCStreamPublishViewController.swift; sourceTree = "<group>"; };
+		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamDrawable.swift; sourceTree = "<group>"; };
 		BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Choreographer.swift; sourceTree = "<group>"; };
 		BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOScreenCaptureUnit.swift; sourceTree = "<group>"; };
@@ -1252,9 +1256,9 @@
 				BCC1A72A264FAC1800661156 /* ElementaryStreamSpecificData.swift */,
 				BCC1A72E264FAC4E00661156 /* ElementaryStreamType.swift */,
 				BCC1A70A2647F23200661156 /* ESDescriptor.swift */,
+				29B8767F1CD70AE800FC07DA /* NALUnit.swift */,
 				29B876801CD70AE800FC07DA /* PacketizedElementaryStream.swift */,
 				BCC1A726264FA1C100661156 /* ProfileLevelIndicationIndexDescriptor.swift */,
-				29B8767F1CD70AE800FC07DA /* NALUnit.swift */,
 				29B876811CD70AE800FC07DA /* ProgramSpecific.swift */,
 				BCC1A7122647F28F00661156 /* SLConfigDescriptor.swift */,
 			);
@@ -1279,14 +1283,16 @@
 			children = (
 				296543641D62FEB700734698 /* AppDelegate.swift */,
 				296543651D62FEB700734698 /* Assets.xcassets */,
+				291619671E7EFE4E009FB344 /* CameraPublishViewController.swift */,
 				BC3004FA296C3FC400119932 /* Extension */,
 				296543671D62FEB700734698 /* Info.plist */,
 				291619621E7EFA2A009FB344 /* Main.storyboard */,
 				BC3004D3296BFFF600119932 /* MainSplitViewController.swift */,
 				296543691D62FEB700734698 /* MainWindowController.swift */,
 				BC3004F0296C0C7400119932 /* MenuViewController.swift */,
-				291619671E7EFE4E009FB344 /* PublishViewController.swift */,
+				BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */,
 				BC3004F8296C351D00119932 /* RTMPPlaybackViewController.swift */,
+				BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */,
 				2965436A1D62FEB700734698 /* VisualEffect.swift */,
 			);
 			path = macOS;
@@ -2485,11 +2491,13 @@
 				2923A1F41D6300510019FBCD /* MainWindowController.swift in Sources */,
 				BC3004F5296C20A300119932 /* NSObject+Extension.swift in Sources */,
 				BC3004D4296BFFF600119932 /* MainSplitViewController.swift in Sources */,
+				BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */,
 				BC3004F1296C0C7400119932 /* MenuViewController.swift in Sources */,
 				BC3004F3296C205500119932 /* NSViewController+Extension.swift in Sources */,
+				BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */,
 				2923A1F31D63004E0019FBCD /* VisualEffect.swift in Sources */,
 				2916196A1E7EFF38009FB344 /* Preference.swift in Sources */,
-				291619691E7EFEA8009FB344 /* PublishViewController.swift in Sources */,
+				291619691E7EFEA8009FB344 /* CameraPublishViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

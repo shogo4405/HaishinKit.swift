@@ -1,6 +1,9 @@
 import AVFoundation
 import CoreImage
 import CoreMedia
+#if canImport(ScreenCaptureKit)
+import ScreenCaptureKit
+#endif
 
 /// The `NetStream` class is the foundation of a RTMPStream, HTTPStream.
 open class NetStream: NSObject {
@@ -296,3 +299,21 @@ extension NetStream: IOScreenCaptureUnitDelegate {
         appendSampleBuffer(sampleBuffer, withType: .video)
     }
 }
+
+#if os(macOS)
+extension NetStream: SCStreamOutput {
+    @available(macOS 12.3, *)
+    public func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
+        if #available(macOS 13.0, *) {
+            switch type {
+            case .screen:
+                appendSampleBuffer(sampleBuffer, withType: .video)
+            default:
+                appendSampleBuffer(sampleBuffer, withType: .audio)
+            }
+        } else {
+            appendSampleBuffer(sampleBuffer, withType: .video)
+        }
+    }
+}
+#endif
