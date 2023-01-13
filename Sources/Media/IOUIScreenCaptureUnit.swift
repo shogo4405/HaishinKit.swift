@@ -11,6 +11,7 @@ private extension CGRect {
 }
 
 // MARK: -
+/// The IOUIScreenCaptureUnit class captures the UIView.
 public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
     static let defaultFrameInterval: Int = 2
     static let defaultAttributes: [NSString: NSObject] = [
@@ -18,9 +19,13 @@ public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
         kCVPixelBufferCGBitmapContextCompatibilityKey: true as NSObject
     ]
 
+    /// Specifies the boolean value that indicates whether the snapshot image downsize or not.
     public var enabledScale = false
+    /// Specifies the boolean value that indicates whether the snapshot should be rendered after recent changes have been incorporated.
     public var afterScreenUpdates = false
+    /// Specifies the number of shaphot  that must pass before the display link notifies the target again.
     public var frameInterval: Int = IOUIScreenCaptureUnit.defaultFrameInterval
+    /// Specifies the CVPixelBufferPool's attrivutes.
     public var attributes: [NSString: NSObject] {
         var attributes: [NSString: NSObject] = IOUIScreenCaptureUnit.defaultAttributes
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: Float(size.width * scale))
@@ -29,7 +34,7 @@ public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
         return attributes
     }
     public weak var delegate: IOScreenCaptureUnitDelegate?
-    public internal(set) var isRunning: Atomic<Bool> = .init(false)
+    public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     private var shared: UIApplication?
     private var viewToCapture: UIView?
@@ -68,12 +73,14 @@ public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
         }
     }
 
+    /// Creates an IOUIScreenCaptureUnit object to capture UIApplication.
     public init(shared: UIApplication) {
         self.shared = shared
         size = UIScreen.main.bounds.size
         super.init()
     }
 
+    /// Create an IOUIScreenCaptureUnit object to capture UIView.
     public init(viewToCapture: UIView) {
         self.viewToCapture = viewToCapture
         size = viewToCapture.bounds.size
@@ -102,7 +109,7 @@ public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
         }
     }
 
-    open func onScreenProcess(_ displayLink: CADisplayLink) {
+    func onScreenProcess(_ displayLink: CADisplayLink) {
         var pixelBuffer: CVPixelBuffer?
 
         CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer)

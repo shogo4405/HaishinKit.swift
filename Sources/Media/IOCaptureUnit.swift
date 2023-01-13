@@ -57,6 +57,7 @@ extension IOCaptureUnit {
     }
 }
 
+/// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 public class IOVideoCaptureUnit: IOCaptureUnit {
     /// The default videoSettings for a device.
     public static let defaultVideoSettings: [NSString: AnyObject] = [
@@ -65,6 +66,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
 
     typealias Output = AVCaptureVideoDataOutput
 
+    /// The current video device object.
     public let device: AVCaptureDevice?
     let input: AVCaptureInput
     let output: Output

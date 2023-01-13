@@ -1,6 +1,4 @@
-/**
- Constans that defines the RTMPObject encoding type.
- */
+/// Constans that defines the RTMPObject encoding type.
 public enum RTMPObjectEncoding: UInt8 {
     /// The AMF0 Encoding.
     case amf0 = 0x00

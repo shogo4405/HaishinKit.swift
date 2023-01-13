@@ -1,5 +1,6 @@
 import Foundation
 
+/// A structure that represents  Key-Value-Object for the VideoToolbox option.
 public struct VTSessionOption {
     let key: VTSessionOptionKey
     let value: AnyObject

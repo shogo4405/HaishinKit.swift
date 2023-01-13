@@ -1,6 +1,6 @@
 import Foundation
 
-/// The NetSocket class creates a two-way connection  between a client and a server. This class is wrapper for a InputStream and an OutputStream.
+/// The NetSocket class creates a two-way connection between a client and a server as a client. This class is wrapper for a InputStream and an OutputStream.
 open class NetSocket: NSObject {
     /// The default time to wait for TCP/IP Handshake done.
     public static let defaultTimeout: Int = 15 // sec

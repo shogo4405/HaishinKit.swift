@@ -1,6 +1,7 @@
 import AVFAudio
 import Foundation
 
+/// A type that can delegate itself to AudioCodec or VideoCodec.
 public typealias AVCodecDelegate = AudioCodecDelegate & VideoCodecDelegate
 
 protocol IOUnit {
