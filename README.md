@@ -143,12 +143,6 @@ github "shogo4405/HaishinKit.swift" ~> 1.4.0
 https://github.com/shogo4405/HaishinKit.swift
 ```
 
-## 💠 Donation
-- GitHub Sponsors
-  - https://github.com/sponsors/shogo4405
-- Paypal
-  - https://www.paypal.me/shogo4405
-
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
 ```swift
@@ -310,6 +304,27 @@ httpService.addHTTPStream(httpStream)
 // add ViewController#view
 view.addSubview(hkView)
 ```
+
+## 💠 Sponsorship
+Looking for sponsors. Sponsoring I will enable us to:
+- Purchase smartphones or peripheral devices for testing purposes.
+- Pay for testing on a specific streaming service or for testing on mobile lines.
+- Potentially private use to continue the OSS development
+
+ If you use any of our libraries for work, see if your employers would be interested in sponsorship. I have some special offers.　I would greatly appreciate. Thank you.
+ - If you request I will note your name product our README.
+ - If you mention on a discussion, an issue or pull request that you are sponsoring us I will prioritise helping you even higher.
+
+スポンサーを募集しています。利用用途としては、
+- テスト目的で、スマートフォンの購入や周辺機器の購入を行います。
+- 特定のストリーミングサービスへのテストの支払いや、モバイル回線でのテストの支払いに利用します。
+- 著書のOSS開発を継続的に行う為に私的に利用する可能性もあります。
+
+このライブラリーを仕事で継続的に利用している場合は、ぜひ。雇用主に、スポンサーに興味がないか確認していただけると幸いです。いくつか特典を用意しています。ぜひ検討いただけると幸いです。
+- README.mdへの企業ロゴの掲載
+- IssueやPull Requestの優先的な対応
+
+[Sponsorship](https://github.com/sponsors/shogo4405)
 
 ## 📖 Reference
 * Adobe’s Real Time Messaging Protocol
