@@ -517,12 +517,12 @@ extension RTMPConnection: RTMPSocketDelegate {
     }
 
     func listen(_ data: Data) {
-        guard let chunk: RTMPChunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
+        guard let chunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
             socket.inputBuffer.append(data)
             return
         }
 
-        var position: Int = chunk.data.count
+        var position = chunk.data.count
         if (4 <= chunk.data.count) && (chunk.data[1] == 0xFF) && (chunk.data[2] == 0xFF) && (chunk.data[3] == 0xFF) {
             position += 4
         }
@@ -537,7 +537,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             position = chunk.append(data, message: messages[chunk.streamId])
         }
 
-        if let message: RTMPMessage = chunk.message, chunk.ready {
+        if let message = chunk.message, chunk.ready {
             if logger.isEnabledFor(level: .trace) {
                 logger.trace(chunk)
             }

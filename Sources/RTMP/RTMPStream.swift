@@ -291,7 +291,9 @@ open class RTMPStream: NetStream {
         }
     }
     var audioTimestamp: Double = 0.0
+    var audioTimestampZero: Double = -1.0
     var videoTimestamp: Double = 0.0
+    var videoTimestampZero: Double = -1.0
     private let muxer = RTMPMuxer()
     private var messages: [RTMPCommandMessage] = []
     private var frameCount: UInt16 = 0
@@ -513,7 +515,11 @@ open class RTMPStream: NetStream {
                 rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
             }
             messages.removeAll()
-        case .playing:
+        case .play:
+            videoTimestamp = 0
+            videoTimestampZero = -1.0
+            audioTimestamp = 0
+            audioTimestampZero = -1.0
             mixer.delegate = self
             mixer.startDecoding(rtmpConnection.audioEngine)
         case .publish:
@@ -534,7 +540,7 @@ open class RTMPStream: NetStream {
     @objc
     private func on(status: Notification) {
         let e = Event.from(status)
-        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
+        guard let data = e.data as? ASObject, let code = data["code"] as? String else {
             return
         }
         switch code {
