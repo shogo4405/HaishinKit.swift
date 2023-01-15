@@ -77,6 +77,11 @@ final class LiveViewController: UIViewController {
         super.viewWillDisappear(animated)
         rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
         rtmpStream.close()
+        rtmpStream.attachAudio(nil)
+        rtmpStream.attachCamera(nil)
+        if #available(iOS 13.0, *) {
+            rtmpStream.attachMultiCamera(nil)
+        }
         // swiftlint:disable notification_center_detachment
         NotificationCenter.default.removeObserver(self)
     }

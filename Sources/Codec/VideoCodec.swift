@@ -256,11 +256,11 @@ public class VideoCodec {
             duration: duration
         ) { [unowned self] status, _, sampleBuffer in
             guard let sampleBuffer, status == noErr else {
-                self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
+                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-            self.formatDescription = sampleBuffer.formatDescription
-            self.delegate?.videoCodec(self, didOutput: sampleBuffer)
+            formatDescription = sampleBuffer.formatDescription
+            delegate?.videoCodec(self, didOutput: sampleBuffer)
         }
     }
 
@@ -292,7 +292,7 @@ public class VideoCodec {
             )
 
             guard status == noErr else {
-                self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
+                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
 
@@ -309,19 +309,19 @@ public class VideoCodec {
             )
 
             guard let buffer = sampleBuffer, status == noErr else {
-                self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
+                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
 
-            if self.isBaseline {
-                self.delegate?.videoCodec(self, didOutput: buffer)
+            if isBaseline {
+                delegate?.videoCodec(self, didOutput: buffer)
             } else {
-                self.buffers.append(buffer)
-                self.buffers.sort {
+                buffers.append(buffer)
+                buffers.sort {
                     $0.presentationTimeStamp < $1.presentationTimeStamp
                 }
-                if self.minimumGroupOfPictures <= buffers.count {
-                    self.delegate?.videoCodec(self, didOutput: buffer)
+                if minimumGroupOfPictures <= buffers.count {
+                    delegate?.videoCodec(self, didOutput: buffers.removeFirst())
                 }
             }
         }

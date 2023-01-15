@@ -21,19 +21,14 @@ final class PlaybackViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        (view as? MTHKView)?.attachStream(rtmpStream)
-        (view as? PiPHKView)?.attachStream(rtmpStream)
-        NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
-        if let layer = view.layer as? AVSampleBufferDisplayLayer, #available(iOS 15.0, *) {
+        (view as? NetStreamDrawable)?.attachStream(rtmpStream)
+        if #available(iOS 15.0, *), let layer = view.layer as? AVSampleBufferDisplayLayer {
             pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
         }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
-        // swiftlint:disable notification_center_detachment
-        NotificationCenter.default.removeObserver(self)
         super.viewWillDisappear(animated)
     }
 
@@ -61,7 +56,7 @@ final class PlaybackViewController: UIViewController {
     @objc
     private func rtmpStatusHandler(_ notification: Notification) {
         let e = Event.from(notification)
-        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
+        guard let data = e.data as? ASObject, let code = data["code"] as? String else {
             return
         }
         logger.info(code)
@@ -101,16 +96,6 @@ final class PlaybackViewController: UIViewController {
         if pictureInPictureController?.isPictureInPictureActive == false {
             rtmpStream.receiveVideo = true
         }
-    }
-
-    @objc
-    private func didInterruptionNotification(_ notification: Notification) {
-        logger.info(notification)
-    }
-
-    @objc
-    private func didRouteChangeNotification(_ notification: Notification) {
-        logger.info(notification)
     }
 }
 
