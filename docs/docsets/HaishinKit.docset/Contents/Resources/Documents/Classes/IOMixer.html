@@ -17,7 +17,7 @@
     <a title="IOMixer Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.4.1 Docs</a> (78% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.4.2 Docs</a> (84% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -205,6 +205,9 @@
                 <a href="../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/ImageTransform.html">ImageTransform</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
               </li>
               <li class="nav-group-task">
@@ -220,6 +223,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/IOMixer.html">IOMixer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/NetStream">NetStream</a>
               </li>
             </ul>
           </li>
@@ -304,9 +310,6 @@
                 <a href="../Structs/MultiCamCaptureSetting.html">MultiCamCaptureSetting</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSetting/TransformDirection.html">– TransformDirection</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Structs/MultiCamCaptureSetting/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
@@ -381,32 +384,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7RunningP02isC0AA6AtomicVySbGvp"></a>
-                    <a name="//apple_ref/swift/Property/isRunning" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7RunningP02isC0AA6AtomicVySbGvp">isRunning</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isRunning</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Bool</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:10HaishinKit7IOMixerC7sessionSo16AVCaptureSessionCvp"></a>
                     <a name="//apple_ref/swift/Property/session" class="dashAnchor"></a>
                     <a class="token" href="#/s:10HaishinKit7IOMixerC7sessionSo16AVCaptureSessionCvp">session</a>
@@ -425,6 +402,32 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">internal(set)</span> <span class="kd">lazy</span> <span class="k">var</span> <span class="nv">session</span><span class="p">:</span> <span class="kt">AVCaptureSession</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit7RunningP02isC0AA6AtomicVySbGvp"></a>
+                    <a name="//apple_ref/swift/Property/isRunning" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit7RunningP02isC0AA6AtomicVySbGvp">isRunning</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">isRunning</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Bool</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -663,7 +666,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-12-30)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-01-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

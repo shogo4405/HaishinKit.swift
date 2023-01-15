@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.4.1 Docs</a> (78% documented)</p>
+        <p><a href="index.html">HaishinKit 1.4.2 Docs</a> (84% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -204,6 +204,9 @@
                 <a href="Enums/FLVVideoCodec.html">FLVVideoCodec</a>
               </li>
               <li class="nav-group-task">
+                <a href="Enums/ImageTransform.html">ImageTransform</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
               </li>
               <li class="nav-group-task">
@@ -219,6 +222,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/IOMixer.html">IOMixer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Extensions.html#/NetStream">NetStream</a>
               </li>
             </ul>
           </li>
@@ -301,9 +307,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Structs/MultiCamCaptureSetting.html">MultiCamCaptureSetting</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Structs/MultiCamCaptureSetting/TransformDirection.html">– TransformDirection</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/MultiCamCaptureSetting/Mode.html">– Mode</a>
@@ -566,7 +569,7 @@ open HaishinKit.xcodeproj
 <span class="n">use_frameworks!</span>
 
 <span class="k">def</span> <span class="nf">import_pods</span>
-    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 1.4.0
+    <span class="n">pod</span> <span class="s1">'HaishinKit'</span><span class="p">,</span> <span class="s1">'~&gt; 1.4.2
 end
 
 target '</span><span class="no">Your</span> <span class="no">Target</span><span class="s1">'  do
@@ -575,25 +578,11 @@ target '</span><span class="no">Your</span> <span class="no">Target</span><span 
 <span class="k">end</span>
 </code></pre>
 <h3 id='carthage' class='heading'>Carthage</h3>
-<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 1.4.0
+<pre class="highlight plaintext"><code>github "shogo4405/HaishinKit.swift" ~&gt; 1.4.2
 </code></pre>
 <h3 id='swift-package-manager' class='heading'>Swift Package Manager</h3>
 <pre class="highlight plaintext"><code>https://github.com/shogo4405/HaishinKit.swift
 </code></pre>
-<h2 id='donation' class='heading'>💠 Donation</h2>
-
-<ul>
-<li>GitHub Sponsors
-
-<ul>
-<li><a href="https://github.com/sponsors/shogo4405">https://github.com/sponsors/shogo4405</a></li>
-</ul></li>
-<li>Paypal
-
-<ul>
-<li><a href="https://www.paypal.me/shogo4405">https://www.paypal.me/shogo4405</a></li>
-</ul></li>
-</ul>
 <h2 id='prerequisites' class='heading'>🔧 Prerequisites</h2>
 
 <p>Make sure you setup and activate your AVAudioSession iOS.</p>
@@ -649,23 +638,23 @@ rtmpStream.publish(&quot;streamName&quot;)
 </code></li>
 </ul>
 <h3 id='settings' class='heading'>Settings</h3>
-<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">rtmpStream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">rtmpConnection</span><span class="p">)</span>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">stream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">rtmpConnection</span><span class="p">)</span>
 
-<span class="n">rtmpStream</span><span class="o">.</span><span class="n">frameRate</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="n">sessionPreset</span> <span class="o">=</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">frameRate</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">sessionPreset</span> <span class="o">=</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span>
 
 <span class="c1">/// Specifies the video capture settings.</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">false</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">auto</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">auto</span>
 <span class="c1">// rtmpStream.videoCapture(for: 1).isVideoMirrored = false</span>
 
 <span class="c1">// Specifies the audio codec settings.</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="n">audioSettings</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioSettings</span> <span class="o">=</span> <span class="p">[</span>
   <span class="o">.</span><span class="nv">bitrate</span><span class="p">:</span> <span class="mi">32</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
 <span class="p">]</span>
 
 <span class="c1">// Specifies the video codec settings.</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="p">[</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="p">[</span>
   <span class="o">.</span><span class="nv">width</span><span class="p">:</span> <span class="mi">640</span><span class="p">,</span> <span class="c1">// video output width</span>
   <span class="o">.</span><span class="nv">height</span><span class="p">:</span> <span class="mi">360</span><span class="p">,</span> <span class="c1">// video output height</span>
   <span class="o">.</span><span class="nv">bitrate</span><span class="p">:</span> <span class="mi">160</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span> <span class="c1">// video output bitrate</span>
@@ -674,7 +663,7 @@ rtmpStream.publish(&quot;streamName&quot;)
 <span class="p">]</span>
 
 <span class="c1">// Specifies the recording settings. 0" means the same of input.</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="nf">startRecording</span><span class="p">([</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">startRecording</span><span class="p">([</span>
   <span class="kt">AVMediaType</span><span class="o">.</span><span class="nv">audio</span><span class="p">:</span> <span class="p">[</span>
     <span class="kt">AVFormatIDKey</span><span class="p">:</span> <span class="kt">Int</span><span class="p">(</span><span class="n">kAudioFormatMPEG4AAC</span><span class="p">),</span>
     <span class="kt">AVSampleRateKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
@@ -696,12 +685,10 @@ rtmpStream.publish(&quot;streamName&quot;)
 <span class="p">])</span>
 
 <span class="c1">// 2nd arguemnt set false</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">),</span> <span class="nv">automaticallyConfiguresApplicationAudioSession</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
-
-
-<span class="err">```</span><span class="n">swift</span>
-<span class="c1">// picrure in picrure settings.</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="n">multiCamCaptureSettings</span> <span class="o">=</span> <span class="kt">MultiCamCaptureSetting</span><span class="p">(</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">),</span> <span class="nv">automaticallyConfiguresApplicationAudioSession</span><span class="p">:</span> <span class="kc">false</span><span class="p">)</span>
+</code></pre>
+<pre class="highlight swift"><code><span class="c1">// picrure in picrure settings.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">multiCamCaptureSettings</span> <span class="o">=</span> <span class="kt">MultiCamCaptureSetting</span><span class="p">(</span>
   <span class="nv">mode</span><span class="p">:</span> <span class="o">.</span><span class="n">pip</span><span class="p">,</span>
   <span class="nv">cornerRadius</span><span class="p">:</span> <span class="mf">16.0</span><span class="p">,</span>
   <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
@@ -711,7 +698,7 @@ rtmpStream.publish(&quot;streamName&quot;)
 <span class="p">)</span>
 </code></pre>
 <pre class="highlight swift"><code><span class="c1">// split settings.</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="n">multiCamCaptureSettings</span> <span class="o">=</span> <span class="kt">MultiCamCaptureSetting</span><span class="p">(</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">multiCamCaptureSettings</span> <span class="o">=</span> <span class="kt">MultiCamCaptureSetting</span><span class="p">(</span>
   <span class="nv">mode</span><span class="p">:</span> <span class="o">.</span><span class="nf">split</span><span class="p">(</span><span class="nv">direction</span><span class="p">:</span> <span class="o">.</span><span class="n">east</span><span class="p">),</span>
   <span class="nv">cornerRadius</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
   <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
@@ -720,10 +707,9 @@ rtmpStream.publish(&quot;streamName&quot;)
   <span class="p">)</span>
 <span class="p">)</span>
 </code></pre>
-<pre class="highlight plaintext"><code>### Authentication
-```swift
-var rtmpConnection = RTMPConnection()
-rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
+<h3 id='authentication' class='heading'>Authentication</h3>
+<pre class="highlight swift"><code><span class="k">var</span> <span class="nv">rtmpConnection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
+<span class="n">rtmpConnection</span><span class="o">.</span><span class="nf">connect</span><span class="p">(</span><span class="s">"rtmp://username:password@localhost/appName/instanceName"</span><span class="p">)</span>
 </code></pre>
 <h3 id='screen-capture' class='heading'>Screen Capture</h3>
 <pre class="highlight swift"><code><span class="c1">// iOS</span>
@@ -752,6 +738,39 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
 <span class="c1">// add ViewController#view</span>
 <span class="n">view</span><span class="o">.</span><span class="nf">addSubview</span><span class="p">(</span><span class="n">hkView</span><span class="p">)</span>
 </code></pre>
+<h2 id='sponsorship' class='heading'>💠 Sponsorship</h2>
+
+<p>Looking for sponsors. Sponsoring I will enable us to:</p>
+
+<ul>
+<li>Purchase smartphones or peripheral devices for testing purposes.</li>
+<li>Pay for testing on a specific streaming service or for testing on mobile lines.</li>
+<li>Potentially private use to continue the OSS development</li>
+</ul>
+
+<p>If you use any of our libraries for work, see if your employers would be interested in sponsorship. I have some special offers.　I would greatly appreciate. Thank you.</p>
+
+<ul>
+<li>If you request I will note your name product our README.</li>
+<li>If you mention on a discussion, an issue or pull request that you are sponsoring us I will prioritise helping you even higher.</li>
+</ul>
+
+<p>スポンサーを募集しています。利用用途としては、</p>
+
+<ul>
+<li>テスト目的で、スマートフォンの購入や周辺機器の購入を行います。</li>
+<li>特定のストリーミングサービスへのテストの支払いや、モバイル回線でのテストの支払いに利用します。</li>
+<li>著書のOSS開発を継続的に行う為に私的に利用する可能性もあります。</li>
+</ul>
+
+<p>このライブラリーを仕事で継続的に利用している場合は、ぜひ。雇用主に、スポンサーに興味がないか確認していただけると幸いです。いくつか特典を用意しています。ぜひ検討いただけると幸いです。</p>
+
+<ul>
+<li>README.mdへの企業ロゴの掲載</li>
+<li>IssueやPull Requestの優先的な対応</li>
+</ul>
+
+<p><a href="https://github.com/sponsors/shogo4405">Sponsorship</a></p>
 <h2 id='reference' class='heading'>📖 Reference</h2>
 
 <ul>
@@ -788,7 +807,7 @@ rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName"
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-12-30)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-01-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

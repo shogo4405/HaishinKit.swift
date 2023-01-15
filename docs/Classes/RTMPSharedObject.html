@@ -17,7 +17,7 @@
     <a title="RTMPSharedObject Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.4.1 Docs</a> (78% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.4.2 Docs</a> (84% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -205,6 +205,9 @@
                 <a href="../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/ImageTransform.html">ImageTransform</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
               </li>
               <li class="nav-group-task">
@@ -220,6 +223,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/IOMixer.html">IOMixer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/NetStream">NetStream</a>
               </li>
             </ul>
           </li>
@@ -304,9 +310,6 @@
                 <a href="../Structs/MultiCamCaptureSetting.html">MultiCamCaptureSetting</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSetting/TransformDirection.html">– TransformDirection</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Structs/MultiCamCaptureSetting/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
@@ -340,12 +343,12 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">RTMPSharedObject</span> <span class="p">:</span> <span class="kt"><a href="../Classes/EventDispatcher.html">EventDispatcher</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">RTMPSharedObject</span> <span class="p">:</span> <span class="kt"><a href="../Classes/EventDispatcher.html">EventDispatcher</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">RTMPSharedObject</span><span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
 
                 </div>
               </div>
-            <p>flash.net.SharedObject for Swift</p>
+            <p>The RTMPSharedObject class is used to read and write data on a server.</p>
 
           </section>
           <section class="section task-group-section">
@@ -364,7 +367,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Returns a reference to a shared object on a server.</p>
 
                       </div>
                       <div class="declaration">
@@ -391,14 +394,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The AMF object encoding type.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">objectEncoding</span><span class="p">:</span> <span class="kt"><a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a></span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">objectEncoding</span><span class="p">:</span> <span class="kt"><a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a></span></code></pre>
 
                         </div>
                       </div>
@@ -418,14 +421,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The current data storage.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">data</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">?]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">data</span><span class="p">:</span> <span class="p">[</span><span class="kt">String</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">?]</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -445,14 +448,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Updates the value of a property in shared object.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">setProperty</span><span class="p">(</span><span class="n">_</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">setProperty</span><span class="p">(</span><span class="n">_</span> <span class="nv">name</span><span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="n">_</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Any</span><span class="p">?)</span></code></pre>
 
                         </div>
                       </div>
@@ -472,14 +475,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Connects to a remove shared object on a server.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">connect</span><span class="p">(</span><span class="n">_</span> <span class="nv">rtmpConnection</span><span class="p">:</span> <span class="kt"><a href="../Classes/RTMPConnection.html">RTMPConnection</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">connect</span><span class="p">(</span><span class="n">_</span> <span class="nv">rtmpConnection</span><span class="p">:</span> <span class="kt"><a href="../Classes/RTMPConnection.html">RTMPConnection</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -499,14 +502,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Purges all of the data.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">clear</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">clear</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -526,14 +529,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Closes the connection a server.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">close</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -584,7 +587,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2022 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2022-12-30)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-01-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

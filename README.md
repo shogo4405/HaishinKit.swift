@@ -126,7 +126,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.4.0
+    pod 'HaishinKit', '~> 1.4.2
 end
 
 target 'Your Target'  do
@@ -136,7 +136,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.4.0
+github "shogo4405/HaishinKit.swift" ~> 1.4.2
 ```
 ### Swift Package Manager
 ```
@@ -320,7 +320,7 @@ Looking for sponsors. Sponsoring I will enable us to:
 - 特定のストリーミングサービスへのテストの支払いや、モバイル回線でのテストの支払いに利用します。
 - 著書のOSS開発を継続的に行う為に私的に利用する可能性もあります。
 
-このライブラリーを仕事で継続的に利用している場合は、ぜひ。雇用主に、スポンサーに興味がないか確認していただけると幸いです。いくつか特典を用意しています。ぜひ検討いただけると幸いです。
+このライブラリーを仕事で継続的に利用している場合は、ぜひ。雇用主に、スポンサーに興味がないか確認いただけると幸いです。いくつか特典を用意しています。
 - README.mdへの企業ロゴの掲載
 - IssueやPull Requestの優先的な対応
 
