@@ -52,7 +52,7 @@ open class NetSocket: NSObject {
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
     private var timeoutHandler: DispatchWorkItem?
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
-    private lazy var outputBuffer: CircularByteBuffer = .init(capacity: windowSizeC)
+    private lazy var outputBuffer: DataBuffer = .init(capacity: windowSizeC)
     private lazy var outputQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     deinit {

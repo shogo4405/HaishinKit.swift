@@ -31,7 +31,7 @@ final class MediaLink {
     weak var delegate: MediaLinkDelegate?
     lazy var playerNode = AVAudioPlayerNode()
     private(set) var isRunning: Atomic<Bool> = .init(false)
-    private var buffer: CircularBuffer<CMSampleBuffer> = .init(256)
+    private var buffer: RingBuffer<CMSampleBuffer> = .init(256)
     private var isBuffering = true {
         didSet {
             if !isBuffering {

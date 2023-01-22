@@ -3,9 +3,9 @@ import XCTest
 
 @testable import HaishinKit
 
-final class CircularBufferTests: XCTestCase {
+final class RingBufferTests: XCTestCase {
     func testExtensibleCircularBuffer() {
-        var buffer = CircularBuffer<String>(4, extensible: false)
+        var buffer = RingBuffer<String>(4, extensible: false)
         _ = buffer.append("a")
         _ = buffer.append("b")
         _ = buffer.append("c")
@@ -29,7 +29,7 @@ final class CircularBufferTests: XCTestCase {
     }
 
     func testNonExtensibleCircularBuffer() {
-        var buffer = CircularBuffer<String>(4, extensible: true)
+        var buffer = RingBuffer<String>(4, extensible: true)
         _ = buffer.append("a")
         _ = buffer.append("b")
         _ = buffer.append("c")
@@ -55,7 +55,7 @@ final class CircularBufferTests: XCTestCase {
     }
 
     func testExtensibleCircularBuffer2() {
-        var buffer = CircularBuffer<String>(4, extensible: true)
+        var buffer = RingBuffer<String>(4, extensible: true)
         _ = buffer.append("a")
         _ = buffer.append("b")
         _ = buffer.append("c")

@@ -1,6 +1,6 @@
 import Foundation
 
-struct CircularBuffer<Element> {
+struct RingBuffer<Element> {
     var first: Element? {
         buffer[top]
     }
@@ -80,7 +80,7 @@ struct CircularBuffer<Element> {
     }
 }
 
-extension CircularBuffer: CustomStringConvertible {
+extension RingBuffer: CustomStringConvertible {
     // MARK: CustomStringConvertible
     var description: String {
         buffer.description

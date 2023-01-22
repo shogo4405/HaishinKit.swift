@@ -1,6 +1,6 @@
 import Foundation
 
-final class CircularByteBuffer: CustomDebugStringConvertible {
+final class DataBuffer {
     var bytes: UnsafePointer<UInt8>? {
         data.withUnsafeBytes { (bytes: UnsafeRawBufferPointer) -> UnsafePointer<UInt8>? in
             bytes.baseAddress?.assumingMemoryBound(to: UInt8.self).advanced(by: head)
@@ -8,9 +8,6 @@ final class CircularByteBuffer: CustomDebugStringConvertible {
     }
     var maxLength: Int {
         min(count, capacity - head)
-    }
-    var debugDescription: String {
-        Mirror(reflecting: self).debugDescription
     }
     private var count: Int {
         let value = tail - head
@@ -99,5 +96,11 @@ final class CircularByteBuffer: CustomDebugStringConvertible {
         head = 0
         capacity = self.data.count
         return append(data)
+    }
+}
+
+extension DataBuffer: CustomDebugStringConvertible {
+    var debugDescription: String {
+        Mirror(reflecting: self).debugDescription
     }
 }
