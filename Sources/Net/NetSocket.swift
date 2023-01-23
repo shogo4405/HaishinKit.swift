@@ -85,7 +85,7 @@ open class NetSocket: NSObject {
             guard let self = self else {
                 return
             }
-            self.outputBuffer.append(data, locked: locked)
+            self.outputBuffer.append(data)
             if let outputStream = self.outputStream, outputStream.hasSpaceAvailable {
                 self.doOutput(outputStream)
             }

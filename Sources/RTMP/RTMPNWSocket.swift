@@ -98,12 +98,12 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
 
     @discardableResult
-    func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
+    func doOutput(chunk: RTMPChunk) -> Int {
         let chunks: [Data] = chunk.split(chunkSizeS)
         for i in 0..<chunks.count - 1 {
             doOutput(data: chunks[i])
         }
-        doOutput(data: chunks.last!, locked: locked)
+        doOutput(data: chunks.last!)
         if logger.isEnabledFor(level: .trace) {
             logger.trace(chunk)
         }
@@ -111,15 +111,10 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
 
     @discardableResult
-    func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
+    func doOutput(data: Data) -> Int {
         queueBytesOut.mutate { $0 = Int64(data.count) }
         outputQueue.async {
             let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
-                defer {
-                    if locked != nil {
-                        OSAtomicAnd32Barrier(0, locked!)
-                    }
-                }
                 guard self.connected else {
                     return
                 }

@@ -38,12 +38,12 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     private var events: [Event] = []
 
     @discardableResult
-    func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
+    func doOutput(chunk: RTMPChunk) -> Int {
         let chunks: [Data] = chunk.split(chunkSizeS)
         for i in 0..<chunks.count - 1 {
             doOutput(data: chunks[i])
         }
-        doOutput(data: chunks.last!, locked: locked)
+        doOutput(data: chunks.last!)
         if logger.isEnabledFor(level: .trace) {
             logger.trace(chunk)
         }

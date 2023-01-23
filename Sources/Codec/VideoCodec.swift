@@ -187,7 +187,6 @@ public class VideoCodec {
             invalidateSession = true
         }
     }
-    var locked: UInt32 = 0
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
     var expectedFrameRate = IOMixer.defaultFrameRate {
         didSet {
@@ -244,7 +243,7 @@ public class VideoCodec {
     }
 
     func inputBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard isRunning.value && locked == 0 else {
+        guard isRunning.value else {
             return
         }
         if invalidateSession {
@@ -382,7 +381,6 @@ extension VideoCodec: Running {
     public func startRunning() {
         lockQueue.async {
             self.isRunning.mutate { $0 = true }
-            OSAtomicAnd32Barrier(0, &self.locked)
             #if os(iOS)
             NotificationCenter.default.addObserver(
                 self,

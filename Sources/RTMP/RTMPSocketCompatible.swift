@@ -26,7 +26,7 @@ protocol RTMPSocketCompatible: AnyObject {
     var qualityOfService: DispatchQoS { get set }
 
     @discardableResult
-    func doOutput(chunk: RTMPChunk, locked: UnsafeMutablePointer<UInt32>?) -> Int
+    func doOutput(chunk: RTMPChunk) -> Int
     func close(isDisconnected: Bool)
     func connect(withName: String, port: Int)
     func setProperty(_ value: Any?, forKey: String)

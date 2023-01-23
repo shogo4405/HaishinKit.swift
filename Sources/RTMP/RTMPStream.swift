@@ -219,7 +219,7 @@ open class RTMPStream: NetStream {
                     commandName: "receiveAudio",
                     commandObject: nil,
                     arguments: [self.receiveAudio]
-                )), locked: nil)
+                )))
             }
         }
     }
@@ -237,7 +237,7 @@ open class RTMPStream: NetStream {
                     commandName: "receiveVideo",
                     commandObject: nil,
                     arguments: [self.receiveVideo]
-                )), locked: nil)
+                )))
             }
         }
     }
@@ -326,7 +326,7 @@ open class RTMPStream: NetStream {
                 self.messages.append(message)
             default:
                 self.readyState = .play
-                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
+                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message))
             }
         }
     }
@@ -344,7 +344,7 @@ open class RTMPStream: NetStream {
                 commandName: "seek",
                 commandObject: nil,
                 arguments: [offset]
-            )), locked: nil)
+            )))
         }
     }
 
@@ -384,7 +384,7 @@ open class RTMPStream: NetStream {
                 self.messages.append(message)
             default:
                 self.readyState = .publish
-                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
+                self.rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message))
             }
         }
     }
@@ -405,7 +405,7 @@ open class RTMPStream: NetStream {
                 objectEncoding: self.objectEncoding,
                 handlerName: handlerName,
                 arguments: arguments
-            )), locked: nil)
+            )))
             self.info.byteCount.mutate { $0 += Int64(length) }
         }
     }
@@ -449,7 +449,7 @@ open class RTMPStream: NetStream {
                                                 commandName: "closeStream",
                                                 commandObject: nil,
                                                 arguments: [self.id]
-                                            )), locked: nil)
+                                            )))
     }
 
     func on(timer: Timer) {
@@ -487,7 +487,7 @@ open class RTMPStream: NetStream {
                 default:
                     break
                 }
-                rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
+                rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: message))
             }
             messages.removeAll()
         case .play:
@@ -584,7 +584,7 @@ extension RTMPStream: RTMPMuxerDelegate {
             type: audioWasSent ? .one : .zero,
             streamId: type.streamId,
             message: RTMPAudioMessage(streamId: id, timestamp: UInt32(audioTimestamp), payload: buffer)
-        ), locked: nil)
+        ))
         audioWasSent = true
         info.byteCount.mutate { $0 += Int64(length) }
         audioTimestamp = withTimestamp + (audioTimestamp - floor(audioTimestamp))
@@ -595,12 +595,11 @@ extension RTMPStream: RTMPMuxerDelegate {
             return
         }
         let type: FLVTagType = .video
-        OSAtomicOr32Barrier(1, &mixer.videoIO.codec.locked)
         let length: Int = rtmpConnection.socket.doOutput(chunk: RTMPChunk(
             type: videoWasSent ? .one : .zero,
             streamId: type.streamId,
             message: RTMPVideoMessage(streamId: id, timestamp: UInt32(videoTimestamp), payload: buffer)
-        ), locked: &mixer.videoIO.codec.locked)
+        ))
         if !videoWasSent {
             logger.debug("first video frame was sent")
         }

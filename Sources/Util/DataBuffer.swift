@@ -21,8 +21,6 @@ final class DataBuffer {
     }
     private var head: Int = 0
     private var tail: Int = 0
-    private var locked: UnsafeMutablePointer<UInt32>?
-    private var lockedTail: Int = -1
     private let baseCapacity: Int
 
     init(capacity: Int) {
@@ -32,14 +30,11 @@ final class DataBuffer {
     }
 
     @discardableResult
-    func append(_ data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Bool {
+    func append(_ data: Data) -> Bool {
         guard data.count + count < capacity else {
             return resize(data)
         }
         let count = data.count
-        if self.locked == nil {
-            self.locked = locked
-        }
         let length = min(count, capacity - tail)
         return self.data.withUnsafeMutableBytes { (bytes: UnsafeMutableRawBufferPointer) -> Bool in
             guard let pointer = bytes.baseAddress?.assumingMemoryBound(to: UInt8.self) else {
@@ -55,9 +50,6 @@ final class DataBuffer {
             if capacity == tail {
                 tail = 0
             }
-            if locked != nil {
-                lockedTail = tail
-            }
             return true
         }
     }
@@ -72,17 +64,11 @@ final class DataBuffer {
         if capacity == head {
             head = 0
         }
-        if let locked = locked, -1 < lockedTail && lockedTail <= head {
-            OSAtomicAnd32Barrier(0, locked)
-            lockedTail = -1
-        }
     }
 
     func clear() {
         head = 0
         tail = 0
-        locked = nil
-        lockedTail = 0
     }
 
     private func resize(_ data: Data) -> Bool {

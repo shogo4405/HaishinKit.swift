@@ -223,7 +223,7 @@ open class RTMPConnection: EventDispatcher {
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPWindowAcknowledgementSizeMessage(UInt32(windowSizeC))
-            ), locked: nil)
+            ))
         }
     }
     var windowSizeS: Int64 = RTMPConnection.defaultWindowSizeS
@@ -287,7 +287,7 @@ open class RTMPConnection: EventDispatcher {
         if responder != nil {
             operations[message.transactionId] = responder
         }
-        socket.doOutput(chunk: RTMPChunk(message: message), locked: nil)
+        socket.doOutput(chunk: RTMPChunk(message: message))
     }
 
     /// Creates a two-way connection to an application on RTMP Server.
@@ -374,7 +374,7 @@ open class RTMPConnection: EventDispatcher {
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPSetChunkSizeMessage(UInt32(socket.chunkSizeS))
-            ), locked: nil)
+            ))
         case .some(.connectRejected):
             guard
                 let uri: URL = uri,
@@ -496,7 +496,7 @@ extension RTMPConnection: RTMPSocketDelegate {
                 close()
                 break
             }
-            socket.doOutput(chunk: chunk, locked: nil)
+            socket.doOutput(chunk: chunk)
         case .closed:
             connected = false
             sequence = 0
@@ -520,7 +520,7 @@ extension RTMPConnection: RTMPSocketDelegate {
             type: sequence == 0 ? .zero : .one,
             streamId: RTMPChunk.StreamID.control.rawValue,
             message: RTMPAcknowledgementMessage(UInt32(totalBytesIn))
-        ), locked: nil)
+        ))
         sequence += 1
     }
 
