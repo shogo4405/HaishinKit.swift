@@ -161,32 +161,6 @@ open class RTMPStream: NetStream {
         }
     }
 
-    /**
-     flash.net.NetStreamPlayTransitions for Swift
-     */
-    public enum PlayTransition: String {
-        case append
-        case appendAndWait
-        case reset
-        case resume
-        case stop
-        case swap
-        case `switch`
-    }
-
-    public struct PlayOption: CustomDebugStringConvertible {
-        public var len: Double = 0
-        public var offset: Double = 0
-        public var oldStreamName: String = ""
-        public var start: Double = 0
-        public var streamName: String = ""
-        public var transition: PlayTransition = .switch
-
-        public var debugDescription: String {
-            Mirror(reflecting: self).debugDescription
-        }
-    }
-
     /// The type of publish options.
     public enum HowToPublish: String {
         /// Publish with server-side recording.

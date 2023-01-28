@@ -4,24 +4,26 @@ import Foundation
 open class NetSocket: NSObject {
     /// The default time to wait for TCP/IP Handshake done.
     public static let defaultTimeout: Int = 15 // sec
+    /// The defulat stream's TCP window size.
     public static let defaultWindowSizeC = Int(UInt16.max)
-
-    open var inputBuffer = Data()
-    /// The time to wait for TCP/IP Handshake done.
-    open var timeout: Int = NetSocket.defaultTimeout
-    /// This instance connected to server(true) or not(false).
-    open var connected = false
-    open var windowSizeC: Int = NetSocket.defaultWindowSizeC
-    /// The statistics of total incoming bytes.
-    open var totalBytesIn: Atomic<Int64> = .init(0)
-    /// The instance's quality of service for a Socket IO.
-    open var qualityOfService: DispatchQoS = .userInitiated
-    /// The instance determine to use the secure-socket layer (SSL) security level.
-    open var securityLevel: StreamSocketSecurityLevel = .none
-    /// The statistics of total outgoing bytes.
-    open private(set) var totalBytesOut: Atomic<Int64> = .init(0)
-    /// The statistics of total outgoing queued bytes.
-    open private(set) var queueBytesOut: Atomic<Int64> = .init(0)
+    /// The current incoming data buffer.
+    public var inputBuffer = Data()
+    /// Specifies time to wait for TCP/IP Handshake done.
+    public var timeout: Int = NetSocket.defaultTimeout
+    /// Specifies  instance connected to server(true) or not(false).
+    public var connected = false
+    /// Specifies the output buffer size in bytes.
+    public var windowSizeC: Int = NetSocket.defaultWindowSizeC
+    /// Specifies  statistics of total incoming bytes.
+    public var totalBytesIn: Atomic<Int64> = .init(0)
+    /// Specifies  instance's quality of service for a Socket IO.
+    public var qualityOfService: DispatchQoS = .userInitiated
+    /// Specifies instance determine to use the secure-socket layer (SSL) security level.
+    public var securityLevel: StreamSocketSecurityLevel = .none
+    /// Specifies  statistics of total outgoing bytes.
+    public private(set) var totalBytesOut: Atomic<Int64> = .init(0)
+    /// Specifies  statistics of total outgoing queued bytes.
+    public private(set) var queueBytesOut: Atomic<Int64> = .init(0)
 
     var inputStream: InputStream? {
         didSet {
@@ -73,6 +75,7 @@ open class NetSocket: NSObject {
         }
     }
 
+    /// Does output data buffer to the server.
     @discardableResult
     public func doOutput(data: Data, locked: UnsafeMutablePointer<UInt32>? = nil) -> Int {
         queueBytesOut.mutate { $0 += Int64(data.count) }
@@ -88,10 +91,12 @@ open class NetSocket: NSObject {
         return data.count
     }
 
+    /// Closes the connection from the server.
     open func close() {
         close(isDisconnected: false)
     }
 
+    /// Listen incoming data buffer from the server.
     open func listen() {
     }
 
