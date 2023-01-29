@@ -54,6 +54,10 @@ public class Setting<T: AnyObject, Key: KeyPathRepresentable>: ExpressibleByDict
                 if let newValue = newValue as? ScalingMode {
                     observer?[keyPath: path] = newValue
                 }
+            case let path as ReferenceWritableKeyPath<T, VideoCodec.BitRateMode>:
+                if let newValue = newValue as? VideoCodec.BitRateMode {
+                    observer?[keyPath: path] = newValue
+                }
             #if os(iOS)
             case let path as ReferenceWritableKeyPath<T, AVCaptureVideoStabilizationMode>:
                 if let newValue = newValue as? AVCaptureVideoStabilizationMode {

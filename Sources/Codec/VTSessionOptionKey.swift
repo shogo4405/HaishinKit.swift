@@ -42,6 +42,8 @@ struct VTSessionOptionKey {
     static let maxH264SliceBytes = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_MaxH264SliceBytes)
     static let maxFrameDelayCount = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_MaxFrameDelayCount)
     static let encoderID = VTSessionOptionKey(CFString: kVTVideoEncoderSpecification_EncoderID)
+    @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
+    static let constantBitRate = VTSessionOptionKey(CFString: kVTCompressionPropertyKey_ConstantBitRate)
 
     let CFString: CFString
 }
