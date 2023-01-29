@@ -209,7 +209,7 @@ open class RTMPConnection: EventDispatcher {
     @objc open private(set) dynamic var currentBytesOutPerSecond: Int32 = 0
 
     var socket: RTMPSocketCompatible!
-    var streams: [UInt32: RTMPStream] = [:]
+    var streams: [RTMPStream] = []
     var sequence: Int64 = 0
     var bandWidth: UInt32 = 0
     var streamsmap: [UInt16: UInt32] = [:]
@@ -309,6 +309,15 @@ open class RTMPConnection: EventDispatcher {
             }
         }
         socket.delegate = self
+        var outputBufferSize: Int = 0
+        for stream in streams {
+            // in bytes.
+            outputBufferSize += Int(stream.mixer.videoIO.codec.bitrate + stream.mixer.audioIO.codec.bitrate) / 8
+        }
+        print(outputBufferSize, socket.outputBufferSize)
+        if socket.outputBufferSize < outputBufferSize {
+            socket.outputBufferSize = outputBufferSize
+        }
         socket.setProperty(parameters, forKey: "parameters")
         let secure = uri.scheme == "rtmps" || uri.scheme == "rtmpts"
         socket.securityLevel = secure ? .negotiatedSSL : .none
@@ -329,7 +338,7 @@ open class RTMPConnection: EventDispatcher {
         if !isDisconnected {
             uri = nil
         }
-        for (_, stream) in streams {
+        for stream in streams {
             stream.close()
         }
         socket.close(isDisconnected: false)
@@ -342,7 +351,6 @@ open class RTMPConnection: EventDispatcher {
                 return
             }
             stream.id = UInt32(id)
-            self.streams[stream.id] = stream
             stream.readyState = .open
         })
         call("createStream", responder: responder)
@@ -451,7 +459,7 @@ open class RTMPConnection: EventDispatcher {
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
         previousQueueBytesOut.append(socket.queueBytesOut.value)
-        for (_, stream) in streams {
+        for stream in streams {
             stream.on(timer: timer)
         }
         if measureInterval <= previousQueueBytesOut.count {
@@ -460,17 +468,17 @@ open class RTMPConnection: EventDispatcher {
                 total += 1
             }
             if total == measureInterval - 1 {
-                for (_, stream) in streams {
+                for stream in streams {
                     stream.delegate?.rtmpStream(stream, publishInsufficientBWOccured: self)
                 }
             } else if total == 0 {
-                for (_, stream) in streams {
+                for stream in streams {
                     stream.delegate?.rtmpStream(stream, publishSufficientBWOccured: self)
                 }
             }
             previousQueueBytesOut.removeFirst()
         }
-        for (_, stream) in streams {
+        for stream in streams {
             stream.delegate?.rtmpStream(stream, updatedStats: self)
         }
     }

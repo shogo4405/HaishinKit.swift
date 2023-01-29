@@ -1,6 +1,7 @@
 import Foundation
 
 final class RTMPTSocket: NSObject, RTMPSocketCompatible {
+    static let defaultWindowSizeC = Int(UInt8.max)
     static let contentType: String = "application/x-fcs"
 
     var timeout: Int = 0
@@ -9,6 +10,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
     var inputBuffer = Data()
     var qualityOfService: DispatchQoS = .default
     var securityLevel: StreamSocketSecurityLevel = .none
+    var outputBufferSize: Int = RTMPTSocket.defaultWindowSizeC
     weak var delegate: RTMPSocketDelegate?
     var connected = false {
         didSet {

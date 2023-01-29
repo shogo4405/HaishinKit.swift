@@ -5,16 +5,19 @@ import Network
 
 @available(iOS 12.0, macOS 10.14, tvOS 12.0, *)
 final class RTMPNWSocket: RTMPSocketCompatible {
+    static let defaultWindowSizeC = Int(UInt8.max)
+
     var timestamp: TimeInterval = 0.0
     var chunkSizeC: Int = RTMPChunk.defaultSize
     var chunkSizeS: Int = RTMPChunk.defaultSize
-    var windowSizeC = Int(UInt8.max)
+    var windowSizeC = RTMPNWSocket.defaultWindowSizeC
     var timeout: Int = NetSocket.defaultTimeout
     var readyState: RTMPSocketReadyState = .uninitialized {
         didSet {
             delegate?.didSetReadyState(readyState)
         }
     }
+    var outputBufferSize: Int = RTMPNWSocket.defaultWindowSizeC
     var securityLevel: StreamSocketSecurityLevel = .none
     var qualityOfService: DispatchQoS = .default
     var inputBuffer = Data()

@@ -282,6 +282,7 @@ open class RTMPStream: NetStream {
         self.rtmpConnection = connection
         super.init()
         dispatcher = EventDispatcher(target: self)
+        connection.streams.append(self)
         addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         if rtmpConnection.connected {

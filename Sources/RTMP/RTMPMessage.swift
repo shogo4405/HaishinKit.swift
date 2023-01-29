@@ -422,7 +422,7 @@ final class RTMPDataMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let stream: RTMPStream = connection.streams[streamId] else {
+        guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
             return
         }
         stream.info.byteCount.mutate { $0 += Int64(payload.count) }
@@ -564,7 +564,7 @@ final class RTMPAudioMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let stream: RTMPStream = connection.streams[streamId] else {
+        guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
             return
         }
         stream.info.byteCount.mutate { $0 += Int64(payload.count) }
@@ -629,7 +629,7 @@ final class RTMPVideoMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let stream: RTMPStream = connection.streams[streamId] else {
+        guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
             return
         }
         stream.info.byteCount.mutate { $0 += Int64(payload.count) }
@@ -810,9 +810,9 @@ final class RTMPUserControlMessage: RTMPMessage {
                 message: RTMPUserControlMessage(event: .pong, value: value)
             ), locked: nil)
         case .bufferEmpty:
-            connection.streams[UInt32(value)]?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferEmpty.data(""))
+            connection.streams.first(where: { $0.id == UInt32(value) })?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferEmpty.data(""))
         case .bufferFull:
-            connection.streams[UInt32(value)]?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferFull.data(""))
+            connection.streams.first(where: { $0.id == UInt32(value) })?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferFull.data(""))
         default:
             break
         }

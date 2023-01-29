@@ -18,6 +18,7 @@ protocol RTMPSocketCompatible: AnyObject {
     var chunkSizeC: Int { get set }
     var chunkSizeS: Int { get set }
     var inputBuffer: Data { get set }
+    var outputBufferSize: Int { get set }
     var totalBytesIn: Atomic<Int64> { get }
     var totalBytesOut: Atomic<Int64> { get }
     var queueBytesOut: Atomic<Int64> { get }
