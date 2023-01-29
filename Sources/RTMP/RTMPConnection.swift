@@ -342,7 +342,6 @@ open class RTMPConnection: EventDispatcher {
             stream.close()
         }
         socket.close(isDisconnected: false)
-        streams.removeAll()
     }
 
     func createStream(_ stream: RTMPStream) {
