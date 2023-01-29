@@ -18,7 +18,16 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
     var outputBufferSize: Int = RTMPNWSocket.defaultWindowSizeC
-    var securityLevel: StreamSocketSecurityLevel = .none
+    var securityLevel: StreamSocketSecurityLevel = .none {
+        didSet {
+            switch securityLevel {
+            case .ssLv2, .ssLv3, .tlSv1, .negotiatedSSL:
+                parameters = .tls
+            default:
+                parameters = .tcp
+            }
+        }
+    }
     var qualityOfService: DispatchQoS = .default
     var inputBuffer = Data()
     weak var delegate: RTMPSocketDelegate?
