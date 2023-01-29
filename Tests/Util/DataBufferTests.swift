@@ -5,7 +5,7 @@ import XCTest
 
 final class NetSocketCycleBufferTests: XCTestCase {
     func testAppendAndTest() {
-        let buffer = NetSocket.CircularBuffer(capacity: 1024)
+        let buffer = DataBuffer(capacity: 1024)
         XCTAssertTrue(buffer.append(Data(repeating: 1, count: 512)))
         XCTAssertEqual(buffer.maxLength, 512)
         XCTAssertTrue(buffer.append(Data(repeating: 2, count: 512)))

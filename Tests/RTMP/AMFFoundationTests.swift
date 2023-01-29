@@ -3,7 +3,7 @@ import XCTest
 
 @testable import HaishinKit
 
-final class ASClassTests: XCTestCase {
+final class AMFFoundationTests: XCTestCase {
 
     static let hello: String = "<a>hello</a>"
 
@@ -19,12 +19,12 @@ final class ASClassTests: XCTestCase {
     }
 
     func testASXMLDocument() {
-        let xml = ASXMLDocument(data: ASClassTests.hello)
-        XCTAssertEqual(xml.description, ASClassTests.hello)
+        let xml = ASXMLDocument(data: AMFFoundationTests.hello)
+        XCTAssertEqual(xml.description, AMFFoundationTests.hello)
     }
 
     func testASXML() {
-        let xml = ASXML(data: ASClassTests.hello)
-        XCTAssertEqual(xml.description, ASClassTests.hello)
+        let xml = ASXML(data: AMFFoundationTests.hello)
+        XCTAssertEqual(xml.description, AMFFoundationTests.hello)
     }
 }
