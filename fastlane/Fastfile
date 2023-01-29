@@ -16,5 +16,6 @@
 desc "[CI] Review PullRequest."
 lane :review do
   spm
+  carthage(use_xcframeworks: true)
   scan(scheme: 'Tests')
 end
