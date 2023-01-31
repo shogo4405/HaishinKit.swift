@@ -33,6 +33,27 @@ public class VideoCodec {
     #endif
     #endif
 
+    /// A bitRate mode that affectes how to encode the video source.
+    public enum BitRateMode {
+        /// The average bit rate.
+        case average
+        /// The constant bit rate.
+        @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
+        case constant
+
+        var key: VTSessionOptionKey {
+            if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *) {
+                switch self {
+                case .average:
+                    return .averageBitRate
+                case .constant:
+                    return .constantBitRate
+                }
+            }
+            return .averageBitRate
+        }
+    }
+
     /**
      * The VideoCodec error domain codes.
      */
@@ -67,7 +88,10 @@ public class VideoCodec {
         case maxKeyFrameIntervalDuration
         /// Specifies the scalingMode.
         case scalingMode
+        /// Specifies the allowFrameRecording.
         case allowFrameReordering
+        /// Specifies the bitRateMode.
+        case bitRateMode
 
         public var keyPath: AnyKeyPath {
             switch self {
@@ -89,6 +113,8 @@ public class VideoCodec {
                 return \VideoCodec.profileLevel
             case .allowFrameReordering:
                 return \VideoCodec.allowFrameReordering
+            case .bitRateMode:
+                return \VideoCodec.bitRateMode
             }
         }
     }
@@ -106,7 +132,6 @@ public class VideoCodec {
         kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
-
     /// Specifies the settings for a VideoCodec.
     public var settings: Setting<VideoCodec, Option> = [:] {
         didSet {
@@ -119,6 +144,15 @@ public class VideoCodec {
     var scalingMode = VideoCodec.defaultScalingMode {
         didSet {
             guard scalingMode != oldValue else {
+                return
+            }
+            invalidateSession = true
+        }
+    }
+
+    var bitRateMode: BitRateMode = .average {
+        didSet {
+            guard bitRateMode != oldValue else {
                 return
             }
             invalidateSession = true
@@ -156,7 +190,7 @@ public class VideoCodec {
             guard bitrate != oldValue else {
                 return
             }
-            let option = VTSessionOption(key: .averageBitRate, value: NSNumber(value: bitrate))
+            let option = VTSessionOption(key: bitRateMode.key, value: NSNumber(value: bitrate))
             if let status = session?.setOption(option), status != noErr {
                 delegate?.videoCodec(self, errorOccurred: .failedToSetOption(status: status, option: option))
             }
@@ -331,7 +365,7 @@ public class VideoCodec {
         var options = Set<VTSessionOption>([
             .init(key: .realTime, value: kCFBooleanTrue),
             .init(key: .profileLevel, value: profileLevel as NSObject),
-            .init(key: .averageBitRate, value: NSNumber(value: bitrate)),
+            .init(key: bitRateMode.key, value: NSNumber(value: bitrate)),
             .init(key: .expectedFrameRate, value: NSNumber(value: expectedFrameRate)),
             .init(key: .maxKeyFrameIntervalDuration, value: NSNumber(value: maxKeyFrameIntervalDuration)),
             .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
