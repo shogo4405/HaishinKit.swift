@@ -297,9 +297,11 @@ final class IOVideoUnit: NSObject, IOUnit {
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration
         )
-        mixer?.recorder.appendPixelBuffer(
+        mixer?.recorder.handleMixedVideoOutput(
             imageBuffer ?? buffer,
-            withPresentationTime: sampleBuffer.presentationTimeStamp
+            withPresentationTime: sampleBuffer.presentationTimeStamp,
+            sampleBuffer: sampleBuffer,
+            multicamSampleBuffer: multiCamSampleBuffer
         )
         if !muted {
             pixelBuffer = buffer
@@ -343,8 +345,10 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
             guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
                 return
             }
+            mixer?.recorder.handleCameraOutput(captureOutput, didOutput: sampleBuffer, from: connection)
             appendSampleBuffer(sampleBuffer)
         } else if multiCamCapture?.output == captureOutput {
+            mixer?.recorder.handleMultiCameraOutput(captureOutput, didOutput: sampleBuffer, from: connection)
             multiCamSampleBuffer = sampleBuffer
         }
     }

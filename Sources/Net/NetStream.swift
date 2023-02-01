@@ -207,17 +207,29 @@ open class NetStream: NSObject {
         }
     }
     #endif
-
+    
+    public enum AppendSampleBufferSource {
+        case stream
+        case screenCapture
+    }
+    
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
-    open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {
+    open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, source: AppendSampleBufferSource, options: [NSObject: AnyObject]? = nil) {
         switch withType {
         case .audio:
             mixer.audioIO.lockQueue.async {
+                self.mixer.recorder.handleStreamOutput(sampleBuffer, withType: .audio)
                 self.mixer.audioIO.appendSampleBuffer(sampleBuffer)
             }
         case .video:
             mixer.videoIO.lockQueue.async {
+                switch source {
+                case .stream:
+                    self.mixer.recorder.handleStreamOutput(sampleBuffer, withType: .video)
+                case .screenCapture:
+                    self.mixer.recorder.handleScreenOutput(sampleBuffer)
+                }
                 self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
             }
         default:
@@ -255,7 +267,7 @@ open class NetStream: NSObject {
 
     /// Starts recording.
     public func startRecording(_ settings: [AVMediaType: [String: Any]]) {
-        mixer.recorder.outputSettings = settings
+        mixer.recorder.prepareForSettings(settings)
         mixer.recorder.startRunning()
     }
 
@@ -296,7 +308,7 @@ extension NetStream: IOScreenCaptureUnitDelegate {
         guard let sampleBuffer, status == noErr else {
             return
         }
-        appendSampleBuffer(sampleBuffer, withType: .video)
+        appendSampleBuffer(sampleBuffer, withType: .video, source: .screenCapture)
     }
 }
 
@@ -307,12 +319,12 @@ extension NetStream: SCStreamOutput {
         if #available(macOS 13.0, *) {
             switch type {
             case .screen:
-                appendSampleBuffer(sampleBuffer, withType: .video)
+                appendSampleBuffer(sampleBuffer, withType: .video, source: .stream)
             default:
-                appendSampleBuffer(sampleBuffer, withType: .audio)
+                appendSampleBuffer(sampleBuffer, withType: .audio, source: .stream)
             }
         } else {
-            appendSampleBuffer(sampleBuffer, withType: .video)
+            appendSampleBuffer(sampleBuffer, withType: .video, source: .stream)
         }
     }
 }

@@ -8,9 +8,34 @@ public protocol IORecorderDelegate: AnyObject {
     func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter)
 }
 
+public protocol IORecorderHandler: Running {
+    
+    /// Called before start recording
+    func prepareForSettings(_ settings: [AVMediaType: [String: Any]])
+    
+    /// Called when data is received from the main camera
+    func handleCameraOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection);
+    
+    /// Called when data is received from the second camera
+    func handleMultiCameraOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection);
+    
+    /// Called when data is received from microphone
+    func handleAudioOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection);
+    
+    /// Called when data is received from screen capture
+    func handleScreenOutput(_ sampleBuffer: CMSampleBuffer);
+    
+    /// Called after the video is mixed into a single output
+    func handleMixedVideoOutput(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime, sampleBuffer: CMSampleBuffer, multicamSampleBuffer: CMSampleBuffer?)
+    
+    func handleStreamOutput(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType);
+    
+}
+
 // MARK: -
 /// The IORecorder class represents video and audio recorder.
 public class IORecorder {
+    
     private static let interpolationThreshold = 1024 * 4
 
     /// The IORecorder error domain codes.
@@ -66,7 +91,7 @@ public class IORecorder {
         URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
     }()
     #endif
-
+    
     /// Append a sample buffer for recording.
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) {
         lockQueue.async {
@@ -283,8 +308,37 @@ public class IORecorder {
     }
 }
 
-extension IORecorder: Running {
-    // MARK: Running
+extension IORecorder: IORecorderHandler {
+    // MARK: IORecorderHandler
+
+    public func prepareForSettings(_ settings: [AVMediaType: [String: Any]]) {
+        outputSettings = settings
+    }
+
+    public func handleCameraOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // only the final mix from handleMixedVideoOutput is recorded to file
+    }
+    
+    public func handleAudioOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        appendSampleBuffer(sampleBuffer, mediaType: .audio)
+    }
+    
+    public func handleMultiCameraOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // only the final mix from handleMixedVideoOutput is recorded to file
+    }
+    
+    public func handleScreenOutput(_ sampleBuffer: CMSampleBuffer) {
+        // only the final mix from handleMixedVideoOutput is recorded to file
+    }
+    
+    public func handleStreamOutput(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType) {
+        // only the final mix from handleMixedVideoOutput is recorded to file
+    }
+    
+    public func handleMixedVideoOutput(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime, sampleBuffer: CMSampleBuffer, multicamSampleBuffer: CMSampleBuffer?) {
+        appendPixelBuffer(pixelBuffer, withPresentationTime: withPresentationTime)
+    }
+    
     public func startRunning() {
         lockQueue.async {
             guard !self.isRunning.value else {

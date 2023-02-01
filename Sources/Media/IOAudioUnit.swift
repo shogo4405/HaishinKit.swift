@@ -74,7 +74,6 @@ final class IOAudioUnit: NSObject, IOUnit {
         guard let sampleBuffer = sampleBuffer.muted(muted) else {
             return
         }
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
         codec.encodeSampleBuffer(sampleBuffer)
     }
 }
@@ -120,6 +119,7 @@ extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
         guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.audio) == true else {
             return
         }
+        mixer?.recorder.handleAudioOutput(output, didOutput: sampleBuffer, from: connection)
         appendSampleBuffer(sampleBuffer)
     }
 }

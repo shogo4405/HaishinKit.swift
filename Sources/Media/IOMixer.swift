@@ -71,8 +71,8 @@ public class IOMixer {
     #endif
     public private(set) var isRunning: Atomic<Bool> = .init(false)
     /// The recorder instance.
-    public lazy var recorder = IORecorder()
-
+    public lazy var recorder: IORecorderHandler = IORecorder()
+    
     /// Specifies the drawable object.
     public weak var drawable: NetStreamDrawable? {
         get {
