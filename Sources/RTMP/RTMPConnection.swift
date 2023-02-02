@@ -87,11 +87,12 @@ open class RTMPConnection: EventDispatcher {
             }
         }
 
-        func data(_ description: String) -> ASObject {
+        func data(_ description: String, error: Error? = nil) -> ASObject {
             [
                 "code": rawValue,
                 "level": level,
-                "description": description
+                "description": description,
+                "error": error
             ]
         }
     }

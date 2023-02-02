@@ -90,8 +90,12 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     override func deinitConnection(isDisconnected: Bool) {
         if isDisconnected {
+            let error = inputStreamError ?? outputStreamError
+            inputStreamError = nil
+            outputStreamError = nil
+            let description = error?.localizedDescription ?? ""
             let data: ASObject = (readyState == .handshakeDone) ?
-                RTMPConnection.Code.connectClosed.data("") : RTMPConnection.Code.connectFailed.data("")
+                RTMPConnection.Code.connectClosed.data(description, error: error) : RTMPConnection.Code.connectFailed.data(description, error: error)
             events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         readyState = .closing
