@@ -398,6 +398,7 @@
 		BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
+		BC7C56892995082700C41A9B /* NetStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C56882995082700C41A9B /* NetStreamTests.swift */; };
 		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC83A4742403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
@@ -896,6 +897,7 @@
 		BC570B4728E9ACC10098A12C /* IOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOUnit.swift; sourceTree = "<group>"; };
 		BC6FC91D29609A6800A746EE /* ShapeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeFactory.swift; sourceTree = "<group>"; };
 		BC6FC9212961B3D800A746EE /* vImage_CGImageFormat+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_CGImageFormat+Extension.swift"; sourceTree = "<group>"; };
+		BC7C56882995082700C41A9B /* NetStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamTests.swift; sourceTree = "<group>"; };
 		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
 		BC94E4FD263FE6B80094C169 /* MP4MovieFragmentHeaderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4MovieFragmentHeaderBox.swift; sourceTree = "<group>"; };
 		BC94E501263FE8400094C169 /* MP4TrackFragmentHeaderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TrackFragmentHeaderBox.swift; sourceTree = "<group>"; };
@@ -1531,6 +1533,7 @@
 			isa = PBXGroup;
 			children = (
 				BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */,
+				BC7C56882995082700C41A9B /* NetStreamTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -2281,6 +2284,7 @@
 				295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */,
 				290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */,
 				290EA8A01DFB61B100053022 /* AMFFoundationTests.swift in Sources */,
+				BC7C56892995082700C41A9B /* NetStreamTests.swift in Sources */,
 				BC94E53A264192B00094C169 /* MP4FileReaderTests2.swift in Sources */,
 				2917CB662104CA2800F6823A /* AudioSpecificConfigTests.swift in Sources */,
 				290EA8AB1DFB61E700053022 /* EventDispatcherTests.swift in Sources */,
