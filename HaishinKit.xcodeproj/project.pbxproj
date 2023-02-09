@@ -399,6 +399,9 @@
 		BC7A23F525171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7A23F625171C8F0089F77C /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		BC7C56892995082700C41A9B /* NetStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C56882995082700C41A9B /* NetStreamTests.swift */; };
+		BC7C568C299538CF00C41A9B /* H264Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C568A299526F800C41A9B /* H264Profile.swift */; };
+		BC7C568D299538D000C41A9B /* H264Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C568A299526F800C41A9B /* H264Profile.swift */; };
+		BC7C568E299538D000C41A9B /* H264Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C568A299526F800C41A9B /* H264Profile.swift */; };
 		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC83A4742403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
@@ -898,6 +901,7 @@
 		BC6FC91D29609A6800A746EE /* ShapeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeFactory.swift; sourceTree = "<group>"; };
 		BC6FC9212961B3D800A746EE /* vImage_CGImageFormat+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_CGImageFormat+Extension.swift"; sourceTree = "<group>"; };
 		BC7C56882995082700C41A9B /* NetStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamTests.swift; sourceTree = "<group>"; };
+		BC7C568A299526F800C41A9B /* H264Profile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = H264Profile.swift; sourceTree = "<group>"; };
 		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
 		BC94E4FD263FE6B80094C169 /* MP4MovieFragmentHeaderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4MovieFragmentHeaderBox.swift; sourceTree = "<group>"; };
 		BC94E501263FE8400094C169 /* MP4TrackFragmentHeaderBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MP4TrackFragmentHeaderBox.swift; sourceTree = "<group>"; };
@@ -1071,6 +1075,7 @@
 				29B876571CD70A7900FC07DA /* AudioCodec.swift */,
 				BC44A1A823D31E92002D4297 /* AudioCodecBuffer.swift */,
 				297E69112324E38800D418AB /* AudioCodecFormat.swift */,
+				BC7C568A299526F800C41A9B /* H264Profile.swift */,
 				29B876591CD70A7900FC07DA /* VideoCodec.swift */,
 				BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */,
 				BC4914B528DEC2FE009E2DF6 /* VTSessionMode.swift */,
@@ -2207,6 +2212,7 @@
 				29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
 				BCC1A7172647F3E000661156 /* DecoderSpecificInfo.swift in Sources */,
+				BC7C568E299538D000C41A9B /* H264Profile.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */,
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
 				297E69122324E38800D418AB /* AudioCodecFormat.swift in Sources */,
@@ -2318,6 +2324,7 @@
 				29B876EC1CD70D5900FC07DA /* AudioCodec.swift in Sources */,
 				BCA97C0B263D80F40027213C /* MP4SampleEntry.swift in Sources */,
 				BCC1A6D826446B2D00661156 /* MP4SoundMediaHeaderBox.swift in Sources */,
+				BC7C568D299538D000C41A9B /* H264Profile.swift in Sources */,
 				BCB977402621812800C9A649 /* AVCFormatStream.swift in Sources */,
 				29B876EE1CD70D5900FC07DA /* VideoCodec.swift in Sources */,
 				BCA97BF1263C31020027213C /* MP4SampleDescriptionBox.swift in Sources */,
@@ -2588,6 +2595,7 @@
 				BCC1A6D5264461FE00661156 /* MP4HandlerBox.swift in Sources */,
 				BCC1A7112647F25A00661156 /* DecoderConfigDescriptor.swift in Sources */,
 				BCC1A6D126445AF500661156 /* MP4TrackExtendsBox.swift in Sources */,
+				BC7C568C299538CF00C41A9B /* H264Profile.swift in Sources */,
 				BC4914A828DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
 				BC110259292E661E00D48035 /* MultiCamCaptureSetting.swift in Sources */,
 				BC4914A428DDD33D009E2DF6 /* VTSessionConvertible.swift in Sources */,
