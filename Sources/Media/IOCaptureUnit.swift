@@ -9,9 +9,9 @@ enum IOCaptureUnitError: Error {
 protocol IOCaptureUnit {
     associatedtype Output: AVCaptureOutput
 
-    var input: AVCaptureInput { get }
-    var output: Output { get }
-    var connection: AVCaptureConnection? { get }
+    var input: AVCaptureInput? { get set }
+    var output: Output? { get set }
+    var connection: AVCaptureConnection? { get set }
 }
 
 extension IOCaptureUnit {
@@ -20,20 +20,20 @@ extension IOCaptureUnit {
             return
         }
         if let connection {
-            if session.canAddInput(input) {
+            if let input, session.canAddInput(input) {
                 session.addInputWithNoConnections(input)
             }
-            if session.canAddOutput(output) {
+            if let output, session.canAddOutput(output) {
                 session.addOutputWithNoConnections(output)
             }
             if session.canAddConnection(connection) {
                 session.addConnection(connection)
             }
         } else {
-            if session.canAddInput(input) {
+            if let input, session.canAddInput(input) {
                 session.addInput(input)
             }
-            if session.canAddOutput(output) {
+            if let output, session.canAddOutput(output) {
                 session.addOutput(output)
             }
         }
@@ -44,14 +44,14 @@ extension IOCaptureUnit {
             return
         }
         if let connection {
-            if output.connections.contains(connection) {
+            if output?.connections.contains(connection) == true {
                 session.removeConnection(connection)
             }
         }
-        if session.inputs.contains(input) {
+        if let input, session.inputs.contains(input) {
             session.removeInput(input)
         }
-        if session.outputs.contains(output) {
+        if let output, session.outputs.contains(output) {
             session.removeOutput(output)
         }
     }
@@ -67,15 +67,20 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureVideoDataOutput
 
     /// The current video device object.
-    public let device: AVCaptureDevice?
-    let input: AVCaptureInput
-    let output: Output
-    let connection: AVCaptureConnection?
+    public private(set) var device: AVCaptureDevice?
+    var input: AVCaptureInput?
+    var output: Output? {
+        didSet {
+            output?.alwaysDiscardsLateVideoFrames = true
+            output?.videoSettings = IOVideoCaptureUnit.defaultVideoSettings as [String: Any]
+        }
+    }
+    var connection: AVCaptureConnection?
 
     /// Specifies the videoOrientation indicates whether to rotate the video flowing through the connection to a given orientation.
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
-            output.connections.filter { $0.isVideoOrientationSupported }.forEach {
+            output?.connections.filter { $0.isVideoOrientationSupported }.forEach {
                 $0.videoOrientation = videoOrientation
             }
         }
@@ -84,7 +89,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     /// Spcifies the video mirroed indicates whether the video flowing through the connection should be mirrored about its vertical axis.
     public var isVideoMirrored = false {
         didSet {
-            output.connections.filter { $0.isVideoMirroringSupported }.forEach {
+            output?.connections.filter { $0.isVideoMirroringSupported }.forEach {
                 $0.isVideoMirrored = isVideoMirrored
             }
         }
@@ -94,44 +99,65 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     @available(macOS, unavailable)
     public var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
         didSet {
-            output.connections.filter { $0.isVideoStabilizationSupported }.forEach {
+            output?.connections.filter { $0.isVideoStabilizationSupported }.forEach {
                 $0.preferredVideoStabilizationMode = preferredVideoStabilizationMode
             }
         }
     }
 
-    init(_ device: AVCaptureDevice?, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) throws {
+    func attachDevice(_ device: AVCaptureDevice?, videoUnit: IOVideoUnit) throws {
+        setSampleBufferDelegate(nil)
+        detachSession(videoUnit.mixer?.session)
         guard let device else {
-            throw IOCaptureUnitError.noDeviceAvailable
+            self.device = nil
+            input = nil
+            output = nil
+            connection = nil
+            return
         }
         self.device = device
         input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureVideoDataOutput()
-        output.alwaysDiscardsLateVideoFrames = true
-        output.videoSettings = videoSettings as? [String: Any]
         #if os(iOS)
-        if #available(iOS 13, *), let port = input.ports.first(where: { $0.mediaType == .video && $0.sourceDeviceType == device.deviceType && $0.sourceDevicePosition == device.position }) {
+        if let output, #available(iOS 13, *), let port = input?.ports.first(where: { $0.mediaType == .video && $0.sourceDeviceType == device.deviceType && $0.sourceDevicePosition == device.position }) {
             connection = AVCaptureConnection(inputPorts: [port], output: output)
         } else {
             connection = nil
         }
         #else
-        if let port = input.ports.first(where: { $0.mediaType == .video }) {
+        if let output, let port = input?.ports.first(where: { $0.mediaType == .video }) {
             connection = AVCaptureConnection(inputPorts: [port], output: output)
         } else {
             connection = nil
         }
         #endif
+        attachSession(videoUnit.mixer?.session)
+        output?.connections.forEach {
+            if $0.isVideoMirroringSupported {
+                $0.isVideoMirrored = isVideoMirrored
+            }
+            if $0.isVideoOrientationSupported {
+                $0.videoOrientation = videoOrientation
+            }
+            #if os(iOS)
+            if $0.isVideoStabilizationSupported {
+                $0.preferredVideoStabilizationMode = preferredVideoStabilizationMode
+            }
+            #endif
+        }
+        setSampleBufferDelegate(videoUnit)
     }
 
     @available(iOS, unavailable)
-    init(_ screen: AVCaptureScreenInput, videoSettings: [NSObject: AnyObject] = IOVideoCaptureUnit.defaultVideoSettings) {
+    func attachScreen(_ screen: AVCaptureScreenInput?, videoUnit: IOVideoUnit) {
+        setSampleBufferDelegate(nil)
+        detachSession(videoUnit.mixer?.session)
         device = nil
         input = screen
         output = AVCaptureVideoDataOutput()
-        output.alwaysDiscardsLateVideoFrames = true
-        output.videoSettings = videoSettings as? [String: Any]
         connection = nil
+        attachSession(videoUnit.mixer?.session)
+        setSampleBufferDelegate(videoUnit)
     }
 
     func setFrameRate(_ frameRate: Float64) {
@@ -166,28 +192,33 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
             videoOrientation = videoUnit.videoOrientation
             setFrameRate(videoUnit.frameRate)
         }
-        output.setSampleBufferDelegate(videoUnit, queue: videoUnit?.lockQueue)
+        output?.setSampleBufferDelegate(videoUnit, queue: videoUnit?.lockQueue)
     }
 }
 
 class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
 
-    let input: AVCaptureInput
-    let output: Output
-    let connection: AVCaptureConnection?
+    var input: AVCaptureInput?
+    var output: Output?
+    var connection: AVCaptureConnection?
 
-    public init(_ device: AVCaptureDevice?) throws {
+    func attachDevice(_ device: AVCaptureDevice?, audioUnit: IOAudioUnit) throws {
+        setSampleBufferDelegate(nil)
+        detachSession(audioUnit.mixer?.session)
         guard let device else {
-            throw IOCaptureUnitError.noDeviceAvailable
+            input = nil
+            output = nil
+            return
         }
         input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureAudioDataOutput()
-        connection = nil
+        attachSession(audioUnit.mixer?.session)
+        setSampleBufferDelegate(audioUnit)
     }
 
     func setSampleBufferDelegate(_ audioUnit: IOAudioUnit?) {
-        output.setSampleBufferDelegate(audioUnit, queue: audioUnit?.lockQueue)
+        output?.setSampleBufferDelegate(audioUnit, queue: audioUnit?.lockQueue)
     }
 }
 #endif
