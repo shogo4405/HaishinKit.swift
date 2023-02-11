@@ -64,6 +64,7 @@ final class LiveViewController: UIViewController {
         }
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            rtmpStream.videoCapture(for: 1)?.isVideoMirrored = true
             rtmpStream.attachMultiCamera(front)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
@@ -117,10 +118,12 @@ final class LiveViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
+        rtmpStream.videoCapture(for: 0)?.isVideoMirrored = position == .front
         rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
             logger.warn(error)
         }
         if #available(iOS 13.0, *) {
+            rtmpStream.videoCapture(for: 1)?.isVideoMirrored = currentPosition == .front
             rtmpStream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
                 logger.warn(error)
             }

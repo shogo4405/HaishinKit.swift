@@ -59,13 +59,13 @@ public class IOMixer {
                 removeSessionObservers(oldValue)
                 oldValue.stopRunning()
             }
-            audioIO.capture?.detachSession(oldValue)
-            videoIO.capture?.detachSession(oldValue)
+            audioIO.capture.detachSession(oldValue)
+            videoIO.capture.detachSession(oldValue)
             if session.canSetSessionPreset(sessionPreset) {
                 session.sessionPreset = sessionPreset
             }
-            audioIO.capture?.attachSession(session)
-            videoIO.capture?.attachSession(session)
+            audioIO.capture.attachSession(session)
+            videoIO.capture.attachSession(session)
         }
     }
     #endif
@@ -324,8 +324,8 @@ extension IOMixer: Running {
                 return
             }
         }
-        videoIO.multiCamCapture?.detachSession(session)
-        videoIO.capture?.detachSession(session)
+        videoIO.multiCamCapture.detachSession(session)
+        videoIO.capture.detachSession(session)
     }
 
     @objc
@@ -335,8 +335,8 @@ extension IOMixer: Running {
                 return
             }
         }
-        videoIO.capture?.attachSession(session)
-        videoIO.multiCamCapture?.attachSession(session)
+        videoIO.capture.attachSession(session)
+        videoIO.multiCamCapture.attachSession(session)
     }
     #endif
 }

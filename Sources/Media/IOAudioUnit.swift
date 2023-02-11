@@ -23,23 +23,10 @@ final class IOAudioUnit: NSObject, IOUnit {
     var muted = false
 
     #if os(iOS) || os(macOS)
-    var capture: IOAudioCaptureUnit? {
-        didSet {
-            oldValue?.setSampleBufferDelegate(nil)
-            oldValue?.detachSession(mixer?.session)
-            capture?.attachSession(mixer?.session)
-            capture?.setSampleBufferDelegate(self)
-        }
-    }
+    private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
 
     private var audioFormat: AVAudioFormat?
-
-    #if os(iOS) || os(macOS)
-    deinit {
-        capture = nil
-    }
-    #endif
 
     #if os(iOS) || os(macOS)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
@@ -52,10 +39,10 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
         codec.invalidate()
         guard let device else {
-            self.capture = nil
+            try capture.attachDevice(nil, audioUnit: self)
             return
         }
-        self.capture = try IOAudioCaptureUnit(device)
+        try capture.attachDevice(device, audioUnit: self)
         #if os(iOS)
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif

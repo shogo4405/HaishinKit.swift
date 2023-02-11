@@ -73,8 +73,8 @@ final class IOVideoUnit: NSObject, IOUnit {
                 return
             }
             codec.expectedFrameRate = frameRate
-            capture?.setFrameRate(frameRate)
-            multiCamCapture?.setFrameRate(frameRate)
+            capture.setFrameRate(frameRate)
+            multiCamCapture.setFrameRate(frameRate)
         }
     }
 
@@ -94,8 +94,8 @@ final class IOVideoUnit: NSObject, IOUnit {
                 }
             }
             drawable?.videoOrientation = videoOrientation
-            capture?.videoOrientation = videoOrientation
-            multiCamCapture?.videoOrientation = videoOrientation
+            capture.videoOrientation = videoOrientation
+            multiCamCapture.videoOrientation = videoOrientation
         }
     }
 
@@ -108,24 +108,8 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    private(set) var capture: IOVideoCaptureUnit? {
-        didSet {
-            oldValue?.setSampleBufferDelegate(nil)
-            oldValue?.detachSession(mixer?.session)
-            capture?.attachSession(mixer?.session)
-            capture?.setSampleBufferDelegate(self)
-        }
-    }
-
-    private(set) var multiCamCapture: IOVideoCaptureUnit? {
-        didSet {
-            multiCamSampleBuffer = nil
-            oldValue?.setSampleBufferDelegate(nil)
-            oldValue?.detachSession(mixer?.session)
-            multiCamCapture?.attachSession(mixer?.session)
-            multiCamCapture?.setSampleBufferDelegate(self)
-        }
-    }
+    private(set) var capture: IOVideoCaptureUnit = .init()
+    private(set) var multiCamCapture: IOVideoCaptureUnit = .init()
     #endif
 
     var multiCamCaptureSettings: MultiCamCaptureSetting = .default
@@ -141,15 +125,11 @@ final class IOVideoUnit: NSObject, IOUnit {
                 self.drawable?.attachStream(nil)
             }
         }
-        #if os(iOS) || os(macOS)
-        capture = nil
-        multiCamCapture = nil
-        #endif
     }
 
     #if os(iOS) || os(macOS)
     func attachCamera(_ device: AVCaptureDevice?) throws {
-        guard let mixer, self.capture?.device != device else {
+        guard let mixer, self.capture.device != device else {
             return
         }
         mixer.session.beginConfiguration()
@@ -161,14 +141,13 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
         guard let device else {
             mixer.mediaSync = .passthrough
-            self.capture = nil
             return
         }
         mixer.mediaSync = .video
-        if multiCamCapture?.device == device {
-            multiCamCapture = nil
+        if multiCamCapture.device == device {
+            try multiCamCapture.attachDevice(nil, videoUnit: self)
         }
-        self.capture = try IOVideoCaptureUnit(device)
+        try capture.attachDevice(device, videoUnit: self)
     }
 
     @available(iOS 13.0, *)
@@ -178,7 +157,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             throw Error.multiCamNotSupported
         }
         #endif
-        guard let mixer, self.multiCamCapture?.device != device else {
+        guard let mixer, multiCamCapture.device != device else {
             return
         }
         guard let device else {
@@ -187,7 +166,8 @@ final class IOVideoUnit: NSObject, IOUnit {
             defer {
                 mixer.session.commitConfiguration()
             }
-            self.multiCamCapture = nil
+            multiCamCapture.detachSession(mixer.session)
+            try multiCamCapture.attachDevice(nil, videoUnit: self)
             return
         }
         mixer.isMultiCamSessionEnabled = true
@@ -195,10 +175,10 @@ final class IOVideoUnit: NSObject, IOUnit {
         defer {
             mixer.session.commitConfiguration()
         }
-        if capture?.device == device {
-            capture = nil
+        if capture.device == device {
+            try multiCamCapture.attachDevice(nil, videoUnit: self)
         }
-        self.multiCamCapture = try IOVideoCaptureUnit(device)
+        try multiCamCapture.attachDevice(device, videoUnit: self)
     }
 
     @available(iOS, unavailable)
@@ -212,16 +192,15 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
         guard let input else {
             mixer.mediaSync = .passthrough
-            self.capture = nil
             return
         }
         mixer.mediaSync = .video
-        self.capture = IOVideoCaptureUnit(input)
+        multiCamCapture.attachScreen(input, videoUnit: self)
     }
 
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
-        capture?.setTorchMode(torchMode)
-        multiCamCapture?.setTorchMode(torchMode)
+        capture.setTorchMode(torchMode)
+        multiCamCapture.setTorchMode(torchMode)
     }
     #endif
 
@@ -255,7 +234,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             imageBuffer?.unlockBaseAddress()
         }
         #if os(macOS)
-        if capture?.isVideoMirrored == true {
+        if capture.isVideoMirrored == true {
             buffer.reflectHorizontal()
         }
         #endif
@@ -339,12 +318,12 @@ extension IOVideoUnit: IOUnitDecoding {
 extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if capture?.output == captureOutput {
+        if capture.output == captureOutput {
             guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
                 return
             }
             appendSampleBuffer(sampleBuffer)
-        } else if multiCamCapture?.output == captureOutput {
+        } else if multiCamCapture.output == captureOutput {
             multiCamSampleBuffer = sampleBuffer
         }
     }
