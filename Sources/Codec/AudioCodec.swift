@@ -183,13 +183,14 @@ public class AudioCodec {
 
     /// Encodes a CMSampleBuffer.
     public func encodeSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
-        guard let format = sampleBuffer.formatDescription, CMSampleBufferDataIsReady(sampleBuffer) && isRunning.value else {
+        guard let format = sampleBuffer.formatDescription, CMSampleBufferDataIsReady(sampleBuffer) else {
             currentAudioBuffer.clear()
             return
         }
-
         inSourceFormat = format.streamBasicDescription?.pointee
-
+        guard isRunning.value else {
+            return
+        }
         do {
             let numSamples = try currentAudioBuffer.write(sampleBuffer, offset: offset)
             if currentAudioBuffer.isReady {
