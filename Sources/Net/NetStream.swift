@@ -20,9 +20,6 @@ open class NetStream: NSObject {
     /// The mixer object.
     public private(set) var mixer = IOMixer()
 
-    /// Specifies the metadata for the stream.
-    public var metadata: [String: Any?] = [:]
-
     /// Specifies the context object.
     public var context: CIContext {
         get {
@@ -141,10 +138,6 @@ open class NetStream: NSObject {
         set {
             mixer.videoIO.codec.settings = newValue
         }
-    }
-
-    deinit {
-        metadata.removeAll()
     }
 
     #if os(iOS) || os(macOS)
