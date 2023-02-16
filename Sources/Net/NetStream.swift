@@ -90,7 +90,7 @@ open class NetStream: NSObject {
     }
 
     /// Specifies the multi camera capture properties.
-    public var multiCamCaptureSettings: MultiCamCaptureSetting {
+    public var multiCamCaptureSettings: MultiCamCaptureSettings {
         get {
             mixer.videoIO.multiCamCaptureSettings
         }
@@ -121,7 +121,7 @@ open class NetStream: NSObject {
     }
 
     /// Specifies the audio compression properties.
-    public var audioSettings: Setting<AudioCodec, AudioCodec.Option> {
+    public var audioSettings: AudioCodecSettings {
         get {
             mixer.audioIO.codec.settings
         }
@@ -131,7 +131,7 @@ open class NetStream: NSObject {
     }
 
     /// Specifies the video compression properties.
-    public var videoSettings: Setting<VideoCodec, VideoCodec.Option> {
+    public var videoSettings: VideoCodecSettings {
         get {
             mixer.videoIO.codec.settings
         }

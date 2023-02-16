@@ -1,7 +1,7 @@
 import Foundation
 
 /// The type of image transform direction.
-public enum ImageTransform {
+public enum ImageTransform: String, Codable {
     /// The north direction.
     case north
     /// The south direction.

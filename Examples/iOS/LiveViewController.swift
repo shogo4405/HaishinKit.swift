@@ -32,7 +32,7 @@ final class LiveViewController: UIViewController {
 
         pipIntentView.layer.borderWidth = 1.0
         pipIntentView.layer.borderColor = UIColor.white.cgColor
-        pipIntentView.bounds = MultiCamCaptureSetting.default.regionOfInterest
+        pipIntentView.bounds = MultiCamCaptureSettings.default.regionOfInterest
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
 
@@ -40,14 +40,10 @@ final class LiveViewController: UIViewController {
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.videoOrientation = orientation
         }
-        rtmpStream.videoSettings = [
-            .width: 720,
-            .height: 1280
-        ]
+        rtmpStream.videoSettings.videoSize = .init(width: 720, height: 1280)
         rtmpStream.mixer.recorder.delegate = self
-
-        videoBitrateSlider?.value = Float(RTMPStream.defaultVideoBitrate) / 1000
-        audioBitrateSlider?.value = Float(RTMPStream.defaultAudioBitrate) / 1000
+        videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
+        audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
 
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
@@ -107,10 +103,11 @@ final class LiveViewController: UIViewController {
             currentFrame.origin.x += deltaX
             currentFrame.origin.y += deltaY
             pipIntentView.frame = currentFrame
-            rtmpStream.multiCamCaptureSettings = MultiCamCaptureSetting(
+            rtmpStream.multiCamCaptureSettings = MultiCamCaptureSettings(
                 mode: rtmpStream.multiCamCaptureSettings.mode,
                 cornerRadius: 16.0,
-                regionOfInterest: currentFrame
+                regionOfInterest: currentFrame,
+                direction: .east
             )
         }
     }
@@ -138,11 +135,11 @@ final class LiveViewController: UIViewController {
     @IBAction func on(slider: UISlider) {
         if slider == audioBitrateSlider {
             audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
-            rtmpStream.audioSettings[.bitrate] = slider.value * 1000
+            rtmpStream.audioSettings.bitRate = UInt32(slider.value * 1000)
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            rtmpStream.videoSettings[.bitrate] = slider.value * 1000
+            rtmpStream.videoSettings.bitRate = UInt32(slider.value * 1000)
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)

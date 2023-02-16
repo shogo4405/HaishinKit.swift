@@ -8,8 +8,8 @@ final class IOMixerTests: XCTestCase {
         weak var weakIOMixer: IOMixer?
         _ = {
             let mixer = IOMixer()
-            mixer.audioIO.codec.bitrate = 1000
-            mixer.videoIO.codec.bitrate = 1000
+            mixer.audioIO.codec.settings.bitRate = 100000
+            mixer.videoIO.codec.settings.bitRate = 100000
             weakIOMixer = mixer
         }()
         XCTAssertNil(weakIOMixer)

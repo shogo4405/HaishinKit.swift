@@ -16,37 +16,13 @@ public protocol AudioCodecDelegate: AnyObject {
  * - seealso: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
 public class AudioCodec {
+    /// The AudioCodec  error domain codes.
     enum Error: Swift.Error {
         case setPropertyError(id: AudioConverterPropertyID, status: OSStatus)
     }
 
-    /**
-     * The audio encoding or decoding options.
-     */
-    public enum Option: String, KeyPathRepresentable {
-        /// Specifies the bitRate of audio output.
-        case bitrate
-        /// Specifies  the sampleRate of audio output.
-        case sampleRate
-        /// The bitRate of audio output.
-        case actualBitrate
-
-        public var keyPath: AnyKeyPath {
-            switch self {
-            case .bitrate:
-                return \AudioCodec.bitrate
-            case .sampleRate:
-                return \AudioCodec.sampleRate
-            case .actualBitrate:
-                return \AudioCodec.actualBitrate
-            }
-        }
-    }
-
     /// The default minimum bitrate for an AudioCodec, value is 8000.
     public static let minimumBitrate: UInt32 = 8 * 1000
-    /// The default bitrate for an AudioCidec, the value is 32000.
-    public static let defaultBitrate: UInt32 = 32 * 1000
     /// The default channels for an AudioCodec, the value is 0 means  according to a input source.
     public static let defaultChannels: UInt32 = 0
     /// The default sampleRate for an AudioCodec, the value is 0 means according to a input source.
@@ -54,33 +30,28 @@ public class AudioCodec {
     /// The default mamimu buffers for an AudioCodec.
     public static let defaultMaximumBuffers: Int = 1
 
+    private static let numSamples: Int = 1024
+
     /// Specifies the output format.
     public var destination: AudioCodecFormat = .aac
     /// Specifies the delegate.
     public weak var delegate: AudioCodecDelegate?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
     /// Specifies the settings for audio codec.
-    public var settings: Setting<AudioCodec, Option> = [:] {
+    public var settings: AudioCodecSettings = .default {
         didSet {
-            settings.observer = self
-        }
-    }
-    private static let numSamples: Int = 1024
-
-    var bitrate: UInt32 = AudioCodec.defaultBitrate {
-        didSet {
-            guard bitrate != oldValue else {
-                return
-            }
-            lockQueue.async {
-                if let format = self._inDestinationFormat {
-                    self.setBitrateUntilNoErr(self.bitrate * format.mChannelsPerFrame)
+            if settings.bitRate != oldValue.bitRate {
+                lockQueue.async {
+                    if let format = self._inDestinationFormat {
+                        self.setBitrateUntilNoErr(self.settings.bitRate * format.mChannelsPerFrame)
+                    }
                 }
             }
         }
     }
+
     var sampleRate: Double = AudioCodec.defaultSampleRate
-    var actualBitrate: UInt32 = AudioCodec.defaultBitrate {
+    var actualBitrate: UInt32 = AudioCodecSettings.default.bitRate {
         didSet {
             logger.info(actualBitrate)
         }
@@ -146,11 +117,6 @@ public class AudioCodec {
         )
     }
 
-    /// Create an AudioCodec instance.
-    public init() {
-        settings.observer = self
-    }
-
     private var _converter: AudioConverterRef?
     private var converter: AudioConverterRef {
         var status: OSStatus = noErr
@@ -163,7 +129,7 @@ public class AudioCodec {
                 &inClassDescriptions,
                 &_converter
             )
-            setBitrateUntilNoErr(bitrate * inDestinationFormat.mChannelsPerFrame)
+            setBitrateUntilNoErr(settings.bitRate * inDestinationFormat.mChannelsPerFrame)
         }
         if status != noErr {
             logger.warn("\(status)")

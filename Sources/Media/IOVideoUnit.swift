@@ -72,7 +72,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard frameRate != oldValue else {
                 return
             }
-            codec.expectedFrameRate = frameRate
+            codec.settings.expectedFrameRate = frameRate
             capture.setFrameRate(frameRate)
             multiCamCapture.setFrameRate(frameRate)
         }
@@ -112,7 +112,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     private(set) var multiCamCapture: IOVideoCaptureUnit = .init()
     #endif
 
-    var multiCamCaptureSettings: MultiCamCaptureSetting = .default
+    var multiCamCaptureSettings: MultiCamCaptureSettings = .default
 
     private var pixelBuffer: CVPixelBuffer?
     private var multiCamSampleBuffer: CMSampleBuffer?
@@ -247,8 +247,8 @@ final class IOVideoUnit: NSObject, IOUnit {
                     regionOfInterest: multiCamCaptureSettings.regionOfInterest,
                     radius: multiCamCaptureSettings.cornerRadius
                 )
-            case .splitView(let direction):
-                buffer.split(multiCamPixelBuffer, direction: direction)
+            case .splitView:
+                buffer.split(multiCamPixelBuffer, direction: multiCamCaptureSettings.direction)
             }
             multiCamPixelBuffer.unlockBaseAddress()
         }
