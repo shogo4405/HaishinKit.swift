@@ -17,7 +17,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.4.2 Docs</a> (84% documented)</p>
+        <p><a href="index.html">HaishinKit 1.4.3 Docs</a> (85% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -129,12 +129,6 @@
                 <a href="Classes/RTMPStream/Code.html">– Code</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/RTMPStream/PlayTransition.html">– PlayTransition</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/RTMPStream/PlayOption.html">– PlayOption</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Classes/RTMPStream/HowToPublish.html">– HowToPublish</a>
               </li>
               <li class="nav-group-task">
@@ -148,6 +142,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoCodec.html">VideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/VideoCodec/BitRateMode.html">– BitRateMode</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoCodec/Error.html">– Error</a>
@@ -203,6 +200,12 @@
               </li>
               <li class="nav-group-task">
                 <a href="Enums/FLVVideoCodec.html">FLVVideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/H264Level.html">H264Level</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/H264Profile.html">H264Profile</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/ImageTransform.html">ImageTransform</a>
@@ -545,6 +548,36 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">HTTPStream</span> <span class="p">:</span> <span class="kt"><a href="Classes/NetStream.html">NetStream</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSWriterC"></a>
+                    <a name="//apple_ref/swift/Class/TSWriter" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC">TSWriter</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>MPEG-2 TS (Transport Stream) Writer Foundation class</p>
+
+                        <a href="Classes/TSWriter.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TSWriter</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/AudioCodecDelegate.html">AudioCodecDelegate</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/VideoCodecDelegate.html">VideoCodecDelegate</a></span></code></pre>
 
                         </div>
                       </div>
@@ -947,6 +980,63 @@
                 <li class="item">
                   <div>
                     <code>
+                    <a name="/s:10HaishinKit5EventC"></a>
+                    <a name="//apple_ref/swift/Class/Event" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit5EventC">Event</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The Event interface is used to provide information.</p>
+
+                        <a href="Classes/Event.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">Event</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Event</span><span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit15EventDispatcherC"></a>
+                    <a name="//apple_ref/swift/Class/EventDispatcher" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit15EventDispatcherC">EventDispatcher</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The EventDispatcher interface is in implementation which supports the DOM Event Model.</p>
+
+                        <a href="Classes/EventDispatcher.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">EventDispatcher</span> <span class="p">:</span> <span class="kt"><a href="Protocols/EventDispatcherConvertible.html">EventDispatcherConvertible</a></span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
                     <a name="/s:10HaishinKit9ResponderC"></a>
                     <a name="//apple_ref/swift/Class/Responder" class="dashAnchor"></a>
                     <a class="token" href="#/s:10HaishinKit9ResponderC">Responder</a>
@@ -1061,36 +1151,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8TSWriterC"></a>
-                    <a name="//apple_ref/swift/Class/TSWriter" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC">TSWriter</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>MPEG-2 TS (Transport Stream) Writer Foundation class</p>
-
-                        <a href="Classes/TSWriter.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TSWriter</span> <span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/AudioCodecDelegate.html">AudioCodecDelegate</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/VideoCodecDelegate.html">VideoCodecDelegate</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:10HaishinKit9ByteArrayC"></a>
                     <a name="//apple_ref/swift/Class/ByteArray" class="dashAnchor"></a>
                     <a class="token" href="#/s:10HaishinKit9ByteArrayC">ByteArray</a>
@@ -1111,63 +1171,6 @@
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">ByteArray</span> <span class="p">:</span> <span class="kt">ByteArrayConvertible</span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">ByteArray</span><span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit5EventC"></a>
-                    <a name="//apple_ref/swift/Class/Event" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit5EventC">Event</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The Event interface is used to provide information.</p>
-
-                        <a href="Classes/Event.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">Event</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">Event</span><span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit15EventDispatcherC"></a>
-                    <a name="//apple_ref/swift/Class/EventDispatcher" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit15EventDispatcherC">EventDispatcher</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The EventDispatcher interface is in implementation which supports the DOM Event Model.</p>
-
-                        <a href="Classes/EventDispatcher.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">EventDispatcher</span> <span class="p">:</span> <span class="kt"><a href="Protocols/EventDispatcherConvertible.html">EventDispatcherConvertible</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1208,7 +1211,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-01-16)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-02-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

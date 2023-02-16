@@ -17,7 +17,7 @@
     <a title="NetSocket Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.4.2 Docs</a> (84% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.4.3 Docs</a> (85% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -129,12 +129,6 @@
                 <a href="../Classes/RTMPStream/Code.html">– Code</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/RTMPStream/PlayTransition.html">– PlayTransition</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/RTMPStream/PlayOption.html">– PlayOption</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/RTMPStream/HowToPublish.html">– HowToPublish</a>
               </li>
               <li class="nav-group-task">
@@ -148,6 +142,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/VideoCodec.html">VideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/VideoCodec/BitRateMode.html">– BitRateMode</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/VideoCodec/Error.html">– Error</a>
@@ -203,6 +200,12 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/H264Level.html">H264Level</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/H264Profile.html">H264Profile</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Enums/ImageTransform.html">ImageTransform</a>
@@ -394,7 +397,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The defulat stream&rsquo;s TCP window size.</p>
 
                       </div>
                       <div class="declaration">
@@ -421,14 +424,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The current incoming data buffer.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">inputBuffer</span><span class="p">:</span> <span class="kt">Data</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">inputBuffer</span><span class="p">:</span> <span class="kt">Data</span></code></pre>
 
                         </div>
                       </div>
@@ -448,14 +451,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The time to wait for TCP/IP Handshake done.</p>
+                        <p>Specifies time to wait for TCP/IP Handshake done.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">timeout</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
@@ -475,14 +478,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>This instance connected to server(true) or not(false).</p>
+                        <p>Specifies  instance connected to server(true) or not(false).</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">connected</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">connected</span><span class="p">:</span> <span class="kt">Bool</span></code></pre>
 
                         </div>
                       </div>
@@ -502,14 +505,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Specifies the output buffer size in bytes.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">windowSizeC</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">windowSizeC</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
@@ -529,14 +532,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The statistics of total incoming bytes.</p>
+                        <p>Specifies  statistics of total incoming bytes.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">totalBytesIn</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Int64</span><span class="o">&gt;</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">totalBytesIn</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Int64</span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>
@@ -556,14 +559,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The instance&rsquo;s quality of service for a Socket IO.</p>
+                        <p>Specifies  instance&rsquo;s quality of service for a Socket IO.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">qualityOfService</span><span class="p">:</span> <span class="kt">DispatchQoS</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">qualityOfService</span><span class="p">:</span> <span class="kt">DispatchQoS</span></code></pre>
 
                         </div>
                       </div>
@@ -583,14 +586,41 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The instance determine to use the secure-socket layer (SSL) security level.</p>
+                        <p>Specifies instance determine to use the secure-socket layer (SSL) security level.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="k">var</span> <span class="nv">securityLevel</span><span class="p">:</span> <span class="kt">StreamSocketSecurityLevel</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">securityLevel</span><span class="p">:</span> <span class="kt">StreamSocketSecurityLevel</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetSocketC16outputBufferSizeSivp"></a>
+                    <a name="//apple_ref/swift/Property/outputBufferSize" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetSocketC16outputBufferSizeSivp">outputBufferSize</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Specifies the output buffer size in bytes.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">outputBufferSize</span><span class="p">:</span> <span class="kt">Int</span></code></pre>
 
                         </div>
                       </div>
@@ -610,14 +640,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The statistics of total outgoing bytes.</p>
+                        <p>Specifies  statistics of total outgoing bytes.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">totalBytesOut</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Int64</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">totalBytesOut</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Int64</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -637,14 +667,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The statistics of total outgoing queued bytes.</p>
+                        <p>Specifies  statistics of total outgoing queued bytes.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">queueBytesOut</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Int64</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">private(set)</span> <span class="k">var</span> <span class="nv">queueBytesOut</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Int64</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -691,7 +721,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Does output data buffer to the server.</p>
 
                       </div>
                       <div class="declaration">
@@ -719,7 +749,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Closes the connection from the server.</p>
 
                       </div>
                       <div class="declaration">
@@ -746,7 +776,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>Listen incoming data buffer from the server.</p>
 
                       </div>
                       <div class="declaration">
@@ -805,7 +835,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-01-16)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-02-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

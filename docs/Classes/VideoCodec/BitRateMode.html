@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>PlayOption Structure Reference</title>
+    <title>BitRateMode Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/PlayOption" class="dashAnchor"></a>
-    <a title="PlayOption Structure Reference"></a>
+    <a name="//apple_ref/swift/Enum/BitRateMode" class="dashAnchor"></a>
+    <a title="BitRateMode Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../../index.html">HaishinKit 1.4.2 Docs</a> (84% documented)</p>
+        <p><a href="../../index.html">HaishinKit 1.4.3 Docs</a> (85% documented)</p>
         <div class="header-right">
           <form role="search" action="../../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../../index.html">HaishinKit Reference</a>
         <img id="carat" src="../../img/carat.png" alt=""/>
-        PlayOption Structure Reference
+        BitRateMode Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -129,12 +129,6 @@
                 <a href="../../Classes/RTMPStream/Code.html">– Code</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Classes/RTMPStream/PlayTransition.html">– PlayTransition</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Classes/RTMPStream/PlayOption.html">– PlayOption</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../../Classes/RTMPStream/HowToPublish.html">– HowToPublish</a>
               </li>
               <li class="nav-group-task">
@@ -148,6 +142,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="../../Classes/VideoCodec.html">VideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/VideoCodec/BitRateMode.html">– BitRateMode</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Classes/VideoCodec/Error.html">– Error</a>
@@ -203,6 +200,12 @@
               </li>
               <li class="nav-group-task">
                 <a href="../../Enums/FLVVideoCodec.html">FLVVideoCodec</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/H264Level.html">H264Level</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/H264Profile.html">H264Profile</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Enums/ImageTransform.html">ImageTransform</a>
@@ -339,15 +342,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>PlayOption</h1>
+            <h1>BitRateMode</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">PlayOption</span> <span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">BitRateMode</span></code></pre>
 
                 </div>
               </div>
-            <p>Undocumented</p>
+            <p>A bitRate mode that affectes how to encode the video source.</p>
 
           </section>
           <section class="section task-group-section">
@@ -356,9 +359,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10RTMPStreamC10PlayOptionV3lenSdvp"></a>
-                    <a name="//apple_ref/swift/Property/len" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10RTMPStreamC10PlayOptionV3lenSdvp">len</a>
+                    <a name="/s:10HaishinKit10VideoCodecC11BitRateModeO7averageyA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/average" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10VideoCodecC11BitRateModeO7averageyA2EmF">average</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -366,14 +369,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The average bit rate.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">len</span><span class="p">:</span> <span class="kt">Double</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">average</span></code></pre>
 
                         </div>
                       </div>
@@ -383,9 +386,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10RTMPStreamC10PlayOptionV6offsetSdvp"></a>
-                    <a name="//apple_ref/swift/Property/offset" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10RTMPStreamC10PlayOptionV6offsetSdvp">offset</a>
+                    <a name="/s:10HaishinKit10VideoCodecC11BitRateModeO8constantyA2EmF"></a>
+                    <a name="//apple_ref/swift/Element/constant" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit10VideoCodecC11BitRateModeO8constantyA2EmF">constant</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -393,148 +396,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Undocumented</p>
+                        <p>The constant bit rate.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">offset</span><span class="p">:</span> <span class="kt">Double</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit10RTMPStreamC10PlayOptionV13oldStreamNameSSvp"></a>
-                    <a name="//apple_ref/swift/Property/oldStreamName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10RTMPStreamC10PlayOptionV13oldStreamNameSSvp">oldStreamName</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">oldStreamName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit10RTMPStreamC10PlayOptionV5startSdvp"></a>
-                    <a name="//apple_ref/swift/Property/start" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10RTMPStreamC10PlayOptionV5startSdvp">start</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">start</span><span class="p">:</span> <span class="kt">Double</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit10RTMPStreamC10PlayOptionV10streamNameSSvp"></a>
-                    <a name="//apple_ref/swift/Property/streamName" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10RTMPStreamC10PlayOptionV10streamNameSSvp">streamName</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">streamName</span><span class="p">:</span> <span class="kt">String</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit10RTMPStreamC10PlayOptionV10transitionAC0D10TransitionOvp"></a>
-                    <a name="//apple_ref/swift/Property/transition" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10RTMPStreamC10PlayOptionV10transitionAC0D10TransitionOvp">transition</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">transition</span><span class="p">:</span> <span class="kt"><a href="../../Classes/RTMPStream/PlayTransition.html">PlayTransition</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:s28CustomDebugStringConvertibleP16debugDescriptionSSvp"></a>
-                    <a name="//apple_ref/swift/Property/debugDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s28CustomDebugStringConvertibleP16debugDescriptionSSvp">debugDescription</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">debugDescription</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">constant</span></code></pre>
 
                         </div>
                       </div>
@@ -546,7 +415,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-01-16)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-02-16)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.3</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
