@@ -11,8 +11,8 @@ enum VTSessionMode {
             var session: VTCompressionSession?
             var status = VTCompressionSessionCreate(
                 allocator: kCFAllocatorDefault,
-                width: videoCodec.width,
-                height: videoCodec.height,
+                width: videoCodec.settings.videoSize.width,
+                height: videoCodec.settings.videoSize.height,
                 codecType: kCMVideoCodecType_H264,
                 encoderSpecification: nil,
                 imageBufferAttributes: videoCodec.attributes as CFDictionary?,
@@ -25,7 +25,7 @@ enum VTSessionMode {
                 videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToCreate(status: status))
                 return nil
             }
-            status = session.setOptions(videoCodec.options())
+            status = session.setOptions(videoCodec.settings.options())
             guard status == noErr else {
                 videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToPrepare(status: status))
                 return nil

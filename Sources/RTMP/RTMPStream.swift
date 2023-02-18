@@ -183,11 +183,6 @@ open class RTMPStream: NetStream {
     }
 
     static let defaultID: UInt32 = 0
-    /// The default audio bitrate for RTMPStream.
-    public static let defaultAudioBitrate: UInt32 = AudioCodec.defaultBitrate
-    /// The default  video bitrate for RTMPStream.
-    public static let defaultVideoBitrate: UInt32 = VideoCodec.defaultBitrate
-
     /// Specifies the delegate of the RTMPStream.
     public weak var delegate: RTMPStreamDelegate?
     /// The NetStreamInfo object whose properties contain data.
@@ -415,15 +410,15 @@ open class RTMPStream: NetStream {
         var metadata: [String: Any] = [:]
         #if os(iOS) || os(macOS)
         if mixer.videoIO.capture.device != nil {
-            metadata["width"] = mixer.videoIO.codec.width
-            metadata["height"] = mixer.videoIO.codec.height
+            metadata["width"] = mixer.videoIO.codec.settings.videoSize.width
+            metadata["height"] = mixer.videoIO.codec.settings.videoSize.height
             metadata["framerate"] = mixer.videoIO.frameRate
             metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
-            metadata["videodatarate"] = mixer.videoIO.codec.bitrate / 1000
+            metadata["videodatarate"] = mixer.videoIO.codec.settings.bitRate / 1000
         }
         if mixer.audioIO.capture.device != nil {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
-            metadata["audiodatarate"] = mixer.audioIO.codec.bitrate / 1000
+            metadata["audiodatarate"] = mixer.audioIO.codec.settings.bitRate / 1000
             if let sampleRate = mixer.audioIO.codec.inSourceFormat?.mSampleRate {
                 metadata["audiosamplerate"] = sampleRate
             }

@@ -3,7 +3,7 @@
  * - seealso: https://developer.apple.com/documentation/videotoolbox/kvtpixeltransferpropertykey_scalingmode
  * - seealso: https://developer.apple.com/documentation/videotoolbox/vtpixeltransfersession/pixel_transfer_properties/scaling_mode_constants
  */
-public enum ScalingMode: String {
+public enum ScalingMode: String, Codable {
     /// kVTScalingMode_Normal
     case normal = "Normal"
     /// kVTScalingMode_Letterbox:

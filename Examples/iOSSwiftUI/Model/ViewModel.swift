@@ -65,10 +65,7 @@ final class ViewModel: ObservableObject {
             rtmpStream.videoOrientation = orientation
         }
         rtmpStream.sessionPreset = .hd1280x720
-        rtmpStream.videoSettings = [
-            .width: 720,
-            .height: 1280
-        ]
+        rtmpStream.videoSettings.videoSize = .init(width: 720, height: 1280)
         rtmpStream.mixer.recorder.delegate = self
 
         nc.publisher(for: UIDevice.orientationDidChangeNotification, object: nil)
@@ -195,11 +192,11 @@ final class ViewModel: ObservableObject {
     }
 
     func changeVideoRate(level: CGFloat) {
-        rtmpStream.videoSettings[.bitrate] = level * 1000
+        rtmpStream.videoSettings.bitRate = UInt32(level * 1000)
     }
 
     func changeAudioRate(level: CGFloat) {
-        rtmpStream.audioSettings[.bitrate] = level * 1000
+        rtmpStream.audioSettings.bitRate = UInt32(level * 1000)
     }
 
     @objc
