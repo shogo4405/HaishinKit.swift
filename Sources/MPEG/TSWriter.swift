@@ -34,12 +34,12 @@ public class TSWriter: Running {
     var segmentDuration: Double = TSWriter.defaultSegmentDuration
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
 
-    private(set) var PAT: ProgramAssociationSpecific = {
-        let PAT: ProgramAssociationSpecific = .init()
+    private(set) var PAT: TSProgramAssociation = {
+        let PAT: TSProgramAssociation = .init()
         PAT.programs = [1: TSWriter.defaultPMTPID]
         return PAT
     }()
-    private(set) var PMT: ProgramMapSpecific = .init()
+    private(set) var PMT: TSProgramMap = .init()
     private var audioConfig: AudioSpecificConfig? {
         didSet {
             writeProgramIfNeeded()
@@ -89,7 +89,7 @@ public class TSWriter: Running {
         PCRPID = TSWriter.defaultVideoPID
         PAT.programs.removeAll()
         PAT.programs = [1: TSWriter.defaultPMTPID]
-        PMT = ProgramMapSpecific()
+        PMT = TSProgramMap()
         audioConfig = nil
         videoConfig = nil
         videoTimestamp = .invalid
@@ -211,11 +211,11 @@ public class TSWriter: Running {
 extension TSWriter: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
     public func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
-        guard let formatDescription: CMAudioFormatDescription = formatDescription else {
+        guard let formatDescription else {
             return
         }
-        var data = ElementaryStreamSpecificData()
-        data.streamType = ElementaryStreamType.adtsaac.rawValue
+        var data = ESSpecificData()
+        data.streamType = ESType.adtsaac.rawValue
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
         audioContinuityCounter = 0
@@ -242,12 +242,12 @@ extension TSWriter: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
     public func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
         guard
-            let formatDescription: CMFormatDescription = formatDescription,
-            let avcC: Data = AVCConfigurationRecord.getData(formatDescription) else {
+            let formatDescription,
+            let avcC = AVCConfigurationRecord.getData(formatDescription) else {
             return
         }
-        var data = ElementaryStreamSpecificData()
-        data.streamType = ElementaryStreamType.h264.rawValue
+        var data = ESSpecificData()
+        data.streamType = ESType.h264.rawValue
         data.elementaryPID = TSWriter.defaultVideoPID
         PMT.elementaryStreamSpecificData.append(data)
         videoContinuityCounter = 0

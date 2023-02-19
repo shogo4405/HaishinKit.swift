@@ -1,4 +1,6 @@
 import AVFoundation
+import CoreMedia
+
 /**
  - seealso: https://en.wikipedia.org/wiki/Packetized_elementary_stream
  */
@@ -29,14 +31,14 @@ struct PESOptionalHeader {
     var dataAlignmentIndicator = false
     var copyright = false
     var originalOrCopy = false
-    var PTSDTSIndicator: UInt8 = PESPTSDTSIndicator.none.rawValue
-    var ESCRFlag = false
-    var ESRateFlag = false
-    var DSMTrickModeFlag = false
+    var ptsDtsIndicator: UInt8 = PESPTSDTSIndicator.none.rawValue
+    var esCRFlag = false
+    var esRateFlag = false
+    var dsmTrickModeFlag = false
     var additionalCopyInfoFlag = false
-    var CRCFlag = false
+    var crcFlag = false
     var extentionFlag = false
-    var PESHeaderLength: UInt8 = 0
+    var pesHeaderLength: UInt8 = 0
     var optionalFields = Data()
     var stuffingBytes = Data()
 
@@ -50,20 +52,38 @@ struct PESOptionalHeader {
     mutating func setTimestamp(_ timestamp: CMTime, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime) {
         let base = Double(timestamp.seconds)
         if presentationTimeStamp != CMTime.invalid {
-            PTSDTSIndicator |= 0x02
+            ptsDtsIndicator |= 0x02
         }
         if decodeTimeStamp != CMTime.invalid {
-            PTSDTSIndicator |= 0x01
+            ptsDtsIndicator |= 0x01
         }
-        if (PTSDTSIndicator & 0x02) == 0x02 {
-            let PTS = UInt64((presentationTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
-            optionalFields += TSTimestamp.encode(PTS, PTSDTSIndicator << 4)
+        if (ptsDtsIndicator & 0x02) == 0x02 {
+            let pts = Int64((presentationTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
+            optionalFields += TSTimestamp.encode(pts, ptsDtsIndicator << 4)
         }
-        if (PTSDTSIndicator & 0x01) == 0x01 {
-            let DTS = UInt64((decodeTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
-            optionalFields += TSTimestamp.encode(DTS, 0x01 << 4)
+        if (ptsDtsIndicator & 0x01) == 0x01 {
+            let dts = Int64((decodeTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
+            optionalFields += TSTimestamp.encode(dts, 0x01 << 4)
         }
-        PESHeaderLength = UInt8(optionalFields.count)
+        pesHeaderLength = UInt8(optionalFields.count)
+    }
+
+    func makeSampleTimingInfo() -> CMSampleTimingInfo? {
+        var presentationTimeStamp: CMTime = .invalid
+        var decodeTimeStamp: CMTime = .invalid
+        if ptsDtsIndicator & 0x02 == 0x02 {
+            let pts = TSTimestamp.decode(optionalFields, offset: 0)
+            presentationTimeStamp = .init(value: pts, timescale: CMTimeScale(TSTimestamp.resolution))
+        }
+        if ptsDtsIndicator & 0x01 == 0x01 {
+            let dts = TSTimestamp.decode(optionalFields, offset: TSTimestamp.dataSize)
+            decodeTimeStamp = .init(value: dts, timescale: CMTimeScale(TSTimestamp.resolution))
+        }
+        return CMSampleTimingInfo(
+            duration: .invalid,
+            presentationTimeStamp: presentationTimeStamp,
+            decodeTimeStamp: decodeTimeStamp
+        )
     }
 }
 
@@ -78,16 +98,16 @@ extension PESOptionalHeader: DataConvertible {
             bytes[0] |= (dataAlignmentIndicator ? 1 : 0) << 2
             bytes[0] |= (copyright ? 1 : 0) << 1
             bytes[0] |= (originalOrCopy ? 1 : 0)
-            bytes[1] |= PTSDTSIndicator << 6
-            bytes[1] |= (ESCRFlag ? 1 : 0) << 5
-            bytes[1] |= (ESRateFlag ? 1 : 0) << 4
-            bytes[1] |= (DSMTrickModeFlag ? 1 : 0) << 3
+            bytes[1] |= ptsDtsIndicator << 6
+            bytes[1] |= (esCRFlag ? 1 : 0) << 5
+            bytes[1] |= (esRateFlag ? 1 : 0) << 4
+            bytes[1] |= (dsmTrickModeFlag ? 1 : 0) << 3
             bytes[1] |= (additionalCopyInfoFlag ? 1 : 0) << 2
-            bytes[1] |= (CRCFlag ? 1 : 0) << 1
+            bytes[1] |= (crcFlag ? 1 : 0) << 1
             bytes[1] |= extentionFlag ? 1 : 0
             return ByteArray()
                 .writeBytes(bytes)
-                .writeUInt8(PESHeaderLength)
+                .writeUInt8(pesHeaderLength)
                 .writeBytes(optionalFields)
                 .writeBytes(stuffingBytes)
                 .data
@@ -102,15 +122,15 @@ extension PESOptionalHeader: DataConvertible {
                 dataAlignmentIndicator = (bytes[0] & 0b00000100) == 0b00000100
                 copyright = (bytes[0] & 0b00000010) == 0b00000010
                 originalOrCopy = (bytes[0] & 0b00000001) == 0b00000001
-                PTSDTSIndicator = (bytes[1] & 0b11000000) >> 6
-                ESCRFlag = (bytes[1] & 0b00100000) == 0b00100000
-                ESRateFlag = (bytes[1] & 0b00010000) == 0b00010000
-                DSMTrickModeFlag = (bytes[1] & 0b00001000) == 0b00001000
+                ptsDtsIndicator = (bytes[1] & 0b11000000) >> 6
+                esCRFlag = (bytes[1] & 0b00100000) == 0b00100000
+                esRateFlag = (bytes[1] & 0b00010000) == 0b00010000
+                dsmTrickModeFlag = (bytes[1] & 0b00001000) == 0b00001000
                 additionalCopyInfoFlag = (bytes[1] & 0b00000100) == 0b00000100
-                CRCFlag = (bytes[1] & 0b00000010) == 0b00000010
+                crcFlag = (bytes[1] & 0b00000010) == 0b00000010
                 extentionFlag = (bytes[1] & 0b00000001) == 0b00000001
-                PESHeaderLength = bytes[2]
-                optionalFields = try buffer.readBytes(Int(PESHeaderLength))
+                pesHeaderLength = bytes[2]
+                optionalFields = try buffer.readBytes(Int(pesHeaderLength))
             } catch {
                 logger.error("\(buffer)")
             }
@@ -165,7 +185,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
                 packetLength = try buffer.readUInt16()
                 optionalPESHeader = PESOptionalHeader(data: try buffer.readBytes(buffer.bytesAvailable))
                 if let optionalPESHeader: PESOptionalHeader = optionalPESHeader {
-                    buffer.position = PacketizedElementaryStream.untilPacketLengthSize + 3 + Int(optionalPESHeader.PESHeaderLength)
+                    buffer.position = PacketizedElementaryStream.untilPacketLengthSize + 3 + Int(optionalPESHeader.pesHeaderLength)
                 } else {
                     buffer.position = PacketizedElementaryStream.untilPacketLengthSize
                 }
@@ -174,6 +194,13 @@ struct PacketizedElementaryStream: PESPacketHeader {
                 logger.error("\(buffer)")
             }
         }
+    }
+
+    var isEntired: Bool {
+        if 0 < packetLength {
+            return data.count == packetLength - 8
+        }
+        return false
     }
 
     init?(_ payload: Data) {
@@ -187,7 +214,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         guard let bytes = bytes, let config = config else {
             return nil
         }
-        data.append(contentsOf: config.adts(Int(count)))
+        data.append(contentsOf: config.makeHeader(Int(count)))
         data.append(bytes, count: Int(count))
         optionalPESHeader = PESOptionalHeader()
         optionalPESHeader?.dataAlignmentIndicator = true
@@ -297,6 +324,41 @@ struct PacketizedElementaryStream: PESPacketHeader {
     mutating func append(_ data: Data) -> Int {
         self.data.append(data)
         return data.count
+    }
+
+    func makeSampleBuffer(_ streamType: UInt8) -> CMSampleBuffer? {
+        let (count, formatDescription) = makeFormatDescription(streamType)
+        let blockBuffer = data.makeBlockBuffer(advancedBy: count)
+        var sampleBuffer: CMSampleBuffer?
+        var sampleSize: Int = blockBuffer?.dataLength ?? 0
+        var timing = optionalPESHeader?.makeSampleTimingInfo() ?? .invalid
+        guard let blockBuffer, CMSampleBufferCreate(
+                allocator: kCFAllocatorDefault,
+                dataBuffer: blockBuffer,
+                dataReady: true,
+                makeDataReadyCallback: nil,
+                refcon: nil,
+                formatDescription: formatDescription,
+                sampleCount: 1,
+                sampleTimingEntryCount: 1,
+                sampleTimingArray: &timing,
+                sampleSizeEntryCount: 1,
+                sampleSizeArray: &sampleSize,
+                sampleBufferOut: &sampleBuffer) == noErr else {
+            return nil
+        }
+        return sampleBuffer
+    }
+
+    private func makeFormatDescription(_ streamType: UInt8) -> (Int, CMFormatDescription?) {
+        switch streamType {
+        case ESType.adtsaac.rawValue:
+            return (7, ADTSHeader(data: data).makeFormatDescription())
+        case ESType.h264.rawValue:
+            return (0, nil)
+        default:
+            return (0, nil)
+        }
     }
 }
 

@@ -9,6 +9,5 @@ final class RTMPMessageTests: XCTestCase {
         let message = RTMPCommandMessage(objectEncoding: .amf0)
         message.length = bytes.count
         message.payload = Data(bytes)
-        print(message)
     }
 }

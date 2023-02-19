@@ -5,7 +5,7 @@ import AVFoundation
  - seealso: http://wiki.multimedia.cx/index.php?title=MPEG-4_Audio#Audio_Specific_Config
  - seealso: http://wiki.multimedia.cx/?title=Understanding_AAC
  */
-struct AudioSpecificConfig {
+struct AudioSpecificConfig: Equatable {
     static let ADTSHeaderSize: Int = 7
 
     enum AudioObjectType: UInt8 {
@@ -174,7 +174,7 @@ struct AudioSpecificConfig {
         channel = ChannelConfiguration(rawValue: UInt8(asbd.mChannelsPerFrame))!
     }
 
-    func adts(_ length: Int) -> [UInt8] {
+    func makeHeader(_ length: Int) -> [UInt8] {
         let size = 7
         let fullSize: Int = size + length
         var adts = [UInt8](repeating: 0x00, count: size)

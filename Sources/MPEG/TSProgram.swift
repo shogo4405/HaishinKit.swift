@@ -3,13 +3,13 @@ import Foundation
 /**
  - seealso: https://en.wikipedia.org/wiki/Program-specific_information
  */
-protocol PSIPointer {
+protocol TSPSIPointer {
     var pointerField: UInt8 { get set }
     var pointerFillerBytes: Data { get set }
 }
 
 // MARK: -
-protocol PSITableHeader {
+protocol TSPSITableHeader {
     var tableID: UInt8 { get set }
     var sectionSyntaxIndicator: Bool { get set }
     var privateBit: Bool { get set }
@@ -17,7 +17,7 @@ protocol PSITableHeader {
 }
 
 // MARK: -
-protocol PSITableSyntax {
+protocol TSPSITableSyntax {
     var tableIDExtension: UInt16 { get set }
     var versionNumber: UInt8 { get set }
     var currentNextIndicator: Bool { get set }
@@ -28,7 +28,7 @@ protocol PSITableSyntax {
 }
 
 // MARK: -
-class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
+class TSProgram: TSPSIPointer, TSPSITableHeader, TSPSITableSyntax {
     static let reservedBits: UInt8 = 0x03
     static let defaultTableIDExtension: UInt16 = 1
 
@@ -43,7 +43,7 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     var sectionLength: UInt16 = 0
 
     // MARK: PSITableSyntax
-    var tableIDExtension: UInt16 = ProgramSpecific.defaultTableIDExtension
+    var tableIDExtension: UInt16 = TSProgram.defaultTableIDExtension
     var versionNumber: UInt8 = 0
     var currentNextIndicator = true
     var sectionNumber: UInt8 = 0
@@ -69,7 +69,7 @@ class ProgramSpecific: PSIPointer, PSITableHeader, PSITableSyntax {
     }
 }
 
-extension ProgramSpecific: DataConvertible {
+extension TSProgram: DataConvertible {
     var data: Data {
         get {
             let tableData: Data = self.tableData
@@ -80,12 +80,12 @@ extension ProgramSpecific: DataConvertible {
                 .writeUInt16(
                     (sectionSyntaxIndicator ? 0x8000 : 0) |
                         (privateBit ? 0x4000 : 0) |
-                        UInt16(ProgramSpecific.reservedBits) << 12 |
+                        UInt16(TSProgram.reservedBits) << 12 |
                         sectionLength
                 )
                 .writeUInt16(tableIDExtension)
                 .writeUInt8(
-                    ProgramSpecific.reservedBits << 6 |
+                    TSProgram.reservedBits << 6 |
                         versionNumber << 1 |
                         (currentNextIndicator ? 1 : 0)
                 )
@@ -120,7 +120,7 @@ extension ProgramSpecific: DataConvertible {
     }
 }
 
-extension ProgramSpecific: CustomDebugStringConvertible {
+extension TSProgram: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
         Mirror(reflecting: self).debugDescription
@@ -128,7 +128,7 @@ extension ProgramSpecific: CustomDebugStringConvertible {
 }
 
 // MARK: -
-final class ProgramAssociationSpecific: ProgramSpecific {
+final class TSProgramAssociation: TSProgram {
     static let tableID: UInt8 = 0
 
     var programs: [UInt16: UInt16] = [:]
@@ -155,17 +155,17 @@ final class ProgramAssociationSpecific: ProgramSpecific {
 }
 
 // MARK: -
-final class ProgramMapSpecific: ProgramSpecific {
+final class TSProgramMap: TSProgram {
     static let tableID: UInt8 = 2
     static let unusedPCRID: UInt16 = 0x1fff
 
     var PCRPID: UInt16 = 0
     var programInfoLength: UInt16 = 0
-    var elementaryStreamSpecificData: [ElementaryStreamSpecificData] = []
+    var elementaryStreamSpecificData: [ESSpecificData] = []
 
     override init() {
         super.init()
-        tableID = ProgramMapSpecific.tableID
+        tableID = TSProgramMap.tableID
     }
 
     override init?(_ data: Data) {
@@ -176,7 +176,7 @@ final class ProgramMapSpecific: ProgramSpecific {
     override var tableData: Data {
         get {
             var bytes = Data()
-            elementaryStreamSpecificData.sort { (lhs: ElementaryStreamSpecificData, rhs: ElementaryStreamSpecificData) -> Bool in
+            elementaryStreamSpecificData.sort { (lhs: ESSpecificData, rhs: ESSpecificData) -> Bool in
                 lhs.elementaryPID < rhs.elementaryPID
             }
             for essd in elementaryStreamSpecificData {
@@ -197,10 +197,10 @@ final class ProgramMapSpecific: ProgramSpecific {
                 var position = 0
                 while 0 < buffer.bytesAvailable {
                     position = buffer.position
-                    guard let data = ElementaryStreamSpecificData(try buffer.readBytes(buffer.bytesAvailable)) else {
+                    guard let data = ESSpecificData(try buffer.readBytes(buffer.bytesAvailable)) else {
                         break
                     }
-                    buffer.position = position + ElementaryStreamSpecificData.fixedHeaderSize + Int(data.ESInfoLength)
+                    buffer.position = position + ESSpecificData.fixedHeaderSize + Int(data.esInfoLength)
                     elementaryStreamSpecificData.append(data)
                 }
             } catch {
