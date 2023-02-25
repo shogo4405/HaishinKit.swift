@@ -35,7 +35,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
 
     var readyState: RTMPSocketReadyState = .uninitialized {
         didSet {
-            delegate?.didSetReadyState(readyState)
+            delegate?.socket(self, readyState: readyState)
         }
     }
 
@@ -187,7 +187,7 @@ final class RTMPTSocket: NSObject, RTMPSocketCompatible {
             }
             let data: Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(data)
+            delegate?.socket(self, data: data)
         default:
             break
         }

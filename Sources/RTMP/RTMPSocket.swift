@@ -4,7 +4,7 @@ import Foundation
 final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     var readyState: RTMPSocketReadyState = .uninitialized {
         didSet {
-            delegate?.didSetReadyState(readyState)
+            delegate?.socket(self, readyState: readyState)
         }
     }
     var timestamp: TimeInterval {
@@ -17,7 +17,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
 
     override var totalBytesIn: Atomic<Int64> {
         didSet {
-            delegate?.didSetTotalBytesIn(totalBytesIn.value)
+            delegate?.socket(self, totalBytesIn: totalBytesIn.value)
         }
     }
 
@@ -74,7 +74,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
             }
             let bytes: Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes)
+            delegate?.socket(self, data: bytes)
         default:
             break
         }

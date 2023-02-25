@@ -14,7 +14,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     var timeout: Int = NetSocket.defaultTimeout
     var readyState: RTMPSocketReadyState = .uninitialized {
         didSet {
-            delegate?.didSetReadyState(readyState)
+            delegate?.socket(self, readyState: readyState)
         }
     }
     var outputBufferSize: Int = RTMPNWSocket.defaultWindowSizeC
@@ -201,7 +201,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             }
             let bytes: Data = inputBuffer
             inputBuffer.removeAll()
-            delegate?.listen(bytes)
+            delegate?.socket(self, data: bytes)
         default:
             break
         }
