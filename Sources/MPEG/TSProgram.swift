@@ -10,7 +10,7 @@ protocol TSPSIPointer {
 
 // MARK: -
 protocol TSPSITableHeader {
-    var tableID: UInt8 { get set }
+    var tableId: UInt8 { get set }
     var sectionSyntaxIndicator: Bool { get set }
     var privateBit: Bool { get set }
     var sectionLength: UInt16 { get set }
@@ -18,7 +18,7 @@ protocol TSPSITableHeader {
 
 // MARK: -
 protocol TSPSITableSyntax {
-    var tableIDExtension: UInt16 { get set }
+    var tableIdExtension: UInt16 { get set }
     var versionNumber: UInt8 { get set }
     var currentNextIndicator: Bool { get set }
     var sectionNumber: UInt8 { get set }
@@ -37,13 +37,13 @@ class TSProgram: TSPSIPointer, TSPSITableHeader, TSPSITableSyntax {
     var pointerFillerBytes = Data()
 
     // MARK: PSITableHeader
-    var tableID: UInt8 = 0
+    var tableId: UInt8 = 0
     var sectionSyntaxIndicator = false
     var privateBit = false
     var sectionLength: UInt16 = 0
 
     // MARK: PSITableSyntax
-    var tableIDExtension: UInt16 = TSProgram.defaultTableIDExtension
+    var tableIdExtension: UInt16 = TSProgram.defaultTableIDExtension
     var versionNumber: UInt8 = 0
     var currentNextIndicator = true
     var sectionNumber: UInt8 = 0
@@ -62,7 +62,7 @@ class TSProgram: TSPSIPointer, TSPSITableHeader, TSPSITableSyntax {
         var packets: [TSPacket] = []
         var packet = TSPacket()
         packet.payloadUnitStartIndicator = true
-        packet.PID = PID
+        packet.pid = PID
         _ = packet.fill(data, useAdaptationField: false)
         packets.append(packet)
         return packets
@@ -76,14 +76,14 @@ extension TSProgram: DataConvertible {
             sectionLength = UInt16(tableData.count) + 9
             sectionSyntaxIndicator = !tableData.isEmpty
             let buffer = ByteArray()
-                .writeUInt8(tableID)
+                .writeUInt8(tableId)
                 .writeUInt16(
                     (sectionSyntaxIndicator ? 0x8000 : 0) |
                         (privateBit ? 0x4000 : 0) |
                         UInt16(TSProgram.reservedBits) << 12 |
                         sectionLength
                 )
-                .writeUInt16(tableIDExtension)
+                .writeUInt16(tableIdExtension)
                 .writeUInt8(
                     TSProgram.reservedBits << 6 |
                         versionNumber << 1 |
@@ -92,7 +92,7 @@ extension TSProgram: DataConvertible {
                 .writeUInt8(sectionNumber)
                 .writeUInt8(lastSectionNumber)
                 .writeBytes(tableData)
-            crc32 = CRC32.MPEG2.calculate(buffer.data)
+            crc32 = CRC32.mpeg2.calculate(buffer.data)
             return Data([pointerField] + pointerFillerBytes) + buffer.writeUInt32(crc32).data
         }
         set {
@@ -100,12 +100,12 @@ extension TSProgram: DataConvertible {
             do {
                 pointerField = try buffer.readUInt8()
                 pointerFillerBytes = try buffer.readBytes(Int(pointerField))
-                tableID = try buffer.readUInt8()
+                tableId = try buffer.readUInt8()
                 let bytes: Data = try buffer.readBytes(2)
                 sectionSyntaxIndicator = (bytes[0] & 0x80) == 0x80
                 privateBit = (bytes[0] & 0x40) == 0x40
                 sectionLength = UInt16(bytes[0] & 0x03) << 8 | UInt16(bytes[1])
-                tableIDExtension = try buffer.readUInt16()
+                tableIdExtension = try buffer.readUInt16()
                 versionNumber = try buffer.readUInt8()
                 currentNextIndicator = (versionNumber & 0x01) == 0x01
                 versionNumber = (versionNumber & 0b00111110) >> 1
@@ -165,7 +165,7 @@ final class TSProgramMap: TSProgram {
 
     override init() {
         super.init()
-        tableID = TSProgramMap.tableID
+        tableId = TSProgramMap.tableID
     }
 
     override init?(_ data: Data) {

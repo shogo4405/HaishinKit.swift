@@ -11,7 +11,7 @@ struct TSPacket {
     var transportErrorIndicator = false
     var payloadUnitStartIndicator = false
     var transportPriority = false
-    var PID: UInt16 = 0
+    var pid: UInt16 = 0
     var scramblingControl: UInt8 = 0
     var adaptationFieldFlag = false
     var payloadFlag = false
@@ -74,8 +74,8 @@ extension TSPacket: DataConvertible {
             bytes[1] |= transportErrorIndicator ? 0x80 : 0
             bytes[1] |= payloadUnitStartIndicator ? 0x40 : 0
             bytes[1] |= transportPriority ? 0x20 : 0
-            bytes[1] |= UInt8(PID >> 8)
-            bytes[2] |= UInt8(PID & 0x00FF)
+            bytes[1] |= UInt8(pid >> 8)
+            bytes[2] |= UInt8(pid & 0x00FF)
             bytes[3] |= scramblingControl << 6
             bytes[3] |= adaptationFieldFlag ? 0x20 : 0
             bytes[3] |= payloadFlag ? 0x10 : 0
@@ -94,7 +94,7 @@ extension TSPacket: DataConvertible {
                 transportErrorIndicator = (data[1] & 0x80) == 0x80
                 payloadUnitStartIndicator = (data[1] & 0x40) == 0x40
                 transportPriority = (data[1] & 0x20) == 0x20
-                PID = UInt16(data[1] & 0x1f) << 8 | UInt16(data[2])
+                pid = UInt16(data[1] & 0x1f) << 8 | UInt16(data[2])
                 scramblingControl = UInt8(data[3] & 0xc0)
                 adaptationFieldFlag = (data[3] & 0x20) == 0x20
                 payloadFlag = (data[3] & 0x10) == 0x10

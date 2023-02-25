@@ -10,7 +10,7 @@ final class ESSpecificDataTests: XCTestCase {
 
     func testAACData() {
         let data = ESSpecificData(aacData)
-        XCTAssertEqual(data?.streamType, ESType.adtsaac.rawValue)
+        XCTAssertEqual(data?.streamType, ESType.adtsAac.rawValue)
         XCTAssertEqual(data?.elementaryPID, 257)
     }
 

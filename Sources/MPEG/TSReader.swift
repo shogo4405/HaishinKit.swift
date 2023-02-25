@@ -45,11 +45,11 @@ public class TSReader {
             guard let packet = TSPacket(data: data.subdata(in: i * TSPacket.size..<(i + 1) * TSPacket.size)) else {
                 continue
             }
-            if packet.PID == 0x0000 {
+            if packet.pid == 0x0000 {
                 pat = TSProgramAssociation(packet.payload)
                 continue
             }
-            if let channel = programs[packet.PID] {
+            if let channel = programs[packet.pid] {
                 pmt[channel] = TSProgramMap(packet.payload)
                 continue
             }
@@ -69,15 +69,15 @@ public class TSReader {
 
     private func readPacketizedElementaryStream(_ packet: TSPacket) {
         if packet.payloadUnitStartIndicator {
-            if let sampleBuffer = makeSampleBuffer(packet.PID, forUpdate: true) {
-                delegate?.reader(self, id: packet.PID, didReadCMSampleBuffer: sampleBuffer)
+            if let sampleBuffer = makeSampleBuffer(packet.pid, forUpdate: true) {
+                delegate?.reader(self, id: packet.pid, didReadCMSampleBuffer: sampleBuffer)
             }
-            packetizedElementaryStreams[packet.PID] = PacketizedElementaryStream(packet.payload)
+            packetizedElementaryStreams[packet.pid] = PacketizedElementaryStream(packet.payload)
             return
         }
-        _ = packetizedElementaryStreams[packet.PID]?.append(packet.payload)
-        if let sampleBuffer = makeSampleBuffer(packet.PID) {
-            delegate?.reader(self, id: packet.PID, didReadCMSampleBuffer: sampleBuffer)
+        _ = packetizedElementaryStreams[packet.pid]?.append(packet.payload)
+        if let sampleBuffer = makeSampleBuffer(packet.pid) {
+            delegate?.reader(self, id: packet.pid, didReadCMSampleBuffer: sampleBuffer)
         }
     }
 

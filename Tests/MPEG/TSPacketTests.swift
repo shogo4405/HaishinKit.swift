@@ -9,7 +9,7 @@ final class TSPacketTests: XCTestCase {
     func testTSPacket() {
         let packetWithMetadata = TSPacket(data: TSPacketTests.dataWithMetadata)!
         XCTAssertEqual(packetWithMetadata.syncByte, TSPacket.defaultSyncByte)
-        XCTAssertEqual(packetWithMetadata.PID, 17)
+        XCTAssertEqual(packetWithMetadata.pid, 17)
         XCTAssertEqual(packetWithMetadata.data, TSPacketTests.dataWithMetadata)
     }
 

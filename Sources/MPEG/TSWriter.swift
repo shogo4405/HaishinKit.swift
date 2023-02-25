@@ -215,7 +215,7 @@ extension TSWriter: AudioCodecDelegate {
             return
         }
         var data = ESSpecificData()
-        data.streamType = ESType.adtsaac.rawValue
+        data.streamType = ESType.adtsAac.rawValue
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
         audioContinuityCounter = 0

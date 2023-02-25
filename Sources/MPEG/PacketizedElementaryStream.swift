@@ -266,12 +266,12 @@ struct PacketizedElementaryStream: PESPacketHeader {
 
         // start
         var packet = TSPacket()
-        packet.PID = PID
+        packet.pid = PID
         if let PCR: UInt64 = PCR {
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
-            packet.adaptationField?.PCRFlag = true
-            packet.adaptationField?.PCR = TSProgramClockReference.encode(PCR, 0)
+            packet.adaptationField?.pcrFlag = true
+            packet.adaptationField?.pcr = TSProgramClockReference.encode(PCR, 0)
             packet.adaptationField?.compute()
         }
         packet.payloadUnitStartIndicator = true
@@ -282,7 +282,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         let r: Int = (payload.count - position) % 184
         for index in stride(from: payload.startIndex.advanced(by: position), to: payload.endIndex.advanced(by: -r), by: 184) {
             var packet = TSPacket()
-            packet.PID = PID
+            packet.pid = PID
             packet.payloadFlag = true
             packet.payload = payload.subdata(in: index..<index.advanced(by: 184))
             packets.append(packet)
@@ -294,14 +294,14 @@ struct PacketizedElementaryStream: PESPacketHeader {
         case 183:
             let remain: Data = payload.subdata(in: payload.endIndex - r..<payload.endIndex - 1)
             var packet = TSPacket()
-            packet.PID = PID
+            packet.pid = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
             _ = packet.fill(remain, useAdaptationField: true)
             packets.append(packet)
             packet = TSPacket()
-            packet.PID = PID
+            packet.pid = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
@@ -310,7 +310,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         default:
             let remain: Data = payload.subdata(in: payload.count - r..<payload.count)
             var packet = TSPacket()
-            packet.PID = PID
+            packet.pid = PID
             packet.adaptationFieldFlag = true
             packet.adaptationField = TSAdaptationField()
             packet.adaptationField?.compute()
@@ -352,7 +352,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
 
     private func makeFormatDescription(_ streamType: UInt8) -> (Int, CMFormatDescription?) {
         switch streamType {
-        case ESType.adtsaac.rawValue:
+        case ESType.adtsAac.rawValue:
             return (7, ADTSHeader(data: data).makeFormatDescription())
         case ESType.h264.rawValue:
             return (0, nil)

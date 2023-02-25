@@ -6,15 +6,15 @@ import AVFoundation
  - seealso: http://wiki.multimedia.cx/?title=Understanding_AAC
  */
 struct AudioSpecificConfig: Equatable {
-    static let ADTSHeaderSize: Int = 7
+    static let adtsHeaderSize: Int = 7
 
     enum AudioObjectType: UInt8 {
         case unknown = 0
         case aacMain = 1
-        case aaclc = 2
-        case aacssr = 3
-        case aacltp = 4
-        case aacsbr = 5
+        case aacLc = 2
+        case aacSsr = 3
+        case aacLtp = 4
+        case aacSbr = 5
         case aacScalable = 6
         case twinqVQ = 7
         case celp = 8
@@ -25,13 +25,13 @@ struct AudioSpecificConfig: Equatable {
             case .aac_Main:
                 self = .aacMain
             case .AAC_LC:
-                self = .aaclc
+                self = .aacLc
             case .AAC_SSR:
-                self = .aacssr
+                self = .aacSsr
             case .AAC_LTP:
-                self = .aacltp
+                self = .aacLtp
             case .AAC_SBR:
-                self = .aacsbr
+                self = .aacSbr
             case .aac_Scalable:
                 self = .aacScalable
             case .twinVQ:

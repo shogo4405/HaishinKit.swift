@@ -8,13 +8,13 @@ class TSAdaptationField {
     var discontinuityIndicator = false
     var randomAccessIndicator = false
     var elementaryStreamPriorityIndicator = false
-    var PCRFlag = false
-    var OPCRFlag = false
+    var pcrFlag = false
+    var opcrFlag = false
     var splicingPointFlag = false
     var transportPrivateDataFlag = false
     var adaptationFieldExtensionFlag = false
-    var PCR = Data()
-    var OPCR = Data()
+    var pcr = Data()
+    var opcr = Data()
     var spliceCountdown: UInt8 = 0
     var transportPrivateDataLength: UInt8 = 0
     var transportPrivateData = Data()
@@ -30,8 +30,8 @@ class TSAdaptationField {
 
     func compute() {
         length = UInt8(truncatingIfNeeded: TSAdaptationField.fixedSectionSize)
-        length += UInt8(truncatingIfNeeded: PCR.count)
-        length += UInt8(truncatingIfNeeded: OPCR.count)
+        length += UInt8(truncatingIfNeeded: pcr.count)
+        length += UInt8(truncatingIfNeeded: opcr.count)
         length += UInt8(truncatingIfNeeded: transportPrivateData.count)
         if let adaptationExtension: TSAdaptationExtensionField = adaptationExtension {
             length += adaptationExtension.length + 1
@@ -54,19 +54,19 @@ extension TSAdaptationField: DataConvertible {
             byte |= discontinuityIndicator ? 0x80 : 0
             byte |= randomAccessIndicator ? 0x40 : 0
             byte |= elementaryStreamPriorityIndicator ? 0x20 : 0
-            byte |= PCRFlag ? 0x10 : 0
-            byte |= OPCRFlag ? 0x08 : 0
+            byte |= pcrFlag ? 0x10 : 0
+            byte |= opcrFlag ? 0x08 : 0
             byte |= splicingPointFlag ? 0x04 : 0
             byte |= transportPrivateDataFlag ? 0x02 : 0
             byte |= adaptationFieldExtensionFlag ? 0x01 : 0
             let buffer = ByteArray()
                 .writeUInt8(length)
                 .writeUInt8(byte)
-            if PCRFlag {
-                buffer.writeBytes(PCR)
+            if pcrFlag {
+                buffer.writeBytes(pcr)
             }
-            if OPCRFlag {
-                buffer.writeBytes(OPCR)
+            if opcrFlag {
+                buffer.writeBytes(opcr)
             }
             if splicingPointFlag {
                 buffer.writeUInt8(spliceCountdown)
@@ -87,16 +87,16 @@ extension TSAdaptationField: DataConvertible {
                 discontinuityIndicator = (byte & 0x80) == 0x80
                 randomAccessIndicator = (byte & 0x40) == 0x40
                 elementaryStreamPriorityIndicator = (byte & 0x20) == 0x20
-                PCRFlag = (byte & 0x10) == 0x10
-                OPCRFlag = (byte & 0x08) == 0x08
+                pcrFlag = (byte & 0x10) == 0x10
+                opcrFlag = (byte & 0x08) == 0x08
                 splicingPointFlag = (byte & 0x04) == 0x04
                 transportPrivateDataFlag = (byte & 0x02) == 0x02
                 adaptationFieldExtensionFlag = (byte & 0x01) == 0x01
-                if PCRFlag {
-                    PCR = try buffer.readBytes(TSAdaptationField.PCRSize)
+                if pcrFlag {
+                    pcr = try buffer.readBytes(TSAdaptationField.PCRSize)
                 }
-                if OPCRFlag {
-                    OPCR = try buffer.readBytes(TSAdaptationField.PCRSize)
+                if opcrFlag {
+                    opcr = try buffer.readBytes(TSAdaptationField.PCRSize)
                 }
                 if splicingPointFlag {
                     spliceCountdown = try buffer.readUInt8()

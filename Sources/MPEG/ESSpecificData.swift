@@ -9,7 +9,7 @@ enum ESType: UInt8 {
     case mpeg2TabledData = 0x05
     case mpeg2PacketizedData = 0x06
 
-    case adtsaac = 0x0F
+    case adtsAac = 0x0F
     case h263 = 0x10
 
     case h264 = 0x1B
