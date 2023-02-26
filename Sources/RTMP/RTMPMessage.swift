@@ -642,15 +642,20 @@ final class RTMPVideoMessage: RTMPMessage {
             stream.mixer.mediaLink.hasVideo = true
             stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         case FLVAVCPacketType.nal.rawValue:
-            enqueueSampleBuffer(stream, type: type)
+            if let sampleBuffer = makeSampleBuffer(stream, type: type) {
+                sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
+                stream.mixer.mediaLink.enqueueVideo(sampleBuffer)
+            }
+            if stream.mixer.mediaLink.isPaused && stream.mixer.audioIO.codec.formatDescription == nil {
+                stream.mixer.mediaLink.isPaused = false
+            }
         default:
             break
         }
     }
 
-    private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
+    private func makeSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) -> CMSampleBuffer? {
         let isBaseline = stream.mixer.videoIO.codec.isBaseline
-
         // compositionTime -> SI24
         var compositionTime = isBaseline ? 0 : Int32(data: [0] + payload[2..<5]).bigEndian
         compositionTime <<= 8
@@ -674,55 +679,26 @@ final class RTMPVideoMessage: RTMPMessage {
             decodeTimeStamp: .invalid
         )
 
-        // swiftlint:disable closure_body_length
-        payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
-            var blockBuffer: CMBlockBuffer?
-            let length: Int = payload.count - FLVTagType.video.headerSize
-            guard CMBlockBufferCreateWithMemoryBlock(
-                    allocator: kCFAllocatorDefault,
-                    memoryBlock: nil,
-                    blockLength: length,
-                    blockAllocator: nil,
-                    customBlockSource: nil,
-                    offsetToData: 0,
-                    dataLength: length,
-                    flags: 0,
-                    blockBufferOut: &blockBuffer) == noErr else {
-                stream.mixer.videoIO.codec.needsSync.mutate { $0 = true }
-                return
-            }
-            guard CMBlockBufferReplaceDataBytes(
-                    with: buffer.baseAddress!.advanced(by: FLVTagType.video.headerSize),
-                    blockBuffer: blockBuffer!,
-                    offsetIntoDestination: 0,
-                    dataLength: length) == noErr else {
-                return
-            }
-            var sampleBuffer: CMSampleBuffer?
-            var sampleSizes: [Int] = [length]
-            guard CMSampleBufferCreate(
-                    allocator: kCFAllocatorDefault,
-                    dataBuffer: blockBuffer!,
-                    dataReady: true,
-                    makeDataReadyCallback: nil,
-                    refcon: nil,
-                    formatDescription: stream.mixer.videoIO.formatDescription,
-                    sampleCount: 1,
-                    sampleTimingEntryCount: 1,
-                    sampleTimingArray: &timing,
-                    sampleSizeEntryCount: 1,
-                    sampleSizeArray: &sampleSizes,
-                    sampleBufferOut: &sampleBuffer) == noErr else {
-                return
-            }
-            if let sampleBuffer = sampleBuffer {
-                sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
-                stream.mixer.mediaLink.enqueueVideo(sampleBuffer)
-            }
-            if stream.mixer.mediaLink.isPaused && stream.mixer.audioIO.codec.formatDescription == nil {
-                stream.mixer.mediaLink.isPaused = false
-            }
+        let blockBuffer = payload.makeBlockBuffer(advancedBy: FLVTagType.video.headerSize)
+        var sampleBuffer: CMSampleBuffer?
+        var sampleSize = blockBuffer?.dataLength ?? 0
+        guard CMSampleBufferCreate(
+                allocator: kCFAllocatorDefault,
+                dataBuffer: blockBuffer,
+                dataReady: true,
+                makeDataReadyCallback: nil,
+                refcon: nil,
+                formatDescription: stream.mixer.videoIO.formatDescription,
+                sampleCount: 1,
+                sampleTimingEntryCount: 1,
+                sampleTimingArray: &timing,
+                sampleSizeEntryCount: 1,
+                sampleSizeArray: &sampleSize,
+                sampleBufferOut: &sampleBuffer) == noErr else {
+            return nil
         }
+
+        return sampleBuffer
     }
 
     private func makeFormatDescription(_ stream: RTMPStream) -> OSStatus {
