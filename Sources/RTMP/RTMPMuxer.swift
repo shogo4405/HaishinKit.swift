@@ -25,22 +25,22 @@ final class RTMPMuxer {
 
 extension RTMPMuxer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
-    func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
-        guard let formatDescription = formatDescription else {
-            return
-        }
+    func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
+    }
+
+    func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
         var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
-        buffer.append(contentsOf: AudioSpecificConfig(formatDescription: formatDescription).bytes)
+        buffer.append(contentsOf: AudioSpecificConfig(formatDescription: outputFormat.formatDescription).bytes)
         delegate?.muxer(self, didOutputAudio: buffer, withTimestamp: 0)
     }
 
-    func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
+    func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
         let delta = (audioTimeStamp == CMTime.zero ? 0 : presentationTimeStamp.seconds - audioTimeStamp.seconds) * 1000
-        guard let bytes = sample[0].mData, 0 < sample[0].mDataByteSize && 0 <= delta else {
+        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer, 0 <= delta else {
             return
         }
         var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.raw.rawValue])
-        buffer.append(bytes.assumingMemoryBound(to: UInt8.self), count: Int(sample[0].mDataByteSize))
+        buffer.append(audioBuffer.data.assumingMemoryBound(to: UInt8.self), count: Int(audioBuffer.byteLength))
         delegate?.muxer(self, didOutputAudio: buffer, withTimestamp: delta)
         audioTimeStamp = presentationTimeStamp
     }

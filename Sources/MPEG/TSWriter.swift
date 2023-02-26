@@ -210,27 +210,27 @@ public class TSWriter: Running {
 
 extension TSWriter: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
-    public func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
-        guard let formatDescription else {
-            return
-        }
+    public func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
+    }
+
+    public func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
         var data = ESSpecificData()
         data.streamType = ESType.adtsAac.rawValue
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
         audioContinuityCounter = 0
-        audioConfig = AudioSpecificConfig(formatDescription: formatDescription)
+        audioConfig = AudioSpecificConfig(formatDescription: outputFormat.formatDescription)
     }
 
-    public func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !sample.isEmpty && 0 < sample[0].mDataByteSize else {
+    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
             return
         }
         writeSampleBuffer(
             TSWriter.defaultAudioPID,
             streamID: 192,
-            bytes: sample[0].mData?.assumingMemoryBound(to: UInt8.self),
-            count: sample[0].mDataByteSize,
+            bytes: audioBuffer.data.assumingMemoryBound(to: UInt8.self),
+            count: audioBuffer.byteLength,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: .invalid,
             randomAccessIndicator: true

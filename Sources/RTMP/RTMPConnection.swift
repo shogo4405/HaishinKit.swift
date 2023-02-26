@@ -314,7 +314,7 @@ open class RTMPConnection: EventDispatcher {
         var outputBufferSize: Int = 0
         for stream in streams {
             // in bytes.
-            outputBufferSize += Int(stream.mixer.videoIO.codec.settings.bitRate + stream.mixer.audioIO.codec.settings.bitRate) / 8
+            outputBufferSize += (Int(stream.mixer.videoIO.codec.settings.bitRate) + stream.mixer.audioIO.codec.settings.bitRate) / 8
         }
         if socket.outputBufferSize < outputBufferSize {
             socket.outputBufferSize = outputBufferSize

@@ -1,4 +1,5 @@
 import AudioToolbox
+import AVFoundation
 
 /// The type of the AudioCodec supports format.
 public enum AudioCodecFormat {
@@ -70,22 +71,6 @@ public enum AudioCodecFormat {
         }
     }
 
-    var inClassDescriptions: [AudioClassDescription] {
-        switch self {
-        case .aac:
-            #if os(iOS)
-            return [
-                AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleSoftwareAudioCodecManufacturer),
-                AudioClassDescription(mType: kAudioEncoderComponentType, mSubType: kAudioFormatMPEG4AAC, mManufacturer: kAppleHardwareAudioCodecManufacturer)
-            ]
-            #else
-            return []
-            #endif
-        case .pcm:
-            return []
-        }
-    }
-
     func maximumBuffers(_ channel: UInt32) -> Int {
         switch self {
         case .aac:
@@ -95,21 +80,30 @@ public enum AudioCodecFormat {
         }
     }
 
-    func audioStreamBasicDescription(_ inSourceFormat: AudioStreamBasicDescription?, sampleRate: Double, channels: UInt32) -> AudioStreamBasicDescription? {
-        guard let inSourceFormat = inSourceFormat else {
+    func makeAudioBuffer(_ format: AVAudioFormat) -> AVAudioBuffer? {
+        switch self {
+        case .aac:
+            return AVAudioCompressedBuffer(format: format, packetCapacity: 1, maximumPacketSize: 1024)
+        case .pcm:
+            return AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1024)
+        }
+    }
+
+    func makeAudioFormat(_ inSourceFormat: AudioStreamBasicDescription?) -> AVAudioFormat? {
+        guard let inSourceFormat else {
             return nil
         }
-        let destinationChannels: UInt32 = (channels == 0) ? inSourceFormat.mChannelsPerFrame : channels
-        return AudioStreamBasicDescription(
-            mSampleRate: sampleRate == 0 ? inSourceFormat.mSampleRate : sampleRate,
+        var streamDescription = AudioStreamBasicDescription(
+            mSampleRate: inSourceFormat.mSampleRate,
             mFormatID: formatID,
             mFormatFlags: formatFlags,
             mBytesPerPacket: bytesPerPacket,
             mFramesPerPacket: framesPerPacket,
             mBytesPerFrame: bytesPerFrame,
-            mChannelsPerFrame: destinationChannels,
+            mChannelsPerFrame: inSourceFormat.mChannelsPerFrame,
             mBitsPerChannel: bitsPerChannel,
             mReserved: 0
         )
+        return AVAudioFormat(streamDescription: &streamDescription)
     }
 }

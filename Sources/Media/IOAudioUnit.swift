@@ -37,7 +37,6 @@ final class IOAudioUnit: NSObject, IOUnit {
         defer {
             mixer.session.commitConfiguration()
         }
-        codec.invalidate()
         guard let device else {
             try capture.attachDevice(nil, audioUnit: self)
             return
@@ -62,7 +61,8 @@ final class IOAudioUnit: NSObject, IOUnit {
             return
         }
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
-        codec.encodeSampleBuffer(sampleBuffer)
+        codec.inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
+        codec.appendSampleBuffer(sampleBuffer)
     }
 }
 
@@ -114,11 +114,14 @@ extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
 
 extension IOAudioUnit: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
-    func audioCodec(_ codec: AudioCodec, didSet formatDescription: CMFormatDescription?) {
-        guard let formatDescription = formatDescription, let audioEngine = audioEngine else {
+    func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
+    }
+
+    func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
+        guard let audioEngine = audioEngine else {
             return
         }
-        audioFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
+        audioFormat = AVAudioFormat(cmAudioFormatDescription: outputFormat.formatDescription)
         nstry({
             if let plyerNode = self.mixer?.mediaLink.playerNode, let audioFormat = self.audioFormat {
                 audioEngine.connect(plyerNode, to: audioEngine.mainMixerNode, format: audioFormat)
@@ -133,26 +136,13 @@ extension IOAudioUnit: AudioCodecDelegate {
         }
     }
 
-    func audioCodec(_ codec: AudioCodec, didOutput sample: UnsafeMutableAudioBufferListPointer, presentationTimeStamp: CMTime) {
-        guard !sample.isEmpty, sample[0].mDataByteSize != 0 else {
+    func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
             return
-        }
-        guard
-            let audioFormat = audioFormat,
-            let buffer = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: sample[0].mDataByteSize / 4) else {
-            return
-        }
-        buffer.frameLength = buffer.frameCapacity
-        let bufferList = UnsafeMutableAudioBufferListPointer(buffer.mutableAudioBufferList)
-        for i in 0..<bufferList.count {
-            guard let mData = sample[i].mData else { continue }
-            memcpy(bufferList[i].mData, mData, Int(sample[i].mDataByteSize))
-            bufferList[i].mDataByteSize = sample[i].mDataByteSize
-            bufferList[i].mNumberChannels = 1
         }
         if let mixer = mixer {
-            mixer.delegate?.mixer(mixer, didOutput: buffer, presentationTimeStamp: presentationTimeStamp)
+            mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
         }
-        mixer?.mediaLink.enqueueAudio(buffer)
+        mixer?.mediaLink.enqueueAudio(audioBuffer)
     }
 }
