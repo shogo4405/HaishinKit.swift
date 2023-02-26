@@ -10,7 +10,8 @@ protocol MediaLinkDelegate: AnyObject {
 }
 
 final class MediaLink {
-    static let defaultBufferTime: Double = 0.2
+    private static let bufferTime = 0.2
+    private static let bufferingTime = 0.0
 
     var isPaused = false {
         didSet {
@@ -27,9 +28,9 @@ final class MediaLink {
         }
     }
     var hasVideo = false
-    var bufferTime = MediaLink.defaultBufferTime
+    var bufferTime = MediaLink.bufferTime
     weak var delegate: MediaLinkDelegate?
-    lazy var playerNode = AVAudioPlayerNode()
+    private(set) lazy var playerNode = AVAudioPlayerNode()
     private(set) var isRunning: Atomic<Bool> = .init(false)
     private var buffer: RingBuffer<CMSampleBuffer> = .init(256)
     private var isBuffering = true {
@@ -41,7 +42,7 @@ final class MediaLink {
             delegate?.mediaLink(self, didBufferingChanged: isBuffering)
         }
     }
-    private var bufferingTime: Double = 0.0
+    private var bufferingTime = MediaLink.bufferingTime
     private lazy var choreographer: Choreographer = {
         var choreographer = DisplayLinkChoreographer()
         choreographer.delegate = self
@@ -132,7 +133,8 @@ extension MediaLink: Running {
                 return
             }
             self.hasVideo = false
-            self.bufferingTime = Self.defaultBufferTime
+            self.bufferingTime = Self.bufferingTime
+            self.isBuffering = true
             self.choreographer.startRunning()
             self.isRunning.mutate { $0 = true }
         }
