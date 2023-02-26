@@ -274,6 +274,10 @@ extension IOMixer: Running {
             do {
                 try device.lockForConfiguration()
                 device.activeFormat = format
+                if let duration = format.getFrameRate(videoIO.frameRate) {
+                    device.activeVideoMinFrameDuration = duration
+                    device.activeVideoMaxFrameDuration = duration
+                }
                 device.unlockForConfiguration()
                 session.startRunning()
             } catch {

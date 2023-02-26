@@ -161,13 +161,13 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     }
 
     func setFrameRate(_ frameRate: Float64) {
-        guard let device, let data = device.actualFPS(frameRate) else {
+        guard let device, let duration = device.activeFormat.getFrameRate(frameRate) else {
             return
         }
         do {
             try device.lockForConfiguration()
-            device.activeVideoMinFrameDuration = data.duration
-            device.activeVideoMaxFrameDuration = data.duration
+            device.activeVideoMinFrameDuration = duration
+            device.activeVideoMaxFrameDuration = duration
             device.unlockForConfiguration()
         } catch {
             logger.error("while locking device for fps:", error)

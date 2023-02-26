@@ -6,39 +6,32 @@ extension AVFrameRateRange {
         max(minFrameRate, min(maxFrameRate, rate))
     }
 
-    func contains(rate: Float64) -> Bool {
-        (minFrameRate...maxFrameRate) ~= rate
+    func contains(frameRate: Float64) -> Bool {
+        (minFrameRate...maxFrameRate) ~= frameRate
     }
 }
 
-extension AVCaptureDevice {
-    func actualFPS(_ fps: Float64) -> (fps: Float64, duration: CMTime)? {
+extension AVCaptureDevice.Format {
+    func getFrameRate(_ frameRate: Float64) -> CMTime? {
         var durations: [CMTime] = []
         var frameRates: [Float64] = []
-
-        for range in activeFormat.videoSupportedFrameRateRanges {
+        for range in videoSupportedFrameRateRanges {
             if range.minFrameRate == range.maxFrameRate {
                 durations.append(range.minFrameDuration)
                 frameRates.append(range.maxFrameRate)
                 continue
             }
-
-            if range.contains(rate: fps) {
-                return (fps, CMTimeMake(value: 100, timescale: Int32(100 * fps)))
+            if range.contains(frameRate: frameRate) {
+                return CMTimeMake(value: 100, timescale: Int32(100 * frameRate))
             }
-
-            let actualFPS: Float64 = range.clamp(rate: fps)
-            return (actualFPS, CMTimeMake(value: 100, timescale: Int32(100 * actualFPS)))
+            return CMTimeMake(value: 100, timescale: Int32(100 * range.clamp(rate: frameRate)))
         }
-
-        let diff = frameRates.map { abs($0 - fps) }
-
+        let diff = frameRates.map { abs($0 - frameRate) }
         if let minElement: Float64 = diff.min() {
             for i in 0..<diff.count where diff[i] == minElement {
-                return (frameRates[i], durations[i])
+                return durations[i]
             }
         }
-
         return nil
     }
 }
