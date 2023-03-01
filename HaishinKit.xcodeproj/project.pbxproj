@@ -440,6 +440,7 @@
 		BCCBCE9829A90D880095B51C /* NALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9629A90D880095B51C /* NALUnit.swift */; };
 		BCCBCE9929A90D880095B51C /* NALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9629A90D880095B51C /* NALUnit.swift */; };
 		BCCBCE9B29A9D96A0095B51C /* NALUnitReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9A29A9D96A0095B51C /* NALUnitReaderTests.swift */; };
+		BCCBCEA029ADF55A0095B51C /* AudioCodecBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9F29ADF55A0095B51C /* AudioCodecBufferTests.swift */; };
 		BCD1DC3A260627C300A1C593 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCD63AB526FDF1250084842D /* iOSSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB426FDF1250084842D /* iOSSwiftUIApp.swift */; };
 		BCD63AB726FDF1250084842D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB626FDF1250084842D /* ContentView.swift */; };
@@ -781,6 +782,7 @@
 		BCCBCE9429A7C9C90095B51C /* AVCFormatStreamTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStreamTests.swift; sourceTree = "<group>"; };
 		BCCBCE9629A90D880095B51C /* NALUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NALUnit.swift; sourceTree = "<group>"; };
 		BCCBCE9A29A9D96A0095B51C /* NALUnitReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NALUnitReaderTests.swift; sourceTree = "<group>"; };
+		BCCBCE9F29ADF55A0095B51C /* AudioCodecBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecBufferTests.swift; sourceTree = "<group>"; };
 		BCD63AB226FDF1250084842D /* Example iOS+SwiftUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS+SwiftUI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCD63AB426FDF1250084842D /* iOSSwiftUIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iOSSwiftUIApp.swift; sourceTree = "<group>"; };
 		BCD63AB626FDF1250084842D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -1043,6 +1045,7 @@
 		295018191FFA196800358E10 /* Codec */ = {
 			isa = PBXGroup;
 			children = (
+				BCCBCE9F29ADF55A0095B51C /* AudioCodecBufferTests.swift */,
 				2950181F1FFA1BD700358E10 /* AudioCodecTests.swift */,
 				BC0BF4F62986CE8700D72CB4 /* VideoCodecTests.swift */,
 			);
@@ -1995,6 +1998,7 @@
 				290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */,
 				BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */,
 				290EA89A1DFB619600053022 /* TSProgramTests.swift in Sources */,
+				BCCBCEA029ADF55A0095B51C /* AudioCodecBufferTests.swift in Sources */,
 				BC0BF4F72986CE8700D72CB4 /* VideoCodecTests.swift in Sources */,
 				290EA8931DFB617800053022 /* HTTPRequestTests.swift in Sources */,
 				2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */,

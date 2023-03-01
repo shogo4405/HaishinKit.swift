@@ -135,7 +135,7 @@ final class LiveViewController: UIViewController {
     @IBAction func on(slider: UISlider) {
         if slider == audioBitrateSlider {
             audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
-            rtmpStream.audioSettings.bitRate = UInt32(slider.value * 1000)
+            rtmpStream.audioSettings.bitRate = Int(slider.value * 1000)
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"

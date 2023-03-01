@@ -588,24 +588,34 @@ final class RTMPAudioMessage: RTMPMessage {
             stream.mixer.audioIO.codec.destination = .pcm
             stream.mixer.audioIO.codec.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
-            enqueueSampleBuffer(stream, type: type)
+            if stream.mixer.audioIO.codec.inSourceFormat == nil {
+                stream.mixer.audioIO.codec.destination = .pcm
+                stream.mixer.audioIO.codec.inSourceFormat = makeAudioStreamBasicDescription()
+            }
+            if let audioBuffer = makeAudioBuffer(stream) {
+                stream.mixer.audioIO.codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
+            }
         case .none:
             break
         }
     }
 
-    private func enqueueSampleBuffer(_ stream: RTMPStream, type: RTMPChunkType) {
-        if stream.mixer.audioIO.codec.inSourceFormat == nil {
-            stream.mixer.audioIO.codec.destination = .pcm
-            stream.mixer.audioIO.codec.inSourceFormat = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
+    private func makeAudioBuffer(_ stream: RTMPStream) -> AVAudioBuffer? {
+        return payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> AVAudioBuffer? in
+            guard let baseAddress = buffer.baseAddress, let buffer = stream.mixer.audioIO.codec.makeInputBuffer() as? AVAudioCompressedBuffer else {
+                return nil
+            }
+            let byteCount = payload.count - codec.headerSize
+            buffer.packetDescriptions?.pointee = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: UInt32(byteCount))
+            buffer.packetCount = 1
+            buffer.byteLength = UInt32(byteCount)
+            buffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
+            return buffer
         }
-        payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> Void in
-            stream.mixer.audioIO.codec.encodeBytes(
-                buffer.baseAddress?.advanced(by: codec.headerSize),
-                count: payload.count - codec.headerSize,
-                presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000)
-            )
-        }
+    }
+
+    private func makeAudioStreamBasicDescription() -> AudioStreamBasicDescription? {
+        return nil
     }
 }
 
@@ -646,7 +656,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 sampleBuffer.isNotSync = !(payload[0] >> 4 == FLVFrameType.key.rawValue)
                 stream.mixer.mediaLink.enqueueVideo(sampleBuffer)
             }
-            if stream.mixer.mediaLink.isPaused && stream.mixer.audioIO.codec.formatDescription == nil {
+            if stream.mixer.mediaLink.isPaused && stream.mixer.audioIO.codec.inSourceFormat == nil {
                 stream.mixer.mediaLink.isPaused = false
             }
         default:
