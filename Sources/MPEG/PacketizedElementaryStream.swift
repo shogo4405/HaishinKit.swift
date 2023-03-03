@@ -326,9 +326,14 @@ struct PacketizedElementaryStream: PESPacketHeader {
         return data.count
     }
 
-    func makeSampleBuffer(_ streamType: UInt8) -> CMSampleBuffer? {
-        let (count, formatDescription) = makeFormatDescription(streamType)
-        let blockBuffer = data.makeBlockBuffer(advancedBy: count)
+    mutating func makeSampleBuffer(_ streamType: ESStreamType, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
+        switch streamType {
+        case .h264:
+            _ = AVCFormatStream.toVideoStream(&data)
+        default:
+            break
+        }
+        let blockBuffer = data.makeBlockBuffer(advancedBy: streamType.headerSize)
         var sampleBuffer: CMSampleBuffer?
         var sampleSize: Int = blockBuffer?.dataLength ?? 0
         var timing = optionalPESHeader?.makeSampleTimingInfo() ?? .invalid
@@ -348,17 +353,6 @@ struct PacketizedElementaryStream: PESPacketHeader {
             return nil
         }
         return sampleBuffer
-    }
-
-    private func makeFormatDescription(_ streamType: UInt8) -> (Int, CMFormatDescription?) {
-        switch streamType {
-        case ESType.adtsAac.rawValue:
-            return (7, ADTSHeader(data: data).makeFormatDescription())
-        case ESType.h264.rawValue:
-            return (0, nil)
-        default:
-            return (0, nil)
-        }
     }
 }
 

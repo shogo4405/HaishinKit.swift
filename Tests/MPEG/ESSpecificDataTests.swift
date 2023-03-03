@@ -10,13 +10,13 @@ final class ESSpecificDataTests: XCTestCase {
 
     func testAACData() {
         let data = ESSpecificData(aacData)
-        XCTAssertEqual(data?.streamType, ESType.adtsAac.rawValue)
+        XCTAssertEqual(data?.streamType, .adtsAac)
         XCTAssertEqual(data?.elementaryPID, 257)
     }
 
     func testH264Data() {
         let data = ESSpecificData(h264Data)
-        XCTAssertEqual(data?.streamType, ESType.h264.rawValue)
+        XCTAssertEqual(data?.streamType, .h264)
         XCTAssertEqual(data?.elementaryPID, 256)
     }
 }

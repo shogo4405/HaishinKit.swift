@@ -23,9 +23,9 @@ struct AVCConfigurationRecord {
     static let reserveBitDepthChromaMinus8 = 0xF8
 
     var configurationVersion: UInt8 = 1
-    var AVCProfileIndication: UInt8 = 0
+    var avcProfileIndication: UInt8 = 0
     var profileCompatibility: UInt8 = 0
-    var AVCLevelIndication: UInt8 = 0
+    var avcLevelIndication: UInt8 = 0
     var lengthSizeMinusOneWithReserved: UInt8 = 0
     var numOfSequenceParameterSetsWithReserved: UInt8 = 0
     var sequenceParameterSets: [[UInt8]] = []
@@ -73,9 +73,9 @@ extension AVCConfigurationRecord: DataConvertible {
         get {
             let buffer = ByteArray()
                 .writeUInt8(configurationVersion)
-                .writeUInt8(AVCProfileIndication)
+                .writeUInt8(avcProfileIndication)
                 .writeUInt8(profileCompatibility)
-                .writeUInt8(AVCLevelIndication)
+                .writeUInt8(avcLevelIndication)
                 .writeUInt8(lengthSizeMinusOneWithReserved)
                 .writeUInt8(numOfSequenceParameterSetsWithReserved)
             for i in 0..<sequenceParameterSets.count {
@@ -95,9 +95,9 @@ extension AVCConfigurationRecord: DataConvertible {
             let buffer = ByteArray(data: newValue)
             do {
                 configurationVersion = try buffer.readUInt8()
-                AVCProfileIndication = try buffer.readUInt8()
+                avcProfileIndication = try buffer.readUInt8()
                 profileCompatibility = try buffer.readUInt8()
-                AVCLevelIndication = try buffer.readUInt8()
+                avcLevelIndication = try buffer.readUInt8()
                 lengthSizeMinusOneWithReserved = try buffer.readUInt8()
                 numOfSequenceParameterSetsWithReserved = try buffer.readUInt8()
                 let numOfSequenceParameterSets: UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets

@@ -30,8 +30,10 @@ public class TSReader {
             }
         }
     }
+    private var nalUnitReader = NALUnitReader()
     private var programs: [UInt16: UInt16] = [:]
     private var esSpecData: [UInt16: ESSpecificData] = [:]
+    private var formatDescriptions: [UInt16: CMFormatDescription] = [:]
     private var packetizedElementaryStreams: [UInt16: PacketizedElementaryStream] = [:]
 
     /// Create a  new TSReader instance.
@@ -64,6 +66,7 @@ public class TSReader {
         pmt.removeAll()
         programs.removeAll()
         esSpecData.removeAll()
+        formatDescriptions.removeAll()
         packetizedElementaryStreams.removeAll()
     }
 
@@ -84,12 +87,26 @@ public class TSReader {
     private func makeSampleBuffer(_ id: UInt16, forUpdate: Bool = false) -> CMSampleBuffer? {
         guard
             let data = esSpecData[id],
-            let pes = packetizedElementaryStreams[id], pes.isEntired || forUpdate else {
+            var pes = packetizedElementaryStreams[id], pes.isEntired || forUpdate else {
             return nil
         }
         defer {
             packetizedElementaryStreams[id] = nil
         }
-        return pes.makeSampleBuffer(data.streamType)
+        if formatDescriptions[id] == nil {
+            formatDescriptions[id] = makeFormatDescription(data, pes: pes)
+        }
+        return pes.makeSampleBuffer(data.streamType, formatDescription: formatDescriptions[id])
+    }
+
+    private func makeFormatDescription(_ data: ESSpecificData, pes: PacketizedElementaryStream) -> CMFormatDescription? {
+        switch data.streamType {
+        case .adtsAac:
+            return ADTSHeader(data: pes.data).makeFormatDescription()
+        case .h264:
+            return nalUnitReader.makeFormatDescription(pes.data)
+        default:
+            return nil
+        }
     }
 }

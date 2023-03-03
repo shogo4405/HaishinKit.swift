@@ -33,7 +33,7 @@ struct ADTSHeader: Equatable {
             mSampleRate: frequency.sampleRate,
             mFormatID: kAudioFormatMPEG4AAC,
             mFormatFlags: UInt32(type.rawValue),
-            mBytesPerPacket: 0,
+            mBytesPerPacket: 1,
             mFramesPerPacket: 1024,
             mBytesPerFrame: 0,
             mChannelsPerFrame: UInt32(channel.rawValue),

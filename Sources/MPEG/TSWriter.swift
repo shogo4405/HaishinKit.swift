@@ -215,7 +215,7 @@ extension TSWriter: AudioCodecDelegate {
 
     public func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
         var data = ESSpecificData()
-        data.streamType = ESType.adtsAac.rawValue
+        data.streamType = .adtsAac
         data.elementaryPID = TSWriter.defaultAudioPID
         PMT.elementaryStreamSpecificData.append(data)
         audioContinuityCounter = 0
@@ -247,7 +247,7 @@ extension TSWriter: VideoCodecDelegate {
             return
         }
         var data = ESSpecificData()
-        data.streamType = ESType.h264.rawValue
+        data.streamType = .h264
         data.elementaryPID = TSWriter.defaultVideoPID
         PMT.elementaryStreamSpecificData.append(data)
         videoContinuityCounter = 0

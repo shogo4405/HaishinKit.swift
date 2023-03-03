@@ -98,7 +98,7 @@ public class VideoCodec {
             }
             if let atoms: [String: AnyObject] = formatDescription?.`extension`(by: "SampleDescriptionExtensionAtoms"), let avcC: Data = atoms["avcC"] as? Data {
                 let config = AVCConfigurationRecord(data: avcC)
-                isBaseline = config.AVCProfileIndication == 66
+                isBaseline = config.avcProfileIndication == 66
             }
             delegate?.videoCodec(self, didSet: formatDescription)
         }

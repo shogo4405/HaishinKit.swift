@@ -1,3 +1,4 @@
+import CoreMedia
 import Foundation
 
 enum NALUnitType: UInt8, Equatable {
@@ -27,6 +28,13 @@ struct NALUnit: Equatable {
         self.type = NALUnitType(rawValue: data[0] & 0x1f) ?? .unspec
         self.payload = data.subdata(in: 1..<length)
     }
+
+    var data: Data {
+        var result = Data()
+        result.append(refIdc << 5 | self.type.rawValue | 0b1100000)
+        result.append(payload)
+        return result
+    }
 }
 
 class NALUnitReader {
@@ -46,5 +54,40 @@ class NALUnitReader {
         let length = data.count - startCode - 4
         units.append(.init(data.advanced(by: startCode + 4), length: length))
         return units
+    }
+
+    func makeFormatDescription(_ data: Data) -> CMFormatDescription? {
+        let units = read(data).filter { $0.type == .pps || $0.type == .sps }
+        guard
+            let pps = units.first(where: { $0.type == .pps }),
+            let sps = units.first(where: { $0.type == .sps }) else {
+            return nil
+        }
+        var formatDescription: CMFormatDescription?
+        _ = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
+            guard let ppsBaseAddress = ppsBuffer.baseAddress else {
+                return nil
+            }
+            return sps.data.withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
+                guard let spsBaseAddress = spsBuffer.baseAddress else {
+                    return nil
+                }
+                let pointers: [UnsafePointer<UInt8>] = [
+                    spsBaseAddress.assumingMemoryBound(to: UInt8.self),
+                    ppsBaseAddress.assumingMemoryBound(to: UInt8.self)
+                ]
+                let sizes: [Int] = [spsBuffer.count, ppsBuffer.count]
+                let nalUnitHeaderLength: Int32 = 4
+                return CMVideoFormatDescriptionCreateFromH264ParameterSets(
+                    allocator: kCFAllocatorDefault,
+                    parameterSetCount: pointers.count,
+                    parameterSetPointers: pointers,
+                    parameterSetSizes: sizes,
+                    nalUnitHeaderLength: nalUnitHeaderLength,
+                    formatDescriptionOut: &formatDescription
+                )
+            }
+        }
+        return formatDescription
     }
 }
