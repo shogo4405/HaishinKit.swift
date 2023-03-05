@@ -6,6 +6,8 @@ public protocol IORecorderDelegate: AnyObject {
     func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error)
     /// Tells the receiver to finish writing.
     func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter)
+    
+    func recorder(_ recorder: IORecorder, postprocessingVideo sampleBuffer: CMSampleBuffer)
 }
 
 // MARK: -
@@ -67,6 +69,10 @@ public class IORecorder {
     }()
     #endif
 
+    public func potprocessSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        self.delegate?.recorder(self, postprocessingVideo: sampleBuffer)
+    }
+    
     /// Append a sample buffer for recording.
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) {
         lockQueue.async {
@@ -92,7 +98,7 @@ public class IORecorder {
                     self.audioPresentationTime = CMTimeAdd(self.audioPresentationTime, sampleBuffer.duration)
                 }
             }
-
+            
             if input.isReadyForMoreMediaData {
                 switch mediaType {
                 case .audio:

@@ -301,6 +301,9 @@ final class IOVideoUnit: NSObject, IOUnit {
             imageBuffer ?? buffer,
             withPresentationTime: sampleBuffer.presentationTimeStamp
         )
+
+        mixer?.recorder.potprocessSampleBuffer(sampleBuffer)
+        
         if !muted {
             pixelBuffer = buffer
         }
