@@ -295,4 +295,8 @@ extension LiveViewController: IORecorderDelegate {
             }
         })
     }
+    
+    func recorder(_ recorder: IORecorder, postprocessingVideo sampleBuffer: CMSampleBuffer) {
+        print("Hello")
+    }
 }
