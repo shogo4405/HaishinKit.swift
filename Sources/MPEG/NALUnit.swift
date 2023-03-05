@@ -38,21 +38,33 @@ struct NALUnit: Equatable {
 }
 
 class NALUnitReader {
+    static let defaultStartCodeLength: Int = 4
+
+    var startCodeLength: Int = NALUnitReader.defaultStartCodeLength
+
     func read(_ data: Data) -> [NALUnit] {
         var units: [NALUnit] = []
-        var startCode: Int = 0
+        var startCodeOffset: Int = 0
         for i in 0..<data.count {
-            guard data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 0 && data[i + 3] == 1 else {
+            if data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 0 && data[i + 3] == 1 {
+                startCodeLength = 4
+            } else if data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 1 {
+                if 1 < i && data[i - 1] != 0 {
+                    startCodeLength = 3
+                } else {
+                    continue
+                }
+            } else {
                 continue
             }
-            let length = i - startCode - 4
+            let length = i - startCodeOffset - startCodeLength
             if 0 < length {
-                units.append(.init(data.advanced(by: startCode + 4), length: length))
+                units.append(.init(data.advanced(by: startCodeOffset + startCodeLength), length: length))
             }
-            startCode = i
+            startCodeOffset = i
         }
-        let length = data.count - startCode - 4
-        units.append(.init(data.advanced(by: startCode + 4), length: length))
+        let length = data.count - startCodeOffset - startCodeLength
+        units.append(.init(data.advanced(by: startCodeOffset + startCodeLength), length: length))
         return units
     }
 
@@ -64,7 +76,7 @@ class NALUnitReader {
             return nil
         }
         var formatDescription: CMFormatDescription?
-        _ = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
+        let status = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
             guard let ppsBaseAddress = ppsBuffer.baseAddress else {
                 return nil
             }
@@ -77,7 +89,7 @@ class NALUnitReader {
                     ppsBaseAddress.assumingMemoryBound(to: UInt8.self)
                 ]
                 let sizes: [Int] = [spsBuffer.count, ppsBuffer.count]
-                let nalUnitHeaderLength: Int32 = 4
+                let nalUnitHeaderLength = Int32(4)
                 return CMVideoFormatDescriptionCreateFromH264ParameterSets(
                     allocator: kCFAllocatorDefault,
                     parameterSetCount: pointers.count,

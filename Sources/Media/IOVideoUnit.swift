@@ -271,7 +271,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         if muted {
             imageBuffer = pixelBuffer
         }
-        codec.inputBuffer(
+        codec.appendImageBuffer(
             imageBuffer ?? buffer,
             presentationTimeStamp: sampleBuffer.presentationTimeStamp,
             duration: sampleBuffer.duration

@@ -1,5 +1,6 @@
 import Foundation
 import XCTest
+import Logboard
 
 @testable import HaishinKit
 

@@ -329,7 +329,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     mutating func makeSampleBuffer(_ streamType: ESStreamType, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
         switch streamType {
         case .h264:
-            _ = AVCFormatStream.toVideoStream(&data)
+            _ = AVCFormatStream.toNALFileFormat(&data)
         default:
             break
         }

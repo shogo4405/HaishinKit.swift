@@ -33,20 +33,31 @@ struct AVCFormatStream {
         return result
     }
 
-    static func toVideoStream(_ data: inout Data) -> Data {
-        var startCode: Int = 0
+    static func toNALFileFormat(_ data: inout Data) -> Data {
+        var startCodeLength: Int = 4
+        var startCodeOffset: Int = 0
         for i in 0..<data.count {
-            guard data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 0 && data[i + 3] == 1 else {
+            if data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 0 && data[i + 3] == 1 {
+                startCodeLength = 4
+            } else if data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 1 {
+                if 1 < i && data[i - 1] != 0 {
+                    startCodeLength = 3
+                } else {
+                    continue
+                }
+            } else {
                 continue
             }
-            let length = i - startCode - 4
+            let length = i - startCodeOffset - startCodeLength
             if 0 < length {
-                data.replaceSubrange(startCode..<startCode + 4, with: Int32(length).bigEndian.data)
+                let start = 4 - startCodeLength
+                data.replaceSubrange(startCodeOffset..<startCodeOffset + startCodeLength, with: Int32(length).bigEndian.data[start...])
             }
-            startCode = i
+            startCodeOffset = i
         }
-        let length = data.count - startCode - 4
-        data.replaceSubrange(startCode..<startCode + 4, with: Int32(length).bigEndian.data)
+        let length = data.count - startCodeOffset - startCodeLength
+        let start = 4 - startCodeLength
+        data.replaceSubrange(startCodeOffset..<startCodeOffset + startCodeLength, with: Int32(length).bigEndian.data[start...])
         return data
     }
 }

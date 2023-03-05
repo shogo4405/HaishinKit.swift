@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import Logboard
 
 /// The interface an MPEG-2 TS (Transport Stream) reader uses to inform its delegates.
 public protocol TSReaderDelegate: AnyObject {
@@ -19,6 +20,9 @@ public class TSReader {
             for (channel, PID) in PAT.programs {
                 programs[PID] = channel
             }
+            if logger.isEnabledFor(level: .trace) {
+                logger.trace(programs)
+            }
         }
     }
     private var pmt: [UInt16: TSProgramMap] = [:] {
@@ -27,6 +31,9 @@ public class TSReader {
                 for data in pmt.elementaryStreamSpecificData {
                     esSpecData[data.elementaryPID] = data
                 }
+            }
+            if logger.isEnabledFor(level: .trace) {
+                logger.trace(esSpecData)
             }
         }
     }
