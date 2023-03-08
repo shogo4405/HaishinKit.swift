@@ -60,16 +60,16 @@ extension RTMPMuxer: VideoCodecDelegate {
     }
 
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
-        let keyframe: Bool = !sampleBuffer.isNotSync
+        let keyframe = !sampleBuffer.isNotSync
         var compositionTime: Int32 = 0
-        let presentationTimeStamp: CMTime = sampleBuffer.presentationTimeStamp
-        var decodeTimeStamp: CMTime = sampleBuffer.decodeTimeStamp
+        let presentationTimeStamp = sampleBuffer.presentationTimeStamp
+        var decodeTimeStamp = sampleBuffer.decodeTimeStamp
         if decodeTimeStamp == CMTime.invalid {
             decodeTimeStamp = presentationTimeStamp
         } else {
             compositionTime = (videoTimeStamp == .zero) ? 0 : Int32((sampleBuffer.presentationTimeStamp.seconds - videoTimeStamp.seconds) * 1000)
         }
-        let delta = (videoTimeStamp == CMTime.zero ? 0 : decodeTimeStamp.seconds - videoTimeStamp.seconds) * 1000
+        let delta = (videoTimeStamp == .zero ? 0 : decodeTimeStamp.seconds - videoTimeStamp.seconds) * 1000
         guard let data = sampleBuffer.dataBuffer?.data, 0 <= delta else {
             return
         }

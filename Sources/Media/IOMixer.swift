@@ -27,6 +27,30 @@ public class IOMixer {
         case passthrough
     }
 
+    enum Mode {
+        case ready
+        case encoding
+        case decoding
+    }
+
+    public var hasVideo: Bool {
+        get {
+            mediaLink.hasVideo
+        }
+        set {
+            mediaLink.hasVideo = newValue
+        }
+    }
+
+    public var isPaused: Bool {
+        get {
+            mediaLink.isPaused
+        }
+        set {
+            mediaLink.isPaused = newValue
+        }
+    }
+
     #if os(iOS) || os(macOS)
     var isMultitaskingCameraAccessEnabled = true
 
@@ -51,6 +75,8 @@ public class IOMixer {
             session.commitConfiguration()
         }
     }
+
+    private var mode: Mode = .ready
 
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
@@ -105,8 +131,36 @@ public class IOMixer {
         return mediaLink
     }()
 
+    #if os(iOS) || os(macOS)
+    deinit {
+        if session.isRunning {
+            session.stopRunning()
+        }
+    }
+    #endif
+
     private var audioTimeStamp = CMTime.zero
     private var videoTimeStamp = CMTime.zero
+
+    /// Append a CMSampleBuffer with media type.
+    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, with type: AVMediaType) {
+        switch mode {
+        case .encoding:
+            break
+        case .decoding:
+            switch type {
+            case .audio:
+                audioIO.codec.appendSampleBuffer(sampleBuffer)
+            case .video:
+                videoIO.codec.formatDescription = sampleBuffer.formatDescription
+                mediaLink.enqueueVideo(sampleBuffer)
+            default:
+                break
+            }
+        case .ready:
+            break
+        }
+    }
 
     func useSampleBuffer(sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) -> Bool {
         switch mediaSync {
@@ -150,19 +204,12 @@ public class IOMixer {
         return session
     }
     #endif
-
-    #if os(iOS) || os(macOS)
-    deinit {
-        if session.isRunning {
-            session.stopRunning()
-        }
-    }
-    #endif
 }
 
 extension IOMixer: IOUnitEncoding {
     /// Starts encoding for video and audio data.
     public func startEncoding(_ delegate: AVCodecDelegate) {
+        mode = .encoding
         videoIO.startEncoding(delegate)
         audioIO.startEncoding(delegate)
     }
@@ -173,12 +220,14 @@ extension IOMixer: IOUnitEncoding {
         audioTimeStamp = CMTime.zero
         videoIO.stopEncoding()
         audioIO.stopEncoding()
+        mode = .ready
     }
 }
 
 extension IOMixer: IOUnitDecoding {
     /// Starts decoding for video and audio data.
     public func startDecoding(_ audioEngine: AVAudioEngine) {
+        mode = .decoding
         mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
         videoIO.startDecoding(audioEngine)
@@ -189,6 +238,7 @@ extension IOMixer: IOUnitDecoding {
         mediaLink.stopRunning()
         audioIO.stopDecoding()
         videoIO.stopDecoding()
+        mode = .ready
     }
 }
 

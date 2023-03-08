@@ -11,7 +11,7 @@ final class PacketizedElementaryStreamTests: XCTestCase {
     func testVideoData() {
         let pes = PacketizedElementaryStream(PacketizedElementaryStreamTests.dataWithVideo)!
         let header = pes.optionalPESHeader
-        let timingInfo = header?.makeSampleTimingInfo()
+        let timingInfo = header?.makeSampleTimingInfo(.invalid)
         XCTAssertEqual(timingInfo?.presentationTimeStamp, CMTime(value: 126384, timescale: CMTimeScale(TSTimestamp.resolution)))
         XCTAssertEqual(pes.payload, PacketizedElementaryStreamTests.dataWithVideo)
     }

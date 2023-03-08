@@ -34,30 +34,17 @@ struct AVCFormatStream {
     }
 
     static func toNALFileFormat(_ data: inout Data) -> Data {
-        var startCodeLength: Int = 4
-        var startCodeOffset: Int = 0
-        for i in 0..<data.count {
-            if data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 0 && data[i + 3] == 1 {
-                startCodeLength = 4
-            } else if data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 1 {
-                if 1 < i && data[i - 1] != 0 {
-                    startCodeLength = 3
-                } else {
-                    continue
-                }
-            } else {
+        var lastIndexOf = data.count - 1
+        for i in (2..<data.count).reversed() {
+            guard data[i] == 1 && data[i - 1] == 0 && data[i - 2] == 0 else {
                 continue
             }
-            let length = i - startCodeOffset - startCodeLength
-            if 0 < length {
-                let start = 4 - startCodeLength
-                data.replaceSubrange(startCodeOffset..<startCodeOffset + startCodeLength, with: Int32(length).bigEndian.data[start...])
-            }
-            startCodeOffset = i
+            let startCodeLength = 0 <= i - 3 && data[i - 3] == 0 ? 4 : 3
+            let start = 4 - startCodeLength
+            let length = lastIndexOf - i
+            data.replaceSubrange(i - startCodeLength + 1...i, with: Int32(length).bigEndian.data[start...])
+            lastIndexOf = i - startCodeLength
         }
-        let length = data.count - startCodeOffset - startCodeLength
-        let start = 4 - startCodeLength
-        data.replaceSubrange(startCodeOffset..<startCodeOffset + startCodeLength, with: Int32(length).bigEndian.data[start...])
         return data
     }
 }
