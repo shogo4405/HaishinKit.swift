@@ -163,7 +163,6 @@ public class VideoCodec {
             needsSync.mutate { $0 = false }
         }
         session?.inputBuffer(sampleBuffer) { [unowned self] status, _, imageBuffer, presentationTimeStamp, duration in
-
             guard let imageBuffer, status == noErr else {
                 self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return

@@ -16,4 +16,9 @@ extension CMBlockBuffer {
         }
         return Data(bytes: buffer!, count: length)
     }
+
+    @discardableResult
+    func copyDataBytes(to buffer: UnsafeMutableRawPointer) -> OSStatus {
+        return CMBlockBufferCopyDataBytes(self, atOffset: 0, dataLength: dataLength, destination: buffer)
+    }
 }

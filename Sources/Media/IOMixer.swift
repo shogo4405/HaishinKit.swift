@@ -27,8 +27,8 @@ public class IOMixer {
         case passthrough
     }
 
-    enum Mode {
-        case ready
+    enum ReadyState {
+        case standby
         case encoding
         case decoding
     }
@@ -76,7 +76,7 @@ public class IOMixer {
         }
     }
 
-    private var mode: Mode = .ready
+    private var readyState: ReadyState = .standby
 
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
@@ -143,21 +143,21 @@ public class IOMixer {
     private var videoTimeStamp = CMTime.zero
 
     /// Append a CMSampleBuffer with media type.
-    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, with type: AVMediaType) {
-        switch mode {
+    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        switch readyState {
         case .encoding:
             break
         case .decoding:
-            switch type {
-            case .audio:
+            switch sampleBuffer.formatDescription?.mediaType {
+            case kCMMediaType_Audio:
                 audioIO.codec.appendSampleBuffer(sampleBuffer)
-            case .video:
+            case kCMMediaType_Video:
                 videoIO.codec.formatDescription = sampleBuffer.formatDescription
                 mediaLink.enqueueVideo(sampleBuffer)
             default:
                 break
             }
-        case .ready:
+        case .standby:
             break
         }
     }
@@ -209,25 +209,34 @@ public class IOMixer {
 extension IOMixer: IOUnitEncoding {
     /// Starts encoding for video and audio data.
     public func startEncoding(_ delegate: AVCodecDelegate) {
-        mode = .encoding
+        guard readyState == .standby else {
+            return
+        }
+        readyState = .encoding
         videoIO.startEncoding(delegate)
         audioIO.startEncoding(delegate)
     }
 
     /// Stop encoding.
     public func stopEncoding() {
+        guard readyState == .encoding else {
+            return
+        }
         videoTimeStamp = CMTime.zero
         audioTimeStamp = CMTime.zero
         videoIO.stopEncoding()
         audioIO.stopEncoding()
-        mode = .ready
+        readyState = .standby
     }
 }
 
 extension IOMixer: IOUnitDecoding {
     /// Starts decoding for video and audio data.
     public func startDecoding(_ audioEngine: AVAudioEngine) {
-        mode = .decoding
+        guard readyState == .standby else {
+            return
+        }
+        readyState = .decoding
         mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
         videoIO.startDecoding(audioEngine)
@@ -235,10 +244,13 @@ extension IOMixer: IOUnitDecoding {
 
     /// Stop decoding.
     public func stopDecoding() {
+        guard readyState == .decoding else {
+            return
+        }
         mediaLink.stopRunning()
         audioIO.stopDecoding()
         videoIO.stopDecoding()
-        mode = .ready
+        readyState = .standby
     }
 }
 

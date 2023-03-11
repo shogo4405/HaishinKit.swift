@@ -68,7 +68,7 @@ struct PESOptionalHeader {
         pesHeaderLength = UInt8(optionalFields.count)
     }
 
-    func makeSampleTimingInfo(_ previousTimeStamp: CMTime) -> CMSampleTimingInfo? {
+    func makeSampleTimingInfo(_ previousPresentationTimeStamp: CMTime) -> CMSampleTimingInfo? {
         var presentationTimeStamp: CMTime = .invalid
         var decodeTimeStamp: CMTime = .invalid
         if ptsDtsIndicator & 0x02 == 0x02 {
@@ -80,7 +80,7 @@ struct PESOptionalHeader {
             decodeTimeStamp = .init(value: dts, timescale: CMTimeScale(TSTimestamp.resolution))
         }
         return CMSampleTimingInfo(
-            duration: presentationTimeStamp - previousTimeStamp,
+            duration: presentationTimeStamp - previousPresentationTimeStamp,
             presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: decodeTimeStamp
         )
@@ -326,7 +326,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         return data.count
     }
 
-    mutating func makeSampleBuffer(_ streamType: ESStreamType, previousTimeStamp: CMTime, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
+    mutating func makeSampleBuffer(_ streamType: ESStreamType, previousPresentationTimeStamp: CMTime, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
         switch streamType {
         case .h264:
             _ = AVCFormatStream.toNALFileFormat(&data)
@@ -336,7 +336,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         let blockBuffer = data.makeBlockBuffer(advancedBy: streamType.headerSize)
         var sampleBuffer: CMSampleBuffer?
         var sampleSize: Int = blockBuffer?.dataLength ?? 0
-        var timing = optionalPESHeader?.makeSampleTimingInfo(previousTimeStamp) ?? .invalid
+        var timing = optionalPESHeader?.makeSampleTimingInfo(previousPresentationTimeStamp) ?? .invalid
         guard let blockBuffer, CMSampleBufferCreate(
                 allocator: kCFAllocatorDefault,
                 dataBuffer: blockBuffer,

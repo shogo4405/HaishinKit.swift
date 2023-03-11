@@ -75,9 +75,9 @@ public class TSReader {
         pmt.removeAll()
         programs.removeAll()
         esSpecData.removeAll()
-        previousPresentationTimeStamps.removeAll()
         formatDescriptions.removeAll()
         packetizedElementaryStreams.removeAll()
+        previousPresentationTimeStamps.removeAll()
     }
 
     private func readPacketizedElementaryStream(_ packet: TSPacket) {
@@ -126,7 +126,7 @@ public class TSReader {
         }
         let sampleBuffer = pes.makeSampleBuffer(
             data.streamType,
-            previousTimeStamp: previousPresentationTimeStamps[id] ?? .invalid,
+            previousPresentationTimeStamp: previousPresentationTimeStamps[id] ?? .invalid,
             formatDescription: formatDescriptions[id]
         )
         sampleBuffer?.isNotSync = isNotSync

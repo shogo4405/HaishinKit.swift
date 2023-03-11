@@ -41,37 +41,49 @@ public class AudioCodec {
             guard var inSourceFormat, inSourceFormat != oldValue else {
                 return
             }
-            audioBuffer = .init(&inSourceFormat)
+            ringBuffer = .init(&inSourceFormat)
             audioConverter = makeAudioConvter(&inSourceFormat)
         }
     }
+    private var ringBuffer: AudioCodecRingBuffer?
     private var audioConverter: AVAudioConverter?
-    private var audioBuffer: AudioCodecBuffer?
 
     /// Append a CMSampleBuffer.
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
-        guard CMSampleBufferDataIsReady(sampleBuffer), isRunning.value, let audioBuffer, let audioConverter, let buffer = makeOutputBuffer()  else {
+        guard CMSampleBufferDataIsReady(sampleBuffer), isRunning.value else {
             return
         }
-        let numSamples = audioBuffer.appendSampleBuffer(sampleBuffer, offset: offset)
-        if audioBuffer.isReady {
-            for effect in effects {
-                effect.execute(audioBuffer.current, presentationTimeStamp: audioBuffer.presentationTimeStamp)
+        switch destination {
+        case .aac:
+            guard let audioConverter, let ringBuffer, let buffer = makeOutputBuffer() else {
+                return
             }
-            var error: NSError?
-            audioConverter.convert(to: buffer, error: &error) { _, status in
-                status.pointee = .haveData
-                return audioBuffer.current
+            let numSamples = ringBuffer.appendSampleBuffer(sampleBuffer, offset: offset)
+            if ringBuffer.isReady {
+                for effect in effects {
+                    effect.execute(ringBuffer.current, presentationTimeStamp: ringBuffer.presentationTimeStamp)
+                }
+                var error: NSError?
+                audioConverter.convert(to: buffer, error: &error) { _, status in
+                    status.pointee = .haveData
+                    return ringBuffer.current
+                }
+                if let error {
+                    delegate?.audioCodec(self, errorOccurred: .faildToConvert(error: error))
+                } else {
+                    delegate?.audioCodec(self, didOutput: buffer, presentationTimeStamp: ringBuffer.presentationTimeStamp)
+                }
+                ringBuffer.next()
             }
-            if let error {
-                delegate?.audioCodec(self, errorOccurred: .faildToConvert(error: error))
-            } else {
-                delegate?.audioCodec(self, didOutput: buffer, presentationTimeStamp: audioBuffer.presentationTimeStamp)
+            if offset + numSamples < sampleBuffer.numSamples {
+                appendSampleBuffer(sampleBuffer, offset: offset + numSamples)
             }
-            audioBuffer.next()
-        }
-        if offset + numSamples < sampleBuffer.numSamples {
-            appendSampleBuffer(sampleBuffer, offset: offset + numSamples)
+        case .pcm:
+            guard let buffer = makeInputBuffer() as? AVAudioCompressedBuffer else {
+                return
+            }
+            sampleBuffer.dataBuffer?.copyDataBytes(to: buffer.data)
+            appendAudioBuffer(buffer, presentationTimeStamp: sampleBuffer.presentationTimeStamp)
         }
     }
 
@@ -137,7 +149,7 @@ extension AudioCodec: Running {
         lockQueue.async {
             self.inSourceFormat = nil
             self.audioConverter = nil
-            self.audioBuffer = nil
+            self.ringBuffer = nil
             self.isRunning.mutate { $0 = false }
         }
     }

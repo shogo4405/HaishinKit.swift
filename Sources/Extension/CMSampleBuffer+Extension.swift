@@ -1,4 +1,5 @@
 import Accelerate
+import AVFoundation
 import CoreMedia
 
 extension CMSampleBuffer {

@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-final class AudioCodecBuffer {
+final class AudioCodecRingBuffer {
     enum Error: Swift.Error {
         case isReady
         case noBlockBuffer
@@ -25,9 +25,9 @@ final class AudioCodecBuffer {
     private var buffers: [AVAudioPCMBuffer] = []
     private var cursor: Int = 0
     private var workingBuffer: AVAudioPCMBuffer
-    private var maxBuffers: Int = AudioCodecBuffer.maxBuffers
+    private var maxBuffers: Int = AudioCodecRingBuffer.maxBuffers
 
-    init?(_ inSourceFormat: inout AudioStreamBasicDescription, numSamples: UInt32 = AudioCodecBuffer.numSamples) {
+    init?(_ inSourceFormat: inout AudioStreamBasicDescription, numSamples: UInt32 = AudioCodecRingBuffer.numSamples) {
         guard
             inSourceFormat.mFormatID == kAudioFormatLinearPCM,
             let format = AVAudioFormat(streamDescription: &inSourceFormat),
@@ -139,7 +139,7 @@ final class AudioCodecBuffer {
     }
 }
 
-extension AudioCodecBuffer: CustomDebugStringConvertible {
+extension AudioCodecRingBuffer: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
         Mirror(reflecting: self).debugDescription

@@ -12,7 +12,7 @@ final class AudioCodecBufferTests: XCTestCase {
             XCTFail()
             return
         }
-        let buffer = AudioCodecBuffer(&asbd, numSamples: 1024)
+        let buffer = AudioCodecRingBuffer(&asbd, numSamples: 1024)
         for _ in 0..<1024/256 {
             _ = buffer?.appendSampleBuffer(sampleBuffer, offset: 0)
         }
@@ -34,7 +34,7 @@ final class AudioCodecBufferTests: XCTestCase {
             let sampleBuffer_1 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 920),
             let sampleBuffer_2 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 921),
             var asbd = sampleBuffer_1.formatDescription?.audioStreamBasicDescription,
-            let buffer = AudioCodecBuffer(&asbd, numSamples: 1024) else {
+            let buffer = AudioCodecRingBuffer(&asbd, numSamples: 1024) else {
             XCTFail()
             return
         }
@@ -75,7 +75,7 @@ final class AudioCodecBufferTests: XCTestCase {
             let sampleBuffer_1 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 920),
             let sampleBuffer_2 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 921),
             var asbd = sampleBuffer_1.formatDescription?.audioStreamBasicDescription,
-            let buffer = AudioCodecBuffer(&asbd, numSamples: 1024) else {
+            let buffer = AudioCodecRingBuffer(&asbd, numSamples: 1024) else {
             XCTFail()
             return
         }
@@ -95,7 +95,7 @@ final class AudioCodecBufferTests: XCTestCase {
         }
     }
 
-    private func appendSampleBuffer(_ buffer: AudioCodecBuffer, sampleBuffer: CMSampleBuffer, offset: Int = 0) {
+    private func appendSampleBuffer(_ buffer: AudioCodecRingBuffer, sampleBuffer: CMSampleBuffer, offset: Int = 0) {
         let numSamples = buffer.appendSampleBuffer(sampleBuffer, offset: offset)
         if buffer.isReady {
             buffer.next()
