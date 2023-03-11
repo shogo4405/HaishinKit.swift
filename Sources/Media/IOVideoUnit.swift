@@ -340,5 +340,6 @@ extension IOVideoUnit: VideoCodecDelegate {
     }
 
     func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+        logger.trace(error)
     }
 }

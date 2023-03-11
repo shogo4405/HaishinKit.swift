@@ -28,14 +28,14 @@ struct NALUnit: Equatable {
     }
 
     init(_ data: Data, length: Int) {
-        self.refIdc = data[0] & 0x60 >> 5
+        self.refIdc = data[0] >> 5
         self.type = NALUnitType(rawValue: data[0] & 0x1f) ?? .unspec
         self.payload = data.subdata(in: 1..<length)
     }
 
     var data: Data {
         var result = Data()
-        result.append(refIdc << 5 | self.type.rawValue | 0b1100000)
+        result.append(refIdc << 5 | self.type.rawValue)
         result.append(payload)
         return result
     }
@@ -69,7 +69,7 @@ class NALUnitReader {
             return nil
         }
         var formatDescription: CMFormatDescription?
-        _ = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
+        let status = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
             guard let ppsBaseAddress = ppsBuffer.baseAddress else {
                 return nil
             }
@@ -91,6 +91,9 @@ class NALUnitReader {
                     formatDescriptionOut: &formatDescription
                 )
             }
+        }
+        if let status, status != noErr {
+            logger.error(status)
         }
         return formatDescription
     }

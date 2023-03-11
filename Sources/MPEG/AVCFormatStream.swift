@@ -42,8 +42,10 @@ struct AVCFormatStream {
             let startCodeLength = 0 <= i - 3 && data[i - 3] == 0 ? 4 : 3
             let start = 4 - startCodeLength
             let length = lastIndexOf - i
-            data.replaceSubrange(i - startCodeLength + 1...i, with: Int32(length).bigEndian.data[start...])
-            lastIndexOf = i - startCodeLength
+            if 0 < length {
+                data.replaceSubrange(i - startCodeLength + 1...i, with: Int32(length).bigEndian.data[start...])
+                lastIndexOf = i - startCodeLength
+            }
         }
         return data
     }
