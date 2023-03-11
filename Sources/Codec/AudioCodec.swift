@@ -42,7 +42,7 @@ public class AudioCodec {
                 return
             }
             ringBuffer = .init(&inSourceFormat)
-            audioConverter = makeAudioConvter(&inSourceFormat)
+            audioConverter = makeAudioConverter(&inSourceFormat)
         }
     }
     private var ringBuffer: AudioCodecRingBuffer?
@@ -122,7 +122,7 @@ public class AudioCodec {
         return destination.makeAudioBuffer(outputFormat)
     }
 
-    private func makeAudioConvter(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioConverter? {
+    private func makeAudioConverter(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioConverter? {
         guard
             let inputFormat = AVAudioFormat(streamDescription: &inSourceFormat),
             let outputFormat = destination.makeAudioFormat(inSourceFormat) else {
