@@ -20,7 +20,8 @@ public protocol AudioCodecDelegate: AnyObject {
 public class AudioCodec {
     /// The AudioCodec  error domain codes.
     public enum Error: Swift.Error {
-        case faildToConvert(error: NSError)
+        case failedToCreate(from: AVAudioFormat, to: AVAudioFormat)
+        case failedToConvert(error: NSError)
     }
     /// Specifies the output format.
     public var destination: AudioCodecFormat = .aac
@@ -69,7 +70,7 @@ public class AudioCodec {
                     return ringBuffer.current
                 }
                 if let error {
-                    delegate?.audioCodec(self, errorOccurred: .faildToConvert(error: error))
+                    delegate?.audioCodec(self, errorOccurred: .failedToConvert(error: error))
                 } else {
                     delegate?.audioCodec(self, didOutput: buffer, presentationTimeStamp: ringBuffer.presentationTimeStamp)
                 }
@@ -82,6 +83,10 @@ public class AudioCodec {
             guard let buffer = makeInputBuffer() as? AVAudioCompressedBuffer else {
                 return
             }
+            let byteCount = sampleBuffer.dataBuffer?.dataLength ?? 0
+            buffer.packetDescriptions?.pointee = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: UInt32(byteCount))
+            buffer.packetCount = 1
+            buffer.byteLength = UInt32(byteCount)
             sampleBuffer.dataBuffer?.copyDataBytes(to: buffer.data)
             appendAudioBuffer(buffer, presentationTimeStamp: sampleBuffer.presentationTimeStamp)
         }
@@ -97,7 +102,7 @@ public class AudioCodec {
             return audioBuffer
         }
         if let error {
-            delegate?.audioCodec(self, errorOccurred: .faildToConvert(error: error))
+            delegate?.audioCodec(self, errorOccurred: .failedToConvert(error: error))
         } else {
             delegate?.audioCodec(self, didOutput: buffer, presentationTimeStamp: presentationTimeStamp)
         }
@@ -128,11 +133,16 @@ public class AudioCodec {
             let outputFormat = destination.makeAudioFormat(inSourceFormat) else {
             return nil
         }
-        defer {
-            delegate?.audioCodec(self, didSet: outputFormat)
-        }
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
+        defer {
+            if converter != nil && isRunning.value {
+                delegate?.audioCodec(self, didSet: outputFormat)
+            }
+        }
         settings.apply(converter, oldValue: nil)
+        if converter == nil {
+            delegate?.audioCodec(self, errorOccurred: .failedToCreate(from: inputFormat, to: outputFormat))
+        }
         return converter
     }
 }
@@ -142,6 +152,9 @@ extension AudioCodec: Running {
     public func startRunning() {
         lockQueue.async {
             self.isRunning.mutate { $0 = true }
+            if let audioConverter = self.audioConverter {
+                self.delegate?.audioCodec(self, didSet: audioConverter.outputFormat)
+            }
         }
     }
 

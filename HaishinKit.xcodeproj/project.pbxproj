@@ -452,6 +452,7 @@
 		BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
+		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -790,6 +791,7 @@
 		BCD63ABB26FDF12A0084842D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
+		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -966,6 +968,7 @@
 			children = (
 				BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */,
 				29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */,
+				BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */,
 				294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */,
 				29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */,
 				29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */,
@@ -1710,6 +1713,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCC1A7212648540800661156 /* RPReplay_Final1620580691.mp4 in Resources */,
+				BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */,
 				BCAD0C19263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v in Resources */,
 				294637AA1EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv in Resources */,
 				29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */,

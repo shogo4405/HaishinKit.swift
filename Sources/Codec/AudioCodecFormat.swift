@@ -71,15 +71,6 @@ public enum AudioCodecFormat {
         }
     }
 
-    func maximumBuffers(_ channel: UInt32) -> Int {
-        switch self {
-        case .aac:
-            return 1
-        case .pcm:
-            return Int(channel)
-        }
-    }
-
     func makeAudioBuffer(_ format: AVAudioFormat) -> AVAudioBuffer? {
         switch self {
         case .aac:
@@ -93,17 +84,27 @@ public enum AudioCodecFormat {
         guard let inSourceFormat else {
             return nil
         }
-        var streamDescription = AudioStreamBasicDescription(
-            mSampleRate: inSourceFormat.mSampleRate,
-            mFormatID: formatID,
-            mFormatFlags: formatFlags,
-            mBytesPerPacket: bytesPerPacket,
-            mFramesPerPacket: framesPerPacket,
-            mBytesPerFrame: bytesPerFrame,
-            mChannelsPerFrame: inSourceFormat.mChannelsPerFrame,
-            mBitsPerChannel: bitsPerChannel,
-            mReserved: 0
-        )
-        return AVAudioFormat(streamDescription: &streamDescription)
+        switch self {
+        case .aac:
+            var streamDescription = AudioStreamBasicDescription(
+                mSampleRate: inSourceFormat.mSampleRate,
+                mFormatID: formatID,
+                mFormatFlags: formatFlags,
+                mBytesPerPacket: bytesPerPacket,
+                mFramesPerPacket: framesPerPacket,
+                mBytesPerFrame: bytesPerFrame,
+                mChannelsPerFrame: inSourceFormat.mChannelsPerFrame,
+                mBitsPerChannel: bitsPerChannel,
+                mReserved: 0
+            )
+            return AVAudioFormat(streamDescription: &streamDescription)
+        case .pcm:
+            return AVAudioFormat(
+                commonFormat: .pcmFormatFloat32,
+                sampleRate: inSourceFormat.mSampleRate,
+                channels: inSourceFormat.mChannelsPerFrame,
+                interleaved: true
+            )
+        }
     }
 }
