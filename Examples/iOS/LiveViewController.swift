@@ -26,6 +26,7 @@ final class LiveViewController: UIViewController {
     private var currentEffect: VideoEffect?
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
+    private var videoBitRate = VideoCodecSettings.default.bitRate
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,6 +41,7 @@ final class LiveViewController: UIViewController {
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.videoOrientation = orientation
         }
+        rtmpStream.delegate = self
         rtmpStream.videoSettings.videoSize = .init(width: 720, height: 1280)
         rtmpStream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
@@ -294,5 +296,41 @@ extension LiveViewController: IORecorderDelegate {
                 print(error)
             }
         })
+    }
+}
+
+extension LiveViewController: RTMPStreamDelegate {
+    // MARK: RTMPStreamDelegate
+    func rtmpStream(_ stream: RTMPStream, publishInsufficientBWOccured connection: RTMPConnection) {
+        // Adaptive bitrate streaming exsample. Please feedback me your good algorithm. :D
+        videoBitRate -= 32 * 1000
+        stream.videoSettings.bitRate = max(videoBitRate, 64 * 1000)
+    }
+
+    func rtmpStream(_ stream: RTMPStream, publishSufficientBWOccured connection: RTMPConnection) {
+        videoBitRate += 32 * 1000
+        stream.videoSettings.bitRate = min(videoBitRate, VideoCodecSettings.default.bitRate)
+    }
+
+    func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime) {
+    }
+
+    func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer) {
+    }
+
+    func rtmpStream(_ stream: RTMPStream, updatedStats connection: RTMPConnection) {
+    }
+
+    func rtmpStream(_ stream: RTMPStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+    }
+
+    func rtmpStream(_ stream: RTMPStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+    }
+
+    func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error) {
+    }
+
+    func rtmpStreamDidClear(_ stream: RTMPStream) {
+        videoBitRate = VideoCodecSettings.default.bitRate
     }
 }

@@ -39,8 +39,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 - [x] Publish and Recording (H264/AAC)
 - [x] _Playback (Beta)_
 - [x] Adaptive bitrate streaming
-  - [x] Handling (see also [#126](/../../issues/126))
-  - [x] Automatic drop frames
+  - [x] Handling (see also [#1153](/../../issues/1153))
 - [ ] Action Message Format
   - [x] AMF0
   - [ ] AMF3
