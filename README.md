@@ -297,8 +297,8 @@ var hkView = HKView(frame: view.bounds)
 hkView.attachStream(httpStream)
 
 var httpService = HLSService(domain: "", type: "_http._tcp", name: "HaishinKit", port: 8080)
-httpService.startRunning()
 httpService.addHTTPStream(httpStream)
+httpService.startRunning()
 
 // add ViewController#view
 view.addSubview(hkView)
