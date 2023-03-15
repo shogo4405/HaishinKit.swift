@@ -327,15 +327,23 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 
     mutating func makeSampleBuffer(_ streamType: ESStreamType, previousPresentationTimeStamp: CMTime, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
+        let blockBuffer = data.makeBlockBuffer(advancedBy: 0)
+        var sampleSizes: [Int] = []
         switch streamType {
         case .h264:
             _ = AVCFormatStream.toNALFileFormat(&data)
+            sampleSizes.append(blockBuffer?.dataLength ?? 0)
+        case .adtsAac:
+            let reader = ADTSReader()
+            reader.read(data)
+            var iterator = reader.makeIterator()
+            while let next = iterator.next() {
+                sampleSizes.append(next)
+            }
         default:
             break
         }
-        let blockBuffer = data.makeBlockBuffer(advancedBy: streamType.headerSize)
         var sampleBuffer: CMSampleBuffer?
-        var sampleSize: Int = blockBuffer?.dataLength ?? 0
         var timing = optionalPESHeader?.makeSampleTimingInfo(previousPresentationTimeStamp) ?? .invalid
         guard let blockBuffer, CMSampleBufferCreate(
                 allocator: kCFAllocatorDefault,
@@ -344,11 +352,11 @@ struct PacketizedElementaryStream: PESPacketHeader {
                 makeDataReadyCallback: nil,
                 refcon: nil,
                 formatDescription: formatDescription,
-                sampleCount: 1,
+                sampleCount: sampleSizes.count,
                 sampleTimingEntryCount: 1,
                 sampleTimingArray: &timing,
-                sampleSizeEntryCount: 1,
-                sampleSizeArray: &sampleSize,
+                sampleSizeEntryCount: sampleSizes.count,
+                sampleSizeArray: &sampleSizes,
                 sampleBufferOut: &sampleBuffer) == noErr else {
             return nil
         }

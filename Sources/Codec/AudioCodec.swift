@@ -80,15 +80,24 @@ public class AudioCodec {
                 appendSampleBuffer(sampleBuffer, offset: offset + numSamples)
             }
         case .pcm:
-            guard let buffer = makeInputBuffer() as? AVAudioCompressedBuffer else {
-                return
+            var offset = 0
+            var presentationTimeStamp = sampleBuffer.presentationTimeStamp
+            for i in 0..<sampleBuffer.numSamples {
+                guard let buffer = makeInputBuffer() as? AVAudioCompressedBuffer else {
+                    continue
+                }
+                let sampleSize = CMSampleBufferGetSampleSize(sampleBuffer, at: i)
+                let byteCount = sampleSize - ADTSHeader.size
+                buffer.packetDescriptions?.pointee = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: UInt32(byteCount))
+                buffer.packetCount = 1
+                buffer.byteLength = UInt32(byteCount)
+                if let blockBuffer = sampleBuffer.dataBuffer {
+                    CMBlockBufferCopyDataBytes(blockBuffer, atOffset: offset + ADTSHeader.size, dataLength: byteCount, destination: buffer.data)
+                    appendAudioBuffer(buffer, presentationTimeStamp: presentationTimeStamp)
+                    presentationTimeStamp = CMTimeAdd(presentationTimeStamp, CMTime(value: CMTimeValue(1024), timescale: sampleBuffer.presentationTimeStamp.timescale))
+                    offset += sampleSize
+                }
             }
-            let byteCount = sampleBuffer.dataBuffer?.dataLength ?? 0
-            buffer.packetDescriptions?.pointee = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: UInt32(byteCount))
-            buffer.packetCount = 1
-            buffer.byteLength = UInt32(byteCount)
-            sampleBuffer.dataBuffer?.copyDataBytes(to: buffer.data)
-            appendAudioBuffer(buffer, presentationTimeStamp: sampleBuffer.presentationTimeStamp)
         }
     }
 

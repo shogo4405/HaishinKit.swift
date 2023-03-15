@@ -2,6 +2,8 @@ import CoreMedia
 import Foundation
 
 struct ADTSHeader: Equatable {
+    static let size: Int = 7
+    static let sizeWithCrc = 9
     static let sync: UInt8 = 0xFF
 
     var sync = Self.sync
@@ -16,6 +18,11 @@ struct ADTSHeader: Equatable {
     var copyrightIdBit = false
     var copyrightIdStart = false
     var aacFrameLength: UInt16 = 0
+    var bufferFullness: UInt16 = 0
+    var aacFrames: UInt8 = 0
+
+    init() {
+    }
 
     init(data: Data) {
         self.data = data
@@ -33,7 +40,7 @@ struct ADTSHeader: Equatable {
             mSampleRate: frequency.sampleRate,
             mFormatID: kAudioFormatMPEG4AAC,
             mFormatFlags: UInt32(type.rawValue),
-            mBytesPerPacket: 1,
+            mBytesPerPacket: 0,
             mFramesPerPacket: 1024,
             mBytesPerFrame: 0,
             mChannelsPerFrame: UInt32(channel.rawValue),
@@ -62,6 +69,9 @@ extension ADTSHeader: DataConvertible {
             Data()
         }
         set {
+            guard ADTSHeader.size <= data.count else {
+                return
+            }
             sync = newValue[0]
             id = (newValue[1] & 0b00001111) >> 3
             layer = (newValue[1] >> 2) & 0b00000011
@@ -73,6 +83,42 @@ extension ADTSHeader: DataConvertible {
             home = (newValue[3] & 0b00010000) == 0b00010000
             copyrightIdBit = (newValue[3] & 0b00001000) == 0b00001000
             copyrightIdStart = (newValue[3] & 0b00000100) == 0b00000100
+            aacFrameLength = UInt16(newValue[3] & 0b00000011) << 11 | UInt16(newValue[4]) << 3 | UInt16(newValue[5] >> 5)
+            bufferFullness = UInt16(newValue[5]) >> 2 | UInt16(newValue[6] >> 2)
+            aacFrames = newValue[6] & 0b00000011
         }
+    }
+}
+
+class ADTSReader: Sequence {
+    private var data: Data = .init()
+
+    func read(_ data: Data) {
+        self.data = data
+    }
+
+    func makeIterator() -> ADTSReaderIterator {
+        return ADTSReaderIterator(data: data)
+    }
+}
+
+struct ADTSReaderIterator: IteratorProtocol {
+    private let data: Data
+    private var cursor: Int = 0
+    private var header: ADTSHeader = .init()
+
+    init(data: Data) {
+        self.data = data
+    }
+
+    mutating func next() -> Int? {
+        guard cursor < data.count else {
+            return nil
+        }
+        header.data = data.advanced(by: cursor)
+        defer {
+            cursor += Int(header.aacFrameLength)
+        }
+        return Int(header.aacFrameLength)
     }
 }
