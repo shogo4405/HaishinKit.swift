@@ -69,7 +69,7 @@ extension ADTSHeader: DataConvertible {
             Data()
         }
         set {
-            guard ADTSHeader.size <= data.count else {
+            guard ADTSHeader.size <= newValue.count else {
                 return
             }
             sync = newValue[0]
