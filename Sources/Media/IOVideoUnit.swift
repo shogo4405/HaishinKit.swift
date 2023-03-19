@@ -332,7 +332,7 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension IOVideoUnit: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
-    func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
+    func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
     }
 
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {

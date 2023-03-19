@@ -4,9 +4,9 @@ import AVFoundation
  * The interface a AudioCodec uses to inform its delegate.
  */
 public protocol AudioCodecDelegate: AnyObject {
-    /// Tells the receiver to set a formatDescription.
+    /// Tells the receiver to output an AVAudioFormat.
     func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat)
-    /// Tells the receiver to output a encoded or decoded sampleBuffer.
+    /// Tells the receiver to output an encoded or decoded CMSampleBuffer.
     func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime)
     /// Tells the receiver to occured an error.
     func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error)

@@ -11,7 +11,7 @@ import UIKit
  */
 public protocol VideoCodecDelegate: AnyObject {
     /// Tells the receiver to set a formatDescription.
-    func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?)
+    func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?)
     /// Tells the receiver to output an encoded or decoded sampleBuffer.
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
@@ -100,7 +100,7 @@ public class VideoCodec {
                 let config = AVCConfigurationRecord(data: avcC)
                 isBaseline = config.avcProfileIndication == 66
             }
-            delegate?.videoCodec(self, didSet: formatDescription)
+            delegate?.videoCodec(self, didOutput: formatDescription)
         }
     }
     var needsSync: Atomic<Bool> = .init(true)

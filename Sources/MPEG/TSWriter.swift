@@ -240,7 +240,7 @@ extension TSWriter: AudioCodecDelegate {
 
 extension TSWriter: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
-    public func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
+    public func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
         guard
             let formatDescription,
             let avcC = AVCConfigurationRecord.getData(formatDescription) else {
