@@ -203,13 +203,13 @@ open class NetStream: NSObject {
 
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
-    open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, withType: AVMediaType, options: [NSObject: AnyObject]? = nil) {
-        switch withType {
-        case .audio:
+    open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, options: [NSObject: AnyObject]? = nil) {
+        switch sampleBuffer.formatDescription?.mediaType {
+        case kCMMediaType_Audio:
             mixer.audioIO.lockQueue.async {
                 self.mixer.audioIO.appendSampleBuffer(sampleBuffer)
             }
-        case .video:
+        case kCMMediaType_Video:
             mixer.videoIO.lockQueue.async {
                 self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
             }
@@ -289,7 +289,7 @@ extension NetStream: IOScreenCaptureUnitDelegate {
         guard let sampleBuffer, status == noErr else {
             return
         }
-        appendSampleBuffer(sampleBuffer, withType: .video)
+        appendSampleBuffer(sampleBuffer)
     }
 }
 
@@ -300,12 +300,12 @@ extension NetStream: SCStreamOutput {
         if #available(macOS 13.0, *) {
             switch type {
             case .screen:
-                appendSampleBuffer(sampleBuffer, withType: .video)
+                appendSampleBuffer(sampleBuffer)
             default:
-                appendSampleBuffer(sampleBuffer, withType: .audio)
+                appendSampleBuffer(sampleBuffer)
             }
         } else {
-            appendSampleBuffer(sampleBuffer, withType: .video)
+            appendSampleBuffer(sampleBuffer)
         }
     }
 }

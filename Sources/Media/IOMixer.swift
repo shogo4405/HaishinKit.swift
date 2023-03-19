@@ -51,6 +51,8 @@ public class IOMixer {
         }
     }
 
+    private var readyState: ReadyState = .standby
+
     #if os(iOS) || os(macOS)
     var isMultitaskingCameraAccessEnabled = true
 
@@ -75,8 +77,6 @@ public class IOMixer {
             session.commitConfiguration()
         }
     }
-
-    private var readyState: ReadyState = .standby
 
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
