@@ -615,7 +615,7 @@ final class RTMPAudioMessage: RTMPMessage {
     }
 
     private func makeAudioStreamBasicDescription() -> AudioStreamBasicDescription? {
-        return nil
+        return codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
     }
 }
 

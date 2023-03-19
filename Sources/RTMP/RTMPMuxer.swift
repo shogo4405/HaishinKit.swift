@@ -28,9 +28,9 @@ extension RTMPMuxer: AudioCodecDelegate {
     func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
     }
 
-    func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
+    func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
         var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
-        buffer.append(contentsOf: AudioSpecificConfig(formatDescription: outputFormat.formatDescription).bytes)
+        buffer.append(contentsOf: AudioSpecificConfig(formatDescription: audioFormat.formatDescription).bytes)
         delegate?.muxer(self, didOutputAudio: buffer, withTimestamp: 0)
     }
 
@@ -48,6 +48,10 @@ extension RTMPMuxer: AudioCodecDelegate {
 
 extension RTMPMuxer: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
+    func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+        delegate?.muxer(self, videoCodecErrorOccurred: error)
+    }
+
     func videoCodec(_ codec: VideoCodec, didSet formatDescription: CMFormatDescription?) {
         guard
             let formatDescription = formatDescription,
@@ -78,9 +82,5 @@ extension RTMPMuxer: VideoCodecDelegate {
         buffer.append(data)
         delegate?.muxer(self, didOutputVideo: buffer, withTimestamp: delta)
         videoTimeStamp = decodeTimeStamp
-    }
-
-    func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
-        delegate?.muxer(self, videoCodecErrorOccurred: error)
     }
 }

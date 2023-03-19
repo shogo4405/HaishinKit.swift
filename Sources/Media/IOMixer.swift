@@ -236,10 +236,10 @@ extension IOMixer: IOUnitDecoding {
         guard readyState == .standby else {
             return
         }
-        readyState = .decoding
-        mediaLink.startRunning()
         audioIO.startDecoding(audioEngine)
         videoIO.startDecoding(audioEngine)
+        mediaLink.startRunning()
+        readyState = .decoding
     }
 
     /// Stop decoding.

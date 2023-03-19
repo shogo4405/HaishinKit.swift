@@ -12,7 +12,6 @@ final class IOAudioUnit: NSObject, IOUnit {
     }()
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
-
     var audioEngine: AVAudioEngine?
     var soundTransform: SoundTransform = .init() {
         didSet {
@@ -25,8 +24,6 @@ final class IOAudioUnit: NSObject, IOUnit {
     #if os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
-
-    private var audioFormat: AVAudioFormat?
 
     #if os(iOS) || os(macOS)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
@@ -117,13 +114,12 @@ extension IOAudioUnit: AudioCodecDelegate {
     func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
     }
 
-    func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
+    func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
         guard let audioEngine = audioEngine else {
             return
         }
-        audioFormat = AVAudioFormat(cmAudioFormatDescription: outputFormat.formatDescription)
         nstry({
-            if let plyerNode = self.mixer?.mediaLink.playerNode, let audioFormat = self.audioFormat {
+            if let plyerNode = self.mixer?.mediaLink.playerNode {
                 audioEngine.connect(plyerNode, to: audioEngine.mainMixerNode, format: audioFormat)
             }
         }, { exeption in

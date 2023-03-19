@@ -213,7 +213,7 @@ extension TSWriter: AudioCodecDelegate {
     public func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
     }
 
-    public func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat) {
+    public func audioCodec(_ codec: AudioCodec, didOutput outputFormat: AVAudioFormat) {
         var data = ESSpecificData()
         data.streamType = .adtsAac
         data.elementaryPID = TSWriter.defaultAudioPID

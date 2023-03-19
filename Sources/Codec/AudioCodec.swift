@@ -5,7 +5,7 @@ import AVFoundation
  */
 public protocol AudioCodecDelegate: AnyObject {
     /// Tells the receiver to set a formatDescription.
-    func audioCodec(_ codec: AudioCodec, didSet outputFormat: AVAudioFormat)
+    func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat)
     /// Tells the receiver to output a encoded or decoded sampleBuffer.
     func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime)
     /// Tells the receiver to occured an error.
@@ -143,14 +143,11 @@ public class AudioCodec {
             return nil
         }
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
-        defer {
-            if converter != nil && isRunning.value {
-                delegate?.audioCodec(self, didSet: outputFormat)
-            }
-        }
         settings.apply(converter, oldValue: nil)
         if converter == nil {
             delegate?.audioCodec(self, errorOccurred: .failedToCreate(from: inputFormat, to: outputFormat))
+        } else {
+            delegate?.audioCodec(self, didOutput: outputFormat)
         }
         return converter
     }
@@ -160,15 +157,21 @@ extension AudioCodec: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
-            self.isRunning.mutate { $0 = true }
-            if let audioConverter = self.audioConverter {
-                self.delegate?.audioCodec(self, didSet: audioConverter.outputFormat)
+            guard !self.isRunning.value else {
+                return
             }
+            if let audioConverter = self.audioConverter {
+                self.delegate?.audioCodec(self, didOutput: audioConverter.outputFormat)
+            }
+            self.isRunning.mutate { $0 = true }
         }
     }
 
     public func stopRunning() {
         lockQueue.async {
+            guard self.isRunning.value else {
+                return
+            }
             self.inSourceFormat = nil
             self.audioConverter = nil
             self.ringBuffer = nil
