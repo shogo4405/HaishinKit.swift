@@ -48,22 +48,30 @@ struct AVCConfigurationRecord {
     }
 
     func makeFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus {
-        var parameterSetPointers: [UnsafePointer<UInt8>] = [
-            UnsafePointer<UInt8>(sequenceParameterSets[0]),
-            UnsafePointer<UInt8>(pictureParameterSets[0])
-        ]
-        var parameterSetSizes: [Int] = [
-            sequenceParameterSets[0].count,
-            pictureParameterSets[0].count
-        ]
-        return CMVideoFormatDescriptionCreateFromH264ParameterSets(
-            allocator: kCFAllocatorDefault,
-            parameterSetCount: 2,
-            parameterSetPointers: &parameterSetPointers,
-            parameterSetSizes: &parameterSetSizes,
-            nalUnitHeaderLength: naluLength,
-            formatDescriptionOut: formatDescriptionOut
-        )
+        return pictureParameterSets[0].withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+            guard let ppsBaseAddress = ppsBuffer.baseAddress else {
+                return kCMFormatDescriptionBridgeError_InvalidParameter
+            }
+            return sequenceParameterSets[0].withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+                guard let spsBaseAddress = spsBuffer.baseAddress else {
+                    return kCMFormatDescriptionBridgeError_InvalidParameter
+                }
+                let pointers: [UnsafePointer<UInt8>] = [
+                    spsBaseAddress.assumingMemoryBound(to: UInt8.self),
+                    ppsBaseAddress.assumingMemoryBound(to: UInt8.self)
+                ]
+                let sizes: [Int] = [spsBuffer.count, ppsBuffer.count]
+                let nalUnitHeaderLength: Int32 = 4
+                return CMVideoFormatDescriptionCreateFromH264ParameterSets(
+                    allocator: kCFAllocatorDefault,
+                    parameterSetCount: pointers.count,
+                    parameterSetPointers: pointers,
+                    parameterSetSizes: sizes,
+                    nalUnitHeaderLength: nalUnitHeaderLength,
+                    formatDescriptionOut: formatDescriptionOut
+                )
+            }
+        }
     }
 }
 

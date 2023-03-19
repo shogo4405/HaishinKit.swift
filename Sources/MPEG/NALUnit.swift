@@ -69,13 +69,13 @@ class NALUnitReader {
             return nil
         }
         var formatDescription: CMFormatDescription?
-        let status = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
+        let status = pps.data.withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus in
             guard let ppsBaseAddress = ppsBuffer.baseAddress else {
-                return nil
+                return kCMFormatDescriptionBridgeError_InvalidParameter
             }
-            return sps.data.withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> OSStatus? in
+            return sps.data.withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> OSStatus in
                 guard let spsBaseAddress = spsBuffer.baseAddress else {
-                    return nil
+                    return kCMFormatDescriptionBridgeError_InvalidParameter
                 }
                 let pointers: [UnsafePointer<UInt8>] = [
                     spsBaseAddress.assumingMemoryBound(to: UInt8.self),
@@ -92,7 +92,7 @@ class NALUnitReader {
                 )
             }
         }
-        if let status, status != noErr {
+        if status != noErr {
             logger.error(status)
         }
         return formatDescription
