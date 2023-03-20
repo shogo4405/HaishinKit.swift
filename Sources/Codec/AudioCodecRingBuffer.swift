@@ -82,7 +82,7 @@ final class AudioCodecRingBuffer {
                 break
             }
         } else {
-            for i in 0..<current.stride {
+            for i in 0..<Int(format.channelCount) {
                 switch format.commonFormat {
                 case .pcmFormatInt16:
                     memcpy(current.int16ChannelData?[i].advanced(by: index), workingBuffer.int16ChannelData?[i].advanced(by: offset), numSamples * 2)
@@ -114,7 +114,7 @@ final class AudioCodecRingBuffer {
                 break
             }
         } else {
-            for i in 0..<current.stride {
+            for i in 0..<Int(format.channelCount) {
                 switch format.commonFormat {
                 case .pcmFormatInt16:
                     current.int16ChannelData?[i].assign(repeating: 0, count: numSamples)
