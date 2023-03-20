@@ -1,31 +1,5 @@
 import AVFoundation
 
-/// The interface a RTMPStream uses to inform its delegate.
-public protocol RTMPStreamDelegate: AnyObject {
-    /// Tells the receiver to publish insufficient bandwidth occured.
-    func rtmpStream(_ stream: RTMPStream, publishInsufficientBWOccured connection: RTMPConnection)
-    /// Tells the receiver to publish sufficient bandwidth occured.
-    func rtmpStream(_ stream: RTMPStream, publishSufficientBWOccured connection: RTMPConnection)
-    /// Tells the receiver to playback an audio packet incoming.
-    func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
-    /// Tells the receiver to playback a video packet incoming.
-    func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer)
-    /// Tells the receiver to update statistics.
-    func rtmpStream(_ stream: RTMPStream, updatedStats connection: RTMPConnection)
-    #if os(iOS)
-    /// Tells the receiver to session was interrupted.
-    func rtmpStream(_ stream: RTMPStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
-    /// Tells the receiver to session interrupted ended.
-    func rtmpStream(_ stream: RTMPStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
-    #endif
-    /// Tells the receiver to video codec error occured.
-    func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error)
-    /// Tells the receiver to audio codec error occured.
-    func rtmpStream(_ stream: RTMPStream, audioCodecErrorOccurred error: AudioCodec.Error)
-    /// Tells the receiver to the stream opend.
-    func rtmpStreamDidClear(_ stream: RTMPStream)
-}
-
 /// An object that provides the interface to control a one-way channel over a RtmpConnection.
 open class RTMPStream: NetStream {
     /// NetStatusEvent#info.code for NetStream
@@ -185,8 +159,6 @@ open class RTMPStream: NetStream {
     }
 
     static let defaultID: UInt32 = 0
-    /// Specifies the delegate of the RTMPStream.
-    public weak var delegate: RTMPStreamDelegate?
     /// The NetStreamInfo object whose properties contain data.
     public internal(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
@@ -479,7 +451,6 @@ open class RTMPStream: NetStream {
             currentFPS = 0
             frameCount = 0
             info.clear()
-            delegate?.rtmpStreamDidClear(self)
             for message in messages {
                 rtmpConnection.currentTransactionId += 1
                 message.streamId = id
@@ -618,11 +589,11 @@ extension RTMPStream: RTMPMuxerDelegate {
     }
 
     func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error) {
-        delegate?.rtmpStream(self, videoCodecErrorOccurred: error)
+        delegate?.stream(self, videoCodecErrorOccurred: error)
     }
 
     func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error) {
-        delegate?.rtmpStream(self, audioCodecErrorOccurred: error)
+        delegate?.stream(self, audioCodecErrorOccurred: error)
     }
 }
 
@@ -630,20 +601,20 @@ extension RTMPStream: IOMixerDelegate {
     // MARK: IOMixerDelegate
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
         frameCount += 1
-        delegate?.rtmpStream(self, didOutput: video)
+        delegate?.stream(self, didOutput: video)
     }
 
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        delegate?.rtmpStream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
+        delegate?.stream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
     }
 
     #if os(iOS)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-        delegate?.rtmpStream(self, sessionWasInterrupted: session, reason: reason)
+        delegate?.stream(self, sessionWasInterrupted: session, reason: reason)
     }
 
     func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-        delegate?.rtmpStream(self, sessionInterruptionEnded: session, reason: reason)
+        delegate?.stream(self, sessionInterruptionEnded: session, reason: reason)
     }
     #endif
 }

@@ -5,6 +5,24 @@ import CoreMedia
 import ScreenCaptureKit
 #endif
 
+/// The interface a NetStream uses to inform its delegate.
+public protocol NetStreamDelegate: AnyObject {
+    /// Tells the receiver to playback an audio packet incoming.
+    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
+    /// Tells the receiver to playback a video packet incoming.
+    func stream(_ stream: NetStream, didOutput video: CMSampleBuffer)
+    #if os(iOS)
+    /// Tells the receiver to session was interrupted.
+    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    /// Tells the receiver to session interrupted ended.
+    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    #endif
+    /// Tells the receiver to video codec error occured.
+    func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error)
+    /// Tells the receiver to audio codec error occured.
+    func stream(_ stream: NetStream, audioCodecErrorOccurred error: AudioCodec.Error)
+}
+
 /// The `NetStream` class is the foundation of a RTMPStream, HTTPStream.
 open class NetStream: NSObject {
     /// The lockQueue.
@@ -19,6 +37,8 @@ open class NetStream: NSObject {
 
     /// The mixer object.
     public private(set) var mixer = IOMixer()
+    /// Specifies the delegate of the NetStream.
+    public weak var delegate: NetStreamDelegate?
 
     /// Specifies the context object.
     public var context: CIContext {
