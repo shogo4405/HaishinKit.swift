@@ -25,6 +25,18 @@ open class RTMPResponder {
     }
 }
 
+/// The interface a RTMPConnectionDelegate uses to inform its delegate.
+public protocol RTMPConnectionDelegate: AnyObject {
+    /// Tells the receiver to publish insufficient bandwidth occured.
+    func connection(_ connection: RTMPConnection, publishInsufficientBWOccured stream: RTMPStream)
+    /// Tells the receiver to publish sufficient bandwidth occured.
+    func connection(_ connection: RTMPConnection, publishSufficientBWOccured stream: RTMPStream)
+    /// Tells the receiver to update statistics.
+    func connection(_ connection: RTMPConnection, updateStats stream: RTMPStream)
+    /// Tells the receiver to the stream opend.
+    func connection(_ connection: RTMPConnection, didClear stream: RTMPStream)
+}
+
 // MARK: -
 /// The RTMPConneciton class create a two-way RTMP connection.
 open class RTMPConnection: EventDispatcher {
@@ -203,6 +215,8 @@ open class RTMPConnection: EventDispatcher {
     public var totalStreamsCount: Int {
         streams.count
     }
+    /// Specifies the delegate of the NetStream.
+    public weak var delegate: RTMPConnectionDelegate?
     /// The statistics of outgoing queue bytes per second.
     @objc open private(set) dynamic var previousQueueBytesOut: [Int64] = []
     /// The statistics of incoming bytes per second.
@@ -469,17 +483,17 @@ open class RTMPConnection: EventDispatcher {
             }
             if total == measureInterval - 1 {
                 for stream in streams {
-                    stream.delegate?.rtmpStream(stream, publishInsufficientBWOccured: self)
+                    delegate?.connection(self, publishInsufficientBWOccured: stream)
                 }
             } else if total == 0 {
                 for stream in streams {
-                    stream.delegate?.rtmpStream(stream, publishSufficientBWOccured: self)
+                    delegate?.connection(self, publishSufficientBWOccured: stream)
                 }
             }
             previousQueueBytesOut.removeFirst()
         }
         for stream in streams {
-            stream.delegate?.rtmpStream(stream, updatedStats: self)
+            delegate?.connection(self, didClear: stream)
         }
     }
 }

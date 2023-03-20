@@ -31,6 +31,8 @@ final class LiveViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        rtmpConnection.delegate = self
+
         pipIntentView.layer.borderWidth = 1.0
         pipIntentView.layer.borderColor = UIColor.white.cgColor
         pipIntentView.bounds = MultiCamCaptureSettings.default.regionOfInterest
@@ -41,7 +43,6 @@ final class LiveViewController: UIViewController {
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.videoOrientation = orientation
         }
-        rtmpStream.delegate = self
         rtmpStream.videoSettings.videoSize = .init(width: 720, height: 1280)
         rtmpStream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
@@ -280,6 +281,26 @@ final class LiveViewController: UIViewController {
     }
 }
 
+extension LiveViewController: RTMPConnectionDelegate {
+    func connection(_ connection: RTMPConnection, publishInsufficientBWOccured stream: RTMPStream) {
+        // Adaptive bitrate streaming exsample. Please feedback me your good algorithm. :D
+        videoBitRate -= 32 * 1000
+        stream.videoSettings.bitRate = max(videoBitRate, 64 * 1000)
+    }
+
+    func connection(_ connection: RTMPConnection, publishSufficientBWOccured stream: RTMPStream) {
+        videoBitRate += 32 * 1000
+        stream.videoSettings.bitRate = min(videoBitRate, VideoCodecSettings.default.bitRate)
+    }
+
+    func connection(_ connection: RTMPConnection, updateStats stream: RTMPStream) {
+    }
+
+    func connection(_ connection: RTMPConnection, didClear stream: RTMPStream) {
+        videoBitRate = VideoCodecSettings.default.bitRate
+    }
+}
+
 extension LiveViewController: IORecorderDelegate {
     // MARK: IORecorderDelegate
     func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error) {
@@ -296,44 +317,5 @@ extension LiveViewController: IORecorderDelegate {
                 print(error)
             }
         })
-    }
-}
-
-extension LiveViewController: RTMPStreamDelegate {
-    // MARK: RTMPStreamDelegate
-    func rtmpStream(_ stream: RTMPStream, publishInsufficientBWOccured connection: RTMPConnection) {
-        // Adaptive bitrate streaming exsample. Please feedback me your good algorithm. :D
-        videoBitRate -= 32 * 1000
-        stream.videoSettings.bitRate = max(videoBitRate, 64 * 1000)
-    }
-
-    func rtmpStream(_ stream: RTMPStream, publishSufficientBWOccured connection: RTMPConnection) {
-        videoBitRate += 32 * 1000
-        stream.videoSettings.bitRate = min(videoBitRate, VideoCodecSettings.default.bitRate)
-    }
-
-    func rtmpStream(_ stream: RTMPStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, didOutput video: CMSampleBuffer) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, updatedStats connection: RTMPConnection) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, audioCodecErrorOccurred error: HaishinKit.AudioCodec.Error) {
-    }
-
-    func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error) {
-    }
-
-    func rtmpStreamDidClear(_ stream: RTMPStream) {
-        videoBitRate = VideoCodecSettings.default.bitRate
     }
 }
