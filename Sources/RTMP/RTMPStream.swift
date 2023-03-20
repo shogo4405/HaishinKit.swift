@@ -20,6 +20,8 @@ public protocol RTMPStreamDelegate: AnyObject {
     #endif
     /// Tells the receiver to video codec error occured.
     func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error)
+    /// Tells the receiver to audio codec error occured.
+    func rtmpStream(_ stream: RTMPStream, audioCodecErrorOccurred error: AudioCodec.Error)
     /// Tells the receiver to the stream opend.
     func rtmpStreamDidClear(_ stream: RTMPStream)
 }
@@ -617,6 +619,10 @@ extension RTMPStream: RTMPMuxerDelegate {
 
     func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error) {
         delegate?.rtmpStream(self, videoCodecErrorOccurred: error)
+    }
+
+    func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error) {
+        delegate?.rtmpStream(self, audioCodecErrorOccurred: error)
     }
 }
 

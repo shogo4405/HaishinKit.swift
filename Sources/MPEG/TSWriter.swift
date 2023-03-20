@@ -235,6 +235,7 @@ extension TSWriter: AudioCodecDelegate {
             decodeTimeStamp: .invalid,
             randomAccessIndicator: true
         )
+        codec.releaseOutputBuffer(audioBuffer)
     }
 }
 

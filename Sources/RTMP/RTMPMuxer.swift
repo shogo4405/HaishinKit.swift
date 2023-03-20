@@ -4,6 +4,7 @@ protocol RTMPMuxerDelegate: AnyObject {
     func muxer(_ muxer: RTMPMuxer, didSetMetadata: ASObject)
     func muxer(_ muxer: RTMPMuxer, didOutputAudio buffer: Data, withTimestamp: Double)
     func muxer(_ muxer: RTMPMuxer, didOutputVideo buffer: Data, withTimestamp: Double)
+    func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error)
     func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error)
 }
 
@@ -26,6 +27,7 @@ final class RTMPMuxer {
 extension RTMPMuxer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
     func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
+        delegate?.muxer(self, audioCodecErrorOccurred: error)
     }
 
     func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
@@ -43,6 +45,7 @@ extension RTMPMuxer: AudioCodecDelegate {
         buffer.append(audioBuffer.data.assumingMemoryBound(to: UInt8.self), count: Int(audioBuffer.byteLength))
         delegate?.muxer(self, didOutputAudio: buffer, withTimestamp: delta)
         audioTimeStamp = presentationTimeStamp
+        codec.releaseOutputBuffer(audioBuffer)
     }
 }
 

@@ -327,6 +327,9 @@ extension LiveViewController: RTMPStreamDelegate {
     func rtmpStream(_ stream: RTMPStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
     }
 
+    func rtmpStream(_ stream: RTMPStream, audioCodecErrorOccurred error: HaishinKit.AudioCodec.Error) {
+    }
+
     func rtmpStream(_ stream: RTMPStream, videoCodecErrorOccurred error: VideoCodec.Error) {
     }
 
