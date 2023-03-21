@@ -7,12 +7,15 @@ extension VTDecompressionSession: VTSessionConvertible {
         ._EnableTemporalProcessing
     ]
 
-    func inputBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) {
+    @inline(__always)
+    func encodeFrame(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) -> OSStatus {
+        return noErr
     }
 
-    func inputBuffer(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) {
+    @inline(__always)
+    func decodeFrame(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) -> OSStatus {
         var flagsOut: VTDecodeInfoFlags = []
-        VTDecompressionSessionDecodeFrame(
+        return VTDecompressionSessionDecodeFrame(
             self,
             sampleBuffer: sampleBuffer,
             flags: Self.defaultDecodeFlags,

@@ -6,8 +6,8 @@ protocol VTSessionConvertible {
     func setOption(_ option: VTSessionOption) -> OSStatus
     func setOptions(_ options: Set<VTSessionOption>) -> OSStatus
     func copySupportedPropertyDictionary() -> [AnyHashable: Any]
-    func inputBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler)
-    func inputBuffer(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping  VTDecompressionOutputHandler)
+    func encodeFrame(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) -> OSStatus
+    func decodeFrame(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) -> OSStatus
     func invalidate()
 }
 

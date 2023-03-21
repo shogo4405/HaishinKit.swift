@@ -118,8 +118,6 @@ public class VideoCodec {
         return attributes
     }
     weak var delegate: VideoCodecDelegate?
-
-    private var lastImageBuffer: CVImageBuffer?
     private(set) var session: VTSessionConvertible? {
         didSet {
             oldValue?.invalidate()
@@ -137,7 +135,7 @@ public class VideoCodec {
         if invalidateSession {
             session = VTSessionMode.compression.makeSession(self)
         }
-        session?.inputBuffer(
+        session?.encodeFrame(
             imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
             duration: duration
@@ -162,30 +160,26 @@ public class VideoCodec {
         if !sampleBuffer.isNotSync {
             needsSync.mutate { $0 = false }
         }
-        session?.inputBuffer(sampleBuffer) { [unowned self] status, _, imageBuffer, presentationTimeStamp, duration in
+        session?.decodeFrame(sampleBuffer) { [unowned self] status, _, imageBuffer, presentationTimeStamp, duration in
             guard let imageBuffer, status == noErr else {
                 self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-
             var timingInfo = CMSampleTimingInfo(
                 duration: duration,
                 presentationTimeStamp: presentationTimeStamp,
                 decodeTimeStamp: .invalid
             )
-
             var videoFormatDescription: CMVideoFormatDescription?
             var status = CMVideoFormatDescriptionCreateForImageBuffer(
                 allocator: kCFAllocatorDefault,
                 imageBuffer: imageBuffer,
                 formatDescriptionOut: &videoFormatDescription
             )
-
             guard status == noErr else {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-
             var sampleBuffer: CMSampleBuffer?
             status = CMSampleBufferCreateForImageBuffer(
                 allocator: kCFAllocatorDefault,
@@ -197,7 +191,6 @@ public class VideoCodec {
                 sampleTiming: &timingInfo,
                 sampleBufferOut: &sampleBuffer
             )
-
             guard let buffer = sampleBuffer, status == noErr else {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
@@ -269,7 +262,6 @@ extension VideoCodec: Running {
             self.invalidateSession = true
             self.needsSync.mutate { $0 = true }
             self.buffers.removeAll()
-            self.lastImageBuffer = nil
             self.formatDescription = nil
             #if os(iOS)
             NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)

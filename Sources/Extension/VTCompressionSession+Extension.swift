@@ -9,9 +9,10 @@ extension VTCompressionSession {
 
 extension VTCompressionSession: VTSessionConvertible {
     // MARK: VTSessionConvertible
-    func inputBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) {
+    @inline(__always)
+    func encodeFrame(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) -> OSStatus {
         var flags: VTEncodeInfoFlags = []
-        VTCompressionSessionEncodeFrame(
+        return VTCompressionSessionEncodeFrame(
             self,
             imageBuffer: imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
@@ -22,7 +23,9 @@ extension VTCompressionSession: VTSessionConvertible {
         )
     }
 
-    func inputBuffer(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) {
+    @inline(__always)
+    func decodeFrame(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) -> OSStatus {
+        return noErr
     }
 
     func invalidate() {
