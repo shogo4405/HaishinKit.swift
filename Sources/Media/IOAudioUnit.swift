@@ -12,15 +12,13 @@ final class IOAudioUnit: NSObject, IOUnit {
     }()
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
-    var audioEngine: AVAudioEngine?
     var soundTransform: SoundTransform = .init() {
         didSet {
             soundTransform.apply(mixer?.mediaLink.playerNode)
         }
     }
-    weak var mixer: IOMixer?
     var muted = false
-
+    weak var mixer: IOMixer?
     #if os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
@@ -78,10 +76,9 @@ extension IOAudioUnit: IOUnitEncoding {
 
 extension IOAudioUnit: IOUnitDecoding {
     // MARK: IOUnitDecoding
-    func startDecoding(_ audioEngine: AVAudioEngine) {
-        self.audioEngine = audioEngine
+    func startDecoding() {
         if let playerNode = mixer?.mediaLink.playerNode {
-            audioEngine.attach(playerNode)
+            mixer?.audioEngine?.attach(playerNode)
         }
         codec.delegate = self
         codec.startRunning()
@@ -89,9 +86,8 @@ extension IOAudioUnit: IOUnitDecoding {
 
     func stopDecoding() {
         if let playerNode = mixer?.mediaLink.playerNode {
-            audioEngine?.detach(playerNode)
+            mixer?.audioEngine?.detach(playerNode)
         }
-        audioEngine = nil
         codec.stopRunning()
         codec.delegate = nil
     }
@@ -115,20 +111,13 @@ extension IOAudioUnit: AudioCodecDelegate {
     }
 
     func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
-        guard let audioEngine = audioEngine else {
-            return
-        }
-        nstry({
-            if let plyerNode = self.mixer?.mediaLink.playerNode {
-                audioEngine.connect(plyerNode, to: audioEngine.mainMixerNode, format: audioFormat)
-            }
-        }, { exeption in
-            logger.warn(exeption)
-        })
         do {
-            try audioEngine.start()
+            mixer?.audioFormat = audioFormat
+            if let audioEngine = mixer?.audioEngine, audioEngine.isRunning == false {
+                try audioEngine.start()
+            }
         } catch {
-            logger.warn(error)
+            logger.error(error)
         }
     }
 

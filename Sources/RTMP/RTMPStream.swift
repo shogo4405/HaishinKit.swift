@@ -473,7 +473,7 @@ open class RTMPStream: NetStream {
             audioTimestamp = 0
             audioTimestampZero = -1.0
             mixer.delegate = self
-            mixer.startDecoding(rtmpConnection.audioEngine)
+            mixer.startDecoding()
         case .publish:
             muxer.dispose()
             muxer.delegate = self

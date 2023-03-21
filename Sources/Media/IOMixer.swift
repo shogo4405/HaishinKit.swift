@@ -21,6 +21,10 @@ protocol IOMixerDelegate: AnyObject {
 public class IOMixer {
     /// The default fps for an IOMixer, value is 30.
     public static let defaultFrameRate: Float64 = 30
+    /// The AVAudioEngine shared instance holder.
+    public static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
+        return AVAudioEngine()
+    }
 
     enum MediaSync {
         case video
@@ -51,7 +55,27 @@ public class IOMixer {
         }
     }
 
+    var audioFormat: AVAudioFormat? {
+        didSet {
+            guard let audioEngine else {
+                return
+            }
+            nstry({
+                if let audioFormat = self.audioFormat {
+                    audioEngine.connect(self.mediaLink.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
+                } else {
+                    audioEngine.disconnectNodeInput(self.mediaLink.playerNode)
+                }
+            }, { exeption in
+                logger.warn(exeption)
+            })
+        }
+    }
+
     private var readyState: ReadyState = .standby
+    private(set) lazy var audioEngine: AVAudioEngine? = {
+        return IOMixer.audioEngineHolder.retain()
+    }()
 
     #if os(iOS) || os(macOS)
     var isMultitaskingCameraAccessEnabled = true
@@ -136,6 +160,7 @@ public class IOMixer {
         if session.isRunning {
             session.stopRunning()
         }
+        IOMixer.audioEngineHolder.release(audioEngine)
     }
     #endif
 
@@ -232,12 +257,12 @@ extension IOMixer: IOUnitEncoding {
 
 extension IOMixer: IOUnitDecoding {
     /// Starts decoding for video and audio data.
-    public func startDecoding(_ audioEngine: AVAudioEngine) {
+    public func startDecoding() {
         guard readyState == .standby else {
             return
         }
-        audioIO.startDecoding(audioEngine)
-        videoIO.startDecoding(audioEngine)
+        audioIO.startDecoding()
+        videoIO.startDecoding()
         mediaLink.startRunning()
         readyState = .decoding
     }

@@ -4,19 +4,14 @@ import HaishinKit
 
 final class RTMPPlaybackViewController: NSViewController {
     @IBOutlet private weak var lfView: MTHKView!
-    @IBOutlet private weak var urlField: NSTextField!
-
     private var rtmpConnection = RTMPConnection()
-    private lazy var rtmpStream: RTMPStream = {
-        let rtmpStream = RTMPStream(connection: rtmpConnection)
-        // rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        lfView.attachStream(rtmpStream)
-        return rtmpStream
-    }()
+    private var rtmpStream: RTMPStream!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
+        rtmpStream = RTMPStream(connection: rtmpConnection)
+        lfView.attachStream(rtmpStream)
     }
 
     @IBAction private func didTappedPlayback(_ button: NSButton) {
@@ -42,7 +37,7 @@ final class RTMPPlaybackViewController: NSViewController {
         logger.info(data)
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream.play(Preference.defaultInstance.streamName)
+            rtmpStream?.play(Preference.defaultInstance.streamName)
         default:
             break
         }

@@ -17,6 +17,6 @@ protocol IOUnitEncoding {
 }
 
 protocol IOUnitDecoding {
-    func startDecoding(_ audioEngine: AVAudioEngine)
+    func startDecoding()
     func stopDecoding()
 }

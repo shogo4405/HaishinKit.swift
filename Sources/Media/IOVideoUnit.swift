@@ -302,7 +302,7 @@ extension IOVideoUnit: IOUnitEncoding {
 
 extension IOVideoUnit: IOUnitDecoding {
     // MARK: IOUnitDecoding
-    func startDecoding(_ audioEndinge: AVAudioEngine) {
+    func startDecoding() {
         codec.delegate = self
         codec.startRunning()
     }
