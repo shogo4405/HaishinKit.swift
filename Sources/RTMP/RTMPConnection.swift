@@ -33,8 +33,6 @@ public protocol RTMPConnectionDelegate: AnyObject {
     func connection(_ connection: RTMPConnection, publishSufficientBWOccured stream: RTMPStream)
     /// Tells the receiver to update statistics.
     func connection(_ connection: RTMPConnection, updateStats stream: RTMPStream)
-    /// Tells the receiver to the stream opend.
-    func connection(_ connection: RTMPConnection, didClear stream: RTMPStream)
 }
 
 // MARK: -
@@ -493,7 +491,7 @@ open class RTMPConnection: EventDispatcher {
             previousQueueBytesOut.removeFirst()
         }
         for stream in streams {
-            delegate?.connection(self, didClear: stream)
+            delegate?.connection(self, updateStats: stream)
         }
     }
 }

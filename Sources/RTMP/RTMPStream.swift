@@ -451,6 +451,7 @@ open class RTMPStream: NetStream {
             currentFPS = 0
             frameCount = 0
             info.clear()
+            delegate?.streamDidOpen(self)
             for message in messages {
                 rtmpConnection.currentTransactionId += 1
                 message.streamId = id
