@@ -211,6 +211,10 @@ extension IOMixer: Running {
             return
         }
         addSessionObservers(session)
+        #if os(iOS)
+        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        #endif
         session.startRunning()
         isRunning.mutate { $0 = session.isRunning }
     }
@@ -220,6 +224,10 @@ extension IOMixer: Running {
             return
         }
         removeSessionObservers(session)
+        #if os(iOS)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        #endif
         session.stopRunning()
         isRunning.mutate { $0 = session.isRunning }
     }
@@ -229,8 +237,6 @@ extension IOMixer: Running {
         #if os(iOS)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded(_:)), name: .AVCaptureSessionInterruptionEnded, object: session)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted(_:)), name: .AVCaptureSessionWasInterrupted, object: session)
-        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: session)
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: session)
         #endif
     }
 
@@ -239,8 +245,6 @@ extension IOMixer: Running {
         #if os(iOS)
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: session)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: session)
         #endif
     }
 
