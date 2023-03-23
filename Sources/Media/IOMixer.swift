@@ -1,4 +1,8 @@
 import AVFoundation
+#if canImport(SwiftPMSupport)
+import SwiftPMSupport
+#endif
+
 #if os(iOS)
 import UIKit
 #endif

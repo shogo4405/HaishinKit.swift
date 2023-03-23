@@ -9,6 +9,7 @@ extension VTCompressionSession {
 
 extension VTCompressionSession: VTSessionConvertible {
     // MARK: VTSessionConvertible
+    @discardableResult
     @inline(__always)
     func encodeFrame(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) -> OSStatus {
         var flags: VTEncodeInfoFlags = []
@@ -23,6 +24,7 @@ extension VTCompressionSession: VTSessionConvertible {
         )
     }
 
+    @discardableResult
     @inline(__always)
     func decodeFrame(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) -> OSStatus {
         return noErr
