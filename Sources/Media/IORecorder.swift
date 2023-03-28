@@ -85,14 +85,6 @@ public class IORecorder {
                 break
             }
 
-            // fix Local record audio desynchronization on camera switch
-            if mediaType == .audio && self.audioPresentationTime != .zero {
-                if let sampleBuffer = self.makeAudioCMSampleBuffer(sampleBuffer), input.isReadyForMoreMediaData {
-                    input.append(sampleBuffer)
-                    self.audioPresentationTime = CMTimeAdd(self.audioPresentationTime, sampleBuffer.duration)
-                }
-            }
-
             if input.isReadyForMoreMediaData {
                 switch mediaType {
                 case .audio:
@@ -167,6 +159,7 @@ public class IORecorder {
         guard writerInputs[mediaType] == nil else {
             return writerInputs[mediaType]
         }
+
         var outputSettings: [String: Any] = [:]
         if let defaultOutputSettings: [String: Any] = self.outputSettings[mediaType] {
             switch mediaType {
@@ -223,63 +216,6 @@ public class IORecorder {
         let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [:])
         pixelBufferAdaptor = adaptor
         return adaptor
-    }
-
-    private func makeAudioCMSampleBuffer(_ buffer: CMSampleBuffer) -> CMSampleBuffer? {
-        let numSamples = Int((buffer.presentationTimeStamp.seconds - self.audioPresentationTime.seconds) * Double(buffer.presentationTimeStamp.timescale))
-
-        guard Self.interpolationThreshold <= numSamples else {
-            return nil
-        }
-
-        var status: OSStatus = noErr
-        var sampleBuffer: CMSampleBuffer?
-
-        var timing = CMSampleTimingInfo(
-            duration: CMTime(value: 1, timescale: buffer.duration.timescale),
-            presentationTimeStamp: audioPresentationTime,
-            decodeTimeStamp: CMTime.invalid
-        )
-
-        status = CMSampleBufferCreate(
-            allocator: kCFAllocatorDefault,
-            dataBuffer: nil,
-            dataReady: false,
-            makeDataReadyCallback: nil,
-            refcon: nil,
-            formatDescription: buffer.formatDescription,
-            sampleCount: numSamples,
-            sampleTimingEntryCount: 1,
-            sampleTimingArray: &timing,
-            sampleSizeEntryCount: 0,
-            sampleSizeArray: nil,
-            sampleBufferOut: &sampleBuffer
-        )
-
-        guard
-            let sampleBuffer = sampleBuffer,
-            let formatDescription = sampleBuffer.formatDescription, status == noErr else {
-            return nil
-        }
-
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: AVAudioFormat(cmAudioFormatDescription: formatDescription), frameCapacity: AVAudioFrameCount(numSamples)) else {
-            return nil
-        }
-        buffer.frameLength = buffer.frameCapacity
-
-        status = CMSampleBufferSetDataBufferFromAudioBufferList(
-            sampleBuffer,
-            blockBufferAllocator: kCFAllocatorDefault,
-            blockBufferMemoryAllocator: kCFAllocatorDefault,
-            flags: 0,
-            bufferList: buffer.audioBufferList
-        )
-
-        guard status == noErr else {
-            return nil
-        }
-
-        return sampleBuffer
     }
 }
 

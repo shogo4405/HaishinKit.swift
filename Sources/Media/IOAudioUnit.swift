@@ -10,7 +10,6 @@ final class IOAudioUnit: NSObject, IOUnit {
         codec.lockQueue = lockQueue
         return codec
     }()
-
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
     var soundTransform: SoundTransform = .init() {
         didSet {
@@ -22,6 +21,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     #if os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
+    private var presentationTimeStamp: CMTime = .invalid
 
     #if os(iOS) || os(macOS)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
@@ -43,6 +43,19 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
     #endif
 
+    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        guard CMSampleBufferDataIsReady(sampleBuffer), let sampleBuffer = sampleBuffer.muted(muted) else {
+            return
+        }
+        if isFragmented(sampleBuffer), let sampleBuffer = makeSampleBuffer(sampleBuffer) {
+            appendSampleBuffer(sampleBuffer)
+        }
+        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
+        codec.inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
+        codec.appendSampleBuffer(sampleBuffer)
+        presentationTimeStamp = CMTimeAdd(sampleBuffer.presentationTimeStamp, CMTime(value: CMTimeValue(sampleBuffer.numSamples), timescale: sampleBuffer.presentationTimeStamp.timescale))
+    }
+
     func registerEffect(_ effect: AudioEffect) -> Bool {
         codec.effects.insert(effect).inserted
     }
@@ -51,13 +64,59 @@ final class IOAudioUnit: NSObject, IOUnit {
         codec.effects.remove(effect) != nil
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard let sampleBuffer = sampleBuffer.muted(muted) else {
-            return
+    private func isFragmented(_ sampleBuffer: CMSampleBuffer) -> Bool {
+        if presentationTimeStamp == .invalid {
+            return false
         }
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
-        codec.inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
-        codec.appendSampleBuffer(sampleBuffer)
+        return presentationTimeStamp != sampleBuffer.presentationTimeStamp
+    }
+
+    private func makeSampleBuffer(_ buffer: CMSampleBuffer) -> CMSampleBuffer? {
+        let numSamples = Int(buffer.presentationTimeStamp.value - presentationTimeStamp.value - 1)
+        guard 0 < numSamples else {
+            return nil
+        }
+        var status: OSStatus = noErr
+        var sampleBuffer: CMSampleBuffer?
+        var timing = CMSampleTimingInfo(
+            duration: CMTime(value: 1, timescale: buffer.duration.timescale),
+            presentationTimeStamp: presentationTimeStamp,
+            decodeTimeStamp: CMTime.invalid
+        )
+        status = CMSampleBufferCreate(
+            allocator: kCFAllocatorDefault,
+            dataBuffer: nil,
+            dataReady: false,
+            makeDataReadyCallback: nil,
+            refcon: nil,
+            formatDescription: buffer.formatDescription,
+            sampleCount: numSamples,
+            sampleTimingEntryCount: 1,
+            sampleTimingArray: &timing,
+            sampleSizeEntryCount: 0,
+            sampleSizeArray: nil,
+            sampleBufferOut: &sampleBuffer
+        )
+        guard
+            let sampleBuffer = sampleBuffer,
+            let formatDescription = sampleBuffer.formatDescription, status == noErr else {
+            return nil
+        }
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: AVAudioFormat(cmAudioFormatDescription: formatDescription), frameCapacity: AVAudioFrameCount(numSamples)) else {
+            return nil
+        }
+        buffer.frameLength = buffer.frameCapacity
+        status = CMSampleBufferSetDataBufferFromAudioBufferList(
+            sampleBuffer,
+            blockBufferAllocator: kCFAllocatorDefault,
+            blockBufferMemoryAllocator: kCFAllocatorDefault,
+            flags: 0,
+            bufferList: buffer.audioBufferList
+        )
+        guard status == noErr else {
+            return nil
+        }
+        return sampleBuffer
     }
 }
 
