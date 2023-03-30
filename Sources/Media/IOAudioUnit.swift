@@ -21,6 +21,15 @@ final class IOAudioUnit: NSObject, IOUnit {
     #if os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
+    private var inSourceFormat: AudioStreamBasicDescription? {
+        didSet {
+            guard inSourceFormat != oldValue else {
+                return
+            }
+            presentationTimeStamp = .invalid
+            codec.inSourceFormat = inSourceFormat
+        }
+    }
     private var presentationTimeStamp: CMTime = .invalid
 
     #if os(iOS) || os(macOS)
@@ -47,13 +56,13 @@ final class IOAudioUnit: NSObject, IOUnit {
         guard CMSampleBufferDataIsReady(sampleBuffer), let sampleBuffer = sampleBuffer.muted(muted) else {
             return
         }
+        inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
         if isFragmented(sampleBuffer), let sampleBuffer = makeSampleBuffer(sampleBuffer) {
             appendSampleBuffer(sampleBuffer)
         }
         mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
-        codec.inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
         codec.appendSampleBuffer(sampleBuffer)
-        presentationTimeStamp = CMTimeAdd(sampleBuffer.presentationTimeStamp, CMTime(value: CMTimeValue(sampleBuffer.numSamples), timescale: sampleBuffer.presentationTimeStamp.timescale))
+        presentationTimeStamp = CMTimeAdd(presentationTimeStamp, CMTime(value: CMTimeValue(sampleBuffer.numSamples), timescale: presentationTimeStamp.timescale))
     }
 
     func registerEffect(_ effect: AudioEffect) -> Bool {
@@ -66,27 +75,28 @@ final class IOAudioUnit: NSObject, IOUnit {
 
     private func isFragmented(_ sampleBuffer: CMSampleBuffer) -> Bool {
         if presentationTimeStamp == .invalid {
+            presentationTimeStamp = sampleBuffer.presentationTimeStamp
             return false
         }
         return presentationTimeStamp != sampleBuffer.presentationTimeStamp
     }
 
     private func makeSampleBuffer(_ buffer: CMSampleBuffer) -> CMSampleBuffer? {
-        let numSamples = Int(buffer.presentationTimeStamp.value - presentationTimeStamp.value - 1)
+        let numSamples = min(Int(buffer.presentationTimeStamp.value - presentationTimeStamp.value), Int(presentationTimeStamp.timescale))
         guard 0 < numSamples else {
             return nil
         }
         var status: OSStatus = noErr
         var sampleBuffer: CMSampleBuffer?
         var timing = CMSampleTimingInfo(
-            duration: CMTime(value: 1, timescale: buffer.duration.timescale),
+            duration: CMTime(value: 1, timescale: presentationTimeStamp.timescale),
             presentationTimeStamp: presentationTimeStamp,
-            decodeTimeStamp: CMTime.invalid
+            decodeTimeStamp: .invalid
         )
         status = CMSampleBufferCreate(
             allocator: kCFAllocatorDefault,
             dataBuffer: nil,
-            dataReady: false,
+            dataReady: true,
             makeDataReadyCallback: nil,
             refcon: nil,
             formatDescription: buffer.formatDescription,
