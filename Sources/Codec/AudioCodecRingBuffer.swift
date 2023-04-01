@@ -105,11 +105,11 @@ final class AudioCodecRingBuffer {
             let channelCount = Int(format.channelCount)
             switch format.commonFormat {
             case .pcmFormatInt16:
-                current.int16ChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
+                current.int16ChannelData?[0].update(repeating: 0, count: numSamples * channelCount)
             case .pcmFormatInt32:
-                current.int32ChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
+                current.int32ChannelData?[0].update(repeating: 0, count: numSamples * channelCount)
             case .pcmFormatFloat32:
-                current.floatChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
+                current.floatChannelData?[0].update(repeating: 0, count: numSamples * channelCount)
             default:
                 break
             }
@@ -117,11 +117,11 @@ final class AudioCodecRingBuffer {
             for i in 0..<Int(format.channelCount) {
                 switch format.commonFormat {
                 case .pcmFormatInt16:
-                    current.int16ChannelData?[i].assign(repeating: 0, count: numSamples)
+                    current.int16ChannelData?[i].update(repeating: 0, count: numSamples)
                 case .pcmFormatInt32:
-                    current.int32ChannelData?[i].assign(repeating: 0, count: numSamples)
+                    current.int32ChannelData?[i].update(repeating: 0, count: numSamples)
                 case .pcmFormatFloat32:
-                    current.floatChannelData?[i].assign(repeating: 0, count: numSamples)
+                    current.floatChannelData?[i].update(repeating: 0, count: numSamples)
                 default:
                     break
                 }
