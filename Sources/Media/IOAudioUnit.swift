@@ -140,6 +140,7 @@ extension IOAudioUnit: IOUnitEncoding {
     func stopEncoding() {
         codec.stopRunning()
         codec.delegate = nil
+        inSourceFormat = nil
     }
 }
 
@@ -159,6 +160,7 @@ extension IOAudioUnit: IOUnitDecoding {
         }
         codec.stopRunning()
         codec.delegate = nil
+        inSourceFormat = nil
     }
 }
 

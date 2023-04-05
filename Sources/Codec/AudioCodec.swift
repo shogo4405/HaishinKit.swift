@@ -53,7 +53,7 @@ public class AudioCodec {
 
     /// Append a CMSampleBuffer.
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
-        guard CMSampleBufferDataIsReady(sampleBuffer), isRunning.value else {
+        guard isRunning.value else {
             return
         }
         switch destination {
