@@ -135,7 +135,7 @@ public class VideoCodec {
         if invalidateSession {
             session = VTSessionMode.compression.makeSession(self)
         }
-        session?.encodeFrame(
+        _ = session?.encodeFrame(
             imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
             duration: duration
@@ -160,7 +160,7 @@ public class VideoCodec {
         if !sampleBuffer.isNotSync {
             needsSync.mutate { $0 = false }
         }
-        session?.decodeFrame(sampleBuffer) { [unowned self] status, _, imageBuffer, presentationTimeStamp, duration in
+        _ = session?.decodeFrame(sampleBuffer) { [unowned self] status, _, imageBuffer, presentationTimeStamp, duration in
             guard let imageBuffer, status == noErr else {
                 self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
