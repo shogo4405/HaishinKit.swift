@@ -72,12 +72,14 @@ if #available(iOS 13.0, *) {
 ```
 
 ### Rendering
-|-|[HKView](https://shogo4405.github.io/HaishinKit.swift/Classes/HKView.html)|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
+|Features|[HKView](https://shogo4405.github.io/HaishinKit.swift/Classes/HKView.html)|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
 |-|:---:|:---:|:---:|
 |Engine|AVCaptureVideoPreviewLayer|AVSampleBufferDisplayLayer|Metal|
-|Publish|○|◯|○|
-|Playback|×|◯|○|
-|VisualEffect|×|◯|○|
+|Publish|◯|◯|◯|
+|Playback|×|◯|◯|
+|VisualEffect|×|◯|◯|
+|PictureInPicture|×|◯|×|
+|MultiCamera|×|◯|◯|
 
 ### Others
 - [x] [Support multitasking camera access.](https://developer.apple.com/documentation/avfoundation/capture_setup/accessing_the_camera_while_multitasking)
@@ -92,6 +94,7 @@ if #available(iOS 13.0, *) {
 ## 🌏 Requirements
 |-|iOS|OSX|tvOS|Xcode|Swift|
 |:----:|:----:|:----:|:----:|:----:|:----:|
+|main|11.0+|10.13+|10.2+|14.3+|5.8+|
 |1.4.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
 |1.3.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
 |1.2.0+|9.0+|10.11+|10.2+|13.0+|5.5+|
@@ -103,6 +106,7 @@ Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and t
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
+git checkout refs/tags/1.4.5
 carthage bootstrap --use-xcframeworks
 open HaishinKit.xcodeproj
 ```
@@ -158,26 +162,24 @@ do {
 ## 📓 RTMP Usage
 Real Time Messaging Protocol (RTMP).
 ```swift
-let rtmpConnection = RTMPConnection()
-let rtmpStream = RTMPStream(connection: rtmpConnection)
-rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
+let connection = RTMPConnection()
+let stream = RTMPStream(connection: rtmpConnection)
+stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
     // print(error)
 }
-rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
     // print(error)
 }
 
-let hkView = HKView(frame: view.bounds)
+let hkView = MTHKView(frame: view.bounds)
 hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-hkView.attachStream(rtmpStream)
+hkView.attachStream(stream)
 
 // add ViewController#view
 view.addSubview(hkView)
 
-rtmpConnection.connect("rtmp://localhost/appName/instanceName")
-rtmpStream.publish("streamName")
-// if you want to record a stream.
-// rtmpStream.publish("streamName", type: .localRecord)
+connection.connect("rtmp://localhost/appName/instanceName")
+stream.publish("streamName")
 ```
 
 ### RTMP URL Format
@@ -270,8 +272,8 @@ stream.multiCamCaptureSettings = MultiCamCaptureSetting(
 ```
 ### Authentication
 ```swift
-var rtmpConnection = RTMPConnection()
-rtmpConnection.connect("rtmp://username:password@localhost/appName/instanceName")
+var connection = RTMPConnection()
+connection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```
 
 ### Screen Capture
@@ -282,22 +284,22 @@ screen.delegate = rtmpStream
 screen.startRunning()
 
 // macOS
-rtmpStream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
+stream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```
 
 ## 📓 HTTP Usage
 HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
 ```swift
-var httpStream = HTTPStream()
-httpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
-httpStream.attachAudio(AVCaptureDevice.default(for: .audio))
-httpStream.publish("hello")
+var stream = HTTPStream()
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
+stream.attachAudio(AVCaptureDevice.default(for: .audio))
+stream.publish("hello")
 
-var hkView = HKView(frame: view.bounds)
+var hkView = MTHKView(frame: view.bounds)
 hkView.attachStream(httpStream)
 
 var httpService = HLSService(domain: "", type: "_http._tcp", name: "HaishinKit", port: 8080)
-httpService.addHTTPStream(httpStream)
+httpService.addHTTPStream(stream)
 httpService.startRunning()
 
 // add ViewController#view
