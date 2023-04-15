@@ -222,17 +222,7 @@ public class VideoCodec {
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
-    var expectedFrameRate = IOMixer.defaultFrameRate {
-        didSet {
-            guard expectedFrameRate != oldValue else {
-                return
-            }
-            let option = VTSessionOption(key: .expectedFrameRate, value: NSNumber(value: expectedFrameRate))
-            if let status = session?.setOption(option), status != noErr {
-                delegate?.videoCodec(self, errorOccurred: .failedToSetOption(status: status, option: option))
-            }
-        }
-    }
+    var expectedFrameRate = IOMixer.defaultFrameRate
     var formatDescription: CMFormatDescription? {
         didSet {
             guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
@@ -366,7 +356,8 @@ public class VideoCodec {
             .init(key: .realTime, value: kCFBooleanTrue),
             .init(key: .profileLevel, value: profileLevel as NSObject),
             .init(key: bitRateMode.key, value: NSNumber(value: bitrate)),
-            .init(key: .expectedFrameRate, value: NSNumber(value: expectedFrameRate)),
+            // It seemes that VT supports the range 0 to 30.
+            .init(key: .expectedFrameRate, value: NSNumber(value: (expectedFrameRate <= 30) ? expectedFrameRate : 0)),
             .init(key: .maxKeyFrameIntervalDuration, value: NSNumber(value: maxKeyFrameIntervalDuration)),
             .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
             .init(key: .pixelTransferProperties, value: [
