@@ -1,5 +1,20 @@
 import AVFoundation
 
+#if os(iOS)
+extension AVCaptureDevice.Format {
+    @available(iOS, obsoleted: 12.0)
+    var isMultiCamSupported: Bool {
+        return false
+    }
+}
+#elseif os(macOS)
+extension AVCaptureDevice.Format {
+    var isMultiCamSupported: Bool {
+        return true
+    }
+}
+#endif
+
 #if os(iOS) || os(macOS)
 extension AVFrameRateRange {
     func clamp(rate: Float64) -> Float64 {
@@ -12,7 +27,7 @@ extension AVFrameRateRange {
 }
 
 extension AVCaptureDevice.Format {
-    func getFrameRate(_ frameRate: Float64) -> CMTime? {
+    func isFrameRateSupported(_ frameRate: Float64) -> Bool {
         var durations: [CMTime] = []
         var frameRates: [Float64] = []
         for range in videoSupportedFrameRateRanges {
@@ -22,17 +37,17 @@ extension AVCaptureDevice.Format {
                 continue
             }
             if range.contains(frameRate: frameRate) {
-                return CMTimeMake(value: 100, timescale: Int32(100 * frameRate))
+                return true
             }
-            return CMTimeMake(value: 100, timescale: Int32(100 * range.clamp(rate: frameRate)))
+            return false
         }
         let diff = frameRates.map { abs($0 - frameRate) }
         if let minElement: Float64 = diff.min() {
             for i in 0..<diff.count where diff[i] == minElement {
-                return durations[i]
+                return true
             }
         }
-        return nil
+        return false
     }
 }
 

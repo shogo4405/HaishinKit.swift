@@ -267,6 +267,7 @@ extension IOMixer: Running {
                   let format = device.videoFormat(
                     width: sessionPreset.width ?? videoIO.codec.width,
                     height: sessionPreset.height ?? videoIO.codec.height,
+                    frameRate: videoIO.frameRate,
                     isMultiCamSupported: isMultiCamSupported
                   ), device.activeFormat != format else {
                 return
@@ -274,9 +275,9 @@ extension IOMixer: Running {
             do {
                 try device.lockForConfiguration()
                 device.activeFormat = format
-                if let duration = format.getFrameRate(videoIO.frameRate) {
-                    device.activeVideoMinFrameDuration = duration
-                    device.activeVideoMaxFrameDuration = duration
+                if format.isFrameRateSupported(videoIO.frameRate) {
+                    device.activeVideoMinFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
                 }
                 device.unlockForConfiguration()
                 session.startRunning()
