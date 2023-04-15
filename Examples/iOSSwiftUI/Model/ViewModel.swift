@@ -17,8 +17,8 @@ final class ViewModel: ObservableObject {
     private var retryCount: Int = 0
     @Published var published = false
     @Published var zoomLevel: CGFloat = 1.0
-    @Published var videoRate: CGFloat = 160.0
-    @Published var audioRate: CGFloat = 32.0
+    @Published var videoRate = CGFloat(VideoCodecSettings.default.bitRate / 1000)
+    @Published var audioRate = CGFloat(AudioCodecSettings.default.bitRate / 1000)
     @Published var fps: String = "FPS"
     private var nc = NotificationCenter.default
 
@@ -196,7 +196,7 @@ final class ViewModel: ObservableObject {
     }
 
     func changeAudioRate(level: CGFloat) {
-        rtmpStream.audioSettings.bitRate = UInt32(level * 1000)
+        rtmpStream.audioSettings.bitRate = Int(level * 1000)
     }
 
     @objc
