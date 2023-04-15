@@ -196,7 +196,7 @@ open class RTMPConnection: EventDispatcher {
     /// Specifies the instance connected to server(true) or not(false).
     public private(set) var connected = false
     /// Specifies the instance requires Network.framework if possible.
-    public var requireNetworkFramework = false
+    public var requireNetworkFramework = true
     /// Specifies the socket optional parameters.
     public var parameters: Any?
     /// Specifies the object encoding for this RTMPConnection instance.
