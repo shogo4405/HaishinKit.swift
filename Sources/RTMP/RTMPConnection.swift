@@ -412,15 +412,14 @@ open class RTMPConnection: EventDispatcher {
     }
 
     private func makeConnectionChunk() -> RTMPChunk? {
-        guard let uri: URL = uri else {
+        guard let uri else {
             return nil
         }
 
-        var app = String(uri.path[uri.path.index(uri.path.startIndex, offsetBy: 1)...])
-        if let query: String = uri.query {
+        var app = uri.path.isEmpty ? "" : String(uri.path[uri.path.index(uri.path.startIndex, offsetBy: 1)...])
+        if let query = uri.query {
             app += "?" + query
         }
-
         currentTransactionId += 1
 
         let message = RTMPCommandMessage(
