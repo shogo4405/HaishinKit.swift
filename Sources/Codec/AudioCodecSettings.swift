@@ -10,7 +10,7 @@ public struct AudioCodecSettings: Codable {
     public var bitRate: Int
 
     /// Create an new AudioCodecSettings instance.
-    public init(bitRate: Int = 32 * 1000) {
+    public init(bitRate: Int = 64 * 1000) {
         self.bitRate = bitRate
     }
 
