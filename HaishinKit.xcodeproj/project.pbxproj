@@ -322,6 +322,9 @@
 		BC110258292E661E00D48035 /* MultiCamCaptureSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110256292E661E00D48035 /* MultiCamCaptureSettings.swift */; };
 		BC110259292E661E00D48035 /* MultiCamCaptureSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110256292E661E00D48035 /* MultiCamCaptureSettings.swift */; };
 		BC11D94625A1B01000D710BA /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */; };
+		BC1DC4A529F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */; };
+		BC1DC4A629F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */; };
 		BC20DF38250377A3007BC608 /* IOUIScreenCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B131C1D35272D00A1E8F5 /* IOUIScreenCaptureUnit.swift */; };
 		BC3004CE296B0A1700119932 /* Shape.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3004CD296B0A1700119932 /* Shape.swift */; };
 		BC3004CF296B0A1700119932 /* Shape.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3004CD296B0A1700119932 /* Shape.swift */; };
@@ -739,6 +742,7 @@
 		BC1102492925147300D48035 /* IOCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureUnit.swift; sourceTree = "<group>"; };
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
 		BC110256292E661E00D48035 /* MultiCamCaptureSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiCamCaptureSettings.swift; sourceTree = "<group>"; };
+		BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureSession+Extension.swift"; sourceTree = "<group>"; };
 		BC3004CD296B0A1700119932 /* Shape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shape.swift; sourceTree = "<group>"; };
 		BC3004D3296BFFF600119932 /* MainSplitViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSplitViewController.swift; sourceTree = "<group>"; };
 		BC3004F0296C0C7400119932 /* MenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuViewController.swift; sourceTree = "<group>"; };
@@ -1302,6 +1306,7 @@
 				BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */,
 				BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */,
 				BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */,
+				BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */,
 				29EA87E51E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift */,
 				29EA87E91E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift */,
 				2916196B1E7F0768009FB344 /* CMFormatDescription+Extension.swift */,
@@ -1949,6 +1954,7 @@
 				BC562DC7295767860048D89A /* AVCaptureDevice+Extension.swift in Sources */,
 				29EA87E21E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
 				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
+				BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				29EA87D81E79A0090043A5F8 /* URL+Extension.swift in Sources */,
 				BC9F9C7826F8C16600B01ED0 /* Choreographer.swift in Sources */,
 				29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */,
@@ -2070,6 +2076,7 @@
 				294852571D852499002DE492 /* RTMPTSocket.swift in Sources */,
 				BC83A4742403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				BCC1A72C264FAC1800661156 /* ESSpecificData.swift in Sources */,
+				BC1DC4A529F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				BC110258292E661E00D48035 /* MultiCamCaptureSettings.swift in Sources */,
 				29B877001CD70D5A00FC07DA /* PacketizedElementaryStream.swift in Sources */,
 				BC570B4928E9ACC10098A12C /* IOUnit.swift in Sources */,
@@ -2270,6 +2277,7 @@
 				29EB3DF11ED0576C001CAE8B /* Constants.swift in Sources */,
 				29EB3E011ED05856001CAE8B /* HTTPStream.swift in Sources */,
 				29EB3E171ED05893001CAE8B /* NetClient.swift in Sources */,
+				BC1DC4A629F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				BC0D236F26331BAB001DDA0C /* DataBuffer.swift in Sources */,
 				BC7C56C1299FC38D00C41A9B /* VideoSize.swift in Sources */,
 				BCB977412621812800C9A649 /* AVCFormatStream.swift in Sources */,

@@ -226,7 +226,7 @@ open class NetStream: NSObject {
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
     open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, options: [NSObject: AnyObject]? = nil) {
-        switch sampleBuffer.formatDescription?.mediaType {
+        switch sampleBuffer.formatDescription?._mediaType {
         case kCMMediaType_Audio:
             mixer.audioIO.lockQueue.async {
                 self.mixer.audioIO.appendSampleBuffer(sampleBuffer)
