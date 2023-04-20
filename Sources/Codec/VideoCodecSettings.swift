@@ -24,7 +24,7 @@ public struct VideoCodecSettings: Codable {
     /// Specifies  the HardwareEncoder is enabled(TRUE), or not(FALSE) for macOS.
     public var isHardwareEncoderEnabled = true
 
-    var expectedFrameRate: Float64 = 30
+    var expectedFrameRate: Float64 = IOMixer.defaultFrameRate
 
     /// Creates a new VideoCodecSettings instance.
     public init(
@@ -59,12 +59,6 @@ public struct VideoCodecSettings: Codable {
     }
 
     func apply(_ codec: VideoCodec, rhs: VideoCodecSettings) {
-        if expectedFrameRate != rhs.expectedFrameRate {
-            let option = VTSessionOption(key: .expectedFrameRate, value: NSNumber(value: expectedFrameRate))
-            if let status = codec.session?.setOption(option), status != noErr {
-                codec.delegate?.videoCodec(codec, errorOccurred: .failedToSetOption(status: status, option: option))
-            }
-        }
         if bitRate != rhs.bitRate {
             let option = VTSessionOption(key: bitRateMode.key, value: NSNumber(value: bitRate))
             if let status = codec.session?.setOption(option), status != noErr {
@@ -79,7 +73,8 @@ public struct VideoCodecSettings: Codable {
             .init(key: .realTime, value: kCFBooleanTrue),
             .init(key: .profileLevel, value: profileLevel as NSObject),
             .init(key: bitRateMode.key, value: NSNumber(value: bitRate)),
-            .init(key: .expectedFrameRate, value: NSNumber(value: expectedFrameRate)),
+            // It seemes that VT supports the range 0 to 30.
+            .init(key: .expectedFrameRate, value: NSNumber(value: (expectedFrameRate <= 30) ? expectedFrameRate : 0)),
             .init(key: .maxKeyFrameIntervalDuration, value: NSNumber(value: maxKeyFrameIntervalDuration)),
             .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
             .init(key: .pixelTransferProperties, value: [
