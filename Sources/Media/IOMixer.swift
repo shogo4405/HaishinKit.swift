@@ -358,20 +358,20 @@ extension IOMixer: Running {
             #else
             let isMultiCamSupported = true
             #endif
-            guard let device = error.device,
-                  let format = device.videoFormat(
-                    width: sessionPreset.width ?? videoIO.codec.settings.videoSize.width,
-                    height: sessionPreset.height ?? videoIO.codec.settings.videoSize.height,
-                    isMultiCamSupported: isMultiCamSupported
-                  ), device.activeFormat != format else {
+            guard let device = error.device, let format = device.videoFormat(
+                width: sessionPreset.width ?? videoIO.codec.settings.videoSize.width,
+                height: sessionPreset.height ?? videoIO.codec.settings.videoSize.height,
+                frameRate: videoIO.frameRate,
+                isMultiCamSupported: isMultiCamSupported
+            ), device.activeFormat != format else {
                 return
             }
             do {
                 try device.lockForConfiguration()
                 device.activeFormat = format
-                if let duration = format.getFrameRate(videoIO.frameRate) {
-                    device.activeVideoMinFrameDuration = duration
-                    device.activeVideoMaxFrameDuration = duration
+                if format.isFrameRateSupported(videoIO.frameRate) {
+                    device.activeVideoMinFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
                 }
                 device.unlockForConfiguration()
                 session.startRunning()
@@ -380,13 +380,7 @@ extension IOMixer: Running {
             }
         #if os(iOS)
         case .mediaServicesWereReset:
-            guard isRunning.value else {
-                return
-            }
-            if !session.isRunning {
-                session.startRunning()
-                isRunning.mutate { $0 = session.isRunning }
-            }
+            resumeCaptureSessionIfNeeded()
         #endif
         default:
             break
@@ -429,6 +423,7 @@ extension IOMixer: Running {
 
     @objc
     private func didBecomeActive(_ notification: Notification) {
+        resumeCaptureSessionIfNeeded()
         if #available(iOS 16, *) {
             guard !session.isMultitaskingCameraAccessEnabled else {
                 return
@@ -438,6 +433,14 @@ extension IOMixer: Running {
         videoIO.multiCamCapture.attachSession(session)
     }
     #endif
+
+    private func resumeCaptureSessionIfNeeded() {
+        guard isRunning.value && !session.isRunning else {
+            return
+        }
+        session.startRunning()
+        isRunning.mutate { $0 = session.isRunning }
+    }
 }
 #else
 extension IOMixer: Running {
