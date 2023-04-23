@@ -177,7 +177,7 @@ public class IOMixer {
         case .encoding:
             break
         case .decoding:
-            switch sampleBuffer.formatDescription?.mediaType {
+            switch sampleBuffer.formatDescription?._mediaType {
             case kCMMediaType_Audio:
                 audioIO.codec.appendSampleBuffer(sampleBuffer)
             case kCMMediaType_Video:
