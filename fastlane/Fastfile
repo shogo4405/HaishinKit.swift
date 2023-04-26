@@ -19,3 +19,8 @@ lane :review do
   carthage(use_xcframeworks: true) if Helper.is_ci?
   scan(scheme: 'Tests')
 end
+
+desc "Creates documents."
+lane :document do
+  sh('swift package --allow-writing-to-directory ./docs generate-documentation --target HaishinKit --disable-indexing --hosting-base-path HaishinKit.swift --output-path ./docs')
+end
