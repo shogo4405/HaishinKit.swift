@@ -21,6 +21,8 @@ public protocol NetStreamDelegate: AnyObject {
     func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error)
     /// Tells the receiver to audio codec error occured.
     func stream(_ stream: NetStream, audioCodecErrorOccurred error: AudioCodec.Error)
+    /// Tells the receiver to will drop video frame.
+    func streamWillDropFrame(_ stream: NetStream) -> Bool
     /// Tells the receiver to the stream opened.
     func streamDidOpen(_ stream: NetStream)
 }

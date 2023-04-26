@@ -6,6 +6,7 @@ protocol RTMPMuxerDelegate: AnyObject {
     func muxer(_ muxer: RTMPMuxer, didOutputVideo buffer: Data, withTimestamp: Double)
     func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error)
     func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error)
+    func muxerWillDropFrame(_ muxer: RTMPMuxer) -> Bool
 }
 
 // MARK: -
@@ -83,5 +84,9 @@ extension RTMPMuxer: VideoCodecDelegate {
         buffer.append(data)
         delegate?.muxer(self, didOutputVideo: buffer, withTimestamp: delta)
         videoTimeStamp = decodeTimeStamp
+    }
+
+    func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool {
+        return delegate?.muxerWillDropFrame(self) ?? false
     }
 }

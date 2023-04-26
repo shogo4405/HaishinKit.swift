@@ -16,6 +16,8 @@ public protocol VideoCodecDelegate: AnyObject {
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
     func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error)
+    /// Tells the receiver to drop frame.
+    func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool
 }
 
 // MARK: -
@@ -144,12 +146,14 @@ public class VideoCodec {
                 return
             }
             formatDescription = sampleBuffer.formatDescription
-            delegate?.videoCodec(self, didOutput: sampleBuffer)
+            if !(delegate?.videoCodecWillDropFame(self) ?? false) {
+                delegate?.videoCodec(self, didOutput: sampleBuffer)
+            }
         }
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard isRunning.value else {
+        guard isRunning.value, !(delegate?.videoCodecWillDropFame(self) ?? false) else {
             return
         }
         if invalidateSession {
