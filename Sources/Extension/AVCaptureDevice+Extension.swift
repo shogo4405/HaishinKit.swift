@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 
+#if os(iOS) || os(macOS)
 extension AVCaptureDevice {
     func videoFormat(width: Int32, height: Int32, frameRate: Float64, isMultiCamSupported: Bool) -> AVCaptureDevice.Format? {
         if isMultiCamSupported {
@@ -18,3 +19,4 @@ extension AVCaptureDevice {
         }
     }
 }
+#endif
