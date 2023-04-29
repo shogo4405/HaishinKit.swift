@@ -102,6 +102,9 @@ extension HKView: NetStreamDrawable {
 
         stream.lockQueue.async {
             stream.mixer.videoIO.drawable = self
+            DispatchQueue.main.async {
+                self.layer.session = stream.mixer.session
+            }
             self.currentStream = stream
             stream.mixer.startRunning()
         }
