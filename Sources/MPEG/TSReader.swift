@@ -8,7 +8,7 @@ public protocol TSReaderDelegate: AnyObject {
     func reader(_ reader: TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer)
 }
 
-/// The TSReader class represents read MPETF-2 transport stream data.
+/// The TSReader class represents read MPEG-2 transport stream data.
 public class TSReader {
     /// Specifies the delegate object.
     public weak var delegate: TSReaderDelegate?

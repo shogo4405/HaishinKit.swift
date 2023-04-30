@@ -43,7 +43,22 @@ final class LiveViewController: UIViewController {
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             rtmpStream.videoOrientation = orientation
         }
-        rtmpStream.videoSettings.videoSize = .init(width: 720, height: 1280)
+
+        rtmpStream.audioSettings = AudioCodecSettings(
+            bitRate: 64 * 1000
+        )
+
+        rtmpStream.videoSettings = VideoCodecSettings(
+            videoSize: .init(width: 854, height: 480),
+            profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
+            bitRate: 640 * 1000,
+            maxKeyFrameIntervalDuration: 2,
+            scalingMode: .trim,
+            bitRateMode: .average,
+            allowFrameReordering: nil,
+            isHardwareEncoderEnabled: true
+        )
+
         rtmpStream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000

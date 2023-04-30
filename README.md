@@ -208,18 +208,21 @@ stream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
 // rtmpStream.videoCapture(for: 1).isVideoMirrored = false
 
 // Specifies the audio codec settings.
-stream.audioSettings = [
-  .bitrate: 32 * 1000,
-]
+stream.audioSettings = AudioCodecSettings(
+  bitRate: 64 * 1000
+)
 
 // Specifies the video codec settings.
-stream.videoSettings = [
-  .width: 640, // video output width
-  .height: 360, // video output height
-  .bitrate: 160 * 1000, // video output bitrate
-  .profileLevel: kVTProfileLevel_H264_Baseline_3_1, // H264 Profile require "import VideoToolbox"
-  .maxKeyFrameIntervalDuration: 2, // key frame / sec
-]
+stream.videoSettings = VideoCodecSettings(
+  videoSize: .init(width: 854, height: 480),
+  profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
+  bitRate: 640 * 1000,
+  maxKeyFrameIntervalDuration: 2,
+  scalingMode: .trim,
+  bitRateMode: .average,
+  allowFrameReordering: nil,
+  isHardwareEncoderEnabled: true
+)
 
 // Specifies the recording settings. 0" means the same of input.
 stream.startRecording([
@@ -280,7 +283,7 @@ connection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```swift
 // iOS
 let screen = IOUIScreenCaptureUnit(shared: UIApplication.shared)
-screen.delegate = rtmpStream
+screen.delegate = stream
 screen.startRunning()
 
 // macOS

@@ -6,12 +6,12 @@ import Foundation
 import SwiftPMSupport
 #endif
 
-/// MPEG-2 TS (Transport Stream) Writer delegate
+/// The interface an MPEG-2 TS (Transport Stream) writer uses to inform its delegates.
 public protocol TSWriterDelegate: AnyObject {
     func writer(_ writer: TSWriter, didOutput data: Data)
 }
 
-/// MPEG-2 TS (Transport Stream) Writer Foundation class
+/// The TSWriter class represents writs  MPEG-2 transport stream data.
 public class TSWriter: Running {
     public static let defaultPATPID: UInt16 = 0
     public static let defaultPMTPID: UInt16 = 4095
