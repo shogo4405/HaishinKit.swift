@@ -1,10 +1,12 @@
 # HaishinKit for iOS, macOS, tvOS, and [Android](https://github.com/shogo4405/HaishinKit.kt).
+[![GitHub Stars](https://img.shields.io/github/stars/shogo4405/HaishinKit.swift?style=social)](https://github.com/shogo4405/HaishinKit.swift/stargazers)
 [![Release](https://img.shields.io/github/v/release/shogo4405/HaishinKit.swift)](https://github.com/shogo4405/HaishinKit.swift/releases/latest)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
 * Camera and Microphone streaming library via RTMP, HLS for iOS, macOS, tvOS.
+* README.md contains unreleased content, which can be tested on the main branch.
 * [API Documentation](https://shogo4405.github.io/HaishinKit.swift/documentation/haishinkit)
 
 <p align="center">
@@ -33,10 +35,16 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <a href="https://streamlabs.com/" target="_blank"><img src="https://user-images.githubusercontent.com/810189/206836172-9c360977-ab6b-4eff-860b-82d0e7b06318.png" width="350px" alt="Streamlabs" /></a>
 </p>
 
+## 🌏 Related projects
+Project name    |Notes       |License
+----------------|------------|--------------
+[HaishinKit for Android.](https://github.com/shogo4405/HaishinKit.kt)|Camera and Microphone streaming library via RTMP for Android.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.kt/blob/master/LICENSE.md)
+[HaishinKit for Flutter.](https://github.com/shogo4405/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.dart/blob/master/LICENSE.md)
+
 ## 🎨 Features
 ### RTMP
 - [x] Authentication
-- [x] Publish and Recording (H264/AAC)
+- [x] Publish and Recording
 - [x] _Playback (Beta)_
 - [x] Adaptive bitrate streaming
   - [x] Handling (see also [#1153](/../../issues/1153))
@@ -49,6 +57,12 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
   - [x] _Tunneled (RTMPT over SSL/TLS) (Technical Preview)_
 - [x] _RTMPT (Technical Preview)_
 - [x] ReplayKit Live as a Broadcast Upload Extension
+- [x] Supported codec
+  - Audio
+    - [x] AAC
+  - Video
+    - [x] H264/AVC
+    - [x] H265/HEVC ([Server-side support is required.](https://github.com/veovera/enhanced-rtmp/blob/main/enhanced-rtmp-v1.pdf))
 
 ### HLS
 - [x] HTTPService
@@ -75,11 +89,11 @@ if #available(iOS 13.0, *) {
 |Features|[HKView](https://shogo4405.github.io/HaishinKit.swift/Classes/HKView.html)|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
 |-|:---:|:---:|:---:|
 |Engine|AVCaptureVideoPreviewLayer|AVSampleBufferDisplayLayer|Metal|
-|Publish|◯|◯|◯|
-|Playback|×|◯|◯|
-|VisualEffect|×|◯|◯|
-|PictureInPicture|×|◯|×|
-|MultiCamera|×|◯|◯|
+|Publish|✔|✔|✔|
+|Playback|<br />|✔|✔|
+|VisualEffect|<br />|✔|✔|
+|PictureInPicture|<br />|✔|<br />|
+|MultiCamera|<br />|✔|✔|
 
 ### Others
 - [x] [Support multitasking camera access.](https://developer.apple.com/documentation/avfoundation/capture_setup/accessing_the_camera_while_multitasking)
@@ -96,8 +110,6 @@ if #available(iOS 13.0, *) {
 |:----:|:----:|:----:|:----:|:----:|:----:|
 |1.5.0+|11.0+|10.13+|10.2+|14.3+|5.7+|
 |1.4.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
-|1.3.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
-|1.2.0+|9.0+|10.11+|10.2+|13.0+|5.5+|
 
 ## 🐾 Examples
 Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS.

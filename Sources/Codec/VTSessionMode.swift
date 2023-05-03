@@ -13,7 +13,7 @@ enum VTSessionMode {
                 allocator: kCFAllocatorDefault,
                 width: videoCodec.settings.videoSize.width,
                 height: videoCodec.settings.videoSize.height,
-                codecType: kCMVideoCodecType_H264,
+                codecType: videoCodec.settings.format.codecType,
                 encoderSpecification: nil,
                 imageBufferAttributes: videoCodec.attributes as CFDictionary?,
                 compressedDataAllocator: nil,

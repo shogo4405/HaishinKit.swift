@@ -27,14 +27,6 @@ public protocol VideoCodecDelegate: AnyObject {
 public class VideoCodec {
     static let defaultMinimumGroupOfPictures: Int = 12
 
-    #if os(OSX)
-    #if arch(arm64)
-    static let encoderName = NSString(string: "com.apple.videotoolbox.videoencoder.ave.avc")
-    #else
-    static let encoderName = NSString(string: "com.apple.videotoolbox.videoencoder.h264.gva")
-    #endif
-    #endif
-
     /**
      * The VideoCodec error domain codes.
      */
@@ -77,7 +69,7 @@ public class VideoCodec {
                 return
             }
             if let atoms: [String: AnyObject] = formatDescription?.`extension`(by: "SampleDescriptionExtensionAtoms"), let avcC: Data = atoms["avcC"] as? Data {
-                let config = AVCConfigurationRecord(data: avcC)
+                let config = AVCDecoderConfigurationRecord(data: avcC)
                 isBaseline = config.avcProfileIndication == 66
             }
             delegate?.videoCodec(self, didOutput: formatDescription)
@@ -148,7 +140,7 @@ public class VideoCodec {
             var timingInfo = CMSampleTimingInfo(
                 duration: duration,
                 presentationTimeStamp: presentationTimeStamp,
-                decodeTimeStamp: .invalid
+                decodeTimeStamp: sampleBuffer.decodeTimeStamp
             )
             var videoFormatDescription: CMVideoFormatDescription?
             var status = CMVideoFormatDescriptionCreateForImageBuffer(
@@ -175,9 +167,7 @@ public class VideoCodec {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-            if isBaseline {
-                delegate?.videoCodec(self, didOutput: buffer)
-            } else {
+            if buffer.decodeTimeStamp.isValid {
                 buffers.append(buffer)
                 buffers.sort {
                     $0.presentationTimeStamp < $1.presentationTimeStamp
@@ -185,6 +175,8 @@ public class VideoCodec {
                 if minimumGroupOfPictures <= buffers.count {
                     delegate?.videoCodec(self, didOutput: buffers.removeFirst())
                 }
+            } else {
+                delegate?.videoCodec(self, didOutput: buffer)
             }
         }
     }

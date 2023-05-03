@@ -38,7 +38,7 @@ public class TSReader {
             }
         }
     }
-    private var nalUnitReader = NALUnitReader()
+    private var nalUnitReader = AVCNALUnitReader()
     private var programs: [UInt16: UInt16] = [:]
     private var esSpecData: [UInt16: ESSpecificData] = [:]
     private var formatDescriptions: [UInt16: CMFormatDescription] = [:]
