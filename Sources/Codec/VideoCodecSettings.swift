@@ -6,6 +6,43 @@ public struct VideoCodecSettings: Codable {
     /// The defulat value.
     public static let `default` = VideoCodecSettings()
 
+    /// A bitRate mode that affectes how to encode the video source.
+    public enum BitRateMode: String, Codable {
+        /// The average bit rate.
+        case average
+        /// The constant bit rate.
+        @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
+        case constant
+
+        var key: VTSessionOptionKey {
+            if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *) {
+                switch self {
+                case .average:
+                    return .averageBitRate
+                case .constant:
+                    return .constantBitRate
+                }
+            }
+            return .averageBitRate
+        }
+    }
+
+    /**
+     * The scaling mode.
+     * - seealso: https://developer.apple.com/documentation/videotoolbox/kvtpixeltransferpropertykey_scalingmode
+     * - seealso: https://developer.apple.com/documentation/videotoolbox/vtpixeltransfersession/pixel_transfer_properties/scaling_mode_constants
+     */
+    public enum ScalingMode: String, Codable {
+        /// kVTScalingMode_Normal
+        case normal = "Normal"
+        /// kVTScalingMode_Letterbox
+        case letterbox = "Letterbox"
+        /// kVTScalingMode_CropSourceToCleanAperture
+        case cropSourceToCleanAperture = "CropSourceToCleanAperture"
+        /// kVTScalingMode_Trim
+        case trim = "Trim"
+    }
+
     /// Specifies the video size of encoding video.
     public var videoSize: VideoSize
     /// Specifies the bitrate.
@@ -18,7 +55,7 @@ public struct VideoCodecSettings: Codable {
     /// Specifies the allowFrameRecording.
     public var allowFrameReordering: Bool?
     /// Specifies the bitRateMode.
-    public var bitRateMode: VideoCodec.BitRateMode
+    public var bitRateMode: BitRateMode
     /// Specifies the H264 profileLevel.
     public var profileLevel: String
     /// Specifies  the HardwareEncoder is enabled(TRUE), or not(FALSE) for macOS.
@@ -33,7 +70,7 @@ public struct VideoCodecSettings: Codable {
         bitRate: UInt32 = 640 * 1000,
         maxKeyFrameIntervalDuration: Int32 = 2,
         scalingMode: ScalingMode = .trim,
-        bitRateMode: VideoCodec.BitRateMode = .average,
+        bitRateMode: BitRateMode = .average,
         allowFrameReordering: Bool? = nil,
         isHardwareEncoderEnabled: Bool = true
     ) {

@@ -7,6 +7,7 @@ extension AVCaptureSession {
         get {
             false
         }
+        // swiftlint:disable unused_setter_value
         set {
             logger.warn("isMultitaskingCameraAccessSupported is unavailabled in Mac Catalyst.")
         }
@@ -16,6 +17,7 @@ extension AVCaptureSession {
         get {
             false
         }
+        // swiftlint:disable unused_setter_value
         set {
             logger.warn("isMultitaskingCameraAccessEnabled is unavailabled in Mac Catalyst.")
         }

@@ -23,8 +23,7 @@ public class AudioCodec {
         case failedToCreate(from: AVAudioFormat, to: AVAudioFormat)
         case failedToConvert(error: NSError)
     }
-    /// Specifies the output format.
-    public var destination: AudioCodecFormat = .aac
+
     /// Specifies the delegate.
     public weak var delegate: AudioCodecDelegate?
     /// This instance is running to process(true) or not(false).
@@ -56,7 +55,7 @@ public class AudioCodec {
         guard isRunning.value else {
             return
         }
-        switch destination {
+        switch settings.format {
         case .aac:
             guard let audioConverter, let ringBuffer else {
                 return
@@ -143,7 +142,7 @@ public class AudioCodec {
             return nil
         }
         if outputBuffers.isEmpty {
-            return destination.makeAudioBuffer(outputFormat)
+            return settings.format.makeAudioBuffer(outputFormat)
         }
         return outputBuffers.removeFirst()
     }
@@ -151,7 +150,7 @@ public class AudioCodec {
     private func makeAudioConverter(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioConverter? {
         guard
             let inputFormat = AVAudioFormat(streamDescription: &inSourceFormat),
-            let outputFormat = destination.makeAudioFormat(inSourceFormat) else {
+            let outputFormat = settings.format.makeAudioFormat(inSourceFormat) else {
             return nil
         }
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)

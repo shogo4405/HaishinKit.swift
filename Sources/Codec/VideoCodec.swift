@@ -35,27 +35,6 @@ public class VideoCodec {
     #endif
     #endif
 
-    /// A bitRate mode that affectes how to encode the video source.
-    public enum BitRateMode: String, Codable {
-        /// The average bit rate.
-        case average
-        /// The constant bit rate.
-        @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
-        case constant
-
-        var key: VTSessionOptionKey {
-            if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *) {
-                switch self {
-                case .average:
-                    return .averageBitRate
-                case .constant:
-                    return .constantBitRate
-                }
-            }
-            return .averageBitRate
-        }
-    }
-
     /**
      * The VideoCodec error domain codes.
      */

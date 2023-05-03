@@ -585,11 +585,11 @@ final class RTMPAudioMessage: RTMPMessage {
         switch FLVAACPacketType(rawValue: payload[1]) {
         case .seq?:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
-            stream.mixer.audioIO.codec.destination = .pcm
+            stream.mixer.audioIO.codec.settings.format = .pcm
             stream.mixer.audioIO.codec.inSourceFormat = config?.audioStreamBasicDescription()
         case .raw?:
             if stream.mixer.audioIO.codec.inSourceFormat == nil {
-                stream.mixer.audioIO.codec.destination = .pcm
+                stream.mixer.audioIO.codec.settings.format = .pcm
                 stream.mixer.audioIO.codec.inSourceFormat = makeAudioStreamBasicDescription()
             }
             if let audioBuffer = makeAudioBuffer(stream) {
