@@ -1,7 +1,7 @@
 import AVFoundation
 
 /// The type of flv supports audio codecs.
-public enum FLVAudioCodec: UInt8 {
+enum FLVAudioCodec: UInt8 {
     /// The PCM codec.
     case pcm = 0
     /// The ADPCM codec.
