@@ -106,7 +106,6 @@ Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and t
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
-git checkout refs/tags/1.4.6
 carthage bootstrap --use-xcframeworks
 open HaishinKit.xcodeproj
 ```
@@ -129,7 +128,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.4.6
+    pod 'HaishinKit', '~> 1.5.0
 end
 
 target 'Your Target'  do
@@ -139,7 +138,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.4.6
+github "shogo4405/HaishinKit.swift" ~> 1.5.0
 ```
 ### Swift Package Manager
 ```

@@ -26,7 +26,7 @@ private class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
 
     init() {
         audioCodec.delegate = self
-        audioCodec.destination = .pcm
+        audioCodec.settings.format = .pcm
         audioCodec.startRunning()
     }
 
