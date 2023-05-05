@@ -155,7 +155,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
         if let config: AudioSpecificConfig = config as? AudioSpecificConfig {
             return PacketizedElementaryStream(bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp, decodeTimeStamp: decodeTimeStamp, timestamp: timestamp, config: config)
         }
-        if let config: AVCConfigurationRecord = config as? AVCConfigurationRecord {
+        if let config: AVCDecoderConfigurationRecord = config as? AVCDecoderConfigurationRecord {
             return PacketizedElementaryStream(bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp, decodeTimeStamp: decodeTimeStamp, timestamp: timestamp, config: randomAccessIndicator ? config : nil)
         }
         return nil
@@ -231,11 +231,11 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
-    init?(bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, timestamp: CMTime, config: AVCConfigurationRecord?) {
+    init?(bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, timestamp: CMTime, config: AVCDecoderConfigurationRecord?) {
         guard let bytes = bytes else {
             return nil
         }
-        if let config: AVCConfigurationRecord = config {
+        if let config: AVCDecoderConfigurationRecord = config {
             data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x10])
             data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
             data.append(contentsOf: config.sequenceParameterSets[0])

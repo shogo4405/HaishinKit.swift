@@ -1,7 +1,7 @@
 import CoreMedia
 import Foundation
 
-enum NALUnitType: UInt8, Equatable {
+enum AVCNALUnitType: UInt8, Equatable {
     case unspec = 0
     case slice = 1 // P frame
     case dpa = 2
@@ -18,9 +18,9 @@ enum NALUnitType: UInt8, Equatable {
 }
 
 // MARK: -
-struct NALUnit: Equatable {
+struct AVCNALUnit: Equatable {
     let refIdc: UInt8
-    let type: NALUnitType
+    let type: AVCNALUnitType
     let payload: Data
 
     init(_ data: Data) {
@@ -29,7 +29,7 @@ struct NALUnit: Equatable {
 
     init(_ data: Data, length: Int) {
         self.refIdc = data[0] >> 5
-        self.type = NALUnitType(rawValue: data[0] & 0x1f) ?? .unspec
+        self.type = AVCNALUnitType(rawValue: data[0] & 0x1f) ?? .unspec
         self.payload = data.subdata(in: 1..<length)
     }
 
@@ -41,14 +41,14 @@ struct NALUnit: Equatable {
     }
 }
 
-class NALUnitReader {
+class AVCNALUnitReader {
     static let defaultStartCodeLength: Int = 4
     static let defaultNALUnitHeaderLength: Int32 = 4
 
-    var nalUnitHeaderLength: Int32 = NALUnitReader.defaultNALUnitHeaderLength
+    var nalUnitHeaderLength: Int32 = AVCNALUnitReader.defaultNALUnitHeaderLength
 
-    func read(_ data: Data) -> [NALUnit] {
-        var units: [NALUnit] = []
+    func read(_ data: Data) -> [AVCNALUnit] {
+        var units: [AVCNALUnit] = []
         var lastIndexOf = data.count - 1
         for i in (2..<data.count).reversed() {
             guard data[i] == 1 && data[i - 1] == 0 && data[i - 2] == 0 else {

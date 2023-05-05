@@ -43,6 +43,36 @@ public struct VideoCodecSettings: Codable {
         case trim = "Trim"
     }
 
+    /// The type of the VideoCodec supports format.
+    enum Format: Codable {
+        case h264
+        case hevc
+
+        #if os(macOS)
+        var encoderID: NSString {
+            switch self {
+            case .h264:
+                #if arch(arm64)
+                return NSString(string: "com.apple.videotoolbox.videoencoder.ave.avc")
+                #else
+                return NSString(string: "com.apple.videotoolbox.videoencoder.h264.gva")
+                #endif
+            case .hevc:
+                return NSString(string: "com.apple.videotoolbox.videoencoder.ave.hevc")
+            }
+        }
+        #endif
+
+        var codecType: UInt32 {
+            switch self {
+            case .h264:
+                return kCMVideoCodecType_H264
+            case .hevc:
+                return kCMVideoCodecType_HEVC
+            }
+        }
+    }
+
     /// Specifies the video size of encoding video.
     public var videoSize: VideoSize
     /// Specifies the bitrate.
@@ -57,10 +87,19 @@ public struct VideoCodecSettings: Codable {
     /// Specifies the bitRateMode.
     public var bitRateMode: BitRateMode
     /// Specifies the H264 profileLevel.
-    public var profileLevel: String
-    /// Specifies  the HardwareEncoder is enabled(TRUE), or not(FALSE) for macOS.
+    public var profileLevel: String {
+        didSet {
+            if profileLevel.contains("HEVC") {
+                format = .hevc
+            } else {
+                format = .h264
+            }
+        }
+    }
+    /// Specifies the HardwareEncoder is enabled(TRUE), or not(FALSE) for macOS.
     public var isHardwareEncoderEnabled = true
 
+    var format: Format = .h264
     var expectedFrameRate: Float64 = IOMixer.defaultFrameRate
 
     /// Creates a new VideoCodecSettings instance.
@@ -82,6 +121,9 @@ public struct VideoCodecSettings: Codable {
         self.bitRateMode = bitRateMode
         self.allowFrameReordering = allowFrameReordering
         self.isHardwareEncoderEnabled = isHardwareEncoderEnabled
+        if profileLevel.contains("HEVC") {
+            self.format = .hevc
+        }
     }
 
     func invalidateSession(_ rhs: VideoCodecSettings) -> Bool {
@@ -120,7 +162,7 @@ public struct VideoCodecSettings: Codable {
         ])
         #if os(macOS)
         if isHardwareEncoderEnabled {
-            options.insert(.init(key: .encoderID, value: VideoCodec.encoderName))
+            options.insert(.init(key: .encoderID, value: format.encoderID))
             options.insert(.init(key: .enableHardwareAcceleratedVideoEncoder, value: kCFBooleanTrue))
             options.insert(.init(key: .requireHardwareAcceleratedVideoEncoder, value: kCFBooleanTrue))
         }

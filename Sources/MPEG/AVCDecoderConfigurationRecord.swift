@@ -1,16 +1,20 @@
 import AVFoundation
 import VideoToolbox
 
+protocol DecoderConfigurationRecord {
+    func makeFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus
+}
+
 // MARK: -
 /*
  - seealso: ISO/IEC 14496-15 2010
  */
-struct AVCConfigurationRecord {
+struct AVCDecoderConfigurationRecord: DecoderConfigurationRecord {
     static func getData(_ formatDescription: CMFormatDescription?) -> Data? {
-        guard let formatDescription = formatDescription else {
+        guard let formatDescription else {
             return nil
         }
-        if let atoms: NSDictionary = CMFormatDescriptionGetExtension(formatDescription, extensionKey: "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
+        if let atoms = CMFormatDescriptionGetExtension(formatDescription, extensionKey: "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
             return atoms["avcC"] as? Data
         }
         return nil
@@ -75,7 +79,7 @@ struct AVCConfigurationRecord {
     }
 }
 
-extension AVCConfigurationRecord: DataConvertible {
+extension AVCDecoderConfigurationRecord: DataConvertible {
     // MARK: DataConvertible
     var data: Data {
         get {
@@ -108,7 +112,7 @@ extension AVCConfigurationRecord: DataConvertible {
                 avcLevelIndication = try buffer.readUInt8()
                 lengthSizeMinusOneWithReserved = try buffer.readUInt8()
                 numOfSequenceParameterSetsWithReserved = try buffer.readUInt8()
-                let numOfSequenceParameterSets: UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCConfigurationRecord.reserveNumOfSequenceParameterSets
+                let numOfSequenceParameterSets: UInt8 = numOfSequenceParameterSetsWithReserved & ~AVCDecoderConfigurationRecord.reserveNumOfSequenceParameterSets
                 for _ in 0..<numOfSequenceParameterSets {
                     let length = Int(try buffer.readUInt16())
                     sequenceParameterSets.append(try buffer.readBytes(length).bytes)
@@ -125,7 +129,7 @@ extension AVCConfigurationRecord: DataConvertible {
     }
 }
 
-extension AVCConfigurationRecord: CustomDebugStringConvertible {
+extension AVCDecoderConfigurationRecord: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     var debugDescription: String {
         Mirror(reflecting: self).debugDescription
