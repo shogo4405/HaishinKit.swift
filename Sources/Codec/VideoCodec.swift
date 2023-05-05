@@ -106,10 +106,10 @@ public class VideoCodec {
     }
     private var invalidateSession = true
     private var buffers: [CMSampleBuffer] = []
-    private var minimumGroupOfPictures: Int = VideoCodec.defaultMinimumGroupOfPictures
+    private var minimumGroupOfPictures = VideoCodec.defaultMinimumGroupOfPictures
 
     func appendImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard isRunning.value else {
+        guard isRunning.value, !(delegate?.videoCodecWillDropFame(self) ?? false) else {
             return
         }
         if invalidateSession {
@@ -125,14 +125,12 @@ public class VideoCodec {
                 return
             }
             formatDescription = sampleBuffer.formatDescription
-            if !(delegate?.videoCodecWillDropFame(self) ?? false) {
-                delegate?.videoCodec(self, didOutput: sampleBuffer)
-            }
+            delegate?.videoCodec(self, didOutput: sampleBuffer)
         }
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard isRunning.value, !(delegate?.videoCodecWillDropFame(self) ?? false) else {
+        guard isRunning.value else {
             return
         }
         if invalidateSession {
@@ -177,7 +175,6 @@ public class VideoCodec {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-
             if isBaseline {
                 delegate?.videoCodec(self, didOutput: buffer)
             } else {
