@@ -51,7 +51,7 @@ public class VideoCodec {
 
     /// The videoCodec's attributes value.
     public static var defaultAttributes: [NSString: AnyObject]? = [
-        kCVPixelBufferIOSurfacePropertiesKey: [:] as AnyObject,
+        kCVPixelBufferIOSurfacePropertiesKey: NSDictionary(),
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
 
