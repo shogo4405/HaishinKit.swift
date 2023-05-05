@@ -62,7 +62,9 @@ Project name    |Notes       |License
     - [x] AAC
   - Video
     - [x] H264/AVC
+      - ex: `stream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_3_1 as String`
     - [x] H265/HEVC ([Server-side support is required.](https://github.com/veovera/enhanced-rtmp/blob/main/enhanced-rtmp-v1.pdf))
+      - ex: `stream.videoSettings.profileLevel = kVTProfileLevel_HEVC_Main_AutoLevel as String`
 
 ### HLS
 - [x] HTTPService
