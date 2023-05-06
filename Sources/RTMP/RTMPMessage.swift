@@ -582,12 +582,12 @@ final class RTMPAudioMessage: RTMPMessage {
         default:
             stream.audioTimestamp += Double(timestamp)
         }
-        switch FLVAACPacketType(rawValue: payload[1]) {
-        case .seq?:
+        switch payload[1] {
+        case FLVAACPacketType.seq.rawValue:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
             stream.mixer.audioIO.codec.settings.format = .pcm
             stream.mixer.audioIO.codec.inSourceFormat = config?.audioStreamBasicDescription()
-        case .raw?:
+        case FLVAACPacketType.raw.rawValue:
             if stream.mixer.audioIO.codec.inSourceFormat == nil {
                 stream.mixer.audioIO.codec.settings.format = .pcm
                 stream.mixer.audioIO.codec.inSourceFormat = makeAudioStreamBasicDescription()
@@ -595,7 +595,7 @@ final class RTMPAudioMessage: RTMPMessage {
             if let audioBuffer = makeAudioBuffer(stream) {
                 stream.mixer.audioIO.codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
             }
-        case .none:
+        default:
             break
         }
     }
@@ -644,35 +644,30 @@ final class RTMPVideoMessage: RTMPMessage {
             return
         }
         if (payload[0] & 0b10000000) == 0 {
-            switch payload[0] >> 4 & 0b00001111 {
-            case FLVVideoCodec.avc.rawValue:
-                switch payload[1] {
-                case FLVAVCPacketType.seq.rawValue:
-                    makeFormatDescription(stream, format: .h264)
-                case FLVAVCPacketType.nal.rawValue:
-                    if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 0) {
-                        stream.mixer.mediaLink.enqueueVideo(sampleBuffer)
-                    }
-                default:
-                    break
+            guard payload[0] & 0b01110000 >> 4 == FLVVideoCodec.avc.rawValue else {
+                return
+            }
+            switch payload[1] {
+            case FLVAVCPacketType.seq.rawValue:
+                makeFormatDescription(stream, format: .h264)
+            case FLVAVCPacketType.nal.rawValue:
+                if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 0) {
+                    stream.mixer.videoIO.codec.appendSampleBuffer(sampleBuffer)
                 }
             default:
                 break
             }
         } else {
             // IsExHeader for Enhancing RTMP, FLV
-            switch true {
-            // hvc1
-            case payload[1] == 0x68 && payload[2] == 0x76 && payload[3] == 0x63 && payload[4] == 0x31:
-                switch payload[0] & 0b00001111 {
-                case FLVVideoPacketType.sequenceStart.rawValue:
-                    makeFormatDescription(stream, format: .hevc)
-                case FLVVideoPacketType.codedFrames.rawValue:
-                    if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 3) {
-                        stream.mixer.mediaLink.enqueueVideo(sampleBuffer)
-                    }
-                default:
-                    break
+            guard payload[1] == 0x68 && payload[2] == 0x76 && payload[3] == 0x63 && payload[4] == 0x31 else {
+                return
+            }
+            switch payload[0] & 0b00001111 {
+            case FLVVideoPacketType.sequenceStart.rawValue:
+                makeFormatDescription(stream, format: .hevc)
+            case FLVVideoPacketType.codedFrames.rawValue:
+                if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 3) {
+                    stream.mixer.videoIO.codec.appendSampleBuffer(sampleBuffer)
                 }
             default:
                 break

@@ -25,8 +25,6 @@ public protocol VideoCodecDelegate: AnyObject {
  * The VideoCodec class provides methods for encode or decode for video.
  */
 public class VideoCodec {
-    static let defaultMinimumGroupOfPictures: Int = 12
-
     /**
      * The VideoCodec error domain codes.
      */
@@ -98,7 +96,6 @@ public class VideoCodec {
     }
     private var invalidateSession = true
     private var buffers: [CMSampleBuffer] = []
-    private var minimumGroupOfPictures = VideoCodec.defaultMinimumGroupOfPictures
 
     func appendImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
         guard isRunning.value, !(delegate?.videoCodecWillDropFame(self) ?? false) else {
@@ -167,17 +164,7 @@ public class VideoCodec {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-            if buffer.decodeTimeStamp.isValid {
-                buffers.append(buffer)
-                buffers.sort {
-                    $0.presentationTimeStamp < $1.presentationTimeStamp
-                }
-                if minimumGroupOfPictures <= buffers.count {
-                    delegate?.videoCodec(self, didOutput: buffers.removeFirst())
-                }
-            } else {
-                delegate?.videoCodec(self, didOutput: buffer)
-            }
+            delegate?.videoCodec(self, didOutput: buffer)
         }
     }
 
@@ -232,7 +219,6 @@ extension VideoCodec: Running {
             self.session = nil
             self.invalidateSession = true
             self.needsSync.mutate { $0 = true }
-            self.buffers.removeAll()
             self.formatDescription = nil
             #if os(iOS)
             NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
