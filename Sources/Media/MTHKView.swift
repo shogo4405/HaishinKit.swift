@@ -20,7 +20,7 @@ public class MTHKView: MTKView {
     private var currentSampleBuffer: CMSampleBuffer?
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
 
-    private lazy var commandQueue: MTLCommandQueue? = {
+    private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
 

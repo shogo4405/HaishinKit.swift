@@ -30,7 +30,7 @@ struct RTMPSharedObjectEvent {
         self.data = data
     }
 
-    init?(serializer: inout AMFSerializer) throws {
+    init?(serializer: inout any AMFSerializer) throws {
         guard let byte: UInt8 = try? serializer.readUInt8(), let type = RTMPSharedObjectType(rawValue: byte) else {
             return nil
         }
@@ -50,7 +50,7 @@ struct RTMPSharedObjectEvent {
         }
     }
 
-    func serialize(_ serializer: inout AMFSerializer) {
+    func serialize(_ serializer: inout any AMFSerializer) {
         serializer.writeUInt8(type.rawValue)
         guard let name: String = name else {
             serializer.writeUInt32(0)

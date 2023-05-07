@@ -21,7 +21,7 @@ final class PlaybackViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        (view as? NetStreamDrawable)?.attachStream(rtmpStream)
+        (view as? (any NetStreamDrawable))?.attachStream(rtmpStream)
         if #available(iOS 15.0, *), let layer = view.layer as? AVSampleBufferDisplayLayer {
             pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
         }

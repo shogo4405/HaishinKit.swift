@@ -38,7 +38,7 @@ public class IORecorder {
     ]
 
     /// Specifies the delegate.
-    public weak var delegate: IORecorderDelegate?
+    public weak var delegate: (any IORecorderDelegate)?
     /// Specifies the recorder settings.
     public var outputSettings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings
     /// The running indicies whether recording or not.

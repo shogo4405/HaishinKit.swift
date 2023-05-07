@@ -33,7 +33,7 @@ public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
         attributes[kCVPixelBufferBytesPerRowAlignmentKey] = NSNumber(value: Float(size.width * scale * 4))
         return attributes
     }
-    public weak var delegate: IOScreenCaptureUnitDelegate?
+    public weak var delegate: (any IOScreenCaptureUnitDelegate)?
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     private var shared: UIApplication?

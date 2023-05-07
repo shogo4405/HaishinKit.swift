@@ -214,7 +214,7 @@ open class RTMPConnection: EventDispatcher {
         streams.count
     }
     /// Specifies the delegate of the NetStream.
-    public weak var delegate: RTMPConnectionDelegate?
+    public weak var delegate: (any RTMPConnectionDelegate)?
     /// The statistics of outgoing queue bytes per second.
     @objc open private(set) dynamic var previousQueueBytesOut: [Int64] = []
     /// The statistics of incoming bytes per second.
@@ -222,7 +222,7 @@ open class RTMPConnection: EventDispatcher {
     /// The statistics of outgoing bytes per second.
     @objc open private(set) dynamic var currentBytesOutPerSecond: Int32 = 0
 
-    var socket: RTMPSocketCompatible!
+    var socket: (any RTMPSocketCompatible)!
     var streams: [RTMPStream] = []
     var sequence: Int64 = 0
     var bandWidth: UInt32 = 0
@@ -483,7 +483,7 @@ open class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    func socket(_ socket: RTMPSocketCompatible, readyState: RTMPSocketReadyState) {
+    func socket(_ socket: any RTMPSocketCompatible, readyState: RTMPSocketReadyState) {
         if logger.isEnabledFor(level: .debug) {
             logger.debug(readyState)
         }
@@ -509,7 +509,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    func socket(_ socket: RTMPSocketCompatible, totalBytesIn: Int64) {
+    func socket(_ socket: any RTMPSocketCompatible, totalBytesIn: Int64) {
         guard windowSizeS * (sequence + 1) <= totalBytesIn else {
             return
         }
@@ -521,7 +521,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         sequence += 1
     }
 
-    func socket(_ socket: RTMPSocketCompatible, data: Data) {
+    func socket(_ socket: any RTMPSocketCompatible, data: Data) {
         guard let chunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
             socket.inputBuffer.append(data)
             return

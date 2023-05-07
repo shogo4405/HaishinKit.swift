@@ -30,7 +30,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
     var qualityOfService: DispatchQoS = .default
     var inputBuffer = Data()
-    weak var delegate: RTMPSocketDelegate?
+    weak var delegate: (any RTMPSocketDelegate)?
 
     private(set) var queueBytesOut: Atomic<Int64> = .init(0)
     private(set) var totalBytesIn: Atomic<Int64> = .init(0)

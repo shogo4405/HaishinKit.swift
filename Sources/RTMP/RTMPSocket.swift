@@ -12,7 +12,7 @@ final class RTMPSocket: NetSocket, RTMPSocketCompatible {
     }
     var chunkSizeC: Int = RTMPChunk.defaultSize
     var chunkSizeS: Int = RTMPChunk.defaultSize
-    weak var delegate: RTMPSocketDelegate?
+    weak var delegate: (any RTMPSocketDelegate)?
     private var handshake = RTMPHandshake()
 
     override var totalBytesIn: Atomic<Int64> {

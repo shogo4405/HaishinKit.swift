@@ -21,7 +21,7 @@ public class TSWriter: Running {
     public static let defaultSegmentDuration: Double = 2
 
     /// The delegate instance.
-    public weak var delegate: TSWriterDelegate?
+    public weak var delegate: (any TSWriterDelegate)?
     /// This instance is running to process(true) or not(false).
     public internal(set) var isRunning: Atomic<Bool> = .init(false)
     /// The exptected medias = [.video, .audio].

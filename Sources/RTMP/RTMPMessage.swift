@@ -314,7 +314,7 @@ final class RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    private var serializer: AMFSerializer = AMF0Serializer()
+    private var serializer: any AMFSerializer = AMF0Serializer()
 
     init(objectEncoding: RTMPObjectEncoding) {
         self.objectEncoding = objectEncoding
@@ -362,7 +362,7 @@ final class RTMPDataMessage: RTMPMessage {
     var handlerName: String = ""
     var arguments: [Any?] = []
 
-    private var serializer: AMFSerializer = AMF0Serializer()
+    private var serializer: any AMFSerializer = AMF0Serializer()
 
     override var payload: Data {
         get {
@@ -493,7 +493,7 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         }
     }
 
-    private var serializer: AMFSerializer = AMF0Serializer()
+    private var serializer: any AMFSerializer = AMF0Serializer()
 
     init(objectEncoding: RTMPObjectEncoding) {
         self.objectEncoding = objectEncoding

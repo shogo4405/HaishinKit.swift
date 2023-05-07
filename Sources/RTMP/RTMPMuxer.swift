@@ -13,7 +13,7 @@ protocol RTMPMuxerDelegate: AnyObject {
 final class RTMPMuxer {
     static let aac: UInt8 = FLVAudioCodec.aac.rawValue << 4 | FLVSoundRate.kHz44.rawValue << 2 | FLVSoundSize.snd16bit.rawValue << 1 | FLVSoundType.stereo.rawValue
 
-    weak var delegate: RTMPMuxerDelegate?
+    weak var delegate: (any RTMPMuxerDelegate)?
     private var audioTimeStamp: CMTime = .zero
     private var videoTimeStamp: CMTime = .zero
     private let compositiionTimeOffset: CMTime = .init(value: 3, timescale: 30)

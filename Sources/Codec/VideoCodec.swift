@@ -87,8 +87,8 @@ public class VideoCodec {
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: settings.videoSize.height)
         return attributes
     }
-    weak var delegate: VideoCodecDelegate?
-    private(set) var session: VTSessionConvertible? {
+    weak var delegate: (any VideoCodecDelegate)?
+    private(set) var session: (any VTSessionConvertible)? {
         didSet {
             oldValue?.invalidate()
             invalidateSession = false

@@ -12,7 +12,7 @@ protocol IOUnit {
 }
 
 protocol IOUnitEncoding {
-    func startEncoding(_ delegate: AVCodecDelegate)
+    func startEncoding(_ delegate: any AVCodecDelegate)
     func stopEncoding()
 }
 

@@ -5,7 +5,7 @@ enum VTSessionMode {
     case compression
     case decompression
 
-    func makeSession(_ videoCodec: VideoCodec) -> VTSessionConvertible? {
+    func makeSession(_ videoCodec: VideoCodec) -> (any VTSessionConvertible)? {
         switch self {
         case .compression:
             var session: VTCompressionSession?

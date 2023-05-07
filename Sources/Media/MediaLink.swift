@@ -32,7 +32,7 @@ final class MediaLink {
     }
     var hasVideo = false
     var bufferTime = MediaLink.bufferTime
-    weak var delegate: MediaLinkDelegate?
+    weak var delegate: (any MediaLinkDelegate)?
     private(set) lazy var playerNode = AVAudioPlayerNode()
     private(set) var isRunning: Atomic<Bool> = .init(false)
     private var isBuffering = true {
@@ -45,7 +45,7 @@ final class MediaLink {
         }
     }
     private var bufferingTime = MediaLink.bufferingTime
-    private lazy var choreographer: Choreographer = {
+    private lazy var choreographer: any Choreographer = {
         var choreographer = DisplayLinkChoreographer()
         choreographer.delegate = self
         return choreographer
@@ -121,7 +121,7 @@ final class MediaLink {
 
 extension MediaLink: ChoreographerDelegate {
     // MARK: ChoreographerDelegate
-    func choreographer(_ choreographer: Choreographer, didFrame duration: Double) {
+    func choreographer(_ choreographer: any Choreographer, didFrame duration: Double) {
         guard let bufferQueue else {
             return
         }

@@ -25,7 +25,7 @@ public class AudioCodec {
     }
 
     /// Specifies the delegate.
-    public weak var delegate: AudioCodecDelegate?
+    public weak var delegate: (any AudioCodecDelegate)?
     /// This instance is running to process(true) or not(false).
     public private(set) var isRunning: Atomic<Bool> = .init(false)
     /// Specifies the settings for audio codec.

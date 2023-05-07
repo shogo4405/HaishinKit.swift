@@ -240,7 +240,7 @@ open class RTMPStream: NetStream {
     private let muxer = RTMPMuxer()
     private var messages: [RTMPCommandMessage] = []
     private var frameCount: UInt16 = 0
-    private var dispatcher: EventDispatcherConvertible!
+    private var dispatcher: (any EventDispatcherConvertible)!
     private var audioWasSent = false
     private var videoWasSent = false
     private var howToPublish: RTMPStream.HowToPublish = .live

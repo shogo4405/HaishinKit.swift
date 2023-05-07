@@ -11,7 +11,7 @@ enum RTMPSocketReadyState: UInt8 {
 
 protocol RTMPSocketCompatible: AnyObject {
     var timeout: Int { get set }
-    var delegate: RTMPSocketDelegate? { get set }
+    var delegate: (any RTMPSocketDelegate)? { get set }
     var connected: Bool { get }
     var timestamp: TimeInterval { get }
     var readyState: RTMPSocketReadyState { get set }
@@ -47,7 +47,7 @@ extension RTMPSocketCompatible {
 // MARK: -
 // swiftlint:disable class_delegate_protocol
 protocol RTMPSocketDelegate: EventDispatcherConvertible {
-    func socket(_ socket: RTMPSocketCompatible, data: Data)
-    func socket(_ socket: RTMPSocketCompatible, readyState: RTMPSocketReadyState)
-    func socket(_ socket: RTMPSocketCompatible, totalBytesIn: Int64)
+    func socket(_ socket: any RTMPSocketCompatible, data: Data)
+    func socket(_ socket: any RTMPSocketCompatible, readyState: RTMPSocketReadyState)
+    func socket(_ socket: any RTMPSocketCompatible, totalBytesIn: Int64)
 }

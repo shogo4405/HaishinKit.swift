@@ -132,7 +132,7 @@ final class IOAudioUnit: NSObject, IOUnit {
 
 extension IOAudioUnit: IOUnitEncoding {
     // MARK: IOUnitEncoding
-    func startEncoding(_ delegate: AVCodecDelegate) {
+    func startEncoding(_ delegate: any AVCodecDelegate) {
         codec.delegate = delegate
         codec.startRunning()
     }
