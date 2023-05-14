@@ -1,5 +1,6 @@
 import Accelerate
 import CoreMedia
+import CoreVideo
 import Foundation
 
 extension vImage_Buffer {
@@ -19,6 +20,11 @@ extension vImage_Buffer {
     mutating func copy(to cvPixelBuffer: CVPixelBuffer, format: inout vImage_CGImageFormat) -> vImage_Error {
         let cvImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(cvPixelBuffer).takeRetainedValue()
         vImageCVImageFormat_SetColorSpace(cvImageFormat, CGColorSpaceCreateDeviceRGB())
+        defer {
+            if let dictionary = CVBufferGetAttachments(cvPixelBuffer, .shouldNotPropagate) {
+                CVBufferSetAttachments(cvPixelBuffer, dictionary, .shouldPropagate)
+            }
+        }
         return vImageBuffer_CopyToCVPixelBuffer(
             &self,
             &format,

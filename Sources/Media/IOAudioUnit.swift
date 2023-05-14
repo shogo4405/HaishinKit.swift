@@ -60,7 +60,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         if isFragmented(sampleBuffer), let sampleBuffer = makeSampleBuffer(sampleBuffer) {
             appendSampleBuffer(sampleBuffer)
         }
-        mixer?.recorder.appendSampleBuffer(sampleBuffer, mediaType: .audio)
+        mixer?.recorder.appendSampleBuffer(sampleBuffer)
         codec.appendSampleBuffer(sampleBuffer)
         presentationTimeStamp = CMTimeAdd(presentationTimeStamp, CMTime(value: CMTimeValue(sampleBuffer.numSamples), timescale: presentationTimeStamp.timescale))
     }
