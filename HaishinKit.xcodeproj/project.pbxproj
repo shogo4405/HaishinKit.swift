@@ -45,7 +45,6 @@
 		293B42E92340B4840086F973 /* RTMPObjectEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293B42E82340B4840086F973 /* RTMPObjectEncoding.swift */; };
 		293B42EA2340B4840086F973 /* RTMPObjectEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293B42E82340B4840086F973 /* RTMPObjectEncoding.swift */; };
 		293B42EB2340B4840086F973 /* RTMPObjectEncoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293B42E82340B4840086F973 /* RTMPObjectEncoding.swift */; };
-		2940EF4F2380116500430456 /* RingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2940EF4E2380116500430456 /* RingBufferTests.swift */; };
 		2941746B22D069B300A2944F /* AudioEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2941746A22D069B300A2944F /* AudioEffect.swift */; };
 		2941746C22D069B300A2944F /* AudioEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2941746A22D069B300A2944F /* AudioEffect.swift */; };
 		2941746D22D069B300A2944F /* AudioEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2941746A22D069B300A2944F /* AudioEffect.swift */; };
@@ -608,7 +607,6 @@
 		2927A2991E7ED2D70044AF91 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
 		2930D03F1E12D17C00DA2DC5 /* SampleHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SampleHandler.swift; sourceTree = "<group>"; };
 		293B42E82340B4840086F973 /* RTMPObjectEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPObjectEncoding.swift; sourceTree = "<group>"; };
-		2940EF4E2380116500430456 /* RingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RingBufferTests.swift; sourceTree = "<group>"; };
 		2941746A22D069B300A2944F /* AudioEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEffect.swift; sourceTree = "<group>"; };
 		2942424C1CF4C01300D65DCB /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
 		2942A4F721A9418A004E1BEE /* Running.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Running.swift; sourceTree = "<group>"; };
@@ -970,7 +968,6 @@
 				BCC9E9082636FF7400948774 /* DataBufferTests.swift */,
 				290EA8A61DFB61E700053022 /* EventDispatcherTests.swift */,
 				290EA8A71DFB61E700053022 /* MD5Tests.swift */,
-				2940EF4E2380116500430456 /* RingBufferTests.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -2042,7 +2039,6 @@
 				035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */,
 				290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */,
 				BCC9E9092636FF7400948774 /* DataBufferTests.swift in Sources */,
-				2940EF4F2380116500430456 /* RingBufferTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2607,7 +2603,7 @@
 				);
 				MARKETING_VERSION = 1.5.0;
 				ONLY_ACTIVE_ARCH = YES;
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-enable-upcoming-feature ExistentialAny";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
