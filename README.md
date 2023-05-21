@@ -38,6 +38,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 ## 🌏 Related projects
 Project name    |Notes       |License
 ----------------|------------|--------------
+[SRTHaishinKit for iOS.](https://github.com/shogo4405/SRTHaishinKit.swift)|Camera and Microphone streaming library via SRT.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/SRTHaishinKit.swift/blob/master/LICENSE.md)
 [HaishinKit for Android.](https://github.com/shogo4405/HaishinKit.kt)|Camera and Microphone streaming library via RTMP for Android.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.kt/blob/master/LICENSE.md)
 [HaishinKit for Flutter.](https://github.com/shogo4405/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.dart/blob/master/LICENSE.md)
 
