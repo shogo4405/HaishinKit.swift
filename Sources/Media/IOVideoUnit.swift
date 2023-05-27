@@ -132,6 +132,17 @@ final class IOVideoUnit: NSObject, IOUnit {
         guard let mixer, self.capture.device != device else {
             return
         }
+        guard let device else {
+            mixer.mediaSync = .passthrough
+            mixer.session.beginConfiguration()
+            defer {
+                mixer.session.commitConfiguration()
+            }
+            capture.detachSession(mixer.session)
+            try capture.attachDevice(nil, videoUnit: self)
+            return
+        }
+        mixer.mediaSync = .video
         mixer.session.beginConfiguration()
         defer {
             mixer.session.commitConfiguration()
@@ -139,11 +150,6 @@ final class IOVideoUnit: NSObject, IOUnit {
                 setTorchMode(.on)
             }
         }
-        guard let device else {
-            mixer.mediaSync = .passthrough
-            return
-        }
-        mixer.mediaSync = .video
         if multiCamCapture.device == device {
             try multiCamCapture.attachDevice(nil, videoUnit: self)
         }
