@@ -158,6 +158,16 @@ open class RTMPStream: NetStream {
         case publishing
     }
 
+    private struct PausedStatus {
+        let hasAudio: Bool
+        let hasVideo: Bool
+
+        init(hasAudio: Bool, hasVideo: Bool) {
+            self.hasAudio = hasAudio
+            self.hasVideo = hasVideo
+        }
+    }
+
     static let defaultID: UInt32 = 0
     /// The NetStreamInfo object whose properties contain data.
     public internal(set) var info = RTMPStreamInfo()
@@ -216,8 +226,14 @@ open class RTMPStream: NetStream {
             lockQueue.async {
                 switch self.readyState {
                 case .publish, .publishing:
-                    self.hasVideo = self.paused
-                    self.hasAudio = self.paused
+                    if self.paused {
+                        self.pausedStatus = .init(hasAudio: self.hasAudio, hasVideo: self.hasVideo)
+                        self.hasAudio = false
+                        self.hasVideo = false
+                    } else {
+                        self.hasAudio = self.pausedStatus.hasAudio
+                        self.hasVideo = self.pausedStatus.hasVideo
+                    }
                 default:
                     break
                 }
@@ -243,6 +259,7 @@ open class RTMPStream: NetStream {
     private var dispatcher: (any EventDispatcherConvertible)!
     private var audioWasSent = false
     private var videoWasSent = false
+    private var pausedStatus = PausedStatus(hasAudio: false, hasVideo: false)
     private var howToPublish: RTMPStream.HowToPublish = .live
     private weak var rtmpConnection: RTMPConnection?
 
