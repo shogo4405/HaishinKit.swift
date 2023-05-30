@@ -234,6 +234,15 @@ open class RTMPStream: NetStream {
                         self.hasAudio = self.pausedStatus.hasAudio
                         self.hasVideo = self.pausedStatus.hasVideo
                     }
+                case .play, .playing:
+                    self.rtmpConnection?.socket.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                        streamId: self.id,
+                        transactionId: 0,
+                        objectEncoding: self.objectEncoding,
+                        commandName: "pause",
+                        commandObject: nil,
+                        arguments: [self.paused, floor(self.startedAt.timeIntervalSinceNow * -1000)]
+                    )))
                 default:
                     break
                 }
@@ -255,12 +264,14 @@ open class RTMPStream: NetStream {
     var videoTimestampZero: Double = -1.0
     private let muxer = RTMPMuxer()
     private var messages: [RTMPCommandMessage] = []
+    private var startedAt = Date()
     private var frameCount: UInt16 = 0
     private var dispatcher: (any EventDispatcherConvertible)!
     private var audioWasSent = false
     private var videoWasSent = false
     private var pausedStatus = PausedStatus(hasAudio: false, hasVideo: false)
     private var howToPublish: RTMPStream.HowToPublish = .live
+    private var dataTimeStamps: [String: Date] = .init()
     private weak var rtmpConnection: RTMPConnection?
 
     /// Creates a new stream.
@@ -386,12 +397,20 @@ open class RTMPStream: NetStream {
             guard let rtmpConnection = self.rtmpConnection, self.readyState == .publishing else {
                 return
             }
-            let length = rtmpConnection.socket.doOutput(chunk: RTMPChunk(message: RTMPDataMessage(
-                streamId: self.id,
-                objectEncoding: self.objectEncoding,
-                handlerName: handlerName,
-                arguments: arguments
-            )))
+            let dataWasSent = self.dataTimeStamps[handlerName] == nil ? false : true
+            let timestmap: UInt32 = dataWasSent ? UInt32((self.dataTimeStamps[handlerName]?.timeIntervalSinceNow ?? 0) * -1000) : UInt32(self.startedAt.timeIntervalSinceNow * -1000)
+            let chunk = RTMPChunk(
+                type: dataWasSent ? RTMPChunkType.one : RTMPChunkType.zero,
+                streamId: RTMPChunk.StreamID.data.rawValue,
+                message: RTMPDataMessage(
+                    streamId: self.id,
+                    objectEncoding: self.objectEncoding,
+                    timestamp: timestmap,
+                    handlerName: handlerName,
+                    arguments: arguments
+                ))
+            let length = rtmpConnection.socket.doOutput(chunk: chunk)
+            self.dataTimeStamps[handlerName] = .init()
             self.info.byteCount.mutate { $0 += Int64(length) }
         }
     }
@@ -487,6 +506,7 @@ open class RTMPStream: NetStream {
             }
             messages.removeAll()
         case .play:
+            startedAt = .init()
             videoTimestamp = 0
             videoTimestampZero = -1.0
             audioTimestamp = 0
@@ -494,11 +514,13 @@ open class RTMPStream: NetStream {
             mixer.delegate = self
             mixer.startDecoding()
         case .publish:
+            startedAt = .init()
             muxer.dispose()
             muxer.delegate = self
             mixer.startRunning()
             videoWasSent = false
             audioWasSent = false
+            dataTimeStamps.removeAll()
             FCPublish()
         case .publishing:
             send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())

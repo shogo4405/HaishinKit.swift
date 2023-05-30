@@ -40,6 +40,7 @@ final class RTMPChunk {
         case command = 0x03
         case audio = 0x04
         case video = 0x05
+        case data = 0x08
     }
 
     static let defaultSize: Int = 128
