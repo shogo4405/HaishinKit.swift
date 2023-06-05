@@ -570,10 +570,6 @@ extension RTMPStream: EventDispatcherConvertible {
 
 extension RTMPStream: RTMPMuxerDelegate {
     // MARK: RTMPMuxerDelegate
-    func muxer(_ muxer: RTMPMuxer, didSetMetadata: ASObject) {
-        send(handlerName: "@setDataFrame", arguments: "onMetaData", didSetMetadata)
-    }
-
     func muxer(_ muxer: RTMPMuxer, didOutputAudio buffer: Data, withTimestamp: Double) {
         guard let rtmpConnection, readyState == .publishing else {
             return

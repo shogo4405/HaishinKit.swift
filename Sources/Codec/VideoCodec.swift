@@ -66,15 +66,10 @@ public class VideoCodec {
             guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
                 return
             }
-            if let atoms: [String: AnyObject] = formatDescription?.`extension`(by: "SampleDescriptionExtensionAtoms"), let avcC: Data = atoms["avcC"] as? Data {
-                let config = AVCDecoderConfigurationRecord(data: avcC)
-                isBaseline = config.avcProfileIndication == 66
-            }
             delegate?.videoCodec(self, didOutput: formatDescription)
         }
     }
     var needsSync: Atomic<Bool> = .init(true)
-    var isBaseline = true
     var attributes: [NSString: AnyObject]? {
         guard VideoCodec.defaultAttributes != nil else {
             return nil
@@ -95,7 +90,6 @@ public class VideoCodec {
         }
     }
     private var invalidateSession = true
-    private var buffers: [CMSampleBuffer] = []
 
     func appendImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
         guard isRunning.value, !(delegate?.videoCodecWillDropFame(self) ?? false) else {

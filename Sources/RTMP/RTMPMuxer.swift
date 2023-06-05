@@ -1,7 +1,6 @@
 import AVFoundation
 
 protocol RTMPMuxerDelegate: AnyObject {
-    func muxer(_ muxer: RTMPMuxer, didSetMetadata: ASObject)
     func muxer(_ muxer: RTMPMuxer, didOutputAudio buffer: Data, withTimestamp: Double)
     func muxer(_ muxer: RTMPMuxer, didOutputVideo buffer: Data, withTimestamp: Double)
     func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error)
