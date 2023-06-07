@@ -413,11 +413,12 @@ final class RTMPDataMessage: RTMPMessage {
         super.init(type: objectEncoding.dataType)
     }
 
-    init(streamId: UInt32, objectEncoding: RTMPObjectEncoding, handlerName: String, arguments: [Any?] = []) {
+    init(streamId: UInt32, objectEncoding: RTMPObjectEncoding, timestamp: UInt32, handlerName: String, arguments: [Any?] = []) {
         self.objectEncoding = objectEncoding
         self.handlerName = handlerName
         self.arguments = arguments
         super.init(type: objectEncoding.dataType)
+        self.timestamp = timestamp
         self.streamId = streamId
     }
 
