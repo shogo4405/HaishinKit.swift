@@ -95,8 +95,8 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
+    #if os(iOS)
     /// Specifies the preferredVideoStabilizationMode most appropriate for use with the connection.
-    @available(macOS, unavailable)
     public var preferredVideoStabilizationMode: AVCaptureVideoStabilizationMode = .off {
         didSet {
             output?.connections.filter { $0.isVideoStabilizationSupported }.forEach {
@@ -104,6 +104,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
             }
         }
     }
+    #endif
 
     func attachDevice(_ device: AVCaptureDevice?, videoUnit: IOVideoUnit) throws {
         setSampleBufferDelegate(nil)
