@@ -415,6 +415,10 @@
 		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC83A4742403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
+		BC8446052A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */; };
+		BC8446062A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */; };
+		BC8446072A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */; };
+		BC8446092A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */; };
 		BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959EF0296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959EF1296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
@@ -777,6 +781,8 @@
 		BC7C56CC29A786AE00C41A9B /* ADTS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTS.swift; sourceTree = "<group>"; };
 		BC7C56D029A78D4F00C41A9B /* ADTSHeaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSHeaderTests.swift; sourceTree = "<group>"; };
 		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
+		BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferUtil.swift; sourceTree = "<group>"; };
+		BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferUtilTests.swift; sourceTree = "<group>"; };
 		BC959EEE296EE4190067BA97 /* ImageTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTransform.swift; sourceTree = "<group>"; };
 		BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCStreamPublishViewController.swift; sourceTree = "<group>"; };
 		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
@@ -918,6 +924,7 @@
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
 				29DC17B221D0CC0600E26CED /* Atomic.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
+				BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
 				29B876671CD70AB300FC07DA /* DataConvertible.swift */,
@@ -964,6 +971,7 @@
 			isa = PBXGroup;
 			children = (
 				290EA8A41DFB61E700053022 /* ByteArrayTests.swift */,
+				BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */,
 				290EA8A51DFB61E700053022 /* CRC32Tests.swift */,
 				BCC9E9082636FF7400948774 /* DataBufferTests.swift */,
 				290EA8A61DFB61E700053022 /* EventDispatcherTests.swift */,
@@ -1912,6 +1920,7 @@
 				BC44A1A923D31E92002D4297 /* AudioCodecRingBuffer.swift in Sources */,
 				BC20DF38250377A3007BC608 /* IOUIScreenCaptureUnit.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
+				BC8446052A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */,
 				29B876841CD70AE800FC07DA /* AVCDecoderConfigurationRecord.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* NetStreamDrawable.swift in Sources */,
@@ -2017,6 +2026,7 @@
 				295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */,
 				290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */,
 				290EA8A01DFB61B100053022 /* AMFFoundationTests.swift in Sources */,
+				BC8446092A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift in Sources */,
 				BC7C56892995082700C41A9B /* NetStreamTests.swift in Sources */,
 				2917CB662104CA2800F6823A /* AudioSpecificConfigTests.swift in Sources */,
 				290EA8AB1DFB61E700053022 /* EventDispatcherTests.swift in Sources */,
@@ -2112,6 +2122,7 @@
 				29EA87EE1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
 				29B8770C1CD70D5A00FC07DA /* NetService.swift in Sources */,
 				BC1DC5152A05428800E928ED /* HEVCNALUnit.swift in Sources */,
+				BC8446062A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */,
 				2958911B1EEB8E3F00CE51E1 /* FLVAudioCodec.swift in Sources */,
 				BC4914A328DDD33D009E2DF6 /* VTSessionConvertible.swift in Sources */,
 				293B42EA2340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
@@ -2236,6 +2247,7 @@
 				BC83A4752403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */,
 				BC9CFA9523BDE8B700917EEF /* NetStreamDrawable.swift in Sources */,
 				29EB3E031ED0585D001CAE8B /* AudioSpecificConfig.swift in Sources */,
+				BC8446072A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */,
 				29EB3E141ED05889001CAE8B /* IOVideoUnit.swift in Sources */,
 				29EB3E221ED059FD001CAE8B /* RTMPMessage.swift in Sources */,
 				29EB3E001ED05854001CAE8B /* HTTPService.swift in Sources */,
