@@ -19,6 +19,7 @@ protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
     func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
     #endif
+    func mixerSessionWillResume(_ mixer: IOMixer)
 }
 
 /// An object that mixies audio and video for streaming.
@@ -323,6 +324,11 @@ extension IOMixer: Running {
         isRunning.mutate { $0 = session.isRunning }
     }
 
+    func startCaptureSession() {
+        session.startRunning()
+        isRunning.mutate { $0 = session.isRunning }
+    }
+
     private func addSessionObservers(_ session: AVCaptureSession) {
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError(_:)), name: .AVCaptureSessionRuntimeError, object: session)
         #if os(iOS)
@@ -438,8 +444,7 @@ extension IOMixer: Running {
         guard isRunning.value && !session.isRunning else {
             return
         }
-        session.startRunning()
-        isRunning.mutate { $0 = session.isRunning }
+        delegate?.mixerSessionWillResume(self)
     }
 }
 #else
