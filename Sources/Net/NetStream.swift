@@ -40,7 +40,11 @@ open class NetStream: NSObject {
     private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
 
     /// The mixer object.
-    public private(set) var mixer = IOMixer()
+    public private(set) lazy var mixer: IOMixer = {
+        let mixer = IOMixer()
+        mixer.delegate = self
+        return mixer
+    }()
     /// Specifies the delegate of the NetStream.
     public weak var delegate: (any NetStreamDelegate)?
 
@@ -280,6 +284,33 @@ open class NetStream: NSObject {
     public func stopRecording() {
         mixer.recorder.stopRunning()
     }
+}
+
+extension NetStream: IOMixerDelegate {
+    // MARK: IOMixerDelegate
+    func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
+        delegate?.stream(self, didOutput: video)
+    }
+
+    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+        delegate?.stream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
+    }
+
+    func mixerSessionWillResume(_ mixer: IOMixer) {
+        lockQueue.async {
+            mixer.startCaptureSession()
+        }
+    }
+
+    #if os(iOS)
+    func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+        delegate?.stream(self, sessionWasInterrupted: session, reason: reason)
+    }
+
+    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+        delegate?.stream(self, sessionInterruptionEnded: session, reason: reason)
+    }
+    #endif
 }
 
 extension NetStream: IOScreenCaptureUnitDelegate {

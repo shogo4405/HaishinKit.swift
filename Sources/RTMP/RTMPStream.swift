@@ -638,25 +638,3 @@ extension RTMPStream: RTMPMuxerDelegate {
         return delegate?.streamWillDropFrame(self) ?? false
     }
 }
-
-extension RTMPStream: IOMixerDelegate {
-    // MARK: IOMixerDelegate
-    func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
-        frameCount += 1
-        delegate?.stream(self, didOutput: video)
-    }
-
-    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        delegate?.stream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
-    }
-
-    #if os(iOS)
-    func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-        delegate?.stream(self, sessionWasInterrupted: session, reason: reason)
-    }
-
-    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-        delegate?.stream(self, sessionInterruptionEnded: session, reason: reason)
-    }
-    #endif
-}
