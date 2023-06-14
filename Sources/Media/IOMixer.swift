@@ -454,5 +454,8 @@ extension IOMixer: Running {
 
     public func stopRunning() {
     }
+
+    func startCaptureSession() {
+    }
 }
 #endif
