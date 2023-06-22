@@ -7,7 +7,7 @@ import SwiftUI
 import VideoToolbox
 
 final class ViewModel: ObservableObject {
-    let maxRetryCount: Int = 5
+    let maxRetryCount: Int = 1000
 
     private var rtmpConnection = RTMPConnection()
     @Published var rtmpStream: RTMPStream!

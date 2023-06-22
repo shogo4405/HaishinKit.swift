@@ -35,6 +35,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     private(set) var queueBytesOut: Atomic<Int64> = .init(0)
     private(set) var totalBytesIn: Atomic<Int64> = .init(0)
     private(set) var totalBytesOut: Atomic<Int64> = .init(0)
+    private var isViable = false
     private(set) var connected = false {
         didSet {
             if connected {
@@ -77,6 +78,12 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         inputBuffer.removeAll(keepingCapacity: false)
         connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
         connection?.stateUpdateHandler = stateDidChange(to:)
+        connection?.viabilityUpdateHandler = { [weak self] isViable in
+            self?.isViable = isViable
+            if (!isViable) {
+                self?.stateDidChange(to: .failed(.posix(.ENOTCONN)))
+            }
+        }
         connection?.start(queue: inputQueue)
         if let connection = connection {
             receive(on: connection)
@@ -94,7 +101,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     }
 
     func close(isDisconnected: Bool) {
-        guard let connection else {
+        guard connection != nil else {
             return
         }
         if isDisconnected {
@@ -103,16 +110,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         readyState = .closing
-        if connection.state == .ready {
-            outputQueue.async {
-                let completion: NWConnection.SendCompletion = .contentProcessed { (_: Error?) in
-                    self.connection = nil
-                }
-                connection.send(content: nil, contentContext: .finalMessage, isComplete: true, completion: completion)
-            }
-        } else {
-            self.connection = nil
-        }
+        self.connection = nil
         timeoutHandler?.cancel()
     }
 
@@ -166,12 +164,22 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         case .ready:
             timeoutHandler?.cancel()
             connected = true
-        case .failed:
+        case .waiting(let error):
+            print("Connection waiting: \(error.localizedDescription)")
+            close(isDisconnected: true)
+        case .setup:
+            print("Connection is setting up")
+        case .preparing:
+            print("Connection is preparing")
+        case .failed(let error):
+            print("Connection failed: \(error.localizedDescription)")
             close(isDisconnected: true)
         case .cancelled:
+            print("Connection cancelled")
             close(isDisconnected: true)
-        default:
-            break
+        @unknown default:
+            print("Unknown connection state")
+            // Handle other possible states
         }
     }
 
