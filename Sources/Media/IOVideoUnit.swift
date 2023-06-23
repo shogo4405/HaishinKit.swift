@@ -72,7 +72,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard frameRate != oldValue else {
                 return
             }
-            codec.settings.expectedFrameRate = frameRate
             capture.setFrameRate(frameRate)
             multiCamCapture.setFrameRate(frameRate)
         }

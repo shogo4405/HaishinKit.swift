@@ -100,7 +100,6 @@ public struct VideoCodecSettings: Codable {
     public var isHardwareEncoderEnabled = true
 
     var format: Format = .h264
-    var expectedFrameRate: Float64 = IOMixer.defaultFrameRate
 
     /// Creates a new VideoCodecSettings instance.
     public init(
@@ -146,14 +145,14 @@ public struct VideoCodecSettings: Codable {
         }
     }
 
-    func options() -> Set<VTSessionOption> {
+    func options(_ codec: VideoCodec) -> Set<VTSessionOption> {
         let isBaseline = profileLevel.contains("Baseline")
         var options = Set<VTSessionOption>([
             .init(key: .realTime, value: kCFBooleanTrue),
             .init(key: .profileLevel, value: profileLevel as NSObject),
             .init(key: bitRateMode.key, value: NSNumber(value: bitRate)),
             // It seemes that VT supports the range 0 to 30.
-            .init(key: .expectedFrameRate, value: NSNumber(value: (expectedFrameRate <= 30) ? expectedFrameRate : 0)),
+            .init(key: .expectedFrameRate, value: NSNumber(value: (codec.expectedFrameRate <= 30) ? codec.expectedFrameRate : 0)),
             .init(key: .maxKeyFrameIntervalDuration, value: NSNumber(value: maxKeyFrameIntervalDuration)),
             .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
             .init(key: .pixelTransferProperties, value: [
