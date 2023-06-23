@@ -61,6 +61,7 @@ public class VideoCodec {
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
+    var expectedFrameRate = IOMixer.defaultFrameRate
     var formatDescription: CMFormatDescription? {
         didSet {
             guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
