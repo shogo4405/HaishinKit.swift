@@ -151,14 +151,18 @@ public struct VideoCodecSettings: Codable {
             .init(key: .realTime, value: kCFBooleanTrue),
             .init(key: .profileLevel, value: profileLevel as NSObject),
             .init(key: bitRateMode.key, value: NSNumber(value: bitRate)),
-            // It seemes that VT supports the range 0 to 30.
-            .init(key: .expectedFrameRate, value: NSNumber(value: (codec.expectedFrameRate <= 30) ? codec.expectedFrameRate : 0)),
             .init(key: .maxKeyFrameIntervalDuration, value: NSNumber(value: maxKeyFrameIntervalDuration)),
             .init(key: .allowFrameReordering, value: (allowFrameReordering ?? !isBaseline) as NSObject),
             .init(key: .pixelTransferProperties, value: [
                 "ScalingMode": scalingMode.rawValue
             ] as NSObject)
         ])
+        if codec.expectedFrameRate != IOMixer.defaultFrameRate {
+            // It seemes that VT supports the range 0 to 30.
+            options.insert(.init(key: .expectedFrameRate, value: NSNumber(value: (codec.expectedFrameRate <= 30) ? codec.expectedFrameRate : 0)))
+        } else {
+            options.insert(.init(key: .expectedFrameRate, value: NSNumber(value: 30)))
+        }
         #if os(macOS)
         if isHardwareEncoderEnabled {
             options.insert(.init(key: .encoderID, value: format.encoderID))

@@ -6,6 +6,7 @@ import SwiftPMSupport
 #if os(iOS)
 import UIKit
 #endif
+
 #if os(iOS) || os(macOS)
 extension AVCaptureSession.Preset {
     static let `default`: AVCaptureSession.Preset = .hd1280x720
@@ -24,12 +25,12 @@ protocol IOMixerDelegate: AnyObject {
 
 /// An object that mixies audio and video for streaming.
 public class IOMixer {
-    /// The default fps for an IOMixer, value is 30.
-    public static let defaultFrameRate: Float64 = 30
     /// The AVAudioEngine shared instance holder.
     public static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
         return AVAudioEngine()
     }
+
+    static let defaultFrameRate: Float64 = -1
 
     enum MediaSync {
         case video

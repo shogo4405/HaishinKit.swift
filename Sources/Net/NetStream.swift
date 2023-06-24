@@ -78,13 +78,14 @@ open class NetStream: NSObject {
     /// Specifies the frame rate of a device capture.
     public var frameRate: Float64 {
         get {
-            var frameRate: Float64 = IOMixer.defaultFrameRate
+            var frameRate = IOMixer.defaultFrameRate
             lockQueue.sync {
                 frameRate = self.mixer.videoIO.frameRate
             }
             return frameRate
         }
         set {
+            precondition(0 < newValue)
             lockQueue.async {
                 self.mixer.videoIO.frameRate = newValue
             }

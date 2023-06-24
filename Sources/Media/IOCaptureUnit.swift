@@ -162,7 +162,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     }
 
     func setFrameRate(_ frameRate: Float64) {
-        guard let device else {
+        guard let device, 0 < frameRate else {
             return
         }
         do {
