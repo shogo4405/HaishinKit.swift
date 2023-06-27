@@ -327,13 +327,15 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 
     mutating func makeSampleBuffer(_ streamType: ESStreamType, previousPresentationTimeStamp: CMTime, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
-        let blockBuffer = data.makeBlockBuffer(advancedBy: 0)
+        var blockBuffer: CMBlockBuffer? = nil
         var sampleSizes: [Int] = []
         switch streamType {
         case .h264:
             _ = AVCFormatStream.toNALFileFormat(&data)
+            blockBuffer = data.makeBlockBuffer(advancedBy: 0)
             sampleSizes.append(blockBuffer?.dataLength ?? 0)
         case .adtsAac:
+            blockBuffer = data.makeBlockBuffer(advancedBy: 0)
             let reader = ADTSReader()
             reader.read(data)
             var iterator = reader.makeIterator()
