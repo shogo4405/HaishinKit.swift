@@ -183,7 +183,7 @@ public class IOMixer {
                 audioIO.codec.appendSampleBuffer(sampleBuffer)
             case kCMMediaType_Video:
                 videoIO.codec.formatDescription = sampleBuffer.formatDescription
-                mediaLink.enqueueVideo(sampleBuffer)
+                videoIO.codec.appendSampleBuffer(sampleBuffer)
             default:
                 break
             }
