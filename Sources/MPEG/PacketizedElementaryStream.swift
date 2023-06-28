@@ -327,7 +327,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     }
 
     mutating func makeSampleBuffer(_ streamType: ESStreamType, previousPresentationTimeStamp: CMTime, formatDescription: CMFormatDescription?) -> CMSampleBuffer? {
-        var blockBuffer: CMBlockBuffer? = nil
+        var blockBuffer: CMBlockBuffer?
         var sampleSizes: [Int] = []
         switch streamType {
         case .h264:
