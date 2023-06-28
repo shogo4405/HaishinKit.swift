@@ -28,7 +28,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             }
         }
     }
-    var qualityOfService: DispatchQoS = .default
+    var qualityOfService: DispatchQoS = .userInitiated
     var inputBuffer = Data()
     weak var delegate: (any RTMPSocketDelegate)?
 
@@ -164,14 +164,24 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
         case .ready:
+            logger.info("Connection is ready.")
             timeoutHandler?.cancel()
             connected = true
-        case .failed:
+        case .waiting(let error):
+            logger.warn("Connection waiting:", error)
+            close(isDisconnected: true)
+        case .setup:
+            logger.debug("Connection is setting up.")
+        case .preparing:
+            logger.debug("Connection is preparing.")
+        case .failed(let error):
+            logger.warn("Connection failed:", error)
             close(isDisconnected: true)
         case .cancelled:
+            logger.info("Connection cancelled.")
             close(isDisconnected: true)
-        default:
-            break
+        @unknown default:
+            logger.error("Unknown connection state.")
         }
     }
 
