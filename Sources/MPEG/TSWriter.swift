@@ -8,10 +8,18 @@ import SwiftPMSupport
 
 /// The interface an MPEG-2 TS (Transport Stream) writer uses to inform its delegates.
 public protocol TSWriterDelegate: AnyObject {
+    func writer(_ writer: TSWriter, didRotateFileHandle timestamp: CMTime)
     func writer(_ writer: TSWriter, didOutput data: Data)
 }
 
-/// The TSWriter class represents writs  MPEG-2 transport stream data.
+public extension TSWriterDelegate {
+    // default implementation noop
+    func writer(_ writer: TSWriter, didRotateFileHandle timestamp: CMTime) {
+        // noop
+    }
+}
+
+/// The TSWriter class represents writes MPEG-2 transport stream data.
 public class TSWriter: Running {
     public static let defaultPATPID: UInt16 = 0
     public static let defaultPMTPID: UInt16 = 4095
@@ -165,6 +173,7 @@ public class TSWriter: Running {
         }
         writeProgram()
         rotatedTimestamp = timestamp
+        delegate?.writer(self, didRotateFileHandle: timestamp)
     }
 
     func write(_ data: Data) {
