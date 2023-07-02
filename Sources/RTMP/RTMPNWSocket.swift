@@ -62,8 +62,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
     private var parameters: NWParameters = .tcp
-    private lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPNWSocket.input", qos: qualityOfService)
-    private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPNWSocket.output", qos: qualityOfService)
+    private lazy var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPNWSocket.input", qos: qualityOfService)
     private var timeoutHandler: DispatchWorkItem?
 
     func connect(withName: String, port: Int) {
@@ -77,7 +76,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         inputBuffer.removeAll(keepingCapacity: false)
         connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
         connection?.stateUpdateHandler = stateDidChange(to:)
-        connection?.start(queue: inputQueue)
+        connection?.start(queue: networkQueue)
         if let connection = connection {
             receive(on: connection)
         }
@@ -104,12 +103,9 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
         readyState = .closing
         if connection.state == .ready {
-            outputQueue.async {
-                let completion: NWConnection.SendCompletion = .contentProcessed { (_: Error?) in
-                    self.connection = nil
-                }
-                connection.send(content: nil, contentContext: .finalMessage, isComplete: true, completion: completion)
-            }
+            connection.send(content: nil, contentContext: .finalMessage, isComplete: true, completion: .contentProcessed { _ in
+                self.connection = nil
+            })
         } else {
             self.connection = nil
         }
@@ -132,20 +128,17 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     @discardableResult
     func doOutput(data: Data) -> Int {
         queueBytesOut.mutate { $0 = Int64(data.count) }
-        outputQueue.async {
-            let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
-                guard self.connected else {
-                    return
-                }
-                if error != nil {
-                    self.close(isDisconnected: true)
-                    return
-                }
-                self.totalBytesOut.mutate { $0 += Int64(data.count) }
-                self.queueBytesOut.mutate { $0 -= Int64(data.count) }
+        connection?.send(content: data, completion: .contentProcessed { error in
+            guard self.connected else {
+                return
             }
-            self.connection?.send(content: data, completion: sendCompletion)
-        }
+            if error != nil {
+                self.close(isDisconnected: true)
+                return
+            }
+            self.totalBytesOut.mutate { $0 += Int64(data.count) }
+            self.queueBytesOut.mutate { $0 -= Int64(data.count) }
+        })
         return data.count
     }
 
