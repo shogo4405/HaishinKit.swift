@@ -53,11 +53,11 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     private var handshake = RTMPHandshake()
     private var connection: NWConnection? {
         didSet {
+            oldValue?.viabilityUpdateHandler = nil
             oldValue?.stateUpdateHandler = nil
-            oldValue?.cancel()
+            oldValue?.forceCancel()
             if connection == nil {
                 connected = false
-                readyState = .closed
             }
         }
     }
@@ -75,6 +75,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         queueBytesOut.mutate { $0 = 0 }
         inputBuffer.removeAll(keepingCapacity: false)
         connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
+        connection?.viabilityUpdateHandler = viabilityDidChange(to:)
         connection?.stateUpdateHandler = stateDidChange(to:)
         connection?.start(queue: networkQueue)
         if let connection = connection {
@@ -102,7 +103,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         readyState = .closing
-        if connection.state == .ready {
+        if !isDisconnected && connection.state == .ready {
             connection.send(content: nil, contentContext: .finalMessage, isComplete: true, completion: .contentProcessed { _ in
                 self.connection = nil
             })
@@ -151,6 +152,13 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             parameters = value
         default:
             break
+        }
+    }
+
+    private func viabilityDidChange(to viability: Bool) {
+        logger.info("Connection viability changed to ", viability)
+        if viability == false {
+            close(isDisconnected: true)
         }
     }
 
