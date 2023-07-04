@@ -63,8 +63,8 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         }
     }
     private var parameters: NWParameters = .tcp
-    private lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPNWSocket.input", qos: qualityOfService)
-    private lazy var outputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPNWSocket.output", qos: qualityOfService)
+    
+    private lazy var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPNWSocket.input", qos: qualityOfService)
     private var timeoutHandler: DispatchWorkItem?
 
     func connect(withName: String, port: Int) {
@@ -78,13 +78,8 @@ final class RTMPNWSocket: RTMPSocketCompatible {
         inputBuffer.removeAll(keepingCapacity: false)
         connection = NWConnection(to: NWEndpoint.hostPort(host: .init(withName), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
         connection?.stateUpdateHandler = stateDidChange(to:)
-        connection?.viabilityUpdateHandler = { [weak self] isViable in
-            self?.isViable = isViable
-            if (!isViable) {
-                self?.stateDidChange(to: .failed(.posix(.ENOTCONN)))
-            }
-        }
-        connection?.start(queue: inputQueue)
+        connection?.viabilityUpdateHandler = viabilityDidChange(to:)
+        connection?.start(queue: networkQueue)
         if let connection = connection {
             receive(on: connection)
         }
@@ -110,8 +105,23 @@ final class RTMPNWSocket: RTMPSocketCompatible {
             events.append(Event(type: .rtmpStatus, bubbles: false, data: data))
         }
         readyState = .closing
-        self.connection = nil
+//        self.connection = nil
+        if !isDisconnected && connection?.state == .ready {
+           connection?.send(content: nil, contentContext: .finalMessage, isComplete: true, completion: .contentProcessed { _ in
+               self.connection = nil
+           })
+       } else {
+           self.connection = nil
+       }
         timeoutHandler?.cancel()
+    }
+    
+    private func viabilityDidChange(to viability: Bool) {
+        logger.info("Connection viability changed to ", viability)
+        if viability == false {
+            close(isDisconnected: true)
+            //self?.stateDidChange(to: .failed(.posix(.ENOTCONN)))
+        }
     }
 
     @discardableResult
@@ -130,20 +140,17 @@ final class RTMPNWSocket: RTMPSocketCompatible {
     @discardableResult
     func doOutput(data: Data) -> Int {
         queueBytesOut.mutate { $0 = Int64(data.count) }
-        outputQueue.async {
-            let sendCompletion = NWConnection.SendCompletion.contentProcessed { error in
-                guard self.connected else {
-                    return
-                }
-                if error != nil {
-                    self.close(isDisconnected: true)
-                    return
-                }
-                self.totalBytesOut.mutate { $0 += Int64(data.count) }
-                self.queueBytesOut.mutate { $0 -= Int64(data.count) }
+        connection?.send(content: data, completion: .contentProcessed { error in
+            guard self.connected else {
+                return
             }
-            self.connection?.send(content: data, completion: sendCompletion)
-        }
+            if error != nil {
+                self.close(isDisconnected: true)
+                return
+            }
+            self.totalBytesOut.mutate { $0 += Int64(data.count) }
+            self.queueBytesOut.mutate { $0 -= Int64(data.count) }
+        })
         return data.count
     }
 
@@ -161,25 +168,25 @@ final class RTMPNWSocket: RTMPSocketCompatible {
 
     private func stateDidChange(to state: NWConnection.State) {
         switch state {
-        case .ready:
-            timeoutHandler?.cancel()
-            connected = true
-        case .waiting(let error):
-            print("Connection waiting: \(error.localizedDescription)")
-            close(isDisconnected: true)
-        case .setup:
-            print("Connection is setting up")
-        case .preparing:
-            print("Connection is preparing")
-        case .failed(let error):
-            print("Connection failed: \(error.localizedDescription)")
-            close(isDisconnected: true)
-        case .cancelled:
-            print("Connection cancelled")
-            close(isDisconnected: true)
-        @unknown default:
-            print("Unknown connection state")
-            // Handle other possible states
+            case .ready:
+                logger.info("Connection is ready.")
+                timeoutHandler?.cancel()
+                connected = true
+            case .waiting(let error):
+                logger.warn("Connection waiting:", error)
+                close(isDisconnected: true)
+            case .setup:
+                logger.debug("Connection is setting up.")
+            case .preparing:
+                logger.debug("Connection is preparing.")
+            case .failed(let error):
+                logger.warn("Connection failed:", error)
+                close(isDisconnected: true)
+            case .cancelled:
+                logger.info("Connection cancelled.")
+                close(isDisconnected: true)
+            @unknown default:
+                logger.error("Unknown connection state.")
         }
     }
 
