@@ -16,6 +16,7 @@ final class PlaybackViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         rtmpStream = RTMPStream(connection: rtmpConnection)
+        rtmpStream.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -117,5 +118,33 @@ extension PlaybackViewController: AVPictureInPictureSampleBufferPlaybackDelegate
 
     func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, skipByInterval skipInterval: CMTime, completion completionHandler: @escaping () -> Void) {
         completionHandler()
+    }
+}
+
+extension PlaybackViewController: NetStreamDelegate {
+    // MARK: NetStreamDelegate
+    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime) {
+    }
+
+    func stream(_ stream: NetStream, didOutput video: CMSampleBuffer) {
+    }
+
+    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+    }
+
+    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+    }
+
+    func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error) {
+    }
+
+    func stream(_ stream: NetStream, audioCodecErrorOccurred error: HaishinKit.AudioCodec.Error) {
+    }
+
+    func streamWillDropFrame(_ stream: NetStream) -> Bool {
+        return false
+    }
+
+    func streamDidOpen(_ stream: NetStream) {
     }
 }
