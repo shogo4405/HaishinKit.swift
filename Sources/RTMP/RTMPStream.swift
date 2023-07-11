@@ -161,11 +161,6 @@ open class RTMPStream: NetStream {
     private struct PausedStatus {
         let hasAudio: Bool
         let hasVideo: Bool
-
-        init(hasAudio: Bool, hasVideo: Bool) {
-            self.hasAudio = hasAudio
-            self.hasVideo = hasVideo
-        }
     }
 
     static let defaultID: UInt32 = 0

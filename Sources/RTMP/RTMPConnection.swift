@@ -140,19 +140,19 @@ open class RTMPConnection: EventDispatcher {
         case clientSeek = 1
     }
 
-    private static func createSanJoseAuthCommand(_ url: URL, description: String) -> String {
+    private static func makeSanJoseAuthCommand(_ url: URL, description: String) -> String {
         var command: String = url.absoluteString
 
-        guard let index: String.Index = description.firstIndex(of: "?") else {
+        guard let index = description.firstIndex(of: "?") else {
             return command
         }
 
         let query = String(description[description.index(index, offsetBy: 1)...])
         let challenge = String(format: "%08x", UInt32.random(in: 0...UInt32.max))
-        let dictionary: [String: String] = URL(string: "http://localhost?" + query)!.dictionaryFromQuery()
+        let dictionary = URL(string: "http://localhost?" + query)!.dictionaryFromQuery()
 
-        var response: String = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
-        if let opaque: String = dictionary["opaque"] {
+        var response = MD5.base64("\(url.user!)\(dictionary["salt"]!)\(url.password!)")
+        if let opaque = dictionary["opaque"] {
             command += "&opaque=\(opaque)"
             response += opaque
         } else if let challenge: String = dictionary["challenge"] {
@@ -292,7 +292,7 @@ open class RTMPConnection: EventDispatcher {
 
     /// Creates a two-way connection to an application on RTMP Server.
     open func connect(_ command: String, arguments: Any?...) {
-        guard let uri = URL(string: command), let scheme: String = uri.scheme, !connected && Self.supportedProtocols.contains(scheme) else {
+        guard let uri = URL(string: command), let scheme = uri.scheme, !connected && Self.supportedProtocols.contains(scheme) else {
             return
         }
         self.uri = uri
@@ -345,7 +345,7 @@ open class RTMPConnection: EventDispatcher {
 
     func createStream(_ stream: RTMPStream) {
         let responder = RTMPResponder(result: { data -> Void in
-            guard let id: Double = data[0] as? Double else {
+            guard let id = data[0] as? Double else {
                 return
             }
             stream.id = UInt32(id)
@@ -359,8 +359,8 @@ open class RTMPConnection: EventDispatcher {
         let e = Event.from(status)
 
         guard
-            let data: ASObject = e.data as? ASObject,
-            let code: String = data["code"] as? String else {
+            let data = e.data as? ASObject,
+            let code = data["code"] as? String else {
             return
         }
 
@@ -375,10 +375,10 @@ open class RTMPConnection: EventDispatcher {
             ))
         case .some(.connectRejected):
             guard
-                let uri: URL = uri,
-                let user: String = uri.user,
-                let password: String = uri.password,
-                let description: String = data["description"] as? String else {
+                let uri,
+                let user = uri.user,
+                let password = uri.password,
+                let description = data["description"] as? String else {
                 break
             }
             socket.close(isDisconnected: false)
@@ -388,21 +388,21 @@ open class RTMPConnection: EventDispatcher {
             case description.contains("reason=authfailed"):
                 break
             case description.contains("reason=needauth"):
-                let command: String = Self.createSanJoseAuthCommand(uri, description: description)
+                let command = Self.makeSanJoseAuthCommand(uri, description: description)
                 connect(command, arguments: arguments)
             case description.contains("authmod=adobe"):
                 if user.isEmpty || password.isEmpty {
                     close(isDisconnected: true)
                     break
                 }
-                let query: String = uri.query ?? ""
-                let command: String = uri.absoluteString + (query.isEmpty ? "?" : "&") + "authmod=adobe&user=\(user)"
+                let query = uri.query ?? ""
+                let command = uri.absoluteString + (query.isEmpty ? "?" : "&") + "authmod=adobe&user=\(user)"
                 connect(command, arguments: arguments)
             default:
                 break
             }
         case .some(.connectClosed):
-            if let description: String = data["description"] as? String {
+            if let description = data["description"] as? String {
                 logger.warn(description)
             }
             close(isDisconnected: true)
@@ -449,8 +449,8 @@ open class RTMPConnection: EventDispatcher {
 
     @objc
     private func on(timer: Timer) {
-        let totalBytesIn: Int64 = self.totalBytesIn
-        let totalBytesOut: Int64 = self.totalBytesOut
+        let totalBytesIn = self.totalBytesIn
+        let totalBytesOut = self.totalBytesOut
         currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
         currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn
@@ -489,7 +489,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
         switch readyState {
         case .handshakeDone:
-            guard let chunk: RTMPChunk = makeConnectionChunk() else {
+            guard let chunk = makeConnectionChunk() else {
                 close()
                 break
             }
