@@ -287,6 +287,7 @@ extension IOMixer: IOUnitDecoding {
 extension IOMixer: MediaLinkDelegate {
     // MARK: MediaLinkDelegate
     func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer) {
+        delegate?.mixer(self, didOutput: sampleBuffer)
         drawable?.enqueue(sampleBuffer)
     }
 
