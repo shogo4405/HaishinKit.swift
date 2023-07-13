@@ -17,7 +17,7 @@ protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
     #if os(iOS)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
-    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession)
     #endif
     func mixerSessionWillResume(_ mixer: IOMixer)
 }
@@ -407,13 +407,10 @@ extension IOMixer: Running {
 
     @objc
     private func sessionInterruptionEnded(_ notification: Notification) {
-        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
-              let reasonIntegerValue = userInfoValue.integerValue,
-              let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue),
-              let session = notification.object as? AVCaptureSession else {
+        guard let session = notification.object as? AVCaptureSession else {
             return
         }
-        delegate?.mixer(self, sessionInterruptionEnded: session, reason: reason)
+        delegate?.mixer(self, sessionInterruptionEnded: session)
     }
 
     @objc

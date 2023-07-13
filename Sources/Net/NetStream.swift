@@ -15,7 +15,7 @@ public protocol NetStreamDelegate: AnyObject {
     /// Tells the receiver to session was interrupted.
     func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
     /// Tells the receiver to session interrupted ended.
-    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
+    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
     /// Tells the receiver to video codec error occured.
     func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error)
@@ -307,8 +307,8 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, sessionWasInterrupted: session, reason: reason)
     }
 
-    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
-        delegate?.stream(self, sessionInterruptionEnded: session, reason: reason)
+    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession) {
+        delegate?.stream(self, sessionInterruptionEnded: session)
     }
     #endif
 }
