@@ -57,12 +57,24 @@ final class IOAudioUnit: NSObject, IOUnit {
             return
         }
         inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
-        if isFragmented(sampleBuffer), let sampleBuffer = makeSampleBuffer(sampleBuffer) {
-            appendSampleBuffer(sampleBuffer)
+        // Synchronization between video and audio, need to synchronize the gaps.
+        let numGapSamples = numGapSamples(sampleBuffer)
+        let numSampleBuffers = Int(numGapSamples / sampleBuffer.numSamples)
+        if 1 <= numSampleBuffers {
+            var gapPresentationTimeStamp = presentationTimeStamp
+            for i in 0 ... numSampleBuffers {
+                let numSamples = numSampleBuffers == i ? numGapSamples % sampleBuffer.numSamples : sampleBuffer.numSamples
+                guard let gapSampleBuffer = CMAudioSampleBufferUtil.makeSampleBuffer(sampleBuffer, numSamples: numSamples, presentationTimeStamp: gapPresentationTimeStamp) else {
+                    continue
+                }
+                mixer?.recorder.appendSampleBuffer(gapSampleBuffer)
+                codec.appendSampleBuffer(gapSampleBuffer)
+                gapPresentationTimeStamp = CMTimeAdd(gapPresentationTimeStamp, gapSampleBuffer.duration)
+            }
         }
         mixer?.recorder.appendSampleBuffer(sampleBuffer)
         codec.appendSampleBuffer(sampleBuffer)
-        presentationTimeStamp = CMTimeAdd(presentationTimeStamp, CMTime(value: CMTimeValue(sampleBuffer.numSamples), timescale: presentationTimeStamp.timescale))
+        presentationTimeStamp = sampleBuffer.presentationTimeStamp
     }
 
     func registerEffect(_ effect: AudioEffect) -> Bool {
@@ -73,20 +85,18 @@ final class IOAudioUnit: NSObject, IOUnit {
         codec.effects.remove(effect) != nil
     }
 
-    private func isFragmented(_ sampleBuffer: CMSampleBuffer) -> Bool {
-        if presentationTimeStamp == .invalid {
-            presentationTimeStamp = sampleBuffer.presentationTimeStamp
-            return false
+    private func numGapSamples(_ sampleBuffer: CMSampleBuffer) -> Int {
+        guard let mSampleRate = inSourceFormat?.mSampleRate, presentationTimeStamp != .invalid else {
+            return 0
         }
-        return presentationTimeStamp != sampleBuffer.presentationTimeStamp
-    }
-
-    private func makeSampleBuffer(_ buffer: CMSampleBuffer) -> CMSampleBuffer? {
-        let numSamples = min(Int(buffer.presentationTimeStamp.value - presentationTimeStamp.value), Int(presentationTimeStamp.timescale))
-        guard 0 < numSamples else {
-            return nil
+        let sampleRate = Int32(mSampleRate)
+        // Device audio.
+        if presentationTimeStamp.timescale == sampleRate {
+            return Int(sampleBuffer.presentationTimeStamp.value - presentationTimeStamp.value) - sampleBuffer.numSamples
         }
-        return CMAudioSampleBufferUtil.makeSampleBuffer(buffer, numSamples: numSamples, presentationTimeStamp: presentationTimeStamp)
+        // ReplayKit audio. PTS = {69426976806125/1000000000 = 69426.977}
+        let diff = CMTime(seconds: sampleBuffer.presentationTimeStamp.seconds, preferredTimescale: sampleRate) - CMTime(seconds: presentationTimeStamp.seconds, preferredTimescale: sampleRate)
+        return Int(diff.value) - sampleBuffer.numSamples
     }
 }
 
