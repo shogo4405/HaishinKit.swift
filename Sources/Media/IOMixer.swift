@@ -305,7 +305,7 @@ extension IOMixer: Running {
         }
         #if os(iOS)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(didBecomeActive(_:)), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         #endif
         addSessionObservers(session)
         session.startRunning()
@@ -320,7 +320,7 @@ extension IOMixer: Running {
         session.stopRunning()
         #if os(iOS)
         NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
         #endif
         isRunning.mutate { $0 = session.isRunning }
     }
@@ -429,7 +429,7 @@ extension IOMixer: Running {
     }
 
     @objc
-    private func didBecomeActive(_ notification: Notification) {
+    private func willEnterForeground(_ notification: Notification) {
         resumeCaptureSessionIfNeeded()
         if #available(iOS 16, *) {
             guard !session.isMultitaskingCameraAccessEnabled else {
