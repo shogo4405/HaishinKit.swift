@@ -5,6 +5,9 @@ import SwiftPMSupport
 #endif
 
 final class IOAudioUnit: NSObject, IOUnit {
+    private static let defaultPresentationTimeStamp: CMTime = .invalid
+    private static let sampleBuffersThreshold: Int = 1
+
     lazy var codec: AudioCodec = {
         var codec = AudioCodec()
         codec.lockQueue = lockQueue
@@ -26,11 +29,11 @@ final class IOAudioUnit: NSObject, IOUnit {
             guard inSourceFormat != oldValue else {
                 return
             }
-            presentationTimeStamp = .invalid
+            presentationTimeStamp = Self.defaultPresentationTimeStamp
             codec.inSourceFormat = inSourceFormat
         }
     }
-    private var presentationTimeStamp: CMTime = .invalid
+    private var presentationTimeStamp = IOAudioUnit.defaultPresentationTimeStamp
 
     #if os(iOS) || os(macOS)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
@@ -60,7 +63,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         // Synchronization between video and audio, need to synchronize the gaps.
         let numGapSamples = numGapSamples(sampleBuffer)
         let numSampleBuffers = Int(numGapSamples / sampleBuffer.numSamples)
-        if 1 <= numSampleBuffers {
+        if Self.sampleBuffersThreshold <= numSampleBuffers {
             var gapPresentationTimeStamp = presentationTimeStamp
             for i in 0 ... numSampleBuffers {
                 let numSamples = numSampleBuffers == i ? numGapSamples % sampleBuffer.numSamples : sampleBuffer.numSamples
@@ -86,7 +89,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
 
     private func numGapSamples(_ sampleBuffer: CMSampleBuffer) -> Int {
-        guard let mSampleRate = inSourceFormat?.mSampleRate, presentationTimeStamp != .invalid else {
+        guard let mSampleRate = inSourceFormat?.mSampleRate, presentationTimeStamp != Self.defaultPresentationTimeStamp else {
             return 0
         }
         let sampleRate = Int32(mSampleRate)
