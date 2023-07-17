@@ -44,6 +44,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
             if let description = CMSampleBufferGetFormatDescription(sampleBuffer) {
                 let dimensions = CMVideoFormatDescriptionGetDimensions(description)
                 rtmpStream.videoSettings.videoSize = .init(width: dimensions.width, height: dimensions.height)
+                rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
             }
             rtmpStream.appendSampleBuffer(sampleBuffer)
         case .audioMic:
