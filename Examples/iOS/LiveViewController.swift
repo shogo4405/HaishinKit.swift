@@ -46,6 +46,8 @@ final class LiveViewController: UIViewController {
             rtmpStream.videoOrientation = orientation
         }
 
+        rtmpStream.loopback = DeviceUtil.isHeadphoneConnected()
+
         rtmpStream.audioSettings = AudioCodecSettings(
             bitRate: 64 * 1000
         )
@@ -326,6 +328,11 @@ final class LiveViewController: UIViewController {
             audioDevicePicker.isHidden = false
         }
         audioDevicePicker.reloadAllComponents()
+        if DeviceUtil.isHeadphoneDisconnected(notification) {
+            rtmpStream.loopback = false
+        } else {
+            rtmpStream.loopback = DeviceUtil.isHeadphoneConnected()
+        }
     }
 
     @objc

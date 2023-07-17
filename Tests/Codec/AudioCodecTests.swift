@@ -9,7 +9,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 1024) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -19,7 +19,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(48000.0, numSamples: 1024) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(48000.0, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -29,7 +29,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(24000.0, numSamples: 1024) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(24000.0, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -39,7 +39,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(16000.0, numSamples: 1024) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(16000.0, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -49,7 +49,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(8000.0, numSamples: 256) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(8000.0, numSamples: 256) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -59,7 +59,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(8000.0, numSamples: 960) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(8000.0, numSamples: 960) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -69,7 +69,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(44100.0, numSamples: 1224) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(44100.0, numSamples: 1224) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -80,7 +80,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for numSample in numSamples {
-            if let sampleBuffer = SinWaveUtil.createCMSampleBuffer(44100.0, numSamples: numSample) {
+            if let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(44100.0, numSamples: numSample) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }

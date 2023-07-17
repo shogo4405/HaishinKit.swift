@@ -7,7 +7,7 @@ import AVFoundation
 final class AudioCodecBufferTests: XCTestCase {
     func testMain() {
         guard
-            let sampleBuffer = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 256),
+            let sampleBuffer = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: 256),
             var asbd = sampleBuffer.formatDescription?.audioStreamBasicDescription else {
             XCTFail()
             return
@@ -31,8 +31,8 @@ final class AudioCodecBufferTests: XCTestCase {
 
     func testMain2() {
         guard
-            let sampleBuffer_1 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 920),
-            let sampleBuffer_2 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 921),
+            let sampleBuffer_1 = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: 920),
+            let sampleBuffer_2 = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: 921),
             var asbd = sampleBuffer_1.formatDescription?.audioStreamBasicDescription,
             let buffer = AudioCodecRingBuffer(&asbd, numSamples: 1024) else {
             XCTFail()
@@ -72,8 +72,8 @@ final class AudioCodecBufferTests: XCTestCase {
 
     func testMain3() {
         guard
-            let sampleBuffer_1 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 920),
-            let sampleBuffer_2 = SinWaveUtil.createCMSampleBuffer(44100, numSamples: 921),
+            let sampleBuffer_1 = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: 920),
+            let sampleBuffer_2 = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: 921),
             var asbd = sampleBuffer_1.formatDescription?.audioStreamBasicDescription,
             let buffer = AudioCodecRingBuffer(&asbd, numSamples: 1024) else {
             XCTFail()

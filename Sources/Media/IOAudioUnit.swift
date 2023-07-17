@@ -21,6 +21,16 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
     var muted = false
     weak var mixer: IOMixer?
+    var loopback = false {
+        didSet {
+            if loopback {
+                monitor.startRunning()
+            } else {
+                monitor.stopRunning()
+            }
+        }
+    }
+    private var monitor: IOAudioMonitor = .init()
     #if os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
@@ -31,6 +41,7 @@ final class IOAudioUnit: NSObject, IOUnit {
             }
             presentationTimeStamp = Self.defaultPresentationTimeStamp
             codec.inSourceFormat = inSourceFormat
+            monitor.inSourceFormat = inSourceFormat
         }
     }
     private var presentationTimeStamp = IOAudioUnit.defaultPresentationTimeStamp
@@ -75,6 +86,7 @@ final class IOAudioUnit: NSObject, IOUnit {
                 gapPresentationTimeStamp = CMTimeAdd(gapPresentationTimeStamp, gapSampleBuffer.duration)
             }
         }
+        monitor.appendSampleBuffer(sampleBuffer)
         mixer?.recorder.appendSampleBuffer(sampleBuffer)
         codec.appendSampleBuffer(sampleBuffer)
         presentationTimeStamp = sampleBuffer.presentationTimeStamp
@@ -93,11 +105,11 @@ final class IOAudioUnit: NSObject, IOUnit {
             return 0
         }
         let sampleRate = Int32(mSampleRate)
-        // Device audio.
+        // Device audioMic or ReplayKit audioMic.
         if presentationTimeStamp.timescale == sampleRate {
             return Int(sampleBuffer.presentationTimeStamp.value - presentationTimeStamp.value) - sampleBuffer.numSamples
         }
-        // ReplayKit audio. PTS = {69426976806125/1000000000 = 69426.977}
+        // ReplayKit audioApp. PTS = {69426976806125/1000000000 = 69426.977}
         let diff = CMTime(seconds: sampleBuffer.presentationTimeStamp.seconds, preferredTimescale: sampleRate) - CMTime(seconds: presentationTimeStamp.seconds, preferredTimescale: sampleRate)
         return Int(diff.value) - sampleBuffer.numSamples
     }
