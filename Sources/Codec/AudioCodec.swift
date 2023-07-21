@@ -24,6 +24,17 @@ public class AudioCodec {
         case failedToConvert(error: NSError)
     }
 
+    static func makeAudioFormat(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioFormat? {
+        if kLinearPCMFormatFlagIsBigEndian == (inSourceFormat.mFormatFlags & kLinearPCMFormatFlagIsBigEndian) {
+            // ReplayKit audioApp.
+            guard inSourceFormat.mBitsPerChannel == 16 else {
+                return nil
+            }
+            return AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate, channels: inSourceFormat.mChannelsPerFrame, interleaved: true)
+        }
+        return .init(streamDescription: &inSourceFormat)
+    }
+
     /// Specifies the delegate.
     public weak var delegate: (any AudioCodecDelegate)?
     /// This instance is running to process(true) or not(false).
@@ -149,7 +160,7 @@ public class AudioCodec {
 
     private func makeAudioConverter(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioConverter? {
         guard
-            let inputFormat = AVAudioFormat(streamDescription: &inSourceFormat),
+            let inputFormat = Self.makeAudioFormat(&inSourceFormat),
             let outputFormat = settings.format.makeAudioFormat(inSourceFormat) else {
             return nil
         }

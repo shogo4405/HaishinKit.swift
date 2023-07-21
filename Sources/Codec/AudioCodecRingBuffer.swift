@@ -1,3 +1,4 @@
+import Accelerate
 import AVFoundation
 import Foundation
 
@@ -30,7 +31,7 @@ final class AudioCodecRingBuffer {
     init?(_ inSourceFormat: inout AudioStreamBasicDescription, numSamples: UInt32 = AudioCodecRingBuffer.numSamples) {
         guard
             inSourceFormat.mFormatID == kAudioFormatLinearPCM,
-            let format = AVAudioFormat(streamDescription: &inSourceFormat),
+            let format = AudioCodec.makeAudioFormat(&inSourceFormat),
             let workingBuffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: numSamples) else {
             return nil
         }
@@ -67,6 +68,18 @@ final class AudioCodecRingBuffer {
                 frameCount: Int32(sampleBuffer.numSamples),
                 into: workingBuffer.mutableAudioBufferList
             )
+            if kLinearPCMFormatFlagIsBigEndian == ((sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatFlags ?? 0) & kLinearPCMFormatFlagIsBigEndian) {
+                if format.isInterleaved {
+                    switch format.commonFormat {
+                    case .pcmFormatInt16:
+                        let length = sampleBuffer.dataBuffer?.dataLength ?? 0
+                        var image = vImage_Buffer(data: workingBuffer.mutableAudioBufferList[0].mBuffers.mData, height: 1, width: vImagePixelCount(length / 2), rowBytes: length)
+                        vImageByteSwap_Planar16U(&image, &image, vImage_Flags(kvImageNoFlags))
+                    default:
+                        break
+                    }
+                }
+            }
         }
         let numSamples = min(self.numSamples - index, Int(sampleBuffer.numSamples) - offset)
         if format.isInterleaved {
