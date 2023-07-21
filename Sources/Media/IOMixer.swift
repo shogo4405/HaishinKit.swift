@@ -19,7 +19,6 @@ protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
     func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason)
     #endif
-    func mixerSessionWillResume(_ mixer: IOMixer)
 }
 
 /// An object that mixies audio and video for streaming.
@@ -74,6 +73,26 @@ public class IOMixer {
             }, { exeption in
                 logger.warn(exeption)
             })
+        }
+    }
+
+    var inBackgroundMode = false {
+        didSet {
+            guard inBackgroundMode != oldValue else {
+                return
+            }
+            if inBackgroundMode {
+                if !session.isMultitaskingCameraAccessEnabled {
+                    videoIO.multiCamCapture.detachSession(session)
+                    videoIO.capture.detachSession(session)
+                }
+            } else {
+                startCaptureSessionIfNeeded()
+                if !session.isMultitaskingCameraAccessEnabled {
+                    videoIO.capture.attachSession(session)
+                    videoIO.multiCamCapture.attachSession(session)
+                }
+            }
         }
     }
 
@@ -218,7 +237,7 @@ public class IOMixer {
         if session.canSetSessionPreset(sessionPreset) {
             session.sessionPreset = sessionPreset
         }
-        if #available(iOS 16.0, *), isMultitaskingCameraAccessEnabled, session.isMultitaskingCameraAccessSupported {
+        if isMultitaskingCameraAccessEnabled && session.isMultitaskingCameraAccessSupported {
             session.isMultitaskingCameraAccessEnabled = true
         }
         return session
@@ -303,10 +322,6 @@ extension IOMixer: Running {
         guard !isRunning.value else {
             return
         }
-        #if os(iOS)
-        NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
-        #endif
         addSessionObservers(session)
         session.startRunning()
         isRunning.mutate { $0 = session.isRunning }
@@ -318,14 +333,13 @@ extension IOMixer: Running {
         }
         removeSessionObservers(session)
         session.stopRunning()
-        #if os(iOS)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.didEnterBackgroundNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
-        #endif
         isRunning.mutate { $0 = session.isRunning }
     }
 
-    func startCaptureSession() {
+    func startCaptureSessionIfNeeded() {
+        guard isRunning.value && !session.isRunning else {
+            return
+        }
         session.startRunning()
         isRunning.mutate { $0 = session.isRunning }
     }
@@ -387,7 +401,7 @@ extension IOMixer: Running {
             }
         #if os(iOS)
         case .mediaServicesWereReset:
-            resumeCaptureSessionIfNeeded()
+            startCaptureSessionIfNeeded()
         #endif
         default:
             break
@@ -416,37 +430,7 @@ extension IOMixer: Running {
         }
         delegate?.mixer(self, sessionInterruptionEnded: session, reason: reason)
     }
-
-    @objc
-    private func didEnterBackground(_ notification: Notification) {
-        if #available(iOS 16, *) {
-            guard !session.isMultitaskingCameraAccessEnabled else {
-                return
-            }
-        }
-        videoIO.multiCamCapture.detachSession(session)
-        videoIO.capture.detachSession(session)
-    }
-
-    @objc
-    private func willEnterForeground(_ notification: Notification) {
-        resumeCaptureSessionIfNeeded()
-        if #available(iOS 16, *) {
-            guard !session.isMultitaskingCameraAccessEnabled else {
-                return
-            }
-        }
-        videoIO.capture.attachSession(session)
-        videoIO.multiCamCapture.attachSession(session)
-    }
     #endif
-
-    private func resumeCaptureSessionIfNeeded() {
-        guard isRunning.value && !session.isRunning else {
-            return
-        }
-        delegate?.mixerSessionWillResume(self)
-    }
 }
 #else
 extension IOMixer: Running {
