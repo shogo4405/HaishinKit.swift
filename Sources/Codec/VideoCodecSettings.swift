@@ -81,9 +81,8 @@ public struct VideoCodecSettings: Codable {
     public var maxKeyFrameIntervalDuration: Int32
     /// Specifies the scalingMode.
     public var scalingMode: ScalingMode
-    // swiftlint:disable discouraged_optional_boolean
     /// Specifies the allowFrameRecording.
-    public var allowFrameReordering: Bool?
+    public var allowFrameReordering: Bool? // swiftlint:disable:this discouraged_optional_boolean
     /// Specifies the bitRateMode.
     public var bitRateMode: BitRateMode
     /// Specifies the H264 profileLevel.
@@ -109,7 +108,7 @@ public struct VideoCodecSettings: Codable {
         maxKeyFrameIntervalDuration: Int32 = 2,
         scalingMode: ScalingMode = .trim,
         bitRateMode: BitRateMode = .average,
-        allowFrameReordering: Bool? = nil,
+        allowFrameReordering: Bool? = nil, // swiftlint:disable:this discouraged_optional_boolean
         isHardwareEncoderEnabled: Bool = true
     ) {
         self.videoSize = videoSize

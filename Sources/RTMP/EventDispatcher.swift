@@ -17,9 +17,9 @@ public protocol EventDispatcherConvertible: AnyObject {
 open class Event {
     /// A structure that defines the name of an event.
     public struct Name: RawRepresentable, ExpressibleByStringLiteral {
-        // swiftlint:disable nesting
+        // swiftlint:disable:next nesting
         public typealias RawValue = String
-        // swiftlint:disable nesting
+        // swiftlint:disable:next nesting
         public typealias StringLiteralType = String
 
         public static let sync: Name = "sync"

@@ -8,6 +8,7 @@ let logger = LBLogger.with("com.haishinkit.HaishinKit.iOSSwiftUI")
 // swiftlint:disable type_name
 @main
 struct iOSSwiftUIApp: App {
+    // swiftlint:disable:next attributes
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     var body: some Scene {
@@ -30,3 +31,5 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         return true
     }
 }
+
+// swiftlint:enable type_name

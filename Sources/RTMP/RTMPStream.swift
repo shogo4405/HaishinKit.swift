@@ -290,7 +290,7 @@ open class RTMPStream: NetStream {
 
     /// Plays a live stream from RTMPServer.
     open func play(_ arguments: Any?...) {
-        // swiftlint:disable closure_body_length
+        // swiftlint:disable:next closure_body_length
         lockQueue.async {
             guard let name: String = arguments.first as? String else {
                 switch self.readyState {
@@ -342,7 +342,7 @@ open class RTMPStream: NetStream {
 
     /// Sends streaming audio, vidoe and data message from client.
     open func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
-        // swiftlint:disable closure_body_length
+        // swiftlint:disable:next closure_body_length
         lockQueue.async {
             guard let name: String = name else {
                 switch self.readyState {

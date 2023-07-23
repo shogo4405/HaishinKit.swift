@@ -150,7 +150,7 @@ struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize: Int = 6
     static let startCode = Data([0x00, 0x00, 0x01])
 
-    // swiftlint:disable function_parameter_count
+    // swiftlint:disable:next function_parameter_count
     static func create(_ bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, timestamp: CMTime, config: Any?, randomAccessIndicator: Bool) -> PacketizedElementaryStream? {
         if let config: AudioSpecificConfig = config as? AudioSpecificConfig {
             return PacketizedElementaryStream(bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp, decodeTimeStamp: decodeTimeStamp, timestamp: timestamp, config: config)

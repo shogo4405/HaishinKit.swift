@@ -2,6 +2,8 @@ import Accelerate
 import AVFoundation
 import CoreMedia
 
+// swiftlint:disable discouraged_optional_boolean
+
 extension CMSampleBuffer {
     var isNotSync: Bool {
         get {
@@ -94,7 +96,6 @@ extension CMSampleBuffer {
         return self
     }
 
-    // swiftlint:disable discouraged_optional_boolean
     @inline(__always)
     private func getAttachmentValue(for key: CFString) -> Bool? {
         guard
@@ -119,3 +120,5 @@ extension CMSampleBuffer {
         )
     }
 }
+
+// swiftlint:enable discouraged_optional_boolean

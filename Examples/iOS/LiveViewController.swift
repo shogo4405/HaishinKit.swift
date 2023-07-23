@@ -97,11 +97,11 @@ final class LiveViewController: UIViewController {
         if #available(iOS 13.0, *) {
             rtmpStream.attachMultiCamera(nil)
         }
-        // swiftlint:disable notification_center_detachment
+        // swiftlint:disable:next notification_center_detachment
         NotificationCenter.default.removeObserver(self)
     }
 
-    // swiftlint:disable block_based_kvo
+    // swiftlint:disable:next block_based_kvo
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if Thread.isMainThread {
             currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
