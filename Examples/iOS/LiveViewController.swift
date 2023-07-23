@@ -69,9 +69,6 @@ final class LiveViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-            logger.warn(error)
-        }
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
         rtmpStream.attachCamera(back) { error in
             logger.warn(error)
@@ -80,6 +77,9 @@ final class LiveViewController: UIViewController {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             rtmpStream.videoCapture(for: 1)?.isVideoMirrored = true
             rtmpStream.attachMultiCamera(front)
+        }
+        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
+            logger.warn(error)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         lfView?.attachStream(rtmpStream)
