@@ -5,12 +5,7 @@ import Foundation
 #if targetEnvironment(macCatalyst)
 extension AVCaptureSession {
     var isMultitaskingCameraAccessSupported: Bool {
-        get {
-            false
-        }
-        set {
-            logger.warn("isMultitaskingCameraAccessSupported is unavailabled in Mac Catalyst.")
-        }
+        false
     }
 
     var isMultitaskingCameraAccessEnabled: Bool {
@@ -22,8 +17,13 @@ extension AVCaptureSession {
         }
     }
 }
-#else
+#elseif os(iOS) || os(macOS)
 extension AVCaptureSession {
+    @available(iOS, obsoleted: 16.0)
+    var isMultitaskingCameraAccessSupported: Bool {
+        false
+    }
+
     @available(iOS, obsoleted: 16.0)
     var isMultitaskingCameraAccessEnabled: Bool {
         get {
@@ -32,11 +32,6 @@ extension AVCaptureSession {
         set {
             logger.warn("isMultitaskingCameraAccessEnabled is unavailabled in under iOS 16.")
         }
-    }
-
-    @available(iOS, obsoleted: 16.0)
-    var isMultitaskingCameraAccessSupported: Bool {
-        false
     }
 }
 #endif

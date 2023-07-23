@@ -76,26 +76,6 @@ public class IOMixer {
         }
     }
 
-    var inBackgroundMode = false {
-        didSet {
-            guard inBackgroundMode != oldValue else {
-                return
-            }
-            if inBackgroundMode {
-                if !session.isMultitaskingCameraAccessEnabled {
-                    videoIO.multiCamCapture.detachSession(session)
-                    videoIO.capture.detachSession(session)
-                }
-            } else {
-                startCaptureSessionIfNeeded()
-                if !session.isMultitaskingCameraAccessEnabled {
-                    videoIO.capture.attachSession(session)
-                    videoIO.multiCamCapture.attachSession(session)
-                }
-            }
-        }
-    }
-
     private var readyState: ReadyState = .standby
     private(set) lazy var audioEngine: AVAudioEngine? = {
         return IOMixer.audioEngineHolder.retain()
@@ -126,6 +106,26 @@ public class IOMixer {
         }
     }
 
+    var inBackgroundMode = false {
+        didSet {
+            guard inBackgroundMode != oldValue else {
+                return
+            }
+            if inBackgroundMode {
+                if !session.isMultitaskingCameraAccessEnabled {
+                    videoIO.multiCamCapture.detachSession(session)
+                    videoIO.capture.detachSession(session)
+                }
+            } else {
+                startCaptureSessionIfNeeded()
+                if !session.isMultitaskingCameraAccessEnabled {
+                    videoIO.capture.attachSession(session)
+                    videoIO.multiCamCapture.attachSession(session)
+                }
+            }
+        }
+    }
+
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
         didSet {
@@ -143,6 +143,7 @@ public class IOMixer {
         }
     }
     #endif
+
     public private(set) var isRunning: Atomic<Bool> = .init(false)
     /// The recorder instance.
     public lazy var recorder = IORecorder()
