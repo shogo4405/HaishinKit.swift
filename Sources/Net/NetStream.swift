@@ -4,6 +4,9 @@ import CoreMedia
 #if canImport(ScreenCaptureKit)
 import ScreenCaptureKit
 #endif
+#if os(iOS)
+import UIKit
+#endif
 
 /// The interface a NetStream uses to inform its delegate.
 public protocol NetStreamDelegate: AnyObject {
