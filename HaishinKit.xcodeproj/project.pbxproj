@@ -1148,19 +1148,19 @@
 		2968973F1CDB01AD0074D5F0 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				296897431CDB01D20074D5F0 /* Info.plist */,
-				291F4E361CF206E200F59C51 /* Icon.png */,
-				29205CBD1E461F4E009D3FFF /* Main.storyboard */,
 				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
+				296897421CDB01D20074D5F0 /* Assets.xcassets */,
+				291F4E361CF206E200F59C51 /* Icon.png */,
+				296897431CDB01D20074D5F0 /* Info.plist */,
+				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
 				296897441CDB01D20074D5F0 /* LiveViewController.swift */,
+				29205CBD1E461F4E009D3FFF /* Main.storyboard */,
 				BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */,
 				BCFB355324FA275600DC5108 /* PlaybackViewController.swift */,
 				291468161E581C7D00E619BA /* Preference.swift */,
 				2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */,
-				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
-				296897421CDB01D20074D5F0 /* Assets.xcassets */,
-				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
 				29A39C801D85BEFA007C27E9 /* Screencast */,
+				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";

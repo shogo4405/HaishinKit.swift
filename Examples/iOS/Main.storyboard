@@ -13,15 +13,10 @@
         <scene sceneID="hNz-n2-bh7">
             <objects>
                 <viewController storyboardIdentifier="PopUpLive" id="9pv-A4-QxB" userLabel="Recording" customClass="LiveViewController" customModule="Example_iOS" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
+                    <view key="view" contentMode="scaleToFill" id="tsR-hK-woN" customClass="MTHKView" customModule="HaishinKit">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gme-VA-sgd" customClass="MTHKView" customModule="HaishinKit">
-                                <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                                <viewLayoutGuide key="safeArea" id="h8f-2Q-C5a"/>
-                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                            </view>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="64" minValue="15" maxValue="120" translatesAutoresizingMaskIntoConstraints="NO" id="aKS-oc-LrT">
                                 <rect key="frame" x="14" y="775" width="340" height="31"/>
                                 <connections>
@@ -129,15 +124,54 @@
                                     <action selector="onClose:" destination="9pv-A4-QxB" eventType="touchDown" id="d0Y-4e-dGf"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="VideoFilter" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bMx-pj-MmZ">
+                                <rect key="frame" x="114" y="91" width="82" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="FPS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1iz-bJ-Knk">
+                                <rect key="frame" x="165" y="118" width="31" height="45"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="45" id="noh-is-sN4"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WXJ-5I-M9V">
+                                <rect key="frame" x="198" y="639" width="200" height="50"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="72t-LL-X1N"/>
+                                    <constraint firstAttribute="width" constant="200" id="IeK-QY-Jgl"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="dataSource" destination="9pv-A4-QxB" id="EjN-Uo-FwY"/>
+                                    <outlet property="delegate" destination="9pv-A4-QxB" id="b7Q-fX-OPM"/>
+                                </connections>
+                            </pickerView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="uPl-6C-KBI">
+                                <rect key="frame" x="279" y="600" width="119" height="32"/>
+                                <segments>
+                                    <segment title="mono"/>
+                                    <segment title="Stereo"/>
+                                </segments>
+                                <connections>
+                                    <action selector="onStereoMonoChanged:" destination="9pv-A4-QxB" eventType="valueChanged" id="Kvu-1X-Spn"/>
+                                </connections>
+                            </segmentedControl>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="xxe-Wi-b9E"/>
-                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="YMl-Xb-JZb" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="8" id="0wk-JQ-9EF"/>
                             <constraint firstItem="oVn-9L-n2U" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="1zP-ro-N7o"/>
+                            <constraint firstItem="WXJ-5I-M9V" firstAttribute="top" secondItem="uPl-6C-KBI" secondAttribute="bottom" constant="8" id="2nR-DX-eNt"/>
                             <constraint firstItem="4s5-OW-qAO" firstAttribute="top" secondItem="Qnn-SP-eWm" secondAttribute="bottom" constant="8" id="3iz-95-ma6"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="uPl-6C-KBI" secondAttribute="trailing" constant="16" id="7SA-uD-Z54"/>
                             <constraint firstItem="YMl-Xb-JZb" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="EiW-2l-32g"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="kaV-Nf-KmS" secondAttribute="trailing" constant="16" id="FTV-zN-wI9"/>
+                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="WXJ-5I-M9V" secondAttribute="trailing" constant="16" id="HJK-eV-CXG"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="yIo-MW-aK8" secondAttribute="trailing" id="ImR-m5-b1N"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="2Sy-na-foy" secondAttribute="trailing" constant="8" id="LNX-bz-2rq"/>
                             <constraint firstItem="kaV-Nf-KmS" firstAttribute="leading" secondItem="4s5-OW-qAO" secondAttribute="trailing" constant="16" id="MhN-Ph-tnl"/>
@@ -146,35 +180,37 @@
                             <constraint firstItem="oVn-9L-n2U" firstAttribute="leading" secondItem="LTk-1V-jZa" secondAttribute="trailing" constant="16" id="TIx-vj-Qkh"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="ioi-3B-kK8" secondAttribute="trailing" constant="16" id="Tw6-jv-tFG"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="bottom" secondItem="aKS-oc-LrT" secondAttribute="bottom" constant="8" id="VXV-L1-EAE"/>
-                            <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="Gme-VA-sgd" secondAttribute="trailing" id="WGA-8W-z7H"/>
                             <constraint firstItem="kaV-Nf-KmS" firstAttribute="leading" secondItem="dLf-ee-K3I" secondAttribute="trailing" constant="16" id="XZC-rZ-A2O"/>
                             <constraint firstItem="4s5-OW-qAO" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="16" id="bBy-aT-OSg"/>
                             <constraint firstItem="fbC-rC-wNg" firstAttribute="top" secondItem="2Sy-na-foy" secondAttribute="bottom" constant="8" id="bxt-Jk-DKC"/>
-                            <constraint firstItem="Gme-VA-sgd" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" id="c1b-Eg-nyX"/>
                             <constraint firstItem="yIo-MW-aK8" firstAttribute="leading" secondItem="oVn-9L-n2U" secondAttribute="trailing" constant="16" id="chn-8P-gE4"/>
+                            <constraint firstItem="Qnn-SP-eWm" firstAttribute="top" secondItem="WXJ-5I-M9V" secondAttribute="bottom" constant="10" id="dNo-V9-T9h"/>
                             <constraint firstItem="LTk-1V-jZa" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="evp-pO-uXQ"/>
-                            <constraint firstItem="Gme-VA-sgd" firstAttribute="top" secondItem="tsR-hK-woN" secondAttribute="top" id="hUp-G6-TEb"/>
                             <constraint firstItem="2Sy-na-foy" firstAttribute="top" secondItem="yIo-MW-aK8" secondAttribute="bottom" constant="8" id="jY5-kd-Sch"/>
                             <constraint firstItem="4s5-OW-qAO" firstAttribute="top" secondItem="dLf-ee-K3I" secondAttribute="bottom" constant="-16" id="js0-NN-jOe"/>
                             <constraint firstItem="aKS-oc-LrT" firstAttribute="top" secondItem="gR3-9k-qhK" secondAttribute="bottom" constant="-16" id="kaM-Nj-Bti"/>
+                            <constraint firstItem="1iz-bJ-Knk" firstAttribute="centerY" secondItem="fbC-rC-wNg" secondAttribute="centerY" id="lLe-9k-iNg"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="bottom" secondItem="ioi-3B-kK8" secondAttribute="bottom" constant="16" id="mhN-Dj-nSh"/>
-                            <constraint firstAttribute="bottom" secondItem="Gme-VA-sgd" secondAttribute="bottom" id="pWV-nr-agp"/>
                             <constraint firstItem="aKS-oc-LrT" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="16" id="pnK-uc-yzU"/>
                             <constraint firstItem="yIo-MW-aK8" firstAttribute="top" secondItem="xxe-Wi-b9E" secondAttribute="top" id="r3c-6X-KrF"/>
                             <constraint firstItem="Qnn-SP-eWm" firstAttribute="leading" secondItem="xxe-Wi-b9E" secondAttribute="leading" constant="16" id="rQf-n5-l5u"/>
+                            <constraint firstItem="2Sy-na-foy" firstAttribute="leading" secondItem="bMx-pj-MmZ" secondAttribute="trailing" constant="10" id="se9-F3-8W9"/>
                             <constraint firstItem="kaV-Nf-KmS" firstAttribute="leading" secondItem="gR3-9k-qhK" secondAttribute="trailing" constant="16" id="sh0-J7-Byw"/>
+                            <constraint firstItem="1iz-bJ-Knk" firstAttribute="top" secondItem="bMx-pj-MmZ" secondAttribute="bottom" constant="6" id="tDp-P7-uMp"/>
                             <constraint firstItem="ioi-3B-kK8" firstAttribute="leading" secondItem="aKS-oc-LrT" secondAttribute="trailing" constant="16" id="uU4-Tf-Z5g"/>
                             <constraint firstItem="xxe-Wi-b9E" firstAttribute="trailing" secondItem="fbC-rC-wNg" secondAttribute="trailing" constant="8" id="uUT-rF-Ge3"/>
+                            <constraint firstItem="fbC-rC-wNg" firstAttribute="leading" secondItem="1iz-bJ-Knk" secondAttribute="trailing" constant="10" id="zjH-FT-eUY"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Recording" image="first" id="acW-dT-cKf" userLabel="Recording"/>
                     <connections>
                         <outlet property="audioBitrateLabel" destination="gR3-9k-qhK" id="KH8-U9-YKe"/>
                         <outlet property="audioBitrateSlider" destination="aKS-oc-LrT" id="b72-LB-0BW"/>
+                        <outlet property="audioDevicePicker" destination="WXJ-5I-M9V" id="HHa-EB-KzD"/>
+                        <outlet property="audioMonoStereoSegmentCOntrol" destination="uPl-6C-KBI" id="Vea-Tb-VgH"/>
                         <outlet property="currentFPSLabel" destination="YMl-Xb-JZb" id="k4n-rH-YcZ"/>
                         <outlet property="effectSegmentControl" destination="2Sy-na-foy" id="25f-W4-fWk"/>
                         <outlet property="fpsControl" destination="fbC-rC-wNg" id="t4h-VS-Pmd"/>
-                        <outlet property="lfView" destination="Gme-VA-sgd" id="lgg-bN-G69"/>
                         <outlet property="pauseButton" destination="ioi-3B-kK8" id="Afy-2V-jam"/>
                         <outlet property="publishButton" destination="kaV-Nf-KmS" id="6yv-vb-8Vp"/>
                         <outlet property="videoBitrateLabel" destination="dLf-ee-K3I" id="hto-Gs-HwU"/>
@@ -184,7 +220,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="749.60000000000002" y="-320.68965517241384"/>
+            <point key="canvasLocation" x="749.27536231884062" y="-320.75892857142856"/>
         </scene>
         <!--Preference-->
         <scene sceneID="wg7-f3-ORb">
