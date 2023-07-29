@@ -48,11 +48,11 @@ class IOAudioMonitorRingBuffer {
             let channelCount = Int(format.channelCount)
             switch format.commonFormat {
             case .pcmFormatInt16:
-                memcpy(buffer.int16ChannelData?[0].advanced(by: head), workingBuffer.int16ChannelData?[0].advanced(by: offset), numSamples * channelCount * 2)
+                memcpy(buffer.int16ChannelData?[0].advanced(by: head * channelCount), workingBuffer.int16ChannelData?[0].advanced(by: offset * channelCount), numSamples * channelCount * 2)
             case .pcmFormatInt32:
-                memcpy(buffer.int32ChannelData?[0].advanced(by: head), workingBuffer.int32ChannelData?[0].advanced(by: offset), numSamples * channelCount * 4)
+                memcpy(buffer.int32ChannelData?[0].advanced(by: head * channelCount), workingBuffer.int32ChannelData?[0].advanced(by: offset * channelCount), numSamples * channelCount * 4)
             case .pcmFormatFloat32:
-                memcpy(buffer.floatChannelData?[0].advanced(by: head), workingBuffer.floatChannelData?[0].advanced(by: offset), numSamples * channelCount * 4)
+                memcpy(buffer.floatChannelData?[0].advanced(by: head * channelCount), workingBuffer.floatChannelData?[0].advanced(by: offset * channelCount), numSamples * channelCount * 4)
             default:
                 break
             }
@@ -88,11 +88,11 @@ class IOAudioMonitorRingBuffer {
             let channelCount = Int(format.channelCount)
             switch format.commonFormat {
             case .pcmFormatInt16:
-                memcpy(bufferList[0].mData?.advanced(by: offset * channelCount * 2), buffer.int16ChannelData?[0].advanced(by: tail), numSamples * channelCount * 2)
+                memcpy(bufferList[0].mData?.advanced(by: offset * channelCount * 2), buffer.int16ChannelData?[0].advanced(by: tail * channelCount), numSamples * channelCount * 2)
             case .pcmFormatInt32:
-                memcpy(bufferList[0].mData?.advanced(by: offset * channelCount * 4), buffer.int32ChannelData?[0].advanced(by: tail), numSamples * channelCount * 4)
+                memcpy(bufferList[0].mData?.advanced(by: offset * channelCount * 4), buffer.int32ChannelData?[0].advanced(by: tail * channelCount), numSamples * channelCount * 4)
             case .pcmFormatFloat32:
-                memcpy(bufferList[0].mData?.advanced(by: offset * channelCount * 4), buffer.floatChannelData?[0].advanced(by: tail), numSamples * channelCount * 4)
+                memcpy(bufferList[0].mData?.advanced(by: offset * channelCount * 4), buffer.floatChannelData?[0].advanced(by: tail * channelCount), numSamples * channelCount * 4)
             default:
                 break
             }
