@@ -418,8 +418,11 @@ open class RTMPStream: NetStream {
             metadata["width"] = mixer.videoIO.codec.settings.videoSize.width
             metadata["height"] = mixer.videoIO.codec.settings.videoSize.height
             metadata["framerate"] = mixer.videoIO.frameRate
-            if mixer.videoIO.codec.settings.format == .h264 {
+            switch mixer.videoIO.codec.settings.format {
+            case .h264:
                 metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
+            case .hevc:
+                metadata["videocodecid"] = FLVVideoFourCC.hevc.rawValue
             }
             metadata["videodatarate"] = mixer.videoIO.codec.settings.bitRate / 1000
         }
