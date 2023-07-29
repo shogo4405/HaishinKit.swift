@@ -43,6 +43,31 @@ extension DeviceUtil {
             return nil
         }
     }
+
+    /// Device is connected a headphone or not.
+    public static func isHeadphoneConnected(_ ports: Set<AVAudioSession.Port> = [.headphones, .bluetoothLE, .bluetoothHFP, .bluetoothA2DP]) -> Bool {
+        let outputs = AVAudioSession.sharedInstance().currentRoute.outputs
+        for description in outputs where ports.contains(description.portType) {
+            return true
+        }
+        return false
+    }
+
+    /// Device is disconnected a headphone or not.
+    public static func isHeadphoneDisconnected(_ notification: Notification, ports: Set<AVAudioSession.Port> = [.headphones, .bluetoothLE, .bluetoothHFP, .bluetoothA2DP]) -> Bool {
+        guard let previousRoute = notification.userInfo?[AVAudioSessionRouteChangePreviousRouteKey] as? AVAudioSessionRouteDescription else {
+            return false
+        }
+        var isHeadohoneConnected = false
+        for output in previousRoute.outputs where ports.contains(output.portType) {
+            isHeadohoneConnected = true
+            break
+        }
+        if !isHeadohoneConnected {
+            return false
+        }
+        return !DeviceUtil.isHeadphoneConnected(ports)
+    }
 }
 
 #endif

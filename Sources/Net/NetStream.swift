@@ -50,7 +50,15 @@ open class NetStream: NSObject {
     }()
     /// Specifies the delegate of the NetStream.
     public weak var delegate: (any NetStreamDelegate)?
-
+    /// Specifies the loopback audio or not.
+    public var loopback: Bool {
+        get {
+            mixer.audioIO.loopback
+        }
+        set {
+            mixer.audioIO.loopback = newValue
+        }
+    }
     /// Specifies the context object.
     public var context: CIContext {
         get {
