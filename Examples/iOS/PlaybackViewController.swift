@@ -129,10 +129,10 @@ extension PlaybackViewController: NetStreamDelegate {
     func stream(_ stream: NetStream, didOutput video: CMSampleBuffer) {
     }
 
-    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
     }
 
-    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason) {
+    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession) {
     }
 
     func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error) {
