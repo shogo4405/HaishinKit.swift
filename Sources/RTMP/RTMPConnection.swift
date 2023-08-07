@@ -339,7 +339,7 @@ open class RTMPConnection: EventDispatcher {
         for stream in streams {
             stream.close()
         }
-        socket.close(isDisconnected: false)
+        socket.close(isDisconnected: isDisconnected)
     }
 
     func createStream(_ stream: RTMPStream) {
@@ -445,6 +445,8 @@ open class RTMPConnection: EventDispatcher {
 
         return RTMPChunk(message: message)
     }
+    
+    private var zeroBytesOutCounter = 0
 
     @objc
     private func on(timer: Timer) {
@@ -455,6 +457,20 @@ open class RTMPConnection: EventDispatcher {
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
         previousQueueBytesOut.append(socket.queueBytesOut.value)
+        
+        
+        if currentBytesOutPerSecond == 0 {
+            zeroBytesOutCounter += 1
+            // If currentBytesOutPerSecond has been 0 for the last 5 seconds
+            if zeroBytesOutCounter >= 5 {
+                logger.warn("STALE connection, force close")
+                self.close(isDisconnected: true) // call close function
+                zeroBytesOutCounter = 0 // reset counter
+            }
+        } else {
+            zeroBytesOutCounter = 0 // reset counter
+        }
+        
         for stream in streams {
             stream.on(timer: timer)
         }
