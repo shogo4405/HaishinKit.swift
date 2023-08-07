@@ -476,7 +476,7 @@ open class RTMPConnection: EventDispatcher {
         }
         if measureInterval <= previousQueueBytesOut.count {
             var total = 0
-            for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
+            for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] && previousQueueBytesOut[i + 1] != 0 {
                 total += 1
             }
             if total == measureInterval - 1 {
