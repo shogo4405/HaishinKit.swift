@@ -128,7 +128,7 @@ final class RTMPNWSocket: RTMPSocketCompatible {
 
     @discardableResult
     func doOutput(data: Data) -> Int {
-        queueBytesOut.mutate { $0 = Int64(data.count) }
+        queueBytesOut.mutate { $0 += Int64(data.count) }
         connection?.send(content: data, completion: .contentProcessed { error in
             guard self.connected else {
                 return
