@@ -19,7 +19,9 @@ final class IOAudioMonitor {
     private var audioUnit: AudioUnit? {
         didSet {
             if let oldValue {
+                AudioOutputUnitStop(oldValue)
                 AudioUnitUninitialize(oldValue)
+                AudioComponentInstanceDispose(oldValue)
             }
             if let audioUnit {
                 AudioOutputUnitStart(audioUnit)
@@ -31,6 +33,10 @@ final class IOAudioMonitor {
     private let callback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, _: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
         let monitor = Unmanaged<IOAudioMonitor>.fromOpaque(inRefCon).takeUnretainedValue()
         return monitor.render(inNumberFrames, ioData: ioData)
+    }
+
+    deinit {
+        stopRunning()
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
@@ -88,9 +94,6 @@ extension IOAudioMonitor: Running {
     func stopRunning() {
         guard isRunning.value else {
             return
-        }
-        if let audioUnit {
-            AudioOutputUnitStop(audioUnit)
         }
         audioUnit = nil
         isRunning.mutate { $0 = false }
