@@ -163,7 +163,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             return
         }
         guard let device else {
-            mixer.isMultiCamSessionEnabled = false
             mixer.session.beginConfiguration()
             defer {
                 mixer.session.commitConfiguration()
