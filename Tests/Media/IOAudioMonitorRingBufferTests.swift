@@ -36,7 +36,7 @@ final class IOAudioMonitorRingBufferTests: XCTestCase {
         let buffer = IOAudioMonitorRingBuffer(&asbd, bufferCounts: 3)
         guard
             let readBuffer = AVAudioPCMBuffer(pcmFormat: AVAudioFormat(streamDescription: &asbd)!, frameCapacity: AVAudioFrameCount(numSamples)),
-            let sinWave = SinWaveUtil.makeCMSampleBuffer(44100, numSamples: numSamples, channels: channels) else {
+            let sinWave = CMAudioSampleBufferTestUtil.makeSinWave(44100, numSamples: numSamples, channels: channels) else {
             return
         }
         let bufferList = UnsafeMutableAudioBufferListPointer(readBuffer.mutableAudioBufferList)
