@@ -1,6 +1,6 @@
 import AVFoundation
 
-final class SinWaveUtil {
+enum SinWaveUtil {
     static func makeCMSampleBuffer(_ sampleRate: Double = 44100, numSamples: Int = 1024, channels: UInt32 = 1) -> CMSampleBuffer? {
         var status: OSStatus = noErr
         var sampleBuffer: CMSampleBuffer?
@@ -56,7 +56,6 @@ final class SinWaveUtil {
         guard status == noErr else {
             return nil
         }
-
         let format = AVAudioFormat(cmAudioFormatDescription: formatDescription!)
         let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(numSamples))!
         buffer.frameLength = buffer.frameCapacity

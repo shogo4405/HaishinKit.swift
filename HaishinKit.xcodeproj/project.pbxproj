@@ -439,6 +439,7 @@
 		BCA2252C293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */; };
 		BCA2252D293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */; };
 		BCA2252E293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */; };
+		BCA7C24F2A91AA0500882D85 /* IORecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA7C24E2A91AA0500882D85 /* IORecorderTests.swift */; };
 		BCAD0C18263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = BCAD0C16263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 */; };
 		BCAD0C19263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v in Resources */ = {isa = PBXBuildFile; fileRef = BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
@@ -798,6 +799,7 @@
 		BC9CFA9223BDE8B700917EEF /* NetStreamDrawable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamDrawable.swift; sourceTree = "<group>"; };
 		BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Choreographer.swift; sourceTree = "<group>"; };
 		BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOScreenCaptureUnit.swift; sourceTree = "<group>"; };
+		BCA7C24E2A91AA0500882D85 /* IORecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IORecorderTests.swift; sourceTree = "<group>"; };
 		BCAD0C16263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SampleVideo_360x240_5mb@m4v.m3u8"; sourceTree = "<group>"; };
 		BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "SampleVideo_360x240_5mb@m4v"; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSField.swift; sourceTree = "<group>"; };
@@ -1187,6 +1189,7 @@
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				BC0BF4F329866FB700D72CB4 /* Media */,
 				291C2ACF1CE9FF2B006F042B /* MPEG */,
+				BCA7C2502A91AA3800882D85 /* Net */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
 				295018211FFA1C9D00358E10 /* SinWaveUtil.swift */,
 				291C2AD01CE9FF33006F042B /* Util */,
@@ -1367,7 +1370,7 @@
 			children = (
 				BCD91C0C2A700FF50033F9E1 /* IOAudioMonitorRingBufferTests.swift */,
 				BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */,
-				BC7C56882995082700C41A9B /* NetStreamTests.swift */,
+				BCA7C24E2A91AA0500882D85 /* IORecorderTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1388,6 +1391,14 @@
 				BC3004F4296C20A300119932 /* NSObject+Extension.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		BCA7C2502A91AA3800882D85 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				BC7C56882995082700C41A9B /* NetStreamTests.swift */,
+			);
+			path = Net;
 			sourceTree = "<group>";
 		};
 		BCD1DCF62610751900A1C593 /* MPEG */ = {
@@ -2055,6 +2066,7 @@
 				BC1DC5042A02894D00E928ED /* FLVVideoFourCCTests.swift in Sources */,
 				290EA8931DFB617800053022 /* HTTPRequestTests.swift in Sources */,
 				BC1DC5122A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift in Sources */,
+				BCA7C24F2A91AA0500882D85 /* IORecorderTests.swift in Sources */,
 				BCD91C0D2A700FF50033F9E1 /* IOAudioMonitorRingBufferTests.swift in Sources */,
 				2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */,
 				BC7C56C729A7701F00C41A9B /* ESSpecificDataTests.swift in Sources */,
