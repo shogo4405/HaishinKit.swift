@@ -1,4 +1,7 @@
 import AVFoundation
+#if canImport(SwiftPMSupport)
+import SwiftPMSupport
+#endif
 
 /// The interface an IORecorder uses to inform its delegate.
 public protocol IORecorderDelegate: AnyObject {
@@ -11,12 +14,12 @@ public protocol IORecorderDelegate: AnyObject {
 // MARK: -
 /// The IORecorder class represents video and audio recorder.
 public class IORecorder {
-    private static let interpolationThreshold = 1024 * 4
-
     /// The IORecorder error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: Swift.Error)
+        /// Failed to create the AVAssetWriterInput.
+        case failedToCreateAssetWriterInput(error: NSException)
         /// Failed to append the PixelBuffer or SampleBuffer.
         case failedToAppend(error: Swift.Error?)
         /// Failed to finish writing the AVAssetWriter.
@@ -205,12 +208,17 @@ public class IORecorder {
                 break
             }
         }
-
-        let input = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
-        input.expectsMediaDataInRealTime = true
-        writerInputs[mediaType] = input
-        writer?.add(input)
-
+        var input: AVAssetWriterInput?
+        nstry {
+            input = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
+            input?.expectsMediaDataInRealTime = true
+            self.writerInputs[mediaType] = input
+            if let input {
+                self.writer?.add(input)
+            }
+        } _: { exception in
+            self.delegate?.recorder(self, errorOccured: .failedToCreateAssetWriterInput(error: exception))
+        }
         return input
     }
 
