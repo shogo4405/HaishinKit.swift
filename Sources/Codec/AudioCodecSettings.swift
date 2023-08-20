@@ -79,7 +79,7 @@ public struct AudioCodecSettings: Codable {
         func makeAudioBuffer(_ format: AVAudioFormat) -> AVAudioBuffer? {
             switch self {
             case .aac:
-                return AVAudioCompressedBuffer(format: format, packetCapacity: 1, maximumPacketSize: 1024)
+                return AVAudioCompressedBuffer(format: format, packetCapacity: 1, maximumPacketSize: 1024 * Int(format.channelCount))
             case .pcm:
                 return AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1024)
             }
