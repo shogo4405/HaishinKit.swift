@@ -79,13 +79,14 @@ Supports two camera video sources. A picture-in-picture display that shows the i
 |<img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043421-ceb18cb7-9b50-43fa-a0a2-8b92b78d9df1.png">|<img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043687-a99f21b6-28b2-4170-96de-6c814debd84d.png">|
 
 ```swift
-let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-stream.attachCamera(back)
-
+// If you're using multi-camera functionality, please make sure to call the attachMultiCamera method first. This is required for iOS 14 and 15, among others.
 if #available(iOS 13.0, *) {
   let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
   stream.attachMultiCamera(front)
 }
+let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+stream.attachCamera(back)
+rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio))
 ```
 
 ### Rendering

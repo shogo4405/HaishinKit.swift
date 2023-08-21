@@ -74,13 +74,15 @@ final class LiveViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-        rtmpStream.attachCamera(back) { error in
-            logger.warn(error)
-        }
+
+        // If you're using multi-camera functionality, please make sure to call the attachMultiCamera method first. This is required for iOS 14 and 15, among others.
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             rtmpStream.videoCapture(for: 1)?.isVideoMirrored = true
             rtmpStream.attachMultiCamera(front)
+        }
+        rtmpStream.attachCamera(back) { error in
+            logger.warn(error)
         }
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
             logger.warn(error)
