@@ -3,9 +3,12 @@ import Foundation
 
 /// The AudioCodecSettings class  specifying audio compression settings.
 public struct AudioCodecSettings: Codable {
-    /// The defualt value.
+    /// The default value.
     public static let `default` = AudioCodecSettings()
-
+    
+    /// Maximum number of channels supported by the system
+    public static let maximumNumberOfChannels: UInt32 = 2
+    
     /// The type of the AudioCodec supports format.
     public enum Format: Codable {
         /// The AAC format.
@@ -98,7 +101,7 @@ public struct AudioCodecSettings: Codable {
                     mBytesPerPacket: bytesPerPacket,
                     mFramesPerPacket: framesPerPacket,
                     mBytesPerFrame: bytesPerFrame,
-                    mChannelsPerFrame: inSourceFormat.mChannelsPerFrame,
+                    mChannelsPerFrame: min(inSourceFormat.mChannelsPerFrame, AudioCodecSettings.maximumNumberOfChannels),
                     mBitsPerChannel: bitsPerChannel,
                     mReserved: 0
                 )
@@ -107,7 +110,7 @@ public struct AudioCodecSettings: Codable {
                 return AVAudioFormat(
                     commonFormat: .pcmFormatFloat32,
                     sampleRate: inSourceFormat.mSampleRate,
-                    channels: inSourceFormat.mChannelsPerFrame,
+                    channels: min(inSourceFormat.mChannelsPerFrame, AudioCodecSettings.maximumNumberOfChannels),
                     interleaved: true
                 )
             }
