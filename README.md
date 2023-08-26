@@ -154,7 +154,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.5.6
+github "shogo4405/HaishinKit.swift" ~> 1.5.7
 ```
 ### Swift Package Manager
 ```
