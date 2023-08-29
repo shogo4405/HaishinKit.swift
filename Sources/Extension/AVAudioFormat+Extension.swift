@@ -6,29 +6,29 @@
 import AVFoundation
 
 extension AVAudioFormat {
-    public override var description: String {
+    override public var description: String {
         var descriptionParts: [String] = []
-        
+
         descriptionParts.append("Sample Rate: \(sampleRate) Hz")
         descriptionParts.append("Channels: \(channelCount)")
-        
+
         if let channelLayout = channelLayout {
             descriptionParts.append("Channel Layout: \(channelLayout.layout.readableDescription)")
         }
-        
+
         descriptionParts.append("Format: \(commonFormat.readableDescription)")
         descriptionParts.append(isInterleaved ? "Interleaved" : "Non-interleaved")
         descriptionParts.append(isStandard ? "Standard" : "Non-standard")
-        
+
         if let audioFormatID = audioFormatID {
             descriptionParts.append("AudioFormatID: \(audioFormatID.audioFormatIDDescription) (\(audioFormatID))")
         }
-        
+
         descriptionParts.append("Settings: \(settings)")
-        
+
         return descriptionParts.joined(separator: ", ")
     }
-    
+
     var audioFormatID: AudioFormatID? {
         guard let formatIDValue = settings[AVFormatIDKey] as? NSNumber else {
             return nil
@@ -36,7 +36,6 @@ extension AVAudioFormat {
         return AudioFormatID(formatIDValue.uint32Value)
     }
 }
-
 
 extension UnsafePointer<AudioChannelLayout> {
     var readableDescription: String {
@@ -48,7 +47,7 @@ extension UnsafePointer<AudioChannelLayout> {
         let channelLabels = channelDescriptions.map { $0.mChannelLabel }
         return "tag: \(channelTag), bitmap: \(bitmap), channels: \(numberChannelDescriptions), channelLabels: \(channelLabels)"
     }
-    
+
     var channelDescriptions: [AudioChannelDescription] {
         var mutablePointee = UnsafeMutablePointer(mutating: self).pointee
         let numberOfDescriptions = Int(mutablePointee.mNumberChannelDescriptions)

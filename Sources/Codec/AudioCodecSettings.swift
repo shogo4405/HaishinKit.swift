@@ -5,10 +5,10 @@ import Foundation
 public struct AudioCodecSettings: Codable {
     /// The default value.
     public static let `default` = AudioCodecSettings()
-    
+
     /// Maximum number of channels supported by the system
     public static let maximumNumberOfChannels: UInt32 = 2
-    
+
     /// The type of the AudioCodec supports format.
     public enum Format: Codable {
         /// The AAC format.
