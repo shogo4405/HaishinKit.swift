@@ -31,24 +31,23 @@ public class AudioCodec {
                 return nil
             }
             if let layout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
-                return .init(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate, interleaved: true,
-                        channelLayout: layout)
+                return .init(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate, interleaved: true, channelLayout: layout)
             }
-            return AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate,
-                    channels: inSourceFormat.mChannelsPerFrame, interleaved: true)
+            return AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate, channels: inSourceFormat.mChannelsPerFrame, interleaved: true)
         }
         if let layout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
             return .init(streamDescription: &inSourceFormat, channelLayout: layout)
         }
         return .init(streamDescription: &inSourceFormat)
     }
-    
+
     static func makeChannelLayout(_ numberOfChannels: UInt32) -> AVAudioChannelLayout? {
-        guard numberOfChannels > 2 else { return nil }
-        
+        guard numberOfChannels > 2 else {
+            return nil
+        }
         return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | numberOfChannels)
     }
-    
+
     /// Creates a channel map for specific input and output format
     /// - Examples:
     ///   - Input channel count is 4 and 2, result:  [0, 1, -1, -1]
@@ -58,9 +57,9 @@ public class AudioCodec {
         let outChannels = Int(toFormat.channelCount)
         let channelIndexes = Array(0...inChannels - 1)
         return channelIndexes
-                .prefix(outChannels)
-                .map { NSNumber(value: $0) }
-                + Array(repeating: -1, count: max(0, inChannels - outChannels))
+            .prefix(outChannels)
+            .map { NSNumber(value: $0) }
+            + Array(repeating: -1, count: max(0, inChannels - outChannels))
     }
 
     /// Specifies the delegate.
