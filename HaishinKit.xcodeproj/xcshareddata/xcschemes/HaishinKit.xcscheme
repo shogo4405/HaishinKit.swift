@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
+               BlueprintIdentifier = "2945CBBC1B4BE66000104112"
                BuildableName = "HaishinKit.framework"
-               BlueprintName = "HaishinKit tvOS"
+               BlueprintName = "HaishinKit"
                ReferencedContainer = "container:HaishinKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -43,9 +43,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
+            BlueprintIdentifier = "2945CBBC1B4BE66000104112"
             BuildableName = "HaishinKit.framework"
-            BlueprintName = "HaishinKit tvOS"
+            BlueprintName = "HaishinKit"
             ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -59,9 +59,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "29D3D4DB1ED0509900DD4AA6"
+            BlueprintIdentifier = "2945CBBC1B4BE66000104112"
             BuildableName = "HaishinKit.framework"
-            BlueprintName = "HaishinKit tvOS"
+            BlueprintName = "HaishinKit"
             ReferencedContainer = "container:HaishinKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

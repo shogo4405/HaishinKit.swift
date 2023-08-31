@@ -1,4 +1,4 @@
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 
 static NSString *const __nonnull HaishinKitIdentifier = @"com.haishinkit.HaishinKit";
 FOUNDATION_EXPORT double HaishinKitVersionNumber;
