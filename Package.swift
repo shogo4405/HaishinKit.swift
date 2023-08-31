@@ -22,9 +22,7 @@ let package = Package(
                 dependencies: ["Logboard", "SwiftPMSupport"],
                 path: "Sources",
                 exclude: [
-                    "Platforms/iOS/Info.plist",
-                    "Platforms/macOS/Info.plist",
-                    "Platforms/tvOS/Info.plist"
+                    "Platforms/iOS/Info.plist"
                 ],
                 sources: [
                     "Codec",
