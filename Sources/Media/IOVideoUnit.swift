@@ -45,7 +45,7 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     var muted = false
 
-    private(set) var effects: Set<VideoEffect> = []
+    private(set) var effects: [VideoEffect] = []
 
     private var extent = CGRect.zero {
         didSet {
@@ -216,12 +216,22 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     func registerEffect(_ effect: VideoEffect) -> Bool {
         effect.ciContext = context
-        return effects.insert(effect).inserted
+        if effects.contains(effect) {
+            return false
+        } else {
+            effects.append(effect)
+            return true
+        }
     }
 
     func unregisterEffect(_ effect: VideoEffect) -> Bool {
         effect.ciContext = nil
-        return effects.remove(effect) != nil
+        if let index = effects.firstIndex(of: effect) {
+            effects.remove(at: index)
+            return true
+        } else {
+            return false
+        }
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
