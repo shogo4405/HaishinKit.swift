@@ -122,14 +122,23 @@ public struct AudioCodecSettings: Codable {
 
     /// Specifies the output format.
     public var format: AudioCodecSettings.Format
+    
+    /// Map of the output to input channels
+    public var outputChannelsMap: [Int: Int]
 
     /// Create an new AudioCodecSettings instance.
     public init(
         bitRate: Int = 64 * 1000,
-        format: AudioCodecSettings.Format = .aac
+        format: AudioCodecSettings.Format = .aac,
+        outputChannelsMap: [Int: Int] = [0: 0, 1: 1]
     ) {
         self.bitRate = bitRate
         self.format = format
+        self.outputChannelsMap = outputChannelsMap
+    }
+    
+    func recreateConverter(_ rhs: AudioCodecSettings) -> Bool {
+        !(outputChannelsMap == rhs.outputChannelsMap)
     }
 
     func apply(_ converter: AVAudioConverter?, oldValue: AudioCodecSettings?) {
