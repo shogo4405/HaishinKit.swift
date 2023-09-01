@@ -11,12 +11,17 @@ let package = Package(
         .macCatalyst(.v14)
     ],
     products: [
-        .library(name: "HaishinKit", targets: ["HaishinKit"])
+        .library(name: "HaishinKit", targets: ["HaishinKit"]),
+        .library(name: "SRTHaishinKit", targets: ["SRTHaishinKit"])
     ],
     dependencies: [
         .package(url: "https://github.com/shogo4405/Logboard.git", from: "2.3.1")
     ],
     targets: [
+        .binaryTarget(
+            name: "libsrt",
+            path: "Vendor/SRT/libsrt.xcframework"
+        ),
         .target(name: "SwiftPMSupport"),
         .target(name: "HaishinKit",
                 dependencies: ["Logboard", "SwiftPMSupport"],
@@ -35,6 +40,13 @@ let package = Package(
                     "RTMP",
                     "Util",
                     "Platforms"
-                ])
+                ]),
+        .target(name: "SRTHaishinKit",
+                dependencies: [
+                    "libsrt",
+                    "HaishinKit"
+                ],
+                path: "SRTHaishinKit"
+        )
     ]
 )
