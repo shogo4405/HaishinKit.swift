@@ -50,18 +50,13 @@ public class AudioCodec {
 
     /// Creates a channel map for specific input and output format
     static func makeChannelMap(inChannels: Int, outChannels: Int, outputChannelsMap: [Int: Int]) -> [NSNumber] {
-        var result = (0..<outChannels).map { $0 }
+        var result = Array(repeating: -1, count: outChannels)
+        for inputIndex in 0..<min(inChannels, outChannels) {
+            result[inputIndex] = inputIndex
+        }
         for currentIndex in 0..<outChannels {
-            if let inputIndex = outputChannelsMap[currentIndex] {
-                if inputIndex < inChannels {
-                    result[currentIndex] = inputIndex < inChannels ? inputIndex : currentIndex
-                }
-                else {
-                    result[currentIndex] = currentIndex
-                }
-            }
-            else if currentIndex >= inChannels {
-                result[currentIndex] = -1
+            if let inputIndex = outputChannelsMap[currentIndex], inputIndex < inChannels {
+                result[currentIndex] = inputIndex
             }
         }
         return result.map { NSNumber(value: $0) }
