@@ -26,39 +26,42 @@ srt() {
 }
 
 srt_macosx() {
-  OPENSSL=$(pwd)/OpenSSL/macosx
+  OPENSSL=$(pwd)/OpenSSL/$1
 
-  mkdir -p ./build/macosx
-  pushd ./build/macosx
-  ../../srt/configure --cmake-prefix-path=$OPENSSL --cmake-osx-architectures=arm64;x86_64 --USE_OPENSSL_PC=ON --ssl-include-dir=$OPENSSL/include --ssl-libraries=$OPENSSL/lib/libcrypto.a
+  mkdir -p ./build/$1/$2
+  pushd ./build/$1/$2
+  ../../../srt/configure --cmake-prefix-path=$OPENSSL --cmake-osx-architectures=$2 --USE_OPENSSL_PC=ON --ssl-include-dir=$OPENSSL/include --ssl-libraries=$OPENSSL/lib/libcrypto.a
   make
   popd
 }
 
-# compile
-srt_macosx
+# macOS
+srt_macosx macosx arm64
+srt_macosx macosx x86_64
+rm -f ./build/macosx/libsrt-lipo.a
+lipo -create ./build/macosx/arm64/libsrt.a ./build/macosx/x86_64/libsrt.a -output ./build/macosx/libsrt-lipo.a
+libtool -static -o ./build/macosx/libsrt.a ./build/macosx/libsrt-lipo.a ./OpenSSL/macosx/lib/libcrypto.a ./OpenSSL/macosx/lib/libssl.a
 
+# iOS
 export IPHONEOS_DEPLOYMENT_TARGET=11.0
 SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
 srt iphonesimulator SIMULATOR64 x86_64
 srt iphonesimulator SIMULATOR64 arm64
 srt iphoneos OS arm64
 
-rm -rf ./build/simulator
-mkdir ./build/simulator
-lipo -create ./build/SIMULATOR64/arm64/libsrt.a ./build/SIMULATOR64/x86_64/libsrt.a -output ./build/simulator/libsrt-lipo.a
-libtool -static -o ./build/simulator/libsrt.a ./build/simulator/libsrt-lipo.a ./OpenSSL/iphonesimulator/lib/libcrypto.a ./OpenSSL/iphonesimulator/lib/libssl.a
+rm -f ./build/SIMULATOR64/libsrt-lipo.a
+lipo -create ./build/SIMULATOR64/arm64/libsrt.a ./build/SIMULATOR64/x86_64/libsrt.a -output ./build/SIMULATOR64/libsrt-lipo.a
+libtool -static -o ./build/SIMULATOR64/libsrt.a ./build/SIMULATOR64/libsrt-lipo.a ./OpenSSL/iphonesimulator/lib/libcrypto.a ./OpenSSL/iphonesimulator/lib/libssl.a
 
-rm -rf ./build/device
-mkdir ./build/device
-lipo -create ./build/OS/arm64/libsrt.a -output ./build/device/libsrt-lipo.a
-libtool -static -o ./build/device/libsrt.a ./build/device/libsrt-lipo.a ./OpenSSL/iphoneos/lib/libcrypto.a ./OpenSSL/iphoneos/lib/libssl.a
+rm -f ./build/OS/libsrt-lipo.a
+lipo -create ./build/OS/arm64/libsrt.a -output ./build/OS/libsrt-lipo.a
+libtool -static -o ./build/OS/libsrt.a ./build/OS/libsrt-lipo.a ./OpenSSL/iphoneos/lib/libcrypto.a ./OpenSSL/iphoneos/lib/libssl.a
 
 # make libsrt.xcframework
 rm -rf libsrt.xcframework
 xcodebuild -create-xcframework \
-    -library ./build/simulator/libsrt.a -headers Includes \
-    -library ./build/device/libsrt.a -headers Includes \
+    -library ./build/SIMULATOR64/libsrt.a -headers Includes \
+    -library ./build/OS/libsrt.a -headers Includes \
     -library ./build/macosx/libsrt.a -headers Includes \
     -output libsrt.xcframework
 
