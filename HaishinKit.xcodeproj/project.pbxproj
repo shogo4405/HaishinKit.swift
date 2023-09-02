@@ -815,11 +815,11 @@
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
 				29F39BE72335F8010055F9BB /* Package.swift */,
 				2968973E1CDB01920074D5F0 /* Examples */,
-				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
 				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
 				299F7E371CD71A76001E7272 /* Platforms */,
 				2945CBBE1B4BE66000104112 /* Products */,
 				2945CBBF1B4BE66000104112 /* Sources */,
+				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
 				29798E5A1CE60E5300F5CBD0 /* Tests */,
 			);
 			sourceTree = "<group>";

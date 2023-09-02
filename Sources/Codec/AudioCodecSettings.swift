@@ -122,7 +122,7 @@ public struct AudioCodecSettings: Codable {
 
     /// Specifies the output format.
     public var format: AudioCodecSettings.Format
-    
+
     /// Map of the output to input channels
     public var outputChannelsMap: [Int: Int]
 
@@ -136,7 +136,7 @@ public struct AudioCodecSettings: Codable {
         self.format = format
         self.outputChannelsMap = outputChannelsMap
     }
-    
+
     func recreateConverter(_ rhs: AudioCodecSettings) -> Bool {
         !(outputChannelsMap == rhs.outputChannelsMap)
     }

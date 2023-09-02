@@ -194,8 +194,7 @@ public class AudioCodec {
         logger.debug("inputFormat: \(inputFormat)")
         logger.debug("outputFormat: \(outputFormat)")
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
-        let channelMap = Self.makeChannelMap(inChannels: Int(inputFormat.channelCount), outChannels: Int(outputFormat.channelCount),
-                outputChannelsMap: settings.outputChannelsMap)
+        let channelMap = Self.makeChannelMap(inChannels: Int(inputFormat.channelCount), outChannels: Int(outputFormat.channelCount), outputChannelsMap: settings.outputChannelsMap)
         logger.debug("channelMap: \(channelMap)")
         converter?.channelMap = channelMap
         settings.apply(converter, oldValue: nil)

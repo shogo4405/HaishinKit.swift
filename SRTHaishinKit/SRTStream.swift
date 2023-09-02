@@ -72,7 +72,9 @@ public class SRTStream: NetStream {
         self.connection = connection
         self.connection?.streams.append(self)
         let keyValueObservation = connection.observe(\.connected, options: [.new, .old]) { [weak self] _, _ in
-            guard let self = self else { return }
+            guard let self = self else {
+                return
+            }
             if connection.connected {
                 self.action?()
                 self.action = nil
