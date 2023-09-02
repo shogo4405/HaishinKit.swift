@@ -49,17 +49,17 @@ public class AudioCodec {
     }
 
     /// Creates a channel map for specific input and output format
-    /// - Examples:
-    ///   - Input channel count is 4 and 2, result:  [0, 1, -1, -1]
-    ///   - Input channel count is 2 and 2, result:  [0, 1]
-    static func makeChannelMap(from fromFormat: AVAudioFormat, to toFormat: AVAudioFormat) -> [NSNumber] {
-        let inChannels = Int(fromFormat.channelCount)
-        let outChannels = Int(toFormat.channelCount)
-        let channelIndexes = Array(0...inChannels - 1)
-        return channelIndexes
-            .prefix(outChannels)
-            .map { NSNumber(value: $0) }
-            + Array(repeating: -1, count: max(0, inChannels - outChannels))
+    static func makeChannelMap(inChannels: Int, outChannels: Int, outputChannelsMap: [Int: Int]) -> [NSNumber] {
+        var result = Array(repeating: -1, count: outChannels)
+        for inputIndex in 0..<min(inChannels, outChannels) {
+            result[inputIndex] = inputIndex
+        }
+        for currentIndex in 0..<outChannels {
+            if let inputIndex = outputChannelsMap[currentIndex], inputIndex < inChannels {
+                result[currentIndex] = inputIndex
+            }
+        }
+        return result.map { NSNumber(value: $0) }
     }
 
     /// Specifies the delegate.
@@ -194,7 +194,10 @@ public class AudioCodec {
         logger.debug("inputFormat: \(inputFormat)")
         logger.debug("outputFormat: \(outputFormat)")
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
-        converter?.channelMap = Self.makeChannelMap(from: inputFormat, to: outputFormat)
+        let channelMap = Self.makeChannelMap(inChannels: Int(inputFormat.channelCount), outChannels: Int(outputFormat.channelCount),
+                outputChannelsMap: settings.outputChannelsMap)
+        logger.debug("channelMap: \(channelMap)")
+        converter?.channelMap = channelMap
         settings.apply(converter, oldValue: nil)
         if converter == nil {
             delegate?.audioCodec(self, errorOccurred: .failedToCreate(from: inputFormat, to: outputFormat))

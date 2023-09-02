@@ -93,5 +93,36 @@ final class AudioCodecTests: XCTestCase {
             encoder.appendSampleBuffer(sampleBuffer)
         }
     }
+
+    func testChannelMaps() {
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [:]), [0])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: 0]), [0])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: 0, 1: 1]), [0])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: -1]), [-1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [Int.max: Int.max]), [0])
+
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [:]), [0, -1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: 0]), [0, -1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: 1]), [0, -1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: -1, 1: -1]), [-1, -1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: 1, 1: Int.max]), [0, 1])
+
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [:]), [0])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [0: 0]), [0])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [0: 1]), [1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: -1]), [-1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [Int.max: 0]), [0])
+
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [:]), [0, 1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0]), [0, 1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0, 1: 1]), [0, 1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: -1, 1: -1]), [-1, -1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: -1, 1: 1]), [-1, 1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0, 1: 1, Int.max: Int.max]), [0, 1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0, 1: Int.max]), [0, 1])
+
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 12, outChannels: 2, outputChannelsMap: [:]), [0, 1])
+        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 12, outChannels: 2, outputChannelsMap: [0: -1, 1: 11]), [-1, 11])
+    }
 }
 
