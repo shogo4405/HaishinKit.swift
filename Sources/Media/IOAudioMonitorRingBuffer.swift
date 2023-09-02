@@ -124,11 +124,11 @@ class IOAudioMonitorRingBuffer {
             let channelCount = Int(format.channelCount)
             switch format.commonFormat {
             case .pcmFormatInt16:
-                buffer.int16ChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
+                buffer.int16ChannelData?[0].update(repeating: 0, count: numSamples * channelCount)
             case .pcmFormatInt32:
-                buffer.int32ChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
+                buffer.int32ChannelData?[0].update(repeating: 0, count: numSamples * channelCount)
             case .pcmFormatFloat32:
-                buffer.floatChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
+                buffer.floatChannelData?[0].update(repeating: 0, count: numSamples * channelCount)
             default:
                 break
             }
@@ -136,11 +136,11 @@ class IOAudioMonitorRingBuffer {
             for i in 0..<Int(format.channelCount) {
                 switch format.commonFormat {
                 case .pcmFormatInt16:
-                    buffer.int16ChannelData?[i].assign(repeating: 0, count: numSamples)
+                    buffer.int16ChannelData?[i].update(repeating: 0, count: numSamples)
                 case .pcmFormatInt32:
-                    buffer.int32ChannelData?[i].assign(repeating: 0, count: numSamples)
+                    buffer.int32ChannelData?[i].update(repeating: 0, count: numSamples)
                 case .pcmFormatFloat32:
-                    buffer.floatChannelData?[i].assign(repeating: 0, count: numSamples)
+                    buffer.floatChannelData?[i].update(repeating: 0, count: numSamples)
                 default:
                     break
                 }
