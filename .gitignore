@@ -15,7 +15,6 @@ soe/bin/*
 soe/air/*
 soe/AIR_readme.txt
 
-Cartfile.resolved
 Carthage/*
 
 .idea/
@@ -27,3 +26,5 @@ HaishinKit.xcodeproj/project.xcworkspace/xcuserdata/shogo.xcuserdatad/WorkspaceS
 docs/undocumented.json
 fastlane/report.xml
 docs/docsets/HaishinKit.docset/Contents/Resources/Documents/undocumented.json
+Vendor/SRT/OpenSSL/
+Vendor/SRT/srt/
