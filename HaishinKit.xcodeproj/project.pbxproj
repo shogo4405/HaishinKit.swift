@@ -204,6 +204,10 @@
 		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
 		BC8446052A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */; };
 		BC8446092A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */; };
+		BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
+		BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
+		BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */; };
 		BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */; };
@@ -276,6 +280,20 @@
 			remoteGlobalIDString = 2915EC511D85BDF100621092;
 			remoteInfo = Screencast;
 		};
+		BC8A29922AA63D9E00F6D27F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
+			remoteInfo = HaishinKit;
+		};
+		BC8A29962AA63DA300F6D27F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
+			remoteInfo = HaishinKit;
+		};
 		BCCC459A2AA289FA0016EFE8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -315,6 +333,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */,
 				BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -326,6 +345,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */,
 				BC72EF2C25F24E480068F040 /* Logboard.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -643,6 +663,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */,
 				BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -651,6 +672,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */,
 				BC72EF3225F24E500068F040 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1345,6 +1367,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BC8A29932AA63D9E00F6D27F /* PBXTargetDependency */,
 			);
 			name = "Example macOS";
 			packageProductDependencies = (
@@ -1366,6 +1389,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				BC8A29972AA63DA300F6D27F /* PBXTargetDependency */,
 			);
 			name = "Example tvOS";
 			packageProductDependencies = (
@@ -1920,6 +1944,16 @@
 			isa = PBXTargetDependency;
 			target = 2915EC511D85BDF100621092 /* Screencast */;
 			targetProxy = BC2902362AA0E66A004821D2 /* PBXContainerItemProxy */;
+		};
+		BC8A29932AA63D9E00F6D27F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
+			targetProxy = BC8A29922AA63D9E00F6D27F /* PBXContainerItemProxy */;
+		};
+		BC8A29972AA63DA300F6D27F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
+			targetProxy = BC8A29962AA63DA300F6D27F /* PBXContainerItemProxy */;
 		};
 		BCCC459B2AA289FA0016EFE8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
