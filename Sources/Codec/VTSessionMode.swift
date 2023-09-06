@@ -11,8 +11,8 @@ enum VTSessionMode {
             var session: VTCompressionSession?
             var status = VTCompressionSessionCreate(
                 allocator: kCFAllocatorDefault,
-                width: videoCodec.settings.videoSize.width,
-                height: videoCodec.settings.videoSize.height,
+                width: Int32(videoCodec.settings.videoSize.width),
+                height: Int32(videoCodec.settings.videoSize.height),
                 codecType: videoCodec.settings.format.codecType,
                 encoderSpecification: nil,
                 imageBufferAttributes: videoCodec.attributes as CFDictionary?,

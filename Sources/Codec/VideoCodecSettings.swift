@@ -74,7 +74,7 @@ public struct VideoCodecSettings: Codable {
     }
 
     /// Specifies the video size of encoding video.
-    public var videoSize: VideoSize
+    public var videoSize: CGSize
     /// Specifies the bitrate.
     public var bitRate: UInt32
     /// Specifies the keyframeInterval.
@@ -102,7 +102,7 @@ public struct VideoCodecSettings: Codable {
 
     /// Creates a new VideoCodecSettings instance.
     public init(
-        videoSize: VideoSize = .init(width: 854, height: 480),
+        videoSize: CGSize = .init(width: 854, height: 480),
         profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String,
         bitRate: UInt32 = 640 * 1000,
         maxKeyFrameIntervalDuration: Int32 = 2,

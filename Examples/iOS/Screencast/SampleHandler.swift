@@ -43,7 +43,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
         case .video:
             if let description = CMSampleBufferGetFormatDescription(sampleBuffer) {
                 let dimensions = CMVideoFormatDescriptionGetDimensions(description)
-                rtmpStream.videoSettings.videoSize = .init(width: dimensions.width, height: dimensions.height)
+                rtmpStream.videoSettings.videoSize = .init(width: CGFloat(dimensions.width), height: CGFloat(dimensions.height))
                 rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
             }
             rtmpStream.appendSampleBuffer(sampleBuffer)
