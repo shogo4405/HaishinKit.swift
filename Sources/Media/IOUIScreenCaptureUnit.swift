@@ -13,7 +13,7 @@ private extension CGRect {
 // MARK: -
 /// The IOUIScreenCaptureUnit class captures the UIView.
 public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
-    static let defaultFrameInterval: Int = 2
+    static let defaultPreferredFramesPerSecond: Int = 30
     static let defaultAttributes: [NSString: NSObject] = [
         kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32BGRA),
         kCVPixelBufferCGBitmapContextCompatibilityKey: true as NSObject
@@ -24,7 +24,7 @@ public class IOUIScreenCaptureUnit: NSObject, IOScreenCaptureUnit {
     /// Specifies the boolean value that indicates whether the snapshot should be rendered after recent changes have been incorporated.
     public var afterScreenUpdates = false
     /// Specifies the number of shaphot  that must pass before the display link notifies the target again.
-    public var frameInterval: Int = IOUIScreenCaptureUnit.defaultFrameInterval
+    public var preferredFramesPerSecond: Int = IOUIScreenCaptureUnit.defaultPreferredFramesPerSecond
     /// Specifies the CVPixelBufferPool's attrivutes.
     public var attributes: [NSString: NSObject] {
         var attributes: [NSString: NSObject] = IOUIScreenCaptureUnit.defaultAttributes
@@ -153,7 +153,7 @@ extension IOUIScreenCaptureUnit: Running {
             self.pixelBufferPool = nil
             self.colorSpace = CGColorSpaceCreateDeviceRGB()
             self.displayLink = CADisplayLink(target: self, selector: #selector(onScreen))
-            self.displayLink.frameInterval = self.frameInterval
+            self.displayLink.preferredFramesPerSecond = self.preferredFramesPerSecond
             self.displayLink.add(to: .main, forMode: .common)
         }
     }
