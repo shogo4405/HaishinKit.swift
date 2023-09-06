@@ -2,8 +2,9 @@ import Foundation
 
 extension ExpressibleByIntegerLiteral {
     var data: Data {
-        var value: Self = self
-        return Data(bytes: &value, count: MemoryLayout<Self>.size)
+        return withUnsafePointer(to: self) { value in
+            return Data(bytes: UnsafeRawPointer(value), count: MemoryLayout<Self>.size)
+        }
     }
 
     init(data: Data) {

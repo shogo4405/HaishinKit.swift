@@ -138,6 +138,7 @@
 		2EC97B7327880FF400D8BE32 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B6F27880FF400D8BE32 /* Views.swift */; };
 		2EC97B7427880FF400D8BE32 /* MTHKSwiftUiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */; };
 		BC0394562AA8A384006EDE38 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
+		BC03945F2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */; };
 		BC0BF4F22985FA9000D72CB4 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */; };
 		BC0D236D26331BAB001DDA0C /* DataBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* DataBuffer.swift */; };
@@ -527,6 +528,7 @@
 		2EC97B6E27880FF400D8BE32 /* OnTapGestureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnTapGestureView.swift; sourceTree = "<group>"; };
 		2EC97B6F27880FF400D8BE32 /* Views.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTHKSwiftUiView.swift; sourceTree = "<group>"; };
+		BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressibleByIntegerLiteral+ExtensionTests.swift"; sourceTree = "<group>"; };
 		BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMixerTests.swift; sourceTree = "<group>"; };
 		BC0D236C26331BAB001DDA0C /* DataBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBuffer.swift; sourceTree = "<group>"; };
 		BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBufferPool+Extension.swift"; sourceTree = "<group>"; };
@@ -959,16 +961,17 @@
 		29798E5A1CE60E5300F5CBD0 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
+				295018211FFA1C9D00358E10 /* CMAudioSampleBufferTestUtil.swift */,
+				294637A71EC89BC9008EEC71 /* Config.swift */,
 				291C2AD11CE9FF3E006F042B /* Asset */,
 				295018191FFA196800358E10 /* Codec */,
-				294637A71EC89BC9008EEC71 /* Config.swift */,
 				291C2AD21CE9FF48006F042B /* Core */,
+				BC03945D2AA8AFDD006EDE38 /* Extension */,
 				BC1DC5022A02893600E928ED /* FLV */,
-				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				BC0BF4F329866FB700D72CB4 /* Media */,
 				291C2ACF1CE9FF2B006F042B /* MPEG */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
-				295018211FFA1C9D00358E10 /* CMAudioSampleBufferTestUtil.swift */,
 				291C2AD01CE9FF33006F042B /* Util */,
 			);
 			path = Tests;
@@ -1131,6 +1134,14 @@
 				2EC97B6F27880FF400D8BE32 /* Views.swift */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		BC03945D2AA8AFDD006EDE38 /* Extension */ = {
+			isa = PBXGroup;
+			children = (
+				BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */,
+			);
+			path = Extension;
 			sourceTree = "<group>";
 		};
 		BC0BF4F329866FB700D72CB4 /* Media */ = {
@@ -1810,6 +1821,7 @@
 				BCCBCE9B29A9D96A0095B51C /* NALUnitReaderTests.swift in Sources */,
 				290EA8A11DFB61B100053022 /* RTMPChunkTests.swift in Sources */,
 				290EA89F1DFB61B100053022 /* AMF0SerializerTests.swift in Sources */,
+				BC03945F2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift in Sources */,
 				290EA8AA1DFB61E700053022 /* CRC32Tests.swift in Sources */,
 				035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */,
 				290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */,
