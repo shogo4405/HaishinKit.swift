@@ -35,7 +35,7 @@ let package = Package(
                     "MPEG",
                     "Net",
                     "RTMP",
-                    "Util",
+                    "Util"
                 ]),
         .target(name: "SRTHaishinKit",
                 dependencies: [

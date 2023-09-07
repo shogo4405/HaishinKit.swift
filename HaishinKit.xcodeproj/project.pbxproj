@@ -743,15 +743,12 @@
 				29B876571CD70A7900FC07DA /* AudioCodec.swift */,
 				BC44A1A823D31E92002D4297 /* AudioCodecRingBuffer.swift */,
 				BC7C56B6299E579F00C41A9B /* AudioCodecSettings.swift */,
-				29B876591CD70A7900FC07DA /* VideoCodec.swift */,
-				BC7C56BA299E595000C41A9B /* VideoCodecSettings.swift */,
 				BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */,
 				BC4914B528DEC2FE009E2DF6 /* VTSessionMode.swift */,
 				BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */,
 				BC4914B128DDFE31009E2DF6 /* VTSessionOptionKey.swift */,
 				29B876591CD70A7900FC07DA /* VideoCodec.swift */,
 				BC7C56BA299E595000C41A9B /* VideoCodecSettings.swift */,
-				BC7C56BE299FC38D00C41A9B /* VideoSize.swift */,
 			);
 			path = Codec;
 			sourceTree = "<group>";
@@ -986,18 +983,12 @@
 		29798E5A1CE60E5300F5CBD0 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
-				295018211FFA1C9D00358E10 /* CMAudioSampleBufferTestUtil.swift */,
-				294637A71EC89BC9008EEC71 /* Config.swift */,
 				291C2AD11CE9FF3E006F042B /* Asset */,
 				295018191FFA196800358E10 /* Codec */,
 				291C2AD21CE9FF48006F042B /* Core */,
 				BC03945D2AA8AFDD006EDE38 /* Extension */,
 				BC1DC5022A02893600E928ED /* FLV */,
-				BC0BF4F329866FB700D72CB4 /* Media */,
 				291C2ACF1CE9FF2B006F042B /* MPEG */,
-				291C2ACF1CE9FF2B006F042B /* MPEG */,
-				BC0BF4F329866FB700D72CB4 /* Media */,
 				BC0BF4F329866FB700D72CB4 /* Media */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
 				291C2AD01CE9FF33006F042B /* Util */,
