@@ -9,7 +9,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(44100, numSamples: 1024) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -19,7 +19,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(48000.0, numSamples: 1024) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(48000.0, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -29,7 +29,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(24000.0, numSamples: 1024) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(24000.0, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -39,7 +39,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(16000.0, numSamples: 1024) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(16000.0, numSamples: 1024) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -49,7 +49,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(8000.0, numSamples: 256) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(8000.0, numSamples: 256) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -59,7 +59,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(8000.0, numSamples: 960) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(8000.0, numSamples: 960) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -69,7 +69,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(44100.0, numSamples: 1224) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(44100.0, numSamples: 1224) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -80,7 +80,7 @@ final class AudioCodecTests: XCTestCase {
         let encoder = AudioCodec()
         encoder.startRunning()
         for numSample in numSamples {
-            if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSinWave(44100.0, numSamples: numSample) {
+            if let sampleBuffer = CMAudioSampleBufferFactory.makeSinWave(44100.0, numSamples: numSample) {
                 encoder.appendSampleBuffer(sampleBuffer)
             }
         }
@@ -89,40 +89,9 @@ final class AudioCodecTests: XCTestCase {
     func test3Channel_withoutCrash() {
         let encoder = AudioCodec()
         encoder.startRunning()
-        if let sampleBuffer = CMAudioSampleBufferTestUtil.makeSilence(44100, numSamples: 256, channels: 3) {
+        if let sampleBuffer = CMAudioSampleBufferFactory.makeSilence(44100, numSamples: 256, channels: 3) {
             encoder.appendSampleBuffer(sampleBuffer)
         }
-    }
-
-    func testChannelMaps() {
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [:]), [0])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: 0]), [0])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: 0, 1: 1]), [0])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: -1]), [-1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [Int.max: Int.max]), [0])
-
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [:]), [0, -1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: 0]), [0, -1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: 1]), [0, -1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: -1, 1: -1]), [-1, -1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 2, outputChannelsMap: [0: 1, 1: Int.max]), [0, -1])
-
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [:]), [0])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [0: 0]), [0])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [0: 1]), [1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 1, outChannels: 1, outputChannelsMap: [0: -1]), [-1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 1, outputChannelsMap: [Int.max: 0]), [0])
-
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [:]), [0, 1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0]), [0, 1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0, 1: 1]), [0, 1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: -1, 1: -1]), [-1, -1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: -1, 1: 1]), [-1, 1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0, 1: 1, Int.max: Int.max]), [0, 1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 2, outChannels: 2, outputChannelsMap: [0: 0, 1: Int.max]), [0, 1])
-
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 12, outChannels: 2, outputChannelsMap: [:]), [0, 1])
-        XCTAssertEqual(AudioCodec.makeChannelMap(inChannels: 12, outChannels: 2, outputChannelsMap: [0: -1, 1: 11]), [-1, 11])
     }
 }
 

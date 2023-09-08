@@ -1,4 +1,5 @@
 import AudioUnit
+import AVFoundation
 import CoreMedia
 import Foundation
 
@@ -28,7 +29,7 @@ final class IOAudioMonitor {
             }
         }
     }
-    private var ringBuffer: IOAudioMonitorRingBuffer?
+    private var ringBuffer: IOAudioRingBuffer?
 
     private let callback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, _: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
         let monitor = Unmanaged<IOAudioMonitor>.fromOpaque(inRefCon).takeUnretainedValue()
@@ -39,15 +40,27 @@ final class IOAudioMonitor {
         stopRunning()
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, offset: Int = 0) {
+    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer) {
         guard isRunning.value else {
             return
         }
-        ringBuffer?.appendSampleBuffer(sampleBuffer)
+        ringBuffer?.appendAudioPCMBuffer(audioPCMBuffer)
     }
 
     private func render(_ inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) -> OSStatus {
-        return ringBuffer?.render(inNumberFrames, ioData: ioData) ?? noErr
+        guard let ringBuffer else {
+            return noErr
+        }
+        if ringBuffer.counts == 0 {
+            guard let bufferList = UnsafeMutableAudioBufferListPointer(ioData) else {
+                return noErr
+            }
+            for i in 0..<bufferList.count {
+                memset(bufferList[i].mData, 0, Int(bufferList[i].mDataByteSize))
+            }
+            return noErr
+        }
+        return ringBuffer.render(inNumberFrames, ioData: ioData)
     }
 
     private func makeAudioUnit() -> AudioUnit? {
