@@ -10,7 +10,7 @@ public struct AudioCodecSettings: Codable {
     public static let maximumNumberOfChannels: UInt32 = 2
 
     /// The type of the AudioCodec supports format.
-    public enum Format: Codable {
+    enum Format: Codable {
         /// The AAC format.
         case aac
         /// The PCM format.
@@ -120,25 +120,19 @@ public struct AudioCodecSettings: Codable {
     /// Specifies the bitRate of audio output.
     public var bitRate: Int
 
-    /// Specifies the output format.
-    public var format: AudioCodecSettings.Format
-
     /// Map of the output to input channels
     public var outputChannelsMap: [Int: Int]
+
+    /// Specifies the output format.
+    var format: AudioCodecSettings.Format = .aac
 
     /// Create an new AudioCodecSettings instance.
     public init(
         bitRate: Int = 64 * 1000,
-        format: AudioCodecSettings.Format = .aac,
         outputChannelsMap: [Int: Int] = [0: 0, 1: 1]
     ) {
         self.bitRate = bitRate
-        self.format = format
         self.outputChannelsMap = outputChannelsMap
-    }
-
-    func recreateConverter(_ rhs: AudioCodecSettings) -> Bool {
-        !(outputChannelsMap == rhs.outputChannelsMap)
     }
 
     func apply(_ converter: AVAudioConverter?, oldValue: AudioCodecSettings?) {

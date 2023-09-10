@@ -1,3 +1,7 @@
+/*
+It's convenient during framework development, but there might be inconveniences when releasing it as an external library,
+so I've temporarily commented it out.
+
 //
 // Created by Lev Sokolov on 2023-08-24.
 // Copyright (c) 2023 Shogo Endo. All rights reserved.
@@ -165,3 +169,5 @@ extension AudioFormatID {
         }
     }
 }
+
+*/

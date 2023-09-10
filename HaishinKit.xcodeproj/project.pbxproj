@@ -1471,7 +1471,7 @@
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 1300;
 				LastUpgradeCheck = 1400;
-				ORGANIZATIONNAME = "Shogo Endo";
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					2915EC511D85BDF100621092 = {
 						CreatedOnToolsVersion = 8.0;
