@@ -206,8 +206,8 @@
 		BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C56CC29A786AE00C41A9B /* ADTS.swift */; };
 		BC7C56D129A78D4F00C41A9B /* ADTSHeaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C56D029A78D4F00C41A9B /* ADTSHeaderTests.swift */; };
 		BC83A4732403D83B006BDE06 /* VTCompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */; };
-		BC8446052A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */; };
-		BC8446092A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */; };
+		BC8446052A30BE1600609FFD /* CMAudioSampleBufferFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446042A30BE1600609FFD /* CMAudioSampleBufferFactory.swift */; };
+		BC8446092A30BFC800609FFD /* CMAudioSampleBufferFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8446082A30BFC800609FFD /* CMAudioSampleBufferFactoryTests.swift */; };
 		BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
@@ -244,7 +244,7 @@
 		BCCC45B12AA28A7D0016EFE8 /* SRTMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCC45A92AA28A7C0016EFE8 /* SRTMode.swift */; };
 		BCCC45B22AA28A7D0016EFE8 /* SRTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCC45AA2AA28A7D0016EFE8 /* SRTError.swift */; };
 		BCCC45B42AA28AAD0016EFE8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCC45B32AA28AAD0016EFE8 /* Constants.swift */; };
-		BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; platformFilters = (ios, maccatalyst, macos, ); };
+		BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BCCC45BA2AA28BBE0016EFE8 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCCC45BD2AA28BDC0016EFE8 /* libsrt.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */; };
 		BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45C02AA28BF40016EFE8 /* libc++.tbd */; };
@@ -604,8 +604,8 @@
 		BC7C56CC29A786AE00C41A9B /* ADTS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTS.swift; sourceTree = "<group>"; };
 		BC7C56D029A78D4F00C41A9B /* ADTSHeaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSHeaderTests.swift; sourceTree = "<group>"; };
 		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
-		BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferUtil.swift; sourceTree = "<group>"; };
-		BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferUtilTests.swift; sourceTree = "<group>"; };
+		BC8446042A30BE1600609FFD /* CMAudioSampleBufferFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferFactory.swift; sourceTree = "<group>"; };
+		BC8446082A30BFC800609FFD /* CMAudioSampleBufferFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferFactoryTests.swift; sourceTree = "<group>"; };
 		BC959EEE296EE4190067BA97 /* ImageTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTransform.swift; sourceTree = "<group>"; };
 		BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCStreamPublishViewController.swift; sourceTree = "<group>"; };
 		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
@@ -764,7 +764,7 @@
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
 				29DC17B221D0CC0600E26CED /* Atomic.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
-				BC8446042A30BE1600609FFD /* CMAudioSampleBufferUtil.swift */,
+				BC8446042A30BE1600609FFD /* CMAudioSampleBufferFactory.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
 				29B876671CD70AB300FC07DA /* DataConvertible.swift */,
@@ -811,7 +811,7 @@
 			isa = PBXGroup;
 			children = (
 				290EA8A41DFB61E700053022 /* ByteArrayTests.swift */,
-				BC8446082A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift */,
+				BC8446082A30BFC800609FFD /* CMAudioSampleBufferFactoryTests.swift */,
 				290EA8A51DFB61E700053022 /* CRC32Tests.swift */,
 				BCC9E9082636FF7400948774 /* DataBufferTests.swift */,
 				290EA8A61DFB61E700053022 /* EventDispatcherTests.swift */,
@@ -1732,7 +1732,7 @@
 				BC44A1A923D31E92002D4297 /* AudioCodecRingBuffer.swift in Sources */,
 				BC20DF38250377A3007BC608 /* IOUIScreenCaptureUnit.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
-				BC8446052A30BE1600609FFD /* CMAudioSampleBufferUtil.swift in Sources */,
+				BC8446052A30BE1600609FFD /* CMAudioSampleBufferFactory.swift in Sources */,
 				29B876841CD70AE800FC07DA /* AVCDecoderConfigurationRecord.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* NetStreamDrawable.swift in Sources */,
@@ -1843,7 +1843,7 @@
 				295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */,
 				290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */,
 				290EA8A01DFB61B100053022 /* AMFFoundationTests.swift in Sources */,
-				BC8446092A30BFC800609FFD /* CMAudioSampleBufferUtilTests.swift in Sources */,
+				BC8446092A30BFC800609FFD /* CMAudioSampleBufferFactoryTests.swift in Sources */,
 				BC7C56892995082700C41A9B /* NetStreamTests.swift in Sources */,
 				2917CB662104CA2800F6823A /* AudioSpecificConfigTests.swift in Sources */,
 				290EA8AB1DFB61E700053022 /* EventDispatcherTests.swift in Sources */,
@@ -1996,11 +1996,6 @@
 		};
 		BCCC45B82AA28BB90016EFE8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			platformFilters = (
-				ios,
-				maccatalyst,
-				macos,
-			);
 			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
 			targetProxy = BCCC45B72AA28BB90016EFE8 /* PBXContainerItemProxy */;
 		};

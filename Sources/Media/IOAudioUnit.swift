@@ -78,7 +78,7 @@ final class IOAudioUnit: NSObject, IOUnit {
             var gapPresentationTimeStamp = presentationTimeStamp
             for i in 0 ... numSampleBuffers {
                 let numSamples = numSampleBuffers == i ? numGapSamples % sampleBuffer.numSamples : sampleBuffer.numSamples
-                guard let gapSampleBuffer = CMAudioSampleBufferUtil.makeSampleBuffer(sampleBuffer, numSamples: numSamples, presentationTimeStamp: gapPresentationTimeStamp) else {
+                guard let gapSampleBuffer = CMAudioSampleBufferFactory.makeSampleBuffer(sampleBuffer, numSamples: numSamples, presentationTimeStamp: gapPresentationTimeStamp) else {
                     continue
                 }
                 mixer?.recorder.appendSampleBuffer(gapSampleBuffer)

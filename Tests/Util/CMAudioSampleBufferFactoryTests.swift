@@ -4,7 +4,7 @@ import CoreMedia
 
 @testable import HaishinKit
 
-final class CMAudioSampleBufferUtilTests: XCTestCase {
+final class CMAudioSampleBufferFactoryTests: XCTestCase {
     func test48000_2chTest() {
         let streamBasicDescription = AudioStreamBasicDescription(
             mSampleRate: 48000.0,
@@ -18,7 +18,7 @@ final class CMAudioSampleBufferUtilTests: XCTestCase {
             mReserved: 0
         )
         if let buffer = makeSampleBuffer(streamBasicDescription) {
-            XCTAssertNotNil(CMAudioSampleBufferUtil.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
+            XCTAssertNotNil(CMAudioSampleBufferFactory.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
         } else {
             XCTFail()
         }
@@ -37,7 +37,7 @@ final class CMAudioSampleBufferUtilTests: XCTestCase {
             mReserved: 0
         )
         if let buffer = makeSampleBuffer(streamBasicDescription) {
-            XCTAssertNotNil(CMAudioSampleBufferUtil.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
+            XCTAssertNotNil(CMAudioSampleBufferFactory.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
         } else {
             XCTFail()
         }
@@ -56,7 +56,7 @@ final class CMAudioSampleBufferUtilTests: XCTestCase {
             mReserved: 0
         )
         if let buffer = makeSampleBuffer(streamBasicDescription) {
-            XCTAssertNotNil(CMAudioSampleBufferUtil.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
+            XCTAssertNotNil(CMAudioSampleBufferFactory.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
         } else {
             XCTFail()
         }
@@ -75,7 +75,7 @@ final class CMAudioSampleBufferUtilTests: XCTestCase {
             mReserved: 0
         )
         if let buffer = makeSampleBuffer(streamBasicDescription) {
-            XCTAssertNotNil(CMAudioSampleBufferUtil.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
+            XCTAssertNotNil(CMAudioSampleBufferFactory.makeSampleBuffer(buffer, numSamples: 1024, presentationTimeStamp: .zero))
         } else {
             XCTFail()
         }

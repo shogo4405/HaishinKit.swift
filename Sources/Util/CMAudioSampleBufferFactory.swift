@@ -1,7 +1,7 @@
 import CoreMedia
 import Foundation
 
-enum CMAudioSampleBufferUtil {
+enum CMAudioSampleBufferFactory {
     static func makeSampleBuffer(_ buffer: CMSampleBuffer, numSamples: Int, presentationTimeStamp: CMTime) -> CMSampleBuffer? {
         guard 0 < numSamples, let formatDescription = buffer.formatDescription, let streamBasicDescription = formatDescription.streamBasicDescription else {
             return nil
