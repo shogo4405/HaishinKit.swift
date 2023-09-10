@@ -117,36 +117,4 @@ class IOAudioMonitorRingBuffer {
         }
         return noErr
     }
-
-    func clear() {
-        let numSamples = Int(buffer.frameLength)
-        if format.isInterleaved {
-            let channelCount = Int(format.channelCount)
-            switch format.commonFormat {
-            case .pcmFormatInt16:
-                buffer.int16ChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
-            case .pcmFormatInt32:
-                buffer.int32ChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
-            case .pcmFormatFloat32:
-                buffer.floatChannelData?[0].assign(repeating: 0, count: numSamples * channelCount)
-            default:
-                break
-            }
-        } else {
-            for i in 0..<Int(format.channelCount) {
-                switch format.commonFormat {
-                case .pcmFormatInt16:
-                    buffer.int16ChannelData?[i].assign(repeating: 0, count: numSamples)
-                case .pcmFormatInt32:
-                    buffer.int32ChannelData?[i].assign(repeating: 0, count: numSamples)
-                case .pcmFormatFloat32:
-                    buffer.floatChannelData?[i].assign(repeating: 0, count: numSamples)
-                default:
-                    break
-                }
-            }
-        }
-        head = 0
-        tail = 0
-    }
 }

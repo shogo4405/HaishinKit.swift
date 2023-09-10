@@ -187,6 +187,10 @@
 		BC570B4828E9ACC10098A12C /* IOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC570B4728E9ACC10098A12C /* IOUnit.swift */; };
 		BC6FC91E29609A6800A746EE /* ShapeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6FC91D29609A6800A746EE /* ShapeFactory.swift */; };
 		BC6FC9222961B3D800A746EE /* vImage_CGImageFormat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6FC9212961B3D800A746EE /* vImage_CGImageFormat+Extension.swift */; };
+		BC701F332AAD808F00C4BEFE /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
+		BC701F342AAD808F00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC701F372AAD809D00C4BEFE /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
+		BC701F382AAD809D00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC72EF1025F24DF80068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC72EF1125F24DF80068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
@@ -280,6 +284,20 @@
 			remoteGlobalIDString = 2915EC511D85BDF100621092;
 			remoteInfo = Screencast;
 		};
+		BC701F352AAD808F00C4BEFE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
+			remoteInfo = SRTHaishinKit;
+		};
+		BC701F392AAD809D00C4BEFE /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
+			remoteInfo = SRTHaishinKit;
+		};
 		BC8A29922AA63D9E00F6D27F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -347,6 +365,7 @@
 			files = (
 				BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */,
 				BC72EF2C25F24E480068F040 /* Logboard.xcframework in Embed Frameworks */,
+				BC701F342AAD808F00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +402,7 @@
 			files = (
 				BCD63ADD26FDF34C0084842D /* HaishinKit.framework in Embed Frameworks */,
 				BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */,
+				BC701F382AAD809D00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -665,6 +685,7 @@
 			files = (
 				BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */,
 				BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */,
+				BC701F332AAD808F00C4BEFE /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -702,6 +723,7 @@
 			files = (
 				BCD63ADC26FDF34C0084842D /* HaishinKit.framework in Frameworks */,
 				BCD63AE126FDF3500084842D /* Logboard.xcframework in Frameworks */,
+				BC701F372AAD809D00C4BEFE /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1368,6 +1390,7 @@
 			);
 			dependencies = (
 				BC8A29932AA63D9E00F6D27F /* PBXTargetDependency */,
+				BC701F362AAD808F00C4BEFE /* PBXTargetDependency */,
 			);
 			name = "Example macOS";
 			packageProductDependencies = (
@@ -1431,6 +1454,7 @@
 			);
 			dependencies = (
 				BCD63ADF26FDF34C0084842D /* PBXTargetDependency */,
+				BC701F3A2AAD809D00C4BEFE /* PBXTargetDependency */,
 			);
 			name = "Example iOS+SwiftUI";
 			productName = iOSSwiftUI;
@@ -1944,6 +1968,16 @@
 			isa = PBXTargetDependency;
 			target = 2915EC511D85BDF100621092 /* Screencast */;
 			targetProxy = BC2902362AA0E66A004821D2 /* PBXContainerItemProxy */;
+		};
+		BC701F362AAD808F00C4BEFE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
+			targetProxy = BC701F352AAD808F00C4BEFE /* PBXContainerItemProxy */;
+		};
+		BC701F3A2AAD809D00C4BEFE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
+			targetProxy = BC701F392AAD809D00C4BEFE /* PBXContainerItemProxy */;
 		};
 		BC8A29932AA63D9E00F6D27F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
