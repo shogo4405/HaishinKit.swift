@@ -24,7 +24,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 * If you met a HaishinKit's bug🐛, use a [GitHub Issue](https://github.com/shogo4405/HaishinKit.swift/issues) with **Bug report template**
   - The trace level log is very useful. Please set `LBLogger.with(HaishinKitIdentifier).level = .trace`. 
   - If you don't use an issue template. I will immediately close the your issue without a comment.
-* If you **want to contribute**, submit a pull request!
+* If you **want to contribute**, submit a pull request with a pr template.
 * If you want to support e-mail based communication without GitHub.
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
 * [Discord chatroom](https://discord.com/invite/8nkshPnanr).
@@ -38,7 +38,6 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 ## 🌏 Related projects
 Project name    |Notes       |License
 ----------------|------------|--------------
-[SRTHaishinKit for iOS.](https://github.com/shogo4405/SRTHaishinKit.swift)|Camera and Microphone streaming library via SRT.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/SRTHaishinKit.swift/blob/master/LICENSE.md)
 [HaishinKit for Android.](https://github.com/shogo4405/HaishinKit.kt)|Camera and Microphone streaming library via RTMP for Android.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.kt/blob/master/LICENSE.md)
 [HaishinKit for Flutter.](https://github.com/shogo4405/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.dart/blob/master/LICENSE.md)
 
@@ -64,8 +63,21 @@ Project name    |Notes       |License
   - Video
     - [x] H264/AVC
       - ex: `stream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_3_1 as String`
-    - [x] H265/HEVC ([Server-side support is required.](https://github.com/veovera/enhanced-rtmp/blob/main/enhanced-rtmp-v1.pdf))
+    - [x] H265/HEVC ([Also server-side must support Enhanced RTMP.](https://github.com/veovera/enhanced-rtmp))
       - ex: `stream.videoSettings.profileLevel = kVTProfileLevel_HEVC_Main_AutoLevel as String`
+
+### SRT
+It's a different framework. You can use it through SwiftPM.
+```swift
+import SRTHaishinKit
+```
+- [x] Publish and Recording (H264/AAC)
+- [x] Playback(beta)
+- [ ] mode
+  - [x] caller
+  - [x] listener
+  - [ ] rendezvous
+
 
 ### HLS
 - [x] HTTPService
@@ -144,7 +156,7 @@ source 'https://github.com/CocoaPods/Specs.git'
 use_frameworks!
 
 def import_pods
-    pod 'HaishinKit', '~> 1.5.6
+    pod 'HaishinKit', '~> 1.5.8
 end
 
 target 'Your Target'  do
@@ -154,7 +166,7 @@ end
 ```
 ### Carthage
 ```
-github "shogo4405/HaishinKit.swift" ~> 1.5.7
+github "shogo4405/HaishinKit.swift" ~> 1.5.8
 ```
 ### Swift Package Manager
 ```

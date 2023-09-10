@@ -26,9 +26,6 @@ let package = Package(
         .target(name: "HaishinKit",
                 dependencies: ["Logboard", "SwiftPMSupport"],
                 path: "Sources",
-                exclude: [
-                    "Platforms/iOS/Info.plist"
-                ],
                 sources: [
                     "Codec",
                     "Extension",
@@ -39,7 +36,6 @@ let package = Package(
                     "Net",
                     "RTMP",
                     "Util",
-                    "Platforms"
                 ]),
         .target(name: "SRTHaishinKit",
                 dependencies: [
