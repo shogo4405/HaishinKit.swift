@@ -19,8 +19,8 @@ Carthage/*
 
 .idea/
 .vscode/
+.swiftpm/
 
-Package.resolved
 HaishinKit.xcodeproj/project.xcworkspace/xcuserdata/shogo.xcuserdatad/WorkspaceSettings.xcsettings
 *.xcsettings
 docs/undocumented.json
