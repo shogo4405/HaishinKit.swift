@@ -17,13 +17,13 @@ public class IORecorder {
     /// The IORecorder error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
-        case failedToCreateAssetWriter(error: Swift.Error)
+        case failedToCreateAssetWriter(error: any Swift.Error)
         /// Failed to create the AVAssetWriterInput.
         case failedToCreateAssetWriterInput(error: NSException)
         /// Failed to append the PixelBuffer or SampleBuffer.
-        case failedToAppend(error: Swift.Error?)
+        case failedToAppend(error: (any Swift.Error)?)
         /// Failed to finish writing the AVAssetWriter.
-        case failedToFinishWriting(error: Swift.Error?)
+        case failedToFinishWriting(error: (any Swift.Error)?)
     }
 
     /// The default output settings for an IORecorder.

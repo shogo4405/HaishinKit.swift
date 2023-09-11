@@ -88,7 +88,7 @@ final class LiveViewController: UIViewController {
             logger.warn(error)
         }
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        (view as? NetStreamDrawable)?.attachStream(rtmpStream)
+        (view as? (any NetStreamDrawable))?.attachStream(rtmpStream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
