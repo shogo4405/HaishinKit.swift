@@ -33,14 +33,7 @@ public protocol NetStreamDelegate: AnyObject {
 /// The `NetStream` class is the foundation of a RTMPStream, HTTPStream.
 open class NetStream: NSObject {
     /// The lockQueue.
-    public let lockQueue: DispatchQueue = {
-        let queue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetStream.lock")
-        queue.setSpecific(key: queueKey, value: queueValue)
-        return queue
-    }()
-
-    private static let queueKey = DispatchSpecificKey<UnsafeMutableRawPointer>()
-    private static let queueValue = UnsafeMutableRawPointer.allocate(byteCount: 1, alignment: 1)
+    public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetStream.lock")
 
     /// The mixer object.
     public private(set) lazy var mixer: IOMixer = {
@@ -48,8 +41,10 @@ open class NetStream: NSObject {
         mixer.delegate = self
         return mixer
     }()
+
     /// Specifies the delegate of the NetStream.
     public weak var delegate: (any NetStreamDelegate)?
+
     /// Specifies the loopback audio or not.
     public var loopback: Bool {
         get {
@@ -59,6 +54,7 @@ open class NetStream: NSObject {
             mixer.audioIO.loopback = newValue
         }
     }
+
     /// Specifies the context object.
     public var context: CIContext {
         get {
