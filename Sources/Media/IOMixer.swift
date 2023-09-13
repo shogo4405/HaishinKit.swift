@@ -381,8 +381,8 @@ extension IOMixer: Running {
             let isMultiCamSupported = true
             #endif
             guard let device = error.device, let format = device.videoFormat(
-                width: sessionPreset.width ?? videoIO.codec.settings.videoSize.width,
-                height: sessionPreset.height ?? videoIO.codec.settings.videoSize.height,
+                width: sessionPreset.width ?? Int32(videoIO.codec.settings.videoSize.width),
+                height: sessionPreset.height ?? Int32(videoIO.codec.settings.videoSize.height),
                 frameRate: videoIO.frameRate,
                 isMultiCamSupported: isMultiCamSupported
             ), device.activeFormat != format else {

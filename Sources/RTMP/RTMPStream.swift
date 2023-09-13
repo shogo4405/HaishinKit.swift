@@ -411,7 +411,7 @@ open class RTMPStream: NetStream {
     }
 
     /// Creates flv metadata for a stream.
-    open func createMetaData() -> ASObject {
+    open func makeMetaData() -> ASObject {
         var metadata: [String: Any] = [:]
         #if os(iOS) || os(macOS)
         if mixer.videoIO.capture.device != nil {
@@ -521,7 +521,7 @@ open class RTMPStream: NetStream {
             dataTimeStamps.removeAll()
             FCPublish()
         case .publishing:
-            send(handlerName: "@setDataFrame", arguments: "onMetaData", createMetaData())
+            send(handlerName: "@setDataFrame", arguments: "onMetaData", makeMetaData())
             mixer.startEncoding(muxer)
         default:
             break

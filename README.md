@@ -57,31 +57,19 @@ Project name    |Notes       |License
   - [x] _Tunneled (RTMPT over SSL/TLS) (Technical Preview)_
 - [x] _RTMPT (Technical Preview)_
 - [x] ReplayKit Live as a Broadcast Upload Extension
-- [x] Supported codec
-  - Audio
-    - [x] AAC
-  - Video
-    - [x] H264/AVC
-      - ex: `stream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_3_1 as String`
-    - [x] H265/HEVC ([Also server-side must support Enhanced RTMP.](https://github.com/veovera/enhanced-rtmp))
-      - ex: `stream.videoSettings.profileLevel = kVTProfileLevel_HEVC_Main_AutoLevel as String`
+- [x] Enhanced RTMP
+
+### HLS
+- [x] HTTPService
+- [x] HLS Publish
 
 ### SRT
-It's a different framework. You can use it through SwiftPM.
-```swift
-import SRTHaishinKit
-```
 - [x] Publish and Recording (H264/AAC)
 - [x] Playback(beta)
 - [ ] mode
   - [x] caller
   - [x] listener
   - [ ] rendezvous
-
-
-### HLS
-- [x] HTTPService
-- [x] HLS Publish
 
 ### Multi Camera
 Supports two camera video sources. A picture-in-picture display that shows the image of the secondary camera of the primary camera. Supports camera split display that displays horizontally and vertically.
@@ -113,65 +101,51 @@ rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio))
 
 ### Others
 - [x] [Support multitasking camera access.](https://developer.apple.com/documentation/avfoundation/capture_setup/accessing_the_camera_while_multitasking)
-- [x] _Support tvOS 11.0+  (Technical Preview)_
-  - tvOS can't use camera and microphone devices.
-- [x] Hardware acceleration for H264 video encoding, AAC audio encoding
 - [x] Support "Allow app extension API only" option
-- [ ] ~~Support GPUImage framework (~> 0.5.12)~~
-  - ~~https://github.com/shogo4405/GPUHaishinKit.swift/blob/master/README.md~~
-- [ ] ~~Objective-C Bridging~~
-
-## 🌏 Requirements
-|-|iOS|OSX|tvOS|Xcode|Swift|
-|:----:|:----:|:----:|:----:|:----:|:----:|
-|1.5.0+|11.0+|10.13+|10.2+|14.3+|5.7+|
-|1.4.0+|11.0+|10.13+|10.2+|14.0+|5.7+|
 
 ## 🐾 Examples
 Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS.
 - [x] Camera and microphone publish.
-- [x] RTMP Playback  
+- [x] RTMP Playback
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
-carthage bootstrap --use-xcframeworks
+carthage bootstrap -platform iOS,macOS,tvOS --use-xcframeworks
 open HaishinKit.xcodeproj
 ```
 
-## ☕ Cocoa Keys
+## 🌏 Requirements
+
+### Development
+|Version|Xcode|Swift|
+|:----:|:----:|:----:|
+|1.6.0+|15.0+|5.8+|
+|1.5.0+|14.0+|5.7+|
+
+### OS
+|-|iOS|tvOS|macOS|visionOS|watchOS|
+|:----|:----:|:----:|:----:|:----:|:----:|
+|HaishinKit|12.0+|12.0+|10.13+|-|-|
+|SRTHaishinKit|12.0+|-|-|-|-|
+
+### Cocoa Keys
 Please contains Info.plist.
 
-iOS 10.0+
+**iOS 10.0+**
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
 
-macOS 10.14+
+**macOS 10.14+**
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
 
 ## 🔧 Installation
-### CocoaPods
-```rb
-source 'https://github.com/CocoaPods/Specs.git'
-use_frameworks!
-
-def import_pods
-    pod 'HaishinKit', '~> 1.5.8
-end
-
-target 'Your Target'  do
-    platform :ios, '11.0'
-    import_pods
-end
-```
-### Carthage
-```
-github "shogo4405/HaishinKit.swift" ~> 1.5.8
-```
-### Swift Package Manager
-```
-https://github.com/shogo4405/HaishinKit.swift
-```
+HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit. SRTHaishinKit supports SPM only.
+|  | HaishinKit | SRTHaishinKit |
+| - | :- | :- |
+| SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
+| CocoaPods | source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>    pod 'HaishinKit', '~> 1.6.0<br>end<br><br>target 'Your Target'  do<br>    platform :ios, '12.0'<br>    import_pods<br>end<br> | Not supported. |
+| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.6.0 | Not supported. |
 
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
