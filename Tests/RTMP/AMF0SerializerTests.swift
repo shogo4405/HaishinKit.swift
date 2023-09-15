@@ -20,7 +20,7 @@ final class AMF0SerializerTests: XCTestCase {
     ]
 
     func testConnectionChunk() {
-        var amf: AMFSerializer = AMF0Serializer()
+        var amf: any AMFSerializer = AMF0Serializer()
         amf.serialize(AMF0SerializerTests.connectionChunk)
         amf.position = 0
         let result: ASObject = try! amf.deserialize()
