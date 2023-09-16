@@ -17,7 +17,8 @@ extension AVCaptureSession {
         }
     }
 }
-#elseif os(iOS) || os(macOS)
+#else
+@available(tvOS 17.0, *)
 extension AVCaptureSession {
     @available(iOS, obsoleted: 16.0)
     var isMultitaskingCameraAccessSupported: Bool {

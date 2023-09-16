@@ -2,14 +2,8 @@ import AVFoundation
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
 #endif
-
 #if os(iOS)
 import UIKit
-#endif
-#if os(iOS) || os(macOS)
-extension AVCaptureSession.Preset {
-    static let `default`: AVCaptureSession.Preset = .hd1280x720
-}
 #endif
 
 protocol IOMixerDelegate: AnyObject {
