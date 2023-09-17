@@ -5,9 +5,6 @@ import SwiftPMSupport
 #endif
 
 final class IOAudioUnit: NSObject, IOUnit {
-    private static let defaultPresentationTimeStamp: CMTime = .invalid
-    private static let sampleBuffersThreshold: Int = 1
-
     lazy var codec: AudioCodec = {
         var codec = AudioCodec()
         codec.lockQueue = lockQueue
@@ -30,21 +27,23 @@ final class IOAudioUnit: NSObject, IOUnit {
             }
         }
     }
+
+    var settings: AudioCodecSettings = .default {
+        didSet {
+            codec.settings = settings
+            resampler.settings = settings
+        }
+    }
+
+    private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
+        var resampler = IOAudioResampler<IOAudioUnit>()
+        resampler.delegate = self
+        return resampler
+    }()
     private var monitor: IOAudioMonitor = .init()
     #if os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
-    private var inSourceFormat: AudioStreamBasicDescription? {
-        didSet {
-            guard inSourceFormat != oldValue else {
-                return
-            }
-            presentationTimeStamp = Self.defaultPresentationTimeStamp
-            codec.inSourceFormat = inSourceFormat
-            monitor.inSourceFormat = inSourceFormat
-        }
-    }
-    private var presentationTimeStamp = IOAudioUnit.defaultPresentationTimeStamp
 
     #if os(iOS) || os(macOS)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
@@ -67,51 +66,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     #endif
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        guard CMSampleBufferDataIsReady(sampleBuffer), let sampleBuffer = sampleBuffer.muted(muted) else {
-            return
-        }
-        inSourceFormat = sampleBuffer.formatDescription?.streamBasicDescription?.pointee
-        // Synchronization between video and audio, need to synchronize the gaps.
-        let numGapSamples = numGapSamples(sampleBuffer)
-        let numSampleBuffers = Int(numGapSamples / sampleBuffer.numSamples)
-        if Self.sampleBuffersThreshold <= numSampleBuffers {
-            var gapPresentationTimeStamp = presentationTimeStamp
-            for i in 0 ... numSampleBuffers {
-                let numSamples = numSampleBuffers == i ? numGapSamples % sampleBuffer.numSamples : sampleBuffer.numSamples
-                guard let gapSampleBuffer = CMAudioSampleBufferFactory.makeSampleBuffer(sampleBuffer, numSamples: numSamples, presentationTimeStamp: gapPresentationTimeStamp) else {
-                    continue
-                }
-                mixer?.recorder.appendSampleBuffer(gapSampleBuffer)
-                codec.appendSampleBuffer(gapSampleBuffer)
-                gapPresentationTimeStamp = CMTimeAdd(gapPresentationTimeStamp, gapSampleBuffer.duration)
-            }
-        }
-        monitor.appendSampleBuffer(sampleBuffer)
-        mixer?.recorder.appendSampleBuffer(sampleBuffer)
-        codec.appendSampleBuffer(sampleBuffer)
-        presentationTimeStamp = sampleBuffer.presentationTimeStamp
-    }
-
-    func registerEffect(_ effect: AudioEffect) -> Bool {
-        codec.effects.insert(effect).inserted
-    }
-
-    func unregisterEffect(_ effect: AudioEffect) -> Bool {
-        codec.effects.remove(effect) != nil
-    }
-
-    private func numGapSamples(_ sampleBuffer: CMSampleBuffer) -> Int {
-        guard let mSampleRate = inSourceFormat?.mSampleRate, presentationTimeStamp != Self.defaultPresentationTimeStamp else {
-            return 0
-        }
-        let sampleRate = Int32(mSampleRate)
-        // Device audioMic or ReplayKit audioMic.
-        if presentationTimeStamp.timescale == sampleRate {
-            return Int(sampleBuffer.presentationTimeStamp.value - presentationTimeStamp.value) - sampleBuffer.numSamples
-        }
-        // ReplayKit audioApp. PTS = {69426976806125/1000000000 = 69426.977}
-        let diff = CMTime(seconds: sampleBuffer.presentationTimeStamp.seconds, preferredTimescale: sampleRate) - CMTime(seconds: presentationTimeStamp.seconds, preferredTimescale: sampleRate)
-        return Int(diff.value) - sampleBuffer.numSamples
+        resampler.appendSampleBuffer(sampleBuffer.muted(muted))
     }
 }
 
@@ -125,7 +80,6 @@ extension IOAudioUnit: IOUnitEncoding {
     func stopEncoding() {
         codec.stopRunning()
         codec.delegate = nil
-        inSourceFormat = nil
     }
 }
 
@@ -145,7 +99,6 @@ extension IOAudioUnit: IOUnitDecoding {
         }
         codec.stopRunning()
         codec.delegate = nil
-        inSourceFormat = nil
     }
 }
 
@@ -181,9 +134,31 @@ extension IOAudioUnit: AudioCodecDelegate {
         guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
             return
         }
-        if let mixer = mixer {
+        if let mixer {
             mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
         }
         mixer?.mediaLink.enqueueAudio(audioBuffer)
+    }
+}
+
+extension IOAudioUnit: IOAudioResamplerDelegate {
+    // MARK: IOAudioResamplerDelegate
+    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: AudioCodec.Error) {
+    }
+
+    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioFormat: AVAudioFormat) {
+        codec.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
+        monitor.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
+    }
+
+    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+        if let mixer {
+            mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
+            if mixer.recorder.isRunning.value, let sampleBuffer = audioBuffer.makeSampleBuffer(presentationTimeStamp) {
+                mixer.recorder.appendSampleBuffer(sampleBuffer)
+            }
+        }
+        monitor.appendAudioPCMBuffer(audioBuffer)
+        codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
     }
 }

@@ -1,6 +1,6 @@
 import AVFoundation
 
-enum CMAudioSampleBufferTestUtil {
+enum CMAudioSampleBufferFactory {
     static func makeSilence(_ sampleRate: Double = 44100, numSamples: Int = 1024, channels: UInt32 = 1, presentaionTimeStamp: CMTime = .zero) -> CMSampleBuffer? {
         var asbd = AudioStreamBasicDescription(
             mSampleRate: sampleRate,

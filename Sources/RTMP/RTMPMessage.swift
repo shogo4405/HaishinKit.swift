@@ -603,7 +603,7 @@ final class RTMPAudioMessage: RTMPMessage {
 
     private func makeAudioBuffer(_ stream: RTMPStream) -> AVAudioBuffer? {
         return payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> AVAudioBuffer? in
-            guard let baseAddress = buffer.baseAddress, let buffer = stream.mixer.audioIO.codec.makeInputBuffer() as? AVAudioCompressedBuffer else {
+            guard let baseAddress = buffer.baseAddress, let buffer = stream.mixer.audioIO.codec.inputBuffer as? AVAudioCompressedBuffer else {
                 return nil
             }
             let byteCount = payload.count - codec.headerSize

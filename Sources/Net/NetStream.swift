@@ -158,10 +158,10 @@ open class NetStream: NSObject {
     /// Specifies the audio compression properties.
     public var audioSettings: AudioCodecSettings {
         get {
-            mixer.audioIO.codec.settings
+            mixer.audioIO.settings
         }
         set {
-            mixer.audioIO.codec.settings = newValue
+            mixer.audioIO.settings = newValue
         }
     }
 
@@ -273,20 +273,6 @@ open class NetStream: NSObject {
     public func unregisterVideoEffect(_ effect: VideoEffect) -> Bool {
         mixer.videoIO.lockQueue.sync {
             self.mixer.videoIO.unregisterEffect(effect)
-        }
-    }
-
-    /// Register a audio effect.
-    public func registerAudioEffect(_ effect: AudioEffect) -> Bool {
-        mixer.audioIO.lockQueue.sync {
-            self.mixer.audioIO.registerEffect(effect)
-        }
-    }
-
-    /// Unregister a audio effect.
-    public func unregisterAudioEffect(_ effect: AudioEffect) -> Bool {
-        mixer.audioIO.lockQueue.sync {
-            self.mixer.audioIO.unregisterEffect(effect)
         }
     }
 

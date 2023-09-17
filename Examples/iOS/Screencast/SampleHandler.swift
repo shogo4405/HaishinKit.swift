@@ -34,7 +34,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
          logger.appender = socket
          */
         logger.level = .debug
-        LBLogger.with(HaishinKitIdentifier).level = .trace
+        LBLogger.with(HaishinKitIdentifier).level = .info
         rtmpConnection.connect(Preference.defaultInstance.uri!, arguments: nil)
     }
 

@@ -18,7 +18,7 @@ final class IORecorderTests: XCTestCase, IORecorderDelegate {
         sleep(1)
         var presentationTimeStamp: CMTime = .zero
         for _ in 0...100 {
-            guard let sampleBuffer = CMAudioSampleBufferTestUtil.makeSilence(44100, numSamples: 1024, channels: 2, presentaionTimeStamp: presentationTimeStamp) else {
+            guard let sampleBuffer = CMAudioSampleBufferFactory.makeSilence(44100, numSamples: 1024, channels: 2, presentaionTimeStamp: presentationTimeStamp) else {
                 return
             }
             presentationTimeStamp = CMTimeAdd(presentationTimeStamp, sampleBuffer.duration)
@@ -40,7 +40,7 @@ final class IORecorderTests: XCTestCase, IORecorderDelegate {
         sleep(1)
         var presentationTimeStamp: CMTime = .zero
         for _ in 0...100 {
-            guard let sampleBuffer = CMAudioSampleBufferTestUtil.makeSilence(44100, numSamples: 1024, channels: 4, presentaionTimeStamp: presentationTimeStamp) else {
+            guard let sampleBuffer = CMAudioSampleBufferFactory.makeSilence(44100, numSamples: 1024, channels: 4, presentaionTimeStamp: presentationTimeStamp) else {
                 return
             }
             presentationTimeStamp = CMTimeAdd(presentationTimeStamp, sampleBuffer.duration)

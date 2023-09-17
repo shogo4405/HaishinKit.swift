@@ -77,12 +77,12 @@ extension CMSampleBuffer {
         CMSampleBufferGetPresentationTimeStamp(self)
     }
 
-    func muted(_ muted: Bool) -> CMSampleBuffer? {
+    func muted(_ muted: Bool) -> CMSampleBuffer {
         guard muted else {
             return self
         }
         guard let dataBuffer = dataBuffer else {
-            return nil
+            return self
         }
         let status = CMBlockBufferFillDataBytes(
             with: 0,
@@ -91,7 +91,7 @@ extension CMSampleBuffer {
             dataLength: dataBuffer.dataLength
         )
         guard status == noErr else {
-            return nil
+            return self
         }
         return self
     }
