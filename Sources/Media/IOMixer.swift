@@ -76,8 +76,6 @@ public class IOMixer {
     }()
 
     #if os(iOS) || os(macOS)
-    var isMultitaskingCameraAccessEnabled = true
-
     var isMultiCamSessionEnabled = false {
         didSet {
             guard oldValue != isMultiCamSessionEnabled else {
@@ -232,7 +230,7 @@ public class IOMixer {
         if session.canSetSessionPreset(sessionPreset) {
             session.sessionPreset = sessionPreset
         }
-        if isMultitaskingCameraAccessEnabled && session.isMultitaskingCameraAccessSupported {
+        if session.isMultitaskingCameraAccessSupported {
             session.isMultitaskingCameraAccessEnabled = true
         }
         return session
