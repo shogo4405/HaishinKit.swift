@@ -10,13 +10,68 @@ protocol IOAudioResamplerDelegate: AnyObject {
     func resampler(_ resampler: IOAudioResampler<Self>, errorOccurred error: AudioCodec.Error)
 }
 
-final class IOAudioResampler<T: IOAudioResamplerDelegate> {
-    var settings: AudioCodecSettings = .default {
-        didSet {
-            guard var inSourceFormat, settings.invalidateConverter(oldValue) else {
-                return
+struct IOAudioResamplerSettings {
+    let sampleRate: Float64
+    let channels: UInt32
+    let downmix: Bool
+    let channelMap: [NSNumber]?
+
+    init(sampleRate: Float64 = 0, channels: UInt32 = 0, downmix: Bool = false, channelMap: [NSNumber]? = nil) {
+        self.sampleRate = sampleRate
+        self.channels = channels
+        self.downmix = downmix
+        self.channelMap = channelMap
+    }
+
+    func invalidate(_ oldValue: IOAudioResamplerSettings!) -> Bool {
+        return (sampleRate != oldValue.sampleRate &&
+                    channels != oldValue.channels)
+    }
+
+    func apply(_ converter: AVAudioConverter?, oldValue: IOAudioResamplerSettings?) {
+        guard let converter else {
+            return
+        }
+        if converter.downmix != downmix {
+            converter.downmix = downmix
+        }
+        if let channelMap {
+            converter.channelMap = channelMap
+        } else {
+            switch converter.outputFormat.channelCount {
+            case 1:
+                converter.channelMap = [0]
+            case 2:
+                converter.channelMap = (converter.inputFormat.channelCount == 1) ? [0, 0] : [0, 1]
+            default:
+                logger.error("channelCount must be 2 or less.")
             }
-            setUp(&inSourceFormat)
+        }
+    }
+
+    func makeOutputFormat(_ inputFormat: AVAudioFormat?) -> AVAudioFormat? {
+        guard let inputFormat else {
+            return nil
+        }
+        return .init(
+            commonFormat: inputFormat.commonFormat,
+            sampleRate: min(sampleRate == 0 ? inputFormat.sampleRate : sampleRate, AudioCodecSettings.mamimumSampleRate),
+            channels: min(channels == 0 ? inputFormat.channelCount : channels, AudioCodecSettings.maximumNumberOfChannels),
+            interleaved: inputFormat.isInterleaved
+        )
+    }
+}
+
+final class IOAudioResampler<T: IOAudioResamplerDelegate> {
+    var settings: IOAudioResamplerSettings = .init() {
+        didSet {
+            if settings.invalidate(oldValue) {
+                if var inSourceFormat {
+                    setUp(&inSourceFormat)
+                }
+            } else {
+                settings.apply(audioConverter, oldValue: oldValue)
+            }
         }
     }
     weak var delegate: T?
@@ -42,7 +97,7 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
             guard let audioConverter else {
                 return
             }
-            audioConverter.channelMap = settings.makeChannelMap(Int(audioConverter.inputFormat.channelCount))
+            settings.apply(audioConverter, oldValue: nil)
             audioConverter.primeMethod = .normal
             delegate?.resampler(self, didOutput: audioConverter.outputFormat)
         }

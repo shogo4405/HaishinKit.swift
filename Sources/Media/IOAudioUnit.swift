@@ -31,7 +31,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     var settings: AudioCodecSettings = .default {
         didSet {
             codec.settings = settings
-            resampler.settings = settings
+            resampler.settings = settings.makeAudioResamplerSettings()
         }
     }
 
