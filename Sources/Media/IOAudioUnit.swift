@@ -18,9 +18,9 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
     var muted = false
     weak var mixer: IOMixer?
-    var loopback = false {
+    var isMonitoringEnabled = false {
         didSet {
-            if loopback {
+            if isMonitoringEnabled {
                 monitor.startRunning()
             } else {
                 monitor.stopRunning()

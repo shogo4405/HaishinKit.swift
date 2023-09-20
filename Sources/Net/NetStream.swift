@@ -45,13 +45,13 @@ open class NetStream: NSObject {
     /// Specifies the delegate of the NetStream.
     public weak var delegate: (any NetStreamDelegate)?
 
-    /// Specifies the loopback audio or not.
-    public var loopback: Bool {
+    /// Specifies the audio monitoring enabled or not.
+    public var isMonitoringEnabled: Bool {
         get {
-            mixer.audioIO.loopback
+            mixer.audioIO.isMonitoringEnabled
         }
         set {
-            mixer.audioIO.loopback = newValue
+            mixer.audioIO.isMonitoringEnabled = newValue
         }
     }
 
