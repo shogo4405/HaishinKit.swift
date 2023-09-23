@@ -1,7 +1,6 @@
 import AVFoundation
 import Foundation
 
-#if !os(tvOS)
 @available(tvOS 17.0, *)
 final class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
@@ -31,4 +30,3 @@ final class IOAudioCaptureUnit: IOCaptureUnit {
         output?.setSampleBufferDelegate(audioUnit, queue: audioUnit?.lockQueue)
     }
 }
-#endif

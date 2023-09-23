@@ -40,11 +40,20 @@ final class IOAudioUnit: NSObject, IOUnit {
         return resampler
     }()
     private var monitor: IOAudioMonitor = .init()
-    #if os(iOS) || os(macOS)
+    #if os(tvOS)
+    private var _capture: Any?
+    @available(tvOS 17.0, *)
+    var capture: IOAudioCaptureUnit {
+        if _capture == nil {
+            _capture = IOAudioCaptureUnit()
+        }
+        return _capture as! IOAudioCaptureUnit
+    }
+    #else
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
 
-    #if os(iOS) || os(macOS)
+    @available(tvOS 17.0, *)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
         guard let mixer else {
             return
@@ -63,7 +72,6 @@ final class IOAudioUnit: NSObject, IOUnit {
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif
     }
-    #endif
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         presentationTimeStamp = sampleBuffer.presentationTimeStamp
@@ -103,14 +111,13 @@ extension IOAudioUnit: IOUnitDecoding {
     }
 }
 
-#if os(iOS) || os(macOS)
+@available(tvOS 17.0, *)
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         appendSampleBuffer(sampleBuffer)
     }
 }
-#endif
 
 extension IOAudioUnit: AudioCodecDelegate {
     // MARK: AudioConverterDelegate
