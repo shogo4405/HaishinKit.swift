@@ -519,6 +519,11 @@ open class RTMPStream: NetStream {
             dataTimeStamps.removeAll()
             FCPublish()
         case .publishing:
+            #if os(iOS) || os(macOS)
+            if mixer.videoIO.capture.device != nil {
+                muxer.basetime = mixer.videoIO.presentationTimeStamp
+            }
+            #endif
             send(handlerName: "@setDataFrame", arguments: "onMetaData", makeMetaData())
             mixer.startEncoding(muxer)
         default:
