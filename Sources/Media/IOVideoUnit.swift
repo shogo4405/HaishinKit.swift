@@ -45,6 +45,7 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     var muted = false
 
+    private(set) var presentationTimeStamp: CMTime = .invalid
     private(set) var effects: Set<VideoEffect> = []
 
     private var extent = CGRect.zero {
@@ -129,16 +130,15 @@ final class IOVideoUnit: NSObject, IOUnit {
             return
         }
         guard let device else {
-            mixer.mediaSync = .passthrough
             mixer.session.beginConfiguration()
             defer {
                 mixer.session.commitConfiguration()
             }
             capture.detachSession(mixer.session)
             try capture.attachDevice(nil, videoUnit: self)
+            presentationTimeStamp = .invalid
             return
         }
-        mixer.mediaSync = .video
         mixer.session.beginConfiguration()
         defer {
             mixer.session.commitConfiguration()
@@ -192,10 +192,8 @@ final class IOVideoUnit: NSObject, IOUnit {
             mixer.session.commitConfiguration()
         }
         guard let input else {
-            mixer.mediaSync = .passthrough
             return
         }
-        mixer.mediaSync = .video
         multiCamCapture.attachScreen(input, videoUnit: self)
     }
 
@@ -228,6 +226,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         guard let buffer = sampleBuffer.imageBuffer else {
             return
         }
+        presentationTimeStamp = sampleBuffer.presentationTimeStamp
         var imageBuffer: CVImageBuffer?
         buffer.lockBaseAddress()
         defer {
@@ -320,9 +319,6 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if capture.output == captureOutput {
-            guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.video) == true else {
-                return
-            }
             appendSampleBuffer(sampleBuffer)
         } else if multiCamCapture.output == captureOutput {
             multiCamSampleBuffer = sampleBuffer

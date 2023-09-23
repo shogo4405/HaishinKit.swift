@@ -27,14 +27,13 @@ final class IOAudioUnit: NSObject, IOUnit {
             }
         }
     }
-
     var settings: AudioCodecSettings = .default {
         didSet {
             codec.settings = settings
             resampler.settings = settings.makeAudioResamplerSettings()
         }
     }
-
+    private(set) var presentationTimeStamp: CMTime = .invalid
     private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
         var resampler = IOAudioResampler<IOAudioUnit>()
         resampler.delegate = self
@@ -56,6 +55,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
         guard let device else {
             try capture.attachDevice(nil, audioUnit: self)
+            presentationTimeStamp = .invalid
             return
         }
         try capture.attachDevice(device, audioUnit: self)
@@ -66,6 +66,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     #endif
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        presentationTimeStamp = sampleBuffer.presentationTimeStamp
         resampler.appendSampleBuffer(sampleBuffer.muted(muted))
     }
 }
@@ -106,9 +107,6 @@ extension IOAudioUnit: IOUnitDecoding {
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard mixer?.useSampleBuffer(sampleBuffer: sampleBuffer, mediaType: AVMediaType.audio) == true else {
-            return
-        }
         appendSampleBuffer(sampleBuffer)
     }
 }

@@ -24,11 +24,6 @@ public class IOMixer {
         return AVAudioEngine()
     }
 
-    enum MediaSync {
-        case video
-        case passthrough
-    }
-
     enum ReadyState {
         case standby
         case encoding
@@ -150,8 +145,6 @@ public class IOMixer {
         }
     }
 
-    var mediaSync = MediaSync.passthrough
-
     weak var delegate: (any IOMixerDelegate)?
 
     lazy var audioIO: IOAudioUnit = {
@@ -181,9 +174,6 @@ public class IOMixer {
     }
     #endif
 
-    private var audioTimeStamp = CMTime.zero
-    private var videoTimeStamp = CMTime.zero
-
     /// Append a CMSampleBuffer with media type.
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         switch readyState {
@@ -201,21 +191,6 @@ public class IOMixer {
             }
         case .standby:
             break
-        }
-    }
-
-    func useSampleBuffer(sampleBuffer: CMSampleBuffer, mediaType: AVMediaType) -> Bool {
-        switch mediaSync {
-        case .video:
-            if mediaType == .audio {
-                return !videoTimeStamp.seconds.isZero && videoTimeStamp.seconds <= sampleBuffer.presentationTimeStamp.seconds
-            }
-            if videoTimeStamp == CMTime.zero {
-                videoTimeStamp = sampleBuffer.presentationTimeStamp
-            }
-            return true
-        default:
-            return true
         }
     }
 
@@ -264,8 +239,6 @@ extension IOMixer: IOUnitEncoding {
         guard readyState == .encoding else {
             return
         }
-        videoTimeStamp = CMTime.zero
-        audioTimeStamp = CMTime.zero
         videoIO.stopEncoding()
         audioIO.stopEncoding()
         readyState = .standby
