@@ -20,7 +20,7 @@ final class IOAudioResamplerTests: XCTestCase {
 
     func testpKeep16000() {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
-        resampler.settings = .init(bitRate: 0, sampleRate: 16000, channels: 1)
+        resampler.settings = .init(sampleRate: 16000, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
         resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 16000)
@@ -30,7 +30,7 @@ final class IOAudioResamplerTests: XCTestCase {
 
     func testpKeep44100() {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
-        resampler.settings = .init(bitRate: 0, sampleRate: 44100, channels: 1)
+        resampler.settings = .init(sampleRate: 44100, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
         resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
@@ -44,7 +44,7 @@ final class IOAudioResamplerTests: XCTestCase {
 
     func testpKeep48000() {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
-        resampler.settings = .init(bitRate: 0, sampleRate: 48000, channels: 1)
+        resampler.settings = .init(sampleRate: 48000, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
         resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 48000)
@@ -54,7 +54,7 @@ final class IOAudioResamplerTests: XCTestCase {
 
     func testpPassthrough48000_44100() {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
-        resampler.settings = .init(bitRate: 0, sampleRate: 0, channels: 1)
+        resampler.settings = .init(sampleRate: 0, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
         resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44000)
@@ -64,7 +64,7 @@ final class IOAudioResamplerTests: XCTestCase {
 
     func testpPassthrough44100_48000() {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
-        resampler.settings = .init(bitRate: 0, sampleRate: 0, channels: 1)
+        resampler.settings = .init(sampleRate: 0, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
         resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 48000)
@@ -74,7 +74,7 @@ final class IOAudioResamplerTests: XCTestCase {
 
     func testpPassthrough16000_48000() {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
-        resampler.settings = .init(bitRate: 0, sampleRate: 0, channels: 1)
+        resampler.settings = .init(sampleRate: 0, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
         resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(16000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 16000)

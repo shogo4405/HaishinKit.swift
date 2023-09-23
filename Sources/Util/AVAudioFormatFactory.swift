@@ -8,10 +8,21 @@ enum AVAudioFormatFactory {
             guard inSourceFormat.mBitsPerChannel == 16 else {
                 return nil
             }
-            if let layout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
-                return .init(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate, interleaved: true, channelLayout: layout)
+            let interleaved = !((inSourceFormat.mFormatFlags & kLinearPCMFormatFlagIsNonInterleaved) == kLinearPCMFormatFlagIsNonInterleaved)
+            if let channelLayout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
+                return .init(
+                    commonFormat: .pcmFormatInt16,
+                    sampleRate: inSourceFormat.mSampleRate,
+                    interleaved: interleaved,
+                    channelLayout: channelLayout
+                )
             }
-            return AVAudioFormat(commonFormat: .pcmFormatInt16, sampleRate: inSourceFormat.mSampleRate, channels: inSourceFormat.mChannelsPerFrame, interleaved: true)
+            return .init(
+                commonFormat: .pcmFormatInt16,
+                sampleRate: inSourceFormat.mSampleRate,
+                channels: inSourceFormat.mChannelsPerFrame,
+                interleaved: interleaved
+            )
         }
         if let layout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
             return .init(streamDescription: &inSourceFormat, channelLayout: layout)
@@ -23,6 +34,17 @@ enum AVAudioFormatFactory {
         guard 2 < numberOfChannels else {
             return nil
         }
-        return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | numberOfChannels)
+        switch numberOfChannels {
+        case 4:
+            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_4)
+        case 5:
+            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_5)
+        case 6:
+            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_6)
+        case 8:
+            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_8)
+        default:
+            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | numberOfChannels)
+        }
     }
 }

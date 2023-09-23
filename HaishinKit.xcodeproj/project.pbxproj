@@ -258,7 +258,6 @@
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFC51FE2AAB420700014428 /* IOAudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */; };
-		BCFC9BE02AB43A3A00378E56 /* AudioCodecSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC9BDF2AB43A3A00378E56 /* AudioCodecSettingsTests.swift */; };
 		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
 
@@ -645,7 +644,6 @@
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
 		BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioResampler.swift; sourceTree = "<group>"; };
-		BCFC9BDF2AB43A3A00378E56 /* AudioCodecSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecSettingsTests.swift; sourceTree = "<group>"; };
 		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -896,7 +894,6 @@
 			isa = PBXGroup;
 			children = (
 				2950181F1FFA1BD700358E10 /* AudioCodecTests.swift */,
-				BCFC9BDF2AB43A3A00378E56 /* AudioCodecSettingsTests.swift */,
 			);
 			path = Codec;
 			sourceTree = "<group>";
@@ -1844,7 +1841,6 @@
 				290EA8AA1DFB61E700053022 /* CRC32Tests.swift in Sources */,
 				035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */,
 				290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */,
-				BCFC9BE02AB43A3A00378E56 /* AudioCodecSettingsTests.swift in Sources */,
 				BCC9E9092636FF7400948774 /* DataBufferTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

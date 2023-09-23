@@ -42,6 +42,7 @@ public class AudioCodec {
             guard var inSourceFormat, inSourceFormat != oldValue else {
                 return
             }
+            cursor = 0
             inputBuffers.removeAll()
             outputBuffers.removeAll()
             audioConverter = makeAudioConverter(&inSourceFormat)
