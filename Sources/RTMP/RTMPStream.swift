@@ -426,14 +426,12 @@ open class RTMPStream: NetStream {
             }
             metadata["videodatarate"] = mixer.videoIO.codec.settings.bitRate / 1000
         }
-        if mixer.audioIO.capture.device != nil {
-            metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
-            metadata["audiodatarate"] = mixer.audioIO.codec.settings.bitRate / 1000
-            if let sampleRate = mixer.audioIO.codec.inSourceFormat?.mSampleRate {
-                metadata["audiosamplerate"] = sampleRate
-            }
-        }
         #endif
+        if let inSourceFormat = mixer.audioIO.codec.inSourceFormat {
+            metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
+            metadata["audiodatarate"] = audioSettings.bitRate / 1000
+            metadata["audiosamplerate"] = inSourceFormat.mSampleRate
+        }
         return metadata
     }
 
