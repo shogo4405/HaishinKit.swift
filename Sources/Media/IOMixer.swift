@@ -48,71 +48,22 @@ public class IOMixer {
         }
     }
 
-    var audioFormat: AVAudioFormat? {
-        didSet {
-            guard let audioEngine else {
-                return
+    #if os(tvOS)
+    private var _session: Any?
+    /// The capture session instance.
+    @available(tvOS 17.0, *)
+    public var session: AVCaptureSession {
+        get {
+            if _session == nil {
+                _session = makeSession()
             }
-            nstry({
-                if let audioFormat = self.audioFormat {
-                    audioEngine.connect(self.mediaLink.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
-                } else {
-                    audioEngine.disconnectNodeInput(self.mediaLink.playerNode)
-                }
-            }, { exeption in
-                logger.warn(exeption)
-            })
+            return _session as! AVCaptureSession
+        }
+        set {
+            _session = newValue
         }
     }
-
-    private var readyState: ReadyState = .standby
-    private(set) lazy var audioEngine: AVAudioEngine? = {
-        return IOMixer.audioEngineHolder.retain()
-    }()
-
-    #if os(iOS) || os(macOS)
-    var isMultiCamSessionEnabled = false {
-        didSet {
-            guard oldValue != isMultiCamSessionEnabled else {
-                return
-            }
-            #if os(iOS)
-            session = makeSession()
-            #endif
-        }
-    }
-
-    var sessionPreset: AVCaptureSession.Preset = .default {
-        didSet {
-            guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
-                return
-            }
-            session.beginConfiguration()
-            session.sessionPreset = sessionPreset
-            session.commitConfiguration()
-        }
-    }
-
-    var inBackgroundMode = false {
-        didSet {
-            guard inBackgroundMode != oldValue else {
-                return
-            }
-            if inBackgroundMode {
-                if !session.isMultitaskingCameraAccessEnabled {
-                    videoIO.multiCamCapture.detachSession(session)
-                    videoIO.capture.detachSession(session)
-                }
-            } else {
-                startCaptureSessionIfNeeded()
-                if !session.isMultitaskingCameraAccessEnabled {
-                    videoIO.capture.attachSession(session)
-                    videoIO.multiCamCapture.attachSession(session)
-                }
-            }
-        }
-    }
-
+    #else
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
         didSet {
@@ -165,14 +116,101 @@ public class IOMixer {
         return mediaLink
     }()
 
-    #if os(iOS) || os(macOS)
+    var audioFormat: AVAudioFormat? {
+        didSet {
+            guard let audioEngine else {
+                return
+            }
+            nstry({
+                if let audioFormat = self.audioFormat {
+                    audioEngine.connect(self.mediaLink.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
+                } else {
+                    audioEngine.disconnectNodeInput(self.mediaLink.playerNode)
+                }
+            }, { exeption in
+                logger.warn(exeption)
+            })
+        }
+    }
+
+    var isMultiCamSessionEnabled = false {
+        didSet {
+            guard oldValue != isMultiCamSessionEnabled else {
+                return
+            }
+            #if os(iOS)
+            session = makeSession()
+            #endif
+        }
+    }
+
+    #if os(tvOS)
+    private var _sessionPreset: Any?
+    @available(tvOS 17.0, *)
+    var sessionPreset: AVCaptureSession.Preset {
+        get {
+            if _sessionPreset == nil {
+                _sessionPreset = AVCaptureSession.Preset.default
+            }
+            return _sessionPreset as! AVCaptureSession.Preset
+        }
+        set {
+            guard sessionPreset != newValue, session.canSetSessionPreset(newValue) else {
+                return
+            }
+            session.beginConfiguration()
+            session.sessionPreset = newValue
+            session.commitConfiguration()
+        }
+    }
+    #else
+    var sessionPreset: AVCaptureSession.Preset = .default {
+        didSet {
+            guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
+                return
+            }
+            session.beginConfiguration()
+            session.sessionPreset = sessionPreset
+            session.commitConfiguration()
+        }
+    }
+    #endif
+
+    var inBackgroundMode = false {
+        didSet {
+            if #available(tvOS 17.0, *) {
+                guard inBackgroundMode != oldValue else {
+                    return
+                }
+                if inBackgroundMode {
+                    if !session.isMultitaskingCameraAccessEnabled {
+                        videoIO.multiCamCapture.detachSession(session)
+                        videoIO.capture.detachSession(session)
+                    }
+                } else {
+                    startCaptureSessionIfNeeded()
+                    if !session.isMultitaskingCameraAccessEnabled {
+                        videoIO.capture.attachSession(session)
+                        videoIO.multiCamCapture.attachSession(session)
+                    }
+                }
+            }
+        }
+    }
+
+    private var readyState: ReadyState = .standby
+    private(set) lazy var audioEngine: AVAudioEngine? = {
+        return IOMixer.audioEngineHolder.retain()
+    }()
+
     deinit {
-        if session.isRunning {
-            session.stopRunning()
+        if #available(tvOS 17.0, *) {
+            if session.isRunning {
+                session.stopRunning()
+            }
         }
         IOMixer.audioEngineHolder.release(audioEngine)
     }
-    #endif
 
     /// Append a CMSampleBuffer with media type.
     public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
@@ -194,7 +232,8 @@ public class IOMixer {
         }
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
+    @available(tvOS 17.0, *)
     private func makeSession() -> AVCaptureSession {
         let session: AVCaptureSession
         if isMultiCamSessionEnabled, #available(iOS 13.0, *) {
@@ -210,9 +249,7 @@ public class IOMixer {
         }
         return session
     }
-    #endif
-
-    #if os(macOS)
+    #else
     private func makeSession() -> AVCaptureSession {
         let session = AVCaptureSession()
         if session.canSetSessionPreset(sessionPreset) {
@@ -281,27 +318,31 @@ extension IOMixer: MediaLinkDelegate {
     }
 }
 
-#if os(iOS) || os(macOS)
 extension IOMixer: Running {
     // MARK: Running
     public func startRunning() {
         guard !isRunning.value else {
             return
         }
-        addSessionObservers(session)
-        session.startRunning()
-        isRunning.mutate { $0 = session.isRunning }
+        if #available(tvOS 17.0, *) {
+            addSessionObservers(session)
+            session.startRunning()
+            isRunning.mutate { $0 = session.isRunning }
+        }
     }
 
     public func stopRunning() {
         guard isRunning.value else {
             return
         }
-        removeSessionObservers(session)
-        session.stopRunning()
-        isRunning.mutate { $0 = session.isRunning }
+        if #available(tvOS 17.0, *) {
+            removeSessionObservers(session)
+            session.stopRunning()
+            isRunning.mutate { $0 = session.isRunning }
+        }
     }
 
+    @available(tvOS 17.0, *)
     func startCaptureSessionIfNeeded() {
         guard isRunning.value && !session.isRunning else {
             return
@@ -310,6 +351,7 @@ extension IOMixer: Running {
         isRunning.mutate { $0 = session.isRunning }
     }
 
+    @available(tvOS 17.0, *)
     private func addSessionObservers(_ session: AVCaptureSession) {
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError(_:)), name: .AVCaptureSessionRuntimeError, object: session)
         #if os(iOS)
@@ -318,6 +360,7 @@ extension IOMixer: Running {
         #endif
     }
 
+    @available(tvOS 17.0, *)
     private func removeSessionObservers(_ session: AVCaptureSession) {
         #if os(iOS)
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
@@ -326,6 +369,7 @@ extension IOMixer: Running {
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
     }
 
+    @available(tvOS 17.0, *)
     @objc
     private func sessionRuntimeError(_ notification: NSNotification) {
         guard
@@ -395,15 +439,3 @@ extension IOMixer: Running {
     }
     #endif
 }
-#else
-extension IOMixer: Running {
-    public func startRunning() {
-    }
-
-    public func stopRunning() {
-    }
-
-    func startCaptureSession() {
-    }
-}
-#endif

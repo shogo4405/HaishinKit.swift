@@ -1,4 +1,4 @@
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 
 import AVFoundation
 import UIKit
@@ -6,6 +6,7 @@ import UIKit
 /**
  * A view that displays a video content of a NetStream object which uses AVCaptureVideoPreviewLayer.
  */
+@available(tvOS 17.0, *)
 public class HKView: UIView {
     /// The view’s background color.
     public static var defaultBackgroundColor: UIColor = .black
@@ -32,6 +33,7 @@ public class HKView: UIView {
         currentStream?.mixer.videoIO.formatDescription
     }
 
+    #if !os(tvOS)
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             let orientationChange = { [weak self] in
@@ -53,6 +55,7 @@ public class HKView: UIView {
             }
         }
     }
+    #endif
 
     private var currentSampleBuffer: CMSampleBuffer?
 
@@ -85,6 +88,7 @@ public class HKView: UIView {
     }
 }
 
+@available(tvOS 17.0, *)
 extension HKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     public func attachStream(_ stream: NetStream?) {
@@ -97,7 +101,9 @@ extension HKView: NetStreamDrawable {
 
         stream.mixer.session.beginConfiguration()
         layer.session = stream.mixer.session
+        #if !os(tvOS)
         videoOrientation = stream.mixer.videoIO.videoOrientation
+        #endif
         stream.mixer.session.commitConfiguration()
 
         stream.lockQueue.async {

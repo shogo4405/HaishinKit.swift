@@ -65,11 +65,10 @@ open class NetStream: NSObject {
         }
     }
 
-    #if os(iOS) || os(macOS)
     /// Specifiet the device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public var torch: Bool {
         get {
-            var torch: Bool = false
+            var torch = false
             lockQueue.sync {
                 torch = self.mixer.videoIO.torch
             }
@@ -99,6 +98,7 @@ open class NetStream: NSObject {
     }
 
     /// Specifies the sessionPreset for the AVCaptureSession.
+    @available(tvOS 17.0, *)
     public var sessionPreset: AVCaptureSession.Preset {
         get {
             var sessionPreset: AVCaptureSession.Preset = .default
@@ -115,6 +115,7 @@ open class NetStream: NSObject {
     }
 
     /// Specifies the video orientation for stream.
+    #if !os(tvOS)
     public var videoOrientation: AVCaptureVideoOrientation {
         get {
             mixer.videoIO.videoOrientation
@@ -123,6 +124,7 @@ open class NetStream: NSObject {
             mixer.videoIO.videoOrientation = newValue
         }
     }
+    #endif
 
     /// Specifies the multi camera capture properties.
     public var multiCamCaptureSettings: MultiCamCaptureSettings {
@@ -133,7 +135,6 @@ open class NetStream: NSObject {
             mixer.videoIO.multiCamCaptureSettings = newValue
         }
     }
-    #endif
 
     /// Specifies the hasAudio indicies whether no signal audio or not.
     public var hasAudio: Bool {
@@ -184,9 +185,9 @@ open class NetStream: NSObject {
         #endif
     }
 
-    #if os(iOS) || os(macOS)
     /// Attaches the primary camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
+    @available(tvOS 17.0, *)
     open func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -199,7 +200,7 @@ open class NetStream: NSObject {
 
     /// Attaches the 2ndary camera  object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
-    @available(iOS 13.0, *)
+    @available(iOS 13.0, tvOS 17.0, *)
     open func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -212,6 +213,7 @@ open class NetStream: NSObject {
 
     /// Attaches the audio capture object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
+    @available(tvOS 17.0, *)
     open func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
@@ -222,15 +224,17 @@ open class NetStream: NSObject {
         }
     }
 
+    #if os(macOS)
     /// Attaches the screen input object.
-    @available(iOS, unavailable)
     open func attachScreen(_ input: AVCaptureScreenInput?) {
         lockQueue.async {
             self.mixer.videoIO.attachScreen(input)
         }
     }
+    #endif
 
     /// Returns the IOVideoCaptureUnit by index.
+    @available(tvOS 17.0, *)
     public func videoCapture(for index: Int) -> IOVideoCaptureUnit? {
         return mixer.videoIO.lockQueue.sync {
             switch index {
@@ -243,7 +247,6 @@ open class NetStream: NSObject {
             }
         }
     }
-    #endif
 
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
