@@ -25,7 +25,7 @@ final class RTMPMuxer {
     }
 
     private func isReady(_ presentaionTimeStamp: CMTime) -> Bool {
-        guard basetime == .invalid else {
+        guard basetime != .invalid else {
             return true
         }
         return basetime <= videoTimeStamp
