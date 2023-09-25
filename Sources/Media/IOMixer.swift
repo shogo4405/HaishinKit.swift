@@ -16,7 +16,7 @@ protocol IOMixerDelegate: AnyObject {
 }
 
 /// An object that mixies audio and video for streaming.
-public class IOMixer {
+public final class IOMixer {
     /// The default fps for an IOMixer, value is 30.
     public static let defaultFrameRate: Float64 = 30
     /// The AVAudioEngine shared instance holder.
@@ -111,7 +111,7 @@ public class IOMixer {
     }()
 
     lazy var mediaLink: MediaLink = {
-        var mediaLink = MediaLink()
+        var mediaLink = MediaLink<IOMixer>()
         mediaLink.delegate = self
         return mediaLink
     }()
@@ -308,12 +308,12 @@ extension IOMixer: IOUnitDecoding {
 
 extension IOMixer: MediaLinkDelegate {
     // MARK: MediaLinkDelegate
-    func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer) {
+    func mediaLink(_ mediaLink: MediaLink<IOMixer>, dequeue sampleBuffer: CMSampleBuffer) {
         delegate?.mixer(self, didOutput: sampleBuffer)
         drawable?.enqueue(sampleBuffer)
     }
 
-    func mediaLink(_ mediaLink: MediaLink, didBufferingChanged: Bool) {
+    func mediaLink(_ mediaLink: MediaLink<IOMixer>, didBufferingChanged: Bool) {
         logger.info(didBufferingChanged)
     }
 }

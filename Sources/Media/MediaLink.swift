@@ -5,14 +5,14 @@ import SwiftPMSupport
 #endif
 
 protocol MediaLinkDelegate: AnyObject {
-    func mediaLink(_ mediaLink: MediaLink, dequeue sampleBuffer: CMSampleBuffer)
-    func mediaLink(_ mediaLink: MediaLink, didBufferingChanged: Bool)
+    func mediaLink(_ mediaLink: MediaLink<Self>, dequeue sampleBuffer: CMSampleBuffer)
+    func mediaLink(_ mediaLink: MediaLink<Self>, didBufferingChanged: Bool)
 }
 
-final class MediaLink {
-    private static let bufferTime = 0.2
-    private static let bufferingTime = 0.0
+private let kMediaLink_bufferTime = 0.2
+private let kMediaLink_bufferingTime = 0.0
 
+final class MediaLink<T: MediaLinkDelegate> {
     var isPaused = false {
         didSet {
             guard isPaused != oldValue else {
@@ -31,8 +31,8 @@ final class MediaLink {
         }
     }
     var hasVideo = false
-    var bufferTime = MediaLink.bufferTime
-    weak var delegate: (any MediaLinkDelegate)?
+    var bufferTime = kMediaLink_bufferTime
+    weak var delegate: T?
     private(set) lazy var playerNode = AVAudioPlayerNode()
     private(set) var isRunning: Atomic<Bool> = .init(false)
     private var isBuffering = true {
@@ -44,7 +44,7 @@ final class MediaLink {
             delegate?.mediaLink(self, didBufferingChanged: isBuffering)
         }
     }
-    private var bufferingTime = MediaLink.bufferingTime
+    private var bufferingTime = kMediaLink_bufferingTime
     private lazy var choreographer: any Choreographer = {
         var choreographer = DisplayLinkChoreographer()
         choreographer.delegate = self
@@ -155,7 +155,7 @@ extension MediaLink: Running {
                 return
             }
             self.hasVideo = false
-            self.bufferingTime = Self.bufferingTime
+            self.bufferingTime = kMediaLink_bufferingTime
             self.isBuffering = true
             self.choreographer.startRunning()
             self.makeBufferkQueue()
