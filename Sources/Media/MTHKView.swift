@@ -9,10 +9,6 @@ public class MTHKView: MTKView {
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
-    public var videoFormatDescription: CMVideoFormatDescription? {
-        currentStream?.mixer.videoIO.formatDescription
-    }
-
     #if !os(tvOS)
     public var videoOrientation: AVCaptureVideoOrientation = .portrait
     #endif

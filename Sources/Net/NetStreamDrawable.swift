@@ -8,9 +8,6 @@ public protocol NetStreamDrawable: AnyObject {
     var videoOrientation: AVCaptureVideoOrientation { get set }
     #endif
 
-    /// The videoFormatDescription which is the current CMSampleBuffer.
-    var videoFormatDescription: CMVideoFormatDescription? { get }
-
     /// Attaches a drawable to a new NetStream object.
     func attachStream(_ stream: NetStream?)
 

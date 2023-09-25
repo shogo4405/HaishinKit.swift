@@ -28,11 +28,6 @@ public class HKView: UIView {
         }
     }
 
-    /// A value that displays a video format.
-    public var videoFormatDescription: CMVideoFormatDescription? {
-        currentStream?.mixer.videoIO.formatDescription
-    }
-
     #if !os(tvOS)
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
@@ -137,11 +132,6 @@ public class HKView: NSView {
         didSet {
             layer?.setValue(videoGravity.rawValue, forKey: "videoGravity")
         }
-    }
-
-    /// A value that displays a video format.
-    public var videoFormatDescription: CMVideoFormatDescription? {
-        currentStream?.mixer.videoIO.formatDescription
     }
 
     public var videoOrientation: AVCaptureVideoOrientation = .portrait

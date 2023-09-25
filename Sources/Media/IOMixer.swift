@@ -222,7 +222,6 @@ public final class IOMixer {
             case kCMMediaType_Audio:
                 audioIO.codec.appendSampleBuffer(sampleBuffer)
             case kCMMediaType_Video:
-                videoIO.codec.formatDescription = sampleBuffer.formatDescription
                 videoIO.codec.appendSampleBuffer(sampleBuffer)
             default:
                 break

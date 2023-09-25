@@ -37,7 +37,7 @@ enum VTSessionMode {
             }
             return session
         case .decompression:
-            guard let formatDescription = videoCodec.formatDescription else {
+            guard let formatDescription = videoCodec.outputFormat else {
                 videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToCreate(status: kVTParameterErr))
                 return nil
             }

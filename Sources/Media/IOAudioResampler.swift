@@ -76,6 +76,10 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
     }
     weak var delegate: T?
 
+    var inputFormat: AVAudioFormat? {
+        return audioConverter?.inputFormat
+    }
+
     var outputFormat: AVAudioFormat? {
         return audioConverter?.outputFormat
     }

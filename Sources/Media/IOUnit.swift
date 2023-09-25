@@ -5,8 +5,12 @@ import Foundation
 public typealias AVCodecDelegate = AudioCodecDelegate & VideoCodecDelegate
 
 protocol IOUnit {
+    associatedtype FormatDescription
+
     var mixer: IOMixer? { get set }
     var muted: Bool { get set }
+    var inputFormat: FormatDescription? { get }
+    var outputFormat: FormatDescription? { get }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
 }
