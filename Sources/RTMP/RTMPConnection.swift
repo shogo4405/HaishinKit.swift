@@ -37,7 +37,7 @@ public protocol RTMPConnectionDelegate: AnyObject {
 
 // MARK: -
 /// The RTMPConneciton class create a two-way RTMP connection.
-open class RTMPConnection: EventDispatcher {
+public class RTMPConnection: EventDispatcher {
     /// The default network's window size for RTMPConnection.
     public static let defaultWindowSizeS: Int64 = 250000
     /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
@@ -271,7 +271,7 @@ open class RTMPConnection: EventDispatcher {
     }
 
     /// Calls a command or method on RTMP Server.
-    open func call(_ commandName: String, responder: RTMPResponder?, arguments: Any?...) {
+    public func call(_ commandName: String, responder: RTMPResponder?, arguments: Any?...) {
         guard connected else {
             return
         }
@@ -291,7 +291,7 @@ open class RTMPConnection: EventDispatcher {
     }
 
     /// Creates a two-way connection to an application on RTMP Server.
-    open func connect(_ command: String, arguments: Any?...) {
+    public func connect(_ command: String, arguments: Any?...) {
         guard let uri = URL(string: command), let scheme = uri.scheme, !connected && Self.supportedProtocols.contains(scheme) else {
             return
         }
@@ -323,7 +323,7 @@ open class RTMPConnection: EventDispatcher {
     }
 
     /// Closes the connection from the server.
-    open func close() {
+    public func close() {
         close(isDisconnected: false)
     }
 

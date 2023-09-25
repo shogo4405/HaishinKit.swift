@@ -180,7 +180,7 @@ open class RTMPStream: NetStream {
         }
     }
     /// Incoming audio plays on the stream or not.
-    open var receiveAudio = true {
+    public var receiveAudio = true {
         didSet {
             lockQueue.async {
                 guard self.readyState == .playing else {
@@ -198,7 +198,7 @@ open class RTMPStream: NetStream {
         }
     }
     /// Incoming video plays on the stream or not.
-    open var receiveVideo = true {
+    public var receiveVideo = true {
         didSet {
             lockQueue.async {
                 guard self.readyState == .playing else {
@@ -216,7 +216,7 @@ open class RTMPStream: NetStream {
         }
     }
     /// Pauses playback or publish of a video stream or not.
-    open var paused = false {
+    public var paused = false {
         didSet {
             lockQueue.async {
                 switch self.readyState {
@@ -289,7 +289,7 @@ open class RTMPStream: NetStream {
     }
 
     /// Plays a live stream from RTMPServer.
-    open func play(_ arguments: Any?...) {
+    public func play(_ arguments: Any?...) {
         // swiftlint:disable:next closure_body_length
         lockQueue.async {
             guard let name: String = arguments.first as? String else {
@@ -324,7 +324,7 @@ open class RTMPStream: NetStream {
     }
 
     /// Seeks the keyframe.
-    open func seek(_ offset: Double) {
+    public func seek(_ offset: Double) {
         lockQueue.async {
             guard self.readyState == .playing else {
                 return
@@ -341,7 +341,7 @@ open class RTMPStream: NetStream {
     }
 
     /// Sends streaming audio, vidoe and data message from client.
-    open func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
+    public func publish(_ name: String?, type: RTMPStream.HowToPublish = .live) {
         // swiftlint:disable:next closure_body_length
         lockQueue.async {
             guard let name: String = name else {
@@ -382,12 +382,12 @@ open class RTMPStream: NetStream {
     }
 
     /// Stops playing or publishing and makes available other uses.
-    open func close() {
+    public func close() {
         close(withLockQueue: true)
     }
 
     /// Sends a message on a published stream to all subscribing clients.
-    open func send(handlerName: String, arguments: Any?...) {
+    public func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
             guard let rtmpConnection = self.rtmpConnection, self.readyState == .publishing else {
                 return
