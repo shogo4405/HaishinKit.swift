@@ -512,6 +512,7 @@ open class RTMPStream: NetStream {
             mixer.delegate = self
             mixer.startDecoding()
         case .publish:
+            bitrateStrategy.setUp()
             startedAt = .init()
             muxer.dispose()
             muxer.delegate = self
@@ -635,9 +636,5 @@ extension RTMPStream: RTMPMuxerDelegate {
 
     func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error) {
         delegate?.stream(self, audioCodecErrorOccurred: error)
-    }
-
-    func muxerWillDropFrame(_ muxer: RTMPMuxer) -> Bool {
-        return delegate?.streamWillDropFrame(self) ?? false
     }
 }

@@ -141,10 +141,6 @@ extension PlaybackViewController: NetStreamDelegate {
     func stream(_ stream: NetStream, audioCodecErrorOccurred error: HaishinKit.AudioCodec.Error) {
     }
 
-    func streamWillDropFrame(_ stream: NetStream) -> Bool {
-        return false
-    }
-
     func streamDidOpen(_ stream: NetStream) {
     }
 }

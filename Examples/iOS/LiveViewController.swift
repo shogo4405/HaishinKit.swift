@@ -27,19 +27,18 @@ final class LiveViewController: UIViewController {
     private var currentEffect: VideoEffect?
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
-    private var videoBitRate = VideoCodecSettings.default.bitRate
     private var preferedStereo = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        rtmpConnection.delegate = self
 
         pipIntentView.layer.borderWidth = 1.0
         pipIntentView.layer.borderColor = UIColor.white.cgColor
         pipIntentView.bounds = MultiCamCaptureSettings.default.regionOfInterest
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
+
+        rtmpConnection.delegate = self
 
         rtmpStream = RTMPStream(connection: rtmpConnection)
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
@@ -62,7 +61,7 @@ final class LiveViewController: UIViewController {
             allowFrameReordering: nil,
             isHardwareEncoderEnabled: true
         )
-
+        rtmpStream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
         rtmpStream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
@@ -163,7 +162,7 @@ final class LiveViewController: UIViewController {
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            rtmpStream.videoSettings.bitRate = UInt32(slider.value * 1000)
+            rtmpStream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)
@@ -348,21 +347,15 @@ final class LiveViewController: UIViewController {
 
 extension LiveViewController: RTMPConnectionDelegate {
     func connection(_ connection: RTMPConnection, publishInsufficientBWOccured stream: RTMPStream) {
-        // Adaptive bitrate streaming exsample. Please feedback me your good algorithm. :D
-        videoBitRate -= 32 * 1000
-        stream.videoSettings.bitRate = max(videoBitRate, 64 * 1000)
     }
 
     func connection(_ connection: RTMPConnection, publishSufficientBWOccured stream: RTMPStream) {
-        videoBitRate += 32 * 1000
-        stream.videoSettings.bitRate = min(videoBitRate, VideoCodecSettings.default.bitRate)
     }
 
     func connection(_ connection: RTMPConnection, updateStats stream: RTMPStream) {
     }
 
     func connection(_ connection: RTMPConnection, didClear stream: RTMPStream) {
-        videoBitRate = VideoCodecSettings.default.bitRate
     }
 }
 

@@ -35,6 +35,7 @@ enum VTSessionMode {
                 videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToPrepare(status: status))
                 return nil
             }
+            videoCodec.frameInterval = videoCodec.settings.frameInterval
             return session
         case .decompression:
             guard let formatDescription = videoCodec.outputFormat else {

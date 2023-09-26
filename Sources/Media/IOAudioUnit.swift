@@ -102,7 +102,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         guard var audioStreamBasicDescription else {
             return
         }
-        let status = CMAudioFormatDescriptionCreate(
+        CMAudioFormatDescriptionCreate(
             allocator: kCFAllocatorDefault,
             asbd: &audioStreamBasicDescription,
             layoutSize: 0,
