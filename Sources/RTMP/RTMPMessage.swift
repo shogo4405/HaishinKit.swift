@@ -709,7 +709,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 dataReady: true,
                 makeDataReadyCallback: nil,
                 refcon: nil,
-                formatDescription: stream.mixer.videoIO.formatDescription,
+                formatDescription: stream.mixer.videoIO.inputFormat,
                 sampleCount: 1,
                 sampleTimingEntryCount: 1,
                 sampleTimingArray: &timing,
@@ -728,11 +728,11 @@ final class RTMPVideoMessage: RTMPMessage {
         case .h264:
             var config = AVCDecoderConfigurationRecord()
             config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            status = config.makeFormatDescription(&stream.mixer.videoIO.formatDescription)
+            status = config.makeFormatDescription(&stream.mixer.videoIO.inputFormat)
         case .hevc:
             var config = HEVCDecoderConfigurationRecord()
             config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            status = config.makeFormatDescription(&stream.mixer.videoIO.formatDescription)
+            status = config.makeFormatDescription(&stream.mixer.videoIO.inputFormat)
         }
         if status == noErr {
             stream.mixer.mediaLink.hasVideo = true

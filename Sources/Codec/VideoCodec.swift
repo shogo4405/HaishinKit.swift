@@ -62,12 +62,12 @@ public class VideoCodec {
 
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
     var expectedFrameRate = IOMixer.defaultFrameRate
-    var formatDescription: CMFormatDescription? {
+    private(set) var outputFormat: CMFormatDescription? {
         didSet {
-            guard !CMFormatDescriptionEqual(formatDescription, otherFormatDescription: oldValue) else {
+            guard !CMFormatDescriptionEqual(outputFormat, otherFormatDescription: oldValue) else {
                 return
             }
-            delegate?.videoCodec(self, didOutput: formatDescription)
+            delegate?.videoCodec(self, didOutput: outputFormat)
         }
     }
     var needsSync: Atomic<Bool> = .init(true)
@@ -108,7 +108,7 @@ public class VideoCodec {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
-            formatDescription = sampleBuffer.formatDescription
+            outputFormat = sampleBuffer.formatDescription
             delegate?.videoCodec(self, didOutput: sampleBuffer)
         }
     }
@@ -214,7 +214,7 @@ extension VideoCodec: Running {
             self.session = nil
             self.invalidateSession = true
             self.needsSync.mutate { $0 = true }
-            self.formatDescription = nil
+            self.outputFormat = nil
             #if os(iOS)
             NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)

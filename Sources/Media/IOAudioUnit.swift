@@ -5,6 +5,8 @@ import SwiftPMSupport
 #endif
 
 final class IOAudioUnit: NSObject, IOUnit {
+    typealias FormatDescription = CMAudioFormatDescription
+
     lazy var codec: AudioCodec = {
         var codec = AudioCodec()
         codec.lockQueue = lockQueue
@@ -32,6 +34,10 @@ final class IOAudioUnit: NSObject, IOUnit {
             codec.settings = settings
             resampler.settings = settings.makeAudioResamplerSettings()
         }
+    }
+    var inputFormat: FormatDescription?
+    var outputFormat: FormatDescription? {
+        return codec.outputFormat?.formatDescription
     }
     private(set) var presentationTimeStamp: CMTime = .invalid
     private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
@@ -65,6 +71,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         guard let device else {
             try capture.attachDevice(nil, audioUnit: self)
             presentationTimeStamp = .invalid
+            inputFormat = nil
             return
         }
         try capture.attachDevice(device, audioUnit: self)
@@ -152,6 +159,7 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioFormat: AVAudioFormat) {
+        inputFormat = resampler.inputFormat?.formatDescription
         codec.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
         monitor.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
     }

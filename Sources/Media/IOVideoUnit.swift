@@ -2,6 +2,8 @@ import AVFoundation
 import CoreImage
 
 final class IOVideoUnit: NSObject, IOUnit {
+    typealias FormatDescription = CMVideoFormatDescription
+
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
@@ -12,7 +14,6 @@ final class IOVideoUnit: NSObject, IOUnit {
     ]
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
-
     var context: CIContext = .init() {
         didSet {
             for effect in effects {
@@ -20,7 +21,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-
     weak var drawable: (any NetStreamDrawable)? {
         didSet {
             #if os(iOS) || os(macOS)
@@ -28,45 +28,14 @@ final class IOVideoUnit: NSObject, IOUnit {
             #endif
         }
     }
-
-    var formatDescription: CMVideoFormatDescription? {
-        didSet {
-            codec.formatDescription = formatDescription
-        }
-    }
-
+    var multiCamCaptureSettings: MultiCamCaptureSettings = .default
     lazy var codec: VideoCodec = {
         var codec = VideoCodec()
         codec.lockQueue = lockQueue
         return codec
     }()
-
     weak var mixer: IOMixer?
-
     var muted = false
-
-    private(set) var presentationTimeStamp: CMTime = .invalid
-    private(set) var effects: Set<VideoEffect> = []
-
-    private var extent = CGRect.zero {
-        didSet {
-            guard extent != oldValue else {
-                return
-            }
-            CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
-            pixelBufferPool?.createPixelBuffer(&pixelBuffer)
-        }
-    }
-
-    private var attributes: [NSString: NSObject] {
-        var attributes: [NSString: NSObject] = Self.defaultAttributes
-        attributes[kCVPixelBufferWidthKey] = NSNumber(value: Int(extent.width))
-        attributes[kCVPixelBufferHeightKey] = NSNumber(value: Int(extent.height))
-        return attributes
-    }
-
-    private var pixelBufferPool: CVPixelBufferPool?
-
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
             if #available(tvOS 17.0, *) {
@@ -75,7 +44,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-
     #if !os(tvOS)
     var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
@@ -98,7 +66,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
     #endif
-
     var torch = false {
         didSet {
             guard torch != oldValue else {
@@ -109,7 +76,10 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-
+    var inputFormat: FormatDescription?
+    var outputFormat: FormatDescription? {
+        codec.outputFormat
+    }
     #if os(tvOS)
     private var _capture: Any?
     @available(tvOS 17.0, *)
@@ -132,10 +102,25 @@ final class IOVideoUnit: NSObject, IOUnit {
     private(set) var capture: IOVideoCaptureUnit = .init()
     private(set) var multiCamCapture: IOVideoCaptureUnit = .init()
     #endif
-
-    var multiCamCaptureSettings: MultiCamCaptureSettings = .default
-
+    private(set) var presentationTimeStamp: CMTime = .invalid
+    private(set) var effects: Set<VideoEffect> = []
+    private var extent = CGRect.zero {
+        didSet {
+            guard extent != oldValue else {
+                return
+            }
+            CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
+            pixelBufferPool?.createPixelBuffer(&pixelBuffer)
+        }
+    }
+    private var attributes: [NSString: NSObject] {
+        var attributes: [NSString: NSObject] = Self.defaultAttributes
+        attributes[kCVPixelBufferWidthKey] = NSNumber(value: Int(extent.width))
+        attributes[kCVPixelBufferHeightKey] = NSNumber(value: Int(extent.height))
+        return attributes
+    }
     private var pixelBuffer: CVPixelBuffer?
+    private var pixelBufferPool: CVPixelBufferPool?
     private var multiCamSampleBuffer: CMSampleBuffer?
 
     deinit {
@@ -161,6 +146,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             capture.detachSession(mixer.session)
             try capture.attachDevice(nil, videoUnit: self)
             presentationTimeStamp = .invalid
+            inputFormat = nil
             return
         }
         mixer.session.beginConfiguration()
@@ -248,6 +234,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        inputFormat = sampleBuffer.formatDescription
         guard let buffer = sampleBuffer.imageBuffer else {
             return
         }

@@ -53,6 +53,9 @@ public class AudioCodec {
             }
         }
     }
+    var outputFormat: AVAudioFormat? {
+        return audioConverter?.outputFormat
+    }
     private var cursor: Int = 0
     private var inputBuffers: [AVAudioBuffer] = []
     private var outputBuffers: [AVAudioBuffer] = []

@@ -413,24 +413,24 @@ open class RTMPStream: NetStream {
     /// Creates flv metadata for a stream.
     open func makeMetaData() -> ASObject {
         var metadata: [String: Any] = [:]
-        #if os(iOS) || os(macOS)
-        if mixer.videoIO.capture.device != nil {
-            metadata["width"] = mixer.videoIO.codec.settings.videoSize.width
-            metadata["height"] = mixer.videoIO.codec.settings.videoSize.height
-            metadata["framerate"] = mixer.videoIO.frameRate
-            switch mixer.videoIO.codec.settings.format {
+        if mixer.videoIO.inputFormat != nil {
+            metadata["width"] = videoSettings.videoSize.width
+            metadata["height"] = videoSettings.videoSize.height
+            metadata["framerate"] = frameRate
+            switch videoSettings.format {
             case .h264:
                 metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
             case .hevc:
                 metadata["videocodecid"] = FLVVideoFourCC.hevc.rawValue
             }
-            metadata["videodatarate"] = mixer.videoIO.codec.settings.bitRate / 1000
+            metadata["videodatarate"] = videoSettings.bitRate / 1000
         }
-        #endif
-        if let inSourceFormat = mixer.audioIO.codec.inSourceFormat {
+        if mixer.audioIO.inputFormat != nil {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = audioSettings.bitRate / 1000
-            metadata["audiosamplerate"] = inSourceFormat.mSampleRate
+            if let outputFormat = mixer.audioIO.outputFormat?.audioStreamBasicDescription {
+                metadata["audiosamplerate"] = outputFormat.mSampleRate
+            }
         }
         return metadata
     }
