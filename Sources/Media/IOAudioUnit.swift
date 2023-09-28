@@ -40,6 +40,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         return codec.outputFormat?.formatDescription
     }
     private(set) var presentationTimeStamp: CMTime = .invalid
+    private var effects: Set<AudioEffect> = []
     private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
         var resampler = IOAudioResampler<IOAudioUnit>()
         resampler.delegate = self
@@ -83,6 +84,14 @@ final class IOAudioUnit: NSObject, IOUnit {
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         presentationTimeStamp = sampleBuffer.presentationTimeStamp
         resampler.appendSampleBuffer(sampleBuffer.muted(muted))
+    }
+
+    func registerEffect(_ effect: AudioEffect) -> Bool {
+        effects.insert(effect).inserted
+    }
+
+    func unregisterEffect(_ effect: AudioEffect) -> Bool {
+        effects.remove(effect) != nil
     }
 }
 
@@ -165,6 +174,9 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+        for effect in effects {
+            effect.execute(audioBuffer, presentationTimeStamp: presentationTimeStamp)
+        }
         if let mixer {
             mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
             if mixer.recorder.isRunning.value, let sampleBuffer = audioBuffer.makeSampleBuffer(presentationTimeStamp) {

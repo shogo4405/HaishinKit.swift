@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035AFA032263868E009DD0BB /* RTMPStreamTests.swift */; };
+		1A216BCE25DBFE269F68C42F /* AudioEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A21649B4F13B31B3CE59AE8 /* AudioEffect.swift */; };
 		1A216F07B0BD8E05C8ECC8F1 /* AVAudioFormat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2166D3A449D813866FE9D9 /* AVAudioFormat+Extension.swift */; };
 		2901A4EE1D437170002BBD23 /* MediaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* MediaLink.swift */; };
 		290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */; };
@@ -410,6 +411,7 @@
 
 /* Begin PBXFileReference section */
 		035AFA032263868E009DD0BB /* RTMPStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStreamTests.swift; sourceTree = "<group>"; };
+		1A21649B4F13B31B3CE59AE8 /* AudioEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioEffect.swift; sourceTree = "<group>"; };
 		1A2166D3A449D813866FE9D9 /* AVAudioFormat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAudioFormat+Extension.swift"; sourceTree = "<group>"; };
 		2901A4ED1D437170002BBD23 /* MediaLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLink.swift; sourceTree = "<group>"; };
 		290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPConnectionTests.swift; sourceTree = "<group>"; };
@@ -1065,6 +1067,7 @@
 				BC6FC91D29609A6800A746EE /* ShapeFactory.swift */,
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
+				1A21649B4F13B31B3CE59AE8 /* AudioEffect.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1802,6 +1805,7 @@
 				29B876901CD70AFE00FC07DA /* IOAudioUnit.swift in Sources */,
 				29B876771CD70ACE00FC07DA /* HTTPResponse.swift in Sources */,
 				1A216F07B0BD8E05C8ECC8F1 /* AVAudioFormat+Extension.swift in Sources */,
+				1A216BCE25DBFE269F68C42F /* AudioEffect.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
