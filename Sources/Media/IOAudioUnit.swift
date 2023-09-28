@@ -81,8 +81,12 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        presentationTimeStamp = sampleBuffer.presentationTimeStamp
-        resampler.appendSampleBuffer(sampleBuffer.muted(muted))
+        switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
+        case kAudioFormatLinearPCM:
+            resampler.appendSampleBuffer(sampleBuffer.muted(muted))
+        default:
+            codec.appendSampleBuffer(sampleBuffer)
+        }
     }
 }
 
@@ -105,7 +109,7 @@ extension IOAudioUnit: IOUnitDecoding {
         if let playerNode = mixer?.mediaLink.playerNode {
             mixer?.audioEngine?.attach(playerNode)
         }
-        codec.delegate = self
+        codec.delegate = mixer
         codec.startRunning()
     }
 
@@ -122,34 +126,7 @@ extension IOAudioUnit: IOUnitDecoding {
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        appendSampleBuffer(sampleBuffer)
-    }
-}
-
-extension IOAudioUnit: AudioCodecDelegate {
-    // MARK: AudioConverterDelegate
-    func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
-    }
-
-    func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
-        do {
-            mixer?.audioFormat = audioFormat
-            if let audioEngine = mixer?.audioEngine, audioEngine.isRunning == false {
-                try audioEngine.start()
-            }
-        } catch {
-            logger.error(error)
-        }
-    }
-
-    func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
-            return
-        }
-        if let mixer {
-            mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
-        }
-        mixer?.mediaLink.enqueueAudio(audioBuffer)
+        resampler.appendSampleBuffer(sampleBuffer.muted(muted))
     }
 }
 
@@ -165,6 +142,7 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+        self.presentationTimeStamp = presentationTimeStamp
         if let mixer {
             mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
             if mixer.recorder.isRunning.value, let sampleBuffer = audioBuffer.makeSampleBuffer(presentationTimeStamp) {

@@ -212,25 +212,6 @@ public final class IOMixer {
         IOMixer.audioEngineHolder.release(audioEngine)
     }
 
-    /// Append a CMSampleBuffer with media type.
-    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
-        switch readyState {
-        case .encoding:
-            break
-        case .decoding:
-            switch sampleBuffer.formatDescription?._mediaType {
-            case kCMMediaType_Audio:
-                audioIO.codec.appendSampleBuffer(sampleBuffer)
-            case kCMMediaType_Video:
-                videoIO.codec.appendSampleBuffer(sampleBuffer)
-            default:
-                break
-            }
-        case .standby:
-            break
-        }
-    }
-
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
     private func makeSession() -> AVCaptureSession {
@@ -437,4 +418,47 @@ extension IOMixer: Running {
         delegate?.mixer(self, sessionInterruptionEnded: session)
     }
     #endif
+}
+
+extension IOMixer: AudioCodecDelegate {
+    // MARK: AudioCodecDelegate
+    public func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
+    }
+
+    public func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
+        do {
+            self.audioFormat = audioFormat
+            if let audioEngine = audioEngine, audioEngine.isRunning == false {
+                try audioEngine.start()
+            }
+        } catch {
+            logger.error(error)
+        }
+    }
+
+    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
+            return
+        }
+        delegate?.mixer(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
+        mediaLink.enqueueAudio(audioBuffer)
+    }
+}
+
+extension IOMixer: VideoCodecDelegate {
+    // MARK: VideoCodecDelegate
+    public func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
+    }
+
+    public func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
+        mediaLink.enqueueVideo(sampleBuffer)
+    }
+
+    public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+        logger.trace(error)
+    }
+
+    public func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool {
+        return false
+    }
 }

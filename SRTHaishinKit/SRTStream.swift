@@ -213,6 +213,6 @@ extension SRTStream: TSReaderDelegate {
         guard readyState == .playing else {
             return
         }
-        mixer.appendSampleBuffer(sampleBuffer)
+        appendSampleBuffer(sampleBuffer)
     }
 }
