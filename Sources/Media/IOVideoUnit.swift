@@ -31,6 +31,8 @@ final class IOVideoUnit: NSObject, IOUnit {
             videoMixer.muted = newValue
         }
     }
+
+    #if os(iOS) || os(macOS) || os(tvOS)
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
             if #available(tvOS 17.0, *) {
@@ -39,8 +41,22 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
+
+    var torch = false {
+        didSet {
+            guard torch != oldValue else {
+                return
+            }
+            if #available(tvOS 17.0, *) {
+                setTorchMode(torch ? .on : .off)
+            }
+        }
+    }
+    #endif
+
     var context: CIContext = .init()
-    #if !os(tvOS)
+
+    #if os(iOS) || os(macOS)
     var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             guard videoOrientation != oldValue else {
@@ -62,16 +78,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
     #endif
-    var torch = false {
-        didSet {
-            guard torch != oldValue else {
-                return
-            }
-            if #available(tvOS 17.0, *) {
-                setTorchMode(torch ? .on : .off)
-            }
-        }
-    }
+
     var inputFormat: FormatDescription?
     var outputFormat: FormatDescription? {
         codec.outputFormat
@@ -94,7 +101,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
         return _multiCamCapture as! IOVideoCaptureUnit
     }
-    #else
+    #elseif os(iOS) || os(macOS)
     private(set) var capture: IOVideoCaptureUnit = .init()
     private(set) var multiCamCapture: IOVideoCaptureUnit = .init()
     #endif
@@ -115,6 +122,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
+    #if os(iOS) || os(tvOS) || os(macOS)
     @available(tvOS 17.0, *)
     func attachCamera(_ device: AVCaptureDevice?) throws {
         guard let mixer, self.capture.device != device else {
@@ -174,6 +182,13 @@ final class IOVideoUnit: NSObject, IOUnit {
         try multiCamCapture.attachDevice(device, videoUnit: self)
     }
 
+    @available(tvOS 17.0, *)
+    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
+        capture.setTorchMode(torchMode)
+        multiCamCapture.setTorchMode(torchMode)
+    }
+    #endif
+
     #if os(macOS)
     func attachScreen(_ input: AVCaptureScreenInput?) {
         guard let mixer else {
@@ -189,12 +204,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         multiCamCapture.attachScreen(input, videoUnit: self)
     }
     #endif
-
-    @available(tvOS 17.0, *)
-    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
-        capture.setTorchMode(torchMode)
-        multiCamCapture.setTorchMode(torchMode)
-    }
 
     func registerEffect(_ effect: VideoEffect) -> Bool {
         return videoMixer.registerEffect(effect)
@@ -286,6 +295,7 @@ extension IOVideoUnit: IOUnitDecoding {
     }
 }
 
+#if os(iOS) || os(tvOS) || os(macOS)
 @available(tvOS 17.0, *)
 extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
@@ -298,6 +308,7 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
         }
     }
 }
+#endif
 
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate

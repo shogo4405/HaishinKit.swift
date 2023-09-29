@@ -845,18 +845,18 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
+				2981E1301D646E3F00E8F7CA /* Cartfile */,
 				2968973E1CDB01920074D5F0 /* Examples */,
 				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
-				299F7E371CD71A76001E7272 /* Platforms */,
-				2945CBBE1B4BE66000104112 /* Products */,
-				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
-				2945CBBF1B4BE66000104112 /* Sources */,
-				29798E5A1CE60E5300F5CBD0 /* Tests */,
-				2981E1301D646E3F00E8F7CA /* Cartfile */,
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
 				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
 				29F39BE72335F8010055F9BB /* Package.swift */,
+				299F7E371CD71A76001E7272 /* Platforms */,
+				2945CBBE1B4BE66000104112 /* Products */,
 				2997BDD31D50D31B000AF900 /* README.md */,
+				2945CBBF1B4BE66000104112 /* Sources */,
+				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
+				29798E5A1CE60E5300F5CBD0 /* Tests */,
 			);
 			sourceTree = "<group>";
 			wrapsLines = 0;
@@ -1450,7 +1450,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 1300;
+				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1400;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -2227,12 +2227,12 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Debug;
@@ -2267,12 +2267,12 @@
 				PROVISIONING_PROFILE = "";
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_INCLUDE_PATHS = "";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3";
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Release;

@@ -55,10 +55,11 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
         return _capture as! IOAudioCaptureUnit
     }
-    #else
+    #elseif os(iOS) || os(macOS)
     private(set) var capture: IOAudioCaptureUnit = .init()
     #endif
 
+    #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
         guard let mixer else {
@@ -79,6 +80,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
         #endif
     }
+    #endif
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
@@ -122,6 +124,7 @@ extension IOAudioUnit: IOUnitDecoding {
     }
 }
 
+#if os(iOS) || os(tvOS) || os(macOS)
 @available(tvOS 17.0, *)
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
@@ -129,6 +132,7 @@ extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
         resampler.appendSampleBuffer(sampleBuffer.muted(muted))
     }
 }
+#endif
 
 extension IOAudioUnit: IOAudioResamplerDelegate {
     // MARK: IOAudioResamplerDelegate

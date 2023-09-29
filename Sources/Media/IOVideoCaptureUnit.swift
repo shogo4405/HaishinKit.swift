@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 
+#if os(iOS) || os(tvOS) || os(macOS)
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
 public class IOVideoCaptureUnit: IOCaptureUnit {
@@ -22,7 +23,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     }
     var connection: AVCaptureConnection?
 
-    #if !os(tvOS)
+    #if os(iOS) || os(macOS)
     /// Specifies the videoOrientation indicates whether to rotate the video flowing through the connection to a given orientation.
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
@@ -161,3 +162,4 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
         output?.setSampleBufferDelegate(videoUnit, queue: videoUnit?.lockQueue)
     }
 }
+#endif

@@ -63,7 +63,7 @@ public final class IOMixer {
             _session = newValue
         }
     }
-    #else
+    #elseif os(iOS) || os(macOS)
     /// The capture session instance.
     public internal(set) lazy var session: AVCaptureSession = makeSession() {
         didSet {
@@ -163,7 +163,7 @@ public final class IOMixer {
             session.commitConfiguration()
         }
     }
-    #else
+    #elseif os(iOS) || os(macOS)
     var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
             guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
@@ -176,6 +176,7 @@ public final class IOMixer {
     }
     #endif
 
+    #if os(iOS) || os(macOS) || os(tvOS)
     var inBackgroundMode = false {
         didSet {
             if #available(tvOS 17.0, *) {
@@ -197,6 +198,7 @@ public final class IOMixer {
             }
         }
     }
+    #endif
 
     private var readyState: ReadyState = .standby
     private(set) lazy var audioEngine: AVAudioEngine? = {
@@ -204,11 +206,13 @@ public final class IOMixer {
     }()
 
     deinit {
+        #if os(iOS) || os(macOS) || os(tvOS)
         if #available(tvOS 17.0, *) {
             if session.isRunning {
                 session.stopRunning()
             }
         }
+        #endif
         IOMixer.audioEngineHolder.release(audioEngine)
     }
 
@@ -229,7 +233,7 @@ public final class IOMixer {
         }
         return session
     }
-    #else
+    #elseif os(macOS)
     private func makeSession() -> AVCaptureSession {
         let session = AVCaptureSession()
         if session.canSetSessionPreset(sessionPreset) {
@@ -298,6 +302,7 @@ extension IOMixer: MediaLinkDelegate {
     }
 }
 
+#if os(iOS) || os(macOS) || os(tvOS)
 extension IOMixer: Running {
     // MARK: Running
     public func startRunning() {
@@ -419,6 +424,32 @@ extension IOMixer: Running {
     }
     #endif
 }
+#else
+extension IOMixer: Running {
+    public func startRunning() {
+    }
+    public func stopRunning() {
+    }
+}
+#endif
+
+extension IOMixer: VideoCodecDelegate {
+    // MARK: VideoCodecDelegate
+    public func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
+    }
+
+    public func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
+        mediaLink.enqueueVideo(sampleBuffer)
+    }
+
+    public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+        logger.trace(error)
+    }
+
+    public func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool {
+        return false
+    }
+}
 
 extension IOMixer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
@@ -442,23 +473,5 @@ extension IOMixer: AudioCodecDelegate {
         }
         delegate?.mixer(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
         mediaLink.enqueueAudio(audioBuffer)
-    }
-}
-
-extension IOMixer: VideoCodecDelegate {
-    // MARK: VideoCodecDelegate
-    public func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
-    }
-
-    public func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
-        mediaLink.enqueueVideo(sampleBuffer)
-    }
-
-    public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
-        logger.trace(error)
-    }
-
-    public func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool {
-        return false
     }
 }
