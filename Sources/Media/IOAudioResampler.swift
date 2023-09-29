@@ -23,9 +23,9 @@ struct IOAudioResamplerSettings {
         self.channelMap = channelMap
     }
 
-    func invalidate(_ oldValue: IOAudioResamplerSettings!) -> Bool {
-        return (sampleRate != oldValue.sampleRate &&
-                    channels != oldValue.channels)
+    func invalidate(_ oldValue: IOAudioResamplerSettings) -> Bool {
+        return !(sampleRate == oldValue.sampleRate &&
+                    channels == oldValue.channels)
     }
 
     func apply(_ converter: AVAudioConverter?, oldValue: IOAudioResamplerSettings?) {
