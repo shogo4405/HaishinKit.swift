@@ -3,7 +3,7 @@ import Foundation
 
 /// An interface that manages the NetStream content on the screen.
 public protocol NetStreamDrawable: AnyObject {
-    #if !os(tvOS)
+    #if os(iOS) || os(macOS)
     /// Specifies the orientation of AVCaptureVideoOrientation.
     var videoOrientation: AVCaptureVideoOrientation { get set }
     #endif

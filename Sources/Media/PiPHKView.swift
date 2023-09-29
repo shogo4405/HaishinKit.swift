@@ -1,4 +1,4 @@
-#if os(iOS) || os(tvOS)
+#if os(iOS) || os(tvOS) || os(visionOS)
 import AVFoundation
 import Foundation
 import UIKit
@@ -25,7 +25,7 @@ public class PiPHKView: UIView {
         }
     }
 
-    #if !os(tvOS)
+    #if os(iOS)
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             if Thread.isMainThread {

@@ -65,6 +65,7 @@ open class NetStream: NSObject {
         }
     }
 
+    #if os(iOS) || os(macOS) || os(tvOS)
     /// Specifiet the device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public var torch: Bool {
         get {
@@ -113,9 +114,10 @@ open class NetStream: NSObject {
             }
         }
     }
+    #endif
 
     /// Specifies the video orientation for stream.
-    #if !os(tvOS)
+    #if os(iOS) || os(macOS)
     public var videoOrientation: AVCaptureVideoOrientation {
         get {
             mixer.videoIO.videoOrientation
@@ -185,6 +187,7 @@ open class NetStream: NSObject {
         #endif
     }
 
+    #if os(iOS) || os(macOS) || os(tvOS)
     /// Attaches the primary camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(tvOS 17.0, *)
@@ -224,15 +227,6 @@ open class NetStream: NSObject {
         }
     }
 
-    #if os(macOS)
-    /// Attaches the screen input object.
-    open func attachScreen(_ input: AVCaptureScreenInput?) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(input)
-        }
-    }
-    #endif
-
     /// Returns the IOVideoCaptureUnit by index.
     @available(tvOS 17.0, *)
     public func videoCapture(for index: Int) -> IOVideoCaptureUnit? {
@@ -247,6 +241,16 @@ open class NetStream: NSObject {
             }
         }
     }
+    #endif
+
+    #if os(macOS)
+    /// Attaches the screen input object.
+    open func attachScreen(_ input: AVCaptureScreenInput?) {
+        lockQueue.async {
+            self.mixer.videoIO.attachScreen(input)
+        }
+    }
+    #endif
 
     /// Append a CMSampleBuffer?.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.

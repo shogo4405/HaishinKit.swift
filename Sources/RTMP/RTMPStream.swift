@@ -416,7 +416,9 @@ open class RTMPStream: NetStream {
         if mixer.videoIO.inputFormat != nil {
             metadata["width"] = videoSettings.videoSize.width
             metadata["height"] = videoSettings.videoSize.height
+            #if os(iOS) || os(macOS) || os(tvOS)
             metadata["framerate"] = frameRate
+            #endif
             switch videoSettings.format {
             case .h264:
                 metadata["videocodecid"] = FLVVideoCodec.avc.rawValue

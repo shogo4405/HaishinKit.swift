@@ -1,3 +1,5 @@
+#if os(iOS) || os(tvOS) || os(macOS)
+
 import AVFoundation
 import MetalKit
 
@@ -144,3 +146,5 @@ extension MTHKView: MTKViewDelegate {
         commandBuffer.commit()
     }
 }
+
+#endif
