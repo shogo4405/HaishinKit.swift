@@ -46,8 +46,7 @@ Project name    |Notes       |License
 - [x] Authentication
 - [x] Publish and Recording
 - [x] _Playback (Beta)_
-- [x] Adaptive bitrate streaming
-  - [x] Handling (see also [#1153](/../../issues/1153))
+- [x] Adaptive bitrate streaming (see also [#1308](/../../issues/1308))
 - [ ] Action Message Format
   - [x] AMF0
   - [ ] AMF3

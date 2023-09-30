@@ -289,10 +289,6 @@ extension TSWriter: VideoCodecDelegate {
 
     public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
     }
-
-    public func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool {
-        return false
-    }
 }
 
 class TSFileWriter: TSWriter {

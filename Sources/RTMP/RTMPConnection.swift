@@ -450,11 +450,12 @@ public class RTMPConnection: EventDispatcher {
     private func on(timer: Timer) {
         let totalBytesIn = self.totalBytesIn
         let totalBytesOut = self.totalBytesOut
+        let queueBytesOut = self.socket.queueBytesOut.value
         currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
         currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn
         previousTotalBytesOut = totalBytesOut
-        previousQueueBytesOut.append(socket.queueBytesOut.value)
+        previousQueueBytesOut.append(queueBytesOut)
         for stream in streams {
             stream.on(timer: timer)
         }
@@ -465,10 +466,20 @@ public class RTMPConnection: EventDispatcher {
             }
             if total == measureInterval - 1 {
                 for stream in streams {
+                    stream.bitrateStrategy.insufficientBWOccured(NetBitRateStats(
+                        currentQueueBytesOut: queueBytesOut,
+                        currentBytesInPerSecond: currentBytesInPerSecond,
+                        currentBytesOutPerSecond: currentBytesOutPerSecond
+                    ))
                     delegate?.connection(self, publishInsufficientBWOccured: stream)
                 }
             } else if total == 0 {
                 for stream in streams {
+                    stream.bitrateStrategy.sufficientBWOccured(NetBitRateStats(
+                        currentQueueBytesOut: queueBytesOut,
+                        currentBytesInPerSecond: currentBytesInPerSecond,
+                        currentBytesOutPerSecond: currentBytesOutPerSecond
+                    ))
                     delegate?.connection(self, publishSufficientBWOccured: stream)
                 }
             }

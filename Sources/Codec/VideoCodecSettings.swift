@@ -3,6 +3,11 @@ import VideoToolbox
 
 /// The VideoCodecSettings class  specifying video compression settings.
 public struct VideoCodecSettings: Codable {
+    public static let frameInterval30 = (1 / 30) - 0.001
+    public static let frameInterval10 = (1 / 10) - 0.001
+    public static let frameInterval05 = (1 / 05) - 0.001
+    public static let frameInterval01 = (1 / 01) - 0.001
+
     /// The defulat value.
     public static let `default` = VideoCodecSettings()
 
@@ -76,7 +81,9 @@ public struct VideoCodecSettings: Codable {
     /// Specifies the video size of encoding video.
     public var videoSize: CGSize
     /// Specifies the bitrate.
-    public var bitRate: UInt32
+    public var bitRate: Int
+    /// Specifies the video frame interval.
+    public var frameInterval: Double
     /// Specifies the keyframeInterval.
     public var maxKeyFrameIntervalDuration: Int32
     /// Specifies the scalingMode.
@@ -104,7 +111,8 @@ public struct VideoCodecSettings: Codable {
     public init(
         videoSize: CGSize = .init(width: 854, height: 480),
         profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String,
-        bitRate: UInt32 = 640 * 1000,
+        bitRate: Int = 640 * 1000,
+        frameInterval: Double = 0.0,
         maxKeyFrameIntervalDuration: Int32 = 2,
         scalingMode: ScalingMode = .trim,
         bitRateMode: BitRateMode = .average,
@@ -114,14 +122,15 @@ public struct VideoCodecSettings: Codable {
         self.videoSize = videoSize
         self.profileLevel = profileLevel
         self.bitRate = bitRate
+        self.frameInterval = frameInterval
         self.maxKeyFrameIntervalDuration = maxKeyFrameIntervalDuration
         self.scalingMode = scalingMode
         self.bitRateMode = bitRateMode
         self.allowFrameReordering = allowFrameReordering
-        self.isHardwareEncoderEnabled = isHardwareEncoderEnabled
         if profileLevel.contains("HEVC") {
             self.format = .hevc
         }
+        self.isHardwareEncoderEnabled = isHardwareEncoderEnabled
     }
 
     func invalidateSession(_ rhs: VideoCodecSettings) -> Bool {
@@ -141,6 +150,9 @@ public struct VideoCodecSettings: Codable {
             if let status = codec.session?.setOption(option), status != noErr {
                 codec.delegate?.videoCodec(codec, errorOccurred: .failedToSetOption(status: status, option: option))
             }
+        }
+        if frameInterval != rhs.frameInterval {
+            codec.frameInterval = frameInterval
         }
     }
 

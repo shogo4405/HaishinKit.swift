@@ -1,8 +1,7 @@
 import AVFoundation
 import CoreFoundation
 import VideoToolbox
-
-#if os(iOS)
+#if canImport(UIKit)
 import UIKit
 #endif
 
@@ -16,15 +15,15 @@ public protocol VideoCodecDelegate: AnyObject {
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
     func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error)
-    /// Tells the receiver to drop frame.
-    func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool
 }
 
 // MARK: -
 /**
  * The VideoCodec class provides methods for encode or decode for video.
  */
-public class VideoCodec {
+public final class VideoCodec {
+    static let defaultFrameInterval = 0.0
+
     /**
      * The VideoCodec error domain codes.
      */
@@ -61,15 +60,6 @@ public class VideoCodec {
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
-    var expectedFrameRate = IOMixer.defaultFrameRate
-    private(set) var outputFormat: CMFormatDescription? {
-        didSet {
-            guard !CMFormatDescriptionEqual(outputFormat, otherFormatDescription: oldValue) else {
-                return
-            }
-            delegate?.videoCodec(self, didOutput: outputFormat)
-        }
-    }
     var needsSync: Atomic<Bool> = .init(true)
     var attributes: [NSString: AnyObject]? {
         guard VideoCodec.defaultAttributes != nil else {
@@ -83,7 +73,17 @@ public class VideoCodec {
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: settings.videoSize.height)
         return attributes
     }
+    var frameInterval = VideoCodec.defaultFrameInterval
+    var expectedFrameRate = IOMixer.defaultFrameRate
     weak var delegate: (any VideoCodecDelegate)?
+    private(set) var outputFormat: CMFormatDescription? {
+        didSet {
+            guard !CMFormatDescriptionEqual(outputFormat, otherFormatDescription: oldValue) else {
+                return
+            }
+            delegate?.videoCodec(self, didOutput: outputFormat)
+        }
+    }
     private(set) var session: (any VTSessionConvertible)? {
         didSet {
             oldValue?.invalidate()
@@ -91,9 +91,10 @@ public class VideoCodec {
         }
     }
     private var invalidateSession = true
+    private var presentationTimeStamp: CMTime = .invalid
 
     func appendImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard isRunning.value, !(delegate?.videoCodecWillDropFame(self) ?? false) else {
+        guard isRunning.value, !willDropFrame(presentationTimeStamp) else {
             return
         }
         if invalidateSession {
@@ -108,6 +109,7 @@ public class VideoCodec {
                 delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
+            self.presentationTimeStamp = sampleBuffer.presentationTimeStamp
             outputFormat = sampleBuffer.formatDescription
             delegate?.videoCodec(self, didOutput: sampleBuffer)
         }
@@ -163,7 +165,15 @@ public class VideoCodec {
         }
     }
 
-    #if os(iOS)
+    private func willDropFrame(_ presentationTimeStamp: CMTime) -> Bool {
+        guard Self.defaultFrameInterval < frameInterval else {
+            return false
+        }
+        print(presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval)
+        return presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval
+    }
+
+    #if os(iOS) || os(tvOS) || os(visionOS)
     @objc
     private func applicationWillEnterForeground(_ notification: Notification) {
         invalidateSession = true
@@ -192,7 +202,7 @@ extension VideoCodec: Running {
     public func startRunning() {
         lockQueue.async {
             self.isRunning.mutate { $0 = true }
-            #if os(iOS)
+            #if os(iOS) || os(tvOS) || os(visionOS)
             NotificationCenter.default.addObserver(
                 self,
                 selector: #selector(self.didAudioSessionInterruption),
@@ -215,7 +225,8 @@ extension VideoCodec: Running {
             self.invalidateSession = true
             self.needsSync.mutate { $0 = true }
             self.outputFormat = nil
-            #if os(iOS)
+            self.presentationTimeStamp = .invalid
+            #if os(iOS) || os(tvOS) || os(visionOS)
             NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
             #endif
