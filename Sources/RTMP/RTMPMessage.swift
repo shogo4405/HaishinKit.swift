@@ -586,15 +586,13 @@ final class RTMPAudioMessage: RTMPMessage {
         switch payload[1] {
         case FLVAACPacketType.seq.rawValue:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
-            stream.mixer.audioIO.codec.settings.format = .pcm
-            stream.mixer.audioIO.codec.inSourceFormat = config?.audioStreamBasicDescription()
+            stream.mixer.audioIO.setAudioStreamBasicDescription(config?.audioStreamBasicDescription())
         case FLVAACPacketType.raw.rawValue:
-            if stream.mixer.audioIO.codec.inSourceFormat == nil {
-                stream.mixer.audioIO.codec.settings.format = .pcm
-                stream.mixer.audioIO.codec.inSourceFormat = makeAudioStreamBasicDescription()
+            if stream.mixer.audioIO.inputFormat == nil {
+                stream.mixer.audioIO.setAudioStreamBasicDescription(makeAudioStreamBasicDescription())
             }
             if let audioBuffer = makeAudioBuffer(stream) {
-                stream.mixer.audioIO.codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
+                stream.mixer.audioIO.appendAudioBuffer(audioBuffer, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
             }
         default:
             break
@@ -603,7 +601,7 @@ final class RTMPAudioMessage: RTMPMessage {
 
     private func makeAudioBuffer(_ stream: RTMPStream) -> AVAudioBuffer? {
         return payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> AVAudioBuffer? in
-            guard let baseAddress = buffer.baseAddress, let buffer = stream.mixer.audioIO.codec.inputBuffer as? AVAudioCompressedBuffer else {
+            guard let baseAddress = buffer.baseAddress, let buffer = stream.mixer.audioIO.inputBuffer as? AVAudioCompressedBuffer else {
                 return nil
             }
             let byteCount = payload.count - codec.headerSize
@@ -653,7 +651,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 makeFormatDescription(stream, format: .h264)
             case FLVAVCPacketType.nal.rawValue:
                 if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 0) {
-                    stream.mixer.videoIO.codec.appendSampleBuffer(sampleBuffer)
+                    stream.mixer.videoIO.appendSampleBuffer(sampleBuffer)
                 }
             default:
                 break
@@ -668,7 +666,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 makeFormatDescription(stream, format: .hevc)
             case FLVVideoPacketType.codedFrames.rawValue:
                 if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 3) {
-                    stream.mixer.videoIO.codec.appendSampleBuffer(sampleBuffer)
+                    stream.mixer.videoIO.appendSampleBuffer(sampleBuffer)
                 }
             default:
                 break

@@ -7,11 +7,6 @@ import SwiftPMSupport
 final class IOAudioUnit: NSObject, IOUnit {
     typealias FormatDescription = CMAudioFormatDescription
 
-    lazy var codec: AudioCodec = {
-        var codec = AudioCodec()
-        codec.lockQueue = lockQueue
-        return codec
-    }()
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
     var soundTransform: SoundTransform = .init() {
         didSet {
@@ -39,7 +34,15 @@ final class IOAudioUnit: NSObject, IOUnit {
     var outputFormat: FormatDescription? {
         return codec.outputFormat?.formatDescription
     }
+    var inputBuffer: AVAudioBuffer? {
+        return codec.inputBuffer
+    }
     private(set) var presentationTimeStamp: CMTime = .invalid
+    private lazy var codec: AudioCodec = {
+        var codec = AudioCodec()
+        codec.lockQueue = lockQueue
+        return codec
+    }()
     private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
         var resampler = IOAudioResampler<IOAudioUnit>()
         resampler.delegate = self
@@ -90,6 +93,26 @@ final class IOAudioUnit: NSObject, IOUnit {
             codec.appendSampleBuffer(sampleBuffer)
         }
     }
+
+    func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+        codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
+    }
+
+    func setAudioStreamBasicDescription(_ audioStreamBasicDescription: AudioStreamBasicDescription?) {
+        guard var audioStreamBasicDescription else {
+            return
+        }
+        let status = CMAudioFormatDescriptionCreate(
+            allocator: kCFAllocatorDefault,
+            asbd: &audioStreamBasicDescription,
+            layoutSize: 0,
+            layout: nil,
+            magicCookieSize: 0,
+            magicCookie: nil,
+            extensions: nil,
+            formatDescriptionOut: &inputFormat
+        )
+    }
 }
 
 extension IOAudioUnit: IOUnitEncoding {
@@ -108,6 +131,7 @@ extension IOAudioUnit: IOUnitEncoding {
 extension IOAudioUnit: IOUnitDecoding {
     // MARK: IOUnitDecoding
     func startDecoding() {
+        codec.settings.format = .pcm
         if let playerNode = mixer?.mediaLink.playerNode {
             mixer?.audioEngine?.attach(playerNode)
         }

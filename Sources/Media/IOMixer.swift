@@ -24,12 +24,6 @@ public final class IOMixer {
         return AVAudioEngine()
     }
 
-    enum ReadyState {
-        case standby
-        case encoding
-        case decoding
-    }
-
     public var hasVideo: Bool {
         get {
             mediaLink.hasVideo
@@ -200,7 +194,6 @@ public final class IOMixer {
     }
     #endif
 
-    private var readyState: ReadyState = .standby
     private(set) lazy var audioEngine: AVAudioEngine? = {
         return IOMixer.audioEngineHolder.retain()
     }()
@@ -247,46 +240,30 @@ public final class IOMixer {
 extension IOMixer: IOUnitEncoding {
     /// Starts encoding for video and audio data.
     public func startEncoding(_ delegate: any AVCodecDelegate) {
-        guard readyState == .standby else {
-            return
-        }
-        readyState = .encoding
         videoIO.startEncoding(delegate)
         audioIO.startEncoding(delegate)
     }
 
     /// Stop encoding.
     public func stopEncoding() {
-        guard readyState == .encoding else {
-            return
-        }
         videoIO.stopEncoding()
         audioIO.stopEncoding()
-        readyState = .standby
     }
 }
 
 extension IOMixer: IOUnitDecoding {
     /// Starts decoding for video and audio data.
     public func startDecoding() {
-        guard readyState == .standby else {
-            return
-        }
         audioIO.startDecoding()
         videoIO.startDecoding()
         mediaLink.startRunning()
-        readyState = .decoding
     }
 
     /// Stop decoding.
     public func stopDecoding() {
-        guard readyState == .decoding else {
-            return
-        }
         mediaLink.stopRunning()
         audioIO.stopDecoding()
         videoIO.stopDecoding()
-        readyState = .standby
     }
 }
 
@@ -375,8 +352,8 @@ extension IOMixer: Running {
             let isMultiCamSupported = true
             #endif
             guard let device = error.device, let format = device.videoFormat(
-                width: sessionPreset.width ?? Int32(videoIO.codec.settings.videoSize.width),
-                height: sessionPreset.height ?? Int32(videoIO.codec.settings.videoSize.height),
+                width: sessionPreset.width ?? Int32(videoIO.settings.videoSize.width),
+                height: sessionPreset.height ?? Int32(videoIO.settings.videoSize.height),
                 frameRate: videoIO.frameRate,
                 isMultiCamSupported: isMultiCamSupported
             ), device.activeFormat != format else {

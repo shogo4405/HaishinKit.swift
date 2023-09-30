@@ -171,10 +171,10 @@ open class NetStream: NSObject {
     /// Specifies the video compression properties.
     public var videoSettings: VideoCodecSettings {
         get {
-            mixer.videoIO.codec.settings
+            mixer.videoIO.settings
         }
         set {
-            mixer.videoIO.codec.settings = newValue
+            mixer.videoIO.settings = newValue
         }
     }
 

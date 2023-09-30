@@ -17,11 +17,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
     var multiCamCaptureSettings: MultiCamCaptureSettings = .default
-    lazy var codec: VideoCodec = {
-        var codec = VideoCodec()
-        codec.lockQueue = lockQueue
-        return codec
-    }()
     weak var mixer: IOMixer?
     var muted: Bool {
         get {
@@ -31,7 +26,14 @@ final class IOVideoUnit: NSObject, IOUnit {
             videoMixer.muted = newValue
         }
     }
-
+    var settings: VideoCodecSettings {
+        get {
+            return codec.settings
+        }
+        set {
+            codec.settings = newValue
+        }
+    }
     #if os(iOS) || os(macOS) || os(tvOS)
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
@@ -110,6 +112,11 @@ final class IOVideoUnit: NSObject, IOUnit {
         var videoMixer = IOVideoMixer<IOVideoUnit>()
         videoMixer.delegate = self
         return videoMixer
+    }()
+    private lazy var codec: VideoCodec = {
+        var codec = VideoCodec()
+        codec.lockQueue = lockQueue
+        return codec
     }()
 
     deinit {
