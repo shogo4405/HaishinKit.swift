@@ -169,7 +169,6 @@ public final class VideoCodec {
         guard Self.defaultFrameInterval < frameInterval else {
             return false
         }
-        print(presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval)
         return presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval
     }
 
