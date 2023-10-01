@@ -86,12 +86,6 @@ public struct VideoCodecSettings: Codable {
     public var frameInterval: Double
     /// Specifies the keyframeInterval.
     public var maxKeyFrameIntervalDuration: Int32
-    /// Specifies the scalingMode.
-    public var scalingMode: ScalingMode
-    /// Specifies the allowFrameRecording.
-    public var allowFrameReordering: Bool? // swiftlint:disable:this discouraged_optional_boolean
-    /// Specifies the bitRateMode.
-    public var bitRateMode: BitRateMode
     /// Specifies the H264 profileLevel.
     public var profileLevel: String {
         didSet {
@@ -102,6 +96,12 @@ public struct VideoCodecSettings: Codable {
             }
         }
     }
+    /// Specifies the scalingMode.
+    public var scalingMode: ScalingMode
+    /// Specifies the bitRateMode.
+    public var bitRateMode: BitRateMode
+    /// Specifies the allowFrameRecording.
+    public var allowFrameReordering: Bool? // swiftlint:disable:this discouraged_optional_boolean
     /// Specifies the HardwareEncoder is enabled(TRUE), or not(FALSE) for macOS.
     public var isHardwareEncoderEnabled = true
 
@@ -110,13 +110,13 @@ public struct VideoCodecSettings: Codable {
     /// Creates a new VideoCodecSettings instance.
     public init(
         videoSize: CGSize = .init(width: 854, height: 480),
-        profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String,
         bitRate: Int = 640 * 1000,
         frameInterval: Double = 0.0,
         maxKeyFrameIntervalDuration: Int32 = 2,
+        profileLevel: String = kVTProfileLevel_H264_Baseline_3_1 as String,
         scalingMode: ScalingMode = .trim,
         bitRateMode: BitRateMode = .average,
-        allowFrameReordering: Bool? = nil, // swiftlint:disable:this discouraged_optional_boolean
+        allowFrameReordering: Bool? = nil, // swiftlint:disable:this discouraged_optional_boolean,
         isHardwareEncoderEnabled: Bool = true
     ) {
         self.videoSize = videoSize

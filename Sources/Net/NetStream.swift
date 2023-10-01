@@ -4,7 +4,7 @@ import CoreMedia
 #if canImport(ScreenCaptureKit)
 import ScreenCaptureKit
 #endif
-#if os(iOS)
+#if os(iOS) || os(tvOS)
 import UIKit
 #endif
 
@@ -14,10 +14,12 @@ public protocol NetStreamDelegate: AnyObject {
     func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
     /// Tells the receiver to playback a video packet incoming.
     func stream(_ stream: NetStream, didOutput video: CMSampleBuffer)
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
     /// Tells the receiver to session was interrupted.
+    @available(tvOS 17.0, *)
     func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
     /// Tells the receiver to session interrupted ended.
+    @available(tvOS 17.0, *)
     func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
     /// Tells the receiver to video codec error occured.
@@ -187,7 +189,7 @@ open class NetStream: NSObject {
     /// Creates a NetStream object.
     override public init() {
         super.init()
-        #if os(iOS)
+        #if os(iOS) || os(tvOS)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         #endif
@@ -251,7 +253,7 @@ open class NetStream: NSObject {
 
     #if os(macOS)
     /// Attaches the screen input object.
-    open func attachScreen(_ input: AVCaptureScreenInput?) {
+    public func attachScreen(_ input: AVCaptureScreenInput?) {
         lockQueue.async {
             self.mixer.videoIO.attachScreen(input)
         }
@@ -300,7 +302,7 @@ open class NetStream: NSObject {
         mixer.recorder.stopRunning()
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
     @objc
     private func didEnterBackground(_ notification: Notification) {
         // Require main thread. Otherwise the microphone cannot be used in the background.
@@ -326,11 +328,13 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
     }
 
-    #if os(iOS)
+    #if os(iOS) || os(tvOS)
+    @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
         delegate?.stream(self, sessionWasInterrupted: session, reason: reason)
     }
 
+    @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession) {
         delegate?.stream(self, sessionInterruptionEnded: session)
     }

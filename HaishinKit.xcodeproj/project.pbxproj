@@ -764,9 +764,9 @@
 		290907CE1C3961BC00F2E80C /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				BC701F312AAC676C00C4BEFE /* AVAudioFormatFactory.swift */,
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
 				29DC17B221D0CC0600E26CED /* Atomic.swift */,
+				BC701F312AAC676C00C4BEFE /* AVAudioFormatFactory.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
@@ -1105,21 +1105,13 @@
 		29D3D4FE1ED0536700DD4AA6 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				29D3D5011ED053C000DD4AA6 /* Base.lproj */,
+				29D3D5021ED053C000DD4AA6 /* Main.storyboard */,
 				29D3D4FF1ED053C000DD4AA6 /* AppDelegate.swift */,
 				29D3D5001ED053C000DD4AA6 /* Assets.xcassets */,
 				29D3D5041ED053C000DD4AA6 /* Info.plist */,
 				29D3D5051ED053C000DD4AA6 /* ViewController.swift */,
 			);
 			path = tvOS;
-			sourceTree = "<group>";
-		};
-		29D3D5011ED053C000DD4AA6 /* Base.lproj */ = {
-			isa = PBXGroup;
-			children = (
-				29D3D5021ED053C000DD4AA6 /* Main.storyboard */,
-			);
-			path = Base.lproj;
 			sourceTree = "<group>";
 		};
 		29EA87D11E799EFF0043A5F8 /* Extension */ = {
@@ -1490,7 +1482,6 @@
 					29D3D4EE1ED0531500DD4AA6 = {
 						CreatedOnToolsVersion = 8.3.2;
 						LastSwiftMigration = 1020;
-						ProvisioningStyle = Automatic;
 					};
 					BCCC45952AA289FA0016EFE8 = {
 						CreatedOnToolsVersion = 14.3;
@@ -2499,6 +2490,8 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -2512,6 +2505,7 @@
 				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.Example-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -2519,7 +2513,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 12.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
 			name = Debug;
 		};
@@ -2532,6 +2526,8 @@
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
@@ -2544,13 +2540,14 @@
 				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.haishinkit.Example-tvOS";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = appletvos;
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
-				TVOS_DEPLOYMENT_TARGET = 12.0;
+				TVOS_DEPLOYMENT_TARGET = 17.0;
 			};
 			name = Release;
 		};
