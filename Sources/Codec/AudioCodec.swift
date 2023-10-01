@@ -37,15 +37,15 @@ public class AudioCodec {
         }
     }
     var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioCodec.lock")
-    var inSourceFormat: AudioStreamBasicDescription? {
+    var inputFormat: AVAudioFormat? {
         didSet {
-            guard var inSourceFormat, inSourceFormat != oldValue else {
+            guard inputFormat != oldValue else {
                 return
             }
             cursor = 0
             inputBuffers.removeAll()
             outputBuffers.removeAll()
-            audioConverter = makeAudioConverter(&inSourceFormat)
+            audioConverter = makeAudioConverter()
             for _ in 0..<settings.format.bufferCounts {
                 if let inputBuffer = makeInputBuffer() {
                     inputBuffers.append(inputBuffer)
@@ -126,10 +126,10 @@ public class AudioCodec {
     }
 
     private func makeInputBuffer() -> AVAudioBuffer? {
-        guard let inputFormat = audioConverter?.inputFormat else {
+        guard let inputFormat else {
             return nil
         }
-        switch inSourceFormat?.mFormatID {
+        switch inputFormat.formatDescription.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
             let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: Self.frameCapacity)
             buffer?.frameLength = Self.frameCapacity
@@ -139,10 +139,10 @@ public class AudioCodec {
         }
     }
 
-    private func makeAudioConverter(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioConverter? {
+    private func makeAudioConverter() -> AVAudioConverter? {
         guard
-            let inputFormat = AVAudioFormatFactory.makeAudioFormat(&inSourceFormat),
-            let outputFormat = settings.format.makeAudioFormat(inSourceFormat) else {
+            let inputFormat,
+            let outputFormat = settings.format.makeAudioFormat(inputFormat) else {
             return nil
         }
         if logger.isEnabledFor(level: .info) {

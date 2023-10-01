@@ -5,7 +5,7 @@ import SwiftPMSupport
 #endif
 
 final class IOAudioUnit: NSObject, IOUnit {
-    typealias FormatDescription = CMAudioFormatDescription
+    typealias FormatDescription = AVAudioFormat
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
     var soundTransform: SoundTransform = .init() {
@@ -30,9 +30,9 @@ final class IOAudioUnit: NSObject, IOUnit {
             resampler.settings = settings.makeAudioResamplerSettings()
         }
     }
-    var inputFormat: FormatDescription?
+    private(set) var inputFormat: FormatDescription?
     var outputFormat: FormatDescription? {
-        return codec.outputFormat?.formatDescription
+        return codec.outputFormat
     }
     var inputBuffer: AVAudioBuffer? {
         return codec.inputBuffer
@@ -102,17 +102,9 @@ final class IOAudioUnit: NSObject, IOUnit {
         guard var audioStreamBasicDescription else {
             return
         }
-        CMAudioFormatDescriptionCreate(
-            allocator: kCFAllocatorDefault,
-            asbd: &audioStreamBasicDescription,
-            layoutSize: 0,
-            layout: nil,
-            magicCookieSize: 0,
-            magicCookie: nil,
-            extensions: nil,
-            formatDescriptionOut: &inputFormat
-        )
-        codec.inSourceFormat = audioStreamBasicDescription
+        let audioFormat = AVAudioFormat(streamDescription: &audioStreamBasicDescription)
+        inputFormat = audioFormat
+        codec.inputFormat = audioFormat
     }
 }
 
@@ -165,8 +157,8 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioFormat: AVAudioFormat) {
-        inputFormat = resampler.inputFormat?.formatDescription
-        codec.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
+        inputFormat = resampler.inputFormat
+        codec.inputFormat = audioFormat
         monitor.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
     }
 

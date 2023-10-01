@@ -98,20 +98,17 @@ public struct AudioCodecSettings: Codable {
             }
         }
 
-        func makeAudioFormat(_ inSourceFormat: AudioStreamBasicDescription?) -> AVAudioFormat? {
-            guard let inSourceFormat else {
-                return nil
-            }
+        func makeAudioFormat(_ format: AVAudioFormat) -> AVAudioFormat? {
             switch self {
             case .aac:
                 var streamDescription = AudioStreamBasicDescription(
-                    mSampleRate: inSourceFormat.mSampleRate,
+                    mSampleRate: format.sampleRate,
                     mFormatID: formatID,
                     mFormatFlags: formatFlags,
                     mBytesPerPacket: bytesPerPacket,
                     mFramesPerPacket: framesPerPacket,
                     mBytesPerFrame: bytesPerFrame,
-                    mChannelsPerFrame: min(inSourceFormat.mChannelsPerFrame, AudioCodecSettings.maximumNumberOfChannels),
+                    mChannelsPerFrame: min(format.channelCount, AudioCodecSettings.maximumNumberOfChannels),
                     mBitsPerChannel: bitsPerChannel,
                     mReserved: 0
                 )
@@ -119,8 +116,8 @@ public struct AudioCodecSettings: Codable {
             case .pcm:
                 return AVAudioFormat(
                     commonFormat: .pcmFormatFloat32,
-                    sampleRate: inSourceFormat.mSampleRate,
-                    channels: min(inSourceFormat.mChannelsPerFrame, AudioCodecSettings.maximumNumberOfChannels),
+                    sampleRate: format.sampleRate,
+                    channels: min(format.channelCount, AudioCodecSettings.maximumNumberOfChannels),
                     interleaved: true
                 )
             }
