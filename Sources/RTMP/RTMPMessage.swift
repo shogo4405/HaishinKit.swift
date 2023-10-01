@@ -721,18 +721,17 @@ final class RTMPVideoMessage: RTMPMessage {
     }
 
     private func makeFormatDescription(_ stream: RTMPStream, format: VideoCodecSettings.Format) {
-        var status = noErr
         switch format {
         case .h264:
             var config = AVCDecoderConfigurationRecord()
             config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            status = config.makeFormatDescription(&stream.mixer.videoIO.inputFormat)
+            stream.mixer.videoIO.setConfigurationRecord(config)
         case .hevc:
             var config = HEVCDecoderConfigurationRecord()
             config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            status = config.makeFormatDescription(&stream.mixer.videoIO.inputFormat)
+            stream.mixer.videoIO.setConfigurationRecord(config)
         }
-        if status == noErr {
+        if stream.mixer.videoIO.inputFormat != nil {
             stream.mixer.mediaLink.hasVideo = true
             stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         }

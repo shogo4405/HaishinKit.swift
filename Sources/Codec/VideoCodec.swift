@@ -76,6 +76,7 @@ public final class VideoCodec {
     var frameInterval = VideoCodec.defaultFrameInterval
     var expectedFrameRate = IOMixer.defaultFrameRate
     weak var delegate: (any VideoCodecDelegate)?
+    var inputFormat: CMFormatDescription?
     private(set) var outputFormat: CMFormatDescription? {
         didSet {
             guard !CMFormatDescriptionEqual(outputFormat, otherFormatDescription: oldValue) else {

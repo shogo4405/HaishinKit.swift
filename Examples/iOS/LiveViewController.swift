@@ -46,21 +46,7 @@ final class LiveViewController: UIViewController {
         }
 
         rtmpStream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
-
-        rtmpStream.audioSettings = AudioCodecSettings(
-            bitRate: 64 * 1000
-        )
-
-        rtmpStream.videoSettings = VideoCodecSettings(
-            videoSize: .init(width: 854, height: 480),
-            profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
-            bitRate: 640 * 1000,
-            maxKeyFrameIntervalDuration: 2,
-            scalingMode: .trim,
-            bitRateMode: .average,
-            allowFrameReordering: nil,
-            isHardwareEncoderEnabled: true
-        )
+        rtmpStream.audioSettings.bitRate = 64 * 1000
         rtmpStream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
         rtmpStream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000

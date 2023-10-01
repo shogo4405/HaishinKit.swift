@@ -34,6 +34,17 @@ final class IOVideoUnit: NSObject, IOUnit {
             codec.settings = newValue
         }
     }
+    var inputFormat: FormatDescription? {
+        get {
+            codec.inputFormat
+        }
+        set {
+            codec.inputFormat = newValue
+        }
+    }
+    var outputFormat: FormatDescription? {
+        codec.outputFormat
+    }
     #if os(iOS) || os(macOS) || os(tvOS)
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
@@ -81,10 +92,6 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
     #endif
 
-    var inputFormat: FormatDescription?
-    var outputFormat: FormatDescription? {
-        codec.outputFormat
-    }
     #if os(tvOS)
     private var _capture: Any?
     @available(tvOS 17.0, *)
@@ -269,10 +276,15 @@ final class IOVideoUnit: NSObject, IOUnit {
              kCVPixelFormatType_TwoComponent32Float,
              kCVPixelFormatType_64RGBAHalf,
              kCVPixelFormatType_128RGBAFloat:
+            inputFormat = sampleBuffer.formatDescription
             videoMixer.appendSampleBuffer(sampleBuffer, channel: 0, isVideoMirrored: false)
         default:
             codec.appendSampleBuffer(sampleBuffer)
         }
+    }
+
+    func setConfigurationRecord(_ config: any DecoderConfigurationRecord) {
+        _ = config.makeFormatDescription(&inputFormat)
     }
 }
 
@@ -308,6 +320,7 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if capture.output == captureOutput {
+            inputFormat = sampleBuffer.formatDescription
             videoMixer.appendSampleBuffer(sampleBuffer, channel: 0, isVideoMirrored: connection.isVideoMirrored)
             drawable?.enqueue(sampleBuffer)
         } else if multiCamCapture.output == captureOutput {

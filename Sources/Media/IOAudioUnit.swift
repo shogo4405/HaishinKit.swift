@@ -112,6 +112,7 @@ final class IOAudioUnit: NSObject, IOUnit {
             extensions: nil,
             formatDescriptionOut: &inputFormat
         )
+        codec.inSourceFormat = audioStreamBasicDescription
     }
 }
 
