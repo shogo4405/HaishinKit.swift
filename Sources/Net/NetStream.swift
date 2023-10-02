@@ -328,6 +328,14 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
     }
 
+    func mixer(_ mixer: IOMixer, audioCodecErrorOccurred error: AudioCodec.Error) {
+        delegate?.stream(self, audioCodecErrorOccurred: error)
+    }
+
+    func mixer(_ mixer: IOMixer, videoCodecErrorOccurred error: VideoCodec.Error) {
+        delegate?.stream(self, videoCodecErrorOccurred: error)
+    }
+
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {

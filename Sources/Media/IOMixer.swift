@@ -9,6 +9,8 @@ import UIKit
 protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
+    func mixer(_ mixer: IOMixer, videoCodecErrorOccurred error: VideoCodec.Error)
+    func mixer(_ mixer: IOMixer, audioCodecErrorOccurred error: AudioCodec.Error)
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
@@ -424,17 +426,14 @@ extension IOMixer: VideoCodecDelegate {
     }
 
     public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
-        logger.trace(error)
-    }
-
-    public func videoCodecWillDropFame(_ codec: VideoCodec) -> Bool {
-        return false
+        delegate?.mixer(self, videoCodecErrorOccurred: error)
     }
 }
 
 extension IOMixer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
     public func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
+        delegate?.mixer(self, audioCodecErrorOccurred: error)
     }
 
     public func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
@@ -454,5 +453,17 @@ extension IOMixer: AudioCodecDelegate {
         }
         delegate?.mixer(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
         mediaLink.enqueueAudio(audioBuffer)
+    }
+}
+
+extension IOMixer: IOAudioUnitDelegate {
+    // MARK: IOAudioUnitDelegate
+    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: AudioCodec.Error) {
+        delegate?.mixer(self, audioCodecErrorOccurred: error)
+    }
+
+    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+        delegate?.mixer(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
+        recorder.appendAudioPCMBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
     }
 }

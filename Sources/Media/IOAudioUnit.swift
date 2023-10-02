@@ -4,10 +4,15 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
+protocol IOAudioUnitDelegate: AnyObject {
+    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: AudioCodec.Error)
+    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+}
+
 final class IOAudioUnit: NSObject, IOUnit {
     typealias FormatDescription = AVAudioFormat
 
-    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioIOComponent.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
     var soundTransform: SoundTransform = .init() {
         didSet {
             soundTransform.apply(mixer?.mediaLink.playerNode)
@@ -154,6 +159,7 @@ extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
 extension IOAudioUnit: IOAudioResamplerDelegate {
     // MARK: IOAudioResamplerDelegate
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: AudioCodec.Error) {
+        mixer?.audioUnit(self, errorOccurred: error)
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioFormat: AVAudioFormat) {
@@ -164,12 +170,7 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
         self.presentationTimeStamp = presentationTimeStamp
-        if let mixer {
-            mixer.delegate?.mixer(mixer, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
-            if mixer.recorder.isRunning.value, let sampleBuffer = audioBuffer.makeSampleBuffer(presentationTimeStamp) {
-                mixer.recorder.appendSampleBuffer(sampleBuffer)
-            }
-        }
+        mixer?.audioUnit(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
         monitor.appendAudioPCMBuffer(audioBuffer)
         codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
     }
