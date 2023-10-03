@@ -89,14 +89,14 @@ rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio))
 ```
 
 ### Rendering
-|Features|[HKView](https://shogo4405.github.io/HaishinKit.swift/Classes/HKView.html)|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
-|-|:---:|:---:|:---:|
-|Engine|AVCaptureVideoPreviewLayer|AVSampleBufferDisplayLayer|Metal|
-|Publish|✔|✔|✔|
-|Playback|<br />|✔|✔|
-|VisualEffect|<br />|✔|✔|
-|PictureInPicture|<br />|✔|<br />|
-|MultiCamera|<br />|✔|✔|
+|Features|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
+|-|:---:|:---:|
+|Engine|AVSampleBufferDisplayLayer|Metal|
+|Publish|✔|✔|
+|Playback|✔|✔|
+|VisualEffect|✔|✔|
+|MultiCamera|✔|✔|
+|PictureInPicture|✔|<br />|
 
 ### Others
 - [x] tvOS 17.0 for AVCaptureSession.

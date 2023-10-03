@@ -31,19 +31,56 @@ public class PiPHKView: UIView {
         didSet {
             if Thread.isMainThread {
                 layer.flushAndRemoveImage()
+                (captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
             } else {
                 DispatchQueue.main.sync {
                     layer.flushAndRemoveImage()
+                    (self.captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
                 }
             }
         }
     }
     #endif
+
+    #if os(iOS) || os(tvOS)
+    /// Specifies the capture video preview enabled or not.
+    @available(tvOS 17.0, *)
+    public var isCaptureVideoPreviewEnabled: Bool {
+        get {
+            captureVideoPreview != nil
+        }
+        set {
+            guard isCaptureVideoPreviewEnabled != newValue else {
+                return
+            }
+            if Thread.isMainThread {
+                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
+            } else {
+                DispatchQueue.main.async {
+                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
+                }
+            }
+        }
+    }
+    #endif
+
     private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
         didSet {
             oldValue?.mixer.videoIO.drawable = nil
+        }
+    }
+
+    private var captureVideoPreview: UIView? {
+        didSet {
+            if let oldValue {
+                oldValue.removeFromSuperview()
+            }
+            if let captureVideoPreview {
+                addSubview(captureVideoPreview)
+                sendSubviewToBack(captureVideoPreview)
+            }
         }
     }
 
@@ -115,6 +152,7 @@ public class PiPHKView: NSView {
         }
     }
 
+    /// Specifies the orientation of AVCaptureVideoOrientation.
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             if Thread.isMainThread {
@@ -123,6 +161,37 @@ public class PiPHKView: NSView {
                 DispatchQueue.main.sync {
                     (layer as? AVSampleBufferDisplayLayer)?.flushAndRemoveImage()
                 }
+            }
+        }
+    }
+
+    /// Specifies the capture video preview enabled or not.
+    public var isCaptureVideoPreviewEnabled: Bool {
+        get {
+            captureVideoPreview != nil
+        }
+        set {
+            guard isCaptureVideoPreviewEnabled != newValue else {
+                return
+            }
+            if Thread.isMainThread {
+                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
+            } else {
+                DispatchQueue.main.async {
+                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
+                }
+            }
+        }
+    }
+
+    private var captureVideoPreview: NSView? {
+        didSet {
+            if let oldValue {
+                oldValue.removeFromSuperview()
+            }
+            if let captureVideoPreview {
+                addSubview(captureVideoPreview)
+                sendSubviewToBack(captureVideoPreview)
             }
         }
     }
@@ -155,7 +224,7 @@ public class PiPHKView: NSView {
         super.awakeFromNib()
         wantsLayer = true
         layer = AVSampleBufferDisplayLayer()
-        layer?.backgroundColor = HKView.defaultBackgroundColor.cgColor
+        layer?.backgroundColor = PiPHKView.defaultBackgroundColor.cgColor
         layer?.setValue(videoGravity, forKey: "videoGravity")
     }
 }

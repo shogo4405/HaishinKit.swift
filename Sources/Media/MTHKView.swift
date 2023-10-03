@@ -3,6 +3,12 @@
 import AVFoundation
 import MetalKit
 
+#if os(macOS)
+private typealias View = NSView
+#else
+private typealias View = UIView
+#endif
+
 /**
  * A view that displays a video content of a NetStream object which uses Metal api.
  */
@@ -10,10 +16,34 @@ public class MTHKView: MTKView {
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
-    #if os(iOS)
+    #if os(iOS) || os(macOS)
     /// Specifies the orientation of AVCaptureVideoOrientation.
-    public var videoOrientation: AVCaptureVideoOrientation = .portrait
+    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
+        didSet {
+            (captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
+        }
+    }
     #endif
+
+    /// Specifies the capture video preview enabled or not.
+    @available(tvOS 17.0, *)
+    public var isCaptureVideoPreviewEnabled: Bool {
+        get {
+            captureVideoPreview != nil
+        }
+        set {
+            guard isCaptureVideoPreviewEnabled != newValue else {
+                return
+            }
+            if Thread.isMainThread {
+                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
+            } else {
+                DispatchQueue.main.async {
+                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
+                }
+            }
+        }
+    }
 
     private var currentSampleBuffer: CMSampleBuffer?
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -21,6 +51,18 @@ public class MTHKView: MTKView {
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
+
+    private var captureVideoPreview: View? {
+        didSet {
+            if let oldValue {
+                oldValue.removeFromSuperview()
+            }
+            if let captureVideoPreview {
+                addSubview(captureVideoPreview)
+                sendSubviewToBack(captureVideoPreview)
+            }
+        }
+    }
 
     private weak var currentStream: NetStream? {
         didSet {
