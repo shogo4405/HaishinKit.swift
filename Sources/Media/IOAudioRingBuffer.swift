@@ -69,7 +69,18 @@ final class IOAudioRingBuffer {
                 }
             }
         }
-        skip = numSamples(sampleBuffer)
+        let distance = distance(sampleBuffer)
+        if 0 <= distance {
+            skip = distance
+        } else {
+            // #1289. Considering cases where PTS may be rolled back.
+            let newHead = head + distance
+            if 0 <= newHead {
+                head = newHead
+            } else {
+                head = Int(buffer.frameLength) + newHead
+            }
+        }
         appendAudioPCMBuffer(workingBuffer)
     }
 
@@ -190,12 +201,12 @@ final class IOAudioRingBuffer {
         return noErr
     }
 
-    private func numSamples(_ sampleBuffer: CMSampleBuffer) -> Int {
+    private func distance(_ sampleBuffer: CMSampleBuffer) -> Int {
         // Device audioMic or ReplayKit audioMic.
         let sampleRate = Int32(format.sampleRate)
         if presentationTimeStamp.timescale == sampleRate {
             let presentationTimeStamp = CMTimeAdd(presentationTimeStamp, CMTime(value: CMTimeValue(counts), timescale: presentationTimeStamp.timescale))
-            return max(Int(sampleBuffer.presentationTimeStamp.value - presentationTimeStamp.value), 0)
+            return Int(sampleBuffer.presentationTimeStamp.value - presentationTimeStamp.value)
         }
         return 0
     }
