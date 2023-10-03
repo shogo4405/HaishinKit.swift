@@ -26,6 +26,7 @@ public class PiPHKView: UIView {
     }
 
     #if os(iOS)
+    /// Specifies the orientation of AVCaptureVideoOrientation.
     public var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             if Thread.isMainThread {

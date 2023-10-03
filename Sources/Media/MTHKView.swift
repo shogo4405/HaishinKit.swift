@@ -7,11 +7,11 @@ import MetalKit
  * A view that displays a video content of a NetStream object which uses Metal api.
  */
 public class MTHKView: MTKView {
-    public var isMirrored = false
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
-    #if !os(tvOS)
+    #if os(iOS)
+    /// Specifies the orientation of AVCaptureVideoOrientation.
     public var videoOrientation: AVCaptureVideoOrientation = .portrait
     #endif
 
@@ -132,10 +132,6 @@ extension MTHKView: MTKViewDelegate {
         }
         let bounds = CGRect(origin: .zero, size: drawableSize)
         var scaledImage: CIImage = displayImage
-
-        if isMirrored {
-            scaledImage = scaledImage.oriented(.upMirrored)
-        }
 
         scaledImage = scaledImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
