@@ -114,6 +114,8 @@ extension AMF3Serializer: AMFSerializer {
             return serialize(Double(value))
         case let value as Float:
             return serialize(Double(value))
+        case let value as CGFloat:
+            return serialize(Double(value))
         case let value as Double:
             return serialize(Double(value))
         case let value as Date:
