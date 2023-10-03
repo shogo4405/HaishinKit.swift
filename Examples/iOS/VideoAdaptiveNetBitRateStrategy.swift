@@ -16,7 +16,6 @@ public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertibl
     }
 
     public func sufficientBWOccured(_ stats: NetBitRateStats) {
-        logger.info(stats)
         guard let stream else {
             return
         }
@@ -24,7 +23,6 @@ public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertibl
     }
 
     public func insufficientBWOccured(_ stats: NetBitRateStats) {
-        logger.info(stats)
         guard let stream, 0 < stats.currentBytesOutPerSecond else {
             return
         }
