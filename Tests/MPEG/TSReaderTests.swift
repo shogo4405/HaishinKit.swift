@@ -31,9 +31,7 @@ private class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
     }
 
     func reader(_ reader: HaishinKit.TSReader, id: UInt16, didRead formatDescription: CMFormatDescription) {
-        if let audioStreamBasicDescription = formatDescription.audioStreamBasicDescription {
-            audioCodec.inSourceFormat = audioStreamBasicDescription
-        }
+        audioCodec.inputFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
     }
 
     func reader(_ reader: HaishinKit.TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
