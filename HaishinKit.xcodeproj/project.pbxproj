@@ -71,7 +71,6 @@
 		29798E771CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */; };
 		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
-		299B13271D3B751400A1E8F5 /* HKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 299B13261D3B751400A1E8F5 /* HKView.swift */; };
 		29AF3FCF1D7C744C00E41212 /* NetStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* NetStream.swift */; };
 		29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioCodec.swift */; };
 		29B8765D1CD70A7900FC07DA /* VideoCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876591CD70A7900FC07DA /* VideoCodec.swift */; };
@@ -142,6 +141,8 @@
 		BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */; };
 		BC0D236D26331BAB001DDA0C /* DataBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* DataBuffer.swift */; };
 		BC0F1FD52ACBD39600C326FF /* MemoryUsage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */; };
+		BC0F1FDA2ACC4CC100C326FF /* IOCaptureVideoPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F1FD92ACC4CC100C326FF /* IOCaptureVideoPreview.swift */; };
+		BC0F1FDC2ACC630400C326FF /* NSView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0F1FDB2ACC630400C326FF /* NSView+Extension.swift */; };
 		BC11023E2917C35B00D48035 /* CVPixelBufferPool+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */; };
 		BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* IOCaptureUnit.swift */; };
 		BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
@@ -481,7 +482,6 @@
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299B131C1D35272D00A1E8F5 /* IOUIScreenCaptureUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOUIScreenCaptureUnit.swift; sourceTree = "<group>"; };
-		299B13261D3B751400A1E8F5 /* HKView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HKView.swift; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		299F7E3B1CD71A97001E7272 /* HaishinKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HaishinKit.h; sourceTree = "<group>"; };
 		29A39C881D85BF30007C27E9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -556,6 +556,8 @@
 		BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMixerTests.swift; sourceTree = "<group>"; };
 		BC0D236C26331BAB001DDA0C /* DataBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBuffer.swift; sourceTree = "<group>"; };
 		BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryUsage.swift; sourceTree = "<group>"; };
+		BC0F1FD92ACC4CC100C326FF /* IOCaptureVideoPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureVideoPreview.swift; sourceTree = "<group>"; };
+		BC0F1FDB2ACC630400C326FF /* NSView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSView+Extension.swift"; sourceTree = "<group>"; };
 		BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CVPixelBufferPool+Extension.swift"; sourceTree = "<group>"; };
 		BC1102492925147300D48035 /* IOCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureUnit.swift; sourceTree = "<group>"; };
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
@@ -766,9 +768,9 @@
 		290907CE1C3961BC00F2E80C /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				BC701F312AAC676C00C4BEFE /* AVAudioFormatFactory.swift */,
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
 				29DC17B221D0CC0600E26CED /* Atomic.swift */,
-				BC701F312AAC676C00C4BEFE /* AVAudioFormatFactory.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
@@ -851,18 +853,18 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
-				2981E1301D646E3F00E8F7CA /* Cartfile */,
 				2968973E1CDB01920074D5F0 /* Examples */,
 				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
+				299F7E371CD71A76001E7272 /* Platforms */,
+				2945CBBE1B4BE66000104112 /* Products */,
+				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
+				2945CBBF1B4BE66000104112 /* Sources */,
+				29798E5A1CE60E5300F5CBD0 /* Tests */,
+				2981E1301D646E3F00E8F7CA /* Cartfile */,
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
 				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
 				29F39BE72335F8010055F9BB /* Package.swift */,
-				299F7E371CD71A76001E7272 /* Platforms */,
-				2945CBBE1B4BE66000104112 /* Products */,
 				2997BDD31D50D31B000AF900 /* README.md */,
-				2945CBBF1B4BE66000104112 /* Sources */,
-				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
-				29798E5A1CE60E5300F5CBD0 /* Tests */,
 			);
 			sourceTree = "<group>";
 			wrapsLines = 0;
@@ -971,6 +973,7 @@
 		2968973F1CDB01AD0074D5F0 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
+				29A39C801D85BEFA007C27E9 /* Screencast */,
 				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
 				296897421CDB01D20074D5F0 /* Assets.xcassets */,
 				291F4E361CF206E200F59C51 /* Icon.png */,
@@ -978,14 +981,13 @@
 				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
 				296897441CDB01D20074D5F0 /* LiveViewController.swift */,
 				29205CBD1E461F4E009D3FFF /* Main.storyboard */,
+				BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */,
 				BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */,
 				BCFB355324FA275600DC5108 /* PlaybackViewController.swift */,
 				291468161E581C7D00E619BA /* Preference.swift */,
 				2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */,
-				29A39C801D85BEFA007C27E9 /* Screencast */,
 				BC1BC9032AC80531009005D3 /* VideoAdaptiveNetBitRateStrategy.swift */,
 				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
-				BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */,
 			);
 			path = iOS;
 			sourceTree = "<group>";
@@ -1053,14 +1055,13 @@
 			isa = PBXGroup;
 			children = (
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
-				299B13261D3B751400A1E8F5 /* HKView.swift */,
-				BC959EEE296EE4190067BA97 /* ImageTransform.swift */,
 				BC3802132AB5E7CC001AE399 /* IOAudioCaptureUnit.swift */,
 				BC31DBD12A653D1600C4DEA3 /* IOAudioMonitor.swift */,
 				BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */,
 				BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */,
 				29B876891CD70AFE00FC07DA /* IOAudioUnit.swift */,
 				BC1102492925147300D48035 /* IOCaptureUnit.swift */,
+				BC0F1FD92ACC4CC100C326FF /* IOCaptureVideoPreview.swift */,
 				29B8768B1CD70AFE00FC07DA /* IOMixer.swift */,
 				2976A47D1D48C5C700B53EF2 /* IORecorder.swift */,
 				BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */,
@@ -1069,8 +1070,9 @@
 				BC3802112AB5E770001AE399 /* IOVideoCaptureUnit.swift */,
 				BC3483692AC56F3A002926F1 /* IOVideoMixer.swift */,
 				29B8768E1CD70AFE00FC07DA /* IOVideoUnit.swift */,
-				2901A4ED1D437170002BBD23 /* MediaLink.swift */,
+				BC959EEE296EE4190067BA97 /* ImageTransform.swift */,
 				2999C3742071138F00892E55 /* MTHKView.swift */,
+				2901A4ED1D437170002BBD23 /* MediaLink.swift */,
 				BC110256292E661E00D48035 /* MultiCamCaptureSettings.swift */,
 				BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */,
 				BC3004CD296B0A1700119932 /* Shape.swift */,
@@ -1108,10 +1110,10 @@
 		29D3D4FE1ED0536700DD4AA6 /* tvOS */ = {
 			isa = PBXGroup;
 			children = (
-				29D3D5021ED053C000DD4AA6 /* Main.storyboard */,
 				29D3D4FF1ED053C000DD4AA6 /* AppDelegate.swift */,
 				29D3D5001ED053C000DD4AA6 /* Assets.xcassets */,
 				29D3D5041ED053C000DD4AA6 /* Info.plist */,
+				29D3D5021ED053C000DD4AA6 /* Main.storyboard */,
 				29D3D5051ED053C000DD4AA6 /* ViewController.swift */,
 			);
 			path = tvOS;
@@ -1138,6 +1140,7 @@
 				29EA87DB1E79A0460043A5F8 /* Data+Extension.swift */,
 				29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */,
 				29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */,
+				BC0F1FDB2ACC630400C326FF /* NSView+Extension.swift */,
 				29EA87D71E79A0090043A5F8 /* URL+Extension.swift */,
 				BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */,
 				BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */,
@@ -1707,7 +1710,6 @@
 				2958910E1EEB8D3C00CE51E1 /* FLVVideoCodec.swift in Sources */,
 				BC1DC5142A05428800E928ED /* HEVCNALUnit.swift in Sources */,
 				BC6FC9222961B3D800A746EE /* vImage_CGImageFormat+Extension.swift in Sources */,
-				299B13271D3B751400A1E8F5 /* HKView.swift in Sources */,
 				BC1BC9042AC80531009005D3 /* VideoAdaptiveNetBitRateStrategy.swift in Sources */,
 				BC20DF38250377A3007BC608 /* IOUIScreenCaptureUnit.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
@@ -1748,6 +1750,7 @@
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				BCA2252C293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift in Sources */,
 				BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
+				BC0F1FDA2ACC4CC100C326FF /* IOCaptureVideoPreview.swift in Sources */,
 				BC4914B228DDFE31009E2DF6 /* VTSessionOptionKey.swift in Sources */,
 				29EA87E61E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
 				BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */,
@@ -1760,6 +1763,7 @@
 				29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */,
 				29EA87DF1E79A0810043A5F8 /* CMSampleBuffer+Extension.swift in Sources */,
 				BC562DC7295767860048D89A /* AVCaptureDevice+Extension.swift in Sources */,
+				BC0F1FDC2ACC630400C326FF /* NSView+Extension.swift in Sources */,
 				29EA87E21E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
 				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
