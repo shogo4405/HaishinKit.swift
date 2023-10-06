@@ -39,6 +39,9 @@ final class IOAudioRingBuffer {
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        guard CMSampleBufferDataIsReady(sampleBuffer) else {
+            return
+        }
         if presentationTimeStamp == .zero {
             presentationTimeStamp = sampleBuffer.presentationTimeStamp
         }
