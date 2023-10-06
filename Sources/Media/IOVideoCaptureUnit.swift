@@ -14,14 +14,6 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
 
     /// The current video device object.
     public private(set) var device: AVCaptureDevice?
-    var input: AVCaptureInput?
-    var output: Output? {
-        didSet {
-            output?.alwaysDiscardsLateVideoFrames = true
-            output?.videoSettings = IOVideoCaptureUnit.defaultVideoSettings as [String: Any]
-        }
-    }
-    var connection: AVCaptureConnection?
 
     #if os(iOS) || os(macOS)
     /// Specifies the videoOrientation indicates whether to rotate the video flowing through the connection to a given orientation.
@@ -54,6 +46,26 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     }
     #endif
 
+    var input: AVCaptureInput?
+    var output: Output? {
+        didSet {
+            guard let output else {
+                return
+            }
+            output.alwaysDiscardsLateVideoFrames = true
+            #if os(iOS) || os(macOS)
+            if output.availableVideoPixelFormatTypes.contains(kCVPixelFormatType_32BGRA) {
+                output.videoSettings = IOVideoCaptureUnit.defaultVideoSettings as [String: Any]
+            }
+            #elseif os(tvOS)
+            if output.availableVideoPixelFormatTypes.contains(kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange) {
+                output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange)]
+            }
+            #endif
+        }
+    }
+    var connection: AVCaptureConnection?
+
     func attachDevice(_ device: AVCaptureDevice?, videoUnit: IOVideoUnit) throws {
         setSampleBufferDelegate(nil)
         detachSession(videoUnit.mixer?.session)
@@ -85,7 +97,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
             if $0.isVideoMirroringSupported {
                 $0.isVideoMirrored = isVideoMirrored
             }
-            #if !os(tvOS)
+            #if os(iOS) || os(macOS)
             if $0.isVideoOrientationSupported {
                 $0.videoOrientation = videoOrientation
             }
@@ -154,7 +166,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
 
     func setSampleBufferDelegate(_ videoUnit: IOVideoUnit?) {
         if let videoUnit {
-            #if !os(tvOS)
+            #if os(iOS) || os(macOS)
             videoOrientation = videoUnit.videoOrientation
             #endif
             setFrameRate(videoUnit.frameRate)

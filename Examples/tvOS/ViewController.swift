@@ -12,7 +12,7 @@ final class ViewController: UIViewController {
     @IBOutlet private weak var lfView: MTHKView!
     @IBOutlet private weak var playbackOrPublishSegment: UISegmentedControl! {
         didSet {
-            guard AVContinuityDevicePickerViewController.isSupported else {
+            guard !AVContinuityDevicePickerViewController.isSupported else {
                 return
             }
             playbackOrPublishSegment.removeSegment(at: 1, animated: false)
@@ -86,9 +86,17 @@ final class ViewController: UIViewController {
 extension ViewController: AVContinuityDevicePickerViewControllerDelegate {
     // MARK: AVContinuityDevicePickerViewControllerDelegate
     func continuityDevicePicker( _ pickerViewController: AVContinuityDevicePickerViewController, didConnect device: AVContinuityDevice) {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat, options: [])
+            try AVAudioSession.sharedInstance().setActive(true)
+            stream.attachAudio(AVCaptureDevice.default(for: .audio))
+        } catch {
+            logger.error(error)
+        }
         if let camera = device.videoDevices.first {
             logger.info(camera)
             stream.attachCamera(camera)
         }
+        connection.connect(Preference.defaultInstance.uri!)
     }
 }
