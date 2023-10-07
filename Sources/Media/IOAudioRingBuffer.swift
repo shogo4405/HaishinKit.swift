@@ -72,16 +72,8 @@ final class IOAudioRingBuffer {
         let distance = distance(sampleBuffer)
         if 0 <= distance {
             skip = distance
-        } else {
-            // #1289. Considering cases where PTS may be rolled back.
-            let newHead = head + distance
-            if 0 <= newHead {
-                head = newHead
-            } else {
-                head = Int(buffer.frameLength) + newHead
-            }
         }
-        appendAudioPCMBuffer(workingBuffer)
+        appendAudioPCMBuffer(workingBuffer, offset: offsetCount(sampleBuffer) / 8)
     }
 
     func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, offset: Int = 0) {
@@ -199,6 +191,17 @@ final class IOAudioRingBuffer {
             }
         }
         return noErr
+    }
+    
+    private func offsetCount(_ sampleBuffer: CMSampleBuffer) -> Int {
+        let data = sampleBuffer.dataBuffer?.data?.bytes ?? []
+        let count = 0
+        for i in 0..<data.count {
+            if (data[i * 2 * 4] != 0) {
+                return i * 2 * 4
+            }
+        }
+        return count
     }
 
     private func distance(_ sampleBuffer: CMSampleBuffer) -> Int {
