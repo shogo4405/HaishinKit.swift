@@ -231,7 +231,7 @@ extension TSWriter: AudioCodecDelegate {
         audioConfig = AudioSpecificConfig(formatDescription: outputFormat.formatDescription)
     }
 
-    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
             return
         }
@@ -240,7 +240,7 @@ extension TSWriter: AudioCodecDelegate {
             streamID: 192,
             bytes: audioBuffer.data.assumingMemoryBound(to: UInt8.self),
             count: audioBuffer.byteLength,
-            presentationTimeStamp: presentationTimeStamp,
+            presentationTimeStamp: when.makeTime(),
             decodeTimeStamp: .invalid,
             randomAccessIndicator: true
         )

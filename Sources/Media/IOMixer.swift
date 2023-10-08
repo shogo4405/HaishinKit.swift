@@ -7,7 +7,7 @@ import UIKit
 #endif
 
 protocol IOMixerDelegate: AnyObject {
-    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime)
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
     func mixer(_ mixer: IOMixer, videoCodecErrorOccurred error: VideoCodec.Error)
     func mixer(_ mixer: IOMixer, audioCodecErrorOccurred error: AudioCodec.Error)
@@ -411,6 +411,7 @@ extension IOMixer: Running {
 extension IOMixer: Running {
     public func startRunning() {
     }
+
     public func stopRunning() {
     }
 }
@@ -447,11 +448,11 @@ extension IOMixer: AudioCodecDelegate {
         }
     }
 
-    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
             return
         }
-        delegate?.mixer(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
+        delegate?.mixer(self, didOutput: audioBuffer, when: when)
         mediaLink.enqueueAudio(audioBuffer)
     }
 }
@@ -462,8 +463,8 @@ extension IOMixer: IOAudioUnitDelegate {
         delegate?.mixer(self, audioCodecErrorOccurred: error)
     }
 
-    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        delegate?.mixer(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
-        recorder.appendAudioPCMBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
+    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        delegate?.mixer(self, didOutput: audioBuffer, when: when)
+        recorder.appendAudioPCMBuffer(audioBuffer, when: when)
     }
 }

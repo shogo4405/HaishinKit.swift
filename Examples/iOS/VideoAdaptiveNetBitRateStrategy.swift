@@ -1,4 +1,5 @@
 import Foundation
+import HaishinKit
 
 public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertible {
     public weak var stream: NetStream?

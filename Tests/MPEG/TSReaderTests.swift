@@ -47,7 +47,7 @@ private class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
         // XCTFail()
     }
 
-    func audioCodec(_ codec: HaishinKit.AudioCodec, didOutput audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
     }
 }
 

@@ -6,7 +6,7 @@ import SwiftPMSupport
 
 protocol IOAudioUnitDelegate: AnyObject {
     func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: AudioCodec.Error)
-    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime)
+    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
 
 final class IOAudioUnit: NSObject, IOUnit {
@@ -99,8 +99,15 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
     }
 
-    func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, presentationTimeStamp: CMTime) {
-        codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
+    func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        switch audioBuffer {
+        case let audioBuffer as AVAudioPCMBuffer:
+            resampler.appendAudioPCMBuffer(audioBuffer, when: when)
+        case let audioBuffer as AVAudioCompressedBuffer:
+            codec.appendAudioBuffer(audioBuffer, when: when)
+        default:
+            break
+        }
     }
 
     func setAudioStreamBasicDescription(_ audioStreamBasicDescription: AudioStreamBasicDescription?) {
@@ -165,13 +172,13 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioFormat: AVAudioFormat) {
         inputFormat = resampler.inputFormat
         codec.inputFormat = audioFormat
-        monitor.inSourceFormat = audioFormat.formatDescription.audioStreamBasicDescription
+        monitor.inputFormat = audioFormat
     }
 
-    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        self.presentationTimeStamp = presentationTimeStamp
-        mixer?.audioUnit(self, didOutput: audioBuffer, presentationTimeStamp: presentationTimeStamp)
-        monitor.appendAudioPCMBuffer(audioBuffer)
-        codec.appendAudioBuffer(audioBuffer, presentationTimeStamp: presentationTimeStamp)
+    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        presentationTimeStamp = when.makeTime()
+        mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
+        monitor.appendAudioPCMBuffer(audioBuffer, when: when)
+        codec.appendAudioBuffer(audioBuffer, when: when)
     }
 }
