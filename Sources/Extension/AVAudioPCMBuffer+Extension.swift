@@ -1,7 +1,7 @@
 import AVFoundation
 
 extension AVAudioPCMBuffer {
-    final func makeSampleBuffer(_ presentationTimeStamp: CMTime) -> CMSampleBuffer? {
+    final func makeSampleBuffer(_ when: AVAudioTime) -> CMSampleBuffer? {
         var status: OSStatus = noErr
         var sampleBuffer: CMSampleBuffer?
         status = CMAudioSampleBufferCreateWithPacketDescriptions(
@@ -12,7 +12,7 @@ extension AVAudioPCMBuffer {
             refcon: nil,
             formatDescription: format.formatDescription,
             sampleCount: Int(frameLength),
-            presentationTimeStamp: presentationTimeStamp,
+            presentationTimeStamp: when.makeTime(),
             packetDescriptions: nil,
             sampleBufferOut: &sampleBuffer
         )

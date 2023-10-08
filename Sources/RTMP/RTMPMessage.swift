@@ -592,7 +592,7 @@ final class RTMPAudioMessage: RTMPMessage {
                 stream.mixer.audioIO.setAudioStreamBasicDescription(makeAudioStreamBasicDescription())
             }
             if let audioBuffer = makeAudioBuffer(stream) {
-                stream.mixer.audioIO.appendAudioBuffer(audioBuffer, presentationTimeStamp: CMTime(seconds: stream.audioTimestamp / 1000, preferredTimescale: 1000))
+                stream.mixer.audioIO.appendAudioBuffer(audioBuffer, when: .init(hostTime: UInt64(stream.audioTimestamp)))
             }
         default:
             break

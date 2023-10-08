@@ -28,6 +28,11 @@ final class LiveViewController: UIViewController {
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
     private var preferedStereo = false
+    private lazy var audioCapture: AudioCapture = {
+        let audioCapture = AudioCapture()
+        audioCapture.delegate = self
+        return audioCapture
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -361,6 +366,13 @@ extension LiveViewController: IORecorderDelegate {
                 print(error)
             }
         })
+    }
+}
+
+extension LiveViewController: AudioCaptureDelegate {
+    // MARK: AudioCaptureDelegate
+    func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
+        rtmpStream.appendAudioBuffer(buffer, when: time)
     }
 }
 

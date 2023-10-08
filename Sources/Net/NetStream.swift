@@ -11,7 +11,7 @@ import UIKit
 /// The interface a NetStream uses to inform its delegate.
 public protocol NetStreamDelegate: AnyObject {
     /// Tells the receiver to playback an audio packet incoming.
-    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime)
+    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to playback a video packet incoming.
     func stream(_ stream: NetStream, didOutput video: CMSampleBuffer)
     #if os(iOS) || os(tvOS)
@@ -260,7 +260,7 @@ open class NetStream: NSObject {
     }
     #endif
 
-    /// Append a CMSampleBuffer?.
+    /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
     open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, options: [NSObject: AnyObject]? = nil) {
         switch sampleBuffer.formatDescription?._mediaType {
@@ -274,6 +274,14 @@ open class NetStream: NSObject {
             }
         default:
             break
+        }
+    }
+
+    /// Append an AVAudioBuffer.
+    /// - Warning: This method can't use attachAudio method at the same time.
+    public func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        mixer.audioIO.lockQueue.async {
+            self.mixer.audioIO.appendAudioBuffer(audioBuffer, when: when)
         }
     }
 
@@ -324,8 +332,8 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, didOutput: video)
     }
 
-    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
-        delegate?.stream(self, didOutput: audio, presentationTimeStamp: presentationTimeStamp)
+    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime) {
+        delegate?.stream(self, didOutput: audio, when: when)
     }
 
     func mixer(_ mixer: IOMixer, audioCodecErrorOccurred error: AudioCodec.Error) {

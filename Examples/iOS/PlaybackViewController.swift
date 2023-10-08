@@ -123,7 +123,7 @@ extension PlaybackViewController: AVPictureInPictureSampleBufferPlaybackDelegate
 
 extension PlaybackViewController: NetStreamDelegate {
     // MARK: NetStreamDelegate
-    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, presentationTimeStamp: CMTime) {
+    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
     func stream(_ stream: NetStream, didOutput video: CMSampleBuffer) {

@@ -8,7 +8,7 @@ final class NullIOAudioResamplerDelegate: IOAudioResamplerDelegate {
     func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, didOutput audioFormat: AVAudioFormat) {
     }
 
-    func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, didOutput audioPCMBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+    func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
     func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, errorOccurred error: HaishinKit.AudioCodec.Error) {

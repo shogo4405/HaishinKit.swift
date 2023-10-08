@@ -149,11 +149,11 @@ public class IORecorder {
         }
     }
 
-    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, presentationTimeStamp: CMTime) {
+    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard isRunning.value else {
             return
         }
-        if let sampleBuffer = audioPCMBuffer.makeSampleBuffer(presentationTimeStamp) {
+        if let sampleBuffer = audioPCMBuffer.makeSampleBuffer(when) {
             appendSampleBuffer(sampleBuffer)
         }
     }

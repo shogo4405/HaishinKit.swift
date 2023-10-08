@@ -4,10 +4,10 @@ import CoreMedia
 import Foundation
 
 final class IOAudioMonitor {
-    var inSourceFormat: AudioStreamBasicDescription? {
+    var inputFormat: AVAudioFormat? {
         didSet {
-            if var inSourceFormat {
-                ringBuffer = .init(&inSourceFormat)
+            if let inputFormat {
+                ringBuffer = .init(inputFormat)
                 if isRunning.value {
                     audioUnit = makeAudioUnit()
                 }
@@ -40,11 +40,11 @@ final class IOAudioMonitor {
         stopRunning()
     }
 
-    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer) {
+    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard isRunning.value else {
             return
         }
-        ringBuffer?.appendAudioPCMBuffer(audioPCMBuffer)
+        ringBuffer?.appendAudioPCMBuffer(audioPCMBuffer, when: when)
     }
 
     private func render(_ inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) -> OSStatus {
@@ -64,9 +64,10 @@ final class IOAudioMonitor {
     }
 
     private func makeAudioUnit() -> AudioUnit? {
-        guard var inSourceFormat else {
+        guard let inputFormat else {
             return nil
         }
+        var inSourceFormat = inputFormat.formatDescription.audioStreamBasicDescription
         var audioUnit: AudioUnit?
         #if os(macOS)
         let subType = kAudioUnitSubType_DefaultOutput
