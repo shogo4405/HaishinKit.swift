@@ -67,7 +67,7 @@ public class SRTStream: NetStream {
     }
 
     /// Creates a new SRTStream object.
-    public init(_ connection: SRTConnection) {
+    public init(connection: SRTConnection) {
         super.init()
         self.connection = connection
         self.connection?.streams.append(self)

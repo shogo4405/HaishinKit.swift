@@ -168,17 +168,6 @@ open class RTMPStream: NetStream {
     public internal(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
     public private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
-    /// The number of frames per second being displayed.
-    @objc public private(set) dynamic var currentFPS: UInt16 = 0
-    /// Specifies the controls sound.
-    public var soundTransform: SoundTransform {
-        get {
-            mixer.audioIO.soundTransform
-        }
-        set {
-            mixer.audioIO.soundTransform = newValue
-        }
-    }
     /// Incoming audio plays on the stream or not.
     public var receiveAudio = true {
         didSet {

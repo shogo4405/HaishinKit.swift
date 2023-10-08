@@ -186,6 +186,19 @@ open class NetStream: NSObject {
         }
     }
 
+    /// The number of frames per second being displayed.
+    @objc public internal(set) dynamic var currentFPS: UInt16 = 0
+
+    /// Specifies the controls sound.
+    public var soundTransform: SoundTransform {
+        get {
+            mixer.audioIO.soundTransform
+        }
+        set {
+            mixer.audioIO.soundTransform = newValue
+        }
+    }
+
     /// Creates a NetStream object.
     override public init() {
         super.init()

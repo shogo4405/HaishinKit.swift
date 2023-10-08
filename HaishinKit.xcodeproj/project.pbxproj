@@ -62,7 +62,7 @@
 		296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 296897421CDB01D20074D5F0 /* Assets.xcassets */; };
 		296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */; };
 		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
-		296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897441CDB01D20074D5F0 /* LiveViewController.swift */; };
+		296897681CDB02940074D5F0 /* IngestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897441CDB01D20074D5F0 /* IngestViewController.swift */; };
 		2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */; };
 		2976A47E1D48C5C700B53EF2 /* IORecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* IORecorder.swift */; };
 		2976A4861D4903C300B53EF2 /* DeviceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4851D4903C300B53EF2 /* DeviceUtil.swift */; };
@@ -263,6 +263,7 @@
 		BCD63AE126FDF3500084842D /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCD91C0D2A700FF50033F9E1 /* IOAudioRingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD91C0C2A700FF50033F9E1 /* IOAudioRingBufferTests.swift */; };
+		BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFC51FE2AAB420700014428 /* IOAudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */; };
@@ -472,7 +473,7 @@
 		296897411CDB01D20074D5F0 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		296897421CDB01D20074D5F0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		296897431CDB01D20074D5F0 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		296897441CDB01D20074D5F0 /* LiveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LiveViewController.swift; sourceTree = "<group>"; };
+		296897441CDB01D20074D5F0 /* IngestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IngestViewController.swift; sourceTree = "<group>"; };
 		296897461CDB01D20074D5F0 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
 		2968974E1CDB01DD0074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPMessageTests.swift; sourceTree = "<group>"; };
@@ -657,6 +658,7 @@
 		BCD63AB826FDF12A0084842D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BCD63ABB26FDF12A0084842D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BCD91C0C2A700FF50033F9E1 /* IOAudioRingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioRingBufferTests.swift; sourceTree = "<group>"; };
+		BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamSwitcher.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
 		BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioResampler.swift; sourceTree = "<group>"; };
@@ -979,20 +981,21 @@
 		2968973F1CDB01AD0074D5F0 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				29A39C801D85BEFA007C27E9 /* Screencast */,
 				296897411CDB01D20074D5F0 /* AppDelegate.swift */,
 				296897421CDB01D20074D5F0 /* Assets.xcassets */,
 				BC56765A2AD2AED800524F7E /* AudioCapture.swift */,
 				291F4E361CF206E200F59C51 /* Icon.png */,
 				296897431CDB01D20074D5F0 /* Info.plist */,
+				296897441CDB01D20074D5F0 /* IngestViewController.swift */,
 				2968974D1CDB01DD0074D5F0 /* LaunchScreen.storyboard */,
-				296897441CDB01D20074D5F0 /* LiveViewController.swift */,
 				29205CBD1E461F4E009D3FFF /* Main.storyboard */,
 				BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */,
+				BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */,
 				BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */,
 				BCFB355324FA275600DC5108 /* PlaybackViewController.swift */,
 				291468161E581C7D00E619BA /* Preference.swift */,
 				2950742E1E4620B7007F15A4 /* PreferenceViewController.swift */,
+				29A39C801D85BEFA007C27E9 /* Screencast */,
 				BC1BC9032AC80531009005D3 /* VideoAdaptiveNetBitRateStrategy.swift */,
 				296897461CDB01D20074D5F0 /* VisualEffect.swift */,
 			);
@@ -1875,7 +1878,8 @@
 				BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */,
 				BC0F1FD52ACBD39600C326FF /* MemoryUsage.swift in Sources */,
 				296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */,
-				296897681CDB02940074D5F0 /* LiveViewController.swift in Sources */,
+				296897681CDB02940074D5F0 /* IngestViewController.swift in Sources */,
+				BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */,
 				BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */,
 				2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */,
 				295074311E462105007F15A4 /* PreferenceViewController.swift in Sources */,

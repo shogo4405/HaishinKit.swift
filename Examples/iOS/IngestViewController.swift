@@ -4,9 +4,7 @@ import Photos
 import UIKit
 import VideoToolbox
 
-final class LiveViewController: UIViewController {
-    private static let maxRetryCount: Int = 5
-
+final class IngestViewController: UIViewController {
     @IBOutlet private weak var currentFPSLabel: UILabel!
     @IBOutlet private weak var publishButton: UIButton!
     @IBOutlet private weak var pauseButton: UIButton!
@@ -21,13 +19,14 @@ final class LiveViewController: UIViewController {
     @IBOutlet private weak var audioMonoStereoSegmentCOntrol: UISegmentedControl!
 
     private var pipIntentView = UIView()
-    private var rtmpConnection = RTMPConnection()
-    private var rtmpStream: RTMPStream!
-    private var sharedObject: RTMPSharedObject!
     private var currentEffect: VideoEffect?
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
     private var preferedStereo = false
+    private let netStreamSwitcher: NetStreamSwitcher = .init()
+    private var stream: NetStream {
+        return netStreamSwitcher.stream
+    }
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
         audioCapture.delegate = self
@@ -37,23 +36,22 @@ final class LiveViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
+
         pipIntentView.layer.borderWidth = 1.0
         pipIntentView.layer.borderColor = UIColor.white.cgColor
         pipIntentView.bounds = MultiCamCaptureSettings.default.regionOfInterest
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
 
-        rtmpConnection.delegate = self
-
-        rtmpStream = RTMPStream(connection: rtmpConnection)
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
-            rtmpStream.videoOrientation = orientation
+            stream.videoOrientation = orientation
         }
 
-        rtmpStream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
-        rtmpStream.audioSettings.bitRate = 64 * 1000
-        rtmpStream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
-        rtmpStream.mixer.recorder.delegate = self
+        stream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
+        stream.audioSettings.bitRate = 64 * 1000
+        stream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
+        stream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
 
@@ -68,17 +66,17 @@ final class LiveViewController: UIViewController {
         // If you're using multi-camera functionality, please make sure to call the attachMultiCamera method first. This is required for iOS 14 and 15, among others.
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            rtmpStream.videoCapture(for: 1)?.isVideoMirrored = true
-            rtmpStream.attachMultiCamera(front)
+            stream.videoCapture(for: 1)?.isVideoMirrored = true
+            stream.attachMultiCamera(front)
         }
-        rtmpStream.attachCamera(back) { error in
+        stream.attachCamera(back) { error in
             logger.warn(error)
         }
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
+        stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
             logger.warn(error)
         }
-        rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        (view as? (any NetStreamDrawable))?.attachStream(rtmpStream)
+        stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
+        (view as? (any NetStreamDrawable))?.attachStream(stream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
@@ -86,12 +84,12 @@ final class LiveViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
         super.viewWillDisappear(animated)
-        rtmpStream.removeObserver(self, forKeyPath: "currentFPS")
-        rtmpStream.close()
-        rtmpStream.attachAudio(nil)
-        rtmpStream.attachCamera(nil)
+        stream.removeObserver(self, forKeyPath: "currentFPS")
+        (stream as? RTMPStream)?.close()
+        stream.attachAudio(nil)
+        stream.attachCamera(nil)
         if #available(iOS 13.0, *) {
-            rtmpStream.attachMultiCamera(nil)
+            stream.attachMultiCamera(nil)
         }
         // swiftlint:disable:next notification_center_detachment
         NotificationCenter.default.removeObserver(self)
@@ -100,7 +98,7 @@ final class LiveViewController: UIViewController {
     // swiftlint:disable:next block_based_kvo
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey: Any]?, context: UnsafeMutableRawPointer?) {
         if Thread.isMainThread {
-            currentFPSLabel?.text = "\(rtmpStream.currentFPS)"
+            currentFPSLabel?.text = "\(stream.currentFPS)"
         }
     }
 
@@ -117,8 +115,8 @@ final class LiveViewController: UIViewController {
             currentFrame.origin.x += deltaX
             currentFrame.origin.y += deltaY
             pipIntentView.frame = currentFrame
-            rtmpStream.multiCamCaptureSettings = MultiCamCaptureSettings(
-                mode: rtmpStream.multiCamCaptureSettings.mode,
+            stream.multiCamCaptureSettings = MultiCamCaptureSettings(
+                mode: stream.multiCamCaptureSettings.mode,
                 cornerRadius: 16.0,
                 regionOfInterest: currentFrame,
                 direction: .east
@@ -129,13 +127,13 @@ final class LiveViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        rtmpStream.videoCapture(for: 0)?.isVideoMirrored = position == .front
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
+        stream.videoCapture(for: 0)?.isVideoMirrored = position == .front
+        stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
             logger.warn(error)
         }
         if #available(iOS 13.0, *) {
-            rtmpStream.videoCapture(for: 1)?.isVideoMirrored = currentPosition == .front
-            rtmpStream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
+            stream.videoCapture(for: 1)?.isVideoMirrored = currentPosition == .front
+            stream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
                 logger.warn(error)
             }
         }
@@ -143,21 +141,21 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction func toggleTorch(_ sender: UIButton) {
-        rtmpStream.torch.toggle()
+        stream.torch.toggle()
     }
 
     @IBAction func on(slider: UISlider) {
         if slider == audioBitrateSlider {
             audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
-            rtmpStream.audioSettings.bitRate = Int(slider.value * 1000)
+            stream.audioSettings.bitRate = Int(slider.value * 1000)
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            rtmpStream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
+            stream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)
-            guard let device = rtmpStream.videoCapture(for: 0)?.device, 1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor else {
+            guard let device = stream.videoCapture(for: 0)?.device, 1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor else {
                 return
             }
             do {
@@ -171,7 +169,7 @@ final class LiveViewController: UIViewController {
     }
 
     @IBAction func on(pause: UIButton) {
-        rtmpStream.paused.toggle()
+        (stream as? RTMPStream)?.paused.toggle()
     }
 
     @IBAction func on(close: UIButton) {
@@ -181,48 +179,14 @@ final class LiveViewController: UIViewController {
     @IBAction func on(publish: UIButton) {
         if publish.isSelected {
             UIApplication.shared.isIdleTimerDisabled = false
-            rtmpConnection.close()
-            rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-            rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
+            netStreamSwitcher.close()
             publish.setTitle("●", for: [])
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-            rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-            rtmpConnection.connect(Preference.defaultInstance.uri!)
+            netStreamSwitcher.connect()
             publish.setTitle("■", for: [])
         }
         publish.isSelected.toggle()
-    }
-
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
-            return
-        }
-        logger.info(code)
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            retryCount = 0
-            rtmpStream.publish(Preference.defaultInstance.streamName!)
-        // sharedObject!.connect(rtmpConnection)
-        case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
-            guard retryCount <= LiveViewController.maxRetryCount else {
-                return
-            }
-            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
-            rtmpConnection.connect(Preference.defaultInstance.uri!)
-            retryCount += 1
-        default:
-            break
-        }
-    }
-
-    @objc
-    private func rtmpErrorHandler(_ notification: Notification) {
-        logger.error(notification)
-        rtmpConnection.connect(Preference.defaultInstance.uri!)
     }
 
     func tapScreen(_ gesture: UIGestureRecognizer) {
@@ -230,7 +194,7 @@ final class LiveViewController: UIViewController {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
             let pointOfInterest = CGPoint(x: touchPoint.x / gestureView.bounds.size.width, y: touchPoint.y / gestureView.bounds.size.height)
             guard
-                let device = rtmpStream.videoCapture(for: 0)?.device, device.isFocusPointOfInterestSupported else {
+                let device = stream.videoCapture(for: 0)?.device, device.isFocusPointOfInterestSupported else {
                 return
             }
             do {
@@ -264,11 +228,11 @@ final class LiveViewController: UIViewController {
     @IBAction private func onFPSValueChanged(_ segment: UISegmentedControl) {
         switch segment.selectedSegmentIndex {
         case 0:
-            rtmpStream.frameRate = 15
+            stream.frameRate = 15
         case 1:
-            rtmpStream.frameRate = 30
+            stream.frameRate = 30
         case 2:
-            rtmpStream.frameRate = 60
+            stream.frameRate = 60
         default:
             break
         }
@@ -276,15 +240,15 @@ final class LiveViewController: UIViewController {
 
     @IBAction private func onEffectValueChanged(_ segment: UISegmentedControl) {
         if let currentEffect: VideoEffect = currentEffect {
-            _ = rtmpStream.unregisterVideoEffect(currentEffect)
+            _ = stream.unregisterVideoEffect(currentEffect)
         }
         switch segment.selectedSegmentIndex {
         case 1:
             currentEffect = MonochromeEffect()
-            _ = rtmpStream.registerVideoEffect(currentEffect!)
+            _ = stream.registerVideoEffect(currentEffect!)
         case 2:
             currentEffect = PronamaEffect()
-            _ = rtmpStream.registerVideoEffect(currentEffect!)
+            _ = stream.registerVideoEffect(currentEffect!)
         default:
             break
         }
@@ -321,9 +285,9 @@ final class LiveViewController: UIViewController {
         }
         audioDevicePicker.reloadAllComponents()
         if DeviceUtil.isHeadphoneDisconnected(notification) {
-            rtmpStream.isMonitoringEnabled = false
+            stream.isMonitoringEnabled = false
         } else {
-            rtmpStream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
+            stream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
         }
     }
 
@@ -332,25 +296,11 @@ final class LiveViewController: UIViewController {
         guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
             return
         }
-        rtmpStream.videoOrientation = orientation
+        stream.videoOrientation = orientation
     }
 }
 
-extension LiveViewController: RTMPConnectionDelegate {
-    func connection(_ connection: RTMPConnection, publishInsufficientBWOccured stream: RTMPStream) {
-    }
-
-    func connection(_ connection: RTMPConnection, publishSufficientBWOccured stream: RTMPStream) {
-    }
-
-    func connection(_ connection: RTMPConnection, updateStats stream: RTMPStream) {
-    }
-
-    func connection(_ connection: RTMPConnection, didClear stream: RTMPStream) {
-    }
-}
-
-extension LiveViewController: IORecorderDelegate {
+extension IngestViewController: IORecorderDelegate {
     // MARK: IORecorderDelegate
     func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error) {
         logger.error(error)
@@ -369,14 +319,14 @@ extension LiveViewController: IORecorderDelegate {
     }
 }
 
-extension LiveViewController: AudioCaptureDelegate {
+extension IngestViewController: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
     func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
-        rtmpStream.appendAudioBuffer(buffer, when: time)
+        stream.appendAudioBuffer(buffer, when: time)
     }
 }
 
-extension LiveViewController: UIPickerViewDelegate {
+extension IngestViewController: UIPickerViewDelegate {
     // MARK: UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         let session = AVAudioSession.sharedInstance()
@@ -399,13 +349,13 @@ extension LiveViewController: UIPickerViewDelegate {
         } catch {
             logger.warn("can't set supported setPreferredDataSource")
         }
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
+        stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
             logger.warn(error)
         }
     }
 }
 
-extension LiveViewController: UIPickerViewDataSource {
+extension IngestViewController: UIPickerViewDataSource {
     // MARK: UIPickerViewDataSource
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
