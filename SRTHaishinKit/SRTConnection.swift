@@ -2,7 +2,7 @@ import Foundation
 import libsrt
 
 /// The SRTConnection class create a two-way SRT connection.
-public class SRTConnection: NSObject {
+public final class SRTConnection: NSObject {
     /// SRT Library version
     public static let version: String = SRT_VERSION_STRING
     /// The URI passed to the SRTConnection.connect() method.
@@ -10,13 +10,13 @@ public class SRTConnection: NSObject {
     /// This instance connect to server(true) or not(false)
     @objc public private(set) dynamic var connected = false
 
-    var socket: SRTSocket? {
+    var socket: SRTSocket<SRTConnection>? {
         didSet {
             socket?.delegate = self
         }
     }
     var streams: [SRTStream] = []
-    var clients: [SRTSocket] = []
+    var clients: [SRTSocket<SRTConnection>] = []
 
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData {
@@ -79,15 +79,15 @@ public class SRTConnection: NSObject {
 
 extension SRTConnection: SRTSocketDelegate {
     // MARK: SRTSocketDelegate
-    func socket(_ socket: SRTSocket, status: SRT_SOCKSTATUS) {
+    func socket(_ socket: SRTSocket<SRTConnection>, status: SRT_SOCKSTATUS) {
         connected = socket.status == SRTS_CONNECTED
     }
 
-    func socket(_ socket: SRTSocket, incomingDataAvailabled data: Data, bytes: Int32) {
+    func socket(_ socket: SRTSocket<SRTConnection>, incomingDataAvailabled data: Data, bytes: Int32) {
         streams.first?.doInput(data.subdata(in: 0..<Data.Index(bytes)))
     }
 
-    func socket(_ socket: SRTSocket, didAcceptSocket client: SRTSocket) {
+    func socket(_ socket: SRTSocket<SRTConnection>, didAcceptSocket client: SRTSocket<SRTConnection>) {
         clients.append(client)
     }
 }

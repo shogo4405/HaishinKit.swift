@@ -3,19 +3,19 @@ import HaishinKit
 import libsrt
 import Logboard
 
+private let kSRTSocket_defaultOptions: [SRTSocketOption: Any] = [:]
+private let kSRTSOcket_payloadSize: Int = 1316
+
 protocol SRTSocketDelegate: AnyObject {
-    func socket(_ socket: SRTSocket, status: SRT_SOCKSTATUS)
-    func socket(_ socket: SRTSocket, incomingDataAvailabled data: Data, bytes: Int32)
-    func socket(_ socket: SRTSocket, didAcceptSocket client: SRTSocket)
+    func socket(_ socket: SRTSocket<Self>, status: SRT_SOCKSTATUS)
+    func socket(_ socket: SRTSocket<Self>, incomingDataAvailabled data: Data, bytes: Int32)
+    func socket(_ socket: SRTSocket<Self>, didAcceptSocket client: SRTSocket<Self>)
 }
 
-final class SRTSocket {
-    static let defaultOptions: [SRTSocketOption: Any] = [:]
-    static let payloadSize: Int = 1316
-
+final class SRTSocket<T: SRTSocketDelegate> {
     var timeout: Int = 0
     var options: [SRTSocketOption: Any] = [:]
-    weak var delegate: (any SRTSocketDelegate)?
+    weak var delegate: T?
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
     private(set) var isRunning: Atomic<Bool> = .init(false)
@@ -72,7 +72,7 @@ final class SRTSocket {
         startRunning()
     }
 
-    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = SRTSocket.defaultOptions) throws {
+    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = kSRTSocket_defaultOptions) throws {
         guard socket == SRT_INVALID_SOCK else {
             return
         }
@@ -116,7 +116,7 @@ final class SRTSocket {
 
     func doOutput(data: Data) {
         outgoingQueue.async {
-            self.outgoingBuffer.append(contentsOf: data.chunk(SRTSocket.payloadSize))
+            self.outgoingBuffer.append(contentsOf: data.chunk(kSRTSOcket_payloadSize))
             repeat {
                 guard var data = self.outgoingBuffer.first else {
                     return
