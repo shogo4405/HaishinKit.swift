@@ -58,10 +58,6 @@ Project name    |Notes       |License
 - [x] ReplayKit Live as a Broadcast Upload Extension
 - [x] [Enhanced RTMP](https://github.com/veovera/enhanced-rtmp)
 
-### HLS
-- [x] HTTPService
-- [x] HLS Publish
-
 ### SRT(beta)
 - [x] Publish and Recording (H264/AAC)
 - [x] Playback(beta)
@@ -289,25 +285,6 @@ screen.startRunning()
 
 // macOS
 stream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
-```
-
-## 📓 HTTP Usage
-HTTP Live Streaming (HLS). Your iPhone/Mac become a IP Camera. Basic snipet. You can see http://ip.address:8080/hello/playlist.m3u8 
-```swift
-var stream = HTTPStream()
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
-stream.attachAudio(AVCaptureDevice.default(for: .audio))
-stream.publish("hello")
-
-var hkView = MTHKView(frame: view.bounds)
-hkView.attachStream(httpStream)
-
-var httpService = HLSService(domain: "", type: "_http._tcp", name: "HaishinKit", port: 8080)
-httpService.addHTTPStream(stream)
-httpService.startRunning()
-
-// add ViewController#view
-view.addSubview(hkView)
 ```
 
 ## 💠 Sponsorship
