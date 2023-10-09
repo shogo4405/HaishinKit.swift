@@ -50,9 +50,6 @@ open class NetStream: NSObject {
         }
     }
 
-    /// Specifies the delegate..
-    public weak var delegate: (any NetStreamDelegate)?
-
     /// Specifies the audio monitoring enabled or not.
     public var isMonitoringEnabled: Bool {
         get {
@@ -186,6 +183,16 @@ open class NetStream: NSObject {
         }
     }
 
+    /// The video input format.
+    public var videoInputFormat: CMVideoFormatDescription? {
+        return mixer.videoIO.inputFormat
+    }
+
+    /// The audio input format.
+    public var audioInputFormat: AVAudioFormat? {
+        return mixer.audioIO.inputFormat
+    }
+
     /// The number of frames per second being displayed.
     @objc public internal(set) dynamic var currentFPS: UInt16 = 0
 
@@ -198,6 +205,9 @@ open class NetStream: NSObject {
             mixer.audioIO.soundTransform = newValue
         }
     }
+
+    /// Specifies the delegate..
+    public weak var delegate: (any NetStreamDelegate)?
 
     /// Creates a NetStream object.
     override public init() {
@@ -212,7 +222,7 @@ open class NetStream: NSObject {
     /// Attaches the primary camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(tvOS 17.0, *)
-    open func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
+    public func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.videoIO.attachCamera(device)
@@ -225,7 +235,7 @@ open class NetStream: NSObject {
     /// Attaches the 2ndary camera  object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(iOS 13.0, tvOS 17.0, *)
-    open func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
+    public func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.videoIO.attachMultiCamera(device)
@@ -238,7 +248,7 @@ open class NetStream: NSObject {
     /// Attaches the audio capture object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(tvOS 17.0, *)
-    open func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: any Error) -> Void)? = nil) {
+    public func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
                 try self.mixer.audioIO.attachAudio(device, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
