@@ -105,12 +105,16 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
             delegate?.resampler(self, didOutput: audioConverter.outputFormat)
         }
     }
+    private var anchor: AVAudioTime?
     private var sampleTime: AVAudioFramePosition = kIOAudioResampler_sampleTime
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
         inSourceFormat = sampleBuffer.formatDescription?.audioStreamBasicDescription
         if sampleTime == kIOAudioResampler_sampleTime {
             sampleTime = sampleBuffer.presentationTimeStamp.value
+            if let outputFormat {
+                anchor = .init(hostTime: AVAudioTime.hostTime(forSeconds: sampleBuffer.presentationTimeStamp.seconds), sampleTime: sampleTime, atRate: outputFormat.sampleRate)
+            }
         }
         ringBuffer?.appendSampleBuffer(sampleBuffer)
         resample()
@@ -120,6 +124,7 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
         inSourceFormat = audioBuffer.format.formatDescription.audioStreamBasicDescription
         if sampleTime == kIOAudioResampler_sampleTime {
             sampleTime = when.sampleTime
+            anchor = when
         }
         ringBuffer?.appendAudioPCMBuffer(audioBuffer, when: when)
         resample()
@@ -146,7 +151,10 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
             }
             switch status {
             case .haveData:
-                delegate?.resampler(self, didOutput: outputBuffer, when: .init(sampleTime: sampleTime, atRate: outputBuffer.format.sampleRate))
+                let time = AVAudioTime(sampleTime: sampleTime, atRate: outputBuffer.format.sampleRate)
+                if let anchor, let when = time.extrapolateTime(fromAnchor: anchor) {
+                    delegate?.resampler(self, didOutput: outputBuffer, when: when)
+                }
                 sampleTime += 1024
             case .error:
                 if let error {

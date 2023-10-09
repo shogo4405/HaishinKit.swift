@@ -73,10 +73,12 @@ public final class VideoCodec {
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: settings.videoSize.height)
         return attributes
     }
+    var inputFormat: CMFormatDescription?
+    var passthrough = true
     var frameInterval = VideoCodec.defaultFrameInterval
     var expectedFrameRate = IOMixer.defaultFrameRate
     weak var delegate: (any VideoCodecDelegate)?
-    var inputFormat: CMFormatDescription?
+    private var startedAt: CMTime = .zero
     private(set) var outputFormat: CMFormatDescription? {
         didSet {
             guard !CMFormatDescriptionEqual(outputFormat, otherFormatDescription: oldValue) else {
@@ -167,6 +169,9 @@ public final class VideoCodec {
     }
 
     private func willDropFrame(_ presentationTimeStamp: CMTime) -> Bool {
+        guard startedAt <= presentationTimeStamp else {
+            return true
+        }
         guard Self.defaultFrameInterval < frameInterval else {
             return false
         }
@@ -201,7 +206,6 @@ extension VideoCodec: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {
-            self.isRunning.mutate { $0 = true }
             #if os(iOS) || os(tvOS) || os(visionOS)
             NotificationCenter.default.addObserver(
                 self,
@@ -216,21 +220,24 @@ extension VideoCodec: Running {
                 object: nil
             )
             #endif
+            self.startedAt = self.passthrough ? .zero : CMClockGetTime(CMClockGetHostTimeClock())
+            self.isRunning.mutate { $0 = true }
         }
     }
 
     public func stopRunning() {
         lockQueue.async {
+            self.isRunning.mutate { $0 = false }
             self.session = nil
             self.invalidateSession = true
             self.needsSync.mutate { $0 = true }
             self.outputFormat = nil
             self.presentationTimeStamp = .invalid
+            self.startedAt = .zero
             #if os(iOS) || os(tvOS) || os(visionOS)
             NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
             NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
             #endif
-            self.isRunning.mutate { $0 = false }
         }
     }
 }

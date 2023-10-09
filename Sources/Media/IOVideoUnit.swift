@@ -114,7 +114,6 @@ final class IOVideoUnit: NSObject, IOUnit {
     private(set) var capture: IOVideoCaptureUnit = .init()
     private(set) var multiCamCapture: IOVideoCaptureUnit = .init()
     #endif
-    private(set) var presentationTimeStamp: CMTime = .invalid
     private lazy var videoMixer: IOVideoMixer = {
         var videoMixer = IOVideoMixer<IOVideoUnit>()
         videoMixer.delegate = self
@@ -149,8 +148,8 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
             capture.detachSession(mixer.session)
             try capture.attachDevice(nil, videoUnit: self)
-            presentationTimeStamp = .invalid
             inputFormat = nil
+            codec.passthrough = true
             return
         }
         mixer.session.beginConfiguration()
@@ -164,6 +163,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             try multiCamCapture.attachDevice(nil, videoUnit: self)
         }
         try capture.attachDevice(device, videoUnit: self)
+        codec.passthrough = false
     }
 
     @available(iOS 13.0, tvOS 17.0, *)
@@ -333,7 +333,6 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime) {
-        self.presentationTimeStamp = presentationTimeStamp
         codec.appendImageBuffer(
             imageBuffer,
             presentationTimeStamp: presentationTimeStamp,

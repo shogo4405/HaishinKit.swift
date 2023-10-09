@@ -21,6 +21,8 @@ final class NetStreamSwitcher {
                 swithcer.connection = connection
                 return SRTStream(connection: connection)
             case .http:
+                let service = HLSService(domain: "localhost", type: "_http._tcp", name: "HaishinKit", port: 8080)
+                swithcer.connection = service
                 return HTTPStream()
             }
         }
@@ -48,7 +50,7 @@ final class NetStreamSwitcher {
     private var connection: Any?
     private(set) var stream: NetStream = .init()
 
-    func connect() {
+    func open() {
         switch mode {
         case .rtmp:
             guard let connection = connection as? RTMPConnection else {
@@ -58,10 +60,17 @@ final class NetStreamSwitcher {
             connection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             connection.connect(uri)
         case .srt:
-            (connection as? SRTConnection)?.open(URL(string: uri))
-            (stream as? SRTStream)?.publish("")
+            guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                return
+            }
+            connection.open(URL(string: uri))
+            stream.publish("")
         case .http:
-            break
+            guard let connection = connection as? HLSService, let stream = stream as? HTTPStream else {
+                return
+            }
+            connection.addHTTPStream(stream)
+            connection.startRunning()
         }
     }
 

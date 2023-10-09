@@ -42,7 +42,6 @@ final class IOAudioUnit: NSObject, IOUnit {
     var inputBuffer: AVAudioBuffer? {
         return codec.inputBuffer
     }
-    private(set) var presentationTimeStamp: CMTime = .invalid
     private lazy var codec: AudioCodec = {
         var codec = AudioCodec()
         codec.lockQueue = lockQueue
@@ -79,7 +78,6 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
         guard let device else {
             try capture.attachDevice(nil, audioUnit: self)
-            presentationTimeStamp = .invalid
             inputFormat = nil
             return
         }
@@ -176,7 +174,6 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        presentationTimeStamp = when.makeTime()
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.appendAudioPCMBuffer(audioBuffer, when: when)
         codec.appendAudioBuffer(audioBuffer, when: when)

@@ -183,7 +183,7 @@ final class IngestViewController: UIViewController {
             publish.setTitle("●", for: [])
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            netStreamSwitcher.connect()
+            netStreamSwitcher.open()
             publish.setTitle("■", for: [])
         }
         publish.isSelected.toggle()
@@ -313,7 +313,7 @@ extension IngestViewController: IORecorderDelegate {
             do {
                 try FileManager.default.removeItem(at: writer.outputURL)
             } catch {
-                print(error)
+                logger.warn(error)
             }
         })
     }
