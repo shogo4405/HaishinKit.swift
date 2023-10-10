@@ -322,7 +322,7 @@ extension IngestViewController: IORecorderDelegate {
 extension IngestViewController: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
     func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
-        stream.appendAudioBuffer(buffer, when: time)
+        stream.append(buffer, when: time)
     }
 }
 

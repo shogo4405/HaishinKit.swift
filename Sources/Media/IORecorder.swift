@@ -13,7 +13,7 @@ public protocol IORecorderDelegate: AnyObject {
 
 // MARK: -
 /// The IORecorder class represents video and audio recorder.
-public class IORecorder {
+public final class IORecorder {
     /// The IORecorder error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
@@ -72,7 +72,7 @@ public class IORecorder {
     #endif
 
     /// Append a sample buffer for recording.
-    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    public func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning.value else {
             return
         }
@@ -115,7 +115,7 @@ public class IORecorder {
     }
 
     /// Append a pixel buffer for recording.
-    public func appendPixelBuffer(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
+    public func append(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
         guard isRunning.value else {
             return
         }
@@ -149,12 +149,12 @@ public class IORecorder {
         }
     }
 
-    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func append(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard isRunning.value else {
             return
         }
         if let sampleBuffer = audioPCMBuffer.makeSampleBuffer(when) {
-            appendSampleBuffer(sampleBuffer)
+            append(sampleBuffer)
         }
     }
 

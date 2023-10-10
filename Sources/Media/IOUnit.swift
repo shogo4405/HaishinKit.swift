@@ -1,9 +1,6 @@
 import AVFAudio
 import Foundation
 
-/// A type that can delegate itself to AudioCodec or VideoCodec.
-public typealias AVCodecDelegate = AudioCodecDelegate & VideoCodecDelegate
-
 protocol IOUnit {
     associatedtype FormatDescription
 
@@ -12,11 +9,11 @@ protocol IOUnit {
     var inputFormat: FormatDescription? { get }
     var outputFormat: FormatDescription? { get }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer)
+    func append(_ sampleBuffer: CMSampleBuffer)
 }
 
 protocol IOUnitEncoding {
-    func startEncoding(_ delegate: any AVCodecDelegate)
+    func startEncoding()
     func stopEncoding()
 }
 

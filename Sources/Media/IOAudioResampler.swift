@@ -7,7 +7,7 @@ private let kIOAudioResampler_sampleTime: AVAudioFramePosition = 0
 protocol IOAudioResamplerDelegate: AnyObject {
     func resampler(_ resampler: IOAudioResampler<Self>, didOutput audioFormat: AVAudioFormat)
     func resampler(_ resampler: IOAudioResampler<Self>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime)
-    func resampler(_ resampler: IOAudioResampler<Self>, errorOccurred error: AudioCodec.Error)
+    func resampler(_ resampler: IOAudioResampler<Self>, errorOccurred error: IOMixerAudioError)
 }
 
 struct IOAudioResamplerSettings {
@@ -108,7 +108,7 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
     private var anchor: AVAudioTime?
     private var sampleTime: AVAudioFramePosition = kIOAudioResampler_sampleTime
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer) {
         inSourceFormat = sampleBuffer.formatDescription?.audioStreamBasicDescription
         if sampleTime == kIOAudioResampler_sampleTime {
             sampleTime = sampleBuffer.presentationTimeStamp.value
@@ -116,17 +116,17 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
                 anchor = .init(hostTime: AVAudioTime.hostTime(forSeconds: sampleBuffer.presentationTimeStamp.seconds), sampleTime: sampleTime, atRate: outputFormat.sampleRate)
             }
         }
-        ringBuffer?.appendSampleBuffer(sampleBuffer)
+        ringBuffer?.append(sampleBuffer)
         resample()
     }
 
-    func appendAudioPCMBuffer(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func append(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         inSourceFormat = audioBuffer.format.formatDescription.audioStreamBasicDescription
         if sampleTime == kIOAudioResampler_sampleTime {
             sampleTime = when.sampleTime
             anchor = when
         }
-        ringBuffer?.appendAudioPCMBuffer(audioBuffer, when: when)
+        ringBuffer?.append(audioBuffer, when: when)
         resample()
     }
 

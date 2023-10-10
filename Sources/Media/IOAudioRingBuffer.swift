@@ -36,7 +36,7 @@ final class IOAudioRingBuffer {
         self.outputBuffer.frameLength = self.outputBuffer.frameCapacity
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer) {
         guard CMSampleBufferDataIsReady(sampleBuffer) else {
             return
         }
@@ -69,10 +69,10 @@ final class IOAudioRingBuffer {
         }
         skip = max(Int(sampleBuffer.presentationTimeStamp.value - sampleTime), 0)
         sampleTime += Int64(skip)
-        appendAudioPCMBuffer(inputBuffer)
+        append(inputBuffer)
     }
 
-    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func append(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         if sampleTime == 0 {
             sampleTime = when.sampleTime
         }
@@ -85,11 +85,11 @@ final class IOAudioRingBuffer {
         _ = inputBuffer.copy(audioPCMBuffer)
         skip = Int(max(when.sampleTime - sampleTime, 0))
         sampleTime += Int64(skip)
-        appendAudioPCMBuffer(inputBuffer)
+        append(inputBuffer)
     }
 
     @inline(__always)
-    private func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, offset: Int = 0) {
+    private func append(_ audioPCMBuffer: AVAudioPCMBuffer, offset: Int = 0) {
         let numSamples = min(Int(audioPCMBuffer.frameLength) - offset, Int(outputBuffer.frameLength) - head)
         if inputFormat.isInterleaved {
             let channelCount = Int(inputFormat.channelCount)
@@ -122,7 +122,7 @@ final class IOAudioRingBuffer {
         if head == outputBuffer.frameLength {
             head = 0
             if 0 < Int(audioPCMBuffer.frameLength) - numSamples {
-                appendAudioPCMBuffer(audioPCMBuffer, offset: numSamples)
+                append(audioPCMBuffer, offset: numSamples)
             }
         }
     }

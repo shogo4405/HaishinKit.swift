@@ -23,9 +23,9 @@ public protocol NetStreamDelegate: AnyObject {
     func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
     /// Tells the receiver to video codec error occured.
-    func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error)
+    func stream(_ stream: NetStream, videoErrorOccurred error: IOMixerVideoError)
     /// Tells the receiver to audio codec error occured.
-    func stream(_ stream: NetStream, audioCodecErrorOccurred error: AudioCodec.Error)
+    func stream(_ stream: NetStream, audioErrorOccurred error: IOMixerAudioError)
     /// Tells the receiver to the stream opened.
     func streamDidOpen(_ stream: NetStream)
 }
@@ -285,15 +285,15 @@ open class NetStream: NSObject {
 
     /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
-    open func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, options: [NSObject: AnyObject]? = nil) {
+    public func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?._mediaType {
         case kCMMediaType_Audio:
             mixer.audioIO.lockQueue.async {
-                self.mixer.audioIO.appendSampleBuffer(sampleBuffer)
+                self.mixer.audioIO.append(sampleBuffer)
             }
         case kCMMediaType_Video:
             mixer.videoIO.lockQueue.async {
-                self.mixer.videoIO.appendSampleBuffer(sampleBuffer)
+                self.mixer.videoIO.append(sampleBuffer)
             }
         default:
             break
@@ -302,9 +302,9 @@ open class NetStream: NSObject {
 
     /// Append an AVAudioBuffer.
     /// - Warning: This method can't use attachAudio method at the same time.
-    public func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         mixer.audioIO.lockQueue.async {
-            self.mixer.audioIO.appendAudioBuffer(audioBuffer, when: when)
+            self.mixer.audioIO.append(audioBuffer, when: when)
         }
     }
 
@@ -359,12 +359,12 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, didOutput: audio, when: when)
     }
 
-    func mixer(_ mixer: IOMixer, audioCodecErrorOccurred error: AudioCodec.Error) {
-        delegate?.stream(self, audioCodecErrorOccurred: error)
+    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOMixerAudioError) {
+        delegate?.stream(self, audioErrorOccurred: error)
     }
 
-    func mixer(_ mixer: IOMixer, videoCodecErrorOccurred error: VideoCodec.Error) {
-        delegate?.stream(self, videoCodecErrorOccurred: error)
+    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOMixerVideoError) {
+        delegate?.stream(self, videoErrorOccurred: error)
     }
 
     #if os(iOS) || os(tvOS)
@@ -411,7 +411,7 @@ extension NetStream: IOScreenCaptureUnitDelegate {
         guard let sampleBuffer, status == noErr else {
             return
         }
-        appendSampleBuffer(sampleBuffer)
+        append(sampleBuffer)
     }
 }
 
@@ -422,12 +422,12 @@ extension NetStream: SCStreamOutput {
         if #available(macOS 13.0, *) {
             switch type {
             case .screen:
-                appendSampleBuffer(sampleBuffer)
+                append(sampleBuffer)
             default:
-                appendSampleBuffer(sampleBuffer)
+                append(sampleBuffer)
             }
         } else {
-            appendSampleBuffer(sampleBuffer)
+            append(sampleBuffer)
         }
     }
 }

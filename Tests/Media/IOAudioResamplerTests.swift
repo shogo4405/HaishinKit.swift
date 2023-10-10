@@ -11,7 +11,7 @@ final class NullIOAudioResamplerDelegate: IOAudioResamplerDelegate {
     func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, errorOccurred error: HaishinKit.AudioCodec.Error) {
+    func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, errorOccurred error: HaishinKit.IOMixerAudioError) {
     }
 }
 
@@ -22,9 +22,9 @@ final class IOAudioResamplerTests: XCTestCase {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
         resampler.settings = .init(sampleRate: 16000, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 16000)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 16000)
     }
 
@@ -32,13 +32,13 @@ final class IOAudioResamplerTests: XCTestCase {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
         resampler.settings = .init(sampleRate: 44100, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(16000, numSamples: 1024 * 20, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(16000, numSamples: 1024 * 20, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
     }
 
@@ -46,9 +46,9 @@ final class IOAudioResamplerTests: XCTestCase {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
         resampler.settings = .init(sampleRate: 48000, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 48000)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024 * 2, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024 * 2, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 48000)
     }
 
@@ -56,9 +56,9 @@ final class IOAudioResamplerTests: XCTestCase {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
         resampler.settings = .init(sampleRate: 0, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44000)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 48000)
     }
 
@@ -66,9 +66,9 @@ final class IOAudioResamplerTests: XCTestCase {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
         resampler.settings = .init(sampleRate: 0, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 48000)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
     }
 
@@ -76,9 +76,9 @@ final class IOAudioResamplerTests: XCTestCase {
         let resampler = IOAudioResampler<NullIOAudioResamplerDelegate>()
         resampler.settings = .init(sampleRate: 0, channels: 1)
         resampler.delegate = nullIOAudioResamplerDelegate
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(16000, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(16000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 16000)
-        resampler.appendSampleBuffer(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        resampler.append(CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(resampler.outputFormat?.sampleRate, 44100)
     }
 }
