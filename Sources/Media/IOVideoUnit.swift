@@ -34,14 +34,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             codec.settings = newValue
         }
     }
-    var inputFormat: FormatDescription? {
-        get {
-            codec.inputFormat
-        }
-        set {
-            codec.inputFormat = newValue
-        }
-    }
+    private(set) var inputFormat: FormatDescription?
     var outputFormat: FormatDescription? {
         codec.outputFormat
     }
@@ -279,6 +272,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             inputFormat = sampleBuffer.formatDescription
             videoMixer.appendSampleBuffer(sampleBuffer, channel: 0, isVideoMirrored: false)
         default:
+            inputFormat = sampleBuffer.formatDescription
             codec.appendSampleBuffer(sampleBuffer)
         }
     }

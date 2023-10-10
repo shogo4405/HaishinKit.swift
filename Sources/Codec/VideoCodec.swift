@@ -73,12 +73,19 @@ public final class VideoCodec {
         attributes[kCVPixelBufferHeightKey] = NSNumber(value: settings.videoSize.height)
         return attributes
     }
-    var inputFormat: CMFormatDescription?
     var passthrough = true
     var frameInterval = VideoCodec.defaultFrameInterval
     var expectedFrameRate = IOMixer.defaultFrameRate
     weak var delegate: (any VideoCodecDelegate)?
     private var startedAt: CMTime = .zero
+    private(set) var inputFormat: CMFormatDescription? {
+        didSet {
+            guard !CMFormatDescriptionEqual(inputFormat, otherFormatDescription: oldValue) else {
+                return
+            }
+            outputFormat = nil
+        }
+    }
     private(set) var outputFormat: CMFormatDescription? {
         didSet {
             guard !CMFormatDescriptionEqual(outputFormat, otherFormatDescription: oldValue) else {
@@ -135,21 +142,23 @@ public final class VideoCodec {
                 self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
                 return
             }
+            var status = noErr
+            if outputFormat == nil {
+                status = CMVideoFormatDescriptionCreateForImageBuffer(
+                    allocator: kCFAllocatorDefault,
+                    imageBuffer: imageBuffer,
+                    formatDescriptionOut: &outputFormat
+                )
+            }
+            guard let outputFormat, status == noErr else {
+                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
+                return
+            }
             var timingInfo = CMSampleTimingInfo(
                 duration: duration,
                 presentationTimeStamp: presentationTimeStamp,
                 decodeTimeStamp: sampleBuffer.decodeTimeStamp
             )
-            var videoFormatDescription: CMVideoFormatDescription?
-            var status = CMVideoFormatDescriptionCreateForImageBuffer(
-                allocator: kCFAllocatorDefault,
-                imageBuffer: imageBuffer,
-                formatDescriptionOut: &videoFormatDescription
-            )
-            guard status == noErr else {
-                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
-                return
-            }
             var sampleBuffer: CMSampleBuffer?
             status = CMSampleBufferCreateForImageBuffer(
                 allocator: kCFAllocatorDefault,
@@ -157,7 +166,7 @@ public final class VideoCodec {
                 dataReady: true,
                 makeDataReadyCallback: nil,
                 refcon: nil,
-                formatDescription: videoFormatDescription!,
+                formatDescription: outputFormat,
                 sampleTiming: &timingInfo,
                 sampleBufferOut: &sampleBuffer
             )
@@ -232,6 +241,7 @@ extension VideoCodec: Running {
             self.session = nil
             self.invalidateSession = true
             self.needsSync.mutate { $0 = true }
+            self.inputFormat = nil
             self.outputFormat = nil
             self.presentationTimeStamp = .invalid
             self.startedAt = .zero
