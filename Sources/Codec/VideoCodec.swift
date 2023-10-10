@@ -119,6 +119,7 @@ public final class VideoCodec {
     }
 
     func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        inputFormat = sampleBuffer.formatDescription
         guard isRunning.value else {
             return
         }

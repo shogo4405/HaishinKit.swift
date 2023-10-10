@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import HaishinKit
 import SRTHaishinKit
@@ -23,6 +24,11 @@ final class NetStreamSwitcher {
         }
     }
 
+    enum Method {
+        case ingest
+        case playback
+    }
+
     var uri = "" {
         didSet {
             if uri.contains("srt://") {
@@ -39,14 +45,17 @@ final class NetStreamSwitcher {
     }
     private var retryCount = 0
     private var connection: Any?
+    private var method: Method = .ingest
     private(set) var stream: NetStream = .init()
 
-    func open() {
+    func open(_ method: Method) {
+        self.method = method
         switch mode {
         case .rtmp:
-            guard let connection = connection as? RTMPConnection else {
+            guard let connection = connection as? RTMPConnection, let stream = stream as? RTMPStream else {
                 return
             }
+            stream.delegate = self
             connection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
             connection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             connection.connect(uri)
@@ -54,8 +63,14 @@ final class NetStreamSwitcher {
             guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
                 return
             }
+            stream.delegate = self
             connection.open(URL(string: uri))
-            stream.publish("")
+            switch method {
+            case .playback:
+                stream.play()
+            case .ingest:
+                stream.publish()
+            }
         }
     }
 
@@ -69,8 +84,11 @@ final class NetStreamSwitcher {
             connection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
             connection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
         case .srt:
-            (stream as? SRTStream)?.close()
-            (connection as? SRTConnection)?.close()
+            guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                return
+            }
+            stream.close()
+            connection.close()
         }
     }
 
@@ -84,7 +102,12 @@ final class NetStreamSwitcher {
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             retryCount = 0
-            (stream as? RTMPStream)?.publish(Preference.defaultInstance.streamName!)
+            switch method {
+            case .playback:
+                (stream as? RTMPStream)?.play(Preference.defaultInstance.streamName!)
+            case .ingest:
+                (stream as? RTMPStream)?.publish(Preference.defaultInstance.streamName!)
+            }
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
             guard retryCount <= NetStreamSwitcher.maxRetryCount else {
                 return
@@ -101,5 +124,40 @@ final class NetStreamSwitcher {
     private func rtmpErrorHandler(_ notification: Notification) {
         logger.error(notification)
         (connection as? RTMPConnection)?.connect(Preference.defaultInstance.uri!)
+    }
+}
+
+extension NetStreamSwitcher: NetStreamDelegate {
+    // MARK: NetStreamDelegate
+    /// Tells the receiver to playback an audio packet incoming.
+    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    }
+
+    /// Tells the receiver to playback a video packet incoming.
+    func stream(_ stream: NetStream, didOutput video: CMSampleBuffer) {
+    }
+
+    #if os(iOS) || os(tvOS)
+    /// Tells the receiver to session was interrupted.
+    @available(tvOS 17.0, *)
+    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
+    }
+
+    /// Tells the receiver to session interrupted ended.
+    @available(tvOS 17.0, *)
+    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession) {
+    }
+
+    #endif
+    /// Tells the receiver to video codec error occured.
+    func stream(_ stream: NetStream, videoCodecErrorOccurred error: VideoCodec.Error) {
+    }
+
+    /// Tells the receiver to audio codec error occured.
+    func stream(_ stream: NetStream, audioCodecErrorOccurred error: HaishinKit.AudioCodec.Error) {
+    }
+
+    /// Tells the receiver to the stream opened.
+    func streamDidOpen(_ stream: NetStream) {
     }
 }

@@ -183,7 +183,7 @@ final class IngestViewController: UIViewController {
             publish.setTitle("●", for: [])
         } else {
             UIApplication.shared.isIdleTimerDisabled = true
-            netStreamSwitcher.open()
+            netStreamSwitcher.open(.ingest)
             publish.setTitle("■", for: [])
         }
         publish.isSelected.toggle()
