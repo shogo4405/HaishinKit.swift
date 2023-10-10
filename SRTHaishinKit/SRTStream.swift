@@ -4,7 +4,7 @@ import HaishinKit
 import libsrt
 
 /// An object that provides the interface to control a one-way channel over a SRTConnection.
-public class SRTStream: NetStream {
+public final class SRTStream: NetStream {
     private enum ReadyState: UInt8 {
         case initialized = 0
         case open        = 1
@@ -19,7 +19,6 @@ public class SRTStream: NetStream {
     private var action: (() -> Void)?
     private var keyValueObservations: [NSKeyValueObservation] = []
     private weak var connection: SRTConnection?
-    private lazy var audioEngine: AVAudioEngine = .init()
 
     private lazy var writer: TSWriter = {
         var writer = TSWriter()
@@ -56,6 +55,13 @@ public class SRTStream: NetStream {
                 mixer.startDecoding()
                 readyState = .playing
             case .publish:
+                writer.expectedMedias.removeAll()
+                if videoInputFormat != nil {
+                    writer.expectedMedias.insert(.video)
+                }
+                if audioInputFormat != nil {
+                    writer.expectedMedias.insert(.audio)
+                }
                 mixer.startEncoding(writer)
                 mixer.startRunning()
                 writer.startRunning()
@@ -88,46 +94,6 @@ public class SRTStream: NetStream {
     deinit {
         connection = nil
         keyValueObservations.removeAll()
-    }
-
-    /**
-     Prepare the stream to process media of the given type
-
-     - parameters:
-     - type: An AVMediaType you will be sending via an appendSampleBuffer call
-
-     As with appendSampleBuffer only video and audio types are supported
-     */
-    public func attachRawMedia(_ type: AVMediaType) {
-        writer.expectedMedias.insert(type)
-    }
-
-    /**
-     Remove a media type that was added via attachRawMedia
-
-     - parameters:
-     - type: An AVMediaType that was added via an attachRawMedia call
-     */
-    public func detachRawMedia(_ type: AVMediaType) {
-        writer.expectedMedias.remove(type)
-    }
-
-    override public func attachCamera(_ camera: AVCaptureDevice?, onError: ((any Error) -> Void)? = nil) {
-        if camera == nil {
-            writer.expectedMedias.remove(.video)
-        } else {
-            writer.expectedMedias.insert(.video)
-        }
-        super.attachCamera(camera, onError: onError)
-    }
-
-    override public func attachAudio(_ audio: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = true, onError: ((any Error) -> Void)? = nil) {
-        if audio == nil {
-            writer.expectedMedias.remove(.audio)
-        } else {
-            writer.expectedMedias.insert(.audio)
-        }
-        super.attachAudio(audio, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession, onError: onError)
     }
 
     /// Sends streaming audio, vidoe and data message from client.
