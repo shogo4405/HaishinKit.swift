@@ -8,7 +8,6 @@ final class NetStreamSwitcher {
     enum Mode {
         case rtmp
         case srt
-        case http
 
         func makeStream(_ swithcer: NetStreamSwitcher) -> NetStream {
             switch self {
@@ -20,20 +19,12 @@ final class NetStreamSwitcher {
                 let connection = SRTConnection()
                 swithcer.connection = connection
                 return SRTStream(connection: connection)
-            case .http:
-                let service = HLSService(domain: "localhost", type: "_http._tcp", name: "HaishinKit", port: 8080)
-                swithcer.connection = service
-                return HTTPStream()
             }
         }
     }
 
     var uri = "" {
         didSet {
-            if uri.contains("http://") {
-                mode = .http
-                return
-            }
             if uri.contains("srt://") {
                 mode = .srt
                 return
@@ -65,12 +56,6 @@ final class NetStreamSwitcher {
             }
             connection.open(URL(string: uri))
             stream.publish("")
-        case .http:
-            guard let connection = connection as? HLSService, let stream = stream as? HTTPStream else {
-                return
-            }
-            connection.addHTTPStream(stream)
-            connection.startRunning()
         }
     }
 
@@ -86,8 +71,6 @@ final class NetStreamSwitcher {
         case .srt:
             (stream as? SRTStream)?.close()
             (connection as? SRTConnection)?.close()
-        case .http:
-            break
         }
     }
 

@@ -36,10 +36,6 @@ final class CameraPublishViewController: NSViewController {
         rtmpStream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         return rtmpStream
     }()
-    private var httpService = HLSService(
-        domain: "local", type: HTTPService.type, name: "", port: HTTPService.defaultPort
-    )
-    private var httpStream = HTTPStream()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,10 +85,6 @@ final class CameraPublishViewController: NSViewController {
             case 0:
                 rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
                 rtmpConnection.connect(urlField.stringValue)
-            case 1:
-                httpStream.publish("hello")
-                httpService.addHTTPStream(httpStream)
-                httpService.startRunning()
             default:
                 break
             }
@@ -105,10 +97,6 @@ final class CameraPublishViewController: NSViewController {
         case 0:
             rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
             rtmpConnection.close()
-        case 1:
-            httpService.removeHTTPStream(httpStream)
-            httpService.stopRunning()
-            httpStream.publish(nil)
         default:
             break
         }
@@ -139,10 +127,6 @@ final class CameraPublishViewController: NSViewController {
             currentStream = rtmpStream
             lfView.attachStream(rtmpStream)
             urlField.stringValue = Preference.defaultInstance.uri ?? ""
-        case 1:
-            currentStream = httpStream
-            lfView.attachStream(httpStream)
-            urlField.stringValue = "http://{ipAddress}:8080/hello/playlist.m3u8"
         default:
             break
         }

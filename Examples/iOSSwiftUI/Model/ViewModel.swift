@@ -192,7 +192,7 @@ final class ViewModel: ObservableObject {
     }
 
     func changeVideoRate(level: CGFloat) {
-        rtmpStream.videoSettings.bitRate = UInt32(level * 1000)
+        rtmpStream.videoSettings.bitRate = Int(level * 1000)
     }
 
     func changeAudioRate(level: CGFloat) {

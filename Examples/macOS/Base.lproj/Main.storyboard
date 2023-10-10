@@ -79,7 +79,7 @@
                                 </connections>
                             </popUpButton>
                             <segmentedControl verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="Wuc-0E-MpH">
-                                <rect key="frame" x="18" y="227" width="126" height="24"/>
+                                <rect key="frame" x="18" y="227" width="124" height="24"/>
                                 <constraints>
                                     <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="120" id="vPI-Ua-wua"/>
                                 </constraints>
@@ -87,7 +87,6 @@
                                     <font key="font" metaFont="system"/>
                                     <segments>
                                         <segment label="RTMP" width="59" selected="YES"/>
-                                        <segment label="HLS" width="58" tag="1"/>
                                     </segments>
                                 </segmentedCell>
                                 <connections>
@@ -223,13 +222,13 @@
                         <autoresizingMask key="autoresizingMask"/>
                         <subviews>
                             <scrollView autohidesScrollers="YES" horizontalLineScroll="24" horizontalPageScroll="10" verticalLineScroll="24" verticalPageScroll="10" usesPredominantAxisScrolling="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U7X-zB-Ct9">
-                                <rect key="frame" x="0.0" y="0.0" width="154" height="1888"/>
+                                <rect key="frame" x="0.0" y="0.0" width="154" height="2296"/>
                                 <clipView key="contentView" id="TC0-20-xwt">
-                                    <rect key="frame" x="1" y="1" width="152" height="1886"/>
+                                    <rect key="frame" x="1" y="1" width="152" height="2294"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" multipleSelection="NO" autosaveColumns="NO" rowHeight="24" rowSizeStyle="automatic" viewBased="YES" id="Zf5-MB-jdh">
-                                            <rect key="frame" x="0.0" y="0.0" width="152" height="1886"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="152" height="2294"/>
                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                             <size key="intercellSpacing" width="17" height="0.0"/>
                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
@@ -280,7 +279,7 @@
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="YES" id="5e8-aJ-U5N">
-                                    <rect key="frame" x="1" y="1769" width="152" height="16"/>
+                                    <rect key="frame" x="1" y="2177" width="152" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" wantsLayer="YES" verticalHuggingPriority="750" horizontal="NO" id="eRz-M7-DJS">
