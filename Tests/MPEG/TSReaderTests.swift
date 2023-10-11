@@ -43,7 +43,7 @@ private final class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
     func audioCodec(_ codec: HaishinKit.AudioCodec<TSReaderAudioCodec>, didOutput outputFormat: AVAudioFormat) {
     }
 
-    func audioCodec(_ codec: HaishinKit.AudioCodec<TSReaderAudioCodec>, errorOccurred error: HaishinKit.IOMixerAudioError) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec<TSReaderAudioCodec>, errorOccurred error: HaishinKit.IOAudioUnitError) {
         // XCTFail()
     }
 

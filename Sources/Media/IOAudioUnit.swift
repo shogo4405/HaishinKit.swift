@@ -4,8 +4,16 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
+/// The IO audio unit  error domain codes.
+public enum IOAudioUnitError: Swift.Error {
+    /// The IO audio unit  failed to create the AVAudioConverter..
+    case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
+    /// The IO audio unit  faild to convert the an audio buffer.
+    case failedToConvert(error: NSError)
+}
+
 protocol IOAudioUnitDelegate: AnyObject {
-    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOMixerAudioError)
+    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOAudioUnitError)
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
 
@@ -13,11 +21,6 @@ final class IOAudioUnit: NSObject, IOUnit {
     typealias FormatDescription = AVAudioFormat
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
-    var soundTransform: SoundTransform = .init() {
-        didSet {
-            soundTransform.apply(mixer?.mediaLink.playerNode)
-        }
-    }
     var muted = false
     weak var mixer: IOMixer?
     var isMonitoringEnabled = false {
@@ -34,6 +37,9 @@ final class IOAudioUnit: NSObject, IOUnit {
             codec.settings = settings
             resampler.settings = settings.makeAudioResamplerSettings()
         }
+    }
+    var isRunning: Atomic<Bool> {
+        return codec.isRunning
     }
     private(set) var inputFormat: FormatDescription?
     var outputFormat: FormatDescription? {
@@ -118,35 +124,6 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
 }
 
-extension IOAudioUnit: IOUnitEncoding {
-    // MARK: IOUnitEncoding
-    func startEncoding() {
-        codec.startRunning()
-    }
-
-    func stopEncoding() {
-        codec.stopRunning()
-    }
-}
-
-extension IOAudioUnit: IOUnitDecoding {
-    // MARK: IOUnitDecoding
-    func startDecoding() {
-        codec.settings.format = .pcm
-        if let playerNode = mixer?.mediaLink.playerNode {
-            mixer?.audioEngine?.attach(playerNode)
-        }
-        codec.startRunning()
-    }
-
-    func stopDecoding() {
-        if let playerNode = mixer?.mediaLink.playerNode {
-            mixer?.audioEngine?.detach(playerNode)
-        }
-        codec.stopRunning()
-    }
-}
-
 #if os(iOS) || os(tvOS) || os(macOS)
 @available(tvOS 17.0, *)
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
@@ -157,9 +134,20 @@ extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
 }
 #endif
 
+extension IOAudioUnit: Running {
+    // MARK: Running
+    func startRunning() {
+        codec.startRunning()
+    }
+
+    func stopRunning() {
+        codec.stopRunning()
+    }
+}
+
 extension IOAudioUnit: IOAudioResamplerDelegate {
     // MARK: IOAudioResamplerDelegate
-    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: IOMixerAudioError) {
+    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: IOAudioUnitError) {
         mixer?.audioUnit(self, errorOccurred: error)
     }
 

@@ -149,15 +149,6 @@ open class RTMPStream: NetStream {
         case live
     }
 
-    enum ReadyState: UInt8 {
-        case initialized
-        case open
-        case play
-        case playing
-        case publish
-        case publishing
-    }
-
     private struct PausedStatus {
         let hasAudio: Bool
         let hasVideo: Bool
@@ -234,14 +225,6 @@ open class RTMPStream: NetStream {
         }
     }
     var id: UInt32 = RTMPStream.defaultID
-    var readyState: ReadyState = .initialized {
-        didSet {
-            guard oldValue != readyState else {
-                return
-            }
-            didChangeReadyState(readyState, oldValue: oldValue)
-        }
-    }
     var audioTimestamp: Double = 0.0
     var audioTimestampZero: Double = -1.0
     var videoTimestamp: Double = 0.0
@@ -348,7 +331,7 @@ open class RTMPStream: NetStream {
                 return
             }
 
-            if self.info.resourceName == name && self.readyState == .publishing {
+            if self.info.resourceName == name && self.readyState == .publishing(muxer: self.muxer) {
                 self.howToPublish = type
                 return
             }
@@ -383,7 +366,7 @@ open class RTMPStream: NetStream {
     /// Sends a message on a published stream to all subscribing clients.
     public func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
-            guard let rtmpConnection = self.rtmpConnection, self.readyState == .publishing else {
+            guard let rtmpConnection = self.rtmpConnection, self.readyState == .publishing(muxer: self.muxer) else {
                 return
             }
             let dataWasSent = self.dataTimeStamps[handlerName] == nil ? false : true
@@ -461,21 +444,23 @@ open class RTMPStream: NetStream {
         info.on(timer: timer)
     }
 
-    private func didChangeReadyState(_ readyState: ReadyState, oldValue: ReadyState) {
+    override public func readyStateWillChange(to readyState: NetStream.ReadyState) {
         guard let rtmpConnection else {
             return
         }
-
-        switch oldValue {
-        case .playing:
-            mixer.stopDecoding()
+        switch readyState {
         case .publishing:
             FCUnpublish()
-            mixer.stopEncoding()
         default:
             break
         }
+        super.readyStateDidChange(to: readyState)
+    }
 
+    override public func readyStateDidChange(to readyState: NetStream.ReadyState) {
+        guard let rtmpConnection else {
+            return
+        }
         switch readyState {
         case .open:
             currentFPS = 0
@@ -503,22 +488,19 @@ open class RTMPStream: NetStream {
             videoTimestampZero = -1.0
             audioTimestamp = 0
             audioTimestampZero = -1.0
-            mixer.startDecoding()
         case .publish:
             bitrateStrategy.setUp()
             startedAt = .init()
-            muxer.dispose()
-            mixer.startRunning()
             videoWasSent = false
             audioWasSent = false
             dataTimeStamps.removeAll()
             FCPublish()
         case .publishing:
             send(handlerName: "@setDataFrame", arguments: "onMetaData", makeMetaData())
-            mixer.startEncoding()
         default:
             break
         }
+        super.readyStateDidChange(to: readyState)
     }
 
     @objc
@@ -539,7 +521,7 @@ open class RTMPStream: NetStream {
         case RTMPStream.Code.playStart.rawValue:
             readyState = .playing
         case RTMPStream.Code.publishStart.rawValue:
-            readyState = .publishing
+            readyState = .publishing(muxer: muxer)
         default:
             break
         }
@@ -584,7 +566,7 @@ extension RTMPStream: EventDispatcherConvertible {
 extension RTMPStream: RTMPMuxerDelegate {
     // MARK: RTMPMuxerDelegate
     func muxer(_ muxer: RTMPMuxer, didOutputAudio buffer: Data, withTimestamp: Double) {
-        guard let rtmpConnection, readyState == .publishing else {
+        guard let rtmpConnection, readyState == .publishing(muxer: muxer) else {
             return
         }
         let type: FLVTagType = .audio
@@ -599,7 +581,7 @@ extension RTMPStream: RTMPMuxerDelegate {
     }
 
     func muxer(_ muxer: RTMPMuxer, didOutputVideo buffer: Data, withTimestamp: Double) {
-        guard let rtmpConnection, readyState == .publishing else {
+        guard let rtmpConnection, readyState == .publishing(muxer: muxer) else {
             return
         }
         let type: FLVTagType = .video

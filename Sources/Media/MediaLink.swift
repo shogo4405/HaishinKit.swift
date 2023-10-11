@@ -50,7 +50,7 @@ final class MediaLink<T: MediaLinkDelegate> {
         choreographer.delegate = self
         return choreographer
     }()
-    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.DisplayLinkedQueue.lock")
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MediaLink.lock")
     private var bufferQueue: CMBufferQueue?
     private var scheduledAudioBuffers: Atomic<Int> = .init(0)
     private var presentationTimeStampOrigin: CMTime = .invalid

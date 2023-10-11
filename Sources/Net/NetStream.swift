@@ -1,6 +1,9 @@
 import AVFoundation
 import CoreImage
 import CoreMedia
+#if canImport(SwiftPMSupport)
+import SwiftPMSupport
+#endif
 #if canImport(ScreenCaptureKit)
 import ScreenCaptureKit
 #endif
@@ -23,24 +26,50 @@ public protocol NetStreamDelegate: AnyObject {
     func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
     /// Tells the receiver to video codec error occured.
-    func stream(_ stream: NetStream, videoErrorOccurred error: IOMixerVideoError)
+    func stream(_ stream: NetStream, videoErrorOccurred error: IOVideoUnitError)
     /// Tells the receiver to audio codec error occured.
-    func stream(_ stream: NetStream, audioErrorOccurred error: IOMixerAudioError)
+    func stream(_ stream: NetStream, audioErrorOccurred error: IOAudioUnitError)
     /// Tells the receiver to the stream opened.
     func streamDidOpen(_ stream: NetStream)
 }
 
 /// The `NetStream` class is the foundation of a RTMPStream, HTTPStream.
 open class NetStream: NSObject {
+    public enum ReadyState: Equatable {
+        public static func == (lhs: NetStream.ReadyState, rhs: NetStream.ReadyState) -> Bool {
+            return lhs.rawValue == rhs.rawValue
+        }
+
+        case initialized
+        case open
+        case play
+        case playing
+        case publish
+        case publishing(muxer: any IOMuxer)
+        case closed
+
+        var rawValue: UInt8 {
+            switch self {
+            case .initialized:
+                return 0
+            case .open:
+                return 1
+            case .play:
+                return 2
+            case .playing:
+                return 3
+            case .publish:
+                return 4
+            case .publishing:
+                return 5
+            case .closed:
+                return 6
+            }
+        }
+    }
+
     /// The lockQueue.
     public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetStream.lock")
-
-    /// The mixer object.
-    public private(set) lazy var mixer: IOMixer = {
-        let mixer = IOMixer()
-        mixer.delegate = self
-        return mixer
-    }()
 
     /// Specifies the adaptibe bitrate strategy.
     public var bitrateStrategy: any NetBitRateStrategyConvertible = NetBitRateStrategy.shared {
@@ -193,21 +222,48 @@ open class NetStream: NSObject {
         return mixer.audioIO.inputFormat
     }
 
-    /// The number of frames per second being displayed.
-    @objc public internal(set) dynamic var currentFPS: UInt16 = 0
-
     /// Specifies the controls sound.
     public var soundTransform: SoundTransform {
         get {
-            mixer.audioIO.soundTransform
+            telly.soundTransform
         }
         set {
-            mixer.audioIO.soundTransform = newValue
+            telly.soundTransform = newValue
         }
     }
 
+    /// The number of frames per second being displayed.
+    @objc public internal(set) dynamic var currentFPS: UInt16 = 0
+
     /// Specifies the delegate..
     public weak var delegate: (any NetStreamDelegate)?
+
+    public var readyState: ReadyState = .initialized {
+        willSet {
+            guard readyState != newValue else {
+                return
+            }
+            readyStateWillChange(to: readyState)
+        }
+        didSet {
+            guard readyState != oldValue else {
+                return
+            }
+            readyStateDidChange(to: readyState)
+        }
+    }
+
+    private(set) lazy var mixer: IOMixer = {
+        let mixer = IOMixer()
+        mixer.delegate = self
+        return mixer
+    }()
+
+    private(set) lazy var telly: IOTellyUnit = {
+        let telly = IOTellyUnit()
+        telly.delegate = self
+        return telly
+    }()
 
     /// Creates a NetStream object.
     override public init() {
@@ -323,7 +379,8 @@ open class NetStream: NSObject {
     }
 
     /// Starts recording.
-    public func startRecording(_ settings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings) {
+    public func startRecording(_ delegate: any IORecorderDelegate, settings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings) {
+        mixer.recorder.delegate = delegate
         mixer.recorder.outputSettings = settings
         mixer.recorder.startRunning()
     }
@@ -331,6 +388,31 @@ open class NetStream: NSObject {
     /// Stop recording.
     public func stopRecording() {
         mixer.recorder.stopRunning()
+    }
+
+    open func readyStateWillChange(to readyState: ReadyState) {
+        switch readyState {
+        case .publishing:
+            mixer.stopMuxing()
+        case .playing:
+            mixer.stopMuxing()
+        default:
+            break
+        }
+    }
+
+    open func readyStateDidChange(to readyState: ReadyState) {
+        switch readyState {
+        case .play:
+            audioSettings.format = .pcm
+            mixer.startMuxing(telly)
+        case .publish:
+            mixer.startRunning()
+        case .publishing(let muxer):
+            mixer.startMuxing(muxer)
+        default:
+            break
+        }
     }
 
     #if os(iOS) || os(tvOS)
@@ -359,11 +441,11 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, didOutput: audio, when: when)
     }
 
-    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOMixerAudioError) {
+    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOAudioUnitError) {
         delegate?.stream(self, audioErrorOccurred: error)
     }
 
-    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOMixerVideoError) {
+    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOVideoUnitError) {
         delegate?.stream(self, videoErrorOccurred: error)
     }
 
@@ -378,6 +460,39 @@ extension NetStream: IOMixerDelegate {
         delegate?.stream(self, sessionInterruptionEnded: session)
     }
     #endif
+}
+
+extension NetStream: IOTellyUnitDelegate {
+    // MARK: IOTellyUnitDelegate
+    func tellyUnit(_ tellyUnit: IOTellyUnit, dequeue sampleBuffer: CMSampleBuffer) {
+        mixer.videoIO.drawable?.enqueue(sampleBuffer)
+    }
+
+    func tellyUnit(_ tellyUnit: IOTellyUnit, didBufferingChanged: Bool) {
+    }
+
+    func tellyUnit(_ tellyUnit: IOTellyUnit, didSetAudioFormat audioFormat: AVAudioFormat?) {
+        guard let audioEngine = mixer.audioEngine else {
+            return
+        }
+        nstry({
+            if let audioFormat {
+                audioEngine.attach(tellyUnit.playerNode)
+                audioEngine.connect(tellyUnit.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
+                if !audioEngine.isRunning {
+                    try? audioEngine.start()
+                }
+            } else {
+                audioEngine.detach(tellyUnit.playerNode)
+                audioEngine.disconnectNodeInput(tellyUnit.playerNode)
+                if audioEngine.isRunning {
+                    audioEngine.stop()
+                }
+            }
+        }, { exeption in
+            logger.warn(exeption)
+        })
+    }
 }
 
 extension NetStream: IOScreenCaptureUnitDelegate {

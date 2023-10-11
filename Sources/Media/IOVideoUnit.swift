@@ -1,6 +1,20 @@
 import AVFoundation
 import CoreImage
 
+/**
+ * The IO video unit error domain codes.
+ */
+public enum IOVideoUnitError: Swift.Error {
+    /// The IO video unit failed to create the VTSession.
+    case failedToCreate(status: OSStatus)
+    /// The IO video unit  failed to prepare the VTSession.
+    case failedToPrepare(status: OSStatus)
+    /// The IO video unit failed to encode or decode a flame.
+    case failedToFlame(status: OSStatus)
+    /// The IO video unit failed to set an option.
+    case failedToSetOption(status: OSStatus, option: VTSessionOption)
+}
+
 final class IOVideoUnit: NSObject, IOUnit {
     typealias FormatDescription = CMVideoFormatDescription
 
@@ -61,7 +75,9 @@ final class IOVideoUnit: NSObject, IOUnit {
     #endif
 
     var context: CIContext = .init()
-    var isRunning: Atomic<Bool> = .init(false)
+    var isRunning: Atomic<Bool> {
+        return codec.isRunning
+    }
 
     #if os(iOS) || os(macOS)
     var videoOrientation: AVCaptureVideoOrientation = .portrait {
@@ -286,19 +302,11 @@ final class IOVideoUnit: NSObject, IOUnit {
 extension IOVideoUnit: Running {
     // MARK: Running
     func startRunning() {
-        guard !isRunning.value else {
-            return
-        }
         codec.startRunning()
-        isRunning.mutate { $0 = false }
     }
 
     func stopRunning() {
-        guard isRunning.value else {
-            return
-        }
         codec.stopRunning()
-        isRunning.mutate { $0 = true }
     }
 }
 

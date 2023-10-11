@@ -9,8 +9,8 @@ import UIKit
 protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime)
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
-    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOMixerVideoError)
-    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOMixerAudioError)
+    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOVideoUnitError)
+    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOAudioUnitError)
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
@@ -19,53 +19,13 @@ protocol IOMixerDelegate: AnyObject {
     #endif
 }
 
-/**
- * The IOMixer video error domain codes.
- */
-public enum IOMixerVideoError: Swift.Error {
-    /// The IOMixer video  failed to create the VTSession.
-    case failedToCreate(status: OSStatus)
-    /// The IOMixer video  failed to prepare the VTSession.
-    case failedToPrepare(status: OSStatus)
-    /// The IOMixer video  failed to encode or decode a flame.
-    case failedToFlame(status: OSStatus)
-    /// The IOMixer video  failed to set an option.
-    case failedToSetOption(status: OSStatus, option: VTSessionOption)
-}
-
-/// The IOMixer audio  error domain codes.
-public enum IOMixerAudioError: Swift.Error {
-    /// The IOMixer audio  failed to create the AVAudioConverter..
-    case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
-    /// THe IOMixer audio faild to convert the an audio buffer.
-    case failedToConvert(error: NSError)
-}
-
 /// An object that mixies audio and video for streaming.
-public final class IOMixer {
+final class IOMixer {
     /// The default fps for an IOMixer, value is 30.
-    public static let defaultFrameRate: Float64 = 30
+    static let defaultFrameRate: Float64 = 30
     /// The AVAudioEngine shared instance holder.
-    public static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
+    static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
         return AVAudioEngine()
-    }
-
-    public var hasVideo: Bool {
-        get {
-            mediaLink.hasVideo
-        }
-        set {
-            mediaLink.hasVideo = newValue
-        }
-    }
-
-    public var isPaused: Bool {
-        get {
-            mediaLink.isPaused
-        }
-        set {
-            mediaLink.isPaused = newValue
-        }
     }
 
     #if os(tvOS)
@@ -85,7 +45,7 @@ public final class IOMixer {
     }
     #elseif os(iOS) || os(macOS)
     /// The capture session instance.
-    public internal(set) lazy var session: AVCaptureSession = makeSession() {
+    lazy var session: AVCaptureSession = makeSession() {
         didSet {
             if oldValue.isRunning {
                 removeSessionObservers(oldValue)
@@ -102,22 +62,11 @@ public final class IOMixer {
     }
     #endif
 
-    public private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning: Atomic<Bool> = .init(false)
     /// The recorder instance.
-    public lazy var recorder = IORecorder()
+    private(set) lazy var recorder = IORecorder()
 
-    /// Specifies the drawable object.
-    public weak var drawable: (any NetStreamDrawable)? {
-        get {
-            videoIO.drawable
-        }
-        set {
-            videoIO.drawable = newValue
-        }
-    }
-
-    public weak var muxer: (any IOMuxer)?
-
+    weak var muxer: (any IOMuxer)?
     weak var delegate: (any IOMixerDelegate)?
 
     lazy var audioIO: IOAudioUnit = {
@@ -131,29 +80,6 @@ public final class IOMixer {
         videoIO.mixer = self
         return videoIO
     }()
-
-    lazy var mediaLink: MediaLink = {
-        var mediaLink = MediaLink<IOMixer>()
-        mediaLink.delegate = self
-        return mediaLink
-    }()
-
-    var audioFormat: AVAudioFormat? {
-        didSet {
-            guard let audioEngine else {
-                return
-            }
-            nstry({
-                if let audioFormat = self.audioFormat {
-                    audioEngine.connect(self.mediaLink.playerNode, to: audioEngine.mainMixerNode, format: audioFormat)
-                } else {
-                    audioEngine.disconnectNodeInput(self.mediaLink.playerNode)
-                }
-            }, { exeption in
-                logger.warn(exeption)
-            })
-        }
-    }
 
     var isMultiCamSessionEnabled = false {
         didSet {
@@ -277,52 +203,10 @@ public final class IOMixer {
     #endif
 }
 
-extension IOMixer: IOUnitEncoding {
-    /// Starts encoding for video and audio data.
-    public func startEncoding() {
-        videoIO.startRunning()
-        audioIO.startEncoding()
-    }
-
-    /// Stop encoding.
-    public func stopEncoding() {
-        videoIO.startRunning()
-        audioIO.stopEncoding()
-    }
-}
-
-extension IOMixer: IOUnitDecoding {
-    /// Starts decoding for video and audio data.
-    public func startDecoding() {
-        audioIO.startDecoding()
-        videoIO.startRunning()
-        mediaLink.startRunning()
-    }
-
-    /// Stop decoding.
-    public func stopDecoding() {
-        mediaLink.stopRunning()
-        audioIO.stopDecoding()
-        videoIO.startRunning()
-    }
-}
-
-extension IOMixer: MediaLinkDelegate {
-    // MARK: MediaLinkDelegate
-    func mediaLink(_ mediaLink: MediaLink<IOMixer>, dequeue sampleBuffer: CMSampleBuffer) {
-        delegate?.mixer(self, didOutput: sampleBuffer)
-        drawable?.enqueue(sampleBuffer)
-    }
-
-    func mediaLink(_ mediaLink: MediaLink<IOMixer>, didBufferingChanged: Bool) {
-        logger.info(didBufferingChanged)
-    }
-}
-
 #if os(iOS) || os(macOS) || os(tvOS)
 extension IOMixer: Running {
     // MARK: Running
-    public func startRunning() {
+    func startRunning() {
         guard !isRunning.value else {
             return
         }
@@ -333,7 +217,7 @@ extension IOMixer: Running {
         }
     }
 
-    public func stopRunning() {
+    func stopRunning() {
         guard isRunning.value else {
             return
         }
@@ -443,6 +327,21 @@ extension IOMixer: Running {
 }
 #endif
 
+extension IOMixer {
+    func startMuxing(_ muxer: any IOMuxer) {
+        self.muxer = muxer
+        muxer.startRunning()
+        audioIO.startRunning()
+        videoIO.startRunning()
+    }
+
+    func stopMuxing() {
+        videoIO.stopRunning()
+        audioIO.stopRunning()
+        muxer?.stopRunning()
+    }
+}
+
 extension IOMixer: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
     func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput formatDescription: CMFormatDescription?) {
@@ -450,61 +349,10 @@ extension IOMixer: VideoCodecDelegate {
     }
 
     func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput sampleBuffer: CMSampleBuffer) {
-        switch sampleBuffer.formatDescription?._mediaSubType {
-        case kCVPixelFormatType_1Monochrome,
-             kCVPixelFormatType_2Indexed,
-             kCVPixelFormatType_8Indexed,
-             kCVPixelFormatType_1IndexedGray_WhiteIsZero,
-             kCVPixelFormatType_2IndexedGray_WhiteIsZero,
-             kCVPixelFormatType_4IndexedGray_WhiteIsZero,
-             kCVPixelFormatType_8IndexedGray_WhiteIsZero,
-             kCVPixelFormatType_16BE555,
-             kCVPixelFormatType_16LE555,
-             kCVPixelFormatType_16LE5551,
-             kCVPixelFormatType_16BE565,
-             kCVPixelFormatType_16LE565,
-             kCVPixelFormatType_24RGB,
-             kCVPixelFormatType_24BGR,
-             kCVPixelFormatType_32ARGB,
-             kCVPixelFormatType_32BGRA,
-             kCVPixelFormatType_32ABGR,
-             kCVPixelFormatType_32RGBA,
-             kCVPixelFormatType_64ARGB,
-             kCVPixelFormatType_48RGB,
-             kCVPixelFormatType_32AlphaGray,
-             kCVPixelFormatType_16Gray,
-             kCVPixelFormatType_30RGB,
-             kCVPixelFormatType_422YpCbCr8,
-             kCVPixelFormatType_4444YpCbCrA8,
-             kCVPixelFormatType_4444YpCbCrA8R,
-             kCVPixelFormatType_4444AYpCbCr8,
-             kCVPixelFormatType_4444AYpCbCr16,
-             kCVPixelFormatType_444YpCbCr8,
-             kCVPixelFormatType_422YpCbCr16,
-             kCVPixelFormatType_422YpCbCr10,
-             kCVPixelFormatType_444YpCbCr10,
-             kCVPixelFormatType_420YpCbCr8Planar,
-             kCVPixelFormatType_420YpCbCr8PlanarFullRange,
-             kCVPixelFormatType_422YpCbCr_4A_8BiPlanar,
-             kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
-             kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
-             kCVPixelFormatType_422YpCbCr8_yuvs,
-             kCVPixelFormatType_422YpCbCr8FullRange,
-             kCVPixelFormatType_OneComponent8,
-             kCVPixelFormatType_TwoComponent8,
-             kCVPixelFormatType_OneComponent16Half,
-             kCVPixelFormatType_OneComponent32Float,
-             kCVPixelFormatType_TwoComponent16Half,
-             kCVPixelFormatType_TwoComponent32Float,
-             kCVPixelFormatType_64RGBAHalf,
-             kCVPixelFormatType_128RGBAFloat:
-            mediaLink.enqueueVideo(sampleBuffer)
-        default:
-            muxer?.append(sampleBuffer)
-        }
+        muxer?.append(sampleBuffer)
     }
 
-    func videoCodec(_ codec: VideoCodec<IOMixer>, errorOccurred error: IOMixerVideoError) {
+    func videoCodec(_ codec: VideoCodec<IOMixer>, errorOccurred error: IOVideoUnitError) {
         delegate?.mixer(self, videoErrorOccurred: error)
     }
 }
@@ -512,42 +360,28 @@ extension IOMixer: VideoCodecDelegate {
 extension IOMixer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
     func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioFormat: AVAudioFormat) {
-        switch audioFormat.formatDescription.audioStreamBasicDescription?.mFormatID {
-        case kAudioFormatLinearPCM:
-            do {
-                self.audioFormat = audioFormat
-                if let audioEngine = audioEngine, audioEngine.isRunning == false {
-                    try audioEngine.start()
-                }
-            } catch {
-                logger.error(error)
-            }
-        default:
-            muxer?.audioFormat = audioFormat
-        }
+        muxer?.audioFormat = audioFormat
     }
 
     func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         switch audioBuffer {
         case let audioBuffer as AVAudioPCMBuffer:
             delegate?.mixer(self, didOutput: audioBuffer, when: when)
-            mediaLink.enqueueAudio(audioBuffer)
-        case let audioBuffer as AVAudioCompressedBuffer:
-            muxer?.append(audioBuffer, when: when)
-            codec.releaseOutputBuffer(audioBuffer)
         default:
             break
         }
+        muxer?.append(audioBuffer, when: when)
+        codec.releaseOutputBuffer(audioBuffer)
     }
 
-    func audioCodec(_ codec: AudioCodec<IOMixer>, errorOccurred error: IOMixerAudioError) {
+    func audioCodec(_ codec: AudioCodec<IOMixer>, errorOccurred error: IOAudioUnitError) {
         delegate?.mixer(self, audioErrorOccurred: error)
     }
 }
 
 extension IOMixer: IOAudioUnitDelegate {
     // MARK: IOAudioUnitDelegate
-    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOMixerAudioError) {
+    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOAudioUnitError) {
         delegate?.mixer(self, audioErrorOccurred: error)
     }
 

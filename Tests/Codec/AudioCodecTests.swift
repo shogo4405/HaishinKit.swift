@@ -102,6 +102,6 @@ extension AudioCodecTests: AudioCodecDelegate {
     func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
     }
     
-    func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, errorOccurred error: HaishinKit.IOMixerAudioError) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, errorOccurred error: HaishinKit.IOAudioUnitError) {
     }
 }

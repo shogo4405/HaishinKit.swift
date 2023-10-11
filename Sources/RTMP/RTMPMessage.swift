@@ -732,7 +732,6 @@ final class RTMPVideoMessage: RTMPMessage {
             stream.mixer.videoIO.setConfigurationRecord(config)
         }
         if stream.mixer.videoIO.inputFormat != nil {
-            stream.mixer.mediaLink.hasVideo = true
             stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         }
     }

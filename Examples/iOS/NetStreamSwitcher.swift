@@ -150,11 +150,11 @@ extension NetStreamSwitcher: NetStreamDelegate {
 
     #endif
     /// Tells the receiver to video codec error occured.
-    func stream(_ stream: NetStream, videoErrorOccurred error: IOMixerVideoError) {
+    func stream(_ stream: NetStream, videoErrorOccurred error: IOVideoUnitError) {
     }
 
     /// Tells the receiver to audio codec error occured.
-    func stream(_ stream: NetStream, audioErrorOccurred error: IOMixerAudioError) {
+    func stream(_ stream: NetStream, audioErrorOccurred error: IOAudioUnitError) {
     }
 
     /// Tells the receiver to the stream opened.

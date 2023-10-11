@@ -217,7 +217,10 @@ public final class TSWriter {
 
 extension TSWriter: IOMuxer {
     // IOMuxer
-    public func append(_ audioBuffer: AVAudioCompressedBuffer, when: AVAudioTime) {
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
+            return
+        }
         writeSampleBuffer(
             TSWriter.defaultAudioPID,
             streamID: 192,

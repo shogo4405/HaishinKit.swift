@@ -11,13 +11,3 @@ protocol IOUnit {
 
     func append(_ sampleBuffer: CMSampleBuffer)
 }
-
-protocol IOUnitEncoding {
-    func startEncoding()
-    func stopEncoding()
-}
-
-protocol IOUnitDecoding {
-    func startDecoding()
-    func stopDecoding()
-}

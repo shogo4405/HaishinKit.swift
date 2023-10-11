@@ -9,7 +9,7 @@ protocol AudioCodecDelegate: AnyObject {
     /// Tells the receiver to output an encoded or decoded CMSampleBuffer.
     func audioCodec(_ codec: AudioCodec<Self>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to occured an error.
-    func audioCodec(_ codec: AudioCodec<Self>, errorOccurred error: IOMixerAudioError)
+    func audioCodec(_ codec: AudioCodec<Self>, errorOccurred error: IOAudioUnitError)
 }
 
 private let kAudioCodec_frameCamacity: UInt32 = 1024
@@ -169,6 +169,12 @@ extension AudioCodec: Codec {
             return .init()
         }
         if outputBuffers.isEmpty {
+            if settings.format == .pcm {
+                for i in 0..<10 {
+                    outputBuffers.append(settings.format.makeAudioBuffer(outputFormat) ?? .init())
+                }
+                return outputBuffers.removeFirst()
+            }
             return settings.format.makeAudioBuffer(outputFormat) ?? .init()
         }
         return outputBuffers.removeFirst()

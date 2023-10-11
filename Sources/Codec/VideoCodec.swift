@@ -14,7 +14,7 @@ protocol VideoCodecDelegate: AnyObject {
     /// Tells the receiver to output an encoded or decoded sampleBuffer.
     func videoCodec(_ codec: VideoCodec<Self>, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
-    func videoCodec(_ codec: VideoCodec<Self>, errorOccurred error: IOMixerVideoError)
+    func videoCodec(_ codec: VideoCodec<Self>, errorOccurred error: IOVideoUnitError)
 }
 
 private let kVideoCodec_defaultFrameInterval: Double = 0.0

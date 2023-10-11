@@ -5,16 +5,6 @@ import libsrt
 
 /// An object that provides the interface to control a one-way channel over a SRTConnection.
 public final class SRTStream: NetStream {
-    private enum ReadyState: UInt8 {
-        case initialized = 0
-        case open        = 1
-        case play        = 2
-        case playing     = 3
-        case publish     = 4
-        case publishing  = 5
-        case closed      = 6
-    }
-
     private var name: String?
     private var action: (() -> Void)?
     private var keyValueObservations: [NSKeyValueObservation] = []
@@ -31,47 +21,6 @@ public final class SRTStream: NetStream {
         reader.delegate = self
         return reader
     }()
-
-    private var readyState: ReadyState = .initialized {
-        didSet {
-            guard oldValue != readyState else {
-                return
-            }
-
-            switch oldValue {
-            case .publishing:
-                writer.stopRunning()
-                mixer.stopEncoding()
-            case .playing:
-                mixer.stopDecoding()
-            default:
-                break
-            }
-
-            switch readyState {
-            case .play:
-                connection?.socket?.doInput()
-                mixer.isPaused = false
-                mixer.startDecoding()
-                readyState = .playing
-            case .publish:
-                mixer.muxer = writer
-                writer.expectedMedias.removeAll()
-                if videoInputFormat != nil {
-                    writer.expectedMedias.insert(.video)
-                }
-                if audioInputFormat != nil {
-                    writer.expectedMedias.insert(.audio)
-                }
-                mixer.startEncoding()
-                mixer.startRunning()
-                writer.startRunning()
-                readyState = .publishing
-            default:
-                break
-            }
-        }
-    }
 
     /// Creates a new SRTStream object.
     public init(connection: SRTConnection) {
@@ -147,6 +96,24 @@ public final class SRTStream: NetStream {
         }
     }
 
+    override public func readyStateDidChange(to readyState: NetStream.ReadyState) {
+        switch readyState {
+        case .play:
+            connection?.socket?.doInput()
+        case .publish:
+            writer.expectedMedias.removeAll()
+            if videoInputFormat != nil {
+                writer.expectedMedias.insert(.video)
+            }
+            if audioInputFormat != nil {
+                writer.expectedMedias.insert(.audio)
+            }
+            self.readyState = .publishing(muxer: writer)
+        default:
+            break
+        }
+    }
+
     func doInput(_ data: Data) {
         _ = reader.read(data)
     }
@@ -155,9 +122,6 @@ public final class SRTStream: NetStream {
 extension SRTStream: TSWriterDelegate {
     // MARK: TSWriterDelegate
     public func writer(_ writer: TSWriter, didOutput data: Data) {
-        guard readyState == .publishing else {
-            return
-        }
         connection?.socket?.doOutput(data: data)
     }
 
@@ -168,21 +132,9 @@ extension SRTStream: TSWriterDelegate {
 extension SRTStream: TSReaderDelegate {
     // MARK: TSReaderDelegate
     public func reader(_ reader: TSReader, id: UInt16, didRead formatDescription: CMFormatDescription) {
-        guard readyState == .playing else {
-            return
-        }
-        switch CMFormatDescriptionGetMediaType(formatDescription) {
-        case kCMMediaType_Video:
-            mixer.hasVideo = true
-        default:
-            break
-        }
     }
 
     public func reader(_ reader: TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
-        guard readyState == .playing else {
-            return
-        }
         append(sampleBuffer)
     }
 }

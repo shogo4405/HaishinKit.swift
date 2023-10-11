@@ -51,7 +51,6 @@ final class IngestViewController: UIViewController {
         stream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
         stream.audioSettings.bitRate = 64 * 1000
         stream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
-        stream.mixer.recorder.delegate = self
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
 

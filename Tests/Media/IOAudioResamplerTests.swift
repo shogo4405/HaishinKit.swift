@@ -11,7 +11,7 @@ final class NullIOAudioResamplerDelegate: IOAudioResamplerDelegate {
     func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, errorOccurred error: HaishinKit.IOMixerAudioError) {
+    func resampler(_ resampler: HaishinKit.IOAudioResampler<NullIOAudioResamplerDelegate>, errorOccurred error: HaishinKit.IOAudioUnitError) {
     }
 }
 

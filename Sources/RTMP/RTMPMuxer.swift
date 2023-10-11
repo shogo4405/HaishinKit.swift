@@ -46,19 +46,28 @@ final class RTMPMuxer {
         }
     }
 
+    var isRunning: Atomic<Bool> = .init(false)
     weak var delegate: (any RTMPMuxerDelegate)?
     private var videoTimeStamp: CMTime = .zero
     private var audioTimeStamp: AVAudioTime = .init(hostTime: 0)
     private let compositiionTimeOffset: CMTime = .init(value: 3, timescale: 30)
+}
 
-    func dispose() {
+extension RTMPMuxer: Running {
+    func startRunning() {
         audioTimeStamp = .init(hostTime: 0)
         videoTimeStamp = .zero
+    }
+
+    func stopRunning() {
     }
 }
 
 extension RTMPMuxer: IOMuxer {
-    func append(_ audioBuffer: AVAudioCompressedBuffer, when: AVAudioTime) {
+    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
+            return
+        }
         let delta = audioTimeStamp.hostTime == 0 ? 0 :
             (AVAudioTime.seconds(forHostTime: when.hostTime) - AVAudioTime.seconds(forHostTime: audioTimeStamp.hostTime)) * 1000
         guard 0 <= delta else {
