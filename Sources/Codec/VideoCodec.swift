@@ -10,26 +10,24 @@ import UIKit
  */
 protocol VideoCodecDelegate: AnyObject {
     /// Tells the receiver to set a formatDescription.
-    func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?)
+    func videoCodec(_ codec: VideoCodec<Self>, didOutput formatDescription: CMFormatDescription?)
     /// Tells the receiver to output an encoded or decoded sampleBuffer.
-    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
+    func videoCodec(_ codec: VideoCodec<Self>, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
-    func videoCodec(_ codec: VideoCodec, errorOccurred error: IOMixerVideoError)
+    func videoCodec(_ codec: VideoCodec<Self>, errorOccurred error: IOMixerVideoError)
 }
+
+private let kVideoCodec_defaultFrameInterval: Double = 0.0
+private let kVideoCodec_defaultAttributes: [NSString: AnyObject]? = [
+    kCVPixelBufferIOSurfacePropertiesKey: NSDictionary(),
+    kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
+]
 
 // MARK: -
 /**
  * The VideoCodec class provides methods for encode or decode for video.
  */
-final class VideoCodec {
-    private static let defaultFrameInterval: Double = 0.0
-
-    /// The videoCodec's attributes value.
-    static var defaultAttributes: [NSString: AnyObject]? = [
-        kCVPixelBufferIOSurfacePropertiesKey: NSDictionary(),
-        kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
-    ]
-
+final class VideoCodec<T: VideoCodecDelegate> {
     let lockQueue: DispatchQueue
 
     /// Specifies the settings for a VideoCodec.
@@ -48,11 +46,11 @@ final class VideoCodec {
     private(set) var isRunning: Atomic<Bool> = .init(false)
     var needsSync: Atomic<Bool> = .init(true)
     var attributes: [NSString: AnyObject]? {
-        guard VideoCodec.defaultAttributes != nil else {
+        guard kVideoCodec_defaultAttributes != nil else {
             return nil
         }
         var attributes: [NSString: AnyObject] = [:]
-        for (key, value) in VideoCodec.defaultAttributes ?? [:] {
+        for (key, value) in kVideoCodec_defaultAttributes ?? [:] {
             attributes[key] = value
         }
         attributes[kCVPixelBufferWidthKey] = NSNumber(value: settings.videoSize.width)
@@ -60,9 +58,9 @@ final class VideoCodec {
         return attributes
     }
     var passthrough = true
-    var frameInterval = VideoCodec.defaultFrameInterval
+    var frameInterval = kVideoCodec_defaultFrameInterval
     var expectedFrameRate = IOMixer.defaultFrameRate
-    weak var delegate: (any VideoCodecDelegate)?
+    weak var delegate: T?
     private var startedAt: CMTime = .zero
     private(set) var inputFormat: CMFormatDescription? {
         didSet {
@@ -172,7 +170,7 @@ final class VideoCodec {
         guard startedAt <= presentationTimeStamp else {
             return true
         }
-        guard Self.defaultFrameInterval < frameInterval else {
+        guard kVideoCodec_defaultFrameInterval < frameInterval else {
             return false
         }
         return presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval

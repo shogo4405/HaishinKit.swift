@@ -61,6 +61,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     #endif
 
     var context: CIContext = .init()
+    var isRunning: Atomic<Bool> = .init(false)
 
     #if os(iOS) || os(macOS)
     var videoOrientation: AVCaptureVideoOrientation = .portrait {
@@ -113,7 +114,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         return videoMixer
     }()
     private lazy var codec: VideoCodec = {
-        var codec = VideoCodec(lockQueue: lockQueue)
+        var codec = VideoCodec<IOMixer>(lockQueue: lockQueue)
         codec.delegate = mixer
         return codec
     }()
@@ -282,27 +283,22 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
 }
 
-extension IOVideoUnit: IOUnitEncoding {
-    // MARK: IOUnitEncoding
-    func startEncoding() {
+extension IOVideoUnit: Running {
+    // MARK: Running
+    func startRunning() {
+        guard !isRunning.value else {
+            return
+        }
         codec.startRunning()
+        isRunning.mutate { $0 = false }
     }
 
-    func stopEncoding() {
+    func stopRunning() {
+        guard isRunning.value else {
+            return
+        }
         codec.stopRunning()
-    }
-}
-
-extension IOVideoUnit: IOUnitDecoding {
-    // MARK: IOUnitDecoding
-    func startDecoding() {
-        codec.delegate = mixer
-        codec.startRunning()
-    }
-
-    func stopDecoding() {
-        codec.stopRunning()
-        drawable?.enqueue(nil)
+        isRunning.mutate { $0 = true }
     }
 }
 

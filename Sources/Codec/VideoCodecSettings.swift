@@ -144,7 +144,7 @@ public struct VideoCodecSettings: Codable {
         )
     }
 
-    func apply(_ codec: VideoCodec, rhs: VideoCodecSettings) {
+    func apply<T>(_ codec: VideoCodec<T>, rhs: VideoCodecSettings) {
         if bitRate != rhs.bitRate {
             let option = VTSessionOption(key: bitRateMode.key, value: NSNumber(value: bitRate))
             if let status = codec.session?.setOption(option), status != noErr {
@@ -156,7 +156,7 @@ public struct VideoCodecSettings: Codable {
         }
     }
 
-    func options(_ codec: VideoCodec) -> Set<VTSessionOption> {
+    func options<T>(_ codec: VideoCodec<T>) -> Set<VTSessionOption> {
         let isBaseline = profileLevel.contains("Baseline")
         var options = Set<VTSessionOption>([
             .init(key: .realTime, value: kCFBooleanTrue),

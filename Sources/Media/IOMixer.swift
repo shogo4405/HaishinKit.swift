@@ -226,6 +226,18 @@ public final class IOMixer {
         return IOMixer.audioEngineHolder.retain()
     }()
 
+    private var isMultiCamSupported: Bool {
+        #if os(iOS) || os(tvOS)
+        if #available(iOS 13.0, *) {
+            return session is AVCaptureMultiCamSession
+        } else {
+            return false
+        }
+        #else
+        return false
+        #endif
+    }
+
     deinit {
         #if os(iOS) || os(macOS) || os(tvOS)
         if #available(tvOS 17.0, *) {
@@ -268,13 +280,13 @@ public final class IOMixer {
 extension IOMixer: IOUnitEncoding {
     /// Starts encoding for video and audio data.
     public func startEncoding() {
-        videoIO.startEncoding()
+        videoIO.startRunning()
         audioIO.startEncoding()
     }
 
     /// Stop encoding.
     public func stopEncoding() {
-        videoIO.stopEncoding()
+        videoIO.startRunning()
         audioIO.stopEncoding()
     }
 }
@@ -283,7 +295,7 @@ extension IOMixer: IOUnitDecoding {
     /// Starts decoding for video and audio data.
     public func startDecoding() {
         audioIO.startDecoding()
-        videoIO.startDecoding()
+        videoIO.startRunning()
         mediaLink.startRunning()
     }
 
@@ -291,7 +303,7 @@ extension IOMixer: IOUnitDecoding {
     public func stopDecoding() {
         mediaLink.stopRunning()
         audioIO.stopDecoding()
-        videoIO.stopDecoding()
+        videoIO.startRunning()
     }
 }
 
@@ -369,16 +381,6 @@ extension IOMixer: Running {
         let error = AVError(_nsError: errorValue)
         switch error.code {
         case .unsupportedDeviceActiveFormat:
-            #if os(iOS) || os(tvOS)
-            let isMultiCamSupported: Bool
-            if #available(iOS 13.0, *) {
-                isMultiCamSupported = session is AVCaptureMultiCamSession
-            } else {
-                isMultiCamSupported = false
-            }
-            #else
-            let isMultiCamSupported = true
-            #endif
             guard let device = error.device, let format = device.videoFormat(
                 width: sessionPreset.width ?? Int32(videoIO.settings.videoSize.width),
                 height: sessionPreset.height ?? Int32(videoIO.settings.videoSize.height),
@@ -443,11 +445,11 @@ extension IOMixer: Running {
 
 extension IOMixer: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
-    func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
+    func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput formatDescription: CMFormatDescription?) {
         muxer?.videoFormat = formatDescription
     }
 
-    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
+    func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?._mediaSubType {
         case kCVPixelFormatType_1Monochrome,
              kCVPixelFormatType_2Indexed,
@@ -502,7 +504,7 @@ extension IOMixer: VideoCodecDelegate {
         }
     }
 
-    func videoCodec(_ codec: VideoCodec, errorOccurred error: IOMixerVideoError) {
+    func videoCodec(_ codec: VideoCodec<IOMixer>, errorOccurred error: IOMixerVideoError) {
         delegate?.mixer(self, videoErrorOccurred: error)
     }
 }
