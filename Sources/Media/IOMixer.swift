@@ -9,14 +9,36 @@ import UIKit
 protocol IOMixerDelegate: AnyObject {
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime)
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
-    func mixer(_ mixer: IOMixer, videoCodecErrorOccurred error: VideoCodec.Error)
-    func mixer(_ mixer: IOMixer, audioCodecErrorOccurred error: AudioCodec.Error)
+    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOMixerVideoError)
+    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOMixerAudioError)
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
     @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession)
     #endif
+}
+
+/**
+ * The IOMixer video error domain codes.
+ */
+public enum IOMixerVideoError: Swift.Error {
+    /// The IOMixer video  failed to create the VTSession.
+    case failedToCreate(status: OSStatus)
+    /// The IOMixer video  failed to prepare the VTSession.
+    case failedToPrepare(status: OSStatus)
+    /// The IOMixer video  failed to encode or decode a flame.
+    case failedToFlame(status: OSStatus)
+    /// The IOMixer video  failed to set an option.
+    case failedToSetOption(status: OSStatus, option: VTSessionOption)
+}
+
+/// The IOMixer audio  error domain codes.
+public enum IOMixerAudioError: Swift.Error {
+    /// The IOMixer audio  failed to create the AVAudioConverter..
+    case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
+    /// THe IOMixer audio faild to convert the an audio buffer.
+    case failedToConvert(error: NSError)
 }
 
 /// An object that mixies audio and video for streaming.
@@ -93,6 +115,8 @@ public final class IOMixer {
             videoIO.drawable = newValue
         }
     }
+
+    public weak var muxer: (any IOMuxer)?
 
     weak var delegate: (any IOMixerDelegate)?
 
@@ -243,9 +267,9 @@ public final class IOMixer {
 
 extension IOMixer: IOUnitEncoding {
     /// Starts encoding for video and audio data.
-    public func startEncoding(_ delegate: any AVCodecDelegate) {
-        videoIO.startEncoding(delegate)
-        audioIO.startEncoding(delegate)
+    public func startEncoding() {
+        videoIO.startEncoding()
+        audioIO.startEncoding()
     }
 
     /// Stop encoding.
@@ -419,52 +443,114 @@ extension IOMixer: Running {
 
 extension IOMixer: VideoCodecDelegate {
     // MARK: VideoCodecDelegate
-    public func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
+    func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
+        muxer?.videoFormat = formatDescription
     }
 
-    public func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
-        mediaLink.enqueueVideo(sampleBuffer)
+    func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
+        switch sampleBuffer.formatDescription?._mediaSubType {
+        case kCVPixelFormatType_1Monochrome,
+             kCVPixelFormatType_2Indexed,
+             kCVPixelFormatType_8Indexed,
+             kCVPixelFormatType_1IndexedGray_WhiteIsZero,
+             kCVPixelFormatType_2IndexedGray_WhiteIsZero,
+             kCVPixelFormatType_4IndexedGray_WhiteIsZero,
+             kCVPixelFormatType_8IndexedGray_WhiteIsZero,
+             kCVPixelFormatType_16BE555,
+             kCVPixelFormatType_16LE555,
+             kCVPixelFormatType_16LE5551,
+             kCVPixelFormatType_16BE565,
+             kCVPixelFormatType_16LE565,
+             kCVPixelFormatType_24RGB,
+             kCVPixelFormatType_24BGR,
+             kCVPixelFormatType_32ARGB,
+             kCVPixelFormatType_32BGRA,
+             kCVPixelFormatType_32ABGR,
+             kCVPixelFormatType_32RGBA,
+             kCVPixelFormatType_64ARGB,
+             kCVPixelFormatType_48RGB,
+             kCVPixelFormatType_32AlphaGray,
+             kCVPixelFormatType_16Gray,
+             kCVPixelFormatType_30RGB,
+             kCVPixelFormatType_422YpCbCr8,
+             kCVPixelFormatType_4444YpCbCrA8,
+             kCVPixelFormatType_4444YpCbCrA8R,
+             kCVPixelFormatType_4444AYpCbCr8,
+             kCVPixelFormatType_4444AYpCbCr16,
+             kCVPixelFormatType_444YpCbCr8,
+             kCVPixelFormatType_422YpCbCr16,
+             kCVPixelFormatType_422YpCbCr10,
+             kCVPixelFormatType_444YpCbCr10,
+             kCVPixelFormatType_420YpCbCr8Planar,
+             kCVPixelFormatType_420YpCbCr8PlanarFullRange,
+             kCVPixelFormatType_422YpCbCr_4A_8BiPlanar,
+             kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange,
+             kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,
+             kCVPixelFormatType_422YpCbCr8_yuvs,
+             kCVPixelFormatType_422YpCbCr8FullRange,
+             kCVPixelFormatType_OneComponent8,
+             kCVPixelFormatType_TwoComponent8,
+             kCVPixelFormatType_OneComponent16Half,
+             kCVPixelFormatType_OneComponent32Float,
+             kCVPixelFormatType_TwoComponent16Half,
+             kCVPixelFormatType_TwoComponent32Float,
+             kCVPixelFormatType_64RGBAHalf,
+             kCVPixelFormatType_128RGBAFloat:
+            mediaLink.enqueueVideo(sampleBuffer)
+        default:
+            muxer?.append(sampleBuffer)
+        }
     }
 
-    public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
-        delegate?.mixer(self, videoCodecErrorOccurred: error)
+    func videoCodec(_ codec: VideoCodec, errorOccurred error: IOMixerVideoError) {
+        delegate?.mixer(self, videoErrorOccurred: error)
     }
 }
 
 extension IOMixer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
-    public func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
-        delegate?.mixer(self, audioCodecErrorOccurred: error)
-    }
-
-    public func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat) {
-        do {
-            self.audioFormat = audioFormat
-            if let audioEngine = audioEngine, audioEngine.isRunning == false {
-                try audioEngine.start()
+    func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioFormat: AVAudioFormat) {
+        switch audioFormat.formatDescription.audioStreamBasicDescription?.mFormatID {
+        case kAudioFormatLinearPCM:
+            do {
+                self.audioFormat = audioFormat
+                if let audioEngine = audioEngine, audioEngine.isRunning == false {
+                    try audioEngine.start()
+                }
+            } catch {
+                logger.error(error)
             }
-        } catch {
-            logger.error(error)
+        default:
+            muxer?.audioFormat = audioFormat
         }
     }
 
-    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
-            return
+    func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        switch audioBuffer {
+        case let audioBuffer as AVAudioPCMBuffer:
+            delegate?.mixer(self, didOutput: audioBuffer, when: when)
+            mediaLink.enqueueAudio(audioBuffer)
+        case let audioBuffer as AVAudioCompressedBuffer:
+            muxer?.append(audioBuffer, when: when)
+            codec.releaseOutputBuffer(audioBuffer)
+        default:
+            break
         }
-        delegate?.mixer(self, didOutput: audioBuffer, when: when)
-        mediaLink.enqueueAudio(audioBuffer)
+    }
+
+    func audioCodec(_ codec: AudioCodec<IOMixer>, errorOccurred error: IOMixerAudioError) {
+        delegate?.mixer(self, audioErrorOccurred: error)
     }
 }
 
 extension IOMixer: IOAudioUnitDelegate {
     // MARK: IOAudioUnitDelegate
-    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: AudioCodec.Error) {
-        delegate?.mixer(self, audioCodecErrorOccurred: error)
+    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOMixerAudioError) {
+        delegate?.mixer(self, audioErrorOccurred: error)
     }
 
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.mixer(self, didOutput: audioBuffer, when: when)
-        recorder.appendAudioPCMBuffer(audioBuffer, when: when)
+        recorder.append(audioBuffer, when: when)
     }
 }

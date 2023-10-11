@@ -8,44 +8,32 @@ import UIKit
 /**
  * The interface a VideoCodec uses to inform its delegate.
  */
-public protocol VideoCodecDelegate: AnyObject {
+protocol VideoCodecDelegate: AnyObject {
     /// Tells the receiver to set a formatDescription.
     func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?)
     /// Tells the receiver to output an encoded or decoded sampleBuffer.
     func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to occured an error.
-    func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error)
+    func videoCodec(_ codec: VideoCodec, errorOccurred error: IOMixerVideoError)
 }
 
 // MARK: -
 /**
  * The VideoCodec class provides methods for encode or decode for video.
  */
-public final class VideoCodec {
-    static let defaultFrameInterval = 0.0
-
-    /**
-     * The VideoCodec error domain codes.
-     */
-    public enum Error: Swift.Error {
-        /// The VideoCodec failed to create the VTSession.
-        case failedToCreate(status: OSStatus)
-        /// The VideoCodec failed to prepare the VTSession.
-        case failedToPrepare(status: OSStatus)
-        /// The VideoCodec failed to encode or decode a flame.
-        case failedToFlame(status: OSStatus)
-        /// The VideoCodec failed to set an option.
-        case failedToSetOption(status: OSStatus, option: VTSessionOption)
-    }
+final class VideoCodec {
+    private static let defaultFrameInterval: Double = 0.0
 
     /// The videoCodec's attributes value.
-    public static var defaultAttributes: [NSString: AnyObject]? = [
+    static var defaultAttributes: [NSString: AnyObject]? = [
         kCVPixelBufferIOSurfacePropertiesKey: NSDictionary(),
         kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
     ]
 
+    let lockQueue: DispatchQueue
+
     /// Specifies the settings for a VideoCodec.
-    public var settings: VideoCodecSettings = .default {
+    var settings: VideoCodecSettings = .default {
         didSet {
             let invalidateSession = settings.invalidateSession(oldValue)
             if invalidateSession {
@@ -57,9 +45,7 @@ public final class VideoCodec {
     }
 
     /// The running value indicating whether the VideoCodec is running.
-    public private(set) var isRunning: Atomic<Bool> = .init(false)
-
-    var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCodec.lock")
+    private(set) var isRunning: Atomic<Bool> = .init(false)
     var needsSync: Atomic<Bool> = .init(true)
     var attributes: [NSString: AnyObject]? {
         guard VideoCodec.defaultAttributes != nil else {
@@ -103,7 +89,11 @@ public final class VideoCodec {
     private var invalidateSession = true
     private var presentationTimeStamp: CMTime = .invalid
 
-    func appendImageBuffer(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
+    init(lockQueue: DispatchQueue) {
+        self.lockQueue = lockQueue
+    }
+
+    func append(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
         guard isRunning.value, !willDropFrame(presentationTimeStamp) else {
             return
         }
@@ -125,7 +115,7 @@ public final class VideoCodec {
         }
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer) {
         inputFormat = sampleBuffer.formatDescription
         guard isRunning.value else {
             return
@@ -214,7 +204,7 @@ public final class VideoCodec {
 
 extension VideoCodec: Running {
     // MARK: Running
-    public func startRunning() {
+    func startRunning() {
         lockQueue.async {
             #if os(iOS) || os(tvOS) || os(visionOS)
             NotificationCenter.default.addObserver(
@@ -235,7 +225,7 @@ extension VideoCodec: Running {
         }
     }
 
-    public func stopRunning() {
+    func stopRunning() {
         lockQueue.async {
             self.isRunning.mutate { $0 = false }
             self.session = nil

@@ -40,11 +40,11 @@ final class IOAudioMonitor {
         stopRunning()
     }
 
-    func appendAudioPCMBuffer(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func append(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard isRunning.value else {
             return
         }
-        ringBuffer?.appendAudioPCMBuffer(audioPCMBuffer, when: when)
+        ringBuffer?.append(audioPCMBuffer, when: when)
     }
 
     private func render(_ inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) -> OSStatus {

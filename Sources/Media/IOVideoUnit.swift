@@ -113,8 +113,8 @@ final class IOVideoUnit: NSObject, IOUnit {
         return videoMixer
     }()
     private lazy var codec: VideoCodec = {
-        var codec = VideoCodec()
-        codec.lockQueue = lockQueue
+        var codec = VideoCodec(lockQueue: lockQueue)
+        codec.delegate = mixer
         return codec
     }()
 
@@ -220,7 +220,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         return videoMixer.unregisterEffect(effect)
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?._mediaSubType {
         case kCVPixelFormatType_1Monochrome,
              kCVPixelFormatType_2Indexed,
@@ -270,10 +270,10 @@ final class IOVideoUnit: NSObject, IOUnit {
              kCVPixelFormatType_64RGBAHalf,
              kCVPixelFormatType_128RGBAFloat:
             inputFormat = sampleBuffer.formatDescription
-            videoMixer.appendSampleBuffer(sampleBuffer, channel: 0, isVideoMirrored: false)
+            videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: false)
         default:
             inputFormat = sampleBuffer.formatDescription
-            codec.appendSampleBuffer(sampleBuffer)
+            codec.append(sampleBuffer)
         }
     }
 
@@ -284,14 +284,12 @@ final class IOVideoUnit: NSObject, IOUnit {
 
 extension IOVideoUnit: IOUnitEncoding {
     // MARK: IOUnitEncoding
-    func startEncoding(_ delegate: any AVCodecDelegate) {
-        codec.delegate = delegate
+    func startEncoding() {
         codec.startRunning()
     }
 
     func stopEncoding() {
         codec.stopRunning()
-        codec.delegate = nil
     }
 }
 
@@ -315,10 +313,10 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if capture.output == captureOutput {
             inputFormat = sampleBuffer.formatDescription
-            videoMixer.appendSampleBuffer(sampleBuffer, channel: 0, isVideoMirrored: connection.isVideoMirrored)
+            videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: connection.isVideoMirrored)
             drawable?.enqueue(sampleBuffer)
         } else if multiCamCapture.output == captureOutput {
-            videoMixer.appendSampleBuffer(sampleBuffer, channel: 1, isVideoMirrored: connection.isVideoMirrored)
+            videoMixer.append(sampleBuffer, channel: 1, isVideoMirrored: connection.isVideoMirrored)
         }
     }
 }
@@ -327,12 +325,12 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime) {
-        codec.appendImageBuffer(
+        codec.append(
             imageBuffer,
             presentationTimeStamp: presentationTimeStamp,
             duration: .invalid
         )
-        mixer?.recorder.appendPixelBuffer(
+        mixer?.recorder.append(
             imageBuffer,
             withPresentationTime: presentationTimeStamp
         )

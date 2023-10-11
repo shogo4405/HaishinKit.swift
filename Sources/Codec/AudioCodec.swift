@@ -3,40 +3,34 @@ import AVFoundation
 /**
  * The interface a AudioCodec uses to inform its delegate.
  */
-public protocol AudioCodecDelegate: AnyObject {
+protocol AudioCodecDelegate: AnyObject {
     /// Tells the receiver to output an AVAudioFormat.
-    func audioCodec(_ codec: AudioCodec, didOutput audioFormat: AVAudioFormat)
+    func audioCodec(_ codec: AudioCodec<Self>, didOutput audioFormat: AVAudioFormat)
     /// Tells the receiver to output an encoded or decoded CMSampleBuffer.
-    func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime)
+    func audioCodec(_ codec: AudioCodec<Self>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to occured an error.
-    func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error)
+    func audioCodec(_ codec: AudioCodec<Self>, errorOccurred error: IOMixerAudioError)
 }
+
+private let kAudioCodec_frameCamacity: UInt32 = 1024
 
 // MARK: -
 /**
  * The AudioCodec translate audio data to another format.
  * - seealso: https://developer.apple.com/library/ios/technotes/tn2236/_index.html
  */
-public class AudioCodec {
-    private static let frameCapacity: UInt32 = 1024
-
-    /// The AudioCodec  error domain codes.
-    public enum Error: Swift.Error {
-        case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
-        case failedToConvert(error: NSError)
-    }
-
+final class AudioCodec<T: AudioCodecDelegate> {
     /// Specifies the delegate.
-    public weak var delegate: (any AudioCodecDelegate)?
+    weak var delegate: T?
     /// This instance is running to process(true) or not(false).
-    public private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning: Atomic<Bool> = .init(false)
     /// Specifies the settings for audio codec.
-    public var settings: AudioCodecSettings = .default {
+    var settings: AudioCodecSettings = .default {
         didSet {
             settings.apply(audioConverter, oldValue: oldValue)
         }
     }
-    var lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioCodec.lock")
+    let lockQueue: DispatchQueue
     var inputFormat: AVAudioFormat? {
         didSet {
             guard inputFormat != oldValue else {
@@ -61,8 +55,11 @@ public class AudioCodec {
     private var outputBuffers: [AVAudioBuffer] = []
     private var audioConverter: AVAudioConverter?
 
-    /// Append a CMSampleBuffer.
-    public func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    init(lockQueue: DispatchQueue) {
+        self.lockQueue = lockQueue
+    }
+
+    func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning.value else {
             return
         }
@@ -81,7 +78,7 @@ public class AudioCodec {
                 buffer.byteLength = UInt32(byteCount)
                 if let blockBuffer = sampleBuffer.dataBuffer {
                     CMBlockBufferCopyDataBytes(blockBuffer, atOffset: offset + ADTSHeader.size, dataLength: byteCount, destination: buffer.data)
-                    appendAudioBuffer(buffer, when: presentationTimeStamp.makeAudioTime())
+                    append(buffer, when: presentationTimeStamp.makeAudioTime())
                     presentationTimeStamp = CMTimeAdd(presentationTimeStamp, CMTime(value: CMTimeValue(1024), timescale: sampleBuffer.presentationTimeStamp.timescale))
                     offset += sampleSize
                 }
@@ -91,7 +88,7 @@ public class AudioCodec {
         }
     }
 
-    func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         guard let audioConverter, isRunning.value else {
             return
         }
@@ -131,8 +128,8 @@ public class AudioCodec {
         }
         switch inputFormat.formatDescription.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
-            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: Self.frameCapacity)
-            buffer?.frameLength = Self.frameCapacity
+            let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: kAudioCodec_frameCamacity)
+            buffer?.frameLength = kAudioCodec_frameCamacity
             return buffer
         default:
             return AVAudioCompressedBuffer(format: inputFormat, packetCapacity: 1, maximumPacketSize: 1024)
@@ -184,7 +181,7 @@ extension AudioCodec: Codec {
 
 extension AudioCodec: Running {
     // MARK: Running
-    public func startRunning() {
+    func startRunning() {
         lockQueue.async {
             guard !self.isRunning.value else {
                 return
@@ -197,7 +194,7 @@ extension AudioCodec: Running {
         }
     }
 
-    public func stopRunning() {
+    func stopRunning() {
         lockQueue.async {
             guard self.isRunning.value else {
                 return

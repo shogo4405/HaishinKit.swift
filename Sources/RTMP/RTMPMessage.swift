@@ -592,7 +592,7 @@ final class RTMPAudioMessage: RTMPMessage {
                 stream.mixer.audioIO.setAudioStreamBasicDescription(makeAudioStreamBasicDescription())
             }
             if let audioBuffer = makeAudioBuffer(stream) {
-                stream.mixer.audioIO.appendAudioBuffer(audioBuffer, when: .init(hostTime: UInt64(stream.audioTimestamp)))
+                stream.mixer.audioIO.append(audioBuffer, when: .init(hostTime: UInt64(stream.audioTimestamp)))
             }
         default:
             break
@@ -651,7 +651,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 makeFormatDescription(stream, format: .h264)
             case FLVAVCPacketType.nal.rawValue:
                 if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 0) {
-                    stream.mixer.videoIO.appendSampleBuffer(sampleBuffer)
+                    stream.mixer.videoIO.append(sampleBuffer)
                 }
             default:
                 break
@@ -666,7 +666,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 makeFormatDescription(stream, format: .hevc)
             case FLVVideoPacketType.codedFrames.rawValue:
                 if let sampleBuffer = makeSampleBuffer(stream, type: type, offset: 3) {
-                    stream.mixer.videoIO.appendSampleBuffer(sampleBuffer)
+                    stream.mixer.videoIO.append(sampleBuffer)
                 }
             default:
                 break

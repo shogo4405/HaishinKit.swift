@@ -246,7 +246,11 @@ open class RTMPStream: NetStream {
     var audioTimestampZero: Double = -1.0
     var videoTimestamp: Double = 0.0
     var videoTimestampZero: Double = -1.0
-    private let muxer = RTMPMuxer()
+    private lazy var muxer = {
+        let muxer = RTMPMuxer()
+        muxer.delegate = self
+        return muxer
+    }()
     private var messages: [RTMPCommandMessage] = []
     private var startedAt = Date()
     private var frameCount: UInt16 = 0
@@ -269,6 +273,7 @@ open class RTMPStream: NetStream {
         if rtmpConnection?.connected == true {
             rtmpConnection?.createStream(self)
         }
+        mixer.muxer = muxer
     }
 
     deinit {
@@ -498,13 +503,11 @@ open class RTMPStream: NetStream {
             videoTimestampZero = -1.0
             audioTimestamp = 0
             audioTimestampZero = -1.0
-            mixer.delegate = self
             mixer.startDecoding()
         case .publish:
             bitrateStrategy.setUp()
             startedAt = .init()
             muxer.dispose()
-            muxer.delegate = self
             mixer.startRunning()
             videoWasSent = false
             audioWasSent = false
@@ -512,7 +515,7 @@ open class RTMPStream: NetStream {
             FCPublish()
         case .publishing:
             send(handlerName: "@setDataFrame", arguments: "onMetaData", makeMetaData())
-            mixer.startEncoding(muxer)
+            mixer.startEncoding()
         default:
             break
         }
@@ -612,13 +615,5 @@ extension RTMPStream: RTMPMuxerDelegate {
         info.byteCount.mutate { $0 += Int64(length) }
         videoTimestamp = withTimestamp + (videoTimestamp - floor(videoTimestamp))
         frameCount += 1
-    }
-
-    func muxer(_ muxer: RTMPMuxer, videoCodecErrorOccurred error: VideoCodec.Error) {
-        delegate?.stream(self, videoCodecErrorOccurred: error)
-    }
-
-    func muxer(_ muxer: RTMPMuxer, audioCodecErrorOccurred error: AudioCodec.Error) {
-        delegate?.stream(self, audioCodecErrorOccurred: error)
     }
 }

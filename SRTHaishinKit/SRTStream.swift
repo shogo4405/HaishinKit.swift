@@ -55,6 +55,7 @@ public final class SRTStream: NetStream {
                 mixer.startDecoding()
                 readyState = .playing
             case .publish:
+                mixer.muxer = writer
                 writer.expectedMedias.removeAll()
                 if videoInputFormat != nil {
                     writer.expectedMedias.insert(.video)
@@ -62,7 +63,7 @@ public final class SRTStream: NetStream {
                 if audioInputFormat != nil {
                     writer.expectedMedias.insert(.audio)
                 }
-                mixer.startEncoding(writer)
+                mixer.startEncoding()
                 mixer.startRunning()
                 writer.startRunning()
                 readyState = .publishing
@@ -159,6 +160,9 @@ extension SRTStream: TSWriterDelegate {
         }
         connection?.socket?.doOutput(data: data)
     }
+
+    public func writer(_ writer: TSWriter, didRotateFileHandle timestamp: CMTime) {
+    }
 }
 
 extension SRTStream: TSReaderDelegate {
@@ -179,6 +183,6 @@ extension SRTStream: TSReaderDelegate {
         guard readyState == .playing else {
             return
         }
-        appendSampleBuffer(sampleBuffer)
+        append(sampleBuffer)
     }
 }

@@ -21,8 +21,8 @@ final class TSReaderTests: XCTestCase {
     }
 }
 
-private class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
-    private var audioCodec: HaishinKit.AudioCodec = .init()
+private final class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
+    private var audioCodec: HaishinKit.AudioCodec<TSReaderAudioCodec> = .init(lockQueue: DispatchQueue(label: "TSReaderAudioCodec"))
 
     init() {
         audioCodec.delegate = self
@@ -36,18 +36,18 @@ private class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
 
     func reader(_ reader: HaishinKit.TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
         if sampleBuffer.formatDescription?.mediaType == .audio {
-            audioCodec.appendSampleBuffer(sampleBuffer)
+            audioCodec.append(sampleBuffer)
         }
     }
 
-    func audioCodec(_ codec: HaishinKit.AudioCodec, didOutput outputFormat: AVAudioFormat) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec<TSReaderAudioCodec>, didOutput outputFormat: AVAudioFormat) {
     }
 
-    func audioCodec(_ codec: HaishinKit.AudioCodec, errorOccurred error: HaishinKit.AudioCodec.Error) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec<TSReaderAudioCodec>, errorOccurred error: HaishinKit.IOMixerAudioError) {
         // XCTFail()
     }
 
-    func audioCodec(_ codec: HaishinKit.AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec<TSReaderAudioCodec>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
     }
 }
 

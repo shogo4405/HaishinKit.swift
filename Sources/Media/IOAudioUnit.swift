@@ -5,7 +5,7 @@ import SwiftPMSupport
 #endif
 
 protocol IOAudioUnitDelegate: AnyObject {
-    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: AudioCodec.Error)
+    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOMixerAudioError)
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
 
@@ -42,9 +42,9 @@ final class IOAudioUnit: NSObject, IOUnit {
     var inputBuffer: AVAudioBuffer? {
         return codec.inputBuffer
     }
-    private lazy var codec: AudioCodec = {
-        var codec = AudioCodec()
-        codec.lockQueue = lockQueue
+    private lazy var codec: AudioCodec<IOMixer> = {
+        var codec = AudioCodec<IOMixer>(lockQueue: lockQueue)
+        codec.delegate = mixer
         return codec
     }()
     private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
@@ -88,21 +88,21 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
     #endif
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
-            resampler.appendSampleBuffer(sampleBuffer.muted(muted))
+            resampler.append(sampleBuffer.muted(muted))
         default:
-            codec.appendSampleBuffer(sampleBuffer)
+            codec.append(sampleBuffer)
         }
     }
 
-    func appendAudioBuffer(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         switch audioBuffer {
         case let audioBuffer as AVAudioPCMBuffer:
-            resampler.appendAudioPCMBuffer(audioBuffer, when: when)
+            resampler.append(audioBuffer, when: when)
         case let audioBuffer as AVAudioCompressedBuffer:
-            codec.appendAudioBuffer(audioBuffer, when: when)
+            codec.append(audioBuffer, when: when)
         default:
             break
         }
@@ -120,14 +120,12 @@ final class IOAudioUnit: NSObject, IOUnit {
 
 extension IOAudioUnit: IOUnitEncoding {
     // MARK: IOUnitEncoding
-    func startEncoding(_ delegate: any AVCodecDelegate) {
-        codec.delegate = delegate
+    func startEncoding() {
         codec.startRunning()
     }
 
     func stopEncoding() {
         codec.stopRunning()
-        codec.delegate = nil
     }
 }
 
@@ -138,7 +136,6 @@ extension IOAudioUnit: IOUnitDecoding {
         if let playerNode = mixer?.mediaLink.playerNode {
             mixer?.audioEngine?.attach(playerNode)
         }
-        codec.delegate = mixer
         codec.startRunning()
     }
 
@@ -147,7 +144,6 @@ extension IOAudioUnit: IOUnitDecoding {
             mixer?.audioEngine?.detach(playerNode)
         }
         codec.stopRunning()
-        codec.delegate = nil
     }
 }
 
@@ -156,14 +152,14 @@ extension IOAudioUnit: IOUnitDecoding {
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        resampler.appendSampleBuffer(sampleBuffer.muted(muted))
+        resampler.append(sampleBuffer.muted(muted))
     }
 }
 #endif
 
 extension IOAudioUnit: IOAudioResamplerDelegate {
     // MARK: IOAudioResamplerDelegate
-    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: AudioCodec.Error) {
+    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: IOMixerAudioError) {
         mixer?.audioUnit(self, errorOccurred: error)
     }
 
@@ -175,7 +171,7 @@ extension IOAudioUnit: IOAudioResamplerDelegate {
 
     func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
-        monitor.appendAudioPCMBuffer(audioBuffer, when: when)
-        codec.appendAudioBuffer(audioBuffer, when: when)
+        monitor.append(audioBuffer, when: when)
+        codec.append(audioBuffer, when: when)
     }
 }

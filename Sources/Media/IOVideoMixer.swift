@@ -56,7 +56,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         return effects.remove(effect) != nil
     }
 
-    func appendSampleBuffer(_ sampleBuffer: CMSampleBuffer, channel: Int, isVideoMirrored: Bool) {
+    func append(_ sampleBuffer: CMSampleBuffer, channel: Int, isVideoMirrored: Bool) {
         switch channel {
         case 0:
             var imageBuffer: CVImageBuffer?

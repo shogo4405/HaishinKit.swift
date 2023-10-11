@@ -45,15 +45,15 @@ open class SampleHandler: RPBroadcastSampleHandler {
                 rtmpStream.videoSettings.videoSize = .init(width: CGFloat(dimensions.width), height: CGFloat(dimensions.height))
                 rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
             }
-            rtmpStream.appendSampleBuffer(sampleBuffer)
+            rtmpStream.append(sampleBuffer)
         case .audioMic:
             isMirophoneOn = true
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.appendSampleBuffer(sampleBuffer)
+                rtmpStream.append(sampleBuffer)
             }
         case .audioApp:
             if !isMirophoneOn && CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.appendSampleBuffer(sampleBuffer)
+                rtmpStream.append(sampleBuffer)
             }
         @unknown default:
             break

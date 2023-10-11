@@ -22,7 +22,7 @@ final class IORecorderTests: XCTestCase, IORecorderDelegate {
                 return
             }
             presentationTimeStamp = CMTimeAdd(presentationTimeStamp, sampleBuffer.duration)
-            recorder.appendSampleBuffer(sampleBuffer)
+            recorder.append(sampleBuffer)
         }
         recorder.stopRunning()
         sleep(1)
@@ -44,13 +44,13 @@ final class IORecorderTests: XCTestCase, IORecorderDelegate {
                 return
             }
             presentationTimeStamp = CMTimeAdd(presentationTimeStamp, sampleBuffer.duration)
-            recorder.appendSampleBuffer(sampleBuffer)
+            recorder.append(sampleBuffer)
         }
         recorder.stopRunning()
         sleep(1)
     }
 
-    func recorder(_ recorder: HaishinKit.IORecorder, errorOccured error: HaishinKit.IORecorder.Error) {
+    func recorder(_ recorder: HaishinKit.IORecorder, errorOccured error: IORecorder.Error) {
         // print("recorder:errorOccured", error)
     }
 

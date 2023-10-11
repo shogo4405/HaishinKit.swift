@@ -12,15 +12,8 @@ public protocol TSWriterDelegate: AnyObject {
     func writer(_ writer: TSWriter, didOutput data: Data)
 }
 
-public extension TSWriterDelegate {
-    // default implementation noop
-    func writer(_ writer: TSWriter, didRotateFileHandle timestamp: CMTime) {
-        // noop
-    }
-}
-
 /// The TSWriter class represents writes MPEG-2 transport stream data.
-public class TSWriter: Running {
+public final class TSWriter {
     public static let defaultPATPID: UInt16 = 0
     public static let defaultPMTPID: UInt16 = 4095
     public static let defaultVideoPID: UInt16 = 256
@@ -34,6 +27,36 @@ public class TSWriter: Running {
     public internal(set) var isRunning: Atomic<Bool> = .init(false)
     /// The exptected medias = [.video, .audio].
     public var expectedMedias: Set<AVMediaType> = []
+
+    public var audioFormat: AVAudioFormat? {
+        didSet {
+            guard let audioFormat else {
+                return
+            }
+            var data = ESSpecificData()
+            data.streamType = .adtsAac
+            data.elementaryPID = TSWriter.defaultAudioPID
+            PMT.elementaryStreamSpecificData.append(data)
+            audioContinuityCounter = 0
+            audioConfig = AudioSpecificConfig(formatDescription: audioFormat.formatDescription)
+        }
+    }
+
+    public var videoFormat: CMFormatDescription? {
+        didSet {
+            guard
+                let videoFormat,
+                let avcC = AVCDecoderConfigurationRecord.getData(videoFormat) else {
+                return
+            }
+            var data = ESSpecificData()
+            data.streamType = .h264
+            data.elementaryPID = TSWriter.defaultVideoPID
+            PMT.elementaryStreamSpecificData.append(data)
+            videoContinuityCounter = 0
+            videoConfig = AVCDecoderConfigurationRecord(data: avcC)
+        }
+    }
 
     var audioContinuityCounter: UInt8 = 0
     var videoContinuityCounter: UInt8 = 0
@@ -79,31 +102,6 @@ public class TSWriter: Running {
 
     public init(segmentDuration: Double = TSWriter.defaultSegmentDuration) {
         self.segmentDuration = segmentDuration
-    }
-
-    public func startRunning() {
-        guard isRunning.value else {
-            return
-        }
-        isRunning.mutate { $0 = true }
-    }
-
-    public func stopRunning() {
-        guard !isRunning.value else {
-            return
-        }
-        audioContinuityCounter = 0
-        videoContinuityCounter = 0
-        PCRPID = TSWriter.defaultVideoPID
-        PAT.programs.removeAll()
-        PAT.programs = [1: TSWriter.defaultPMTPID]
-        PMT = TSProgramMap()
-        audioConfig = nil
-        videoConfig = nil
-        videoTimestamp = .invalid
-        audioTimestamp = .invalid
-        PCRTimestamp = .invalid
-        isRunning.mutate { $0 = false }
     }
 
     // swiftlint:disable:next function_parameter_count
@@ -217,24 +215,9 @@ public class TSWriter: Running {
     }
 }
 
-extension TSWriter: AudioCodecDelegate {
-    // MARK: AudioCodecDelegate
-    public func audioCodec(_ codec: AudioCodec, errorOccurred error: AudioCodec.Error) {
-    }
-
-    public func audioCodec(_ codec: AudioCodec, didOutput outputFormat: AVAudioFormat) {
-        var data = ESSpecificData()
-        data.streamType = .adtsAac
-        data.elementaryPID = TSWriter.defaultAudioPID
-        PMT.elementaryStreamSpecificData.append(data)
-        audioContinuityCounter = 0
-        audioConfig = AudioSpecificConfig(formatDescription: outputFormat.formatDescription)
-    }
-
-    public func audioCodec(_ codec: AudioCodec, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
-            return
-        }
+extension TSWriter: IOMuxer {
+    // IOMuxer
+    public func append(_ audioBuffer: AVAudioCompressedBuffer, when: AVAudioTime) {
         writeSampleBuffer(
             TSWriter.defaultAudioPID,
             streamID: 192,
@@ -244,27 +227,9 @@ extension TSWriter: AudioCodecDelegate {
             decodeTimeStamp: .invalid,
             randomAccessIndicator: true
         )
-        codec.releaseOutputBuffer(audioBuffer)
-    }
-}
-
-extension TSWriter: VideoCodecDelegate {
-    // MARK: VideoCodecDelegate
-    public func videoCodec(_ codec: VideoCodec, didOutput formatDescription: CMFormatDescription?) {
-        guard
-            let formatDescription,
-            let avcC = AVCDecoderConfigurationRecord.getData(formatDescription) else {
-            return
-        }
-        var data = ESSpecificData()
-        data.streamType = .h264
-        data.elementaryPID = TSWriter.defaultVideoPID
-        PMT.elementaryStreamSpecificData.append(data)
-        videoContinuityCounter = 0
-        videoConfig = AVCDecoderConfigurationRecord(data: avcC)
     }
 
-    public func videoCodec(_ codec: VideoCodec, didOutput sampleBuffer: CMSampleBuffer) {
+    public func append(_ sampleBuffer: CMSampleBuffer) {
         guard let dataBuffer = sampleBuffer.dataBuffer else {
             return
         }
@@ -286,7 +251,31 @@ extension TSWriter: VideoCodecDelegate {
             randomAccessIndicator: !sampleBuffer.isNotSync
         )
     }
+}
 
-    public func videoCodec(_ codec: VideoCodec, errorOccurred error: VideoCodec.Error) {
+extension TSWriter: Running {
+    public func startRunning() {
+        guard isRunning.value else {
+            return
+        }
+        isRunning.mutate { $0 = true }
+    }
+
+    public func stopRunning() {
+        guard !isRunning.value else {
+            return
+        }
+        audioContinuityCounter = 0
+        videoContinuityCounter = 0
+        PCRPID = TSWriter.defaultVideoPID
+        PAT.programs.removeAll()
+        PAT.programs = [1: TSWriter.defaultPMTPID]
+        PMT = TSProgramMap()
+        audioConfig = nil
+        videoConfig = nil
+        videoTimestamp = .invalid
+        audioTimestamp = .invalid
+        PCRTimestamp = .invalid
+        isRunning.mutate { $0 = false }
     }
 }
