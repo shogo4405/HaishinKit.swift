@@ -23,10 +23,6 @@ protocol IOMixerDelegate: AnyObject {
 final class IOMixer {
     /// The default fps for an IOMixer, value is 30.
     static let defaultFrameRate: Float64 = 30
-    /// The AVAudioEngine shared instance holder.
-    static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
-        return AVAudioEngine()
-    }
 
     #if os(tvOS)
     private var _session: Any?
@@ -149,7 +145,7 @@ final class IOMixer {
     #endif
 
     private(set) lazy var audioEngine: AVAudioEngine? = {
-        return IOMixer.audioEngineHolder.retain()
+        return NetStream.audioEngineHolder.retain()
     }()
 
     private var isMultiCamSupported: Bool {
@@ -172,7 +168,7 @@ final class IOMixer {
             }
         }
         #endif
-        IOMixer.audioEngineHolder.release(audioEngine)
+        NetStream.audioEngineHolder.release(audioEngine)
     }
 
     #if os(iOS) || os(tvOS)

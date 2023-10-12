@@ -170,7 +170,7 @@ extension AudioCodec: Codec {
         }
         if outputBuffers.isEmpty {
             if settings.format == .pcm {
-                for i in 0..<10 {
+                for _ in 0..<10 {
                     outputBuffers.append(settings.format.makeAudioBuffer(outputFormat) ?? .init())
                 }
                 return outputBuffers.removeFirst()

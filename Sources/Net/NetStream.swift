@@ -35,6 +35,11 @@ public protocol NetStreamDelegate: AnyObject {
 
 /// The `NetStream` class is the foundation of a RTMPStream, HTTPStream.
 open class NetStream: NSObject {
+    /// The AVAudioEngine shared instance holder.
+    static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
+        return AVAudioEngine()
+    }
+
     public enum ReadyState: Equatable {
         public static func == (lhs: NetStream.ReadyState, rhs: NetStream.ReadyState) -> Bool {
             return lhs.rawValue == rhs.rawValue
