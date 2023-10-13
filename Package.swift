@@ -32,7 +32,6 @@ let package = Package(
                     "Codec",
                     "Extension",
                     "FLV",
-                    "HTTP",
                     "Media",
                     "MPEG",
                     "Net",
