@@ -14,7 +14,7 @@ public protocol EventDispatcherConvertible: AnyObject {
 
 // MARK: -
 /// The Event interface is used to provide information.
-open class Event {
+public final class Event {
     /// A structure that defines the name of an event.
     public struct Name: RawRepresentable, ExpressibleByStringLiteral {
         // swiftlint:disable:next nesting
@@ -78,7 +78,7 @@ extension Event: CustomDebugStringConvertible {
 /**
  * The EventDispatcher interface is in implementation which supports the DOM Event Model.
  */
-open class EventDispatcher: EventDispatcherConvertible {
+public class EventDispatcher: EventDispatcherConvertible {
     private weak var target: AnyObject?
 
     /// Creates a new event dispatcher.

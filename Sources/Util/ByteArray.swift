@@ -72,7 +72,7 @@ protocol ByteArrayConvertible {
 /**
  * The ByteArray class provides methods and properties the reading or writing with binary data.
  */
-open class ByteArray: ByteArrayConvertible {
+public class ByteArray: ByteArrayConvertible {
     static let fillZero: [UInt8] = [0x00]
 
     static let sizeOfInt8: Int = 1

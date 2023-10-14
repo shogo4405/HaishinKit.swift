@@ -315,10 +315,10 @@ extension IOMixer: Running {
 }
 #else
 extension IOMixer: Running {
-    public func startRunning() {
+    func startRunning() {
     }
 
-    public func stopRunning() {
+    func stopRunning() {
     }
 }
 #endif

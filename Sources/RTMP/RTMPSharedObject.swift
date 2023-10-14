@@ -79,7 +79,7 @@ extension RTMPSharedObjectEvent: CustomDebugStringConvertible {
 
 // MARK: -
 /// The RTMPSharedObject class is used to read and write data on a server.
-public class RTMPSharedObject: EventDispatcher {
+public final class RTMPSharedObject: EventDispatcher {
     private static var remoteSharedObjects: [String: RTMPSharedObject] = [:]
 
     /// Returns a reference to a shared object on a server.
