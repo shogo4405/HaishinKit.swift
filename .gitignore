@@ -28,5 +28,6 @@ fastlane/report.xml
 docs/docsets/HaishinKit.docset/Contents/Resources/Documents/undocumented.json
 Vendor/SRT/OpenSSL/
 Vendor/SRT/srt/
+Vendor/SRT/Includes/
 HaishinKit.json
 SRTHaishinKit.json

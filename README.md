@@ -5,7 +5,7 @@
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
-* Camera and Microphone streaming library via RTMP, HLS and SRT for iOS, macOS, tvOS.
+* Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS.
 * README.md contains unreleased content, which can be tested on the main branch.
 * [API Documentation](https://shogo4405.github.io/HaishinKit.swift/documentation/haishinkit)
 
@@ -115,14 +115,15 @@ open HaishinKit.xcodeproj
 ### Development
 |Version|Xcode|Swift|
 |:----:|:----:|:----:|
+|1.7.0+|15.0+|5.9+|
 |1.6.0+|15.0+|5.8+|
 |1.5.0+|14.0+|5.7+|
 
 ### OS
 |-|iOS|tvOS|macOS|visionOS|watchOS|
 |:----|:----:|:----:|:----:|:----:|:----:|
-|HaishinKit|12.0+|12.0+|10.13+|-|-|
-|SRTHaishinKit|12.0+|-|-|-|-|
+|HaishinKit|12.0+|12.0+|10.13+|1.0+|-|
+|SRTHaishinKit|12.0+|-|13.0+|-|-|
 
 ### Cocoa Keys
 Please contains Info.plist.
