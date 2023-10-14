@@ -11,9 +11,11 @@ if which $(pwd)/srt >/dev/null; then
 else
   git clone git@github.com:Haivision/srt.git
   pushd srt
-  git checkout refs/tags/v1.5.1
+  git checkout refs/tags/v1.5.3
   popd
 fi
+
+cp srt/srtcore/*.h Includes
 
 srt() {
   IOS_OPENSSL=$(pwd)/OpenSSL/$1
@@ -37,13 +39,11 @@ srt_macosx() {
 
 # macOS
 srt_macosx macosx arm64
-srt_macosx macosx x86_64
 rm -f ./build/macosx/libsrt-lipo.a
-lipo -create ./build/macosx/arm64/libsrt.a ./build/macosx/x86_64/libsrt.a -output ./build/macosx/libsrt-lipo.a
-libtool -static -o ./build/macosx/libsrt.a ./build/macosx/libsrt-lipo.a ./OpenSSL/macosx/lib/libcrypto.a ./OpenSSL/macosx/lib/libssl.a
+libtool -static -o ./build/macosx/libsrt.a  ./build/macosx/arm64/libsrt.a ./OpenSSL/macosx/lib/libcrypto.a ./OpenSSL/macosx/lib/libssl.a
 
 # iOS
-export IPHONEOS_DEPLOYMENT_TARGET=11.0
+export IPHONEOS_DEPLOYMENT_TARGET=12.0
 SDKVERSION=$(xcrun --sdk iphoneos --show-sdk-version)
 srt iphonesimulator SIMULATOR64 x86_64
 srt iphonesimulator SIMULATOR64 arm64
