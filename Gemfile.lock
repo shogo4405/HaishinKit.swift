@@ -3,10 +3,15 @@ GEM
   specs:
     CFPropertyList (3.0.6)
       rexml
-    activesupport (7.0.8)
+    activesupport (7.1.1)
+      base64
+      bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
+      mutex_m
       tzinfo (~> 2.0)
     addressable (2.8.5)
       public_suffix (>= 2.0.2, < 6.0)
@@ -32,6 +37,8 @@ GEM
     aws-sigv4 (1.6.0)
       aws-eventstream (~> 1, >= 1.0.2)
     babosa (1.0.4)
+    base64 (0.1.1)
+    bigdecimal (3.1.4)
     claide (1.1.0)
     clamp (0.6.5)
     cocoapods (1.13.0)
@@ -77,12 +84,15 @@ GEM
     commander (4.6.0)
       highline (~> 2.0.0)
     concurrent-ruby (1.2.2)
+    connection_pool (2.4.1)
     declarative (0.0.20)
     digest-crc (0.6.5)
       rake (>= 12.0.0, < 14.0.0)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.8.1)
+    drb (2.1.1)
+      ruby2_keywords
     emoji_regex (3.2.3)
     escape (0.0.4)
     ethon (0.16.0)
@@ -226,6 +236,7 @@ GEM
     multi_json (1.15.0)
     multipart-post (2.3.0)
     mustache (1.1.1)
+    mutex_m (0.1.2)
     nanaimo (0.3.0)
     nap (1.1.0)
     naturally (2.2.1)
@@ -301,7 +312,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 7.0, <= 7.0.8)
+  activesupport (~> 7.1)
   cocoapods
   fastlane
   jazzy
