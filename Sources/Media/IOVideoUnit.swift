@@ -291,10 +291,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             codec.append(sampleBuffer)
         }
     }
-
-    func setConfigurationRecord(_ config: any DecoderConfigurationRecord) {
-        _ = config.makeFormatDescription(&inputFormat)
-    }
 }
 
 extension IOVideoUnit: Running {

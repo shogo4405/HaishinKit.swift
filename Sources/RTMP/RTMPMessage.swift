@@ -679,7 +679,6 @@ final class RTMPVideoMessage: RTMPMessage {
         var compositionTime = Int32(data: [0] + payload[2 + offset..<5 + offset]).bigEndian
         compositionTime <<= 8
         compositionTime /= 256
-
         var duration = Int64(timestamp)
         switch type {
         case .zero:
@@ -691,13 +690,11 @@ final class RTMPVideoMessage: RTMPMessage {
         default:
             stream.videoTimestamp += Double(timestamp)
         }
-
         var timing = CMSampleTimingInfo(
             duration: CMTimeMake(value: duration, timescale: 1000),
             presentationTimeStamp: CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(compositionTime), timescale: 1000),
             decodeTimeStamp: compositionTime == 0 ? .invalid : CMTimeMake(value: Int64(stream.videoTimestamp), timescale: 1000)
         )
-
         let blockBuffer = payload.makeBlockBuffer(advancedBy: FLVTagType.video.headerSize + offset)
         var sampleBuffer: CMSampleBuffer?
         var sampleSize = blockBuffer?.dataLength ?? 0
@@ -707,7 +704,7 @@ final class RTMPVideoMessage: RTMPMessage {
                 dataReady: true,
                 makeDataReadyCallback: nil,
                 refcon: nil,
-                formatDescription: stream.mixer.videoIO.inputFormat,
+                formatDescription: stream.muxer.videoFormat,
                 sampleCount: 1,
                 sampleTimingEntryCount: 1,
                 sampleTimingArray: &timing,
@@ -725,13 +722,13 @@ final class RTMPVideoMessage: RTMPMessage {
         case .h264:
             var config = AVCDecoderConfigurationRecord()
             config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            stream.mixer.videoIO.setConfigurationRecord(config)
+            stream.muxer.videoFormat = config.makeFormatDescription()
         case .hevc:
             var config = HEVCDecoderConfigurationRecord()
             config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            stream.mixer.videoIO.setConfigurationRecord(config)
+            stream.muxer.videoFormat = config.makeFormatDescription()
         }
-        if stream.mixer.videoIO.inputFormat != nil {
+        if stream.muxer.videoFormat != nil {
             stream.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
         }
     }

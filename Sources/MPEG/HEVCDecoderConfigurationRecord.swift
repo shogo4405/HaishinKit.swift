@@ -40,22 +40,23 @@ struct HEVCDecoderConfigurationRecord: DecoderConfigurationRecord {
         self.data = data
     }
 
-    func makeFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus {
+    func makeFormatDescription() -> CMFormatDescription? {
         guard let vps = array[.vps], let sps = array[.sps], let pps = array[.pps] else {
-            return kCMFormatDescriptionBridgeError_InvalidParameter
+            return nil
         }
-        return vps[0].withUnsafeBytes { (vpsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+        return vps[0].withUnsafeBytes { (vpsBuffer: UnsafeRawBufferPointer) -> CMFormatDescription? in
             guard let vpsBaseAddress = vpsBuffer.baseAddress else {
-                return kCMFormatDescriptionBridgeError_InvalidParameter
+                return nil
             }
-            return sps[0].withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+            return sps[0].withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> CMFormatDescription? in
                 guard let spsBaseAddress = spsBuffer.baseAddress else {
-                    return kCMFormatDescriptionBridgeError_InvalidParameter
+                    return nil
                 }
-                return pps[0].withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+                return pps[0].withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> CMFormatDescription? in
                     guard let ppsBaseAddress = ppsBuffer.baseAddress else {
-                        return kCMFormatDescriptionBridgeError_InvalidParameter
+                        return nil
                     }
+                    var formatDescriptionOut: CMFormatDescription?
                     let pointers: [UnsafePointer<UInt8>] = [
                         vpsBaseAddress.assumingMemoryBound(to: UInt8.self),
                         spsBaseAddress.assumingMemoryBound(to: UInt8.self),
@@ -63,15 +64,16 @@ struct HEVCDecoderConfigurationRecord: DecoderConfigurationRecord {
                     ]
                     let sizes: [Int] = [vpsBuffer.count, spsBuffer.count, ppsBuffer.count]
                     let nalUnitHeaderLength: Int32 = 4
-                    return CMVideoFormatDescriptionCreateFromHEVCParameterSets(
+                    CMVideoFormatDescriptionCreateFromHEVCParameterSets(
                         allocator: kCFAllocatorDefault,
                         parameterSetCount: pointers.count,
                         parameterSetPointers: pointers,
                         parameterSetSizes: sizes,
                         nalUnitHeaderLength: nalUnitHeaderLength,
                         extensions: nil,
-                        formatDescriptionOut: formatDescriptionOut
+                        formatDescriptionOut: &formatDescriptionOut
                     )
+                    return formatDescriptionOut
                 }
             }
         }

@@ -2,7 +2,7 @@ import AVFoundation
 import VideoToolbox
 
 protocol DecoderConfigurationRecord {
-    func makeFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus
+    func makeFormatDescription() -> CMFormatDescription?
 }
 
 // MARK: -
@@ -51,14 +51,14 @@ struct AVCDecoderConfigurationRecord: DecoderConfigurationRecord {
         self.data = data
     }
 
-    func makeFormatDescription(_ formatDescriptionOut: UnsafeMutablePointer<CMFormatDescription?>) -> OSStatus {
-        return pictureParameterSets[0].withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+    func makeFormatDescription() -> CMFormatDescription? {
+        return pictureParameterSets[0].withUnsafeBytes { (ppsBuffer: UnsafeRawBufferPointer) -> CMFormatDescription? in
             guard let ppsBaseAddress = ppsBuffer.baseAddress else {
-                return kCMFormatDescriptionBridgeError_InvalidParameter
+                return nil
             }
-            return sequenceParameterSets[0].withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> OSStatus in
+            return sequenceParameterSets[0].withUnsafeBytes { (spsBuffer: UnsafeRawBufferPointer) -> CMFormatDescription? in
                 guard let spsBaseAddress = spsBuffer.baseAddress else {
-                    return kCMFormatDescriptionBridgeError_InvalidParameter
+                    return nil
                 }
                 let pointers: [UnsafePointer<UInt8>] = [
                     spsBaseAddress.assumingMemoryBound(to: UInt8.self),
@@ -66,14 +66,16 @@ struct AVCDecoderConfigurationRecord: DecoderConfigurationRecord {
                 ]
                 let sizes: [Int] = [spsBuffer.count, ppsBuffer.count]
                 let nalUnitHeaderLength: Int32 = 4
-                return CMVideoFormatDescriptionCreateFromH264ParameterSets(
+                var formatDescriptionOut: CMFormatDescription?
+                CMVideoFormatDescriptionCreateFromH264ParameterSets(
                     allocator: kCFAllocatorDefault,
                     parameterSetCount: pointers.count,
                     parameterSetPointers: pointers,
                     parameterSetSizes: sizes,
                     nalUnitHeaderLength: nalUnitHeaderLength,
-                    formatDescriptionOut: formatDescriptionOut
+                    formatDescriptionOut: &formatDescriptionOut
                 )
+                return formatDescriptionOut
             }
         }
     }
