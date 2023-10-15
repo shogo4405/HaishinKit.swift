@@ -106,7 +106,7 @@ Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and t
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
-carthage bootstrap -platform iOS,macOS,tvOS --use-xcframeworks
+carthage bootstrap --platform iOS,macOS,tvOS --use-xcframeworks
 open HaishinKit.xcodeproj
 ```
 
