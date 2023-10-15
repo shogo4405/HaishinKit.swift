@@ -395,6 +395,8 @@ open class NetStream: NSObject {
         mixer.recorder.stopRunning()
     }
 
+    /// A handler that receives stream readyState will update.
+    /// - Warning: Please do not call this method yourself.
     open func readyStateWillChange(to readyState: ReadyState) {
         switch readyState {
         case .publishing:
@@ -406,6 +408,8 @@ open class NetStream: NSObject {
         }
     }
 
+    /// A handler that receives stream readyState updated.
+    /// - Warning: Please do not call this method yourself.
     open func readyStateDidChange(to readyState: ReadyState) {
         switch readyState {
         case .play:

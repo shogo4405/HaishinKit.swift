@@ -3,17 +3,17 @@ import Foundation
 /// The singleton ASUndefined object.
 public let kASUndefined = ASUndefined()
 
-/// The ASObject class represents an object for AcrionScript.
+/// The ASObject typealias represents an object for AcrionScript.
 public typealias ASObject = [String: Any?]
 
-/// The ASUndefined class represents an undefined for ActionScript.
+/// The ASUndefined structure represents an undefined for ActionScript.
 public struct ASUndefined: CustomStringConvertible {
     public var description: String {
         "undefined"
     }
 }
 
-/// The ASTypedObject class represents a typed object for ActionScript.
+/// The ASTypedObject structure represents a typed object for ActionScript.
 public struct ASTypedObject {
     public typealias TypedObjectDecoder = (_ type: String, _ data: ASObject) throws -> Any
 
@@ -44,7 +44,7 @@ public struct ASTypedObject {
 }
 
 // MARK: -
-/// The ASArray class represents an array value for ActionScript.
+/// The ASArray structure represents an array value for ActionScript.
 public struct ASArray {
     private(set) var data: [Any?]
     private(set) var dict: [String: Any?] = [:]
@@ -121,7 +121,7 @@ extension ASArray: Equatable {
 }
 
 // MARK: -
-// ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
+/// ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
 /// - seealso: 2.17 XML Document Type (amf0-file-format-specification.pdf)
 /// - seealso: 3.9 XMLDocument type (amf-file-format-spec.pdf)
 public struct ASXMLDocument: CustomStringConvertible {

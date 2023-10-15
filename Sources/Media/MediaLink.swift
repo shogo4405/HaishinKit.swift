@@ -55,7 +55,7 @@ final class MediaLink<T: MediaLinkDelegate> {
     private var scheduledAudioBuffers: Atomic<Int> = .init(0)
     private var presentationTimeStampOrigin: CMTime = .invalid
 
-    func enqueueVideo(_ buffer: CMSampleBuffer) {
+    func enqueue(_ buffer: CMSampleBuffer) {
         guard buffer.presentationTimeStamp != .invalid else {
             return
         }
@@ -78,10 +78,13 @@ final class MediaLink<T: MediaLinkDelegate> {
         }
     }
 
-    func enqueueAudio(_ buffer: AVAudioPCMBuffer) {
+    func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
+            return
+        }
         nstry({
             self.scheduledAudioBuffers.mutate { $0 += 1 }
-            self.playerNode.scheduleBuffer(buffer, completionHandler: self.didAVAudioNodeCompletion)
+            self.playerNode.scheduleBuffer(audioBuffer, completionHandler: self.didAVAudioNodeCompletion)
             if !self.hasVideo && !self.playerNode.isPlaying && 10 <= self.scheduledAudioBuffers.value {
                 self.playerNode.play()
             }

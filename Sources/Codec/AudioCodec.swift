@@ -40,7 +40,7 @@ final class AudioCodec<T: AudioCodecDelegate> {
             inputBuffers.removeAll()
             outputBuffers.removeAll()
             audioConverter = makeAudioConverter()
-            for _ in 0..<settings.format.bufferCounts {
+            for _ in 0..<settings.format.inputBufferCounts {
                 if let inputBuffer = makeInputBuffer() {
                     inputBuffers.append(inputBuffer)
                 }
@@ -169,13 +169,9 @@ extension AudioCodec: Codec {
             return .init()
         }
         if outputBuffers.isEmpty {
-            if settings.format == .pcm {
-                for _ in 0..<10 {
-                    outputBuffers.append(settings.format.makeAudioBuffer(outputFormat) ?? .init())
-                }
-                return outputBuffers.removeFirst()
+            for _ in 0..<settings.format.outputBufferCounts {
+                outputBuffers.append(settings.format.makeAudioBuffer(outputFormat) ?? .init())
             }
-            return settings.format.makeAudioBuffer(outputFormat) ?? .init()
         }
         return outputBuffers.removeFirst()
     }

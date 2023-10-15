@@ -1,11 +1,11 @@
-# HaishinKit for iOS, macOS, tvOS, and [Android](https://github.com/shogo4405/HaishinKit.kt).
+# HaishinKit for iOS, macOS, tvOS, visionOS and [Android](https://github.com/shogo4405/HaishinKit.kt).
 [![GitHub Stars](https://img.shields.io/github/stars/shogo4405/HaishinKit.swift?style=social)](https://github.com/shogo4405/HaishinKit.swift/stargazers)
 [![Release](https://img.shields.io/github/v/release/shogo4405/HaishinKit.swift)](https://github.com/shogo4405/HaishinKit.swift/releases/latest)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
 
-* Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS.
+* Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
 * [API Documentation](https://shogo4405.github.io/HaishinKit.swift/documentation/haishinkit)
 
@@ -46,7 +46,7 @@ Project name    |Notes       |License
 - [x] Authentication
 - [x] Publish and Recording
 - [x] _Playback (Beta)_
-- [x] Adaptive bitrate streaming (see also [#1308](/../../issues/1308))
+- [x] [Adaptive bitrate streaming](../../issues/1308))
 - [ ] Action Message Format
   - [x] AMF0
   - [ ] AMF3
@@ -100,9 +100,9 @@ rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio))
 - [x] Support "Allow app extension API only" option
 
 ## 🐾 Examples
-Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS.
+Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS. Example macOS requires Apple Silicon mac.
 - [x] Camera and microphone publish.
-- [x] RTMP Playback
+- [x] Playback
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
@@ -136,6 +136,10 @@ Please contains Info.plist.
 * NSMicrophoneUsageDescription
 * NSCameraUsageDescription
 
+**tvOS 17.0+**
+* NSMicrophoneUsageDescription
+* NSCameraUsageDescription
+
 ## 🔧 Installation
 HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit. SRTHaishinKit supports SPM only.
 |  | HaishinKit | SRTHaishinKit |
@@ -158,13 +162,15 @@ do {
 ```
 
 ## 📓 RTMP Usage
-Real Time Messaging Protocol (RTMP).
+### Ingest
 ```swift
 let connection = RTMPConnection()
 let stream = RTMPStream(connection: rtmpConnection)
+
 stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
     // print(error)
 }
+
 stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
     // print(error)
 }
@@ -180,30 +186,76 @@ connection.connect("rtmp://localhost/appName/instanceName")
 stream.publish("streamName")
 ```
 
-### RTMP URL Format
-* rtmp://server-ip-address[:port]/application/[appInstance]/[prefix:[path1[/path2/]]]streamName
-  - [] mark is an Optional.
-  ```
-  rtmpConneciton.connect("rtmp://server-ip-address[:port]/application/[appInstance]")
-  rtmpStream.publish("[prefix:[path1[/path2/]]]streamName")
-  ```
-* rtmp://localhost/live/streamName
-  ```
-  rtmpConneciton.connect("rtmp://localhost/live")
-  rtmpStream.publish("streamName")
-  ```
-
-### Settings
+### Playback
 ```swift
-var stream = RTMPStream(connection: rtmpConnection)
+let connection = RTMPConnection()
+let stream = RTMPStream(connection: rtmpConnection)
 
+let hkView = MTHKView(frame: view.bounds)
+hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
+hkView.attachStream(stream)
+
+// add ViewController#view
+view.addSubview(hkView)
+
+connection.connect("rtmp://localhost/appName/instanceName")
+stream.play("streamName")
+```
+
+### Authentication
+```swift
+var connection = RTMPConnection()
+connection.connect("rtmp://username:password@localhost/appName/instanceName")
+```
+
+## 📓 SRT Usage
+### Ingest
+```swift
+let connection = SRTConnection()
+let stream = SRTStream(connection: connection)
+stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
+    // print(error)
+}
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
+    // print(error)
+}
+
+let hkView = HKView(frame: view.bounds)
+hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
+hkView.attachStream(rtmpStream)
+
+// add ViewController#view
+view.addSubview(hkView)
+
+connection.connect("srt://host:port?option=foo")
+stream.publish()
+```
+
+### Playback
+```swift
+let connection = SRTConnection()
+let stream = SRTStream(connection: connection)
+
+let hkView = MTHKView(frame: view.bounds)
+hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
+hkView.attachStream(rtmpStream)
+
+// add ViewController#view
+view.addSubview(hkView)
+
+connection.connect("srt://host:port?option=foo")
+stream.play()
+```
+
+## 📓 Settings
+```swift
 stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
 
 /// Specifies the video capture settings.
 stream.videoCapture(for: 0).isVideoMirrored = false
 stream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
-// rtmpStream.videoCapture(for: 1).isVideoMirrored = false
+// stream.videoCapture(for: 1).isVideoMirrored = false
 
 // Specifies the audio codec settings.
 stream.audioSettings = AudioCodecSettings(
@@ -244,8 +296,7 @@ stream.startRecording([
   ]
 ])
 
-// 2nd arguemnt set false
-stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false)
+stream.attachAudio(AVCaptureDevice.default(for: .audio))
 ```
 
 ```swift
@@ -270,11 +321,6 @@ stream.multiCamCaptureSettings = MultiCamCaptureSetting(
     size: .zero
   )
 )
-```
-### Authentication
-```swift
-var connection = RTMPConnection()
-connection.connect("rtmp://username:password@localhost/appName/instanceName")
 ```
 
 ### Screen Capture

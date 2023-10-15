@@ -159,7 +159,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             capture.detachSession(mixer.session)
             try capture.attachDevice(nil, videoUnit: self)
             inputFormat = nil
-            codec.passthrough = true
             return
         }
         mixer.session.beginConfiguration()
@@ -173,7 +172,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             try multiCamCapture.attachDevice(nil, videoUnit: self)
         }
         try capture.attachDevice(device, videoUnit: self)
-        codec.passthrough = false
     }
 
     @available(iOS 13.0, tvOS 17.0, *)
@@ -302,6 +300,9 @@ final class IOVideoUnit: NSObject, IOUnit {
 extension IOVideoUnit: Running {
     // MARK: Running
     func startRunning() {
+        #if os(iOS)
+        codec.passthrough = capture.preferredVideoStabilizationMode == .off
+        #endif
         codec.startRunning()
     }
 

@@ -390,7 +390,7 @@ open class RTMPStream: NetStream {
     /// Creates flv metadata for a stream.
     open func makeMetaData() -> ASObject {
         var metadata: [String: Any] = [:]
-        if mixer.videoIO.inputFormat != nil {
+        if videoInputFormat != nil {
             metadata["width"] = videoSettings.videoSize.width
             metadata["height"] = videoSettings.videoSize.height
             #if os(iOS) || os(macOS) || os(tvOS)
@@ -404,7 +404,7 @@ open class RTMPStream: NetStream {
             }
             metadata["videodatarate"] = videoSettings.bitRate / 1000
         }
-        if mixer.audioIO.inputFormat != nil {
+        if audioInputFormat != nil {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = audioSettings.bitRate / 1000
             if let outputFormat = mixer.audioIO.outputFormat {
@@ -414,40 +414,7 @@ open class RTMPStream: NetStream {
         return metadata
     }
 
-    func close(withLockQueue: Bool) {
-        if withLockQueue {
-            lockQueue.sync {
-                self.close(withLockQueue: false)
-            }
-            return
-        }
-        guard let rtmpConnection, ReadyState.open.rawValue < readyState.rawValue else {
-            return
-        }
-        readyState = .open
-        rtmpConnection.socket?.doOutput(chunk: RTMPChunk(
-                                            type: .zero,
-                                            streamId: RTMPChunk.StreamID.command.rawValue,
-                                            message: RTMPCommandMessage(
-                                                streamId: 0,
-                                                transactionId: 0,
-                                                objectEncoding: self.objectEncoding,
-                                                commandName: "closeStream",
-                                                commandObject: nil,
-                                                arguments: [self.id]
-                                            )))
-    }
-
-    func on(timer: Timer) {
-        currentFPS = frameCount
-        frameCount = 0
-        info.on(timer: timer)
-    }
-
     override public func readyStateWillChange(to readyState: NetStream.ReadyState) {
-        guard let rtmpConnection else {
-            return
-        }
         switch readyState {
         case .publishing:
             FCUnpublish()
@@ -501,6 +468,36 @@ open class RTMPStream: NetStream {
             break
         }
         super.readyStateDidChange(to: readyState)
+    }
+
+    func close(withLockQueue: Bool) {
+        if withLockQueue {
+            lockQueue.sync {
+                self.close(withLockQueue: false)
+            }
+            return
+        }
+        guard let rtmpConnection, ReadyState.open.rawValue < readyState.rawValue else {
+            return
+        }
+        readyState = .open
+        rtmpConnection.socket?.doOutput(chunk: RTMPChunk(
+                                            type: .zero,
+                                            streamId: RTMPChunk.StreamID.command.rawValue,
+                                            message: RTMPCommandMessage(
+                                                streamId: 0,
+                                                transactionId: 0,
+                                                objectEncoding: self.objectEncoding,
+                                                commandName: "closeStream",
+                                                commandObject: nil,
+                                                arguments: [self.id]
+                                            )))
+    }
+
+    func on(timer: Timer) {
+        currentFPS = frameCount
+        frameCount = 0
+        info.on(timer: timer)
     }
 
     @objc

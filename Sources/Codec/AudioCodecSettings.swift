@@ -80,12 +80,21 @@ public struct AudioCodecSettings: Codable {
             }
         }
 
-        var bufferCounts: Int {
+        var inputBufferCounts: Int {
             switch self {
             case .aac:
                 return 6
             case .pcm:
                 return 1
+            }
+        }
+
+        var outputBufferCounts: Int {
+            switch self {
+            case .aac:
+                return 1
+            case .pcm:
+                return 6
             }
         }
 

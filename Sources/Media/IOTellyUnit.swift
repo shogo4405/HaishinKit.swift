@@ -62,14 +62,11 @@ extension IOTellyUnit: Running {
 extension IOTellyUnit: IOMuxer {
     // MARK: IOMuxer
     func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
-            return
-        }
-        mediaLink.enqueueAudio(audioBuffer)
+        mediaLink.enqueue(audioBuffer, when: when)
     }
 
     func append(_ sampleBuffer: CMSampleBuffer) {
-        mediaLink.enqueueVideo(sampleBuffer)
+        mediaLink.enqueue(sampleBuffer)
     }
 }
 

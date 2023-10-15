@@ -14,10 +14,10 @@ final class MenuViewController: NSViewController {
 
     private lazy var menus: [Menu] = {
         var menus: [Menu] = [
-            .init(title: "Publish Test", factory: { CameraPublishViewController.getUIViewController() }),
-            .init(title: "RTMP Playback Test", factory: { RTMPPlaybackViewController.getUIViewController() })
+            .init(title: "Ingest Test", factory: { CameraIngestViewController.getUIViewController() }),
+            .init(title: "Playback Test", factory: { PlaybackViewController.getUIViewController() })
         ]
-        menus.append(.init(title: "SCStream Publish Test", factory: { SCStreamPublishViewController.getUIViewController() }))
+        menus.append(.init(title: "SCStream Ingest Test", factory: { SCStreamPublishViewController.getUIViewController() }))
         menus.append(.init(title: "Preference", factory: { PreferenceViewController.getUIViewController() }))
         return menus
     }()
