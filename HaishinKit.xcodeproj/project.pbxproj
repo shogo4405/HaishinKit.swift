@@ -214,6 +214,7 @@
 		BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BC93792F2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */; };
 		BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */; };
 		BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */; };
@@ -611,6 +612,7 @@
 		BC7C56CC29A786AE00C41A9B /* ADTS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTS.swift; sourceTree = "<group>"; };
 		BC7C56D029A78D4F00C41A9B /* ADTSHeaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSHeaderTests.swift; sourceTree = "<group>"; };
 		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
+		BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVAudioCompressedBuffer+Extension.swift"; sourceTree = "<group>"; };
 		BC959EEE296EE4190067BA97 /* ImageTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTransform.swift; sourceTree = "<group>"; };
 		BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCStreamPublishViewController.swift; sourceTree = "<group>"; };
 		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
@@ -1110,15 +1112,16 @@
 		29EA87D11E799EFF0043A5F8 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */,
+				BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */,
 				1A2166D3A449D813866FE9D9 /* AVAudioFormat+Extension.swift */,
 				BC22EEF12AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift */,
 				BC04A2D32AD2D1D700C87A3E /* AVAudioTime+Extension.swift */,
-				BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */,
 				BC2828AC2AA3225100741013 /* AVCaptureDevice.Format+Extension.swift */,
-				BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */,
+				BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */,
 				BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */,
+				BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */,
 				BC2828AE2AA322E400741013 /* AVFrameRateRange+Extension.swift */,
-				BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */,
 				29EA87E51E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift */,
 				29EA87E91E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift */,
 				2916196B1E7F0768009FB344 /* CMFormatDescription+Extension.swift */,
@@ -1132,10 +1135,10 @@
 				29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */,
 				BC0F1FDB2ACC630400C326FF /* NSView+Extension.swift */,
 				29EA87D71E79A0090043A5F8 /* URL+Extension.swift */,
-				BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */,
-				BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */,
 				BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */,
 				BC6FC9212961B3D800A746EE /* vImage_CGImageFormat+Extension.swift */,
+				BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */,
+				BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1758,6 +1761,7 @@
 				BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				29EA87D81E79A0090043A5F8 /* URL+Extension.swift in Sources */,
 				BC9F9C7826F8C16600B01ED0 /* Choreographer.swift in Sources */,
+				BC93792F2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift in Sources */,
 				29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */,
 				29B876831CD70AE800FC07DA /* AudioSpecificConfig.swift in Sources */,
 				295891121EEB8D7200CE51E1 /* FLVFrameType.swift in Sources */,

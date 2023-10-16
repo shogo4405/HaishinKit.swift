@@ -568,53 +568,14 @@ final class RTMPAudioMessage: RTMPMessage {
         guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
             return
         }
-        stream.info.byteCount.mutate { $0 += Int64(payload.count) }
-        guard codec.isSupported else {
-            return
-        }
-        var duration = Int64(timestamp)
-        switch type {
-        case .zero:
-            if stream.audioTimestampZero == -1 {
-                stream.audioTimestampZero = Double(timestamp)
-            }
-            duration -= Int64(stream.audioTimestamp)
-            stream.audioTimestamp = Double(timestamp) - stream.audioTimestampZero
-        default:
-            stream.audioTimestamp += Double(timestamp)
-        }
-        switch payload[1] {
-        case FLVAACPacketType.seq.rawValue:
-            let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
-            stream.mixer.audioIO.setAudioStreamBasicDescription(config?.audioStreamBasicDescription())
-        case FLVAACPacketType.raw.rawValue:
-            if stream.mixer.audioIO.inputFormat == nil {
-                stream.mixer.audioIO.setAudioStreamBasicDescription(makeAudioStreamBasicDescription())
-            }
-            if let audioBuffer = makeAudioBuffer(stream) {
-                stream.mixer.audioIO.append(audioBuffer, when: .init(hostTime: UInt64(stream.audioTimestamp)))
-            }
-        default:
-            break
-        }
+        stream.muxer.append(self, type: type)
     }
 
-    private func makeAudioBuffer(_ stream: RTMPStream) -> AVAudioBuffer? {
-        return payload.withUnsafeMutableBytes { (buffer: UnsafeMutableRawBufferPointer) -> AVAudioBuffer? in
-            guard let baseAddress = buffer.baseAddress, let buffer = stream.mixer.audioIO.inputBuffer as? AVAudioCompressedBuffer else {
-                return nil
-            }
-            let byteCount = payload.count - codec.headerSize
-            buffer.packetDescriptions?.pointee = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: UInt32(byteCount))
-            buffer.packetCount = 1
-            buffer.byteLength = UInt32(byteCount)
-            buffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
-            return buffer
+    func makeAudioFormat() -> AVAudioFormat? {
+        guard var audioStreamBasicDescription = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType) else {
+            return nil
         }
-    }
-
-    private func makeAudioStreamBasicDescription() -> AudioStreamBasicDescription? {
-        return codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType)
+        return AVAudioFormat(streamDescription: &audioStreamBasicDescription)
     }
 }
 

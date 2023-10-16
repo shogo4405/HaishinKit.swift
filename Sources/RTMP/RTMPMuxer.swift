@@ -14,6 +14,12 @@ final class RTMPMuxer {
                 var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
                 buffer.append(contentsOf: AudioSpecificConfig(formatDescription: audioFormat.formatDescription).bytes)
                 stream?.outputAudio(buffer, withTimestamp: 0)
+            case .playing:
+                if let audioFormat {
+                    audioBuffer = AVAudioCompressedBuffer(format: audioFormat, packetCapacity: 1, maximumPacketSize: 1024 * Int(audioFormat.channelCount))
+                } else {
+                    audioBuffer = nil
+                }
             default:
                 break
             }
@@ -53,6 +59,7 @@ final class RTMPMuxer {
 
     var isRunning: Atomic<Bool> = .init(false)
     private var videoTimeStamp: CMTime = .zero
+    private var audioBuffer: AVAudioCompressedBuffer?
     private var audioTimeStamp: AVAudioTime = .init(hostTime: 0)
     private let compositiionTimeOffset: CMTime = .init(value: 3, timescale: 30)
     private weak var stream: RTMPStream?
@@ -60,26 +67,47 @@ final class RTMPMuxer {
     init(_ stream: RTMPStream) {
         self.stream = stream
     }
-}
 
-extension RTMPMuxer: Running {
-    // MARK: Running
-    func startRunning() {
-        guard !isRunning.value else {
+    func append(_ message: RTMPAudioMessage, type: RTMPChunkType) {
+        let payload = message.payload
+        let codec = message.codec
+        stream?.info.byteCount.mutate { $0 += Int64(payload.count) }
+        guard let stream, message.codec.isSupported else {
             return
         }
-        audioTimeStamp = .init(hostTime: 0)
-        videoTimeStamp = .zero
-        audioFormat = nil
-        videoFormat = nil
-        isRunning.mutate { $0 = true }
-    }
-
-    func stopRunning() {
-        guard isRunning.value else {
-            return
+        var duration = Int64(message.timestamp)
+        switch type {
+        case .zero:
+            if stream.audioTimestampZero == -1 {
+                stream.audioTimestampZero = Double(message.timestamp)
+            }
+            duration -= Int64(stream.audioTimestamp)
+            stream.audioTimestamp = Double(message.timestamp) - stream.audioTimestampZero
+        default:
+            stream.audioTimestamp += Double(message.timestamp)
         }
-        isRunning.mutate { $0 = false }
+        switch payload[1] {
+        case FLVAACPacketType.seq.rawValue:
+            let config = AudioSpecificConfig(bytes: [UInt8](payload[message.codec.headerSize..<payload.count]))
+            stream.muxer.audioFormat = config?.makeAudioFormat()
+        case FLVAACPacketType.raw.rawValue:
+            if audioFormat == nil {
+                audioFormat = message.makeAudioFormat()
+            }
+            payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
+                guard let baseAddress = buffer.baseAddress, let audioBuffer else {
+                    return
+                }
+                let byteCount = payload.count - codec.headerSize
+                audioBuffer.packetDescriptions?.pointee = AudioStreamPacketDescription(mStartOffset: 0, mVariableFramesInPacket: 0, mDataByteSize: UInt32(byteCount))
+                audioBuffer.packetCount = 1
+                audioBuffer.byteLength = UInt32(byteCount)
+                audioBuffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
+                stream.mixer.audioIO.append(audioBuffer, when: .init(hostTime: UInt64(stream.audioTimestamp)))
+            }
+        default:
+            break
+        }
     }
 }
 
@@ -130,5 +158,26 @@ extension RTMPMuxer: IOMuxer {
             return 0
         }
         return Int32((sampleBuffer.presentationTimeStamp - videoTimeStamp + compositiionTimeOffset).seconds * 1000)
+    }
+}
+
+extension RTMPMuxer: Running {
+    // MARK: Running
+    func startRunning() {
+        guard !isRunning.value else {
+            return
+        }
+        audioTimeStamp = .init(hostTime: 0)
+        videoTimeStamp = .zero
+        audioFormat = nil
+        videoFormat = nil
+        isRunning.mutate { $0 = true }
+    }
+
+    func stopRunning() {
+        guard isRunning.value else {
+            return
+        }
+        isRunning.mutate { $0 = false }
     }
 }

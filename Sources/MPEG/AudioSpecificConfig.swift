@@ -188,7 +188,12 @@ struct AudioSpecificConfig: Equatable {
         return adts
     }
 
-    func audioStreamBasicDescription() -> AudioStreamBasicDescription {
+    func makeAudioFormat() -> AVAudioFormat? {
+        var audioStreamBasicDescription = makeAudioStreamBasicDescription()
+        return AVAudioFormat(streamDescription: &audioStreamBasicDescription)
+    }
+
+    private func makeAudioStreamBasicDescription() -> AudioStreamBasicDescription {
         AudioStreamBasicDescription(
             mSampleRate: frequency.sampleRate,
             mFormatID: kAudioFormatMPEG4AAC,

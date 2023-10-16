@@ -45,9 +45,6 @@ final class IOAudioUnit: NSObject, IOUnit {
     var outputFormat: FormatDescription? {
         return codec.outputFormat
     }
-    var inputBuffer: AVAudioBuffer? {
-        return codec.inputBuffer
-    }
     private lazy var codec: AudioCodec<IOMixer> = {
         var codec = AudioCodec<IOMixer>(lockQueue: lockQueue)
         codec.delegate = mixer
@@ -112,15 +109,6 @@ final class IOAudioUnit: NSObject, IOUnit {
         default:
             break
         }
-    }
-
-    func setAudioStreamBasicDescription(_ audioStreamBasicDescription: AudioStreamBasicDescription?) {
-        guard var audioStreamBasicDescription else {
-            return
-        }
-        let audioFormat = AVAudioFormat(streamDescription: &audioStreamBasicDescription)
-        inputFormat = audioFormat
-        codec.inputFormat = audioFormat
     }
 }
 

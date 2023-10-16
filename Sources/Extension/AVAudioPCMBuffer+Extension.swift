@@ -33,8 +33,10 @@ extension AVAudioPCMBuffer {
         return sampleBuffer
     }
 
-    final func copy(_ audioPCMBuffer: AVAudioBuffer) -> Bool {
-        guard let audioPCMBuffer = audioPCMBuffer as? AVAudioPCMBuffer, frameLength == audioPCMBuffer.frameLength else {
+    @discardableResult
+    @inline(__always)
+    final func copy(_ audioBuffer: AVAudioBuffer) -> Bool {
+        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer, frameLength == audioBuffer.frameLength else {
             return false
         }
         let numSamples = Int(frameLength)
@@ -42,11 +44,11 @@ extension AVAudioPCMBuffer {
             let channelCount = Int(format.channelCount)
             switch format.commonFormat {
             case .pcmFormatInt16:
-                memcpy(int16ChannelData?[0], audioPCMBuffer.int16ChannelData?[0], numSamples * channelCount * 2)
+                memcpy(int16ChannelData?[0], audioBuffer.int16ChannelData?[0], numSamples * channelCount * 2)
             case .pcmFormatInt32:
-                memcpy(int32ChannelData?[0], audioPCMBuffer.int32ChannelData?[0], numSamples * channelCount * 4)
+                memcpy(int32ChannelData?[0], audioBuffer.int32ChannelData?[0], numSamples * channelCount * 4)
             case .pcmFormatFloat32:
-                memcpy(floatChannelData?[0], audioPCMBuffer.floatChannelData?[0], numSamples * channelCount * 4)
+                memcpy(floatChannelData?[0], audioBuffer.floatChannelData?[0], numSamples * channelCount * 4)
             default:
                 break
             }
@@ -54,11 +56,11 @@ extension AVAudioPCMBuffer {
             for i in 0..<Int(format.channelCount) {
                 switch format.commonFormat {
                 case .pcmFormatInt16:
-                    memcpy(int16ChannelData?[i], audioPCMBuffer.int16ChannelData?[i], numSamples * 2)
+                    memcpy(int16ChannelData?[i], audioBuffer.int16ChannelData?[i], numSamples * 2)
                 case .pcmFormatInt32:
-                    memcpy(int32ChannelData?[i], audioPCMBuffer.int32ChannelData?[i], numSamples * 4)
+                    memcpy(int32ChannelData?[i], audioBuffer.int32ChannelData?[i], numSamples * 4)
                 case .pcmFormatFloat32:
-                    memcpy(floatChannelData?[i], audioPCMBuffer.floatChannelData?[i], numSamples * 4)
+                    memcpy(floatChannelData?[i], audioBuffer.floatChannelData?[i], numSamples * 4)
                 default:
                     break
                 }

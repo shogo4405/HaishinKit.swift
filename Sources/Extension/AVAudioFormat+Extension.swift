@@ -1,5 +1,6 @@
 import AVFoundation
 
+#if DEBUG
 extension AVAudioCommonFormat: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
@@ -105,3 +106,4 @@ extension AudioFormatID: CustomDebugStringConvertible {
         }
     }
 }
+#endif

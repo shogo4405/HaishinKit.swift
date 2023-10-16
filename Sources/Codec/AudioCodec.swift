@@ -89,6 +89,7 @@ final class AudioCodec<T: AudioCodecDelegate> {
     }
 
     func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        inputFormat = audioBuffer.format
         guard let audioConverter, isRunning.value else {
             return
         }
@@ -96,6 +97,8 @@ final class AudioCodec<T: AudioCodecDelegate> {
         let outputBuffer = self.outputBuffer
         let outputStatus = audioConverter.convert(to: outputBuffer, error: &error) { _, inputStatus in
             switch self.inputBuffer {
+            case let inputBuffer as AVAudioCompressedBuffer:
+                inputBuffer.copy(audioBuffer)
             case let inputBuffer as AVAudioPCMBuffer:
                 if !inputBuffer.copy(audioBuffer) {
                     inputBuffer.muted()
@@ -160,10 +163,6 @@ extension AudioCodec: Codec {
     // MARK: Codec
     typealias Buffer = AVAudioBuffer
 
-    var inputBuffer: AVAudioBuffer {
-        return inputBuffers[cursor]
-    }
-
     var outputBuffer: AVAudioBuffer {
         guard let outputFormat = audioConverter?.outputFormat else {
             return .init()
@@ -178,6 +177,10 @@ extension AudioCodec: Codec {
 
     func releaseOutputBuffer(_ buffer: AVAudioBuffer) {
         outputBuffers.append(buffer)
+    }
+
+    private var inputBuffer: AVAudioBuffer {
+        return inputBuffers[cursor]
     }
 }
 
