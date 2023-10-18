@@ -89,7 +89,7 @@ final class RTMPMuxer {
         switch payload[1] {
         case FLVAACPacketType.seq.rawValue:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[message.codec.headerSize..<payload.count]))
-            stream.muxer.audioFormat = config?.makeAudioFormat()
+            audioFormat = config?.makeAudioFormat()
         case FLVAACPacketType.raw.rawValue:
             if audioFormat == nil {
                 audioFormat = message.makeAudioFormat()
@@ -107,6 +107,56 @@ final class RTMPMuxer {
             }
         default:
             break
+        }
+    }
+
+    func append(_ message: RTMPVideoMessage, type: RTMPChunkType) {
+        stream?.info.byteCount.mutate { $0 += Int64( message.payload.count) }
+        guard let stream, FLVTagType.video.headerSize <= message.payload.count && message.isSupported else {
+            return
+        }
+
+        var duration = Int64(message.timestamp)
+        switch type {
+        case .zero:
+            if stream.videoTimestampZero == -1 {
+                stream.videoTimestampZero = Double(message.timestamp)
+            }
+            duration -= Int64(stream.videoTimestamp)
+            stream.videoTimestamp = Double(message.timestamp) - stream.videoTimestampZero
+        default:
+            stream.videoTimestamp += Double(message.timestamp)
+        }
+
+        var timing = CMSampleTimingInfo(
+            duration: CMTimeMake(value: duration, timescale: 1000),
+            presentationTimeStamp: CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(message.compositionTime), timescale: 1000),
+            decodeTimeStamp: message.compositionTime == 0 ? .invalid : CMTimeMake(value: Int64(stream.videoTimestamp), timescale: 1000)
+        )
+
+        if message.isExHeader {
+            // IsExHeader for Enhancing RTMP, FLV
+            switch message.packetType {
+            case FLVVideoPacketType.sequenceStart.rawValue:
+                videoFormat = message.makeFormatDescription(.hevc)
+            case FLVVideoPacketType.codedFrames.rawValue:
+                if let sampleBuffer = message.makeSampleBuffer(&timing, formatDesciption: videoFormat) {
+                    stream.mixer.videoIO.append(sampleBuffer)
+                }
+            default:
+                break
+            }
+        } else {
+            switch message.packetType {
+            case FLVAVCPacketType.seq.rawValue:
+                videoFormat = message.makeFormatDescription(.h264)
+            case FLVAVCPacketType.nal.rawValue:
+                if let sampleBuffer = message.makeSampleBuffer(&timing, formatDesciption: videoFormat) {
+                    stream.mixer.videoIO.append(sampleBuffer)
+                }
+            default:
+                break
+            }
         }
     }
 }
