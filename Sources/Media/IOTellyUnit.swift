@@ -47,15 +47,17 @@ extension IOTellyUnit: Running {
             return
         }
         isRunning.mutate { $0 = true }
+        mediaLink.startRunning()
     }
 
     func stopRunning() {
         guard isRunning.value else {
             return
         }
-        isRunning.mutate { $0 = false }
         audioFormat = nil
         videoFormat = nil
+        mediaLink.stopRunning()
+        isRunning.mutate { $0 = false }
     }
 }
 

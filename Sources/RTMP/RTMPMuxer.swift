@@ -51,6 +51,8 @@ final class RTMPMuxer {
                 default:
                     break
                 }
+            case .playing:
+                stream?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.videoDimensionChange.data(""))
             default:
                 break
             }
