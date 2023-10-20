@@ -5,7 +5,7 @@ import AVFoundation
  */
 protocol AudioCodecDelegate: AnyObject {
     /// Tells the receiver to output an AVAudioFormat.
-    func audioCodec(_ codec: AudioCodec<Self>, didOutput audioFormat: AVAudioFormat)
+    func audioCodec(_ codec: AudioCodec<Self>, didOutput audioFormat: AVAudioFormat?)
     /// Tells the receiver to output an encoded or decoded CMSampleBuffer.
     func audioCodec(_ codec: AudioCodec<Self>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to occured an error.

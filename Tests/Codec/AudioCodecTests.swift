@@ -96,12 +96,12 @@ final class AudioCodecTests: XCTestCase {
 }
 
 extension AudioCodecTests: AudioCodecDelegate {
-    func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, didOutput audioFormat: AVAudioFormat) {
+    func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, didOutput audioFormat: AVAudioFormat?) {
     }
-    
+
     func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
     }
-    
+
     func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, errorOccurred error: HaishinKit.IOAudioUnitError) {
     }
 }

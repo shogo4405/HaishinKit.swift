@@ -355,7 +355,7 @@ extension IOMixer: VideoCodecDelegate {
 
 extension IOMixer: AudioCodecDelegate {
     // MARK: AudioCodecDelegate
-    func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioFormat: AVAudioFormat) {
+    func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioFormat: AVAudioFormat?) {
         muxer?.audioFormat = audioFormat
     }
 
