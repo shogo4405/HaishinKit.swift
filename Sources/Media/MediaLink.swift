@@ -51,7 +51,9 @@ final class MediaLink<T: MediaLinkDelegate> {
         return choreographer
     }()
     private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MediaLink.lock")
+    private var frameCount: AVAudioFramePosition = 0
     private var bufferQueue: CMBufferQueue?
+    private var lastRenderTime: AVAudioTime = .zero
     private var scheduledAudioBuffers: Atomic<Int> = .init(0)
     private var presentationTimeStampOrigin: CMTime = .invalid
 
@@ -70,7 +72,7 @@ final class MediaLink<T: MediaLinkDelegate> {
             CMBufferQueueEnqueue(bufferQueue, buffer: buffer)
         }
         if isBuffering {
-            bufferingTime += buffer.duration.seconds
+            bufferingTime += bufferQueue?.duration.seconds ?? 0
             if bufferTime <= bufferingTime {
                 bufferTime += 0.1
                 isBuffering = false
@@ -82,9 +84,15 @@ final class MediaLink<T: MediaLinkDelegate> {
         guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
             return
         }
+        if lastRenderTime == .zero {
+            lastRenderTime = playerNode.lastRenderTime ?? .zero
+        }
         nstry({
             self.scheduledAudioBuffers.mutate { $0 += 1 }
-            self.playerNode.scheduleBuffer(audioBuffer, completionHandler: self.didAVAudioNodeCompletion)
+            if let at = AVAudioTime(sampleTime: self.frameCount, atRate: audioBuffer.format.sampleRate).extrapolateTime(fromAnchor: self.lastRenderTime) {
+                self.playerNode.scheduleBuffer(audioBuffer, at: at, completionHandler: self.didAVAudioNodeCompletion)
+            }
+            self.frameCount += Int64(audioBuffer.frameLength)
             if !self.hasVideo && !self.playerNode.isPlaying && 10 <= self.scheduledAudioBuffers.value {
                 self.playerNode.play()
             }
@@ -173,6 +181,8 @@ extension MediaLink: Running {
             }
             self.choreographer.stopRunning()
             self.bufferQueue = nil
+            self.frameCount = 0
+            self.lastRenderTime = .zero
             self.scheduledAudioBuffers.mutate { $0 = 0 }
             self.presentationTimeStampOrigin = .invalid
             self.isRunning.mutate { $0 = false }

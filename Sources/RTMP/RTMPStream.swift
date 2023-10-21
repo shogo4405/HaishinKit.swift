@@ -226,9 +226,7 @@ open class RTMPStream: NetStream {
     }
     var id: UInt32 = RTMPStream.defaultID
     var audioTimestamp: Double = 0.0
-    var audioTimestampZero: Double = -1.0
     var videoTimestamp: Double = 0.0
-    var videoTimestampZero: Double = -1.0
     private(set) lazy var muxer = {
         return RTMPMuxer(self)
     }()
@@ -450,9 +448,7 @@ open class RTMPStream: NetStream {
         case .play:
             startedAt = .init()
             videoTimestamp = 0
-            videoTimestampZero = -1.0
             audioTimestamp = 0
-            audioTimestampZero = -1.0
         case .publish:
             bitrateStrategy.setUp()
             startedAt = .init()

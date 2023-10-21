@@ -94,7 +94,7 @@ public struct AudioCodecSettings: Codable {
             case .aac:
                 return 1
             case .pcm:
-                return 10
+                return 24
             }
         }
 

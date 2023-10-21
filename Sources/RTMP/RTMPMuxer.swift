@@ -74,20 +74,11 @@ final class RTMPMuxer {
         let payload = message.payload
         let codec = message.codec
         stream?.info.byteCount.mutate { $0 += Int64(payload.count) }
+
         guard let stream, message.codec.isSupported else {
             return
         }
-        var duration = Int64(message.timestamp)
-        switch type {
-        case .zero:
-            if stream.audioTimestampZero == -1 {
-                stream.audioTimestampZero = Double(message.timestamp)
-            }
-            duration -= Int64(stream.audioTimestamp)
-            stream.audioTimestamp = Double(message.timestamp) - stream.audioTimestampZero
-        default:
-            stream.audioTimestamp += Double(message.timestamp)
-        }
+
         switch payload[1] {
         case FLVAACPacketType.seq.rawValue:
             let config = AudioSpecificConfig(bytes: [UInt8](payload[message.codec.headerSize..<payload.count]))
@@ -105,10 +96,17 @@ final class RTMPMuxer {
                 audioBuffer.packetCount = 1
                 audioBuffer.byteLength = UInt32(byteCount)
                 audioBuffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
-                stream.mixer.audioIO.append(audioBuffer, when: .init(hostTime: UInt64(stream.audioTimestamp)))
+                stream.mixer.audioIO.append(audioBuffer, when: audioTimeStamp)
             }
         default:
             break
+        }
+
+        switch type {
+        case .zero:
+            audioTimeStamp = .init(hostTime: AVAudioTime.hostTime(forSeconds: Double(message.timestamp) / 1000))
+        default:
+            audioTimeStamp = .init(hostTime: AVAudioTime.hostTime(forSeconds: AVAudioTime.seconds(forHostTime: audioTimeStamp.hostTime) + Double(message.timestamp) / 1000))
         }
     }
 
@@ -118,31 +116,13 @@ final class RTMPMuxer {
             return
         }
 
-        var duration = Int64(message.timestamp)
-        switch type {
-        case .zero:
-            if stream.videoTimestampZero == -1 {
-                stream.videoTimestampZero = Double(message.timestamp)
-            }
-            duration -= Int64(stream.videoTimestamp)
-            stream.videoTimestamp = Double(message.timestamp) - stream.videoTimestampZero
-        default:
-            stream.videoTimestamp += Double(message.timestamp)
-        }
-
-        var timing = CMSampleTimingInfo(
-            duration: CMTimeMake(value: duration, timescale: 1000),
-            presentationTimeStamp: CMTimeMake(value: Int64(stream.videoTimestamp) + Int64(message.compositionTime), timescale: 1000),
-            decodeTimeStamp: message.compositionTime == 0 ? .invalid : CMTimeMake(value: Int64(stream.videoTimestamp), timescale: 1000)
-        )
-
         if message.isExHeader {
             // IsExHeader for Enhancing RTMP, FLV
             switch message.packetType {
             case FLVVideoPacketType.sequenceStart.rawValue:
                 videoFormat = message.makeFormatDescription(.hevc)
             case FLVVideoPacketType.codedFrames.rawValue:
-                if let sampleBuffer = message.makeSampleBuffer(&timing, formatDesciption: videoFormat) {
+                if let sampleBuffer = message.makeSampleBuffer(videoTimeStamp, formatDesciption: videoFormat) {
                     stream.mixer.videoIO.append(sampleBuffer)
                 }
             default:
@@ -153,12 +133,19 @@ final class RTMPMuxer {
             case FLVAVCPacketType.seq.rawValue:
                 videoFormat = message.makeFormatDescription(.h264)
             case FLVAVCPacketType.nal.rawValue:
-                if let sampleBuffer = message.makeSampleBuffer(&timing, formatDesciption: videoFormat) {
+                if let sampleBuffer = message.makeSampleBuffer(videoTimeStamp, formatDesciption: videoFormat) {
                     stream.mixer.videoIO.append(sampleBuffer)
                 }
             default:
                 break
             }
+        }
+
+        switch type {
+        case .zero:
+            videoTimeStamp = .init(value: CMTimeValue(message.timestamp), timescale: 1000)
+        default:
+            videoTimeStamp = CMTimeAdd(videoTimeStamp, .init(value: CMTimeValue(message.timestamp), timescale: 1000))
         }
     }
 }

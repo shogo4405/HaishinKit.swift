@@ -628,10 +628,15 @@ final class RTMPVideoMessage: RTMPMessage {
         stream.muxer.append(self, type: type)
     }
 
-    func makeSampleBuffer(_ timing: inout CMSampleTimingInfo, formatDesciption: CMFormatDescription?) -> CMSampleBuffer? {
+    func makeSampleBuffer(_ presentationTimeStamp: CMTime, formatDesciption: CMFormatDescription?) -> CMSampleBuffer? {
         var sampleBuffer: CMSampleBuffer?
         let blockBuffer = payload.makeBlockBuffer(advancedBy: FLVTagType.video.headerSize + offset)
         var sampleSize = blockBuffer?.dataLength ?? 0
+        var timing = CMSampleTimingInfo(
+            duration: .invalid,
+            presentationTimeStamp: compositionTime == 0 ? presentationTimeStamp : CMTimeAdd(presentationTimeStamp, .init(value: CMTimeValue(compositionTime), timescale: 1000)),
+            decodeTimeStamp: compositionTime == 0 ? .invalid : presentationTimeStamp
+        )
         guard CMSampleBufferCreate(
                 allocator: kCFAllocatorDefault,
                 dataBuffer: blockBuffer,

@@ -226,6 +226,7 @@
 		BCAD0C19263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v in Resources */ = {isa = PBXBuildFile; fileRef = BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
 		BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
+		BCC1288D2AE3A3A7002995A4 /* CMBufferQueue+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1288C2AE3A3A7002995A4 /* CMBufferQueue+Extension.swift */; };
 		BCC1A7212648540800661156 /* RPReplay_Final1620580691.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */; };
 		BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72A264FAC1800661156 /* ESSpecificData.swift */; };
 		BCC4F4152AD6FC1100954EF5 /* IOTellyUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC4F4142AD6FC1100954EF5 /* IOTellyUnit.swift */; };
@@ -624,6 +625,7 @@
 		BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "SampleVideo_360x240_5mb@m4v"; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSField.swift; sourceTree = "<group>"; };
 		BCB9773E2621812800C9A649 /* AVCFormatStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStream.swift; sourceTree = "<group>"; };
+		BCC1288C2AE3A3A7002995A4 /* CMBufferQueue+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMBufferQueue+Extension.swift"; sourceTree = "<group>"; };
 		BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = RPReplay_Final1620580691.mp4; sourceTree = "<group>"; };
 		BCC1A72A264FAC1800661156 /* ESSpecificData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESSpecificData.swift; sourceTree = "<group>"; };
 		BCC4F4142AD6FC1100954EF5 /* IOTellyUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOTellyUnit.swift; sourceTree = "<group>"; };
@@ -1124,6 +1126,7 @@
 				BC2828AE2AA322E400741013 /* AVFrameRateRange+Extension.swift */,
 				29EA87E51E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift */,
 				29EA87E91E79A3B70043A5F8 /* CMBlockBuffer+Extension.swift */,
+				BCC1288C2AE3A3A7002995A4 /* CMBufferQueue+Extension.swift */,
 				2916196B1E7F0768009FB344 /* CMFormatDescription+Extension.swift */,
 				29EA87DE1E79A0810043A5F8 /* CMSampleBuffer+Extension.swift */,
 				BC04A2D52AD2D95500C87A3E /* CMTime+Extension.swift */,
@@ -1738,6 +1741,7 @@
 				BC04A2D62AD2D95500C87A3E /* CMTime+Extension.swift in Sources */,
 				BC22EEF22AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift in Sources */,
 				BCCBCE9729A90D880095B51C /* AVCNALUnit.swift in Sources */,
+				BCC1288D2AE3A3A7002995A4 /* CMBufferQueue+Extension.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				BCA2252C293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift in Sources */,
 				BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
