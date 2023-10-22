@@ -522,35 +522,8 @@ final class RTMPSharedObjectMessage: RTMPMessage {
  7.1.5. Audio Message (9)
  */
 final class RTMPAudioMessage: RTMPMessage {
-    private(set) var codec: FLVAudioCodec = .unknown
-    private(set) var soundRate: FLVSoundRate = .kHz44
-    private(set) var soundSize: FLVSoundSize = .snd8bit
-    private(set) var soundType: FLVSoundType = .stereo
-
-    override var payload: Data {
-        get {
-            super.payload
-        }
-        set {
-            if super.payload == newValue {
-                return
-            }
-
-            super.payload = newValue
-
-            if length == newValue.count && !newValue.isEmpty {
-                guard let codec = FLVAudioCodec(rawValue: newValue[0] >> 4),
-                      let soundRate = FLVSoundRate(rawValue: (newValue[0] & 0b00001100) >> 2),
-                      let soundSize = FLVSoundSize(rawValue: (newValue[0] & 0b00000010) >> 1),
-                      let soundType = FLVSoundType(rawValue: (newValue[0] & 0b00000001)) else {
-                    return
-                }
-                self.codec = codec
-                self.soundRate = soundRate
-                self.soundSize = soundSize
-                self.soundType = soundType
-            }
-        }
+    var codec: FLVAudioCodec {
+        return payload.isEmpty ? .unknown : FLVAudioCodec(rawValue: payload[0] >> 4) ?? .unknown
     }
 
     init() {
@@ -572,7 +545,7 @@ final class RTMPAudioMessage: RTMPMessage {
     }
 
     func makeAudioFormat() -> AVAudioFormat? {
-        guard var audioStreamBasicDescription = codec.audioStreamBasicDescription(soundRate, size: soundSize, type: soundType) else {
+        guard var audioStreamBasicDescription = codec.audioStreamBasicDescription(&payload) else {
             return nil
         }
         return AVAudioFormat(streamDescription: &audioStreamBasicDescription)
@@ -656,17 +629,22 @@ final class RTMPVideoMessage: RTMPMessage {
         return sampleBuffer
     }
 
-    func makeFormatDescription(_ format: VideoCodecSettings.Format) -> CMFormatDescription? {
-        switch format {
-        case .h264:
-            var config = AVCDecoderConfigurationRecord()
-            config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            return config.makeFormatDescription()
-        case .hevc:
-            var config = HEVCDecoderConfigurationRecord()
-            config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
-            return config.makeFormatDescription()
+    func makeFormatDescription() -> CMFormatDescription? {
+        if isExHeader {
+            // hevc
+            if payload[1] == 0x68 && payload[2] == 0x76 && payload[3] == 0x63 && payload[4] == 0x31 {
+                var config = HEVCDecoderConfigurationRecord()
+                config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
+                return config.makeFormatDescription()
+            }
+        } else {
+            if payload[0] & 0b01110000 >> 4 == FLVVideoCodec.avc.rawValue {
+                var config = AVCDecoderConfigurationRecord()
+                config.data = payload.subdata(in: FLVTagType.video.headerSize..<payload.count)
+                return config.makeFormatDescription()
+            }
         }
+        return nil
     }
 }
 

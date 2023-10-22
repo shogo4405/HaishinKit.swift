@@ -81,7 +81,7 @@ final class RTMPMuxer {
 
         switch payload[1] {
         case FLVAACPacketType.seq.rawValue:
-            let config = AudioSpecificConfig(bytes: [UInt8](payload[message.codec.headerSize..<payload.count]))
+            let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
             audioFormat = config?.makeAudioFormat()
         case FLVAACPacketType.raw.rawValue:
             if audioFormat == nil {
@@ -120,7 +120,7 @@ final class RTMPMuxer {
             // IsExHeader for Enhancing RTMP, FLV
             switch message.packetType {
             case FLVVideoPacketType.sequenceStart.rawValue:
-                videoFormat = message.makeFormatDescription(.hevc)
+                videoFormat = message.makeFormatDescription()
             case FLVVideoPacketType.codedFrames.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimeStamp, formatDesciption: videoFormat) {
                     stream.mixer.videoIO.append(sampleBuffer)
@@ -131,7 +131,7 @@ final class RTMPMuxer {
         } else {
             switch message.packetType {
             case FLVAVCPacketType.seq.rawValue:
-                videoFormat = message.makeFormatDescription(.h264)
+                videoFormat = message.makeFormatDescription()
             case FLVAVCPacketType.nal.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimeStamp, formatDesciption: videoFormat) {
                     stream.mixer.videoIO.append(sampleBuffer)
