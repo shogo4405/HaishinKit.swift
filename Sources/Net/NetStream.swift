@@ -13,9 +13,9 @@ import UIKit
 
 /// The interface a NetStream uses to inform its delegate.
 public protocol NetStreamDelegate: AnyObject {
-    /// Tells the receiver to playback an audio packet incoming.
+    /// Tells the receiver an audio packet incoming.
     func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
-    /// Tells the receiver to playback a video packet incoming.
+    /// Tells the receiver to playback a video incoming.
     func stream(_ stream: NetStream, didOutput video: CMSampleBuffer)
     #if os(iOS) || os(tvOS)
     /// Tells the receiver to session was interrupted.
@@ -25,32 +25,40 @@ public protocol NetStreamDelegate: AnyObject {
     @available(tvOS 17.0, *)
     func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
-    /// Tells the receiver to video codec error occured.
+    /// Tells the receiver to video error occured.
     func stream(_ stream: NetStream, videoErrorOccurred error: IOVideoUnitError)
-    /// Tells the receiver to audio codec error occured.
+    /// Tells the receiver to audio error occured.
     func stream(_ stream: NetStream, audioErrorOccurred error: IOAudioUnitError)
     /// Tells the receiver to the stream opened.
     func streamDidOpen(_ stream: NetStream)
 }
 
-/// The `NetStream` class is the foundation of a RTMPStream, HTTPStream.
+/// The `NetStream` class is the foundation of a RTMPStream.
 open class NetStream: NSObject {
     /// The AVAudioEngine shared instance holder.
     static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
         return AVAudioEngine()
     }
 
+    /// The enumeration defines the state a ReadyState NetStream is in.
     public enum ReadyState: Equatable {
         public static func == (lhs: NetStream.ReadyState, rhs: NetStream.ReadyState) -> Bool {
             return lhs.rawValue == rhs.rawValue
         }
 
+        /// NetStream has been created.
         case initialized
+        /// NetStream waiting for new method.
         case open
+        /// NetStream play() has been called.
         case play
+        /// NetStream play and server was accepted as playing
         case playing
+        /// NetStream publish() has been called
         case publish
+        /// NetStream publish and server accpted as publising.
         case publishing(muxer: any IOMuxer)
+        /// NetStream close() has been called.
         case closed
 
         var rawValue: UInt8 {
@@ -74,7 +82,7 @@ open class NetStream: NSObject {
     }
 
     /// The lockQueue.
-    public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetStream.lock")
+    public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetStream.lock", qos: .userInitiated)
 
     /// Specifies the adaptibe bitrate strategy.
     public var bitrateStrategy: any NetBitRateStrategyConvertible = NetBitRateStrategy.shared {
@@ -243,6 +251,7 @@ open class NetStream: NSObject {
     /// Specifies the delegate..
     public weak var delegate: (any NetStreamDelegate)?
 
+    /// The current state of the stream.
     public var readyState: ReadyState = .initialized {
         willSet {
             guard readyState != newValue else {

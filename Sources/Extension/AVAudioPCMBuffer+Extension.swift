@@ -17,7 +17,7 @@ extension AVAudioPCMBuffer {
             sampleBufferOut: &sampleBuffer
         )
         guard let sampleBuffer else {
-            logger.warn("CMAudioSampleBufferCreateWithPacketDescriptions returned errorr: ", status)
+            logger.warn("CMAudioSampleBufferCreateWithPacketDescriptions returned error: ", status)
             return nil
         }
         status = CMSampleBufferSetDataBufferFromAudioBufferList(
@@ -28,7 +28,7 @@ extension AVAudioPCMBuffer {
             bufferList: audioBufferList
         )
         if status != noErr {
-            logger.warn("CMSampleBufferSetDataBufferFromAudioBufferList returned errorr: ", status)
+            logger.warn("CMSampleBufferSetDataBufferFromAudioBufferList returned error: ", status)
         }
         return sampleBuffer
     }

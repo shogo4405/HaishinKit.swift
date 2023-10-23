@@ -46,16 +46,19 @@ final class NetStreamSwitcher {
     private var retryCount = 0
     private var connection: Any?
     private var method: Method = .ingest
-    private(set) var stream: NetStream = .init()
+    private(set) var stream: NetStream = .init() {
+        didSet {
+            stream.delegate = self
+        }
+    }
 
     func open(_ method: Method) {
         self.method = method
         switch mode {
         case .rtmp:
-            guard let connection = connection as? RTMPConnection, let stream = stream as? RTMPStream else {
+            guard let connection = connection as? RTMPConnection else {
                 return
             }
-            stream.delegate = self
             connection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
             connection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             connection.connect(uri)
@@ -63,7 +66,6 @@ final class NetStreamSwitcher {
             guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
                 return
             }
-            stream.delegate = self
             connection.open(URL(string: uri))
             switch method {
             case .playback:
