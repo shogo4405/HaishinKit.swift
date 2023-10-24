@@ -1,12 +1,12 @@
 Pod::Spec.new do |s|
 
   s.name          = "HaishinKit"
-  s.version       = "1.6.0"
-  s.summary       = "Camera and Microphone streaming library via RTMP, HLS for iOS, macOS and tvOS."
-  s.swift_version = "5.8"
+  s.version       = "1.7.0"
+  s.summary       = "Camera and Microphone streaming library via RTMP for iOS, macOS, tvOS and visionOS."
+  s.swift_version = "5.9"
 
   s.description  = <<-DESC
-  HaishinKit. Camera and Microphone streaming library via RTMP, HLS for iOS, macOS and tvOS.
+  HaishinKit. Camera and Microphone streaming library via RTMP for iOS, macOS, tvOS and visionOS.
   DESC
 
   s.homepage     = "https://github.com/shogo4405/HaishinKit.swift"
@@ -24,7 +24,10 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "12.0"
   s.tvos.source_files = "Platforms/iOS/*.{h,swift}"
 
+  s.visionos.deployment_target = "1.0"
+  s.visionos.source_files = "Platforms/iOS/*.{h,swift}"
+
   s.source_files = "Sources/**/*.swift"
-  s.dependency 'Logboard', '~> 2.4.1'
+  s.dependency 'Logboard', '~> 2.4.2'
 
 end

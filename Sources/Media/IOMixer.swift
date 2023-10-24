@@ -148,6 +148,7 @@ final class IOMixer {
         return NetStream.audioEngineHolder.retain()
     }()
 
+    @available(tvOS 17.0, *)
     private var isMultiCamSupported: Bool {
         #if os(iOS) || os(tvOS)
         if #available(iOS 13.0, *) {
