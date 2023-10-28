@@ -150,6 +150,7 @@ public struct VideoCodecSettings: Codable {
 
     func apply<T>(_ codec: VideoCodec<T>, rhs: VideoCodecSettings) {
         if bitRate != rhs.bitRate {
+            logger.info("bitRate change from ", rhs.bitRate, " to ", bitRate)
             let option = VTSessionOption(key: bitRateMode.key, value: NSNumber(value: bitRate))
             if let status = codec.session?.setOption(option), status != noErr {
                 codec.delegate?.videoCodec(codec, errorOccurred: .failedToSetOption(status: status, option: option))

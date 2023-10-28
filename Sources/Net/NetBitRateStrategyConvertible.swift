@@ -74,6 +74,7 @@ public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertibl
         if Self.sufficientBWCountsThreshold <= sufficientBWCounts {
             let incremental = mamimumVideoBitRate / 10
             stream.videoSettings.bitRate = min(stream.videoSettings.bitRate + incremental, mamimumVideoBitRate)
+            sufficientBWCounts = 0
         } else {
             sufficientBWCounts += 1
         }
@@ -83,6 +84,7 @@ public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertibl
         guard let stream, 0 < stats.currentBytesOutPerSecond else {
             return
         }
+        sufficientBWCounts = 0
         if 0 < stats.currentBytesOutPerSecond {
             let bitRate = Int(stats.currentBytesOutPerSecond * 8) / (zeroBytesOutPerSecondCounts + 1)
             stream.videoSettings.bitRate = max(bitRate - stream.audioSettings.bitRate, mamimumVideoBitRate / 10)
