@@ -3,9 +3,13 @@ import VideoToolbox
 
 /// The VideoCodecSettings class  specifying video compression settings.
 public struct VideoCodecSettings: Codable {
+    /// The number of frame rate for 30fps.
     public static let frameInterval30 = (1 / 30) - 0.001
+    /// The number of frame rate for 10fps.
     public static let frameInterval10 = (1 / 10) - 0.001
+    /// The number of frame rate for 5fps.
     public static let frameInterval05 = (1 / 05) - 0.001
+    /// The number of frame rate for 1fps.
     public static let frameInterval01 = (1 / 01) - 0.001
 
     /// The defulat value.

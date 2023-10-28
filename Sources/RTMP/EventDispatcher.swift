@@ -22,17 +22,23 @@ public final class Event {
         // swiftlint:disable:next nesting
         public typealias StringLiteralType = String
 
+        /// A type name for Sync event.
         public static let sync: Name = "sync"
+        /// A type name for Event.
         public static let event: Name = "event"
+        /// A type name for IO_Error event.
         public static let ioError: Name = "ioError"
+        /// A type name for RTMPStatus event.
         public static let rtmpStatus: Name = "rtmpStatus"
 
         public let rawValue: String
 
+        /// Create a Event.Name by rawValue.
         public init(rawValue: String) {
             self.rawValue = rawValue
         }
 
+        /// Create a Event.Name by stringLiteral.
         public init(stringLiteral value: String) {
             self.rawValue = value
         }

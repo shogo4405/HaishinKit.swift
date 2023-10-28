@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>TSReader Class Reference</title>
+    <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
+    <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
+    <meta charset='utf-8'>
+    <script src="../js/jquery.min.js" defer></script>
+    <script src="../js/jazzy.js" defer></script>
+    
+    <script src="../js/lunr.min.js" defer></script>
+    <script src="../js/typeahead.jquery.js" defer></script>
+    <script src="../js/jazzy.search.js" defer></script>
+  </head>
+  <body>
+    <a name="//apple_ref/swift/Class/TSReader" class="dashAnchor"></a>
+    <a title="TSReader Class Reference"></a>
+    <header>
+      <div class="content-wrapper">
+        <p><a href="../index.html">HaishinKit 1.7.0 Docs</a> (88% documented)</p>
+        <div class="header-right">
+          <form role="search" action="../search.json">
+            <input type="text" placeholder="Search documentation" data-typeahead>
+          </form>
+        </div>
+      </div>
+    </header>
+    <div class="content-wrapper">
+      <p id="breadcrumbs">
+        <a href="../index.html">HaishinKit Reference</a>
+        <img id="carat" src="../img/carat.png" alt=""/>
+        TSReader Class Reference
+      </p>
+    </div>
+    <div class="content-wrapper">
+      <nav class="sidebar">
+        <ul class="nav-groups">
+          <li class="nav-group-name">
+            <a href="../Classes.html">Classes</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Classes/ByteArray.html">ByteArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/ByteArray/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Event.html">Event</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/Event/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/EventDispatcher.html">EventDispatcher</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IORecorder.html">IORecorder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IORecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/InstanceHolder.html">InstanceHolder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/MTHKView.html">MTHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetBitRateStrategy.html">NetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetClient.html">NetClient</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetService.html">NetService</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetSocket.html">NetSocket</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetStream.html">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/NetStream/ReadyState.html">– ReadyState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PiPHKView.html">PiPHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/PiPHKView.html">PiPHKView</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPConnection.html">RTMPConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPConnection/Code.html">– Code</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPResponder.html">RTMPResponder</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPSharedObject.html">RTMPSharedObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream.html">RTMPStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream/Code.html">– Code</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/RTMPStream/HowToPublish.html">– HowToPublish</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SRTConnection.html">SRTConnection</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SRTLogger.html">SRTLogger</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/SRTStream.html">SRTStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TSReader.html">TSReader</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/TSWriter.html">TSWriter</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/VideoAdaptiveNetBitRateStrategy.html">VideoAdaptiveNetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/VideoEffect.html">VideoEffect</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Global%20Variables.html">Global Variables</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Global%20Variables.html#/s:10HaishinKit12kASUndefinedAA0C0Vvp">kASUndefined</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Enums.html">Enumerations</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceUtil.html">DeviceUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/DeviceUtil.html">DeviceUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/IOVideoUnitError.html">IOVideoUnitError</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/ImageTransform.html">ImageTransform</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SRTLogFunctionalArea.html">SRTLogFunctionalArea</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SRTLogLevel.html">SRTLogLevel</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SRTMode.html">SRTMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/SRTSocketOption.html">SRTSocketOption</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Extensions.html">Extensions</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions/AVAudioCommonFormat.html">AVAudioCommonFormat</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/AudioFormatID.html">AudioFormatID</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/IOMixer">IOMixer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Protocols.html">Protocols</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Protocols/EventDispatcherConvertible.html">EventDispatcherConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOMuxer.html">IOMuxer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IORecorderDelegate.html">IORecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOScreenCaptureUnit.html">IOScreenCaptureUnit</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/NetStreamDelegate.html">NetStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/Running.html">Running</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/TSReaderDelegate.html">TSReaderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/TSWriterDelegate.html">TSWriterDelegate</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Structs.html">Structures</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Structs/ASArray.html">ASArray</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ASTypedObject.html">ASTypedObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ASUndefined.html">ASUndefined</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ASXML.html">ASXML</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/ASXMLDocument.html">ASXMLDocument</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/Atomic.html">Atomic</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MultiCamCaptureSettings.html">MultiCamCaptureSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/MultiCamCaptureSettings/Mode.html">– Mode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/NetBitRateStats.html">NetBitRateStats</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SRTPerformanceData.html">SRTPerformanceData</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/SoundTransform.html">SoundTransform</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/VTSessionOption.html">VTSessionOption</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/VideoCodecSettings.html">VideoCodecSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/VideoCodecSettings/BitRateMode.html">– BitRateMode</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/VideoCodecSettings/ScalingMode.html">– ScalingMode</a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-group-name">
+            <a href="../Typealiases.html">Type Aliases</a>
+            <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+      <article class="main-content">
+        <section>
+          <section class="section">
+            <h1>TSReader</h1>
+              <div class="declaration">
+                <div class="language">
+                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TSReader</span></code></pre>
+
+                </div>
+              </div>
+            <p>The TSReader class represents read MPEG-2 transport stream data.</p>
+
+          </section>
+          <section class="section task-group-section">
+            <div class="task-group">
+              <ul>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSReaderC8delegateAA0C8Delegate_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSReaderC8delegateAA0C8Delegate_pSgvp">delegate</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Specifies the delegate object.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="p">(</span><span class="n">any</span> <span class="kt"><a href="../Protocols/TSReaderDelegate.html">TSReaderDelegate</a></span><span class="p">)?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSReaderCACycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSReaderCACycfc">init()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Create a  new TSReader instance.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSReaderC4readySi10Foundation4DataVF"></a>
+                    <a name="//apple_ref/swift/Method/read(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSReaderC4readySi10Foundation4DataVF">read(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Reads transport-stream data.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">read</span><span class="p">(</span><span class="n">_</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Int</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSReaderC5clearyyF"></a>
+                    <a name="//apple_ref/swift/Method/clear()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSReaderC5clearyyF">clear()</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Clears the reader object for new transport stream.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">clear</span><span class="p">()</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </section>
+        </section>
+        <section id="footer">
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-10-28)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+        </section>
+      </article>
+    </div>
+  </body>
+</html>

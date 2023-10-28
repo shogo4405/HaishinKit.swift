@@ -7,7 +7,7 @@
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
-* [API Documentation](https://shogo4405.github.io/HaishinKit.swift/documentation/haishinkit)
+* [API Documentation](https://shogo4405.github.io/HaishinKit.swift/)
 
 <p align="center">
 <strong>Sponsored with 💖 by</strong><br />
@@ -46,7 +46,7 @@ Project name    |Notes       |License
 - [x] Authentication
 - [x] Publish and Recording
 - [x] _Playback (Beta)_
-- [x] [Adaptive bitrate streaming](../../issues/1308))
+- [x] [Adaptive bitrate streaming](../../issues/1308)
 - [ ] Action Message Format
   - [x] AMF0
   - [ ] AMF3
@@ -248,6 +248,7 @@ stream.play()
 ```
 
 ## 📓 Settings
+### Capture
 ```swift
 stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
@@ -255,14 +256,23 @@ stream.sessionPreset = AVCaptureSession.Preset.medium
 /// Specifies the video capture settings.
 stream.videoCapture(for: 0).isVideoMirrored = false
 stream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
-// stream.videoCapture(for: 1).isVideoMirrored = false
+// stream.videoCapture(for: 0).isVideoMirrored = false
+```
 
-// Specifies the audio codec settings.
+### AudioCodecSetting
+When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
+```
 stream.audioSettings = AudioCodecSettings(
-  bitRate: 64 * 1000
+  bitRate: Int = 64 * 1000,
+  sampleRate: Float64 = 0,
+  channels: UInt32 = 0,
+  downmix: Bool = false,
+  channelMap: [Int]? = nil
 )
+```
 
-// Specifies the video codec settings.
+### VideoCodecSettings
+```
 stream.videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),
   profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
@@ -273,9 +283,12 @@ stream.videoSettings = VideoCodecSettings(
   allowFrameReordering: nil,
   isHardwareEncoderEnabled: true
 )
+```
 
+### Recording
+```
 // Specifies the recording settings. 0" means the same of input.
-stream.startRecording([
+stream.startRecording(self, settings: [
   AVMediaType.audio: [
     AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
     AVSampleRateKey: 0,
@@ -295,43 +308,6 @@ stream.startRecording([
     */
   ]
 ])
-
-stream.attachAudio(AVCaptureDevice.default(for: .audio))
-```
-
-```swift
-// picrure in picrure settings.
-stream.multiCamCaptureSettings = MultiCamCaptureSetting(
-  mode: .pip,
-  cornerRadius: 16.0,
-  regionOfInterest: .init(
-    origin: CGPoint(x: 16, y: 16),
-    size: .init(width: 160, height: 160)
-  )
-)
-```
-
-```swift
-// split settings.
-stream.multiCamCaptureSettings = MultiCamCaptureSetting(
-  mode: .split(direction: .east),
-  cornerRadius: 0.0,
-  regionOfInterest: .init(
-    origin: .zero,
-    size: .zero
-  )
-)
-```
-
-### Screen Capture
-```swift
-// iOS
-let screen = IOUIScreenCaptureUnit(shared: UIApplication.shared)
-screen.delegate = stream
-screen.startRunning()
-
-// macOS
-stream.attachScreen(AVCaptureScreenInput(displayID: CGMainDisplayID()))
 ```
 
 ## 💠 Sponsorship
