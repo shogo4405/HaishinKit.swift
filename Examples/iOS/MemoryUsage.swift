@@ -6,6 +6,7 @@ final class MemoryUsage {
     static let MB1 = 1000 * 1000 * 1
     static let MB5 = 1000 * 1000 * 5
     static let MB10 = 1000 * 10000 * 10
+    static let MB100 = 1000 * 10000 * 1000
 
     static let shared = MemoryUsage()
 
@@ -29,17 +30,17 @@ final class MemoryUsage {
 
     private func allocateAavailable(_ size: Int) {
         if step < size {
-            for _ in 0..<(size / step) - 1 {
+            for _ in 0..<(size / step) {
                 let value = UnsafeMutablePointer<Int8>.allocate(capacity: step)
                 value.update(repeating: 0, count: step)
                 data.append(value)
             }
             sleep(3)
-            allocate(available())
+            allocateAavailable(available())
         } else {
             if MemoryUsage.MB5 < size {
-                let value = UnsafeMutablePointer<Int8>.allocate(capacity: size - MemoryUsage.MB5)
-                value.update(repeating: 0, count: size - MemoryUsage.MB5)
+                let value = UnsafeMutablePointer<Int8>.allocate(capacity: size - MemoryUsage.MB10)
+                value.update(repeating: 0, count: size - MemoryUsage.MB10)
                 data.append(value)
             }
         }
