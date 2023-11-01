@@ -14,7 +14,7 @@ class SCStreamPublishViewController: NSViewController {
     private var stream: NetStream {
         return netStreamSwitcher.stream
     }
-    
+
     private let lockQueue = DispatchQueue(label: "SCStreamPublishViewController.lock")
 
     private var _scstream: Any?
@@ -48,7 +48,7 @@ class SCStreamPublishViewController: NSViewController {
             }
         }
     }
-    
+
     @IBAction private func publishOrStop(_ sender: NSButton) {
         // Publish
         if sender.title == "Publish" {
@@ -78,7 +78,6 @@ class SCStreamPublishViewController: NSViewController {
         }
     }
 }
-
 
 extension SCStreamPublishViewController: SCStreamDelegate {
     // MARK: SCStreamDelegate

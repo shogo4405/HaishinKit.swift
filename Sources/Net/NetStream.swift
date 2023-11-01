@@ -116,11 +116,7 @@ open class NetStream: NSObject {
     /// Specifiet the device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public var torch: Bool {
         get {
-            var torch = false
-            lockQueue.sync {
-                torch = self.mixer.videoIO.torch
-            }
-            return torch
+            return lockQueue.sync { self.mixer.videoIO.torch }
         }
         set {
             lockQueue.async {
@@ -132,11 +128,7 @@ open class NetStream: NSObject {
     /// Specifies the frame rate of a device capture.
     public var frameRate: Float64 {
         get {
-            var frameRate: Float64 = IOMixer.defaultFrameRate
-            lockQueue.sync {
-                frameRate = self.mixer.videoIO.frameRate
-            }
-            return frameRate
+            return lockQueue.sync { self.mixer.videoIO.frameRate }
         }
         set {
             lockQueue.async {
@@ -149,11 +141,7 @@ open class NetStream: NSObject {
     @available(tvOS 17.0, *)
     public var sessionPreset: AVCaptureSession.Preset {
         get {
-            var sessionPreset: AVCaptureSession.Preset = .default
-            lockQueue.sync {
-                sessionPreset = self.mixer.sessionPreset
-            }
-            return sessionPreset
+            return lockQueue.sync { self.mixer.sessionPreset }
         }
         set {
             lockQueue.async {
@@ -331,7 +319,7 @@ open class NetStream: NSObject {
     /// Returns the IOVideoCaptureUnit by index.
     @available(tvOS 17.0, *)
     public func videoCapture(for index: Int) -> IOVideoCaptureUnit? {
-        return mixer.videoIO.lockQueue.sync {
+        return lockQueue.sync {
             switch index {
             case 0:
                 return self.mixer.videoIO.capture
