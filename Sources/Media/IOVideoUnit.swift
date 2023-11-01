@@ -296,6 +296,7 @@ final class IOVideoUnit: NSObject, IOUnit {
              kCVPixelFormatType_128RGBAFloat:
             inputFormat = sampleBuffer.formatDescription
             videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: false)
+            drawable?.enqueue(sampleBuffer)
         default:
             inputFormat = sampleBuffer.formatDescription
             codec.append(sampleBuffer)
