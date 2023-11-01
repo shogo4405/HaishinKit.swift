@@ -15,7 +15,13 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
     var muted = false
     var multiCamCaptureSettings: MultiCamCaptureSettings = .default
     weak var delegate: T?
-    var context: CIContext = .init()
+    var context: CIContext = .init() {
+        didSet {
+            for effect in effects {
+                effect.ciContext = context
+            }
+        }
+    }
     private var extent = CGRect.zero {
         didSet {
             guard extent != oldValue else {
