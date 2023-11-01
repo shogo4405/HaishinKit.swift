@@ -74,7 +74,17 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
     #endif
 
-    var context: CIContext = .init()
+    var context: CIContext {
+        get {
+            return lockQueue.sync { self.videoMixer.context }
+        }
+        set {
+            lockQueue.async {
+                self.videoMixer.context = newValue
+            }
+        }
+    }
+
     var isRunning: Atomic<Bool> {
         return codec.isRunning
     }
