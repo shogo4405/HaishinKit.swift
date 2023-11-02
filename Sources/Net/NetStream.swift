@@ -223,6 +223,11 @@ open class NetStream: NSObject {
         return mixer.audioIO.inputFormat
     }
 
+    /// The isRecording value that indicates whether the recorder is recording.
+    public var isRecording: Bool {
+        return mixer.recorder.isRunning.value
+    }
+
     /// Specifies the controls sound.
     public var soundTransform: SoundTransform {
         get {
