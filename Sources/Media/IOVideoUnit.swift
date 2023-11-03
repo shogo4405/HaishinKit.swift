@@ -13,10 +13,17 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoIOComponent.lock")
 
-    var context: CIContext = .init() {
-        didSet {
-            for effect in effects {
-                effect.ciContext = context
+    private var _context: CIContext = .init()
+    var context: CIContext {
+        get {
+            lockQueue.sync { _context }
+        }
+        set {
+            lockQueue.async {
+                self._context = newValue
+                for effect in self.effects {
+                    effect.ciContext = newValue
+                }
             }
         }
     }
@@ -215,7 +222,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
 
     func registerEffect(_ effect: VideoEffect) -> Bool {
-        effect.ciContext = context
+        effect.ciContext = _context
         return effects.insert(effect).inserted
     }
 
@@ -265,7 +272,7 @@ final class IOVideoUnit: NSObject, IOUnit {
                 }
                 #endif
                 imageBuffer?.lockBaseAddress()
-                context.render(image, to: imageBuffer ?? buffer)
+                _context.render(image, to: imageBuffer ?? buffer)
             }
             drawable?.enqueue(sampleBuffer)
         }
