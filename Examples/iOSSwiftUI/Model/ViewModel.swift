@@ -66,8 +66,6 @@ final class ViewModel: ObservableObject {
         }
         rtmpStream.sessionPreset = .hd1280x720
         rtmpStream.videoSettings.videoSize = .init(width: 720, height: 1280)
-        rtmpStream.mixer.recorder.delegate = self
-
         nc.publisher(for: UIDevice.orientationDidChangeNotification, object: nil)
             .sink { [weak self] _ in
                 guard let orientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation), let self = self else {
