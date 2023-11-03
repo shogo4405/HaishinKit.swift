@@ -248,7 +248,7 @@ stream.play()
 ```
 
 ## 📓 Settings
-### Capture
+### 📹 Capture
 ```swift
 stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
@@ -259,7 +259,7 @@ stream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
 // stream.videoCapture(for: 0).isVideoMirrored = false
 ```
 
-### AudioCodecSetting
+### 🔊 [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)
 When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
 ```
 stream.audioSettings = AudioCodecSettings(
@@ -271,7 +271,7 @@ stream.audioSettings = AudioCodecSettings(
 )
 ```
 
-### VideoCodecSettings
+### 🎥 [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)
 ```
 stream.videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),
@@ -285,7 +285,7 @@ stream.videoSettings = VideoCodecSettings(
 )
 ```
 
-### Recording
+### ⏺️ Recording
 ```
 // Specifies the recording settings. 0" means the same of input.
 stream.startRecording(self, settings: [
