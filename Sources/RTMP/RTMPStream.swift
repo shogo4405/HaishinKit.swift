@@ -417,7 +417,7 @@ open class RTMPStream: NetStream {
         default:
             break
         }
-        super.readyStateDidChange(to: readyState)
+        super.readyStateWillChange(to: readyState)
     }
 
     override public func readyStateDidChange(to readyState: NetStream.ReadyState) {
