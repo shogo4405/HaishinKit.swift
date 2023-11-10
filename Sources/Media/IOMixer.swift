@@ -28,7 +28,7 @@ final class IOMixer {
     private var _session: Any?
     /// The capture session instance.
     @available(tvOS 17.0, *)
-    public var session: AVCaptureSession {
+    var session: AVCaptureSession {
         get {
             if _session == nil {
                 _session = makeSession()
@@ -42,18 +42,24 @@ final class IOMixer {
     #elseif os(iOS) || os(macOS)
     /// The capture session instance.
     lazy var session: AVCaptureSession = makeSession() {
-        didSet {
-            if oldValue.isRunning {
-                removeSessionObservers(oldValue)
-                oldValue.stopRunning()
+        willSet {
+            if session.isRunning {
+                removeSessionObservers(session)
+                session.stopRunning()
             }
-            audioIO.capture.detachSession(oldValue)
-            videoIO.capture.detachSession(oldValue)
+            audioIO.capture.detachSession(session)
+            videoIO.capture.detachSession(session)
+        }
+        didSet {
             if session.canSetSessionPreset(sessionPreset) {
                 session.sessionPreset = sessionPreset
             }
             audioIO.capture.attachSession(session)
             videoIO.capture.attachSession(session)
+            if isRunning.value {
+                addSessionObservers(session)
+                session.startRunning()
+            }
         }
     }
     #endif
@@ -65,13 +71,13 @@ final class IOMixer {
     weak var muxer: (any IOMuxer)?
     weak var delegate: (any IOMixerDelegate)?
 
-    lazy var audioIO: IOAudioUnit = {
+    lazy var audioIO = {
         var audioIO = IOAudioUnit()
         audioIO.mixer = self
         return audioIO
     }()
 
-    lazy var videoIO: IOVideoUnit = {
+    lazy var videoIO = {
         var videoIO = IOVideoUnit()
         videoIO.mixer = self
         return videoIO
