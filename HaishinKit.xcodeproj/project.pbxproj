@@ -190,6 +190,7 @@
 		BC56765B2AD2AED800524F7E /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC56765A2AD2AED800524F7E /* AudioCapture.swift */; };
 		BC570B4828E9ACC10098A12C /* IOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC570B4728E9ACC10098A12C /* IOUnit.swift */; };
 		BC6692F32AC2F717009EC058 /* NetBitRateStrategyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6692F22AC2F717009EC058 /* NetBitRateStrategyConvertible.swift */; };
+		BC6889782B011AEB0026A4C2 /* IOCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */; };
 		BC6FC91E29609A6800A746EE /* ShapeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6FC91D29609A6800A746EE /* ShapeFactory.swift */; };
 		BC6FC9222961B3D800A746EE /* vImage_CGImageFormat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6FC9212961B3D800A746EE /* vImage_CGImageFormat+Extension.swift */; };
 		BC701F332AAD808F00C4BEFE /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
@@ -602,6 +603,7 @@
 		BC56765A2AD2AED800524F7E /* AudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
 		BC570B4728E9ACC10098A12C /* IOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOUnit.swift; sourceTree = "<group>"; };
 		BC6692F22AC2F717009EC058 /* NetBitRateStrategyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetBitRateStrategyConvertible.swift; sourceTree = "<group>"; };
+		BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureSession.swift; sourceTree = "<group>"; };
 		BC6FC91D29609A6800A746EE /* ShapeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeFactory.swift; sourceTree = "<group>"; };
 		BC6FC9212961B3D800A746EE /* vImage_CGImageFormat+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_CGImageFormat+Extension.swift"; sourceTree = "<group>"; };
 		BC7C56B6299E579F00C41A9B /* AudioCodecSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecSettings.swift; sourceTree = "<group>"; };
@@ -1048,6 +1050,7 @@
 				BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */,
 				BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */,
 				29B876891CD70AFE00FC07DA /* IOAudioUnit.swift */,
+				BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */,
 				BC1102492925147300D48035 /* IOCaptureUnit.swift */,
 				BC0F1FD92ACC4CC100C326FF /* IOCaptureVideoPreview.swift */,
 				29B8768B1CD70AFE00FC07DA /* IOMixer.swift */,
@@ -1727,6 +1730,7 @@
 				BC1DC4FB2A02868900E928ED /* FLVVideoFourCC.swift in Sources */,
 				2976A47E1D48C5C700B53EF2 /* IORecorder.swift in Sources */,
 				BC110257292E661E00D48035 /* MultiCamCaptureSettings.swift in Sources */,
+				BC6889782B011AEB0026A4C2 /* IOCaptureSession.swift in Sources */,
 				BC3802142AB5E7CC001AE399 /* IOAudioCaptureUnit.swift in Sources */,
 				29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */,
 				2958912E1EEB8F4100CE51E1 /* FLVSoundType.swift in Sources */,

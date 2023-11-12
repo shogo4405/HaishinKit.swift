@@ -44,10 +44,11 @@ final class IngestViewController: UIViewController {
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
 
+        // If you're using multi-camera functionality, please make sure isMultiCamSessionEnabled = true. Initialization point.
+        stream.isMultiCamSessionEnabled = true
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             stream.videoOrientation = orientation
         }
-
         stream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
         stream.audioSettings.bitRate = 64 * 1000
         stream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
@@ -62,18 +63,19 @@ final class IngestViewController: UIViewController {
         super.viewWillAppear(animated)
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
 
-        // If you're using multi-camera functionality, please make sure to call the attachMultiCamera method first. This is required for iOS 14 and 15, among others.
-        if #available(iOS 13.0, *) {
-            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            stream.videoCapture(for: 1)?.isVideoMirrored = true
-            stream.attachMultiCamera(front)
-        }
         stream.attachCamera(back) { error in
             logger.warn(error)
         }
         stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
             logger.warn(error)
         }
+
+        if #available(iOS 13.0, *) {
+            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            stream.videoCapture(for: 1)?.isVideoMirrored = true
+            stream.attachMultiCamera(front)
+        }
+
         stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         (view as? (any NetStreamDrawable))?.attachStream(stream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)

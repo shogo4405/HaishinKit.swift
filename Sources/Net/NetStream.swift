@@ -7,7 +7,7 @@ import SwiftPMSupport
 #if canImport(ScreenCaptureKit)
 import ScreenCaptureKit
 #endif
-#if os(iOS) || os(tvOS)
+#if canImport(UIKit)
 import UIKit
 #endif
 
@@ -137,15 +137,29 @@ open class NetStream: NSObject {
         }
     }
 
+    #if os(iOS) || os(tvOS)
+    /// Specifies the AVCaptureMultiCamSession enabled.
+    /// Warning: If there is a possibility of using multiple cameras, please set it to true initially.
+    @available(tvOS 17.0, iOS 13.0, *)
+    public var isMultiCamSessionEnabled: Bool {
+        get {
+            return mixer.session.isMultiCamSessionEnabled
+        }
+        set {
+            mixer.session.isMultiCamSessionEnabled = newValue
+        }
+    }
+    #endif
+
     /// Specifies the sessionPreset for the AVCaptureSession.
     @available(tvOS 17.0, *)
     public var sessionPreset: AVCaptureSession.Preset {
         get {
-            return lockQueue.sync { self.mixer.sessionPreset }
+            return lockQueue.sync { self.mixer.session.sessionPreset }
         }
         set {
             lockQueue.async {
-                self.mixer.sessionPreset = newValue
+                self.mixer.session.sessionPreset = newValue
             }
         }
     }
@@ -260,13 +274,13 @@ open class NetStream: NSObject {
         }
     }
 
-    private(set) lazy var mixer: IOMixer = {
+    private(set) lazy var mixer = {
         let mixer = IOMixer()
         mixer.delegate = self
         return mixer
     }()
 
-    private(set) lazy var telly: IOTellyUnit = {
+    private lazy var telly = {
         let telly = IOTellyUnit()
         telly.delegate = self
         return telly
@@ -288,7 +302,7 @@ open class NetStream: NSObject {
     public func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachCamera(device)
+                try self.mixer.videoIO.attachCamera(device, channel: 0)
             } catch {
                 onError?(error)
             }
@@ -301,7 +315,7 @@ open class NetStream: NSObject {
     public func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachMultiCamera(device)
+                try self.mixer.videoIO.attachCamera(device, channel: 1)
             } catch {
                 onError?(error)
             }
@@ -323,25 +337,18 @@ open class NetStream: NSObject {
 
     /// Returns the IOVideoCaptureUnit by index.
     @available(tvOS 17.0, *)
-    public func videoCapture(for index: Int) -> IOVideoCaptureUnit? {
+    public func videoCapture(for channel: UInt8) -> IOVideoCaptureUnit? {
         return lockQueue.sync {
-            switch index {
-            case 0:
-                return self.mixer.videoIO.capture
-            case 1:
-                return self.mixer.videoIO.multiCamCapture
-            default:
-                return nil
-            }
+            return self.mixer.videoIO.capture(for: channel)
         }
     }
     #endif
 
     #if os(macOS)
     /// Attaches the screen input object.
-    public func attachScreen(_ input: AVCaptureScreenInput?) {
+    public func attachScreen(_ input: AVCaptureScreenInput?, channel: UInt8 = 0) {
         lockQueue.async {
-            self.mixer.videoIO.attachScreen(input)
+            self.mixer.videoIO.attachScreen(input, channel: channel)
         }
     }
     #endif
@@ -402,9 +409,9 @@ open class NetStream: NSObject {
     open func readyStateWillChange(to readyState: ReadyState) {
         switch readyState {
         case .publishing:
-            mixer.stopMuxing()
+            mixer.stopRunning()
         case .playing:
-            mixer.stopMuxing()
+            mixer.stopRunning()
         default:
             break
         }
@@ -416,13 +423,28 @@ open class NetStream: NSObject {
         switch readyState {
         case .play:
             audioSettings.format = .pcm
-            mixer.startMuxing(telly)
-        case .publish:
+            mixer.muxer = telly
             mixer.startRunning()
+        case .publish:
+            // Start capture audio and video data.
+            mixer.session.startRunning()
         case .publishing(let muxer):
-            mixer.startMuxing(muxer)
+            mixer.muxer = muxer
+            mixer.startRunning()
         default:
             break
+        }
+    }
+
+    func setNetStreamDrawable(_ drawable: (any NetStreamDrawable)?) {
+        lockQueue.async {
+            self.mixer.videoIO.drawable = drawable
+            guard #available(tvOS 17.0, *) else {
+                return
+            }
+            if self.mixer.videoIO.hasDevice {
+                self.mixer.session.startRunning()
+            }
         }
     }
 
@@ -430,13 +452,13 @@ open class NetStream: NSObject {
     @objc
     private func didEnterBackground(_ notification: Notification) {
         // Require main thread. Otherwise the microphone cannot be used in the background.
-        mixer.inBackgroundMode = true
+        mixer.setBackgroundMode(true)
     }
 
     @objc
     private func willEnterForeground(_ notification: Notification) {
         lockQueue.async {
-            self.mixer.inBackgroundMode = false
+            self.mixer.setBackgroundMode(false)
         }
     }
     #endif

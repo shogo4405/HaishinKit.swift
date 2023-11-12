@@ -1,7 +1,7 @@
+#if os(iOS) || os(tvOS) || os(macOS)
 import AVFoundation
 import Foundation
 
-#if os(iOS) || os(tvOS) || os(macOS)
 @available(tvOS 17.0, *)
 final class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
@@ -13,7 +13,7 @@ final class IOAudioCaptureUnit: IOCaptureUnit {
 
     func attachDevice(_ device: AVCaptureDevice?, audioUnit: IOAudioUnit) throws {
         setSampleBufferDelegate(nil)
-        detachSession(audioUnit.mixer?.session)
+        audioUnit.mixer?.session.detachCapture(self)
         guard let device else {
             self.device = nil
             input = nil
@@ -23,7 +23,7 @@ final class IOAudioCaptureUnit: IOCaptureUnit {
         self.device = device
         input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureAudioDataOutput()
-        attachSession(audioUnit.mixer?.session)
+        audioUnit.mixer?.session.attachCapture(self)
         setSampleBufferDelegate(audioUnit)
     }
 

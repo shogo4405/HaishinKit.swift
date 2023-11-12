@@ -56,8 +56,9 @@ final class IOVideoUnit: NSObject, IOUnit {
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
             if #available(tvOS 17.0, *) {
-                capture.setFrameRate(frameRate)
-                multiCamCapture.setFrameRate(frameRate)
+                for capture in captures.values {
+                    capture.setFrameRate(frameRate)
+                }
             }
         }
     }
@@ -85,6 +86,11 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
+    @available(tvOS 17.0, *)
+    var hasDevice: Bool {
+        !captures.lazy.filter { $0.value.device != nil }.isEmpty
+    }
+
     var isRunning: Atomic<Bool> {
         return codec.isRunning
     }
@@ -95,51 +101,39 @@ final class IOVideoUnit: NSObject, IOUnit {
             guard videoOrientation != oldValue else {
                 return
             }
-            mixer?.session.beginConfiguration()
-            defer {
-                mixer?.session.commitConfiguration()
-                // https://github.com/shogo4405/HaishinKit.swift/issues/190
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                    if self.torch {
-                        self.setTorchMode(.on)
-                    }
+            mixer?.session.configuration { _ in
+                drawable?.videoOrientation = videoOrientation
+                for capture in captures.values {
+                    capture.videoOrientation = videoOrientation
                 }
             }
-            drawable?.videoOrientation = videoOrientation
-            capture.videoOrientation = videoOrientation
-            multiCamCapture.videoOrientation = videoOrientation
+            // https://github.com/shogo4405/HaishinKit.swift/issues/190
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                if self.torch {
+                    self.setTorchMode(.on)
+                }
+            }
         }
     }
     #endif
 
     #if os(tvOS)
-    private var _capture: Any?
+    private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
-    var capture: IOVideoCaptureUnit {
-        if _capture == nil {
-            _capture = IOVideoCaptureUnit()
-        }
-        return _capture as! IOVideoCaptureUnit
-    }
-
-    private var _multiCamCapture: Any?
-    @available(tvOS 17.0, *)
-    var multiCamCapture: IOVideoCaptureUnit {
-        if _multiCamCapture == nil {
-            _multiCamCapture = IOVideoCaptureUnit()
-        }
-        return _multiCamCapture as! IOVideoCaptureUnit
+    private var captures: [UInt8: IOVideoCaptureUnit] {
+        return _captures as! [UInt8: IOVideoCaptureUnit]
     }
     #elseif os(iOS) || os(macOS)
-    private(set) var capture: IOVideoCaptureUnit = .init()
-    private(set) var multiCamCapture: IOVideoCaptureUnit = .init()
+    private var captures: [UInt8: IOVideoCaptureUnit] = [:]
     #endif
-    private lazy var videoMixer: IOVideoMixer = {
+
+    private lazy var videoMixer = {
         var videoMixer = IOVideoMixer<IOVideoUnit>()
         videoMixer.delegate = self
         return videoMixer
     }()
-    private lazy var codec: VideoCodec = {
+
+    private lazy var codec = {
         var codec = VideoCodec<IOMixer>(lockQueue: lockQueue)
         codec.delegate = mixer
         return codec
@@ -154,88 +148,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-
-    #if os(iOS) || os(tvOS) || os(macOS)
-    @available(tvOS 17.0, *)
-    func attachCamera(_ device: AVCaptureDevice?) throws {
-        guard let mixer, self.capture.device != device else {
-            return
-        }
-        guard let device else {
-            mixer.session.beginConfiguration()
-            defer {
-                mixer.session.commitConfiguration()
-            }
-            capture.detachSession(mixer.session)
-            try capture.attachDevice(nil, videoUnit: self)
-            inputFormat = nil
-            return
-        }
-        mixer.session.beginConfiguration()
-        defer {
-            mixer.session.commitConfiguration()
-            if torch {
-                setTorchMode(.on)
-            }
-        }
-        if multiCamCapture.device == device {
-            try multiCamCapture.attachDevice(nil, videoUnit: self)
-        }
-        try capture.attachDevice(device, videoUnit: self)
-    }
-
-    @available(iOS 13.0, tvOS 17.0, *)
-    func attachMultiCamera(_ device: AVCaptureDevice?) throws {
-        #if os(iOS)
-        guard AVCaptureMultiCamSession.isMultiCamSupported else {
-            throw Error.multiCamNotSupported
-        }
-        #endif
-        guard let mixer, multiCamCapture.device != device else {
-            return
-        }
-        guard let device else {
-            mixer.session.beginConfiguration()
-            defer {
-                mixer.session.commitConfiguration()
-            }
-            multiCamCapture.detachSession(mixer.session)
-            try multiCamCapture.attachDevice(nil, videoUnit: self)
-            return
-        }
-        mixer.isMultiCamSessionEnabled = true
-        mixer.session.beginConfiguration()
-        defer {
-            mixer.session.commitConfiguration()
-        }
-        if capture.device == device {
-            try multiCamCapture.attachDevice(nil, videoUnit: self)
-        }
-        try multiCamCapture.attachDevice(device, videoUnit: self)
-    }
-
-    @available(tvOS 17.0, *)
-    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
-        capture.setTorchMode(torchMode)
-        multiCamCapture.setTorchMode(torchMode)
-    }
-    #endif
-
-    #if os(macOS)
-    func attachScreen(_ input: AVCaptureScreenInput?) {
-        guard let mixer else {
-            return
-        }
-        mixer.session.beginConfiguration()
-        defer {
-            mixer.session.commitConfiguration()
-        }
-        guard let input else {
-            return
-        }
-        multiCamCapture.attachScreen(input, videoUnit: self)
-    }
-    #endif
 
     func registerEffect(_ effect: VideoEffect) -> Bool {
         return videoMixer.registerEffect(effect)
@@ -302,13 +214,90 @@ final class IOVideoUnit: NSObject, IOUnit {
             codec.append(sampleBuffer)
         }
     }
+
+    #if os(iOS) || os(tvOS) || os(macOS)
+    @available(tvOS 17.0, *)
+    func attachCamera(_ device: AVCaptureDevice?, channel: UInt8) throws {
+        guard self.captures[channel]?.device != device else {
+            return
+        }
+        if hasDevice && device != nil && mixer?.session.isMultiCamSessionEnabled == false {
+            throw Error.multiCamNotSupported
+        }
+        try mixer?.session.configuration { _ in
+            let capture = capture(for: channel)
+            for capture in captures.values where capture.device == device {
+                try capture.attachDevice(nil, videoUnit: self)
+            }
+            try capture?.attachDevice(device, videoUnit: self)
+        }
+        if drawable != nil && device != nil {
+            // Start captureing if not running.
+            mixer?.session.startRunning()
+        }
+    }
+
+    @available(tvOS 17.0, *)
+    func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
+        for capture in captures.values {
+            capture.setTorchMode(torchMode)
+        }
+    }
+
+    @available(tvOS 17.0, *)
+    func capture(for channel: UInt8) -> IOVideoCaptureUnit? {
+        #if os(tvOS)
+        return lockQueue.sync {
+            if _captures[channel] == nil {
+                _captures[channel] = IOVideoCaptureUnit()
+            }
+            return _captures[channel] as? IOVideoCaptureUnit
+        }
+        #else
+        return lockQueue.sync {
+            if captures[channel] == nil {
+                captures[channel] = .init()
+            }
+            return captures[channel]
+        }
+        #endif
+    }
+
+    @available(tvOS 17.0, *)
+    func setBackgroundMode(_ background: Bool) {
+        guard let session = mixer?.session, !session.isMultitaskingCameraAccessEnabled else {
+            return
+        }
+        if background {
+            for capture in captures.values {
+                mixer?.session.detachCapture(capture)
+            }
+        } else {
+            for capture in captures.values {
+                mixer?.session.attachCapture(capture)
+            }
+        }
+    }
+    #endif
+
+    #if os(macOS)
+    func attachScreen(_ input: AVCaptureScreenInput?, channel: UInt8) {
+        mixer?.session.configuration { _ in
+            let capture = capture(for: channel)
+            for capture in captures.values where capture.input == input {
+                capture.attachScreen(nil, videoUnit: self)
+            }
+            capture?.attachScreen(input, videoUnit: self)
+        }
+    }
+    #endif
 }
 
 extension IOVideoUnit: Running {
     // MARK: Running
     func startRunning() {
         #if os(iOS)
-        codec.passthrough = capture.preferredVideoStabilizationMode == .off
+        codec.passthrough = captures[0]?.preferredVideoStabilizationMode == .off
         #endif
         codec.startRunning()
     }
@@ -323,11 +312,11 @@ extension IOVideoUnit: Running {
 extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if capture.output == captureOutput {
+        if captures[0]?.output == captureOutput {
             inputFormat = sampleBuffer.formatDescription
             videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: connection.isVideoMirrored)
             drawable?.enqueue(sampleBuffer)
-        } else if multiCamCapture.output == captureOutput {
+        } else if captures[1]?.output == captureOutput {
             videoMixer.append(sampleBuffer, channel: 1, isVideoMirrored: connection.isVideoMirrored)
         }
     }

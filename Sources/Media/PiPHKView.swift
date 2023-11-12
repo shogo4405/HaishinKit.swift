@@ -67,16 +67,19 @@ public class PiPHKView: UIView {
     private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
+        willSet {
+            currentStream?.setNetStreamDrawable(nil)
+        }
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
+            currentStream?.setNetStreamDrawable(self)
         }
     }
 
     private var captureVideoPreview: UIView? {
+        willSet {
+            captureVideoPreview?.removeFromSuperview()
+        }
         didSet {
-            if let oldValue {
-                oldValue.removeFromSuperview()
-            }
             if let captureVideoPreview {
                 addSubview(captureVideoPreview)
                 sendSubviewToBack(captureVideoPreview)
@@ -111,14 +114,12 @@ public class PiPHKView: UIView {
 extension PiPHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     public func attachStream(_ stream: NetStream?) {
-        guard let stream: NetStream = stream else {
-            currentStream = nil
-            return
-        }
-        stream.lockQueue.async {
-            stream.mixer.videoIO.drawable = self
-            self.currentStream = stream
-            stream.mixer.startRunning()
+        if Thread.isMainThread {
+            currentStream = stream
+        } else {
+            DispatchQueue.main.async {
+                self.currentStream = stream
+            }
         }
     }
 
@@ -185,13 +186,13 @@ public class PiPHKView: NSView {
     }
 
     private var captureVideoPreview: NSView? {
+        willSet {
+            captureVideoPreview?.removeFromSuperview()
+        }
         didSet {
-            if let oldValue {
-                oldValue.removeFromSuperview()
-            }
-            if let captureVideoPreview {
-                addSubview(captureVideoPreview)
-                sendSubviewToBack(captureVideoPreview)
+            captureVideoPreview.map {
+                addSubview($0)
+                sendSubviewToBack($0)
             }
         }
     }
@@ -199,8 +200,11 @@ public class PiPHKView: NSView {
     private var currentSampleBuffer: CMSampleBuffer?
 
     private weak var currentStream: NetStream? {
+        willSet {
+            currentStream?.setNetStreamDrawable(nil)
+        }
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
+            currentStream?.setNetStreamDrawable(self)
         }
     }
 
@@ -232,14 +236,12 @@ public class PiPHKView: NSView {
 extension PiPHKView: NetStreamDrawable {
     // MARK: NetStreamDrawable
     public func attachStream(_ stream: NetStream?) {
-        guard let stream: NetStream = stream else {
-            currentStream = nil
-            return
-        }
-        stream.lockQueue.async {
-            stream.mixer.videoIO.drawable = self
-            self.currentStream = stream
-            stream.mixer.startRunning()
+        if Thread.isMainThread {
+            currentStream = stream
+        } else {
+            DispatchQueue.main.async {
+                self.currentStream = stream
+            }
         }
     }
 
