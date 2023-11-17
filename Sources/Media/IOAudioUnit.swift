@@ -59,35 +59,30 @@ final class IOAudioUnit: NSObject, IOUnit {
     #if os(tvOS)
     private var _capture: Any?
     @available(tvOS 17.0, *)
-    var capture: IOAudioCaptureUnit {
+    private var capture: IOAudioCaptureUnit {
         if _capture == nil {
             _capture = IOAudioCaptureUnit()
         }
         return _capture as! IOAudioCaptureUnit
     }
     #elseif os(iOS) || os(macOS)
-    private(set) var capture: IOAudioCaptureUnit = .init()
+    private var capture: IOAudioCaptureUnit = .init()
     #endif
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
-        guard let mixer else {
-            return
+        try mixer?.session.configuration { session in
+            guard let device else {
+                try capture.attachDevice(nil, audioUnit: self)
+                inputFormat = nil
+                return
+            }
+            try capture.attachDevice(device, audioUnit: self)
+            #if os(iOS)
+            session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
+            #endif
         }
-        mixer.session.beginConfiguration()
-        defer {
-            mixer.session.commitConfiguration()
-        }
-        guard let device else {
-            try capture.attachDevice(nil, audioUnit: self)
-            inputFormat = nil
-            return
-        }
-        try capture.attachDevice(device, audioUnit: self)
-        #if os(iOS)
-        mixer.session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
-        #endif
     }
     #endif
 

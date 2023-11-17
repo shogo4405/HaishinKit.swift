@@ -53,7 +53,7 @@ final class IOCaptureVideoPreview: UIView {
     }
 
     func attachStream(_ stream: NetStream?) {
-        layer.session = stream?.mixer.session
+        layer.session = stream?.mixer.session.session
         #if os(iOS)
         if let videoOrientation = stream?.videoOrientation, layer.connection?.isVideoOrientationSupported == true {
             layer.connection?.videoOrientation = videoOrientation

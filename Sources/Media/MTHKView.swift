@@ -53,26 +53,25 @@ public class MTHKView: MTKView {
     }()
 
     private var captureVideoPreview: View? {
+        willSet {
+            captureVideoPreview?.removeFromSuperview()
+        }
         didSet {
-            if let oldValue {
-                oldValue.removeFromSuperview()
-            }
-            if let captureVideoPreview {
-                addSubview(captureVideoPreview)
-                sendSubviewToBack(captureVideoPreview)
+            captureVideoPreview.map {
+                addSubview($0)
+                sendSubviewToBack($0)
             }
         }
     }
 
     private weak var currentStream: NetStream? {
+        willSet {
+            currentStream?.setNetStreamDrawable(nil)
+        }
         didSet {
-            oldValue?.mixer.videoIO.drawable = nil
-            if let currentStream = currentStream {
-                currentStream.mixer.videoIO.context = CIContext(mtlDevice: device!)
-                currentStream.lockQueue.async {
-                    currentStream.mixer.videoIO.drawable = self
-                    currentStream.mixer.startRunning()
-                }
+            currentStream.map {
+                $0.mixer.videoIO.context = CIContext(mtlDevice: device!)
+                currentStream?.setNetStreamDrawable(self)
             }
         }
     }

@@ -1,10 +1,10 @@
+#if os(iOS) || os(tvOS) || os(macOS)
 import AVFoundation
 import Foundation
 
-#if os(iOS) || os(tvOS) || os(macOS)
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
-public class IOVideoCaptureUnit: IOCaptureUnit {
+public final class IOVideoCaptureUnit: IOCaptureUnit {
     #if os(iOS) || os(macOS)
     /// The default color format.
     public static let colorFormat = kCVPixelFormatType_32BGRA
@@ -71,7 +71,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
 
     func attachDevice(_ device: AVCaptureDevice?, videoUnit: IOVideoUnit) throws {
         setSampleBufferDelegate(nil)
-        detachSession(videoUnit.mixer?.session)
+        videoUnit.mixer?.session.detachCapture(self)
         guard let device else {
             self.device = nil
             input = nil
@@ -95,7 +95,7 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
             connection = nil
         }
         #endif
-        attachSession(videoUnit.mixer?.session)
+        videoUnit.mixer?.session.attachCapture(self)
         output?.connections.forEach {
             if $0.isVideoMirroringSupported {
                 $0.isVideoMirrored = isVideoMirrored
@@ -117,12 +117,12 @@ public class IOVideoCaptureUnit: IOCaptureUnit {
     #if os(macOS)
     func attachScreen(_ screen: AVCaptureScreenInput?, videoUnit: IOVideoUnit) {
         setSampleBufferDelegate(nil)
-        detachSession(videoUnit.mixer?.session)
+        videoUnit.mixer?.session.detachCapture(self)
         device = nil
         input = screen
         output = AVCaptureVideoDataOutput()
         connection = nil
-        attachSession(videoUnit.mixer?.session)
+        videoUnit.mixer?.session.attachCapture(self)
         setSampleBufferDelegate(videoUnit)
     }
     #endif

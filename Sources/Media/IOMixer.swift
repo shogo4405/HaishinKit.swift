@@ -1,9 +1,7 @@
 import AVFoundation
+
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
-#endif
-#if os(iOS)
-import UIKit
 #endif
 
 protocol IOMixerDelegate: AnyObject {
@@ -21,327 +19,77 @@ protocol IOMixerDelegate: AnyObject {
 
 /// An object that mixies audio and video for streaming.
 final class IOMixer {
-    /// The default fps for an IOMixer, value is 30.
     static let defaultFrameRate: Float64 = 30
 
-    #if os(tvOS)
-    private var _session: Any?
-    /// The capture session instance.
-    @available(tvOS 17.0, *)
-    var session: AVCaptureSession {
-        get {
-            if _session == nil {
-                _session = makeSession()
-            }
-            return _session as! AVCaptureSession
-        }
-        set {
-            _session = newValue
-        }
-    }
-    #elseif os(iOS) || os(macOS)
-    /// The capture session instance.
-    lazy var session: AVCaptureSession = makeSession() {
-        willSet {
-            if session.isRunning {
-                removeSessionObservers(session)
-                session.stopRunning()
-            }
-            audioIO.capture.detachSession(session)
-            videoIO.capture.detachSession(session)
-        }
-        didSet {
-            if session.canSetSessionPreset(sessionPreset) {
-                session.sessionPreset = sessionPreset
-            }
-            audioIO.capture.attachSession(session)
-            videoIO.capture.attachSession(session)
-            if isRunning.value {
-                addSessionObservers(session)
-                session.startRunning()
-            }
-        }
-    }
-    #endif
-
-    private(set) var isRunning: Atomic<Bool> = .init(false)
-    /// The recorder instance.
-    private(set) lazy var recorder = IORecorder()
-
     weak var muxer: (any IOMuxer)?
+
     weak var delegate: (any IOMixerDelegate)?
 
-    lazy var audioIO = {
+    private(set) var isRunning: Atomic<Bool> = .init(false)
+
+    private(set) lazy var recorder = IORecorder()
+
+    private(set) lazy var audioIO = {
         var audioIO = IOAudioUnit()
         audioIO.mixer = self
         return audioIO
     }()
 
-    lazy var videoIO = {
+    private(set) lazy var videoIO = {
         var videoIO = IOVideoUnit()
         videoIO.mixer = self
         return videoIO
     }()
 
-    var isMultiCamSessionEnabled = false {
-        didSet {
-            guard oldValue != isMultiCamSessionEnabled else {
-                return
-            }
-            #if os(iOS)
-            session = makeSession()
-            #endif
-        }
-    }
-
-    #if os(tvOS)
-    private var _sessionPreset: Any?
-    @available(tvOS 17.0, *)
-    var sessionPreset: AVCaptureSession.Preset {
-        get {
-            if _sessionPreset == nil {
-                _sessionPreset = AVCaptureSession.Preset.default
-            }
-            return _sessionPreset as! AVCaptureSession.Preset
-        }
-        set {
-            guard sessionPreset != newValue, session.canSetSessionPreset(newValue) else {
-                return
-            }
-            session.beginConfiguration()
-            session.sessionPreset = newValue
-            session.commitConfiguration()
-        }
-    }
-    #elseif os(iOS) || os(macOS)
-    var sessionPreset: AVCaptureSession.Preset = .default {
-        didSet {
-            guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
-                return
-            }
-            session.beginConfiguration()
-            session.sessionPreset = sessionPreset
-            session.commitConfiguration()
-        }
-    }
-    #endif
-
-    #if os(iOS) || os(macOS) || os(tvOS)
-    var inBackgroundMode = false {
-        didSet {
-            if #available(tvOS 17.0, *) {
-                guard inBackgroundMode != oldValue else {
-                    return
-                }
-                if inBackgroundMode {
-                    if !session.isMultitaskingCameraAccessEnabled {
-                        videoIO.multiCamCapture.detachSession(session)
-                        videoIO.capture.detachSession(session)
-                    }
-                } else {
-                    startCaptureSessionIfNeeded()
-                    if !session.isMultitaskingCameraAccessEnabled {
-                        videoIO.capture.attachSession(session)
-                        videoIO.multiCamCapture.attachSession(session)
-                    }
-                }
-            }
-        }
-    }
-    #endif
+    private(set) lazy var session = {
+        var session = IOCaptureSession()
+        session.delegate = self
+        return session
+    }()
 
     private(set) lazy var audioEngine: AVAudioEngine? = {
         return NetStream.audioEngineHolder.retain()
     }()
 
-    @available(tvOS 17.0, *)
-    private var isMultiCamSupported: Bool {
-        #if os(iOS) || os(tvOS)
-        if #available(iOS 13.0, *) {
-            return session is AVCaptureMultiCamSession
-        } else {
-            return false
-        }
-        #else
-        return false
-        #endif
-    }
-
     deinit {
-        #if os(iOS) || os(macOS) || os(tvOS)
-        if #available(tvOS 17.0, *) {
-            if session.isRunning {
-                session.stopRunning()
-            }
-        }
-        #endif
         NetStream.audioEngineHolder.release(audioEngine)
     }
 
     #if os(iOS) || os(tvOS)
-    @available(tvOS 17.0, *)
-    private func makeSession() -> AVCaptureSession {
-        let session: AVCaptureSession
-        if isMultiCamSessionEnabled, #available(iOS 13.0, *) {
-            session = AVCaptureMultiCamSession()
+    func setBackgroundMode(_ background: Bool) {
+        guard #available(tvOS 17.0, *) else {
+            return
+        }
+        if background {
+            videoIO.setBackgroundMode(background)
         } else {
-            session = AVCaptureSession()
+            videoIO.setBackgroundMode(background)
+            session.startRunningIfNeeded()
         }
-        if session.canSetSessionPreset(sessionPreset) {
-            session.sessionPreset = sessionPreset
-        }
-        if session.isMultitaskingCameraAccessSupported {
-            session.isMultitaskingCameraAccessEnabled = true
-        }
-        return session
-    }
-    #elseif os(macOS)
-    private func makeSession() -> AVCaptureSession {
-        let session = AVCaptureSession()
-        if session.canSetSessionPreset(sessionPreset) {
-            session.sessionPreset = sessionPreset
-        }
-        return session
     }
     #endif
 }
 
-#if os(iOS) || os(macOS) || os(tvOS)
 extension IOMixer: Running {
     // MARK: Running
     func startRunning() {
         guard !isRunning.value else {
             return
         }
-        if #available(tvOS 17.0, *) {
-            addSessionObservers(session)
-            session.startRunning()
-            isRunning.mutate { $0 = session.isRunning }
-        }
+        muxer?.startRunning()
+        audioIO.startRunning()
+        videoIO.startRunning()
+        isRunning.mutate { $0 = true }
     }
 
     func stopRunning() {
         guard isRunning.value else {
             return
         }
-        if #available(tvOS 17.0, *) {
-            removeSessionObservers(session)
-            session.stopRunning()
-            isRunning.mutate { $0 = session.isRunning }
-        }
-    }
-
-    @available(tvOS 17.0, *)
-    func startCaptureSessionIfNeeded() {
-        guard isRunning.value && !session.isRunning else {
-            return
-        }
-        session.startRunning()
-        isRunning.mutate { $0 = session.isRunning }
-    }
-
-    @available(tvOS 17.0, *)
-    private func addSessionObservers(_ session: AVCaptureSession) {
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError(_:)), name: .AVCaptureSessionRuntimeError, object: session)
-        #if os(iOS) || os(tvOS)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded(_:)), name: .AVCaptureSessionInterruptionEnded, object: session)
-        NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted(_:)), name: .AVCaptureSessionWasInterrupted, object: session)
-        #endif
-    }
-
-    @available(tvOS 17.0, *)
-    private func removeSessionObservers(_ session: AVCaptureSession) {
-        #if os(iOS) || os(tvOS)
-        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
-        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
-        #endif
-        NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionRuntimeError, object: session)
-    }
-
-    @available(tvOS 17.0, *)
-    @objc
-    private func sessionRuntimeError(_ notification: NSNotification) {
-        guard
-            let errorValue = notification.userInfo?[AVCaptureSessionErrorKey] as? NSError else {
-            return
-        }
-        let error = AVError(_nsError: errorValue)
-        switch error.code {
-        case .unsupportedDeviceActiveFormat:
-            guard let device = error.device, let format = device.videoFormat(
-                width: sessionPreset.width ?? Int32(videoIO.settings.videoSize.width),
-                height: sessionPreset.height ?? Int32(videoIO.settings.videoSize.height),
-                frameRate: videoIO.frameRate,
-                isMultiCamSupported: isMultiCamSupported
-            ), device.activeFormat != format else {
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.activeFormat = format
-                if format.isFrameRateSupported(videoIO.frameRate) {
-                    device.activeVideoMinFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
-                    device.activeVideoMaxFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
-                }
-                device.unlockForConfiguration()
-                session.startRunning()
-            } catch {
-                logger.warn(error)
-            }
-        #if os(iOS) || os(tvOS)
-        case .mediaServicesWereReset:
-            startCaptureSessionIfNeeded()
-        #endif
-        default:
-            break
-        }
-    }
-
-    #if os(iOS) || os(tvOS)
-    @available(tvOS 17.0, *)
-    @objc
-    private func sessionWasInterrupted(_ notification: Notification) {
-        guard let session = notification.object as? AVCaptureSession else {
-            return
-        }
-        guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
-              let reasonIntegerValue = userInfoValue.integerValue,
-              let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue) else {
-            delegate?.mixer(self, sessionWasInterrupted: session, reason: nil)
-            return
-        }
-        delegate?.mixer(self, sessionWasInterrupted: session, reason: reason)
-    }
-
-    @available(tvOS 17.0, *)
-    @objc
-    private func sessionInterruptionEnded(_ notification: Notification) {
-        delegate?.mixer(self, sessionInterruptionEnded: session)
-    }
-    #endif
-}
-#else
-extension IOMixer: Running {
-    func startRunning() {
-    }
-
-    func stopRunning() {
-    }
-}
-#endif
-
-extension IOMixer {
-    func startMuxing(_ muxer: any IOMuxer) {
-        self.muxer = muxer
-        muxer.startRunning()
-        audioIO.startRunning()
-        videoIO.startRunning()
-    }
-
-    func stopMuxing() {
         videoIO.stopRunning()
         audioIO.stopRunning()
         muxer?.stopRunning()
+        isRunning.mutate { $0 = false }
     }
 }
 
@@ -380,6 +128,50 @@ extension IOMixer: AudioCodecDelegate {
     func audioCodec(_ codec: AudioCodec<IOMixer>, errorOccurred error: IOAudioUnitError) {
         delegate?.mixer(self, audioErrorOccurred: error)
     }
+}
+
+extension IOMixer: IOCaptureSessionDelegate {
+    // MARK: IOCaptureSessionDelegate
+    @available(tvOS 17.0, *)
+    func session(_ capture: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError) {
+        switch error.code {
+        case .unsupportedDeviceActiveFormat:
+            guard let device = error.device, let format = device.videoFormat(
+                width: session.sessionPreset.width ?? Int32(videoIO.settings.videoSize.width),
+                height: session.sessionPreset.height ?? Int32(videoIO.settings.videoSize.height),
+                frameRate: videoIO.frameRate,
+                isMultiCamSupported: capture.isMultiCamSessionEnabled
+            ), device.activeFormat != format else {
+                return
+            }
+            do {
+                try device.lockForConfiguration()
+                device.activeFormat = format
+                if format.isFrameRateSupported(videoIO.frameRate) {
+                    device.activeVideoMinFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+                    device.activeVideoMaxFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+                }
+                device.unlockForConfiguration()
+                capture.startRunningIfNeeded()
+            } catch {
+                logger.warn(error)
+            }
+        default:
+            break
+        }
+    }
+
+    #if os(iOS) || os(tvOS)
+    @available(tvOS 17.0, *)
+    func session(_ _: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
+        delegate?.mixer(self, sessionWasInterrupted: session, reason: reason)
+    }
+
+    @available(tvOS 17.0, *)
+    func session(_ _: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession) {
+        delegate?.mixer(self, sessionInterruptionEnded: session)
+    }
+    #endif
 }
 
 extension IOMixer: IOAudioUnitDelegate {
