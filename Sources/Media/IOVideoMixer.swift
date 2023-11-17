@@ -41,7 +41,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
     private var pixelBuffer: CVPixelBuffer?
     private var pixelBufferPool: CVPixelBufferPool?
     private var multiCamSampleBuffer: CMSampleBuffer?
-    private(set) var effects: Set<VideoEffect> = []
+    private(set) var effects: [VideoEffect] = .init()
 
     @inline(__always)
     func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
@@ -54,12 +54,20 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
 
     func registerEffect(_ effect: VideoEffect) -> Bool {
         effect.ciContext = context
-        return effects.insert(effect).inserted
+        if effects.contains(effect) {
+            return false
+        }
+        effects.append(effect)
+        return true
     }
 
     func unregisterEffect(_ effect: VideoEffect) -> Bool {
         effect.ciContext = nil
-        return effects.remove(effect) != nil
+        if let index = effects.firstIndex(of: effect) {
+            effects.remove(at: index)
+            return true
+        }
+        return false
     }
 
     func append(_ sampleBuffer: CMSampleBuffer, channel: Int, isVideoMirrored: Bool) {
