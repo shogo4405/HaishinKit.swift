@@ -73,6 +73,10 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
+    @available(tvOS 17.0, *)
+    var hasDevice: Bool {
+        !captures.lazy.filter { $0.value.device != nil }.isEmpty
+    }
     #endif
 
     var context: CIContext {
@@ -84,11 +88,6 @@ final class IOVideoUnit: NSObject, IOUnit {
                 self.videoMixer.context = newValue
             }
         }
-    }
-
-    @available(tvOS 17.0, *)
-    var hasDevice: Bool {
-        !captures.lazy.filter { $0.value.device != nil }.isEmpty
     }
 
     var isRunning: Atomic<Bool> {

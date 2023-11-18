@@ -426,8 +426,10 @@ open class NetStream: NSObject {
             mixer.muxer = telly
             mixer.startRunning()
         case .publish:
+            #if os(iOS) || os(tvOS) || os(macOS)
             // Start capture audio and video data.
             mixer.session.startRunning()
+            #endif
         case .publishing(let muxer):
             mixer.muxer = muxer
             mixer.startRunning()
@@ -442,9 +444,11 @@ open class NetStream: NSObject {
             guard #available(tvOS 17.0, *) else {
                 return
             }
+            #if os(iOS) || os(tvOS) || os(macOS)
             if self.mixer.videoIO.hasDevice {
                 self.mixer.session.startRunning()
             }
+            #endif
         }
     }
 

@@ -41,11 +41,13 @@ final class IOMixer {
         return videoIO
     }()
 
+    #if os(iOS) || os(tvOS) || os(macOS)
     private(set) lazy var session = {
         var session = IOCaptureSession()
         session.delegate = self
         return session
     }()
+    #endif
 
     private(set) lazy var audioEngine: AVAudioEngine? = {
         return NetStream.audioEngineHolder.retain()
@@ -130,6 +132,7 @@ extension IOMixer: AudioCodecDelegate {
     }
 }
 
+#if os(iOS) || os(tvOS) || os(macOS)
 extension IOMixer: IOCaptureSessionDelegate {
     // MARK: IOCaptureSessionDelegate
     @available(tvOS 17.0, *)
@@ -173,6 +176,7 @@ extension IOMixer: IOCaptureSessionDelegate {
     }
     #endif
 }
+#endif
 
 extension IOMixer: IOAudioUnitDelegate {
     // MARK: IOAudioUnitDelegate
