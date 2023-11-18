@@ -893,7 +893,7 @@
 				29EA87D11E799EFF0043A5F8 /* Extension */,
 				295891081EEB8B1D00CE51E1 /* FLV */,
 				BCD1DCF62610751900A1C593 /* MPEG */,
-				29BDE0BD1C65BC2400D6A768 /* Media */,
+				29BDE0BD1C65BC2400D6A768 /* IO */,
 				297C16881CC5382600117ADF /* Net */,
 				29C0E0591C2EB00A009DD8E8 /* RTMP */,
 				290907CE1C3961BC00F2E80C /* Util */,
@@ -1040,7 +1040,7 @@
 			path = Screencast;
 			sourceTree = "<group>";
 		};
-		29BDE0BD1C65BC2400D6A768 /* Media */ = {
+		29BDE0BD1C65BC2400D6A768 /* IO */ = {
 			isa = PBXGroup;
 			children = (
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
@@ -1072,7 +1072,7 @@
 				29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
 			);
-			path = Media;
+			path = IO;
 			sourceTree = "<group>";
 		};
 		29C0E0591C2EB00A009DD8E8 /* RTMP */ = {
