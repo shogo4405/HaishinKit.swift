@@ -31,7 +31,7 @@ public struct AudioCodecSettings: Codable {
             case .aac:
                 return UInt32(MPEG4ObjectID.AAC_LC.rawValue)
             case .pcm:
-                return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat
+                return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat | kAudioFormatFlagIsNonInterleaved
             }
         }
 
@@ -108,28 +108,18 @@ public struct AudioCodecSettings: Codable {
         }
 
         func makeAudioFormat(_ format: AVAudioFormat) -> AVAudioFormat? {
-            switch self {
-            case .aac:
-                var streamDescription = AudioStreamBasicDescription(
-                    mSampleRate: format.sampleRate,
-                    mFormatID: formatID,
-                    mFormatFlags: formatFlags,
-                    mBytesPerPacket: bytesPerPacket,
-                    mFramesPerPacket: framesPerPacket,
-                    mBytesPerFrame: bytesPerFrame,
-                    mChannelsPerFrame: min(format.channelCount, AudioCodecSettings.maximumNumberOfChannels),
-                    mBitsPerChannel: bitsPerChannel,
-                    mReserved: 0
-                )
-                return AVAudioFormat(streamDescription: &streamDescription)
-            case .pcm:
-                return AVAudioFormat(
-                    commonFormat: .pcmFormatFloat32,
-                    sampleRate: format.sampleRate,
-                    channels: min(format.channelCount, AudioCodecSettings.maximumNumberOfChannels),
-                    interleaved: true
-                )
-            }
+            var streamDescription = AudioStreamBasicDescription(
+                mSampleRate: format.sampleRate,
+                mFormatID: formatID,
+                mFormatFlags: formatFlags,
+                mBytesPerPacket: bytesPerPacket,
+                mFramesPerPacket: framesPerPacket,
+                mBytesPerFrame: bytesPerFrame,
+                mChannelsPerFrame: min(format.channelCount, AudioCodecSettings.maximumNumberOfChannels),
+                mBitsPerChannel: bitsPerChannel,
+                mReserved: 0
+            )
+            return AVAudioFormat(streamDescription: &streamDescription)
         }
     }
 

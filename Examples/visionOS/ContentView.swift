@@ -4,7 +4,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel = ViewModel()
-    
+
     private var lfView: PiPHKSwiftUiView!
 
     init() {
@@ -16,7 +16,7 @@ struct ContentView: View {
         VStack {
             lfView
                 .ignoresSafeArea()
-                .onTapGesture { location in
+                .onTapGesture { _ in
                     self.viewModel.startPlaying()
                 }
             Text("Hello, world!")
@@ -27,4 +27,3 @@ struct ContentView: View {
 #Preview(windowStyle: .automatic) {
     ContentView()
 }
-

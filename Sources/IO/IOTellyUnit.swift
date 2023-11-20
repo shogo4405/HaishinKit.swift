@@ -34,7 +34,7 @@ final class IOTellyUnit {
 
     var delegate: (any IOTellyUnitDelegate)?
 
-    private lazy var mediaLink: MediaLink = {
+    private lazy var mediaLink = {
         var mediaLink = MediaLink<IOTellyUnit>()
         mediaLink.delegate = self
         return mediaLink

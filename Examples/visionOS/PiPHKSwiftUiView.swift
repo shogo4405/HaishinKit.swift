@@ -1,5 +1,5 @@
-import SwiftUI
 import HaishinKit
+import SwiftUI
 
 struct PiPHKSwiftUiView: UIViewRepresentable {
     var piphkView = PiPHKView(frame: .zero)
@@ -15,4 +15,3 @@ struct PiPHKSwiftUiView: UIViewRepresentable {
         piphkView.attachStream(rtmpStream)
     }
 }
-
