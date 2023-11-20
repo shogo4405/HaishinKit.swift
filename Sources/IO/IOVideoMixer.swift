@@ -70,7 +70,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         return false
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer, channel: Int, isVideoMirrored: Bool) {
+    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8, isVideoMirrored: Bool) {
         switch channel {
         case 0:
             var imageBuffer: CVImageBuffer?
@@ -123,6 +123,17 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
             }
         case 1:
             multiCamSampleBuffer = sampleBuffer
+        default:
+            break
+        }
+    }
+
+    func detach(_ channel: UInt8) {
+        switch channel {
+        case 0:
+            pixelBuffer = nil
+        case 1:
+            multiCamSampleBuffer = nil
         default:
             break
         }

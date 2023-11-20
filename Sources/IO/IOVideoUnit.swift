@@ -234,6 +234,11 @@ final class IOVideoUnit: NSObject, IOUnit {
             // Start captureing if not running.
             mixer?.session.startRunning()
         }
+        if device == nil {
+            lockQueue.async {
+                self.videoMixer.detach(channel)
+            }
+        }
     }
 
     @available(tvOS 17.0, *)
