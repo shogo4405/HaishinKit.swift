@@ -217,24 +217,24 @@ final class IOVideoUnit: NSObject, IOUnit {
     #if os(iOS) || os(tvOS) || os(macOS)
     @available(tvOS 17.0, *)
     func attachCamera(_ device: AVCaptureDevice?, channel: UInt8) throws {
-        guard self.captures[channel]?.device != device else {
+        guard captures[channel]?.device != device else {
             return
         }
-        if hasDevice && device != nil && mixer?.session.isMultiCamSessionEnabled == false {
+        if hasDevice && device != nil && captures[channel]?.device != nil && mixer?.session.isMultiCamSessionEnabled == false {
             throw Error.multiCamNotSupported
         }
         try mixer?.session.configuration { _ in
-            let capture = capture(for: channel)
             for capture in captures.values where capture.device == device {
                 try capture.attachDevice(nil, videoUnit: self)
             }
-            try capture?.attachDevice(device, videoUnit: self)
+            try capture(for: channel)?.attachDevice(device, videoUnit: self)
         }
-        if drawable != nil && device != nil {
-            // Start captureing if not running.
-            mixer?.session.startRunning()
-        }
-        if device == nil {
+        if let device {
+            if let drawable {
+                // Start captureing if not running.
+                mixer?.session.startRunning()
+            }
+        } else {
             lockQueue.async {
                 self.videoMixer.detach(channel)
             }
