@@ -427,6 +427,15 @@ final class RTMPDataMessage: RTMPMessage {
             return
         }
         stream.info.byteCount.mutate { $0 += Int64(payload.count) }
+        switch handlerName {
+        case "onMetaData":
+            stream.metadata = arguments[0] as? [String: Any?] ?? [:]
+        case "|RtmpSampleAccess":
+            stream.audioSampleAccess = arguments[0] as? Bool ?? true
+            stream.videoSampleAccess = arguments[1] as? Bool ?? true
+        default:
+            break
+        }
     }
 }
 
