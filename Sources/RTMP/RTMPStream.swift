@@ -155,10 +155,16 @@ open class RTMPStream: NetStream {
     }
 
     static let defaultID: UInt32 = 0
-    /// The NetStreamInfo object whose properties contain data.
+    /// The RTMPStream metadata.
+    public internal(set) var metadata: [String: Any?] = [:]
+    /// The RTMPStreamInfo object whose properties contain data.
     public internal(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
     public private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
+    /// The boolean value that indicates audio samples allow access or not.
+    public internal(set) var audioSampleAccess = true
+    /// The boolean value that indicates video samples allow access or not.
+    public internal(set) var videoSampleAccess = true
     /// Incoming audio plays on the stream or not.
     public var receiveAudio = true {
         didSet {
@@ -428,6 +434,9 @@ open class RTMPStream: NetStream {
         case .open:
             currentFPS = 0
             frameCount = 0
+            audioSampleAccess = true
+            videoSampleAccess = true
+            metadata.removeAll()
             info.clear()
             delegate?.streamDidOpen(self)
             for message in messages {
@@ -457,7 +466,9 @@ open class RTMPStream: NetStream {
             dataTimeStamps.removeAll()
             FCPublish()
         case .publishing:
-            send(handlerName: "@setDataFrame", arguments: "onMetaData", makeMetaData())
+            let metadata = makeMetaData()
+            send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
+            self.metadata = metadata
         default:
             break
         }
