@@ -70,8 +70,8 @@ public class MTHKView: MTKView {
         }
         didSet {
             currentStream.map {
-                $0.mixer.videoIO.context = CIContext(mtlDevice: device!)
-                currentStream?.setNetStreamDrawable(self)
+                $0.context = CIContext(mtlDevice: device!)
+                $0.setNetStreamDrawable(self)
             }
         }
     }
@@ -134,7 +134,7 @@ extension MTHKView: MTKViewDelegate {
         guard
             let currentDrawable = currentDrawable,
             let commandBuffer = commandQueue?.makeCommandBuffer(),
-            let context = currentStream?.mixer.videoIO.context else {
+            let context = currentStream?.context else {
             return
         }
         if

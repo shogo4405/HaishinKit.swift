@@ -95,15 +95,16 @@ final class IOCaptureSession {
             return false
         }
         #else
-        return false
+        return true
         #endif
     }
 
     deinit {
-        if #available(tvOS 17.0, *) {
-            if session.isRunning {
-                session.stopRunning()
-            }
+        guard #available(tvOS 17.0, *) else {
+            return
+        }
+        if session.isRunning {
+            session.stopRunning()
         }
     }
 

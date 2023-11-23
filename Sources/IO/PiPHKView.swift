@@ -80,9 +80,9 @@ public class PiPHKView: UIView {
             captureVideoPreview?.removeFromSuperview()
         }
         didSet {
-            if let captureVideoPreview {
-                addSubview(captureVideoPreview)
-                sendSubviewToBack(captureVideoPreview)
+            captureVideoPreview.map {
+                addSubview($0)
+                sendSubviewToBack($0)
             }
         }
     }
