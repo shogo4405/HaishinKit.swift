@@ -15,7 +15,7 @@ enum VTSessionMode {
                 height: Int32(videoCodec.settings.videoSize.height),
                 codecType: videoCodec.settings.format.codecType,
                 encoderSpecification: nil,
-                imageBufferAttributes: videoCodec.attributes as CFDictionary?,
+                imageBufferAttributes: videoCodec.imageBufferAttributes(.compression) as CFDictionary?,
                 compressedDataAllocator: nil,
                 outputCallback: nil,
                 refcon: nil,
@@ -42,15 +42,12 @@ enum VTSessionMode {
                 videoCodec.delegate?.videoCodec(videoCodec, errorOccurred: .failedToCreate(status: kVTParameterErr))
                 return nil
             }
-            var attributes = videoCodec.attributes
-            attributes?.removeValue(forKey: kCVPixelBufferWidthKey)
-            attributes?.removeValue(forKey: kCVPixelBufferHeightKey)
             var session: VTDecompressionSession?
             let status = VTDecompressionSessionCreate(
                 allocator: kCFAllocatorDefault,
                 formatDescription: formatDescription,
                 decoderSpecification: nil,
-                imageBufferAttributes: attributes as CFDictionary?,
+                imageBufferAttributes: videoCodec.imageBufferAttributes(.decompression) as CFDictionary?,
                 outputCallback: nil,
                 decompressionSessionOut: &session
             )

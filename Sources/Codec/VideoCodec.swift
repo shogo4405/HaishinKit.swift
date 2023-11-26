@@ -45,18 +45,6 @@ final class VideoCodec<T: VideoCodecDelegate> {
     /// The running value indicating whether the VideoCodec is running.
     private(set) var isRunning: Atomic<Bool> = .init(false)
     var needsSync: Atomic<Bool> = .init(true)
-    var attributes: [NSString: AnyObject]? {
-        guard kVideoCodec_defaultAttributes != nil else {
-            return nil
-        }
-        var attributes: [NSString: AnyObject] = [:]
-        for (key, value) in kVideoCodec_defaultAttributes ?? [:] {
-            attributes[key] = value
-        }
-        attributes[kCVPixelBufferWidthKey] = NSNumber(value: settings.videoSize.width)
-        attributes[kCVPixelBufferHeightKey] = NSNumber(value: settings.videoSize.height)
-        return attributes
-    }
     var passthrough = true
     var frameInterval = kVideoCodec_defaultFrameInterval
     var expectedFrameRate = IOMixer.defaultFrameRate
@@ -163,6 +151,23 @@ final class VideoCodec<T: VideoCodecDelegate> {
                 return
             }
             delegate?.videoCodec(self, didOutput: buffer)
+        }
+    }
+
+    func imageBufferAttributes(_ mode: VTSessionMode) -> [NSString: AnyObject]? {
+        switch mode {
+        case .compression:
+            var attributes: [NSString: AnyObject] = [:]
+            if let inputFormat {
+                // Specify the pixel format of the uncompressed video.
+                attributes[kCVPixelBufferPixelFormatTypeKey] = inputFormat._mediaSubType as CFNumber
+            }
+            return attributes.isEmpty ? nil : attributes
+        case .decompression:
+            return [
+                kCVPixelBufferIOSurfacePropertiesKey: NSDictionary(),
+                kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
+            ]
         }
     }
 
