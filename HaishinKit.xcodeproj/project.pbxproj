@@ -207,10 +207,6 @@
 		BC7A0E422B088FA7005FB2F7 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = BC7A0E412B088FA7005FB2F7 /* RealityKitContent */; };
 		BC7A0E442B088FA7005FB2F7 /* Example_visionOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E432B088FA7005FB2F7 /* Example_visionOSApp.swift */; };
 		BC7A0E462B088FA7005FB2F7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E452B088FA7005FB2F7 /* ContentView.swift */; };
-		BC7A0E482B088FA7005FB2F7 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E472B088FA7005FB2F7 /* Renderer.swift */; };
-		BC7A0E4A2B088FA7005FB2F7 /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E492B088FA7005FB2F7 /* Shaders.metal */; };
-		BC7A0E4E2B088FA7005FB2F7 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC7A0E4D2B088FA7005FB2F7 /* Preview Assets.xcassets */; };
-		BC7A0E502B088FA9005FB2F7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC7A0E4F2B088FA9005FB2F7 /* Assets.xcassets */; };
 		BC7A0E552B0894B9005FB2F7 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC7A0E562B0894B9005FB2F7 /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC7A0E5A2B0894CE005FB2F7 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
@@ -644,11 +640,6 @@
 		BC7A0E402B088FA7005FB2F7 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		BC7A0E432B088FA7005FB2F7 /* Example_visionOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_visionOSApp.swift; sourceTree = "<group>"; };
 		BC7A0E452B088FA7005FB2F7 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		BC7A0E472B088FA7005FB2F7 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
-		BC7A0E492B088FA7005FB2F7 /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
-		BC7A0E4B2B088FA7005FB2F7 /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
-		BC7A0E4D2B088FA7005FB2F7 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		BC7A0E4F2B088FA9005FB2F7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BC7A0E512B088FA9005FB2F7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BC7A0E5D2B089A08005FB2F7 /* PiPHKSwiftUiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHKSwiftUiView.swift; sourceTree = "<group>"; };
 		BC7C56B6299E579F00C41A9B /* AudioCodecSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecSettings.swift; sourceTree = "<group>"; };
@@ -1262,15 +1253,10 @@
 		BC7A0E3E2B088FA7005FB2F7 /* visionOS */ = {
 			isa = PBXGroup;
 			children = (
-				BC7A0E4F2B088FA9005FB2F7 /* Assets.xcassets */,
 				BC7A0E452B088FA7005FB2F7 /* ContentView.swift */,
 				BC7A0E432B088FA7005FB2F7 /* Example_visionOSApp.swift */,
 				BC7A0E512B088FA9005FB2F7 /* Info.plist */,
 				BC7A0E5D2B089A08005FB2F7 /* PiPHKSwiftUiView.swift */,
-				BC7A0E4C2B088FA7005FB2F7 /* Preview Content */,
-				BC7A0E472B088FA7005FB2F7 /* Renderer.swift */,
-				BC7A0E492B088FA7005FB2F7 /* Shaders.metal */,
-				BC7A0E4B2B088FA7005FB2F7 /* ShaderTypes.h */,
 				BC603E482B08933F00C8386E /* ViewModel.swift */,
 			);
 			path = visionOS;
@@ -1282,14 +1268,6 @@
 				BC7A0E402B088FA7005FB2F7 /* RealityKitContent */,
 			);
 			path = Packages;
-			sourceTree = "<group>";
-		};
-		BC7A0E4C2B088FA7005FB2F7 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				BC7A0E4D2B088FA7005FB2F7 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */ = {
@@ -1699,8 +1677,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC7A0E502B088FA9005FB2F7 /* Assets.xcassets in Resources */,
-				BC7A0E4E2B088FA7005FB2F7 /* Preview Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2029,9 +2005,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC7A0E5E2B089A08005FB2F7 /* PiPHKSwiftUiView.swift in Sources */,
-				BC7A0E4A2B088FA7005FB2F7 /* Shaders.metal in Sources */,
 				BC7A0E462B088FA7005FB2F7 /* ContentView.swift in Sources */,
-				BC7A0E482B088FA7005FB2F7 /* Renderer.swift in Sources */,
 				BC603E492B08933F00C8386E /* ViewModel.swift in Sources */,
 				BC7A0E5C2B089851005FB2F7 /* Preference.swift in Sources */,
 				BC7A0E442B088FA7005FB2F7 /* Example_visionOSApp.swift in Sources */,
@@ -2717,7 +2691,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_ASSET_PATHS = "\"Examples/visionOS/Preview Content\"";
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2737,7 +2710,6 @@
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = Examples/visionOS/ShaderTypes.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -2758,7 +2730,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"Examples/visionOS/Preview Content\"";
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
@@ -2776,7 +2747,6 @@
 				SDKROOT = xros;
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = Examples/visionOS/ShaderTypes.h;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				XROS_DEPLOYMENT_TARGET = 1.0;

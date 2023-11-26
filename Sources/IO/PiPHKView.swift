@@ -64,8 +64,6 @@ public class PiPHKView: UIView {
     }
     #endif
 
-    private var currentSampleBuffer: CMSampleBuffer?
-
     private weak var currentStream: NetStream? {
         willSet {
             currentStream?.setNetStreamDrawable(nil)
@@ -125,7 +123,6 @@ extension PiPHKView: NetStreamDrawable {
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
             if let sampleBuffer = sampleBuffer {
                 layer.enqueue(sampleBuffer)
             }
@@ -197,8 +194,6 @@ public class PiPHKView: NSView {
         }
     }
 
-    private var currentSampleBuffer: CMSampleBuffer?
-
     private weak var currentStream: NetStream? {
         willSet {
             currentStream?.setNetStreamDrawable(nil)
@@ -247,7 +242,6 @@ extension PiPHKView: NetStreamDrawable {
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
             if let sampleBuffer = sampleBuffer {
                 (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
             }
