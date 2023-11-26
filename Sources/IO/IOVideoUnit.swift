@@ -229,8 +229,8 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
             try capture(for: channel)?.attachDevice(device, videoUnit: self)
         }
-        if let device {
-            if let drawable {
+        if device != nil {
+            if drawable != nil {
                 // Start captureing if not running.
                 mixer?.session.startRunning()
             }
