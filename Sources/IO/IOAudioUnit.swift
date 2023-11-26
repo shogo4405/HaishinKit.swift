@@ -86,7 +86,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
     #endif
 
-    func append(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
         switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
             resampler.append(sampleBuffer.muted(muted))

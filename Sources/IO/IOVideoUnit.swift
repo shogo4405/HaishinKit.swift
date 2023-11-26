@@ -156,7 +156,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         return videoMixer.unregisterEffect(effect)
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
         switch sampleBuffer.formatDescription?._mediaSubType {
         case kCVPixelFormatType_1Monochrome,
              kCVPixelFormatType_2Indexed,

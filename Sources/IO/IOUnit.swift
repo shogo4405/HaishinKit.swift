@@ -9,5 +9,5 @@ protocol IOUnit {
     var inputFormat: FormatDescription? { get }
     var outputFormat: FormatDescription? { get }
 
-    func append(_ sampleBuffer: CMSampleBuffer)
+    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8)
 }
