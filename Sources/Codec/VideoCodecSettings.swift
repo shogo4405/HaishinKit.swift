@@ -181,7 +181,7 @@ public struct VideoCodecSettings: Codable {
         ])
         if bitRateMode == .average {
             if let dataRateLimits, dataRateLimits.count == 2 {
-                var limits: [Double] = []
+                var limits = [Double](repeating: 0.0, count: 2)
                 limits[0] = dataRateLimits[0] == 0 ? Double(bitRate) / 8 * 1.5 : dataRateLimits[0]
                 limits[1] = dataRateLimits[1] == 0 ? Double(1.0) : dataRateLimits[1]
                 options.insert(.init(key: .dataRateLimits, value: limits as NSArray))
