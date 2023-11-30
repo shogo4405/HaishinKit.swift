@@ -220,7 +220,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         guard captures[channel]?.device != device else {
             return
         }
-        if hasDevice && device != nil && captures[channel]?.device != nil && mixer?.session.isMultiCamSessionEnabled == false {
+        if hasDevice && device != nil && captures[channel]?.device == nil && mixer?.session.isMultiCamSessionEnabled == false {
             throw Error.multiCamNotSupported
         }
         try mixer?.session.configuration { _ in
