@@ -30,7 +30,14 @@ final class IOVideoUnit: NSObject, IOUnit {
             #endif
         }
     }
-    var multiCamCaptureSettings: MultiCamCaptureSettings = .default
+    var multiCamCaptureSettings: MultiCamCaptureSettings {
+        get {
+            return videoMixer.multiCamCaptureSettings
+        }
+        set {
+            videoMixer.multiCamCaptureSettings = newValue
+        }
+    }
     weak var mixer: IOMixer?
     var muted: Bool {
         get {
