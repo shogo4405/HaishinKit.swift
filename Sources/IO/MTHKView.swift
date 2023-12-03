@@ -65,13 +65,10 @@ public class MTHKView: MTKView {
     }
 
     private weak var currentStream: NetStream? {
-        willSet {
-            currentStream?.setNetStreamDrawable(nil)
-        }
         didSet {
             currentStream.map {
                 $0.context = CIContext(mtlDevice: device!)
-                $0.setNetStreamDrawable(self)
+                $0.drawable = self
             }
         }
     }

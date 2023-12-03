@@ -255,8 +255,28 @@ open class NetStream: NSObject {
     /// The number of frames per second being displayed.
     @objc public internal(set) dynamic var currentFPS: UInt16 = 0
 
-    /// Specifies the delegate..
+    /// Specifies the delegate.
     public weak var delegate: (any NetStreamDelegate)?
+
+    /// Specifies the drawable.
+    public var drawable: (any NetStreamDrawable)? {
+        get {
+            mixer.videoIO.drawable
+        }
+        set {
+            mixer.videoIO.drawable = newValue
+            guard #available(tvOS 17.0, *) else {
+                return
+            }
+            lockQueue.async {
+                #if os(iOS) || os(tvOS) || os(macOS)
+                if self.mixer.videoIO.hasDevice {
+                    self.mixer.session.startRunning()
+                }
+                #endif
+            }
+        }
+    }
 
     /// The current state of the stream.
     public var readyState: ReadyState = .initialized {
@@ -435,20 +455,6 @@ open class NetStream: NSObject {
             mixer.startRunning()
         default:
             break
-        }
-    }
-
-    func setNetStreamDrawable(_ drawable: (any NetStreamDrawable)?) {
-        lockQueue.async {
-            self.mixer.videoIO.drawable = drawable
-            guard #available(tvOS 17.0, *) else {
-                return
-            }
-            #if os(iOS) || os(tvOS) || os(macOS)
-            if self.mixer.videoIO.hasDevice {
-                self.mixer.session.startRunning()
-            }
-            #endif
         }
     }
 

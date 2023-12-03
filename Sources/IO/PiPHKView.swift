@@ -65,11 +65,8 @@ public class PiPHKView: UIView {
     #endif
 
     private weak var currentStream: NetStream? {
-        willSet {
-            currentStream?.setNetStreamDrawable(nil)
-        }
         didSet {
-            currentStream?.setNetStreamDrawable(self)
+            currentStream?.drawable = self
         }
     }
 
@@ -195,11 +192,8 @@ public class PiPHKView: NSView {
     }
 
     private weak var currentStream: NetStream? {
-        willSet {
-            currentStream?.setNetStreamDrawable(nil)
-        }
         didSet {
-            currentStream?.setNetStreamDrawable(self)
+            currentStream?.drawable = self
         }
     }
 
