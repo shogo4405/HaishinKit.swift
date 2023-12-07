@@ -417,7 +417,7 @@ open class RTMPStream: NetStream {
     }
 
     override public func readyStateWillChange(to readyState: NetStream.ReadyState) {
-        switch readyState {
+        switch self.readyState {
         case .publishing:
             FCUnpublish()
         default:

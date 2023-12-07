@@ -9,14 +9,12 @@ public final class SRTStream: NetStream {
     private var action: (() -> Void)?
     private var keyValueObservations: [NSKeyValueObservation] = []
     private weak var connection: SRTConnection?
-
-    private lazy var writer: TSWriter = {
+    private lazy var writer = {
         var writer = TSWriter()
         writer.delegate = self
         return writer
     }()
-
-    private lazy var reader: TSReader = {
+    private lazy var reader = {
         var reader = TSReader()
         reader.delegate = self
         return reader
@@ -97,9 +95,11 @@ public final class SRTStream: NetStream {
     }
 
     override public func readyStateDidChange(to readyState: NetStream.ReadyState) {
+        super.readyStateDidChange(to: readyState)
         switch readyState {
         case .play:
             connection?.socket?.doInput()
+            self.readyState = .playing
         case .publish:
             writer.expectedMedias.removeAll()
             if videoInputFormat != nil {
