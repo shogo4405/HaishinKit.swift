@@ -284,7 +284,7 @@ open class NetStream: NSObject {
             guard readyState != newValue else {
                 return
             }
-            readyStateWillChange(to: readyState)
+            readyStateWillChange(to: newValue)
         }
         didSet {
             guard readyState != oldValue else {
@@ -427,10 +427,10 @@ open class NetStream: NSObject {
     /// A handler that receives stream readyState will update.
     /// - Warning: Please do not call this method yourself.
     open func readyStateWillChange(to readyState: ReadyState) {
-        switch readyState {
-        case .publishing:
-            mixer.stopRunning()
+        switch self.readyState {
         case .playing:
+            mixer.stopRunning()
+        case .publishing:
             mixer.stopRunning()
         default:
             break
