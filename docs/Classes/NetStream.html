@@ -17,7 +17,7 @@
     <a title="NetStream Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.1 Docs</a> (88% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -193,9 +193,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions.html#/IOMixer">IOMixer</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
@@ -857,7 +854,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the delegate..</p>
+                        <p>Specifies the delegate.</p>
 
                       </div>
                       <div class="declaration">
@@ -865,6 +862,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="p">(</span><span class="n">any</span> <span class="kt"><a href="../Protocols/NetStreamDelegate.html">NetStreamDelegate</a></span><span class="p">)?</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit9NetStreamC8drawableAA0cD8Drawable_pSgvp"></a>
+                    <a name="//apple_ref/swift/Property/drawable" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC8drawableAA0cD8Drawable_pSgvp">drawable</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Specifies the drawable.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">drawable</span><span class="p">:</span> <span class="p">(</span><span class="n">any</span> <span class="kt"><a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a></span><span class="p">)?</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -1027,9 +1051,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit9NetStreamC12videoCapture3forAA07IOVideoF4UnitCSgSi_tF"></a>
+                    <a name="/s:10HaishinKit9NetStreamC12videoCapture3forAA07IOVideoF4UnitCSgs5UInt8V_tF"></a>
                     <a name="//apple_ref/swift/Method/videoCapture(for:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit9NetStreamC12videoCapture3forAA07IOVideoF4UnitCSgSi_tF">videoCapture(for:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC12videoCapture3forAA07IOVideoF4UnitCSgs5UInt8V_tF">videoCapture(for:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1045,7 +1069,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@available(tvOS 17.0, *)</span>
-<span class="kd">public</span> <span class="kd">func</span> <span class="nf">videoCapture</span><span class="p">(</span><span class="k">for</span> <span class="nv">index</span><span class="p">:</span> <span class="kt">Int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a></span><span class="p">?</span></code></pre>
+<span class="kd">public</span> <span class="kd">func</span> <span class="nf">videoCapture</span><span class="p">(</span><span class="k">for</span> <span class="nv">channel</span><span class="p">:</span> <span class="kt">UInt8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt"><a href="../Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -1055,9 +1079,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit9NetStreamC12attachScreenyySo09AVCaptureF5InputCSgF"></a>
-                    <a name="//apple_ref/swift/Method/attachScreen(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit9NetStreamC12attachScreenyySo09AVCaptureF5InputCSgF">attachScreen(_:<wbr>)</a>
+                    <a name="/s:10HaishinKit9NetStreamC12attachScreen_7channelySo09AVCaptureF5InputCSg_s5UInt8VtF"></a>
+                    <a name="//apple_ref/swift/Method/attachScreen(_:channel:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit9NetStreamC12attachScreen_7channelySo09AVCaptureF5InputCSg_s5UInt8VtF">attachScreen(_:<wbr>channel:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -1072,7 +1096,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">attachScreen</span><span class="p">(</span><span class="n">_</span> <span class="nv">input</span><span class="p">:</span> <span class="kt">AVCaptureScreenInput</span><span class="p">?)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">attachScreen</span><span class="p">(</span><span class="n">_</span> <span class="nv">input</span><span class="p">:</span> <span class="kt">AVCaptureScreenInput</span><span class="p">?,</span> <span class="nv">channel</span><span class="p">:</span> <span class="kt">UInt8</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -1386,7 +1410,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-11-09)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

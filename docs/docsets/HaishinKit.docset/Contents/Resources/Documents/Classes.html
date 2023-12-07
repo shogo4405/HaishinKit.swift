@@ -17,7 +17,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.7.1 Docs</a> (88% documented)</p>
+        <p><a href="index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -195,9 +195,6 @@
                 <a href="Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
               </li>
               <li class="nav-group-task">
-                <a href="Extensions.html#/IOMixer">IOMixer</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
             </ul>
@@ -322,64 +319,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8TSReaderC"></a>
-                    <a name="//apple_ref/swift/Class/TSReader" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSReaderC">TSReader</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The TSReader class represents read MPEG-2 transport stream data.</p>
-
-                        <a href="Classes/TSReader.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TSReader</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC"></a>
-                    <a name="//apple_ref/swift/Class/TSWriter" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC">TSWriter</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The TSWriter class represents writes MPEG-2 transport stream data.</p>
-
-                        <a href="Classes/TSWriter.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TSWriter</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOMuxer.html">IOMuxer</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:10HaishinKit10IORecorderC"></a>
                     <a name="//apple_ref/swift/Class/IORecorder" class="dashAnchor"></a>
                     <a class="token" href="#/s:10HaishinKit10IORecorderC">IORecorder</a>
@@ -455,7 +394,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">@available(tvOS 17.0, *)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="kt">IOVideoCaptureUnit</span> <span class="p">:</span> <span class="kt">IOCaptureUnit</span></code></pre>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IOVideoCaptureUnit</span> <span class="p">:</span> <span class="kt">IOCaptureUnit</span></code></pre>
 
                         </div>
                       </div>
@@ -590,6 +529,64 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">VideoEffect</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSReaderC"></a>
+                    <a name="//apple_ref/swift/Class/TSReader" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSReaderC">TSReader</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The TSReader class represents read MPEG-2 transport stream data.</p>
+
+                        <a href="Classes/TSReader.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">TSReader</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit8TSWriterC"></a>
+                    <a name="//apple_ref/swift/Class/TSWriter" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC">TSWriter</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>The TSWriter class represents writes MPEG-2 transport stream data.</p>
+
+                        <a href="Classes/TSWriter.html" class="slightly-smaller">See more</a>
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TSWriter</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOMuxer.html">IOMuxer</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1088,7 +1085,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-11-09)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

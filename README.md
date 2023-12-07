@@ -74,13 +74,15 @@ Supports two camera video sources. A picture-in-picture display that shows the i
 |<img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043421-ceb18cb7-9b50-43fa-a0a2-8b92b78d9df1.png">|<img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043687-a99f21b6-28b2-4170-96de-6c814debd84d.png">|
 
 ```swift
-// If you're using multi-camera functionality, please make sure to call the attachMultiCamera method first. This is required for iOS 14 and 15, among others.
+// If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
+stream.isMultiCamSessionEnabled = true
+
+let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+stream.attachCamera(back)
 if #available(iOS 13.0, *) {
   let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
   stream.attachMultiCamera(front)
 }
-let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-stream.attachCamera(back)
 rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio))
 ```
 
@@ -254,9 +256,11 @@ stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
 
 /// Specifies the video capture settings.
-stream.videoCapture(for: 0).isVideoMirrored = false
-stream.videoCapture(for: 0).preferredVideoStabilizationMode = .auto
-// stream.videoCapture(for: 0).isVideoMirrored = false
+stream.videoCapture(for: 0).map {
+    // $0.isVideoMirrored = true
+    $0.preferredVideoStabilizationMode = .standard
+    // $0.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+}
 ```
 
 ### 🔊 [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)

@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.7.1 Docs</a> (88% documented)</p>
+        <p><a href="index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -192,9 +192,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions.html#/IOMixer">IOMixer</a>
               </li>
               <li class="nav-group-task">
                 <a href="Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
@@ -432,13 +429,15 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <td style="text-align: center"><img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043687-a99f21b6-28b2-4170-96de-6c814debd84d.png"></td>
 </tr>
 </tbody></table>
-<pre class="highlight swift"><code><span class="c1">// If you're using multi-camera functionality, please make sure to call the attachMultiCamera method first. This is required for iOS 14 and 15, among others.</span>
+<pre class="highlight swift"><code><span class="c1">// If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">isMultiCamSessionEnabled</span> <span class="o">=</span> <span class="kc">true</span>
+
+<span class="k">let</span> <span class="nv">back</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
 <span class="k">if</span> <span class="kd">#available(iOS 13.0, *)</span> <span class="p">{</span>
   <span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
   <span class="n">stream</span><span class="o">.</span><span class="nf">attachMultiCamera</span><span class="p">(</span><span class="n">front</span><span class="p">)</span>
 <span class="p">}</span>
-<span class="k">let</span> <span class="nv">back</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
 <span class="n">rtmpStream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span>
 </code></pre>
 <h3 id='rendering' class='heading'>Rendering</h3>
@@ -683,9 +682,11 @@ open HaishinKit.xcodeproj
 <span class="n">stream</span><span class="o">.</span><span class="n">sessionPreset</span> <span class="o">=</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span>
 
 <span class="c1">/// Specifies the video capture settings.</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">false</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">auto</span>
-<span class="c1">// stream.videoCapture(for: 0).isVideoMirrored = false</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span>
+    <span class="c1">// $0.isVideoMirrored = true</span>
+    <span class="nv">$0</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span>
+    <span class="c1">// $0.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange</span>
+<span class="p">}</span>
 </code></pre>
 <h3 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-audiocodecsettings-html-audiocodecsettings-a' class='heading'>🔊 <a href="https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html">AudioCodecSettings</a></h3>
 
@@ -802,7 +803,7 @@ stream.startRecording(self, settings: [
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-11-09)</p>
+          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

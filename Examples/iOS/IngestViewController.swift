@@ -44,7 +44,7 @@ final class IngestViewController: UIViewController {
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
 
-        // If you're using multi-camera functionality, please make sure isMultiCamSessionEnabled = true. Initialization point.
+        // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
         stream.isMultiCamSessionEnabled = true
         if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
             stream.videoOrientation = orientation
