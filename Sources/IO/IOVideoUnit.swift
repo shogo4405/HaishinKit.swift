@@ -235,16 +235,13 @@ final class IOVideoUnit: NSObject, IOUnit {
                 try capture.attachDevice(nil, videoUnit: self)
             }
             try capture(for: channel)?.attachDevice(device, videoUnit: self)
+            if device == nil {
+                videoMixer.detach(channel)
+            }
         }
-        if device != nil {
-            if drawable != nil {
-                // Start captureing if not running.
-                mixer?.session.startRunning()
-            }
-        } else {
-            lockQueue.async {
-                self.videoMixer.detach(channel)
-            }
+        if device != nil && drawable != nil {
+            // Start captureing if not running.
+            mixer?.session.startRunning()
         }
     }
 
@@ -258,19 +255,15 @@ final class IOVideoUnit: NSObject, IOUnit {
     @available(tvOS 17.0, *)
     func capture(for channel: UInt8) -> IOVideoCaptureUnit? {
         #if os(tvOS)
-        return lockQueue.sync {
-            if _captures[channel] == nil {
-                _captures[channel] = IOVideoCaptureUnit()
-            }
-            return _captures[channel] as? IOVideoCaptureUnit
+        if _captures[channel] == nil {
+            _captures[channel] = IOVideoCaptureUnit()
         }
+        return _captures[channel] as? IOVideoCaptureUnit
         #else
-        return lockQueue.sync {
-            if captures[channel] == nil {
-                captures[channel] = .init()
-            }
-            return captures[channel]
+        if captures[channel] == nil {
+            captures[channel] = .init()
         }
+        return captures[channel]
         #endif
     }
 

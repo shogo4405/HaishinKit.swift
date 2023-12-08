@@ -358,7 +358,7 @@ open class NetStream: NSObject {
     /// Returns the IOVideoCaptureUnit by index.
     @available(tvOS 17.0, *)
     public func videoCapture(for channel: UInt8) -> IOVideoCaptureUnit? {
-        return lockQueue.sync {
+        return mixer.videoIO.lockQueue.sync {
             return self.mixer.videoIO.capture(for: channel)
         }
     }
