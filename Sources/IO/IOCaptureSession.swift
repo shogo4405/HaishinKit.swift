@@ -25,23 +25,16 @@ final class IOCaptureSession {
     static let isMultiCamSupported = true
     #endif
 
-    #if os(tvOS)
-    private var _session: Any?
-    /// The capture session instance.
-    @available(tvOS 17.0, *)
-    var session: AVCaptureSession {
-        if _session == nil {
-            _session = makeSession()
-        }
-        return _session as! AVCaptureSession
-    }
-    #elseif os(iOS) || os(macOS)
-    /// The capture session instance.
-    private(set) lazy var session: AVCaptureSession = makeSession()
-    #endif
-
     #if os(iOS) || os(tvOS)
-    var isMultiCamSessionEnabled = false
+    var isMultiCamSessionEnabled = false {
+        didSet {
+            if !Self.isMultiCamSupported {
+                isMultiCamSessionEnabled = false
+                logger.info("This device can't support the AVCaptureMultiCamSession.")
+            }
+        }
+    }
+
     @available(tvOS 17.0, *)
     var isMultitaskingCameraAccessEnabled: Bool {
         return session.isMultitaskingCameraAccessEnabled
@@ -55,6 +48,16 @@ final class IOCaptureSession {
     private(set) var isRunning: Atomic<Bool> = .init(false)
 
     #if os(tvOS)
+    private var _session: Any?
+    /// The capture session instance.
+    @available(tvOS 17.0, *)
+    var session: AVCaptureSession {
+        if _session == nil {
+            _session = makeSession()
+        }
+        return _session as! AVCaptureSession
+    }
+
     private var _sessionPreset: Any?
     @available(tvOS 17.0, *)
     var sessionPreset: AVCaptureSession.Preset {
@@ -84,6 +87,9 @@ final class IOCaptureSession {
             session.commitConfiguration()
         }
     }
+
+    /// The capture session instance.
+    private(set) lazy var session: AVCaptureSession = makeSession()
     #endif
 
     @available(tvOS 17.0, *)
