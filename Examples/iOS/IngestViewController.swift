@@ -69,7 +69,6 @@ final class IngestViewController: UIViewController {
         stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
             logger.warn(error)
         }
-
         if #available(iOS 13.0, *) {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             stream.videoCapture(for: 1)?.isVideoMirrored = true

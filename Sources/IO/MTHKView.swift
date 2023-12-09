@@ -46,11 +46,14 @@ public class MTHKView: MTKView {
     }
 
     private var currentSampleBuffer: CMSampleBuffer?
+
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
 
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
+
+    private var context: CIContext?
 
     private var captureVideoPreview: View? {
         willSet {
@@ -67,7 +70,9 @@ public class MTHKView: MTKView {
     private weak var currentStream: NetStream? {
         didSet {
             currentStream.map {
-                $0.context = CIContext(mtlDevice: device!)
+                if let context = self.context {
+                    $0.context = context
+                }
                 $0.drawable = self
             }
         }
@@ -91,6 +96,9 @@ public class MTHKView: MTKView {
         delegate = self
         framebufferOnly = false
         enableSetNeedsDisplay = true
+        if let device {
+            context = CIContext(mtlDevice: device)
+        }
     }
 }
 
@@ -129,9 +137,9 @@ extension MTHKView: MTKViewDelegate {
 
     public func draw(in view: MTKView) {
         guard
+            let context,
             let currentDrawable = currentDrawable,
-            let commandBuffer = commandQueue?.makeCommandBuffer(),
-            let context = currentStream?.context else {
+            let commandBuffer = commandQueue?.makeCommandBuffer() else {
             return
         }
         if
