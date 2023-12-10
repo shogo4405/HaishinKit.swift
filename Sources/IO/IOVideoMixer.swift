@@ -4,6 +4,7 @@ import Foundation
 
 protocol IOVideoMixerDelegate: AnyObject {
     func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime)
+    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput sampleBUffer: CMSampleBuffer)
 }
 
 private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
@@ -13,7 +14,7 @@ private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
 
 final class IOVideoMixer<T: IOVideoMixerDelegate> {
     var muted = false
-    var multiCamCaptureSettings: MultiCamCaptureSettings = .default
+    var settings: MultiCamCaptureSettings = .default
     weak var delegate: T?
     var context: CIContext = .init() {
         didSet {
@@ -71,8 +72,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
     }
 
     func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8, isVideoMirrored: Bool) {
-        switch channel {
-        case 0:
+        if channel == settings.channel {
             var imageBuffer: CVImageBuffer?
             guard let buffer = sampleBuffer.imageBuffer else {
                 return
@@ -89,15 +89,15 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
             #endif
             if let multiCamPixelBuffer = multiCamSampleBuffer?.imageBuffer {
                 multiCamPixelBuffer.lockBaseAddress()
-                switch multiCamCaptureSettings.mode {
+                switch settings.mode {
                 case .pip:
                     buffer.over(
                         multiCamPixelBuffer,
-                        regionOfInterest: multiCamCaptureSettings.regionOfInterest,
-                        radius: multiCamCaptureSettings.cornerRadius
+                        regionOfInterest: settings.regionOfInterest,
+                        radius: settings.cornerRadius
                     )
                 case .splitView:
-                    buffer.split(multiCamPixelBuffer, direction: multiCamCaptureSettings.direction)
+                    buffer.split(multiCamPixelBuffer, direction: settings.direction)
                 }
                 multiCamPixelBuffer.unlockBaseAddress()
             }
@@ -121,10 +121,9 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
             if !muted {
                 pixelBuffer = buffer
             }
-        case 1:
+            delegate?.videoMixer(self, didOutput: sampleBuffer)
+        } else {
             multiCamSampleBuffer = sampleBuffer
-        default:
-            break
         }
     }
 

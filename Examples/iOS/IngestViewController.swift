@@ -126,18 +126,20 @@ final class IngestViewController: UIViewController {
 
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
-        let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        stream.videoCapture(for: 0)?.isVideoMirrored = position == .front
-        stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
-            logger.warn(error)
-        }
-        if #available(iOS 13.0, *) {
-            stream.videoCapture(for: 1)?.isVideoMirrored = currentPosition == .front
-            stream.attachMultiCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
+        if stream.isMultiCamSessionEnabled {
+            if stream.multiCamCaptureSettings.channel == 0 {
+                stream.multiCamCaptureSettings.channel = 1
+            } else {
+                stream.multiCamCaptureSettings.channel = 0
+            }
+        } else {
+            let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
+            stream.videoCapture(for: 0)?.isVideoMirrored = position == .front
+            stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
                 logger.warn(error)
             }
+            currentPosition = position
         }
-        currentPosition = position
     }
 
     @IBAction func toggleTorch(_ sender: UIButton) {
