@@ -136,7 +136,7 @@ extension IOMixer: AudioCodecDelegate {
 extension IOMixer: IOCaptureSessionDelegate {
     // MARK: IOCaptureSessionDelegate
     @available(tvOS 17.0, *)
-    func session(_ capture: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError) {
+    func captureSession(_ capture: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError) {
         switch error.code {
         case .unsupportedDeviceActiveFormat:
             guard let device = error.device, let format = device.videoFormat(
@@ -166,12 +166,12 @@ extension IOMixer: IOCaptureSessionDelegate {
 
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
-    func session(_ _: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
+    func captureSession(_ _: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
         delegate?.mixer(self, sessionWasInterrupted: session, reason: reason)
     }
 
     @available(tvOS 17.0, *)
-    func session(_ _: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession) {
+    func captureSession(_ _: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession) {
         delegate?.mixer(self, sessionInterruptionEnded: session)
     }
     #endif

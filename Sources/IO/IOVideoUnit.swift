@@ -62,22 +62,21 @@ final class IOVideoUnit: NSObject, IOUnit {
     #if os(iOS) || os(macOS) || os(tvOS)
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
-            if #available(tvOS 17.0, *) {
-                for capture in captures.values {
-                    capture.setFrameRate(frameRate)
-                }
+            guard #available(tvOS 17.0, *) else {
+                return
+            }
+            for capture in captures.values {
+                capture.setFrameRate(frameRate)
             }
         }
     }
 
     var torch = false {
         didSet {
-            guard torch != oldValue else {
+            guard #available(tvOS 17.0, *), torch != oldValue else {
                 return
             }
-            if #available(tvOS 17.0, *) {
-                setTorchMode(torch ? .on : .off)
-            }
+            setTorchMode(torch ? .on : .off)
         }
     }
     @available(tvOS 17.0, *)

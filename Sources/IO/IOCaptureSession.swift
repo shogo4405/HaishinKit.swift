@@ -3,12 +3,12 @@ import AVFoundation
 
 protocol IOCaptureSessionDelegate: AnyObject {
     @available(tvOS 17.0, *)
-    func session(_ session: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError)
+    func captureSession(_ session: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError)
     #if os(iOS) || os(tvOS)
     @available(tvOS 17.0, *)
-    func session(_ session: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
+    func captureSession(_ session: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
     @available(tvOS 17.0, *)
-    func session(_ session: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession)
+    func captureSession(_ session: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession)
     #endif
 }
 
@@ -231,7 +231,7 @@ final class IOCaptureSession {
         default:
             break
         }
-        delegate?.session(self, sessionRuntimeError: session, error: error)
+        delegate?.captureSession(self, sessionRuntimeError: session, error: error)
     }
 
     #if os(iOS) || os(tvOS)
@@ -244,16 +244,16 @@ final class IOCaptureSession {
         guard let userInfoValue = notification.userInfo?[AVCaptureSessionInterruptionReasonKey] as AnyObject?,
               let reasonIntegerValue = userInfoValue.integerValue,
               let reason = AVCaptureSession.InterruptionReason(rawValue: reasonIntegerValue) else {
-            delegate?.session(self, sessionWasInterrupted: session, reason: nil)
+            delegate?.captureSession(self, sessionWasInterrupted: session, reason: nil)
             return
         }
-        delegate?.session(self, sessionWasInterrupted: session, reason: reason)
+        delegate?.captureSession(self, sessionWasInterrupted: session, reason: reason)
     }
 
     @available(tvOS 17.0, *)
     @objc
     private func sessionInterruptionEnded(_ notification: Notification) {
-        delegate?.session(self, sessionInterruptionEnded: session)
+        delegate?.captureSession(self, sessionInterruptionEnded: session)
     }
     #endif
 }
