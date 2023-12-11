@@ -31,6 +31,8 @@ public struct MultiCamCaptureSettings: Codable {
     public let regionOfInterest: CGRect
     /// The direction of the splitView position.
     public let direction: ImageTransform
+    /// Specifies the main channel number.
+    public var channel: UInt8 = 0
 
     /// Create a new MultiCamCaptureSetting.
     public init(mode: Mode, cornerRadius: CGFloat, regionOfInterest: CGRect, direction: ImageTransform) {

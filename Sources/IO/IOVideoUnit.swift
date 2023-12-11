@@ -32,10 +32,10 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
     var multiCamCaptureSettings: MultiCamCaptureSettings {
         get {
-            return videoMixer.multiCamCaptureSettings
+            return videoMixer.settings
         }
         set {
-            videoMixer.multiCamCaptureSettings = newValue
+            videoMixer.settings = newValue
         }
     }
     weak var mixer: IOMixer?
@@ -211,9 +211,7 @@ final class IOVideoUnit: NSObject, IOUnit {
              kCVPixelFormatType_TwoComponent32Float,
              kCVPixelFormatType_64RGBAHalf,
              kCVPixelFormatType_128RGBAFloat:
-            inputFormat = sampleBuffer.formatDescription
-            videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: false)
-            drawable?.enqueue(sampleBuffer)
+            videoMixer.append(sampleBuffer, channel: channel, isVideoMirrored: false)
         default:
             inputFormat = sampleBuffer.formatDescription
             codec.append(sampleBuffer)
@@ -316,9 +314,7 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
     // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         if captures[0]?.output == captureOutput {
-            inputFormat = sampleBuffer.formatDescription
             videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: connection.isVideoMirrored)
-            drawable?.enqueue(sampleBuffer)
         } else if captures[1]?.output == captureOutput {
             videoMixer.append(sampleBuffer, channel: 1, isVideoMirrored: connection.isVideoMirrored)
         }
@@ -328,6 +324,11 @@ extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
+    func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
+        inputFormat = sampleBuffer.formatDescription
+        drawable?.enqueue(sampleBuffer)
+    }
+
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime) {
         codec.append(
             imageBuffer,
