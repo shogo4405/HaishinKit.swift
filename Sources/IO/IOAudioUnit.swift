@@ -4,11 +4,11 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
-/// The IO audio unit  error domain codes.
+/// The IOAudioUnit  error domain codes.
 public enum IOAudioUnitError: Swift.Error {
-    /// The IO audio unit  failed to create the AVAudioConverter..
+    /// The IOAudioUnit  failed to create the AVAudioConverter.
     case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
-    /// The IO audio unit  faild to convert the an audio buffer.
+    /// The IOAudioUnit  faild to convert the an audio buffer.
     case failedToConvert(error: NSError)
 }
 

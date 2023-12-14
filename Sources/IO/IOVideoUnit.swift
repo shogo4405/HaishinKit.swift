@@ -1,17 +1,17 @@
 import AVFoundation
 import CoreImage
 
-/**
- * The IO video unit error domain codes.
- */
-public enum IOVideoUnitError: Swift.Error {
-    /// The IO video unit failed to create the VTSession.
+/// The IOVideoUnit error domain codes.
+public enum IOVideoUnitError: Error {
+    /// The IOVideoUnit failed to attach device.
+    case failedToAttach(error: (any Error)?)
+    /// The IOVideoUnit failed to create the VTSession.
     case failedToCreate(status: OSStatus)
-    /// The IO video unit  failed to prepare the VTSession.
+    /// The IOVideoUnit  failed to prepare the VTSession.
     case failedToPrepare(status: OSStatus)
-    /// The IO video unit failed to encode or decode a flame.
+    /// The IOVideoUnit failed to encode or decode a flame.
     case failedToFlame(status: OSStatus)
-    /// The IO video unit failed to set an option.
+    /// The IOVideoUnit failed to set an option.
     case failedToSetOption(status: OSStatus, option: VTSessionOption)
 }
 
@@ -220,7 +220,7 @@ final class IOVideoUnit: NSObject, IOUnit {
 
     #if os(iOS) || os(tvOS) || os(macOS)
     @available(tvOS 17.0, *)
-    func attachCamera(_ device: AVCaptureDevice?, channel: UInt8) throws {
+    func attachCamera(_ device: AVCaptureDevice?, channel: UInt8, configuration: IOVideoCaptureConfigurationBlock?) throws {
         guard captures[channel]?.device != device else {
             return
         }
@@ -229,9 +229,11 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
         try mixer?.session.configuration { _ in
             for capture in captures.values where capture.device == device {
-                try capture.attachDevice(nil, videoUnit: self)
+                try? capture.attachDevice(nil, videoUnit: self)
             }
-            try capture(for: channel)?.attachDevice(device, videoUnit: self)
+            let capture = self.capture(for: channel)
+            configuration?(capture, nil)
+            try capture?.attachDevice(device, videoUnit: self)
             if device == nil {
                 videoMixer.detach(channel)
             }

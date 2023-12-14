@@ -62,19 +62,21 @@ final class IngestViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-
-        stream.attachCamera(back) { error in
-            logger.warn(error)
+        stream.attachCamera(back, channel: 0) { _, error in
+            if let error {
+                logger.warn(error)
+            }
         }
         stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
             logger.warn(error)
         }
-        if #available(iOS 13.0, *) {
-            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            stream.videoCapture(for: 1)?.isVideoMirrored = true
-            stream.attachMultiCamera(front)
+        let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+        stream.attachCamera(front, channel: 1) { videoUnit, error in
+            videoUnit?.isVideoMirrored = true
+            if let error {
+                logger.error(error)
+            }
         }
-
         stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         (view as? (any NetStreamDrawable))?.attachStream(stream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
@@ -87,10 +89,8 @@ final class IngestViewController: UIViewController {
         stream.removeObserver(self, forKeyPath: "currentFPS")
         (stream as? RTMPStream)?.close()
         stream.attachAudio(nil)
-        stream.attachCamera(nil)
-        if #available(iOS 13.0, *) {
-            stream.attachMultiCamera(nil)
-        }
+        stream.attachCamera(nil, channel: 0)
+        stream.attachCamera(nil, channel: 1)
         // swiftlint:disable:next notification_center_detachment
         NotificationCenter.default.removeObserver(self)
     }
@@ -134,9 +134,8 @@ final class IngestViewController: UIViewController {
             }
         } else {
             let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-            stream.videoCapture(for: 0)?.isVideoMirrored = position == .front
-            stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { error in
-                logger.warn(error)
+            stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { videoUnit, _ in
+                videoUnit?.isVideoMirrored = position == .front
             }
             currentPosition = position
         }
