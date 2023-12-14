@@ -319,10 +319,11 @@ open class NetStream: NSObject {
     /// Attaches the primary camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(tvOS 17.0, *)
+    @available(*, deprecated, renamed: "attachCamera(_:channel:configuration:)")
     public func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachCamera(device, channel: 0)
+                try self.mixer.videoIO.attachCamera(device, channel: 0, configuration: nil)
             } catch {
                 onError?(error)
             }
@@ -332,13 +333,34 @@ open class NetStream: NSObject {
     /// Attaches the 2ndary camera  object for picture in picture.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(iOS 13.0, tvOS 17.0, *)
+    @available(*, deprecated, renamed: "attachCamera(_:channel:configuration:)")
     public func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachCamera(device, channel: 1)
+                try self.mixer.videoIO.attachCamera(device, channel: 1, configuration: nil)
             } catch {
                 onError?(error)
             }
+        }
+    }
+
+    /// Attaches the camera object.
+    @available(tvOS 17.0, *)
+    public func attachCamera(_ device: AVCaptureDevice?, channel: UInt8 = 0, configuration: IOVideoCaptureConfigurationBlock? = nil) {
+        lockQueue.async {
+            do {
+                try self.mixer.videoIO.attachCamera(device, channel: channel, configuration: configuration)
+            } catch {
+                configuration?(nil, IOVideoUnitError.failedToAttach(error: error))
+            }
+        }
+    }
+
+    /// Returns the IOVideoCaptureUnit by channel.
+    @available(tvOS 17.0, *)
+    public func videoCapture(for channel: UInt8) -> IOVideoCaptureUnit? {
+        return mixer.videoIO.lockQueue.sync {
+            return self.mixer.videoIO.capture(for: channel)
         }
     }
 
@@ -352,14 +374,6 @@ open class NetStream: NSObject {
             } catch {
                 onError?(error)
             }
-        }
-    }
-
-    /// Returns the IOVideoCaptureUnit by index.
-    @available(tvOS 17.0, *)
-    public func videoCapture(for channel: UInt8) -> IOVideoCaptureUnit? {
-        return mixer.videoIO.lockQueue.sync {
-            return self.mixer.videoIO.capture(for: channel)
         }
     }
     #endif
