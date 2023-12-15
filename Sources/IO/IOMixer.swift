@@ -50,11 +50,11 @@ final class IOMixer {
     #endif
 
     private(set) lazy var audioEngine: AVAudioEngine? = {
-        return NetStream.audioEngineHolder.retain()
+        return IOStream.audioEngineHolder.retain()
     }()
 
     deinit {
-        NetStream.audioEngineHolder.release(audioEngine)
+        IOStream.audioEngineHolder.release(audioEngine)
     }
 
     #if os(iOS) || os(tvOS)

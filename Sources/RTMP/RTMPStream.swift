@@ -1,7 +1,7 @@
 import AVFoundation
 
 /// An object that provides the interface to control a one-way channel over a RtmpConnection.
-open class RTMPStream: NetStream {
+open class RTMPStream: IOStream {
     /// NetStatusEvent#info.code for NetStream
     /// - seealso: https://help.adobe.com/en_US/air/reference/html/flash/events/NetStatusEvent.html#NET_STATUS
     public enum Code: String {
@@ -416,7 +416,7 @@ open class RTMPStream: NetStream {
         return metadata
     }
 
-    override public func readyStateWillChange(to readyState: NetStream.ReadyState) {
+    override public func readyStateWillChange(to readyState: IOStream.ReadyState) {
         switch self.readyState {
         case .publishing:
             FCUnpublish()
@@ -426,7 +426,7 @@ open class RTMPStream: NetStream {
         super.readyStateWillChange(to: readyState)
     }
 
-    override public func readyStateDidChange(to readyState: NetStream.ReadyState) {
+    override public func readyStateDidChange(to readyState: IOStream.ReadyState) {
         guard let rtmpConnection else {
             return
         }

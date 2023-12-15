@@ -1,8 +1,10 @@
 import AVFoundation
 import Foundation
 
-/// An interface that manages the NetStream content on the screen.
-public protocol NetStreamDrawable: AnyObject {
+typealias NetStreamDrawable = IOStreamDrawable
+
+/// An interface that manages the IOStream content on the screen.
+public protocol IOStreamDrawable: AnyObject {
     #if os(iOS) || os(macOS)
     /// Specifies the orientation of AVCaptureVideoOrientation.
     var videoOrientation: AVCaptureVideoOrientation { get set }
@@ -17,7 +19,7 @@ public protocol NetStreamDrawable: AnyObject {
     #endif
 
     /// Attaches a drawable to a new NetStream object.
-    func attachStream(_ stream: NetStream?)
+    func attachStream(_ stream: IOStream?)
 
     /// Enqueue a CMSampleBuffer? to draw.
     func enqueue(_ sampleBuffer: CMSampleBuffer?)

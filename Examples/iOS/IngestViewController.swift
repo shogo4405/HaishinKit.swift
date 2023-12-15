@@ -24,7 +24,7 @@ final class IngestViewController: UIViewController {
     private var retryCount: Int = 0
     private var preferedStereo = false
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: NetStream {
+    private var stream: IOStream {
         return netStreamSwitcher.stream
     }
     private lazy var audioCapture: AudioCapture = {
@@ -51,7 +51,7 @@ final class IngestViewController: UIViewController {
         }
         stream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
         stream.audioSettings.bitRate = 64 * 1000
-        stream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
+        stream.bitrateStrategy = IOStreamVideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
 
@@ -78,7 +78,7 @@ final class IngestViewController: UIViewController {
             }
         }
         stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        (view as? (any NetStreamDrawable))?.attachStream(stream)
+        (view as? (any IOStreamDrawable))?.attachStream(stream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
@@ -152,7 +152,7 @@ final class IngestViewController: UIViewController {
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            stream.bitrateStrategy = VideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
+            stream.bitrateStrategy = IOStreamVideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)

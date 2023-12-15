@@ -5,7 +5,7 @@ import HaishinKit
 final class PlaybackViewController: NSViewController {
     @IBOutlet private weak var lfView: MTHKView!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: NetStream {
+    private var stream: IOStream {
         return netStreamSwitcher.stream
     }
 

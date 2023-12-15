@@ -11,30 +11,34 @@ import ScreenCaptureKit
 import UIKit
 #endif
 
-/// The interface a NetStream uses to inform its delegate.
-public protocol NetStreamDelegate: AnyObject {
+typealias NetStreamDelegate = IOStreamDelegate
+
+/// The interface an IOStream uses to inform its delegate.
+public protocol IOStreamDelegate: AnyObject {
     /// Tells the receiver an audio packet incoming.
-    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
+    func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to playback a video incoming.
-    func stream(_ stream: NetStream, didOutput video: CMSampleBuffer)
+    func stream(_ stream: IOStream, didOutput video: CMSampleBuffer)
     #if os(iOS) || os(tvOS)
     /// Tells the receiver to session was interrupted.
     @available(tvOS 17.0, *)
-    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
+    func stream(_ stream: IOStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
     /// Tells the receiver to session interrupted ended.
     @available(tvOS 17.0, *)
-    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession)
+    func stream(_ stream: IOStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
     /// Tells the receiver to video error occured.
-    func stream(_ stream: NetStream, videoErrorOccurred error: IOVideoUnitError)
+    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
     /// Tells the receiver to audio error occured.
-    func stream(_ stream: NetStream, audioErrorOccurred error: IOAudioUnitError)
+    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError)
     /// Tells the receiver to the stream opened.
-    func streamDidOpen(_ stream: NetStream)
+    func streamDidOpen(_ stream: IOStream)
 }
 
-/// The `NetStream` class is the foundation of a RTMPStream.
-open class NetStream: NSObject {
+typealias NetStream = IOStream
+
+/// The `IOStream` class is the foundation of a RTMPStream.
+open class IOStream: NSObject {
     /// The AVAudioEngine shared instance holder.
     static let audioEngineHolder: InstanceHolder<AVAudioEngine> = .init {
         return AVAudioEngine()
@@ -42,7 +46,7 @@ open class NetStream: NSObject {
 
     /// The enumeration defines the state a ReadyState NetStream is in.
     public enum ReadyState: Equatable {
-        public static func == (lhs: NetStream.ReadyState, rhs: NetStream.ReadyState) -> Bool {
+        public static func == (lhs: IOStream.ReadyState, rhs: IOStream.ReadyState) -> Bool {
             return lhs.rawValue == rhs.rawValue
         }
 
@@ -85,7 +89,7 @@ open class NetStream: NSObject {
     public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetStream.lock", qos: .userInitiated)
 
     /// Specifies the adaptibe bitrate strategy.
-    public var bitrateStrategy: any NetBitRateStrategyConvertible = NetBitRateStrategy.shared {
+    public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy.shared {
         didSet {
             bitrateStrategy.stream = self
             bitrateStrategy.setUp()
@@ -256,10 +260,10 @@ open class NetStream: NSObject {
     @objc public internal(set) dynamic var currentFPS: UInt16 = 0
 
     /// Specifies the delegate.
-    public weak var delegate: (any NetStreamDelegate)?
+    public weak var delegate: (any IOStreamDelegate)?
 
     /// Specifies the drawable.
-    public var drawable: (any NetStreamDrawable)? {
+    public var drawable: (any IOStreamDrawable)? {
         get {
             mixer.videoIO.drawable
         }
@@ -488,7 +492,7 @@ open class NetStream: NSObject {
     #endif
 }
 
-extension NetStream: IOMixerDelegate {
+extension IOStream: IOMixerDelegate {
     // MARK: IOMixerDelegate
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
         delegate?.stream(self, didOutput: video)
@@ -519,7 +523,7 @@ extension NetStream: IOMixerDelegate {
     #endif
 }
 
-extension NetStream: IOTellyUnitDelegate {
+extension IOStream: IOTellyUnitDelegate {
     // MARK: IOTellyUnitDelegate
     func tellyUnit(_ tellyUnit: IOTellyUnit, dequeue sampleBuffer: CMSampleBuffer) {
         mixer.videoIO.drawable?.enqueue(sampleBuffer)
@@ -552,7 +556,7 @@ extension NetStream: IOTellyUnitDelegate {
     }
 }
 
-extension NetStream: IOScreenCaptureUnitDelegate {
+extension IOStream: IOScreenCaptureUnitDelegate {
     // MARK: IOScreenCaptureUnitDelegate
     public func session(_ session: any IOScreenCaptureUnit, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime) {
         var timingInfo = CMSampleTimingInfo(
@@ -588,7 +592,7 @@ extension NetStream: IOScreenCaptureUnitDelegate {
 }
 
 #if os(macOS)
-extension NetStream: SCStreamOutput {
+extension IOStream: SCStreamOutput {
     @available(macOS 12.3, *)
     public func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
         if #available(macOS 13.0, *) {

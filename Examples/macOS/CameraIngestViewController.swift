@@ -19,7 +19,7 @@ final class CameraIngestViewController: NSViewController {
     @IBOutlet private weak var urlField: NSTextField!
     @IBOutlet private weak var segmentedControl: NSSegmentedControl!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: NetStream {
+    private var stream: IOStream {
         return netStreamSwitcher.stream
     }
 

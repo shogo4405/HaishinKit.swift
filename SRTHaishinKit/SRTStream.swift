@@ -4,7 +4,7 @@ import HaishinKit
 import libsrt
 
 /// An object that provides the interface to control a one-way channel over a SRTConnection.
-public final class SRTStream: NetStream {
+public final class SRTStream: IOStream {
     private var name: String?
     private var action: (() -> Void)?
     private var keyValueObservations: [NSKeyValueObservation] = []
@@ -94,7 +94,7 @@ public final class SRTStream: NetStream {
         }
     }
 
-    override public func readyStateDidChange(to readyState: NetStream.ReadyState) {
+    override public func readyStateDidChange(to readyState: IOStream.ReadyState) {
         super.readyStateDidChange(to: readyState)
         switch readyState {
         case .play:

@@ -466,7 +466,7 @@ public class RTMPConnection: EventDispatcher {
             }
             if total == measureInterval - 1 {
                 for stream in streams {
-                    stream.bitrateStrategy.insufficientBWOccured(NetBitRateStats(
+                    stream.bitrateStrategy.insufficientBWOccured(IOStreamBitRateStats(
                         currentQueueBytesOut: queueBytesOut,
                         currentBytesInPerSecond: currentBytesInPerSecond,
                         currentBytesOutPerSecond: currentBytesOutPerSecond
@@ -475,7 +475,7 @@ public class RTMPConnection: EventDispatcher {
                 }
             } else if total == 0 {
                 for stream in streams {
-                    stream.bitrateStrategy.sufficientBWOccured(NetBitRateStats(
+                    stream.bitrateStrategy.sufficientBWOccured(IOStreamBitRateStats(
                         currentQueueBytesOut: queueBytesOut,
                         currentBytesInPerSecond: currentBytesInPerSecond,
                         currentBytesOutPerSecond: currentBytesOutPerSecond

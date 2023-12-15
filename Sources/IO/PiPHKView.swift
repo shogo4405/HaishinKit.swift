@@ -64,7 +64,7 @@ public class PiPHKView: UIView {
     }
     #endif
 
-    private weak var currentStream: NetStream? {
+    private weak var currentStream: IOStream? {
         didSet {
             currentStream?.drawable = self
         }
@@ -106,9 +106,9 @@ public class PiPHKView: UIView {
     }
 }
 
-extension PiPHKView: NetStreamDrawable {
+extension PiPHKView: IOStreamDrawable {
     // MARK: NetStreamDrawable
-    public func attachStream(_ stream: NetStream?) {
+    public func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
             currentStream = stream
         } else {
@@ -191,7 +191,7 @@ public class PiPHKView: NSView {
         }
     }
 
-    private weak var currentStream: NetStream? {
+    private weak var currentStream: IOStream? {
         didSet {
             currentStream?.drawable = self
         }
@@ -222,9 +222,9 @@ public class PiPHKView: NSView {
     }
 }
 
-extension PiPHKView: NetStreamDrawable {
+extension PiPHKView: IOStreamDrawable {
     // MARK: NetStreamDrawable
-    public func attachStream(_ stream: NetStream?) {
+    public func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
             currentStream = stream
         } else {

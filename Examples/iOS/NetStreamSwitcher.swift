@@ -10,7 +10,7 @@ final class NetStreamSwitcher {
         case rtmp
         case srt
 
-        func makeStream(_ swithcer: NetStreamSwitcher) -> NetStream {
+        func makeStream(_ swithcer: NetStreamSwitcher) -> IOStream {
             switch self {
             case .rtmp:
                 let connection = RTMPConnection()
@@ -46,7 +46,7 @@ final class NetStreamSwitcher {
     private var retryCount = 0
     private var connection: Any?
     private var method: Method = .ingest
-    private(set) var stream: NetStream = .init() {
+    private(set) var stream: IOStream = .init() {
         didSet {
             stream.delegate = self
         }
@@ -129,37 +129,37 @@ final class NetStreamSwitcher {
     }
 }
 
-extension NetStreamSwitcher: NetStreamDelegate {
+extension NetStreamSwitcher: IOStreamDelegate {
     // MARK: NetStreamDelegate
     /// Tells the receiver to playback an audio packet incoming.
-    func stream(_ stream: NetStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
     /// Tells the receiver to playback a video packet incoming.
-    func stream(_ stream: NetStream, didOutput video: CMSampleBuffer) {
+    func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
     }
 
     #if os(iOS) || os(tvOS)
     /// Tells the receiver to session was interrupted.
     @available(tvOS 17.0, *)
-    func stream(_ stream: NetStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
+    func stream(_ stream: IOStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
     }
 
     /// Tells the receiver to session interrupted ended.
     @available(tvOS 17.0, *)
-    func stream(_ stream: NetStream, sessionInterruptionEnded session: AVCaptureSession) {
+    func stream(_ stream: IOStream, sessionInterruptionEnded session: AVCaptureSession) {
     }
 
     #endif
     /// Tells the receiver to video codec error occured.
-    func stream(_ stream: NetStream, videoErrorOccurred error: IOVideoUnitError) {
+    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError) {
     }
 
     /// Tells the receiver to audio codec error occured.
-    func stream(_ stream: NetStream, audioErrorOccurred error: IOAudioUnitError) {
+    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError) {
     }
 
     /// Tells the receiver to the stream opened.
-    func streamDidOpen(_ stream: NetStream) {
+    func streamDidOpen(_ stream: IOStream) {
     }
 }

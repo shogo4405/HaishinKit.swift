@@ -67,7 +67,7 @@ public class MTHKView: MTKView {
         }
     }
 
-    private weak var currentStream: NetStream? {
+    private weak var currentStream: IOStream? {
         didSet {
             currentStream.map {
                 if let context = self.context {
@@ -102,9 +102,9 @@ public class MTHKView: MTKView {
     }
 }
 
-extension MTHKView: NetStreamDrawable {
+extension MTHKView: IOStreamDrawable {
     // MARK: NetStreamDrawable
-    public func attachStream(_ stream: NetStream?) {
+    public func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
             currentStream = stream
         } else {

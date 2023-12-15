@@ -23,7 +23,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
-    weak var drawable: (any NetStreamDrawable)? {
+    weak var drawable: (any IOStreamDrawable)? {
         didSet {
             #if os(iOS) || os(macOS)
             drawable?.videoOrientation = videoOrientation

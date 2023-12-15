@@ -52,7 +52,7 @@ final class IOCaptureVideoPreview: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func attachStream(_ stream: NetStream?) {
+    func attachStream(_ stream: IOStream?) {
         layer.session = stream?.mixer.session.session
         #if os(iOS)
         if let videoOrientation = stream?.videoOrientation, layer.connection?.isVideoOrientationSupported == true {
@@ -109,7 +109,7 @@ final class IOCaptureVideoPreview: NSView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func attachStream(_ stream: NetStream?) {
+    func attachStream(_ stream: IOStream?) {
         layer?.setValue(stream?.mixer.session, forKey: "session")
     }
 

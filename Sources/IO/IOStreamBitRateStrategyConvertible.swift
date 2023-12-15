@@ -1,7 +1,7 @@
 import Foundation
 
-/// A structure that represents a NetStream's bitRate statics.
-public struct NetBitRateStats {
+/// A structure that represents a IOStream's bitRate statics.
+public struct IOStreamBitRateStats {
     /// The statistics of outgoing queue bytes per second.
     public let currentQueueBytesOut: Int64
     /// The statistics of incoming bytes per second.
@@ -10,10 +10,10 @@ public struct NetBitRateStats {
     public let currentBytesOutPerSecond: Int32
 }
 
-/// A type with a NetStream's bitrate strategy representation.
-public protocol NetBitRateStrategyConvertible: AnyObject {
+/// A type with a IOStream's bitrate strategy representation.
+public protocol IOStreamBitRateStrategyConvertible: AnyObject {
     /// Specifies the stream instance.
-    var stream: NetStream? { get set }
+    var stream: IOStream? { get set }
     /// The mamimum video bitRate.
     var mamimumVideoBitRate: Int { get }
     /// The mamimum audio bitRate.
@@ -22,34 +22,34 @@ public protocol NetBitRateStrategyConvertible: AnyObject {
     /// SetUps the NetBitRateStrategy instance.
     func setUp()
     /// Invoke sufficientBWOccured.
-    func sufficientBWOccured(_ stats: NetBitRateStats)
+    func sufficientBWOccured(_ stats: IOStreamBitRateStats)
     /// Invoke insufficientBWOccured.
-    func insufficientBWOccured(_ stats: NetBitRateStats)
+    func insufficientBWOccured(_ stats: IOStreamBitRateStats)
 }
 
-/// The NetBitRateStrategy class provides a no operative bitrate storategy.
-public final class NetBitRateStrategy: NetBitRateStrategyConvertible {
-    public static let shared = NetBitRateStrategy()
+/// The IOStreamBitRateStrategy class provides a no operative bitrate storategy.
+public final class IOStreamBitRateStrategy: IOStreamBitRateStrategyConvertible {
+    public static let shared = IOStreamBitRateStrategy()
 
-    public weak var stream: NetStream?
+    public weak var stream: IOStream?
     public let mamimumVideoBitRate: Int = 0
     public let mamimumAudioBitRate: Int = 0
 
     public func setUp() {
     }
 
-    public func sufficientBWOccured(_ stats: NetBitRateStats) {
+    public func sufficientBWOccured(_ stats: IOStreamBitRateStats) {
     }
 
-    public func insufficientBWOccured(_ stats: NetBitRateStats) {
+    public func insufficientBWOccured(_ stats: IOStreamBitRateStats) {
     }
 }
 
-/// The VideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.
-public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertible {
+/// The IOStreamVideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.
+public final class IOStreamVideoAdaptiveNetBitRateStrategy: IOStreamBitRateStrategyConvertible {
     public static let sufficientBWCountsThreshold: Int = 15
 
-    public weak var stream: NetStream?
+    public weak var stream: IOStream?
     public let mamimumVideoBitRate: Int
     public let mamimumAudioBitRate: Int = 0
     private var sufficientBWCounts: Int = 0
@@ -64,7 +64,7 @@ public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertibl
         stream?.videoSettings.bitRate = mamimumVideoBitRate
     }
 
-    public func sufficientBWOccured(_ stats: NetBitRateStats) {
+    public func sufficientBWOccured(_ stats: IOStreamBitRateStats) {
         guard let stream else {
             return
         }
@@ -80,7 +80,7 @@ public final class VideoAdaptiveNetBitRateStrategy: NetBitRateStrategyConvertibl
         }
     }
 
-    public func insufficientBWOccured(_ stats: NetBitRateStats) {
+    public func insufficientBWOccured(_ stats: IOStreamBitRateStats) {
         guard let stream, 0 < stats.currentBytesOutPerSecond else {
             return
         }

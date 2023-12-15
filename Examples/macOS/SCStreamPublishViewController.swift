@@ -11,7 +11,7 @@ class SCStreamPublishViewController: NSViewController {
     @IBOutlet private weak var mthkView: MTHKView!
 
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: NetStream {
+    private var stream: IOStream {
         return netStreamSwitcher.stream
     }
 
