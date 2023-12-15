@@ -14,7 +14,7 @@ private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
 
 final class IOVideoMixer<T: IOVideoMixerDelegate> {
     var muted = false
-    var settings: MultiCamCaptureSettings = .default
+    var settings: IOVideoMixerSettings = .default
     weak var delegate: T?
     var context: CIContext = .init() {
         didSet {

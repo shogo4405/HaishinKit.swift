@@ -40,7 +40,7 @@ final class IngestViewController: UIViewController {
 
         pipIntentView.layer.borderWidth = 1.0
         pipIntentView.layer.borderColor = UIColor.white.cgColor
-        pipIntentView.bounds = MultiCamCaptureSettings.default.regionOfInterest
+        pipIntentView.bounds = IOVideoMixerSettings.default.regionOfInterest
         pipIntentView.isUserInteractionEnabled = true
         view.addSubview(pipIntentView)
 
@@ -115,7 +115,7 @@ final class IngestViewController: UIViewController {
             currentFrame.origin.x += deltaX
             currentFrame.origin.y += deltaY
             pipIntentView.frame = currentFrame
-            stream.multiCamCaptureSettings = MultiCamCaptureSettings(
+            stream.multiCamCaptureSettings = IOVideoMixerSettings(
                 mode: stream.multiCamCaptureSettings.mode,
                 cornerRadius: 16.0,
                 regionOfInterest: currentFrame,

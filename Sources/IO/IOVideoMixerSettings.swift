@@ -2,8 +2,10 @@ import Accelerate
 import CoreMedia
 import Foundation
 
-/// The MultiCamCaptureSetting represents the pip capture settings for the video capture.
-public struct MultiCamCaptureSettings: Codable {
+public typealias MultiCamCaptureSettings = IOVideoMixerSettings
+
+/// The IOVideoMixerSettings represents the pip capture settings for the video capture.
+public struct IOVideoMixerSettings: Codable {
     /// The type of image display mode.
     public enum Mode: String, Codable {
         /// The picture in picture mode means video stream playing within an inset window, freeing the rest of the screen for other tasks.
@@ -13,7 +15,7 @@ public struct MultiCamCaptureSettings: Codable {
     }
 
     /// The default setting for the stream.
-    public static let `default` = MultiCamCaptureSettings(
+    public static let `default` = IOVideoMixerSettings(
         mode: .pip,
         cornerRadius: 16.0,
         regionOfInterest: .init(
@@ -34,7 +36,7 @@ public struct MultiCamCaptureSettings: Codable {
     /// Specifies the main channel number.
     public var channel: UInt8 = 0
 
-    /// Create a new MultiCamCaptureSetting.
+    /// Create a new IOVideoMixerSettings.
     public init(mode: Mode, cornerRadius: CGFloat, regionOfInterest: CGRect, direction: ImageTransform) {
         self.mode = mode
         self.cornerRadius = cornerRadius

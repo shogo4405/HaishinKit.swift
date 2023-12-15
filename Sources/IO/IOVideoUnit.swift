@@ -30,7 +30,7 @@ final class IOVideoUnit: NSObject, IOUnit {
             #endif
         }
     }
-    var multiCamCaptureSettings: MultiCamCaptureSettings {
+    var multiCamCaptureSettings: IOVideoMixerSettings {
         get {
             return videoMixer.settings
         }
