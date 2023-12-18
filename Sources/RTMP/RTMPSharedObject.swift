@@ -115,7 +115,7 @@ public final class RTMPSharedObject: EventDispatcher {
         }
     }
 
-    private var rtmpConnection: RTMPConnection?
+    private var connection: RTMPConnection?
 
     init(name: String, path: String, persistence: Bool) {
         self.name = name
@@ -127,39 +127,39 @@ public final class RTMPSharedObject: EventDispatcher {
     /// Updates the value of a property in shared object.
     public func setProperty(_ name: String, _ value: Any?) {
         data[name] = value
-        guard let rtmpConnection: RTMPConnection = rtmpConnection, succeeded else {
+        guard let connection, succeeded else {
             return
         }
-        rtmpConnection.socket.doOutput(chunk: createChunk([
+        connection.socket?.doOutput(chunk: createChunk([
             RTMPSharedObjectEvent(type: .requestChange, name: name, data: value)
         ]))
     }
 
     /// Connects to a remove shared object on a server.
     public func connect(_ rtmpConnection: RTMPConnection) {
-        if self.rtmpConnection != nil {
+        if self.connection != nil {
             close()
         }
-        self.rtmpConnection = rtmpConnection
+        self.connection = rtmpConnection
         rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
         if rtmpConnection.connected {
-            timestamp = rtmpConnection.socket.timestamp
-            rtmpConnection.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
+            timestamp = rtmpConnection.socket?.timestamp ?? 0
+            rtmpConnection.socket?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
         }
     }
 
     /// Purges all of the data.
     public func clear() {
         data.removeAll(keepingCapacity: false)
-        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]))
+        connection?.socket?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]))
     }
 
     /// Closes the connection a server.
     public func close() {
         data.removeAll(keepingCapacity: false)
-        rtmpConnection?.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        rtmpConnection?.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
-        rtmpConnection = nil
+        connection?.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
+        connection?.socket?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
+        connection = nil
     }
 
     final func on(message: RTMPSharedObjectMessage) {
@@ -221,14 +221,15 @@ public final class RTMPSharedObject: EventDispatcher {
     @objc
     private func rtmpStatusHandler(_ notification: Notification) {
         let e = Event.from(notification)
-        if let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String {
-            switch code {
-            case RTMPConnection.Code.connectSuccess.rawValue:
-                timestamp = rtmpConnection!.socket.timestamp
-                rtmpConnection!.socket.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
-            default:
-                break
-            }
+        guard let connection, let data = e.data as? ASObject else {
+            return
+        }
+        switch data["code"] as? String {
+        case RTMPConnection.Code.connectSuccess.rawValue:
+            timestamp = connection.socket?.timestamp ?? 0
+            connection.socket?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
+        default:
+            break
         }
     }
 }

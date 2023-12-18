@@ -170,23 +170,9 @@ public class RTMPConnection: EventDispatcher {
     /// Specifies the URL of an HTTP referer.
     public var pageUrl: String?
     /// Specifies the time to wait for TCP/IP Handshake done.
-    public var timeout: Int {
-        get {
-            socket.timeout
-        }
-        set {
-            socket.timeout = newValue
-        }
-    }
+    public var timeout: Int = NetSocket.defaultTimeout
     /// Specifies the dispatchQos for socket.
-    public var qualityOfService: DispatchQoS {
-        get {
-            socket.qualityOfService
-        }
-        set {
-            socket.qualityOfService = newValue
-        }
-    }
+    public var qualityOfService: DispatchQoS = NetSocket.defaultQualityOfService
     /// Specifies the name of application.
     public var flashVer: String = RTMPConnection.defaultFlashVer
     /// Specifies theoutgoing RTMPChunkSize.
@@ -203,11 +189,11 @@ public class RTMPConnection: EventDispatcher {
     public var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The statistics of total incoming bytes.
     public var totalBytesIn: Int64 {
-        socket.totalBytesIn.value
+        socket?.totalBytesIn.value ?? 0
     }
     /// The statistics of total outgoing bytes.
     public var totalBytesOut: Int64 {
-        socket.totalBytesOut.value
+        socket?.totalBytesOut.value ?? 0
     }
     /// The statistics of total RTMPStream counts.
     public var totalStreamsCount: Int {
@@ -222,7 +208,12 @@ public class RTMPConnection: EventDispatcher {
     /// The statistics of outgoing bytes per second.
     @objc open private(set) dynamic var currentBytesOutPerSecond: Int32 = 0
 
-    var socket: (any RTMPSocketCompatible)!
+    var socket: (any RTMPSocketCompatible)? {
+        didSet {
+            oldValue?.delegate = nil
+            socket?.delegate = self
+        }
+    }
     var streams: [RTMPStream] = []
     var sequence: Int64 = 0
     var bandWidth: UInt32 = 0
@@ -230,7 +221,7 @@ public class RTMPConnection: EventDispatcher {
     var operations: [Int: RTMPResponder] = [:]
     var windowSizeC: Int64 = RTMPConnection.defaultWindowSizeS {
         didSet {
-            guard socket.connected else {
+            guard let socket, socket.connected else {
                 return
             }
             socket.doOutput(chunk: RTMPChunk(
@@ -245,7 +236,7 @@ public class RTMPConnection: EventDispatcher {
     private var timer: Timer? {
         didSet {
             oldValue?.invalidate()
-            if let timer = timer {
+            if let timer {
                 RunLoop.main.add(timer, forMode: .common)
             }
         }
@@ -272,7 +263,7 @@ public class RTMPConnection: EventDispatcher {
 
     /// Calls a command or method on RTMP Server.
     public func call(_ commandName: String, responder: RTMPResponder?, arguments: Any?...) {
-        guard connected else {
+        guard let socket, connected else {
             return
         }
         currentTransactionId += 1
@@ -307,19 +298,23 @@ public class RTMPConnection: EventDispatcher {
                 socket = socket is RTMPSocket ? socket : RTMPSocket()
             }
         }
-        socket.delegate = self
-        var outputBufferSize: Int = 0
-        for stream in streams {
-            // in bytes.
-            outputBufferSize += (Int(stream.mixer.videoIO.settings.bitRate) + stream.mixer.audioIO.settings.bitRate) / 8
+        socket.map {
+            $0.timeout = timeout
+            $0.qualityOfService = qualityOfService
+            let secure = uri.scheme == "rtmps" || uri.scheme == "rtmpts"
+            $0.securityLevel = secure ? .negotiatedSSL : .none
+            $0.delegate = self
+            var outputBufferSize: Int = 0
+            for stream in streams {
+                // in bytes.
+                outputBufferSize += (Int(stream.mixer.videoIO.settings.bitRate) + stream.mixer.audioIO.settings.bitRate) / 8
+            }
+            if $0.outputBufferSize < outputBufferSize {
+                $0.outputBufferSize = outputBufferSize
+            }
+            $0.setProperty(parameters, forKey: "parameters")
+            $0.connect(withName: uri.host!, port: uri.port ?? (secure ? Self.defaultSecurePort : Self.defaultPort))
         }
-        if socket.outputBufferSize < outputBufferSize {
-            socket.outputBufferSize = outputBufferSize
-        }
-        socket.setProperty(parameters, forKey: "parameters")
-        let secure = uri.scheme == "rtmps" || uri.scheme == "rtmpts"
-        socket.securityLevel = secure ? .negotiatedSSL : .none
-        socket.connect(withName: uri.host!, port: uri.port ?? (secure ? Self.defaultSecurePort : Self.defaultPort))
     }
 
     /// Closes the connection from the server.
@@ -339,7 +334,7 @@ public class RTMPConnection: EventDispatcher {
         for stream in streams {
             stream.close()
         }
-        socket.close(isDisconnected: false)
+        socket?.close(isDisconnected: false)
     }
 
     func createStream(_ stream: RTMPStream) {
@@ -366,6 +361,9 @@ public class RTMPConnection: EventDispatcher {
         switch Code(rawValue: code) {
         case .some(.connectSuccess):
             connected = true
+            guard let socket else {
+                return
+            }
             socket.chunkSizeS = chunkSize
             socket.doOutput(chunk: RTMPChunk(
                 type: .zero,
@@ -380,7 +378,7 @@ public class RTMPConnection: EventDispatcher {
                 let description = data["description"] as? String else {
                 break
             }
-            socket.close(isDisconnected: false)
+            socket?.close(isDisconnected: false)
             switch true {
             case description.contains("reason=nosuchuser"):
                 break
@@ -450,7 +448,7 @@ public class RTMPConnection: EventDispatcher {
     private func on(timer: Timer) {
         let totalBytesIn = self.totalBytesIn
         let totalBytesOut = self.totalBytesOut
-        let queueBytesOut = self.socket.queueBytesOut.value
+        let queueBytesOut = self.socket?.queueBytesOut.value ?? 0
         currentBytesInPerSecond = Int32(totalBytesIn - previousTotalBytesIn)
         currentBytesOutPerSecond = Int32(totalBytesOut - previousTotalBytesOut)
         previousTotalBytesIn = totalBytesIn

@@ -109,7 +109,7 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        connection.socket.chunkSizeC = Int(size)
+        connection.socket?.chunkSizeC = Int(size)
     }
 }
 
@@ -729,7 +729,7 @@ final class RTMPUserControlMessage: RTMPMessage {
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
         switch event {
         case .ping:
-            connection.socket.doOutput(chunk: RTMPChunk(
+            connection.socket?.doOutput(chunk: RTMPChunk(
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPUserControlMessage(event: .pong, value: value)
