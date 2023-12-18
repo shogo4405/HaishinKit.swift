@@ -11,6 +11,7 @@ import ScreenCaptureKit
 import UIKit
 #endif
 
+@available(*, deprecated, renamed: "IOStreamDelegate")
 typealias NetStreamDelegate = IOStreamDelegate
 
 /// The interface an IOStream uses to inform its delegate.
@@ -35,6 +36,7 @@ public protocol IOStreamDelegate: AnyObject {
     func streamDidOpen(_ stream: IOStream)
 }
 
+@available(*, deprecated, renamed: "IOStream")
 typealias NetStream = IOStream
 
 /// The `IOStream` class is the foundation of a RTMPStream.
@@ -86,7 +88,7 @@ open class IOStream: NSObject {
     }
 
     /// The lockQueue.
-    public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetStream.lock", qos: .userInitiated)
+    public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.IOStream.lock", qos: .userInitiated)
 
     /// Specifies the adaptibe bitrate strategy.
     public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy.shared {

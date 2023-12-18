@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 
+@available(*, deprecated, renamed: "IOStreamDrawable")
 typealias NetStreamDrawable = IOStreamDrawable
 
 /// An interface that manages the IOStream content on the screen.

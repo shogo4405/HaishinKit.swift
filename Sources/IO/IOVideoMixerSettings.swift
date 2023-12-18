@@ -2,6 +2,7 @@ import Accelerate
 import CoreMedia
 import Foundation
 
+@available(*, deprecated, renamed: "IOVideoMixerSettings")
 public typealias MultiCamCaptureSettings = IOVideoMixerSettings
 
 /// The IOVideoMixerSettings represents the pip capture settings for the video capture.
