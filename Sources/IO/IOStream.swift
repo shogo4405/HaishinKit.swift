@@ -184,12 +184,23 @@ open class IOStream: NSObject {
     #endif
 
     /// Specifies the multi camera capture properties.
+    @available(*, deprecated, renamed: "videoMixerSettings")
     public var multiCamCaptureSettings: IOVideoMixerSettings {
         get {
-            mixer.videoIO.multiCamCaptureSettings
+            mixer.videoIO.mixerSettings
         }
         set {
-            mixer.videoIO.multiCamCaptureSettings = newValue
+            mixer.videoIO.mixerSettings = newValue
+        }
+    }
+
+    /// Specifies the video mixer settings..
+    public var videoMixerSettings: IOVideoMixerSettings {
+        get {
+            mixer.videoIO.mixerSettings
+        }
+        set {
+            mixer.videoIO.mixerSettings = newValue
         }
     }
 
