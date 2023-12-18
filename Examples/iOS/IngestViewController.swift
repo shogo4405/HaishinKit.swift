@@ -115,8 +115,8 @@ final class IngestViewController: UIViewController {
             currentFrame.origin.x += deltaX
             currentFrame.origin.y += deltaY
             pipIntentView.frame = currentFrame
-            stream.multiCamCaptureSettings = IOVideoMixerSettings(
-                mode: stream.multiCamCaptureSettings.mode,
+            stream.videoMixerSettings = IOVideoMixerSettings(
+                mode: stream.videoMixerSettings.mode,
                 cornerRadius: 16.0,
                 regionOfInterest: currentFrame,
                 direction: .east
@@ -127,10 +127,10 @@ final class IngestViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         if stream.isMultiCamSessionEnabled {
-            if stream.multiCamCaptureSettings.channel == 0 {
-                stream.multiCamCaptureSettings.channel = 1
+            if stream.videoMixerSettings.channel == 0 {
+                stream.videoMixerSettings.channel = 1
             } else {
-                stream.multiCamCaptureSettings.channel = 0
+                stream.videoMixerSettings.channel = 0
             }
         } else {
             let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back

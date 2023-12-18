@@ -487,16 +487,16 @@ open class RTMPStream: IOStream {
         }
         readyState = .open
         connection.socket?.doOutput(chunk: RTMPChunk(
-                                            type: .zero,
-                                            streamId: RTMPChunk.StreamID.command.rawValue,
-                                            message: RTMPCommandMessage(
-                                                streamId: 0,
-                                                transactionId: 0,
-                                                objectEncoding: self.objectEncoding,
-                                                commandName: "closeStream",
-                                                commandObject: nil,
-                                                arguments: [self.id]
-                                            )))
+                                        type: .zero,
+                                        streamId: RTMPChunk.StreamID.command.rawValue,
+                                        message: RTMPCommandMessage(
+                                            streamId: 0,
+                                            transactionId: 0,
+                                            objectEncoding: self.objectEncoding,
+                                            commandName: "closeStream",
+                                            commandObject: nil,
+                                            arguments: [self.id]
+                                        )))
     }
 
     func on(timer: Timer) {

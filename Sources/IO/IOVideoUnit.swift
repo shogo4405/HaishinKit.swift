@@ -255,12 +255,12 @@ final class IOVideoUnit: NSObject, IOUnit {
     func capture(for channel: UInt8) -> IOVideoCaptureUnit? {
         #if os(tvOS)
         if _captures[channel] == nil {
-            _captures[channel] = IOVideoCaptureUnit()
+            _captures[channel] = IOVideoCaptureUnit(channel)
         }
         return _captures[channel] as? IOVideoCaptureUnit
         #else
         if captures[channel] == nil {
-            captures[channel] = .init()
+            captures[channel] = .init(channel)
         }
         return captures[channel]
         #endif
@@ -311,15 +311,10 @@ extension IOVideoUnit: Running {
 }
 
 #if os(iOS) || os(tvOS) || os(macOS)
-@available(tvOS 17.0, *)
-extension IOVideoUnit: AVCaptureVideoDataOutputSampleBufferDelegate {
-    // MARK: AVCaptureVideoDataOutputSampleBufferDelegate
-    func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        if captures[0]?.output == captureOutput {
-            videoMixer.append(sampleBuffer, channel: 0, isVideoMirrored: connection.isVideoMirrored)
-        } else if captures[1]?.output == captureOutput {
-            videoMixer.append(sampleBuffer, channel: 1, isVideoMirrored: connection.isVideoMirrored)
-        }
+extension IOVideoUnit {
+    @available(tvOS 17.0, *)
+    func makeVideoDataOutputSampleBuffer(_ channel: UInt8) -> IOVideoCaptureUnitVideoDataOutputSampleBuffer {
+        return .init(channel: channel, videoMixer: videoMixer)
     }
 }
 #endif
