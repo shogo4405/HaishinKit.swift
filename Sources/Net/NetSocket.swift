@@ -4,8 +4,11 @@ import Foundation
 open class NetSocket: NSObject {
     /// The default time to wait for TCP/IP Handshake done.
     public static let defaultTimeout: Int = 15 // sec
-    /// The defulat stream's TCP window size.
+    /// The default stream's TCP window size.
     public static let defaultWindowSizeC = Int(UInt16.max)
+    /// The default quality of service.
+    public static let defaultQualityOfService: DispatchQoS = .userInitiated
+
     /// The current incoming data buffer.
     public var inputBuffer = Data()
     /// Specifies time to wait for TCP/IP Handshake done.
@@ -17,7 +20,7 @@ open class NetSocket: NSObject {
     /// Specifies  statistics of total incoming bytes.
     public var totalBytesIn: Atomic<Int64> = .init(0)
     /// Specifies  instance's quality of service for a Socket IO.
-    public var qualityOfService: DispatchQoS = .userInitiated
+    public var qualityOfService: DispatchQoS = NetSocket.defaultQualityOfService
     /// Specifies instance determine to use the secure-socket layer (SSL) security level.
     public var securityLevel: StreamSocketSecurityLevel = .none
     /// Specifies the output buffer size in bytes.
