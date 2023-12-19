@@ -121,7 +121,9 @@ public struct VideoCodecSettings: Codable {
         scalingMode: ScalingMode = .trim,
         bitRateMode: BitRateMode = .average,
         maxKeyFrameIntervalDuration: Int32 = 2,
-        allowFrameReordering: Bool? = nil, // swiftlint:disable:this discouraged_optional_boolean
+        // swiftlint:disable discouraged_optional_boolean
+        allowFrameReordering: Bool? = nil,
+        // swiftlint:enable discouraged_optional_boolean
         dataRateLimits: [Double]? = [0.0, 0.0],
         isHardwareEncoderEnabled: Bool = true
     ) {
