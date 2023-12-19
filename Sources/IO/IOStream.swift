@@ -278,16 +278,16 @@ open class IOStream: NSObject {
     /// Specifies the drawable.
     public var drawable: (any IOStreamDrawable)? {
         get {
-            mixer.videoIO.drawable
+            lockQueue.sync { mixer.videoIO.drawable }
         }
         set {
-            mixer.videoIO.drawable = newValue
-            guard #available(tvOS 17.0, *) else {
-                return
-            }
             lockQueue.async {
+                self.mixer.videoIO.drawable = newValue
+                guard #available(tvOS 17.0, *) else {
+                    return
+                }
                 #if os(iOS) || os(tvOS) || os(macOS)
-                if self.mixer.videoIO.hasDevice {
+                if newValue != nil && self.mixer.videoIO.hasDevice {
                     self.mixer.session.startRunning()
                 }
                 #endif
