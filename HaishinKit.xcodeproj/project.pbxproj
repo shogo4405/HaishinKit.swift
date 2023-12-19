@@ -1280,10 +1280,10 @@
 			isa = PBXGroup;
 			children = (
 				BC7C56CC29A786AE00C41A9B /* ADTS.swift */,
+				29B8767D1CD70AE800FC07DA /* AudioSpecificConfig.swift */,
 				29B8767E1CD70AE800FC07DA /* AVCDecoderConfigurationRecord.swift */,
 				BCB9773E2621812800C9A649 /* AVCFormatStream.swift */,
 				BCCBCE9629A90D880095B51C /* AVCNALUnit.swift */,
-				29B8767D1CD70AE800FC07DA /* AudioSpecificConfig.swift */,
 				29B876B91CD70B3900FC07DA /* CRC32.swift */,
 				BCC1A72A264FAC1800661156 /* ESSpecificData.swift */,
 				BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */,

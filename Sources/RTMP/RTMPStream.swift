@@ -368,7 +368,7 @@ open class RTMPStream: IOStream {
     /// Sends a message on a published stream to all subscribing clients.
     public func send(handlerName: String, arguments: Any?...) {
         lockQueue.async {
-            guard let rtmpConnection = self.connection, self.readyState == .publishing(muxer: self.muxer) else {
+            guard let connection = self.connection, self.readyState == .publishing(muxer: self.muxer) else {
                 return
             }
             let dataWasSent = self.dataTimeStamps[handlerName] == nil ? false : true
@@ -383,7 +383,7 @@ open class RTMPStream: IOStream {
                     handlerName: handlerName,
                     arguments: arguments
                 ))
-            let length = rtmpConnection.socket?.doOutput(chunk: chunk) ?? 0
+            let length = connection.socket?.doOutput(chunk: chunk) ?? 0
             self.dataTimeStamps[handlerName] = .init()
             self.info.byteCount.mutate { $0 += Int64(length) }
         }
@@ -541,11 +541,8 @@ open class RTMPStream: IOStream {
 
     @objc
     private func on(status: Notification) {
-        guard let connection else {
-            return
-        }
         let e = Event.from(status)
-        guard let data = e.data as? ASObject, let code = data["code"] as? String else {
+        guard let connection, let data = e.data as? ASObject, let code = data["code"] as? String else {
             return
         }
         switch code {
