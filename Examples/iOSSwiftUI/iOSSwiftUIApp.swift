@@ -23,7 +23,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         // Logboard.with(HaishinKitIdentifier).level = .trace
         let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetooth])
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
             try session.setActive(true)
         } catch {
             logger.error(error)
