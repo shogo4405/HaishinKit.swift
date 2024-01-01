@@ -6,6 +6,6 @@ extension AVAudioTime {
     static let zero = AVAudioTime(hostTime: 0)
 
     func makeTime() -> CMTime {
-        return .init(value: sampleTime, timescale: CMTimeScale(sampleRate))
+        return .init(seconds: AVAudioTime.seconds(forHostTime: hostTime), preferredTimescale: 1000000000)
     }
 }
