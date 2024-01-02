@@ -12,7 +12,7 @@ import UIKit
 #endif
 
 @available(*, deprecated, renamed: "IOStreamDelegate")
-typealias NetStreamDelegate = IOStreamDelegate
+public typealias NetStreamDelegate = IOStreamDelegate
 
 /// The interface an IOStream uses to inform its delegate.
 public protocol IOStreamDelegate: AnyObject {
@@ -37,7 +37,7 @@ public protocol IOStreamDelegate: AnyObject {
 }
 
 @available(*, deprecated, renamed: "IOStream")
-typealias NetStream = IOStream
+public typealias NetStream = IOStream
 
 /// The `IOStream` class is the foundation of a RTMPStream.
 open class IOStream: NSObject {

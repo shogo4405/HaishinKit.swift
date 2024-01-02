@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>VideoAdaptiveNetBitRateStrategy Class Reference</title>
+    <title>IOStreamVideoAdaptiveNetBitRateStrategy Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/VideoAdaptiveNetBitRateStrategy" class="dashAnchor"></a>
-    <a title="VideoAdaptiveNetBitRateStrategy Class Reference"></a>
+    <a name="//apple_ref/swift/Class/IOStreamVideoAdaptiveNetBitRateStrategy" class="dashAnchor"></a>
+    <a title="IOStreamVideoAdaptiveNetBitRateStrategy Class Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.7.3 Docs</a> (87% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        VideoAdaptiveNetBitRateStrategy Class Reference
+        IOStreamVideoAdaptiveNetBitRateStrategy Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -60,6 +60,18 @@
                 <a href="../Classes/IORecorder/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/IOStream.html">IOStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStream/ReadyState.html">– ReadyState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
               </li>
               <li class="nav-group-task">
@@ -72,9 +84,6 @@
                 <a href="../Classes/MTHKView.html">MTHKView</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/NetBitRateStrategy.html">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/NetClient.html">NetClient</a>
               </li>
               <li class="nav-group-task">
@@ -82,12 +91,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/NetSocket.html">NetSocket</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream.html">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream/ReadyState.html">– ReadyState</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/PiPHKView.html">PiPHKView</a>
@@ -130,9 +133,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TSWriter.html">TSWriter</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/VideoAdaptiveNetBitRateStrategy.html">VideoAdaptiveNetBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/VideoEffect.html">VideoEffect</a>
@@ -218,13 +218,13 @@
                 <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a>
+                <a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDelegate.html">NetStreamDelegate</a>
+                <a href="../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+                <a href="../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,13 +265,13 @@
                 <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings.html">MultiCamCaptureSettings</a>
+                <a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings/Mode.html">– Mode</a>
+                <a href="../Structs/IOVideoMixerSettings.html">IOVideoMixerSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/NetBitRateStats.html">NetBitRateStats</a>
+                <a href="../Structs/IOVideoMixerSettings/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
@@ -302,6 +302,33 @@
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -309,15 +336,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>VideoAdaptiveNetBitRateStrategy</h1>
+            <h1>IOStreamVideoAdaptiveNetBitRateStrategy</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">VideoAdaptiveNetBitRateStrategy</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IOStreamVideoAdaptiveNetBitRateStrategy</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a></span></code></pre>
 
                 </div>
               </div>
-            <p>The VideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.</p>
+            <p>The IOStreamVideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.</p>
 
           </section>
           <section class="section task-group-section">
@@ -326,9 +353,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit31VideoAdaptiveNetBitRateStrategyC27sufficientBWCountsThresholdSivpZ"></a>
+                    <a name="/s:10HaishinKit39IOStreamVideoAdaptiveNetBitRateStrategyC27sufficientBWCountsThresholdSivpZ"></a>
                     <a name="//apple_ref/swift/Variable/sufficientBWCountsThreshold" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategyC27sufficientBWCountsThresholdSivpZ">sufficientBWCountsThreshold</a>
+                    <a class="token" href="#/s:10HaishinKit39IOStreamVideoAdaptiveNetBitRateStrategyC27sufficientBWCountsThresholdSivpZ">sufficientBWCountsThreshold</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,9 +380,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit29NetBitRateStrategyConvertibleP6streamAA0C6StreamCSgvp"></a>
+                    <a name="/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP6streamAA0C0CSgvp"></a>
                     <a name="//apple_ref/swift/Property/stream" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit29NetBitRateStrategyConvertibleP6streamAA0C6StreamCSgvp">stream</a>
+                    <a class="token" href="#/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP6streamAA0C0CSgvp">stream</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -369,7 +396,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/NetStream.html">NetStream</a></span><span class="p">?</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -379,9 +406,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit29NetBitRateStrategyConvertibleP012mamimumVideodE0Sivp"></a>
+                    <a name="/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP012mamimumVideodE0Sivp"></a>
                     <a name="//apple_ref/swift/Property/mamimumVideoBitRate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit29NetBitRateStrategyConvertibleP012mamimumVideodE0Sivp">mamimumVideoBitRate</a>
+                    <a class="token" href="#/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP012mamimumVideodE0Sivp">mamimumVideoBitRate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -405,9 +432,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit29NetBitRateStrategyConvertibleP012mamimumAudiodE0Sivp"></a>
+                    <a name="/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP012mamimumAudiodE0Sivp"></a>
                     <a name="//apple_ref/swift/Property/mamimumAudioBitRate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit29NetBitRateStrategyConvertibleP012mamimumAudiodE0Sivp">mamimumAudioBitRate</a>
+                    <a class="token" href="#/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP012mamimumAudiodE0Sivp">mamimumAudioBitRate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -431,9 +458,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit31VideoAdaptiveNetBitRateStrategyC07mamimumC7BitrateACSi_tcfc"></a>
+                    <a name="/s:10HaishinKit39IOStreamVideoAdaptiveNetBitRateStrategyC07mamimumD7BitrateACSi_tcfc"></a>
                     <a name="//apple_ref/swift/Method/init(mamimumVideoBitrate:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategyC07mamimumC7BitrateACSi_tcfc">init(mamimumVideoBitrate:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit39IOStreamVideoAdaptiveNetBitRateStrategyC07mamimumD7BitrateACSi_tcfc">init(mamimumVideoBitrate:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -458,9 +485,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit29NetBitRateStrategyConvertibleP5setUpyyF"></a>
+                    <a name="/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP5setUpyyF"></a>
                     <a name="//apple_ref/swift/Method/setUp()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit29NetBitRateStrategyConvertibleP5setUpyyF">setUp()</a>
+                    <a class="token" href="#/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP5setUpyyF">setUp()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -484,9 +511,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit29NetBitRateStrategyConvertibleP19sufficientBWOccuredyyAA0cdE5StatsVF"></a>
+                    <a name="/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP19sufficientBWOccuredyyAA0cdE5StatsVF"></a>
                     <a name="//apple_ref/swift/Method/sufficientBWOccured(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit29NetBitRateStrategyConvertibleP19sufficientBWOccuredyyAA0cdE5StatsVF">sufficientBWOccured(_:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP19sufficientBWOccuredyyAA0cdE5StatsVF">sufficientBWOccured(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -500,7 +527,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sufficientBWOccured</span><span class="p">(</span><span class="n">_</span> <span class="nv">stats</span><span class="p">:</span> <span class="kt"><a href="../Structs/NetBitRateStats.html">NetBitRateStats</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">sufficientBWOccured</span><span class="p">(</span><span class="n">_</span> <span class="nv">stats</span><span class="p">:</span> <span class="kt"><a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -510,9 +537,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit29NetBitRateStrategyConvertibleP21insufficientBWOccuredyyAA0cdE5StatsVF"></a>
+                    <a name="/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP21insufficientBWOccuredyyAA0cdE5StatsVF"></a>
                     <a name="//apple_ref/swift/Method/insufficientBWOccured(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit29NetBitRateStrategyConvertibleP21insufficientBWOccuredyyAA0cdE5StatsVF">insufficientBWOccured(_:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit34IOStreamBitRateStrategyConvertibleP21insufficientBWOccuredyyAA0cdE5StatsVF">insufficientBWOccured(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -526,7 +553,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">insufficientBWOccured</span><span class="p">(</span><span class="n">_</span> <span class="nv">stats</span><span class="p">:</span> <span class="kt"><a href="../Structs/NetBitRateStats.html">NetBitRateStats</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">insufficientBWOccured</span><span class="p">(</span><span class="n">_</span> <span class="nv">stats</span><span class="p">:</span> <span class="kt"><a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -538,7 +565,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-01-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

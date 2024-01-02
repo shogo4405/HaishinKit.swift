@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>MultiCamCaptureSettings Structure Reference</title>
+    <title>IOStreamDrawable Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Struct/MultiCamCaptureSettings" class="dashAnchor"></a>
-    <a title="MultiCamCaptureSettings Structure Reference"></a>
+    <a name="//apple_ref/swift/Protocol/IOStreamDrawable" class="dashAnchor"></a>
+    <a title="IOStreamDrawable Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.7.3 Docs</a> (87% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        MultiCamCaptureSettings Structure Reference
+        IOStreamDrawable Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -60,6 +60,18 @@
                 <a href="../Classes/IORecorder/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/IOStream.html">IOStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStream/ReadyState.html">– ReadyState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
               </li>
               <li class="nav-group-task">
@@ -72,9 +84,6 @@
                 <a href="../Classes/MTHKView.html">MTHKView</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/NetBitRateStrategy.html">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/NetClient.html">NetClient</a>
               </li>
               <li class="nav-group-task">
@@ -82,12 +91,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/NetSocket.html">NetSocket</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream.html">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream/ReadyState.html">– ReadyState</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/PiPHKView.html">PiPHKView</a>
@@ -130,9 +133,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TSWriter.html">TSWriter</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/VideoAdaptiveNetBitRateStrategy.html">VideoAdaptiveNetBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/VideoEffect.html">VideoEffect</a>
@@ -218,13 +218,13 @@
                 <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a>
+                <a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDelegate.html">NetStreamDelegate</a>
+                <a href="../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+                <a href="../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,13 +265,13 @@
                 <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings.html">MultiCamCaptureSettings</a>
+                <a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings/Mode.html">– Mode</a>
+                <a href="../Structs/IOVideoMixerSettings.html">IOVideoMixerSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/NetBitRateStats.html">NetBitRateStats</a>
+                <a href="../Structs/IOVideoMixerSettings/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
@@ -302,6 +302,33 @@
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -309,15 +336,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>MultiCamCaptureSettings</h1>
+            <h1>IOStreamDrawable</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">MultiCamCaptureSettings</span> <span class="p">:</span> <span class="kt">Codable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">IOStreamDrawable</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
 
                 </div>
               </div>
-            <p>The MultiCamCaptureSetting represents the pip capture settings for the video capture.</p>
+            <p>An interface that manages the IOStream content on the screen.</p>
 
           </section>
           <section class="section task-group-section">
@@ -326,9 +353,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV4ModeO"></a>
-                    <a name="//apple_ref/swift/Enum/Mode" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV4ModeO">Mode</a>
+                    <a name="/s:10HaishinKit16IOStreamDrawableP16videoOrientationSo014AVCaptureVideoF0Vvp"></a>
+                    <a name="//apple_ref/swift/Property/videoOrientation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDrawableP16videoOrientationSo014AVCaptureVideoF0Vvp">videoOrientation</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -336,15 +363,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The type of image display mode.</p>
+                        <p>Specifies the orientation of AVCaptureVideoOrientation.</p>
 
-                        <a href="../Structs/MultiCamCaptureSettings/Mode.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">Mode</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Codable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoOrientation</span><span class="p">:</span> <span class="kt">AVCaptureVideoOrientation</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -354,9 +380,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV7defaultACvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/default" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV7defaultACvpZ">default</a>
+                    <a name="/s:10HaishinKit16IOStreamDrawableP28isCaptureVideoPreviewEnabledSbvp"></a>
+                    <a name="//apple_ref/swift/Property/isCaptureVideoPreviewEnabled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDrawableP28isCaptureVideoPreviewEnabledSbvp">isCaptureVideoPreviewEnabled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -364,14 +390,17 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The default setting for the stream.</p>
+                        <p>Specifies the capture video preview enabled or not.</p>
+
+<p>Use AVCaptureVideoPreviewLayer as an internal implementation. You can verify that there is no delay in cinema mode. However, you cannot confirm the filter state.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">let</span> <span class="err">`</span><span class="k">default</span><span class="err">`</span><span class="p">:</span> <span class="kt">MultiCamCaptureSettings</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@available(tvOS 17.0, *)</span>
+<span class="k">var</span> <span class="nv">isCaptureVideoPreviewEnabled</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
 
                         </div>
                       </div>
@@ -381,9 +410,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV4modeAC4ModeOvp"></a>
-                    <a name="//apple_ref/swift/Property/mode" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV4modeAC4ModeOvp">mode</a>
+                    <a name="/s:10HaishinKit16IOStreamDrawableP12attachStreamyyAA0C0CSgF"></a>
+                    <a name="//apple_ref/swift/Method/attachStream(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDrawableP12attachStreamyyAA0C0CSgF">attachStream(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -391,14 +420,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The image display mode.</p>
+                        <p>Attaches a drawable to a new NetStream object.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">mode</span><span class="p">:</span> <span class="kt"><a href="../Structs/MultiCamCaptureSettings/Mode.html">Mode</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">attachStream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">?)</span></code></pre>
 
                         </div>
                       </div>
@@ -408,9 +437,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV12cornerRadius14CoreFoundation7CGFloatVvp"></a>
-                    <a name="//apple_ref/swift/Property/cornerRadius" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV12cornerRadius14CoreFoundation7CGFloatVvp">cornerRadius</a>
+                    <a name="/s:10HaishinKit16IOStreamDrawableP7enqueueyySo17CMSampleBufferRefaSgF"></a>
+                    <a name="//apple_ref/swift/Method/enqueue(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDrawableP7enqueueyySo17CMSampleBufferRefaSgF">enqueue(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -418,95 +447,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The cornerRadius of the picture in picture image.</p>
+                        <p>Enqueue a CMSampleBuffer? to draw.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">cornerRadius</span><span class="p">:</span> <span class="kt">CGFloat</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV16regionOfInterestSo6CGRectVvp"></a>
-                    <a name="//apple_ref/swift/Property/regionOfInterest" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV16regionOfInterestSo6CGRectVvp">regionOfInterest</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The region of the picture in picture image.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="kt">CGRect</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV9directionAA14ImageTransformOvp"></a>
-                    <a name="//apple_ref/swift/Property/direction" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV9directionAA14ImageTransformOvp">direction</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The direction of the splitView position.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">direction</span><span class="p">:</span> <span class="kt"><a href="../Enums/ImageTransform.html">ImageTransform</a></span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit23MultiCamCaptureSettingsV4mode12cornerRadius16regionOfInterest9directionA2C4ModeO_14CoreFoundation7CGFloatVSo6CGRectVAA14ImageTransformOtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(mode:cornerRadius:regionOfInterest:direction:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit23MultiCamCaptureSettingsV4mode12cornerRadius16regionOfInterest9directionA2C4ModeO_14CoreFoundation7CGFloatVSo6CGRectVAA14ImageTransformOtcfc">init(mode:<wbr>cornerRadius:<wbr>regionOfInterest:<wbr>direction:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Create a new MultiCamCaptureSetting.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">mode</span><span class="p">:</span> <span class="kt"><a href="../Structs/MultiCamCaptureSettings/Mode.html">Mode</a></span><span class="p">,</span> <span class="nv">cornerRadius</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span> <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">,</span> <span class="nv">direction</span><span class="p">:</span> <span class="kt"><a href="../Enums/ImageTransform.html">ImageTransform</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">enqueue</span><span class="p">(</span><span class="n">_</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">?)</span></code></pre>
 
                         </div>
                       </div>
@@ -518,7 +466,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-01-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

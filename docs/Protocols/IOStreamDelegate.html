@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>NetStreamDrawable Protocol Reference</title>
+    <title>IOStreamDelegate Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Protocol/NetStreamDrawable" class="dashAnchor"></a>
-    <a title="NetStreamDrawable Protocol Reference"></a>
+    <a name="//apple_ref/swift/Protocol/IOStreamDelegate" class="dashAnchor"></a>
+    <a title="IOStreamDelegate Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.7.3 Docs</a> (87% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        NetStreamDrawable Protocol Reference
+        IOStreamDelegate Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -60,6 +60,18 @@
                 <a href="../Classes/IORecorder/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/IOStream.html">IOStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStream/ReadyState.html">– ReadyState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
               </li>
               <li class="nav-group-task">
@@ -72,9 +84,6 @@
                 <a href="../Classes/MTHKView.html">MTHKView</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/NetBitRateStrategy.html">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/NetClient.html">NetClient</a>
               </li>
               <li class="nav-group-task">
@@ -82,12 +91,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/NetSocket.html">NetSocket</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream.html">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream/ReadyState.html">– ReadyState</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/PiPHKView.html">PiPHKView</a>
@@ -130,9 +133,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TSWriter.html">TSWriter</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/VideoAdaptiveNetBitRateStrategy.html">VideoAdaptiveNetBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/VideoEffect.html">VideoEffect</a>
@@ -218,13 +218,13 @@
                 <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a>
+                <a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDelegate.html">NetStreamDelegate</a>
+                <a href="../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+                <a href="../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,13 +265,13 @@
                 <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings.html">MultiCamCaptureSettings</a>
+                <a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings/Mode.html">– Mode</a>
+                <a href="../Structs/IOVideoMixerSettings.html">IOVideoMixerSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/NetBitRateStats.html">NetBitRateStats</a>
+                <a href="../Structs/IOVideoMixerSettings/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
@@ -302,6 +302,33 @@
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
+              </li>
             </ul>
           </li>
         </ul>
@@ -309,15 +336,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>NetStreamDrawable</h1>
+            <h1>IOStreamDelegate</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">NetStreamDrawable</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">IOStreamDelegate</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
 
                 </div>
               </div>
-            <p>An interface that manages the NetStream content on the screen.</p>
+            <p>The interface an IOStream uses to inform its delegate.</p>
 
           </section>
           <section class="section task-group-section">
@@ -326,9 +353,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP16videoOrientationSo014AVCaptureVideoG0Vvp"></a>
-                    <a name="//apple_ref/swift/Property/videoOrientation" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP16videoOrientationSo014AVCaptureVideoG0Vvp">videoOrientation</a>
+                    <a name="/s:10HaishinKit16IOStreamDelegateP6stream_9didOutput4whenyAA0C0C_So13AVAudioBufferCSo0I4TimeCtF"></a>
+                    <a name="//apple_ref/swift/Method/stream(_:didOutput:when:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDelegateP6stream_9didOutput4whenyAA0C0C_So13AVAudioBufferCSo0I4TimeCtF">stream(_:<wbr>didOutput:<wbr>when:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -336,14 +363,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the orientation of AVCaptureVideoOrientation.</p>
+                        <p>Tells the receiver an audio packet incoming.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoOrientation</span><span class="p">:</span> <span class="kt">AVCaptureVideoOrientation</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">stream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">,</span> <span class="n">didOutput</span> <span class="nv">audio</span><span class="p">:</span> <span class="kt">AVAudioBuffer</span><span class="p">,</span> <span class="nv">when</span><span class="p">:</span> <span class="kt">AVAudioTime</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -353,9 +380,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP28isCaptureVideoPreviewEnabledSbvp"></a>
-                    <a name="//apple_ref/swift/Property/isCaptureVideoPreviewEnabled" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP28isCaptureVideoPreviewEnabledSbvp">isCaptureVideoPreviewEnabled</a>
+                    <a name="/s:10HaishinKit16IOStreamDelegateP6stream_9didOutputyAA0C0C_So17CMSampleBufferRefatF"></a>
+                    <a name="//apple_ref/swift/Method/stream(_:didOutput:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDelegateP6stream_9didOutputyAA0C0C_So17CMSampleBufferRefatF">stream(_:<wbr>didOutput:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -363,17 +390,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the capture video preview enabled or not.</p>
-
-<p>Use AVCaptureVideoPreviewLayer as an internal implementation. You can verify that there is no delay in cinema mode. However, you cannot confirm the filter state.</p>
+                        <p>Tells the receiver to playback a video incoming.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">@available(tvOS 17.0, *)</span>
-<span class="k">var</span> <span class="nv">isCaptureVideoPreviewEnabled</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">stream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">,</span> <span class="n">didOutput</span> <span class="nv">video</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -383,9 +407,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP06attachD0yyAA0cD0CSgF"></a>
-                    <a name="//apple_ref/swift/Method/attachStream(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP06attachD0yyAA0cD0CSgF">attachStream(_:<wbr>)</a>
+                    <a name="/s:10HaishinKit16IOStreamDelegateP6stream_18videoErrorOccurredyAA0C0C_AA011IOVideoUnitG0OtF"></a>
+                    <a name="//apple_ref/swift/Method/stream(_:videoErrorOccurred:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDelegateP6stream_18videoErrorOccurredyAA0C0C_AA011IOVideoUnitG0OtF">stream(_:<wbr>videoErrorOccurred:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -393,14 +417,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Attaches a drawable to a new NetStream object.</p>
+                        <p>Tells the receiver to video error occured.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">attachStream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/NetStream.html">NetStream</a></span><span class="p">?)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">stream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">,</span> <span class="n">videoErrorOccurred</span> <span class="nv">error</span><span class="p">:</span> <span class="kt"><a href="../Enums/IOVideoUnitError.html">IOVideoUnitError</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -410,9 +434,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit17NetStreamDrawableP7enqueueyySo17CMSampleBufferRefaSgF"></a>
-                    <a name="//apple_ref/swift/Method/enqueue(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit17NetStreamDrawableP7enqueueyySo17CMSampleBufferRefaSgF">enqueue(_:<wbr>)</a>
+                    <a name="/s:10HaishinKit16IOStreamDelegateP6stream_18audioErrorOccurredyAA0C0C_AA011IOAudioUnitG0OtF"></a>
+                    <a name="//apple_ref/swift/Method/stream(_:audioErrorOccurred:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDelegateP6stream_18audioErrorOccurredyAA0C0C_AA011IOAudioUnitG0OtF">stream(_:<wbr>audioErrorOccurred:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -420,14 +444,41 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Enqueue a CMSampleBuffer? to draw.</p>
+                        <p>Tells the receiver to audio error occured.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">enqueue</span><span class="p">(</span><span class="n">_</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">?)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">stream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">,</span> <span class="n">audioErrorOccurred</span> <span class="nv">error</span><span class="p">:</span> <span class="kt"><a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a></span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit16IOStreamDelegateP13streamDidOpenyyAA0C0CF"></a>
+                    <a name="//apple_ref/swift/Method/streamDidOpen(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamDelegateP13streamDidOpenyyAA0C0CF">streamDidOpen(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Tells the receiver to the stream opened.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">streamDidOpen</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -439,7 +490,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-01-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
+        <p><a href="index.html">HaishinKit 1.7.3 Docs</a> (87% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -59,6 +59,18 @@
                 <a href="Classes/IORecorder/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/IOStream.html">IOStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IOStream/ReadyState.html">– ReadyState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
               </li>
               <li class="nav-group-task">
@@ -71,9 +83,6 @@
                 <a href="Classes/MTHKView.html">MTHKView</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/NetBitRateStrategy.html">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Classes/NetClient.html">NetClient</a>
               </li>
               <li class="nav-group-task">
@@ -81,12 +90,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/NetSocket.html">NetSocket</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/NetStream.html">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/NetStream/ReadyState.html">– ReadyState</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/PiPHKView.html">PiPHKView</a>
@@ -129,9 +132,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/TSWriter.html">TSWriter</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/VideoAdaptiveNetBitRateStrategy.html">VideoAdaptiveNetBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoEffect.html">VideoEffect</a>
@@ -217,13 +217,13 @@
                 <a href="Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a>
+                <a href="Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/NetStreamDelegate.html">NetStreamDelegate</a>
+                <a href="Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+                <a href="Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -264,13 +264,13 @@
                 <a href="Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/MultiCamCaptureSettings.html">MultiCamCaptureSettings</a>
+                <a href="Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/MultiCamCaptureSettings/Mode.html">– Mode</a>
+                <a href="Structs/IOVideoMixerSettings.html">IOVideoMixerSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="Structs/NetBitRateStats.html">NetBitRateStats</a>
+                <a href="Structs/IOVideoMixerSettings/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
@@ -300,6 +300,33 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -433,12 +460,19 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <span class="n">stream</span><span class="o">.</span><span class="n">isMultiCamSessionEnabled</span> <span class="o">=</span> <span class="kc">true</span>
 
 <span class="k">let</span> <span class="nv">back</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">)</span>
-<span class="k">if</span> <span class="kd">#available(iOS 13.0, *)</span> <span class="p">{</span>
-  <span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
-  <span class="n">stream</span><span class="o">.</span><span class="nf">attachMultiCamera</span><span class="p">(</span><span class="n">front</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">,</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
+    <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="p">}</span>
 <span class="p">}</span>
-<span class="n">rtmpStream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span>
+
+<span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+  <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
+    <span class="n">logger</span><span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
 </code></pre>
 <h3 id='rendering' class='heading'>Rendering</h3>
 
@@ -606,11 +640,13 @@ open HaishinKit.xcodeproj
 <span class="k">let</span> <span class="nv">stream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">rtmpConnection</span><span class="p">)</span>
 
 <span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
-    <span class="c1">// print(error)</span>
+  <span class="c1">// print(error)</span>
 <span class="p">}</span>
 
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
-    <span class="c1">// print(error)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">),</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
+    <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="k">let</span> <span class="nv">hkView</span> <span class="o">=</span> <span class="kt">MTHKView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
@@ -648,8 +684,10 @@ open HaishinKit.xcodeproj
 <span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
     <span class="c1">// print(error)</span>
 <span class="p">}</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
-    <span class="c1">// print(error)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">),</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
+    <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="k">let</span> <span class="nv">hkView</span> <span class="o">=</span> <span class="kt">HKView</span><span class="p">(</span><span class="nv">frame</span><span class="p">:</span> <span class="n">view</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
@@ -682,10 +720,11 @@ open HaishinKit.xcodeproj
 <span class="n">stream</span><span class="o">.</span><span class="n">sessionPreset</span> <span class="o">=</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span>
 
 <span class="c1">/// Specifies the video capture settings.</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">videoCapture</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">map</span> <span class="p">{</span>
-    <span class="c1">// $0.isVideoMirrored = true</span>
-    <span class="nv">$0</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span>
-    <span class="c1">// $0.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange</span>
+<span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+  <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">true</span>
+  <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span>
+  <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">colorFormat</span> <span class="o">=</span> <span class="n">kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange</span>
 <span class="p">}</span>
 </code></pre>
 <h3 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-audiocodecsettings-html-audiocodecsettings-a' class='heading'>🔊 <a href="https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html">AudioCodecSettings</a></h3>
@@ -803,7 +842,7 @@ stream.startRecording(self, settings: [
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-01-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

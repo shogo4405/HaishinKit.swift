@@ -78,12 +78,19 @@ Supports two camera video sources. A picture-in-picture display that shows the i
 stream.isMultiCamSessionEnabled = true
 
 let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-stream.attachCamera(back)
-if #available(iOS 13.0, *) {
-  let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-  stream.attachMultiCamera(front)
+stream.attachCamera(back, channel: 0) { _, error in
+  if let error {
+    logger.warn(error)
+  }
 }
-rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio))
+
+let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+stream.attachCamera(front, channel: 1) { videoUnit, error in
+  videoUnit?.isVideoMirrored = true
+  if let error {
+    logger.error(error)
+  }
+}
 ```
 
 ### Rendering
@@ -170,11 +177,13 @@ let connection = RTMPConnection()
 let stream = RTMPStream(connection: rtmpConnection)
 
 stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-    // print(error)
+  // print(error)
 }
 
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
-    // print(error)
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), channel: 0) { _, error in
+  if let error {
+    logger.warn(error)
+  }
 }
 
 let hkView = MTHKView(frame: view.bounds)
@@ -218,8 +227,10 @@ let stream = SRTStream(connection: connection)
 stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
     // print(error)
 }
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)) { error in
-    // print(error)
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), channel: 0) { _, error in
+  if let error {
+    logger.warn(error)
+  }
 }
 
 let hkView = HKView(frame: view.bounds)
@@ -256,10 +267,11 @@ stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
 
 /// Specifies the video capture settings.
-stream.videoCapture(for: 0).map {
-    // $0.isVideoMirrored = true
-    $0.preferredVideoStabilizationMode = .standard
-    // $0.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+stream.attachCamera(front, channel: 0) { videoUnit, error in
+  videoUnit?.isVideoMirrored = true
+  videoUnit?.preferredVideoStabilizationMode = .standard
+  videoUnit?.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
 }
 ```
 

@@ -17,7 +17,7 @@
     <a title="ASXML Structure Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.2 Docs</a> (88% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.7.3 Docs</a> (87% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -60,6 +60,18 @@
                 <a href="../Classes/IORecorder/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Classes/IOStream.html">IOStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStream/ReadyState.html">– ReadyState</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
               </li>
               <li class="nav-group-task">
@@ -72,9 +84,6 @@
                 <a href="../Classes/MTHKView.html">MTHKView</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/NetBitRateStrategy.html">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Classes/NetClient.html">NetClient</a>
               </li>
               <li class="nav-group-task">
@@ -82,12 +91,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/NetSocket.html">NetSocket</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream.html">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/NetStream/ReadyState.html">– ReadyState</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/PiPHKView.html">PiPHKView</a>
@@ -130,9 +133,6 @@
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/TSWriter.html">TSWriter</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/VideoAdaptiveNetBitRateStrategy.html">VideoAdaptiveNetBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/VideoEffect.html">VideoEffect</a>
@@ -218,13 +218,13 @@
                 <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetBitRateStrategyConvertible.html">NetBitRateStrategyConvertible</a>
+                <a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDelegate.html">NetStreamDelegate</a>
+                <a href="../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/NetStreamDrawable.html">NetStreamDrawable</a>
+                <a href="../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,13 +265,13 @@
                 <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings.html">MultiCamCaptureSettings</a>
+                <a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/MultiCamCaptureSettings/Mode.html">– Mode</a>
+                <a href="../Structs/IOVideoMixerSettings.html">IOVideoMixerSettings</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Structs/NetBitRateStats.html">NetBitRateStats</a>
+                <a href="../Structs/IOVideoMixerSettings/Mode.html">– Mode</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
@@ -301,6 +301,33 @@
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -426,7 +453,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2023 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2023-12-10)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-01-02)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
