@@ -174,7 +174,7 @@ do {
 ### Ingest
 ```swift
 let connection = RTMPConnection()
-let stream = RTMPStream(connection: rtmpConnection)
+let stream = RTMPStream(connection: connection)
 
 stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
   // print(error)
