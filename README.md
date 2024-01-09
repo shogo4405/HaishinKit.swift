@@ -174,7 +174,7 @@ do {
 ### Ingest
 ```swift
 let connection = RTMPConnection()
-let stream = RTMPStream(connection: rtmpConnection)
+let stream = RTMPStream(connection: connection)
 
 stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
   // print(error)
@@ -200,7 +200,7 @@ stream.publish("streamName")
 ### Playback
 ```swift
 let connection = RTMPConnection()
-let stream = RTMPStream(connection: rtmpConnection)
+let stream = RTMPStream(connection: connection)
 
 let hkView = MTHKView(frame: view.bounds)
 hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
