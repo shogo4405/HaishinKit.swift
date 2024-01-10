@@ -102,6 +102,9 @@ extension IOMixer: VideoCodecDelegate {
     }
 
     func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput sampleBuffer: CMSampleBuffer) {
+        if sampleBuffer.formatDescription?.isCompressed == false {
+            delegate?.mixer(self, didOutput: sampleBuffer)
+        }
         muxer?.append(sampleBuffer)
     }
 
@@ -187,5 +190,12 @@ extension IOMixer: IOAudioUnitDelegate {
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.mixer(self, didOutput: audioBuffer, when: when)
         recorder.append(audioBuffer, when: when)
+    }
+}
+
+extension IOMixer: IOVideoUnitDelegate {
+    // MARK: IOVideoUnitDelegate
+    func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer) {
+        delegate?.mixer(self, didOutput: sampleBuffer)
     }
 }
