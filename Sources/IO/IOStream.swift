@@ -16,9 +16,9 @@ public typealias NetStreamDelegate = IOStreamDelegate
 
 /// The interface an IOStream uses to inform its delegate.
 public protocol IOStreamDelegate: AnyObject {
-    /// Tells the receiver an audio packet incoming.
+    /// Tells the receiver to an audio packet incoming.
     func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
-    /// Tells the receiver to playback a video incoming.
+    /// Tells the receiver to a video incoming.
     func stream(_ stream: IOStream, didOutput video: CMSampleBuffer)
     #if os(iOS) || os(tvOS)
     /// Tells the receiver to session was interrupted.
