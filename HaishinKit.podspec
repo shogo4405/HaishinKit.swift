@@ -24,10 +24,10 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "12.0"
   s.tvos.source_files = "Platforms/iOS/*.{h,swift}"
 
-  # s.visionos.deployment_target = "1.0"
-  # s.visionos.source_files = "Platforms/iOS/*.{h,swift}"
+  s.visionos.deployment_target = "1.0"
+  s.visionos.source_files = "Platforms/iOS/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
-  s.dependency 'Logboard', '~> 2.4.1'
+  s.dependency 'Logboard', '~> 2.4.2'
 
 end
