@@ -162,4 +162,12 @@ extension NetStreamSwitcher: IOStreamDelegate {
     /// Tells the receiver to the stream opened.
     func streamDidOpen(_ stream: IOStream) {
     }
+
+    /// Tells the receiver that the ready state will change.
+    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState) {
+    }
+
+    /// Tells the receiver that the ready state did change.
+    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState) {
+    }
 }
