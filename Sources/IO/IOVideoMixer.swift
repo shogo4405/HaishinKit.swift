@@ -107,7 +107,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
                 #if os(macOS)
                 pixelBufferPool?.createPixelBuffer(&imageBuffer)
                 #else
-                if buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
+                if settings.alwaysUseBufferPoolForVideoEffects || buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
                     pixelBufferPool?.createPixelBuffer(&imageBuffer)
                 }
                 #endif
