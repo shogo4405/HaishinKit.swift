@@ -34,6 +34,10 @@ public protocol IOStreamDelegate: AnyObject {
     func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError)
     /// Tells the receiver to the stream opened.
     func streamDidOpen(_ stream: IOStream)
+    /// Tells the receiver that the ready state will change.
+    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState)
+    /// Tells the receiver that the ready state did change.
+    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState)
 }
 
 @available(*, deprecated, renamed: "IOStream")
@@ -301,6 +305,7 @@ open class IOStream: NSObject {
             guard readyState != newValue else {
                 return
             }
+            delegate?.stream(self, willChangeReadyState: readyState)
             readyStateWillChange(to: newValue)
         }
         didSet {
@@ -308,6 +313,7 @@ open class IOStream: NSObject {
                 return
             }
             readyStateDidChange(to: readyState)
+            delegate?.stream(self, didChangeReadyState: readyState)
         }
     }
 
