@@ -35,7 +35,7 @@ struct IOAudioResamplerSettings {
         if converter.downmix != downmix {
             converter.downmix = downmix
         }
-        if let channelMap {
+        if let channelMap = validatedChannelMap(converter) {
             converter.channelMap = channelMap
         } else {
             switch converter.outputFormat.channelCount {
@@ -59,6 +59,18 @@ struct IOAudioResamplerSettings {
             channels: min(channels == 0 ? inputFormat.channelCount : channels, AudioCodecSettings.maximumNumberOfChannels),
             interleaved: inputFormat.isInterleaved
         )
+    }
+    
+    private func validatedChannelMap(_ converter: AVAudioConverter) -> [NSNumber]? {
+        guard let channelMap, channelMap.count == converter.outputFormat.channelCount else {
+            return nil
+        }
+        for inputChannel in channelMap {
+            if inputChannel.intValue >= converter.inputFormat.channelCount {
+                return nil
+            }
+        }
+        return channelMap
     }
 }
 
