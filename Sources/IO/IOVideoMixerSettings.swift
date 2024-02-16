@@ -36,6 +36,8 @@ public struct IOVideoMixerSettings: Codable {
     public let direction: ImageTransform
     /// Specifies the main channel number.
     public var channel: UInt8 = 0
+    /// Specifies if effects are always rendered to a new buffer.
+    public var alwaysUseBufferPoolForVideoEffects: Bool = false
 
     /// Create a new IOVideoMixerSettings.
     public init(mode: Mode, cornerRadius: CGFloat, regionOfInterest: CGRect, direction: ImageTransform) {
