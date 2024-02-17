@@ -60,7 +60,7 @@ struct IOAudioResamplerSettings {
             interleaved: inputFormat.isInterleaved
         )
     }
-    
+
     private func validatedChannelMap(_ converter: AVAudioConverter) -> [NSNumber]? {
         guard let channelMap, channelMap.count == converter.outputFormat.channelCount else {
             return nil
