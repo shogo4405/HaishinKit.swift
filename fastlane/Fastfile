@@ -20,6 +20,11 @@ lane :review do
     use_xcframeworks: true,
     platform: 'iOS'
   ) if Helper.is_ci?
+  danger(
+    danger_id: 'danger',
+    dangerfile: 'Dangerfile',
+    verbose: true
+  )
   scan(scheme: 'Tests')
 end
 
