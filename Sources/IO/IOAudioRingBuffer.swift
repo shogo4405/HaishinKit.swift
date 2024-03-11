@@ -40,8 +40,14 @@ final class IOAudioRingBuffer {
         guard CMSampleBufferDataIsReady(sampleBuffer) else {
             return
         }
+        let targetSampleTime: CMTimeValue
+        if sampleBuffer.presentationTimeStamp.timescale == Int32(inputBuffer.format.sampleRate) {
+            targetSampleTime = sampleBuffer.presentationTimeStamp.value
+        } else {
+            targetSampleTime = Int64(Double(sampleBuffer.presentationTimeStamp.value) * inputBuffer.format.sampleRate / Double(sampleBuffer.presentationTimeStamp.timescale))
+        }
         if sampleTime == 0 {
-            sampleTime = sampleBuffer.presentationTimeStamp.value
+            sampleTime = targetSampleTime
         }
         if inputBuffer.frameLength < sampleBuffer.numSamples {
             if let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: AVAudioFrameCount(sampleBuffer.numSamples)) {
@@ -67,7 +73,7 @@ final class IOAudioRingBuffer {
                 }
             }
         }
-        skip = max(Int(sampleBuffer.presentationTimeStamp.value - sampleTime), 0)
+        skip = max(Int(targetSampleTime - sampleTime), 0)
         sampleTime += Int64(skip)
         append(inputBuffer)
     }
