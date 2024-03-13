@@ -279,6 +279,7 @@ extension IOVideoUnit {
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
+        inputFormat = sampleBuffer.formatDescription
         drawable?.enqueue(sampleBuffer)
         mixer?.videoUnit(self, didOutput: sampleBuffer)
     }
