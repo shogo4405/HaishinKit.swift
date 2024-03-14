@@ -371,6 +371,9 @@ open class RTMPStream: IOStream {
             guard let connection = self.connection, self.readyState == .publishing(muxer: self.muxer) else {
                 return
             }
+            if handlerName == "@setDataFrame" {
+                self.dataTimeStamps.removeValue(forKey: handlerName)
+            }
             let dataWasSent = self.dataTimeStamps[handlerName] == nil ? false : true
             let timestmap: UInt32 = dataWasSent ? UInt32((self.dataTimeStamps[handlerName]?.timeIntervalSinceNow ?? 0) * -1000) : UInt32(self.startedAt.timeIntervalSinceNow * -1000)
             let chunk = RTMPChunk(
