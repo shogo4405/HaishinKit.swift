@@ -256,6 +256,7 @@ open class RTMPStream: IOStream {
         addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         connection.addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         if connection.connected {
+            releaseStream()
             connection.createStream(self)
         }
         mixer.muxer = muxer
@@ -548,6 +549,7 @@ open class RTMPStream: IOStream {
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             readyState = .initialized
+            releaseStream()
             connection.createStream(self)
         case RTMPStream.Code.playReset.rawValue:
             readyState = .play
@@ -562,6 +564,13 @@ open class RTMPStream: IOStream {
 }
 
 extension RTMPStream {
+    func releaseStream() {
+        guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
+            return
+        }
+        connection.call("releaseStream", responder: nil, arguments: name)
+    }
+
     func FCPublish() {
         guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
             return
