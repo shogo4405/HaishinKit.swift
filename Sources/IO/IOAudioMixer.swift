@@ -93,7 +93,7 @@ final class IOAudioMixer {
     private var mixerNode: MixerNode?
     private var outputNode: OutputNode?
     private lazy var defaultTrack: Track = {
-        createTrack(channel: kIOAudioMixer_defaultResamplerTag, settings: settings.defaultResamplerSettings)
+        makeTrack(channel: kIOAudioMixer_defaultResamplerTag, settings: settings.defaultResamplerSettings)
     }()
 
     private let inputRenderCallback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
@@ -124,7 +124,7 @@ final class IOAudioMixer {
         track(channel: Int(channel))?.resampler.append(audioBuffer, when: when)
     }
 
-    private func createTrack(channel: Int, settings: IOAudioResamplerSettings) -> Track {
+    private func makeTrack(channel: Int, settings: IOAudioResamplerSettings) -> Track {
         let resampler = IOAudioResampler<IOAudioMixer>()
         resampler.tag = channel
         resampler.settings = settings
@@ -141,9 +141,9 @@ final class IOAudioMixer {
             return track
         } else if let sampleRate = outputFormat?.sampleRate, let channels = outputFormat?.channelCount {
             if tracks[kIOAudioMixer_defaultResamplerTag] == nil {
-                _ = createTrack(channel: kIOAudioMixer_defaultResamplerTag, settings: settings.defaultResamplerSettings)
+                _ = makeTrack(channel: kIOAudioMixer_defaultResamplerTag, settings: settings.defaultResamplerSettings)
             }
-            return createTrack(channel: channel,
+            return makeTrack(channel: channel,
                                settings: settings.resamplerSettings(channel: channel, sampleRate: sampleRate, channels: channels))
         }
         return nil
