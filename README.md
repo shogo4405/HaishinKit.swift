@@ -32,7 +32,11 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 
 ## 💖 Sponsors
 <p align="center">
-<a href="https://streamlabs.com/" target="_blank"><img src="https://user-images.githubusercontent.com/810189/206836172-9c360977-ab6b-4eff-860b-82d0e7b06318.png" width="350px" alt="Streamlabs" /></a>
+  <br />
+  <br />
+  <a href="https://github.com/sponsors/shogo4405">Offer Sponsors</a>
+  <br />
+  <br />
 </p>
 
 ## 🌏 Related projects
