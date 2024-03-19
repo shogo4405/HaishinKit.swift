@@ -129,7 +129,7 @@ final class IOAudioMixer {
         resampler.tag = channel
         resampler.settings = settings
         resampler.delegate = self
-        let track = Track(resampler: resampler)
+        let track = Track(resampler: resampler, format: resampler.outputFormat)
         tracks[channel] = track
         return track
     }
