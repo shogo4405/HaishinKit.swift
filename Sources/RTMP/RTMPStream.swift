@@ -244,7 +244,7 @@ open class RTMPStream: IOStream {
     private var videoWasSent = false
     private var pausedStatus = PausedStatus(hasAudio: false, hasVideo: false)
     private var howToPublish: RTMPStream.HowToPublish = .live
-    private var dataTimeStamps: [String: Date] = .init()
+    private var dataTimestamps: [String: Date] = .init()
     private weak var connection: RTMPConnection?
 
     /// Creates a new stream.
@@ -366,13 +366,19 @@ open class RTMPStream: IOStream {
     }
 
     /// Sends a message on a published stream to all subscribing clients.
-    public func send(handlerName: String, arguments: Any?...) {
+    /// @param handlerName
+    /// @param arguemnts
+    /// @param isResetTimestamp A workaround option for sending timestamps as 0 in some services.
+    public func send(handlerName: String, arguments: Any?..., isResetTimestamp: Bool = false) {
         lockQueue.async {
             guard let connection = self.connection, self.readyState == .publishing(muxer: self.muxer) else {
                 return
             }
-            let dataWasSent = self.dataTimeStamps[handlerName] == nil ? false : true
-            let timestmap: UInt32 = dataWasSent ? UInt32((self.dataTimeStamps[handlerName]?.timeIntervalSinceNow ?? 0) * -1000) : UInt32(self.startedAt.timeIntervalSinceNow * -1000)
+            if isResetTimestamp {
+                self.dataTimestamps[handlerName] = nil
+            }
+            let dataWasSent = self.dataTimestamps[handlerName] == nil ? false : true
+            let timestmap: UInt32 = dataWasSent ? UInt32((self.dataTimestamps[handlerName]?.timeIntervalSinceNow ?? 0) * -1000) : UInt32(self.startedAt.timeIntervalSinceNow * -1000)
             let chunk = RTMPChunk(
                 type: dataWasSent ? RTMPChunkType.one : RTMPChunkType.zero,
                 streamId: RTMPChunk.StreamID.data.rawValue,
@@ -384,7 +390,7 @@ open class RTMPStream: IOStream {
                     arguments: arguments
                 ))
             let length = connection.socket?.doOutput(chunk: chunk) ?? 0
-            self.dataTimeStamps[handlerName] = .init()
+            self.dataTimestamps[handlerName] = .init()
             self.info.byteCount.mutate { $0 += Int64(length) }
         }
     }
@@ -463,7 +469,7 @@ open class RTMPStream: IOStream {
             startedAt = .init()
             videoWasSent = false
             audioWasSent = false
-            dataTimeStamps.removeAll()
+            dataTimestamps.removeAll()
             FCPublish()
         case .publishing:
             let metadata = makeMetaData()
