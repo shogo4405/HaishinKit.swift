@@ -54,8 +54,8 @@ class AudioNode {
     @discardableResult
     func connect(to node: AudioNode, sourceBus: Int = 0, destBus: Int = 0) throws -> AudioUnitConnection {
         var connection = AudioUnitConnection(sourceAudioUnit: audioUnit,
-                                             sourceOutputNumber: 0,
-                                             destInputNumber: 0)
+                                             sourceOutputNumber: UInt32(sourceBus),
+                                             destInputNumber: UInt32(destBus))
         let status = AudioUnitSetProperty(node.audioUnit,
                                           kAudioUnitProperty_MakeConnection,
                                           kAudioUnitScope_Input,
