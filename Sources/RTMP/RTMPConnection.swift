@@ -179,6 +179,8 @@ public class RTMPConnection: EventDispatcher {
     public var chunkSize: Int = RTMPConnection.defaultChunkSizeS
     /// Specifies the URI passed to the Self.connect() method.
     public private(set) var uri: URL?
+    /// Specifies a name to pass to `releaseStream` command.
+    public private(set) var resourceName: String?
     /// Specifies the instance connected to server(true) or not(false).
     public private(set) var connected = false
     /// Specifies the instance requires Network.framework if possible.
@@ -282,11 +284,12 @@ public class RTMPConnection: EventDispatcher {
     }
 
     /// Creates a two-way connection to an application on RTMP Server.
-    public func connect(_ command: String, arguments: Any?...) {
+    public func connect(_ command: String, name: String? = nil, arguments: Any?...) {
         guard let uri = URL(string: command), let scheme = uri.scheme, !connected && Self.supportedProtocols.contains(scheme) else {
             return
         }
         self.uri = uri
+        self.resourceName = name
         self.arguments = arguments
         switch scheme {
         case "rtmpt", "rtmpts":
@@ -338,6 +341,9 @@ public class RTMPConnection: EventDispatcher {
     }
 
     func createStream(_ stream: RTMPStream) {
+        if let resourceName {
+            call("releaseStream", responder: nil, arguments: resourceName)
+        }
         let responder = RTMPResponder(result: { data -> Void in
             guard let id = data[0] as? Double else {
                 return
@@ -386,7 +392,7 @@ public class RTMPConnection: EventDispatcher {
                 break
             case description.contains("reason=needauth"):
                 let command = Self.makeSanJoseAuthCommand(uri, description: description)
-                connect(command, arguments: arguments)
+                connect(command, name: resourceName, arguments: arguments)
             case description.contains("authmod=adobe"):
                 if user.isEmpty || password.isEmpty {
                     close(isDisconnected: true)
@@ -394,7 +400,7 @@ public class RTMPConnection: EventDispatcher {
                 }
                 let query = uri.query ?? ""
                 let command = uri.absoluteString + (query.isEmpty ? "?" : "&") + "authmod=adobe&user=\(user)"
-                connect(command, arguments: arguments)
+                connect(command, name: resourceName, arguments: arguments)
             default:
                 break
             }
