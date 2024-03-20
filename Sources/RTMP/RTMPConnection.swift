@@ -343,6 +343,7 @@ public class RTMPConnection: EventDispatcher {
     func createStream(_ stream: RTMPStream) {
         if let resourceName {
             call("releaseStream", responder: nil, arguments: resourceName)
+            call("FCPublish", responder: nil, arguments: resourceName)
         }
         let responder = RTMPResponder(result: { data -> Void in
             guard let id = data[0] as? Double else {

@@ -470,7 +470,6 @@ open class RTMPStream: IOStream {
             videoWasSent = false
             audioWasSent = false
             dataTimestamps.removeAll()
-            FCPublish()
         case .publishing:
             let metadata = makeMetaData()
             send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
@@ -568,13 +567,6 @@ open class RTMPStream: IOStream {
 }
 
 extension RTMPStream {
-    func FCPublish() {
-        guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
-            return
-        }
-        connection.call("FCPublish", responder: nil, arguments: name)
-    }
-
     func FCUnpublish() {
         guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
             return
