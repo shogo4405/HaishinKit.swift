@@ -4,6 +4,7 @@
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fshogo4405%2FHaishinKit.swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/shogo4405/HaishinKit.swift)
 [![GitHub license](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://raw.githubusercontent.com/shogo4405/HaishinKit.swift/master/LICENSE.md)
+[![GitHub Sponsor](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&color=ff69b4)](https://github.com/sponsors/shogo4405)
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
@@ -34,7 +35,7 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <p align="center">
   <br />
   <br />
-  <a href="https://github.com/sponsors/shogo4405">Offer Sponsors</a>
+  <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
   <br />
   <br />
 </p>
@@ -329,39 +330,6 @@ stream.startRecording(self, settings: [
   ]
 ])
 ```
-
-## 💠 Sponsorship
-Looking for sponsors. Sponsoring I will enable us to:
-- Purchase smartphones or peripheral devices for testing purposes.
-- Pay for testing on a specific streaming service or for testing on mobile lines.
-- Potentially private use to continue the OSS development
-
- If you use any of our libraries for work, see if your employers would be interested in sponsorship. I have some special offers.　I would greatly appreciate. Thank you.
- - If you request I will note your name product our README.
- - If you mention on a discussion, an issue or pull request that you are sponsoring us I will prioritise helping you even higher.
-
-スポンサーを募集しています。利用用途としては、
-- テスト目的で、スマートフォンの購入や周辺機器の購入を行います。
-- 特定のストリーミングサービスへのテストの支払いや、モバイル回線でのテストの支払いに利用します。
-- 著書のOSS開発を継続的に行う為に私的に利用する可能性もあります。
-
-このライブラリーを仕事で継続的に利用している場合は、ぜひ。雇用主に、スポンサーに興味がないか確認いただけると幸いです。いくつか特典を用意しています。
-- README.mdへの企業ロゴの掲載
-- IssueやPull Requestの優先的な対応
-
-[Sponsorship](https://github.com/sponsors/shogo4405)
-
-## 📖 Reference
-* Adobe’s Real Time Messaging Protocol
-  * http://www.adobe.com/content/dam/Adobe/en/devnet/rtmp/pdf/rtmp_specification_1.0.pdf
-* Action Message Format -- AMF 0
-  * https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf0-file-format-specification.pdf
-* Action Message Format -- AMF 3 
-  * https://www.adobe.com/content/dam/acom/en/devnet/pdf/amf-file-format-spec.pdf
-* Video File Format Specification Version 10
-  * https://www.adobe.com/content/dam/acom/en/devnet/flv/video_file_format_spec_v10.pdf
-* Adobe Flash Video File Format Specification Version 10.1
-  * http://download.macromedia.com/f4v/video_file_format_spec_v10_1.pdf
 
 ## 📜 License
 BSD-3-Clause
