@@ -230,6 +230,9 @@ open class RTMPStream: IOStream {
             }
         }
     }
+    /// Specifies the stream name used for FMLE-compatible sequences.
+    public var fcPublishName: String?
+
     var id: UInt32 = RTMPStream.defaultID
     var audioTimestamp: Double = 0.0
     var videoTimestamp: Double = 0.0
@@ -248,9 +251,10 @@ open class RTMPStream: IOStream {
     private weak var connection: RTMPConnection?
 
     /// Creates a new stream.
-    public init(connection: RTMPConnection) {
+    public init(connection: RTMPConnection, fcPublishName: String? = nil) {
         self.connection = connection
         super.init()
+        self.fcPublishName = fcPublishName
         dispatcher = EventDispatcher(target: self)
         connection.streams.append(self)
         addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
@@ -470,7 +474,6 @@ open class RTMPStream: IOStream {
             videoWasSent = false
             audioWasSent = false
             dataTimestamps.removeAll()
-            FCPublish()
         case .publishing:
             let metadata = makeMetaData()
             send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
@@ -568,13 +571,6 @@ open class RTMPStream: IOStream {
 }
 
 extension RTMPStream {
-    func FCPublish() {
-        guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
-            return
-        }
-        connection.call("FCPublish", responder: nil, arguments: name)
-    }
-
     func FCUnpublish() {
         guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
             return
