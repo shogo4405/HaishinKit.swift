@@ -589,7 +589,7 @@ final class RTMPVideoMessage: RTMPMessage {
     }
 
     private var offset: Int {
-        return isExHeader ? 3 : 0
+        return isExHeader ? packetType == FLVVideoPacketType.codedFrames.rawValue ? 3 : 0 : 0
     }
 
     init() {

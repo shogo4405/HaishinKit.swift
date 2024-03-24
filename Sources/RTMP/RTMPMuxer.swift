@@ -125,6 +125,10 @@ final class RTMPMuxer {
                 if let sampleBuffer = message.makeSampleBuffer(videoTimeStamp, formatDesciption: videoFormat) {
                     stream.mixer.videoIO.append(sampleBuffer)
                 }
+            case FLVVideoPacketType.codedFramesX.rawValue:
+                if let sampleBuffer = message.makeSampleBuffer(videoTimeStamp, formatDesciption: videoFormat) {
+                    stream.mixer.videoIO.append(sampleBuffer)
+                }
             default:
                 break
             }
