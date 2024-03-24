@@ -3,6 +3,8 @@ import Foundation
 
 /// The RTMPResponder class provides to use handle RTMPConnection's callback.
 open class RTMPResponder {
+    static let empty = RTMPResponder(result: { _ in })
+
     /// A Handler represents RTMPResponder's callback function.
     public typealias Handler = (_ data: [Any?]) -> Void
 
@@ -338,6 +340,11 @@ public class RTMPConnection: EventDispatcher {
     }
 
     func createStream(_ stream: RTMPStream) {
+        if let fcPublishName = stream.fcPublishName {
+            // FMLE-compatible sequences
+            call("releaseStream", responder: RTMPResponder.empty, arguments: fcPublishName)
+            call("FCPublish", responder: RTMPResponder.empty, arguments: fcPublishName)
+        }
         let responder = RTMPResponder(result: { data -> Void in
             guard let id = data[0] as? Double else {
                 return

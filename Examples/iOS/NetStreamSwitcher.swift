@@ -59,6 +59,8 @@ final class NetStreamSwitcher {
             guard let connection = connection as? RTMPConnection else {
                 return
             }
+            // Performing operations for FMLE compatibility purposes.
+            (stream as? RTMPStream)?.fcPublishName = Preference.defaultInstance.streamName
             connection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
             connection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
             connection.connect(uri)
