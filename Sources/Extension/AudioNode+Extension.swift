@@ -20,10 +20,10 @@ extension AudioNode: CustomStringConvertible {
                 }
                 if let mixerNode = self as? MixerNode, let volume = try? mixerNode.volume(bus: busIndex, of: scope) {
                     if scope != .input || scope == .input && (try? mixerNode.isEnabled(bus: busIndex, scope: scope)) ?? false {
-                        busDescription.append("bus: \(busIndex), volume: \(volume), format: \(asbd)")
+                        busDescription.append("bus: \(busIndex), volume: \(volume), format: \(asbd.verboseDescription)")
                     }
                 } else {
-                    busDescription.append("bus: \(busIndex), format: \(asbd)")
+                    busDescription.append("bus: \(busIndex), format: \(asbd.verboseDescription)")
                 }
             }
 

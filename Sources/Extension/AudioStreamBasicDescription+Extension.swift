@@ -15,7 +15,7 @@ extension AudioStreamBasicDescription: Equatable {
     }
 }
 
-extension AudioStreamBasicDescription: CustomStringConvertible {
+extension AudioStreamBasicDescription {
     public enum ReadableFormatFlag: String, CaseIterable, CustomStringConvertible {
         case audioFormatFlagIsFloat = "audio_IsFloat"
         case audioFormatFlagIsBigEndian = "audio_IsBigEndian"
@@ -159,7 +159,7 @@ extension AudioStreamBasicDescription: CustomStringConvertible {
         ReadableFlagOptionSet(rawValue: mFormatFlags)
     }
 
-    public var description: String {
+    public var verboseDescription: String {
         "AudioStreamBasicDescription(mSampleRate: \(mSampleRate), mFormatID: \(mFormatID) \(readableFormatID), "
             + "mFormatFlags: \(mFormatFlags) \(readableFlags), mBytesPerPacket: \(mBytesPerPacket), "
             + "mFramesPerPacket: \(mFramesPerPacket), mBytesPerFrame: \(mBytesPerFrame), "
