@@ -66,22 +66,22 @@ final class IOAudioMixer {
     var delegate: (any IOAudioMixerDelegate)?
     var settings: IOAudioMixerSettings = .init() {
         didSet {
-            defaultTrack.resampler.settings = settings.defaultResamplerSettings
+            defaultTrack?.resampler.settings = settings.defaultResamplerSettings
             if !settings.defaultResamplerSettings.invalidate(oldValue.defaultResamplerSettings) {
                 enforceResamplersSettings()
             }
         }
     }
     var inputFormat: AVAudioFormat? {
-        return defaultTrack.resampler.inputFormat
+        return defaultTrack?.resampler.inputFormat
     }
     var outputFormat: AVAudioFormat? {
-        return defaultTrack.resampler.outputFormat
+        return defaultTrack?.resampler.outputFormat
     }
     private(set) var numberOfTracks = 0
     private var tracks: [Int: Track] = [:] {
         didSet {
-            numberOfTracks += 1
+            numberOfTracks = tracks.keys.count
             tryToSetupAudioNodes()
         }
     }
@@ -92,9 +92,9 @@ final class IOAudioMixer {
     private var sampleTime: AVAudioFramePosition = kIOAudioMixer_sampleTime
     private var mixerNode: MixerNode?
     private var outputNode: OutputNode?
-    private lazy var defaultTrack: Track = {
-        makeTrack(channel: kIOAudioMixer_defaultResamplerTag, settings: settings.defaultResamplerSettings)
-    }()
+    private var defaultTrack: Track? {
+        tracks[kIOAudioMixer_defaultResamplerTag]
+    }
 
     private let inputRenderCallback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
         let audioMixer = Unmanaged<IOAudioMixer>.fromOpaque(inRefCon).takeUnretainedValue()
@@ -113,7 +113,7 @@ final class IOAudioMixer {
                 anchor = .init(hostTime: AVAudioTime.hostTime(forSeconds: sampleBuffer.presentationTimeStamp.seconds), sampleTime: sampleTime, atRate: outputFormat.sampleRate)
             }
         }
-        track(channel: Int(channel))?.resampler.append(sampleBuffer)
+        track(channel: Int(channel)).resampler.append(sampleBuffer)
     }
 
     func append(_ audioBuffer: AVAudioPCMBuffer, channel: UInt8, when: AVAudioTime) {
@@ -121,32 +121,33 @@ final class IOAudioMixer {
             sampleTime = when.sampleTime
             anchor = when
         }
-        track(channel: Int(channel))?.resampler.append(audioBuffer, when: when)
+        track(channel: Int(channel)).resampler.append(audioBuffer, when: when)
     }
 
-    private func makeTrack(channel: Int, settings: IOAudioResamplerSettings) -> Track {
+    private func track(channel: Int) -> Track {
+        let channel = Int(channel)
+        if let track = tracks[channel] {
+            return track
+        }
+        let track = makeTrack(channel: channel)
+        if channel == kIOAudioMixer_defaultResamplerTag {
+            enforceResamplersSettings()
+        }
+        return track
+    }
+
+    private func makeTrack(channel: Int) -> Track {
         let resampler = IOAudioResampler<IOAudioMixer>()
-        resampler.tag = channel
-        resampler.settings = settings
+        resampler.channel = channel
+        if channel == kIOAudioMixer_defaultResamplerTag {
+            resampler.settings = settings.defaultResamplerSettings
+        } else {
+            applySettings(resampler: resampler, defaultFormat: outputFormat, preferredSettings: settings.resamplersSettings[channel])
+        }
         resampler.delegate = self
         let track = Track(resampler: resampler, format: resampler.outputFormat)
         tracks[channel] = track
         return track
-    }
-
-    private func track(channel: Int) -> Track? {
-        if channel == kIOAudioMixer_defaultResamplerTag {
-            return defaultTrack
-        } else if let track = tracks[channel] {
-            return track
-        } else if let sampleRate = outputFormat?.sampleRate, let channels = outputFormat?.channelCount {
-            if tracks[kIOAudioMixer_defaultResamplerTag] == nil {
-                _ = makeTrack(channel: kIOAudioMixer_defaultResamplerTag, settings: settings.defaultResamplerSettings)
-            }
-            return makeTrack(channel: channel,
-                               settings: settings.resamplerSettings(channel: channel, sampleRate: sampleRate, channels: channels))
-        }
-        return nil
     }
 
     private func tryToSetupAudioNodes() {
@@ -199,7 +200,7 @@ final class IOAudioMixer {
     }
 
     private func provideInput(_ inNumberFrames: UInt32, channel: Int, ioData: UnsafeMutablePointer<AudioBufferList>?) -> OSStatus {
-        guard let ringBuffer = track(channel: channel)?.ringBuffer else {
+        guard let ringBuffer = track(channel: channel).ringBuffer else {
             return noErr
         }
         if ringBuffer.counts == 0 {
@@ -243,14 +244,24 @@ final class IOAudioMixer {
             if channel == kIOAudioMixer_defaultResamplerTag {
                 continue
             }
-            let preferredSettings = settings.resamplersSettings[channel] ?? .init()
-            track.resampler.settings = IOAudioResamplerSettings(
-                sampleRate: outputFormat.sampleRate,
-                channels: outputFormat.channelCount,
-                downmix: preferredSettings.downmix,
-                channelMap: preferredSettings.channelMap
-            )
+            applySettings(resampler: track.resampler, defaultFormat: outputFormat, preferredSettings: settings.resamplersSettings[channel])
         }
+    }
+
+    private func applySettings(resampler: IOAudioResampler<IOAudioMixer>,
+                               defaultFormat: AVAudioFormat?,
+                               preferredSettings: IOAudioResamplerSettings?) {
+        let preferredSettings = preferredSettings ?? .init()
+        guard let defaultFormat else {
+            resampler.settings = preferredSettings
+            return
+        }
+        resampler.settings = IOAudioResamplerSettings(
+            sampleRate: defaultFormat.sampleRate,
+            channels: defaultFormat.channelCount,
+            downmix: preferredSettings.downmix,
+            channelMap: preferredSettings.channelMap
+        )
     }
 }
 
@@ -258,36 +269,35 @@ extension IOAudioMixer: IOAudioResamplerDelegate {
     // MARK: IOAudioResamplerDelegate
     func resampler(_ resampler: IOAudioResampler<IOAudioMixer>, didOutput audioFormat: AVAudioFormat) {
         guard shouldMix else {
-            if resampler.tag == kIOAudioMixer_defaultResamplerTag {
-                delegate?.audioMixer(self, didOutput: audioFormat)
-            }
+            delegate?.audioMixer(self, didOutput: audioFormat)
             return
         }
-        if resampler.tag == kIOAudioMixer_defaultResamplerTag {
+        if resampler.channel == kIOAudioMixer_defaultResamplerTag {
             enforceResamplersSettings()
             tryToSetupAudioNodes()
             delegate?.audioMixer(self, didOutput: audioFormat)
         }
-        track(channel: resampler.tag)?.ringBuffer = .init(audioFormat)
+        track(channel: resampler.channel).ringBuffer = .init(audioFormat)
     }
 
     func resampler(_ resampler: IOAudioResampler<IOAudioMixer>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard shouldMix else {
-            if resampler.tag == kIOAudioMixer_defaultResamplerTag {
-                delegate?.audioMixer(self, didOutput: audioBuffer, when: when)
-            }
+            delegate?.audioMixer(self, didOutput: audioBuffer, when: when)
             return
         }
         guard audioBuffer.format.sampleRate == outputFormat?.sampleRate else {
             delegate?.audioMixer(self, errorOccurred: .failedToMix(error: IOAudioMixerError.invalidSampleRate))
             return
         }
-        guard let track = track(channel: resampler.tag) else {
+        let track = track(channel: resampler.channel)
+        if track.ringBuffer == nil, let format = resampler.outputFormat {
+            track.ringBuffer = .init(format)
+        }
+        guard let ringBuffer = track.ringBuffer else {
             return
         }
-        track.ringBuffer?.append(audioBuffer, when: when)
-
-        if resampler.tag == kIOAudioMixer_defaultResamplerTag {
+        ringBuffer.append(audioBuffer, when: when)
+        if resampler.channel == kIOAudioMixer_defaultResamplerTag {
             mix(numberOfFrames: audioBuffer.frameLength)
         }
     }

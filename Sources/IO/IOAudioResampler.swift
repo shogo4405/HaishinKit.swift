@@ -138,7 +138,7 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
         return audioConverter?.outputFormat
     }
 
-    var tag: Int = 0
+    var channel: Int = 0
 
     private var inSourceFormat: AudioStreamBasicDescription? {
         didSet {
@@ -243,7 +243,7 @@ final class IOAudioResampler<T: IOAudioResamplerDelegate> {
         }
         if let inputFormat, let outputFormat {
             if logger.isEnabledFor(level: .info) {
-                logger.info("tag:", tag, ", inputFormat:", inputFormat, ", outputFormat:", outputFormat)
+                logger.info("channel:", channel, ", inputFormat:", inputFormat, ", outputFormat:", outputFormat)
             }
             sampleTime = kIOAudioResampler_sampleTime
             audioConverter = .init(from: inputFormat, to: outputFormat)
