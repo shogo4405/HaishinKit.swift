@@ -8,12 +8,12 @@ jobs:
     runs-on: macOS-13
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Select Xcode version
       run: sudo xcode-select -s '/Applications/Xcode_15.0.app'
     - name: bundle install
       env:
-        DANGER_GITHUB_API_TOKEN: ${{ secrets.DANGER_GITHUB_API_TOKEN }}
+        DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         bundle install
         bundle exec fastlane review
