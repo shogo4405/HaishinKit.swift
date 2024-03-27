@@ -1,10 +1,9 @@
-#if os(iOS) || os(tvOS) || os(macOS)
 import AVFoundation
 
 protocol IOCaptureSessionDelegate: AnyObject {
     @available(tvOS 17.0, *)
     func captureSession(_ session: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError)
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     @available(tvOS 17.0, *)
     func captureSession(_ session: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
     @available(tvOS 17.0, *)
@@ -21,8 +20,10 @@ final class IOCaptureSession {
             return false
         }
     }
-    #else
+    #elseif os(macOS)
     static let isMultiCamSupported = true
+    #elseif os(visionOS)
+    static let isMultiCamSupported = false
     #endif
 
     #if os(iOS) || os(tvOS)
@@ -39,9 +40,12 @@ final class IOCaptureSession {
     var isMultitaskingCameraAccessEnabled: Bool {
         return session.isMultitaskingCameraAccessEnabled
     }
-    #else
+    #elseif os(macOS)
     let isMultiCamSessionEnabled = true
     let isMultitaskingCameraAccessEnabled = true
+    #elseif os(visionOS)
+    let isMultiCamSessionEnabled = false
+    let isMultitaskingCameraAccessEnabled = false
     #endif
 
     weak var delegate: (any IOCaptureSessionDelegate)?
@@ -76,7 +80,10 @@ final class IOCaptureSession {
             session.commitConfiguration()
         }
     }
-    #elseif os(iOS) || os(macOS)
+    #elseif os(visionOS)
+    /// The capture session instance.
+    private(set) lazy var session = AVCaptureSession()
+    #else
     var sessionPreset: AVCaptureSession.Preset = .default {
         didSet {
             guard sessionPreset != oldValue, session.canSetSessionPreset(sessionPreset) else {
@@ -125,6 +132,7 @@ final class IOCaptureSession {
 
     @available(tvOS 17.0, *)
     func attachCapture(_ capture: any IOCaptureUnit) {
+        #if !os(visionOS)
         if let connection = capture.connection {
             if let input = capture.input, session.canAddInput(input) {
                 session.addInputWithNoConnections(input)
@@ -135,23 +143,26 @@ final class IOCaptureSession {
             if session.canAddConnection(connection) {
                 session.addConnection(connection)
             }
-        } else {
-            if let input = capture.input, session.canAddInput(input) {
-                session.addInput(input)
-            }
-            if let output = capture.output, session.canAddOutput(output) {
-                session.addOutput(output)
-            }
+            return
+        }
+        #endif
+        if let input = capture.input, session.canAddInput(input) {
+            session.addInput(input)
+        }
+        if let output = capture.output, session.canAddOutput(output) {
+            session.addOutput(output)
         }
     }
 
     @available(tvOS 17.0, *)
     func detachCapture(_ capture: any IOCaptureUnit) {
+        #if !os(visionOS)
         if let connection = capture.connection {
             if capture.output?.connections.contains(connection) == true {
                 session.removeConnection(connection)
             }
         }
+        #endif
         if let input = capture.input, session.inputs.contains(input) {
             session.removeInput(input)
         }
@@ -199,7 +210,7 @@ final class IOCaptureSession {
     @available(tvOS 17.0, *)
     private func addSessionObservers(_ session: AVCaptureSession) {
         NotificationCenter.default.addObserver(self, selector: #selector(sessionRuntimeError(_:)), name: .AVCaptureSessionRuntimeError, object: session)
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionInterruptionEnded(_:)), name: .AVCaptureSessionInterruptionEnded, object: session)
         NotificationCenter.default.addObserver(self, selector: #selector(sessionWasInterrupted(_:)), name: .AVCaptureSessionWasInterrupted, object: session)
         #endif
@@ -207,7 +218,7 @@ final class IOCaptureSession {
 
     @available(tvOS 17.0, *)
     private func removeSessionObservers(_ session: AVCaptureSession) {
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionWasInterrupted, object: session)
         NotificationCenter.default.removeObserver(self, name: .AVCaptureSessionInterruptionEnded, object: session)
         #endif
@@ -234,7 +245,7 @@ final class IOCaptureSession {
         delegate?.captureSession(self, sessionRuntimeError: session, error: error)
     }
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     @available(tvOS 17.0, *)
     @objc
     private func sessionWasInterrupted(_ notification: Notification) {
@@ -286,5 +297,3 @@ extension IOCaptureSession: Running {
         }
     }
 }
-
-#endif
