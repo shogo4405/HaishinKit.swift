@@ -1,4 +1,3 @@
-#if os(iOS) || os(tvOS) || os(macOS)
 import AVFoundation
 import Foundation
 
@@ -14,4 +13,3 @@ protocol IOCaptureUnit {
     var output: Output? { get set }
     var connection: AVCaptureConnection? { get set }
 }
-#endif

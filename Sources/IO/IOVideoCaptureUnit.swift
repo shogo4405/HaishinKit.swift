@@ -1,4 +1,3 @@
-#if os(iOS) || os(tvOS) || os(macOS)
 import AVFoundation
 import Foundation
 
@@ -37,6 +36,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     }
     #endif
 
+    #if os(iOS) || os(macOS) || os(tvOS)
     /// Spcifies the video mirroed indicates whether the video flowing through the connection should be mirrored about its vertical axis.
     public var isVideoMirrored = false {
         didSet {
@@ -45,6 +45,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             }
         }
     }
+    #endif
 
     #if os(iOS)
     /// Specifies the preferredVideoStabilizationMode most appropriate for use with the connection.
@@ -65,11 +66,13 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
                 return
             }
             output.alwaysDiscardsLateVideoFrames = true
+            #if os(iOS) || os(macOS) || os(tvOS)
             if output.availableVideoPixelFormatTypes.contains(colorFormat) {
                 output.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: NSNumber(value: colorFormat)]
             } else {
                 logger.warn("device doesn't support this color format ", colorFormat, ".")
             }
+            #endif
         }
     }
     var connection: AVCaptureConnection?
@@ -98,7 +101,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         } else {
             connection = nil
         }
-        #else
+        #elseif os(tvOS) || os(macOS)
         if let output, let port = input?.ports.first(where: { $0.mediaType == .video }) {
             connection = AVCaptureConnection(inputPorts: [port], output: output)
         } else {
@@ -106,6 +109,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         }
         #endif
         videoUnit.mixer?.session.attachCapture(self)
+        #if os(iOS) || os(tvOS) || os(macOS)
         output?.connections.forEach {
             if $0.isVideoMirroringSupported {
                 $0.isVideoMirrored = isVideoMirrored
@@ -121,6 +125,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             }
             #endif
         }
+        #endif
         setSampleBufferDelegate(videoUnit)
     }
 
@@ -164,6 +169,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
 
+    #if os(iOS) || os(tvOS) || os(macOS)
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
         guard let device, device.isTorchModeSupported(torchMode) else {
             return
@@ -176,6 +182,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             logger.error("while setting torch:", error)
         }
     }
+    #endif
 
     func setSampleBufferDelegate(_ videoUnit: IOVideoUnit?) {
         if let videoUnit {
@@ -204,5 +211,3 @@ final class IOVideoCaptureUnitVideoDataOutputSampleBuffer: NSObject, AVCaptureVi
         videoMixer.append(sampleBuffer, channel: channel, isVideoMirrored: connection.isVideoMirrored)
     }
 }
-
-#endif

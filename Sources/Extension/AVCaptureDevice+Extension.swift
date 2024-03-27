@@ -1,5 +1,3 @@
-#if os(iOS) || os(tvOS) || os(macOS)
-
 import AVFoundation
 import Foundation
 
@@ -21,5 +19,3 @@ extension AVCaptureDevice {
         }
     }
 }
-
-#endif

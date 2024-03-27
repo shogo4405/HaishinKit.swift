@@ -63,7 +63,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     var outputFormat: FormatDescription? {
         codec.outputFormat
     }
-    #if os(iOS) || os(macOS) || os(tvOS)
+
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
             guard #available(tvOS 17.0, *) else {
@@ -75,6 +75,7 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
+    #if os(iOS) || os(tvOS) || os(macOS)
     var torch = false {
         didSet {
             guard #available(tvOS 17.0, *), torch != oldValue else {
@@ -83,11 +84,12 @@ final class IOVideoUnit: NSObject, IOUnit {
             setTorchMode(torch ? .on : .off)
         }
     }
+    #endif
+
     @available(tvOS 17.0, *)
     var hasDevice: Bool {
         !captures.lazy.filter { $0.value.device != nil }.isEmpty
     }
-    #endif
 
     var context: CIContext {
         get {
@@ -132,7 +134,7 @@ final class IOVideoUnit: NSObject, IOUnit {
     private var captures: [UInt8: IOVideoCaptureUnit] {
         return _captures as! [UInt8: IOVideoCaptureUnit]
     }
-    #elseif os(iOS) || os(macOS)
+    #elseif os(iOS) || os(macOS) || os(visionOS)
     private var captures: [UInt8: IOVideoCaptureUnit] = [:]
     #endif
 
@@ -175,7 +177,6 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
-    #if os(iOS) || os(tvOS) || os(macOS)
     @available(tvOS 17.0, *)
     func attachCamera(_ device: AVCaptureDevice?, channel: UInt8, configuration: IOVideoCaptureConfigurationBlock?) throws {
         guard captures[channel]?.device != device else {
@@ -201,12 +202,14 @@ final class IOVideoUnit: NSObject, IOUnit {
         }
     }
 
+    #if os(iOS) || os(tvOS) || os(macOS)
     @available(tvOS 17.0, *)
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
         for capture in captures.values {
             capture.setTorchMode(torchMode)
         }
     }
+    #endif
 
     @available(tvOS 17.0, *)
     func capture(for channel: UInt8) -> IOVideoCaptureUnit? {
@@ -238,7 +241,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-    #endif
 
     #if os(macOS)
     func attachScreen(_ input: AVCaptureScreenInput?, channel: UInt8) {
@@ -267,14 +269,12 @@ extension IOVideoUnit: Running {
     }
 }
 
-#if os(iOS) || os(tvOS) || os(macOS)
 extension IOVideoUnit {
     @available(tvOS 17.0, *)
     func makeVideoDataOutputSampleBuffer(_ channel: UInt8) -> IOVideoCaptureUnitVideoDataOutputSampleBuffer {
         return .init(channel: channel, videoMixer: videoMixer)
     }
 }
-#endif
 
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate

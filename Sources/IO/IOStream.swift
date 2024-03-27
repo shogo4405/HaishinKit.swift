@@ -20,7 +20,7 @@ public protocol IOStreamDelegate: AnyObject {
     func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to a video incoming.
     func stream(_ stream: IOStream, didOutput video: CMSampleBuffer)
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     /// Tells the receiver to session was interrupted.
     @available(tvOS 17.0, *)
     func stream(_ stream: IOStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
@@ -290,11 +290,9 @@ open class IOStream: NSObject {
                 guard #available(tvOS 17.0, *) else {
                     return
                 }
-                #if os(iOS) || os(tvOS) || os(macOS)
                 if newValue != nil && self.mixer.videoIO.hasDevice {
                     self.mixer.session.startRunning()
                 }
-                #endif
             }
         }
     }
@@ -332,13 +330,12 @@ open class IOStream: NSObject {
     /// Creates a NetStream object.
     override public init() {
         super.init()
-        #if os(iOS) || os(tvOS)
+        #if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         #endif
     }
 
-    #if os(iOS) || os(macOS) || os(tvOS)
     /// Attaches the primary camera object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(tvOS 17.0, *)
@@ -387,6 +384,7 @@ open class IOStream: NSObject {
         }
     }
 
+    #if os(iOS) || os(macOS) || os(tvOS)
     /// Attaches the audio capture object.
     /// - Warning: This method can't use appendSampleBuffer at the same time.
     @available(tvOS 17.0, *)
@@ -483,10 +481,7 @@ open class IOStream: NSObject {
             mixer.muxer = telly
             mixer.startRunning()
         case .publish:
-            #if os(iOS) || os(tvOS) || os(macOS)
-            // Start capture audio and video data.
             mixer.session.startRunning()
-            #endif
         case .publishing(let muxer):
             mixer.muxer = muxer
             mixer.startRunning()
@@ -495,7 +490,7 @@ open class IOStream: NSObject {
         }
     }
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     @objc
     private func didEnterBackground(_ notification: Notification) {
         // Require main thread. Otherwise the microphone cannot be used in the background.
@@ -529,7 +524,7 @@ extension IOStream: IOMixerDelegate {
         delegate?.stream(self, videoErrorOccurred: error)
     }
 
-    #if os(iOS) || os(tvOS)
+    #if os(iOS) || os(tvOS) || os(visionOS)
     @available(tvOS 17.0, *)
     func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
         delegate?.stream(self, sessionWasInterrupted: session, reason: reason)
