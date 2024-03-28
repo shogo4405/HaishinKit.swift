@@ -10,6 +10,8 @@ public enum IOAudioUnitError: Swift.Error {
     case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
     /// The IOAudioUnit  faild to convert the an audio buffer.
     case failedToConvert(error: NSError)
+    /// The IOAudioUnit  failed to mix the audio buffers.
+    case failedToMix(error: any Error)
 }
 
 protocol IOAudioUnitDelegate: AnyObject {
@@ -35,7 +37,7 @@ final class IOAudioUnit: NSObject, IOUnit {
     var settings: AudioCodecSettings = .default {
         didSet {
             codec.settings = settings
-            resampler.settings = settings.makeAudioResamplerSettings()
+            audioMixer.settings = settings.makeAudioMixerSettings()
         }
     }
     var isRunning: Atomic<Bool> {
@@ -50,10 +52,10 @@ final class IOAudioUnit: NSObject, IOUnit {
         codec.delegate = mixer
         return codec
     }()
-    private lazy var resampler: IOAudioResampler<IOAudioUnit> = {
-        var resampler = IOAudioResampler<IOAudioUnit>()
-        resampler.delegate = self
-        return resampler
+    private lazy var audioMixer: IOAudioMixer = {
+        var audioMixer = IOAudioMixer()
+        audioMixer.delegate = self
+        return audioMixer
     }()
     private var monitor: IOAudioMonitor = .init()
     #if os(tvOS)
@@ -89,16 +91,16 @@ final class IOAudioUnit: NSObject, IOUnit {
     func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
         switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
-            resampler.append(sampleBuffer.muted(muted))
+            audioMixer.append(sampleBuffer, channel: channel)
         default:
             codec.append(sampleBuffer)
         }
     }
 
-    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+    func append(_ audioBuffer: AVAudioBuffer, channel: UInt8 = 0, when: AVAudioTime) {
         switch audioBuffer {
         case let audioBuffer as AVAudioPCMBuffer:
-            resampler.append(audioBuffer, when: when)
+            audioMixer.append(audioBuffer, channel: channel, when: when)
         case let audioBuffer as AVAudioCompressedBuffer:
             codec.append(audioBuffer, when: when)
         default:
@@ -112,7 +114,7 @@ final class IOAudioUnit: NSObject, IOUnit {
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        resampler.append(sampleBuffer.muted(muted))
+        audioMixer.append(sampleBuffer.muted(muted))
     }
 }
 #endif
@@ -128,19 +130,19 @@ extension IOAudioUnit: Running {
     }
 }
 
-extension IOAudioUnit: IOAudioResamplerDelegate {
-    // MARK: IOAudioResamplerDelegate
-    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, errorOccurred error: IOAudioUnitError) {
+extension IOAudioUnit: IOAudioMixerDelegate {
+    // MARK: IOAudioMixerDelegate
+    func audioMixer(_ audioMixer: IOAudioMixer, errorOccurred error: IOAudioUnitError) {
         mixer?.audioUnit(self, errorOccurred: error)
     }
 
-    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioFormat: AVAudioFormat) {
-        inputFormat = resampler.inputFormat
+    func audioMixer(_ audioMixer: IOAudioMixer, didOutput audioFormat: AVAudioFormat) {
+        inputFormat = audioMixer.inputFormat
         codec.inputFormat = audioFormat
         monitor.inputFormat = audioFormat
     }
 
-    func resampler(_ resampler: IOAudioResampler<IOAudioUnit>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func audioMixer(_ audioMixer: IOAudioMixer, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.append(audioBuffer, when: when)
         codec.append(audioBuffer, when: when)

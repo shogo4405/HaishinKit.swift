@@ -138,6 +138,8 @@ public struct AudioCodecSettings: Codable {
     /// channelMap = [2, 3]
     /// ```
     public var channelMap: [Int]?
+    /// Specifies settings for alternative audio sources.
+    public var sourceSettings: [Int: AudioCodecSettings]?
     /// Specifies the output format.
     var format: AudioCodecSettings.Format = .aac
 
@@ -147,13 +149,15 @@ public struct AudioCodecSettings: Codable {
         sampleRate: Float64 = 0,
         channels: UInt32 = 0,
         downmix: Bool = false,
-        channelMap: [Int]? = nil
+        channelMap: [Int]? = nil,
+        sourceSettings: [Int: AudioCodecSettings]? = nil
     ) {
         self.bitRate = bitRate
         self.sampleRate = sampleRate
         self.channels = channels
         self.downmix = downmix
         self.channelMap = channelMap
+        self.sourceSettings = sourceSettings
     }
 
     func apply(_ converter: AVAudioConverter?, oldValue: AudioCodecSettings?) {
@@ -169,6 +173,19 @@ public struct AudioCodecSettings: Codable {
             })?.intValue ?? bitRate
             converter.bitRate = min(maxAvailableBitRate, max(minAvailableBitRate, bitRate))
         }
+    }
+
+    func makeAudioMixerSettings() -> IOAudioMixerSettings {
+        guard let sourceSettings else {
+            return IOAudioMixerSettings(defaultResamplerSettings: makeAudioResamplerSettings())
+        }
+        var resamplersSettings: [Int: IOAudioResamplerSettings] = [
+            0: makeAudioResamplerSettings()
+        ]
+        for (source, codecSettings) in sourceSettings {
+            resamplersSettings[source] = codecSettings.makeAudioResamplerSettings()
+        }
+        return IOAudioMixerSettings(resamplersSettings: resamplersSettings)
     }
 
     func makeAudioResamplerSettings() -> IOAudioResamplerSettings {

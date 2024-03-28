@@ -47,13 +47,12 @@ open class SampleHandler: RPBroadcastSampleHandler {
             }
             rtmpStream.append(sampleBuffer)
         case .audioMic:
-            isMirophoneOn = true
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer)
+                rtmpStream.append(sampleBuffer, channel: 0)
             }
         case .audioApp:
-            if !isMirophoneOn && CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer)
+            if CMSampleBufferDataIsReady(sampleBuffer) {
+                rtmpStream.append(sampleBuffer, channel: 1)
             }
         @unknown default:
             break
