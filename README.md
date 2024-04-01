@@ -68,7 +68,7 @@ Project name    |Notes       |License
 - [x] Playback(beta)
 - [ ] mode
   - [x] caller
-  - [x] listener
+  - [ ] listener
   - [ ] rendezvous
 
 ### Multi Camera
