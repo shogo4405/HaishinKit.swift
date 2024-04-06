@@ -51,7 +51,7 @@ final class IngestViewController: UIViewController {
         }
         stream.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
         stream.audioSettings.bitRate = 64 * 1000
-        stream.bitrateStrategy = IOStreamVideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
+        stream.bitrateStrategy = IOStreamVideoAdaptiveBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
 
@@ -152,7 +152,7 @@ final class IngestViewController: UIViewController {
         }
         if slider == videoBitrateSlider {
             videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            stream.bitrateStrategy = IOStreamVideoAdaptiveNetBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
+            stream.bitrateStrategy = IOStreamVideoAdaptiveBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)

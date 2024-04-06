@@ -45,8 +45,8 @@ public final class IOStreamBitRateStrategy: IOStreamBitRateStrategyConvertible {
     }
 }
 
-/// The IOStreamVideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.
-public final class IOStreamVideoAdaptiveNetBitRateStrategy: IOStreamBitRateStrategyConvertible {
+/// The IOStreamVideoAdaptiveBitRateStrategy class provides an algorithm that focuses on video bitrate control.
+public final class IOStreamVideoAdaptiveBitRateStrategy: IOStreamBitRateStrategyConvertible {
     public static let sufficientBWCountsThreshold: Int = 15
 
     public weak var stream: IOStream?
