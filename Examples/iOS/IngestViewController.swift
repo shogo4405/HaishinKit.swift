@@ -78,7 +78,7 @@ final class IngestViewController: UIViewController {
             }
         }
         stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        (view as? (any IOStreamDrawable))?.attachStream(stream)
+        (view as? (any IOStreamView))?.attachStream(stream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }

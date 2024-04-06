@@ -263,7 +263,7 @@ open class IOStream: NSObject {
     public weak var delegate: (any IOStreamDelegate)?
 
     /// Specifies the drawable.
-    public var drawable: (any IOStreamDrawable)? {
+    public var drawable: (any IOStreamView)? {
         get {
             lockQueue.sync { mixer.videoIO.drawable }
         }

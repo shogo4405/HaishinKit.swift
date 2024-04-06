@@ -2,7 +2,7 @@ import AVFoundation
 import Foundation
 
 /// An interface that manages the IOStream content on the screen.
-public protocol IOStreamDrawable: AnyObject {
+public protocol IOStreamView: AnyObject {
     #if os(iOS) || os(macOS)
     /// Specifies the orientation of AVCaptureVideoOrientation.
     var videoOrientation: AVCaptureVideoOrientation { get set }

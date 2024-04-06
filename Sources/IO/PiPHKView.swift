@@ -106,7 +106,7 @@ public class PiPHKView: UIView {
     }
 }
 
-extension PiPHKView: IOStreamDrawable {
+extension PiPHKView: IOStreamView {
     // MARK: NetStreamDrawable
     public func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
@@ -222,7 +222,7 @@ public class PiPHKView: NSView {
     }
 }
 
-extension PiPHKView: IOStreamDrawable {
+extension PiPHKView: IOStreamView {
     // MARK: NetStreamDrawable
     public func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
