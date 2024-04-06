@@ -520,38 +520,3 @@ extension IOStream: IOTellyUnitDelegate {
     }
 }
 
-extension IOStream: IOScreenCaptureUnitDelegate {
-    // MARK: IOScreenCaptureUnitDelegate
-    public func session(_ session: any IOScreenCaptureUnit, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime) {
-        var timingInfo = CMSampleTimingInfo(
-            duration: .invalid,
-            presentationTimeStamp: presentationTime,
-            decodeTimeStamp: .invalid
-        )
-        var videoFormatDescription: CMVideoFormatDescription?
-        var status = CMVideoFormatDescriptionCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            formatDescriptionOut: &videoFormatDescription
-        )
-        guard status == noErr else {
-            return
-        }
-        var sampleBuffer: CMSampleBuffer?
-        status = CMSampleBufferCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            dataReady: true,
-            makeDataReadyCallback: nil,
-            refcon: nil,
-            formatDescription: videoFormatDescription!,
-            sampleTiming: &timingInfo,
-            sampleBufferOut: &sampleBuffer
-        )
-        guard let sampleBuffer, status == noErr else {
-            return
-        }
-        append(sampleBuffer)
-    }
-}
-
