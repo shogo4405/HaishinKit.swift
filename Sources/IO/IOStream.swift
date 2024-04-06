@@ -17,6 +17,14 @@ public protocol IOStreamDelegate: AnyObject {
     func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to a video incoming.
     func stream(_ stream: IOStream, didOutput video: CMSampleBuffer)
+    /// Tells the receiver to video error occured.
+    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
+    /// Tells the receiver to audio error occured.
+    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError)
+    /// Tells the receiver that the ready state will change.
+    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState)
+    /// Tells the receiver that the ready state did change.
+    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState)
     #if os(iOS) || os(tvOS) || os(visionOS)
     /// Tells the receiver to session was interrupted.
     @available(tvOS 17.0, *)
@@ -25,16 +33,6 @@ public protocol IOStreamDelegate: AnyObject {
     @available(tvOS 17.0, *)
     func stream(_ stream: IOStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
-    /// Tells the receiver to video error occured.
-    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
-    /// Tells the receiver to audio error occured.
-    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError)
-    /// Tells the receiver to the stream opened.
-    func streamDidOpen(_ stream: IOStream)
-    /// Tells the receiver that the ready state will change.
-    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState)
-    /// Tells the receiver that the ready state did change.
-    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState)
 }
 
 /// The `IOStream` class is the foundation of a RTMPStream.

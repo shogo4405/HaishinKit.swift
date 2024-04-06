@@ -96,7 +96,7 @@ final class ViewModel: ObservableObject {
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             logger.error(error)
         }
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { _ , error  in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { _, error  in
             logger.error(error)
         }
         rtmpStream.publisher(for: \.currentFPS)

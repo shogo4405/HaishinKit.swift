@@ -448,7 +448,6 @@ open class RTMPStream: IOStream {
             videoSampleAccess = true
             metadata.removeAll()
             info.clear()
-            delegate?.streamDidOpen(self)
             for message in messages {
                 connection.currentTransactionId += 1
                 message.streamId = id
