@@ -3,18 +3,18 @@ import AVFoundation
 import SwiftPMSupport
 #endif
 
-/// The interface an IORecorder uses to inform its delegate.
-public protocol IORecorderDelegate: AnyObject {
+/// The interface an IOStreamRecorderDelegate uses to inform its delegate.
+public protocol IOStreamRecorderDelegate: AnyObject {
     /// Tells the receiver to recorder error occured.
-    func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error)
+    func recorder(_ recorder: IOStreamRecorder, errorOccured error: IOStreamRecorder.Error)
     /// Tells the receiver to finish writing.
-    func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter)
+    func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter)
 }
 
 // MARK: -
-/// The IORecorder class represents video and audio recorder.
-public final class IORecorder {
-    /// The IORecorder error domain codes.
+/// The IOStreamRecorderDelegate class represents video and audio recorder.
+public final class IOStreamRecorder {
+    /// The IOStreamRecorderDelegate error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: any Swift.Error)
@@ -41,9 +41,9 @@ public final class IORecorder {
     ]
 
     /// Specifies the delegate.
-    public weak var delegate: (any IORecorderDelegate)?
+    public weak var delegate: (any IOStreamRecorderDelegate)?
     /// Specifies the recorder settings.
-    public var outputSettings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings
+    public var outputSettings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultOutputSettings
     /// The running indicies whether recording or not.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
@@ -244,7 +244,7 @@ public final class IORecorder {
     }
 }
 
-extension IORecorder: Running {
+extension IOStreamRecorder: Running {
     // MARK: Running
     public func startRunning() {
         lockQueue.async {

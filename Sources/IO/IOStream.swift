@@ -403,7 +403,7 @@ open class IOStream: NSObject {
     }
 
     /// Starts recording.
-    public func startRecording(_ delegate: any IORecorderDelegate, settings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings) {
+    public func startRecording(_ delegate: any IOStreamRecorderDelegate, settings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultOutputSettings) {
         mixer.recorder.delegate = delegate
         mixer.recorder.outputSettings = settings
         mixer.recorder.startRunning()

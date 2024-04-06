@@ -96,7 +96,7 @@ final class ViewModel: ObservableObject {
         rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
             logger.error(error)
         }
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { error in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { _ , error  in
             logger.error(error)
         }
         rtmpStream.publisher(for: \.currentFPS)
@@ -228,13 +228,13 @@ final class ViewModel: ObservableObject {
     }
 }
 
-extension ViewModel: IORecorderDelegate {
-    // MARK: IORecorderDelegate
-    func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error) {
+extension ViewModel: IOStreamRecorderDelegate {
+    // MARK: IOStreamRecorderDelegate
+    func recorder(_ recorder: IOStreamRecorder, errorOccured error: IOStreamRecorder.Error) {
         logger.error(error)
     }
 
-    func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter) {
+    func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter) {
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
         }, completionHandler: { _, error -> Void in

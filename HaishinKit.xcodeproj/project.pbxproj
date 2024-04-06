@@ -64,7 +64,7 @@
 		296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897411CDB01D20074D5F0 /* AppDelegate.swift */; };
 		296897681CDB02940074D5F0 /* IngestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296897441CDB01D20074D5F0 /* IngestViewController.swift */; };
 		2976077F20A89FBB00DCF24F /* RTMPMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */; };
-		2976A47E1D48C5C700B53EF2 /* IORecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* IORecorder.swift */; };
+		2976A47E1D48C5C700B53EF2 /* IOStreamRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A47D1D48C5C700B53EF2 /* IOStreamRecorder.swift */; };
 		2976A4861D4903C300B53EF2 /* DeviceUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2976A4851D4903C300B53EF2 /* DeviceUtil.swift */; };
 		29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */; };
 		29798E761CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */; };
@@ -506,7 +506,7 @@
 		296897461CDB01D20074D5F0 /* VisualEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VisualEffect.swift; sourceTree = "<group>"; };
 		2968974E1CDB01DD0074D5F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2976077E20A89FBB00DCF24F /* RTMPMessageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPMessageTests.swift; sourceTree = "<group>"; };
-		2976A47D1D48C5C700B53EF2 /* IORecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IORecorder.swift; sourceTree = "<group>"; };
+		2976A47D1D48C5C700B53EF2 /* IOStreamRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOStreamRecorder.swift; sourceTree = "<group>"; };
 		2976A4851D4903C300B53EF2 /* DeviceUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtil.swift; sourceTree = "<group>"; };
 		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29798E5D1CE60E5300F5CBD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1107,7 +1107,7 @@
 				BC0F1FD92ACC4CC100C326FF /* IOCaptureVideoPreview.swift */,
 				29B8768B1CD70AFE00FC07DA /* IOMixer.swift */,
 				BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */,
-				2976A47D1D48C5C700B53EF2 /* IORecorder.swift */,
+				2976A47D1D48C5C700B53EF2 /* IOStreamRecorder.swift */,
 				BCA2252B293CC5B600DD7CB2 /* IOScreenCaptureUnit.swift */,
 				29AF3FCE1D7C744C00E41212 /* IOStream.swift */,
 				BC6692F22AC2F717009EC058 /* IOStreamBitRateStrategyConvertible.swift */,
@@ -1828,7 +1828,7 @@
 				BC34FA0B286CB90A00EFAF27 /* PiPHKView.swift in Sources */,
 				293B42E92340B4840086F973 /* RTMPObjectEncoding.swift in Sources */,
 				BC1DC4FB2A02868900E928ED /* FLVVideoFourCC.swift in Sources */,
-				2976A47E1D48C5C700B53EF2 /* IORecorder.swift in Sources */,
+				2976A47E1D48C5C700B53EF2 /* IOStreamRecorder.swift in Sources */,
 				BC110257292E661E00D48035 /* IOVideoMixerSettings.swift in Sources */,
 				BC6889782B011AEB0026A4C2 /* IOCaptureSession.swift in Sources */,
 				BC3802142AB5E7CC001AE399 /* IOAudioCaptureUnit.swift in Sources */,

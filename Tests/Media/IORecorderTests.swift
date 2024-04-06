@@ -7,7 +7,7 @@ import AVFoundation
 
 final class IORecorderTests: XCTestCase, IORecorderDelegate {
     func testRecorder2channel() {
-        let recorder = IORecorder()
+        let recorder = IOStreamRecorder()
         recorder.delegate = self
         recorder.outputSettings = [.audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -29,7 +29,7 @@ final class IORecorderTests: XCTestCase, IORecorderDelegate {
     }
 
     func testRecorder4channel() {
-        let recorder = IORecorder()
+        let recorder = IOStreamRecorder()
         recorder.delegate = self
         recorder.outputSettings = [.audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
@@ -50,11 +50,11 @@ final class IORecorderTests: XCTestCase, IORecorderDelegate {
         sleep(1)
     }
 
-    func recorder(_ recorder: HaishinKit.IORecorder, errorOccured error: IORecorder.Error) {
+    func recorder(_ recorder: HaishinKit.IOStreamRecorder, errorOccured error: IOStreamRecorder.Error) {
         // print("recorder:errorOccured", error)
     }
 
-    func recorder(_ recorder: HaishinKit.IORecorder, finishWriting writer: AVAssetWriter) {
+    func recorder(_ recorder: HaishinKit.IOStreamRecorder, finishWriting writer: AVAssetWriter) {
         // print("recorder:finishWriting")
     }
 }
