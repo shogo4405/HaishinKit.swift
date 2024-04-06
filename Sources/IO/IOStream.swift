@@ -410,15 +410,15 @@ open class IOStream: NSObject {
 
     /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
-    public func append(_ sampleBuffer: CMSampleBuffer) {
+    public func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
         switch sampleBuffer.formatDescription?._mediaType {
         case kCMMediaType_Audio:
             mixer.audioIO.lockQueue.async {
-                self.mixer.audioIO.append(sampleBuffer)
+                self.mixer.audioIO.append(sampleBuffer, channel: channel)
             }
         case kCMMediaType_Video:
             mixer.videoIO.lockQueue.async {
-                self.mixer.videoIO.append(sampleBuffer)
+                self.mixer.videoIO.append(sampleBuffer, channel: channel)
             }
         default:
             break
@@ -427,9 +427,9 @@ open class IOStream: NSObject {
 
     /// Append an AVAudioBuffer.
     /// - Warning: This method can't use attachAudio method at the same time.
-    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+    public func append(_ audioBuffer: AVAudioBuffer, channel: UInt8 = 0, when: AVAudioTime) {
         mixer.audioIO.lockQueue.async {
-            self.mixer.audioIO.append(audioBuffer, when: when)
+            self.mixer.audioIO.append(audioBuffer, channel: channel, when: when)
         }
     }
 
