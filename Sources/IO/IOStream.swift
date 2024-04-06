@@ -364,12 +364,12 @@ open class IOStream: NSObject {
     /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
     public func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
-        switch sampleBuffer.formatDescription?._mediaType {
-        case kCMMediaType_Audio:
+        switch sampleBuffer.formatDescription?.mediaType {
+        case .audio?:
             mixer.audioIO.lockQueue.async {
                 self.mixer.audioIO.append(sampleBuffer, channel: channel)
             }
-        case kCMMediaType_Video:
+        case .video?:
             mixer.videoIO.lockQueue.async {
                 self.mixer.videoIO.append(sampleBuffer, channel: channel)
             }

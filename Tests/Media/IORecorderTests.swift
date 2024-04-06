@@ -5,7 +5,7 @@ import AVFoundation
 
 @testable import HaishinKit
 
-final class IORecorderTests: XCTestCase, IORecorderDelegate {
+final class IORecorderTests: XCTestCase, IOStreamRecorderDelegate {
     func testRecorder2channel() {
         let recorder = IOStreamRecorder()
         recorder.delegate = self

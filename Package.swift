@@ -5,10 +5,10 @@ import PackageDescription
 let package = Package(
     name: "HaishinKit",
     platforms: [
-        .iOS(.v12),
-        .tvOS(.v12),
+        .iOS(.v13),
+        .tvOS(.v13),
         .visionOS(.v1),
-        .macOS(.v10_13),
+        .macOS(.v10_15),
         .macCatalyst(.v14)
     ],
     products: [
