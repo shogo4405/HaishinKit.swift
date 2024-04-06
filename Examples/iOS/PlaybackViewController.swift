@@ -16,7 +16,7 @@ final class PlaybackViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
-        (view as? (any IOStreamDrawable))?.attachStream(stream)
+        (view as? (any IOStreamView))?.attachStream(stream)
         if #available(iOS 15.0, *), let layer = view.layer as? AVSampleBufferDisplayLayer {
             pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
         }

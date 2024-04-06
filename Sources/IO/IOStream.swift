@@ -11,15 +11,20 @@ import ScreenCaptureKit
 import UIKit
 #endif
 
-@available(*, deprecated, renamed: "IOStreamDelegate")
-public typealias NetStreamDelegate = IOStreamDelegate
-
 /// The interface an IOStream uses to inform its delegate.
 public protocol IOStreamDelegate: AnyObject {
     /// Tells the receiver to an audio packet incoming.
     func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
     /// Tells the receiver to a video incoming.
     func stream(_ stream: IOStream, didOutput video: CMSampleBuffer)
+    /// Tells the receiver to video error occured.
+    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
+    /// Tells the receiver to audio error occured.
+    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError)
+    /// Tells the receiver that the ready state will change.
+    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState)
+    /// Tells the receiver that the ready state did change.
+    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState)
     #if os(iOS) || os(tvOS) || os(visionOS)
     /// Tells the receiver to session was interrupted.
     @available(tvOS 17.0, *)
@@ -28,20 +33,7 @@ public protocol IOStreamDelegate: AnyObject {
     @available(tvOS 17.0, *)
     func stream(_ stream: IOStream, sessionInterruptionEnded session: AVCaptureSession)
     #endif
-    /// Tells the receiver to video error occured.
-    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
-    /// Tells the receiver to audio error occured.
-    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError)
-    /// Tells the receiver to the stream opened.
-    func streamDidOpen(_ stream: IOStream)
-    /// Tells the receiver that the ready state will change.
-    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState)
-    /// Tells the receiver that the ready state did change.
-    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState)
 }
-
-@available(*, deprecated, renamed: "IOStream")
-public typealias NetStream = IOStream
 
 /// The `IOStream` class is the foundation of a RTMPStream.
 open class IOStream: NSObject {
@@ -187,17 +179,6 @@ open class IOStream: NSObject {
     }
     #endif
 
-    /// Specifies the multi camera capture properties.
-    @available(*, deprecated, renamed: "videoMixerSettings")
-    public var multiCamCaptureSettings: IOVideoMixerSettings {
-        get {
-            mixer.videoIO.mixerSettings
-        }
-        set {
-            mixer.videoIO.mixerSettings = newValue
-        }
-    }
-
     /// Specifies the video mixer settings..
     public var videoMixerSettings: IOVideoMixerSettings {
         get {
@@ -280,7 +261,7 @@ open class IOStream: NSObject {
     public weak var delegate: (any IOStreamDelegate)?
 
     /// Specifies the drawable.
-    public var drawable: (any IOStreamDrawable)? {
+    public var drawable: (any IOStreamView)? {
         get {
             lockQueue.sync { mixer.videoIO.drawable }
         }
@@ -334,34 +315,6 @@ open class IOStream: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         #endif
-    }
-
-    /// Attaches the primary camera object.
-    /// - Warning: This method can't use appendSampleBuffer at the same time.
-    @available(tvOS 17.0, *)
-    @available(*, deprecated, renamed: "attachCamera(_:channel:configuration:)")
-    public func attachCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
-        lockQueue.async {
-            do {
-                try self.mixer.videoIO.attachCamera(device, channel: 0, configuration: nil)
-            } catch {
-                onError?(error)
-            }
-        }
-    }
-
-    /// Attaches the 2ndary camera  object for picture in picture.
-    /// - Warning: This method can't use appendSampleBuffer at the same time.
-    @available(iOS 13.0, tvOS 17.0, *)
-    @available(*, deprecated, renamed: "attachCamera(_:channel:configuration:)")
-    public func attachMultiCamera(_ device: AVCaptureDevice?, onError: ((_ error: any Error) -> Void)? = nil) {
-        lockQueue.async {
-            do {
-                try self.mixer.videoIO.attachCamera(device, channel: 1, configuration: nil)
-            } catch {
-                onError?(error)
-            }
-        }
     }
 
     /// Attaches the camera object.
@@ -448,7 +401,7 @@ open class IOStream: NSObject {
     }
 
     /// Starts recording.
-    public func startRecording(_ delegate: any IORecorderDelegate, settings: [AVMediaType: [String: Any]] = IORecorder.defaultOutputSettings) {
+    public func startRecording(_ delegate: any IOStreamRecorderDelegate, settings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultOutputSettings) {
         mixer.recorder.delegate = delegate
         mixer.recorder.outputSettings = settings
         mixer.recorder.startRunning()

@@ -78,7 +78,7 @@ final class IngestViewController: UIViewController {
             }
         }
         stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
-        (view as? (any IOStreamDrawable))?.attachStream(stream)
+        (view as? (any IOStreamView))?.attachStream(stream)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
@@ -301,13 +301,13 @@ final class IngestViewController: UIViewController {
     }
 }
 
-extension IngestViewController: IORecorderDelegate {
-    // MARK: IORecorderDelegate
-    func recorder(_ recorder: IORecorder, errorOccured error: IORecorder.Error) {
+extension IngestViewController: IOStreamRecorderDelegate {
+    // MARK: IOStreamRecorderDelegate
+    func recorder(_ recorder: IOStreamRecorder, errorOccured error: IOStreamRecorder.Error) {
         logger.error(error)
     }
 
-    func recorder(_ recorder: IORecorder, finishWriting writer: AVAssetWriter) {
+    func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter) {
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
         }, completionHandler: { _, error -> Void in

@@ -1,8 +1,5 @@
 import Foundation
 
-@available(*, deprecated, renamed: "IOStreamBitRateStats")
-public typealias NetBitRateStats = IOStreamBitRateStats
-
 /// A structure that represents a IOStream's bitRate statics.
 public struct IOStreamBitRateStats {
     /// The statistics of outgoing queue bytes per second.
@@ -12,9 +9,6 @@ public struct IOStreamBitRateStats {
     /// The statistics of outgoing bytes per second.
     public let currentBytesOutPerSecond: Int32
 }
-
-@available(*, deprecated, renamed: "IOStreamBitRateStats")
-public typealias NetBitRateStrategyConvertible = IOStreamBitRateStrategyConvertible
 
 /// A type with a IOStream's bitrate strategy representation.
 public protocol IOStreamBitRateStrategyConvertible: AnyObject {
@@ -33,9 +27,6 @@ public protocol IOStreamBitRateStrategyConvertible: AnyObject {
     func insufficientBWOccured(_ stats: IOStreamBitRateStats)
 }
 
-@available(*, deprecated, renamed: "IOStreamBitRateStrategy")
-public typealias NetBitRateStrategy = IOStreamBitRateStrategy
-
 /// The IOStreamBitRateStrategy class provides a no operative bitrate storategy.
 public final class IOStreamBitRateStrategy: IOStreamBitRateStrategyConvertible {
     public static let shared = IOStreamBitRateStrategy()
@@ -53,9 +44,6 @@ public final class IOStreamBitRateStrategy: IOStreamBitRateStrategyConvertible {
     public func insufficientBWOccured(_ stats: IOStreamBitRateStats) {
     }
 }
-
-@available(*, deprecated, renamed: "IOStreamVideoAdaptiveNetBitRateStrategy")
-public typealias VideoAdaptiveNetBitRateStrategy = IOStreamVideoAdaptiveNetBitRateStrategy
 
 /// The IOStreamVideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.
 public final class IOStreamVideoAdaptiveNetBitRateStrategy: IOStreamBitRateStrategyConvertible {

@@ -27,7 +27,7 @@ final class IOMixer {
 
     private(set) var isRunning: Atomic<Bool> = .init(false)
 
-    private(set) lazy var recorder = IORecorder()
+    private(set) lazy var recorder = IOStreamRecorder()
 
     private(set) lazy var audioIO = {
         var audioIO = IOAudioUnit()
