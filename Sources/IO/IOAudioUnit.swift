@@ -91,6 +91,11 @@ final class IOAudioUnit: NSObject, IOUnit {
         case kAudioFormatLinearPCM:
             resampler.append(sampleBuffer.muted(muted))
         default:
+            if codec.inputFormat?.formatDescription != sampleBuffer.formatDescription {
+                if var asbd = sampleBuffer.formatDescription?.audioStreamBasicDescription {
+                    codec.inputFormat = AVAudioFormat.init(streamDescription: &asbd)
+                }
+            }
             codec.append(sampleBuffer)
         }
     }
