@@ -349,15 +349,6 @@ open class IOStream: NSObject {
     }
     #endif
 
-    #if os(macOS)
-    /// Attaches the screen input object.
-    public func attachScreen(_ input: AVCaptureScreenInput?, channel: UInt8 = 0) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(input, channel: channel)
-        }
-    }
-    #endif
-
     /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
     public func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
@@ -519,4 +510,3 @@ extension IOStream: IOTellyUnitDelegate {
         })
     }
 }
-

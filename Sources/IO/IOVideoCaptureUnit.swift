@@ -129,19 +129,6 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         setSampleBufferDelegate(videoUnit)
     }
 
-    #if os(macOS)
-    func attachScreen(_ screen: AVCaptureScreenInput?, videoUnit: IOVideoUnit) {
-        setSampleBufferDelegate(nil)
-        videoUnit.mixer?.session.detachCapture(self)
-        device = nil
-        input = screen
-        output = AVCaptureVideoDataOutput()
-        connection = nil
-        videoUnit.mixer?.session.attachCapture(self)
-        setSampleBufferDelegate(videoUnit)
-    }
-    #endif
-
     func setFrameRate(_ frameRate: Float64) {
         guard let device else {
             return
