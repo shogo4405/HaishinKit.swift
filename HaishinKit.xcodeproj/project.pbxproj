@@ -84,7 +84,6 @@
 		29B876921CD70AFE00FC07DA /* IOMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768B1CD70AFE00FC07DA /* IOMixer.swift */; };
 		29B876941CD70AFE00FC07DA /* SoundTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */; };
 		29B876961CD70AFE00FC07DA /* VideoEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */; };
-		29B8769B1CD70B1100FC07DA /* MIME.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876971CD70B1100FC07DA /* MIME.swift */; };
 		29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876981CD70B1100FC07DA /* NetClient.swift */; };
 		29B8769D1CD70B1100FC07DA /* NetService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876991CD70B1100FC07DA /* NetService.swift */; };
 		29B8769E1CD70B1100FC07DA /* NetSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8769A1CD70B1100FC07DA /* NetSocket.swift */; };
@@ -524,7 +523,6 @@
 		29B8768D1CD70AFE00FC07DA /* SoundTransform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SoundTransform.swift; sourceTree = "<group>"; };
 		29B8768E1CD70AFE00FC07DA /* IOVideoUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOVideoUnit.swift; sourceTree = "<group>"; };
 		29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoEffect.swift; sourceTree = "<group>"; };
-		29B876971CD70B1100FC07DA /* MIME.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MIME.swift; sourceTree = "<group>"; };
 		29B876981CD70B1100FC07DA /* NetClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetClient.swift; sourceTree = "<group>"; };
 		29B876991CD70B1100FC07DA /* NetService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetService.swift; sourceTree = "<group>"; };
 		29B8769A1CD70B1100FC07DA /* NetSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NetSocket.swift; sourceTree = "<group>"; };
@@ -1042,7 +1040,6 @@
 		297C16881CC5382600117ADF /* Net */ = {
 			isa = PBXGroup;
 			children = (
-				29B876971CD70B1100FC07DA /* MIME.swift */,
 				29B876981CD70B1100FC07DA /* NetClient.swift */,
 				29B876991CD70B1100FC07DA /* NetService.swift */,
 				29B8769A1CD70B1100FC07DA /* NetSocket.swift */,
@@ -1786,7 +1783,6 @@
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BC4078C42AD5CC7E00BBB4FA /* IOMuxer.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* IOStreamView.swift in Sources */,
-				29B8769B1CD70B1100FC07DA /* MIME.swift in Sources */,
 				BC1DC50E2A039E1900E928ED /* FLVVideoPacketType.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
 				29B876871CD70AE800FC07DA /* TSProgram.swift in Sources */,
