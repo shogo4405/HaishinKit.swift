@@ -1,13 +1,6 @@
 import CoreMedia
 
 extension CMBlockBuffer {
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var dataLength: Int {
-        CMBlockBufferGetDataLength(self)
-    }
-
     var data: Data? {
         var length = 0
         var buffer: UnsafeMutablePointer<Int8>?

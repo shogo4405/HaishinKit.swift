@@ -136,8 +136,8 @@ open HaishinKit.xcodeproj
 ### OS
 |-|iOS|tvOS|macOS|visionOS|watchOS|
 |:----|:----:|:----:|:----:|:----:|:----:|
-|HaishinKit|12.0+|12.0+|10.13+|1.0+|-|
-|SRTHaishinKit|12.0+|-|13.0+|-|-|
+|HaishinKit|13.0+|13.0+|10.15+|1.0+|-|
+|SRTHaishinKit|13.0+|-|13.0+|-|-|
 
 ### Cocoa Keys
 Please contains Info.plist.

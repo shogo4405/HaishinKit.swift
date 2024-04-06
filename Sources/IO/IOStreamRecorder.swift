@@ -76,7 +76,7 @@ public final class IOStreamRecorder {
         guard isRunning.value else {
             return
         }
-        let mediaType: AVMediaType = (sampleBuffer.formatDescription?._mediaType == kCMMediaType_Video) ? .video : .audio
+        let mediaType: AVMediaType = (sampleBuffer.formatDescription?.mediaType == .video) ? .video : .audio
         lockQueue.async {
             guard
                 let writer = self.writer,
