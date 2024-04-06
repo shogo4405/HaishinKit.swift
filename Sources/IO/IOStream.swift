@@ -380,9 +380,9 @@ open class IOStream: NSObject {
 
     /// Append an AVAudioBuffer.
     /// - Warning: This method can't use attachAudio method at the same time.
-    public func append(_ audioBuffer: AVAudioBuffer, channel: UInt8 = 0, when: AVAudioTime) {
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, channel: UInt8 = 0) {
         mixer.audioIO.lockQueue.async {
-            self.mixer.audioIO.append(audioBuffer, channel: channel, when: when)
+            self.mixer.audioIO.append(audioBuffer, when: when, channel: channel)
         }
     }
 

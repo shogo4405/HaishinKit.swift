@@ -102,7 +102,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
     }
 
-    func append(_ audioBuffer: AVAudioBuffer, channel: UInt8 = 0, when: AVAudioTime) {
+    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, channel: UInt8 = 0) {
         switch audioBuffer {
         case let audioBuffer as AVAudioPCMBuffer:
             audioMixer.append(audioBuffer, channel: channel, when: when)

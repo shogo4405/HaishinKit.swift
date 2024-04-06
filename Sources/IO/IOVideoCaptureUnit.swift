@@ -196,7 +196,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     }
 }
 
-// swiftlint:disable:next type_name
+// swiftlint:disable type_name
 @available(tvOS 17.0, *)
 final class IOVideoCaptureUnitVideoDataOutputSampleBuffer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     private let channel: UInt8
@@ -211,3 +211,4 @@ final class IOVideoCaptureUnitVideoDataOutputSampleBuffer: NSObject, AVCaptureVi
         videoMixer.append(sampleBuffer, channel: channel, isVideoMirrored: connection.isVideoMirrored)
     }
 }
+// swiftlint:enable type_name

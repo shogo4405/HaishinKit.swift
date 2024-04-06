@@ -96,7 +96,7 @@ final class RTMPMuxer {
                 audioBuffer.packetCount = 1
                 audioBuffer.byteLength = UInt32(byteCount)
                 audioBuffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
-                stream.mixer.audioIO.append(audioBuffer, channel: 0, when: audioTimeStamp)
+                stream.mixer.audioIO.append(audioBuffer, when: audioTimeStamp)
             }
         default:
             break
