@@ -96,7 +96,6 @@
 		29B876B11CD70B2800FC07DA /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A51CD70B2800FC07DA /* RTMPMessage.swift */; };
 		29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */; };
 		29B876B41CD70B2800FC07DA /* RTMPSharedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */; };
-		29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A91CD70B2800FC07DA /* RTMPSocket.swift */; };
 		29B876B61CD70B2800FC07DA /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876AA1CD70B2800FC07DA /* RTMPStream.swift */; };
 		29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876B81CD70B3900FC07DA /* ByteArray.swift */; };
 		29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876B91CD70B3900FC07DA /* CRC32.swift */; };
@@ -540,7 +539,6 @@
 		29B876A51CD70B2800FC07DA /* RTMPMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPMessage.swift; sourceTree = "<group>"; };
 		29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPMuxer.swift; sourceTree = "<group>"; };
 		29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPSharedObject.swift; sourceTree = "<group>"; };
-		29B876A91CD70B2800FC07DA /* RTMPSocket.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPSocket.swift; sourceTree = "<group>"; };
 		29B876AA1CD70B2800FC07DA /* RTMPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStream.swift; sourceTree = "<group>"; };
 		29B876B81CD70B3900FC07DA /* ByteArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArray.swift; sourceTree = "<group>"; };
 		29B876B91CD70B3900FC07DA /* CRC32.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CRC32.swift; sourceTree = "<group>"; };
@@ -1135,7 +1133,6 @@
 				29DF20612312A3DD004057C3 /* RTMPNWSocket.swift */,
 				293B42E82340B4840086F973 /* RTMPObjectEncoding.swift */,
 				29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */,
-				29B876A91CD70B2800FC07DA /* RTMPSocket.swift */,
 				29DF20652312A436004057C3 /* RTMPSocketCompatible.swift */,
 				29B876AA1CD70B2800FC07DA /* RTMPStream.swift */,
 				BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */,
@@ -1836,7 +1833,6 @@
 				29EA87E61E79A2780043A5F8 /* CMAudioFormatDescription+Extension.swift in Sources */,
 				BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */,
 				BC562DCB29576D220048D89A /* AVCaptureSession.Preset+Extension.swift in Sources */,
-				29B876B51CD70B2800FC07DA /* RTMPSocket.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */,
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
