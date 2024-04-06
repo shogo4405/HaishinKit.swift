@@ -349,15 +349,6 @@ open class IOStream: NSObject {
     }
     #endif
 
-    #if os(macOS)
-    /// Attaches the screen input object.
-    public func attachScreen(_ input: AVCaptureScreenInput?, channel: UInt8 = 0) {
-        lockQueue.async {
-            self.mixer.videoIO.attachScreen(input, channel: channel)
-        }
-    }
-    #endif
-
     /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
     public func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
@@ -519,39 +510,3 @@ extension IOStream: IOTellyUnitDelegate {
         })
     }
 }
-
-extension IOStream: IOScreenCaptureUnitDelegate {
-    // MARK: IOScreenCaptureUnitDelegate
-    public func session(_ session: any IOScreenCaptureUnit, didOutput pixelBuffer: CVPixelBuffer, presentationTime: CMTime) {
-        var timingInfo = CMSampleTimingInfo(
-            duration: .invalid,
-            presentationTimeStamp: presentationTime,
-            decodeTimeStamp: .invalid
-        )
-        var videoFormatDescription: CMVideoFormatDescription?
-        var status = CMVideoFormatDescriptionCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            formatDescriptionOut: &videoFormatDescription
-        )
-        guard status == noErr else {
-            return
-        }
-        var sampleBuffer: CMSampleBuffer?
-        status = CMSampleBufferCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            dataReady: true,
-            makeDataReadyCallback: nil,
-            refcon: nil,
-            formatDescription: videoFormatDescription!,
-            sampleTiming: &timingInfo,
-            sampleBufferOut: &sampleBuffer
-        )
-        guard let sampleBuffer, status == noErr else {
-            return
-        }
-        append(sampleBuffer)
-    }
-}
-

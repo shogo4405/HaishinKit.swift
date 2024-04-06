@@ -241,18 +241,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
-
-    #if os(macOS)
-    func attachScreen(_ input: AVCaptureScreenInput?, channel: UInt8) {
-        mixer?.session.configuration { _ in
-            let capture = capture(for: channel)
-            for capture in captures.values where capture.input == input {
-                capture.attachScreen(nil, videoUnit: self)
-            }
-            capture?.attachScreen(input, videoUnit: self)
-        }
-    }
-    #endif
 }
 
 extension IOVideoUnit: Running {
