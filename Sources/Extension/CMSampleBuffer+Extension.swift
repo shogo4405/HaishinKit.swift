@@ -14,69 +14,6 @@ extension CMSampleBuffer {
         }
     }
 
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var isValid: Bool {
-        CMSampleBufferIsValid(self)
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var dataBuffer: CMBlockBuffer? {
-        get {
-            CMSampleBufferGetDataBuffer(self)
-        }
-        set {
-            _ = newValue.map {
-                CMSampleBufferSetDataBuffer(self, newValue: $0)
-            }
-        }
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var imageBuffer: CVImageBuffer? {
-        CMSampleBufferGetImageBuffer(self)
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var numSamples: CMItemCount {
-        CMSampleBufferGetNumSamples(self)
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var duration: CMTime {
-        CMSampleBufferGetDuration(self)
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var formatDescription: CMFormatDescription? {
-        CMSampleBufferGetFormatDescription(self)
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var decodeTimeStamp: CMTime {
-        CMSampleBufferGetDecodeTimeStamp(self)
-    }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var presentationTimeStamp: CMTime {
-        CMSampleBufferGetPresentationTimeStamp(self)
-    }
-
     func muted(_ muted: Bool) -> CMSampleBuffer {
         guard muted else {
             return self

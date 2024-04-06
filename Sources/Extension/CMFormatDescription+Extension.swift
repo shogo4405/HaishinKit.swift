@@ -9,11 +9,4 @@ extension CMFormatDescription {
     var _mediaSubType: FourCharCode {
         CMFormatDescriptionGetMediaSubType(self)
     }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    var audioStreamBasicDescription: AudioStreamBasicDescription? {
-        return CMAudioFormatDescriptionGetStreamBasicDescription(self)?.pointee
-    }
 }
