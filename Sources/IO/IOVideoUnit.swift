@@ -278,9 +278,5 @@ extension IOVideoUnit: IOVideoMixerDelegate {
             presentationTimeStamp: presentationTimeStamp,
             duration: .invalid
         )
-        mixer?.recorder.append(
-            imageBuffer,
-            withPresentationTime: presentationTimeStamp
-        )
     }
 }

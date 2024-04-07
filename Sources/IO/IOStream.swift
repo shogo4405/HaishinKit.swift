@@ -10,10 +10,6 @@ import UIKit
 
 /// The interface an IOStream uses to inform its delegate.
 public protocol IOStreamDelegate: AnyObject {
-    /// Tells the receiver to an audio packet incoming.
-    func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime)
-    /// Tells the receiver to a video incoming.
-    func stream(_ stream: IOStream, didOutput video: CMSampleBuffer)
     /// Tells the receiver to video error occured.
     func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
     /// Tells the receiver to audio error occured.
@@ -45,19 +41,19 @@ open class IOStream: NSObject {
             return lhs.rawValue == rhs.rawValue
         }
 
-        /// NetStream has been created.
+        /// IOStream has been created.
         case initialized
-        /// NetStream waiting for new method.
+        /// IOStream waiting for new method.
         case open
-        /// NetStream play() has been called.
+        /// IOStream play() has been called.
         case play
-        /// NetStream play and server was accepted as playing
+        /// IOStream play and server was accepted as playing
         case playing
-        /// NetStream publish() has been called
+        /// IOStream publish() has been called
         case publish
-        /// NetStream publish and server accpted as publising.
+        /// IOStream publish and server accpted as publising.
         case publishing(muxer: any IOMuxer)
-        /// NetStream close() has been called.
+        /// IOStream close() has been called.
         case closed
 
         var rawValue: UInt8 {
@@ -139,7 +135,7 @@ open class IOStream: NSObject {
     #if os(iOS) || os(tvOS)
     /// Specifies the AVCaptureMultiCamSession enabled.
     /// Warning: If there is a possibility of using multiple cameras, please set it to true initially.
-    @available(tvOS 17.0, iOS 13.0, *)
+    @available(tvOS 17.0, *)
     public var isMultiCamSessionEnabled: Bool {
         get {
             return mixer.session.isMultiCamSessionEnabled
@@ -236,11 +232,6 @@ open class IOStream: NSObject {
         return mixer.audioIO.inputFormat
     }
 
-    /// The isRecording value that indicates whether the recorder is recording.
-    public var isRecording: Bool {
-        return mixer.recorder.isRunning.value
-    }
-
     /// Specifies the controls sound.
     public var soundTransform: SoundTransform {
         get {
@@ -305,6 +296,8 @@ open class IOStream: NSObject {
         return telly
     }()
 
+    private var observers: [any IOStreamObserver] = []
+
     /// Creates a NetStream object.
     override public init() {
         super.init()
@@ -312,6 +305,10 @@ open class IOStream: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(didEnterBackground(_:)), name: UIApplication.didEnterBackgroundNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground(_:)), name: UIApplication.willEnterForegroundNotification, object: nil)
         #endif
+    }
+
+    deinit {
+        observers.removeAll()
     }
 
     /// Attaches the camera object.
@@ -388,16 +385,19 @@ open class IOStream: NSObject {
         }
     }
 
-    /// Starts recording.
-    public func startRecording(_ delegate: any IOStreamRecorderDelegate, settings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultOutputSettings) {
-        mixer.recorder.delegate = delegate
-        mixer.recorder.outputSettings = settings
-        mixer.recorder.startRunning()
+    /// Adds an observer.
+    public func addObserver(_ observer: any IOStreamObserver) {
+        guard observers.firstIndex(where: { $0 === observer }) == nil else {
+            return
+        }
+        observers.append(observer)
     }
 
-    /// Stop recording.
-    public func stopRecording() {
-        mixer.recorder.stopRunning()
+    /// Removes an observer.
+    public func removeObserver(_ observer: any IOStreamObserver) {
+        if let index = observers.firstIndex(where: { $0 === observer }) {
+            observers.remove(at: index)
+        }
     }
 
     /// A handler that receives stream readyState will update.
@@ -450,11 +450,11 @@ open class IOStream: NSObject {
 extension IOStream: IOMixerDelegate {
     // MARK: IOMixerDelegate
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
-        delegate?.stream(self, didOutput: video)
+        observers.forEach { $0.stream(self, didOutput: video) }
     }
 
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime) {
-        delegate?.stream(self, didOutput: audio, when: when)
+        observers.forEach { $0.stream(self, didOutput: audio, when: when) }
     }
 
     func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOAudioUnitError) {
