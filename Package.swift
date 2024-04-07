@@ -30,7 +30,6 @@ let package = Package(
                 sources: [
                     "Codec",
                     "Extension",
-                    "FLV",
                     "IO",
                     "ISO",
                     "Net",
