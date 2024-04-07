@@ -5,11 +5,11 @@ import AVFoundation
 
 @testable import HaishinKit
 
-final class IORecorderTests: XCTestCase, IOStreamRecorderDelegate {
+final class IOStreamRecorderTests: XCTestCase, IOStreamRecorderDelegate {
     func testRecorder2channel() {
         let recorder = IOStreamRecorder()
         recorder.delegate = self
-        recorder.outputSettings = [.audio: [
+        recorder.settings = [.audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
             AVNumberOfChannelsKey: 0
@@ -31,7 +31,7 @@ final class IORecorderTests: XCTestCase, IOStreamRecorderDelegate {
     func testRecorder4channel() {
         let recorder = IOStreamRecorder()
         recorder.delegate = self
-        recorder.outputSettings = [.audio: [
+        recorder.settings = [.audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
             AVNumberOfChannelsKey: 0

@@ -12,9 +12,9 @@ public protocol IOStreamRecorderDelegate: AnyObject {
 }
 
 // MARK: -
-/// The IOStreamRecorderDelegate class represents video and audio recorder.
+/// The IOStreamRecorder class represents video and audio recorder.
 public final class IOStreamRecorder {
-    /// The IOStreamRecorderDelegate error domain codes.
+    /// The IOStreamRecorder error domain codes.
     public enum Error: Swift.Error {
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: any Swift.Error)
@@ -26,8 +26,8 @@ public final class IOStreamRecorder {
         case failedToFinishWriting(error: (any Swift.Error)?)
     }
 
-    /// The default output settings for an IORecorder.
-    public static let defaultOutputSettings: [AVMediaType: [String: Any]] = [
+    /// The default output settings for an IOStreamRecorder.
+    public static let defaultSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -43,7 +43,7 @@ public final class IOStreamRecorder {
     /// Specifies the delegate.
     public weak var delegate: (any IOStreamRecorderDelegate)?
     /// Specifies the recorder settings.
-    public var outputSettings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultOutputSettings
+    public var settings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultSettings
     /// The running indicies whether recording or not.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
 
@@ -52,11 +52,10 @@ public final class IOStreamRecorder {
         guard let writer = writer else {
             return false
         }
-        return outputSettings.count == writer.inputs.count
+        return settings.count == writer.inputs.count
     }
     private var writer: AVAssetWriter?
     private var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
-    private var pixelBufferAdaptor: AVAssetWriterInputPixelBufferAdaptor?
     private var audioPresentationTime: CMTime = .zero
     private var videoPresentationTime: CMTime = .zero
     private var dimensions: CMVideoDimensions = .init(width: 0, height: 0)
@@ -72,7 +71,7 @@ public final class IOStreamRecorder {
     #endif
 
     /// Append a sample buffer for recording.
-    public func append(_ sampleBuffer: CMSampleBuffer) {
+    func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning.value else {
             return
         }
@@ -114,41 +113,6 @@ public final class IOStreamRecorder {
         }
     }
 
-    /// Append a pixel buffer for recording.
-    public func append(_ pixelBuffer: CVPixelBuffer, withPresentationTime: CMTime) {
-        guard isRunning.value else {
-            return
-        }
-        lockQueue.async {
-            if self.dimensions.width != pixelBuffer.width || self.dimensions.height != pixelBuffer.height {
-                self.dimensions = .init(width: Int32(pixelBuffer.width), height: Int32(pixelBuffer.height))
-            }
-            guard
-                let writer = self.writer,
-                let input = self.makeWriterInput(.video, sourceFormatHint: nil),
-                let adaptor = self.makePixelBufferAdaptor(input),
-                self.isReadyForStartWriting && self.videoPresentationTime.seconds < withPresentationTime.seconds else {
-                return
-            }
-
-            switch writer.status {
-            case .unknown:
-                writer.startWriting()
-                writer.startSession(atSourceTime: withPresentationTime)
-            default:
-                break
-            }
-
-            if input.isReadyForMoreMediaData {
-                if adaptor.append(pixelBuffer, withPresentationTime: withPresentationTime) {
-                    self.videoPresentationTime = withPresentationTime
-                } else {
-                    self.delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
-                }
-            }
-        }
-    }
-
     func append(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard isRunning.value else {
             return
@@ -172,7 +136,6 @@ public final class IOStreamRecorder {
             self.delegate?.recorder(self, finishWriting: writer)
             self.writer = nil
             self.writerInputs.removeAll()
-            self.pixelBufferAdaptor = nil
             dispatchGroup.leave()
         }
         dispatchGroup.wait()
@@ -184,7 +147,7 @@ public final class IOStreamRecorder {
         }
 
         var outputSettings: [String: Any] = [:]
-        if let defaultOutputSettings: [String: Any] = self.outputSettings[mediaType] {
+        if let defaultOutputSettings: [String: Any] = self.settings[mediaType] {
             switch mediaType {
             case .audio:
                 guard
@@ -230,17 +193,18 @@ public final class IOStreamRecorder {
         }
         return input
     }
+}
 
-    private func makePixelBufferAdaptor(_ writerInput: AVAssetWriterInput?) -> AVAssetWriterInputPixelBufferAdaptor? {
-        guard pixelBufferAdaptor == nil else {
-            return pixelBufferAdaptor
+extension IOStreamRecorder: IOStreamObserver {
+    // MARK: IOStreamObserver
+    public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
+        append(video)
+    }
+
+    public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+        if let audio = audio as? AVAudioPCMBuffer {
+            append(audio, when: when)
         }
-        guard let writerInput = writerInput else {
-            return nil
-        }
-        let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: writerInput, sourcePixelBufferAttributes: [:])
-        pixelBufferAdaptor = adaptor
-        return adaptor
     }
 }
 

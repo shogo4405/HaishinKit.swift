@@ -282,7 +282,7 @@ stream.attachCamera(front, channel: 0) { videoUnit, error in
 
 ### 🔊 [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)
 When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
-```
+```swift
 stream.audioSettings = AudioCodecSettings(
   bitRate: Int = 64 * 1000,
   sampleRate: Float64 = 0,
@@ -293,7 +293,7 @@ stream.audioSettings = AudioCodecSettings(
 ```
 
 ### 🎥 [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)
-```
+```swift
 stream.videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),
   profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
@@ -307,9 +307,12 @@ stream.videoSettings = VideoCodecSettings(
 ```
 
 ### ⏺️ Recording
-```
+```swift
 // Specifies the recording settings. 0" means the same of input.
-stream.startRecording(self, settings: [
+var recorder = IOStreamRecorder()
+stream.addObserver(recorder)
+
+recorder.outputSettings = [
   AVMediaType.audio: [
     AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
     AVSampleRateKey: 0,
@@ -328,7 +331,10 @@ stream.startRecording(self, settings: [
     ]
     */
   ]
-])
+]
+
+recorder.startRunning()
+
 ```
 
 ## 📜 License

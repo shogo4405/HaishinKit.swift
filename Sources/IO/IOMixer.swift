@@ -27,8 +27,6 @@ final class IOMixer {
 
     private(set) var isRunning: Atomic<Bool> = .init(false)
 
-    private(set) lazy var recorder = IOStreamRecorder()
-
     private(set) lazy var audioIO = {
         var audioIO = IOAudioUnit()
         audioIO.mixer = self
@@ -187,7 +185,6 @@ extension IOMixer: IOAudioUnitDelegate {
 
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.mixer(self, didOutput: audioBuffer, when: when)
-        recorder.append(audioBuffer, when: when)
     }
 }
 
