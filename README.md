@@ -312,7 +312,7 @@ stream.videoSettings = VideoCodecSettings(
 var recorder = IOStreamRecorder()
 stream.addObserver(recorder)
 
-recorder.outputSettings = [
+recorder.settings = [
   AVMediaType.audio: [
     AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
     AVSampleRateKey: 0,
@@ -334,7 +334,7 @@ recorder.outputSettings = [
 ]
 
 recorder.startRunning()
-
+// recorder.stopRunning()
 ```
 
 ## 📜 License
