@@ -138,12 +138,20 @@ final class NetStreamSwitcher {
 
 extension NetStreamSwitcher: IOStreamDelegate {
     // MARK: NetStreamDelegate
-    /// Tells the receiver to playback an audio packet incoming.
-    func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    /// Tells the receiver to video codec error occured.
+    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError) {
     }
 
-    /// Tells the receiver to playback a video packet incoming.
-    func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
+    /// Tells the receiver to audio codec error occured.
+    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError) {
+    }
+
+    /// Tells the receiver that the ready state will change.
+    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState) {
+    }
+
+    /// Tells the receiver that the ready state did change.
+    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState) {
     }
 
     #if os(iOS) || os(tvOS)
@@ -156,25 +164,5 @@ extension NetStreamSwitcher: IOStreamDelegate {
     @available(tvOS 17.0, *)
     func stream(_ stream: IOStream, sessionInterruptionEnded session: AVCaptureSession) {
     }
-
     #endif
-    /// Tells the receiver to video codec error occured.
-    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError) {
-    }
-
-    /// Tells the receiver to audio codec error occured.
-    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError) {
-    }
-
-    /// Tells the receiver to the stream opened.
-    func streamDidOpen(_ stream: IOStream) {
-    }
-
-    /// Tells the receiver that the ready state will change.
-    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState) {
-    }
-
-    /// Tells the receiver that the ready state did change.
-    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState) {
-    }
 }
