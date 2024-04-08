@@ -85,7 +85,7 @@ public final class TSWriter {
     private var audioTimestamp: CMTime = .invalid
     private var PCRTimestamp = CMTime.zero
     private var canWriteFor: Bool {
-        guard expectedMedias.isEmpty else {
+        guard !expectedMedias.isEmpty else {
             return true
         }
         if expectedMedias.contains(.audio) && expectedMedias.contains(.video) {
@@ -169,7 +169,7 @@ public final class TSWriter {
         if duration <= segmentDuration {
             return
         }
-        writeProgram()
+        writeProgramIfNeeded()
         rotatedTimestamp = timestamp
         delegate?.writer(self, didRotateFileHandle: timestamp)
     }
