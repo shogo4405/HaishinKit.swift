@@ -14,6 +14,7 @@ final class MenuViewController: NSViewController {
 
     private lazy var menus: [Menu] = {
         var menus: [Menu] = [
+            .init(title: "FLVAnalyzer", factory: { FLVAnalyzerViewController.getUIViewController() }),
             .init(title: "Ingest Test", factory: { CameraIngestViewController.getUIViewController() }),
             .init(title: "Playback Test", factory: { PlaybackViewController.getUIViewController() })
         ]

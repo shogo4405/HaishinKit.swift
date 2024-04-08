@@ -178,6 +178,11 @@
 		BC570B4828E9ACC10098A12C /* IOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC570B4728E9ACC10098A12C /* IOUnit.swift */; };
 		BC5A945C2BC2A8D80006F722 /* FLVFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5A945B2BC2A8D80006F722 /* FLVFoundation.swift */; };
 		BC603E492B08933F00C8386E /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC603E482B08933F00C8386E /* ViewModel.swift */; };
+		BC64364F2BC4184A00C725D7 /* FLVReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC64364E2BC4184A00C725D7 /* FLVReader.swift */; };
+		BC6436512BC41B1400C725D7 /* FLVAnalyzerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6436502BC41B1400C725D7 /* FLVAnalyzerViewController.swift */; };
+		BC6436532BC41F1100C725D7 /* DnDableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6436522BC41F1100C725D7 /* DnDableView.swift */; };
+		BC6436552BC41F2D00C725D7 /* DnDDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6436542BC41F2D00C725D7 /* DnDDelegate.swift */; };
+		BC6436572BC41FE200C725D7 /* Data+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6436562BC41FE200C725D7 /* Data+Extension.swift */; };
 		BC6692F32AC2F717009EC058 /* IOStreamBitRateStrategyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6692F22AC2F717009EC058 /* IOStreamBitRateStrategyConvertible.swift */; };
 		BC6889782B011AEB0026A4C2 /* IOCaptureSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */; };
 		BC6FC91E29609A6800A746EE /* ShapeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6FC91D29609A6800A746EE /* ShapeFactory.swift */; };
@@ -605,6 +610,11 @@
 		BC570B4728E9ACC10098A12C /* IOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOUnit.swift; sourceTree = "<group>"; };
 		BC5A945B2BC2A8D80006F722 /* FLVFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVFoundation.swift; sourceTree = "<group>"; };
 		BC603E482B08933F00C8386E /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		BC64364E2BC4184A00C725D7 /* FLVReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVReader.swift; sourceTree = "<group>"; };
+		BC6436502BC41B1400C725D7 /* FLVAnalyzerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVAnalyzerViewController.swift; sourceTree = "<group>"; };
+		BC6436522BC41F1100C725D7 /* DnDableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DnDableView.swift; sourceTree = "<group>"; };
+		BC6436542BC41F2D00C725D7 /* DnDDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DnDDelegate.swift; sourceTree = "<group>"; };
+		BC6436562BC41FE200C725D7 /* Data+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Extension.swift"; sourceTree = "<group>"; };
 		BC6692F22AC2F717009EC058 /* IOStreamBitRateStrategyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamBitRateStrategyConvertible.swift; sourceTree = "<group>"; };
 		BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureSession.swift; sourceTree = "<group>"; };
 		BC6FC91D29609A6800A746EE /* ShapeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeFactory.swift; sourceTree = "<group>"; };
@@ -930,17 +940,21 @@
 		296543541D62FE3E00734698 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
-				BC3004FA296C3FC400119932 /* Extension */,
 				296543641D62FEB700734698 /* AppDelegate.swift */,
 				296543651D62FEB700734698 /* Assets.xcassets */,
 				291619671E7EFE4E009FB344 /* CameraIngestViewController.swift */,
+				BC6436522BC41F1100C725D7 /* DnDableView.swift */,
+				BC6436542BC41F2D00C725D7 /* DnDDelegate.swift */,
+				BC3004FA296C3FC400119932 /* Extension */,
+				BC6436502BC41B1400C725D7 /* FLVAnalyzerViewController.swift */,
+				BC64364E2BC4184A00C725D7 /* FLVReader.swift */,
 				296543671D62FEB700734698 /* Info.plist */,
 				291619621E7EFA2A009FB344 /* Main.storyboard */,
 				BC3004D3296BFFF600119932 /* MainSplitViewController.swift */,
 				296543691D62FEB700734698 /* MainWindowController.swift */,
 				BC3004F0296C0C7400119932 /* MenuViewController.swift */,
-				BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */,
 				BC3004F8296C351D00119932 /* PlaybackViewController.swift */,
+				BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */,
 				BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */,
 				2965436A1D62FEB700734698 /* VisualEffect.swift */,
 			);
@@ -1189,6 +1203,7 @@
 		BC3004FA296C3FC400119932 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				BC6436562BC41FE200C725D7 /* Data+Extension.swift */,
 				BC3004F4296C20A300119932 /* NSObject+Extension.swift */,
 				BC3004F6296C20DF00119932 /* NSStoryboard.Name+Extension.swift */,
 				BC3004F2296C205500119932 /* NSViewController+Extension.swift */,
@@ -1903,8 +1918,13 @@
 				BC3004F5296C20A300119932 /* NSObject+Extension.swift in Sources */,
 				BC3004D4296BFFF600119932 /* MainSplitViewController.swift in Sources */,
 				BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */,
+				BC6436552BC41F2D00C725D7 /* DnDDelegate.swift in Sources */,
+				BC6436512BC41B1400C725D7 /* FLVAnalyzerViewController.swift in Sources */,
 				BC3004F1296C0C7400119932 /* MenuViewController.swift in Sources */,
 				BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */,
+				BC6436532BC41F1100C725D7 /* DnDableView.swift in Sources */,
+				BC6436572BC41FE200C725D7 /* Data+Extension.swift in Sources */,
+				BC64364F2BC4184A00C725D7 /* FLVReader.swift in Sources */,
 				BC3004F3296C205500119932 /* NSViewController+Extension.swift in Sources */,
 				BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */,
 				2923A1F31D63004E0019FBCD /* VisualEffect.swift in Sources */,
