@@ -426,16 +426,6 @@ open class RTMPStream: IOStream {
         return metadata
     }
 
-    override public func readyStateWillChange(to readyState: IOStream.ReadyState) {
-        switch self.readyState {
-        case .publishing:
-            FCUnpublish()
-        default:
-            break
-        }
-        super.readyStateWillChange(to: readyState)
-    }
-
     override public func readyStateDidChange(to readyState: IOStream.ReadyState) {
         guard let connection else {
             return
@@ -494,6 +484,9 @@ open class RTMPStream: IOStream {
             return
         }
         readyState = .open
+        if let fcPublishName {
+            connection.call("FCUnpublish", responder: nil, arguments: fcPublishName)
+        }
         connection.socket?.doOutput(chunk: RTMPChunk(
                                         type: .zero,
                                         streamId: RTMPChunk.StreamID.command.rawValue,
@@ -566,15 +559,6 @@ open class RTMPStream: IOStream {
         default:
             break
         }
-    }
-}
-
-extension RTMPStream {
-    func FCUnpublish() {
-        guard let connection, let name = info.resourceName, connection.flashVer.contains("FMLE/") else {
-            return
-        }
-        connection.call("FCUnpublish", responder: nil, arguments: name)
     }
 }
 
