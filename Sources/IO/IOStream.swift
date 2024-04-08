@@ -387,7 +387,7 @@ open class IOStream: NSObject {
 
     /// Adds an observer.
     public func addObserver(_ observer: any IOStreamObserver) {
-        guard observers.firstIndex(where: { $0 === observer }) == nil else {
+        guard !observers.contains(where: { $0 === observer }) else {
             return
         }
         observers.append(observer)
