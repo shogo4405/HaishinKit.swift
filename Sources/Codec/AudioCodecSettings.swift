@@ -8,7 +8,7 @@ public struct AudioCodecSettings: Codable {
     /// Maximum number of channels supported by the system
     public static let maximumNumberOfChannels: UInt32 = 2
     /// Maximum sampleRate supported by the system
-    public static let mamimumSampleRate: Float64 = 48000.0
+    public static let maximumSampleRate: Float64 = 48000.0
 
     /// The type of the AudioCodec supports format.
     enum Format: Codable {
@@ -31,7 +31,7 @@ public struct AudioCodecSettings: Codable {
             case .aac:
                 return UInt32(MPEG4ObjectID.AAC_LC.rawValue)
             case .pcm:
-                return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat | kAudioFormatFlagIsNonInterleaved
+                return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat
             }
         }
 

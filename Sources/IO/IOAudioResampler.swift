@@ -55,7 +55,7 @@ struct IOAudioResamplerSettings {
         }
         return .init(
             commonFormat: inputFormat.commonFormat,
-            sampleRate: min(sampleRate == 0 ? inputFormat.sampleRate : sampleRate, AudioCodecSettings.mamimumSampleRate),
+            sampleRate: min(sampleRate == 0 ? inputFormat.sampleRate : sampleRate, AudioCodecSettings.maximumSampleRate),
             channels: min(channels == 0 ? inputFormat.channelCount : channels, AudioCodecSettings.maximumNumberOfChannels),
             interleaved: inputFormat.isInterleaved
         )
