@@ -1,10 +1,12 @@
 import AppKit
 import Foundation
+@testable import HaishinKit
 
 final class FLVAnalyzerViewController: NSViewController {
-    @IBOutlet private weak var tableView: NSTableView! = nil
-    @IBOutlet private weak var splitView: NSSplitView! = nil
-    @IBOutlet private weak var hexView: NSTextView! = nil
+    @IBOutlet private weak var textView: NSTextView!
+    @IBOutlet private weak var tableView: NSTableView!
+    @IBOutlet private weak var splitView: NSSplitView!
+    @IBOutlet private weak var hexView: NSTextView!
 
     private var tags: [any FLVTag] = []
     private var reader: FLVReader?
@@ -49,6 +51,8 @@ extension FLVAnalyzerViewController: NSTableViewDataSource {
                 return "\(tag.codec)"
             }
             return ""
+        case "StreamId":
+            return tag.streamId
         case "DataSize":
             return tag.dataSize
         case "Timestamp":
@@ -69,8 +73,18 @@ extension FLVAnalyzerViewController: NSTableViewDataSource {
 extension FLVAnalyzerViewController: NSTableViewDelegate {
     // MARK: NSTableViewDelegate
     func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
-        guard let data: Data = reader?.getData(tags[row]) else {
+        guard let data = reader?.getData(tags[row]) else {
             return false
+        }
+        if tags[row].tagType == .data {
+            let amf = AMF0Serializer(data: data)
+            let commandName = try? amf.deserialize()
+            let name = try? amf.deserialize()
+            if let array: ASObject = try? amf.deserialize() {
+                textView.string = "\(String(describing: commandName)):\(String(describing: name)):\(array.description)"
+            } else {
+                print("ERROR")
+            }
         }
         hexView.string = data.bytes.description
         return true
