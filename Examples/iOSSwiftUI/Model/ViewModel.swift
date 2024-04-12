@@ -170,7 +170,7 @@ final class ViewModel: ObservableObject {
 
     func rotateCamera() {
         let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { unit, error  in
+        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { _, error  in
             logger.error(error)
         }
         currentPosition = position
