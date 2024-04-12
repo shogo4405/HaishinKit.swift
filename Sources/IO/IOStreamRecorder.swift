@@ -152,7 +152,7 @@ public final class IOStreamRecorder {
             case .audio:
                 guard
                     let format = sourceFormatHint,
-                    let inSourceFormat = format.streamBasicDescription?.pointee else {
+                    let inSourceFormat = format.audioStreamBasicDescription else {
                     break
                 }
                 for (key, value) in defaultOutputSettings {

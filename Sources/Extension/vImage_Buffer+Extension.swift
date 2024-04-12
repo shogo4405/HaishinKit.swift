@@ -111,11 +111,4 @@ extension vImage_Buffer {
             vImage_Flags(kvImageBackgroundColorFill)
         )
     }
-
-    @available(iOS, obsoleted: 13.0)
-    @available(tvOS, obsoleted: 13.0)
-    @available(macOS, obsoleted: 10.15)
-    func free() {
-        Darwin.free(data)
-    }
 }

@@ -164,7 +164,7 @@ extension RTMPMuxer: IOMuxer {
     }
 
     func append(_ sampleBuffer: CMSampleBuffer) {
-        guard let stream, let data = sampleBuffer.dataBuffer?.data else {
+        guard let stream, let data = try? sampleBuffer.dataBuffer?.dataBytes() else {
             return
         }
         let keyframe = !sampleBuffer.isNotSync
