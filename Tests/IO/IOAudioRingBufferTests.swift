@@ -46,7 +46,7 @@ final class IOAudioRingBufferTests: XCTestCase {
             buffer?.append(sinWave)
             readBuffer.int16ChannelData?[0].update(repeating: 0, count: numSamples)
             _ = buffer?.render(UInt32(numSamples), ioData: readBuffer.mutableAudioBufferList)
-            XCTAssertEqual(sinWave.dataBuffer?.data?.bytes, Data(bytes: bufferList[0].mData!, count: numSamples * Int(channels) * 2).bytes)
+            XCTAssertEqual(try? sinWave.dataBuffer?.dataBytes().bytes, Data(bytes: bufferList[0].mData!, count: numSamples * Int(channels) * 2).bytes)
         }
     }
 }
