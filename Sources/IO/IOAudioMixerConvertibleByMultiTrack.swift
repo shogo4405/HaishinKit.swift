@@ -1,14 +1,14 @@
 import AVFoundation
 import Foundation
 
-final class IOAUAudioMixer: IOAudioMixerConvertible {
+final class IOAudioMixerConvertibleByMultiTrack: IOAudioMixerConvertible {
     private static let defaultSampleTime: AVAudioFramePosition = 0
 
     private class Track {
-        let resampler: IOAudioResampler<IOAUAudioMixer>
+        let resampler: IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>
         var ringBuffer: IOAudioRingBuffer?
 
-        init(resampler: IOAudioResampler<IOAUAudioMixer>, format: AVAudioFormat? = nil) {
+        init(resampler: IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>, format: AVAudioFormat? = nil) {
             self.resampler = resampler
             if let format {
                 self.ringBuffer = .init(format)
@@ -42,7 +42,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
         numberOfTracks > 1
     }
     private var anchor: AVAudioTime?
-    private var sampleTime: AVAudioFramePosition = IOAUAudioMixer.defaultSampleTime
+    private var sampleTime: AVAudioFramePosition = IOAudioMixerConvertibleByMultiTrack.defaultSampleTime
     private var mixerNode: MixerNode?
     private var outputNode: OutputNode?
     private var defaultTrack: Track? {
@@ -50,7 +50,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
     }
 
     private let inputRenderCallback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
-        let audioMixer = Unmanaged<IOAUAudioMixer>.fromOpaque(inRefCon).takeUnretainedValue()
+        let audioMixer = Unmanaged<IOAudioMixerConvertibleByMultiTrack>.fromOpaque(inRefCon).takeUnretainedValue()
         let status = audioMixer.provideInput(inNumberFrames, channel: Int(inBusNumber), ioData: ioData)
         guard status == noErr else {
             audioMixer.delegate?.audioMixer(audioMixer, errorOccurred: .failedToMix(error: IOAudioMixerError.unableToProvideInputData))
@@ -90,7 +90,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
     }
 
     private func makeTrack(channel: Int) -> Track {
-        let resampler = IOAudioResampler<IOAUAudioMixer>()
+        let resampler = IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>()
         resampler.channel = channel
         if channel == settings.mainTrack {
             resampler.settings = settings.defaultResamplerSettings
@@ -201,7 +201,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
         }
     }
 
-    private func applySettings(resampler: IOAudioResampler<IOAUAudioMixer>,
+    private func applySettings(resampler: IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>,
                                defaultFormat: AVAudioFormat?,
                                preferredSettings: IOAudioResamplerSettings?) {
         let preferredSettings = preferredSettings ?? .init()
@@ -218,9 +218,9 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
     }
 }
 
-extension IOAUAudioMixer: IOAudioResamplerDelegate {
+extension IOAudioMixerConvertibleByMultiTrack: IOAudioResamplerDelegate {
     // MARK: IOAudioResamplerDelegate
-    func resampler(_ resampler: IOAudioResampler<IOAUAudioMixer>, didOutput audioFormat: AVAudioFormat) {
+    func resampler(_ resampler: IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>, didOutput audioFormat: AVAudioFormat) {
         guard shouldMix else {
             delegate?.audioMixer(self, didOutput: audioFormat)
             return
@@ -233,7 +233,7 @@ extension IOAUAudioMixer: IOAudioResamplerDelegate {
         track(channel: resampler.channel).ringBuffer = .init(audioFormat)
     }
 
-    func resampler(_ resampler: IOAudioResampler<IOAUAudioMixer>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func resampler(_ resampler: IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard shouldMix else {
             delegate?.audioMixer(self, didOutput: audioBuffer, when: when)
             return
@@ -255,7 +255,7 @@ extension IOAUAudioMixer: IOAudioResamplerDelegate {
         }
     }
 
-    func resampler(_ resampler: IOAudioResampler<IOAUAudioMixer>, errorOccurred error: IOAudioUnitError) {
+    func resampler(_ resampler: IOAudioResampler<IOAudioMixerConvertibleByMultiTrack>, errorOccurred error: IOAudioUnitError) {
         delegate?.audioMixer(self, errorOccurred: error)
     }
 }
