@@ -129,9 +129,9 @@ open HaishinKit.xcodeproj
 ### Development
 |Version|Xcode|Swift|
 |:----:|:----:|:----:|
+|1.8.0+|15.3+|5.9+|
 |1.7.0+|15.0+|5.9+|
 |1.6.0+|15.0+|5.8+|
-|1.5.0+|14.0+|5.7+|
 
 ### OS
 |-|iOS|tvOS|macOS|visionOS|watchOS|

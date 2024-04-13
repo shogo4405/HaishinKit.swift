@@ -16,7 +16,7 @@ let package = Package(
         .library(name: "SRTHaishinKit", targets: ["SRTHaishinKit"])
     ],
     dependencies: [
-        .package(url: "https://github.com/shogo4405/Logboard.git", "2.4.1"..<"2.5.0")
+        .package(url: "https://github.com/shogo4405/Logboard.git", "2.5.0"..<"2.6.0")
     ],
     targets: [
         .binaryTarget(
