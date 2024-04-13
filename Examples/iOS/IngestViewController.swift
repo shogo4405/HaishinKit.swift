@@ -62,7 +62,7 @@ final class IngestViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-        stream.attachCamera(back, channel: 0) { _, error in
+        stream.attachCamera(back, track: 0) { _, error in
             if let error {
                 logger.warn(error)
             }
@@ -71,7 +71,7 @@ final class IngestViewController: UIViewController {
             logger.warn(error)
         }
         let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-        stream.attachCamera(front, channel: 1) { videoUnit, error in
+        stream.attachCamera(front, track: 1) { videoUnit, error in
             videoUnit?.isVideoMirrored = true
             if let error {
                 logger.error(error)
@@ -89,8 +89,8 @@ final class IngestViewController: UIViewController {
         stream.removeObserver(self, forKeyPath: "currentFPS")
         (stream as? RTMPStream)?.close()
         stream.attachAudio(nil)
-        stream.attachCamera(nil, channel: 0)
-        stream.attachCamera(nil, channel: 1)
+        stream.attachCamera(nil, track: 0)
+        stream.attachCamera(nil, track: 1)
         // swiftlint:disable:next notification_center_detachment
         NotificationCenter.default.removeObserver(self)
     }
@@ -127,10 +127,10 @@ final class IngestViewController: UIViewController {
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         if stream.isMultiCamSessionEnabled {
-            if stream.videoMixerSettings.channel == 0 {
-                stream.videoMixerSettings.channel = 1
+            if stream.videoMixerSettings.mainTrack == 0 {
+                stream.videoMixerSettings.mainTrack = 1
             } else {
-                stream.videoMixerSettings.channel = 0
+                stream.videoMixerSettings.mainTrack = 0
             }
         } else {
             let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back

@@ -71,8 +71,8 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         return false
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8, isVideoMirrored: Bool) {
-        if channel == settings.channel {
+    func append(_ sampleBuffer: CMSampleBuffer, track: UInt8, isVideoMirrored: Bool) {
+        if track == settings.mainTrack {
             var imageBuffer: CVImageBuffer?
             guard let buffer = sampleBuffer.imageBuffer else {
                 return
@@ -127,8 +127,8 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         }
     }
 
-    func detach(_ channel: UInt8) {
-        switch channel {
+    func detach(_ track: UInt8) {
+        switch track {
         case 0:
             pixelBuffer = nil
         case 1:

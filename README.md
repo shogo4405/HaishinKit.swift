@@ -83,14 +83,14 @@ Supports two camera video sources. A picture-in-picture display that shows the i
 stream.isMultiCamSessionEnabled = true
 
 let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-stream.attachCamera(back, channel: 0) { _, error in
+stream.attachCamera(back, track: 0) { _, error in
   if let error {
     logger.warn(error)
   }
 }
 
 let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-stream.attachCamera(front, channel: 1) { videoUnit, error in
+stream.attachCamera(front, track: 1) { videoUnit, error in
   videoUnit?.isVideoMirrored = true
   if let error {
     logger.error(error)
@@ -185,7 +185,7 @@ stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
   // print(error)
 }
 
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), channel: 0) { _, error in
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), track: 0) { _, error in
   if let error {
     logger.warn(error)
   }
@@ -232,7 +232,7 @@ let stream = SRTStream(connection: connection)
 stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
     // print(error)
 }
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), channel: 0) { _, error in
+stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), track: 0) { _, error in
   if let error {
     logger.warn(error)
   }
@@ -273,7 +273,7 @@ stream.sessionPreset = AVCaptureSession.Preset.medium
 
 /// Specifies the video capture settings.
 let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-stream.attachCamera(front, channel: 0) { videoUnit, error in
+stream.attachCamera(front, track: 0) { videoUnit, error in
   videoUnit?.isVideoMirrored = true
   videoUnit?.preferredVideoStabilizationMode = .standard
   videoUnit?.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange

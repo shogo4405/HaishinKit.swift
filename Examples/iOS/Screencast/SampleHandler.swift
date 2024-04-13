@@ -48,11 +48,11 @@ open class SampleHandler: RPBroadcastSampleHandler {
             rtmpStream.append(sampleBuffer)
         case .audioMic:
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer, channel: 0)
+                rtmpStream.append(sampleBuffer, track: 0)
             }
         case .audioApp:
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer, channel: 1)
+                rtmpStream.append(sampleBuffer, track: 1)
             }
         @unknown default:
             break
