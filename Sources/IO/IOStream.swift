@@ -313,21 +313,21 @@ open class IOStream: NSObject {
 
     /// Attaches the camera object.
     @available(tvOS 17.0, *)
-    public func attachCamera(_ device: AVCaptureDevice?, channel: UInt8 = 0, configuration: IOVideoCaptureConfigurationBlock? = nil) {
+    public func attachCamera(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOVideoCaptureConfigurationBlock? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.videoIO.attachCamera(device, channel: channel, configuration: configuration)
+                try self.mixer.videoIO.attachCamera(device, track: track, configuration: configuration)
             } catch {
                 configuration?(nil, IOVideoUnitError.failedToAttach(error: error))
             }
         }
     }
 
-    /// Returns the IOVideoCaptureUnit by channel.
+    /// Returns the IOVideoCaptureUnit by track.
     @available(tvOS 17.0, *)
-    public func videoCapture(for channel: UInt8) -> IOVideoCaptureUnit? {
+    public func videoCapture(for track: UInt8) -> IOVideoCaptureUnit? {
         return mixer.videoIO.lockQueue.sync {
-            return self.mixer.videoIO.capture(for: channel)
+            return self.mixer.videoIO.capture(for: track)
         }
     }
 
@@ -348,15 +348,15 @@ open class IOStream: NSObject {
 
     /// Append a CMSampleBuffer.
     /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
-    public func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
+    public func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
         switch sampleBuffer.formatDescription?.mediaType {
         case .audio?:
             mixer.audioIO.lockQueue.async {
-                self.mixer.audioIO.append(sampleBuffer, channel: channel)
+                self.mixer.audioIO.append(sampleBuffer, track: track)
             }
         case .video?:
             mixer.videoIO.lockQueue.async {
-                self.mixer.videoIO.append(sampleBuffer, channel: channel)
+                self.mixer.videoIO.append(sampleBuffer, track: track)
             }
         default:
             break
@@ -365,9 +365,9 @@ open class IOStream: NSObject {
 
     /// Append an AVAudioBuffer.
     /// - Warning: This method can't use attachAudio method at the same time.
-    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, channel: UInt8 = 0) {
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, track: UInt8 = 0) {
         mixer.audioIO.lockQueue.async {
-            self.mixer.audioIO.append(audioBuffer, when: when, channel: channel)
+            self.mixer.audioIO.append(audioBuffer, when: when, track: track)
         }
     }
 

@@ -58,7 +58,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     }
     #endif
 
-    let channel: UInt8
+    let track: UInt8
     var input: AVCaptureInput?
     var output: Output? {
         didSet {
@@ -78,8 +78,8 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     var connection: AVCaptureConnection?
     private var dataOutput: IOVideoCaptureUnitVideoDataOutputSampleBuffer?
 
-    init(_ channel: UInt8) {
-        self.channel = channel
+    init(_ track: UInt8) {
+        self.track = track
     }
 
     func attachDevice(_ device: AVCaptureDevice?, videoUnit: IOVideoUnit) throws {
@@ -178,7 +178,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             #endif
             setFrameRate(videoUnit.frameRate)
         }
-        dataOutput = videoUnit?.makeVideoDataOutputSampleBuffer(channel)
+        dataOutput = videoUnit?.makeVideoDataOutputSampleBuffer(track)
         output?.setSampleBufferDelegate(dataOutput, queue: videoUnit?.lockQueue)
     }
 }
@@ -186,16 +186,16 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
 // swiftlint:disable type_name
 @available(tvOS 17.0, *)
 final class IOVideoCaptureUnitVideoDataOutputSampleBuffer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
-    private let channel: UInt8
+    private let track: UInt8
     private let videoMixer: IOVideoMixer<IOVideoUnit>
 
-    init(channel: UInt8, videoMixer: IOVideoMixer<IOVideoUnit>) {
-        self.channel = channel
+    init(track: UInt8, videoMixer: IOVideoMixer<IOVideoUnit>) {
+        self.track = track
         self.videoMixer = videoMixer
     }
 
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        videoMixer.append(sampleBuffer, channel: channel, isVideoMirrored: connection.isVideoMirrored)
+        videoMixer.append(sampleBuffer, track: track, isVideoMirrored: connection.isVideoMirrored)
     }
 }
 // swiftlint:enable type_name

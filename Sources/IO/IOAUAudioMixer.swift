@@ -46,7 +46,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
     private var mixerNode: MixerNode?
     private var outputNode: OutputNode?
     private var defaultTrack: Track? {
-        tracks[settings.channel]
+        tracks[settings.mainTrack]
     }
 
     private let inputRenderCallback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
@@ -59,22 +59,22 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
         return status
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
-        if sampleTime == Self.defaultSampleTime, channel == settings.channel {
+    func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
+        if sampleTime == Self.defaultSampleTime, track == settings.mainTrack {
             sampleTime = sampleBuffer.presentationTimeStamp.value
             if let outputFormat {
                 anchor = .init(hostTime: AVAudioTime.hostTime(forSeconds: sampleBuffer.presentationTimeStamp.seconds), sampleTime: sampleTime, atRate: outputFormat.sampleRate)
             }
         }
-        track(channel: Int(channel)).resampler.append(sampleBuffer)
+        self.track(channel: Int(track)).resampler.append(sampleBuffer)
     }
 
-    func append(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime, channel: UInt8) {
-        if sampleTime == Self.defaultSampleTime, channel == settings.channel {
+    func append(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime, track: UInt8) {
+        if sampleTime == Self.defaultSampleTime, track == settings.mainTrack {
             sampleTime = when.sampleTime
             anchor = when
         }
-        track(channel: Int(channel)).resampler.append(audioBuffer, when: when)
+        self.track(channel: Int(track)).resampler.append(audioBuffer, when: when)
     }
 
     private func track(channel: Int) -> Track {
@@ -83,7 +83,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
             return track
         }
         let track = makeTrack(channel: channel)
-        if channel == settings.channel {
+        if channel == settings.mainTrack {
             enforceResamplersSettings()
         }
         return track
@@ -92,7 +92,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
     private func makeTrack(channel: Int) -> Track {
         let resampler = IOAudioResampler<IOAUAudioMixer>()
         resampler.channel = channel
-        if channel == settings.channel {
+        if channel == settings.mainTrack {
             resampler.settings = settings.defaultResamplerSettings
         } else {
             applySettings(resampler: resampler, defaultFormat: outputFormat, preferredSettings: settings.resamplersSettings[channel])
@@ -194,7 +194,7 @@ final class IOAUAudioMixer: IOAudioMixerConvertible {
             return
         }
         for (channel, track) in tracks {
-            if channel == settings.channel {
+            if channel == settings.mainTrack {
                 continue
             }
             applySettings(resampler: track.resampler, defaultFormat: outputFormat, preferredSettings: settings.resamplersSettings[channel])
@@ -225,7 +225,7 @@ extension IOAUAudioMixer: IOAudioResamplerDelegate {
             delegate?.audioMixer(self, didOutput: audioFormat)
             return
         }
-        if resampler.channel == settings.channel {
+        if resampler.channel == settings.mainTrack {
             enforceResamplersSettings()
             tryToSetupAudioNodes()
             delegate?.audioMixer(self, didOutput: audioFormat)
@@ -250,7 +250,7 @@ extension IOAUAudioMixer: IOAudioResamplerDelegate {
             return
         }
         ringBuffer.append(audioBuffer, when: when)
-        if resampler.channel == settings.channel {
+        if resampler.channel == settings.mainTrack {
             mix(numberOfFrames: audioBuffer.frameLength)
         }
     }

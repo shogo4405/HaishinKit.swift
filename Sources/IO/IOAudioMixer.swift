@@ -17,27 +17,27 @@ protocol IOAudioMixerDelegate: AnyObject {
 }
 
 struct IOAudioMixerSettings {
-    let channel: Int = 0
+    let mainTrack: Int = 0
     let defaultResamplerSettings: IOAudioResamplerSettings
     let resamplersSettings: [Int: IOAudioResamplerSettings]
 
     init(defaultResamplerSettings: IOAudioResamplerSettings) {
         self.defaultResamplerSettings = defaultResamplerSettings
         self.resamplersSettings = [
-            channel: defaultResamplerSettings
+            mainTrack: defaultResamplerSettings
         ]
     }
 
     init(resamplersSettings: [Int: IOAudioResamplerSettings] = [:]) {
-        let defaultSettings = resamplersSettings[channel] ?? .init()
+        let defaultSettings = resamplersSettings[mainTrack] ?? .init()
         self.defaultResamplerSettings = defaultSettings
-        self.resamplersSettings = resamplersSettings.merging([channel: defaultSettings]) { _, settings in
+        self.resamplersSettings = resamplersSettings.merging([mainTrack: defaultSettings]) { _, settings in
             settings
         }
     }
 
-    func resamplerSettings(channel: Int, sampleRate: Float64, channels: UInt32) -> IOAudioResamplerSettings {
-        let preferredSettings = resamplersSettings[channel] ?? .init()
+    func resamplerSettings(track: Int, sampleRate: Float64, channels: UInt32) -> IOAudioResamplerSettings {
+        let preferredSettings = resamplersSettings[track] ?? .init()
         return .init(
             sampleRate: sampleRate,
             channels: channels,
@@ -51,6 +51,6 @@ protocol IOAudioMixerConvertible: AnyObject {
     var inputFormat: AVAudioFormat? { get }
     var settings: IOAudioMixerSettings { get set }
 
-    func append(_ buffer: CMSampleBuffer, channel: UInt8)
-    func append(_ buffer: AVAudioPCMBuffer, when: AVAudioTime, channel: UInt8)
+    func append(_ buffer: CMSampleBuffer, track: UInt8)
+    func append(_ buffer: AVAudioPCMBuffer, when: AVAudioTime, track: UInt8)
 }

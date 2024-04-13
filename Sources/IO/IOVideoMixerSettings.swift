@@ -31,8 +31,8 @@ public struct IOVideoMixerSettings: Codable {
     public let regionOfInterest: CGRect
     /// The direction of the splitView position.
     public let direction: ImageTransform
-    /// Specifies the main channel number.
-    public var channel: UInt8 = 0
+    /// Specifies the main track number.
+    public var mainTrack: UInt8 = 0
     /// Specifies if effects are always rendered to a new buffer.
     public var alwaysUseBufferPoolForVideoEffects = false
 

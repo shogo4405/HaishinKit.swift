@@ -35,11 +35,11 @@ final class CameraIngestViewController: NSViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
         stream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
-        stream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video), channel: 0)
+        stream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video), track: 0)
         var devices = AVCaptureDevice.devices(for: .video)
         devices.removeFirst()
         if let device = devices.first {
-            stream.attachCamera(device, channel: 1)
+            stream.attachCamera(device, track: 1)
         }
     }
 
@@ -71,6 +71,6 @@ final class CameraIngestViewController: NSViewController {
 
     @IBAction private func selectCamera(_ sender: AnyObject) {
         let device = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
-        stream.attachCamera(device, channel: 0)
+        stream.attachCamera(device, track: 0)
     }
 }

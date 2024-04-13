@@ -88,10 +88,10 @@ final class IOAudioUnit: NSObject, IOUnit {
     }
     #endif
 
-    func append(_ sampleBuffer: CMSampleBuffer, channel: UInt8 = 0) {
+    func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
         switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
-            audioMixer.append(sampleBuffer, channel: channel)
+            audioMixer.append(sampleBuffer, track: track)
         default:
             if codec.inputFormat?.formatDescription != sampleBuffer.formatDescription {
                 if var asbd = sampleBuffer.formatDescription?.audioStreamBasicDescription {
@@ -102,10 +102,10 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
     }
 
-    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, channel: UInt8 = 0) {
+    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, track: UInt8 = 0) {
         switch audioBuffer {
         case let audioBuffer as AVAudioPCMBuffer:
-            audioMixer.append(audioBuffer, when: when, channel: channel)
+            audioMixer.append(audioBuffer, when: when, track: track)
         case let audioBuffer as AVAudioCompressedBuffer:
             codec.append(audioBuffer, when: when)
         default:
@@ -119,7 +119,7 @@ final class IOAudioUnit: NSObject, IOUnit {
 extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
     // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        audioMixer.append(sampleBuffer.muted(muted), channel: 0)
+        audioMixer.append(sampleBuffer.muted(muted), track: 0)
     }
 }
 #endif
