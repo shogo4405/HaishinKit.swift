@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/shogo4405/Logboard.git",
       "state" : {
-        "revision" : "6a7cbf54553936103084ed72cfb6d6f836758229",
-        "version" : "2.4.1"
+        "revision" : "272976e1f3e8873e60ffe4b08fe50df48a93751b",
+        "version" : "2.5.0"
       }
     }
   ],

@@ -35,7 +35,7 @@ open class IOStream: NSObject {
         return AVAudioEngine()
     }
 
-    /// The enumeration defines the state a ReadyState NetStream is in.
+    /// The enumeration defines the state an IOStream client is in.
     public enum ReadyState: Equatable {
         public static func == (lhs: IOStream.ReadyState, rhs: IOStream.ReadyState) -> Bool {
             return lhs.rawValue == rhs.rawValue
@@ -298,7 +298,7 @@ open class IOStream: NSObject {
 
     private var observers: [any IOStreamObserver] = []
 
-    /// Creates a NetStream object.
+    /// Creates an object.
     override public init() {
         super.init()
         #if os(iOS) || os(tvOS) || os(visionOS)
@@ -311,7 +311,7 @@ open class IOStream: NSObject {
         observers.removeAll()
     }
 
-    /// Attaches the camera object.
+    /// Attaches the camera device.
     @available(tvOS 17.0, *)
     public func attachCamera(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOVideoCaptureConfigurationBlock? = nil) {
         lockQueue.async {
@@ -332,8 +332,7 @@ open class IOStream: NSObject {
     }
 
     #if os(iOS) || os(macOS) || os(tvOS)
-    /// Attaches the audio capture object.
-    /// - Warning: This method can't use appendSampleBuffer at the same time.
+    /// Attaches the audio device.
     @available(tvOS 17.0, *)
     public func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: any Error) -> Void)? = nil) {
         lockQueue.async {
@@ -346,8 +345,10 @@ open class IOStream: NSObject {
     }
     #endif
 
-    /// Append a CMSampleBuffer.
-    /// - Warning: This method can't use attachCamera or attachAudio method at the same time.
+    /// Appends a CMSampleBuffer.
+    /// - Parameters:
+    ///   - sampleBuffer:The sample buffer to append.
+    ///   - track: Track number used for mixing
     public func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
         switch sampleBuffer.formatDescription?.mediaType {
         case .audio?:
@@ -363,22 +364,25 @@ open class IOStream: NSObject {
         }
     }
 
-    /// Append an AVAudioBuffer.
-    /// - Warning: This method can't use attachAudio method at the same time.
+    /// Appends an AVAudioBuffer.
+    /// - Parameters:
+    ///   - audioBuffer:The audio buffer to append.
+    ///   - when: The audio time to append.
+    ///   - track: Track number used for mixing.
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, track: UInt8 = 0) {
         mixer.audioIO.lockQueue.async {
             self.mixer.audioIO.append(audioBuffer, when: when, track: track)
         }
     }
 
-    /// Register a video effect.
+    /// Registers a video effect.
     public func registerVideoEffect(_ effect: VideoEffect) -> Bool {
         mixer.videoIO.lockQueue.sync {
             self.mixer.videoIO.registerEffect(effect)
         }
     }
 
-    /// Unregister a video effect.
+    /// Unregisters a video effect.
     public func unregisterVideoEffect(_ effect: VideoEffect) -> Bool {
         mixer.videoIO.lockQueue.sync {
             self.mixer.videoIO.unregisterEffect(effect)

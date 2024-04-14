@@ -14,7 +14,7 @@ protocol IOCaptureSessionDelegate: AnyObject {
 final class IOCaptureSession {
     #if os(iOS) || os(tvOS)
     static var isMultiCamSupported: Bool {
-        if #available(iOS 13.0, tvOS 17.0, *) {
+        if #available(tvOS 17.0, *) {
             return AVCaptureMultiCamSession.isMultiCamSupported
         } else {
             return false
@@ -102,11 +102,7 @@ final class IOCaptureSession {
     @available(tvOS 17.0, *)
     private var isMultiCamSession: Bool {
         #if os(iOS) || os(tvOS)
-        if #available(iOS 13.0, *) {
-            return session is AVCaptureMultiCamSession
-        } else {
-            return false
-        }
+        return session is AVCaptureMultiCamSession
         #else
         return true
         #endif
@@ -184,7 +180,7 @@ final class IOCaptureSession {
     @available(tvOS 17.0, *)
     private func makeSession() -> AVCaptureSession {
         let session: AVCaptureSession
-        if isMultiCamSessionEnabled, #available(iOS 13.0, *) {
+        if isMultiCamSessionEnabled {
             session = AVCaptureMultiCamSession()
         } else {
             session = AVCaptureSession()
