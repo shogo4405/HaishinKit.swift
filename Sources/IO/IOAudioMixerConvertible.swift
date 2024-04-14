@@ -48,6 +48,7 @@ struct IOAudioMixerSettings {
 }
 
 protocol IOAudioMixerConvertible: AnyObject {
+    var delegate: (any IOAudioMixerDelegate)? { get set }
     var inputFormat: AVAudioFormat? { get }
     var settings: IOAudioMixerSettings { get set }
 

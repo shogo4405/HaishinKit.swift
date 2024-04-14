@@ -15,7 +15,8 @@ open class SampleHandler: RPBroadcastSampleHandler {
     }()
 
     private lazy var rtmpStream: RTMPStream = {
-        RTMPStream(connection: rtmpConnection)
+        FeatureUtil.setEnabled(feature: .multiTrackMixing, isEnabled: true)
+        return RTMPStream(connection: rtmpConnection)
     }()
 
     private var isMirophoneOn = false
