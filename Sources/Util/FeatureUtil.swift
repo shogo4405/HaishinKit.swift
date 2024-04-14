@@ -10,7 +10,7 @@ public enum FeatureUtil {
         public typealias StringLiteralType = String
 
         /// This is a feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
-        public static let multiTrackMixing: Name = "multiTrackMixing"
+        public static let multiTrackAudioMixing: Name = "multiTrackAudioMixing"
 
         /// The raw type value.
         public let rawValue: String

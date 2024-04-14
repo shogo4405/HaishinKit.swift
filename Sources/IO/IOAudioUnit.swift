@@ -53,7 +53,7 @@ final class IOAudioUnit: NSObject, IOUnit {
         return codec
     }()
     private lazy var audioMixer: any IOAudioMixerConvertible = {
-        if FeatureUtil.isEnabled(feature: .multiTrackMixing) {
+        if FeatureUtil.isEnabled(feature: .multiTrackAudioMixing) {
             var audioMixer = IOAudioMixerConvertibleByMultiTrack()
             audioMixer.delegate = self
             return audioMixer
