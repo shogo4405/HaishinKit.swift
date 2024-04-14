@@ -19,14 +19,13 @@ protocol IOVideoUnitDelegate: AnyObject {
     func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer)
 }
 
-final class IOVideoUnit: NSObject, IOUnit {
+final class IOVideoUnit: IOUnit<IOVideoCaptureUnit> {
     typealias FormatDescription = CMVideoFormatDescription
 
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
 
-    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
     weak var drawable: (any IOStreamView)? {
         didSet {
             #if os(iOS) || os(macOS)
@@ -42,7 +41,6 @@ final class IOVideoUnit: NSObject, IOUnit {
             videoMixer.settings = newValue
         }
     }
-    weak var mixer: IOMixer?
     var muted: Bool {
         get {
             videoMixer.muted
@@ -128,16 +126,6 @@ final class IOVideoUnit: NSObject, IOUnit {
     }
     #endif
 
-    #if os(tvOS)
-    private var _captures: [UInt8: Any] = [:]
-    @available(tvOS 17.0, *)
-    private var captures: [UInt8: IOVideoCaptureUnit] {
-        return _captures as! [UInt8: IOVideoCaptureUnit]
-    }
-    #elseif os(iOS) || os(macOS) || os(visionOS)
-    private var captures: [UInt8: IOVideoCaptureUnit] = [:]
-    #endif
-
     private lazy var videoMixer = {
         var videoMixer = IOVideoMixer<IOVideoUnit>()
         videoMixer.delegate = self
@@ -212,21 +200,6 @@ final class IOVideoUnit: NSObject, IOUnit {
     #endif
 
     @available(tvOS 17.0, *)
-    func capture(for track: UInt8) -> IOVideoCaptureUnit? {
-        #if os(tvOS)
-        if _captures[track] == nil {
-            _captures[track] = IOVideoCaptureUnit(track)
-        }
-        return _captures[track] as? IOVideoCaptureUnit
-        #else
-        if captures[track] == nil {
-            captures[track] = .init(track)
-        }
-        return captures[track]
-        #endif
-    }
-
-    @available(tvOS 17.0, *)
     func setBackgroundMode(_ background: Bool) {
         guard let session = mixer?.session, !session.isMultitaskingCameraAccessEnabled else {
             return
@@ -241,6 +214,11 @@ final class IOVideoUnit: NSObject, IOUnit {
             }
         }
     }
+
+    @available(tvOS 17.0, *)
+    func makeDataOutput(_ track: UInt8) -> IOVideoCaptureUnitDataOutput {
+        return .init(track: track, videoMixer: videoMixer)
+    }
 }
 
 extension IOVideoUnit: Running {
@@ -254,13 +232,6 @@ extension IOVideoUnit: Running {
 
     func stopRunning() {
         codec.stopRunning()
-    }
-}
-
-extension IOVideoUnit {
-    @available(tvOS 17.0, *)
-    func makeVideoDataOutputSampleBuffer(_ track: UInt8) -> IOVideoCaptureUnitVideoDataOutputSampleBuffer {
-        return .init(track: track, videoMixer: videoMixer)
     }
 }
 

@@ -76,7 +76,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         }
     }
     var connection: AVCaptureConnection?
-    private var dataOutput: IOVideoCaptureUnitVideoDataOutputSampleBuffer?
+    private var dataOutput: IOVideoCaptureUnitDataOutput?
 
     init(_ track: UInt8) {
         self.track = track
@@ -178,14 +178,13 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             #endif
             setFrameRate(videoUnit.frameRate)
         }
-        dataOutput = videoUnit?.makeVideoDataOutputSampleBuffer(track)
+        dataOutput = videoUnit?.makeDataOutput(track)
         output?.setSampleBufferDelegate(dataOutput, queue: videoUnit?.lockQueue)
     }
 }
 
-// swiftlint:disable type_name
 @available(tvOS 17.0, *)
-final class IOVideoCaptureUnitVideoDataOutputSampleBuffer: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+final class IOVideoCaptureUnitDataOutput: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     private let track: UInt8
     private let videoMixer: IOVideoMixer<IOVideoUnit>
 
@@ -198,4 +197,3 @@ final class IOVideoCaptureUnitVideoDataOutputSampleBuffer: NSObject, AVCaptureVi
         videoMixer.append(sampleBuffer, track: track, isVideoMirrored: connection.isVideoMirrored)
     }
 }
-// swiftlint:enable type_name

@@ -19,12 +19,10 @@ protocol IOAudioUnitDelegate: AnyObject {
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
 
-final class IOAudioUnit: NSObject, IOUnit {
+final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
     typealias FormatDescription = AVAudioFormat
 
-    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
     var muted = false
-    weak var mixer: IOMixer?
     var isMonitoringEnabled = false {
         didSet {
             if isMonitoringEnabled {
@@ -64,29 +62,18 @@ final class IOAudioUnit: NSObject, IOUnit {
         }
     }()
     private var monitor: IOAudioMonitor = .init()
-    #if os(tvOS)
-    private var _capture: Any?
-    @available(tvOS 17.0, *)
-    private var capture: IOAudioCaptureUnit {
-        if _capture == nil {
-            _capture = IOAudioCaptureUnit()
-        }
-        return _capture as! IOAudioCaptureUnit
-    }
-    #elseif os(iOS) || os(macOS)
-    private var capture: IOAudioCaptureUnit = .init()
-    #endif
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
     func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
         try mixer?.session.configuration { session in
             guard let device else {
-                try capture.attachDevice(nil, audioUnit: self)
+                try captures[0]?.attachDevice(nil, audioUnit: self)
                 inputFormat = nil
                 return
             }
-            try capture.attachDevice(device, audioUnit: self)
+            let capture = capture(for: 0)
+            try capture?.attachDevice(device, audioUnit: self)
             #if os(iOS)
             session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
             #endif
@@ -118,17 +105,12 @@ final class IOAudioUnit: NSObject, IOUnit {
             break
         }
     }
-}
 
-#if os(iOS) || os(tvOS) || os(macOS)
-@available(tvOS 17.0, *)
-extension IOAudioUnit: AVCaptureAudioDataOutputSampleBufferDelegate {
-    // MARK: AVCaptureAudioDataOutputSampleBufferDelegate
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        audioMixer.append(sampleBuffer.muted(muted), track: 0)
+    @available(tvOS 17.0, *)
+    func makeDataOutput(_ track: UInt8) -> IOAudioCaptureUnitDataOutput {
+        return .init(track: track, audioMixer: audioMixer)
     }
 }
-#endif
 
 extension IOAudioUnit: Running {
     // MARK: Running
@@ -154,6 +136,9 @@ extension IOAudioUnit: IOAudioMixerDelegate {
     }
 
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        if muted {
+            audioBuffer.muted()
+        }
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.append(audioBuffer, when: when)
         codec.append(audioBuffer, when: when)

@@ -6,10 +6,16 @@ import Foundation
 final class IOAudioCaptureUnit: IOCaptureUnit {
     typealias Output = AVCaptureAudioDataOutput
 
+    let track: UInt8
     private(set) var device: AVCaptureDevice?
     var input: AVCaptureInput?
     var output: Output?
     var connection: AVCaptureConnection?
+    private var dataOutput: IOAudioCaptureUnitDataOutput?
+
+    init(_ track: UInt8) {
+        self.track = track
+    }
 
     func attachDevice(_ device: AVCaptureDevice?, audioUnit: IOAudioUnit) throws {
         setSampleBufferDelegate(nil)
@@ -28,7 +34,23 @@ final class IOAudioCaptureUnit: IOCaptureUnit {
     }
 
     func setSampleBufferDelegate(_ audioUnit: IOAudioUnit?) {
-        output?.setSampleBufferDelegate(audioUnit, queue: audioUnit?.lockQueue)
+        dataOutput = audioUnit?.makeDataOutput(track)
+        output?.setSampleBufferDelegate(dataOutput, queue: audioUnit?.lockQueue)
+    }
+}
+
+@available(tvOS 17.0, *)
+final class IOAudioCaptureUnitDataOutput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
+    private let track: UInt8
+    private let audioMixer: any IOAudioMixerConvertible
+
+    init(track: UInt8, audioMixer: any IOAudioMixerConvertible) {
+        self.track = track
+        self.audioMixer = audioMixer
+    }
+
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        audioMixer.append(sampleBuffer, track: track)
     }
 }
 #endif

@@ -14,25 +14,6 @@ extension CMSampleBuffer {
         }
     }
 
-    func muted(_ muted: Bool) -> CMSampleBuffer {
-        guard muted else {
-            return self
-        }
-        guard let dataBuffer = dataBuffer else {
-            return self
-        }
-        let status = CMBlockBufferFillDataBytes(
-            with: 0,
-            blockBuffer: dataBuffer,
-            offsetIntoDestination: 0,
-            dataLength: dataBuffer.dataLength
-        )
-        guard status == noErr else {
-            return self
-        }
-        return self
-    }
-
     @inline(__always)
     private func getAttachmentValue(for key: CFString) -> Bool? {
         guard
