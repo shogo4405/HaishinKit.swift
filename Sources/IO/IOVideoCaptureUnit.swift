@@ -1,7 +1,7 @@
 import AVFoundation
 import Foundation
 
-/// Configuration calback block for IOVideoUnit.
+/// Configuration calback block for IOVideoCaptureUnit.
 @available(tvOS 17.0, *)
 public typealias IOVideoCaptureConfigurationBlock = (IOVideoCaptureUnit?, IOVideoUnitError?) -> Void
 
@@ -16,7 +16,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     public static let colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
     #endif
 
-    typealias Output = AVCaptureVideoDataOutput
+    public typealias Output = AVCaptureVideoDataOutput
 
     /// The current video device object.
     public private(set) var device: AVCaptureDevice?
@@ -58,9 +58,9 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     }
     #endif
 
-    let track: UInt8
-    var input: AVCaptureInput?
-    var output: Output? {
+    public let track: UInt8
+    public private(set) var input: AVCaptureInput?
+    public private(set) var output: Output? {
         didSet {
             guard let output else {
                 return
@@ -75,7 +75,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             #endif
         }
     }
-    var connection: AVCaptureConnection?
+    public private(set) var connection: AVCaptureConnection?
     private var dataOutput: IOVideoCaptureUnitDataOutput?
 
     init(_ track: UInt8) {

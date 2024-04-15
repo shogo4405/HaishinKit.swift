@@ -2,24 +2,31 @@
 import AVFoundation
 import Foundation
 
+/// Configuration calback block for IOAudioCaptureUnit.
 @available(tvOS 17.0, *)
-final class IOAudioCaptureUnit: IOCaptureUnit {
-    typealias Output = AVCaptureAudioDataOutput
+public typealias IOAudioCaptureConfigurationBlock = (IOAudioCaptureUnit?, IOAudioUnitError?) -> Void
 
-    let track: UInt8
-    private(set) var device: AVCaptureDevice?
-    var input: AVCaptureInput?
-    var output: Output?
-    var connection: AVCaptureConnection?
+/// An object that provides the interface to control the AVCaptureDevice's transport behavior.
+@available(tvOS 17.0, *)
+public final class IOAudioCaptureUnit: IOCaptureUnit {
+    public typealias Output = AVCaptureAudioDataOutput
+
+    public let track: UInt8
+    public private(set) var input: AVCaptureInput?
+    public private(set) var device: AVCaptureDevice?
+    public private(set) var output: Output? {
+        didSet {
+            oldValue?.setSampleBufferDelegate(nil, queue: nil)
+        }
+    }
+    public private(set) var connection: AVCaptureConnection?
     private var dataOutput: IOAudioCaptureUnitDataOutput?
 
     init(_ track: UInt8) {
         self.track = track
     }
 
-    func attachDevice(_ device: AVCaptureDevice?, audioUnit: IOAudioUnit) throws {
-        setSampleBufferDelegate(nil)
-        audioUnit.mixer?.session.detachCapture(self)
+    func attachDevice(_ device: AVCaptureDevice?) throws {
         guard let device else {
             self.device = nil
             input = nil
@@ -29,8 +36,6 @@ final class IOAudioCaptureUnit: IOCaptureUnit {
         self.device = device
         input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureAudioDataOutput()
-        audioUnit.mixer?.session.attachCapture(self)
-        setSampleBufferDelegate(audioUnit)
     }
 
     func setSampleBufferDelegate(_ audioUnit: IOAudioUnit?) {

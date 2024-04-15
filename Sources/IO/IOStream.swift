@@ -333,14 +333,36 @@ open class IOStream: NSObject {
 
     #if os(iOS) || os(macOS) || os(tvOS)
     /// Attaches the audio device.
+    ///
+    /// You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
+    /// ```
+    /// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+    /// var audios = AVCaptureDevice.devices(for: .audio)
+    /// if let device = audios.removeFirst() {
+    ///    stream.attachAudio(device, track: 0)
+    /// }
+    /// if let device = audios.removeFirst() {
+    ///    stream.attachAudio(device, track: 1)
+    /// }
+    /// ```
     @available(tvOS 17.0, *)
-    public func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool = false, onError: ((_ error: any Error) -> Void)? = nil) {
+    public func attachAudio(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOAudioCaptureConfigurationBlock? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.audioIO.attachAudio(device, automaticallyConfiguresApplicationAudioSession: automaticallyConfiguresApplicationAudioSession)
+                try self.mixer.audioIO.attachAudio(device, track: track) { capture in
+                    configuration?(capture, nil)
+                }
             } catch {
-                onError?(error)
+                configuration?(nil, IOAudioUnitError.failedToAttach(error: error))
             }
+        }
+    }
+
+    /// Returns the IOAudioCaptureUnit by track.
+    @available(tvOS 17.0, *)
+    public func audioCapture(for track: UInt8) -> IOAudioCaptureUnit? {
+        return mixer.audioIO.lockQueue.sync {
+            return self.mixer.audioIO.capture(for: track)
         }
     }
     #endif
@@ -402,6 +424,12 @@ open class IOStream: NSObject {
         if let index = observers.firstIndex(where: { $0 === observer }) {
             observers.remove(at: index)
         }
+    }
+
+    /// Configurations for the AVCaptureSession.
+    @available(tvOS 17.0, *)
+    func configuration(_ lambda: (_ session: AVCaptureSession) throws -> Void) rethrows {
+        try mixer.session.configuration(lambda)
     }
 
     /// A handler that receives stream readyState will update.

@@ -181,8 +181,10 @@ do {
 let connection = RTMPConnection()
 let stream = RTMPStream(connection: connection)
 
-stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-  // print(error)
+stream.attachAudio(AVCaptureDevice.default(for: .audio)) { _, error in
+  if let error {
+    logger.warn(error)
+  }
 }
 
 stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), track: 0) { _, error in

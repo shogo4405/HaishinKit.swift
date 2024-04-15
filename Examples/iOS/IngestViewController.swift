@@ -67,7 +67,7 @@ final class IngestViewController: UIViewController {
                 logger.warn(error)
             }
         }
-        stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
+        stream.attachAudio(AVCaptureDevice.default(for: .audio)) { _, error in
             logger.warn(error)
         }
         let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
@@ -350,7 +350,7 @@ extension IngestViewController: UIPickerViewDelegate {
         } catch {
             logger.warn("can't set supported setPreferredDataSource")
         }
-        stream.attachAudio(AVCaptureDevice.default(for: .audio), automaticallyConfiguresApplicationAudioSession: false) { error in
+        stream.attachAudio(AVCaptureDevice.default(for: .audio)) { _, error in
             logger.warn(error)
         }
     }

@@ -6,6 +6,8 @@ import SwiftPMSupport
 
 /// The IOAudioUnit  error domain codes.
 public enum IOAudioUnitError: Swift.Error {
+    /// The IOAudioUnit failed to attach device.
+    case failedToAttach(error: (any Error)?)
     /// The IOAudioUnit  failed to create the AVAudioConverter.
     case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
     /// The IOAudioUnit  faild to convert the an audio buffer.
@@ -49,7 +51,7 @@ final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
         return codec
     }()
     private lazy var audioMixer: any IOAudioMixerConvertible = {
-        if FeatureUtil.isEnabled(feature: .multiTrackAudioMixing) {
+        if FeatureUtil.isEnabled(for: .multiTrackAudioMixing) {
             var audioMixer = IOAudioMixerConvertibleByMultiTrack()
             audioMixer.delegate = self
             return audioMixer
@@ -63,18 +65,18 @@ final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
-    func attachAudio(_ device: AVCaptureDevice?, automaticallyConfiguresApplicationAudioSession: Bool) throws {
-        try mixer?.session.configuration { session in
+    func attachAudio(_ device: AVCaptureDevice?, track: UInt8, configuration: (_ capture: IOAudioCaptureUnit?) -> Void) throws {
+        try mixer?.session.configuration { _ in
+            mixer?.session.detachCapture(captures[track])
             guard let device else {
-                try captures[0]?.attachDevice(nil, audioUnit: self)
-                inputFormat = nil
+                try captures[track]?.attachDevice(nil)
                 return
             }
-            let capture = capture(for: 0)
-            try capture?.attachDevice(device, audioUnit: self)
-            #if os(iOS)
-            session.automaticallyConfiguresApplicationAudioSession = automaticallyConfiguresApplicationAudioSession
-            #endif
+            let capture = capture(for: track)
+            try capture?.attachDevice(device)
+            configuration(capture)
+            capture?.setSampleBufferDelegate(self)
+            mixer?.session.attachCapture(capture)
         }
     }
     #endif
