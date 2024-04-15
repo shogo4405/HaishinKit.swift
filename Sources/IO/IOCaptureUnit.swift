@@ -1,10 +1,6 @@
 import AVFoundation
 import Foundation
 
-enum IOCaptureUnitError: Error {
-    case noDeviceAvailable
-}
-
 @available(tvOS 17.0, *)
 protocol IOCaptureUnit {
     associatedtype Output: AVCaptureOutput
