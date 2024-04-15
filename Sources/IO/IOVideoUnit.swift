@@ -20,8 +20,6 @@ protocol IOVideoUnitDelegate: AnyObject {
 }
 
 final class IOVideoUnit: IOUnit<IOVideoCaptureUnit> {
-    typealias FormatDescription = CMVideoFormatDescription
-
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
@@ -57,8 +55,8 @@ final class IOVideoUnit: IOUnit<IOVideoCaptureUnit> {
             codec.settings = newValue
         }
     }
-    private(set) var inputFormat: FormatDescription?
-    var outputFormat: FormatDescription? {
+    private(set) var inputFormat: CMVideoFormatDescription?
+    var outputFormat: CMVideoFormatDescription? {
         codec.outputFormat
     }
 

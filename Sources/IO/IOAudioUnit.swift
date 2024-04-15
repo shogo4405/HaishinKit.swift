@@ -20,8 +20,6 @@ protocol IOAudioUnitDelegate: AnyObject {
 }
 
 final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
-    typealias FormatDescription = AVAudioFormat
-
     var muted = false
     var isMonitoringEnabled = false {
         didSet {
@@ -41,8 +39,8 @@ final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
     var isRunning: Atomic<Bool> {
         return codec.isRunning
     }
-    private(set) var inputFormat: FormatDescription?
-    var outputFormat: FormatDescription? {
+    private(set) var inputFormat: AVAudioFormat?
+    var outputFormat: AVAudioFormat? {
         return codec.outputFormat
     }
     private lazy var codec: AudioCodec<IOMixer> = {
