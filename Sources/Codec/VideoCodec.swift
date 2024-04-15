@@ -55,6 +55,7 @@ final class VideoCodec<T: VideoCodecDelegate> {
             guard !CMFormatDescriptionEqual(inputFormat, otherFormatDescription: oldValue) else {
                 return
             }
+            if inputFormat != nil { self.invalidateSession = true }
             outputFormat = nil
         }
     }

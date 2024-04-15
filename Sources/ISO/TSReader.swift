@@ -103,12 +103,14 @@ public class TSReader {
         defer {
             packetizedElementaryStreams[id] = nil
         }
-        if formatDescriptions[id] == nil {
-            formatDescriptions[id] = makeFormatDescription(data, pes: pes)
-            if let formatDescription = formatDescriptions[id] {
-                delegate?.reader(self, id: id, didRead: formatDescription)
+       
+        if let newFormat = makeFormatDescription(data, pes: pes) {
+            if formatDescriptions[id]?.dimensions.width != newFormat.dimensions.width || formatDescriptions[id]?.dimensions.height != newFormat.dimensions.height {
+                formatDescriptions[id] = newFormat
+                delegate?.reader(self, id: id, didRead: newFormat)
             }
         }
+
         var isNotSync = true
         switch data.streamType {
         case .h264:
