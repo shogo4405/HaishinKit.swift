@@ -127,7 +127,10 @@ final class IOCaptureSession {
     }
 
     @available(tvOS 17.0, *)
-    func attachCapture(_ capture: any IOCaptureUnit) {
+    func attachCapture(_ capture: (any IOCaptureUnit)?) {
+        guard let capture else {
+            return
+        }
         #if !os(visionOS)
         if let connection = capture.connection {
             if let input = capture.input, session.canAddInput(input) {
@@ -151,7 +154,10 @@ final class IOCaptureSession {
     }
 
     @available(tvOS 17.0, *)
-    func detachCapture(_ capture: any IOCaptureUnit) {
+    func detachCapture(_ capture: (any IOCaptureUnit)?) {
+        guard let capture else {
+            return
+        }
         #if !os(visionOS)
         if let connection = capture.connection {
             if capture.output?.connections.contains(connection) == true {

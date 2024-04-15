@@ -29,13 +29,13 @@ public enum FeatureUtil {
     private static var flags: [String: Bool] = [:]
 
     /// Whether or not a flag is enabled.
-    public static func isEnabled(feature: Name) -> Bool {
+    public static func isEnabled(for feature: Name) -> Bool {
         return flags[feature.rawValue] ?? false
     }
 
     /// Setter for a feature flag.
     public static func setEnabled(
-        feature: Name,
+        for feature: Name,
         isEnabled: Bool
     ) {
         flags[feature.rawValue] = isEnabled

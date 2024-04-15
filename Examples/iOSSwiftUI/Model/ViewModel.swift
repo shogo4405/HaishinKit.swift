@@ -93,11 +93,15 @@ final class ViewModel: ObservableObject {
     }
 
     func registerForPublishEvent() {
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-            logger.error(error)
+        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { _, error in
+            if let error {
+                logger.error(error)
+            }
         }
         rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { _, error  in
-            logger.error(error)
+            if let error {
+                logger.error(error)
+            }
         }
         rtmpStream.publisher(for: \.currentFPS)
             .sink { [weak self] currentFPS in
