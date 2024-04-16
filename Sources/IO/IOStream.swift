@@ -172,16 +172,6 @@ open class IOStream: NSObject {
     }
     #endif
 
-    /// Specifies the video mixer settings..
-    public var videoMixerSettings: IOVideoMixerSettings {
-        get {
-            mixer.videoIO.mixerSettings
-        }
-        set {
-            mixer.videoIO.mixerSettings = newValue
-        }
-    }
-
     /// Specifies the hasAudio indicies whether no signal audio or not.
     public var hasAudio: Bool {
         get {
@@ -199,6 +189,26 @@ open class IOStream: NSObject {
         }
         set {
             mixer.videoIO.muted = !newValue
+        }
+    }
+
+    /// Specifies the audio mixer settings.
+    public var audioMixerSettings: IOAudioMixerSettings {
+        get {
+            mixer.audioIO.mixerSettings
+        }
+        set {
+            mixer.audioIO.mixerSettings = newValue
+        }
+    }
+
+    /// Specifies the video mixer settings.
+    public var videoMixerSettings: IOVideoMixerSettings {
+        get {
+            mixer.videoIO.mixerSettings
+        }
+        set {
+            mixer.videoIO.mixerSettings = newValue
         }
     }
 
@@ -222,14 +232,14 @@ open class IOStream: NSObject {
         }
     }
 
-    /// The video input format.
-    public var videoInputFormat: CMVideoFormatDescription? {
-        return mixer.videoIO.inputFormat
-    }
-
     /// The audio input format.
     public var audioInputFormat: AVAudioFormat? {
         return mixer.audioIO.inputFormat
+    }
+
+    /// The video input format.
+    public var videoInputFormat: CMVideoFormatDescription? {
+        return mixer.videoIO.inputFormat
     }
 
     /// Specifies the controls sound.

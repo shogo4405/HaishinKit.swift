@@ -118,7 +118,7 @@
 		2EC97B7327880FF400D8BE32 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B6F27880FF400D8BE32 /* Views.swift */; };
 		2EC97B7427880FF400D8BE32 /* MTHKSwiftUiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */; };
 		B34239852B9FD3E30068C3FB /* AudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34239842B9FD3E30068C3FB /* AudioNode.swift */; };
-		B3D687822B80302B00E6A28E /* IOAudioMixerConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D687812B80302B00E6A28E /* IOAudioMixerConvertible.swift */; };
+		B3D687822B80302B00E6A28E /* IOAudioMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D687812B80302B00E6A28E /* IOAudioMixer.swift */; };
 		BC0394562AA8A384006EDE38 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC03945F2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */; };
 		BC04A2D42AD2D1D700C87A3E /* AVAudioTime+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC04A2D32AD2D1D700C87A3E /* AVAudioTime+Extension.swift */; };
@@ -158,11 +158,11 @@
 		BC34FA0B286CB90A00EFAF27 /* PiPHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */; };
 		BC3802122AB5E770001AE399 /* IOVideoCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802112AB5E770001AE399 /* IOVideoCaptureUnit.swift */; };
 		BC3802142AB5E7CC001AE399 /* IOAudioCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802132AB5E7CC001AE399 /* IOAudioCaptureUnit.swift */; };
-		BC3802192AB6AD79001AE399 /* IOAudioResamplerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802182AB6AD79001AE399 /* IOAudioResamplerTests.swift */; };
+		BC3802192AB6AD79001AE399 /* IOAudioMixerTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802182AB6AD79001AE399 /* IOAudioMixerTrackTests.swift */; };
 		BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */; };
 		BC4078C42AD5CC7E00BBB4FA /* IOMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */; };
-		BC4231642BCA5F28003A80DC /* IOAudioMixerConvertibleByMultiTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231632BCA5F28003A80DC /* IOAudioMixerConvertibleByMultiTrack.swift */; };
-		BC42316A2BCA8BE5003A80DC /* IOAudioMixerConvertibleBySingleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231692BCA8BE5003A80DC /* IOAudioMixerConvertibleBySingleTrack.swift */; };
+		BC4231642BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */; };
+		BC42316A2BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */; };
 		BC42316C2BCB7084003A80DC /* FeatureUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC42316B2BCB7084003A80DC /* FeatureUtil.swift */; };
 		BC4914A228DDD33D009E2DF6 /* VTSessionConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */; };
 		BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */; };
@@ -267,7 +267,7 @@
 		BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
-		BCFC51FE2AAB420700014428 /* IOAudioResampler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */; };
+		BCFC51FE2AAB420700014428 /* IOAudioMixerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */; };
 		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
 
@@ -558,7 +558,7 @@
 		2EC97B6F27880FF400D8BE32 /* Views.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Views.swift; sourceTree = "<group>"; };
 		2EC97B7027880FF400D8BE32 /* MTHKSwiftUiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MTHKSwiftUiView.swift; sourceTree = "<group>"; };
 		B34239842B9FD3E30068C3FB /* AudioNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioNode.swift; sourceTree = "<group>"; };
-		B3D687812B80302B00E6A28E /* IOAudioMixerConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOAudioMixerConvertible.swift; sourceTree = "<group>"; };
+		B3D687812B80302B00E6A28E /* IOAudioMixer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IOAudioMixer.swift; sourceTree = "<group>"; };
 		BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExpressibleByIntegerLiteral+ExtensionTests.swift"; sourceTree = "<group>"; };
 		BC04A2D32AD2D1D700C87A3E /* AVAudioTime+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVAudioTime+Extension.swift"; sourceTree = "<group>"; };
 		BC04A2D52AD2D95500C87A3E /* CMTime+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime+Extension.swift"; sourceTree = "<group>"; };
@@ -594,11 +594,11 @@
 		BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiPHKView.swift; sourceTree = "<group>"; };
 		BC3802112AB5E770001AE399 /* IOVideoCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOVideoCaptureUnit.swift; sourceTree = "<group>"; };
 		BC3802132AB5E7CC001AE399 /* IOAudioCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioCaptureUnit.swift; sourceTree = "<group>"; };
-		BC3802182AB6AD79001AE399 /* IOAudioResamplerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioResamplerTests.swift; sourceTree = "<group>"; };
+		BC3802182AB6AD79001AE399 /* IOAudioMixerTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerTrackTests.swift; sourceTree = "<group>"; };
 		BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSReaderTests.swift; sourceTree = "<group>"; };
 		BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMuxer.swift; sourceTree = "<group>"; };
-		BC4231632BCA5F28003A80DC /* IOAudioMixerConvertibleByMultiTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerConvertibleByMultiTrack.swift; sourceTree = "<group>"; };
-		BC4231692BCA8BE5003A80DC /* IOAudioMixerConvertibleBySingleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerConvertibleBySingleTrack.swift; sourceTree = "<group>"; };
+		BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerByMultiTrack.swift; sourceTree = "<group>"; };
+		BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerBySingleTrack.swift; sourceTree = "<group>"; };
 		BC42316B2BCB7084003A80DC /* FeatureUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureUtil.swift; sourceTree = "<group>"; };
 		BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionConvertible.swift; sourceTree = "<group>"; };
 		BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOption.swift; sourceTree = "<group>"; };
@@ -678,7 +678,7 @@
 		BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamSwitcher.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
-		BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioResampler.swift; sourceTree = "<group>"; };
+		BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerTrack.swift; sourceTree = "<group>"; };
 		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1065,11 +1065,11 @@
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
 				BC959EEE296EE4190067BA97 /* ImageTransform.swift */,
 				BC3802132AB5E7CC001AE399 /* IOAudioCaptureUnit.swift */,
-				B3D687812B80302B00E6A28E /* IOAudioMixerConvertible.swift */,
-				BC4231632BCA5F28003A80DC /* IOAudioMixerConvertibleByMultiTrack.swift */,
-				BC4231692BCA8BE5003A80DC /* IOAudioMixerConvertibleBySingleTrack.swift */,
+				B3D687812B80302B00E6A28E /* IOAudioMixer.swift */,
+				BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */,
+				BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */,
+				BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */,
 				BC31DBD12A653D1600C4DEA3 /* IOAudioMonitor.swift */,
-				BCFC51FD2AAB420700014428 /* IOAudioResampler.swift */,
 				BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */,
 				29B876891CD70AFE00FC07DA /* IOAudioUnit.swift */,
 				BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */,
@@ -1193,7 +1193,7 @@
 		BC0BF4F329866FB700D72CB4 /* IO */ = {
 			isa = PBXGroup;
 			children = (
-				BC3802182AB6AD79001AE399 /* IOAudioResamplerTests.swift */,
+				BC3802182AB6AD79001AE399 /* IOAudioMixerTrackTests.swift */,
 				BCD91C0C2A700FF50033F9E1 /* IOAudioRingBufferTests.swift */,
 				BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */,
 				BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */,
@@ -1755,7 +1755,7 @@
 				29B8765D1CD70A7900FC07DA /* VideoCodec.swift in Sources */,
 				2999C3752071138F00892E55 /* MTHKView.swift in Sources */,
 				29AF3FCF1D7C744C00E41212 /* IOStream.swift in Sources */,
-				B3D687822B80302B00E6A28E /* IOAudioMixerConvertible.swift in Sources */,
+				B3D687822B80302B00E6A28E /* IOAudioMixer.swift in Sources */,
 				BC1DC5142A05428800E928ED /* HEVCNALUnit.swift in Sources */,
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
 				29B876841CD70AE800FC07DA /* AVCDecoderConfigurationRecord.swift in Sources */,
@@ -1792,10 +1792,10 @@
 				BC0F1FDA2ACC4CC100C326FF /* IOCaptureVideoPreview.swift in Sources */,
 				BC4914B228DDFE31009E2DF6 /* VTSessionOptionKey.swift in Sources */,
 				BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */,
-				BC42316A2BCA8BE5003A80DC /* IOAudioMixerConvertibleBySingleTrack.swift in Sources */,
+				BC42316A2BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift in Sources */,
 				BC562DCB29576D220048D89A /* AVCaptureSession.Preset+Extension.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
-				BC4231642BCA5F28003A80DC /* IOAudioMixerConvertibleByMultiTrack.swift in Sources */,
+				BC4231642BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */,
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
 				BCC4F4152AD6FC1100954EF5 /* IOTellyUnit.swift in Sources */,
@@ -1816,7 +1816,7 @@
 				29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */,
 				29B876831CD70AE800FC07DA /* AudioSpecificConfig.swift in Sources */,
 				29B876961CD70AFE00FC07DA /* VideoEffect.swift in Sources */,
-				BCFC51FE2AAB420700014428 /* IOAudioResampler.swift in Sources */,
+				BCFC51FE2AAB420700014428 /* IOAudioMixerTrack.swift in Sources */,
 				BC34836A2AC56F3A002926F1 /* IOVideoMixer.swift in Sources */,
 				29B876691CD70AB300FC07DA /* Constants.swift in Sources */,
 				29B8766D1CD70AB300FC07DA /* DataConvertible.swift in Sources */,
@@ -1875,7 +1875,7 @@
 				290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */,
 				BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */,
 				290EA89A1DFB619600053022 /* TSProgramTests.swift in Sources */,
-				BC3802192AB6AD79001AE399 /* IOAudioResamplerTests.swift in Sources */,
+				BC3802192AB6AD79001AE399 /* IOAudioMixerTrackTests.swift in Sources */,
 				BC1DC5042A02894D00E928ED /* FLVVideoFourCCTests.swift in Sources */,
 				BC1DC5122A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift in Sources */,
 				BCA7C24F2A91AA0500882D85 /* IOStreamRecorderTests.swift in Sources */,

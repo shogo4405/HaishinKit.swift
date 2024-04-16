@@ -145,7 +145,7 @@ extension AudioNode: CustomStringConvertible {
                     continue
                 }
                 if let mixerNode = self as? MixerNode, let volume = try? mixerNode.volume(bus: busIndex, of: scope) {
-                    if scope != .input || scope == .input && (try? mixerNode.isEnabled(bus: busIndex, scope: scope)) ?? false {
+                    if scope != .input || scope == .input && (try? mixerNode.isEnabled(bus: UInt8(busIndex), scope: scope)) ?? false {
                         busDescription.append("bus: \(busIndex), volume: \(volume), format: \(asbd.verboseDescription)")
                     }
                 } else {
@@ -330,7 +330,7 @@ class MixerNode: AudioNode {
         }
     }
 
-    func enable(bus: Int, scope: AudioNode.BusScope, isEnabled: Bool) throws {
+    func enable(bus: UInt8, scope: AudioNode.BusScope, isEnabled: Bool) throws {
         let value: AudioUnitParameterValue = isEnabled ? 1 : 0
         let status = AudioUnitSetParameter(audioUnit,
                                            kMultiChannelMixerParam_Enable,
@@ -343,7 +343,7 @@ class MixerNode: AudioNode {
         }
     }
 
-    func isEnabled(bus: Int, scope: AudioNode.BusScope) throws -> Bool {
+    func isEnabled(bus: UInt8, scope: AudioNode.BusScope) throws -> Bool {
         var value: AudioUnitParameterValue = 0
         let status = AudioUnitGetParameter(audioUnit,
                                            kMultiChannelMixerParam_Enable,
