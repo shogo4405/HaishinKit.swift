@@ -21,7 +21,10 @@ protocol IOAudioUnitDelegate: AnyObject {
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
 
-final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
+final class IOAudioUnit: IOUnit {
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
+    weak var mixer: IOMixer?
+
     var muted = false
     var isMonitoringEnabled = false {
         didSet {
@@ -62,6 +65,15 @@ final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
         }
     }()
     private var monitor: IOAudioMonitor = .init()
+    #if os(tvOS)
+    private var _captures: [UInt8: Any] = [:]
+    @available(tvOS 17.0, *)
+    var captures: [UInt8: IOAudioCaptureUnit] {
+        return _captures as! [UInt8: IOAudioCaptureUnit]
+    }
+    #elseif os(iOS) || os(macOS) || os(visionOS)
+    var captures: [UInt8: IOAudioCaptureUnit] = [:]
+    #endif
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
@@ -109,6 +121,21 @@ final class IOAudioUnit: IOUnit<IOAudioCaptureUnit> {
     @available(tvOS 17.0, *)
     func makeDataOutput(_ track: UInt8) -> IOAudioCaptureUnitDataOutput {
         return .init(track: track, audioMixer: audioMixer)
+    }
+
+    @available(tvOS 17.0, *)
+    func capture(for track: UInt8) -> IOAudioCaptureUnit? {
+        #if os(tvOS)
+        if _captures[track] == nil {
+            _captures[track] = .init(track)
+        }
+        return _captures[track] as? IOAudioCaptureUnit
+        #else
+        if captures[track] == nil {
+            captures[track] = .init(track)
+        }
+        return captures[track]
+        #endif
     }
 }
 

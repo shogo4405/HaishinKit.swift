@@ -19,10 +19,13 @@ protocol IOVideoUnitDelegate: AnyObject {
     func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer)
 }
 
-final class IOVideoUnit: IOUnit<IOVideoCaptureUnit> {
+final class IOVideoUnit: IOUnit {
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
+
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
+    weak var mixer: IOMixer?
 
     weak var drawable: (any IOStreamView)? {
         didSet {
@@ -136,6 +139,16 @@ final class IOVideoUnit: IOUnit<IOVideoCaptureUnit> {
         return codec
     }()
 
+    #if os(tvOS)
+    private var _captures: [UInt8: Any] = [:]
+    @available(tvOS 17.0, *)
+    var captures: [UInt8: IOVideoCaptureUnit] {
+        return _captures as! [UInt8: IOVideoCaptureUnit]
+    }
+    #elseif os(iOS) || os(macOS) || os(visionOS)
+    var captures: [UInt8: IOVideoCaptureUnit] = [:]
+    #endif
+
     deinit {
         if Thread.isMainThread {
             self.drawable?.attachStream(nil)
@@ -216,6 +229,21 @@ final class IOVideoUnit: IOUnit<IOVideoCaptureUnit> {
     @available(tvOS 17.0, *)
     func makeDataOutput(_ track: UInt8) -> IOVideoCaptureUnitDataOutput {
         return .init(track: track, videoMixer: videoMixer)
+    }
+
+    @available(tvOS 17.0, *)
+    func capture(for track: UInt8) -> IOVideoCaptureUnit? {
+        #if os(tvOS)
+        if _captures[track] == nil {
+            _captures[track] = .init(track)
+        }
+        return _captures[track] as? IOVideoCaptureUnit
+        #else
+        if captures[track] == nil {
+            captures[track] = .init(track)
+        }
+        return captures[track]
+        #endif
     }
 }
 
