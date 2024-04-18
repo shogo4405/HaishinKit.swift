@@ -35,10 +35,20 @@ final class IOAudioUnit: IOUnit {
             }
         }
     }
-    var settings: AudioCodecSettings = .default {
-        didSet {
-            codec.settings = settings
-            audioMixer.settings = settings.makeAudioMixerSettings()
+    var settings: AudioCodecSettings {
+        get {
+            codec.settings
+        }
+        set {
+            codec.settings = newValue
+        }
+    }
+    var mixerSettings: IOAudioMixerSettings {
+        get {
+            audioMixer.settings
+        }
+        set {
+            audioMixer.settings = newValue
         }
     }
     var isRunning: Atomic<Bool> {
@@ -55,11 +65,11 @@ final class IOAudioUnit: IOUnit {
     }()
     private lazy var audioMixer: any IOAudioMixerConvertible = {
         if FeatureUtil.isEnabled(for: .multiTrackAudioMixing) {
-            var audioMixer = IOAudioMixerConvertibleByMultiTrack()
+            var audioMixer = IOAudioMixerByMultiTrack()
             audioMixer.delegate = self
             return audioMixer
         } else {
-            var audioMixer = IOAudioMixerConvertibleBySingleTrack()
+            var audioMixer = IOAudioMixerBySingleTrack()
             audioMixer.delegate = self
             return audioMixer
         }
@@ -157,7 +167,6 @@ extension IOAudioUnit: IOAudioMixerDelegate {
     }
 
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
-        inputFormat = audioMixer.inputFormat
         codec.inputFormat = audioFormat
         monitor.inputFormat = audioFormat
     }

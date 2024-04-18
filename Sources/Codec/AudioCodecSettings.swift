@@ -125,39 +125,14 @@ public struct AudioCodecSettings: Codable {
 
     /// Specifies the bitRate of audio output.
     public var bitRate: Int
-    /// Specifies the sampleRate of audio output.
-    public var sampleRate: Float64
-    /// Specifies the channels of audio output.
-    public var channels: UInt32
-    /// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.
-    public var downmix: Bool
-    /// Specifies the map of the output to input channels.
-    /// ## Example code:
-    /// ```
-    /// // If you want to use the 3rd and 4th channels from a 4-channel input source for a 2-channel output, you would specify it like this.
-    /// channelMap = [2, 3]
-    /// ```
-    public var channelMap: [Int]?
-    /// Specifies settings for alternative audio sources.
-    public var sourceSettings: [Int: AudioCodecSettings]?
     /// Specifies the output format.
     var format: AudioCodecSettings.Format = .aac
 
     /// Create an new AudioCodecSettings instance. A value of 0 will use the same value as the input source.
     public init(
-        bitRate: Int = 64 * 1000,
-        sampleRate: Float64 = 0,
-        channels: UInt32 = 0,
-        downmix: Bool = false,
-        channelMap: [Int]? = nil,
-        sourceSettings: [Int: AudioCodecSettings]? = nil
+        bitRate: Int = 64 * 1000
     ) {
         self.bitRate = bitRate
-        self.sampleRate = sampleRate
-        self.channels = channels
-        self.downmix = downmix
-        self.channelMap = channelMap
-        self.sourceSettings = sourceSettings
     }
 
     func apply(_ converter: AVAudioConverter?, oldValue: AudioCodecSettings?) {
@@ -173,27 +148,5 @@ public struct AudioCodecSettings: Codable {
             })?.intValue ?? bitRate
             converter.bitRate = min(maxAvailableBitRate, max(minAvailableBitRate, bitRate))
         }
-    }
-
-    func makeAudioMixerSettings() -> IOAudioMixerSettings {
-        guard let sourceSettings else {
-            return IOAudioMixerSettings(defaultResamplerSettings: makeAudioResamplerSettings())
-        }
-        var resamplersSettings: [Int: IOAudioResamplerSettings] = [
-            0: makeAudioResamplerSettings()
-        ]
-        for (source, codecSettings) in sourceSettings {
-            resamplersSettings[source] = codecSettings.makeAudioResamplerSettings()
-        }
-        return IOAudioMixerSettings(resamplersSettings: resamplersSettings)
-    }
-
-    func makeAudioResamplerSettings() -> IOAudioResamplerSettings {
-        return .init(
-            sampleRate: sampleRate,
-            channels: channels,
-            downmix: downmix,
-            channelMap: channelMap?.map { NSNumber(value: $0) }
-        )
     }
 }
