@@ -93,7 +93,7 @@ final class MediaLink<T: MediaLinkDelegate> {
                 self.playerNode.scheduleBuffer(audioBuffer, at: at, completionHandler: self.didAVAudioNodeCompletion)
             }
             self.frameCount += Int64(audioBuffer.frameLength)
-            if !self.hasVideo && !self.playerNode.isPlaying && 10 <= self.scheduledAudioBuffers.value {
+            if !self.isPaused && !self.playerNode.isPlaying && 10 <= self.scheduledAudioBuffers.value {
                 self.playerNode.play()
             }
         }, { exeption in

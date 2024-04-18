@@ -69,7 +69,6 @@ final class SRTSocket<T: SRTSocketDelegate> {
         if incomingBuffer.count < windowSizeC {
             incomingBuffer = .init(count: Int(windowSizeC))
         }
-        startRunning()
     }
 
     func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = kSRTSocket_defaultOptions) throws {
@@ -144,6 +143,7 @@ final class SRTSocket<T: SRTSocketDelegate> {
         }
         srt_close(socket)
         socket = SRT_INVALID_SOCK
+        stopRunning()
     }
 
     func configure(_ binding: SRTSocketOption.Binding) -> Bool {
