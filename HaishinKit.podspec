@@ -16,16 +16,16 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/shogo4405/HaishinKit.swift.git", :tag => "#{s.version}" }
 
   s.ios.deployment_target = "13.0"
-  s.ios.source_files = "Platforms/iOS/*.{h,swift}"
+  s.ios.source_files = "Platforms/*.{h,swift}"
 
   s.osx.deployment_target = "10.15"
-  s.osx.source_files = "Platforms/iOS/*.{h,swift}"
+  s.osx.source_files = "Platforms/*.{h,swift}"
 
   s.tvos.deployment_target = "13.0"
-  s.tvos.source_files = "Platforms/iOS/*.{h,swift}"
+  s.tvos.source_files = "Platforms/*.{h,swift}"
 
   s.visionos.deployment_target = "1.0"
-  s.visionos.source_files = "Platforms/iOS/*.{h,swift}"
+  s.visionos.source_files = "Platforms/*.{h,swift}"
 
   s.source_files = "Sources/**/*.swift"
   s.dependency 'Logboard', '~> 2.5.0'

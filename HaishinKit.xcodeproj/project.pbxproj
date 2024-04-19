@@ -1039,18 +1039,10 @@
 		299F7E371CD71A76001E7272 /* Platforms */ = {
 			isa = PBXGroup;
 			children = (
-				299F7E391CD71A86001E7272 /* iOS */,
-			);
-			path = Platforms;
-			sourceTree = "<group>";
-		};
-		299F7E391CD71A86001E7272 /* iOS */ = {
-			isa = PBXGroup;
-			children = (
 				299F7E3B1CD71A97001E7272 /* HaishinKit.h */,
 				299F7E3A1CD71A97001E7272 /* Info.plist */,
 			);
-			path = iOS;
+			path = Platforms;
 			sourceTree = "<group>";
 		};
 		29A39C801D85BEFA007C27E9 /* Screencast */ = {
@@ -2305,7 +2297,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Platforms/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Platforms/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2351,7 +2343,7 @@
 				ENABLE_MODULE_VERIFIER = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Platforms/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/Platforms/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
