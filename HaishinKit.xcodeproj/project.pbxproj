@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 035AFA032263868E009DD0BB /* RTMPStreamTests.swift */; };
-		1A216F07B0BD8E05C8ECC8F1 /* AVAudioFormat+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2166D3A449D813866FE9D9 /* AVAudioFormat+Extension.swift */; };
+		1A216F07B0BD8E05C8ECC8F1 /* AVAudioFormat+DebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2166D3A449D813866FE9D9 /* AVAudioFormat+DebugExtension.swift */; };
 		2901A4EE1D437170002BBD23 /* MediaLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2901A4ED1D437170002BBD23 /* MediaLink.swift */; };
 		290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */; };
 		290EA8901DFB616000053022 /* Foundation+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 290EA88E1DFB616000053022 /* Foundation+ExtensionTests.swift */; };
@@ -125,6 +125,7 @@
 		BC04A2D62AD2D95500C87A3E /* CMTime+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC04A2D52AD2D95500C87A3E /* CMTime+Extension.swift */; };
 		BC0587C12BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587C02BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift */; };
 		BC0587C32BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587C22BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift */; };
+		BC0587D22BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */; };
 		BC0BF4F22985FA9000D72CB4 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */; };
 		BC0D236D26331BAB001DDA0C /* DataBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* DataBuffer.swift */; };
@@ -441,7 +442,7 @@
 
 /* Begin PBXFileReference section */
 		035AFA032263868E009DD0BB /* RTMPStreamTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStreamTests.swift; sourceTree = "<group>"; };
-		1A2166D3A449D813866FE9D9 /* AVAudioFormat+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAudioFormat+Extension.swift"; sourceTree = "<group>"; };
+		1A2166D3A449D813866FE9D9 /* AVAudioFormat+DebugExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "AVAudioFormat+DebugExtension.swift"; sourceTree = "<group>"; };
 		2901A4ED1D437170002BBD23 /* MediaLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaLink.swift; sourceTree = "<group>"; };
 		290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPConnectionTests.swift; sourceTree = "<group>"; };
 		290EA88E1DFB616000053022 /* Foundation+ExtensionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Foundation+ExtensionTests.swift"; sourceTree = "<group>"; };
@@ -566,6 +567,7 @@
 		BC04A2D52AD2D95500C87A3E /* CMTime+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMTime+Extension.swift"; sourceTree = "<group>"; };
 		BC0587C02BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerBySingleTrackTests.swift; sourceTree = "<group>"; };
 		BC0587C22BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerByMultiTrackTests.swift; sourceTree = "<group>"; };
+		BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+DebugExtension.swift"; sourceTree = "<group>"; };
 		BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMixerTests.swift; sourceTree = "<group>"; };
 		BC0D236C26331BAB001DDA0C /* DataBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBuffer.swift; sourceTree = "<group>"; };
 		BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryUsage.swift; sourceTree = "<group>"; };
@@ -895,18 +897,19 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
+				2981E1301D646E3F00E8F7CA /* Cartfile */,
+				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
+				2997BDD31D50D31B000AF900 /* README.md */,
+				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
+				29F39BE72335F8010055F9BB /* Package.swift */,
+				BC0587D02BD2C9C5006751C8 /* DebugDescription */,
 				2968973E1CDB01920074D5F0 /* Examples */,
 				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
 				299F7E371CD71A76001E7272 /* Platforms */,
 				2945CBBE1B4BE66000104112 /* Products */,
-				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
 				2945CBBF1B4BE66000104112 /* Sources */,
+				BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */,
 				29798E5A1CE60E5300F5CBD0 /* Tests */,
-				2981E1301D646E3F00E8F7CA /* Cartfile */,
-				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
-				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
-				29F39BE72335F8010055F9BB /* Package.swift */,
-				2997BDD31D50D31B000AF900 /* README.md */,
 			);
 			sourceTree = "<group>";
 			wrapsLines = 0;
@@ -1135,7 +1138,6 @@
 			children = (
 				BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */,
 				BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */,
-				1A2166D3A449D813866FE9D9 /* AVAudioFormat+Extension.swift */,
 				BC22EEF12AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift */,
 				BC04A2D32AD2D1D700C87A3E /* AVAudioTime+Extension.swift */,
 				BC2828AC2AA3225100741013 /* AVCaptureDevice.Format+Extension.swift */,
@@ -1184,6 +1186,15 @@
 				BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		BC0587D02BD2C9C5006751C8 /* DebugDescription */ = {
+			isa = PBXGroup;
+			children = (
+				1A2166D3A449D813866FE9D9 /* AVAudioFormat+DebugExtension.swift */,
+				BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */,
+			);
+			path = DebugDescription;
 			sourceTree = "<group>";
 		};
 		BC0BF4F329866FB700D72CB4 /* IO */ = {
@@ -1807,6 +1818,7 @@
 				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				29EA87D81E79A0090043A5F8 /* URL+Extension.swift in Sources */,
+				BC0587D22BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift in Sources */,
 				BC9F9C7826F8C16600B01ED0 /* Choreographer.swift in Sources */,
 				BC5A945C2BC2A8D80006F722 /* FLVFoundation.swift in Sources */,
 				BCD8702B2BC266CD009E495B /* IOStreamObserver.swift in Sources */,
@@ -1847,7 +1859,7 @@
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
 				29B876901CD70AFE00FC07DA /* IOAudioUnit.swift in Sources */,
-				1A216F07B0BD8E05C8ECC8F1 /* AVAudioFormat+Extension.swift in Sources */,
+				1A216F07B0BD8E05C8ECC8F1 /* AVAudioFormat+DebugExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

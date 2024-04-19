@@ -146,10 +146,10 @@ extension AudioNode: CustomStringConvertible {
                 }
                 if let mixerNode = self as? MixerNode, let volume = try? mixerNode.volume(bus: busIndex, of: scope) {
                     if scope != .input || scope == .input && (try? mixerNode.isEnabled(bus: UInt8(busIndex), scope: scope)) ?? false {
-                        busDescription.append("bus: \(busIndex), volume: \(volume), format: \(asbd.verboseDescription)")
+                        busDescription.append("bus: \(busIndex), volume: \(volume), format: \(asbd)")
                     }
                 } else {
-                    busDescription.append("bus: \(busIndex), format: \(asbd.verboseDescription)")
+                    busDescription.append("bus: \(busIndex), format: \(asbd)")
                 }
             }
 
