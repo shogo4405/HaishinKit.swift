@@ -359,7 +359,7 @@ open class IOStream: NSObject {
     public func attachAudio(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOAudioCaptureConfigurationBlock? = nil) {
         lockQueue.async {
             do {
-                try self.mixer.audioIO.attachAudio(device, track: track) { capture in
+                try self.mixer.audioIO.attachAudio(track, device: device) { capture in
                     configuration?(capture, nil)
                 }
             } catch {
@@ -385,11 +385,11 @@ open class IOStream: NSObject {
         switch sampleBuffer.formatDescription?.mediaType {
         case .audio?:
             mixer.audioIO.lockQueue.async {
-                self.mixer.audioIO.append(sampleBuffer, track: track)
+                self.mixer.audioIO.append(track, buffer: sampleBuffer)
             }
         case .video?:
             mixer.videoIO.lockQueue.async {
-                self.mixer.videoIO.append(sampleBuffer, track: track)
+                self.mixer.videoIO.append(track, buffer: sampleBuffer)
             }
         default:
             break
@@ -403,7 +403,7 @@ open class IOStream: NSObject {
     ///   - track: Track number used for mixing.
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, track: UInt8 = 0) {
         mixer.audioIO.lockQueue.async {
-            self.mixer.audioIO.append(audioBuffer, when: when, track: track)
+            self.mixer.audioIO.append(track, buffer: audioBuffer, when: when)
         }
     }
 

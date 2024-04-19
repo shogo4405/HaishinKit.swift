@@ -87,7 +87,7 @@ final class IOAudioUnit: IOUnit {
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
-    func attachAudio(_ device: AVCaptureDevice?, track: UInt8, configuration: (_ capture: IOAudioCaptureUnit?) -> Void) throws {
+    func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: (_ capture: IOAudioCaptureUnit?) -> Void) throws {
         try mixer?.session.configuration { _ in
             mixer?.session.detachCapture(captures[track])
             guard let device else {
@@ -103,26 +103,26 @@ final class IOAudioUnit: IOUnit {
     }
     #endif
 
-    func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
-        switch sampleBuffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
+    func append(_ track: UInt8, buffer: CMSampleBuffer) {
+        switch buffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
         case kAudioFormatLinearPCM:
-            audioMixer.append(sampleBuffer, track: track)
+            audioMixer.append(track, buffer: buffer)
         default:
-            if codec.inputFormat?.formatDescription != sampleBuffer.formatDescription {
-                if var asbd = sampleBuffer.formatDescription?.audioStreamBasicDescription {
+            if codec.inputFormat?.formatDescription != buffer.formatDescription {
+                if var asbd = buffer.formatDescription?.audioStreamBasicDescription {
                     codec.inputFormat = AVAudioFormat.init(streamDescription: &asbd)
                 }
             }
-            codec.append(sampleBuffer)
+            codec.append(buffer)
         }
     }
 
-    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, track: UInt8 = 0) {
-        switch audioBuffer {
-        case let audioBuffer as AVAudioPCMBuffer:
-            audioMixer.append(audioBuffer, when: when, track: track)
+    func append(_ track: UInt8, buffer: AVAudioBuffer, when: AVAudioTime) {
+        switch buffer {
+        case let buffer as AVAudioPCMBuffer:
+            audioMixer.append(track, buffer: buffer, when: when)
         case let audioBuffer as AVAudioCompressedBuffer:
-            codec.append(audioBuffer, when: when)
+            codec.append(buffer, when: when)
         default:
             break
         }

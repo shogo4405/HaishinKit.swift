@@ -10,7 +10,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             }
         }
     }
-    private var outputFormat: AVAudioFormat? {
+    private(set) var outputFormat: AVAudioFormat? {
         didSet {
             guard let outputFormat, outputFormat != oldValue else {
                 return
@@ -25,12 +25,12 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             guard var inSourceFormat, inSourceFormat != oldValue else {
                 return
             }
-            outputFormat = Self.makeAudioFormat(&inSourceFormat)
+            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(&inSourceFormat))
         }
     }
     private var track: IOAudioMixerTrack<IOAudioMixerBySingleTrack>?
 
-    func append(_ buffer: CMSampleBuffer, track: UInt8) {
+    func append(_ track: UInt8, buffer: CMSampleBuffer) {
         guard settings.mainTrack == track else {
             return
         }
@@ -38,7 +38,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
         self.track?.append(buffer)
     }
 
-    func append(_ buffer: AVAudioPCMBuffer, when: AVAudioTime, track: UInt8) {
+    func append(_ track: UInt8, buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard settings.mainTrack == track else {
             return
         }

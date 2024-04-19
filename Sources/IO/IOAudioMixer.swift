@@ -42,14 +42,27 @@ public struct IOAudioMixerSettings {
         self.sampleRate = sampleRate
         self.tracks = tracks
     }
+
+    func makeAudioFormat(_ format: AVAudioFormat?) -> AVAudioFormat? {
+        guard let format else {
+            return nil
+        }
+        return .init(
+            commonFormat: format.commonFormat,
+            sampleRate: min(sampleRate == 0 ? format.sampleRate : sampleRate, AudioCodecSettings.maximumSampleRate),
+            channels: min(channels == 0 ? format.channelCount : channels, AudioCodecSettings.maximumNumberOfChannels),
+            interleaved: format.isInterleaved
+        )
+    }
 }
 
 protocol IOAudioMixerConvertible: AnyObject {
     var delegate: (any IOAudioMixerDelegate)? { get set }
     var settings: IOAudioMixerSettings { get set }
+    var outputFormat: AVAudioFormat? { get }
 
-    func append(_ buffer: CMSampleBuffer, track: UInt8)
-    func append(_ buffer: AVAudioPCMBuffer, when: AVAudioTime, track: UInt8)
+    func append(_ track: UInt8, buffer: CMSampleBuffer)
+    func append(_ track: UInt8, buffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
 
 extension IOAudioMixerConvertible {

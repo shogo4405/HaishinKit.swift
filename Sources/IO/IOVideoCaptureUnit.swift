@@ -194,6 +194,6 @@ final class IOVideoCaptureUnitDataOutput: NSObject, AVCaptureVideoDataOutputSamp
     }
 
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        videoMixer.append(sampleBuffer, track: track, isVideoMirrored: connection.isVideoMirrored)
+        videoMixer.append(track, sampleBuffer: sampleBuffer, isVideoMirrored: connection.isVideoMirrored)
     }
 }

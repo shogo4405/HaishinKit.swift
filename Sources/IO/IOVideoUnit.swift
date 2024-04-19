@@ -167,12 +167,12 @@ final class IOVideoUnit: IOUnit {
         return videoMixer.unregisterEffect(effect)
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
-        if sampleBuffer.formatDescription?.isCompressed == true {
-            inputFormat = sampleBuffer.formatDescription
-            codec.append(sampleBuffer)
+    func append(_ track: UInt8, buffer: CMSampleBuffer) {
+        if buffer.formatDescription?.isCompressed == true {
+            inputFormat = buffer.formatDescription
+            codec.append(buffer)
         } else {
-            videoMixer.append(sampleBuffer, track: track, isVideoMirrored: false)
+            videoMixer.append(track, sampleBuffer: buffer, isVideoMirrored: false)
         }
     }
 

@@ -55,7 +55,7 @@ final class IOAudioCaptureUnitDataOutput: NSObject, AVCaptureAudioDataOutputSamp
     }
 
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        audioMixer.append(sampleBuffer, track: track)
+        audioMixer.append(track, buffer: sampleBuffer)
     }
 }
 #endif

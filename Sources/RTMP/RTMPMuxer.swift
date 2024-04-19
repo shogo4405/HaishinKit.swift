@@ -103,7 +103,7 @@ final class RTMPMuxer {
                 audioBuffer.packetCount = 1
                 audioBuffer.byteLength = UInt32(byteCount)
                 audioBuffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
-                stream.mixer.audioIO.append(audioBuffer, when: audioTimestamp.value)
+                stream.mixer.audioIO.append(0, buffer: audioBuffer, when: audioTimestamp.value)
             }
         default:
             break
@@ -123,11 +123,11 @@ final class RTMPMuxer {
                 videoFormat = message.makeFormatDescription()
             case FLVVideoPacketType.codedFrames.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.mixer.videoIO.append(sampleBuffer)
+                    stream.mixer.videoIO.append(0, buffer: sampleBuffer)
                 }
             case FLVVideoPacketType.codedFramesX.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.mixer.videoIO.append(sampleBuffer)
+                    stream.mixer.videoIO.append(0, buffer: sampleBuffer)
                 }
             default:
                 break
@@ -138,7 +138,7 @@ final class RTMPMuxer {
                 videoFormat = message.makeFormatDescription()
             case FLVAVCPacketType.nal.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.mixer.videoIO.append(sampleBuffer)
+                    stream.mixer.videoIO.append(0, buffer: sampleBuffer)
                 }
             default:
                 break

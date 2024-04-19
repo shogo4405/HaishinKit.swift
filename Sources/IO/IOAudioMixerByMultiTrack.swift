@@ -12,7 +12,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             }
         }
     }
-    private var outputFormat: AVAudioFormat? {
+    private(set) var outputFormat: AVAudioFormat? {
         didSet {
             guard let outputFormat, outputFormat != oldValue else {
                 return
@@ -28,7 +28,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             guard var inSourceFormat, inSourceFormat != oldValue else {
                 return
             }
-            outputFormat = Self.makeAudioFormat(&inSourceFormat)
+            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(&inSourceFormat))
         }
     }
     private(set) var numberOfTracks = 0
@@ -57,18 +57,18 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
         return status
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
+    func append(_ track: UInt8, buffer: CMSampleBuffer) {
         if settings.mainTrack == track {
-            inSourceFormat = sampleBuffer.formatDescription?.audioStreamBasicDescription
+            inSourceFormat = buffer.formatDescription?.audioStreamBasicDescription
         }
-        self.track(for: track)?.append(sampleBuffer)
+        self.track(for: track)?.append(buffer)
     }
 
-    func append(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime, track: UInt8) {
+    func append(_ track: UInt8, buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         if settings.mainTrack == track {
-            inSourceFormat = audioBuffer.format.streamDescription.pointee
+            inSourceFormat = buffer.format.streamDescription.pointee
         }
-        self.track(for: track)?.append(audioBuffer, when: when)
+        self.track(for: track)?.append(buffer, when: when)
     }
 
     private func tryToSetupAudioNodes() {
