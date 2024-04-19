@@ -66,7 +66,7 @@ public class PiPHKView: UIView {
 
     private weak var currentStream: IOStream? {
         didSet {
-            currentStream?.drawable = self
+            currentStream?.view = self
         }
     }
 
@@ -193,7 +193,7 @@ public class PiPHKView: NSView {
 
     private weak var currentStream: IOStream? {
         didSet {
-            currentStream?.drawable = self
+            currentStream?.view = self
         }
     }
 

@@ -73,7 +73,7 @@ public class MTHKView: MTKView {
                 if let context = self.context {
                     $0.context = context
                 }
-                $0.drawable = self
+                $0.view = self
             }
         }
     }

@@ -27,10 +27,10 @@ final class IOVideoUnit: IOUnit {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
     weak var mixer: IOMixer?
 
-    weak var drawable: (any IOStreamView)? {
+    weak var view: (any IOStreamView)? {
         didSet {
             #if os(iOS) || os(macOS)
-            drawable?.videoOrientation = videoOrientation
+            view?.videoOrientation = videoOrientation
             #endif
         }
     }
@@ -112,7 +112,7 @@ final class IOVideoUnit: IOUnit {
                 return
             }
             mixer?.session.configuration { _ in
-                drawable?.videoOrientation = videoOrientation
+                view?.videoOrientation = videoOrientation
                 for capture in captures.values {
                     capture.videoOrientation = videoOrientation
                 }
@@ -151,10 +151,10 @@ final class IOVideoUnit: IOUnit {
 
     deinit {
         if Thread.isMainThread {
-            self.drawable?.attachStream(nil)
+            self.view?.attachStream(nil)
         } else {
             DispatchQueue.main.sync {
-                self.drawable?.attachStream(nil)
+                self.view?.attachStream(nil)
             }
         }
     }
@@ -195,7 +195,7 @@ final class IOVideoUnit: IOUnit {
                 videoMixer.detach(track)
             }
         }
-        if device != nil && drawable != nil {
+        if device != nil && view != nil {
             // Start captureing if not running.
             mixer?.session.startRunning()
         }
@@ -265,7 +265,7 @@ extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
         inputFormat = sampleBuffer.formatDescription
-        drawable?.enqueue(sampleBuffer)
+        view?.enqueue(sampleBuffer)
         mixer?.videoUnit(self, didOutput: sampleBuffer)
     }
 

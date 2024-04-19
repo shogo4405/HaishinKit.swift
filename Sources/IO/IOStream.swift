@@ -258,14 +258,14 @@ open class IOStream: NSObject {
     /// Specifies the delegate.
     public weak var delegate: (any IOStreamDelegate)?
 
-    /// Specifies the drawable.
-    public var drawable: (any IOStreamView)? {
+    /// Specifies the view.
+    public var view: (any IOStreamView)? {
         get {
-            lockQueue.sync { mixer.videoIO.drawable }
+            lockQueue.sync { mixer.videoIO.view }
         }
         set {
             lockQueue.async {
-                self.mixer.videoIO.drawable = newValue
+                self.mixer.videoIO.view = newValue
                 guard #available(tvOS 17.0, *) else {
                     return
                 }
@@ -523,7 +523,7 @@ extension IOStream: IOMixerDelegate {
 extension IOStream: IOTellyUnitDelegate {
     // MARK: IOTellyUnitDelegate
     func tellyUnit(_ tellyUnit: IOTellyUnit, dequeue sampleBuffer: CMSampleBuffer) {
-        mixer.videoIO.drawable?.enqueue(sampleBuffer)
+        mixer.videoIO.view?.enqueue(sampleBuffer)
     }
 
     func tellyUnit(_ tellyUnit: IOTellyUnit, didBufferingChanged: Bool) {
