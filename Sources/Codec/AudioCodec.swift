@@ -101,7 +101,7 @@ final class AudioCodec<T: AudioCodecDelegate> {
                 inputBuffer.copy(audioBuffer)
             case let inputBuffer as AVAudioPCMBuffer:
                 if !inputBuffer.copy(audioBuffer) {
-                    inputBuffer.muted()
+                    inputBuffer.muted(true)
                 }
             default:
                 break

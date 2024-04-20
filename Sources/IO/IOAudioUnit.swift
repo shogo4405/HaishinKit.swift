@@ -124,7 +124,7 @@ final class IOAudioUnit: IOUnit {
         switch buffer {
         case let buffer as AVAudioPCMBuffer:
             audioMixer.append(track, buffer: buffer, when: when)
-        case let audioBuffer as AVAudioCompressedBuffer:
+        case let buffer as AVAudioCompressedBuffer:
             codec.append(buffer, when: when)
         default:
             break
@@ -178,9 +178,7 @@ extension IOAudioUnit: IOAudioMixerDelegate {
     }
 
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        if muted {
-            audioBuffer.muted()
-        }
+        audioBuffer.muted(muted)
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.append(audioBuffer, when: when)
         codec.append(audioBuffer, when: when)

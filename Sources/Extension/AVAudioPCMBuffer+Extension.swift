@@ -69,7 +69,11 @@ extension AVAudioPCMBuffer {
         return true
     }
 
-    final func muted() {
+    @discardableResult
+    final func muted(_ isMuted: Bool) -> AVAudioPCMBuffer {
+        guard isMuted else {
+            return self
+        }
         let numSamples = Int(frameLength)
         if format.isInterleaved {
             let channelCount = Int(format.channelCount)
@@ -97,5 +101,6 @@ extension AVAudioPCMBuffer {
                 }
             }
         }
+        return self
     }
 }
