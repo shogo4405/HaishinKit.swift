@@ -16,6 +16,7 @@ public enum IOVideoUnitError: Error {
 }
 
 protocol IOVideoUnitDelegate: AnyObject {
+    func videoUnit(_ videoUnit: IOVideoUnit, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
     func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer)
 }
 
@@ -58,11 +59,12 @@ final class IOVideoUnit: IOUnit {
             codec.settings = newValue
         }
     }
-    private(set) var inputFormat: CMVideoFormatDescription?
-    var outputFormat: CMVideoFormatDescription? {
+    var inputFormats: [UInt8: CMFormatDescription] {
+        return videoMixer.inputFormats
+    }
+    var outputFormat: CMFormatDescription? {
         codec.outputFormat
     }
-
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
             guard #available(tvOS 17.0, *) else {
@@ -169,7 +171,6 @@ final class IOVideoUnit: IOUnit {
 
     func append(_ track: UInt8, buffer: CMSampleBuffer) {
         if buffer.formatDescription?.isCompressed == true {
-            inputFormat = buffer.formatDescription
             codec.append(buffer)
         } else {
             videoMixer.append(track, sampleBuffer: buffer, isVideoMirrored: false)
@@ -263,8 +264,11 @@ extension IOVideoUnit: Running {
 
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
+    func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
+        mixer?.videoUnit(self, track: track, didInput: sampleBuffer)
+    }
+
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
-        inputFormat = sampleBuffer.formatDescription
         view?.enqueue(sampleBuffer)
         mixer?.videoUnit(self, didOutput: sampleBuffer)
     }

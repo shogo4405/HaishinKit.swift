@@ -5,6 +5,8 @@ import SwiftPMSupport
 #endif
 
 protocol IOMixerDelegate: AnyObject {
+    func mixer(_ mixer: IOMixer, track: UInt8, didInput audio: AVAudioBuffer, when: AVAudioTime)
+    func mixer(_ mixer: IOMixer, track: UInt8, didInput video: CMSampleBuffer)
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime)
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
     func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOVideoUnitError)
@@ -179,6 +181,10 @@ extension IOMixer: IOCaptureSessionDelegate {
 
 extension IOMixer: IOAudioUnitDelegate {
     // MARK: IOAudioUnitDelegate
+    func audioUnit(_ audioUnit: IOAudioUnit, track: UInt8, didInput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        delegate?.mixer(self, track: track, didInput: audioBuffer, when: when)
+    }
+
     func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOAudioUnitError) {
         delegate?.mixer(self, audioErrorOccurred: error)
     }
@@ -190,6 +196,10 @@ extension IOMixer: IOAudioUnitDelegate {
 
 extension IOMixer: IOVideoUnitDelegate {
     // MARK: IOVideoUnitDelegate
+    func videoUnit(_ videoUnit: IOVideoUnit, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
+        delegate?.mixer(self, track: track, didInput: sampleBuffer)
+    }
+
     func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer) {
         delegate?.mixer(self, didOutput: sampleBuffer)
     }

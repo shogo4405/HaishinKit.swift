@@ -102,10 +102,10 @@ public final class SRTStream: IOStream {
             self.readyState = .playing
         case .publish:
             writer.expectedMedias.removeAll()
-            if videoInputFormat != nil {
+            if !videoInputFormats.isEmpty {
                 writer.expectedMedias.insert(.video)
             }
-            if audioInputFormat != nil {
+            if !audioInputFormats.isEmpty {
                 writer.expectedMedias.insert(.audio)
             }
             self.readyState = .publishing(muxer: writer)

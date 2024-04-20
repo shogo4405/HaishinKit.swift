@@ -406,7 +406,7 @@ open class RTMPStream: IOStream {
     /// Creates flv metadata for a stream.
     open func makeMetaData() -> ASObject {
         var metadata: [String: Any] = [:]
-        if videoInputFormat != nil {
+        if !videoInputFormats.isEmpty {
             metadata["width"] = videoSettings.videoSize.width
             metadata["height"] = videoSettings.videoSize.height
             #if os(iOS) || os(macOS) || os(tvOS)
@@ -420,7 +420,7 @@ open class RTMPStream: IOStream {
             }
             metadata["videodatarate"] = videoSettings.bitRate / 1000
         }
-        if audioInputFormat != nil {
+        if !audioInputFormats.isEmpty {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
             metadata["audiodatarate"] = audioSettings.bitRate / 1000
             if let outputFormat = mixer.audioIO.outputFormat {

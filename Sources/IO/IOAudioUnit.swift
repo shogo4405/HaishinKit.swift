@@ -17,6 +17,7 @@ public enum IOAudioUnitError: Swift.Error {
 }
 
 protocol IOAudioUnitDelegate: AnyObject {
+    func audioUnit(_ audioUnit: IOAudioUnit, track: UInt8, didInput audioBuffer: AVAudioBuffer, when: AVAudioTime)
     func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOAudioUnitError)
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime)
 }
@@ -54,7 +55,9 @@ final class IOAudioUnit: IOUnit {
     var isRunning: Atomic<Bool> {
         return codec.isRunning
     }
-    private(set) var inputFormat: AVAudioFormat?
+    var inputFormats: [UInt8: AVAudioFormat] {
+        return audioMixer.inputFormats
+    }
     var outputFormat: AVAudioFormat? {
         return codec.outputFormat
     }
@@ -162,6 +165,9 @@ extension IOAudioUnit: Running {
 
 extension IOAudioUnit: IOAudioMixerDelegate {
     // MARK: IOAudioMixerDelegate
+    func audioMixer(_ audioMixer: any IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    }
+
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
         mixer?.audioUnit(self, errorOccurred: error)
     }

@@ -10,6 +10,13 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             }
         }
     }
+    var inputFormats: [UInt8: AVAudioFormat] {
+        var formats: [UInt8: AVAudioFormat] = .init()
+        if let track = track, let inputFormat = track.inputFormat {
+            formats[track.id] = inputFormat
+        }
+        return formats
+    }
     private(set) var outputFormat: AVAudioFormat? {
         didSet {
             guard let outputFormat, outputFormat != oldValue else {
