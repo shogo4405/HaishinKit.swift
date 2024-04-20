@@ -173,7 +173,6 @@
 		BC4914B228DDFE31009E2DF6 /* VTSessionOptionKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914B128DDFE31009E2DF6 /* VTSessionOptionKey.swift */; };
 		BC4914B628DEC2FE009E2DF6 /* VTSessionMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914B528DEC2FE009E2DF6 /* VTSessionMode.swift */; };
 		BC4C9EAC23F00F3A004A14F2 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
-		BC4C9EAF23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */; };
 		BC5019C12A6D266B0046E02F /* IOAudioRingBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */; };
 		BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC562DC7295767860048D89A /* AVCaptureDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */; };
@@ -611,7 +610,6 @@
 		BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTDecompressionSession+Extension.swift"; sourceTree = "<group>"; };
 		BC4914B128DDFE31009E2DF6 /* VTSessionOptionKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOptionKey.swift; sourceTree = "<group>"; };
 		BC4914B528DEC2FE009E2DF6 /* VTSessionMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionMode.swift; sourceTree = "<group>"; };
-		BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+Extension.swift"; sourceTree = "<group>"; };
 		BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioRingBuffer.swift; sourceTree = "<group>"; };
 		BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStreamInfo.swift; sourceTree = "<group>"; };
 		BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureDevice+Extension.swift"; sourceTree = "<group>"; };
@@ -1136,7 +1134,6 @@
 		29EA87D11E799EFF0043A5F8 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
-				BC4C9EAE23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift */,
 				BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */,
 				BC22EEF12AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift */,
 				BC04A2D32AD2D1D700C87A3E /* AVAudioTime+Extension.swift */,
@@ -1773,7 +1770,6 @@
 				BC9CFA9323BDE8B700917EEF /* IOStreamView.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
 				29B876871CD70AE800FC07DA /* TSProgram.swift in Sources */,
-				BC4C9EAF23F2E736004A14F2 /* AudioStreamBasicDescription+Extension.swift in Sources */,
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
 				BC3802122AB5E770001AE399 /* IOVideoCaptureUnit.swift in Sources */,
 				298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */,

@@ -27,12 +27,12 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             self.track = track
         }
     }
-    private var inSourceFormat: AudioStreamBasicDescription? {
+    private var inSourceFormat: CMFormatDescription? {
         didSet {
-            guard var inSourceFormat, inSourceFormat != oldValue else {
+            guard inSourceFormat != oldValue, var audioStreamBasicDescription = inSourceFormat?.audioStreamBasicDescription  else {
                 return
             }
-            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(&inSourceFormat))
+            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(&audioStreamBasicDescription))
         }
     }
     private var track: IOAudioMixerTrack<IOAudioMixerBySingleTrack>?
@@ -41,7 +41,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
         guard settings.mainTrack == track else {
             return
         }
-        inSourceFormat = buffer.formatDescription?.audioStreamBasicDescription
+        inSourceFormat = buffer.formatDescription
         self.track?.append(buffer)
     }
 
@@ -49,7 +49,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
         guard settings.mainTrack == track else {
             return
         }
-        inSourceFormat = buffer.format.streamDescription.pointee
+        inSourceFormat = buffer.format.formatDescription
         self.track?.append(buffer, when: when)
     }
 }

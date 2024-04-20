@@ -125,13 +125,12 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
     var inputFormat: AVAudioFormat? {
         return audioConverter?.inputFormat
     }
-
-    private var inSourceFormat: AudioStreamBasicDescription? {
+    private var inSourceFormat: CMFormatDescription? {
         didSet {
-            guard var inSourceFormat, inSourceFormat != oldValue else {
+            guard inSourceFormat != oldValue, var audioStreamBasicDescription = inSourceFormat?.audioStreamBasicDescription else {
                 return
             }
-            setUp(&inSourceFormat)
+            setUp(&audioStreamBasicDescription)
         }
     }
     private var ringBuffer: IOAudioRingBuffer?
@@ -155,8 +154,8 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
     }
 
     func append(_ sampleBuffer: CMSampleBuffer) {
-        inSourceFormat = sampleBuffer.formatDescription?.audioStreamBasicDescription
-        guard let inSourceFormat else {
+        inSourceFormat = sampleBuffer.formatDescription
+        guard let inSourceFormat = inSourceFormat?.audioStreamBasicDescription else {
             return
         }
         if sampleTime == kIOAudioMixerTrack_sampleTime {
@@ -174,7 +173,7 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
     }
 
     func append(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        inSourceFormat = audioBuffer.format.formatDescription.audioStreamBasicDescription
+        inSourceFormat = audioBuffer.format.formatDescription
         if sampleTime == kIOAudioMixerTrack_sampleTime {
             sampleTime = when.sampleTime
             anchor = when
