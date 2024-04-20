@@ -12,6 +12,9 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             }
         }
     }
+    var inputFormats: [UInt8: AVAudioFormat] {
+        return tracks.compactMapValues { $0.inputFormat }
+    }
     private(set) var outputFormat: AVAudioFormat? {
         didSet {
             guard let outputFormat, outputFormat != oldValue else {

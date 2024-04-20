@@ -3,8 +3,9 @@ import CoreMedia
 import Foundation
 
 protocol IOVideoMixerDelegate: AnyObject {
+    func videoMixer(_ videoMixer: IOVideoMixer<Self>, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
     func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime)
-    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput sampleBUffer: CMSampleBuffer)
+    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput sampleBbffer: CMSampleBuffer)
 }
 
 private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
@@ -22,6 +23,16 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
                 effect.ciContext = context
             }
         }
+    }
+    var inputFormats: [UInt8: CMFormatDescription] {
+        var formats: [UInt8: CMFormatDescription] = .init()
+        if let sampleBuffer, let formatDescription = sampleBuffer.formatDescription {
+            formats[0] = formatDescription
+        }
+        if let multiCamSampleBuffer, let formatDescription = multiCamSampleBuffer.formatDescription {
+            formats[1] = formatDescription
+        }
+        return formats
     }
     private var extent = CGRect.zero {
         didSet {
@@ -41,6 +52,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
     private var buffer: CVPixelBuffer?
     private var pixelBuffer: CVPixelBuffer?
     private var pixelBufferPool: CVPixelBufferPool?
+    private var sampleBuffer: CMSampleBuffer?
     private var multiCamSampleBuffer: CMSampleBuffer?
     private(set) var effects: [VideoEffect] = .init()
 
@@ -77,6 +89,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
             guard let buffer = sampleBuffer.imageBuffer else {
                 return
             }
+            self.sampleBuffer = sampleBuffer
             buffer.lockBaseAddress()
             defer {
                 buffer.unlockBaseAddress()
@@ -131,6 +144,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         switch track {
         case 0:
             pixelBuffer = nil
+            sampleBuffer = nil
         case 1:
             multiCamSampleBuffer = nil
         default:

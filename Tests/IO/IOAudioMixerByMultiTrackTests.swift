@@ -18,4 +18,19 @@ final class IOAudioMixerByMultiTrackTests: XCTestCase {
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
     }
+
+    func testInputFormats() {
+        let mixer = IOAudioMixerByMultiTrack()
+        mixer.settings = .init(
+            mainTrack: 0,
+            channels: 1,
+            sampleRate: 44100,
+            tracks: .init()
+        )
+        mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        mixer.append(1, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        let inputFormats = mixer.inputFormats
+        XCTAssertEqual(inputFormats[0]?.sampleRate, 48000)
+        XCTAssertEqual(inputFormats[1]?.sampleRate, 44100)
+    }
 }

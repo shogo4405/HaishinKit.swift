@@ -138,6 +138,12 @@ final class NetStreamSwitcher {
 
 extension NetStreamSwitcher: IOStreamDelegate {
     // MARK: NetStreamDelegate
+    func stream(_ stream: IOStream, track: UInt8, didInput buffer: AVAudioBuffer, when: AVAudioTime) {
+    }
+
+    func stream(_ stream: IOStream, track: UInt8, didInput buffer: CMSampleBuffer) {
+    }
+
     /// Tells the receiver to video codec error occured.
     func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError) {
     }

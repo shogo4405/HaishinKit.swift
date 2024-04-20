@@ -10,6 +10,10 @@ import UIKit
 
 /// The interface an IOStream uses to inform its delegate.
 public protocol IOStreamDelegate: AnyObject {
+    /// Tells the receiver to an audio buffer incoming.
+    func stream(_ stream: IOStream, track: UInt8, didInput buffer: AVAudioBuffer, when: AVAudioTime)
+    /// Tells the receiver to a video buffer incoming.
+    func stream(_ stream: IOStream, track: UInt8, didInput buffer: CMSampleBuffer)
     /// Tells the receiver to video error occured.
     func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError)
     /// Tells the receiver to audio error occured.
@@ -232,14 +236,14 @@ open class IOStream: NSObject {
         }
     }
 
-    /// The audio input format.
-    public var audioInputFormat: AVAudioFormat? {
-        return mixer.audioIO.inputFormat
+    /// The audio input formats.
+    public var audioInputFormats: [UInt8: AVAudioFormat] {
+        return mixer.audioIO.inputFormats
     }
 
-    /// The video input format.
-    public var videoInputFormat: CMVideoFormatDescription? {
-        return mixer.videoIO.inputFormat
+    /// The video input formats.
+    public var videoInputFormats: [UInt8: CMFormatDescription] {
+        return mixer.videoIO.inputFormats
     }
 
     /// Specifies the controls sound.
@@ -490,6 +494,14 @@ open class IOStream: NSObject {
 }
 
 extension IOStream: IOMixerDelegate {
+    func mixer(_ mixer: IOMixer, track: UInt8, didInput audio: AVAudioBuffer, when: AVAudioTime) {
+        delegate?.stream(self, track: track, didInput: audio, when: when)
+    }
+
+    func mixer(_ mixer: IOMixer, track: UInt8, didInput video: CMSampleBuffer) {
+        delegate?.stream(self, track: track, didInput: video)
+    }
+
     // MARK: IOMixerDelegate
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
         observers.forEach { $0.stream(self, didOutput: video) }
