@@ -103,7 +103,7 @@ public class MTHKView: MTKView {
 }
 
 extension MTHKView: IOStreamView {
-    // MARK: NetStreamDrawable
+    // MARK: IOStreamView
     public func attachStream(_ stream: IOStream?) {
         if Thread.isMainThread {
             currentStream = stream
