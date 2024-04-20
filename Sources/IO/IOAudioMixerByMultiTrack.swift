@@ -7,6 +7,9 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
     var delegate: (any IOAudioMixerDelegate)?
     var settings = IOAudioMixerSettings.default {
         didSet {
+            if let inSourceFormat, settings.invalidateAudioFormat(oldValue) {
+                outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(inSourceFormat))
+            }
             for (id, trackSettings) in settings.tracks {
                 tracks[id]?.settings = trackSettings
             }
@@ -28,10 +31,10 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
     }
     private var inSourceFormat: CMFormatDescription? {
         didSet {
-            guard inSourceFormat != oldValue, var audioStreamBasicDescription = inSourceFormat?.audioStreamBasicDescription else {
+            guard inSourceFormat != oldValue else {
                 return
             }
-            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(&audioStreamBasicDescription))
+            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(inSourceFormat))
         }
     }
     private(set) var numberOfTracks = 0

@@ -29,10 +29,10 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
     }
     private var inSourceFormat: CMFormatDescription? {
         didSet {
-            guard inSourceFormat != oldValue, var audioStreamBasicDescription = inSourceFormat?.audioStreamBasicDescription  else {
+            guard inSourceFormat != oldValue else {
                 return
             }
-            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(&audioStreamBasicDescription))
+            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(inSourceFormat))
         }
     }
     private var track: IOAudioMixerTrack<IOAudioMixerBySingleTrack>?

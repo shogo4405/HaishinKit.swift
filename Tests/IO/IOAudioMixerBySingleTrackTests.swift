@@ -5,7 +5,7 @@ import XCTest
 @testable import HaishinKit
 
 final class IOAudioMixerBySingleTrackTests: XCTestCase {
-    func testpKeep44100() {
+    func testKeep44100() {
         let mixer = IOAudioMixerBySingleTrack()
         mixer.settings = .init(
             channels: 1,
@@ -15,6 +15,22 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
+    }
+
+    func test44100to48000() {
+        let mixer = IOAudioMixerBySingleTrack()
+        mixer.settings = .init(
+            channels: 1,
+            sampleRate: 44100
+        )
+        mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
+        XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
+        mixer.settings = .init(
+            channels: 1,
+            sampleRate: 48000
+        )
+        mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
+        XCTAssertEqual(mixer.outputFormat?.sampleRate, 48000)
     }
 
     func testpPassthrough16000_48000() {

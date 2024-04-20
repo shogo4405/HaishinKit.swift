@@ -40,6 +40,11 @@ public struct IOAudioMixerSettings {
         self.sampleRate = sampleRate
     }
 
+    func invalidateAudioFormat(_ oldValue: Self) -> Bool {
+        return !(sampleRate == oldValue.sampleRate &&
+                    channels == oldValue.channels)
+    }
+
     func makeAudioFormat(_ format: AVAudioFormat?) -> AVAudioFormat? {
         guard let format else {
             return nil
@@ -64,7 +69,10 @@ protocol IOAudioMixerConvertible: AnyObject {
 }
 
 extension IOAudioMixerConvertible {
-    static func makeAudioFormat(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioFormat? {
+    static func makeAudioFormat(_ formatDescription: CMFormatDescription?) -> AVAudioFormat? {
+        guard var inSourceFormat = formatDescription?.audioStreamBasicDescription else {
+            return nil
+        }
         if inSourceFormat.mFormatID == kAudioFormatLinearPCM && kLinearPCMFormatFlagIsBigEndian == (inSourceFormat.mFormatFlags & kLinearPCMFormatFlagIsBigEndian) {
             let interleaved = !((inSourceFormat.mFormatFlags & kLinearPCMFormatFlagIsNonInterleaved) == kLinearPCMFormatFlagIsNonInterleaved)
             if let channelLayout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
