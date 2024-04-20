@@ -14,7 +14,6 @@ private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
 ]
 
 final class IOVideoMixer<T: IOVideoMixerDelegate> {
-    var muted = false
     var settings: IOVideoMixerSettings = .default
     weak var delegate: T?
     var context: CIContext = .init() {
@@ -127,11 +126,11 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
                 imageBuffer?.lockBaseAddress()
                 context.render(image, to: imageBuffer ?? buffer)
             }
-            if muted {
+            if settings.isMuted {
                 imageBuffer = pixelBuffer
             }
             delegate?.videoMixer(self, didOutput: imageBuffer ?? buffer, presentationTimeStamp: sampleBuffer.presentationTimeStamp)
-            if !muted {
+            if !settings.isMuted {
                 pixelBuffer = buffer
             }
             delegate?.videoMixer(self, didOutput: sampleBuffer)

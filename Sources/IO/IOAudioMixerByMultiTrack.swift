@@ -146,7 +146,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             let buffer = try outputNode.render(numberOfFrames: numberOfFrames, sampleTime: sampleTime)
             let time = AVAudioTime(sampleTime: sampleTime, atRate: outputNode.format.sampleRate)
             if let anchor, let when = time.extrapolateTime(fromAnchor: anchor) {
-                delegate?.audioMixer(self, didOutput: buffer, when: when)
+                delegate?.audioMixer(self, didOutput: buffer.muted(settings.isMuted), when: when)
                 sampleTime += Int64(numberOfFrames)
             }
         } catch {

@@ -25,8 +25,6 @@ protocol IOAudioUnitDelegate: AnyObject {
 final class IOAudioUnit: IOUnit {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
     weak var mixer: IOMixer?
-
-    var muted = false
     var isMonitoringEnabled = false {
         didSet {
             if isMonitoringEnabled {
@@ -178,7 +176,6 @@ extension IOAudioUnit: IOAudioMixerDelegate {
     }
 
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        audioBuffer.muted(muted)
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.append(audioBuffer, when: when)
         codec.append(audioBuffer, when: when)

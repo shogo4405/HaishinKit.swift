@@ -8,10 +8,8 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     func testpKeep44100() {
         let mixer = IOAudioMixerBySingleTrack()
         mixer.settings = .init(
-            mainTrack: 0,
             channels: 1,
-            sampleRate: 44100,
-            tracks: .init()
+            sampleRate: 44100
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
@@ -22,10 +20,8 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     func testpPassthrough16000_48000() {
         let mixer = IOAudioMixerBySingleTrack()
         mixer.settings = .init(
-            mainTrack: 0,
             channels: 1,
-            sampleRate: 0,
-            tracks: .init()
+            sampleRate: 0
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(16000, numSamples: 1024, channels: 1)!)
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 16000)
@@ -36,10 +32,8 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     func testInputFormats() {
         let mixer = IOAudioMixerBySingleTrack()
         mixer.settings = .init(
-            mainTrack: 0,
             channels: 1,
-            sampleRate: 44100,
-            tracks: .init()
+            sampleRate: 44100
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         let inputFormats = mixer.inputFormats

@@ -31,6 +31,8 @@ public struct IOVideoMixerSettings: Codable {
     public let regionOfInterest: CGRect
     /// The direction of the splitView position.
     public let direction: ImageTransform
+    /// Specifies the isMuted indicies whether freeze video signal or not.
+    public var isMuted = false
     /// Specifies the main track number.
     public var mainTrack: UInt8 = 0
     /// Specifies if effects are always rendered to a new buffer.

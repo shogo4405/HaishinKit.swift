@@ -56,8 +56,8 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
 
 extension IOAudioMixerBySingleTrack: IOAudioMixerTrackDelegate {
     // MARK: IOAudioMixerTrackDelegate
-    func track(_ resampler: IOAudioMixerTrack<IOAudioMixerBySingleTrack>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        delegate?.audioMixer(self, didOutput: audioPCMBuffer, when: when)
+    func track(_ resampler: IOAudioMixerTrack<IOAudioMixerBySingleTrack>, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        delegate?.audioMixer(self, didOutput: buffer.muted(settings.isMuted), when: when)
     }
 
     func track(_ resampler: IOAudioMixerTrack<IOAudioMixerBySingleTrack>, errorOccurred error: IOAudioUnitError) {

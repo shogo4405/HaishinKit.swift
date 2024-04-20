@@ -20,26 +20,24 @@ public struct IOAudioMixerSettings {
     /// The default value.
     public static let `default` = IOAudioMixerSettings()
 
+    /// Specifies the channels of audio output.
+    public let channels: UInt32
+    /// Specifies the sampleRate of audio output.
+    public let sampleRate: Float64
+    /// Specifies the muted that indicates whether the audio output is muted.
+    public var isMuted = false
     /// Specifies the main track number.
     public var mainTrack: UInt8 = 0
-    /// Specifies the channels of audio output.
-    public var channels: UInt32
-    /// Specifies the sampleRate of audio output.
-    public var sampleRate: Float64
     /// Specifies the track settings.
     public var tracks: [UInt8: IOAudioMixerTrackSettings] = .init()
 
     /// Creates a new instance of a settings.
     public init(
-        mainTrack: UInt8 = 0,
         channels: UInt32 = 0,
-        sampleRate: Float64 = 0,
-        tracks: [UInt8: IOAudioMixerTrackSettings] = .init()
+        sampleRate: Float64 = 0
     ) {
-        self.mainTrack = mainTrack
         self.channels = channels
         self.sampleRate = sampleRate
-        self.tracks = tracks
     }
 
     func makeAudioFormat(_ format: AVAudioFormat?) -> AVAudioFormat? {
