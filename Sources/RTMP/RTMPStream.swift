@@ -150,8 +150,18 @@ open class RTMPStream: IOStream {
     }
 
     private struct PausedStatus {
-        let hasAudio: Bool
-        let hasVideo: Bool
+        let audioIsMuted: Bool
+        let videoIsMuted: Bool
+
+        init(_ stream: IOStream) {
+            audioIsMuted = stream.audioMixerSettings.isMuted
+            videoIsMuted = stream.videoMixerSettings.isMuted
+        }
+
+        func restore(_ stream: IOStream) {
+            stream.audioMixerSettings.isMuted = audioIsMuted
+            stream.videoMixerSettings.isMuted = videoIsMuted
+        }
     }
 
     static let defaultID: UInt32 = 0
@@ -208,12 +218,11 @@ open class RTMPStream: IOStream {
                 switch self.readyState {
                 case .publish, .publishing:
                     if self.paused {
-                        self.pausedStatus = .init(hasAudio: self.hasAudio, hasVideo: self.hasVideo)
-                        self.hasAudio = false
-                        self.hasVideo = false
+                        self.pausedStatus = .init(self)
+                        self.audioMixerSettings.isMuted = true
+                        self.videoMixerSettings.isMuted = true
                     } else {
-                        self.hasAudio = self.pausedStatus.hasAudio
-                        self.hasVideo = self.pausedStatus.hasVideo
+                        self.pausedStatus.restore(self)
                     }
                 case .play, .playing:
                     self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
@@ -241,7 +250,7 @@ open class RTMPStream: IOStream {
     private var messages: [RTMPCommandMessage] = []
     private var startedAt = Date()
     private var dispatcher: (any EventDispatcherConvertible)!
-    private var pausedStatus = PausedStatus(hasAudio: false, hasVideo: false)
+    private lazy var pausedStatus = PausedStatus(self)
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var dataTimestamps: [String: Date] = .init()
     private weak var connection: RTMPConnection?

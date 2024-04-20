@@ -43,14 +43,6 @@ final class IOVideoUnit: IOUnit {
             videoMixer.settings = newValue
         }
     }
-    var muted: Bool {
-        get {
-            videoMixer.muted
-        }
-        set {
-            videoMixer.muted = newValue
-        }
-    }
     var settings: VideoCodecSettings {
         get {
             return codec.settings
