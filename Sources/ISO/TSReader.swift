@@ -28,8 +28,8 @@ public class TSReader<T: TSReaderDelegate> {
     }
     private var pmt: [UInt16: TSProgramMap] = [:] {
         didSet {
-            for (_, pmt) in pmt {
-                for data in pmt.elementaryStreamSpecificData {
+            for pmt in pmt.values {
+                for data in pmt.elementaryStreamSpecificData where esSpecData[data.elementaryPID] != data {
                     esSpecData[data.elementaryPID] = data
                 }
             }
@@ -103,11 +103,10 @@ public class TSReader<T: TSReaderDelegate> {
         defer {
             packetizedElementaryStreams[id] = nil
         }
-        if formatDescriptions[id] == nil {
-            formatDescriptions[id] = makeFormatDescription(data, pes: pes)
-            if let formatDescription = formatDescriptions[id] {
-                delegate?.reader(self, id: id, didRead: formatDescription)
-            }
+        let formatDescription = makeFormatDescription(data, pes: pes)
+        if let formatDescription, formatDescriptions[id] != formatDescription {
+            formatDescriptions[id] = formatDescription
+            delegate?.reader(self, id: id, didRead: formatDescription)
         }
         var isNotSync = true
         switch data.streamType {

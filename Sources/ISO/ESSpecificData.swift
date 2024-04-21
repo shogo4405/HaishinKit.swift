@@ -26,7 +26,7 @@ enum ESStreamType: UInt8 {
     }
 }
 
-struct ESSpecificData {
+struct ESSpecificData: Equatable {
     static let fixedHeaderSize: Int = 5
 
     var streamType: ESStreamType = .unspecific
