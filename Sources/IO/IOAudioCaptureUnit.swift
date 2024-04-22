@@ -41,6 +41,9 @@ public final class IOAudioCaptureUnit: IOCaptureUnit {
         self.device = device
         input = try AVCaptureDeviceInput(device: device)
         output = AVCaptureAudioDataOutput()
+        if let input, let output {
+            connection = AVCaptureConnection(inputPorts: input.ports, output: output)
+        }
     }
 
     func setSampleBufferDelegate(_ audioUnit: IOAudioUnit?) {
