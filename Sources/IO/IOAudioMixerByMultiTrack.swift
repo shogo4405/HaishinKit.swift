@@ -24,8 +24,8 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
                 return
             }
             for id in tracks.keys {
-                tracks[id] = .init(id: id, outputFormat: outputFormat)
                 buffers[id] = .init(outputFormat)
+                tracks[id] = .init(id: id, outputFormat: outputFormat)
             }
         }
     }
@@ -37,18 +37,21 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(inSourceFormat))
         }
     }
-    private(set) var numberOfTracks = 0
     private var tracks: [UInt8: IOAudioMixerTrack<IOAudioMixerByMultiTrack>] = [:] {
         didSet {
-            numberOfTracks = tracks.keys.count
+            shouldMix = 1 < tracks.count
             tryToSetupAudioNodes()
         }
     }
-    private var shouldMix: Bool {
-        numberOfTracks > 1
-    }
     private var anchor: AVAudioTime?
-    private var buffers: [UInt8: IOAudioRingBuffer] = [:]
+    private var buffers: [UInt8: IOAudioRingBuffer] = [:] {
+        didSet {
+            if logger.isEnabledFor(level: .trace) {
+                logger.trace(buffers)
+            }
+        }
+    }
+    private var shouldMix = false
     private var mixerNode: MixerNode?
     private var sampleTime: AVAudioFramePosition = IOAudioMixerByMultiTrack.defaultSampleTime
     private var outputNode: OutputNode?
@@ -96,10 +99,10 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
         }
         sampleTime = Self.defaultSampleTime
         let mixerNode = try MixerNode(format: outputFormat)
-        try mixerNode.update(busCount: numberOfTracks, scope: .input)
+        try mixerNode.update(busCount: tracks.count, scope: .input)
         let busCount = try mixerNode.busCount(scope: .input)
-        if busCount > numberOfTracks {
-            for index in numberOfTracks..<busCount {
+        if busCount > tracks.count {
+            for index in tracks.count..<busCount {
                 try mixerNode.enable(bus: UInt8(index), scope: .input, isEnabled: false)
             }
         }
