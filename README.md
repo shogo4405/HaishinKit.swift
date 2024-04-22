@@ -268,12 +268,53 @@ stream.play()
 ```
 
 ## 📓 Settings
-### 📹 Capture
+### 📹 AVCaptureSession
 ```swift
 stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
+```
 
-/// Specifies the video capture settings.
+### 🔊 Audio
+#### [Capture](https://shogo4405.github.io/HaishinKit.swift/Classes/IOAudioCaptureUnit.html)
+Specifies the capture capture settings.
+```swift
+let front = AVCaptureDevice.default(for: .audio)
+stream.attachAudio(front, track: 0) { audioUnit, error in
+}
+```
+
+#### [AudioMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html)
+When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
+
+```swift
+// If you want to mix multiple audio tracks, please enable the Feature flag.
+// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+stream.audioMixerSettings = IOAudioMixerSettings(
+  channels: UInt32 = 1,
+  sampleRate: Float64 = 44100,
+)
+stream.audioMixerSettings.isMuted = false
+stream.audioMixerSettings.mainTrack = 0
+stream.audioMixerSettings.tracks = [
+  0: .init(
+    isMuted: Bool = false,
+    downmix: Bool = true,
+    channelMap: [Int]? = nil
+  )
+]
+```
+
+#### [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)
+```swift
+stream.audioSettings = AudioCodecSettings(
+  bitRate: Int = 64 * 1000,
+)
+```
+
+### 🎥 Video
+#### [Capture](https://shogo4405.github.io/HaishinKit.swift/Classes/IOVideoCaptureUnit.html)
+Specifies the video capture settings.
+```swift
 let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
 stream.attachCamera(front, track: 0) { videoUnit, error in
   videoUnit?.isVideoMirrored = true
@@ -282,19 +323,17 @@ stream.attachCamera(front, track: 0) { videoUnit, error in
 }
 ```
 
-### 🔊 [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)
-When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
+#### [VideoMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoMixerSettings.html)
 ```swift
-stream.audioSettings = AudioCodecSettings(
-  bitRate: Int = 64 * 1000,
-  sampleRate: Float64 = 0,
-  channels: UInt32 = 0,
-  downmix: Bool = false,
-  channelMap: [Int]? = nil
+stream.videoMixerSettings = init(
+    mode: Mode,
+    cornerRadius: CGFloat,
+    regionOfInterest: CGRect,
+    direction: ImageTransform
 )
 ```
 
-### 🎥 [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)
+#### [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)
 ```swift
 stream.videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),

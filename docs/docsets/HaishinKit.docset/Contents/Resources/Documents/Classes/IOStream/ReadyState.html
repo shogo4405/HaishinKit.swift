@@ -17,7 +17,7 @@
     <a title="ReadyState Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../../index.html">HaishinKit 1.7.6 Docs</a> (87% documented)</p>
+        <p><a href="../../index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="../../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -54,10 +54,7 @@
                 <a href="../../Classes/EventDispatcher.html">EventDispatcher</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Classes/IORecorder.html">IORecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Classes/IORecorder/Error.html">– Error</a>
+                <a href="../../Classes/IOAudioCaptureUnit.html">IOAudioCaptureUnit</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Classes/IOStream.html">IOStream</a>
@@ -69,10 +66,13 @@
                 <a href="../../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+                <a href="../../Classes/IOStreamRecorder.html">IOStreamRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
+                <a href="../../Classes/IOStreamRecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Classes/IOStreamVideoAdaptiveBitRateStrategy.html">IOStreamVideoAdaptiveBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
@@ -157,6 +157,15 @@
                 <a href="../../Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
+                <a href="../../Enums/FeatureUtil.html">FeatureUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/FeatureUtil/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Enums/IOAudioMixerError.html">IOAudioMixerError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -186,15 +195,6 @@
             <a href="../../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../../Extensions/AVAudioCommonFormat.html">AVAudioCommonFormat</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Extensions/AudioFormatID.html">AudioFormatID</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
             </ul>
@@ -209,22 +209,19 @@
                 <a href="../../Protocols/IOMuxer.html">IOMuxer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Protocols/IORecorderDelegate.html">IORecorderDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Protocols/IOScreenCaptureUnit.html">IOScreenCaptureUnit</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
+                <a href="../../Protocols/IOStreamObserver.html">IOStreamObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/IOStreamRecorderDelegate.html">IOStreamRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Protocols/IOStreamView.html">IOStreamView</a>
               </li>
               <li class="nav-group-task">
                 <a href="../../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,6 +262,12 @@
                 <a href="../../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
+                <a href="../../Structs/IOAudioMixerSettings.html">IOAudioMixerSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../../Structs/IOAudioMixerTrackSettings.html">IOAudioMixerTrackSettings</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
@@ -303,31 +306,10 @@
                 <a href="../../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
               <li class="nav-group-task">
+                <a href="../../Typealiases.html#/s:10HaishinKit32IOAudioCaptureConfigurationBlocka">IOAudioCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -344,7 +326,7 @@
 
                 </div>
               </div>
-            <p>The enumeration defines the state a ReadyState NetStream is in.</p>
+            <p>The enumeration defines the state an IOStream client is in.</p>
 
           </section>
           <section class="section task-group-section">
@@ -389,7 +371,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream has been created.</p>
+                        <p>IOStream has been created.</p>
 
                       </div>
                       <div class="declaration">
@@ -416,7 +398,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream waiting for new method.</p>
+                        <p>IOStream waiting for new method.</p>
 
                       </div>
                       <div class="declaration">
@@ -443,7 +425,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream play() has been called.</p>
+                        <p>IOStream play() has been called.</p>
 
                       </div>
                       <div class="declaration">
@@ -470,7 +452,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream play and server was accepted as playing</p>
+                        <p>IOStream play and server was accepted as playing</p>
 
                       </div>
                       <div class="declaration">
@@ -497,7 +479,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream publish() has been called</p>
+                        <p>IOStream publish() has been called</p>
 
                       </div>
                       <div class="declaration">
@@ -524,7 +506,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream publish and server accpted as publising.</p>
+                        <p>IOStream publish and server accpted as publising.</p>
 
                       </div>
                       <div class="declaration">
@@ -551,7 +533,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>NetStream close() has been called.</p>
+                        <p>IOStream close() has been called.</p>
 
                       </div>
                       <div class="declaration">
@@ -570,7 +552,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-06)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>AVAudioCommonFormat Extension Reference</title>
+    <title>FeatureUtil Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Extension/AVAudioCommonFormat" class="dashAnchor"></a>
-    <a title="AVAudioCommonFormat Extension Reference"></a>
+    <a name="//apple_ref/swift/Enum/FeatureUtil" class="dashAnchor"></a>
+    <a title="FeatureUtil Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.6 Docs</a> (87% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        AVAudioCommonFormat Extension Reference
+        FeatureUtil Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -54,10 +54,7 @@
                 <a href="../Classes/EventDispatcher.html">EventDispatcher</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/IORecorder.html">IORecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/IORecorder/Error.html">– Error</a>
+                <a href="../Classes/IOAudioCaptureUnit.html">IOAudioCaptureUnit</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/IOStream.html">IOStream</a>
@@ -69,10 +66,13 @@
                 <a href="../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+                <a href="../Classes/IOStreamRecorder.html">IOStreamRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
+                <a href="../Classes/IOStreamRecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamVideoAdaptiveBitRateStrategy.html">IOStreamVideoAdaptiveBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
@@ -157,6 +157,15 @@
                 <a href="../Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/FeatureUtil.html">FeatureUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FeatureUtil/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/IOAudioMixerError.html">IOAudioMixerError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -186,15 +195,6 @@
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Extensions/AVAudioCommonFormat.html">AVAudioCommonFormat</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AudioFormatID.html">AudioFormatID</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
             </ul>
@@ -209,22 +209,19 @@
                 <a href="../Protocols/IOMuxer.html">IOMuxer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/IORecorderDelegate.html">IORecorderDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/IOScreenCaptureUnit.html">IOScreenCaptureUnit</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
+                <a href="../Protocols/IOStreamObserver.html">IOStreamObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOStreamRecorderDelegate.html">IOStreamRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOStreamView.html">IOStreamView</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,6 +262,12 @@
                 <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Structs/IOAudioMixerSettings.html">IOAudioMixerSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/IOAudioMixerTrackSettings.html">IOAudioMixerTrackSettings</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
@@ -303,31 +306,10 @@
                 <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit32IOAudioCaptureConfigurationBlocka">IOAudioCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -336,15 +318,16 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>AVAudioCommonFormat</h1>
+            <h1>FeatureUtil</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">AVAudioCommonFormat</span><span class="p">:</span> <span class="kt">CustomDebugStringConvertible</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">FeatureUtil</span></code></pre>
 
                 </div>
               </div>
-            
+            <p>The util object to get feature flag info.</p>
+
           </section>
           <section class="section task-group-section">
             <div class="task-group">
@@ -352,9 +335,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:s28CustomDebugStringConvertibleP16debugDescriptionSSvp"></a>
-                    <a name="//apple_ref/swift/Property/debugDescription" class="dashAnchor"></a>
-                    <a class="token" href="#/s:s28CustomDebugStringConvertibleP16debugDescriptionSSvp">debugDescription</a>
+                    <a name="/s:10HaishinKit11FeatureUtilO4NameV"></a>
+                    <a name="//apple_ref/swift/Struct/Name" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO4NameV">Name</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -362,13 +345,72 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>A structure that defines the name of a feature.</p>
+
+                        <a href="../Enums/FeatureUtil/Name.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">var</span> <span class="nv">debugDescription</span><span class="p">:</span> <span class="kt">String</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Name</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">ExpressibleByStringLiteral</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit11FeatureUtilO9isEnabled3forSbAC4NameV_tFZ"></a>
+                    <a name="//apple_ref/swift/Method/isEnabled(for:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO9isEnabled3forSbAC4NameV_tFZ">isEnabled(for:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Whether or not a flag is enabled.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">isEnabled</span><span class="p">(</span><span class="k">for</span> <span class="nv">feature</span><span class="p">:</span> <span class="kt"><a href="../Enums/FeatureUtil/Name.html">Name</a></span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit11FeatureUtilO10setEnabled3for02isF0yAC4NameV_SbtFZ"></a>
+                    <a name="//apple_ref/swift/Method/setEnabled(for:isEnabled:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO10setEnabled3for02isF0yAC4NameV_SbtFZ">setEnabled(for:<wbr>isEnabled:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Setter for a feature flag.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="nf">setEnabled</span><span class="p">(</span>
+    <span class="k">for</span> <span class="nv">feature</span><span class="p">:</span> <span class="kt"><a href="../Enums/FeatureUtil/Name.html">Name</a></span><span class="p">,</span>
+    <span class="nv">isEnabled</span><span class="p">:</span> <span class="kt">Bool</span>
+<span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -380,7 +422,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-06)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

@@ -11,14 +11,19 @@ public typealias IOAudioCaptureConfigurationBlock = (IOAudioCaptureUnit?, IOAudi
 public final class IOAudioCaptureUnit: IOCaptureUnit {
     public typealias Output = AVCaptureAudioDataOutput
 
+    /// The track number.
     public let track: UInt8
+    /// The input data to a cupture session.
     public private(set) var input: AVCaptureInput?
+    /// The current audio device object.
     public private(set) var device: AVCaptureDevice?
+    /// The output data to a sample buffers.
     public private(set) var output: Output? {
         didSet {
             oldValue?.setSampleBufferDelegate(nil, queue: nil)
         }
     }
+    /// The connection from a capture input to a capture output.
     public private(set) var connection: AVCaptureConnection?
     private var dataOutput: IOAudioCaptureUnitDataOutput?
 

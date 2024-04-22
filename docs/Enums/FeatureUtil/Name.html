@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>ReadyState Enumeration Reference</title>
+    <title>Name Structure Reference</title>
     <link rel="stylesheet" type="text/css" href="../../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/ReadyState" class="dashAnchor"></a>
-    <a title="ReadyState Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Struct/Name" class="dashAnchor"></a>
+    <a title="Name Structure Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../../index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../../index.html">HaishinKit Reference</a>
         <img id="carat" src="../../img/carat.png" alt=""/>
-        ReadyState Enumeration Reference
+        Name Structure Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -318,15 +318,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>ReadyState</h1>
+            <h1>Name</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ReadyState</span> <span class="p">:</span> <span class="kt">Equatable</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">struct</span> <span class="kt">Name</span> <span class="p">:</span> <span class="kt">RawRepresentable</span><span class="p">,</span> <span class="kt">ExpressibleByStringLiteral</span></code></pre>
 
                 </div>
               </div>
-            <p>The enumeration defines the state an IOStream client is in.</p>
+            <p>A structure that defines the name of a feature.</p>
 
           </section>
           <section class="section task-group-section">
@@ -335,9 +335,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:SQ2eeoiySbx_xtFZ"></a>
-                    <a name="//apple_ref/swift/Method/==(_:_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:SQ2eeoiySbx_xtFZ">==(_:<wbr>_:<wbr>)</a>
+                    <a name="/s:SY8RawValueQa"></a>
+                    <a name="//apple_ref/swift/Alias/RawValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:SY8RawValueQa">RawValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -351,7 +351,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kd">func</span> <span class="o">==</span> <span class="p">(</span><span class="nv">lhs</span><span class="p">:</span> <span class="kt"><a href="../../Classes/IOStream.html">IOStream</a></span><span class="o">.</span><span class="kt">ReadyState</span><span class="p">,</span> <span class="nv">rhs</span><span class="p">:</span> <span class="kt"><a href="../../Classes/IOStream.html">IOStream</a></span><span class="o">.</span><span class="kt">ReadyState</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Bool</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">RawValue</span> <span class="o">=</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -361,9 +361,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO11initializedyA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/initialized" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO11initializedyA2EmF">initialized</a>
+                    <a name="/s:s26ExpressibleByStringLiteralP0cD4TypeQa"></a>
+                    <a name="//apple_ref/swift/Alias/StringLiteralType" class="dashAnchor"></a>
+                    <a class="token" href="#/s:s26ExpressibleByStringLiteralP0cD4TypeQa">StringLiteralType</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -371,14 +371,13 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>IOStream has been created.</p>
-
+                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">initialized</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">typealias</span> <span class="kt">StringLiteralType</span> <span class="o">=</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -388,9 +387,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO4openyA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/open" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO4openyA2EmF">open</a>
+                    <a name="/s:10HaishinKit11FeatureUtilO4NameV21multiTrackAudioMixingAEvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/multiTrackAudioMixing" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO4NameV21multiTrackAudioMixingAEvpZ">multiTrackAudioMixing</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -398,14 +397,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>IOStream waiting for new method.</p>
+                        <p>This is a feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="kd">open</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">multiTrackAudioMixing</span><span class="p">:</span> <span class="kt">Name</span></code></pre>
 
                         </div>
                       </div>
@@ -415,9 +414,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO4playyA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/play" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO4playyA2EmF">play</a>
+                    <a name="/s:10HaishinKit11FeatureUtilO4NameV8rawValueSSvp"></a>
+                    <a name="//apple_ref/swift/Property/rawValue" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO4NameV8rawValueSSvp">rawValue</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -425,14 +424,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>IOStream play() has been called.</p>
+                        <p>The raw type value.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">play</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">rawValue</span><span class="p">:</span> <span class="kt">String</span></code></pre>
 
                         </div>
                       </div>
@@ -442,9 +441,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO7playingyA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/playing" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO7playingyA2EmF">playing</a>
+                    <a name="/s:10HaishinKit11FeatureUtilO4NameV8rawValueAESS_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(rawValue:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO4NameV8rawValueAESS_tcfc">init(rawValue:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -452,14 +451,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>IOStream play and server was accepted as playing</p>
+                        <p>Create a feature name by rawValue.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">playing</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">rawValue</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -469,9 +468,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO7publishyA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/publish" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO7publishyA2EmF">publish</a>
+                    <a name="/s:10HaishinKit11FeatureUtilO4NameV13stringLiteralAESS_tcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(stringLiteral:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO4NameV13stringLiteralAESS_tcfc">init(stringLiteral:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -479,68 +478,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>IOStream publish() has been called</p>
+                        <p>Create a feature name by stringLiteral.</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">publish</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO10publishingyAeA7IOMuxer_p_tcAEmF"></a>
-                    <a name="//apple_ref/swift/Element/publishing(muxer:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO10publishingyAeA7IOMuxer_p_tcAEmF">publishing(muxer:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>IOStream publish and server accpted as publising.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">publishing</span><span class="p">(</span><span class="nv">muxer</span><span class="p">:</span> <span class="n">any</span> <span class="kt"><a href="../../Protocols/IOMuxer.html">IOMuxer</a></span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8IOStreamC10ReadyStateO6closedyA2EmF"></a>
-                    <a name="//apple_ref/swift/Element/closed" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8IOStreamC10ReadyStateO6closedyA2EmF">closed</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>IOStream close() has been called.</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">closed</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="n">stringLiteral</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">String</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>

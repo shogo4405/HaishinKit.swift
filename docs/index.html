@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.7.6 Docs</a> (87% documented)</p>
+        <p><a href="index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -53,10 +53,7 @@
                 <a href="Classes/EventDispatcher.html">EventDispatcher</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/IORecorder.html">IORecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/IORecorder/Error.html">– Error</a>
+                <a href="Classes/IOAudioCaptureUnit.html">IOAudioCaptureUnit</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/IOStream.html">IOStream</a>
@@ -68,10 +65,13 @@
                 <a href="Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+                <a href="Classes/IOStreamRecorder.html">IOStreamRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
+                <a href="Classes/IOStreamRecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IOStreamVideoAdaptiveBitRateStrategy.html">IOStreamVideoAdaptiveBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
@@ -156,6 +156,15 @@
                 <a href="Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
+                <a href="Enums/FeatureUtil.html">FeatureUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/FeatureUtil/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/IOAudioMixerError.html">IOAudioMixerError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -185,15 +194,6 @@
             <a href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Extensions/AVAudioCommonFormat.html">AVAudioCommonFormat</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/AudioFormatID.html">AudioFormatID</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
             </ul>
@@ -208,22 +208,19 @@
                 <a href="Protocols/IOMuxer.html">IOMuxer</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/IORecorderDelegate.html">IORecorderDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Protocols/IOScreenCaptureUnit.html">IOScreenCaptureUnit</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
+                <a href="Protocols/IOStreamObserver.html">IOStreamObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/IOStreamRecorderDelegate.html">IOStreamRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/IOStreamView.html">IOStreamView</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -264,6 +261,12 @@
                 <a href="Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
+                <a href="Structs/IOAudioMixerSettings.html">IOAudioMixerSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/IOAudioMixerTrackSettings.html">IOAudioMixerTrackSettings</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
@@ -302,31 +305,10 @@
                 <a href="Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
               <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit32IOAudioCaptureConfigurationBlocka">IOAudioCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -465,14 +447,14 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <span class="n">stream</span><span class="o">.</span><span class="n">isMultiCamSessionEnabled</span> <span class="o">=</span> <span class="kc">true</span>
 
 <span class="k">let</span> <span class="nv">back</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">,</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">,</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
   <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
     <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
   <span class="p">}</span>
 <span class="p">}</span>
 
 <span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
   <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">true</span>
   <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
     <span class="n">logger</span><span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
@@ -551,6 +533,11 @@ open HaishinKit.xcodeproj
 </tr>
 </thead><tbody>
 <tr>
+<td style="text-align: center">1.8.0+</td>
+<td style="text-align: center">15.3+</td>
+<td style="text-align: center">5.9+</td>
+</tr>
+<tr>
 <td style="text-align: center">1.7.0+</td>
 <td style="text-align: center">15.0+</td>
 <td style="text-align: center">5.9+</td>
@@ -559,11 +546,6 @@ open HaishinKit.xcodeproj
 <td style="text-align: center">1.6.0+</td>
 <td style="text-align: center">15.0+</td>
 <td style="text-align: center">5.8+</td>
-</tr>
-<tr>
-<td style="text-align: center">1.5.0+</td>
-<td style="text-align: center">14.0+</td>
-<td style="text-align: center">5.7+</td>
 </tr>
 </tbody></table>
 <h3 id='os' class='heading'>OS</h3>
@@ -580,15 +562,15 @@ open HaishinKit.xcodeproj
 </thead><tbody>
 <tr>
 <td style="text-align: left">HaishinKit</td>
-<td style="text-align: center">12.0+</td>
-<td style="text-align: center">12.0+</td>
-<td style="text-align: center">10.13+</td>
+<td style="text-align: center">13.0+</td>
+<td style="text-align: center">13.0+</td>
+<td style="text-align: center">10.15+</td>
 <td style="text-align: center">1.0+</td>
 <td style="text-align: center">-</td>
 </tr>
 <tr>
 <td style="text-align: left">SRTHaishinKit</td>
-<td style="text-align: center">12.0+</td>
+<td style="text-align: center">13.0+</td>
 <td style="text-align: center">-</td>
 <td style="text-align: center">13.0+</td>
 <td style="text-align: center">-</td>
@@ -644,11 +626,13 @@ open HaishinKit.xcodeproj
 <pre class="highlight swift"><code><span class="k">let</span> <span class="nv">connection</span> <span class="o">=</span> <span class="kt">RTMPConnection</span><span class="p">()</span>
 <span class="k">let</span> <span class="nv">stream</span> <span class="o">=</span> <span class="kt">RTMPStream</span><span class="p">(</span><span class="nv">connection</span><span class="p">:</span> <span class="n">connection</span><span class="p">)</span>
 
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
-  <span class="c1">// print(error)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
+    <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+  <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">),</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">),</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
   <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
     <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
   <span class="p">}</span>
@@ -689,7 +673,7 @@ open HaishinKit.xcodeproj
 <span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">))</span> <span class="p">{</span> <span class="n">error</span> <span class="k">in</span>
     <span class="c1">// print(error)</span>
 <span class="p">}</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">),</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">),</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
   <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
     <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
   <span class="p">}</span>
@@ -720,63 +704,101 @@ open HaishinKit.xcodeproj
 <span class="n">stream</span><span class="o">.</span><span class="nf">play</span><span class="p">()</span>
 </code></pre>
 <h2 id='settings' class='heading'>📓 Settings</h2>
-<h3 id='capture' class='heading'>📹 Capture</h3>
+<h3 id='avcapturesession' class='heading'>📹 AVCaptureSession</h3>
 <pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">frameRate</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">stream</span><span class="o">.</span><span class="n">sessionPreset</span> <span class="o">=</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span>
+</code></pre>
+<h3 id='audio' class='heading'>🔊 Audio</h3>
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-classes-ioaudiocaptureunit-html-capture-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Classes/IOAudioCaptureUnit.html">Capture</a></h4>
 
-<span class="c1">/// Specifies the video capture settings.</span>
-<span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">channel</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+<p>Specifies the capture capture settings.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">audio</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachAudio</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">audioUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
+<span class="p">}</span>
+</code></pre>
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-ioaudiomixersettings-html-audiomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html">AudioMixerSettings</a></h4>
+
+<p>When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.</p>
+<pre class="highlight swift"><code><span class="c1">// If you want to mix multiple audio tracks, please enable the Feature flag.</span>
+<span class="c1">// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span> <span class="o">=</span> <span class="kt">IOAudioMixerSettings</span><span class="p">(</span>
+  <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">44100</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">isMuted</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">mainTrack</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="mi">0</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
+    <span class="nv">isMuted</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span><span class="p">,</span>
+    <span class="nv">downmix</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nv">channelMap</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span>
+  <span class="p">)</span>
+<span class="p">]</span>
+</code></pre>
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-audiocodecsettings-html-audiocodecsettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html">AudioCodecSettings</a></h4>
+<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">audioSettings</span> <span class="o">=</span> <span class="kt">AudioCodecSettings</span><span class="p">(</span>
+  <span class="nv">bitRate</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre>
+<h3 id='video' class='heading'>🎥 Video</h3>
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-classes-iovideocaptureunit-html-capture-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Classes/IOVideoCaptureUnit.html">Capture</a></h4>
+
+<p>Specifies the video capture settings.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
   <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">true</span>
   <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">preferredVideoStabilizationMode</span> <span class="o">=</span> <span class="o">.</span><span class="n">standard</span>
   <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">colorFormat</span> <span class="o">=</span> <span class="n">kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange</span>
 <span class="p">}</span>
 </code></pre>
-<h3 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-audiocodecsettings-html-audiocodecsettings-a' class='heading'>🔊 <a href="https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html">AudioCodecSettings</a></h3>
-
-<p>When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.</p>
-<pre class="highlight plaintext"><code>stream.audioSettings = AudioCodecSettings(
-  bitRate: Int = 64 * 1000,
-  sampleRate: Float64 = 0,
-  channels: UInt32 = 0,
-  downmix: Bool = false,
-  channelMap: [Int]? = nil
-)
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-videomixersettings-html-videomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/VideoMixerSettings.html">VideoMixerSettings</a></h4>
+<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span> <span class="o">=</span> <span class="nf">init</span><span class="p">(</span>
+    <span class="nv">mode</span><span class="p">:</span> <span class="kt">Mode</span><span class="p">,</span>
+    <span class="nv">cornerRadius</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span>
+    <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">,</span>
+    <span class="nv">direction</span><span class="p">:</span> <span class="kt">ImageTransform</span>
+<span class="p">)</span>
 </code></pre>
-<h3 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-videocodecsettings-html-videocodecsettings-a' class='heading'>🎥 <a href="https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html">VideoCodecSettings</a></h3>
-<pre class="highlight plaintext"><code>stream.videoSettings = VideoCodecSettings(
-  videoSize: .init(width: 854, height: 480),
-  profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
-  bitRate: 640 * 1000,
-  maxKeyFrameIntervalDuration: 2,
-  scalingMode: .trim,
-  bitRateMode: .average,
-  allowFrameReordering: nil,
-  isHardwareEncoderEnabled: true
-)
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-videocodecsettings-html-videocodecsettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html">VideoCodecSettings</a></h4>
+<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="kt">VideoCodecSettings</span><span class="p">(</span>
+  <span class="nv">videoSize</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">854</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">480</span><span class="p">),</span>
+  <span class="nv">profileLevel</span><span class="p">:</span> <span class="n">kVTProfileLevel_H264_Baseline_3_1</span> <span class="k">as</span> <span class="kt">String</span><span class="p">,</span>
+  <span class="nv">bitRate</span><span class="p">:</span> <span class="mi">640</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
+  <span class="nv">maxKeyFrameIntervalDuration</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="nv">scalingMode</span><span class="p">:</span> <span class="o">.</span><span class="n">trim</span><span class="p">,</span>
+  <span class="nv">bitRateMode</span><span class="p">:</span> <span class="o">.</span><span class="n">average</span><span class="p">,</span>
+  <span class="nv">allowFrameReordering</span><span class="p">:</span> <span class="kc">nil</span><span class="p">,</span>
+  <span class="nv">isHardwareEncoderEnabled</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">)</span>
 </code></pre>
 <h3 id='️-recording' class='heading'>⏺️ Recording</h3>
-<pre class="highlight plaintext"><code>// Specifies the recording settings. 0" means the same of input.
-stream.startRecording(self, settings: [
-  AVMediaType.audio: [
-    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-    AVSampleRateKey: 0,
-    AVNumberOfChannelsKey: 0,
-    // AVEncoderBitRateKey: 128000,
-  ],
-  AVMediaType.video: [
-    AVVideoCodecKey: AVVideoCodecH264,
-    AVVideoHeightKey: 0,
-    AVVideoWidthKey: 0,
-    /*
+<pre class="highlight swift"><code><span class="c1">// Specifies the recording settings. 0" means the same of input.</span>
+<span class="k">var</span> <span class="nv">recorder</span> <span class="o">=</span> <span class="kt">IOStreamRecorder</span><span class="p">()</span>
+<span class="n">stream</span><span class="o">.</span><span class="nf">addObserver</span><span class="p">(</span><span class="n">recorder</span><span class="p">)</span>
+
+<span class="n">recorder</span><span class="o">.</span><span class="n">settings</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="kt">AVMediaType</span><span class="o">.</span><span class="nv">audio</span><span class="p">:</span> <span class="p">[</span>
+    <span class="kt">AVFormatIDKey</span><span class="p">:</span> <span class="kt">Int</span><span class="p">(</span><span class="n">kAudioFormatMPEG4AAC</span><span class="p">),</span>
+    <span class="kt">AVSampleRateKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="kt">AVNumberOfChannelsKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="c1">// AVEncoderBitRateKey: 128000,</span>
+  <span class="p">],</span>
+  <span class="kt">AVMediaType</span><span class="o">.</span><span class="nv">video</span><span class="p">:</span> <span class="p">[</span>
+    <span class="kt">AVVideoCodecKey</span><span class="p">:</span> <span class="kt">AVVideoCodecH264</span><span class="p">,</span>
+    <span class="kt">AVVideoHeightKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="kt">AVVideoWidthKey</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="cm">/*
     AVVideoCompressionPropertiesKey: [
       AVVideoMaxKeyFrameIntervalDurationKey: 2,
       AVVideoProfileLevelKey: AVVideoProfileLevelH264Baseline30,
       AVVideoAverageBitRateKey: 512000
     ]
-    */
-  ]
-])
+    */</span>
+  <span class="p">]</span>
+<span class="p">]</span>
+
+<span class="n">recorder</span><span class="o">.</span><span class="nf">startRunning</span><span class="p">()</span>
+<span class="c1">// recorder.stopRunning()</span>
 </code></pre>
 <h2 id='license' class='heading'>📜 License</h2>
 
@@ -785,7 +807,7 @@ stream.startRecording(self, settings: [
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-06)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

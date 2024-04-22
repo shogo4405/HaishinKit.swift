@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>IOUIScreenCaptureUnit Class Reference</title>
+    <title>IOStreamView Protocol Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,11 +13,11 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Class/IOUIScreenCaptureUnit" class="dashAnchor"></a>
-    <a title="IOUIScreenCaptureUnit Class Reference"></a>
+    <a name="//apple_ref/swift/Protocol/IOStreamView" class="dashAnchor"></a>
+    <a title="IOStreamView Protocol Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="../index.html">HaishinKit 1.7.6 Docs</a> (87% documented)</p>
+        <p><a href="../index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="../search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -29,7 +29,7 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit Reference</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        IOUIScreenCaptureUnit Class Reference
+        IOStreamView Protocol Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -54,10 +54,7 @@
                 <a href="../Classes/EventDispatcher.html">EventDispatcher</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/IORecorder.html">IORecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Classes/IORecorder/Error.html">– Error</a>
+                <a href="../Classes/IOAudioCaptureUnit.html">IOAudioCaptureUnit</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/IOStream.html">IOStream</a>
@@ -69,10 +66,13 @@
                 <a href="../Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+                <a href="../Classes/IOStreamRecorder.html">IOStreamRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
+                <a href="../Classes/IOStreamRecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Classes/IOStreamVideoAdaptiveBitRateStrategy.html">IOStreamVideoAdaptiveBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
@@ -157,6 +157,15 @@
                 <a href="../Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Enums/FeatureUtil.html">FeatureUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/FeatureUtil/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Enums/IOAudioMixerError.html">IOAudioMixerError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -186,15 +195,6 @@
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="../Extensions/AVAudioCommonFormat.html">AVAudioCommonFormat</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AudioFormatID.html">AudioFormatID</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
             </ul>
@@ -209,22 +209,19 @@
                 <a href="../Protocols/IOMuxer.html">IOMuxer</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/IORecorderDelegate.html">IORecorderDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/IOScreenCaptureUnit.html">IOScreenCaptureUnit</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
+                <a href="../Protocols/IOStreamObserver.html">IOStreamObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOStreamRecorderDelegate.html">IOStreamRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Protocols/IOStreamView.html">IOStreamView</a>
               </li>
               <li class="nav-group-task">
                 <a href="../Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,6 +262,12 @@
                 <a href="../Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Structs/IOAudioMixerSettings.html">IOAudioMixerSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="../Structs/IOAudioMixerTrackSettings.html">IOAudioMixerTrackSettings</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
@@ -303,31 +306,10 @@
                 <a href="../Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
               <li class="nav-group-task">
+                <a href="../Typealiases.html#/s:10HaishinKit32IOAudioCaptureConfigurationBlocka">IOAudioCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="../Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="../Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -336,14 +318,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>IOUIScreenCaptureUnit</h1>
+            <h1>IOStreamView</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">protocol</span> <span class="kt">IOStreamView</span> <span class="p">:</span> <span class="kt">AnyObject</span></code></pre>
+
                 </div>
               </div>
-            <p>The IOUIScreenCaptureUnit class captures the UIView.</p>
+            <p>An interface that manages the IOStream content on the screen.</p>
 
           </section>
           <section class="section task-group-section">
@@ -352,9 +335,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/enabledScale" class="dashAnchor"></a>
-                    <a class="token" href="#/">enabledScale</a>
+                    <a name="/s:10HaishinKit12IOStreamViewP16videoOrientationSo014AVCaptureVideoF0Vvp"></a>
+                    <a name="//apple_ref/swift/Property/videoOrientation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit12IOStreamViewP16videoOrientationSo014AVCaptureVideoF0Vvp">videoOrientation</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -362,18 +345,26 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the boolean value that indicates whether the snapshot image downsize or not.</p>
+                        <p>Specifies the orientation of AVCaptureVideoOrientation.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">var</span> <span class="nv">videoOrientation</span><span class="p">:</span> <span class="kt">AVCaptureVideoOrientation</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/afterScreenUpdates" class="dashAnchor"></a>
-                    <a class="token" href="#/">afterScreenUpdates</a>
+                    <a name="/s:10HaishinKit12IOStreamViewP28isCaptureVideoPreviewEnabledSbvp"></a>
+                    <a name="//apple_ref/swift/Property/isCaptureVideoPreviewEnabled" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit12IOStreamViewP28isCaptureVideoPreviewEnabledSbvp">isCaptureVideoPreviewEnabled</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -381,18 +372,29 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the boolean value that indicates whether the snapshot should be rendered after recent changes have been incorporated.</p>
+                        <p>Specifies the capture video preview enabled or not.</p>
+
+<p>Use AVCaptureVideoPreviewLayer as an internal implementation. You can verify that there is no delay in cinema mode. However, you cannot confirm the filter state.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">@available(tvOS 17.0, *)</span>
+<span class="k">var</span> <span class="nv">isCaptureVideoPreviewEnabled</span><span class="p">:</span> <span class="kt">Bool</span> <span class="p">{</span> <span class="k">get</span> <span class="k">set</span> <span class="p">}</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/preferredFramesPerSecond" class="dashAnchor"></a>
-                    <a class="token" href="#/">preferredFramesPerSecond</a>
+                    <a name="/s:10HaishinKit12IOStreamViewP12attachStreamyyAA0C0CSgF"></a>
+                    <a name="//apple_ref/swift/Method/attachStream(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit12IOStreamViewP12attachStreamyyAA0C0CSgF">attachStream(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -400,18 +402,26 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the number of shaphot  that must pass before the display link notifies the target again.</p>
+                        <p>Attaches a drawable to a new NetStream object.</p>
 
                       </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">attachStream</span><span class="p">(</span><span class="n">_</span> <span class="nv">stream</span><span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span><span class="p">?)</span></code></pre>
+
+                        </div>
+                      </div>
                     </section>
                   </div>
                 </li>
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/attributes" class="dashAnchor"></a>
-                    <a class="token" href="#/">attributes</a>
+                    <a name="/s:10HaishinKit12IOStreamViewP7enqueueyySo17CMSampleBufferRefaSgF"></a>
+                    <a name="//apple_ref/swift/Method/enqueue(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit12IOStreamViewP7enqueueyySo17CMSampleBufferRefaSgF">enqueue(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -419,149 +429,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the CVPixelBufferPool&rsquo;s attrivutes.</p>
+                        <p>Enqueue a CMSampleBuffer? to draw.</p>
 
                       </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
-                    <a class="token" href="#/">delegate</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Property/isRunning" class="dashAnchor"></a>
-                    <a class="token" href="#/">isRunning</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/init(shared:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">init(shared:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Creates an IOUIScreenCaptureUnit object to capture UIApplication.</p>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">func</span> <span class="nf">enqueue</span><span class="p">(</span><span class="n">_</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">?)</span></code></pre>
 
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/init(viewToCapture:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">init(viewToCapture:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Create an IOUIScreenCaptureUnit object to capture UIView.</p>
-
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/onScreen(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/">onScreen(_:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/Running"></a>
-                <a name="//apple_ref/swift/Section/Running" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/Running"></a>
-                  <h3 class="section-name"><span>Running</span>
-</h3>
-                </div>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/startRunning()" class="dashAnchor"></a>
-                    <a class="token" href="#/">startRunning()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Method/stopRunning()" class="dashAnchor"></a>
-                    <a class="token" href="#/">stopRunning()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
+                        </div>
                       </div>
                     </section>
                   </div>
@@ -571,7 +448,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-06)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

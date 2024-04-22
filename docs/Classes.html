@@ -17,7 +17,7 @@
     <a title="Classes  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.7.6 Docs</a> (87% documented)</p>
+        <p><a href="index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -54,10 +54,7 @@
                 <a href="Classes/EventDispatcher.html">EventDispatcher</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/IORecorder.html">IORecorder</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Classes/IORecorder/Error.html">– Error</a>
+                <a href="Classes/IOAudioCaptureUnit.html">IOAudioCaptureUnit</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/IOStream.html">IOStream</a>
@@ -69,10 +66,13 @@
                 <a href="Classes/IOStreamBitRateStrategy.html">IOStreamBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+                <a href="Classes/IOStreamRecorder.html">IOStreamRecorder</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/IOUIScreenCaptureUnit.html">IOUIScreenCaptureUnit</a>
+                <a href="Classes/IOStreamRecorder/Error.html">– Error</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/IOStreamVideoAdaptiveBitRateStrategy.html">IOStreamVideoAdaptiveBitRateStrategy</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
@@ -157,6 +157,15 @@
                 <a href="Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
+                <a href="Enums/FeatureUtil.html">FeatureUtil</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/FeatureUtil/Name.html">– Name</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Enums/IOAudioMixerError.html">IOAudioMixerError</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -186,15 +195,6 @@
             <a href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
               <li class="nav-group-task">
-                <a href="Extensions/AVAudioCommonFormat.html">AVAudioCommonFormat</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/AudioFormatID.html">AudioFormatID</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Extensions/AudioStreamBasicDescription.html">AudioStreamBasicDescription</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
             </ul>
@@ -209,22 +209,19 @@
                 <a href="Protocols/IOMuxer.html">IOMuxer</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/IORecorderDelegate.html">IORecorderDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Protocols/IOScreenCaptureUnit.html">IOScreenCaptureUnit</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/IOStreamDelegate.html">IOStreamDelegate</a>
               </li>
               <li class="nav-group-task">
-                <a href="Protocols/IOStreamDrawable.html">IOStreamDrawable</a>
+                <a href="Protocols/IOStreamObserver.html">IOStreamObserver</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/IOStreamRecorderDelegate.html">IOStreamRecorderDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/IOStreamView.html">IOStreamView</a>
               </li>
               <li class="nav-group-task">
                 <a href="Protocols/RTMPConnectionDelegate.html">RTMPConnectionDelegate</a>
@@ -265,6 +262,12 @@
                 <a href="Structs/AudioCodecSettings.html">AudioCodecSettings</a>
               </li>
               <li class="nav-group-task">
+                <a href="Structs/IOAudioMixerSettings.html">IOAudioMixerSettings</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/IOAudioMixerTrackSettings.html">IOAudioMixerTrackSettings</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Structs/IOStreamBitRateStats.html">IOStreamBitRateStats</a>
               </li>
               <li class="nav-group-task">
@@ -303,31 +306,10 @@
                 <a href="Typealiases.html#/s:10HaishinKit8ASObjecta">ASObject</a>
               </li>
               <li class="nav-group-task">
+                <a href="Typealiases.html#/s:10HaishinKit32IOAudioCaptureConfigurationBlocka">IOAudioCaptureConfigurationBlock</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Typealiases.html#/s:10HaishinKit32IOVideoCaptureConfigurationBlocka">IOVideoCaptureConfigurationBlock</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit23MultiCamCaptureSettingsa">MultiCamCaptureSettings</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit15NetBitRateStatsa">NetBitRateStats</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit18NetBitRateStrategya">NetBitRateStrategy</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit29NetBitRateStrategyConvertiblea">NetBitRateStrategyConvertible</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit9NetStreama">NetStream</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit17NetStreamDelegatea">NetStreamDelegate</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit17NetStreamDrawablea">NetStreamDrawable</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Typealiases.html#/s:10HaishinKit31VideoAdaptiveNetBitRateStrategya">VideoAdaptiveNetBitRateStrategy</a>
               </li>
             </ul>
           </li>
@@ -346,9 +328,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit10IORecorderC"></a>
-                    <a name="//apple_ref/swift/Class/IORecorder" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit10IORecorderC">IORecorder</a>
+                    <a name="/s:10HaishinKit18IOAudioCaptureUnitC"></a>
+                    <a name="//apple_ref/swift/Class/IOAudioCaptureUnit" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit18IOAudioCaptureUnitC">IOAudioCaptureUnit</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -356,16 +338,16 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The IORecorder class represents video and audio recorder.</p>
+                        <p>An object that provides the interface to control the AVCaptureDevice&rsquo;s transport behavior.</p>
 
-                        <a href="Classes/IORecorder.html" class="slightly-smaller">See more</a>
+                        <a href="Classes/IOAudioCaptureUnit.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IORecorder</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">IORecorder</span><span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">@available(tvOS 17.0, *)</span>
+<span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IOAudioCaptureUnit</span> <span class="p">:</span> <span class="kt">IOCaptureUnit</span></code></pre>
 
                         </div>
                       </div>
@@ -394,8 +376,6 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">open</span> <span class="kd">class</span> <span class="kt">IOStream</span> <span class="p">:</span> <span class="kt">NSObject</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">IOStream</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOScreenCaptureUnitDelegate.html">IOScreenCaptureUnitDelegate</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">IOStream</span><span class="p">:</span> <span class="kt">SCStreamOutput</span></code></pre>
 
                         </div>
                       </div>
@@ -433,9 +413,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit39IOStreamVideoAdaptiveNetBitRateStrategyC"></a>
-                    <a name="//apple_ref/swift/Class/IOStreamVideoAdaptiveNetBitRateStrategy" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit39IOStreamVideoAdaptiveNetBitRateStrategyC">IOStreamVideoAdaptiveNetBitRateStrategy</a>
+                    <a name="/s:10HaishinKit36IOStreamVideoAdaptiveBitRateStrategyC"></a>
+                    <a name="//apple_ref/swift/Class/IOStreamVideoAdaptiveBitRateStrategy" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit36IOStreamVideoAdaptiveBitRateStrategyC">IOStreamVideoAdaptiveBitRateStrategy</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -443,15 +423,15 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The IOStreamVideoAdaptiveNetBitRateStrategy class provides an algorithm that focuses on video bitrate control.</p>
+                        <p>The IOStreamVideoAdaptiveBitRateStrategy class provides an algorithm that focuses on video bitrate control.</p>
 
-                        <a href="Classes/IOStreamVideoAdaptiveNetBitRateStrategy.html" class="slightly-smaller">See more</a>
+                        <a href="Classes/IOStreamVideoAdaptiveBitRateStrategy.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IOStreamVideoAdaptiveNetBitRateStrategy</span> <span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a></span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IOStreamVideoAdaptiveBitRateStrategy</span> <span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamBitRateStrategyConvertible.html">IOStreamBitRateStrategyConvertible</a></span></code></pre>
 
                         </div>
                       </div>
@@ -461,9 +441,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/"></a>
-                    <a name="//apple_ref/swift/Class/IOUIScreenCaptureUnit" class="dashAnchor"></a>
-                    <a class="token" href="#/">IOUIScreenCaptureUnit</a>
+                    <a name="/s:10HaishinKit16IOStreamRecorderC"></a>
+                    <a name="//apple_ref/swift/Class/IOStreamRecorder" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit16IOStreamRecorderC">IOStreamRecorder</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -471,15 +451,18 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The IOUIScreenCaptureUnit class captures the UIView.</p>
+                        <p>The IOStreamRecorder class represents video and audio recorder.</p>
 
-                        <a href="Classes/IOUIScreenCaptureUnit.html" class="slightly-smaller">See more</a>
+                        <a href="Classes/IOStreamRecorder.html" class="slightly-smaller">See more</a>
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">IOStreamRecorder</span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">IOStreamRecorder</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamObserver.html">IOStreamObserver</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">IOStreamRecorder</span><span class="p">:</span> <span class="kt"><a href="Protocols/Running.html">Running</a></span></code></pre>
+
                         </div>
                       </div>
                     </section>
@@ -536,7 +519,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">MTHKView</span> <span class="p">:</span> <span class="kt">MTKView</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MTHKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamDrawable.html">IOStreamDrawable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MTHKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamView.html">IOStreamView</a></span></code></pre>
 <pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">MTHKView</span><span class="p">:</span> <span class="kt">MTKViewDelegate</span></code></pre>
 
                         </div>
@@ -593,7 +576,7 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">class</span> <span class="kt">PiPHKView</span> <span class="p">:</span> <span class="kt">NSView</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PiPHKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamDrawable.html">IOStreamDrawable</a></span></code></pre>
+<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">PiPHKView</span><span class="p">:</span> <span class="kt"><a href="Protocols/IOStreamView.html">IOStreamView</a></span></code></pre>
 
                         </div>
                       </div>
@@ -1112,7 +1095,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-06)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
