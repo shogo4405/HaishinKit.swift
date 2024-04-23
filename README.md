@@ -272,6 +272,11 @@ stream.play()
 ```swift
 stream.frameRate = 30
 stream.sessionPreset = AVCaptureSession.Preset.medium
+
+// Do not call beginConfiguration() and commitConfiguration() internally within the scope of the method, as they are called internally.
+stream.configuration { session in
+  session.automaticallyConfiguresApplicationAudioSession = true
+}
 ```
 
 ### 🔊 Audio
@@ -284,15 +289,18 @@ stream.attachAudio(front, track: 0) { audioUnit, error in
 ```
 
 #### [AudioMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html)
-When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
-
+If you want to mix multiple audio tracks, please enable the Feature flag.
 ```swift
-// If you want to mix multiple audio tracks, please enable the Feature flag.
-// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+```
+
+When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
+```swift
 stream.audioMixerSettings = IOAudioMixerSettings(
-  channels: UInt32 = 1,
-  sampleRate: Float64 = 44100,
+  channels: UInt32 = 0, // Setting the value to 0 will be the same as the value specified in mainTrack.
+  sampleRate: Float64 = 44100, // Setting the value to 0 will be the same as the value specified in mainTrack.
 )
+
 stream.audioMixerSettings.isMuted = false
 stream.audioMixerSettings.mainTrack = 0
 stream.audioMixerSettings.tracks = [
@@ -323,13 +331,13 @@ stream.attachCamera(front, track: 0) { videoUnit, error in
 }
 ```
 
-#### [VideoMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoMixerSettings.html)
+#### [VideoMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOVideoMixerSettings.html)
 ```swift
 stream.videoMixerSettings = init(
-    mode: Mode,
-    cornerRadius: CGFloat,
-    regionOfInterest: CGRect,
-    direction: ImageTransform
+  mode: Mode,
+  cornerRadius: CGFloat,
+  regionOfInterest: CGRect,
+  direction: ImageTransform
 )
 ```
 

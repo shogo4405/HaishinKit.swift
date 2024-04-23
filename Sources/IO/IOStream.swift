@@ -422,7 +422,7 @@ open class IOStream: NSObject {
 
     /// Configurations for the AVCaptureSession.
     @available(tvOS 17.0, *)
-    func configuration(_ lambda: (_ session: AVCaptureSession) throws -> Void) rethrows {
+    public func configuration(_ lambda: (_ session: AVCaptureSession) throws -> Void) rethrows {
         try mixer.session.configuration(lambda)
     }
 
