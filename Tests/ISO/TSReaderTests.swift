@@ -13,7 +13,7 @@ final class TSReaderTests: XCTestCase {
         do {
             let readerDelegate = TSReaderAudioCodec()
             let fileHandle = try FileHandle(forReadingFrom: url)
-            let reader = TSReader()
+            let reader = TSReader<TSReaderAudioCodec>()
             reader.delegate = readerDelegate
             _ = reader.read(fileHandle.readDataToEndOfFile())
         } catch {
@@ -30,11 +30,11 @@ private final class TSReaderAudioCodec: TSReaderDelegate, AudioCodecDelegate {
         audioCodec.startRunning()
     }
 
-    func reader(_ reader: HaishinKit.TSReader, id: UInt16, didRead formatDescription: CMFormatDescription) {
+    func reader(_ reader: TSReader<TSReaderAudioCodec>, id: UInt16, didRead formatDescription: CMFormatDescription) {
         audioCodec.inputFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
     }
 
-    func reader(_ reader: HaishinKit.TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
+    func reader(_ reader: TSReader<TSReaderAudioCodec>, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
         if sampleBuffer.formatDescription?.mediaType == .audio {
             audioCodec.append(sampleBuffer)
         }

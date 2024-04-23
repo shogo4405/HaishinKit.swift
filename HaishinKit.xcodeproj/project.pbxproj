@@ -227,11 +227,8 @@
 		BCA3A5252BC4ED220083BBB1 /* RTMPTimestamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA3A5242BC4ED220083BBB1 /* RTMPTimestamp.swift */; };
 		BCA3A5272BC507880083BBB1 /* RTMPTimestampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */; };
 		BCA7C24F2A91AA0500882D85 /* IOStreamRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */; };
-		BCAD0C18263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = BCAD0C16263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 */; };
-		BCAD0C19263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v in Resources */ = {isa = PBXBuildFile; fileRef = BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
 		BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
-		BCC1A7212648540800661156 /* RPReplay_Final1620580691.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */; };
 		BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72A264FAC1800661156 /* ESSpecificData.swift */; };
 		BCC4F4152AD6FC1100954EF5 /* IOTellyUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC4F4142AD6FC1100954EF5 /* IOTellyUnit.swift */; };
 		BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
@@ -647,11 +644,8 @@
 		BCA3A5242BC4ED220083BBB1 /* RTMPTimestamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPTimestamp.swift; sourceTree = "<group>"; };
 		BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPTimestampTests.swift; sourceTree = "<group>"; };
 		BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamRecorderTests.swift; sourceTree = "<group>"; };
-		BCAD0C16263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "SampleVideo_360x240_5mb@m4v.m3u8"; sourceTree = "<group>"; };
-		BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "SampleVideo_360x240_5mb@m4v"; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSField.swift; sourceTree = "<group>"; };
 		BCB9773E2621812800C9A649 /* AVCFormatStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStream.swift; sourceTree = "<group>"; };
-		BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = RPReplay_Final1620580691.mp4; sourceTree = "<group>"; };
 		BCC1A72A264FAC1800661156 /* ESSpecificData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESSpecificData.swift; sourceTree = "<group>"; };
 		BCC4F4142AD6FC1100954EF5 /* IOTellyUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOTellyUnit.swift; sourceTree = "<group>"; };
 		BCC9E9082636FF7400948774 /* DataBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataBufferTests.swift; sourceTree = "<group>"; };
@@ -871,13 +865,10 @@
 		291C2AD11CE9FF3E006F042B /* Asset */ = {
 			isa = PBXGroup;
 			children = (
-				BCC1A7202648540800661156 /* RPReplay_Final1620580691.mp4 */,
 				29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */,
 				294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */,
 				29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */,
 				29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */,
-				BCAD0C17263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v */,
-				BCAD0C16263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 */,
 				BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */,
 			);
 			path = Asset;
@@ -1592,14 +1583,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCC1A7212648540800661156 /* RPReplay_Final1620580691.mp4 in Resources */,
 				BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */,
-				BCAD0C19263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v in Resources */,
 				294637AA1EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv in Resources */,
 				29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */,
 				29798E761CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.m3u8 in Resources */,
 				29798E771CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.mp4 in Resources */,
-				BCAD0C18263ED67F00ADFB80 /* SampleVideo_360x240_5mb@m4v.m3u8 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
