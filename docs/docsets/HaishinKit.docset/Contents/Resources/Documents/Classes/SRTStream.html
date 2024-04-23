@@ -163,9 +163,6 @@
                 <a href="../Enums/FeatureUtil/Name.html">– Name</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/IOAudioMixerError.html">IOAudioMixerError</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -194,6 +191,9 @@
           <li class="nav-group-name">
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/s:13SRTHaishinKit8SRTMuxerC">SRTMuxer</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
@@ -323,8 +323,6 @@
                 <div class="language">
                   
                   <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">SRTStream</span> <span class="p">:</span> <span class="kt"><a href="../Classes/IOStream.html">IOStream</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">SRTStream</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TSWriterDelegate.html">TSWriterDelegate</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">SRTStream</span><span class="p">:</span> <span class="kt"><a href="../Protocols/TSReaderDelegate.html">TSReaderDelegate</a></span></code></pre>
 
                 </div>
               </div>
@@ -347,7 +345,7 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Creates a new SRTStream object.</p>
+                        <p>Creates a new stream object.</p>
 
                       </div>
                       <div class="declaration">
@@ -470,140 +468,10 @@
                 </li>
               </ul>
             </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/TSWriterDelegate"></a>
-                <a name="//apple_ref/swift/Section/TSWriterDelegate" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/TSWriterDelegate"></a>
-                  <h3 class="section-name"><span>TSWriterDelegate</span>
-</h3>
-                </div>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SRTHaishinKit9SRTStreamC6writer_9didOutputy07HaishinB08TSWriterC_10Foundation4DataVtF"></a>
-                    <a name="//apple_ref/swift/Method/writer(_:didOutput:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit9SRTStreamC6writer_9didOutputy07HaishinB08TSWriterC_10Foundation4DataVtF">writer(_:<wbr>didOutput:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">writer</span><span class="p">(</span><span class="n">_</span> <span class="nv">writer</span><span class="p">:</span> <span class="kt"><a href="../Classes/TSWriter.html">TSWriter</a></span><span class="p">,</span> <span class="n">didOutput</span> <span class="nv">data</span><span class="p">:</span> <span class="kt">Data</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SRTHaishinKit9SRTStreamC6writer_19didRotateFileHandley07HaishinB08TSWriterC_So6CMTimeatF"></a>
-                    <a name="//apple_ref/swift/Method/writer(_:didRotateFileHandle:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit9SRTStreamC6writer_19didRotateFileHandley07HaishinB08TSWriterC_So6CMTimeatF">writer(_:<wbr>didRotateFileHandle:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">writer</span><span class="p">(</span><span class="n">_</span> <span class="nv">writer</span><span class="p">:</span> <span class="kt"><a href="../Classes/TSWriter.html">TSWriter</a></span><span class="p">,</span> <span class="n">didRotateFileHandle</span> <span class="nv">timestamp</span><span class="p">:</span> <span class="kt">CMTime</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="task-group">
-              <div class="task-name-container">
-                <a name="/TSReaderDelegate"></a>
-                <a name="//apple_ref/swift/Section/TSReaderDelegate" class="dashAnchor"></a>
-                <div class="section-name-container">
-                  <a class="section-name-link" href="#/TSReaderDelegate"></a>
-                  <h3 class="section-name"><span>TSReaderDelegate</span>
-</h3>
-                </div>
-              </div>
-              <ul>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SRTHaishinKit9SRTStreamC6reader_2id7didReady07HaishinB08TSReaderC_s6UInt16VSo22CMFormatDescriptionRefatF"></a>
-                    <a name="//apple_ref/swift/Method/reader(_:id:didRead:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit9SRTStreamC6reader_2id7didReady07HaishinB08TSReaderC_s6UInt16VSo22CMFormatDescriptionRefatF">reader(_:<wbr>id:<wbr>didRead:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">reader</span><span class="p">(</span><span class="n">_</span> <span class="nv">reader</span><span class="p">:</span> <span class="kt"><a href="../Classes/TSReader.html">TSReader</a></span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">didRead</span> <span class="nv">formatDescription</span><span class="p">:</span> <span class="kt">CMFormatDescription</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:13SRTHaishinKit9SRTStreamC6reader_2id7didReady07HaishinB08TSReaderC_s6UInt16VSo17CMSampleBufferRefatF"></a>
-                    <a name="//apple_ref/swift/Method/reader(_:id:didRead:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit9SRTStreamC6reader_2id7didReady07HaishinB08TSReaderC_s6UInt16VSo17CMSampleBufferRefatF">reader(_:<wbr>id:<wbr>didRead:<wbr>)</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">reader</span><span class="p">(</span><span class="n">_</span> <span class="nv">reader</span><span class="p">:</span> <span class="kt"><a href="../Classes/TSReader.html">TSReader</a></span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="kt">UInt16</span><span class="p">,</span> <span class="n">didRead</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-              </ul>
-            </div>
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-29)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

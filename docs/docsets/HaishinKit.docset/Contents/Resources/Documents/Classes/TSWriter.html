@@ -163,9 +163,6 @@
                 <a href="../Enums/FeatureUtil/Name.html">– Name</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/IOAudioMixerError.html">IOAudioMixerError</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -194,6 +191,9 @@
           <li class="nav-group-name">
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/s:13SRTHaishinKit8SRTMuxerC">SRTMuxer</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
@@ -322,9 +322,7 @@
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TSWriter</span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/IOMuxer.html">IOMuxer</a></span></code></pre>
-<pre class="highlight swift"><code><span class="kd">extension</span> <span class="kt">TSWriter</span><span class="p">:</span> <span class="kt"><a href="../Protocols/Running.html">Running</a></span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="kt">TSWriter</span><span class="o">&lt;</span><span class="kt">T</span><span class="o">&gt;</span> <span class="k">where</span> <span class="kt">T</span> <span class="p">:</span> <span class="kt"><a href="../Protocols/TSWriterDelegate.html">TSWriterDelegate</a></span></code></pre>
 
                 </div>
               </div>
@@ -337,144 +335,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8TSWriterC13defaultPATPIDs6UInt16VvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultPATPID" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC13defaultPATPIDs6UInt16VvpZ">defaultPATPID</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultPATPID</span><span class="p">:</span> <span class="kt">UInt16</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC13defaultPMTPIDs6UInt16VvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultPMTPID" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC13defaultPMTPIDs6UInt16VvpZ">defaultPMTPID</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultPMTPID</span><span class="p">:</span> <span class="kt">UInt16</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC15defaultVideoPIDs6UInt16VvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultVideoPID" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC15defaultVideoPIDs6UInt16VvpZ">defaultVideoPID</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultVideoPID</span><span class="p">:</span> <span class="kt">UInt16</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC15defaultAudioPIDs6UInt16VvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultAudioPID" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC15defaultAudioPIDs6UInt16VvpZ">defaultAudioPID</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultAudioPID</span><span class="p">:</span> <span class="kt">UInt16</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC22defaultSegmentDurationSdvpZ"></a>
-                    <a name="//apple_ref/swift/Variable/defaultSegmentDuration" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC22defaultSegmentDurationSdvpZ">defaultSegmentDuration</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>Undocumented</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">defaultSegmentDuration</span><span class="p">:</span> <span class="kt">Double</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC8delegateAA0C8Delegate_pSgvp"></a>
+                    <a name="/s:10HaishinKit8TSWriterC8delegatexSgvp"></a>
                     <a name="//apple_ref/swift/Property/delegate" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC8delegateAA0C8Delegate_pSgvp">delegate</a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC8delegatexSgvp">delegate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -489,34 +352,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="p">(</span><span class="n">any</span> <span class="kt"><a href="../Protocols/TSWriterDelegate.html">TSWriterDelegate</a></span><span class="p">)?</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit8TSWriterC9isRunningAA6AtomicVySbGvp"></a>
-                    <a name="//apple_ref/swift/Property/isRunning" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC9isRunningAA6AtomicVySbGvp">isRunning</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>This instance is running to process(true) or not(false).</p>
-
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">internal(set)</span> <span class="k">var</span> <span class="nv">isRunning</span><span class="p">:</span> <span class="kt"><a href="../Structs/Atomic.html">Atomic</a></span><span class="o">&lt;</span><span class="kt">Bool</span><span class="o">&gt;</span> <span class="p">{</span> <span class="k">get</span> <span class="p">}</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">weak</span> <span class="k">var</span> <span class="nv">delegate</span><span class="p">:</span> <span class="kt">T</span><span class="p">?</span></code></pre>
 
                         </div>
                       </div>
@@ -553,9 +389,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7IOMuxerP11audioFormatSo07AVAudioE0CSgvp"></a>
+                    <a name="/s:10HaishinKit8TSWriterC11audioFormatSo07AVAudioE0CSgvp"></a>
                     <a name="//apple_ref/swift/Property/audioFormat" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7IOMuxerP11audioFormatSo07AVAudioE0CSgvp">audioFormat</a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC11audioFormatSo07AVAudioE0CSgvp">audioFormat</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -563,7 +399,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -579,9 +416,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7IOMuxerP11videoFormatSo22CMFormatDescriptionRefaSgvp"></a>
+                    <a name="/s:10HaishinKit8TSWriterC11videoFormatSo22CMFormatDescriptionRefaSgvp"></a>
                     <a name="//apple_ref/swift/Property/videoFormat" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7IOMuxerP11videoFormatSo22CMFormatDescriptionRefaSgvp">videoFormat</a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC11videoFormatSo22CMFormatDescriptionRefaSgvp">videoFormat</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -589,7 +426,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Undocumented</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -605,9 +443,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit8TSWriterC15segmentDurationACSd_tcfc"></a>
+                    <a name="/s:10HaishinKit8TSWriterC15segmentDurationACyxGSd_tcfc"></a>
                     <a name="//apple_ref/swift/Method/init(segmentDuration:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit8TSWriterC15segmentDurationACSd_tcfc">init(segmentDuration:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC15segmentDurationACyxGSd_tcfc">init(segmentDuration:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -622,7 +460,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">segmentDuration</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="kt">TSWriter</span><span class="o">.</span><span class="n"><a href="../Classes/TSWriter.html#/s:10HaishinKit8TSWriterC22defaultSegmentDurationSdvpZ">defaultSegmentDuration</a></span><span class="p">)</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span><span class="nv">segmentDuration</span><span class="p">:</span> <span class="kt">Double</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
@@ -632,9 +470,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7IOMuxerP6append_4whenySo13AVAudioBufferC_So0F4TimeCtF"></a>
+                    <a name="/s:10HaishinKit8TSWriterC6append_4whenySo13AVAudioBufferC_So0F4TimeCtF"></a>
                     <a name="//apple_ref/swift/Method/append(_:when:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7IOMuxerP6append_4whenySo13AVAudioBufferC_So0F4TimeCtF">append(_:<wbr>when:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC6append_4whenySo13AVAudioBufferC_So0F4TimeCtF">append(_:<wbr>when:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -642,7 +480,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Appends a buffer.</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -658,9 +497,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7IOMuxerP6appendyySo17CMSampleBufferRefaF"></a>
+                    <a name="/s:10HaishinKit8TSWriterC6appendyySo17CMSampleBufferRefaF"></a>
                     <a name="//apple_ref/swift/Method/append(_:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7IOMuxerP6appendyySo17CMSampleBufferRefaF">append(_:<wbr>)</a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC6appendyySo17CMSampleBufferRefaF">append(_:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -668,7 +507,8 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
+                        <p>Appends a buffer.</p>
+
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
@@ -684,9 +524,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit7RunningP05startC0yyF"></a>
-                    <a name="//apple_ref/swift/Method/startRunning()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7RunningP05startC0yyF">startRunning()</a>
+                    <a name="/s:10HaishinKit8TSWriterC5clearyyF"></a>
+                    <a name="//apple_ref/swift/Method/clear()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit8TSWriterC5clearyyF">clear()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -694,39 +534,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">startRunning</span><span class="p">()</span></code></pre>
+                        <p>Clears the reader object for new transport stream.</p>
 
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit7RunningP04stopC0yyF"></a>
-                    <a name="//apple_ref/swift/Method/stopRunning()" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit7RunningP04stopC0yyF">stopRunning()</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">stopRunning</span><span class="p">()</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">clear</span><span class="p">()</span></code></pre>
 
                         </div>
                       </div>
@@ -738,7 +553,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-29)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>

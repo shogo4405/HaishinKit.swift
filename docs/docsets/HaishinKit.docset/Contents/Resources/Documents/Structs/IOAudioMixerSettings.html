@@ -163,9 +163,6 @@
                 <a href="../Enums/FeatureUtil/Name.html">– Name</a>
               </li>
               <li class="nav-group-task">
-                <a href="../Enums/IOAudioMixerError.html">IOAudioMixerError</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="../Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -194,6 +191,9 @@
           <li class="nav-group-name">
             <a href="../Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="../Extensions.html#/s:13SRTHaishinKit8SRTMuxerC">SRTMuxer</a>
+              </li>
               <li class="nav-group-task">
                 <a href="../Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
@@ -362,9 +362,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit20IOAudioMixerSettingsV8channelss6UInt32Vvp"></a>
-                    <a name="//apple_ref/swift/Property/channels" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit20IOAudioMixerSettingsV8channelss6UInt32Vvp">channels</a>
+                    <a name="/s:10HaishinKit20IOAudioMixerSettingsV17maximumSampleRateSdvpZ"></a>
+                    <a name="//apple_ref/swift/Variable/maximumSampleRate" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit20IOAudioMixerSettingsV17maximumSampleRateSdvpZ">maximumSampleRate</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -372,14 +372,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>Specifies the channels of audio output.</p>
+                        <p>Maximum sampleRate supported by the system</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">static</span> <span class="k">let</span> <span class="nv">maximumSampleRate</span><span class="p">:</span> <span class="kt">Float64</span></code></pre>
 
                         </div>
                       </div>
@@ -407,6 +407,33 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit20IOAudioMixerSettingsV8channelss6UInt32Vvp"></a>
+                    <a name="//apple_ref/swift/Property/channels" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit20IOAudioMixerSettingsV8channelss6UInt32Vvp">channels</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Specifies the channels of audio output.</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="k">let</span> <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span></code></pre>
 
                         </div>
                       </div>
@@ -497,9 +524,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit20IOAudioMixerSettingsV8channels10sampleRateACs6UInt32V_Sdtcfc"></a>
-                    <a name="//apple_ref/swift/Method/init(channels:sampleRate:)" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit20IOAudioMixerSettingsV8channels10sampleRateACs6UInt32V_Sdtcfc">init(channels:<wbr>sampleRate:<wbr>)</a>
+                    <a name="/s:10HaishinKit20IOAudioMixerSettingsV10sampleRate8channelsACSd_s6UInt32Vtcfc"></a>
+                    <a name="//apple_ref/swift/Method/init(sampleRate:channels:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit20IOAudioMixerSettingsV10sampleRate8channelsACSd_s6UInt32Vtcfc">init(sampleRate:<wbr>channels:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -515,8 +542,8 @@
                         <div class="language">
                           <p class="aside-title">Swift</p>
                           <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">(</span>
-    <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-    <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="p">)</span></code></pre>
 
                         </div>
@@ -529,7 +556,7 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-29)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
