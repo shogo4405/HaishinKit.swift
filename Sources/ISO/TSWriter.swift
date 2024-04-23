@@ -8,21 +8,20 @@ import SwiftPMSupport
 
 /// The interface an MPEG-2 TS (Transport Stream) writer uses to inform its delegates.
 public protocol TSWriterDelegate: AnyObject {
-    func writer(_ writer: TSWriter, didRotateFileHandle timestamp: CMTime)
-    func writer(_ writer: TSWriter, didOutput data: Data)
+    func writer(_ writer: TSWriter<Self>, didRotateFileHandle timestamp: CMTime)
+    func writer(_ writer: TSWriter<Self>, didOutput data: Data)
 }
 
+private let kTSWriter_defaultPATPID: UInt16 = 0
+private let kTSWriter_defaultPMTPID: UInt16 = 4095
+private let kTSWriter_defaultVideoPID: UInt16 = 256
+private let kTSWriter_defaultAudioPID: UInt16 = 257
+private let kTSWriter_defaultSegmentDuration: Double = 2
+
 /// The TSWriter class represents writes MPEG-2 transport stream data.
-public final class TSWriter {
-    public static let defaultPATPID: UInt16 = 0
-    public static let defaultPMTPID: UInt16 = 4095
-    public static let defaultVideoPID: UInt16 = 256
-    public static let defaultAudioPID: UInt16 = 257
-
-    public static let defaultSegmentDuration: Double = 2
-
+public final class TSWriter<T: TSWriterDelegate> {
     /// The delegate instance.
-    public weak var delegate: (any TSWriterDelegate)?
+    public weak var delegate: T?
     /// This instance is running to process(true) or not(false).
     public internal(set) var isRunning: Atomic<Bool> = .init(false)
     /// The exptected medias = [.video, .audio].
@@ -35,7 +34,7 @@ public final class TSWriter {
             }
             var data = ESSpecificData()
             data.streamType = .adtsAac
-            data.elementaryPID = TSWriter.defaultAudioPID
+            data.elementaryPID = kTSWriter_defaultAudioPID
             PMT.elementaryStreamSpecificData.append(data)
             audioContinuityCounter = 0
             audioConfig = AudioSpecificConfig(formatDescription: audioFormat.formatDescription)
@@ -51,7 +50,7 @@ public final class TSWriter {
             }
             var data = ESSpecificData()
             data.streamType = .h264
-            data.elementaryPID = TSWriter.defaultVideoPID
+            data.elementaryPID = kTSWriter_defaultVideoPID
             PMT.elementaryStreamSpecificData.append(data)
             videoContinuityCounter = 0
             videoConfig = AVCDecoderConfigurationRecord(data: avcC)
@@ -60,14 +59,14 @@ public final class TSWriter {
 
     var audioContinuityCounter: UInt8 = 0
     var videoContinuityCounter: UInt8 = 0
-    var PCRPID: UInt16 = TSWriter.defaultVideoPID
+    var PCRPID: UInt16 = kTSWriter_defaultVideoPID
     var rotatedTimestamp = CMTime.zero
-    var segmentDuration: Double = TSWriter.defaultSegmentDuration
+    var segmentDuration: Double = kTSWriter_defaultSegmentDuration
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.TSWriter.lock")
 
     private(set) var PAT: TSProgramAssociation = {
         let PAT: TSProgramAssociation = .init()
-        PAT.programs = [1: TSWriter.defaultPMTPID]
+        PAT.programs = [1: kTSWriter_defaultPMTPID]
         return PAT
     }()
     private(set) var PMT: TSProgramMap = .init()
@@ -100,7 +99,7 @@ public final class TSWriter {
         return false
     }
 
-    public init(segmentDuration: Double = TSWriter.defaultSegmentDuration) {
+    public init(segmentDuration: Double = 2.0) {
         self.segmentDuration = segmentDuration
     }
 
@@ -111,13 +110,13 @@ public final class TSWriter {
         }
 
         switch PID {
-        case TSWriter.defaultAudioPID:
+        case kTSWriter_defaultAudioPID:
             guard audioTimestamp == .invalid else { break }
             audioTimestamp = presentationTimeStamp
             if PCRPID == PID {
                 PCRTimestamp = presentationTimeStamp
             }
-        case TSWriter.defaultVideoPID:
+        case kTSWriter_defaultVideoPID:
             guard videoTimestamp == .invalid else { break }
             videoTimestamp = presentationTimeStamp
             if PCRPID == PID {
@@ -132,7 +131,7 @@ public final class TSWriter {
                 count: count,
                 presentationTimeStamp: presentationTimeStamp,
                 decodeTimeStamp: decodeTimeStamp,
-                timestamp: PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestamp,
+                timestamp: PID == kTSWriter_defaultVideoPID ? videoTimestamp : audioTimestamp,
                 config: streamID == 192 ? audioConfig : videoConfig,
                 randomAccessIndicator: randomAccessIndicator) else {
             return
@@ -149,10 +148,10 @@ public final class TSWriter {
         var bytes = Data()
         for var packet in packets {
             switch PID {
-            case TSWriter.defaultAudioPID:
+            case kTSWriter_defaultAudioPID:
                 packet.continuityCounter = audioContinuityCounter
                 audioContinuityCounter = (audioContinuityCounter + 1) & 0x0f
-            case TSWriter.defaultVideoPID:
+            case kTSWriter_defaultVideoPID:
                 packet.continuityCounter = videoContinuityCounter
                 videoContinuityCounter = (videoContinuityCounter + 1) & 0x0f
             default:
@@ -182,8 +181,8 @@ public final class TSWriter {
         PMT.PCRPID = PCRPID
         var bytes = Data()
         var packets: [TSPacket] = []
-        packets.append(contentsOf: PAT.arrayOfPackets(TSWriter.defaultPATPID))
-        packets.append(contentsOf: PMT.arrayOfPackets(TSWriter.defaultPMTPID))
+        packets.append(contentsOf: PAT.arrayOfPackets(kTSWriter_defaultPATPID))
+        packets.append(contentsOf: PMT.arrayOfPackets(kTSWriter_defaultPMTPID))
         for packet in packets {
             bytes.append(packet.data)
         }
@@ -204,7 +203,7 @@ public final class TSWriter {
         var PCR: UInt64?
         let duration: Double = timestamp.seconds - PCRTimestamp.seconds
         if PCRPID == PID && 0.02 <= duration {
-            PCR = UInt64((timestamp.seconds - (PID == TSWriter.defaultVideoPID ? videoTimestamp : audioTimestamp).seconds) * TSTimestamp.resolution)
+            PCR = UInt64((timestamp.seconds - (PID == kTSWriter_defaultVideoPID ? videoTimestamp : audioTimestamp).seconds) * TSTimestamp.resolution)
             PCRTimestamp = timestamp
         }
         var packets: [TSPacket] = []
@@ -222,7 +221,7 @@ extension TSWriter: IOMuxer {
             return
         }
         writeSampleBuffer(
-            TSWriter.defaultAudioPID,
+            kTSWriter_defaultAudioPID,
             streamID: 192,
             bytes: audioBuffer.data.assumingMemoryBound(to: UInt8.self),
             count: audioBuffer.byteLength,
@@ -245,7 +244,7 @@ extension TSWriter: IOMuxer {
             return
         }
         writeSampleBuffer(
-            TSWriter.defaultVideoPID,
+            kTSWriter_defaultVideoPID,
             streamID: 224,
             bytes: UnsafeRawPointer(bytes).bindMemory(to: UInt8.self, capacity: length),
             count: UInt32(length),
@@ -270,9 +269,9 @@ extension TSWriter: Running {
         }
         audioContinuityCounter = 0
         videoContinuityCounter = 0
-        PCRPID = TSWriter.defaultVideoPID
+        PCRPID = kTSWriter_defaultVideoPID
         PAT.programs.removeAll()
-        PAT.programs = [1: TSWriter.defaultPMTPID]
+        PAT.programs = [1: kTSWriter_defaultPMTPID]
         PMT = TSProgramMap()
         audioConfig = nil
         videoConfig = nil

@@ -4,14 +4,14 @@ import Logboard
 
 /// The interface an MPEG-2 TS (Transport Stream) reader uses to inform its delegates.
 public protocol TSReaderDelegate: AnyObject {
-    func reader(_ reader: TSReader, id: UInt16, didRead formatDescription: CMFormatDescription)
-    func reader(_ reader: TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer)
+    func reader(_ reader: TSReader<Self>, id: UInt16, didRead formatDescription: CMFormatDescription)
+    func reader(_ reader: TSReader<Self>, id: UInt16, didRead sampleBuffer: CMSampleBuffer)
 }
 
 /// The TSReader class represents read MPEG-2 transport stream data.
-public class TSReader {
+public class TSReader<T: TSReaderDelegate> {
     /// Specifies the delegate object.
-    public weak var delegate: (any TSReaderDelegate)?
+    public weak var delegate: T?
 
     private var pat: TSProgramAssociation? {
         didSet {

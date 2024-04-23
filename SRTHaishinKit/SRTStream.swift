@@ -10,12 +10,12 @@ public final class SRTStream: IOStream {
     private var keyValueObservations: [NSKeyValueObservation] = []
     private weak var connection: SRTConnection?
     private lazy var writer = {
-        var writer = TSWriter()
+        var writer = TSWriter<SRTStream>()
         writer.delegate = self
         return writer
     }()
     private lazy var reader = {
-        var reader = TSReader()
+        var reader = TSReader<SRTStream>()
         reader.delegate = self
         return reader
     }()
@@ -121,20 +121,20 @@ public final class SRTStream: IOStream {
 
 extension SRTStream: TSWriterDelegate {
     // MARK: TSWriterDelegate
-    public func writer(_ writer: TSWriter, didOutput data: Data) {
+    public func writer(_ writer: TSWriter<SRTStream>, didOutput data: Data) {
         connection?.socket?.doOutput(data: data)
     }
 
-    public func writer(_ writer: TSWriter, didRotateFileHandle timestamp: CMTime) {
+    public func writer(_ writer: TSWriter<SRTStream>, didRotateFileHandle timestamp: CMTime) {
     }
 }
 
 extension SRTStream: TSReaderDelegate {
     // MARK: TSReaderDelegate
-    public func reader(_ reader: TSReader, id: UInt16, didRead formatDescription: CMFormatDescription) {
+    public func reader(_ reader: TSReader<SRTStream>, id: UInt16, didRead formatDescription: CMFormatDescription) {
     }
 
-    public func reader(_ reader: TSReader, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
+    public func reader(_ reader: TSReader<SRTStream>, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
         append(sampleBuffer)
     }
 }
