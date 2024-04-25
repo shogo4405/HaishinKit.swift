@@ -17,7 +17,6 @@ final class CameraIngestViewController: NSViewController {
     @IBOutlet private weak var audioPopUpButton: NSPopUpButton!
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
     @IBOutlet private weak var urlField: NSTextField!
-    @IBOutlet private weak var segmentedControl: NSSegmentedControl!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
     private var stream: IOStream {
         return netStreamSwitcher.stream
@@ -58,7 +57,6 @@ final class CameraIngestViewController: NSViewController {
         } else {
             // Stop
             sender.title = "Publish"
-            segmentedControl.isEnabled = true
             netStreamSwitcher.close()
         }
     }

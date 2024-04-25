@@ -1,14 +1,12 @@
 import AVFAudio
 import Foundation
 
-/// The AudioCodecSettings class  specifying audio compression settings.
+/// Constraints on the audio codec  compression settings.
 public struct AudioCodecSettings: Codable {
     /// The default value.
     public static let `default` = AudioCodecSettings()
     /// Maximum number of channels supported by the system
     public static let maximumNumberOfChannels: UInt32 = 2
-    /// Maximum sampleRate supported by the system
-    public static let maximumSampleRate: Float64 = 48000.0
 
     /// The type of the AudioCodec supports format.
     enum Format: Codable {
@@ -124,16 +122,21 @@ public struct AudioCodecSettings: Codable {
     }
 
     /// Specifies the bitRate of audio output.
-    public var bitRate: Int
+    public var bitRate: Int = 64 * 1000
+
+    /// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.
+    public var downmix = true
+
+    /// Specifies the map of the output to input channels.
+    /// ## Example code:
+    /// ```
+    /// // If you want to use the 3rd and 4th channels from a 4-channel input source for a 2-channel output, you would specify it like this.
+    /// channelMap = [2, 3]
+    /// ```
+    public var channelMap: [Int]?
+
     /// Specifies the output format.
     var format: AudioCodecSettings.Format = .aac
-
-    /// Create an new AudioCodecSettings instance. A value of 0 will use the same value as the input source.
-    public init(
-        bitRate: Int = 64 * 1000
-    ) {
-        self.bitRate = bitRate
-    }
 
     func apply(_ converter: AVAudioConverter?, oldValue: AudioCodecSettings?) {
         guard let converter else {
@@ -148,5 +151,23 @@ public struct AudioCodecSettings: Codable {
             })?.intValue ?? bitRate
             converter.bitRate = min(maxAvailableBitRate, max(minAvailableBitRate, bitRate))
         }
+
+        if downmix != oldValue?.downmix {
+            converter.downmix = downmix
+        }
+
+        if channelMap != oldValue?.channelMap, let newChannelMap = validatedChannelMap(converter) {
+            converter.channelMap = newChannelMap
+        }
+    }
+
+    private func validatedChannelMap(_ converter: AVAudioConverter) -> [NSNumber]? {
+        guard let channelMap, channelMap.count == converter.outputFormat.channelCount else {
+            return nil
+        }
+        for inputChannel in channelMap where converter.inputFormat.channelCount <= inputChannel {
+            return nil
+        }
+        return channelMap.map { NSNumber(value: $0) }
     }
 }

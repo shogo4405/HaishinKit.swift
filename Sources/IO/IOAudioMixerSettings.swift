@@ -5,11 +5,15 @@ import Foundation
 public struct IOAudioMixerSettings {
     /// The default value.
     public static let `default` = IOAudioMixerSettings()
+    /// Maximum sampleRate supported by the system
+    public static let maximumSampleRate: Float64 = 48000.0
 
-    /// Specifies the channels of audio output.
-    public let channels: UInt32
+    static let commonFormat: AVAudioCommonFormat = .pcmFormatFloat32
+
     /// Specifies the sampleRate of audio output.
     public let sampleRate: Float64
+    /// Specifies the channels of audio output.
+    public let channels: UInt32
     /// Specifies the muted that indicates whether the audio output is muted.
     public var isMuted = false
     /// Specifies the main track number.
@@ -19,11 +23,11 @@ public struct IOAudioMixerSettings {
 
     /// Creates a new instance of a settings.
     public init(
-        channels: UInt32 = 0,
-        sampleRate: Float64 = 0
+        sampleRate: Float64 = 0,
+        channels: UInt32 = 0
     ) {
-        self.channels = channels
         self.sampleRate = sampleRate
+        self.channels = channels
     }
 
     func invalidateOutputFormat(_ oldValue: Self) -> Bool {
@@ -35,10 +39,20 @@ public struct IOAudioMixerSettings {
         guard let format = AVAudioUtil.makeAudioFormat(formatDescription) else {
             return nil
         }
+        let sampleRate = min(sampleRate == 0 ? format.sampleRate : sampleRate, Self.maximumSampleRate)
+        let channelCount = channels == 0 ? format.channelCount : channels
+        if let channelLayout = AVAudioUtil.makeChannelLayout(channelCount) {
+            return .init(
+                commonFormat: Self.commonFormat,
+                sampleRate: sampleRate,
+                interleaved: format.isInterleaved,
+                channelLayout: channelLayout
+            )
+        }
         return .init(
-            commonFormat: format.commonFormat,
-            sampleRate: min(sampleRate == 0 ? format.sampleRate : sampleRate, AudioCodecSettings.maximumSampleRate),
-            channels: min(channels == 0 ? format.channelCount : channels, AudioCodecSettings.maximumNumberOfChannels),
+            commonFormat: Self.commonFormat,
+            sampleRate: sampleRate,
+            channels: min(channelCount, 2),
             interleaved: format.isInterleaved
         )
     }

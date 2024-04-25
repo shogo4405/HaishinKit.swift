@@ -53,10 +53,8 @@ public struct IOAudioMixerTrackSettings: Codable {
         guard let channelMap, channelMap.count == converter.outputFormat.channelCount else {
             return nil
         }
-        for inputChannel in channelMap {
-            if inputChannel >= converter.inputFormat.channelCount {
-                return nil
-            }
+        for inputChannel in channelMap where converter.inputFormat.channelCount <= inputChannel {
+            return nil
         }
         return channelMap
     }
