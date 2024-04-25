@@ -11,11 +11,14 @@ protocol IOAudioMixerTrackDelegate: AnyObject {
 
 /// Constraints on the audio mixier track's settings.
 public struct IOAudioMixerTrackSettings: Codable {
+    /// Specifies the volume for output. 
+    public var volume: Float = 1.0
+
     /// Specifies the muted that indicates whether the audio output is muted.
-    public var isMuted: Bool
+    public var isMuted = false
 
     /// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.
-    public var downmix: Bool
+    public var downmix = true
 
     /// Specifies the map of the output to input channels.
     /// ## Example code:
@@ -24,16 +27,6 @@ public struct IOAudioMixerTrackSettings: Codable {
     /// channelMap = [2, 3]
     /// ```
     public var channelMap: [Int]?
-
-    /// Creates a new instance of a settings.
-    public init(
-        isMuted: Bool = false,
-        downmix: Bool = true,
-        channelMap: [Int]? = nil) {
-        self.isMuted = isMuted
-        self.downmix = downmix
-        self.channelMap = channelMap
-    }
 
     func apply(_ converter: AVAudioConverter?, oldValue: IOAudioMixerTrackSettings?) {
         guard let converter else {
@@ -205,7 +198,7 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
             case .haveData:
                 let time = AVAudioTime(sampleTime: sampleTime, atRate: outputBuffer.format.sampleRate)
                 if let anchor, let when = time.extrapolateTime(fromAnchor: anchor) {
-                    delegate?.track(self, didOutput: outputBuffer.muted(settings.isMuted), when: when)
+                    delegate?.track(self, didOutput: outputBuffer.volume(settings.volume).muted(settings.isMuted), when: when)
                 }
                 sampleTime += 1024
             case .error:

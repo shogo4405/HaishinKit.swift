@@ -1,3 +1,4 @@
+import Accelerate
 import AVFoundation
 
 extension AVAudioPCMBuffer {
@@ -34,7 +35,7 @@ extension AVAudioPCMBuffer {
     }
 
     @discardableResult
-    @inline(__always)
+    @inlinable
     final func copy(_ audioBuffer: AVAudioBuffer) -> Bool {
         guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer, frameLength == audioBuffer.frameLength else {
             return false
@@ -70,6 +71,7 @@ extension AVAudioPCMBuffer {
     }
 
     @discardableResult
+    @inlinable
     final func muted(_ isMuted: Bool) -> AVAudioPCMBuffer {
         guard isMuted else {
             return self
@@ -98,6 +100,40 @@ extension AVAudioPCMBuffer {
                     floatChannelData?[i].update(repeating: 0, count: numSamples)
                 default:
                     break
+                }
+            }
+        }
+        return self
+    }
+
+    @inlinable
+    final func volume(_ value: Float) -> Self {
+        guard value < 1.0 && format.commonFormat == .pcmFormatFloat32 else {
+            return self
+        }
+        var count = value
+        if format.isInterleaved {
+            if let floatChannelData = floatChannelData?[0] {
+                vDSP_vsmul(
+                    floatChannelData,
+                    1,
+                    &count,
+                    floatChannelData,
+                    1,
+                    UInt(frameLength * format.channelCount)
+                )
+            }
+        } else {
+            for i in 0..<Int(format.channelCount) {
+                if let floatChannelData = floatChannelData?[i] {
+                    vDSP_vsmul(
+                        floatChannelData,
+                        1,
+                        &count,
+                        floatChannelData,
+                        1,
+                        UInt(frameLength)
+                    )
                 }
             }
         }
