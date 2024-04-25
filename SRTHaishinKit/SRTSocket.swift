@@ -8,6 +8,7 @@ private let kSRTSOcket_payloadSize: Int = 1316
 
 protocol SRTSocketDelegate: AnyObject {
     func socket(_ socket: SRTSocket<Self>, status: SRT_SOCKSTATUS)
+    func socket(_ socket: SRTSocket<Self>, error: String)
     func socket(_ socket: SRTSocket<Self>, incomingDataAvailabled data: Data, bytes: Int32)
     func socket(_ socket: SRTSocket<Self>, didAcceptSocket client: SRTSocket<Self>)
 }
@@ -173,6 +174,7 @@ final class SRTSocket<T: SRTSocketDelegate> {
 
     private func makeSocketError() -> SRTError {
         let error_message = String(cString: srt_getlasterror_str())
+        delegate?.socket(self, error: error_message)
         logger.error(error_message)
         return SRTError.illegalState(message: error_message)
     }

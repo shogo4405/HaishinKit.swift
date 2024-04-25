@@ -18,6 +18,8 @@ public final class SRTConnection: NSObject {
     var streams: [SRTStream] = []
     var clients: [SRTSocket<SRTConnection>] = []
 
+    public weak var delegate: SRTSocketDelegateError?
+
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData {
         guard let socket else {
@@ -78,6 +80,10 @@ public final class SRTConnection: NSObject {
 }
 
 extension SRTConnection: SRTSocketDelegate {
+    func socket(_ socket: SRTSocket<SRTConnection>, error: String) {
+        delegate?.socket(error: error)
+    }
+    
     // MARK: SRTSocketDelegate
     func socket(_ socket: SRTSocket<SRTConnection>, status: SRT_SOCKSTATUS) {
         connected = socket.status == SRTS_CONNECTED
@@ -90,4 +96,8 @@ extension SRTConnection: SRTSocketDelegate {
     func socket(_ socket: SRTSocket<SRTConnection>, didAcceptSocket client: SRTSocket<SRTConnection>) {
         clients.append(client)
     }
+}
+
+public protocol SRTSocketDelegateError: AnyObject {
+    func socket(error: String)
 }
