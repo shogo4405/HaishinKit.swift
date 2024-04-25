@@ -11,7 +11,7 @@ protocol IOAudioMixerTrackDelegate: AnyObject {
 
 /// Constraints on the audio mixier track's settings.
 public struct IOAudioMixerTrackSettings: Codable {
-    /// Specifies the volume for output. 
+    /// Specifies the volume for output.
     public var volume: Float = 1.0
 
     /// Specifies the muted that indicates whether the audio output is muted.
@@ -63,48 +63,6 @@ public struct IOAudioMixerTrackSettings: Codable {
 }
 
 final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
-    private static func makeAudioFormat(_ inSourceFormat: inout AudioStreamBasicDescription) -> AVAudioFormat? {
-        if inSourceFormat.mFormatID == kAudioFormatLinearPCM && kLinearPCMFormatFlagIsBigEndian == (inSourceFormat.mFormatFlags & kLinearPCMFormatFlagIsBigEndian) {
-            let interleaved = !((inSourceFormat.mFormatFlags & kLinearPCMFormatFlagIsNonInterleaved) == kLinearPCMFormatFlagIsNonInterleaved)
-            if let channelLayout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
-                return .init(
-                    commonFormat: .pcmFormatInt16,
-                    sampleRate: inSourceFormat.mSampleRate,
-                    interleaved: interleaved,
-                    channelLayout: channelLayout
-                )
-            }
-            return .init(
-                commonFormat: .pcmFormatInt16,
-                sampleRate: inSourceFormat.mSampleRate,
-                channels: inSourceFormat.mChannelsPerFrame,
-                interleaved: interleaved
-            )
-        }
-        if let layout = Self.makeChannelLayout(inSourceFormat.mChannelsPerFrame) {
-            return .init(streamDescription: &inSourceFormat, channelLayout: layout)
-        }
-        return .init(streamDescription: &inSourceFormat)
-    }
-
-    private static func makeChannelLayout(_ numberOfChannels: UInt32) -> AVAudioChannelLayout? {
-        guard 2 < numberOfChannels else {
-            return nil
-        }
-        switch numberOfChannels {
-        case 4:
-            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_4)
-        case 5:
-            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_5)
-        case 6:
-            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_6)
-        case 8:
-            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_8)
-        default:
-            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | numberOfChannels)
-        }
-    }
-
     let id: UInt8
     let outputFormat: AVAudioFormat
 
@@ -120,10 +78,10 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
     }
     private var inSourceFormat: CMFormatDescription? {
         didSet {
-            guard inSourceFormat != oldValue, var audioStreamBasicDescription = inSourceFormat?.audioStreamBasicDescription else {
+            guard inSourceFormat != oldValue else {
                 return
             }
-            setUp(&audioStreamBasicDescription)
+            setUp(inSourceFormat)
         }
     }
     private var ringBuffer: IOAudioRingBuffer?
@@ -211,21 +169,18 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
         } while(status == .haveData)
     }
 
-    private func setUp(_ inSourceFormat: inout AudioStreamBasicDescription) {
-        let inputFormat = Self.makeAudioFormat(&inSourceFormat)
-        if let inputFormat {
-            inputBuffer = .init(pcmFormat: inputFormat, frameCapacity: 1024 * 4)
-            ringBuffer = .init(inputFormat)
-        }
-        outputBuffer = .init(pcmFormat: outputFormat, frameCapacity: kIOAudioMixerTrack_frameCapacity)
-        if let inputFormat {
-            if logger.isEnabledFor(level: .info) {
-                logger.info("inputFormat:", inputFormat, ", outputFormat:", outputFormat)
-            }
-            sampleTime = kIOAudioMixerTrack_sampleTime
-            audioConverter = .init(from: inputFormat, to: outputFormat)
-        } else {
+    private func setUp(_ inSourceFormat: CMFormatDescription?) {
+        guard let inputFormat = AVAudioUtil.makeAudioFormat(inSourceFormat) else {
             delegate?.track(self, errorOccurred: .failedToCreate(from: inputFormat, to: outputFormat))
+            return
         }
+        inputBuffer = .init(pcmFormat: inputFormat, frameCapacity: 1024 * 4)
+        ringBuffer = .init(inputFormat)
+        outputBuffer = .init(pcmFormat: outputFormat, frameCapacity: kIOAudioMixerTrack_frameCapacity)
+        if logger.isEnabledFor(level: .info) {
+            logger.info("inputFormat:", inputFormat, ", outputFormat:", outputFormat)
+        }
+        sampleTime = kIOAudioMixerTrack_sampleTime
+        audioConverter = .init(from: inputFormat, to: outputFormat)
     }
 }

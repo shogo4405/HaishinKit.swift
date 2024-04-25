@@ -32,7 +32,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             guard inSourceFormat != oldValue else {
                 return
             }
-            outputFormat = settings.makeAudioFormat(Self.makeAudioFormat(inSourceFormat))
+            outputFormat = settings.makeOutputFormat(inSourceFormat)
         }
     }
     private var track: IOAudioMixerTrack<IOAudioMixerBySingleTrack>?

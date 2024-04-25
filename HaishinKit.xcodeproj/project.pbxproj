@@ -228,6 +228,8 @@
 		BCA3A5272BC507880083BBB1 /* RTMPTimestampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */; };
 		BCA7C24F2A91AA0500882D85 /* IOStreamRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */; };
 		BCABED082BD8286400CC7E73 /* change_video_resolution.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCABED072BD8284800CC7E73 /* change_video_resolution.ts */; };
+		BCABED102BDAA3AB00CC7E73 /* AVAudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */; };
+		BCABED122BDAA80800CC7E73 /* IOAudioMixerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
 		BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
 		BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72A264FAC1800661156 /* ESSpecificData.swift */; };
@@ -646,6 +648,8 @@
 		BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPTimestampTests.swift; sourceTree = "<group>"; };
 		BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamRecorderTests.swift; sourceTree = "<group>"; };
 		BCABED072BD8284800CC7E73 /* change_video_resolution.ts */ = {isa = PBXFileReference; explicitFileType = video.quicktime; fileEncoding = 4; path = change_video_resolution.ts; sourceTree = "<group>"; };
+		BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAudioUtil.swift; sourceTree = "<group>"; };
+		BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerSettings.swift; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSField.swift; sourceTree = "<group>"; };
 		BCB9773E2621812800C9A649 /* AVCFormatStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStream.swift; sourceTree = "<group>"; };
 		BCC1A72A264FAC1800661156 /* ESSpecificData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESSpecificData.swift; sourceTree = "<group>"; };
@@ -804,6 +808,7 @@
 			children = (
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
 				29DC17B221D0CC0600E26CED /* Atomic.swift */,
+				BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
@@ -1059,6 +1064,7 @@
 				B3D687812B80302B00E6A28E /* IOAudioMixer.swift */,
 				BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */,
 				BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */,
+				BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */,
 				BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */,
 				BC31DBD12A653D1600C4DEA3 /* IOAudioMonitor.swift */,
 				BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */,
@@ -1758,6 +1764,7 @@
 				29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */,
 				29B876841CD70AE800FC07DA /* AVCDecoderConfigurationRecord.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
+				BCABED102BDAA3AB00CC7E73 /* AVAudioUtil.swift in Sources */,
 				BC4078C42AD5CC7E00BBB4FA /* IOMuxer.swift in Sources */,
 				BC9CFA9323BDE8B700917EEF /* IOStreamView.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
@@ -1830,6 +1837,7 @@
 				29B8769D1CD70B1100FC07DA /* NetService.swift in Sources */,
 				29B8769E1CD70B1100FC07DA /* NetSocket.swift in Sources */,
 				BC4914B628DEC2FE009E2DF6 /* VTSessionMode.swift in Sources */,
+				BCABED122BDAA80800CC7E73 /* IOAudioMixerSettings.swift in Sources */,
 				BC2828AD2AA3225100741013 /* AVCaptureDevice.Format+Extension.swift in Sources */,
 				BC1DC50A2A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift in Sources */,
 				BC6692F32AC2F717009EC058 /* IOStreamBitRateStrategyConvertible.swift in Sources */,
