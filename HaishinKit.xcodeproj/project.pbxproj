@@ -230,6 +230,7 @@
 		BCABED082BD8286400CC7E73 /* change_video_resolution.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCABED072BD8284800CC7E73 /* change_video_resolution.ts */; };
 		BCABED102BDAA3AB00CC7E73 /* AVAudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */; };
 		BCABED122BDAA80800CC7E73 /* IOAudioMixerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */; };
+		BCABED1E2BDCC79000CC7E73 /* SRTMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED1D2BDCC79000CC7E73 /* SRTMuxer.swift */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
 		BCB9773F2621812800C9A649 /* AVCFormatStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* AVCFormatStream.swift */; };
 		BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72A264FAC1800661156 /* ESSpecificData.swift */; };
@@ -650,6 +651,7 @@
 		BCABED072BD8284800CC7E73 /* change_video_resolution.ts */ = {isa = PBXFileReference; explicitFileType = video.quicktime; fileEncoding = 4; path = change_video_resolution.ts; sourceTree = "<group>"; };
 		BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAudioUtil.swift; sourceTree = "<group>"; };
 		BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerSettings.swift; sourceTree = "<group>"; };
+		BCABED1D2BDCC79000CC7E73 /* SRTMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRTMuxer.swift; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSField.swift; sourceTree = "<group>"; };
 		BCB9773E2621812800C9A649 /* AVCFormatStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCFormatStream.swift; sourceTree = "<group>"; };
 		BCC1A72A264FAC1800661156 /* ESSpecificData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESSpecificData.swift; sourceTree = "<group>"; };
@@ -1248,6 +1250,7 @@
 				BCCC45982AA289FA0016EFE8 /* SRTHaishinKit.h */,
 				BCCC45A82AA28A7C0016EFE8 /* SRTLogger.swift */,
 				BCCC45A92AA28A7C0016EFE8 /* SRTMode.swift */,
+				BCABED1D2BDCC79000CC7E73 /* SRTMuxer.swift */,
 				BCCC45A42AA28A7C0016EFE8 /* SRTPerformanceData.swift */,
 				BCCC45A62AA28A7C0016EFE8 /* SRTSocket.swift */,
 				BCCC45A32AA28A7B0016EFE8 /* SRTSocketOption.swift */,
@@ -1988,6 +1991,7 @@
 				BCCC45AB2AA28A7D0016EFE8 /* SRTSocketOption.swift in Sources */,
 				BCCC45AD2AA28A7D0016EFE8 /* SRTStream.swift in Sources */,
 				BCCC45B12AA28A7D0016EFE8 /* SRTMode.swift in Sources */,
+				BCABED1E2BDCC79000CC7E73 /* SRTMuxer.swift in Sources */,
 				BCCC45AF2AA28A7D0016EFE8 /* SRTConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

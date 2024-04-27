@@ -22,8 +22,6 @@ private let kTSWriter_defaultSegmentDuration: Double = 2
 public final class TSWriter<T: TSWriterDelegate> {
     /// The delegate instance.
     public weak var delegate: T?
-    /// This instance is running to process(true) or not(false).
-    public internal(set) var isRunning: Atomic<Bool> = .init(false)
     /// The exptected medias = [.video, .audio].
     public var expectedMedias: Set<AVMediaType> = []
 
@@ -101,6 +99,61 @@ public final class TSWriter<T: TSWriterDelegate> {
 
     public init(segmentDuration: Double = 2.0) {
         self.segmentDuration = segmentDuration
+    }
+
+    /// Appends a buffer.
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
+            return
+        }
+        writeSampleBuffer(
+            kTSWriter_defaultAudioPID,
+            streamID: 192,
+            bytes: audioBuffer.data.assumingMemoryBound(to: UInt8.self),
+            count: audioBuffer.byteLength,
+            presentationTimeStamp: when.makeTime(),
+            decodeTimeStamp: .invalid,
+            randomAccessIndicator: true
+        )
+    }
+
+    /// Appends a buffer.
+    public func append(_ sampleBuffer: CMSampleBuffer) {
+        guard let dataBuffer = sampleBuffer.dataBuffer else {
+            return
+        }
+        var length = 0
+        var buffer: UnsafeMutablePointer<Int8>?
+        guard CMBlockBufferGetDataPointer(dataBuffer, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &buffer) == noErr else {
+            return
+        }
+        guard let bytes = buffer else {
+            return
+        }
+        writeSampleBuffer(
+            kTSWriter_defaultVideoPID,
+            streamID: 224,
+            bytes: UnsafeRawPointer(bytes).bindMemory(to: UInt8.self, capacity: length),
+            count: UInt32(length),
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            decodeTimeStamp: sampleBuffer.decodeTimeStamp,
+            randomAccessIndicator: !sampleBuffer.isNotSync
+        )
+    }
+
+    /// Clears the reader object for new transport stream.
+    public func clear() {
+        audioContinuityCounter = 0
+        videoContinuityCounter = 0
+        PCRPID = kTSWriter_defaultVideoPID
+        PAT.programs.removeAll()
+        PAT.programs = [1: kTSWriter_defaultPMTPID]
+        PMT = TSProgramMap()
+        audioConfig = nil
+        videoConfig = nil
+        videoTimestamp = .invalid
+        audioTimestamp = .invalid
+        PCRTimestamp = .invalid
     }
 
     // swiftlint:disable:next function_parameter_count
@@ -211,73 +264,5 @@ public final class TSWriter<T: TSWriterDelegate> {
             packets.append(packet)
         }
         return packets
-    }
-}
-
-extension TSWriter: IOMuxer {
-    // IOMuxer
-    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioCompressedBuffer else {
-            return
-        }
-        writeSampleBuffer(
-            kTSWriter_defaultAudioPID,
-            streamID: 192,
-            bytes: audioBuffer.data.assumingMemoryBound(to: UInt8.self),
-            count: audioBuffer.byteLength,
-            presentationTimeStamp: when.makeTime(),
-            decodeTimeStamp: .invalid,
-            randomAccessIndicator: true
-        )
-    }
-
-    public func append(_ sampleBuffer: CMSampleBuffer) {
-        guard let dataBuffer = sampleBuffer.dataBuffer else {
-            return
-        }
-        var length = 0
-        var buffer: UnsafeMutablePointer<Int8>?
-        guard CMBlockBufferGetDataPointer(dataBuffer, atOffset: 0, lengthAtOffsetOut: nil, totalLengthOut: &length, dataPointerOut: &buffer) == noErr else {
-            return
-        }
-        guard let bytes = buffer else {
-            return
-        }
-        writeSampleBuffer(
-            kTSWriter_defaultVideoPID,
-            streamID: 224,
-            bytes: UnsafeRawPointer(bytes).bindMemory(to: UInt8.self, capacity: length),
-            count: UInt32(length),
-            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
-            decodeTimeStamp: sampleBuffer.decodeTimeStamp,
-            randomAccessIndicator: !sampleBuffer.isNotSync
-        )
-    }
-}
-
-extension TSWriter: Running {
-    public func startRunning() {
-        guard isRunning.value else {
-            return
-        }
-        isRunning.mutate { $0 = true }
-    }
-
-    public func stopRunning() {
-        guard !isRunning.value else {
-            return
-        }
-        audioContinuityCounter = 0
-        videoContinuityCounter = 0
-        PCRPID = kTSWriter_defaultVideoPID
-        PAT.programs.removeAll()
-        PAT.programs = [1: kTSWriter_defaultPMTPID]
-        PMT = TSProgramMap()
-        audioConfig = nil
-        videoConfig = nil
-        videoTimestamp = .invalid
-        audioTimestamp = .invalid
-        PCRTimestamp = .invalid
-        isRunning.mutate { $0 = false }
     }
 }

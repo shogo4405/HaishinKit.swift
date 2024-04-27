@@ -9,18 +9,11 @@ public final class SRTStream: IOStream {
     private var action: (() -> Void)?
     private var keyValueObservations: [NSKeyValueObservation] = []
     private weak var connection: SRTConnection?
-    private lazy var writer = {
-        var writer = TSWriter<SRTStream>()
-        writer.delegate = self
-        return writer
-    }()
-    private lazy var reader = {
-        var reader = TSReader<SRTStream>()
-        reader.delegate = self
-        return reader
+    private lazy var muxer: SRTMuxer = {
+        SRTMuxer(self)
     }()
 
-    /// Creates a new SRTStream object.
+    /// Creates a new stream object.
     public init(connection: SRTConnection) {
         super.init()
         self.connection = connection
@@ -101,40 +94,24 @@ public final class SRTStream: IOStream {
             connection?.socket?.doInput()
             self.readyState = .playing
         case .publish:
-            writer.expectedMedias.removeAll()
+            muxer.expectedMedias.removeAll()
             if !videoInputFormats.isEmpty {
-                writer.expectedMedias.insert(.video)
+                muxer.expectedMedias.insert(.video)
             }
             if !audioInputFormats.isEmpty {
-                writer.expectedMedias.insert(.audio)
+                muxer.expectedMedias.insert(.audio)
             }
-            self.readyState = .publishing(muxer: writer)
+            self.readyState = .publishing(muxer: muxer)
         default:
             break
         }
     }
 
     func doInput(_ data: Data) {
-        _ = reader.read(data)
+        _ = muxer.read(data)
     }
-}
 
-extension SRTStream: TSWriterDelegate {
-    // MARK: TSWriterDelegate
-    public func writer(_ writer: TSWriter<SRTStream>, didOutput data: Data) {
+    func doOutput(_ data: Data) {
         connection?.socket?.doOutput(data: data)
-    }
-
-    public func writer(_ writer: TSWriter<SRTStream>, didRotateFileHandle timestamp: CMTime) {
-    }
-}
-
-extension SRTStream: TSReaderDelegate {
-    // MARK: TSReaderDelegate
-    public func reader(_ reader: TSReader<SRTStream>, id: UInt16, didRead formatDescription: CMFormatDescription) {
-    }
-
-    public func reader(_ reader: TSReader<SRTStream>, id: UInt16, didRead sampleBuffer: CMSampleBuffer) {
-        append(sampleBuffer)
     }
 }
