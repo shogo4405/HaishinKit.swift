@@ -296,9 +296,10 @@ FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
 
 When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
 ```swift
+// Setting the value to 0 will be the same as the value specified in mainTrack.
 stream.audioMixerSettings = IOAudioMixerSettings(
-  channels: UInt32 = 0, // Setting the value to 0 will be the same as the value specified in mainTrack.
-  sampleRate: Float64 = 44100, // Setting the value to 0 will be the same as the value specified in mainTrack.
+  channels: UInt32 = 0,
+  sampleRate: Float64 = 44100
 )
 
 stream.audioMixerSettings.isMuted = false
@@ -314,9 +315,12 @@ stream.audioMixerSettings.tracks = [
 
 #### [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)
 ```swift
-stream.audioSettings = AudioCodecSettings(
-  bitRate: Int = 64 * 1000,
-)
+/// Specifies the bitRate of audio output.
+stream.audioSettings.bitrate = 64 * 1000
+/// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.
+stream.audioSettings.downmix = true
+/// Specifies the map of the output to input channels.
+ stream.audioSettings.channelMap: [Int]? = nil
 ```
 
 ### 🎥 Video
@@ -333,17 +337,20 @@ stream.attachCamera(front, track: 0) { videoUnit, error in
 
 #### [VideoMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOVideoMixerSettings.html)
 ```swift
-stream.videoMixerSettings = init(
-  mode: Mode,
-  cornerRadius: CGFloat,
-  regionOfInterest: CGRect,
-  direction: ImageTransform
+stream.videoMixerSettings = IOVideoMixerSettings(
+  mode: .pip,
+  cornerRadius: 16.0,
+  regionOfInterest: .init(
+    origin: CGPoint(x: 16, y: 16),
+    size: .init(width: 160, height: 160)
+  ),
+  direction: .east
 )
 ```
 
 #### [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)
 ```swift
-stream.videoSettings = VideoCodecSettings(
+stream.videoSettings = .init(
   videoSize: .init(width: 854, height: 480),
   profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
   bitRate: 640 * 1000,

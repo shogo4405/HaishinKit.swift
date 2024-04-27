@@ -34,6 +34,7 @@ let package = Package(
                     "ISO",
                     "Net",
                     "RTMP",
+                    "Screen",
                     "Util"
                 ]),
         .target(name: "SRTHaishinKit",
