@@ -12,6 +12,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             }
             for (id, trackSettings) in settings.tracks {
                 tracks[id]?.settings = trackSettings
+                try? mixerNode?.update(volume: trackSettings.volume, bus: id, scope: .input)
             }
         }
     }
@@ -87,6 +88,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
         do {
             try setupAudioNodes()
         } catch {
+            logger.error(error)
             delegate?.audioMixer(self, errorOccurred: .failedToMix(error: error))
         }
     }
@@ -107,11 +109,11 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             }
         }
         for (bus, _) in tracks {
-            try mixerNode.update(format: outputFormat, bus: Int(bus), scope: .input)
+            try mixerNode.update(format: outputFormat, bus: bus, scope: .input)
             var callbackStruct = AURenderCallbackStruct(inputProc: inputRenderCallback,
                                                         inputProcRefCon: Unmanaged.passUnretained(self).toOpaque())
-            try mixerNode.update(inputCallback: &callbackStruct, bus: Int(bus))
-            try mixerNode.update(volume: 1, bus: Int(bus), scope: .input)
+            try mixerNode.update(inputCallback: &callbackStruct, bus: bus)
+            try mixerNode.update(volume: 1, bus: bus, scope: .input)
         }
         try mixerNode.update(format: outputFormat, bus: 0, scope: .output)
         try mixerNode.update(volume: 1, bus: 0, scope: .output)

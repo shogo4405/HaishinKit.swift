@@ -1,11 +1,9 @@
 import AVFoundation
 
 /// The IOAudioMixerError  error domain codes.
-public enum IOAudioMixerError: Swift.Error {
+enum IOAudioMixerError: Swift.Error {
     /// Mixer is unable to provide input data.
     case unableToProvideInputData
-    /// Mixer is unable to make sure that all resamplers output the same audio format.
-    case unableToEnforceAudioFormat
 }
 
 protocol IOAudioMixerDelegate: AnyObject {

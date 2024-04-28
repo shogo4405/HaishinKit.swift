@@ -11,6 +11,9 @@ protocol IOAudioMixerTrackDelegate: AnyObject {
 
 /// Constraints on the audio mixier track's settings.
 public struct IOAudioMixerTrackSettings: Codable {
+    /// The default value.
+    public static let `default` = IOAudioMixerTrackSettings()
+
     /// Specifies the volume for output.
     public var volume: Float = 1.0
 
@@ -44,7 +47,7 @@ public struct IOAudioMixerTrackSettings: Codable {
             case 2:
                 converter.channelMap = (converter.inputFormat.channelCount == 1) ? [0, 0] : [0, 1]
             default:
-                logger.error("channelCount must be 2 or less.")
+                break
             }
         }
     }

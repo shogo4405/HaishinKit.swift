@@ -1,5 +1,6 @@
 import HaishinKit
 import Logboard
+import MediaPlayer
 import ReplayKit
 import VideoToolbox
 
@@ -7,6 +8,8 @@ let logger = LBLogger.with(HaishinKitIdentifier)
 
 @available(iOS 10.0, *)
 open class SampleHandler: RPBroadcastSampleHandler {
+    private var slider: UISlider?
+
     private lazy var rtmpConnection: RTMPConnection = {
         let conneciton = RTMPConnection()
         conneciton.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusEvent), observer: self)
@@ -19,7 +22,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
         return RTMPStream(connection: rtmpConnection)
     }()
 
-    private var isMirophoneOn = false
+    private var needVideoConfiguration = true
 
     deinit {
         rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
@@ -35,16 +38,28 @@ open class SampleHandler: RPBroadcastSampleHandler {
          logger.level = .debug
          */
         LBLogger.with(HaishinKitIdentifier).level = .info
+        // rtmpStream.audioMixerSettings = .init(sampleRate: 0, channels: 2)
+        rtmpStream.audioMixerSettings.tracks[1] = .default
         rtmpConnection.connect(Preference.defaultInstance.uri!, arguments: nil)
+        // The volume of the audioApp can be obtained even when muted. A hack to synchronize with the volume.
+        DispatchQueue.main.async {
+            let volumeView = MPVolumeView(frame: CGRect.zero)
+            if let slider = volumeView.subviews.compactMap({ $0 as? UISlider }).first {
+                self.slider = slider
+            }
+        }
     }
 
     override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         switch sampleBufferType {
         case .video:
-            if let description = CMSampleBufferGetFormatDescription(sampleBuffer) {
-                let dimensions = CMVideoFormatDescriptionGetDimensions(description)
-                rtmpStream.videoSettings.videoSize = .init(width: CGFloat(dimensions.width), height: CGFloat(dimensions.height))
+            if needVideoConfiguration, let dimensions = sampleBuffer.formatDescription?.dimensions {
+                rtmpStream.videoSettings.videoSize = .init(
+                    width: CGFloat(dimensions.width),
+                    height: CGFloat(dimensions.height)
+                )
                 rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
+                needVideoConfiguration = false
             }
             rtmpStream.append(sampleBuffer)
         case .audioMic:
@@ -52,6 +67,9 @@ open class SampleHandler: RPBroadcastSampleHandler {
                 rtmpStream.append(sampleBuffer, track: 0)
             }
         case .audioApp:
+            if let volume = slider?.value {
+                rtmpStream.audioMixerSettings.tracks[1]?.volume = volume * 0.5
+            }
             if CMSampleBufferDataIsReady(sampleBuffer) {
                 rtmpStream.append(sampleBuffer, track: 1)
             }
