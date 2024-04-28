@@ -157,7 +157,7 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
             case .haveData:
                 let time = AVAudioTime(sampleTime: sampleTime, atRate: outputBuffer.format.sampleRate)
                 if let anchor, let when = time.extrapolateTime(fromAnchor: anchor) {
-                    delegate?.track(self, didOutput: outputBuffer.volume(settings.volume).muted(settings.isMuted), when: when)
+                    delegate?.track(self, didOutput: outputBuffer.muted(settings.isMuted), when: when)
                 }
                 sampleTime += 1024
             case .error:

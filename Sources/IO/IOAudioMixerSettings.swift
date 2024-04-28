@@ -8,7 +8,11 @@ public struct IOAudioMixerSettings {
     /// Maximum sampleRate supported by the system
     public static let maximumSampleRate: Float64 = 48000.0
 
+    #if os(macOS)
     static let commonFormat: AVAudioCommonFormat = .pcmFormatFloat32
+    #else
+    static let commonFormat: AVAudioCommonFormat = .pcmFormatInt16
+    #endif
 
     /// Specifies the sampleRate of audio output.
     public let sampleRate: Float64

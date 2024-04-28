@@ -105,38 +105,4 @@ extension AVAudioPCMBuffer {
         }
         return self
     }
-
-    @inlinable
-    final func volume(_ value: Float) -> Self {
-        guard value < 1.0 && format.commonFormat == .pcmFormatFloat32 else {
-            return self
-        }
-        var count = value
-        if format.isInterleaved {
-            if let floatChannelData = floatChannelData?[0] {
-                vDSP_vsmul(
-                    floatChannelData,
-                    1,
-                    &count,
-                    floatChannelData,
-                    1,
-                    UInt(frameLength * format.channelCount)
-                )
-            }
-        } else {
-            for i in 0..<Int(format.channelCount) {
-                if let floatChannelData = floatChannelData?[i] {
-                    vDSP_vsmul(
-                        floatChannelData,
-                        1,
-                        &count,
-                        floatChannelData,
-                        1,
-                        UInt(frameLength)
-                    )
-                }
-            }
-        }
-        return self
-    }
 }
