@@ -44,10 +44,11 @@ public final class IOStreamRecorder {
     public weak var delegate: (any IOStreamRecorderDelegate)?
     /// Specifies the recorder settings.
     public var settings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultSettings
+    /// Specifies the file name. nil will generate a unique file name.
+    public var fileName: String?
     /// The running indicies whether recording or not.
     public private(set) var isRunning: Atomic<Bool> = .init(false)
-
-    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IORecorder.lock")
+    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOStreamRecorder.lock")
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
@@ -70,7 +71,10 @@ public final class IOStreamRecorder {
     }()
     #endif
 
-    /// Append a sample buffer for recording.
+    /// Creates a new recorder.
+    public init() {
+    }
+
     func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning.value else {
             return
@@ -113,15 +117,6 @@ public final class IOStreamRecorder {
         }
     }
 
-    func append(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        guard isRunning.value else {
-            return
-        }
-        if let sampleBuffer = audioPCMBuffer.makeSampleBuffer(when) {
-            append(sampleBuffer)
-        }
-    }
-
     func finishWriting() {
         guard let writer = writer, writer.status == .writing else {
             delegate?.recorder(self, errorOccured: .failedToFinishWriting(error: writer?.error))
@@ -147,7 +142,7 @@ public final class IOStreamRecorder {
         }
 
         var outputSettings: [String: Any] = [:]
-        if let defaultOutputSettings: [String: Any] = self.settings[mediaType] {
+        if let settings = self.settings[mediaType] {
             switch mediaType {
             case .audio:
                 guard
@@ -155,7 +150,7 @@ public final class IOStreamRecorder {
                     let inSourceFormat = format.audioStreamBasicDescription else {
                     break
                 }
-                for (key, value) in defaultOutputSettings {
+                for (key, value) in settings {
                     switch key {
                     case AVSampleRateKey:
                         outputSettings[key] = AnyUtil.isZero(value) ? inSourceFormat.mSampleRate : value
@@ -166,7 +161,8 @@ public final class IOStreamRecorder {
                     }
                 }
             case .video:
-                for (key, value) in defaultOutputSettings {
+                dimensions = sourceFormatHint?.dimensions ?? .init(width: 0, height: 0)
+                for (key, value) in settings {
                     switch key {
                     case AVVideoHeightKey:
                         outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.height) : value
@@ -202,9 +198,10 @@ extension IOStreamRecorder: IOStreamObserver {
     }
 
     public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
-        if let audio = audio as? AVAudioPCMBuffer {
-            append(audio, when: when)
+        guard let sampleBuffer = (audio as? AVAudioPCMBuffer)?.makeSampleBuffer(when) else {
+            return
         }
+        append(sampleBuffer)
     }
 }
 
@@ -218,7 +215,8 @@ extension IOStreamRecorder: Running {
             do {
                 self.videoPresentationTime = .zero
                 self.audioPresentationTime = .zero
-                let url = self.moviesDirectory.appendingPathComponent((UUID().uuidString)).appendingPathExtension("mp4")
+                let fileName = self.fileName ?? UUID().uuidString
+                let url = self.moviesDirectory.appendingPathComponent(fileName).appendingPathExtension("mp4")
                 self.writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
                 self.isRunning.mutate { $0 = true }
             } catch {
