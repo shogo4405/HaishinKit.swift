@@ -31,7 +31,7 @@ final class AudioCodec<T: AudioCodecDelegate> {
         }
     }
     let lockQueue: DispatchQueue
-    var inputFormat: AVAudioFormat? {
+    private(set) var inputFormat: AVAudioFormat? {
         didSet {
             guard inputFormat != oldValue else {
                 return
@@ -65,6 +65,9 @@ final class AudioCodec<T: AudioCodecDelegate> {
         }
         switch settings.format {
         case .pcm:
+            if let formatDescription = sampleBuffer.formatDescription, inputFormat?.formatDescription != formatDescription {
+                inputFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
+            }
             var offset = 0
             var presentationTimeStamp = sampleBuffer.presentationTimeStamp
             for i in 0..<sampleBuffer.numSamples {
@@ -129,8 +132,8 @@ final class AudioCodec<T: AudioCodecDelegate> {
         guard let inputFormat else {
             return nil
         }
-        switch inputFormat.formatDescription.audioStreamBasicDescription?.mFormatID {
-        case kAudioFormatLinearPCM:
+        switch inputFormat.formatDescription.mediaSubType {
+        case .linearPCM:
             let buffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: kAudioCodec_frameCamacity)
             buffer?.frameLength = kAudioCodec_frameCamacity
             return buffer

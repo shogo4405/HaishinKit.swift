@@ -105,15 +105,10 @@ final class IOAudioUnit: IOUnit {
     #endif
 
     func append(_ track: UInt8, buffer: CMSampleBuffer) {
-        switch buffer.formatDescription?.audioStreamBasicDescription?.mFormatID {
-        case kAudioFormatLinearPCM:
+        switch buffer.formatDescription?.mediaSubType {
+        case .linearPCM?:
             audioMixer.append(track, buffer: buffer)
         default:
-            if codec.inputFormat?.formatDescription != buffer.formatDescription {
-                if var asbd = buffer.formatDescription?.audioStreamBasicDescription {
-                    codec.inputFormat = AVAudioFormat.init(streamDescription: &asbd)
-                }
-            }
             codec.append(buffer)
         }
     }
@@ -171,7 +166,6 @@ extension IOAudioUnit: IOAudioMixerDelegate {
     }
 
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
-        codec.inputFormat = audioFormat
         monitor.inputFormat = audioFormat
     }
 
