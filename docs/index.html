@@ -162,9 +162,6 @@
                 <a href="Enums/FeatureUtil/Name.html">– Name</a>
               </li>
               <li class="nav-group-task">
-                <a href="Enums/IOAudioMixerError.html">IOAudioMixerError</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
@@ -193,6 +190,9 @@
           <li class="nav-group-name">
             <a href="Extensions.html">Extensions</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Extensions.html#/s:13SRTHaishinKit8SRTMuxerC">SRTMuxer</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Extensions.html#/s:13SRTHaishinKit9SRTSocketC">SRTSocket</a>
               </li>
@@ -707,6 +707,11 @@ open HaishinKit.xcodeproj
 <h3 id='avcapturesession' class='heading'>📹 AVCaptureSession</h3>
 <pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">frameRate</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">stream</span><span class="o">.</span><span class="n">sessionPreset</span> <span class="o">=</span> <span class="kt">AVCaptureSession</span><span class="o">.</span><span class="kt">Preset</span><span class="o">.</span><span class="n">medium</span>
+
+<span class="c1">// Do not call beginConfiguration() and commitConfiguration() internally within the scope of the method, as they are called internally.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">configuration</span> <span class="p">{</span> <span class="n">session</span> <span class="k">in</span>
+  <span class="n">session</span><span class="o">.</span><span class="n">automaticallyConfiguresApplicationAudioSession</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="p">}</span>
 </code></pre>
 <h3 id='audio' class='heading'>🔊 Audio</h3>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-classes-ioaudiocaptureunit-html-capture-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Classes/IOAudioCaptureUnit.html">Capture</a></h4>
@@ -718,13 +723,17 @@ open HaishinKit.xcodeproj
 </code></pre>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-ioaudiomixersettings-html-audiomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html">AudioMixerSettings</a></h4>
 
+<p>If you want to mix multiple audio tracks, please enable the Feature flag.</p>
+<pre class="highlight swift"><code><span class="kt">FeatureUtil</span><span class="o">.</span><span class="nf">setEnabled</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">multiTrackAudioMixing</span><span class="p">,</span> <span class="nv">isEnabled</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+</code></pre>
+
 <p>When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.</p>
-<pre class="highlight swift"><code><span class="c1">// If you want to mix multiple audio tracks, please enable the Feature flag.</span>
-<span class="c1">// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)</span>
+<pre class="highlight swift"><code><span class="c1">// Setting the value to 0 will be the same as the value specified in mainTrack.</span>
 <span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span> <span class="o">=</span> <span class="kt">IOAudioMixerSettings</span><span class="p">(</span>
-  <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">44100</span><span class="p">,</span>
+  <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+  <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">44100</span>
 <span class="p">)</span>
+
 <span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">isMuted</span> <span class="o">=</span> <span class="kc">false</span>
 <span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">mainTrack</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">tracks</span> <span class="o">=</span> <span class="p">[</span>
@@ -736,9 +745,12 @@ open HaishinKit.xcodeproj
 <span class="p">]</span>
 </code></pre>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-audiocodecsettings-html-audiocodecsettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html">AudioCodecSettings</a></h4>
-<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">audioSettings</span> <span class="o">=</span> <span class="kt">AudioCodecSettings</span><span class="p">(</span>
-  <span class="nv">bitRate</span><span class="p">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
-<span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">/// Specifies the bitRate of audio output.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioSettings</span><span class="o">.</span><span class="n">bitrate</span> <span class="o">=</span> <span class="mi">64</span> <span class="o">*</span> <span class="mi">1000</span>
+<span class="c1">/// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioSettings</span><span class="o">.</span><span class="n">downmix</span> <span class="o">=</span> <span class="kc">true</span>
+<span class="c1">/// Specifies the map of the output to input channels.</span>
+ <span class="n">stream</span><span class="o">.</span><span class="n">audioSettings</span><span class="o">.</span><span class="nv">channelMap</span><span class="p">:</span> <span class="p">[</span><span class="kt">Int</span><span class="p">]?</span> <span class="o">=</span> <span class="kc">nil</span>
 </code></pre>
 <h3 id='video' class='heading'>🎥 Video</h3>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-classes-iovideocaptureunit-html-capture-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Classes/IOVideoCaptureUnit.html">Capture</a></h4>
@@ -751,16 +763,19 @@ open HaishinKit.xcodeproj
   <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">colorFormat</span> <span class="o">=</span> <span class="n">kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange</span>
 <span class="p">}</span>
 </code></pre>
-<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-videomixersettings-html-videomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/VideoMixerSettings.html">VideoMixerSettings</a></h4>
-<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span> <span class="o">=</span> <span class="nf">init</span><span class="p">(</span>
-    <span class="nv">mode</span><span class="p">:</span> <span class="kt">Mode</span><span class="p">,</span>
-    <span class="nv">cornerRadius</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span>
-    <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="kt">CGRect</span><span class="p">,</span>
-    <span class="nv">direction</span><span class="p">:</span> <span class="kt">ImageTransform</span>
+<h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-iovideomixersettings-html-videomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/IOVideoMixerSettings.html">VideoMixerSettings</a></h4>
+<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span> <span class="o">=</span> <span class="kt">IOVideoMixerSettings</span><span class="p">(</span>
+  <span class="nv">mode</span><span class="p">:</span> <span class="o">.</span><span class="n">pip</span><span class="p">,</span>
+  <span class="nv">cornerRadius</span><span class="p">:</span> <span class="mf">16.0</span><span class="p">,</span>
+  <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
+    <span class="nv">origin</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="mi">16</span><span class="p">),</span>
+    <span class="nv">size</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">160</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">160</span><span class="p">)</span>
+  <span class="p">),</span>
+  <span class="nv">direction</span><span class="p">:</span> <span class="o">.</span><span class="n">east</span>
 <span class="p">)</span>
 </code></pre>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-videocodecsettings-html-videocodecsettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html">VideoCodecSettings</a></h4>
-<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="kt">VideoCodecSettings</span><span class="p">(</span>
+<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
   <span class="nv">videoSize</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">854</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">480</span><span class="p">),</span>
   <span class="nv">profileLevel</span><span class="p">:</span> <span class="n">kVTProfileLevel_H264_Baseline_3_1</span> <span class="k">as</span> <span class="kt">String</span><span class="p">,</span>
   <span class="nv">bitRate</span><span class="p">:</span> <span class="mi">640</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span>
@@ -807,7 +822,7 @@ open HaishinKit.xcodeproj
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-22)</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-29)</p>
           <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
