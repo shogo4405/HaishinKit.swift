@@ -18,7 +18,7 @@ public final class SRTConnection: NSObject {
     var streams: [SRTStream] = []
     var clients: [SRTSocket<SRTConnection>] = []
 
-    public weak var delegate: SRTSocketDelegateError?
+    public weak var delegate: (any SRTSocketDelegateError)?
 
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData {

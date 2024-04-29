@@ -96,7 +96,9 @@ open class IOStream: NSObject {
             mixer.audioIO.isMonitoringEnabled = newValue
         }
     }
-
+    
+    public var muted: Bool = false
+    
     /// Specifies the context object.
     public var context: CIContext {
         get {
@@ -375,7 +377,9 @@ open class IOStream: NSObject {
         switch sampleBuffer.formatDescription?.mediaType {
         case .audio?:
             mixer.audioIO.lockQueue.async {
-                self.mixer.audioIO.append(sampleBuffer, track: track)
+                if !self.muted {
+                    self.mixer.audioIO.append(sampleBuffer, track: track)
+                }
             }
         case .video?:
             mixer.videoIO.lockQueue.async {
