@@ -26,7 +26,7 @@ public final class IOStreamRecorder {
         case failedToFinishWriting(error: (any Swift.Error)?)
     }
 
-    /// The default output settings for an IOStreamRecorder.
+    /// The default output settings for a recording.
     public static let defaultSettings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),

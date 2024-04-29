@@ -8,11 +8,11 @@ final class RTMPMuxer {
         didSet {
             switch stream?.readyState {
             case .publishing:
-                guard let audioFormat else {
+                guard let audioFormat, let config = AudioSpecificConfig(formatDescription: audioFormat.formatDescription) else {
                     return
                 }
                 var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
-                buffer.append(contentsOf: AudioSpecificConfig(formatDescription: audioFormat.formatDescription).bytes)
+                buffer.append(contentsOf: config.bytes)
                 stream?.doOutput(
                     .zero,
                     chunkStreamId: FLVTagType.audio.streamId,
