@@ -82,7 +82,7 @@ final class IOAudioUnit: IOUnit {
     var captures: [UInt8: IOAudioCaptureUnit] {
         return _captures as! [UInt8: IOAudioCaptureUnit]
     }
-    #elseif os(iOS) || os(macOS) || os(visionOS)
+    #elseif os(iOS) || os(macOS)
     var captures: [UInt8: IOAudioCaptureUnit] = [:]
     #endif
 
@@ -100,27 +100,6 @@ final class IOAudioUnit: IOUnit {
             configuration(capture)
             capture?.setSampleBufferDelegate(self)
             mixer?.session.attachCapture(capture)
-        }
-    }
-    #endif
-
-    func append(_ track: UInt8, buffer: CMSampleBuffer) {
-        switch buffer.formatDescription?.mediaSubType {
-        case .linearPCM?:
-            audioMixer.append(track, buffer: buffer)
-        default:
-            codec.append(buffer)
-        }
-    }
-
-    func append(_ track: UInt8, buffer: AVAudioBuffer, when: AVAudioTime) {
-        switch buffer {
-        case let buffer as AVAudioPCMBuffer:
-            audioMixer.append(track, buffer: buffer, when: when)
-        case let buffer as AVAudioCompressedBuffer:
-            codec.append(buffer, when: when)
-        default:
-            break
         }
     }
 
@@ -142,6 +121,27 @@ final class IOAudioUnit: IOUnit {
         }
         return captures[track]
         #endif
+    }
+    #endif
+
+    func append(_ track: UInt8, buffer: CMSampleBuffer) {
+        switch buffer.formatDescription?.mediaSubType {
+        case .linearPCM?:
+            audioMixer.append(track, buffer: buffer)
+        default:
+            codec.append(buffer)
+        }
+    }
+
+    func append(_ track: UInt8, buffer: AVAudioBuffer, when: AVAudioTime) {
+        switch buffer {
+        case let buffer as AVAudioPCMBuffer:
+            audioMixer.append(track, buffer: buffer, when: when)
+        case let buffer as AVAudioCompressedBuffer:
+            codec.append(buffer, when: when)
+        default:
+            break
+        }
     }
 }
 
