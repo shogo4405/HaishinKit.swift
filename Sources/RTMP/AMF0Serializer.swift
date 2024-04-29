@@ -134,6 +134,8 @@ extension AMF0Serializer: AMFSerializer {
             return serialize(value)
         case let value as Bool:
             return serialize(value)
+        case let value as [Any?]:
+            return serialize(value)
         case let value as ASArray:
             return serialize(value)
         case let value as ASObject:

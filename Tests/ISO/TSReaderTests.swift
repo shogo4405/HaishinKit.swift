@@ -1,7 +1,6 @@
 import Foundation
 import XCTest
 import Logboard
-import CoreMedia
 import AVFAudio
 
 @testable import HaishinKit
@@ -53,8 +52,6 @@ private final class TSReaderTestsResult: TSReaderDelegate, AudioCodecDelegate {
 
     func reader(_ reader: TSReader<TSReaderTestsResult>, id: UInt16, didRead formatDescription: CMFormatDescription) {
         switch formatDescription.mediaType {
-        case .audio:
-            audioCodec.inputFormat = AVAudioFormat(cmAudioFormatDescription: formatDescription)
         case .video:
             videoFormats.append(formatDescription)
         default:
