@@ -83,6 +83,11 @@ open class IOStream: NSObject {
     /// The lockQueue.
     public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.IOStream.lock", qos: .userInitiated)
 
+    /// The offscreen rendering object.
+    public var screen: Screen {
+        return mixer.videoIO.screen
+    }
+
     /// Specifies the adaptibe bitrate strategy.
     public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy.shared {
         didSet {
@@ -98,16 +103,6 @@ open class IOStream: NSObject {
         }
         set {
             mixer.audioIO.isMonitoringEnabled = newValue
-        }
-    }
-
-    /// Specifies the context object.
-    public var context: CIContext {
-        get {
-            mixer.videoIO.context
-        }
-        set {
-            mixer.videoIO.context = newValue
         }
     }
 

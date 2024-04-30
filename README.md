@@ -62,31 +62,34 @@ Project name    |Notes       |License
   - [ ] listener
   - [ ] rendezvous
 
-### Multi Camera
-Supports two camera video sources. A picture-in-picture display that shows the image of the secondary camera of the primary camera. Supports camera split display that displays horizontally and vertically.
-
-|Picture-In-Picture|Split|
-|:-:|:-:|
-|<img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043421-ceb18cb7-9b50-43fa-a0a2-8b92b78d9df1.png">|<img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043687-a99f21b6-28b2-4170-96de-6c814debd84d.png">|
+### Offscreen Rendering.
+Through off-screen rendering capabilities, it is possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
 
 ```swift
-// If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
-stream.isMultiCamSessionEnabled = true
+let videoScreenObject = VideoTrackScreenObject()
+videoScreenObject.cornerRadius = 32.0
+videoScreenObject.track = 1
+videoScreenObject.horizontalAlignment = .right
+videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+_ = videoScreenObject.registerVideoEffect(MonochromeEffect())
+try? stream.screen.addChild(videoScreenObject)
 
-let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-stream.attachCamera(back, track: 0) { _, error in
-  if let error {
-    logger.warn(error)
-  }
+let imageScreenObject = ImageScreenObject()
+let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
+if let provider = CGDataProvider(url: imageURL as CFURL) {
+    imageScreenObject.verticalAlignment = .bottom
+    imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
+    imageScreenObject.cgImage = CGImage(
+        pngDataProviderSource: provider,
+        decode: nil,
+        shouldInterpolate: false,
+        intent: .defaultIntent
+    )
+} else {
+    logger.info("no image")
 }
-
-let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-stream.attachCamera(front, track: 1) { videoUnit, error in
-  videoUnit?.isVideoMirrored = true
-  if let error {
-    logger.error(error)
-  }
-}
+try? stream.screen.addChild(imageScreenObject)
 ```
 
 ### Rendering

@@ -18,7 +18,6 @@ final class IngestViewController: UIViewController {
     @IBOutlet private weak var audioDevicePicker: UIPickerView!
     @IBOutlet private weak var audioMonoStereoSegmentCOntrol: UISegmentedControl!
 
-    private var pipIntentView = UIView()
     private var currentEffect: VideoEffect?
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
@@ -32,17 +31,22 @@ final class IngestViewController: UIViewController {
         audioCapture.delegate = self
         return audioCapture
     }()
+    private var videoScreenObject = VideoTrackScreenObject()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
 
-        pipIntentView.layer.borderWidth = 1.0
-        pipIntentView.layer.borderColor = UIColor.white.cgColor
-        pipIntentView.bounds = IOVideoMixerSettings.default.regionOfInterest
-        pipIntentView.isUserInteractionEnabled = true
-        view.addSubview(pipIntentView)
+        stream.screen.size = .init(width: 720, height: 1280)
+        stream.screen.backgroundColor = UIColor.white.cgColor
+
+        videoScreenObject.cornerRadius = 16.0
+        videoScreenObject.track = 1
+        videoScreenObject.horizontalAlignment = .right
+        videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+        videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+        try? stream.screen.addChild(videoScreenObject)
 
         // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
         stream.isMultiCamSessionEnabled = true
@@ -59,6 +63,7 @@ final class IngestViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
+        stream.screen.startRunning()
         let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
         stream.attachCamera(back, track: 0) { _, error in
             if let error {
@@ -90,6 +95,17 @@ final class IngestViewController: UIViewController {
         stream.attachAudio(nil)
         stream.attachCamera(nil, track: 0)
         stream.attachCamera(nil, track: 1)
+        stream.screen.stopRunning()
+        // swiftlint:disable:next notification_center_detachment
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        if UIDevice.current.orientation.isLandscape {
+            stream.screen.size = .init(width: 1280, height: 720)
+        } else {
+            stream.screen.size = .init(width: 720, height: 1280)
+        }
     }
 
     // swiftlint:disable:next block_based_kvo
@@ -99,35 +115,15 @@ final class IngestViewController: UIViewController {
         }
     }
 
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else {
-            return
-        }
-        if touch.view == pipIntentView {
-            let destLocation = touch.location(in: view)
-            let prevLocation = touch.previousLocation(in: view)
-            var currentFrame = pipIntentView.frame
-            let deltaX = destLocation.x - prevLocation.x
-            let deltaY = destLocation.y - prevLocation.y
-            currentFrame.origin.x += deltaX
-            currentFrame.origin.y += deltaY
-            pipIntentView.frame = currentFrame
-            stream.videoMixerSettings = IOVideoMixerSettings(
-                mode: stream.videoMixerSettings.mode,
-                cornerRadius: 16.0,
-                regionOfInterest: currentFrame,
-                direction: .east
-            )
-        }
-    }
-
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
         if stream.isMultiCamSessionEnabled {
             if stream.videoMixerSettings.mainTrack == 0 {
                 stream.videoMixerSettings.mainTrack = 1
+                videoScreenObject.track = 0
             } else {
                 stream.videoMixerSettings.mainTrack = 0
+                videoScreenObject.track = 1
             }
         } else {
             let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back

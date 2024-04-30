@@ -2,47 +2,25 @@ import Accelerate
 import CoreMedia
 import Foundation
 
-/// The IOVideoMixerSettings represents the pip capture settings for the video capture.
+/// Constraints on the audio mixier settings.
 public struct IOVideoMixerSettings: Codable {
-    /// The type of image display mode.
+    /// The default setting for the stream.
+    public static let `default`: IOVideoMixerSettings = .init()
+
+    /// The type of image rendering mode.
     public enum Mode: String, Codable {
-        /// The picture in picture mode means video stream playing within an inset window, freeing the rest of the screen for other tasks.
-        case pip
-        /// The split view means video stream playing within two individual windows.
-        case splitView
+        /// The input buffer will be used as it is. No effects will be applied.
+        case passthrough
+        /// Off-screen rendering will be performed to allow for more flexible drawing.
+        case offscreen
     }
 
-    /// The default setting for the stream.
-    public static let `default` = IOVideoMixerSettings(
-        mode: .pip,
-        cornerRadius: 16.0,
-        regionOfInterest: .init(
-            origin: CGPoint(x: 16, y: 16),
-            size: .init(width: 160, height: 160)
-        ),
-        direction: .east
-    )
+    /// Specifies the image rendering mode.
+    public var mode: Mode = .offscreen
 
-    /// The image display mode.
-    public let mode: Mode
-    /// The cornerRadius of the picture in picture image.
-    public let cornerRadius: CGFloat
-    /// The region of the picture in picture image.
-    public let regionOfInterest: CGRect
-    /// The direction of the splitView position.
-    public let direction: ImageTransform
-    /// Specifies the isMuted indicies whether freeze video signal or not.
+    /// Specifies the muted indicies whether freeze video signal or not.
     public var isMuted = false
+
     /// Specifies the main track number.
     public var mainTrack: UInt8 = 0
-    /// Specifies if effects are always rendered to a new buffer.
-    public var alwaysUseBufferPoolForVideoEffects = false
-
-    /// Create a new IOVideoMixerSettings.
-    public init(mode: Mode, cornerRadius: CGFloat, regionOfInterest: CGRect, direction: ImageTransform) {
-        self.mode = mode
-        self.cornerRadius = cornerRadius
-        self.regionOfInterest = regionOfInterest
-        self.direction = direction
-    }
 }
