@@ -6,7 +6,7 @@ public struct AudioCodecSettings: Codable {
     /// The default value.
     public static let `default` = AudioCodecSettings()
     /// Maximum number of channels supported by the system
-    public static let maximumNumberOfChannels: UInt32 = 2
+    static let maximumNumberOfChannels: UInt32 = 8
 
     /// The type of the AudioCodec supports format.
     enum Format: Codable {
@@ -29,7 +29,9 @@ public struct AudioCodecSettings: Codable {
             case .aac:
                 return UInt32(MPEG4ObjectID.AAC_LC.rawValue)
             case .pcm:
-                return kAudioFormatFlagIsNonInterleaved | kAudioFormatFlagIsPacked | kAudioFormatFlagIsFloat
+                return kAudioFormatFlagIsNonInterleaved
+                    | kAudioFormatFlagIsPacked
+                    | kAudioFormatFlagIsFloat
             }
         }
 
@@ -106,6 +108,7 @@ public struct AudioCodecSettings: Codable {
         }
 
         func makeAudioFormat(_ format: AVAudioFormat) -> AVAudioFormat? {
+            let config = AudioSpecificConfig.ChannelConfiguration(channelCount: format.channelCount)
             var streamDescription = AudioStreamBasicDescription(
                 mSampleRate: format.sampleRate,
                 mFormatID: formatID,
@@ -113,11 +116,17 @@ public struct AudioCodecSettings: Codable {
                 mBytesPerPacket: bytesPerPacket,
                 mFramesPerPacket: framesPerPacket,
                 mBytesPerFrame: bytesPerFrame,
-                mChannelsPerFrame: min(format.channelCount, AudioCodecSettings.maximumNumberOfChannels),
+                mChannelsPerFrame: min(
+                    config?.channelCount ?? format.channelCount,
+                    AudioCodecSettings.maximumNumberOfChannels
+                ),
                 mBitsPerChannel: bitsPerChannel,
                 mReserved: 0
             )
-            return AVAudioFormat(streamDescription: &streamDescription)
+            return AVAudioFormat(
+                streamDescription: &streamDescription,
+                channelLayout: config?.audioChannelLayout
+            )
         }
     }
 
