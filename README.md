@@ -298,8 +298,8 @@ When you specify the sampling rate, it will perform resampling. Additionally, in
 ```swift
 // Setting the value to 0 will be the same as the value specified in mainTrack.
 stream.audioMixerSettings = IOAudioMixerSettings(
+  sampleRate: Float64 = 44100,
   channels: UInt32 = 0,
-  sampleRate: Float64 = 44100
 )
 
 stream.audioMixerSettings.isMuted = false
@@ -363,6 +363,12 @@ stream.videoSettings = .init(
 ```
 
 ### ⏺️ Recording
+Internally, I am now handling data with more than 3 channels. If you encounter audio issues with IOStreamRecorder, it is recommended to set it back to a maximum of 2 channels when saving locally.
+```swift
+let channels = max(stream.audioInputFormats[0].channels ?? 1, 2)
+stream.audioMixerSettings = .init(sampleRate: 0, channels: channels)
+```
+
 ```swift
 // Specifies the recording settings. 0" means the same of input.
 var recorder = IOStreamRecorder()
