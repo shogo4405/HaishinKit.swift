@@ -241,9 +241,9 @@ struct AudioSpecificConfig: Equatable {
         self.channelConfig = channel
     }
 
-    init?(formatDescription: CMFormatDescription) {
+    init?(formatDescription: CMFormatDescription?) {
         guard
-            let streamDescription = formatDescription.audioStreamBasicDescription,
+            let streamDescription = formatDescription?.audioStreamBasicDescription,
             let type = AudioObjectType(objectID: MPEG4ObjectID(rawValue: Int(streamDescription.mFormatFlags))),
             let frequency = SamplingFrequency(sampleRate: streamDescription.mSampleRate),
             let channelConfig = ChannelConfiguration(channelCount: streamDescription.mChannelsPerFrame) else {

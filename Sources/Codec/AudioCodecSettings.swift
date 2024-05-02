@@ -6,7 +6,7 @@ public struct AudioCodecSettings: Codable {
     /// The default value.
     public static let `default` = AudioCodecSettings()
     /// Maximum number of channels supported by the system
-    static let maximumNumberOfChannels: UInt32 = 8
+    public static let maximumNumberOfChannels: UInt32 = 8
 
     /// The type of the AudioCodec supports format.
     enum Format: Codable {
@@ -107,7 +107,7 @@ public struct AudioCodecSettings: Codable {
             }
         }
 
-        func makeAudioFormat(_ format: AVAudioFormat) -> AVAudioFormat? {
+        func makeOutputAudioFormat(_ format: AVAudioFormat) -> AVAudioFormat? {
             let config = AudioSpecificConfig.ChannelConfiguration(channelCount: format.channelCount)
             var streamDescription = AudioStreamBasicDescription(
                 mSampleRate: format.sampleRate,
@@ -133,15 +133,10 @@ public struct AudioCodecSettings: Codable {
     /// Specifies the bitRate of audio output.
     public var bitRate: Int = 64 * 1000
 
-    /// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.
+    /// Specifies the mixes the channels or not.
     public var downmix = true
 
     /// Specifies the map of the output to input channels.
-    /// ## Example code:
-    /// ```
-    /// // If you want to use the 3rd and 4th channels from a 4-channel input source for a 2-channel output, you would specify it like this.
-    /// channelMap = [2, 3]
-    /// ```
     public var channelMap: [Int]?
 
     /// Specifies the output format.

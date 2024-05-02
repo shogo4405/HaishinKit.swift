@@ -145,7 +145,7 @@ final class AudioCodec<T: AudioCodecDelegate> {
     private func makeAudioConverter() -> AVAudioConverter? {
         guard
             let inputFormat,
-            let outputFormat = settings.format.makeAudioFormat(inputFormat) else {
+            let outputFormat = settings.format.makeOutputAudioFormat(inputFormat) else {
             return nil
         }
         if logger.isEnabledFor(level: .info) {

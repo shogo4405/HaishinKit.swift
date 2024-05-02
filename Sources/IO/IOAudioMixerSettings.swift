@@ -14,14 +14,19 @@ public struct IOAudioMixerSettings {
     static let commonFormat: AVAudioCommonFormat = .pcmFormatInt16
     #endif
 
-    /// Specifies the sampleRate of audio output.
+    /// Specifies the sampleRate of audio output. A value of 0 will be the same as the main track source.
     public let sampleRate: Float64
-    /// Specifies the channels of audio output.
+
+    /// Specifies the channels of audio output. A value of 0 will be the same as the main track source.
+    /// - Warning: If you are using IOStreamRecorder, please set it to 1 or 2. Otherwise, the audio will not be saved in local recordings.
     public let channels: UInt32
+
     /// Specifies the muted that indicates whether the audio output is muted.
     public var isMuted = false
+
     /// Specifies the main track number.
     public var mainTrack: UInt8 = 0
+
     /// Specifies the track settings.
     public var tracks: [UInt8: IOAudioMixerTrackSettings] = .init()
 

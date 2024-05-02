@@ -8,7 +8,7 @@ final class RTMPMuxer {
         didSet {
             switch stream?.readyState {
             case .publishing:
-                guard let audioFormat, let config = AudioSpecificConfig(formatDescription: audioFormat.formatDescription) else {
+                guard let config = AudioSpecificConfig(formatDescription: audioFormat?.formatDescription) else {
                     return
                 }
                 var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
