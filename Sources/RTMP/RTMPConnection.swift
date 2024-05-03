@@ -42,6 +42,8 @@ public class RTMPConnection: EventDispatcher {
     public static let defaultWindowSizeS: Int64 = 250000
     /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
     public static let supportedProtocols: Set<String> = ["rtmp", "rtmps", "rtmpt", "rtmpts"]
+    /// The supported fourCcList are hvc1.
+    public static let supportedFourCcList = ["hvc1"]
     /// The default RTMP port is 1935.
     public static let defaultPort: Int = 1935
     /// The default RTMPS port is 443.
@@ -435,6 +437,7 @@ public class RTMPConnection: EventDispatcher {
                 "videoCodecs": SupportVideo.h264.rawValue,
                 "videoFunction": VideoFunction.clientSeek.rawValue,
                 "pageUrl": pageUrl,
+                "fourCcList": Self.supportedFourCcList,
                 "objectEncoding": objectEncoding.rawValue
             ],
             arguments: arguments
