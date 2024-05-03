@@ -135,6 +135,7 @@
 		BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* IOCaptureUnit.swift */; };
 		BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
 		BC110257292E661E00D48035 /* IOVideoMixerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110256292E661E00D48035 /* IOVideoMixerSettings.swift */; };
+		BC1CCF602BE53FE70067198A /* IOAudioTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */; };
 		BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */; };
 		BC1DC5042A02894D00E928ED /* FLVVideoFourCCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */; };
 		BC1DC50A2A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */; };
@@ -578,6 +579,7 @@
 		BC1102492925147300D48035 /* IOCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureUnit.swift; sourceTree = "<group>"; };
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
 		BC110256292E661E00D48035 /* IOVideoMixerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOVideoMixerSettings.swift; sourceTree = "<group>"; };
+		BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioTime.swift; sourceTree = "<group>"; };
 		BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureSession+Extension.swift"; sourceTree = "<group>"; };
 		BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVVideoFourCCTests.swift; sourceTree = "<group>"; };
 		BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HEVCDecoderConfigurationRecord.swift; sourceTree = "<group>"; };
@@ -1069,6 +1071,7 @@
 				BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */,
 				BC31DBD12A653D1600C4DEA3 /* IOAudioMonitor.swift */,
 				BC5019C02A6D266B0046E02F /* IOAudioRingBuffer.swift */,
+				BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */,
 				29B876891CD70AFE00FC07DA /* IOAudioUnit.swift */,
 				BC6889772B011AEB0026A4C2 /* IOCaptureSession.swift */,
 				BC1102492925147300D48035 /* IOCaptureUnit.swift */,
@@ -1857,6 +1860,7 @@
 				BC1DC50A2A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift in Sources */,
 				BC6692F32AC2F717009EC058 /* IOStreamBitRateStrategyConvertible.swift in Sources */,
 				BC6FC91E29609A6800A746EE /* ShapeFactory.swift in Sources */,
+				BC1CCF602BE53FE70067198A /* IOAudioTime.swift in Sources */,
 				BC32E88829C9971100051507 /* InstanceHolder.swift in Sources */,
 				BC04A2D42AD2D1D700C87A3E /* AVAudioTime+Extension.swift in Sources */,
 				BC7C56B7299E579F00C41A9B /* AudioCodecSettings.swift in Sources */,

@@ -2,7 +2,6 @@ import Accelerate
 import AVFoundation
 
 private let kIOAudioMixerTrack_frameCapacity: AVAudioFrameCount = 1024
-private let kIOAudioMixerTrack_sampleTime: AVAudioFramePosition = 0
 
 protocol IOAudioMixerTrackDelegate: AnyObject {
     func track(_ track: IOAudioMixerTrack<Self>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime)
@@ -85,6 +84,7 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
             setUp(inSourceFormat)
         }
     }
+    private var audioTime = IOAudioTime()
     private var ringBuffer: IOAudioRingBuffer?
     private var inputBuffer: AVAudioPCMBuffer?
     private var outputBuffer: AVAudioPCMBuffer?
@@ -97,8 +97,6 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
             audioConverter.primeMethod = .normal
         }
     }
-    private var anchor: AVAudioTime?
-    private var sampleTime: AVAudioFramePosition = kIOAudioMixerTrack_sampleTime
 
     init(id: UInt8, outputFormat: AVAudioFormat) {
         self.id = id
@@ -110,15 +108,8 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
         guard let inSourceFormat = inSourceFormat?.audioStreamBasicDescription else {
             return
         }
-        if sampleTime == kIOAudioMixerTrack_sampleTime {
-            let targetSampleTime: CMTimeValue
-            if sampleBuffer.presentationTimeStamp.timescale == Int32(inSourceFormat.mSampleRate) {
-                targetSampleTime = sampleBuffer.presentationTimeStamp.value
-            } else {
-                targetSampleTime = Int64(Double(sampleBuffer.presentationTimeStamp.value) * inSourceFormat.mSampleRate / Double(sampleBuffer.presentationTimeStamp.timescale))
-            }
-            sampleTime = AVAudioFramePosition(targetSampleTime)
-            anchor = .init(hostTime: AVAudioTime.hostTime(forSeconds: sampleBuffer.presentationTimeStamp.seconds), sampleTime: sampleTime, atRate: outputFormat.sampleRate)
+        if !audioTime.hasAnchor {
+            audioTime.anchor(sampleBuffer.presentationTimeStamp, sampleRate: outputFormat.sampleRate)
         }
         ringBuffer?.append(sampleBuffer)
         resample()
@@ -126,9 +117,8 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
 
     func append(_ audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         inSourceFormat = audioBuffer.format.formatDescription
-        if sampleTime == kIOAudioMixerTrack_sampleTime {
-            sampleTime = when.sampleTime
-            anchor = when
+        if !audioTime.hasAnchor {
+            audioTime.anchor(when)
         }
         ringBuffer?.append(audioBuffer, when: when)
         resample()
@@ -155,11 +145,8 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
             }
             switch status {
             case .haveData:
-                let time = AVAudioTime(sampleTime: sampleTime, atRate: outputBuffer.format.sampleRate)
-                if let anchor, let when = time.extrapolateTime(fromAnchor: anchor) {
-                    delegate?.track(self, didOutput: outputBuffer.muted(settings.isMuted), when: when)
-                }
-                sampleTime += 1024
+                delegate?.track(self, didOutput: outputBuffer.muted(settings.isMuted), when: audioTime.at)
+                audioTime.advanced(1024)
             case .error:
                 if let error {
                     delegate?.track(self, errorOccurred: .failedToConvert(error: error))
@@ -181,7 +168,7 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
         if logger.isEnabledFor(level: .info) {
             logger.info("inputFormat:", inputFormat, ", outputFormat:", outputFormat)
         }
-        sampleTime = kIOAudioMixerTrack_sampleTime
+        audioTime.reset()
         audioConverter = .init(from: inputFormat, to: outputFormat)
     }
 }
