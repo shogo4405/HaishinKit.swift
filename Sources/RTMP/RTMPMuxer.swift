@@ -36,22 +36,22 @@ final class RTMPMuxer {
             case .publishing:
                 switch videoFormat?.mediaSubType {
                 case .h264?:
-                    guard let avcC = AVCDecoderConfigurationRecord.getData(videoFormat) else {
+                    guard let configurationBox = videoFormat?.configurationBox else {
                         return
                     }
                     var buffer = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
-                    buffer.append(avcC)
+                    buffer.append(configurationBox)
                     stream?.doOutput(
                         .zero,
                         chunkStreamId: FLVTagType.video.streamId,
                         message: RTMPVideoMessage(streamId: 0, timestamp: 0, payload: buffer)
                     )
                 case .hevc?:
-                    guard let hvcC = HEVCDecoderConfigurationRecord.getData(videoFormat) else {
+                    guard let configurationBox = videoFormat?.configurationBox else {
                         return
                     }
                     var buffer = Data([0b10000000 | FLVFrameType.key.rawValue << 4 | FLVVideoPacketType.sequenceStart.rawValue, 0x68, 0x76, 0x63, 0x31])
-                    buffer.append(hvcC)
+                    buffer.append(configurationBox)
                     stream?.doOutput(
                         .zero,
                         chunkStreamId: FLVTagType.video.streamId,

@@ -10,16 +10,6 @@ protocol DecoderConfigurationRecord {
  - seealso: ISO/IEC 14496-15 2010
  */
 struct AVCDecoderConfigurationRecord: DecoderConfigurationRecord {
-    static func getData(_ formatDescription: CMFormatDescription?) -> Data? {
-        guard let formatDescription else {
-            return nil
-        }
-        if let atoms = CMFormatDescriptionGetExtension(formatDescription, extensionKey: "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
-            return atoms["avcC"] as? Data
-        }
-        return nil
-    }
-
     static let reserveLengthSizeMinusOne: UInt8 = 0x3F
     static let reserveNumOfSequenceParameterSets: UInt8 = 0xE0
     static let reserveChromaFormat: UInt8 = 0xFC

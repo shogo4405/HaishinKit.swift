@@ -43,15 +43,15 @@ public final class TSWriter<T: TSWriterDelegate> {
         didSet {
             guard
                 let videoFormat,
-                let avcC = AVCDecoderConfigurationRecord.getData(videoFormat) else {
+                let config = videoFormat.makeDecodeConfigurtionRecord() as? AVCDecoderConfigurationRecord else {
                 return
             }
             var data = ESSpecificData()
-            data.streamType = .h264
+            data.streamType = videoFormat.streamType
             data.elementaryPID = kTSWriter_defaultVideoPID
             PMT.elementaryStreamSpecificData.append(data)
             videoContinuityCounter = 0
-            videoConfig = AVCDecoderConfigurationRecord(data: avcC)
+            videoConfig = config
         }
     }
 

@@ -3,16 +3,6 @@ import Foundation
 
 /// ISO/IEC 14496-15 8.3.3.1.2
 struct HEVCDecoderConfigurationRecord: DecoderConfigurationRecord {
-    static func getData(_ formatDescription: CMFormatDescription?) -> Data? {
-        guard let formatDescription else {
-            return nil
-        }
-        if let atoms = CMFormatDescriptionGetExtension(formatDescription, extensionKey: "SampleDescriptionExtensionAtoms" as CFString) as? NSDictionary {
-            return atoms["hvcC"] as? Data
-        }
-        return nil
-    }
-
     var configurationVersion: UInt8 = 1
     var generalProfileSpace: UInt8 = 0
     var generalTierFlag = false
