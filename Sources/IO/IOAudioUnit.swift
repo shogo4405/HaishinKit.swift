@@ -159,6 +159,7 @@ extension IOAudioUnit: Running {
 extension IOAudioUnit: IOAudioMixerDelegate {
     // MARK: IOAudioMixerDelegate
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        mixer?.audioUnit(self, track: track, didInput: buffer, when: when)
     }
 
     func audioMixer(_ audioMixer: any IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {

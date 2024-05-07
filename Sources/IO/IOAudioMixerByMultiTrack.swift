@@ -183,6 +183,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
 extension IOAudioMixerByMultiTrack: IOAudioMixerTrackDelegate {
     // MARK: IOAudioMixerTrackDelegate
     func track(_ track: IOAudioMixerTrack<IOAudioMixerByMultiTrack>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        delegate?.audioMixer(self, track: track.id, didInput: audioPCMBuffer, when: when)
         guard shouldMix else {
             delegate?.audioMixer(self, didOutput: audioPCMBuffer, when: when)
             return

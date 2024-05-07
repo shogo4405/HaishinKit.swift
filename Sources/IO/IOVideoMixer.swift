@@ -83,6 +83,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
     }
 
     func append(_ track: UInt8, sampleBuffer: CMSampleBuffer, isVideoMirrored: Bool) {
+        delegate?.videoMixer(self, track: track, didInput: sampleBuffer)
         if track == settings.mainTrack {
             var imageBuffer: CVImageBuffer?
             guard let buffer = sampleBuffer.imageBuffer else {
