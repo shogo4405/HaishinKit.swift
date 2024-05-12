@@ -8,7 +8,7 @@ protocol AudioCaptureDelegate: AnyObject {
 
 final class AudioCapture {
     var isRunning: Atomic<Bool> = .init(false)
-    var delegate: (any AudioCaptureDelegate)?
+    weak var delegate: (any AudioCaptureDelegate)?
     private let audioEngine = AVAudioEngine()
 }
 
