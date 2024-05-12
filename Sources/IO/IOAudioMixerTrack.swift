@@ -105,9 +105,6 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
 
     func append(_ sampleBuffer: CMSampleBuffer) {
         inSourceFormat = sampleBuffer.formatDescription
-        guard let inSourceFormat = inSourceFormat?.audioStreamBasicDescription else {
-            return
-        }
         if !audioTime.hasAnchor {
             audioTime.anchor(sampleBuffer.presentationTimeStamp, sampleRate: outputFormat.sampleRate)
         }

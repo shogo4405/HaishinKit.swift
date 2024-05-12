@@ -108,7 +108,7 @@ public final class SRTStream: IOStream {
     }
 
     func doInput(_ data: Data) {
-        _ = muxer.read(data)
+        muxer.read(data)
     }
 
     func doOutput(_ data: Data) {
