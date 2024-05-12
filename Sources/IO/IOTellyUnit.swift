@@ -32,7 +32,7 @@ final class IOTellyUnit {
         return mediaLink.playerNode
     }
 
-    var delegate: (any IOTellyUnitDelegate)?
+    weak var delegate: (any IOTellyUnitDelegate)?
 
     private lazy var mediaLink = {
         var mediaLink = MediaLink<IOTellyUnit>()

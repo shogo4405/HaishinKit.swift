@@ -2,7 +2,7 @@ import AVFoundation
 import Foundation
 
 final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
-    var delegate: (any IOAudioMixerDelegate)?
+    weak var delegate: (any IOAudioMixerDelegate)?
     var settings = IOAudioMixerSettings.default {
         didSet {
             if let trackSettings = settings.tracks[settings.mainTrack] {

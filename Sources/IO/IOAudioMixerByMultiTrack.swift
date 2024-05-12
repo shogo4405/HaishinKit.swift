@@ -4,7 +4,7 @@ import Foundation
 final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
     private static let defaultSampleTime: AVAudioFramePosition = 0
 
-    var delegate: (any IOAudioMixerDelegate)?
+    weak var delegate: (any IOAudioMixerDelegate)?
     var settings = IOAudioMixerSettings.default {
         didSet {
             if let inSourceFormat, settings.invalidateOutputFormat(oldValue) {
