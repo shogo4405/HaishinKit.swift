@@ -63,6 +63,11 @@ public struct ASArray {
     public init(data: [Any?]) {
         self.data = data
     }
+
+    init(_ dict: ASObject) {
+        self.dict = dict
+        self.data = .init()
+    }
 }
 
 extension ASArray: ExpressibleByArrayLiteral {
@@ -109,7 +114,7 @@ extension ASArray: ExpressibleByArrayLiteral {
 extension ASArray: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
-        data.description
+        data.debugDescription + ":" + dict.debugDescription
     }
 }
 

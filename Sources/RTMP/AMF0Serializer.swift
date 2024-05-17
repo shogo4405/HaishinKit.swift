@@ -88,12 +88,7 @@ enum AMF0Type: UInt8 {
     case avmplush = 0x11
 }
 
-// MARK: -
-/**
- AMF0Serializer
-
- -seealso: http://wwwimages.adobe.com/content/dam/Adobe/en/devnet/amf/pdf/amf0-file-format-specification.pdf
- */
+// MARK: - AMF0Serializer
 final class AMF0Serializer: ByteArray {
     var reference = AMFReference()
 }
@@ -232,7 +227,7 @@ extension AMF0Serializer: AMFSerializer {
      * - seealso: 2.4 String Type
      */
     func serialize(_ value: String) -> Self {
-        let isLong: Bool = UInt32(UInt16.max) < UInt32(value.count)
+        let isLong = UInt32(UInt16.max) < UInt32(value.count)
         writeUInt8(isLong ? AMF0Type.longString.rawValue : AMF0Type.string.rawValue)
         return serializeUTF8(value, isLong)
     }
@@ -251,7 +246,7 @@ extension AMF0Serializer: AMFSerializer {
 
     /**
      * 2.5 Object Type
-     * typealias ECMAObject = Dictionary<String, Any?>
+     * typealias ECMAObject = [String, Any?]
      */
     func serialize(_ value: ASObject) -> Self {
         writeUInt8(AMF0Type.object.rawValue)
@@ -289,7 +284,17 @@ extension AMF0Serializer: AMFSerializer {
      * - seealso: 2.10 ECMA Array Type
      */
     func serialize(_ value: ASArray) -> Self {
-        self
+        writeUInt8(AMF0Type.ecmaArray.rawValue)
+        writeUInt32(UInt32(value.data.count))
+        value.data.enumerated().forEach { index, value in
+            serializeUTF8(index.description, false).serialize(value)
+        }
+        value.dict.forEach { key, value in
+            serializeUTF8(key, false).serialize(value)
+        }
+        serializeUTF8("", false)
+        writeUInt8(AMF0Type.objectEnd.rawValue)
+        return self
     }
 
     func deserialize() throws -> ASArray {
@@ -304,7 +309,7 @@ extension AMF0Serializer: AMFSerializer {
 
         var result = ASArray(count: Int(try readUInt32()))
         while true {
-            let key: String = try deserializeUTF8(false)
+            let key = try deserializeUTF8(false)
             guard !key.isEmpty else {
                 position += 1
                 break
