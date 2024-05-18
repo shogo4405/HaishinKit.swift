@@ -248,7 +248,11 @@ open class RTMPStream: IOStream {
         return RTMPMuxer(self)
     }()
     private var messages: [RTMPCommandMessage] = []
-    private var startedAt = Date()
+    private var startedAt = Date() {
+        didSet {
+            dataTimestamps.removeAll()
+        }
+    }
     private var dispatcher: (any EventDispatcherConvertible)!
     private lazy var pausedStatus = PausedStatus(self)
     private var howToPublish: RTMPStream.HowToPublish = .live
@@ -466,15 +470,15 @@ open class RTMPStream: IOStream {
                 connection.socket?.doOutput(chunk: RTMPChunk(message: message))
             }
             messages.removeAll()
-        case .play:
+        case .playing:
             startedAt = .init()
         case .publish:
             bitrateStrategy.setUp()
             startedAt = .init()
-            dataTimestamps.removeAll()
         case .publishing:
+            startedAt = .init()
             let metadata = makeMetaData()
-            send(handlerName: "@setDataFrame", arguments: "onMetaData", metadata)
+            send(handlerName: "@setDataFrame", arguments: "onMetaData", ASArray(metadata))
             self.metadata = metadata
         default:
             break

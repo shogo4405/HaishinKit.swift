@@ -57,4 +57,16 @@ final class AMF0SerializerTests: XCTestCase {
             }
         }
     }
+
+    func testASArray() {
+        var array = ASArray()
+        array["hello"] = "world"
+        array["world"] = "hello"
+        var amf: any AMFSerializer = AMF0Serializer()
+        amf.serialize(array)
+        amf.position = 0
+        let result: ASArray = try! amf.deserialize()
+        XCTAssertEqual(array["hello"] as? String, result["hello"] as? String)
+        XCTAssertEqual(array["world"] as? String, result["world"] as? String)
+    }
 }
