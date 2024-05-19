@@ -418,7 +418,9 @@ open class RTMPStream: IOStream {
 
     /// Creates flv metadata for a stream.
     open func makeMetaData() -> ASObject {
-        var metadata: [String: Any] = [:]
+        var metadata: [String: Any] = [
+            "duration": 0
+        ]
         if !videoInputFormats.isEmpty {
             metadata["width"] = videoSettings.videoSize.width
             metadata["height"] = videoSettings.videoSize.height
