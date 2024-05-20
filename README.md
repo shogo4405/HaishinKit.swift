@@ -117,12 +117,48 @@ stream.attachCamera(front, track: 1) { videoUnit, error in
 Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS. Example macOS requires Apple Silicon mac.
 - [x] Camera and microphone publish.
 - [x] Playback
+
+### Cloning the Examples
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
 carthage bootstrap --platform iOS,macOS,tvOS --use-xcframeworks
 open HaishinKit.xcodeproj
 ```
+
+### Running the Examples 
+
+If you want to test HaishinKit's live-streaming functionality in your local network, you will have to set up a web sever, e.g., on your Mac. 
+
+We recommend using the nginx web server.
+
+nginx is available through Homebrew, but that version lacks RTMP support.
+
+To obtain a version of nginx that supports RTMP, you will have to tap a community tap like (this one)[https://github.com/denji/homebrew-nginx] in Homebrew, and then run:
+
+```sh
+brew install nginx-full --with-rtmp-module
+```
+
+We recommend the following `nginx` configuration, which you may add **at the bottom of** `/opt/homebrew/etc/nginx/nginx.conf`:
+
+```nginx
+rtmp {
+        server {
+                listen 1935;
+                application live {
+                    live on;
+                    hls  off;
+                    record off;
+                }
+        }
+}
+```
+
+You will also have to tell the HaishinKit examples where your web server is running; in this case, on your Mac. 
+To do so, update the IP address in `Examples/iOS/Preferences.swift` with your Mac's IP address (or hostname).
+
+Finally, you can start the web server by running the `nginx` command on your Mac, build your examples, and test live-streaming between devices in your local network.
 
 ## 🌏 Requirements
 
