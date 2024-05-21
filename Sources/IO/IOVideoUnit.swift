@@ -165,7 +165,7 @@ final class IOVideoUnit: IOUnit {
         if buffer.formatDescription?.isCompressed == true {
             codec.append(buffer)
         } else {
-            videoMixer.append(track, sampleBuffer: buffer, isVideoMirrored: false)
+            videoMixer.append(track, sampleBuffer: buffer)
         }
     }
 

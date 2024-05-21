@@ -82,7 +82,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         return false
     }
 
-    func append(_ track: UInt8, sampleBuffer: CMSampleBuffer, isVideoMirrored: Bool) {
+    func append(_ track: UInt8, sampleBuffer: CMSampleBuffer) {
         delegate?.videoMixer(self, track: track, didInput: sampleBuffer)
         if track == settings.mainTrack {
             var imageBuffer: CVImageBuffer?
@@ -95,11 +95,6 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
                 buffer.unlockBaseAddress()
                 imageBuffer?.unlockBaseAddress()
             }
-            #if os(macOS)
-            if isVideoMirrored {
-                buffer.reflectHorizontal()
-            }
-            #endif
             if let multiCamPixelBuffer = multiCamSampleBuffer?.imageBuffer {
                 multiCamPixelBuffer.lockBaseAddress()
                 switch settings.mode {

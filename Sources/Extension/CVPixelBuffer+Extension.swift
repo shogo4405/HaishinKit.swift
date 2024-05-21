@@ -77,25 +77,6 @@ extension CVPixelBuffer {
         return self
     }
 
-    @discardableResult
-    func reflectHorizontal() -> Self {
-        guard var imageBuffer = try? makevImage_Buffer(format: &Self.format) else {
-            return self
-        }
-        defer {
-            imageBuffer.free()
-        }
-        guard
-            vImageHorizontalReflect_ARGB8888(
-                &imageBuffer,
-                &imageBuffer,
-                vImage_Flags(kvImageLeaveAlphaUnchanged)) == kvImageNoError else {
-            return self
-        }
-        imageBuffer.copy(to: self, format: &Self.format)
-        return self
-    }
-
     func makevImage_Buffer(format: inout vImage_CGImageFormat) throws -> vImage_Buffer {
         var buffer = vImage_Buffer()
         let cvImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(self).takeRetainedValue()
