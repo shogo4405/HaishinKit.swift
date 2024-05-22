@@ -10,13 +10,13 @@
 * README.md contains unreleased content, which can be tested on the main branch.
 * [API Documentation](https://shogo4405.github.io/HaishinKit.swift/)
 
+## 💖 Sponsors
 <p align="center">
-<strong>Sponsored with 💖 by</strong><br />
-<a href="https://getstream.io/chat/sdk/ios/?utm_source=https://github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_content=developer&utm_term=swift" target="_blank">
-<img src="https://stream-blog-v2.imgix.net/blog/wp-content/uploads/f7401112f41742c4e173c30d4f318cb8/stream_logo_white.png?w=350" alt="Stream Chat" style="margin: 8px" />
-</a>
-<br />
-Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/ios-chat/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">Try the iOS Chat tutorial</a> 💬
+  <br />
+  <br />
+  <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
+  <br />
+  <br />
 </p>
 
 ## 💬 Communication
@@ -30,15 +30,6 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
 * [Discord chatroom](https://discord.com/invite/8nkshPnanr).
 * 日本語が分かる方は、日本語でのコミニケーションをお願いします！
-
-## 💖 Sponsors
-<p align="center">
-  <br />
-  <br />
-  <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
-  <br />
-  <br />
-</p>
 
 ## 🌏 Related projects
 Project name    |Notes       |License
