@@ -34,6 +34,9 @@ enum AVAudioUtil {
             return nil
         }
         switch numberOfChannels {
+        case 3:
+            // https://github.com/shogo4405/HaishinKit.swift/issues/1444
+            return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_MPEG_3_0_B)
         case 4:
             return AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_AudioUnit_4)
         case 5:
