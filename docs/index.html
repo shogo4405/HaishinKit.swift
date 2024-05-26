@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.8.0 Docs</a> (88% documented)</p>
+        <p><a href="index.html">HaishinKit 1.8.1 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -26,9 +26,7 @@
     </header>
     <div class="content-wrapper">
       <p id="breadcrumbs">
-        <a href="index.html">HaishinKit Reference</a>
-        <img id="carat" src="img/carat.png" alt=""/>
-        HaishinKit  Reference
+        <a href="index.html">HaishinKit</a>
       </p>
     </div>
     <div class="content-wrapper">
@@ -332,14 +330,14 @@
 <li>README.md contains unreleased content, which can be tested on the main branch.</li>
 <li><a href="https://shogo4405.github.io/HaishinKit.swift/">API Documentation</a></li>
 </ul>
+<h2 id='sponsors' class='heading'>💖 Sponsors</h2>
 
 <p align="center">
-<strong>Sponsored with 💖 by</strong><br />
-<a href="https://getstream.io/chat/sdk/ios/?utm_source=https://github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_content=developer&utm_term=swift" target="_blank">
-<img src="https://stream-blog-v2.imgix.net/blog/wp-content/uploads/f7401112f41742c4e173c30d4f318cb8/stream_logo_white.png?w=350" alt="Stream Chat" style="margin: 8px" />
-</a>
-<br />
-Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/ios-chat/?utm_source=github.com/shogo4405/HaishinKit.swift&utm_medium=github&utm_campaign=oss_sponsorship" target="_blank">Try the iOS Chat tutorial</a> 💬
+  <br />
+  <br />
+  <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
+  <br />
+  <br />
 </p>
 <h2 id='communication' class='heading'>💬 Communication</h2>
 
@@ -361,15 +359,6 @@ Enterprise Grade APIs for Feeds & Chat. <a href="https://getstream.io/tutorials/
 <li><a href="https://discord.com/invite/8nkshPnanr">Discord chatroom</a>.</li>
 <li>日本語が分かる方は、日本語でのコミニケーションをお願いします！</li>
 </ul>
-<h2 id='sponsors' class='heading'>💖 Sponsors</h2>
-
-<p align="center">
-  <br />
-  <br />
-  <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
-  <br />
-  <br />
-</p>
 <h2 id='related-projects' class='heading'>🌏 Related projects</h2>
 
 <table><thead>
@@ -730,8 +719,8 @@ open HaishinKit.xcodeproj
 <p>When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.</p>
 <pre class="highlight swift"><code><span class="c1">// Setting the value to 0 will be the same as the value specified in mainTrack.</span>
 <span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span> <span class="o">=</span> <span class="kt">IOAudioMixerSettings</span><span class="p">(</span>
+  <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">44100</span><span class="p">,</span>
   <span class="nv">channels</span><span class="p">:</span> <span class="kt">UInt32</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-  <span class="nv">sampleRate</span><span class="p">:</span> <span class="kt">Float64</span> <span class="o">=</span> <span class="mi">44100</span>
 <span class="p">)</span>
 
 <span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span><span class="o">.</span><span class="n">isMuted</span> <span class="o">=</span> <span class="kc">false</span>
@@ -787,6 +776,11 @@ open HaishinKit.xcodeproj
 <span class="p">)</span>
 </code></pre>
 <h3 id='️-recording' class='heading'>⏺️ Recording</h3>
+
+<p>Internally, I am now handling data with more than 3 channels. If you encounter audio issues with IOStreamRecorder, it is recommended to set it back to a maximum of 2 channels when saving locally.</p>
+<pre class="highlight swift"><code><span class="k">let</span> <span class="nv">channels</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">stream</span><span class="o">.</span><span class="n">audioInputFormats</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">channels</span> <span class="p">??</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">audioMixerSettings</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">sampleRate</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">channels</span><span class="p">:</span> <span class="n">channels</span><span class="p">)</span>
+</code></pre>
 <pre class="highlight swift"><code><span class="c1">// Specifies the recording settings. 0" means the same of input.</span>
 <span class="k">var</span> <span class="nv">recorder</span> <span class="o">=</span> <span class="kt">IOStreamRecorder</span><span class="p">()</span>
 <span class="n">stream</span><span class="o">.</span><span class="nf">addObserver</span><span class="p">(</span><span class="n">recorder</span><span class="p">)</span>
@@ -822,8 +816,8 @@ open HaishinKit.xcodeproj
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-04-29)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.14.4</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-05-26)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.15.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
