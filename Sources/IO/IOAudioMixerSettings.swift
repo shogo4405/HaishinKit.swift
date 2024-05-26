@@ -30,6 +30,10 @@ public struct IOAudioMixerSettings {
     /// Specifies the track settings.
     public var tracks: [UInt8: IOAudioMixerTrackSettings] = .init()
 
+    /// Specifies the maximum number of channels supported by the system
+    /// - Description: The maximum number of channels to be used when the number of channels is 0 (not set). More than 2 channels are not supported by the service. It is defined to prevent audio issues since recording does not support more than 2 channels.
+    public var maximumNumberOfChannels: UInt32 = 2
+
     /// Creates a new instance of a settings.
     public init(
         sampleRate: Float64 = 0,
@@ -49,7 +53,7 @@ public struct IOAudioMixerSettings {
             return nil
         }
         let sampleRate = min(sampleRate == 0 ? format.sampleRate : sampleRate, Self.maximumSampleRate)
-        let channelCount = channels == 0 ? format.channelCount : channels
+        let channelCount = channels == 0 ? min(format.channelCount, maximumNumberOfChannels) : channels
         if let channelLayout = AVAudioUtil.makeChannelLayout(channelCount) {
             return .init(
                 commonFormat: Self.commonFormat,
