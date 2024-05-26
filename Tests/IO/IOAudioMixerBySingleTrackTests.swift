@@ -47,7 +47,7 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 48000)
     }
 
-    func test44100to48000_4ch() {
+    func test44100to48000_4ch_2ch() {
         let result = Result()
         let mixer = IOAudioMixerBySingleTrack()
         mixer.delegate = result
@@ -55,11 +55,33 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
             sampleRate: 44100, channels: 0
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 4)!)
+        XCTAssertEqual(mixer.outputFormat?.channelCount, 2)
+        XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
+        mixer.settings = .init(
+            sampleRate: 48000, channels: 0
+        )
+        mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 4)!)
+        mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 4)!)
+        XCTAssertEqual(mixer.outputFormat?.channelCount, 2)
+        XCTAssertEqual(mixer.outputFormat?.sampleRate, 48000)
+        XCTAssertEqual(result.outputs.count, 2)
+    }
+
+    func test44100to48000_4ch() {
+        let result = Result()
+        let mixer = IOAudioMixerBySingleTrack()
+        mixer.delegate = result
+        mixer.settings = .init(
+            sampleRate: 44100, channels: 0
+        )
+        mixer.settings.maximumNumberOfChannels = 4
+        mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 4)!)
         XCTAssertEqual(mixer.outputFormat?.channelCount, 4)
         XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
         mixer.settings = .init(
             sampleRate: 48000, channels: 0
         )
+        mixer.settings.maximumNumberOfChannels = 4
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 4)!)
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 4)!)
         XCTAssertEqual(mixer.outputFormat?.channelCount, 4)
