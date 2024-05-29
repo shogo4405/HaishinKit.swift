@@ -16,6 +16,12 @@ final class PlaybackViewController: NSViewController {
     }
 
     @IBAction private func didTappedPlayback(_ button: NSButton) {
-        netStreamSwitcher.open(.playback)
+        if button.title == "Playback" {
+            button.title = "Close"
+            netStreamSwitcher.open(.playback)
+        } else {
+            button.title = "Playback"
+            netStreamSwitcher.close()
+        }
     }
 }
