@@ -45,17 +45,15 @@ final class MediaLink<T: MediaLinkDelegate> {
         }
     }
     private var bufferingTime = kMediaLink_bufferingTime
-    private lazy var choreographer: any Choreographer = {
+    private lazy var choreographer: DisplayLinkChoreographer = {
         var choreographer = DisplayLinkChoreographer()
         choreographer.delegate = self
         return choreographer
     }()
-    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.MediaLink.lock")
-    private var frameCount: AVAudioFramePosition = 0
-    private var bufferQueue: CMBufferQueue?
-    private var lastRenderTime: AVAudioTime = .zero
+    private var bufferQueue: TypedBlockQueue<CMSampleBuffer>?
     private var scheduledAudioBuffers: Atomic<Int> = .init(0)
     private var presentationTimeStampOrigin: CMTime = .invalid
+    private var audioTime = IOAudioTime()
 
     func enqueue(_ buffer: CMSampleBuffer) {
         guard buffer.presentationTimeStamp != .invalid else {
@@ -68,9 +66,7 @@ final class MediaLink<T: MediaLinkDelegate> {
             delegate?.mediaLink(self, dequeue: buffer)
             return
         }
-        if let bufferQueue {
-            CMBufferQueueEnqueue(bufferQueue, buffer: buffer)
-        }
+        try? bufferQueue?.enqueue(buffer)
         if isBuffering {
             bufferingTime += bufferQueue?.duration.seconds ?? 0
             if bufferTime <= bufferingTime {
@@ -84,15 +80,21 @@ final class MediaLink<T: MediaLinkDelegate> {
         guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
             return
         }
-        if lastRenderTime == .zero {
-            lastRenderTime = playerNode.lastRenderTime ?? .zero
+        if !audioTime.hasAnchor {
+            audioTime.anchor(playerNode.lastRenderTime ?? .zero)
         }
         nstry({
             self.scheduledAudioBuffers.mutate { $0 += 1 }
-            if let at = AVAudioTime(sampleTime: self.frameCount, atRate: audioBuffer.format.sampleRate).extrapolateTime(fromAnchor: self.lastRenderTime) {
-                self.playerNode.scheduleBuffer(audioBuffer, at: at, completionHandler: self.didAVAudioNodeCompletion)
+            Task {
+                await self.playerNode.scheduleBuffer(audioBuffer, at: self.audioTime.at)
+                self.scheduledAudioBuffers.mutate {
+                    $0 -= 1
+                    if $0 == 0 {
+                        self.isBuffering = true
+                    }
+                }
             }
-            self.frameCount += Int64(audioBuffer.frameLength)
+            self.audioTime.advanced(Int64(audioBuffer.frameLength))
             if !self.isPaused && !self.playerNode.isPlaying && 10 <= self.scheduledAudioBuffers.value {
                 self.playerNode.play()
             }
@@ -111,22 +113,12 @@ final class MediaLink<T: MediaLinkDelegate> {
         return duraiton
     }
 
-    private func didAVAudioNodeCompletion() {
-        scheduledAudioBuffers.mutate {
-            $0 -= 1
-            if $0 == 0 {
-                isBuffering = true
-            }
-        }
-    }
-
     private func makeBufferkQueue() {
-        CMBufferQueueCreate(
-            allocator: kCFAllocatorDefault,
-            capacity: 256,
-            callbacks: CMBufferQueueGetCallbacksForSampleBuffersSortedByOutputPTS(),
-            queueOut: &bufferQueue
-        )
+        do {
+            self.bufferQueue = .init(try .init(capacity: 256, handlers: .outputPTSSortedSampleBuffers))
+        } catch {
+            logger.error(error)
+        }
     }
 }
 
@@ -138,15 +130,14 @@ extension MediaLink: ChoreographerDelegate {
         }
         let duration = self.duration(duration)
         var frameCount = 0
-        while !CMBufferQueueIsEmpty(bufferQueue) {
-            guard let head = CMBufferQueueGetHead(bufferQueue) else {
+        while !bufferQueue.isEmpty {
+            guard let first = bufferQueue.head else {
                 break
             }
-            let first = head as! CMSampleBuffer
             if first.presentationTimeStamp.seconds - presentationTimeStampOrigin.seconds <= duration {
                 delegate?.mediaLink(self, dequeue: first)
                 frameCount += 1
-                CMBufferQueueDequeue(bufferQueue)
+                _ = bufferQueue.dequeue()
             } else {
                 if 2 < frameCount {
                     logger.info("droppedFrame: \(frameCount)")
@@ -161,31 +152,30 @@ extension MediaLink: ChoreographerDelegate {
 extension MediaLink: Running {
     // MARK: Running
     func startRunning() {
-        lockQueue.async {
-            guard !self.isRunning.value else {
-                return
-            }
-            self.hasVideo = false
-            self.bufferingTime = kMediaLink_bufferingTime
-            self.isBuffering = true
-            self.choreographer.startRunning()
-            self.makeBufferkQueue()
-            self.isRunning.mutate { $0 = true }
+        guard !isRunning.value else {
+            return
         }
+        scheduledAudioBuffers.mutate { $0 = 0 }
+        hasVideo = false
+        bufferingTime = kMediaLink_bufferingTime
+        isBuffering = true
+        choreographer.startRunning()
+        makeBufferkQueue()
+        isRunning.mutate { $0 = true }
     }
 
     func stopRunning() {
-        lockQueue.async {
-            guard self.isRunning.value else {
-                return
-            }
-            self.choreographer.stopRunning()
-            self.bufferQueue = nil
-            self.frameCount = 0
-            self.lastRenderTime = .zero
-            self.scheduledAudioBuffers.mutate { $0 = 0 }
-            self.presentationTimeStampOrigin = .invalid
-            self.isRunning.mutate { $0 = false }
+        guard isRunning.value else {
+            return
         }
+        choreographer.stopRunning()
+        if playerNode.isPlaying {
+            playerNode.stop()
+            playerNode.reset()
+        }
+        bufferQueue = nil
+        audioTime.reset()
+        presentationTimeStampOrigin = .invalid
+        isRunning.mutate { $0 = false }
     }
 }

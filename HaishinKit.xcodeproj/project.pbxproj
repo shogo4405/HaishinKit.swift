@@ -136,6 +136,7 @@
 		BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
 		BC110257292E661E00D48035 /* IOVideoMixerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110256292E661E00D48035 /* IOVideoMixerSettings.swift */; };
 		BC1720A92C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1720A82C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift */; };
+		BC1720B62C08C59B00F65941 /* TypedBlockQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */; };
 		BC1CCF602BE53FE70067198A /* IOAudioTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */; };
 		BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */; };
 		BC1DC5042A02894D00E928ED /* FLVVideoFourCCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */; };
@@ -581,6 +582,7 @@
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
 		BC110256292E661E00D48035 /* IOVideoMixerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOVideoMixerSettings.swift; sourceTree = "<group>"; };
 		BC1720A82C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCDecoderConfigurationRecordTests.swift; sourceTree = "<group>"; };
+		BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedBlockQueue.swift; sourceTree = "<group>"; };
 		BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioTime.swift; sourceTree = "<group>"; };
 		BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureSession+Extension.swift"; sourceTree = "<group>"; };
 		BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVVideoFourCCTests.swift; sourceTree = "<group>"; };
@@ -826,6 +828,7 @@
 				BC32E88729C9971100051507 /* InstanceHolder.swift */,
 				2942424C1CF4C01300D65DCB /* MD5.swift */,
 				2942A4F721A9418A004E1BEE /* Running.swift */,
+				BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -1855,6 +1858,7 @@
 				BC22EEEE2AAF50F200E3406D /* Codec.swift in Sources */,
 				29B876BE1CD70B3900FC07DA /* EventDispatcher.swift in Sources */,
 				BC2828AF2AA322E400741013 /* AVFrameRateRange+Extension.swift in Sources */,
+				BC1720B62C08C59B00F65941 /* TypedBlockQueue.swift in Sources */,
 				29B8769D1CD70B1100FC07DA /* NetService.swift in Sources */,
 				29B8769E1CD70B1100FC07DA /* NetSocket.swift in Sources */,
 				BC4914B628DEC2FE009E2DF6 /* VTSessionMode.swift in Sources */,
