@@ -533,8 +533,8 @@ extension IOStream: IOTellyUnitDelegate {
                     try? audioEngine.start()
                 }
             } else {
-                audioEngine.detach(tellyUnit.playerNode)
                 audioEngine.disconnectNodeInput(tellyUnit.playerNode)
+                audioEngine.detach(tellyUnit.playerNode)
                 if audioEngine.isRunning {
                     audioEngine.stop()
                 }

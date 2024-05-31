@@ -54,7 +54,6 @@ extension IOTellyUnit: Running {
         guard isRunning.value else {
             return
         }
-        // https://github.com/shogo4405/HaishinKit.swift/issues/1454 
         mediaLink.stopRunning()
         audioFormat = nil
         videoFormat = nil

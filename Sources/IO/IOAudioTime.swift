@@ -43,7 +43,7 @@ final class IOAudioTime {
             return
         }
         sampleRate = time.sampleRate
-        sampleTime = time.sampleTime
+        sampleTime = 0
         anchorTime = time
     }
 
