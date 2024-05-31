@@ -24,6 +24,10 @@ extension CVPixelBuffer {
         CVPixelBufferGetHeight(self)
     }
 
+    var formatType: OSType {
+        CVPixelBufferGetPixelFormatType(self)
+    }
+
     @discardableResult
     func over(_ pixelBuffer: CVPixelBuffer?, regionOfInterest roi: CGRect = .zero, radius: CGFloat = 0.0) -> Self {
         guard var inputImageBuffer = try? pixelBuffer?.makevImage_Buffer(format: &Self.format) else {

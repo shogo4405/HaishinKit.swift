@@ -9,6 +9,7 @@ let logger = LBLogger.with(HaishinKitIdentifier)
 @available(iOS 10.0, *)
 open class SampleHandler: RPBroadcastSampleHandler {
     private var slider: UISlider?
+    private var rotator = VideoRotator()
 
     private lazy var rtmpConnection: RTMPConnection = {
         let conneciton = RTMPConnection()
@@ -61,7 +62,16 @@ open class SampleHandler: RPBroadcastSampleHandler {
                 rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
                 needVideoConfiguration = false
             }
-            rtmpStream.append(sampleBuffer)
+            if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *), let rotator {
+                switch rotator.rotate(buffer: sampleBuffer) {
+                case .success(let rotatedBuffer):
+                    rtmpStream.append(rotatedBuffer)
+                case .failure(let error):
+                    logger.error(error)
+                }
+            } else {
+                rtmpStream.append(sampleBuffer)
+            }
         case .audioMic:
             if CMSampleBufferDataIsReady(sampleBuffer) {
                 rtmpStream.append(sampleBuffer, track: 0)
