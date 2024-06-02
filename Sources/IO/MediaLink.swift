@@ -124,7 +124,7 @@ final class MediaLink<T: MediaLinkDelegate> {
 
 extension MediaLink: ChoreographerDelegate {
     // MARK: ChoreographerDelegate
-    func choreographer(_ choreographer: any Choreographer, didFrame duration: Double) {
+    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double) {
         guard let bufferQueue else {
             return
         }

@@ -83,7 +83,7 @@ typealias DisplayLink = CADisplayLink
 #endif
 
 protocol ChoreographerDelegate: AnyObject {
-    func choreographer(_ choreographer: any Choreographer, didFrame duration: Double)
+    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double)
 }
 
 protocol Choreographer: Running {

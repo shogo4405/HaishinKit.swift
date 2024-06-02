@@ -493,7 +493,7 @@ public class RTMPConnection: EventDispatcher {
 
 extension RTMPConnection: RTMPSocketDelegate {
     // MARK: RTMPSocketDelegate
-    func socket(_ socket: any RTMPSocketCompatible, readyState: RTMPSocketReadyState) {
+    func socket(_ socket: some RTMPSocketCompatible, readyState: RTMPSocketReadyState) {
         if logger.isEnabledFor(level: .debug) {
             logger.debug(readyState)
         }
@@ -520,7 +520,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         }
     }
 
-    func socket(_ socket: any RTMPSocketCompatible, totalBytesIn: Int64) {
+    func socket(_ socket: some RTMPSocketCompatible, totalBytesIn: Int64) {
         guard windowSizeS * (sequence + 1) <= totalBytesIn else {
             return
         }
@@ -532,7 +532,7 @@ extension RTMPConnection: RTMPSocketDelegate {
         sequence += 1
     }
 
-    func socket(_ socket: any RTMPSocketCompatible, data: Data) {
+    func socket(_ socket: some RTMPSocketCompatible, data: Data) {
         guard let chunk = currentChunk ?? RTMPChunk(data, size: socket.chunkSizeC) else {
             socket.inputBuffer.append(data)
             return

@@ -158,19 +158,19 @@ extension IOAudioUnit: Running {
 
 extension IOAudioUnit: IOAudioMixerDelegate {
     // MARK: IOAudioMixerDelegate
-    func audioMixer(_ audioMixer: any IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         mixer?.audioUnit(self, track: track, didInput: buffer, when: when)
     }
 
-    func audioMixer(_ audioMixer: any IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
+    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
         mixer?.audioUnit(self, errorOccurred: error)
     }
 
-    func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
+    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
         monitor.inputFormat = audioFormat
     }
 
-    func audioMixer(_ audioMixer: any IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.append(audioBuffer, when: when)
         codec.append(audioBuffer, when: when)

@@ -54,8 +54,6 @@ final class IngestViewController: UIViewController {
         stream.bitrateStrategy = IOStreamVideoAdaptiveBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
-
-        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -79,6 +77,7 @@ final class IngestViewController: UIViewController {
         }
         stream.addObserver(self, forKeyPath: "currentFPS", options: .new, context: nil)
         (view as? (any IOStreamView))?.attachStream(stream)
+        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
@@ -91,8 +90,6 @@ final class IngestViewController: UIViewController {
         stream.attachAudio(nil)
         stream.attachCamera(nil, track: 0)
         stream.attachCamera(nil, track: 1)
-        // swiftlint:disable:next notification_center_detachment
-        NotificationCenter.default.removeObserver(self)
     }
 
     // swiftlint:disable:next block_based_kvo

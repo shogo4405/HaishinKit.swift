@@ -47,7 +47,7 @@ extension RTMPSocketCompatible {
 // MARK: -
 // swiftlint:disable:next class_delegate_protocol
 protocol RTMPSocketDelegate: EventDispatcherConvertible {
-    func socket(_ socket: any RTMPSocketCompatible, data: Data)
-    func socket(_ socket: any RTMPSocketCompatible, readyState: RTMPSocketReadyState)
-    func socket(_ socket: any RTMPSocketCompatible, totalBytesIn: Int64)
+    func socket(_ socket: some RTMPSocketCompatible, data: Data)
+    func socket(_ socket: some RTMPSocketCompatible, readyState: RTMPSocketReadyState)
+    func socket(_ socket: some RTMPSocketCompatible, totalBytesIn: Int64)
 }
