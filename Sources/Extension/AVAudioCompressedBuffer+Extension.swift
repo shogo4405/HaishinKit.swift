@@ -16,4 +16,17 @@ extension AVAudioCompressedBuffer {
         data.copyMemory(from: buffer.data, byteCount: Int(buffer.byteLength))
         return true
     }
+
+    func encode(to data: inout Data) {
+        guard let config = AudioSpecificConfig(formatDescription: format.formatDescription) else {
+            return
+        }
+        config.encode(to: &data, length: Int(byteLength))
+        data.withUnsafeMutableBytes {
+            guard let baseAddress = $0.baseAddress else {
+                return
+            }
+            memcpy(baseAddress.advanced(by: AudioSpecificConfig.adtsHeaderSize), self.data, Int(self.byteLength))
+        }
+    }
 }

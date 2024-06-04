@@ -67,17 +67,6 @@ extension CMVideoFormatDescription {
         }
     }
 
-    var streamType: ESStreamType {
-        switch mediaSubType {
-        case .hevc:
-            return .h265
-        case .h264:
-            return .h264
-        default:
-            return .unspecific
-        }
-    }
-
     var configurationBox: Data? {
         guard let atoms = CMFormatDescriptionGetExtension(self, extensionKey: kCMFormatDescriptionExtension_SampleDescriptionExtensionAtoms) as? NSDictionary else {
             return nil

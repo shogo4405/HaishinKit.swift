@@ -150,17 +150,6 @@ struct PacketizedElementaryStream: PESPacketHeader {
     static let untilPacketLengthSize: Int = 6
     static let startCode = Data([0x00, 0x00, 0x01])
 
-    // swiftlint:disable:next function_parameter_count
-    static func create(_ bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, timestamp: CMTime, config: Any?, randomAccessIndicator: Bool) -> PacketizedElementaryStream? {
-        if let config: AudioSpecificConfig = config as? AudioSpecificConfig {
-            return PacketizedElementaryStream(bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp, decodeTimeStamp: decodeTimeStamp, timestamp: timestamp, config: config)
-        }
-        if let config: AVCDecoderConfigurationRecord = config as? AVCDecoderConfigurationRecord {
-            return PacketizedElementaryStream(bytes: bytes, count: count, presentationTimeStamp: presentationTimeStamp, decodeTimeStamp: decodeTimeStamp, timestamp: timestamp, config: randomAccessIndicator ? config : nil)
-        }
-        return nil
-    }
-
     var startCode: Data = PacketizedElementaryStream.startCode
     var streamID: UInt8 = 0
     var packetLength: UInt16 = 0
@@ -210,20 +199,36 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
-    init?(bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, timestamp: CMTime, config: AudioSpecificConfig?) {
-        guard let bytes = bytes, let config = config else {
+    init?(_ sampleBuffer: CMSampleBuffer?, timeStamp: CMTime) {
+        guard let sampleBuffer, let dataBuffer = sampleBuffer.dataBuffer else {
             return nil
         }
-        data.append(contentsOf: config.makeHeader(Int(count)))
-        data.append(bytes, count: Int(count))
+        switch sampleBuffer.formatDescription?.mediaSubType {
+        case .h264:
+            if !sampleBuffer.isNotSync {
+                data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x10])
+                sampleBuffer.formatDescription?.parameterSets.forEach {
+                    data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
+                    data.append(contentsOf: $0)
+                }
+            } else {
+                data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x30])
+            }
+            if let dataBytes = try? dataBuffer.dataBytes() {
+                let stream = AVCFormatStream(data: dataBytes)
+                data.append(stream.toByteStream())
+            }
+        default:
+            return nil
+        }
         optionalPESHeader = PESOptionalHeader()
         optionalPESHeader?.dataAlignmentIndicator = true
         optionalPESHeader?.setTimestamp(
-            timestamp,
-            presentationTimeStamp: presentationTimeStamp,
-            decodeTimeStamp: CMTime.invalid
+            timeStamp,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            decodeTimeStamp: sampleBuffer.decodeTimeStamp
         )
-        let length = data.count + optionalPESHeader!.data.count
+        let length = data.count + (optionalPESHeader?.data.count ?? 0)
         if length < Int(UInt16.max) {
             packetLength = UInt16(length)
         } else {
@@ -231,32 +236,24 @@ struct PacketizedElementaryStream: PESPacketHeader {
         }
     }
 
-    init?(bytes: UnsafePointer<UInt8>?, count: UInt32, presentationTimeStamp: CMTime, decodeTimeStamp: CMTime, timestamp: CMTime, config: AVCDecoderConfigurationRecord?) {
-        guard let bytes = bytes else {
+    init?(_ audioCompressedBuffer: AVAudioCompressedBuffer?, when: AVAudioTime, timeStamp: CMTime) {
+        guard let audioCompressedBuffer else {
             return nil
         }
-        if let config: AVCDecoderConfigurationRecord = config {
-            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x10])
-            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
-            data.append(contentsOf: config.sequenceParameterSets[0])
-            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
-            data.append(contentsOf: config.pictureParameterSets[0])
-        } else {
-            data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x30])
-        }
-        if let stream = AVCFormatStream(bytes: bytes, count: count) {
-            data.append(stream.toByteStream())
-        }
+        data = .init(count: Int(audioCompressedBuffer.byteLength) + AudioSpecificConfig.adtsHeaderSize)
+        audioCompressedBuffer.encode(to: &data)
         optionalPESHeader = PESOptionalHeader()
         optionalPESHeader?.dataAlignmentIndicator = true
         optionalPESHeader?.setTimestamp(
-            timestamp,
-            presentationTimeStamp: presentationTimeStamp,
-            decodeTimeStamp: decodeTimeStamp
+            timeStamp,
+            presentationTimeStamp: when.makeTime(),
+            decodeTimeStamp: .invalid
         )
-        let length = data.count + optionalPESHeader!.data.count
+        let length = data.count + (optionalPESHeader?.data.count ?? 0)
         if length < Int(UInt16.max) {
             packetLength = UInt16(length)
+        } else {
+            return nil
         }
     }
 
