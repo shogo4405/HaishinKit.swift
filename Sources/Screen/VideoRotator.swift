@@ -3,14 +3,24 @@ import Foundation
 import ReplayKit
 import VideoToolbox
 
+/// VideoRotator domain errors
 public enum VideoRotatorError: Error {
+    /// Provided buffer does not contain image buffer
     case noImageBuffer
+    /// Provided buffer does not contain orientation attachment
     case noOrientationInfo
+    /// Provided orientation is not supported
     case unsupportedOrientation
+    /// Pixel buffer cannot be allocated
     case cannotAllocatePixelBuffer(CVReturn)
+    /// Rotation session fails to rotate the image buffer
     case rotationFailure(OSStatus)
 }
 
+/// This class allows to rotate image buffers that are provided by ReplayKit.
+/// The buffers arrive in portrait orientation and contain buffer-level attachment
+/// that allow to determine the target resolution and rotate the buffer accordingly.
+@available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
 public class VideoRotator {
     private var pixelInfo = PixelInfo.zero {
         didSet {
@@ -33,9 +43,6 @@ public class VideoRotator {
     private let session: VTPixelRotationSession
 
     public init?() {
-        guard #available(iOS 16.0, tvOS 16.0, macOS 13.0, *) else {
-            return nil
-        }
         var session: VTPixelRotationSession?
         let status = VTPixelRotationSessionCreate(kCFAllocatorDefault, &session)
         guard status == noErr, let session else {
@@ -44,7 +51,6 @@ public class VideoRotator {
         self.session = session
     }
 
-    @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
     public func rotate(buffer sampleBuffer: CMSampleBuffer) -> Result<CMSampleBuffer, VideoRotatorError> {
         guard let buffer = sampleBuffer.imageBuffer else {
             return .failure(.noImageBuffer)
@@ -132,16 +138,6 @@ private struct PixelInfo: Hashable, Equatable, CustomStringConvertible {
     let width: Int
     let height: Int
     let format: OSType
-
-    static func == (lhs: PixelInfo, rhs: PixelInfo) -> Bool {
-        return lhs.width == rhs.width && lhs.height == rhs.height && lhs.format == rhs.format
-    }
-
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(width)
-        hasher.combine(height)
-        hasher.combine(format)
-    }
 
     public var description: String {
         "PixelInfo(width: \(width), height: \(height), format: \(format))"

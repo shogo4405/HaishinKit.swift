@@ -9,7 +9,12 @@ let logger = LBLogger.with(HaishinKitIdentifier)
 @available(iOS 10.0, *)
 open class SampleHandler: RPBroadcastSampleHandler {
     private var slider: UISlider?
-    private var rotator = VideoRotator()
+    private var _rotator: Any?
+    @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
+    private var rotator: VideoRotator? {
+        get { _rotator as? VideoRotator }
+        set { _rotator = newValue }
+    }
 
     private lazy var rtmpConnection: RTMPConnection = {
         let conneciton = RTMPConnection()
