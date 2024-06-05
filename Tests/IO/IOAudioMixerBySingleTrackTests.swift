@@ -8,17 +8,17 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     final class Result: IOAudioMixerDelegate {
         var outputs: [AVAudioPCMBuffer] = []
 
-        func audioMixer(_ audioMixer: IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         }
 
-        func audioMixer(_ audioMixer: IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
+        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
         }
 
-        func audioMixer(_ audioMixer: IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
             outputs.append(audioBuffer)
         }
 
-        func audioMixer(_ audioMixer: IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
+        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
         }
     }
 
