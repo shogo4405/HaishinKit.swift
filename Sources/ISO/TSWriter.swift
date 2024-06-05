@@ -33,7 +33,7 @@ public final class TSWriter<T: TSWriterDelegate> {
             var data = ESSpecificData()
             data.streamType = audioFormat.formatDescription.streamType
             data.elementaryPID = kTSWriter_defaultAudioPID
-            PMT.elementaryStreamSpecificData.append(data)
+            pmt.elementaryStreamSpecificData.append(data)
             audioContinuityCounter = 0
             writeProgramIfNeeded()
         }
@@ -47,18 +47,18 @@ public final class TSWriter<T: TSWriterDelegate> {
             var data = ESSpecificData()
             data.streamType = videoFormat.streamType
             data.elementaryPID = kTSWriter_defaultVideoPID
-            PMT.elementaryStreamSpecificData.append(data)
+            pmt.elementaryStreamSpecificData.append(data)
             videoContinuityCounter = 0
             writeProgramIfNeeded()
         }
     }
 
-    private(set) var PAT: TSProgramAssociation = {
+    private(set) var pat: TSProgramAssociation = {
         let PAT: TSProgramAssociation = .init()
         PAT.programs = [1: kTSWriter_defaultPMTPID]
         return PAT
     }()
-    private(set) var PMT: TSProgramMap = .init()
+    private(set) var pmt: TSProgramMap = .init()
     private var PCRPID: UInt16 = kTSWriter_defaultVideoPID
     private var canWriteFor: Bool {
         guard !expectedMedias.isEmpty else {
@@ -144,9 +144,9 @@ public final class TSWriter<T: TSWriterDelegate> {
         audioContinuityCounter = 0
         videoContinuityCounter = 0
         PCRPID = kTSWriter_defaultVideoPID
-        PAT.programs.removeAll()
-        PAT.programs = [1: kTSWriter_defaultPMTPID]
-        PMT = TSProgramMap()
+        pat.programs.removeAll()
+        pat.programs = [1: kTSWriter_defaultPMTPID]
+        pmt = TSProgramMap()
         videoTimeStamp = .invalid
         audioTimeStamp = .invalid
         clockTimeStamp = .zero
@@ -191,11 +191,11 @@ public final class TSWriter<T: TSWriterDelegate> {
     }
 
     private func writeProgram() {
-        PMT.PCRPID = PCRPID
+        pmt.PCRPID = PCRPID
         var bytes = Data()
         var packets: [TSPacket] = []
-        packets.append(contentsOf: PAT.arrayOfPackets(kTSWriter_defaultPATPID))
-        packets.append(contentsOf: PMT.arrayOfPackets(kTSWriter_defaultPMTPID))
+        packets.append(contentsOf: pat.arrayOfPackets(kTSWriter_defaultPATPID))
+        packets.append(contentsOf: pmt.arrayOfPackets(kTSWriter_defaultPMTPID))
         for packet in packets {
             bytes.append(packet.data)
         }
