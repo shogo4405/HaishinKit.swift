@@ -103,12 +103,11 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
         let mixerNode = try MixerNode(format: outputFormat)
         try mixerNode.update(busCount: tracks.count, scope: .input)
         let busCount = try mixerNode.busCount(scope: .input)
-        if busCount > tracks.count {
-            for index in tracks.count..<busCount {
-                try mixerNode.enable(bus: UInt8(index), scope: .input, isEnabled: false)
-            }
+        for index in 0..<busCount {
+            try mixerNode.enable(bus: UInt8(index), scope: .input, isEnabled: false)
         }
         for (bus, track) in tracks {
+            try mixerNode.enable(bus: bus, scope: .input, isEnabled: true)
             try mixerNode.update(format: outputFormat, bus: bus, scope: .input)
             var callbackStruct = AURenderCallbackStruct(inputProc: inputRenderCallback,
                                                         inputProcRefCon: Unmanaged.passUnretained(self).toOpaque())
