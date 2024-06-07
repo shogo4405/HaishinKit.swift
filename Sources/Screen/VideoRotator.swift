@@ -144,13 +144,14 @@ private struct PixelInfo: Hashable, Equatable, CustomStringConvertible {
     }
 }
 
+@available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
 private extension CMSampleBuffer {
     var orientation: CGImagePropertyOrientation? {
         get {
             guard let orientationAttachment = CMGetAttachment(
-                self,
-                key: RPVideoSampleOrientationKey as CFString,
-                attachmentModeOut: nil) as? NSNumber
+                    self,
+                    key: RPVideoSampleOrientationKey as CFString,
+                    attachmentModeOut: nil) as? NSNumber
             else { return nil }
 
             return CGImagePropertyOrientation(rawValue: orientationAttachment.uint32Value)
