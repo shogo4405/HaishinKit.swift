@@ -251,6 +251,11 @@
 		BCB9773F2621812800C9A649 /* ISOTypeBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* ISOTypeBufferUtil.swift */; };
 		BCB9D79F2BF12AD8008C5B1B /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */; };
 		BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72A264FAC1800661156 /* ESSpecificData.swift */; };
+		BCC2237E2C1468C700F5F234 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
+		BCC2237F2C1468C700F5F234 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		BCC223852C146ADA00F5F234 /* libsrt.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */; };
+		BCC223882C15212E00F5F234 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
+		BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCC4F4152AD6FC1100954EF5 /* IOTellyUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC4F4142AD6FC1100954EF5 /* IOTellyUnit.swift */; };
 		BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
 		BCC9E9092636FF7400948774 /* DataBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC9E9082636FF7400948774 /* DataBufferTests.swift */; };
@@ -272,7 +277,6 @@
 		BCCC45B42AA28AAD0016EFE8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCC45B32AA28AAD0016EFE8 /* Constants.swift */; };
 		BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BCCC45BA2AA28BBE0016EFE8 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BCCC45BD2AA28BDC0016EFE8 /* libsrt.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */; };
 		BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45C02AA28BF40016EFE8 /* libc++.tbd */; };
 		BCD63AB526FDF1250084842D /* iOSSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB426FDF1250084842D /* iOSSwiftUIApp.swift */; };
 		BCD63AB726FDF1250084842D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB626FDF1250084842D /* ContentView.swift */; };
@@ -351,6 +355,20 @@
 			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
 			remoteInfo = HaishinKit;
 		};
+		BCC223802C1468C700F5F234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
+			remoteInfo = SRTHaishinKit;
+		};
+		BCC2238A2C15212E00F5F234 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
+			remoteInfo = SRTHaishinKit;
+		};
 		BCCC459A2AA289FA0016EFE8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -392,6 +410,7 @@
 			files = (
 				BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */,
 				BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */,
+				BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -441,6 +460,7 @@
 			files = (
 				BC7A0E562B0894B9005FB2F7 /* HaishinKit.framework in Embed Frameworks */,
 				BC7A0E5B2B0894CE005FB2F7 /* Logboard.xcframework in Embed Frameworks */,
+				BCC2237F2C1468C700F5F234 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -773,6 +793,7 @@
 			files = (
 				BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */,
 				BC72EF3225F24E500068F040 /* Logboard.xcframework in Frameworks */,
+				BCC223882C15212E00F5F234 /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -790,6 +811,7 @@
 			files = (
 				BC7A0E552B0894B9005FB2F7 /* HaishinKit.framework in Frameworks */,
 				BC7A0E5A2B0894CE005FB2F7 /* Logboard.xcframework in Frameworks */,
+				BCC2237E2C1468C700F5F234 /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -798,7 +820,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */,
-				BCCC45BD2AA28BDC0016EFE8 /* libsrt.xcframework in Frameworks */,
+				BCC223852C146ADA00F5F234 /* libsrt.xcframework in Frameworks */,
 				BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */,
 				BCCC45BA2AA28BBE0016EFE8 /* Logboard.xcframework in Frameworks */,
 			);
@@ -1502,6 +1524,7 @@
 			);
 			dependencies = (
 				BC8A29972AA63DA300F6D27F /* PBXTargetDependency */,
+				BCC2238B2C15212E00F5F234 /* PBXTargetDependency */,
 			);
 			name = "Example tvOS";
 			productName = "Example tvOS";
@@ -1521,6 +1544,7 @@
 			);
 			dependencies = (
 				BC7A0E582B0894B9005FB2F7 /* PBXTargetDependency */,
+				BCC223812C1468C700F5F234 /* PBXTargetDependency */,
 			);
 			name = "Example visionOS";
 			packageProductDependencies = (
@@ -2139,6 +2163,16 @@
 			isa = PBXTargetDependency;
 			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
 			targetProxy = BC8A29962AA63DA300F6D27F /* PBXContainerItemProxy */;
+		};
+		BCC223812C1468C700F5F234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
+			targetProxy = BCC223802C1468C700F5F234 /* PBXContainerItemProxy */;
+		};
+		BCC2238B2C15212E00F5F234 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
+			targetProxy = BCC2238A2C15212E00F5F234 /* PBXContainerItemProxy */;
 		};
 		BCCC459B2AA289FA0016EFE8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2870,14 +2904,15 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Debug;
 		};
@@ -2923,12 +2958,13 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,3,7";
+				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};

@@ -346,6 +346,7 @@ public final class TextScreenObject: ScreenObject {
     }
 }
 
+#if !os(visionOS)
 /// An object that manages offscreen rendering an asset resource.
 public final class AssetScreenObject: ScreenObject {
     private static let outputSettings = [
@@ -451,3 +452,4 @@ public final class AssetScreenObject: ScreenObject {
         }
     }
 }
+#endif
