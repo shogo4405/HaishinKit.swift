@@ -24,6 +24,7 @@ enum PESPTSDTSIndicator: UInt8 {
 struct PESOptionalHeader {
     static let fixedSectionSize: Int = 3
     static let defaultMarkerBits: UInt8 = 2
+    static let offset = CMTime(value: 3, timescale: 30)
 
     var markerBits: UInt8 = PESOptionalHeader.defaultMarkerBits
     var scramblingControl: UInt8 = 0
@@ -58,7 +59,7 @@ struct PESOptionalHeader {
             ptsDtsIndicator |= 0x01
         }
         if (ptsDtsIndicator & 0x02) == 0x02 {
-            let pts = Int64((presentationTimeStamp.seconds - base) * Double(TSTimestamp.resolution))
+            let pts = Int64((presentationTimeStamp.seconds + Self.offset.seconds - base) * Double(TSTimestamp.resolution))
             optionalFields += TSTimestamp.encode(pts, ptsDtsIndicator << 4)
         }
         if (ptsDtsIndicator & 0x01) == 0x01 {
@@ -215,7 +216,18 @@ struct PacketizedElementaryStream: PESPacketHeader {
                 data.append(contentsOf: [0x00, 0x00, 0x00, 0x01, 0x09, 0x30])
             }
             if let dataBytes = try? dataBuffer.dataBytes() {
-                let stream = AVCFormatStream(data: dataBytes)
+                let stream = ISOTypeBufferUtil(data: dataBytes)
+                data.append(stream.toByteStream())
+            }
+        case .hevc:
+            if !sampleBuffer.isNotSync {
+                sampleBuffer.formatDescription?.parameterSets.forEach {
+                    data.append(contentsOf: [0x00, 0x00, 0x00, 0x01])
+                    data.append(contentsOf: $0)
+                }
+            }
+            if let dataBytes = try? dataBuffer.dataBytes() {
+                let stream = ISOTypeBufferUtil(data: dataBytes)
                 data.append(stream.toByteStream())
             }
         default:
@@ -327,8 +339,8 @@ struct PacketizedElementaryStream: PESPacketHeader {
         var blockBuffer: CMBlockBuffer?
         var sampleSizes: [Int] = []
         switch streamType {
-        case .h264:
-            _ = AVCFormatStream.toNALFileFormat(&data)
+        case .h264, .h265:
+            ISOTypeBufferUtil.toNALFileFormat(&data)
             blockBuffer = data.makeBlockBuffer(advancedBy: 0)
             sampleSizes.append(blockBuffer?.dataLength ?? 0)
         case .adtsAac:

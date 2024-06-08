@@ -1,6 +1,6 @@
 import Foundation
 
-struct AVCFormatStream {
+struct ISOTypeBufferUtil {
     let data: Data
 
     init(data: Data) {
@@ -33,7 +33,7 @@ struct AVCFormatStream {
         return result
     }
 
-    static func toNALFileFormat(_ data: inout Data) -> Data {
+    static func toNALFileFormat(_ data: inout Data) {
         var lastIndexOf = data.count - 1
         for i in (2..<data.count).reversed() {
             guard data[i] == 1 && data[i - 1] == 0 && data[i - 2] == 0 else {
@@ -47,6 +47,5 @@ struct AVCFormatStream {
                 lastIndexOf = i - startCodeLength
             }
         }
-        return data
     }
 }

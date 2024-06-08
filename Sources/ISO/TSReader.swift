@@ -15,10 +15,10 @@ public class TSReader<T: TSReaderDelegate> {
 
     private var pat: TSProgramAssociation? {
         didSet {
-            guard let PAT = pat else {
+            guard let pat else {
                 return
             }
-            for (channel, PID) in PAT.programs {
+            for (channel, PID) in pat.programs {
                 programs[PID] = channel
             }
             if logger.isEnabledFor(level: .trace) {
@@ -38,9 +38,9 @@ public class TSReader<T: TSReaderDelegate> {
             }
         }
     }
-    private var nalUnitReader = AVCNALUnitReader()
     private var programs: [UInt16: UInt16] = [:]
     private var esSpecData: [UInt16: ESSpecificData] = [:]
+    private var nalUnitReader = NALUnitReader()
     private var formatDescriptions: [UInt16: CMFormatDescription] = [:]
     private var packetizedElementaryStreams: [UInt16: PacketizedElementaryStream] = [:]
     private var previousPresentationTimeStamps: [UInt16: CMTime] = [:]
@@ -103,7 +103,7 @@ public class TSReader<T: TSReaderDelegate> {
         defer {
             packetizedElementaryStreams[id] = nil
         }
-        let formatDescription = makeFormatDescription(data, pes: pes)
+        let formatDescription = makeFormatDescription(data, pes: &pes)
         if let formatDescription, formatDescriptions[id] != formatDescription {
             formatDescriptions[id] = formatDescription
             delegate?.reader(self, id: id, didRead: formatDescription)
@@ -111,13 +111,16 @@ public class TSReader<T: TSReaderDelegate> {
         var isNotSync = true
         switch data.streamType {
         case .h264:
-            let units = nalUnitReader.read(pes.data)
+            let units = nalUnitReader.read(&pes.data, type: AVCNALUnit.self)
             if let unit = units.first(where: { $0.type == .idr || $0.type == .slice }) {
                 var data = Data([0x00, 0x00, 0x00, 0x01])
                 data.append(unit.data)
                 pes.data = data
             }
             isNotSync = !units.contains { $0.type == .idr }
+        case .h265:
+            let units = nalUnitReader.read(&pes.data, type: HEVCNALUnit.self)
+            isNotSync = units.contains { $0.type == .sps }
         case .adtsAac:
             isNotSync = false
         default:
@@ -133,12 +136,12 @@ public class TSReader<T: TSReaderDelegate> {
         return sampleBuffer
     }
 
-    private func makeFormatDescription(_ data: ESSpecificData, pes: PacketizedElementaryStream) -> CMFormatDescription? {
+    private func makeFormatDescription(_ data: ESSpecificData, pes: inout PacketizedElementaryStream) -> CMFormatDescription? {
         switch data.streamType {
         case .adtsAac:
             return ADTSHeader(data: pes.data).makeFormatDescription()
-        case .h264:
-            return nalUnitReader.makeFormatDescription(pes.data)
+        case .h264, .h265:
+            return nalUnitReader.makeFormatDescription(&pes.data, type: data.streamType)
         default:
             return nil
         }
