@@ -127,6 +127,12 @@
 		BC0587C12BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587C02BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift */; };
 		BC0587C32BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587C22BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift */; };
 		BC0587D22BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */; };
+		BC0B5B122BE8CFA800D83F8E /* CMVideoDimention+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B112BE8CFA800D83F8E /* CMVideoDimention+Extension.swift */; };
+		BC0B5B142BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B132BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift */; };
+		BC0B5B172BE919D000D83F8E /* ScreenObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B162BE919D000D83F8E /* ScreenObjectTests.swift */; };
+		BC0B5B1C2BE925CA00D83F8E /* ScreenObjectContainerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B1B2BE925CA00D83F8E /* ScreenObjectContainerTests.swift */; };
+		BC0B5B1E2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B1D2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift */; };
+		BC0B5B202BE931D600D83F8E /* VideoTrackScreenObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B1F2BE931D600D83F8E /* VideoTrackScreenObjectTests.swift */; };
 		BC0BF4F22985FA9000D72CB4 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */; };
 		BC0D236D26331BAB001DDA0C /* DataBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0D236C26331BAB001DDA0C /* DataBuffer.swift */; };
@@ -137,9 +143,12 @@
 		BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1102492925147300D48035 /* IOCaptureUnit.swift */; };
 		BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */; };
 		BC110257292E661E00D48035 /* IOVideoMixerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC110256292E661E00D48035 /* IOVideoMixerSettings.swift */; };
+		BC16019C2BE0E4750061BD3E /* ScreenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC16019B2BE0E4750061BD3E /* ScreenObject.swift */; };
 		BC1720A92C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1720A82C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift */; };
 		BC1720B62C08C59B00F65941 /* TypedBlockQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */; };
+		BC1CCF582BE4D5150067198A /* game_jikkyou.png in Resources */ = {isa = PBXBuildFile; fileRef = BC1CCF572BE4D5150067198A /* game_jikkyou.png */; };
 		BC1CCF602BE53FE70067198A /* IOAudioTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */; };
+		BC1CCF622BE66C220067198A /* CGImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1CCF612BE66C220067198A /* CGImage+Extension.swift */; };
 		BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */; };
 		BC1DC5042A02894D00E928ED /* FLVVideoFourCCTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */; };
 		BC1DC50A2A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */; };
@@ -241,6 +250,7 @@
 		BCABED212BDE23C600CC7E73 /* AudioNode+DebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED202BDE23C600CC7E73 /* AudioNode+DebugExtension.swift */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
 		BCB9773F2621812800C9A649 /* ISOTypeBufferUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB9773E2621812800C9A649 /* ISOTypeBufferUtil.swift */; };
+		BCB9D79F2BF12AD8008C5B1B /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */; };
 		BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC1A72A264FAC1800661156 /* ESSpecificData.swift */; };
 		BCC4F4152AD6FC1100954EF5 /* IOTellyUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC4F4142AD6FC1100954EF5 /* IOTellyUnit.swift */; };
 		BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
@@ -275,6 +285,9 @@
 		BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCD8702B2BC266CD009E495B /* IOStreamObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD8702A2BC266CD009E495B /* IOStreamObserver.swift */; };
 		BCD91C0D2A700FF50033F9E1 /* IOAudioRingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD91C0C2A700FF50033F9E1 /* IOAudioRingBufferTests.swift */; };
+		BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */; };
+		BCDEB4FA2BE442F900EEC6ED /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F92BE442F900EEC6ED /* Screen.swift */; };
+		BCDEB4FC2BE4436D00EEC6ED /* ScreenObjectContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */; };
 		BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
@@ -578,6 +591,12 @@
 		BC0587C02BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerBySingleTrackTests.swift; sourceTree = "<group>"; };
 		BC0587C22BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerByMultiTrackTests.swift; sourceTree = "<group>"; };
 		BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+DebugExtension.swift"; sourceTree = "<group>"; };
+		BC0B5B112BE8CFA800D83F8E /* CMVideoDimention+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMVideoDimention+Extension.swift"; sourceTree = "<group>"; };
+		BC0B5B132BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVLayerVideoGravity+Extension.swift"; sourceTree = "<group>"; };
+		BC0B5B162BE919D000D83F8E /* ScreenObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObjectTests.swift; sourceTree = "<group>"; };
+		BC0B5B1B2BE925CA00D83F8E /* ScreenObjectContainerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObjectContainerTests.swift; sourceTree = "<group>"; };
+		BC0B5B1D2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMVideoSampleBufferFactory.swift; sourceTree = "<group>"; };
+		BC0B5B1F2BE931D600D83F8E /* VideoTrackScreenObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoTrackScreenObjectTests.swift; sourceTree = "<group>"; };
 		BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMixerTests.swift; sourceTree = "<group>"; };
 		BC0D236C26331BAB001DDA0C /* DataBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataBuffer.swift; sourceTree = "<group>"; };
 		BC0F1FD42ACBD39600C326FF /* MemoryUsage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryUsage.swift; sourceTree = "<group>"; };
@@ -587,9 +606,12 @@
 		BC1102492925147300D48035 /* IOCaptureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOCaptureUnit.swift; sourceTree = "<group>"; };
 		BC110252292DD6E900D48035 /* vImage_Buffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "vImage_Buffer+Extension.swift"; sourceTree = "<group>"; };
 		BC110256292E661E00D48035 /* IOVideoMixerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOVideoMixerSettings.swift; sourceTree = "<group>"; };
+		BC16019B2BE0E4750061BD3E /* ScreenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObject.swift; sourceTree = "<group>"; };
 		BC1720A82C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCDecoderConfigurationRecordTests.swift; sourceTree = "<group>"; };
 		BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypedBlockQueue.swift; sourceTree = "<group>"; };
+		BC1CCF572BE4D5150067198A /* game_jikkyou.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = game_jikkyou.png; sourceTree = "<group>"; };
 		BC1CCF5F2BE53FE70067198A /* IOAudioTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioTime.swift; sourceTree = "<group>"; };
+		BC1CCF612BE66C220067198A /* CGImage+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CGImage+Extension.swift"; sourceTree = "<group>"; };
 		BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureSession+Extension.swift"; sourceTree = "<group>"; };
 		BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVVideoFourCCTests.swift; sourceTree = "<group>"; };
 		BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HEVCDecoderConfigurationRecord.swift; sourceTree = "<group>"; };
@@ -697,6 +719,9 @@
 		BCD63ABB26FDF12A0084842D /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		BCD8702A2BC266CD009E495B /* IOStreamObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamObserver.swift; sourceTree = "<group>"; };
 		BCD91C0C2A700FF50033F9E1 /* IOAudioRingBufferTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioRingBufferTests.swift; sourceTree = "<group>"; };
+		BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRenderer.swift; sourceTree = "<group>"; };
+		BCDEB4F92BE442F900EEC6ED /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
+		BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObjectContainer.swift; sourceTree = "<group>"; };
 		BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamSwitcher.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
@@ -863,6 +888,7 @@
 				BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */,
 				2917CB652104CA2800F6823A /* AudioSpecificConfigTests.swift */,
 				BC1720A82C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift */,
+				BCCBCE9429A7C9C90095B51C /* AVCFormatStreamTests.swift */,
 				BC7C56C629A7701F00C41A9B /* ESSpecificDataTests.swift */,
 				BC1DC5112A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift */,
 				BCCBCE9429A7C9C90095B51C /* ISOTypeBufferUtilTests.swift */,
@@ -971,6 +997,7 @@
 		296543541D62FE3E00734698 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				BC1CCF572BE4D5150067198A /* game_jikkyou.png */,
 				296543641D62FEB700734698 /* AppDelegate.swift */,
 				296543651D62FEB700734698 /* Assets.xcassets */,
 				291619671E7EFE4E009FB344 /* CameraIngestViewController.swift */,
@@ -1030,16 +1057,18 @@
 		29798E5A1CE60E5300F5CBD0 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
-				295018211FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift */,
-				294637A71EC89BC9008EEC71 /* Config.swift */,
 				291C2AD11CE9FF3E006F042B /* Asset */,
+				295018211FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift */,
+				BC0B5B1D2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift */,
 				295018191FFA196800358E10 /* Codec */,
+				294637A71EC89BC9008EEC71 /* Config.swift */,
 				291C2AD21CE9FF48006F042B /* Core */,
 				BC03945D2AA8AFDD006EDE38 /* Extension */,
+				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				BC0BF4F329866FB700D72CB4 /* IO */,
 				291C2ACF1CE9FF2B006F042B /* ISO */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
+				BC0B5B152BE919B700D83F8E /* Screen */,
 				291C2AD01CE9FF33006F042B /* Util */,
 			);
 			path = Tests;
@@ -1159,9 +1188,12 @@
 				BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */,
 				BC1DC4A329F4F74F00E928ED /* AVCaptureSession+Extension.swift */,
 				BC2828AE2AA322E400741013 /* AVFrameRateRange+Extension.swift */,
+				BC0B5B132BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift */,
+				BC1CCF612BE66C220067198A /* CGImage+Extension.swift */,
 				BC37861C2C0F7B9900D79263 /* CMFormatDescription+Extension.swift */,
 				29EA87DE1E79A0810043A5F8 /* CMSampleBuffer+Extension.swift */,
 				BC04A2D52AD2D95500C87A3E /* CMTime+Extension.swift */,
+				BC0B5B112BE8CFA800D83F8E /* CMVideoDimention+Extension.swift */,
 				29EA87E11E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift */,
 				29EA87EC1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift */,
 				BC11023D2917C35B00D48035 /* CVPixelBufferPool+Extension.swift */,
@@ -1214,6 +1246,16 @@
 			path = DebugDescription;
 			sourceTree = "<group>";
 		};
+		BC0B5B152BE919B700D83F8E /* Screen */ = {
+			isa = PBXGroup;
+			children = (
+				BC0B5B1B2BE925CA00D83F8E /* ScreenObjectContainerTests.swift */,
+				BC0B5B162BE919D000D83F8E /* ScreenObjectTests.swift */,
+				BC0B5B1F2BE931D600D83F8E /* VideoTrackScreenObjectTests.swift */,
+			);
+			path = Screen;
+			sourceTree = "<group>";
+		};
 		BC0BF4F329866FB700D72CB4 /* IO */ = {
 			isa = PBXGroup;
 			children = (
@@ -1255,6 +1297,10 @@
 			children = (
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
 				BC959EEE296EE4190067BA97 /* ImageTransform.swift */,
+				BCDEB4F92BE442F900EEC6ED /* Screen.swift */,
+				BC16019B2BE0E4750061BD3E /* ScreenObject.swift */,
+				BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */,
+				BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */,
 				BC3004CD296B0A1700119932 /* Shape.swift */,
 				BC6FC91D29609A6800A746EE /* ShapeFactory.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
@@ -1651,6 +1697,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCB9D79F2BF12AD8008C5B1B /* SampleVideo_360x240_5mb.mp4 in Resources */,
+				BC1CCF582BE4D5150067198A /* game_jikkyou.png in Resources */,
 				291619661E7EFB09009FB344 /* Main.storyboard in Resources */,
 				2923A1F71D63005F0019FBCD /* Assets.xcassets in Resources */,
 			);
@@ -1803,6 +1851,7 @@
 				BC9CFA9323BDE8B700917EEF /* IOStreamView.swift in Sources */,
 				29B8769C1CD70B1100FC07DA /* NetClient.swift in Sources */,
 				29B876871CD70AE800FC07DA /* TSProgram.swift in Sources */,
+				BC0B5B122BE8CFA800D83F8E /* CMVideoDimention+Extension.swift in Sources */,
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
 				BC3802122AB5E770001AE399 /* IOVideoCaptureUnit.swift in Sources */,
 				298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */,
@@ -1817,6 +1866,7 @@
 				BC110257292E661E00D48035 /* IOVideoMixerSettings.swift in Sources */,
 				BC6889782B011AEB0026A4C2 /* IOCaptureSession.swift in Sources */,
 				BC3802142AB5E7CC001AE399 /* IOAudioCaptureUnit.swift in Sources */,
+				BCDEB4FC2BE4436D00EEC6ED /* ScreenObjectContainer.swift in Sources */,
 				29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */,
 				BC0D236D26331BAB001DDA0C /* DataBuffer.swift in Sources */,
 				29EA87ED1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
@@ -1829,8 +1879,10 @@
 				BC37861D2C0F7B9900D79263 /* CMFormatDescription+Extension.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
 				BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
+				BC1CCF622BE66C220067198A /* CGImage+Extension.swift in Sources */,
 				BC0F1FDA2ACC4CC100C326FF /* IOCaptureVideoPreview.swift in Sources */,
 				BC4914B228DDFE31009E2DF6 /* VTSessionOptionKey.swift in Sources */,
+				BCDEB4FA2BE442F900EEC6ED /* Screen.swift in Sources */,
 				BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */,
 				BC42316A2BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift in Sources */,
 				BC562DCB29576D220048D89A /* AVCaptureSession.Preset+Extension.swift in Sources */,
@@ -1840,11 +1892,13 @@
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
 				BCC4F4152AD6FC1100954EF5 /* IOTellyUnit.swift in Sources */,
 				2942A4F821A9418A004E1BEE /* Running.swift in Sources */,
+				BC0B5B142BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift in Sources */,
 				29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */,
 				BCABED212BDE23C600CC7E73 /* AudioNode+DebugExtension.swift in Sources */,
 				29EA87DF1E79A0810043A5F8 /* CMSampleBuffer+Extension.swift in Sources */,
 				BC562DC7295767860048D89A /* AVCaptureDevice+Extension.swift in Sources */,
 				BC0F1FDC2ACC630400C326FF /* NSView+Extension.swift in Sources */,
+				BC16019C2BE0E4750061BD3E /* ScreenObject.swift in Sources */,
 				29EA87E21E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
 				BC42316C2BCB7084003A80DC /* FeatureUtil.swift in Sources */,
 				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
@@ -1893,6 +1947,7 @@
 				BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* IOMixer.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
+				BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */,
 				BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
@@ -1924,6 +1979,7 @@
 				290EA8991DFB619600053022 /* PacketizedElementaryStreamTests.swift in Sources */,
 				290EA8911DFB616000053022 /* SwiftCore+ExtensionTests.swift in Sources */,
 				BC0BF4F529866FDE00D72CB4 /* IOMixerTests.swift in Sources */,
+				BC0B5B1E2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift in Sources */,
 				290EA89A1DFB619600053022 /* TSProgramTests.swift in Sources */,
 				BC3802192AB6AD79001AE399 /* IOAudioMixerTrackTests.swift in Sources */,
 				BC1DC5042A02894D00E928ED /* FLVVideoFourCCTests.swift in Sources */,
@@ -1937,10 +1993,13 @@
 				290EA8A11DFB61B100053022 /* RTMPChunkTests.swift in Sources */,
 				290EA89F1DFB61B100053022 /* AMF0SerializerTests.swift in Sources */,
 				BC03945F2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift in Sources */,
+				BC0B5B172BE919D000D83F8E /* ScreenObjectTests.swift in Sources */,
 				290EA8AA1DFB61E700053022 /* CRC32Tests.swift in Sources */,
 				035AFA042263868E009DD0BB /* RTMPStreamTests.swift in Sources */,
 				BCA3A5272BC507880083BBB1 /* RTMPTimestampTests.swift in Sources */,
 				290686031DFDB7A7008EB7ED /* RTMPConnectionTests.swift in Sources */,
+				BC0B5B1C2BE925CA00D83F8E /* ScreenObjectContainerTests.swift in Sources */,
+				BC0B5B202BE931D600D83F8E /* VideoTrackScreenObjectTests.swift in Sources */,
 				BCC9E9092636FF7400948774 /* DataBufferTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

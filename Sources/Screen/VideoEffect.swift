@@ -21,9 +21,10 @@ import Foundation
 ///     }
 /// }
 /// ```
-open class VideoEffect: NSObject {
-    /// Specifies the ciContext object.
-    public var ciContext: CIContext?
+open class VideoEffect {
+    /// Creates an object instance.
+    public init() {
+    }
 
     /// Executes to apply a video effect.
     open func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {

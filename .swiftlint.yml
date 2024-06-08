@@ -19,7 +19,7 @@ excluded:
 opt_in_rules:
 #  - anyobject_protocol
   - array_init
-  - attributes
+#  - attributes
 #  - closure_body_length
   - closure_end_indentation
   - closure_spacing

@@ -4,7 +4,8 @@ import Foundation
 
 extension CVPixelBuffer {
     enum Error: Swift.Error {
-        case failedToMakevImage_Buffer(_ error: vImage_Error)
+        case failedToLock(_ status: CVReturn)
+        case unsupportedFormat(_ format: OSType)
     }
 
     static var format = vImage_CGImageFormat(
@@ -16,95 +17,137 @@ extension CVPixelBuffer {
         decode: nil,
         renderingIntent: .defaultIntent)
 
-    var width: Int {
-        CVPixelBufferGetWidth(self)
+    static let lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
+
+    @inlinable @inline(__always)
+    var size: CGSize {
+        return .init(width: CVPixelBufferGetWidth(self), height: CVPixelBufferGetHeight(self))
     }
 
+    @inlinable @inline(__always)
+    var dataSize: Int {
+        CVPixelBufferGetDataSize(self)
+    }
+
+    @inlinable @inline(__always)
+    var pixelFormatType: OSType {
+        CVPixelBufferGetPixelFormatType(self)
+    }
+
+    @inlinable @inline(__always)
+    var baseAddress: UnsafeMutableRawPointer? {
+        CVPixelBufferGetBaseAddress(self)
+    }
+
+    @inlinable @inline(__always)
+    var planeCount: Int {
+        CVPixelBufferGetPlaneCount(self)
+    }
+
+    @inlinable @inline(__always)
+    var bytesPerRow: Int {
+        CVPixelBufferGetBytesPerRow(self)
+    }
+
+    @inlinable @inline(__always)
+    var width: Int {
+        CVPixelBufferGetHeight(self)
+    }
+
+    @inlinable @inline(__always)
     var height: Int {
         CVPixelBufferGetHeight(self)
     }
 
+    @inlinable @inline(__always)
     var formatType: OSType {
         CVPixelBufferGetPixelFormatType(self)
     }
 
-    @discardableResult
-    func over(_ pixelBuffer: CVPixelBuffer?, regionOfInterest roi: CGRect = .zero, radius: CGFloat = 0.0) -> Self {
-        guard var inputImageBuffer = try? pixelBuffer?.makevImage_Buffer(format: &Self.format) else {
-            return self
+    @inline(__always)
+    func copy(_ pixelBuffer: CVPixelBuffer?) throws {
+        // https://stackoverflow.com/questions/53132611/copy-a-cvpixelbuffer-on-any-ios-device
+        try pixelBuffer?.mutate(.readOnly) { pixelBuffer in
+            if planeCount == 0 {
+                let dst = self.baseAddress
+                let src = pixelBuffer.baseAddress
+                let bytesPerRowSrc = pixelBuffer.bytesPerRow
+                let bytesPerRowDst = bytesPerRowSrc
+                if bytesPerRowSrc == bytesPerRowDst {
+                    memcpy(dst, src, height * bytesPerRowSrc)
+                } else {
+                    var startOfRowSrc = src
+                    var startOfRowDst = dst
+                    for _ in 0..<height {
+                        memcpy(startOfRowDst, startOfRowSrc, min(bytesPerRowSrc, bytesPerRowDst))
+                        startOfRowSrc = startOfRowSrc?.advanced(by: bytesPerRowSrc)
+                        startOfRowDst = startOfRowDst?.advanced(by: bytesPerRowDst)
+                    }
+                }
+            } else {
+                for plane in 0..<planeCount {
+                    let dst = baseAddressOfPlane(plane)
+                    let src = pixelBuffer.baseAddressOfPlane(plane)
+                    let height = getHeightOfPlane(plane)
+                    let bytesPerRowSrc = pixelBuffer.bytesPerRawOfPlane(plane)
+                    let bytesPerRowDst = bytesPerRawOfPlane(plane)
+                    if bytesPerRowSrc == bytesPerRowDst {
+                        memcpy(dst, src, height * bytesPerRowSrc)
+                    } else {
+                        var startOfRowSrc = src
+                        var startOfRowDst = dst
+                        for _ in 0..<height {
+                            memcpy(startOfRowDst, startOfRowSrc, min(bytesPerRowSrc, bytesPerRowDst))
+                            startOfRowSrc = startOfRowSrc?.advanced(by: bytesPerRowSrc)
+                            startOfRowDst = startOfRowDst?.advanced(by: bytesPerRowDst)
+                        }
+                    }
+                }
+            }
         }
-        defer {
-            inputImageBuffer.free()
-        }
-        guard var srcImageBuffer = try? makevImage_Buffer(format: &Self.format) else {
-            return self
-        }
-        defer {
-            srcImageBuffer.free()
-        }
-        let xScale = Float(roi.width) / Float(inputImageBuffer.width)
-        let yScale = Float(roi.height) / Float(inputImageBuffer.height)
-        let scaleFactor = (xScale < yScale) ? xScale : yScale
-        var scaledInputImageBuffer = inputImageBuffer.scale(scaleFactor)
-        var shape = ShapeFactory.shared.cornerRadius(CGSize(width: CGFloat(scaledInputImageBuffer.width), height: CGFloat(scaledInputImageBuffer.height)), cornerRadius: radius)
-        vImageSelectChannels_ARGB8888(&shape, &scaledInputImageBuffer, &scaledInputImageBuffer, 0x8, vImage_Flags(kvImageNoFlags))
-        defer {
-            scaledInputImageBuffer.free()
-        }
-        srcImageBuffer.over(&scaledInputImageBuffer, origin: roi.origin)
-        srcImageBuffer.copy(to: self, format: &Self.format)
-        return self
     }
 
-    @discardableResult
-    func split(_ pixelBuffer: CVPixelBuffer?, direction: ImageTransform) -> Self {
-        guard var inputImageBuffer = try? pixelBuffer?.makevImage_Buffer(format: &Self.format) else {
-            return self
+    @inline(__always)
+    func mutate(_ lockFlags: CVPixelBufferLockFlags, lambda: (CVPixelBuffer) throws -> Void) throws {
+        let status = CVPixelBufferLockBaseAddress(self, lockFlags)
+        guard status == kCVReturnSuccess else {
+            throw Error.failedToLock(status)
         }
         defer {
-            inputImageBuffer.free()
+            CVPixelBufferUnlockBaseAddress(self, lockFlags)
         }
-        guard var sourceImageBuffer = try? makevImage_Buffer(format: &Self.format) else {
-            return self
-        }
-        defer {
-            sourceImageBuffer.free()
-        }
-        let scaleX = Float(width) / Float(inputImageBuffer.width)
-        let scaleY = Float(height) / Float(inputImageBuffer.height)
-        var scaledInputImageBuffer = inputImageBuffer.scale(min(scaleY, scaleX))
-        defer {
-            scaledInputImageBuffer.free()
-        }
-        sourceImageBuffer.split(&scaledInputImageBuffer, direction: direction)
-        sourceImageBuffer.copy(to: self, format: &Self.format)
-        return self
+        try lambda(self)
     }
 
-    func makevImage_Buffer(format: inout vImage_CGImageFormat) throws -> vImage_Buffer {
-        var buffer = vImage_Buffer()
-        let cvImageFormat = vImageCVImageFormat_CreateWithCVPixelBuffer(self).takeRetainedValue()
-        vImageCVImageFormat_SetColorSpace(cvImageFormat, CGColorSpaceCreateDeviceRGB())
-        let error = vImageBuffer_InitWithCVPixelBuffer(
-            &buffer,
-            &format,
-            self,
-            cvImageFormat,
-            nil,
-            vImage_Flags(kvImageNoFlags))
-        if error != kvImageNoError {
-            throw Error.failedToMakevImage_Buffer(error)
-        }
-        return buffer
-    }
-
+    @inlinable
+    @inline(__always)
     @discardableResult
     func lockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) -> CVReturn {
         return CVPixelBufferLockBaseAddress(self, lockFlags)
     }
 
+    @inlinable
+    @inline(__always)
     @discardableResult
     func unlockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) -> CVReturn {
         return CVPixelBufferUnlockBaseAddress(self, lockFlags)
+    }
+
+    @inlinable
+    @inline(__always)
+    func baseAddressOfPlane(_ index: Int) -> UnsafeMutableRawPointer? {
+        CVPixelBufferGetBaseAddressOfPlane(self, index)
+    }
+
+    @inlinable
+    @inline(__always)
+    func getHeightOfPlane(_ index: Int) -> Int {
+        CVPixelBufferGetHeightOfPlane(self, index)
+    }
+
+    @inlinable
+    @inline(__always)
+    func bytesPerRawOfPlane(_ index: Int) -> Int {
+        CVPixelBufferGetBytesPerRowOfPlane(self, index)
     }
 }

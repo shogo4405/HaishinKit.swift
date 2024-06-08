@@ -4,146 +4,91 @@ import Foundation
 
 protocol IOVideoMixerDelegate: AnyObject {
     func videoMixer(_ videoMixer: IOVideoMixer<Self>, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
-    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime)
-    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput sampleBbffer: CMSampleBuffer)
+    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput sampleBuffer: CMSampleBuffer)
 }
 
-private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
-    kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange),
-    kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
-]
+private let kIOVideoMixer_lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
 
 final class IOVideoMixer<T: IOVideoMixerDelegate> {
-    var settings: IOVideoMixerSettings = .default
     weak var delegate: T?
-    var context: CIContext = .init() {
-        didSet {
-            for effect in effects {
-                effect.ciContext = context
-            }
-        }
-    }
-    var inputFormats: [UInt8: CMFormatDescription] {
-        var formats: [UInt8: CMFormatDescription] = .init()
-        if let sampleBuffer, let formatDescription = sampleBuffer.formatDescription {
-            formats[0] = formatDescription
-        }
-        if let multiCamSampleBuffer, let formatDescription = multiCamSampleBuffer.formatDescription {
-            formats[1] = formatDescription
-        }
-        return formats
-    }
-    private var extent = CGRect.zero {
-        didSet {
-            guard extent != oldValue else {
-                return
-            }
-            CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
-            pixelBufferPool?.createPixelBuffer(&pixelBuffer)
-        }
-    }
-    private var attributes: [NSString: NSObject] {
-        var attributes: [NSString: NSObject] = kIOVideoMixer_defaultAttributes
-        attributes[kCVPixelBufferWidthKey] = NSNumber(value: Int(extent.width))
-        attributes[kCVPixelBufferHeightKey] = NSNumber(value: Int(extent.height))
-        return attributes
-    }
-    private var buffer: CVPixelBuffer?
-    private var pixelBuffer: CVPixelBuffer?
-    private var pixelBufferPool: CVPixelBufferPool?
-    private var sampleBuffer: CMSampleBuffer?
-    private var multiCamSampleBuffer: CMSampleBuffer?
-    private(set) var effects: [VideoEffect] = .init()
 
-    @inline(__always)
-    func effect(_ buffer: CVImageBuffer, info: CMSampleBuffer?) -> CIImage {
-        var image = CIImage(cvPixelBuffer: buffer)
-        for effect in effects {
-            image = effect.execute(image, info: info)
+    lazy var screen: Screen = {
+        var screen = Screen()
+        screen.observer = self
+        videoTrackScreenObject.track = settings.mainTrack
+        try? screen.addChild(videoTrackScreenObject)
+        return screen
+    }()
+
+    var settings: IOVideoMixerSettings = .default {
+        didSet {
+            if settings.mainTrack != oldValue.mainTrack {
+                videoTrackScreenObject.track = settings.mainTrack
+            }
         }
-        return image
+    }
+
+    private(set) var inputFormats: [UInt8: CMFormatDescription] = [:]
+    private var currentPixelBuffer: CVPixelBuffer?
+    private var videoTrackScreenObject = VideoTrackScreenObject()
+
+    func append(_ track: UInt8, sampleBuffer: CMSampleBuffer) {
+        inputFormats[track] = sampleBuffer.formatDescription
+        delegate?.videoMixer(self, track: track, didInput: sampleBuffer)
+        switch settings.mode {
+        case .offscreen:
+            let screens: [VideoTrackScreenObject] = screen.getScreenObjects()
+            for screen in screens where screen.track == track {
+                screen.enqueue(sampleBuffer)
+            }
+        case .passthrough:
+            if settings.mainTrack == track {
+                outputSampleBuffer(sampleBuffer)
+            }
+        }
     }
 
     func registerEffect(_ effect: VideoEffect) -> Bool {
-        effect.ciContext = context
-        if effects.contains(effect) {
-            return false
-        }
-        effects.append(effect)
-        return true
+        return videoTrackScreenObject.registerVideoEffect(effect)
     }
 
     func unregisterEffect(_ effect: VideoEffect) -> Bool {
-        effect.ciContext = nil
-        if let index = effects.firstIndex(of: effect) {
-            effects.remove(at: index)
-            return true
-        }
-        return false
+        return videoTrackScreenObject.unregisterVideoEffect(effect)
     }
 
-    func append(_ track: UInt8, sampleBuffer: CMSampleBuffer) {
-        delegate?.videoMixer(self, track: track, didInput: sampleBuffer)
-        if track == settings.mainTrack {
-            var imageBuffer: CVImageBuffer?
-            guard let buffer = sampleBuffer.imageBuffer else {
-                return
-            }
-            self.sampleBuffer = sampleBuffer
-            buffer.lockBaseAddress()
-            defer {
-                buffer.unlockBaseAddress()
-                imageBuffer?.unlockBaseAddress()
-            }
-            if let multiCamPixelBuffer = multiCamSampleBuffer?.imageBuffer {
-                multiCamPixelBuffer.lockBaseAddress()
-                switch settings.mode {
-                case .pip:
-                    buffer.over(
-                        multiCamPixelBuffer,
-                        regionOfInterest: settings.regionOfInterest,
-                        radius: settings.cornerRadius
-                    )
-                case .splitView:
-                    buffer.split(multiCamPixelBuffer, direction: settings.direction)
-                }
-                multiCamPixelBuffer.unlockBaseAddress()
-            }
-            if !effects.isEmpty {
-                let image = effect(buffer, info: sampleBuffer)
-                extent = image.extent
-                #if os(macOS)
-                pixelBufferPool?.createPixelBuffer(&imageBuffer)
-                #else
-                if settings.alwaysUseBufferPoolForVideoEffects || buffer.width != Int(extent.width) || buffer.height != Int(extent.height) {
-                    pixelBufferPool?.createPixelBuffer(&imageBuffer)
-                }
-                #endif
-                imageBuffer?.lockBaseAddress()
-                context.render(image, to: imageBuffer ?? buffer)
-            }
-            if settings.isMuted {
-                imageBuffer = pixelBuffer
-            }
-            delegate?.videoMixer(self, didOutput: imageBuffer ?? buffer, presentationTimeStamp: sampleBuffer.presentationTimeStamp)
-            if !settings.isMuted {
-                pixelBuffer = buffer
+    func reset(_ track: UInt8) {
+        inputFormats[track] = nil
+        let screens: [VideoTrackScreenObject] = screen.getScreenObjects()
+        for screen in screens where screen.track == track {
+            screen.reset()
+        }
+    }
+
+    @inline(__always)
+    private func outputSampleBuffer(_ sampleBuffer: CMSampleBuffer) {
+        defer {
+            currentPixelBuffer = sampleBuffer.imageBuffer
+        }
+        guard settings.isMuted else {
+            delegate?.videoMixer(self, didOutput: sampleBuffer)
+            return
+        }
+        do {
+            try sampleBuffer.imageBuffer?.mutate(kIOVideoMixer_lockFlags) { imageBuffer in
+                try imageBuffer.copy(currentPixelBuffer)
             }
             delegate?.videoMixer(self, didOutput: sampleBuffer)
-        } else {
-            multiCamSampleBuffer = sampleBuffer
+        } catch {
+            logger.warn(error)
         }
     }
+}
 
-    func detach(_ track: UInt8) {
-        switch track {
-        case 0:
-            pixelBuffer = nil
-            sampleBuffer = nil
-        case 1:
-            multiCamSampleBuffer = nil
-        default:
-            break
+extension IOVideoMixer: ScreenObserver {
+    func screen(_ screen: Screen, didOutput sampleBuffer: CMSampleBuffer) {
+        guard settings.mode == .offscreen else {
+            return
         }
+        outputSampleBuffer(sampleBuffer)
     }
 }

@@ -12,7 +12,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
 
     #if os(iOS) || os(macOS)
     /// The default color format.
-    public static let colorFormat = kCVPixelFormatType_32BGRA
+    public static let colorFormat = kCVPixelFormatType_32ARGB
     #else
     /// The default color format.
     public static let colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
@@ -22,7 +22,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     public private(set) var device: AVCaptureDevice?
 
     /// Specifies the video capture color format.
-    /// - Warning: If a format other than kCVPixelFormatType_32BGRA is set, the multi-camera feature will become unavailable. We intend to support this in the future.
+    /// - Warning: If a format other than kCVPixelFormatType_32ARGB is set, the multi-camera feature will become unavailable. We intend to support this in the future.
     public var colorFormat = IOVideoCaptureUnit.colorFormat
 
     /// The track number.

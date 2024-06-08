@@ -35,6 +35,11 @@ final class IOVideoUnit: IOUnit {
             #endif
         }
     }
+
+    var screen: Screen {
+        return videoMixer.screen
+    }
+
     var mixerSettings: IOVideoMixerSettings {
         get {
             return videoMixer.settings
@@ -82,17 +87,6 @@ final class IOVideoUnit: IOUnit {
     @available(tvOS 17.0, *)
     var hasDevice: Bool {
         !captures.lazy.filter { $0.value.device != nil }.isEmpty
-    }
-
-    var context: CIContext {
-        get {
-            return lockQueue.sync { self.videoMixer.context }
-        }
-        set {
-            lockQueue.async {
-                self.videoMixer.context = newValue
-            }
-        }
     }
 
     var isRunning: Atomic<Bool> {
@@ -184,13 +178,13 @@ final class IOVideoUnit: IOUnit {
             let capture = self.capture(for: track)
             configuration?(capture, nil)
             try capture?.attachDevice(device, videoUnit: self)
-            if device == nil {
-                videoMixer.detach(track)
-            }
         }
         if device != nil && view != nil {
             // Start captureing if not running.
             mixer?.session.startRunning()
+        }
+        if device == nil {
+            videoMixer.reset(track)
         }
     }
 
@@ -261,15 +255,14 @@ extension IOVideoUnit: IOVideoMixerDelegate {
     }
 
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
+        if let imageBuffer = sampleBuffer.imageBuffer {
+            codec.append(
+                imageBuffer,
+                presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+                duration: sampleBuffer.duration
+            )
+        }
         view?.enqueue(sampleBuffer)
         mixer?.videoUnit(self, didOutput: sampleBuffer)
-    }
-
-    func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime) {
-        codec.append(
-            imageBuffer,
-            presentationTimeStamp: presentationTimeStamp,
-            duration: .invalid
-        )
     }
 }

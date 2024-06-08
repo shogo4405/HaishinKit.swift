@@ -70,9 +70,6 @@ public class MTHKView: MTKView {
     private weak var currentStream: IOStream? {
         didSet {
             currentStream.map {
-                if let context = self.context {
-                    $0.context = context
-                }
                 $0.view = self
             }
         }

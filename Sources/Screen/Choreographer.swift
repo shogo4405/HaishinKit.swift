@@ -8,25 +8,33 @@ import Foundation
 // swiftlint:disable attributes
 
 final class DisplayLink: NSObject {
+    private static let preferredFramesPerSecond = 0
+
     var isPaused = false {
         didSet {
             guard let displayLink = displayLink, oldValue != isPaused else {
                 return
             }
             if isPaused {
-                status = CVDisplayLinkStop(displayLink)
+                CVDisplayLinkStop(displayLink)
             } else {
-                status = CVDisplayLinkStart(displayLink)
+                CVDisplayLinkStart(displayLink)
             }
         }
     }
-    var frameInterval = 0
-    var preferredFramesPerSecond = 1
+    var preferredFramesPerSecond = DisplayLink.preferredFramesPerSecond {
+        didSet {
+            guard preferredFramesPerSecond != oldValue else {
+                return
+            }
+            frameInterval = 1.0 / Double(preferredFramesPerSecond)
+        }
+    }
     private(set) var duration = 0.0
     private(set) var timestamp: CFTimeInterval = 0
-    private var status: CVReturn = 0
-    private var displayLink: CVDisplayLink?
     private var selector: Selector?
+    private var displayLink: CVDisplayLink?
+    private var frameInterval = 0.0
     private weak var delegate: NSObject?
 
     deinit {
@@ -35,16 +43,22 @@ final class DisplayLink: NSObject {
 
     init(target: NSObject, selector sel: Selector) {
         super.init()
-        status = CVDisplayLinkCreateWithActiveCGDisplays(&displayLink)
+        CVDisplayLinkCreateWithActiveCGDisplays(&displayLink)
         guard let displayLink = displayLink else {
             return
         }
         self.delegate = target
         self.selector = sel
-        CVDisplayLinkSetOutputHandler(displayLink) { [unowned self] _, inNow, _, _, _ -> CVReturn in
-            self.timestamp = inNow.pointee.timestamp
-            self.duration = inNow.pointee.duration
-            _ = self.delegate?.perform(self.selector, with: self)
+        CVDisplayLinkSetOutputHandler(displayLink) { [weak self] _, inNow, _, _, _ -> CVReturn in
+            guard let self else {
+                return kCVReturnSuccess
+            }
+            self.duration += inNow.pointee.duration
+            if frameInterval == 0 || frameInterval < inNow.pointee.timestamp - self.timestamp {
+                self.timestamp = inNow.pointee.timestamp
+                _ = self.delegate?.perform(self.selector, with: self)
+                self.duration = 0.0
+            }
             return kCVReturnSuccess
         }
     }
@@ -53,14 +67,14 @@ final class DisplayLink: NSObject {
         guard let displayLink = displayLink, !isPaused else {
             return
         }
-        status = CVDisplayLinkStart(displayLink)
+        CVDisplayLinkStart(displayLink)
     }
 
     func invalidate() {
         guard let displayLink = displayLink, isPaused else {
             return
         }
-        status = CVDisplayLinkStop(displayLink)
+        CVDisplayLinkStop(displayLink)
     }
 }
 
@@ -107,6 +121,7 @@ final class DisplayLinkChoreographer: NSObject, Choreographer {
     }
     weak var delegate: (any ChoreographerDelegate)?
     var isRunning: Atomic<Bool> = .init(false)
+    var preferredFramesPerSecond = DisplayLinkChoreographer.preferredFramesPerSecond
     private var duration: Double = DisplayLinkChoreographer.duration
     private var displayLink: DisplayLink? {
         didSet {
@@ -115,7 +130,7 @@ final class DisplayLinkChoreographer: NSObject, Choreographer {
                 return
             }
             displayLink.isPaused = true
-            displayLink.preferredFramesPerSecond = Self.preferredFramesPerSecond
+            displayLink.preferredFramesPerSecond = preferredFramesPerSecond
             displayLink.add(to: .main, forMode: .common)
         }
     }
