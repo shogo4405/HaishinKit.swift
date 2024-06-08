@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>SRTMode Enumeration Reference</title>
+    <title>VideoRotator Class Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/SRTMode" class="dashAnchor"></a>
-    <a title="SRTMode Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Class/VideoRotator" class="dashAnchor"></a>
+    <a title="VideoRotator Class Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">HaishinKit 1.8.2 Docs</a> (89% documented)</p>
@@ -29,9 +29,9 @@
       <p id="breadcrumbs">
         <a href="../index.html">HaishinKit</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        <a href="../Enums.html">Enumerations</a>
+        <a href="../Classes.html">Classes</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        SRTHaishinKit.SRTMode Enumeration Reference
+        VideoRotator Class Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -326,15 +326,18 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>SRTMode</h1>
+            <h1>VideoRotator</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTMode</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">@available(iOS 16.0, tvOS 16.0, macOS 13.0, *)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="kt">VideoRotator</span></code></pre>
 
                 </div>
               </div>
-            <p>The type of SRTHaishinKit supports srt modes.</p>
+            <p>This class allows to rotate image buffers that are provided by ReplayKit.
+The buffers arrive in portrait orientation and contain buffer-level attachment
+that allow to determine the target resolution and rotate the buffer accordingly.</p>
 
           </section>
           <section class="section task-group-section">
@@ -343,9 +346,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SRTHaishinKit7SRTModeO6calleryA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/caller" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit7SRTModeO6calleryA2CmF">caller</a>
+                    <a name="/s:10HaishinKit12VideoRotatorCACSgycfc"></a>
+                    <a name="//apple_ref/swift/Method/init()" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit12VideoRotatorCACSgycfc">init()</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,14 +356,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The caller mode.</p>
+                        <p>Undocumented</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">caller</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="nf">init</span><span class="p">?()</span></code></pre>
 
                         </div>
                       </div>
@@ -370,9 +373,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SRTHaishinKit7SRTModeO8listeneryA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/listener" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit7SRTModeO8listeneryA2CmF">listener</a>
+                    <a name="/s:10HaishinKit12VideoRotatorC6rotate6buffers6ResultOySo17CMSampleBufferRefaAA0cD5ErrorOGAI_tF"></a>
+                    <a name="//apple_ref/swift/Method/rotate(buffer:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit12VideoRotatorC6rotate6buffers6ResultOySo17CMSampleBufferRefaAA0cD5ErrorOGAI_tF">rotate(buffer:<wbr>)</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -380,14 +383,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The listener mode.</p>
+                        <p>Undocumented</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">listener</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">func</span> <span class="nf">rotate</span><span class="p">(</span><span class="n">buffer</span> <span class="nv">sampleBuffer</span><span class="p">:</span> <span class="kt">CMSampleBuffer</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Result</span><span class="o">&lt;</span><span class="kt">CMSampleBuffer</span><span class="p">,</span> <span class="kt"><a href="../Enums/VideoRotatorError.html">VideoRotatorError</a></span><span class="o">&gt;</span></code></pre>
 
                         </div>
                       </div>

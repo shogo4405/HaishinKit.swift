@@ -55,7 +55,7 @@ Project name    |Notes       |License
 - [x] [Enhanced RTMP](https://github.com/veovera/enhanced-rtmp)
 
 ### SRT(beta)
-- [x] Publish and Recording (H264/AAC)
+- [x] Publish and Recording (H264/HEVC/AAC)
 - [x] Playback(beta)
 - [ ] mode
   - [x] caller

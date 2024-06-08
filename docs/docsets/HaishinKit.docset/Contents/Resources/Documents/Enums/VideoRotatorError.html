@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>SRTMode Enumeration Reference</title>
+    <title>VideoRotatorError Enumeration Reference</title>
     <link rel="stylesheet" type="text/css" href="../css/jazzy.css" />
     <link rel="stylesheet" type="text/css" href="../css/highlight.css" />
     <meta charset='utf-8'>
@@ -13,8 +13,8 @@
     <script src="../js/jazzy.search.js" defer></script>
   </head>
   <body>
-    <a name="//apple_ref/swift/Enum/SRTMode" class="dashAnchor"></a>
-    <a title="SRTMode Enumeration Reference"></a>
+    <a name="//apple_ref/swift/Enum/VideoRotatorError" class="dashAnchor"></a>
+    <a title="VideoRotatorError Enumeration Reference"></a>
     <header>
       <div class="content-wrapper">
         <p><a href="../index.html">HaishinKit 1.8.2 Docs</a> (89% documented)</p>
@@ -31,7 +31,7 @@
         <img id="carat" src="../img/carat.png" alt=""/>
         <a href="../Enums.html">Enumerations</a>
         <img id="carat" src="../img/carat.png" alt=""/>
-        SRTHaishinKit.SRTMode Enumeration Reference
+        VideoRotatorError Enumeration Reference
       </p>
     </div>
     <div class="content-wrapper">
@@ -326,15 +326,15 @@
       <article class="main-content">
         <section>
           <section class="section">
-            <h1>SRTMode</h1>
+            <h1>VideoRotatorError</h1>
               <div class="declaration">
                 <div class="language">
                   
-                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTMode</span></code></pre>
+                  <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">VideoRotatorError</span> <span class="p">:</span> <span class="kt">Error</span></code></pre>
 
                 </div>
               </div>
-            <p>The type of SRTHaishinKit supports srt modes.</p>
+            <p>VideoRotator domain errors</p>
 
           </section>
           <section class="section task-group-section">
@@ -343,9 +343,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SRTHaishinKit7SRTModeO6calleryA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/caller" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit7SRTModeO6calleryA2CmF">caller</a>
+                    <a name="/s:10HaishinKit17VideoRotatorErrorO13noImageBufferyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/noImageBuffer" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit17VideoRotatorErrorO13noImageBufferyA2CmF">noImageBuffer</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -353,14 +353,14 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The caller mode.</p>
+                        <p>Provided buffer does not contain image buffer</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">caller</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">noImageBuffer</span></code></pre>
 
                         </div>
                       </div>
@@ -370,9 +370,9 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:13SRTHaishinKit7SRTModeO8listeneryA2CmF"></a>
-                    <a name="//apple_ref/swift/Element/listener" class="dashAnchor"></a>
-                    <a class="token" href="#/s:13SRTHaishinKit7SRTModeO8listeneryA2CmF">listener</a>
+                    <a name="/s:10HaishinKit17VideoRotatorErrorO17noOrientationInfoyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/noOrientationInfo" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit17VideoRotatorErrorO17noOrientationInfoyA2CmF">noOrientationInfo</a>
                     </code>
                   </div>
                   <div class="height-container">
@@ -380,14 +380,95 @@
                     <section class="section">
                       <div class="pointer"></div>
                       <div class="abstract">
-                        <p>The listener mode.</p>
+                        <p>Provided buffer does not contain orientation attachment</p>
 
                       </div>
                       <div class="declaration">
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">listener</span></code></pre>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">noOrientationInfo</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit17VideoRotatorErrorO22unsupportedOrientationyA2CmF"></a>
+                    <a name="//apple_ref/swift/Element/unsupportedOrientation" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit17VideoRotatorErrorO22unsupportedOrientationyA2CmF">unsupportedOrientation</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Provided orientation is not supported</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="n">unsupportedOrientation</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit17VideoRotatorErrorO25cannotAllocatePixelBufferyACs5Int32VcACmF"></a>
+                    <a name="//apple_ref/swift/Element/cannotAllocatePixelBuffer(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit17VideoRotatorErrorO25cannotAllocatePixelBufferyACs5Int32VcACmF">cannotAllocatePixelBuffer(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Pixel buffer cannot be allocated</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">cannotAllocatePixelBuffer</span><span class="p">(</span><span class="kt">CVReturn</span><span class="p">)</span></code></pre>
+
+                        </div>
+                      </div>
+                    </section>
+                  </div>
+                </li>
+                <li class="item">
+                  <div>
+                    <code>
+                    <a name="/s:10HaishinKit17VideoRotatorErrorO15rotationFailureyACs5Int32VcACmF"></a>
+                    <a name="//apple_ref/swift/Element/rotationFailure(_:)" class="dashAnchor"></a>
+                    <a class="token" href="#/s:10HaishinKit17VideoRotatorErrorO15rotationFailureyACs5Int32VcACmF">rotationFailure(_:<wbr>)</a>
+                    </code>
+                  </div>
+                  <div class="height-container">
+                    <div class="pointer-container"></div>
+                    <section class="section">
+                      <div class="pointer"></div>
+                      <div class="abstract">
+                        <p>Rotation session fails to rotate the image buffer</p>
+
+                      </div>
+                      <div class="declaration">
+                        <h4>Declaration</h4>
+                        <div class="language">
+                          <p class="aside-title">Swift</p>
+                          <pre class="highlight swift"><code><span class="k">case</span> <span class="nf">rotationFailure</span><span class="p">(</span><span class="kt">OSStatus</span><span class="p">)</span></code></pre>
 
                         </div>
                       </div>
