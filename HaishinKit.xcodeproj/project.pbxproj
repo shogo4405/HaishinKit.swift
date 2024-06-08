@@ -234,7 +234,6 @@
 		BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC93792F2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */; };
-		BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959EEE296EE4190067BA97 /* ImageTransform.swift */; };
 		BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */; };
 		BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */; };
 		BC9CFA9323BDE8B700917EEF /* IOStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* IOStreamView.swift */; };
@@ -677,7 +676,6 @@
 		BC7C56D029A78D4F00C41A9B /* ADTSHeaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSHeaderTests.swift; sourceTree = "<group>"; };
 		BC83A4722403D83B006BDE06 /* VTCompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTCompressionSession+Extension.swift"; sourceTree = "<group>"; };
 		BC93792E2ADD76BE001097DB /* AVAudioCompressedBuffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVAudioCompressedBuffer+Extension.swift"; sourceTree = "<group>"; };
-		BC959EEE296EE4190067BA97 /* ImageTransform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageTransform.swift; sourceTree = "<group>"; };
 		BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCStreamPublishViewController.swift; sourceTree = "<group>"; };
 		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* IOStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamView.swift; sourceTree = "<group>"; };
@@ -888,7 +886,6 @@
 				BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */,
 				2917CB652104CA2800F6823A /* AudioSpecificConfigTests.swift */,
 				BC1720A82C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift */,
-				BCCBCE9429A7C9C90095B51C /* AVCFormatStreamTests.swift */,
 				BC7C56C629A7701F00C41A9B /* ESSpecificDataTests.swift */,
 				BC1DC5112A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift */,
 				BCCBCE9429A7C9C90095B51C /* ISOTypeBufferUtilTests.swift */,
@@ -1296,7 +1293,6 @@
 			isa = PBXGroup;
 			children = (
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
-				BC959EEE296EE4190067BA97 /* ImageTransform.swift */,
 				BCDEB4F92BE442F900EEC6ED /* Screen.swift */,
 				BC16019B2BE0E4750061BD3E /* ScreenObject.swift */,
 				BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */,
@@ -1948,7 +1944,6 @@
 				29B876921CD70AFE00FC07DA /* IOMixer.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
 				BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */,
-				BC959EEF296EE4190067BA97 /* ImageTransform.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,
 				29B876901CD70AFE00FC07DA /* IOAudioUnit.swift in Sources */,
