@@ -64,8 +64,22 @@ Project name    |Notes       |License
 
 ### Offscreen Rendering.
 Through off-screen rendering capabilities, it is possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
+<p align="center">
+  <img width="732" alt="" src="https://github.com/shogo4405/HaishinKit.swift/assets/810189/43ad08d4-1a4c-4390-97ca-7bba6109e7cf">
+</p>
 
+<details>
+<summary>Example</summary>
+  
 ```swift
+stream.videoMixerSettings.mode = .offscreen
+stream.screen.startRunning()
+textScreenObject.horizontalAlignment = .right
+textScreenObject.verticalAlignment = .bottom
+textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
+
+stream.screen.backgroundColor = UIColor.black.cgColor
+
 let videoScreenObject = VideoTrackScreenObject()
 videoScreenObject.cornerRadius = 32.0
 videoScreenObject.track = 1
@@ -73,7 +87,6 @@ videoScreenObject.horizontalAlignment = .right
 videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
 videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
 _ = videoScreenObject.registerVideoEffect(MonochromeEffect())
-try? stream.screen.addChild(videoScreenObject)
 
 let imageScreenObject = ImageScreenObject()
 let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
@@ -84,13 +97,24 @@ if let provider = CGDataProvider(url: imageURL as CFURL) {
         pngDataProviderSource: provider,
         decode: nil,
         shouldInterpolate: false,
-        intent: .defaultIntent
+    intent: .defaultIntent
     )
 } else {
     logger.info("no image")
 }
+
+let assetScreenObject = AssetScreenObject()
+assetScreenObject.size = .init(width: 180, height: 180)
+assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
+try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
+try? stream.screen.addChild(assetScreenObject)
+try? stream.screen.addChild(videoScreenObject)
 try? stream.screen.addChild(imageScreenObject)
+try? stream.screen.addChild(textScreenObject)
+stream.screen.delegate = self
 ```
+
+</details>
 
 ### Rendering
 |Features|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
@@ -123,6 +147,7 @@ open HaishinKit.xcodeproj
 ### Development
 |Version|Xcode|Swift|
 |:----:|:----:|:----:|
+|1.9.0+|15.4+|5.10+|
 |1.8.0+|15.3+|5.9+|
 |1.7.0+|15.0+|5.9+|
 |1.6.0+|15.0+|5.8+|
@@ -131,7 +156,7 @@ open HaishinKit.xcodeproj
 |-|iOS|tvOS|macOS|visionOS|watchOS|
 |:----|:----:|:----:|:----:|:----:|:----:|
 |HaishinKit|13.0+|13.0+|10.15+|1.0+|-|
-|SRTHaishinKit|13.0+|-|13.0+|-|-|
+|SRTHaishinKit|13.0+|13.0+|13.0+|1.0+|-|
 
 ### Cocoa Keys
 Please contains Info.plist.
@@ -153,8 +178,8 @@ HaishinKit has a multi-module configuration. If you want to use the SRT protocol
 |  | HaishinKit | SRTHaishinKit |
 | - | :- | :- |
 | SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
-| CocoaPods | source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>    pod 'HaishinKit', '~> 1.6.0<br>end<br><br>target 'Your Target'  do<br>    platform :ios, '12.0'<br>    import_pods<br>end<br> | Not supported. |
-| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.6.0 | Not supported. |
+| CocoaPods | source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>    pod 'HaishinKit', '~> 1.8.2<br>end<br><br>target 'Your Target'  do<br>    platform :ios, '13.0'<br>    import_pods<br>end<br> | Not supported. |
+| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.8.2 | Not supported. |
 
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
@@ -331,15 +356,12 @@ stream.attachCamera(front, track: 0) { videoUnit, error in
 
 #### [VideoMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOVideoMixerSettings.html)
 ```swift
-stream.videoMixerSettings = IOVideoMixerSettings(
-  mode: .pip,
-  cornerRadius: 16.0,
-  regionOfInterest: .init(
-    origin: CGPoint(x: 16, y: 16),
-    size: .init(width: 160, height: 160)
-  ),
-  direction: .east
-)
+/// Specifies the image rendering mode.
+stream.videoMixerSettings.mode = .passthrough or .offscreen
+/// Specifies the muted indicies whether freeze video signal or not.
+stream.videoMixerSettings.isMuted = false
+/// Specifies the main track number.
+stream.videoMixerSettings.mainTrack = 0
 ```
 
 #### [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)

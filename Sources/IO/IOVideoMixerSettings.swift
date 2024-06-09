@@ -16,7 +16,7 @@ public struct IOVideoMixerSettings: Codable {
     }
 
     /// Specifies the image rendering mode.
-    public var mode: Mode = .offscreen
+    public var mode: Mode = .passthrough
 
     /// Specifies the muted indicies whether freeze video signal or not.
     public var isMuted = false
