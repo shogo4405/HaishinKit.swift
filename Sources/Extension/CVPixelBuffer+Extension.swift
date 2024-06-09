@@ -51,7 +51,7 @@ extension CVPixelBuffer {
 
     @inlinable @inline(__always)
     var width: Int {
-        CVPixelBufferGetHeight(self)
+        CVPixelBufferGetWidth(self)
     }
 
     @inlinable @inline(__always)
