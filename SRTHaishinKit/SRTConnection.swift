@@ -3,7 +3,13 @@ import libsrt
 
 /// The SRTConnection class create a two-way SRT connection.
 public final class SRTConnection: NSObject {
-    /// SRT Library version
+    /// The error comain codes.
+    public enum Error: Swift.Error {
+        case notSupportedUri(_ uri: URL?)
+        case failedToConnect(_ message: String, reson: Int32)
+    }
+
+    /// The SRT Library version
     public static let version: String = SRT_VERSION_STRING
     /// The URI passed to the SRTConnection.connect() method.
     public private(set) var uri: URL?
@@ -19,15 +25,15 @@ public final class SRTConnection: NSObject {
     var clients: [SRTSocket<SRTConnection>] = []
 
     /// The SRT's performance data.
-    public var performanceData: SRTPerformanceData {
+    public var performanceData: SRTPerformanceData? {
         guard let socket else {
-            return .zero
+            return nil
         }
         _ = socket.bstats()
         return SRTPerformanceData(mon: socket.perf)
     }
 
-    /// Creates a new SRTConnection.
+    /// Creates an object.
     override public init() {
         super.init()
         srt_startup()
@@ -39,19 +45,27 @@ public final class SRTConnection: NSObject {
     }
 
     /// Open a two-way connection to an application on SRT Server.
-    public func open(_ uri: URL?, mode: SRTMode = .caller) {
-        guard let uri = uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
-            return
+    public func open(_ uri: URL?, mode: SRTMode = .caller) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            guard let uri = uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
+                continuation.resume(throwing: Error.notSupportedUri(uri))
+                return
+            }
+            do {
+                let options = SRTSocketOption.from(uri: uri)
+                let addr = sockaddr_in(mode.host(host), port: UInt16(port))
+                socket = .init()
+                try socket?.open(addr, mode: mode, options: options)
+                self.uri = uri
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
+            }
         }
-        self.uri = uri
-        let options = SRTSocketOption.from(uri: uri)
-        let addr = sockaddr_in(mode.host(host), port: UInt16(port))
-        socket = .init()
-        ((try? socket?.open(addr, mode: mode, options: options)) as ()??)
     }
 
     /// Closes the connection from the server.
-    public func close() {
+    public func close() async {
         for client in clients {
             client.close()
         }

@@ -6,7 +6,7 @@ private let enummapTranstype: [String: Any] = [
     "file": SRTT_FILE
 ]
 
-public enum SRTSocketOption: String {
+public enum SRTSocketOption: String, Sendable {
     static func from(uri: URL?) -> [SRTSocketOption: Any] {
         guard let uri = uri else {
             return [:]

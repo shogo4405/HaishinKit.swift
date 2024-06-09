@@ -1602,7 +1602,7 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftMigration = 0700;
 				LastSwiftUpdateCheck = 1510;
-				LastUpgradeCheck = 1520;
+				LastUpgradeCheck = 1540;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					2915EC511D85BDF100621092 = {
@@ -2497,6 +2497,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
+				"OTHER_SWIFT_FLAGS[arch=*]" = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
@@ -2898,7 +2899,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
+				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny -Xfrontend -warn-concurrency";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.SRTHaishinKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2952,7 +2953,7 @@
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
+				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny -Xfrontend -warn-concurrency";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.SRTHaishinKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

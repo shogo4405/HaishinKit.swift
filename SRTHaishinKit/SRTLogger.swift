@@ -1,7 +1,7 @@
 import Foundation
 import libsrt
 
-public enum SRTLogLevel {
+public enum SRTLogLevel: Sendable {
     /// Highly detailed and very frequent messages.
     case debug
     /// Occasionally displayed information.
@@ -29,7 +29,7 @@ public enum SRTLogLevel {
     }
 }
 
-public enum SRTLogFunctionalArea: Int32 {
+public enum SRTLogFunctionalArea: Int32, Sendable {
     /// General uncategorized log, for serious issues only
     case general = 0
     /// Socket create/open/close/configure activities
@@ -97,7 +97,7 @@ public enum SRTLogFunctionalArea: Int32 {
 }
 
 ///  An object for writing interpolated string messages to srt logging system.
-public class SRTLogger {
+public struct SRTLogger: Sendable {
     public static let shared = SRTLogger()
 
     private init() {
