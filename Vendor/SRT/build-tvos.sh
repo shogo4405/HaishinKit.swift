@@ -11,6 +11,7 @@ srt_tvos() {
 }
 
 # visionOS
+export TVOS_DEPLOYMENT_TARGET=13.0
 srt_tvos appletvsimulator SIMULATOR
 srt_tvos appletvos OS
 mkdir -p ./build/tvos/_SIMULATOR

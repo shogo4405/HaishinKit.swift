@@ -11,6 +11,7 @@ srt_macos() {
 }
 
 # macOS
+export MACOSX_DEPLOYMENT_TARGET=13.0
 srt_macos macosx arm64
 libtool -static -o ./build/macosx/libsrt.a ./build/macosx/arm64/libsrt.a ./OpenSSL/macosx/lib/libcrypto.a ./OpenSSL/macosx/lib/libssl.a
 

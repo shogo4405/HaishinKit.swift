@@ -113,6 +113,15 @@ final class SRTSocket<T: SRTSocketDelegate> {
         startRunning()
     }
 
+    func close() {
+        guard socket != SRT_INVALID_SOCK else {
+            return
+        }
+        srt_close(socket)
+        socket = SRT_INVALID_SOCK
+        stopRunning()
+    }
+
     func doOutput(data: Data) {
         outgoingQueue.async {
             self.outgoingBuffer.append(contentsOf: data.chunk(kSRTSOcket_payloadSize))
@@ -135,15 +144,6 @@ final class SRTSocket<T: SRTSocketDelegate> {
                 }
             } while self.isRunning.value
         }
-    }
-
-    func close() {
-        guard socket != SRT_INVALID_SOCK else {
-            return
-        }
-        srt_close(socket)
-        socket = SRT_INVALID_SOCK
-        stopRunning()
     }
 
     func configure(_ binding: SRTSocketOption.Binding) -> Bool {
