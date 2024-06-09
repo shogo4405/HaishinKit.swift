@@ -81,7 +81,7 @@ final class MediaLink<T: MediaLinkDelegate> {
             return
         }
         if !audioTime.hasAnchor {
-            audioTime.anchor(playerNode.lastRenderTime ?? .zero)
+            audioTime.anchor(playerNode.lastRenderTime ?? AVAudioTime(hostTime: 0))
         }
         nstry({
             self.scheduledAudioBuffers.mutate { $0 += 1 }

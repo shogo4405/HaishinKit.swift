@@ -2,7 +2,7 @@ import AVFAudio
 import Foundation
 
 /// Constraints on the audio codec  compression settings.
-public struct AudioCodecSettings: Codable {
+public struct AudioCodecSettings: Codable, Sendable {
     /// The default value.
     public static let `default` = AudioCodecSettings()
     /// Maximum number of channels supported by the system

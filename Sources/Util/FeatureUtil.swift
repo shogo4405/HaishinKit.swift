@@ -3,7 +3,7 @@ import Foundation
 /// The util object to get feature flag info.
 public enum FeatureUtil {
     /// A structure that defines the name of a feature.
-    public struct Name: RawRepresentable, ExpressibleByStringLiteral {
+    public struct Name: Sendable, RawRepresentable, ExpressibleByStringLiteral {
         // swiftlint:disable:next nesting
         public typealias RawValue = String
         // swiftlint:disable:next nesting

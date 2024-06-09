@@ -3,12 +3,12 @@ import CoreMedia
 import Foundation
 
 /// Constraints on the audio mixier settings.
-public struct IOVideoMixerSettings: Codable {
+public struct IOVideoMixerSettings: Codable, Sendable {
     /// The default setting for the stream.
     public static let `default`: IOVideoMixerSettings = .init()
 
     /// The type of image rendering mode.
-    public enum Mode: String, Codable {
+    public enum Mode: String, Codable, Sendable {
         /// The input buffer will be used as it is. No effects will be applied.
         case passthrough
         /// Off-screen rendering will be performed to allow for more flexible drawing.

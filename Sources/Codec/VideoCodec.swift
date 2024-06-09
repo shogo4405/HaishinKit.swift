@@ -18,10 +18,6 @@ protocol VideoCodecDelegate: AnyObject {
 }
 
 private let kVideoCodec_defaultFrameInterval: Double = 0.0
-private let kVideoCodec_defaultAttributes: [NSString: AnyObject]? = [
-    kCVPixelBufferIOSurfacePropertiesKey: NSDictionary(),
-    kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
-]
 
 // MARK: -
 /**

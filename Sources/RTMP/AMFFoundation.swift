@@ -7,7 +7,7 @@ public let kASUndefined = ASUndefined()
 public typealias ASObject = [String: Any?]
 
 /// The ASUndefined structure represents an undefined for ActionScript.
-public struct ASUndefined: CustomStringConvertible {
+public struct ASUndefined: Sendable, CustomStringConvertible {
     public var description: String {
         "undefined"
     }

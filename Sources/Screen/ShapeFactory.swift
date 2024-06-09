@@ -6,9 +6,7 @@ protocol Shape {
     func makeCGImage() -> CGImage?
 }
 
-class ShapeFactory {
-    static let shared = ShapeFactory()
-
+final class ShapeFactory {
     private var imageBuffers: [String: vImage_Buffer] = [:]
     private var roundedSquareShape = RoundedSquareShape()
 

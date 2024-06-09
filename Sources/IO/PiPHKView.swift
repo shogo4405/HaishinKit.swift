@@ -93,10 +93,6 @@ public class PiPHKView: UIView {
         super.init(coder: aDecoder)
     }
 
-    deinit {
-        attachStream(nil)
-    }
-
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()

@@ -1,22 +1,5 @@
 import Foundation
 
-enum AMFSerializerUtil {
-    private static var classes: [String: AnyClass] = [:]
-
-    static func getClassByAlias(_ name: String) -> AnyClass? {
-        objc_sync_enter(classes)
-        let clazz: AnyClass? = classes[name]
-        objc_sync_exit(classes)
-        return clazz
-    }
-
-    static func registerClassAlias(_ name: String, clazz: AnyClass) {
-        objc_sync_enter(classes)
-        classes[name] = clazz
-        objc_sync_exit(classes)
-    }
-}
-
 enum AMFSerializerError: Error {
     case deserialize
     case outOfIndex

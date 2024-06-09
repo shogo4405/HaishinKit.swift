@@ -349,10 +349,6 @@ public final class TextScreenObject: ScreenObject {
 #if !os(visionOS)
 /// An object that manages offscreen rendering an asset resource.
 public final class AssetScreenObject: ScreenObject {
-    private static let outputSettings = [
-        kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA
-    ] as [String: Any]
-
     public var isReading: Bool {
         return reader?.status == .reading
     }
@@ -390,6 +386,9 @@ public final class AssetScreenObject: ScreenObject {
 
     private var startedAt: CMTime = .zero
     private var videoTrackOutput: AVAssetReaderTrackOutput?
+    private var outputSettings = [
+        kCVPixelBufferPixelFormatTypeKey: kCVPixelFormatType_32BGRA
+    ] as [String: Any]
 
     /// Prepares the asset reader to start reading.
     public func startReading(_ asset: AVAsset) throws {
@@ -399,7 +398,7 @@ public final class AssetScreenObject: ScreenObject {
         }
         let videoTrack = asset.tracks(withMediaType: .video).first
         if let videoTrack {
-            let videoTrackOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: Self.outputSettings)
+            let videoTrackOutput = AVAssetReaderTrackOutput(track: videoTrack, outputSettings: outputSettings)
             videoTrackOutput.alwaysCopiesSampleData = false
             reader.add(videoTrackOutput)
             self.videoTrackOutput = videoTrackOutput

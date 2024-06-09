@@ -2,7 +2,7 @@ import AVFoundation
 import Foundation
 
 /// Constraints on the audio mixier settings.
-public struct IOAudioMixerSettings {
+public struct IOAudioMixerSettings: Sendable {
     /// The default value.
     public static let `default` = IOAudioMixerSettings()
     /// Maximum sampleRate supported by the system

@@ -29,8 +29,6 @@ public protocol IOStreamBitRateStrategyConvertible: AnyObject {
 
 /// The IOStreamBitRateStrategy class provides a no operative bitrate storategy.
 public final class IOStreamBitRateStrategy: IOStreamBitRateStrategyConvertible {
-    public static let shared = IOStreamBitRateStrategy()
-
     public weak var stream: IOStream?
     public let mamimumVideoBitRate: Int = 0
     public let mamimumAudioBitRate: Int = 0

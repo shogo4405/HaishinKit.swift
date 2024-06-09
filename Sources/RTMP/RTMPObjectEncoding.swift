@@ -1,5 +1,5 @@
 /// Constans that defines the RTMPObject encoding type.
-public enum RTMPObjectEncoding: UInt8 {
+public enum RTMPObjectEncoding: UInt8, Sendable {
     /// The AMF0 Encoding.
     case amf0 = 0x00
     /// The AMF3 Encoding.

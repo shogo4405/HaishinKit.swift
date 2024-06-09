@@ -8,15 +8,6 @@ extension CVPixelBuffer {
         case unsupportedFormat(_ format: OSType)
     }
 
-    static var format = vImage_CGImageFormat(
-        bitsPerComponent: 8,
-        bitsPerPixel: 32,
-        colorSpace: nil,
-        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
-        version: 0,
-        decode: nil,
-        renderingIntent: .defaultIntent)
-
     static let lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
 
     @inlinable @inline(__always)

@@ -174,7 +174,7 @@ public class RTMPConnection: EventDispatcher {
     /// Specifies the time to wait for TCP/IP Handshake done.
     public var timeout: Int = NetSocket.defaultTimeout
     /// Specifies the dispatchQos for socket.
-    public var qualityOfService: DispatchQoS = NetSocket.defaultQualityOfService
+    public var qualityOfService: DispatchQoS = .userInitiated
     /// Specifies the name of application.
     public var flashVer: String = RTMPConnection.defaultFlashVer
     /// Specifies theoutgoing RTMPChunkSize.

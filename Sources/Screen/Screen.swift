@@ -9,11 +9,6 @@ import AppKit
 import UIKit
 #endif
 
-private let kIOVideoMixer_defaultAttributes: [NSString: NSObject] = [
-    kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32ARGB),
-    kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue
-]
-
 /// An interface a screen uses to inform its delegate.
 public protocol ScreenDelegate: AnyObject {
     /// Tells the receiver to screen object layout phase.
@@ -91,10 +86,12 @@ public final class Screen: ScreenObjectContainerConvertible {
     }()
     private var timeStamp: CMTime = .invalid
     private var attributes: [NSString: NSObject] {
-        var attributes: [NSString: NSObject] = kIOVideoMixer_defaultAttributes
-        attributes[kCVPixelBufferWidthKey] = NSNumber(value: Int(size.width))
-        attributes[kCVPixelBufferHeightKey] = NSNumber(value: Int(size.height))
-        return attributes
+        return [
+            kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32ARGB),
+            kCVPixelBufferMetalCompatibilityKey: kCFBooleanTrue,
+            kCVPixelBufferWidthKey: NSNumber(value: Int(size.width)),
+            kCVPixelBufferHeightKey: NSNumber(value: Int(size.height))
+        ]
     }
     private var outputFormat: CMFormatDescription?
     private var pixelBufferPool: CVPixelBufferPool? {

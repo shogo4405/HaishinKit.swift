@@ -2,7 +2,7 @@ import Foundation
 import VideoToolbox
 
 /// The VideoCodecSettings class  specifying video compression settings.
-public struct VideoCodecSettings: Codable {
+public struct VideoCodecSettings: Codable, Sendable {
     /// The number of frame rate for 30fps.
     public static let frameInterval30 = (1 / 30) - 0.001
     /// The number of frame rate for 10fps.
@@ -16,7 +16,7 @@ public struct VideoCodecSettings: Codable {
     public static let `default` = VideoCodecSettings()
 
     /// A bitRate mode that affectes how to encode the video source.
-    public enum BitRateMode: String, Codable {
+    public enum BitRateMode: String, Codable, Sendable {
         /// The average bit rate.
         case average
         /// The constant bit rate.
@@ -41,7 +41,7 @@ public struct VideoCodecSettings: Codable {
      * - seealso: https://developer.apple.com/documentation/videotoolbox/kvtpixeltransferpropertykey_scalingmode
      * - seealso: https://developer.apple.com/documentation/videotoolbox/vtpixeltransfersession/pixel_transfer_properties/scaling_mode_constants
      */
-    public enum ScalingMode: String, Codable {
+    public enum ScalingMode: String, Codable, Sendable {
         /// kVTScalingMode_Normal
         case normal = "Normal"
         /// kVTScalingMode_Letterbox

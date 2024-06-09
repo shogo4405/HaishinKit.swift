@@ -89,7 +89,7 @@ open class IOStream: NSObject {
     }
 
     /// Specifies the adaptibe bitrate strategy.
-    public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy.shared {
+    public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy() {
         didSet {
             bitrateStrategy.stream = self
             bitrateStrategy.setUp()

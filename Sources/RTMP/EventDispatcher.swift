@@ -16,7 +16,7 @@ public protocol EventDispatcherConvertible: AnyObject {
 /// The Event interface is used to provide information.
 public final class Event {
     /// A structure that defines the name of an event.
-    public struct Name: RawRepresentable, ExpressibleByStringLiteral {
+    public struct Name: RawRepresentable, ExpressibleByStringLiteral, Sendable {
         // swiftlint:disable:next nesting
         public typealias RawValue = String
         // swiftlint:disable:next nesting

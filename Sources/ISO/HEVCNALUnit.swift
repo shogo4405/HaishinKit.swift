@@ -71,7 +71,7 @@ extension [HEVCNALUnit] {
                         ppsBaseAddress.assumingMemoryBound(to: UInt8.self)
                     ]
                     let sizes: [Int] = [vpsBuffer.count, spsBuffer.count, ppsBuffer.count]
-                    let status = CMVideoFormatDescriptionCreateFromHEVCParameterSets(
+                    CMVideoFormatDescriptionCreateFromHEVCParameterSets(
                         allocator: kCFAllocatorDefault,
                         parameterSetCount: pointers.count,
                         parameterSetPointers: pointers,

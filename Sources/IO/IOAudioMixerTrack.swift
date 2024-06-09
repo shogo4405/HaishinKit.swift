@@ -9,7 +9,7 @@ protocol IOAudioMixerTrackDelegate: AnyObject {
 }
 
 /// Constraints on the audio mixier track's settings.
-public struct IOAudioMixerTrackSettings: Codable {
+public struct IOAudioMixerTrackSettings: Codable, Sendable {
     /// The default value.
     public static let `default` = IOAudioMixerTrackSettings()
 

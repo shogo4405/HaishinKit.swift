@@ -1,6 +1,6 @@
 import Foundation
 
-final class CRC32 {
+final class CRC32: Sendable {
     static let mpeg2 = CRC32(polynomial: 0x04c11db7)
 
     let table: [UInt32]

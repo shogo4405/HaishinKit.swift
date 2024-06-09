@@ -18,15 +18,6 @@ public protocol ScreenRenderer: AnyObject {
 }
 
 final class ScreenRendererByCPU: ScreenRenderer {
-    private static var format = vImage_CGImageFormat(
-        bitsPerComponent: 8,
-        bitsPerPixel: 32,
-        colorSpace: nil,
-        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
-        version: 0,
-        decode: nil,
-        renderingIntent: .defaultIntent)
-
     lazy var context = {
         guard let deive = MTLCreateSystemDefaultDevice() else {
             return CIContext(options: nil)
@@ -66,10 +57,19 @@ final class ScreenRendererByCPU: ScreenRenderer {
             }
         }
     }
+    private var format = vImage_CGImageFormat(
+        bitsPerComponent: 8,
+        bitsPerPixel: 32,
+        colorSpace: nil,
+        bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.first.rawValue),
+        version: 0,
+        decode: nil,
+        renderingIntent: .defaultIntent)
     private var masks: [ScreenObject: vImage_Buffer] = [:]
     private var images: [ScreenObject: vImage_Buffer] = [:]
     private var canvas: vImage_Buffer = .init()
     private var converter: vImageConverter?
+    private var shapeFactory = ShapeFactory()
     private var pixelFormatType: OSType? {
         didSet {
             guard pixelFormatType != oldValue else {
@@ -90,7 +90,7 @@ final class ScreenRendererByCPU: ScreenRenderer {
             vImageCVImageFormat_SetColorSpace(cvImageFormat, CGColorSpaceCreateDeviceRGB())
             converter = try? vImageConverter.make(
                 sourceFormat: cvImageFormat,
-                destinationFormat: Self.format
+                destinationFormat: format
             )
         }
         guard let converter else {
@@ -121,9 +121,9 @@ final class ScreenRendererByCPU: ScreenRenderer {
             }
             do {
                 images[screenObject]?.free()
-                images[screenObject] = try vImage_Buffer(cgImage: image, format: Self.format)
+                images[screenObject] = try vImage_Buffer(cgImage: image, format: format)
                 if 0 < screenObject.cornerRadius {
-                    masks[screenObject] = ShapeFactory.shared.cornerRadius(screenObject.bounds.size, cornerRadius: screenObject.cornerRadius)
+                    masks[screenObject] = shapeFactory.cornerRadius(screenObject.bounds.size, cornerRadius: screenObject.cornerRadius)
                 } else {
                     masks[screenObject] = nil
                 }
