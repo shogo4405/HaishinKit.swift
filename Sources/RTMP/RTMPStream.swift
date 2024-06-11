@@ -138,7 +138,7 @@ open class RTMPStream: IOStream {
     }
 
     /// The type of publish options.
-    public enum HowToPublish: String {
+    public enum HowToPublish: String, Sendable {
         /// Publish with server-side recording.
         case record
         /// Publish with server-side recording which is to append file if exists.

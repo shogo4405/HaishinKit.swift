@@ -25,9 +25,10 @@ public final class IOStreamRecorder {
         /// Failed to finish writing the AVAssetWriter.
         case failedToFinishWriting(error: (any Swift.Error)?)
     }
-
-    /// The default output settings for a recording.
-    public static let defaultSettings: [AVMediaType: [String: Any]] = [
+    /// Specifies the delegate.
+    public weak var delegate: (any IOStreamRecorderDelegate)?
+    /// Specifies the recorder settings.
+    public var settings: [AVMediaType: [String: Any]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -39,11 +40,6 @@ public final class IOStreamRecorder {
             AVVideoWidthKey: 0
         ]
     ]
-
-    /// Specifies the delegate.
-    public weak var delegate: (any IOStreamRecorderDelegate)?
-    /// Specifies the recorder settings.
-    public var settings: [AVMediaType: [String: Any]] = IOStreamRecorder.defaultSettings
     /// Specifies the file name. nil will generate a unique file name.
     public var fileName: String?
     /// The running indicies whether recording or not.

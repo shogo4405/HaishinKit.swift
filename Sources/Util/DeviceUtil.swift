@@ -5,8 +5,9 @@ import UIKit
 /// The namespace of DeviceUtil.
 public enum DeviceUtil {
     /// Looks up the AVCaptureVideoOrientation by a Notification.
+    @MainActor
     public static func videoOrientation(by notification: Notification) -> AVCaptureVideoOrientation? {
-        guard let device: UIDevice = notification.object as? UIDevice else {
+        guard let device = notification.object as? UIDevice else {
             return nil
         }
         return videoOrientation(by: device.orientation)

@@ -3,7 +3,7 @@ import libsrt
 
 /// The SRTPerformanceData represents the SRT's performance statistics. This struct is wrapper for an CBytePerfMon.
 /// - seealso: https://github.com/Haivision/srt/blob/master/srtcore/srt.h
-public struct SRTPerformanceData {
+public struct SRTPerformanceData: Sendable {
     /// The time since the UDT entity is started, in milliseconds.
     public let msTimeStamp: Int64
     /// The total number of sent data packets, including retransmissions.

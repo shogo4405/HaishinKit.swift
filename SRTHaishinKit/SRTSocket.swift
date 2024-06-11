@@ -3,7 +3,6 @@ import HaishinKit
 import libsrt
 import Logboard
 
-private let kSRTSocket_defaultOptions: [SRTSocketOption: Any] = [:]
 private let kSRTSOcket_payloadSize: Int = 1316
 
 protocol SRTSocketDelegate: AnyObject {
@@ -71,7 +70,7 @@ final class SRTSocket<T: SRTSocketDelegate> {
         }
     }
 
-    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = kSRTSocket_defaultOptions) throws {
+    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = [:]) throws {
         guard socket == SRT_INVALID_SOCK else {
             return
         }

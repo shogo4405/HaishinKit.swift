@@ -1,11 +1,6 @@
 import Foundation
 import libsrt
 
-private let enummapTranstype: [String: Any] = [
-    "live": SRTT_LIVE,
-    "file": SRTT_FILE
-]
-
 public enum SRTSocketOption: String, Sendable {
     static func from(uri: URL?) -> [SRTSocketOption: Any] {
         guard let uri = uri else {
@@ -360,7 +355,10 @@ public enum SRTSocketOption: String, Sendable {
     var valmap: [String: Any]? {
         switch self {
         case .transtype:
-            return enummapTranstype
+            return [
+                "live": SRTT_LIVE,
+                "file": SRTT_FILE
+            ]
         default:
             return nil
         }
