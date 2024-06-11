@@ -308,9 +308,9 @@ stream.attachAudio(front, track: 0) { audioUnit, error in
 ```
 
 #### [AudioMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html)
-If you want to mix multiple audio tracks, please enable the Feature flag.
+If you want to mix multiple audio tracks, please enable the feature flag.
 ```swift
-FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+stream.isMultiTrackAudioMixingEnabled = true
 ```
 
 When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
