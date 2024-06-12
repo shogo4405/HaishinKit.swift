@@ -24,8 +24,9 @@ open class SampleHandler: RPBroadcastSampleHandler {
     }()
 
     private lazy var rtmpStream: RTMPStream = {
-        FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
-        return RTMPStream(connection: rtmpConnection)
+        let stream = RTMPStream(connection: rtmpConnection)
+        stream.isMultiTrackAudioMixingEnabled = true
+        return stream
     }()
 
     private var needVideoConfiguration = true

@@ -145,6 +145,17 @@ open class IOStream: NSObject {
     }
     #endif
 
+    /// Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
+    /// Warning: If there is a possibility of this feature, please set it to true initially.
+    public var isMultiTrackAudioMixingEnabled: Bool {
+        get {
+            return mixer.audioIO.isMultiTrackAudioMixingEnabled
+        }
+        set {
+            mixer.audioIO.isMultiTrackAudioMixingEnabled = newValue
+        }
+    }
+
     /// Specifies the sessionPreset for the AVCaptureSession.
     @available(tvOS 17.0, *)
     public var sessionPreset: AVCaptureSession.Preset {

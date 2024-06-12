@@ -10,6 +10,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         LBLogger.with(HaishinKitIdentifier).level = .info
-        FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
     }
 }

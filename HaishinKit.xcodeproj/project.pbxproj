@@ -181,7 +181,6 @@
 		BC4078C42AD5CC7E00BBB4FA /* IOMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */; };
 		BC4231642BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */; };
 		BC42316A2BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */; };
-		BC42316C2BCB7084003A80DC /* FeatureUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC42316B2BCB7084003A80DC /* FeatureUtil.swift */; };
 		BC4914A228DDD33D009E2DF6 /* VTSessionConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */; };
 		BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */; };
 		BC4914AE28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */; };
@@ -661,7 +660,6 @@
 		BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMuxer.swift; sourceTree = "<group>"; };
 		BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerByMultiTrack.swift; sourceTree = "<group>"; };
 		BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerBySingleTrack.swift; sourceTree = "<group>"; };
-		BC42316B2BCB7084003A80DC /* FeatureUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureUtil.swift; sourceTree = "<group>"; };
 		BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionConvertible.swift; sourceTree = "<group>"; };
 		BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOption.swift; sourceTree = "<group>"; };
 		BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTDecompressionSession+Extension.swift"; sourceTree = "<group>"; };
@@ -877,7 +875,6 @@
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
 				29B876671CD70AB300FC07DA /* DataConvertible.swift */,
 				2976A4851D4903C300B53EF2 /* DeviceUtil.swift */,
-				BC42316B2BCB7084003A80DC /* FeatureUtil.swift */,
 				BC32E88729C9971100051507 /* InstanceHolder.swift */,
 				2942424C1CF4C01300D65DCB /* MD5.swift */,
 				2942A4F721A9418A004E1BEE /* Running.swift */,
@@ -1920,7 +1917,6 @@
 				BC0F1FDC2ACC630400C326FF /* NSView+Extension.swift in Sources */,
 				BC16019C2BE0E4750061BD3E /* ScreenObject.swift in Sources */,
 				29EA87E21E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
-				BC42316C2BCB7084003A80DC /* FeatureUtil.swift in Sources */,
 				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				29EA87D81E79A0090043A5F8 /* URL+Extension.swift in Sources */,
