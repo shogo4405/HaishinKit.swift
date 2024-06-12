@@ -90,49 +90,14 @@ public class MTHKView: MTKView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override open func awakeFromNib() {
         super.awakeFromNib()
-        delegate = self
         framebufferOnly = false
         enableSetNeedsDisplay = true
         if let device {
             context = CIContext(mtlDevice: device)
         }
     }
-}
 
-extension MTHKView: IOStreamView {
-    // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
-    }
-
-    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
-            #if os(macOS)
-            self.needsDisplay = true
-            #else
-            self.setNeedsDisplay()
-            #endif
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
-        }
-    }
-}
-
-extension MTHKView: MTKViewDelegate {
-    // MARK: MTKViewDelegate
-    public func mtkView(_ view: MTKView, drawableSizeWillChange size: CGSize) {
-    }
-
-    public func draw(in view: MTKView) {
+    override open func draw(_ rect: CGRect) {
         guard
             let context,
             let currentDrawable = currentDrawable,
@@ -183,6 +148,34 @@ extension MTHKView: MTKViewDelegate {
         context.render(scaledImage, to: currentDrawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
+    }
+}
+
+extension MTHKView: IOStreamView {
+    // MARK: IOStreamView
+    public func attachStream(_ stream: IOStream?) {
+        if Thread.isMainThread {
+            currentStream = stream
+        } else {
+            DispatchQueue.main.async {
+                self.currentStream = stream
+            }
+        }
+    }
+
+    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
+        if Thread.isMainThread {
+            currentSampleBuffer = sampleBuffer
+            #if os(macOS)
+            self.needsDisplay = true
+            #else
+            self.setNeedsDisplay()
+            #endif
+        } else {
+            DispatchQueue.main.async {
+                self.enqueue(sampleBuffer)
+            }
+        }
     }
 }
 

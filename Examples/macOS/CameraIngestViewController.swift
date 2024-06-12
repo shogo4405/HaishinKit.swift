@@ -34,7 +34,7 @@ final class CameraIngestViewController: NSViewController {
 
     override func viewDidAppear() {
         super.viewDidAppear()
-        
+
         stream.isMultiTrackAudioMixingEnabled = true
 
         stream.videoMixerSettings.mode = .offscreen
