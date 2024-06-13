@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
@@ -25,14 +25,6 @@ protocol IOAudioUnitDelegate: AnyObject {
 final class IOAudioUnit: IOUnit {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
     weak var mixer: IOMixer?
-    var settings: AudioCodecSettings {
-        get {
-            codec.settings
-        }
-        set {
-            codec.settings = newValue
-        }
-    }
     var mixerSettings: IOAudioMixerSettings {
         get {
             audioMixer.settings
@@ -51,20 +43,9 @@ final class IOAudioUnit: IOUnit {
         }
     }
     var isMultiTrackAudioMixingEnabled = false
-    var isRunning: Atomic<Bool> {
-        return codec.isRunning
-    }
     var inputFormats: [UInt8: AVAudioFormat] {
         return audioMixer.inputFormats
     }
-    var outputFormat: AVAudioFormat? {
-        return codec.outputFormat
-    }
-    private lazy var codec: AudioCodec<IOMixer> = {
-        var codec = AudioCodec<IOMixer>(lockQueue: lockQueue)
-        codec.delegate = mixer
-        return codec
-    }()
     private lazy var audioMixer: any IOAudioMixerConvertible = {
         if isMultiTrackAudioMixingEnabled {
             var audioMixer = IOAudioMixerByMultiTrack()
@@ -89,7 +70,7 @@ final class IOAudioUnit: IOUnit {
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
-    func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: (_ capture: IOAudioCaptureUnit?) -> Void) throws {
+    func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: IOAudioCaptureConfigurationBlock?) throws {
         try mixer?.session.configuration { _ in
             mixer?.session.detachCapture(captures[track])
             guard let device else {
@@ -98,7 +79,7 @@ final class IOAudioUnit: IOUnit {
             }
             let capture = capture(for: track)
             try capture?.attachDevice(device)
-            configuration(capture)
+            configuration?(capture)
             capture?.setSampleBufferDelegate(self)
             mixer?.session.attachCapture(capture)
         }
@@ -126,34 +107,16 @@ final class IOAudioUnit: IOUnit {
     #endif
 
     func append(_ track: UInt8, buffer: CMSampleBuffer) {
-        switch buffer.formatDescription?.mediaSubType {
-        case .linearPCM?:
-            audioMixer.append(track, buffer: buffer)
-        default:
-            codec.append(buffer)
-        }
+        audioMixer.append(track, buffer: buffer)
     }
 
     func append(_ track: UInt8, buffer: AVAudioBuffer, when: AVAudioTime) {
         switch buffer {
         case let buffer as AVAudioPCMBuffer:
             audioMixer.append(track, buffer: buffer, when: when)
-        case let buffer as AVAudioCompressedBuffer:
-            codec.append(buffer, when: when)
         default:
             break
         }
-    }
-}
-
-extension IOAudioUnit: Running {
-    // MARK: Running
-    func startRunning() {
-        codec.startRunning()
-    }
-
-    func stopRunning() {
-        codec.stopRunning()
     }
 }
 
@@ -174,6 +137,5 @@ extension IOAudioUnit: IOAudioMixerDelegate {
     func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         mixer?.audioUnit(self, didOutput: audioBuffer, when: when)
         monitor.append(audioBuffer, when: when)
-        codec.append(audioBuffer, when: when)
     }
 }

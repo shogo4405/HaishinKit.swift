@@ -2,7 +2,7 @@ import Foundation
 import libsrt
 
 /// The SRTConnection class create a two-way SRT connection.
-public final class SRTConnection: NSObject {
+public final class SRTConnection {
     /// The error comain codes.
     public enum Error: Swift.Error {
         // The uri isn’t supported.
@@ -16,15 +16,11 @@ public final class SRTConnection: NSObject {
     /// The URI passed to the SRTConnection.connect() method.
     public private(set) var uri: URL?
     /// This instance connect to server(true) or not(false)
-    @objc public private(set) dynamic var connected = false
+    public private(set) var connected = false
 
-    var socket: SRTSocket<SRTConnection>? {
-        didSet {
-            socket?.delegate = self
-        }
-    }
-    var streams: [SRTStream] = []
-    var clients: [SRTSocket<SRTConnection>] = []
+    private var streams: [SRTStream] = []
+    private var clients: [SRTSocket] = []
+    private var socket: SRTSocket?
 
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData? {
@@ -36,8 +32,7 @@ public final class SRTConnection: NSObject {
     }
 
     /// Creates an object.
-    override public init() {
-        super.init()
+    public init() {
         srt_startup()
     }
 
@@ -80,6 +75,34 @@ public final class SRTConnection: NSObject {
         connected = false
     }
 
+    func output(_ data: Data) {
+        socket?.doOutput(data: data)
+    }
+
+    func listen() {
+        Task {
+            guard let stream = socket?.makeIncomingStream() else {
+                return
+            }
+            for await data in stream {
+                self.streams.first?.doInput(data)
+            }
+        }
+    }
+
+    func addStream(_ stream: SRTStream) {
+        guard streams.contains(where: { $0 === stream }) else {
+            return
+        }
+        streams.append(stream)
+    }
+
+    func removeStream(_ stream: SRTStream) {
+        if let index = streams.firstIndex(where: { $0 === stream }) {
+            streams.remove(at: index)
+        }
+    }
+
     private func sockaddr_in(_ host: String, port: UInt16) -> sockaddr_in {
         var addr: sockaddr_in = .init()
         addr.sin_family = sa_family_t(AF_INET)
@@ -92,20 +115,5 @@ public final class SRTConnection: NSObject {
         }
         addr.sin_addr = UnsafeRawPointer(hostent.pointee.h_addr_list[0]!).assumingMemoryBound(to: in_addr.self).pointee
         return addr
-    }
-}
-
-extension SRTConnection: SRTSocketDelegate {
-    // MARK: SRTSocketDelegate
-    func socket(_ socket: SRTSocket<SRTConnection>, status: SRT_SOCKSTATUS) {
-        connected = socket.status == SRTS_CONNECTED
-    }
-
-    func socket(_ socket: SRTSocket<SRTConnection>, incomingDataAvailabled data: Data, bytes: Int32) {
-        streams.first?.doInput(data.subdata(in: 0..<Data.Index(bytes)))
-    }
-
-    func socket(_ socket: SRTSocket<SRTConnection>, didAcceptSocket client: SRTSocket<SRTConnection>) {
-        clients.append(client)
     }
 }

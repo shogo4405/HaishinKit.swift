@@ -32,7 +32,6 @@ let package = Package(
                     "Extension",
                     "IO",
                     "ISO",
-                    "Net",
                     "RTMP",
                     "Screen",
                     "Util"

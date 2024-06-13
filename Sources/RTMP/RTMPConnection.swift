@@ -38,6 +38,8 @@ public protocol RTMPConnectionDelegate: AnyObject {
 // MARK: -
 /// The RTMPConneciton class create a two-way RTMP connection.
 public class RTMPConnection {
+    /// The default time to wait for TCP/IP Handshake done.
+    public static let defaultTimeout: Int = 15 // sec
     /// The default network's window size for RTMPConnection.
     public static let defaultWindowSizeS: Int64 = 250000
     /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
@@ -172,7 +174,7 @@ public class RTMPConnection {
     /// Specifies the URL of an HTTP referer.
     public var pageUrl: String?
     /// Specifies the time to wait for TCP/IP Handshake done.
-    public var timeout: Int = NetSocket.defaultTimeout
+    public var timeout: Int = RTMPConnection.defaultTimeout
     /// Specifies the dispatchQos for socket.
     public var qualityOfService: DispatchQoS = .userInitiated
     /// Specifies the name of application.
@@ -202,11 +204,11 @@ public class RTMPConnection {
     /// Specifies the delegate of the RTMPConnection.
     public weak var delegate: (any RTMPConnectionDelegate)?
     /// The statistics of outgoing queue bytes per second.
-    @objc open private(set) dynamic var previousQueueBytesOut: [Int64] = []
+    public private(set) var previousQueueBytesOut: [Int64] = []
     /// The statistics of incoming bytes per second.
-    @objc open private(set) dynamic var currentBytesInPerSecond: Int32 = 0
+    public private(set) var currentBytesInPerSecond: Int32 = 0
     /// The statistics of outgoing bytes per second.
-    @objc open private(set) dynamic var currentBytesOutPerSecond: Int32 = 0
+    public private(set) var currentBytesOutPerSecond: Int32 = 0
 
     var timestamp: TimeInterval {
         socket?.timestamp ?? 0

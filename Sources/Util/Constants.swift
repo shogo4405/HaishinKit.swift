@@ -1,4 +1,4 @@
-import Logboard
+@preconcurrency import Logboard
 
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport

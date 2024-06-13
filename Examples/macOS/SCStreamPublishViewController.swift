@@ -11,7 +11,7 @@ class SCStreamPublishViewController: NSViewController {
     @IBOutlet private weak var mthkView: MTHKView!
 
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: IOStream {
+    private var stream: (any IOStreamConvertible)? {
         return netStreamSwitcher.stream
     }
 
@@ -25,13 +25,15 @@ class SCStreamPublishViewController: NSViewController {
         }
         set {
             _scstream = newValue
-            Task {
-                try? newValue?.addStreamOutput(stream, type: .screen, sampleHandlerQueue: lockQueue)
-                if #available(macOS 13.0, *) {
-                    try? newValue?.addStreamOutput(stream, type: .audio, sampleHandlerQueue: lockQueue)
-                }
-                try await newValue?.startCapture()
-            }
+            /*
+             Task {
+             try? newValue?.addStreamOutput(stream, type: .screen, sampleHandlerQueue: lockQueue)
+             if #available(macOS 13.0, *) {
+             try? newValue?.addStreamOutput(stream, type: .audio, sampleHandlerQueue: lockQueue)
+             }
+             try await newValue?.startCapture()
+             }
+             */
         }
     }
 
@@ -39,7 +41,10 @@ class SCStreamPublishViewController: NSViewController {
         super.viewDidLoad()
         urlField.stringValue = Preference.default.uri ?? ""
         netStreamSwitcher.uri = Preference.default.uri ?? ""
-        mthkView?.attachStream(stream)
+        stream.map {
+            mthkView?.attachStream($0)
+        }
+
         if #available(macOS 12.3, *) {
             Task {
                 try await SCShareableContent.current.windows.forEach {
@@ -81,23 +86,7 @@ class SCStreamPublishViewController: NSViewController {
 
 extension SCStreamPublishViewController: SCStreamDelegate {
     // MARK: SCStreamDelegate
-    func stream(_ stream: SCStream, didStopWithError error: any Error) {
+    nonisolated func stream(_ stream: SCStream, didStopWithError error: any Error) {
         print(error)
-    }
-}
-
-extension IOStream: SCStreamOutput {
-    @available(macOS 12.3, *)
-    public func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
-        if #available(macOS 13.0, *) {
-            switch type {
-            case .screen:
-                append(sampleBuffer)
-            default:
-                append(sampleBuffer)
-            }
-        } else {
-            append(sampleBuffer)
-        }
     }
 }

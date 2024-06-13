@@ -10,7 +10,7 @@ final class NetStreamSwitcher {
         case rtmp
         case srt
 
-        func makeStream(_ swithcer: NetStreamSwitcher) -> IOStream {
+        func makeStream(_ swithcer: NetStreamSwitcher) -> any IOStreamConvertible {
             switch self {
             case .rtmp:
                 let connection = RTMPConnection()
@@ -46,9 +46,9 @@ final class NetStreamSwitcher {
     private var retryCount = 0
     private var connection: Any?
     private var method: Method = .ingest
-    private(set) var stream: IOStream = .init() {
+    private(set) var stream: (any IOStreamConvertible)? {
         didSet {
-            stream.delegate = self
+            // stream?.delegate = self
         }
     }
 
