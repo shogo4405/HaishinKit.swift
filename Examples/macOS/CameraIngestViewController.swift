@@ -18,9 +18,10 @@ final class CameraIngestViewController: NSViewController {
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
     @IBOutlet private weak var urlField: NSTextField!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: IOStream {
+    private var stream: (any IOStreamConvertible)? {
         return netStreamSwitcher.stream
     }
+    private var mixer = IOMixer()
     private var textScreenObject = TextScreenObject()
 
     override func viewDidLoad() {
@@ -29,21 +30,24 @@ final class CameraIngestViewController: NSViewController {
         audioPopUpButton?.present(mediaType: .audio)
         cameraPopUpButton?.present(mediaType: .video)
         netStreamSwitcher.uri = Preference.default.uri ?? ""
-        lfView?.attachStream(stream)
+        stream.map {
+            lfView?.attachStream($0)
+            $0.attachMixer(mixer)
+        }
     }
 
     override func viewDidAppear() {
         super.viewDidAppear()
 
-        stream.isMultiTrackAudioMixingEnabled = true
+        mixer.isMultiTrackAudioMixingEnabled = true
 
-        stream.videoMixerSettings.mode = .offscreen
-        stream.screen.startRunning()
+        mixer.videoMixerSettings.mode = .offscreen
+        mixer.screen.startRunning()
         textScreenObject.horizontalAlignment = .right
         textScreenObject.verticalAlignment = .bottom
         textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
 
-        stream.screen.backgroundColor = NSColor.black.cgColor
+        mixer.screen.backgroundColor = NSColor.black.cgColor
 
         let videoScreenObject = VideoTrackScreenObject()
         videoScreenObject.cornerRadius = 32.0
@@ -72,25 +76,27 @@ final class CameraIngestViewController: NSViewController {
         assetScreenObject.size = .init(width: 180, height: 180)
         assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
         try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
-        try? stream.screen.addChild(assetScreenObject)
-        try? stream.screen.addChild(videoScreenObject)
-        try? stream.screen.addChild(imageScreenObject)
-        try? stream.screen.addChild(textScreenObject)
-        stream.screen.delegate = self
+        try? mixer.screen.addChild(assetScreenObject)
+        try? mixer.screen.addChild(videoScreenObject)
+        try? mixer.screen.addChild(imageScreenObject)
+        try? mixer.screen.addChild(textScreenObject)
+        mixer.screen.delegate = self
 
-        stream.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
+        Task {
+            try? await mixer.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
 
-        var audios = AVCaptureDevice.devices(for: .audio)
-        audios.removeFirst()
-        if let device = audios.first, stream.isMultiTrackAudioMixingEnabled {
-            stream.attachAudio(device, track: 1)
-        }
+            var audios = AVCaptureDevice.devices(for: .audio)
+            audios.removeFirst()
+            if let device = audios.first, mixer.isMultiTrackAudioMixingEnabled {
+                try? await mixer.attachAudio(device, track: 1)
+            }
 
-        stream.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video), track: 0)
-        var videos = AVCaptureDevice.devices(for: .video)
-        videos.removeFirst()
-        if let device = videos.first {
-            stream.attachCamera(device, track: 1)
+            try? await mixer.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video), track: 0)
+            var videos = AVCaptureDevice.devices(for: .video)
+            videos.removeFirst()
+            if let device = videos.first {
+                try? await mixer.attachCamera(device, track: 1)
+            }
         }
     }
 
@@ -108,21 +114,25 @@ final class CameraIngestViewController: NSViewController {
 
     @IBAction private func orientation(_ sender: AnyObject) {
         // lfView.rotate(byDegrees: 90)
-        stream.videoMixerSettings.isMuted.toggle()
+        mixer.videoMixerSettings.isMuted.toggle()
     }
 
     @IBAction private func mirror(_ sender: AnyObject) {
-        stream.videoCapture(for: 0)?.isVideoMirrored.toggle()
+        mixer.videoCapture(for: 0)?.isVideoMirrored.toggle()
     }
 
     @IBAction private func selectAudio(_ sender: AnyObject) {
-        let device = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)
-        stream.attachAudio(device)
+        Task {
+            let device = DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio)
+            try? await mixer.attachAudio(device)
+        }
     }
 
     @IBAction private func selectCamera(_ sender: AnyObject) {
-        let device = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
-        stream.attachCamera(device, track: 0)
+        Task {
+            let device = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
+            try? await mixer.attachCamera(device, track: 0)
+        }
     }
 }
 

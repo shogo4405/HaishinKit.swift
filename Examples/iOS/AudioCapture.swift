@@ -7,14 +7,14 @@ protocol AudioCaptureDelegate: AnyObject {
 }
 
 final class AudioCapture {
-    var isRunning: Atomic<Bool> = .init(false)
+    var isRunning = false
     weak var delegate: (any AudioCaptureDelegate)?
     private let audioEngine = AVAudioEngine()
 }
 
-extension AudioCapture: Running {
+extension AudioCapture: Runner {
     func startRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
         let input = audioEngine.inputNode
@@ -25,17 +25,17 @@ extension AudioCapture: Running {
         }
         do {
             try audioEngine.start()
-            isRunning.mutate { $0 = true }
+            isRunning = true
         } catch {
             logger.error(error)
         }
     }
 
     func stopRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
         audioEngine.stop()
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }

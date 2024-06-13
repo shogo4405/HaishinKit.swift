@@ -8,7 +8,7 @@ protocol IOTellyUnitDelegate: AnyObject {
 }
 
 final class IOTellyUnit {
-    var isRunning: Atomic<Bool> = .init(false)
+    var isRunning = false
 
     var audioFormat: AVAudioFormat? {
         didSet {
@@ -41,23 +41,23 @@ final class IOTellyUnit {
     }()
 }
 
-extension IOTellyUnit: Running {
+extension IOTellyUnit: Runner {
     func startRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
-        isRunning.mutate { $0 = true }
+        isRunning = true
         mediaLink.startRunning()
     }
 
     func stopRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
         mediaLink.stopRunning()
         audioFormat = nil
         videoFormat = nil
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }
 

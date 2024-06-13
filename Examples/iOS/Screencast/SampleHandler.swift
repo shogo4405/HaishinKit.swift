@@ -23,9 +23,15 @@ open class SampleHandler: RPBroadcastSampleHandler {
         return conneciton
     }()
 
+    private lazy var mixer: IOMixer = {
+        let mixer = IOMixer()
+        mixer.isMultiTrackAudioMixingEnabled = true
+        return mixer
+    }()
+
     private lazy var rtmpStream: RTMPStream = {
         let stream = RTMPStream(connection: rtmpConnection)
-        stream.isMultiTrackAudioMixingEnabled = true
+        stream.attachMixer(mixer)
         return stream
     }()
 
@@ -46,7 +52,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
          */
         LBLogger.with(HaishinKitIdentifier).level = .info
         // rtmpStream.audioMixerSettings = .init(sampleRate: 0, channels: 2)
-        rtmpStream.audioMixerSettings.tracks[1] = .default
+        mixer.audioMixerSettings.tracks[1] = .default
         rtmpConnection.connect(Preference.default.uri!, arguments: nil)
         // The volume of the audioApp can be obtained even when muted. A hack to synchronize with the volume.
         DispatchQueue.main.async {
@@ -61,33 +67,35 @@ open class SampleHandler: RPBroadcastSampleHandler {
         switch sampleBufferType {
         case .video:
             if needVideoConfiguration, let dimensions = sampleBuffer.formatDescription?.dimensions {
-                rtmpStream.videoSettings.videoSize = .init(
-                    width: CGFloat(dimensions.width),
-                    height: CGFloat(dimensions.height)
-                )
-                rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
+                /*
+                 rtmpStream.videoSettings.videoSize = .init(
+                 width: CGFloat(dimensions.width),
+                 height: CGFloat(dimensions.height)
+                 )
+                 rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
+                 */
                 needVideoConfiguration = false
             }
             if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *), let rotator {
                 switch rotator.rotate(buffer: sampleBuffer) {
                 case .success(let rotatedBuffer):
-                    rtmpStream.append(rotatedBuffer)
+                    mixer.append(rotatedBuffer)
                 case .failure(let error):
                     logger.error(error)
                 }
             } else {
-                rtmpStream.append(sampleBuffer)
+                mixer.append(sampleBuffer)
             }
         case .audioMic:
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer, track: 0)
+                mixer.append(sampleBuffer, track: 0)
             }
         case .audioApp:
             if let volume = slider?.value {
-                rtmpStream.audioMixerSettings.tracks[1]?.volume = volume * 0.5
+                mixer.audioMixerSettings.tracks[1]?.volume = volume * 0.5
             }
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer, track: 1)
+                mixer.append(sampleBuffer, track: 1)
             }
         @unknown default:
             break

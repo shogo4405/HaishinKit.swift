@@ -8,7 +8,7 @@ final class IOAudioMonitor {
         didSet {
             if let inputFormat {
                 ringBuffer = .init(inputFormat)
-                if isRunning.value {
+                if isRunning {
                     audioUnit = makeAudioUnit()
                 }
             } else {
@@ -16,7 +16,7 @@ final class IOAudioMonitor {
             }
         }
     }
-    private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning = false
     private var audioUnit: AudioUnit? {
         didSet {
             if let oldValue {
@@ -41,7 +41,7 @@ final class IOAudioMonitor {
     }
 
     func append(_ audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
         ringBuffer?.append(audioPCMBuffer, when: when)
@@ -95,21 +95,21 @@ final class IOAudioMonitor {
     }
 }
 
-extension IOAudioMonitor: Running {
+extension IOAudioMonitor: Runner {
     // MARK: Running
     func startRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
         audioUnit = makeAudioUnit()
-        isRunning.mutate { $0 = true }
+        isRunning = true
     }
 
     func stopRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
         audioUnit = nil
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }

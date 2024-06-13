@@ -64,9 +64,10 @@ public class PiPHKView: UIView {
     }
     #endif
 
-    private weak var currentStream: IOStream? {
+    private weak var currentStream: (any IOStreamConvertible)? {
         didSet {
-            currentStream?.view = self
+            oldValue?.removeObserver(self)
+            currentStream?.addObserver(self)
         }
     }
 
@@ -104,25 +105,25 @@ public class PiPHKView: UIView {
 
 extension PiPHKView: IOStreamView {
     // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
+    public func attachStream(_ stream: (some IOStreamConvertible)?) {
+        currentStream = stream
     }
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            if let sampleBuffer = sampleBuffer {
-                layer.enqueue(sampleBuffer)
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
+        guard let sampleBuffer else {
+            return
+        }
+        layer.enqueue(sampleBuffer)
+    }
+}
+
+extension PiPHKView: IOStreamObserver {
+    nonisolated public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    }
+
+    nonisolated public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
+        Task { @MainActor in
+            self.enqueue(video)
         }
     }
 }
@@ -187,9 +188,10 @@ public class PiPHKView: NSView {
         }
     }
 
-    private weak var currentStream: IOStream? {
+    private weak var currentStream: (any IOStreamConvertible)? {
         didSet {
-            currentStream?.view = self
+            oldValue?.removeObserver(self)
+            currentStream?.addObserver(self)
         }
     }
 
@@ -216,25 +218,25 @@ public class PiPHKView: NSView {
 
 extension PiPHKView: IOStreamView {
     // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
+    public func attachStream(_ stream: (some IOStreamConvertible)?) {
+        currentStream = stream
     }
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            if let sampleBuffer = sampleBuffer {
-                (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
+        guard let sampleBuffer else {
+            return
+        }
+        (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
+    }
+}
+
+extension PiPHKView: IOStreamObserver {
+    nonisolated public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    }
+
+    nonisolated public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
+        Task { @MainActor in
+            enqueue(video)
         }
     }
 }

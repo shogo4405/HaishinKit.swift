@@ -100,7 +100,7 @@ protocol ChoreographerDelegate: AnyObject {
     func choreographer(_ choreographer: some Choreographer, didFrame duration: Double)
 }
 
-protocol Choreographer: Running {
+protocol Choreographer: Runner {
     var isPaused: Bool { get set }
     var delegate: (any ChoreographerDelegate)? { get set }
 
@@ -120,7 +120,7 @@ final class DisplayLinkChoreographer: NSObject, Choreographer {
         }
     }
     weak var delegate: (any ChoreographerDelegate)?
-    var isRunning: Atomic<Bool> = .init(false)
+    var isRunning = false
     var preferredFramesPerSecond = DisplayLinkChoreographer.preferredFramesPerSecond
     private var duration: Double = DisplayLinkChoreographer.duration
     private var displayLink: DisplayLink? {
@@ -146,15 +146,15 @@ final class DisplayLinkChoreographer: NSObject, Choreographer {
     }
 }
 
-extension DisplayLinkChoreographer: Running {
+extension DisplayLinkChoreographer: Runner {
     func startRunning() {
         displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
-        isRunning.mutate { $0 = true }
+        isRunning = true
     }
 
     func stopRunning() {
         displayLink = nil
         duration = DisplayLinkChoreographer.duration
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }

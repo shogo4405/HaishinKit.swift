@@ -3,7 +3,7 @@ import Foundation
 
 /// Configuration calback block for IOVideoCaptureUnit.
 @available(tvOS 17.0, *)
-public typealias IOVideoCaptureConfigurationBlock = (IOVideoCaptureUnit?, IOVideoUnitError?) -> Void
+public typealias IOVideoCaptureConfigurationBlock = (IOVideoCaptureUnit?) -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)

@@ -18,3 +18,5 @@ extension CMSampleBuffer {
         }
     }
 }
+
+extension CMSampleBuffer: @unchecked Sendable {}

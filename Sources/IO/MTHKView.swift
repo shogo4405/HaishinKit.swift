@@ -67,11 +67,10 @@ public class MTHKView: MTKView {
         }
     }
 
-    private weak var currentStream: IOStream? {
+    private weak var currentStream: (any IOStreamConvertible)? {
         didSet {
-            currentStream.map {
-                $0.view = self
-            }
+            oldValue?.removeObserver(self)
+            currentStream?.addObserver(self)
         }
     }
 
@@ -153,28 +152,27 @@ public class MTHKView: MTKView {
 
 extension MTHKView: IOStreamView {
     // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
+    public func attachStream(_ stream: (some IOStreamConvertible)?) {
+        currentStream = stream
     }
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
-            #if os(macOS)
-            self.needsDisplay = true
-            #else
-            self.setNeedsDisplay()
-            #endif
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
+        currentSampleBuffer = sampleBuffer
+        #if os(macOS)
+        self.needsDisplay = true
+        #else
+        self.setNeedsDisplay()
+        #endif
+    }
+}
+
+extension MTHKView: IOStreamObserver {
+    nonisolated public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    }
+
+    nonisolated public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
+        Task { @MainActor in
+            self.enqueue(video)
         }
     }
 }

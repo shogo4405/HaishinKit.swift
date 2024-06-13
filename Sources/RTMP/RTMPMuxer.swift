@@ -32,6 +32,9 @@ final class RTMPMuxer {
 
     var videoFormat: CMFormatDescription? {
         didSet {
+            guard videoFormat != oldValue else {
+                return
+            }
             switch stream?.readyState {
             case .publishing:
                 switch videoFormat?.mediaSubType {
@@ -68,7 +71,7 @@ final class RTMPMuxer {
         }
     }
 
-    var isRunning: Atomic<Bool> = .init(false)
+    var isRunning = false
     private var audioBuffer: AVAudioCompressedBuffer?
     private var audioTimestamp: RTMPTimestamp<AVAudioTime> = .init()
     private var videoTimestamp: RTMPTimestamp<CMTime> = .init()
@@ -103,7 +106,7 @@ final class RTMPMuxer {
                 audioBuffer.packetCount = 1
                 audioBuffer.byteLength = UInt32(byteCount)
                 audioBuffer.data.copyMemory(from: baseAddress.advanced(by: codec.headerSize), byteCount: byteCount)
-                stream.mixer.audioIO.append(0, buffer: audioBuffer, when: audioTimestamp.value)
+                stream.append(audioBuffer, when: audioTimestamp.value)
             }
         default:
             break
@@ -123,11 +126,11 @@ final class RTMPMuxer {
                 videoFormat = message.makeFormatDescription()
             case FLVVideoPacketType.codedFrames.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.mixer.videoIO.append(0, buffer: sampleBuffer)
+                    stream.append(sampleBuffer)
                 }
             case FLVVideoPacketType.codedFramesX.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.mixer.videoIO.append(0, buffer: sampleBuffer)
+                    stream.append(sampleBuffer)
                 }
             default:
                 break
@@ -138,7 +141,7 @@ final class RTMPMuxer {
                 videoFormat = message.makeFormatDescription()
             case FLVAVCPacketType.nal.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.mixer.videoIO.append(0, buffer: sampleBuffer)
+                    stream.append(sampleBuffer)
                 }
             default:
                 break
@@ -172,6 +175,7 @@ extension RTMPMuxer: IOMuxer {
         let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
         let timedelta = videoTimestamp.update(decodeTimeStamp)
         stream.frameCount += 1
+        videoFormat = sampleBuffer.formatDescription
         switch sampleBuffer.formatDescription?.mediaSubType {
         case .h264?:
             var buffer = Data([((keyframe ? FLVFrameType.key.rawValue : FLVFrameType.inter.rawValue) << 4) | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.nal.rawValue])
@@ -197,23 +201,23 @@ extension RTMPMuxer: IOMuxer {
     }
 }
 
-extension RTMPMuxer: Running {
+extension RTMPMuxer: Runner {
     // MARK: Running
     func startRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
         audioFormat = nil
         videoFormat = nil
         audioTimestamp.clear()
         videoTimestamp.clear()
-        isRunning.mutate { $0 = true }
+        isRunning = true
     }
 
     func stopRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }

@@ -49,7 +49,7 @@ final class IOCaptureSession {
     #endif
 
     weak var delegate: (any IOCaptureSessionDelegate)?
-    private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning = false
 
     #if os(tvOS)
     private var _session: Any?
@@ -175,11 +175,11 @@ final class IOCaptureSession {
 
     @available(tvOS 17.0, *)
     func startRunningIfNeeded() {
-        guard isRunning.value && !session.isRunning else {
+        guard isRunning && !session.isRunning else {
             return
         }
         session.startRunning()
-        isRunning.mutate { $0 = session.isRunning }
+        isRunning = session.isRunning
     }
 
     #if os(iOS) || os(tvOS)
@@ -271,31 +271,31 @@ final class IOCaptureSession {
     #endif
 }
 
-extension IOCaptureSession: Running {
+extension IOCaptureSession: Runner {
     // MARK: Running
     func startRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
         if #available(tvOS 17.0, *) {
             addSessionObservers(session)
             session.startRunning()
-            isRunning.mutate { $0 = session.isRunning }
+            isRunning = session.isRunning
         } else {
-            isRunning.mutate { $0 = true }
+            isRunning = true
         }
     }
 
     func stopRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
         if #available(tvOS 17.0, *) {
             removeSessionObservers(session)
             session.stopRunning()
-            isRunning.mutate { $0 = session.isRunning }
+            isRunning = session.isRunning
         } else {
-            isRunning.mutate { $0 = false }
+            isRunning = false
         }
     }
 }

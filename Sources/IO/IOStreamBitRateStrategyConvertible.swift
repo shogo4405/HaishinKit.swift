@@ -59,7 +59,7 @@ public final class IOStreamVideoAdaptiveBitRateStrategy: IOStreamBitRateStrategy
 
     public func setUp() {
         zeroBytesOutPerSecondCounts = 0
-        stream?.videoSettings.bitRate = mamimumVideoBitRate
+        // stream?.videoSettings.bitRate = mamimumVideoBitRate
     }
 
     public func sufficientBWOccured(_ stats: IOStreamBitRateStats) {
@@ -71,7 +71,7 @@ public final class IOStreamVideoAdaptiveBitRateStrategy: IOStreamBitRateStrategy
         }
         if Self.sufficientBWCountsThreshold <= sufficientBWCounts {
             let incremental = mamimumVideoBitRate / 10
-            stream.videoSettings.bitRate = min(stream.videoSettings.bitRate + incremental, mamimumVideoBitRate)
+            // stream.videoSettings.bitRate = min(stream.videoSettings.bitRate + incremental, mamimumVideoBitRate)
             sufficientBWCounts = 0
         } else {
             sufficientBWCounts += 1
@@ -85,16 +85,18 @@ public final class IOStreamVideoAdaptiveBitRateStrategy: IOStreamBitRateStrategy
         sufficientBWCounts = 0
         if 0 < stats.currentBytesOutPerSecond {
             let bitRate = Int(stats.currentBytesOutPerSecond * 8) / (zeroBytesOutPerSecondCounts + 1)
-            stream.videoSettings.bitRate = max(bitRate - stream.audioSettings.bitRate, mamimumVideoBitRate / 10)
-            stream.videoSettings.frameInterval = 0.0
+            // stream.videoSettings.bitRate = max(bitRate - stream.audioSettings.bitRate, mamimumVideoBitRate / 10)
+            // stream.videoSettings.frameInterval = 0.0
             sufficientBWCounts = 0
             zeroBytesOutPerSecondCounts = 0
         } else {
             switch zeroBytesOutPerSecondCounts {
             case 2:
-                stream.videoSettings.frameInterval = VideoCodecSettings.frameInterval10
+                break
+            // stream.videoSettings.frameInterval = VideoCodecSettings.frameInterval10
             case 4:
-                stream.videoSettings.frameInterval = VideoCodecSettings.frameInterval05
+                break
+            // stream.videoSettings.frameInterval = VideoCodecSettings.frameInterval05
             default:
                 break
             }

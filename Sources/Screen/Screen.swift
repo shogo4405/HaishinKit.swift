@@ -51,7 +51,7 @@ public final class Screen: ScreenObjectContainerConvertible {
         }
     }
 
-    public var isRunning: Atomic<Bool> {
+    public var isRunning: Bool {
         return choreographer.isRunning
     }
 
@@ -130,10 +130,10 @@ public final class Screen: ScreenObjectContainerConvertible {
     }
 }
 
-extension Screen: Running {
+extension Screen: Runner {
     // MARK: Running
     public func startRunning() {
-        guard !choreographer.isRunning.value else {
+        guard !choreographer.isRunning else {
             return
         }
         CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
@@ -143,7 +143,7 @@ extension Screen: Running {
     }
 
     public func stopRunning() {
-        guard choreographer.isRunning.value else {
+        guard choreographer.isRunning else {
             return
         }
         choreographer.stopRunning()

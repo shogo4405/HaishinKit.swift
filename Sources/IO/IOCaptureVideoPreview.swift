@@ -52,15 +52,6 @@ final class IOCaptureVideoPreview: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func attachStream(_ stream: IOStream?) {
-        layer.session = stream?.mixer.session.session
-        #if os(iOS)
-        if let videoOrientation = stream?.videoOrientation, layer.connection?.isVideoOrientationSupported == true {
-            layer.connection?.videoOrientation = videoOrientation
-        }
-        #endif
-    }
-
     override func removeFromSuperview() {
         super.removeFromSuperview()
         layer.session = nil
@@ -110,7 +101,6 @@ final class IOCaptureVideoPreview: NSView {
     }
 
     func attachStream(_ stream: IOStream?) {
-        layer?.setValue(stream?.mixer.session, forKey: "session")
     }
 
     override func removeFromSuperview() {

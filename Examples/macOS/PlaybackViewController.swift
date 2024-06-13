@@ -5,14 +5,14 @@ import HaishinKit
 final class PlaybackViewController: NSViewController {
     @IBOutlet private weak var lfView: MTHKView!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: IOStream {
+    private var stream: (any IOStreamConvertible)? {
         return netStreamSwitcher.stream
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         netStreamSwitcher.uri = Preference.default.uri!
-        lfView.attachStream(stream)
+        stream.map { lfView.attachStream($0) }
     }
 
     @IBAction private func didTappedPlayback(_ button: NSButton) {

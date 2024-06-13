@@ -34,7 +34,7 @@ final class MediaLink<T: MediaLinkDelegate> {
     var bufferTime = kMediaLink_bufferTime
     weak var delegate: T?
     private(set) lazy var playerNode = AVAudioPlayerNode()
-    private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning = false
     private var isBuffering = true {
         didSet {
             if !isBuffering {
@@ -149,10 +149,10 @@ extension MediaLink: ChoreographerDelegate {
     }
 }
 
-extension MediaLink: Running {
+extension MediaLink: Runner {
     // MARK: Running
     func startRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
         scheduledAudioBuffers.mutate { $0 = 0 }
@@ -161,11 +161,11 @@ extension MediaLink: Running {
         isBuffering = true
         choreographer.startRunning()
         makeBufferkQueue()
-        isRunning.mutate { $0 = true }
+        isRunning = true
     }
 
     func stopRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
         choreographer.stopRunning()
@@ -176,6 +176,6 @@ extension MediaLink: Running {
         bufferQueue = nil
         audioTime.reset()
         presentationTimeStampOrigin = .invalid
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }

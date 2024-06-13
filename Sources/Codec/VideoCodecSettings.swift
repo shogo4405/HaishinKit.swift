@@ -153,12 +153,13 @@ public struct VideoCodecSettings: Codable, Sendable {
         )
     }
 
-    func apply<T>(_ codec: VideoCodec<T>, rhs: VideoCodecSettings) {
+    func apply(_ codec: VideoCodec, rhs: VideoCodecSettings) {
         if bitRate != rhs.bitRate {
             logger.info("bitRate change from ", rhs.bitRate, " to ", bitRate)
             let option = VTSessionOption(key: bitRateMode.key, value: NSNumber(value: bitRate))
             if let status = codec.session?.setOption(option), status != noErr {
-                codec.delegate?.videoCodec(codec, errorOccurred: .failedToSetOption(status: status, option: option))
+                // ToDo
+                // codec.delegate?.videoCodec(codec, errorOccurred: .failedToSetOption(status: status, option: option))
             }
         }
         if frameInterval != rhs.frameInterval {
@@ -167,7 +168,7 @@ public struct VideoCodecSettings: Codable, Sendable {
     }
 
     // https://developer.apple.com/documentation/videotoolbox/encoding_video_for_live_streaming
-    func options<T>(_ codec: VideoCodec<T>) -> Set<VTSessionOption> {
+    func options(_ codec: VideoCodec) -> Set<VTSessionOption> {
         let isBaseline = profileLevel.contains("Baseline")
         var options = Set<VTSessionOption>([
             .init(key: .realTime, value: kCFBooleanTrue),

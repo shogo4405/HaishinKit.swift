@@ -2,7 +2,7 @@ import AVFoundation
 import Foundation
 
 /// A type that multiplexer for streaming.
-public protocol IOMuxer: Running, AnyObject {
+public protocol IOMuxer: Runner, AnyObject {
     /// Specifies the audioFormat.
     var audioFormat: AVAudioFormat? { get set }
     /// Specifies the videoFormat.

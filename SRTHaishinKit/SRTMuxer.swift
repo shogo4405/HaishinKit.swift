@@ -19,7 +19,7 @@ final class SRTMuxer: IOMuxer {
         }
     }
     private weak var stream: SRTStream?
-    private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning = false
     private lazy var writer = {
         var writer = TSWriter<SRTMuxer>()
         writer.delegate = self
@@ -48,22 +48,22 @@ final class SRTMuxer: IOMuxer {
     }
 }
 
-extension SRTMuxer: Running {
+extension SRTMuxer: Runner {
     // MARK: Running
     func startRunning() {
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
-        isRunning.mutate { $0 = true }
+        isRunning = true
     }
 
     func stopRunning() {
-        guard !isRunning.value else {
+        guard !isRunning else {
             return
         }
         reader.clear()
         writer.clear()
-        isRunning.mutate { $0 = false }
+        isRunning = false
     }
 }
 

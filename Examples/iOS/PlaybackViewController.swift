@@ -7,7 +7,7 @@ import UIKit
 final class PlaybackViewController: UIViewController {
     @IBOutlet private weak var playbackButton: UIButton!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: IOStream {
+    private var stream: (any IOStreamConvertible)? {
         return netStreamSwitcher.stream
     }
     private var pictureInPictureController: AVPictureInPictureController?
@@ -16,7 +16,9 @@ final class PlaybackViewController: UIViewController {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
         netStreamSwitcher.uri = Preference.default.uri ?? ""
-        (view as? (any IOStreamView))?.attachStream(stream)
+        stream.map {_ in
+            // (view as? (any IOStreamView))?.attachStream($0)
+        }
         if #available(iOS 15.0, *), let layer = view.layer as? AVSampleBufferDisplayLayer, pictureInPictureController == nil {
             pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
         }
