@@ -16,7 +16,7 @@
     <a title="HaishinKit  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.8.2 Docs</a> (89% documented)</p>
+        <p><a href="index.html">HaishinKit 1.9.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -35,6 +35,9 @@
           <li class="nav-group-name">
             <a href="Classes.html">Classes</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AssetScreenObject.html">AssetScreenObject</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Classes/ByteArray.html">ByteArray</a>
               </li>
@@ -73,6 +76,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ImageScreenObject.html">ImageScreenObject</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/InstanceHolder.html">InstanceHolder</a>
@@ -120,10 +126,28 @@
                 <a href="Classes/SRTConnection.html">SRTConnection</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/SRTLogger.html">SRTLogger</a>
+                <a href="Classes/SRTConnection/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/SRTStream.html">SRTStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Screen.html">Screen</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObject.html">ScreenObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObject/HorizontalAlignment.html">– HorizontalAlignment</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObject/VerticalAlignment.html">– VerticalAlignment</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObjectContainer.html">ScreenObjectContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObjectContainer/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/TSReader.html">TSReader</a>
@@ -132,10 +156,16 @@
                 <a href="Classes/TSWriter.html">TSWriter</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/TextScreenObject.html">TextScreenObject</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/VideoEffect.html">VideoEffect</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoRotator.html">VideoRotator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/VideoTrackScreenObject.html">VideoTrackScreenObject</a>
               </li>
             </ul>
           </li>
@@ -157,19 +187,10 @@
                 <a href="Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
-                <a href="Enums/FeatureUtil.html">FeatureUtil</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Enums/FeatureUtil/Name.html">– Name</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/IOVideoUnitError.html">IOVideoUnitError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Enums/ImageTransform.html">ImageTransform</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
@@ -233,6 +254,12 @@
                 <a href="Protocols/Running.html">Running</a>
               </li>
               <li class="nav-group-task">
+                <a href="Protocols/ScreenDelegate.html">ScreenDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/ScreenRenderer.html">ScreenRenderer</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/TSReaderDelegate.html">TSReaderDelegate</a>
               </li>
               <li class="nav-group-task">
@@ -281,6 +308,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SRTLogger.html">SRTLogger</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SRTPerformanceData.html">SRTPerformanceData</a>
@@ -423,39 +453,61 @@
 <li>[ ] rendezvous</li>
 </ul></li>
 </ul>
-<h3 id='multi-camera' class='heading'>Multi Camera</h3>
+<h3 id='offscreen-rendering' class='heading'>Offscreen Rendering.</h3>
 
-<p>Supports two camera video sources. A picture-in-picture display that shows the image of the secondary camera of the primary camera. Supports camera split display that displays horizontally and vertically.</p>
+<p>Through off-screen rendering capabilities, it is possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.</p>
 
-<table><thead>
-<tr>
-<th style="text-align: center">Picture-In-Picture</th>
-<th style="text-align: center">Split</th>
-</tr>
-</thead><tbody>
-<tr>
-<td style="text-align: center"><img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043421-ceb18cb7-9b50-43fa-a0a2-8b92b78d9df1.png"></td>
-<td style="text-align: center"><img width="1382" alt="" src="https://user-images.githubusercontent.com/810189/210043687-a99f21b6-28b2-4170-96de-6c814debd84d.png"></td>
-</tr>
-</tbody></table>
-<pre class="highlight swift"><code><span class="c1">// If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.</span>
-<span class="n">stream</span><span class="o">.</span><span class="n">isMultiCamSessionEnabled</span> <span class="o">=</span> <span class="kc">true</span>
+<p align="center">
+  <img width="732" alt="" src="https://github.com/shogo4405/HaishinKit.swift/assets/810189/43ad08d4-1a4c-4390-97ca-7bba6109e7cf">
+</p>
 
-<span class="k">let</span> <span class="nv">back</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">back</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">back</span><span class="p">,</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
-  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
-    <span class="n">logger</span><span class="o">.</span><span class="nf">warn</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<details>
+<summary>Example</summary>
+  
+&ldquo;`swift
+stream.videoMixerSettings.mode = .offscreen
+stream.screen.startRunning()
+textScreenObject.horizontalAlignment = .right
+textScreenObject.verticalAlignment = .bottom
+textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
 
-<span class="k">let</span> <span class="nv">front</span> <span class="o">=</span> <span class="kt">AVCaptureDevice</span><span class="o">.</span><span class="nf">default</span><span class="p">(</span><span class="o">.</span><span class="n">builtInWideAngleCamera</span><span class="p">,</span> <span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">video</span><span class="p">,</span> <span class="nv">position</span><span class="p">:</span> <span class="o">.</span><span class="n">front</span><span class="p">)</span>
-<span class="n">stream</span><span class="o">.</span><span class="nf">attachCamera</span><span class="p">(</span><span class="n">front</span><span class="p">,</span> <span class="nv">track</span><span class="p">:</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span> <span class="n">videoUnit</span><span class="p">,</span> <span class="n">error</span> <span class="k">in</span>
-  <span class="n">videoUnit</span><span class="p">?</span><span class="o">.</span><span class="n">isVideoMirrored</span> <span class="o">=</span> <span class="kc">true</span>
-  <span class="k">if</span> <span class="k">let</span> <span class="nv">error</span> <span class="p">{</span>
-    <span class="n">logger</span><span class="o">.</span><span class="nf">error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre>
+stream.screen.backgroundColor = UIColor.black.cgColor
+
+let videoScreenObject = VideoTrackScreenObject()
+videoScreenObject.cornerRadius = 32.0
+videoScreenObject.track = 1
+videoScreenObject.horizontalAlignment = .right
+videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+_ = videoScreenObject.registerVideoEffect(MonochromeEffect())
+
+let imageScreenObject = ImageScreenObject()
+let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: &quot;game_jikkyou&rdquo;, ofType: &ldquo;png&rdquo;) ?? &ldquo;&rdquo;)
+if let provider = CGDataProvider(url: imageURL as CFURL) {
+    imageScreenObject.verticalAlignment = .bottom
+    imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
+    imageScreenObject.cgImage = CGImage(
+        pngDataProviderSource: provider,
+        decode: nil,
+        shouldInterpolate: false,
+    intent: .defaultIntent
+    )
+} else {
+    logger.info(&ldquo;no image&rdquo;)
+}
+
+let assetScreenObject = AssetScreenObject()
+assetScreenObject.size = .init(width: 180, height: 180)
+assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
+try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: &ldquo;SampleVideo_360x240_5mb&rdquo;, ofType: &ldquo;mp4&rdquo;) ?? &ldquo;&rdquo;)))
+try? stream.screen.addChild(assetScreenObject)
+try? stream.screen.addChild(videoScreenObject)
+try? stream.screen.addChild(imageScreenObject)
+try? stream.screen.addChild(textScreenObject)
+stream.screen.delegate = self
+&ldquo;`
+
+</details>
 <h3 id='rendering' class='heading'>Rendering</h3>
 
 <table><thead>
@@ -501,7 +553,7 @@
 <ul>
 <li>[x] tvOS 17.0 for AVCaptureSession.</li>
 <li>[x] <a href="https://developer.apple.com/documentation/avfoundation/capture_setup/accessing_the_camera_while_multitasking">Support multitasking camera access.</a></li>
-<li>[x] Support &ldquo;Allow app extension API only&rdquo; option</li>
+<li>[x] Support &quot;Allow app extension API only&rdquo; option</li>
 </ul>
 <h2 id='examples' class='heading'>🐾 Examples</h2>
 
@@ -527,6 +579,11 @@ open HaishinKit.xcodeproj
 <th style="text-align: center">Swift</th>
 </tr>
 </thead><tbody>
+<tr>
+<td style="text-align: center">1.9.0+</td>
+<td style="text-align: center">15.4+</td>
+<td style="text-align: center">5.10+</td>
+</tr>
 <tr>
 <td style="text-align: center">1.8.0+</td>
 <td style="text-align: center">15.3+</td>
@@ -566,9 +623,9 @@ open HaishinKit.xcodeproj
 <tr>
 <td style="text-align: left">SRTHaishinKit</td>
 <td style="text-align: center">13.0+</td>
-<td style="text-align: center">-</td>
 <td style="text-align: center">13.0+</td>
-<td style="text-align: center">-</td>
+<td style="text-align: center">13.0+</td>
+<td style="text-align: center">1.0+</td>
 <td style="text-align: center">-</td>
 </tr>
 </tbody></table>
@@ -602,8 +659,8 @@ open HaishinKit.xcodeproj
 |  | HaishinKit | SRTHaishinKit |
 | - | :- | :- |
 | SPM | <a href="https://github.com/shogo4405/HaishinKit.swift">https://github.com/shogo4405/HaishinKit.swift</a> | <a href="https://github.com/shogo4405/HaishinKit.swift">https://github.com/shogo4405/HaishinKit.swift</a> |
-| CocoaPods | source &lsquo;<a href="https://github.com/CocoaPods/Specs.git">https://github.com/CocoaPods/Specs.git</a>&rsquo;<br>use_frameworks!<br><br>def import_pods<br>    pod &#39;HaishinKit&rsquo;, &lsquo;~&gt; 1.6.0<br>end<br><br>target &#39;Your Target&rsquo;  do<br>    platform :ios, &lsquo;12.0&rsquo;<br>    import_pods<br>end<br> | Not supported. |
-| Carthage | github &ldquo;shogo4405/HaishinKit.swift&rdquo; ~&gt; 1.6.0 | Not supported. |</p>
+| CocoaPods | source &lsquo;<a href="https://github.com/CocoaPods/Specs.git">https://github.com/CocoaPods/Specs.git</a>&rsquo;<br>use_frameworks!<br><br>def import_pods<br>    pod &#39;HaishinKit&rsquo;, &lsquo;~&gt; 1.8.2<br>end<br><br>target &#39;Your Target&rsquo;  do<br>    platform :ios, &lsquo;13.0&rsquo;<br>    import_pods<br>end<br> | Not supported. |
+| Carthage | github &ldquo;shogo4405/HaishinKit.swift&rdquo; ~&gt; 1.8.2 | Not supported. |</p>
 <h2 id='prerequisites' class='heading'>🔧 Prerequisites</h2>
 
 <p>Make sure you setup and activate your AVAudioSession iOS.</p>
@@ -718,8 +775,8 @@ open HaishinKit.xcodeproj
 </code></pre>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-ioaudiomixersettings-html-audiomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html">AudioMixerSettings</a></h4>
 
-<p>If you want to mix multiple audio tracks, please enable the Feature flag.</p>
-<pre class="highlight swift"><code><span class="kt">FeatureUtil</span><span class="o">.</span><span class="nf">setEnabled</span><span class="p">(</span><span class="nv">for</span><span class="p">:</span> <span class="o">.</span><span class="n">multiTrackAudioMixing</span><span class="p">,</span> <span class="nv">isEnabled</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+<p>If you want to mix multiple audio tracks, please enable the feature flag.</p>
+<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">isMultiTrackAudioMixingEnabled</span> <span class="o">=</span> <span class="kc">true</span>
 </code></pre>
 
 <p>When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.</p>
@@ -759,15 +816,12 @@ open HaishinKit.xcodeproj
 <span class="p">}</span>
 </code></pre>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-iovideomixersettings-html-videomixersettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/IOVideoMixerSettings.html">VideoMixerSettings</a></h4>
-<pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span> <span class="o">=</span> <span class="kt">IOVideoMixerSettings</span><span class="p">(</span>
-  <span class="nv">mode</span><span class="p">:</span> <span class="o">.</span><span class="n">pip</span><span class="p">,</span>
-  <span class="nv">cornerRadius</span><span class="p">:</span> <span class="mf">16.0</span><span class="p">,</span>
-  <span class="nv">regionOfInterest</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
-    <span class="nv">origin</span><span class="p">:</span> <span class="kt">CGPoint</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="nv">y</span><span class="p">:</span> <span class="mi">16</span><span class="p">),</span>
-    <span class="nv">size</span><span class="p">:</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">160</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">160</span><span class="p">)</span>
-  <span class="p">),</span>
-  <span class="nv">direction</span><span class="p">:</span> <span class="o">.</span><span class="n">east</span>
-<span class="p">)</span>
+<pre class="highlight swift"><code><span class="c1">/// Specifies the image rendering mode.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="o">.</span><span class="n">passthrough</span> <span class="n">or</span> <span class="o">.</span><span class="n">offscreen</span>
+<span class="c1">/// Specifies the muted indicies whether freeze video signal or not.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span><span class="o">.</span><span class="n">isMuted</span> <span class="o">=</span> <span class="kc">false</span>
+<span class="c1">/// Specifies the main track number.</span>
+<span class="n">stream</span><span class="o">.</span><span class="n">videoMixerSettings</span><span class="o">.</span><span class="n">mainTrack</span> <span class="o">=</span> <span class="mi">0</span>
 </code></pre>
 <h4 id='a-href-https-shogo4405-github-io-haishinkit-swift-structs-videocodecsettings-html-videocodecsettings-a' class='heading'><a href="https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html">VideoCodecSettings</a></h4>
 <pre class="highlight swift"><code><span class="n">stream</span><span class="o">.</span><span class="n">videoSettings</span> <span class="o">=</span> <span class="o">.</span><span class="nf">init</span><span class="p">(</span>
@@ -822,8 +876,8 @@ open HaishinKit.xcodeproj
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-06-08)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.15.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-06-14)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.15.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>

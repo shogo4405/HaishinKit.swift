@@ -17,7 +17,7 @@
     <a title="Enumerations  Reference"></a>
     <header>
       <div class="content-wrapper">
-        <p><a href="index.html">HaishinKit 1.8.2 Docs</a> (89% documented)</p>
+        <p><a href="index.html">HaishinKit 1.9.0 Docs</a> (88% documented)</p>
         <div class="header-right">
           <form role="search" action="search.json">
             <input type="text" placeholder="Search documentation" data-typeahead>
@@ -38,6 +38,9 @@
           <li class="nav-group-name">
             <a href="Classes.html">Classes</a>
             <ul class="nav-group-tasks">
+              <li class="nav-group-task">
+                <a href="Classes/AssetScreenObject.html">AssetScreenObject</a>
+              </li>
               <li class="nav-group-task">
                 <a href="Classes/ByteArray.html">ByteArray</a>
               </li>
@@ -76,6 +79,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Classes/IOVideoCaptureUnit.html">IOVideoCaptureUnit</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ImageScreenObject.html">ImageScreenObject</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/InstanceHolder.html">InstanceHolder</a>
@@ -123,10 +129,28 @@
                 <a href="Classes/SRTConnection.html">SRTConnection</a>
               </li>
               <li class="nav-group-task">
-                <a href="Classes/SRTLogger.html">SRTLogger</a>
+                <a href="Classes/SRTConnection/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/SRTStream.html">SRTStream</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/Screen.html">Screen</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObject.html">ScreenObject</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObject/HorizontalAlignment.html">– HorizontalAlignment</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObject/VerticalAlignment.html">– VerticalAlignment</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObjectContainer.html">ScreenObjectContainer</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/ScreenObjectContainer/Error.html">– Error</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/TSReader.html">TSReader</a>
@@ -135,10 +159,16 @@
                 <a href="Classes/TSWriter.html">TSWriter</a>
               </li>
               <li class="nav-group-task">
+                <a href="Classes/TextScreenObject.html">TextScreenObject</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Classes/VideoEffect.html">VideoEffect</a>
               </li>
               <li class="nav-group-task">
                 <a href="Classes/VideoRotator.html">VideoRotator</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Classes/VideoTrackScreenObject.html">VideoTrackScreenObject</a>
               </li>
             </ul>
           </li>
@@ -160,19 +190,10 @@
                 <a href="Enums/DeviceUtil.html">DeviceUtil</a>
               </li>
               <li class="nav-group-task">
-                <a href="Enums/FeatureUtil.html">FeatureUtil</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Enums/FeatureUtil/Name.html">– Name</a>
-              </li>
-              <li class="nav-group-task">
                 <a href="Enums/IOAudioUnitError.html">IOAudioUnitError</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/IOVideoUnitError.html">IOVideoUnitError</a>
-              </li>
-              <li class="nav-group-task">
-                <a href="Enums/ImageTransform.html">ImageTransform</a>
               </li>
               <li class="nav-group-task">
                 <a href="Enums/RTMPObjectEncoding.html">RTMPObjectEncoding</a>
@@ -236,6 +257,12 @@
                 <a href="Protocols/Running.html">Running</a>
               </li>
               <li class="nav-group-task">
+                <a href="Protocols/ScreenDelegate.html">ScreenDelegate</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Protocols/ScreenRenderer.html">ScreenRenderer</a>
+              </li>
+              <li class="nav-group-task">
                 <a href="Protocols/TSReaderDelegate.html">TSReaderDelegate</a>
               </li>
               <li class="nav-group-task">
@@ -284,6 +311,9 @@
               </li>
               <li class="nav-group-task">
                 <a href="Structs/RTMPStreamInfo.html">RTMPStreamInfo</a>
+              </li>
+              <li class="nav-group-task">
+                <a href="Structs/SRTLogger.html">SRTLogger</a>
               </li>
               <li class="nav-group-task">
                 <a href="Structs/SRTPerformanceData.html">SRTPerformanceData</a>
@@ -408,35 +438,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RTMPObjectEncoding</span> <span class="p">:</span> <span class="kt">UInt8</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
-                    <a name="/s:10HaishinKit14ImageTransformO"></a>
-                    <a name="//apple_ref/swift/Enum/ImageTransform" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit14ImageTransformO">ImageTransform</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The type of image transform direction.</p>
-
-                        <a href="Enums/ImageTransform.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">ImageTransform</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Codable</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">RTMPObjectEncoding</span> <span class="p">:</span> <span class="kt">UInt8</span><span class="p">,</span> <span class="kt">Sendable</span></code></pre>
 
                         </div>
                       </div>
@@ -522,34 +524,6 @@
                 <li class="item">
                   <div>
                     <code>
-                    <a name="/s:10HaishinKit11FeatureUtilO"></a>
-                    <a name="//apple_ref/swift/Enum/FeatureUtil" class="dashAnchor"></a>
-                    <a class="token" href="#/s:10HaishinKit11FeatureUtilO">FeatureUtil</a>
-                    </code>
-                  </div>
-                  <div class="height-container">
-                    <div class="pointer-container"></div>
-                    <section class="section">
-                      <div class="pointer"></div>
-                      <div class="abstract">
-                        <p>The util object to get feature flag info.</p>
-
-                        <a href="Enums/FeatureUtil.html" class="slightly-smaller">See more</a>
-                      </div>
-                      <div class="declaration">
-                        <h4>Declaration</h4>
-                        <div class="language">
-                          <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">FeatureUtil</span></code></pre>
-
-                        </div>
-                      </div>
-                    </section>
-                  </div>
-                </li>
-                <li class="item">
-                  <div>
-                    <code>
                     <a name="/s:13SRTHaishinKit11SRTLogLevelO"></a>
                     <a name="//apple_ref/swift/Enum/SRTLogLevel" class="dashAnchor"></a>
                     <a class="token" href="#/s:13SRTHaishinKit11SRTLogLevelO">SRTLogLevel</a>
@@ -567,7 +541,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTLogLevel</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTLogLevel</span> <span class="p">:</span> <span class="kt">Sendable</span></code></pre>
 
                         </div>
                       </div>
@@ -594,7 +568,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTLogFunctionalArea</span> <span class="p">:</span> <span class="kt">Int32</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTLogFunctionalArea</span> <span class="p">:</span> <span class="kt">Int32</span><span class="p">,</span> <span class="kt">Sendable</span></code></pre>
 
                         </div>
                       </div>
@@ -649,7 +623,7 @@
                         <h4>Declaration</h4>
                         <div class="language">
                           <p class="aside-title">Swift</p>
-                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTSocketOption</span> <span class="p">:</span> <span class="kt">String</span></code></pre>
+                          <pre class="highlight swift"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="kt">SRTSocketOption</span> <span class="p">:</span> <span class="kt">String</span><span class="p">,</span> <span class="kt">Sendable</span></code></pre>
 
                         </div>
                       </div>
@@ -661,8 +635,8 @@
           </section>
         </section>
         <section id="footer">
-          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-06-08)</p>
-          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.15.0</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
+          <p>&copy; 2024 <a class="link" href="https://github.com/shogo4405/HaishinKit.swift" target="_blank" rel="external noopener">shogo4405</a>. All rights reserved. (Last updated: 2024-06-14)</p>
+          <p>Generated by <a class="link" href="https://github.com/realm/jazzy" target="_blank" rel="external noopener">jazzy ♪♫ v0.15.1</a>, a <a class="link" href="https://realm.io" target="_blank" rel="external noopener">Realm</a> project.</p>
         </section>
       </article>
     </div>
