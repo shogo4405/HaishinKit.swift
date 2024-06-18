@@ -11,6 +11,7 @@ srt_visionos() {
 }
 
 # visionOS
+export XROS_DEPLOYMENT_TARGET=1.0
 srt_visionos visionsimulator SIMULATOR
 srt_visionos visionos OS
 mkdir -p ./build/visionos/_SIMULATOR
