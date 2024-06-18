@@ -5,7 +5,9 @@ import libsrt
 public final class SRTConnection: NSObject {
     /// The error comain codes.
     public enum Error: Swift.Error {
+        // The uri isn’t supported.
         case notSupportedUri(_ uri: URL?)
+        // The fail to connect.
         case failedToConnect(_ message: String, reson: Int32)
     }
 
@@ -57,6 +59,7 @@ public final class SRTConnection: NSObject {
                 socket = .init()
                 try socket?.open(addr, mode: mode, options: options)
                 self.uri = uri
+                connected = socket?.status == SRTS_CONNECTED
                 continuation.resume()
             } catch {
                 continuation.resume(throwing: error)
@@ -74,6 +77,7 @@ public final class SRTConnection: NSObject {
         }
         socket?.close()
         clients.removeAll()
+        connected = false
     }
 
     private func sockaddr_in(_ host: String, port: UInt16) -> sockaddr_in {
