@@ -14,20 +14,24 @@ import UIKit
 #endif
 
 /// The ScreenObject class is the abstract class for all objects that are rendered on the screen.
-public class ScreenObject: Hashable {
-    public static func == (lhs: ScreenObject, rhs: ScreenObject) -> Bool {
-        lhs === rhs
-    }
-
+open class ScreenObject {
+    /// The horizontal alignment for the screen object.
     public enum HorizontalAlignment {
+        /// A guide that marks the left edge of the screen object.
         case left
+        /// A guide that marks the borizontal center of the screen object.
         case center
+        /// A guide that marks the right edge of the screen object.
         case right
     }
 
+    /// The vertical alignment for the screen object.
     public enum VerticalAlignment {
+        /// A guide that marks the top edge of the screen object.
         case top
+        /// A guide that marks the vertical middle of the screen object.
         case middle
+        /// A guide that marks the bottom edge of the screen object.
         case bottom
     }
 
@@ -78,26 +82,13 @@ public class ScreenObject: Hashable {
         shouldInvalidateLayout = true
     }
 
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(ObjectIdentifier(self))
-    }
-
     /// Makes cgImage for offscreen image.
-    public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
+    open func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
         return nil
     }
 
-    func layout(_ renderer: some ScreenRenderer) {
-        bounds = makeBounds(size)
-        renderer.layout(self)
-        shouldInvalidateLayout = false
-    }
-
-    func draw(_ renderer: some ScreenRenderer) {
-        renderer.draw(self)
-    }
-
-    func makeBounds(_ size: CGSize) -> CGRect {
+    /// Makes screen object bounds for offscreen image.
+    open func makeBounds(_ size: CGSize) -> CGRect {
         guard let parent else {
             return .init(origin: .zero, size: self.size)
         }
@@ -131,6 +122,27 @@ public class ScreenObject: Hashable {
 
         return .init(x: x, y: y, width: width, height: height)
     }
+
+    func layout(_ renderer: some ScreenRenderer) {
+        bounds = makeBounds(size)
+        renderer.layout(self)
+        shouldInvalidateLayout = false
+    }
+
+    func draw(_ renderer: some ScreenRenderer) {
+        renderer.draw(self)
+    }
+}
+
+extension ScreenObject: Hashable {
+    // MARK: Hashable
+    public static func == (lhs: ScreenObject, rhs: ScreenObject) -> Bool {
+        lhs === rhs
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
+    }
 }
 
 /// An object that manages offscreen rendering a cgImage source.
@@ -152,7 +164,7 @@ public final class ImageScreenObject: ScreenObject {
         return cgImage
     }
 
-    override func makeBounds(_ size: CGSize) -> CGRect {
+    override public func makeBounds(_ size: CGSize) -> CGRect {
         guard let cgImage else {
             return super.makeBounds(self.size)
         }
@@ -233,7 +245,7 @@ public final class VideoTrackScreenObject: ScreenObject {
         }
     }
 
-    override func makeBounds(_ size: CGSize) -> CGRect {
+    override public func makeBounds(_ size: CGSize) -> CGRect {
         guard parent != nil, let image = queue?.head?.formatDescription?.dimensions.size else {
             return super.makeBounds(size)
         }
@@ -415,7 +427,7 @@ public final class AssetScreenObject: ScreenObject {
         videoTrackOutput = nil
     }
 
-    override func makeBounds(_ size: CGSize) -> CGRect {
+    override public func makeBounds(_ size: CGSize) -> CGRect {
         guard parent != nil, let image = sampleBuffer?.formatDescription?.dimensions.size else {
             return super.makeBounds(size)
         }
