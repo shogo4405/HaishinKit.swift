@@ -253,7 +253,9 @@ open class RTMPStream: IOStream {
             dataTimestamps.removeAll()
         }
     }
-    private var dispatcher: (any EventDispatcherConvertible)!
+    private lazy var dispatcher: EventDispatcher = {
+        return EventDispatcher(target: self)
+    }()
     private lazy var pausedStatus = PausedStatus(self)
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var dataTimestamps: [String: Date] = .init()
@@ -264,7 +266,6 @@ open class RTMPStream: IOStream {
         self.connection = connection
         super.init()
         self.fcPublishName = fcPublishName
-        dispatcher = EventDispatcher(target: self)
         connection.streams.append(self)
         addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         connection.addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
@@ -557,7 +558,7 @@ open class RTMPStream: IOStream {
 }
 
 extension RTMPStream: EventDispatcherConvertible {
-    // MARK: IEventDispatcher
+    // MARK: EventDispatcherConvertible
     public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }

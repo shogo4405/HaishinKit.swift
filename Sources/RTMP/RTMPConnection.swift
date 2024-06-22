@@ -37,7 +37,7 @@ public protocol RTMPConnectionDelegate: AnyObject {
 
 // MARK: -
 /// The RTMPConneciton class create a two-way RTMP connection.
-public class RTMPConnection: EventDispatcher {
+public class RTMPConnection {
     /// The default network's window size for RTMPConnection.
     public static let defaultWindowSizeS: Int64 = 250000
     /// The supported protocols are rtmp, rtmps, rtmpt and rtmps.
@@ -248,10 +248,12 @@ public class RTMPConnection: EventDispatcher {
     private var fragmentedChunks: [UInt16: RTMPChunk] = [:]
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
+    private lazy var dispatcher: EventDispatcher = {
+        return EventDispatcher(target: self)
+    }()
 
     /// Creates a new connection.
-    override public init() {
-        super.init()
+    public init() {
         addEventListener(.rtmpStatus, selector: #selector(on(status:)))
     }
 
@@ -488,6 +490,25 @@ public class RTMPConnection: EventDispatcher {
         for stream in streams {
             delegate?.connection(self, updateStats: stream)
         }
+    }
+}
+
+extension RTMPConnection: EventDispatcherConvertible {
+    // MARK: EventDispatcherConvertible
+    public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
+        dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
+    }
+
+    public func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
+        dispatcher.removeEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
+    }
+
+    public func dispatch(event: Event) {
+        dispatcher.dispatch(event: event)
+    }
+
+    public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) {
+        dispatcher.dispatch(type, bubbles: bubbles, data: data)
     }
 }
 
