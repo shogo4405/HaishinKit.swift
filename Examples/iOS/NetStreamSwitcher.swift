@@ -62,7 +62,7 @@ final class NetStreamSwitcher {
             switch method {
             case .ingest:
                 // Performing operations for FMLE compatibility purposes.
-                (stream as? RTMPStream)?.fcPublishName = Preference.defaultInstance.streamName
+                (stream as? RTMPStream)?.fcPublishName = Preference.default.streamName
             case .playback:
                 break
             }
@@ -120,9 +120,9 @@ final class NetStreamSwitcher {
             retryCount = 0
             switch method {
             case .playback:
-                (stream as? RTMPStream)?.play(Preference.defaultInstance.streamName!)
+                (stream as? RTMPStream)?.play(Preference.default.streamName!)
             case .ingest:
-                (stream as? RTMPStream)?.publish(Preference.defaultInstance.streamName!)
+                (stream as? RTMPStream)?.publish(Preference.default.streamName!)
             }
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
             guard retryCount <= NetStreamSwitcher.maxRetryCount else {
@@ -139,7 +139,7 @@ final class NetStreamSwitcher {
     @objc
     private func rtmpErrorHandler(_ notification: Notification) {
         logger.error(notification)
-        (connection as? RTMPConnection)?.connect(Preference.defaultInstance.uri!)
+        (connection as? RTMPConnection)?.connect(Preference.default.uri!)
     }
 }
 

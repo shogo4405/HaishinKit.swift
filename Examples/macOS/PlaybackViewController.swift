@@ -11,7 +11,7 @@ final class PlaybackViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        netStreamSwitcher.uri = Preference.defaultInstance.uri!
+        netStreamSwitcher.uri = Preference.default.uri!
         lfView.attachStream(stream)
     }
 

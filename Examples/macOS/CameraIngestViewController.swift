@@ -25,10 +25,10 @@ final class CameraIngestViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        urlField.stringValue = Preference.defaultInstance.uri ?? ""
+        urlField.stringValue = Preference.default.uri ?? ""
         audioPopUpButton?.present(mediaType: .audio)
         cameraPopUpButton?.present(mediaType: .video)
-        netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
+        netStreamSwitcher.uri = Preference.default.uri ?? ""
         lfView?.attachStream(stream)
     }
 

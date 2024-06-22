@@ -36,7 +36,7 @@ final class IngestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
+        netStreamSwitcher.uri = Preference.default.uri ?? ""
 
         stream.screen.size = .init(width: 720, height: 1280)
         stream.screen.backgroundColor = UIColor.white.cgColor
