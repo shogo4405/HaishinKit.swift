@@ -80,24 +80,18 @@ extension RTMPSharedObjectEvent: CustomDebugStringConvertible {
 // MARK: -
 /// The RTMPSharedObject class is used to read and write data on a server.
 public final class RTMPSharedObject: EventDispatcher {
-    private static var remoteSharedObjects: [String: RTMPSharedObject] = [:]
+    private static nonisolated(unsafe) var remoteSharedObjects: Atomic<[String: RTMPSharedObject]> = .init([:])
 
     /// Returns a reference to a shared object on a server.
     public static func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
-        let key: String = remotePath + "/" + withName + "?persistence=" + persistence.description
-        objc_sync_enter(remoteSharedObjects)
-        if remoteSharedObjects[key] == nil {
-            remoteSharedObjects[key] = RTMPSharedObject(name: withName, path: remotePath, persistence: persistence)
+        let key = remotePath + "/" + withName + "?persistence=" + persistence.description
+        guard let sharedObject = remoteSharedObjects.value[key] else {
+            let sharedObject = RTMPSharedObject(name: withName, path: remotePath, persistence: persistence)
+            remoteSharedObjects.mutate { $0[key] = sharedObject }
+            return sharedObject
         }
-        objc_sync_exit(remoteSharedObjects)
-        return remoteSharedObjects[key]!
+        return sharedObject
     }
-
-    var name: String
-    var path: String
-    var timestamp: TimeInterval = 0
-    var persistence: Bool
-    var currentVersion: UInt32 = 0
 
     /// The AMF object encoding type.
     public let objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
@@ -114,6 +108,12 @@ public final class RTMPSharedObject: EventDispatcher {
             }
         }
     }
+
+    let name: String
+    let path: String
+    var timestamp: TimeInterval = 0
+    let persistence: Bool
+    var currentVersion: UInt32 = 0
 
     private var connection: RTMPConnection?
 
