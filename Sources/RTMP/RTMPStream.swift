@@ -182,7 +182,7 @@ open class RTMPStream: IOStream {
                 guard self.readyState == .playing else {
                     return
                 }
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
                     objectEncoding: self.objectEncoding,
@@ -200,7 +200,7 @@ open class RTMPStream: IOStream {
                 guard self.readyState == .playing else {
                     return
                 }
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
                     objectEncoding: self.objectEncoding,
@@ -225,7 +225,7 @@ open class RTMPStream: IOStream {
                         self.pausedStatus.restore(self)
                     }
                 case .play, .playing:
-                    self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                    self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                         streamId: self.id,
                         transactionId: 0,
                         objectEncoding: self.objectEncoding,
@@ -254,7 +254,7 @@ open class RTMPStream: IOStream {
         }
     }
     private lazy var dispatcher: EventDispatcher = {
-        return EventDispatcher(target: self)
+        EventDispatcher(target: self)
     }()
     private lazy var pausedStatus = PausedStatus(self)
     private var howToPublish: RTMPStream.HowToPublish = .live
@@ -266,7 +266,7 @@ open class RTMPStream: IOStream {
         self.connection = connection
         super.init()
         self.fcPublishName = fcPublishName
-        connection.streams.append(self)
+        connection.addStream(self)
         addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         connection.addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         if connection.connected {
@@ -311,7 +311,7 @@ open class RTMPStream: IOStream {
                 self.messages.append(message)
             default:
                 self.readyState = .play
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: message))
+                self.connection?.doOutput(chunk: RTMPChunk(message: message))
             }
         }
     }
@@ -322,7 +322,7 @@ open class RTMPStream: IOStream {
             guard self.readyState == .playing else {
                 return
             }
-            self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+            self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -369,7 +369,7 @@ open class RTMPStream: IOStream {
                 self.messages.append(message)
             default:
                 self.readyState = .publish
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: message))
+                self.connection?.doOutput(chunk: RTMPChunk(message: message))
             }
         }
     }
@@ -459,9 +459,8 @@ open class RTMPStream: IOStream {
             metadata.removeAll()
             info.clear()
             for message in messages {
-                connection.currentTransactionId += 1
                 message.streamId = id
-                message.transactionId = connection.currentTransactionId
+                message.transactionId = connection.newTransaction
                 switch message.commandName {
                 case "play":
                     self.readyState = .play
@@ -470,7 +469,7 @@ open class RTMPStream: IOStream {
                 default:
                     break
                 }
-                connection.socket?.doOutput(chunk: RTMPChunk(message: message))
+                connection.doOutput(chunk: RTMPChunk(message: message))
             }
             messages.removeAll()
         case .playing:
@@ -503,29 +502,26 @@ open class RTMPStream: IOStream {
         if let fcPublishName {
             connection.call("FCUnpublish", responder: nil, arguments: fcPublishName)
         }
-        connection.socket?.doOutput(chunk: RTMPChunk(
-                                        type: .zero,
-                                        streamId: RTMPChunk.StreamID.command.rawValue,
-                                        message: RTMPCommandMessage(
-                                            streamId: 0,
-                                            transactionId: 0,
-                                            objectEncoding: self.objectEncoding,
-                                            commandName: "closeStream",
-                                            commandObject: nil,
-                                            arguments: [self.id]
-                                        )))
+        connection.doOutput(chunk: RTMPChunk(
+                                type: .zero,
+                                streamId: RTMPChunk.StreamID.command.rawValue,
+                                message: RTMPCommandMessage(
+                                    streamId: 0,
+                                    transactionId: 0,
+                                    objectEncoding: self.objectEncoding,
+                                    commandName: "closeStream",
+                                    commandObject: nil,
+                                    arguments: [self.id]
+                                )))
     }
 
     func doOutput(_ type: RTMPChunkType, chunkStreamId: UInt16, message: RTMPMessage) {
-        guard let socket = connection?.socket else {
-            return
-        }
         message.streamId = id
-        let length = socket.doOutput(chunk: .init(
+        let length = connection?.doOutput(chunk: .init(
             type: type,
             streamId: chunkStreamId,
             message: message
-        ))
+        )) ?? 0
         info.byteCount.mutate { $0 += Int64(length) }
     }
 

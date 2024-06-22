@@ -332,7 +332,7 @@ final class RTMPCommandMessage: RTMPMessage {
     }
 
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let responder = connection.operations.removeValue(forKey: transactionId) else {
+        guard let responder = connection.responder(transactionId) else {
             switch commandName {
             case "close":
                 connection.close(isDisconnected: true)
@@ -732,7 +732,7 @@ final class RTMPUserControlMessage: RTMPMessage {
     override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
         switch event {
         case .ping:
-            connection.socket?.doOutput(chunk: RTMPChunk(
+            connection.doOutput(chunk: RTMPChunk(
                 type: .zero,
                 streamId: RTMPChunk.StreamID.control.rawValue,
                 message: RTMPUserControlMessage(event: .pong, value: value)

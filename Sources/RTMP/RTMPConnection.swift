@@ -214,11 +214,21 @@ public class RTMPConnection {
             socket?.delegate = self
         }
     }
-    var streams: [RTMPStream] = []
-    var sequence: Int64 = 0
+
+    var timestamp: TimeInterval {
+        socket?.timestamp ?? 0
+    }
+
+    var newTransaction: Int {
+        currentTransactionId += 1
+        return currentTransactionId
+    }
+
+    private(set) var streams: [RTMPStream] = []
+    private var sequence: Int64 = 0
     var bandWidth: UInt32 = 0
-    var streamsmap: [UInt16: UInt32] = [:]
-    var operations: [Int: RTMPResponder] = [:]
+    private var streamsmap: [UInt16: UInt32] = [:]
+    private var operations: [Int: RTMPResponder] = [:]
     var windowSizeC: Int64 = RTMPConnection.defaultWindowSizeS {
         didSet {
             guard let socket, socket.connected else {
@@ -232,7 +242,7 @@ public class RTMPConnection {
         }
     }
     var windowSizeS: Int64 = RTMPConnection.defaultWindowSizeS
-    var currentTransactionId: Int = 0
+    private var currentTransactionId: Int = 0
     private var timer: Timer? {
         didSet {
             oldValue?.invalidate()
@@ -241,6 +251,9 @@ public class RTMPConnection {
             }
         }
     }
+    private lazy var dispatcher: EventDispatcher = {
+        return EventDispatcher(target: self)
+    }()
     private var messages: [UInt16: RTMPMessage] = [:]
     private var arguments: [Any?] = []
     private var currentChunk: RTMPChunk?
@@ -248,9 +261,6 @@ public class RTMPConnection {
     private var fragmentedChunks: [UInt16: RTMPChunk] = [:]
     private var previousTotalBytesIn: Int64 = 0
     private var previousTotalBytesOut: Int64 = 0
-    private lazy var dispatcher: EventDispatcher = {
-        return EventDispatcher(target: self)
-    }()
 
     /// Creates a new connection.
     public init() {
@@ -268,10 +278,9 @@ public class RTMPConnection {
         guard let socket, connected else {
             return
         }
-        currentTransactionId += 1
         let message = RTMPCommandMessage(
             streamId: 0,
-            transactionId: currentTransactionId,
+            transactionId: newTransaction,
             objectEncoding: objectEncoding,
             commandName: commandName,
             commandObject: nil,
@@ -302,14 +311,6 @@ public class RTMPConnection {
             let secure = uri.scheme == "rtmps" || uri.scheme == "rtmpts"
             $0.securityLevel = secure ? .negotiatedSSL : .none
             $0.delegate = self
-            var outputBufferSize: Int = 0
-            for stream in streams {
-                // in bytes.
-                outputBufferSize += (Int(stream.mixer.videoIO.settings.bitRate) + stream.mixer.audioIO.settings.bitRate) / 8
-            }
-            if $0.outputBufferSize < outputBufferSize {
-                $0.outputBufferSize = outputBufferSize
-            }
             $0.setProperty(parameters, forKey: "parameters")
             $0.connect(withName: uri.host!, port: uri.port ?? (secure ? Self.defaultSecurePort : Self.defaultPort))
         }
@@ -318,6 +319,11 @@ public class RTMPConnection {
     /// Closes the connection from the server.
     public func close() {
         close(isDisconnected: false)
+    }
+
+    @discardableResult
+    func doOutput(chunk: RTMPChunk) -> Int {
+        return socket?.doOutput(chunk: chunk) ?? 0
     }
 
     func close(isDisconnected: Bool) {
@@ -333,6 +339,14 @@ public class RTMPConnection {
             stream.close()
         }
         socket?.close(isDisconnected: false)
+    }
+
+    func addStream(_ stream: RTMPStream) {
+        streams.append(stream)
+    }
+
+    func responder(_ transactionId: Int) -> RTMPResponder? {
+        return operations.removeValue(forKey: transactionId)
     }
 
     func createStream(_ stream: RTMPStream) {
@@ -420,11 +434,10 @@ public class RTMPConnection {
         if let query = uri.query {
             app += "?" + query
         }
-        currentTransactionId += 1
 
         let message = RTMPCommandMessage(
             streamId: 0,
-            transactionId: currentTransactionId,
+            transactionId: newTransaction,
             // "connect" must be a objectEncoding = 0
             objectEncoding: .amf0,
             commandName: "connect",
