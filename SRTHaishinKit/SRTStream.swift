@@ -4,33 +4,23 @@ import HaishinKit
 import libsrt
 
 /// An object that provides the interface to control a one-way channel over a SRTConnection.
-public final class SRTStream {
+public actor SRTStream {
+    public private(set) var readyState: IOStream.ReadyState = .initialized
     private var name: String?
-    private var action: (() -> Void)?
+    private var action: (() async -> Void)?
+    private lazy var stream = IOStream()
     private weak var connection: SRTConnection?
-
-    private lazy var muxer: SRTMuxer = {
-        SRTMuxer(self)
-    }()
-
-    private lazy var stream: IOStream = {
-        let stream = IOStream(muxer)
-        stream.delegate = self
-        return stream
-    }()
+    private lazy var writer = TSWriter()
+    private var continuations: [AsyncStream<CMSampleBuffer>.Continuation] = []
 
     /// Creates a new stream object.
-    public init(connection: SRTConnection) {
+    public init(connection: SRTConnection) async {
         self.connection = connection
-        self.connection?.addStream(self)
-    }
-
-    deinit {
-        connection = nil
+        await self.connection?.addStream(self)
     }
 
     /// Sends streaming audio, vidoe and data message from client.
-    public func publish(_ name: String? = "") {
+    public func publish(_ name: String? = "") async {
         guard let name else {
             switch readyState {
             case .publish, .publishing:
@@ -40,15 +30,40 @@ public final class SRTStream {
             }
             return
         }
-        if connection?.connected == true {
-            readyState = .publish
+        if await connection?.connected == true {
+            writer.expectedMedias.removeAll()
+            if stream.videoInputFormat != nil {
+                writer.videoFormat = stream.videoInputFormat
+                writer.expectedMedias.insert(.video)
+            }
+            if stream.audioInputFormat != nil {
+                writer.audioFormat = stream.audioInputFormat
+                writer.expectedMedias.insert(.audio)
+            }
+            readyState = .publishing
+            stream.startRunning()
+            Task {
+                for await buffer in stream.video where stream.isRunning {
+                    writer.append(buffer)
+                }
+            }
+            Task {
+                for await buffer in stream.audio where stream.isRunning {
+                    writer.append(buffer.0, when: buffer.1)
+                }
+            }
+            Task {
+                for await data in writer.output where stream.isRunning {
+                    await connection?.output(data)
+                }
+            }
         } else {
-            action = { [weak self] in self?.publish(name) }
+            action = { [weak self] in await self?.publish(name) }
         }
     }
 
     /// Playback streaming audio and video message from server.
-    public func play(_ name: String? = "") {
+    public func play(_ name: String? = "") async {
         guard let name else {
             switch readyState {
             case .play, .playing:
@@ -58,116 +73,66 @@ public final class SRTStream {
             }
             return
         }
-        if connection?.connected == true {
+        if await connection?.connected == true {
             readyState = .play
+            stream.startRunning()
+            await connection?.listen()
+            readyState = .playing
         } else {
-            action = { [weak self] in self?.play(name) }
+            action = { [weak self] in await self?.play(name) }
         }
     }
 
     /// Stops playing or publishing and makes available other uses.
-    public func close() {
+    public func close() async {
         if readyState == .closed || readyState == .initialized {
             return
         }
+        stream.stopRunning()
         readyState = .closed
     }
 
     func doInput(_ data: Data) {
-        muxer.read(data)
-    }
-
-    func doOutput(_ data: Data) {
-        connection?.output(data)
+        // muxer.read(data)
     }
 }
 
 extension SRTStream: IOStreamConvertible {
-    public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        stream.setAudioSettings(audioSettings)
-    }
-
-    public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        stream.setVideoSettings(videoSettings)
-    }
-
-    public func setBitrateStorategy(_ bitrateStrategy: some IOStreamBitRateStrategyConvertible) {
-        stream.setBitrateStorategy(bitrateStrategy)
-    }
-
     // MARK: IOStreamConvertible
-    public private(set) var readyState: IOStream.ReadyState {
-        get {
-            stream.readyState
-        }
-        set {
-            stream.readyState = newValue
-        }
-    }
-
-    public var bitrateStrategy: any IOStreamBitRateStrategyConvertible {
-        stream.bitrateStrategy
-    }
-
-    public var audioInputFormat: CMFormatDescription? {
-        stream.audioInputFormat
-    }
-
     public var audioSettings: AudioCodecSettings {
-        stream.audioSettings
+        get async {
+            stream.audioSettings
+        }
     }
 
-    public var videoInputFormat: CMFormatDescription? {
-        stream.videoInputFormat
+    public var video: AsyncStream<CMSampleBuffer> {
+        get async {
+            let (stream, continuation) = AsyncStream<CMSampleBuffer>.makeStream()
+            continuations.append(continuation)
+            return stream
+        }
     }
 
     public var videoSettings: VideoCodecSettings {
-        stream.videoSettings
+        get async {
+            stream.videoSettings
+        }
     }
 
-    public func attachMixer(_ mixer: IOMixer?) {
-        stream.attachMixer(mixer)
+    public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
+        stream.audioSettings = audioSettings
+    }
+
+    public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
+        stream.videoSettings = videoSettings
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
         stream.append(sampleBuffer)
+        continuations.forEach { $0.yield(sampleBuffer) }
     }
 
-    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        stream.append(audioBuffer, when: when)
-    }
-
-    public func addObserver(_ observer: some IOStreamObserver) {
-        stream.addObserver(observer)
-    }
-
-    public func removeObserver(_ observer: some IOStreamObserver) {
-        stream.removeObserver(observer)
-    }
-}
-
-extension SRTStream: IOStreamDelegate {
-    public func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState) {
-    }
-
-    public func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState) {
-        switch readyState {
-        case .play:
-            stream.startRunning()
-            connection?.listen()
-            readyState = .playing
-        case .publish:
-            muxer.expectedMedias.removeAll()
-            if videoInputFormat != nil {
-                muxer.expectedMedias.insert(.video)
-            }
-            if audioInputFormat != nil {
-                muxer.expectedMedias.insert(.audio)
-            }
-            readyState = .publishing
-            stream.startRunning()
-        default:
-            break
-        }
+    public func append(_ buffer: AVAudioBuffer, when: AVAudioTime) {
+        stream.append(buffer, when: when)
     }
 }

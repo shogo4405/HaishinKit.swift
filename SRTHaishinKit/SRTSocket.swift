@@ -35,7 +35,6 @@ final class SRTSocket {
                 logger.trace("SRT Socket Closing")
             case SRTS_CLOSED:
                 logger.info("SRT Socket Closed")
-                stopRunning()
             case SRTS_NONEXIST:
                 logger.warn("SRT Socket Not Exist")
             default:
@@ -45,8 +44,6 @@ final class SRTSocket {
     }
     private var windowSizeC: Int32 = 1024 * 4
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
-    private var outgoingContinuation: AsyncStream<Data>.Continuation?
-    private var tasks: [Task<Void, Never>] = .init()
 
     init() {
     }
@@ -100,7 +97,7 @@ final class SRTSocket {
                 throw makeSocketError()
             }
         }
-        startRunning()
+        status = srt_getsockstate(socket)
     }
 
     func close() {
@@ -109,12 +106,11 @@ final class SRTSocket {
         }
         srt_close(socket)
         socket = SRT_INVALID_SOCK
-        stopRunning()
     }
 
     func doOutput(data: Data) {
         for data in data.chunk(kSRTSOcket_payloadSize) {
-            outgoingContinuation?.yield(data)
+            _ = sendmsg2(data)
         }
     }
 
@@ -171,35 +167,5 @@ final class SRTSocket {
             }
             return srt_recvmsg(socket, buffer, windowSizeC)
         }
-    }
-}
-
-extension SRTSocket: Runner {
-    // MARK: Running
-    func startRunning() {
-        guard !isRunning else {
-            return
-        }
-        isRunning = true
-        let outgoingStream = AsyncStream<Data> { continuation in
-            self.outgoingContinuation = continuation
-        }
-        tasks.append(.init {
-            for await data in outgoingStream {
-                let result = sendmsg2(data)
-                if result == SRT_ERROR {
-                    outgoingContinuation?.finish()
-                }
-            }
-        })
-    }
-
-    func stopRunning() {
-        guard isRunning else {
-            return
-        }
-        outgoingContinuation?.finish()
-        tasks.forEach { $0.cancel() }
-        isRunning = false
     }
 }

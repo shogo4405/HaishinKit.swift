@@ -2,7 +2,7 @@ import Foundation
 import libsrt
 
 /// The SRTConnection class create a two-way SRT connection.
-public final class SRTConnection {
+public actor SRTConnection {
     /// The error comain codes.
     public enum Error: Swift.Error {
         // The uri isn’t supported.
@@ -37,7 +37,6 @@ public final class SRTConnection {
     }
 
     deinit {
-        streams.removeAll()
         srt_cleanup()
     }
 
@@ -68,7 +67,7 @@ public final class SRTConnection {
             client.close()
         }
         for stream in streams {
-            stream.close()
+            await stream.close()
         }
         socket?.close()
         clients.removeAll()
@@ -85,7 +84,7 @@ public final class SRTConnection {
                 return
             }
             for await data in stream {
-                self.streams.first?.doInput(data)
+                await self.streams.first?.doInput(data)
             }
         }
     }

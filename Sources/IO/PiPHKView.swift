@@ -64,13 +64,6 @@ public class PiPHKView: UIView {
     }
     #endif
 
-    private weak var currentStream: (any IOStreamConvertible)? {
-        didSet {
-            oldValue?.removeObserver(self)
-            currentStream?.addObserver(self)
-        }
-    }
-
     private var captureVideoPreview: UIView? {
         willSet {
             captureVideoPreview?.removeFromSuperview()
@@ -82,6 +75,8 @@ public class PiPHKView: UIView {
             }
         }
     }
+
+    private var enqueueTask: Task<Void, Never>?
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
@@ -106,7 +101,17 @@ public class PiPHKView: UIView {
 extension PiPHKView: IOStreamView {
     // MARK: IOStreamView
     public func attachStream(_ stream: (some IOStreamConvertible)?) {
-        currentStream = stream
+        if let stream {
+            let task = Task {
+                let videoStream = await stream.video
+                for await video in videoStream where enqueueTask?.isCancelled == false {
+                    enqueue(video)
+                }
+            }
+            self.enqueueTask = task
+        } else {
+            enqueueTask?.cancel()
+        }
     }
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
@@ -114,17 +119,6 @@ extension PiPHKView: IOStreamView {
             return
         }
         layer.enqueue(sampleBuffer)
-    }
-}
-
-extension PiPHKView: IOStreamObserver {
-    nonisolated public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
-    }
-
-    nonisolated public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
-        Task { @MainActor in
-            self.enqueue(video)
-        }
     }
 }
 #else
@@ -188,12 +182,7 @@ public class PiPHKView: NSView {
         }
     }
 
-    private weak var currentStream: (any IOStreamConvertible)? {
-        didSet {
-            oldValue?.removeObserver(self)
-            currentStream?.addObserver(self)
-        }
-    }
+    private var enqueueTask: Task<Void, Never>?
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
@@ -219,7 +208,17 @@ public class PiPHKView: NSView {
 extension PiPHKView: IOStreamView {
     // MARK: IOStreamView
     public func attachStream(_ stream: (some IOStreamConvertible)?) {
-        currentStream = stream
+        if let stream {
+            let task = Task {
+                let videoStream = await stream.video
+                for await video in videoStream where enqueueTask?.isCancelled == false {
+                    enqueue(video)
+                }
+            }
+            self.enqueueTask = task
+        } else {
+            enqueueTask?.cancel()
+        }
     }
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
@@ -227,17 +226,6 @@ extension PiPHKView: IOStreamView {
             return
         }
         (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
-    }
-}
-
-extension PiPHKView: IOStreamObserver {
-    nonisolated public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
-    }
-
-    nonisolated public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
-        Task { @MainActor in
-            enqueue(video)
-        }
     }
 }
 

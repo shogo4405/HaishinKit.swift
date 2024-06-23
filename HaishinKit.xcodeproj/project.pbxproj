@@ -82,7 +82,6 @@
 		29B876AF1CD70B2800FC07DA /* RTMPChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A31CD70B2800FC07DA /* RTMPChunk.swift */; };
 		29B876B01CD70B2800FC07DA /* RTMPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A41CD70B2800FC07DA /* RTMPConnection.swift */; };
 		29B876B11CD70B2800FC07DA /* RTMPMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A51CD70B2800FC07DA /* RTMPMessage.swift */; };
-		29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */; };
 		29B876B41CD70B2800FC07DA /* RTMPSharedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */; };
 		29B876B61CD70B2800FC07DA /* RTMPStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876AA1CD70B2800FC07DA /* RTMPStream.swift */; };
 		29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876B81CD70B3900FC07DA /* ByteArray.swift */; };
@@ -241,7 +240,6 @@
 		BCABED082BD8286400CC7E73 /* change_video_resolution.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCABED072BD8284800CC7E73 /* change_video_resolution.ts */; };
 		BCABED102BDAA3AB00CC7E73 /* AVAudioUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */; };
 		BCABED122BDAA80800CC7E73 /* IOAudioMixerSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */; };
-		BCABED1E2BDCC79000CC7E73 /* SRTMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED1D2BDCC79000CC7E73 /* SRTMuxer.swift */; };
 		BCABED1F2BDD097F00CC7E73 /* IOAudioMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D687812B80302B00E6A28E /* IOAudioMixer.swift */; };
 		BCABED212BDE23C600CC7E73 /* AudioNode+DebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCABED202BDE23C600CC7E73 /* AudioNode+DebugExtension.swift */; };
 		BCB976DF26107B5600C9A649 /* TSField.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB976DE26107B5600C9A649 /* TSField.swift */; };
@@ -560,7 +558,6 @@
 		29B876A31CD70B2800FC07DA /* RTMPChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPChunk.swift; sourceTree = "<group>"; };
 		29B876A41CD70B2800FC07DA /* RTMPConnection.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPConnection.swift; sourceTree = "<group>"; };
 		29B876A51CD70B2800FC07DA /* RTMPMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPMessage.swift; sourceTree = "<group>"; };
-		29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPMuxer.swift; sourceTree = "<group>"; };
 		29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPSharedObject.swift; sourceTree = "<group>"; };
 		29B876AA1CD70B2800FC07DA /* RTMPStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTMPStream.swift; sourceTree = "<group>"; };
 		29B876B81CD70B3900FC07DA /* ByteArray.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ByteArray.swift; sourceTree = "<group>"; };
@@ -701,7 +698,6 @@
 		BCABED072BD8284800CC7E73 /* change_video_resolution.ts */ = {isa = PBXFileReference; explicitFileType = video.quicktime; fileEncoding = 4; path = change_video_resolution.ts; sourceTree = "<group>"; };
 		BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVAudioUtil.swift; sourceTree = "<group>"; };
 		BCABED112BDAA80800CC7E73 /* IOAudioMixerSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerSettings.swift; sourceTree = "<group>"; };
-		BCABED1D2BDCC79000CC7E73 /* SRTMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SRTMuxer.swift; sourceTree = "<group>"; };
 		BCABED202BDE23C600CC7E73 /* AudioNode+DebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioNode+DebugExtension.swift"; sourceTree = "<group>"; };
 		BCB976DE26107B5600C9A649 /* TSField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TSField.swift; sourceTree = "<group>"; };
 		BCB9773E2621812800C9A649 /* ISOTypeBufferUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISOTypeBufferUtil.swift; sourceTree = "<group>"; };
@@ -1154,7 +1150,6 @@
 				29B876A41CD70B2800FC07DA /* RTMPConnection.swift */,
 				29F6F4841DFB83E200920A3A /* RTMPHandshake.swift */,
 				29B876A51CD70B2800FC07DA /* RTMPMessage.swift */,
-				29B876A61CD70B2800FC07DA /* RTMPMuxer.swift */,
 				29DF20612312A3DD004057C3 /* RTMPNWSocket.swift */,
 				293B42E82340B4840086F973 /* RTMPObjectEncoding.swift */,
 				29B876A81CD70B2800FC07DA /* RTMPSharedObject.swift */,
@@ -1322,7 +1317,6 @@
 				BCCC45982AA289FA0016EFE8 /* SRTHaishinKit.h */,
 				BCCC45A82AA28A7C0016EFE8 /* SRTLogger.swift */,
 				BCCC45A92AA28A7C0016EFE8 /* SRTMode.swift */,
-				BCABED1D2BDCC79000CC7E73 /* SRTMuxer.swift */,
 				BCCC45A42AA28A7C0016EFE8 /* SRTPerformanceData.swift */,
 				BCCC45A62AA28A7C0016EFE8 /* SRTSocket.swift */,
 				BCCC45A32AA28A7B0016EFE8 /* SRTSocketOption.swift */,
@@ -1871,7 +1865,6 @@
 				BC6889782B011AEB0026A4C2 /* IOCaptureSession.swift in Sources */,
 				BC3802142AB5E7CC001AE399 /* IOAudioCaptureUnit.swift in Sources */,
 				BCDEB4FC2BE4436D00EEC6ED /* ScreenObjectContainer.swift in Sources */,
-				29B876B21CD70B2800FC07DA /* RTMPMuxer.swift in Sources */,
 				BC0D236D26331BAB001DDA0C /* DataBuffer.swift in Sources */,
 				29EA87ED1E79A3E30043A5F8 /* CVPixelBuffer+Extension.swift in Sources */,
 				29EA87DC1E79A0460043A5F8 /* Data+Extension.swift in Sources */,
@@ -2083,7 +2076,6 @@
 				BCCC45AB2AA28A7D0016EFE8 /* SRTSocketOption.swift in Sources */,
 				BCCC45AD2AA28A7D0016EFE8 /* SRTStream.swift in Sources */,
 				BCCC45B12AA28A7D0016EFE8 /* SRTMode.swift in Sources */,
-				BCABED1E2BDCC79000CC7E73 /* SRTMuxer.swift in Sources */,
 				BCCC45AF2AA28A7D0016EFE8 /* SRTConnection.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

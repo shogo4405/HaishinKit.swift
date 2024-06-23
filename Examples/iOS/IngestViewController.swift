@@ -77,7 +77,6 @@ final class IngestViewController: UIViewController {
             }
         }
         stream.map {
-            $0.attachMixer(mixer)
             (view as? (any IOStreamView))?.attachStream($0)
         }
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)

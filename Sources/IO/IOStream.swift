@@ -8,54 +8,42 @@ import SwiftPMSupport
 import UIKit
 #endif
 
-/// The interface an IOStream uses to inform its delegate.
-public protocol IOStreamDelegate: AnyObject {
-    /// Tells the receiver that the ready state will change.
-    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState)
-    /// Tells the receiver that the ready state did change.
-    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState)
-}
-
 public protocol IOStreamConvertible: AnyObject {
     /// The current state of the stream.
-    var readyState: IOStream.ReadyState { get }
+    var readyState: IOStream.ReadyState { get async }
+
+    var video: AsyncStream<CMSampleBuffer> { get async }
 
     /// Specifies the adaptibe bitrate strategy.
-    var bitrateStrategy: any IOStreamBitRateStrategyConvertible { get }
+    // var bitrateStrategy: any IOStreamBitRateStrategyConvertible { get async }
 
-    var audioInputFormat: CMFormatDescription? { get }
+    // var audioInputFormat: CMFormatDescription? { get async }
 
     /// Specifies the audio compression properties.
-    var audioSettings: AudioCodecSettings { get  }
+    var audioSettings: AudioCodecSettings { get async }
 
-    var videoInputFormat: CMFormatDescription? { get }
+    // var videoInputFormat: CMFormatDescription? { get async }
 
     /// Specifies the video compression properties.
-    var videoSettings: VideoCodecSettings { get }
+    var videoSettings: VideoCodecSettings { get async }
 
     /// Appends a CMSampleBuffer.
     /// - Parameters:
     ///   - sampleBuffer:The sample buffer to append.
-    func append(_ sampleBuffer: CMSampleBuffer)
+    func append(_ sampleBuffer: CMSampleBuffer) async
 
     /// Appends an AVAudioBuffer.
     /// - Parameters:
     ///   - audioBuffer:The audio buffer to append.
     ///   - when: The audio time to append.
     ///   - track: Track number used for mixing.
-    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime)
+    func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) async
 
-    func attachMixer(_ mixer: IOMixer?)
+    func setAudioSettings(_ audioSettings: AudioCodecSettings) async
 
-    func setAudioSettings(_ audioSettings: AudioCodecSettings)
+    func setVideoSettings(_ videoSettings: VideoCodecSettings) async
 
-    func setVideoSettings(_ videoSettings: VideoCodecSettings)
-
-    func setBitrateStorategy(_ bitrateStrategy: some IOStreamBitRateStrategyConvertible)
-
-    func addObserver(_ observer: some IOStreamObserver)
-
-    func removeObserver(_ observer: some IOStreamObserver)
+    // func setBitrateStorategy(_ bitrateStrategy: some IOStreamBitRateStrategyConvertible) async
 }
 
 /// The `IOStream` class is the foundation of a RTMPStream.
@@ -101,113 +89,50 @@ public final class IOStream {
         }
     }
 
-    /// Specifies the adaptibe bitrate strategy.
-    public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy() {
-        didSet {
-            bitrateStrategy.stream = self
-            bitrateStrategy.setUp()
-        }
-    }
+    public private(set) var isRunning = false
 
-    public private(set) var audioInputFormat: CMFormatDescription?
+    public var audio: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
+        return audioCodec.outputStream
+    }
 
     /// Specifies the audio compression properties.
     public var audioSettings: AudioCodecSettings {
-        audioCodec.settings
+        get {
+            audioCodec.settings
+        }
+        set {
+            audioCodec.settings = newValue
+        }
+    }
+
+    public private(set) var audioInputFormat: AVAudioFormat?
+
+    public var video: AsyncStream<CMSampleBuffer> {
+        return videoCodec.outputStream
+    }
+
+    /// Specifies the video compression properties.
+    public var videoSettings: VideoCodecSettings {
+        get {
+            videoCodec.settings
+        }
+        set {
+            videoCodec.settings = newValue
+        }
     }
 
     public private(set) var videoInputFormat: CMFormatDescription?
 
-    public private(set) var isRunning = false
-
-    /// Specifies the video compression properties.
-    public var videoSettings: VideoCodecSettings {
-        videoCodec.settings
-    }
-
-    /// Specifies the delegate.
-    public weak var delegate: (any IOStreamDelegate)?
-
-    /// The current state of the stream.
-    public var readyState: ReadyState = .initialized {
-        willSet {
-            guard readyState != newValue else {
-                return
-            }
-            delegate?.stream(self, willChangeReadyState: readyState)
-        }
-        didSet {
-            guard readyState != oldValue else {
-                return
-            }
-            delegate?.stream(self, didChangeReadyState: readyState)
-        }
-    }
-
-    private let muxer: any IOMuxer
-
-    private weak var mixer: IOMixer? {
-        didSet {
-            oldValue?.removeStream(self)
-            mixer?.addStream(self)
-        }
-    }
-
     private lazy var audioCodec = AudioCodec()
     private lazy var videoCodec = VideoCodec()
-    private var observers: [any IOStreamObserver] = []
 
-    public init(_ muxer: some IOMuxer) {
-        self.muxer = muxer
-    }
-
-    deinit {
-        observers.removeAll()
-    }
-
-    /// Adds an observer.
-    public func addObserver(_ observer: some IOStreamObserver) {
-        guard !observers.contains(where: { $0 === observer }) else {
-            return
-        }
-        observers.append(observer)
-    }
-
-    /// Removes an observer.
-    public func removeObserver(_ observer: some IOStreamObserver) {
-        if let index = observers.firstIndex(where: { $0 === observer }) {
-            observers.remove(at: index)
-        }
-    }
-}
-
-extension IOStream: IOStreamConvertible {
-    // MARK: IOStreamConvertible
-    public func attachMixer(_ mixer: IOMixer?) {
-        self.mixer = mixer
-    }
-
-    public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        audioCodec.settings = audioSettings
-    }
-
-    public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        videoCodec.settings = videoSettings
-    }
-
-    public func setBitrateStorategy(_ bitrateStrategy: some IOStreamBitRateStrategyConvertible) {
-        self.bitrateStrategy = bitrateStrategy
+    public init() {
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.mediaType {
         case .audio:
-            if audioInputFormat != sampleBuffer.formatDescription {
-                audioInputFormat = sampleBuffer.formatDescription
-            }
-            if audioCodec.isRunning {
-                audioCodec.append(sampleBuffer)
-            }
+            break
         case .video:
             if videoInputFormat != sampleBuffer.formatDescription {
                 videoInputFormat = sampleBuffer.formatDescription
@@ -216,17 +141,15 @@ extension IOStream: IOStreamConvertible {
         default:
             break
         }
-        observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
     }
 
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        if audioInputFormat != audioBuffer.format.formatDescription {
-            audioInputFormat = audioBuffer.format.formatDescription
+        if audioInputFormat != audioBuffer.format {
+            audioInputFormat = audioBuffer.format
         }
         if audioCodec.isRunning {
             audioCodec.append(audioBuffer, when: when)
         }
-        observers.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
     }
 }
 
@@ -235,21 +158,8 @@ extension IOStream: Runner {
         guard !isRunning else {
             return
         }
-        muxer.startRunning()
         videoCodec.startRunning()
-        Task {
-            let stream = videoCodec.outputStream
-            for await buffer in stream where isRunning {
-                muxer.append(buffer)
-            }
-        }
         audioCodec.startRunning()
-        Task {
-            let stream = audioCodec.outputStream
-            for await buffer in stream where isRunning {
-                muxer.append(buffer.0, when: buffer.1)
-            }
-        }
         isRunning = true
     }
 
@@ -257,7 +167,6 @@ extension IOStream: Runner {
         guard isRunning else {
             return
         }
-        muxer.stopRunning()
         videoCodec.stopRunning()
         audioCodec.stopRunning()
         isRunning = false

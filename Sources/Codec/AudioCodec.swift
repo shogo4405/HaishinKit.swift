@@ -104,9 +104,7 @@ final class AudioCodec {
         case .haveData:
             outputContinuation?.yield((outputBuffer, when))
         case .error:
-            if let error {
-                // delegate?.audioCodec(self, errorOccurred: .failedToConvert(error: error))
-            }
+            break
         default:
             break
         }

@@ -29,10 +29,14 @@ final class CameraIngestViewController: NSViewController {
         urlField.stringValue = Preference.default.uri ?? ""
         audioPopUpButton?.present(mediaType: .audio)
         cameraPopUpButton?.present(mediaType: .video)
+
         netStreamSwitcher.uri = Preference.default.uri ?? ""
-        stream.map {
-            lfView?.attachStream($0)
-            $0.attachMixer(mixer)
+
+        Task {
+            stream.map {
+                lfView?.attachStream($0)
+                mixer.addStream($0)
+            }
         }
     }
 
