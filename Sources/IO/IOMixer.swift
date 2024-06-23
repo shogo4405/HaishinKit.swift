@@ -278,7 +278,7 @@ public final class IOMixer {
     #endif
 
     /// Adds a stream.
-    func addStream(_ stream: some IOStreamConvertible) {
+    public func addStream(_ stream: some IOStreamConvertible) {
         guard !streams.contains(where: { $0 === stream }) else {
             return
         }
@@ -286,7 +286,7 @@ public final class IOMixer {
     }
 
     /// Removes a stream.
-    func removeStream(_ stream: some IOStreamConvertible) {
+    public func removeStream(_ stream: some IOStreamConvertible) {
         if let index = streams.firstIndex(where: { $0 === stream }) {
             streams.remove(at: index)
         }
@@ -380,7 +380,11 @@ extension IOMixer: IOAudioUnitDelegate {
     }
 
     func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        streams.forEach { $0.append(audioBuffer, when: when) }
+        for stream in streams {
+            Task {
+                await stream.append(audioBuffer, when: when)
+            }
+        }
     }
 }
 
@@ -391,6 +395,10 @@ extension IOMixer: IOVideoUnitDelegate {
     }
 
     func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer) {
-        streams.forEach { $0.append(sampleBuffer) }
+        for stream in streams {
+            Task {
+                await stream.append(sampleBuffer)
+            }
+        }
     }
 }

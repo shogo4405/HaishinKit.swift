@@ -10,7 +10,7 @@ final class NetStreamSwitcher {
         case rtmp
         case srt
 
-        func makeStream(_ swithcer: NetStreamSwitcher) -> any IOStreamConvertible {
+        func makeStream(_ swithcer: NetStreamSwitcher) async -> any IOStreamConvertible {
             switch self {
             case .rtmp:
                 let connection = RTMPConnection()
@@ -19,7 +19,7 @@ final class NetStreamSwitcher {
             case .srt:
                 let connection = SRTConnection()
                 swithcer.connection = connection
-                return SRTStream(connection: connection)
+                return await SRTStream(connection: connection)
             }
         }
     }
@@ -40,7 +40,9 @@ final class NetStreamSwitcher {
     }
     private(set) var mode: Mode = .rtmp {
         didSet {
-            stream = mode.makeStream(self)
+            Task {
+                stream = await mode.makeStream(self)
+            }
         }
     }
     private var retryCount = 0
@@ -78,9 +80,9 @@ final class NetStreamSwitcher {
                     try await connection.open(URL(string: uri))
                     switch method {
                     case .playback:
-                        stream.play()
+                        await stream.play()
                     case .ingest:
-                        stream.publish()
+                        await stream.publish()
                     }
                 } catch {
                     logger.warn(error)
@@ -141,41 +143,4 @@ final class NetStreamSwitcher {
         logger.error(notification)
         (connection as? RTMPConnection)?.connect(Preference.default.uri!)
     }
-}
-
-extension NetStreamSwitcher: IOStreamDelegate {
-    // MARK: NetStreamDelegate
-    func stream(_ stream: IOStream, track: UInt8, didInput buffer: AVAudioBuffer, when: AVAudioTime) {
-    }
-
-    func stream(_ stream: IOStream, track: UInt8, didInput buffer: CMSampleBuffer) {
-    }
-
-    /// Tells the receiver to video codec error occured.
-    func stream(_ stream: IOStream, videoErrorOccurred error: IOVideoUnitError) {
-    }
-
-    /// Tells the receiver to audio codec error occured.
-    func stream(_ stream: IOStream, audioErrorOccurred error: IOAudioUnitError) {
-    }
-
-    /// Tells the receiver that the ready state will change.
-    func stream(_ stream: IOStream, willChangeReadyState state: IOStream.ReadyState) {
-    }
-
-    /// Tells the receiver that the ready state did change.
-    func stream(_ stream: IOStream, didChangeReadyState state: IOStream.ReadyState) {
-    }
-
-    #if os(iOS) || os(tvOS)
-    /// Tells the receiver to session was interrupted.
-    @available(tvOS 17.0, *)
-    func stream(_ stream: IOStream, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
-    }
-
-    /// Tells the receiver to session interrupted ended.
-    @available(tvOS 17.0, *)
-    func stream(_ stream: IOStream, sessionInterruptionEnded session: AVCaptureSession) {
-    }
-    #endif
 }

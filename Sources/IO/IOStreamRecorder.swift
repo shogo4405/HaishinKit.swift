@@ -225,3 +225,5 @@ extension IOStreamRecorder: Runner {
         isRunning = false
     }
 }
+
+extension NSException: @unchecked Sendable {}

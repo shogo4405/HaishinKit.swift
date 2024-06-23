@@ -31,7 +31,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
 
     private lazy var rtmpStream: RTMPStream = {
         let stream = RTMPStream(connection: rtmpConnection)
-        stream.attachMixer(mixer)
+        // stream.attachMixer(mixer)
         return stream
     }()
 

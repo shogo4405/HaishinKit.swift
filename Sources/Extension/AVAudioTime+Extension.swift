@@ -7,3 +7,6 @@ extension AVAudioTime {
         return .init(seconds: AVAudioTime.seconds(forHostTime: hostTime), preferredTimescale: 1000000000)
     }
 }
+
+extension AVAudioBuffer: @unchecked Sendable {}
+extension AVAudioTime: @unchecked Sendable {}

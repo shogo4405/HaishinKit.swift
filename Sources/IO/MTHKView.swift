@@ -67,13 +67,6 @@ public class MTHKView: MTKView {
         }
     }
 
-    private weak var currentStream: (any IOStreamConvertible)? {
-        didSet {
-            oldValue?.removeObserver(self)
-            currentStream?.addObserver(self)
-        }
-    }
-
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     public init(frame: CGRect) {
         super.init(frame: frame, device: MTLCreateSystemDefaultDevice())
@@ -148,12 +141,24 @@ public class MTHKView: MTKView {
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
+
+    private var enqueueTask: Task<Void, Never>?
 }
 
 extension MTHKView: IOStreamView {
     // MARK: IOStreamView
     public func attachStream(_ stream: (some IOStreamConvertible)?) {
-        currentStream = stream
+        if let stream {
+            let task = Task {
+                let videoStream = await stream.video
+                for await video in videoStream where enqueueTask?.isCancelled == false {
+                    enqueue(video)
+                }
+            }
+            self.enqueueTask = task
+        } else {
+            enqueueTask?.cancel()
+        }
     }
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {

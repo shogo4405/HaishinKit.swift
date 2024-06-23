@@ -478,20 +478,24 @@ public class RTMPConnection {
             }
             if total == measureInterval - 1 {
                 for stream in streams {
-                    stream.bitrateStrategy.insufficientBWOccured(IOStreamBitRateStats(
-                        currentQueueBytesOut: queueBytesOut,
-                        currentBytesInPerSecond: currentBytesInPerSecond,
-                        currentBytesOutPerSecond: currentBytesOutPerSecond
-                    ))
+                    /*
+                     stream.bitrateStrategy.insufficientBWOccured(IOStreamBitRateStats(
+                     currentQueueBytesOut: queueBytesOut,
+                     currentBytesInPerSecond: currentBytesInPerSecond,
+                     currentBytesOutPerSecond: currentBytesOutPerSecond
+                     ))
+                     */
                     delegate?.connection(self, publishInsufficientBWOccured: stream)
                 }
             } else if total == 0 {
                 for stream in streams {
-                    stream.bitrateStrategy.sufficientBWOccured(IOStreamBitRateStats(
-                        currentQueueBytesOut: queueBytesOut,
-                        currentBytesInPerSecond: currentBytesInPerSecond,
-                        currentBytesOutPerSecond: currentBytesOutPerSecond
-                    ))
+                    /*
+                     stream.bitrateStrategy.sufficientBWOccured(IOStreamBitRateStats(
+                     currentQueueBytesOut: queueBytesOut,
+                     currentBytesInPerSecond: currentBytesInPerSecond,
+                     currentBytesOutPerSecond: currentBytesOutPerSecond
+                     ))
+                     */
                     delegate?.connection(self, publishSufficientBWOccured: stream)
                 }
             }
@@ -544,9 +548,9 @@ public class RTMPConnection {
                 remotePath: remotePath,
                 persistence: persistence).on(message: message)
         case let message as RTMPAudioMessage:
-            streams.first(where: { $0.id == message.streamId })?.muxer.append(message, type: type)
+            streams.first(where: { $0.id == message.streamId })?.append(message, type: type)
         case let message as RTMPVideoMessage:
-            streams.first(where: { $0.id == message.streamId })?.muxer.append(message, type: type)
+            streams.first(where: { $0.id == message.streamId })?.append(message, type: type)
         case let message as RTMPUserControlMessage:
             switch message.event {
             case .ping:

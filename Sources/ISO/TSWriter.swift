@@ -1,16 +1,11 @@
 import AVFoundation
+import Combine
 import CoreMedia
 import Foundation
 
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
 #endif
-
-/// The interface an MPEG-2 TS (Transport Stream) writer uses to inform its delegates.
-public protocol TSWriterDelegate: AnyObject {
-    func writer(_ writer: TSWriter<Self>, didRotateFileHandle timestamp: CMTime)
-    func writer(_ writer: TSWriter<Self>, didOutput data: Data)
-}
 
 private let kTSWriter_defaultPATPID: UInt16 = 0
 private let kTSWriter_defaultPMTPID: UInt16 = 4095
@@ -19,9 +14,12 @@ private let kTSWriter_defaultAudioPID: UInt16 = 257
 private let kTSWriter_defaultSegmentDuration: Double = 2
 
 /// The TSWriter class represents writes MPEG-2 transport stream data.
-public final class TSWriter<T: TSWriterDelegate> {
-    /// Specifies the delegate instance.
-    public weak var delegate: T?
+public final class TSWriter {
+    public var output: AsyncStream<Data> {
+        return AsyncStream<Data> { continuation in
+            self.continuation = continuation
+        }
+    }
     /// Specifies the exptected medias = [.video, .audio].
     public var expectedMedias: Set<AVMediaType> = []
     /// Specifies the audio format.
@@ -82,6 +80,7 @@ public final class TSWriter<T: TSWriterDelegate> {
     private var rotatedTimeStamp: CMTime = .zero
     private var audioContinuityCounter: UInt8 = 0
     private var videoContinuityCounter: UInt8 = 0
+    private var continuation: AsyncStream<Data>.Continuation?
 
     /// Creates a new instance with segument duration.
     public init(segmentDuration: Double = 2.0) {
@@ -186,11 +185,10 @@ public final class TSWriter<T: TSWriterDelegate> {
         }
         writeProgramIfNeeded()
         rotatedTimeStamp = timestamp
-        delegate?.writer(self, didRotateFileHandle: timestamp)
     }
 
     private func write(_ data: Data) {
-        delegate?.writer(self, didOutput: data)
+        continuation?.yield(data)
     }
 
     private func writeProgram() {
