@@ -14,7 +14,7 @@ final class RTMPMuxer {
                 var buffer = Data([RTMPMuxer.aac, FLVAACPacketType.seq.rawValue])
                 buffer.append(contentsOf: config.bytes)
                 stream?.doOutput(
-                    .zero,
+                    oldValue == nil ? .zero : .one,
                     chunkStreamId: FLVTagType.audio.streamId,
                     message: RTMPAudioMessage(streamId: 0, timestamp: 0, payload: buffer)
                 )
@@ -42,7 +42,7 @@ final class RTMPMuxer {
                     var buffer = Data([FLVFrameType.key.rawValue << 4 | FLVVideoCodec.avc.rawValue, FLVAVCPacketType.seq.rawValue, 0, 0, 0])
                     buffer.append(configurationBox)
                     stream?.doOutput(
-                        .zero,
+                        oldValue == nil ? .zero : .one,
                         chunkStreamId: FLVTagType.video.streamId,
                         message: RTMPVideoMessage(streamId: 0, timestamp: 0, payload: buffer)
                     )
@@ -53,7 +53,7 @@ final class RTMPMuxer {
                     var buffer = Data([0b10000000 | FLVFrameType.key.rawValue << 4 | FLVVideoPacketType.sequenceStart.rawValue, 0x68, 0x76, 0x63, 0x31])
                     buffer.append(configurationBox)
                     stream?.doOutput(
-                        .zero,
+                        oldValue == nil ? .zero : .one,
                         chunkStreamId: FLVTagType.video.streamId,
                         message: RTMPVideoMessage(streamId: 0, timestamp: 0, payload: buffer)
                     )
