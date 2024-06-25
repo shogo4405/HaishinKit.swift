@@ -63,9 +63,6 @@ class RTMPMessage {
     init(type: RTMPMessageType) {
         self.type = type
     }
-
-    func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-    }
 }
 
 extension RTMPMessage: CustomDebugStringConvertible {
@@ -106,10 +103,6 @@ final class RTMPSetChunkSizeMessage: RTMPMessage {
     init(_ size: UInt32) {
         super.init(type: .chunkSize)
         self.size = size
-    }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        connection.socket?.chunkSizeC = Int(size)
     }
 }
 
@@ -208,11 +201,6 @@ final class RTMPWindowAcknowledgementSizeMessage: RTMPMessage {
             super.payload = newValue
         }
     }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        connection.windowSizeC = Int64(size)
-        connection.windowSizeS = Int64(size)
-    }
 }
 
 // MARK: -
@@ -253,10 +241,6 @@ final class RTMPSetPeerBandwidthMessage: RTMPMessage {
             limit = Limit(rawValue: newValue[4]) ?? .unknown
             super.payload = newValue
         }
-    }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        connection.bandWidth = size
     }
 }
 
@@ -330,30 +314,6 @@ final class RTMPCommandMessage: RTMPMessage {
         super.init(type: objectEncoding.commandType)
         self.streamId = streamId
     }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let responder = connection.responder(transactionId) else {
-            switch commandName {
-            case "close":
-                connection.close(isDisconnected: true)
-            case "onFCPublish", "onFCUnpublish":
-                // The specification is undefined, ignores it because it cannot handle it properly.
-                logger.info(commandName, arguments)
-            default:
-                connection.dispatch(.rtmpStatus, bubbles: false, data: arguments.first as Any?)
-            }
-            return
-        }
-
-        switch commandName {
-        case "_result":
-            responder.on(result: arguments)
-        case "_error":
-            responder.on(status: arguments)
-        default:
-            break
-        }
-    }
 }
 
 // MARK: -
@@ -423,22 +383,6 @@ final class RTMPDataMessage: RTMPMessage {
         super.init(type: objectEncoding.dataType)
         self.timestamp = timestamp
         self.streamId = streamId
-    }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
-            return
-        }
-        stream.info.byteCount.mutate { $0 += Int64(payload.count) }
-        switch handlerName {
-        case "onMetaData":
-            stream.metadata = arguments[0] as? [String: Any?] ?? [:]
-        case "|RtmpSampleAccess":
-            stream.audioSampleAccess = arguments[0] as? Bool ?? true
-            stream.videoSampleAccess = arguments[1] as? Bool ?? true
-        default:
-            break
-        }
     }
 }
 
@@ -522,11 +466,6 @@ final class RTMPSharedObjectMessage: RTMPMessage {
         super.init(type: objectEncoding.sharedObjectType)
         self.timestamp = timestamp
     }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        let persistence: Bool = (flags[3] & 2) != 0
-        RTMPSharedObject.getRemote(withName: sharedObjectName, remotePath: connection.uri!.absoluteWithoutQueryString, persistence: persistence).on(message: self)
-    }
 }
 
 // MARK: -
@@ -547,13 +486,6 @@ final class RTMPAudioMessage: RTMPMessage {
         self.streamId = streamId
         self.timestamp = timestamp
         self.payload = payload
-    }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
-            return
-        }
-        stream.muxer.append(self, type: type)
     }
 
     func makeAudioFormat() -> AVAudioFormat? {
@@ -604,13 +536,6 @@ final class RTMPVideoMessage: RTMPMessage {
         self.streamId = streamId
         self.timestamp = timestamp
         self.payload = payload
-    }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        guard let stream = connection.streams.first(where: { $0.id == streamId }) else {
-            return
-        }
-        stream.muxer.append(self, type: type)
     }
 
     func makeSampleBuffer(_ presentationTimeStamp: CMTime, formatDesciption: CMFormatDescription?) -> CMSampleBuffer? {
@@ -727,22 +652,5 @@ final class RTMPUserControlMessage: RTMPMessage {
         super.init(type: .user)
         self.event = event
         self.value = value
-    }
-
-    override func execute(_ connection: RTMPConnection, type: RTMPChunkType) {
-        switch event {
-        case .ping:
-            connection.doOutput(chunk: RTMPChunk(
-                type: .zero,
-                streamId: RTMPChunk.StreamID.control.rawValue,
-                message: RTMPUserControlMessage(event: .pong, value: value)
-            ))
-        case .bufferEmpty:
-            connection.streams.first(where: { $0.id == UInt32(value) })?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferEmpty.data(""))
-        case .bufferFull:
-            connection.streams.first(where: { $0.id == UInt32(value) })?.dispatch(.rtmpStatus, bubbles: false, data: RTMPStream.Code.bufferFull.data(""))
-        default:
-            break
-        }
     }
 }
