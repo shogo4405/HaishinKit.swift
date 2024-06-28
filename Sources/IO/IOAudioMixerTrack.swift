@@ -98,9 +98,10 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
         }
     }
 
-    init(id: UInt8, outputFormat: AVAudioFormat) {
+    init(id: UInt8, outputFormat: AVAudioFormat, delegate: T? = nil) {
         self.id = id
         self.outputFormat = outputFormat
+        self.delegate = delegate
     }
 
     func append(_ sampleBuffer: CMSampleBuffer) {
