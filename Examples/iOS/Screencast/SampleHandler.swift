@@ -9,7 +9,12 @@ let logger = LBLogger.with(HaishinKitIdentifier)
 @available(iOS 10.0, *)
 open class SampleHandler: RPBroadcastSampleHandler {
     private var slider: UISlider?
-    private var _rotator: Any?
+    private var _rotator: Any? = {
+        if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *) {
+            return VideoRotator()
+        }
+        return nil
+    }()
     @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
     private var rotator: VideoRotator? {
         get { _rotator as? VideoRotator }
