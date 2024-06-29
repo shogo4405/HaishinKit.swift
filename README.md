@@ -299,7 +299,7 @@ stream.configuration { session in
 ```
 
 ### 🔊 Audio
-#### [Capture][https://docs.haishinkit.com/swift/1.9.1/Classes/IOAudioCaptureUnit.html)
+#### [Capture](https://docs.haishinkit.com/swift/1.9.1/Classes/IOAudioCaptureUnit.html)
 Specifies the capture capture settings.
 ```swift
 let front = AVCaptureDevice.default(for: .audio)
