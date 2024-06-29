@@ -24,6 +24,7 @@ struct VTRotationSessionOption {
     let value: VTRotationSessionOptionValue
 }
 
+@available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
 extension VTPixelRotationSession {
     func setOption(_ option: VTRotationSessionOption) -> OSStatus {
         VTSessionSetProperty(self, key: option.key.CFString, value: option.value.CFString)
