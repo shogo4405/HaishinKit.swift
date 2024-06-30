@@ -23,9 +23,6 @@ final class IngestViewController: UIViewController {
     private var retryCount: Int = 0
     private var preferedStereo = false
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: (any IOStreamConvertible)? {
-        return netStreamSwitcher.stream
-    }
     private var mixer = IOMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
@@ -37,7 +34,15 @@ final class IngestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        netStreamSwitcher.uri = Preference.default.uri ?? ""
+        Task {
+            await netStreamSwitcher.setPreference(Preference.default)
+            if let stream = await netStreamSwitcher.stream {
+                mixer.addStream(stream)
+                if let view = view as? (any IOStreamObserver) {
+                    await stream.addObserver(view)
+                }
+            }
+        }
 
         mixer.screen.size = .init(width: 720, height: 1280)
         mixer.screen.backgroundColor = UIColor.white.cgColor
@@ -55,8 +60,6 @@ final class IngestViewController: UIViewController {
             mixer.videoOrientation = orientation
         }
         mixer.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
-        // stream?.audioSettings.bitRate = 64 * 1000
-        // stream?.bitrateStrategy = IOStreamVideoAdaptiveBitRateStrategy(mamimumVideoBitrate: VideoCodecSettings.default.bitRate)
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
     }
@@ -64,6 +67,7 @@ final class IngestViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
+
         mixer.videoMixerSettings.mode = .offscreen
         mixer.screen.startRunning()
 
@@ -76,10 +80,6 @@ final class IngestViewController: UIViewController {
                 videoUnit?.isVideoMirrored = true
             }
         }
-        stream.map {
-            (view as? (any IOStreamView))?.attachStream($0)
-        }
-        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
@@ -87,8 +87,8 @@ final class IngestViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         logger.info("viewWillDisappear")
         super.viewWillDisappear(animated)
-        (stream as? RTMPStream)?.close()
         Task {
+            await netStreamSwitcher.close()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachCamera(nil, track: 0)
             try? await mixer.attachCamera(nil, track: 1)
@@ -156,7 +156,11 @@ final class IngestViewController: UIViewController {
     }
 
     @IBAction func on(pause: UIButton) {
-        (stream as? RTMPStream)?.paused.toggle()
+        Task {
+            if let stream = await netStreamSwitcher.stream as? RTMPStream {
+                _ = try? await stream.pause(true)
+            }
+        }
     }
 
     @IBAction func on(close: UIButton) {
@@ -164,16 +168,18 @@ final class IngestViewController: UIViewController {
     }
 
     @IBAction func on(publish: UIButton) {
-        if publish.isSelected {
-            UIApplication.shared.isIdleTimerDisabled = false
-            netStreamSwitcher.close()
-            publish.setTitle("●", for: [])
-        } else {
-            UIApplication.shared.isIdleTimerDisabled = true
-            netStreamSwitcher.open(.ingest)
-            publish.setTitle("■", for: [])
+        Task {
+            if publish.isSelected {
+                UIApplication.shared.isIdleTimerDisabled = false
+                await netStreamSwitcher.close()
+                publish.setTitle("●", for: [])
+            } else {
+                UIApplication.shared.isIdleTimerDisabled = true
+                await netStreamSwitcher.open(.ingest)
+                publish.setTitle("■", for: [])
+            }
+            publish.isSelected.toggle()
         }
-        publish.isSelected.toggle()
     }
 
     func tapScreen(_ gesture: UIGestureRecognizer) {
@@ -286,27 +292,6 @@ final class IngestViewController: UIViewController {
         mixer.videoOrientation = orientation
     }
 }
-
-/*
- extension IngestViewController: IOStreamRecorderDelegate {
- // MARK: IOStreamRecorderDelegate
- func recorder(_ recorder: IOStreamRecorder, errorOccured error: IOStreamRecorder.Error) {
- logger.error(error)
- }
-
- func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter) {
- PHPhotoLibrary.shared().performChanges({() -> Void in
- PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
- }, completionHandler: { _, error -> Void in
- do {
- try FileManager.default.removeItem(at: writer.outputURL)
- } catch {
- logger.warn(error)
- }
- })
- }
- }
- */
 
 extension IngestViewController: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate

@@ -6,7 +6,7 @@ public enum IOVideoUnitError: Error {
     /// The IOVideoUnit failed to attach device.
     case failedToAttach(error: (any Error)?)
     /// The IOVideoUnit failed to set an option.
-    case failedToSetOption(status: OSStatus, option: VTSessionOption)
+    // case failedToSetOption(status: OSStatus, key: String)
 }
 
 protocol IOVideoUnitDelegate: AnyObject {
@@ -72,12 +72,6 @@ final class IOVideoUnit: IOUnit {
             mixer?.session.configuration { _ in
                 for capture in captures.values {
                     capture.videoOrientation = videoOrientation
-                }
-            }
-            // https://github.com/shogo4405/HaishinKit.swift/issues/190
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                if self.torch {
-                    self.setTorchMode(.on)
                 }
             }
         }

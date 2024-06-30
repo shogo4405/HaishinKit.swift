@@ -82,7 +82,7 @@ public final class Screen: ScreenObjectContainerConvertible {
     weak var observer: (any ScreenObserver)?
     private var root: ScreenObjectContainer = .init()
     private(set) var renderer = ScreenRendererByCPU()
-    private lazy var choreographer: DisplayLinkChoreographer = {
+    private lazy var choreographer = {
         var choreographer = DisplayLinkChoreographer()
         choreographer.delegate = self
         return choreographer
@@ -134,7 +134,7 @@ public final class Screen: ScreenObjectContainerConvertible {
 }
 
 extension Screen: Runner {
-    // MARK: Running
+    // MARK: Runner
     public func startRunning() {
         guard !choreographer.isRunning else {
             return

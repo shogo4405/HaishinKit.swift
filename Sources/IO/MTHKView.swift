@@ -16,56 +16,12 @@ public class MTHKView: MTKView {
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
-    #if os(iOS) || os(macOS)
-    /// Specifies the orientation of AVCaptureVideoOrientation.
-    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
-        didSet {
-            (captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
-        }
-    }
-    #endif
-
-    /// Specifies the capture video preview enabled or not.
-    @available(tvOS 17.0, *)
-    public var isCaptureVideoPreviewEnabled: Bool {
-        get {
-            captureVideoPreview != nil
-        }
-        set {
-            guard isCaptureVideoPreviewEnabled != newValue else {
-                return
-            }
-            if Thread.isMainThread {
-                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-            } else {
-                DispatchQueue.main.async {
-                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-                }
-            }
-        }
-    }
-
     private var currentSampleBuffer: CMSampleBuffer?
-
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
-
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
-
     private var context: CIContext?
-
-    private var captureVideoPreview: View? {
-        willSet {
-            captureVideoPreview?.removeFromSuperview()
-        }
-        didSet {
-            captureVideoPreview.map {
-                addSubview($0)
-                sendSubviewToBack($0)
-            }
-        }
-    }
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     public init(frame: CGRect) {
@@ -141,43 +97,20 @@ public class MTHKView: MTKView {
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
-
-    private var enqueueTask: Task<Void, Never>?
-}
-
-extension MTHKView: IOStreamView {
-    // MARK: IOStreamView
-    public func attachStream(_ stream: (some IOStreamConvertible)?) {
-        if let stream {
-            let task = Task {
-                let videoStream = await stream.video
-                for await video in videoStream where enqueueTask?.isCancelled == false {
-                    enqueue(video)
-                }
-            }
-            self.enqueueTask = task
-        } else {
-            enqueueTask?.cancel()
-        }
-    }
-
-    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        currentSampleBuffer = sampleBuffer
-        #if os(macOS)
-        self.needsDisplay = true
-        #else
-        self.setNeedsDisplay()
-        #endif
-    }
 }
 
 extension MTHKView: IOStreamObserver {
-    nonisolated public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    nonisolated public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
+    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
         Task { @MainActor in
-            self.enqueue(video)
+            currentSampleBuffer = video
+            #if os(macOS)
+            self.needsDisplay = true
+            #else
+            self.setNeedsDisplay()
+            #endif
         }
     }
 }

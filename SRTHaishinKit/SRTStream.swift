@@ -5,13 +5,13 @@ import libsrt
 
 /// An object that provides the interface to control a one-way channel over a SRTConnection.
 public actor SRTStream {
-    public private(set) var readyState: IOStream.ReadyState = .initialized
+    public private(set) var readyState: IOStreamReadyState = .idle
     private var name: String?
     private var action: (() async -> Void)?
-    private lazy var stream = IOStream()
+    private lazy var stream = IOMediaConverter()
     private weak var connection: SRTConnection?
     private lazy var writer = TSWriter()
-    private var continuations: [AsyncStream<CMSampleBuffer>.Continuation] = []
+    private var observers: [any IOStreamObserver] = []
 
     /// Creates a new stream object.
     public init(connection: SRTConnection) async {
@@ -23,8 +23,8 @@ public actor SRTStream {
     public func publish(_ name: String? = "") async {
         guard let name else {
             switch readyState {
-            case .publish, .publishing:
-                readyState = .open
+            case .publishing:
+                readyState = .idle
             default:
                 break
             }
@@ -43,7 +43,7 @@ public actor SRTStream {
             readyState = .publishing
             stream.startRunning()
             Task {
-                for await buffer in stream.video where stream.isRunning {
+                for try await buffer in stream.video where stream.isRunning {
                     writer.append(buffer)
                 }
             }
@@ -66,15 +66,14 @@ public actor SRTStream {
     public func play(_ name: String? = "") async {
         guard let name else {
             switch readyState {
-            case .play, .playing:
-                readyState = .open
+            case .playing:
+                readyState = .idle
             default:
                 break
             }
             return
         }
         if await connection?.connected == true {
-            readyState = .play
             stream.startRunning()
             await connection?.listen()
             readyState = .playing
@@ -85,11 +84,11 @@ public actor SRTStream {
 
     /// Stops playing or publishing and makes available other uses.
     public func close() async {
-        if readyState == .closed || readyState == .initialized {
+        if readyState == .idle {
             return
         }
         stream.stopRunning()
-        readyState = .closed
+        readyState = .idle
     }
 
     func doInput(_ data: Data) {
@@ -97,26 +96,14 @@ public actor SRTStream {
     }
 }
 
-extension SRTStream: IOStreamConvertible {
+extension SRTStream: IOStream {
     // MARK: IOStreamConvertible
     public var audioSettings: AudioCodecSettings {
-        get async {
-            stream.audioSettings
-        }
-    }
-
-    public var video: AsyncStream<CMSampleBuffer> {
-        get async {
-            let (stream, continuation) = AsyncStream<CMSampleBuffer>.makeStream()
-            continuations.append(continuation)
-            return stream
-        }
+        stream.audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        get async {
-            stream.videoSettings
-        }
+        stream.videoSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
@@ -129,10 +116,27 @@ extension SRTStream: IOStreamConvertible {
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
         stream.append(sampleBuffer)
-        continuations.forEach { $0.yield(sampleBuffer) }
+        observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+    }
+
+    public func attachAudioEngine(_ audioEngine: AVAudioEngine?) {
     }
 
     public func append(_ buffer: AVAudioBuffer, when: AVAudioTime) {
         stream.append(buffer, when: when)
+        observers.forEach { $0.stream(self, didOutput: buffer, when: when) }
+    }
+
+    public func addObserver(_ observer: some IOStreamObserver) {
+        guard !observers.contains(where: { $0 === observer }) else {
+            return
+        }
+        observers.append(observer)
+    }
+
+    public func removeObserver(_ observer: some IOStreamObserver) {
+        if let index = observers.firstIndex(where: { $0 === observer }) {
+            observers.remove(at: index)
+        }
     }
 }

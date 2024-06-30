@@ -1,181 +1,85 @@
-import AVFoundation
+import CoreMedia
+import Foundation
 
-#if canImport(SwiftPMSupport)
-import SwiftPMSupport
-#endif
-
-protocol MediaLinkDelegate: AnyObject {
-    func mediaLink(_ mediaLink: MediaLink<Self>, dequeue sampleBuffer: CMSampleBuffer)
-    func mediaLink(_ mediaLink: MediaLink<Self>, didBufferingChanged: Bool)
-}
-
-private let kMediaLink_bufferTime = 0.2
-private let kMediaLink_bufferingTime = 0.0
-
-final class MediaLink<T: MediaLinkDelegate> {
-    var isPaused = false {
-        didSet {
-            guard isPaused != oldValue else {
-                return
-            }
-            choreographer.isPaused = isPaused
-            nstry({
-                if self.isPaused {
-                    self.playerNode.pause()
-                } else {
-                    self.playerNode.play()
-                }
-            }, { exeption in
-                logger.warn(exeption)
-            })
-        }
+final actor MediaLink {
+    var dequeue: AsyncStream<CMSampleBuffer> {
+        let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
+        self.continutation = continutation
+        return stream
     }
-    var hasVideo = false
-    var bufferTime = kMediaLink_bufferTime
-    weak var delegate: T?
-    private(set) lazy var playerNode = AVAudioPlayerNode()
     private(set) var isRunning = false
-    private var isBuffering = true {
+    private var storage: TypedBlockQueue<CMSampleBuffer>?
+    private var continutation: AsyncStream<CMSampleBuffer>.Continuation? {
         didSet {
-            if !isBuffering {
-                bufferingTime = 0.0
-            }
-            isPaused = isBuffering
-            delegate?.mediaLink(self, didBufferingChanged: isBuffering)
+            oldValue?.finish()
         }
     }
-    private var bufferingTime = kMediaLink_bufferingTime
-    private lazy var choreographer: DisplayLinkChoreographer = {
-        var choreographer = DisplayLinkChoreographer()
-        choreographer.delegate = self
-        return choreographer
-    }()
-    private var bufferQueue: TypedBlockQueue<CMSampleBuffer>?
-    private var scheduledAudioBuffers: Atomic<Int> = .init(0)
     private var presentationTimeStampOrigin: CMTime = .invalid
-    private var audioTime = IOAudioTime()
+    private weak var audioPlayer: IOAudioPlayer?
 
-    func enqueue(_ buffer: CMSampleBuffer) {
-        guard buffer.presentationTimeStamp != .invalid else {
+    init(_ audioPlayer: IOAudioPlayer) {
+        self.audioPlayer = audioPlayer
+        do {
+            storage = try .init(capacity: 90, handlers: .outputPTSSortedSampleBuffers)
+        } catch {
+            logger.error(error)
+        }
+    }
+
+    func enqueue(_ sampleBuffer: CMSampleBuffer) {
+        guard isRunning else {
             return
         }
         if presentationTimeStampOrigin == .invalid {
-            presentationTimeStampOrigin = buffer.presentationTimeStamp
+            presentationTimeStampOrigin = sampleBuffer.presentationTimeStamp
         }
-        if buffer.presentationTimeStamp == presentationTimeStampOrigin {
-            delegate?.mediaLink(self, dequeue: buffer)
-            return
-        }
-        try? bufferQueue?.enqueue(buffer)
-        if isBuffering {
-            bufferingTime += bufferQueue?.duration.seconds ?? 0
-            if bufferTime <= bufferingTime {
-                bufferTime += 0.1
-                isBuffering = false
-            }
-        }
-    }
-
-    func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
-            return
-        }
-        if !audioTime.hasAnchor {
-            audioTime.anchor(playerNode.lastRenderTime ?? AVAudioTime(hostTime: 0))
-        }
-        nstry({
-            self.scheduledAudioBuffers.mutate { $0 += 1 }
-            Task {
-                await self.playerNode.scheduleBuffer(audioBuffer, at: self.audioTime.at)
-                self.scheduledAudioBuffers.mutate {
-                    $0 -= 1
-                    if $0 == 0 {
-                        self.isBuffering = true
-                    }
-                }
-            }
-            self.audioTime.advanced(Int64(audioBuffer.frameLength))
-            if !self.isPaused && !self.playerNode.isPlaying && 10 <= self.scheduledAudioBuffers.value {
-                self.playerNode.play()
-            }
-        }, { exeption in
-            logger.warn(exeption)
-        })
-    }
-
-    private func duration(_ duraiton: Double) -> Double {
-        if playerNode.isPlaying {
-            guard let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) else {
-                return 0.0
-            }
-            return TimeInterval(playerTime.sampleTime) / playerTime.sampleRate
-        }
-        return duraiton
-    }
-
-    private func makeBufferkQueue() {
         do {
-            self.bufferQueue = .init(try .init(capacity: 256, handlers: .outputPTSSortedSampleBuffers))
+            try storage?.enqueue(sampleBuffer)
         } catch {
             logger.error(error)
         }
     }
 }
 
-extension MediaLink: ChoreographerDelegate {
-    // MARK: ChoreographerDelegate
-    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double) {
-        guard let bufferQueue else {
-            return
-        }
-        let duration = self.duration(duration)
-        var frameCount = 0
-        while !bufferQueue.isEmpty {
-            guard let first = bufferQueue.head else {
-                break
-            }
-            if first.presentationTimeStamp.seconds - presentationTimeStampOrigin.seconds <= duration {
-                delegate?.mediaLink(self, dequeue: first)
-                frameCount += 1
-                _ = bufferQueue.dequeue()
-            } else {
-                if 2 < frameCount {
-                    logger.info("droppedFrame: \(frameCount)")
-                }
-                return
-            }
-        }
-        isBuffering = true
-    }
-}
-
-extension MediaLink: Runner {
-    // MARK: Running
+extension MediaLink: AsyncRunner {
     func startRunning() {
         guard !isRunning else {
             return
         }
-        scheduledAudioBuffers.mutate { $0 = 0 }
-        hasVideo = false
-        bufferingTime = kMediaLink_bufferingTime
-        isBuffering = true
-        choreographer.startRunning()
-        makeBufferkQueue()
         isRunning = true
+        Task {
+            for await currentTime in AsyncDisplayLink.updateFrames where isRunning {
+                guard let storage else {
+                    continue
+                }
+                let currentTime = await audioPlayer?.currentTime ?? currentTime
+                var frameCount = 0
+                while !storage.isEmpty {
+                    guard let first = storage.head else {
+                        break
+                    }
+                    if first.presentationTimeStamp.seconds - presentationTimeStampOrigin.seconds <= currentTime {
+                        continutation?.yield(first)
+                        frameCount += 1
+                        _ = storage.dequeue()
+                    } else {
+                        if 2 < frameCount {
+                            logger.info("droppedFrame: \(frameCount)")
+                        }
+                        return
+                    }
+                }
+            }
+        }
     }
 
     func stopRunning() {
         guard isRunning else {
             return
         }
-        choreographer.stopRunning()
-        if playerNode.isPlaying {
-            playerNode.stop()
-            playerNode.reset()
-        }
-        bufferQueue = nil
-        audioTime.reset()
+        continutation = nil
         presentationTimeStampOrigin = .invalid
+        try? storage?.reset()
         isRunning = false
     }
 }

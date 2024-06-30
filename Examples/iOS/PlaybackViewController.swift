@@ -7,20 +7,21 @@ import UIKit
 final class PlaybackViewController: UIViewController {
     @IBOutlet private weak var playbackButton: UIButton!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: (any IOStreamConvertible)? {
-        return netStreamSwitcher.stream
-    }
     private var pictureInPictureController: AVPictureInPictureController?
 
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-        netStreamSwitcher.uri = Preference.default.uri ?? ""
-        stream.map {_ in
-            // (view as? (any IOStreamView))?.attachStream($0)
-        }
         if #available(iOS 15.0, *), let layer = view.layer as? AVSampleBufferDisplayLayer, pictureInPictureController == nil {
             pictureInPictureController = AVPictureInPictureController(contentSource: .init(sampleBufferDisplayLayer: layer, playbackDelegate: self))
+        }
+        Task {
+            await netStreamSwitcher.setPreference(Preference.default)
+            if let stream = await netStreamSwitcher.stream {
+                if let view = view as? (any IOStreamObserver) {
+                    await stream.addObserver(view)
+                }
+            }
         }
     }
 
@@ -34,23 +35,29 @@ final class PlaybackViewController: UIViewController {
     }
 
     @IBAction func didPlaybackButtonTap(_ button: UIButton) {
-        if button.isSelected {
-            UIApplication.shared.isIdleTimerDisabled = false
-            netStreamSwitcher.close()
-            button.setTitle("●", for: [])
-        } else {
-            UIApplication.shared.isIdleTimerDisabled = true
-            netStreamSwitcher.open(.playback)
-            button.setTitle("■", for: [])
+        Task {
+            if button.isSelected {
+                UIApplication.shared.isIdleTimerDisabled = false
+                await netStreamSwitcher.close()
+                button.setTitle("●", for: [])
+            } else {
+                UIApplication.shared.isIdleTimerDisabled = true
+                await netStreamSwitcher.open(.playback)
+                button.setTitle("■", for: [])
+            }
+            button.isSelected.toggle()
         }
-        button.isSelected.toggle()
     }
 
     @objc
     private func didBecomeActive(_ notification: Notification) {
         logger.info(notification)
         if pictureInPictureController?.isPictureInPictureActive == false {
-            (stream as? RTMPStream)?.receiveVideo = true
+            Task {
+                if let stream = await netStreamSwitcher.stream as? RTMPStream {
+                    _ = try? await stream.receiveVideo(true)
+                }
+            }
         }
     }
 
@@ -58,28 +65,32 @@ final class PlaybackViewController: UIViewController {
     private func didEnterBackground(_ notification: Notification) {
         logger.info(notification)
         if pictureInPictureController?.isPictureInPictureActive == false {
-            (stream as? RTMPStream)?.receiveVideo = false
+            Task {
+                if let stream = await netStreamSwitcher.stream as? RTMPStream {
+                    _ = try? await stream.receiveVideo(false)
+                }
+            }
         }
     }
 }
 
 extension PlaybackViewController: AVPictureInPictureSampleBufferPlaybackDelegate {
     // MARK: AVPictureInPictureControllerDelegate
-    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, setPlaying playing: Bool) {
+    nonisolated func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, setPlaying playing: Bool) {
     }
 
-    func pictureInPictureControllerTimeRangeForPlayback(_ pictureInPictureController: AVPictureInPictureController) -> CMTimeRange {
+    nonisolated func pictureInPictureControllerTimeRangeForPlayback(_ pictureInPictureController: AVPictureInPictureController) -> CMTimeRange {
         return CMTimeRange(start: .zero, duration: .positiveInfinity)
     }
 
-    func pictureInPictureControllerIsPlaybackPaused(_ pictureInPictureController: AVPictureInPictureController) -> Bool {
+    nonisolated func pictureInPictureControllerIsPlaybackPaused(_ pictureInPictureController: AVPictureInPictureController) -> Bool {
         return false
     }
 
-    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, didTransitionToRenderSize newRenderSize: CMVideoDimensions) {
+    nonisolated func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, didTransitionToRenderSize newRenderSize: CMVideoDimensions) {
     }
 
-    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, skipByInterval skipInterval: CMTime, completion completionHandler: @escaping () -> Void) {
+    nonisolated func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, skipByInterval skipInterval: CMTime, completion completionHandler: @escaping () -> Void) {
         completionHandler()
     }
 }

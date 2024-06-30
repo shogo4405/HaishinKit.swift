@@ -17,7 +17,7 @@ final class VideoCodec {
         didSet {
             let invalidateSession = settings.invalidateSession(oldValue)
             if invalidateSession {
-                self.invalidateSession = invalidateSession
+                self.isInvalidateSession = invalidateSession
             } else {
                 settings.apply(self, rhs: oldValue)
             }
@@ -34,30 +34,49 @@ final class VideoCodec {
             guard inputFormat != oldValue else {
                 return
             }
-            invalidateSession = true
+            isInvalidateSession = true
             outputFormat = nil
         }
     }
     private(set) var session: (any VTSessionConvertible)? {
         didSet {
             oldValue?.invalidate()
-            invalidateSession = false
+            isInvalidateSession = false
         }
     }
     private(set) var outputFormat: CMFormatDescription?
-    private(set) lazy var outputStream: AsyncStream<CMSampleBuffer> = {
-        let (stream, continuation) = AsyncStream.makeStream(of: CMSampleBuffer.self)
-        self.outputContinuation = continuation
+    var outputStream: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
+        let (stream, continuation) = AsyncThrowingStream<CMSampleBuffer, any Swift.Error>.makeStream()
+        self.continuation = continuation
         return stream
-    }()
+    }
     private var startedAt: CMTime = .zero
-    private var invalidateSession = true
-    private var inputContinuation: AsyncStream<CMSampleBuffer>.Continuation?
-    private var outputContinuation: AsyncStream<CMSampleBuffer>.Continuation?
+    private var continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?
+    private var isInvalidateSession = true
     private var presentationTimeStamp: CMTime = .invalid
 
     func append(_ sampleBuffer: CMSampleBuffer) {
-        inputContinuation?.yield(sampleBuffer)
+        guard isRunning else {
+            return
+        }
+        do {
+            inputFormat = sampleBuffer.formatDescription
+            if isInvalidateSession {
+                if sampleBuffer.formatDescription?.isCompressed == true {
+                    session = try VTSessionMode.decompression.makeSession(self)
+                } else {
+                    session = try VTSessionMode.compression.makeSession(self)
+                }
+            }
+            guard let session else {
+                throw VTSessionError.failedToCreate(status: kVTParameterErr)
+            }
+            if let continuation {
+                session.convert(sampleBuffer, continuation: continuation)
+            }
+        } catch {
+            logger.error(error)
+        }
     }
 
     func imageBufferAttributes(_ mode: VTSessionMode) -> [NSString: AnyObject]? {
@@ -77,22 +96,6 @@ final class VideoCodec {
         }
     }
 
-    private func convert(_ sampleBuffer: CMSampleBuffer) async throws {
-        inputFormat = sampleBuffer.formatDescription
-        if invalidateSession {
-            if sampleBuffer.formatDescription?.isCompressed == true {
-                session = try VTSessionMode.decompression.makeSession(self)
-            } else {
-                session = try VTSessionMode.compression.makeSession(self)
-            }
-        }
-        guard let session else {
-            throw VTSessionError.failedToCreate(status: kVTParameterErr)
-        }
-        let sampleBuffer = try await session.convert(sampleBuffer)
-        outputContinuation?.yield(sampleBuffer)
-    }
-
     private func willDropFrame(_ presentationTimeStamp: CMTime) -> Bool {
         guard startedAt <= presentationTimeStamp else {
             return true
@@ -106,7 +109,7 @@ final class VideoCodec {
     #if os(iOS) || os(tvOS) || os(visionOS)
     @objc
     private func applicationWillEnterForeground(_ notification: Notification) {
-        invalidateSession = true
+        isInvalidateSession = true
     }
 
     @objc
@@ -119,7 +122,7 @@ final class VideoCodec {
         }
         switch type {
         case .ended:
-            invalidateSession = true
+            isInvalidateSession = true
         default:
             break
         }
@@ -147,13 +150,6 @@ extension VideoCodec: Runner {
             object: nil
         )
         #endif
-        let (stream, continuation) = AsyncStream.makeStream(of: CMSampleBuffer.self)
-        inputContinuation = continuation
-        Task {
-            for await sampleBuffer in stream where isRunning {
-                try? await convert(sampleBuffer)
-            }
-        }
         startedAt = passthrough ? .zero : CMClockGetTime(CMClockGetHostTimeClock())
         isRunning = true
     }
@@ -162,14 +158,14 @@ extension VideoCodec: Runner {
         guard isRunning else {
             return
         }
-        inputContinuation?.finish()
         isRunning = false
         session = nil
-        invalidateSession = true
+        isInvalidateSession = true
         needsSync = true
         inputFormat = nil
         outputFormat = nil
-        // presentationTimeStamp = .invalid
+        presentationTimeStamp = .invalid
+        continuation?.finish()
         startedAt = .zero
         #if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)

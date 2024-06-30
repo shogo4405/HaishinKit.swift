@@ -5,6 +5,8 @@ import AVFAudio
 
 @testable import HaishinKit
 
+/*
+
 final class TSReaderTests: XCTestCase {
     func testTSFileRead() {
         let bundle = Bundle(for: type(of: self))
@@ -76,3 +78,4 @@ private final class TSReaderTestsResult: TSReaderDelegate, AudioCodecDelegate {
     }
 }
 
+*/

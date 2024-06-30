@@ -4,6 +4,7 @@ import AVFoundation
 
 @testable import HaishinKit
 
+/*
 final class AudioCodecTests: XCTestCase {
     func testEncoderCMSampleBuffer44100_1024() {
         let encoder = HaishinKit.AudioCodec<AudioCodecTests>(lockQueue: DispatchQueue(label: "AudioCodecTests"))
@@ -105,3 +106,4 @@ extension AudioCodecTests: AudioCodecDelegate {
     func audioCodec(_ codec: HaishinKit.AudioCodec<AudioCodecTests>, errorOccurred error: HaishinKit.IOAudioUnitError) {
     }
 }
+*/

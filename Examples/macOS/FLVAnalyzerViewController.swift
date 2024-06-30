@@ -93,7 +93,7 @@ extension FLVAnalyzerViewController: NSTableViewDelegate {
 
 extension FLVAnalyzerViewController: DnDDelegate {
     // MARK: DnDDelegate
-    func draggingEntered(_ sender: any NSDraggingInfo) -> NSDragOperation {
+    nonisolated func draggingEntered(_ sender: any NSDraggingInfo) -> NSDragOperation {
         return .copy
     }
 

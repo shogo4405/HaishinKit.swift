@@ -6,8 +6,8 @@ import CoreVideo
 import Foundation
 
 // swiftlint:disable attributes
-
-final class DisplayLink: NSObject {
+// CADisplayLink is deprecated, I've given up on making it conform to Sendable.
+final class DisplayLink: NSObject, @unchecked Sendable {
     private static let preferredFramesPerSecond = 0
 
     var isPaused = false {
@@ -120,7 +120,7 @@ final class DisplayLinkChoreographer: NSObject, Choreographer {
         }
     }
     weak var delegate: (any ChoreographerDelegate)?
-    var isRunning = false
+    private(set) var isRunning = false
     var preferredFramesPerSecond = DisplayLinkChoreographer.preferredFramesPerSecond
     private var duration: Double = DisplayLinkChoreographer.duration
     private var displayLink: DisplayLink? {
@@ -156,5 +156,43 @@ extension DisplayLinkChoreographer: Runner {
         displayLink = nil
         duration = DisplayLinkChoreographer.duration
         isRunning = false
+    }
+}
+
+final class AsyncDisplayLink: NSObject, @unchecked Sendable {
+    private var displayLink: DisplayLink?
+    private let handler: (TimeInterval) -> Void
+    private var currentTime: TimeInterval = 0.0
+
+    init(_ handler: @escaping (TimeInterval) -> Void) {
+        self.handler = handler
+        super.init()
+        self.displayLink = DisplayLink(target: self, selector: #selector(update(displayLink:)))
+        displayLink?.isPaused = false
+        displayLink?.add(to: .main, forMode: .common)
+    }
+
+    func stop() {
+        currentTime = 0.0
+        displayLink?.invalidate()
+    }
+
+    @objc
+    private func update(displayLink: DisplayLink) {
+        handler(currentTime)
+        currentTime += displayLink.duration
+    }
+}
+
+extension AsyncDisplayLink {
+    static var updateFrames: AsyncStream<TimeInterval> {
+        AsyncStream { continuation in
+            let displayLink = AsyncDisplayLink { currentTime in
+                continuation.yield(currentTime)
+            }
+            continuation.onTermination = { _ in
+                displayLink.stop()
+            }
+        }
     }
 }

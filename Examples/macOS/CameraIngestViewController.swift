@@ -18,9 +18,6 @@ final class CameraIngestViewController: NSViewController {
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
     @IBOutlet private weak var urlField: NSTextField!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: (any IOStreamConvertible)? {
-        return netStreamSwitcher.stream
-    }
     private var mixer = IOMixer()
     private var textScreenObject = TextScreenObject()
 
@@ -30,11 +27,11 @@ final class CameraIngestViewController: NSViewController {
         audioPopUpButton?.present(mediaType: .audio)
         cameraPopUpButton?.present(mediaType: .video)
 
-        netStreamSwitcher.uri = Preference.default.uri ?? ""
-
         Task {
+            await netStreamSwitcher.setPreference(Preference.default)
+            let stream = await netStreamSwitcher.stream
+            await stream?.addObserver(lfView!)
             stream.map {
-                lfView?.attachStream($0)
                 mixer.addStream($0)
             }
         }
@@ -105,14 +102,16 @@ final class CameraIngestViewController: NSViewController {
     }
 
     @IBAction private func publishOrStop(_ sender: NSButton) {
-        // Publish
-        if sender.title == "Publish" {
-            sender.title = "Stop"
-            netStreamSwitcher.open(.ingest)
-        } else {
-            // Stop
-            sender.title = "Publish"
-            netStreamSwitcher.close()
+        Task {
+            // Publish
+            if sender.title == "Publish" {
+                sender.title = "Stop"
+                await netStreamSwitcher.open(.ingest)
+            } else {
+                // Stop
+                sender.title = "Publish"
+                await netStreamSwitcher.close()
+            }
         }
     }
 

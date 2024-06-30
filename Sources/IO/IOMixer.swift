@@ -165,7 +165,7 @@ public final class IOMixer {
         return session
     }()
 
-    private var streams: [any IOStreamConvertible] = []
+    private var streams: [any IOStream] = []
 
     /// Creates a new instance.
     public init() {
@@ -278,7 +278,7 @@ public final class IOMixer {
     #endif
 
     /// Adds a stream.
-    public func addStream(_ stream: some IOStreamConvertible) {
+    public func addStream(_ stream: some IOStream) {
         guard !streams.contains(where: { $0 === stream }) else {
             return
         }
@@ -286,7 +286,7 @@ public final class IOMixer {
     }
 
     /// Removes a stream.
-    public func removeStream(_ stream: some IOStreamConvertible) {
+    public func removeStream(_ stream: some IOStream) {
         if let index = streams.firstIndex(where: { $0 === stream }) {
             streams.remove(at: index)
         }

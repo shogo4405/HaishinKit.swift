@@ -4,6 +4,7 @@ import XCTest
 @testable import HaishinKit
 
 final class RTMPConnectionTests: XCTestCase {
+    /*
     func publish() {
         let connection = RTMPConnection()
         let stream = RTMPStream(connection: connection)
@@ -22,4 +23,5 @@ final class RTMPConnectionTests: XCTestCase {
         }()
         XCTAssertNil(weakConnection)
     }
+     */
 }

@@ -30,8 +30,8 @@ protocol AMFSerializer: ByteArrayConvertible {
     func deserialize() throws -> Date
 
     @discardableResult
-    func serialize(_ value: [Any?]) -> Self
-    func deserialize() throws -> [Any?]
+    func serialize(_ value: [(any Sendable)?]) -> Self
+    func deserialize() throws -> [(any Sendable)?]
 
     @discardableResult
     func serialize(_ value: ASArray) -> Self
@@ -46,8 +46,8 @@ protocol AMFSerializer: ByteArrayConvertible {
     func deserialize() throws -> ASXMLDocument
 
     @discardableResult
-    func serialize(_ value: Any?) -> Self
-    func deserialize() throws -> Any?
+    func serialize(_ value: (any Sendable)?) -> Self
+    func deserialize() throws -> (any Sendable)?
 }
 
 enum AMF0Type: UInt8 {
@@ -79,7 +79,7 @@ final class AMF0Serializer: ByteArray {
 extension AMF0Serializer: AMFSerializer {
     // MARK: AMFSerializer
     @discardableResult
-    func serialize(_ value: Any?) -> Self {
+    func serialize(_ value: (any Sendable)?) -> Self {
         if value == nil {
             return writeUInt8(AMF0Type.null.rawValue)
         }
@@ -112,7 +112,7 @@ extension AMF0Serializer: AMFSerializer {
             return serialize(value)
         case let value as Bool:
             return serialize(value)
-        case let value as [Any?]:
+        case let value as [(any Sendable)?]:
             return serialize(value)
         case let value as ASArray:
             return serialize(value)
@@ -123,7 +123,7 @@ extension AMF0Serializer: AMFSerializer {
         }
     }
 
-    func deserialize() throws -> Any? {
+    func deserialize() throws -> (any Sendable)? {
         guard let type = AMF0Type(rawValue: try readUInt8()) else {
             return nil
         }
@@ -152,7 +152,7 @@ extension AMF0Serializer: AMFSerializer {
             assertionFailure()
             return nil
         case .strictArray:
-            return try deserialize() as [Any?]
+            return try deserialize() as [(any Sendable)?]
         case .date:
             return try deserialize() as Date
         case .longString:
@@ -163,7 +163,7 @@ extension AMF0Serializer: AMFSerializer {
         case .xmlDocument:
             return try deserialize() as ASXMLDocument
         case .typedObject:
-            return try deserialize() as Any
+            return nil
         case .avmplush:
             assertionFailure("TODO")
             return nil
@@ -306,7 +306,7 @@ extension AMF0Serializer: AMFSerializer {
     /**
      * - seealso: 2.12 Strict Array Type
      */
-    func serialize(_ value: [Any?]) -> Self {
+    func serialize(_ value: [(any Sendable)?]) -> Self {
         writeUInt8(AMF0Type.strictArray.rawValue)
         if value.isEmpty {
             writeBytes(Data([0x00, 0x00, 0x00, 0x00]))
@@ -319,11 +319,11 @@ extension AMF0Serializer: AMFSerializer {
         return self
     }
 
-    func deserialize() throws -> [Any?] {
+    func deserialize() throws -> [(any Sendable)?] {
         guard try readUInt8() == AMF0Type.strictArray.rawValue else {
             throw AMFSerializerError.deserialize
         }
-        var result: [Any?] = []
+        var result: [(any Sendable)?] = []
         let count = Int(try readUInt32())
         for _ in 0..<count {
             result.append(try deserialize())
@@ -361,7 +361,7 @@ extension AMF0Serializer: AMFSerializer {
         return ASXMLDocument(data: try deserializeUTF8(true))
     }
 
-    func deserialize() throws -> Any {
+    func deserialize() throws -> ASTypedObject {
         guard try readUInt8() == AMF0Type.typedObject.rawValue else {
             throw AMFSerializerError.deserialize
         }
@@ -369,7 +369,7 @@ extension AMF0Serializer: AMFSerializer {
         let typeName = try deserializeUTF8(false)
         var result = ASObject()
         while true {
-            let key: String = try deserializeUTF8(false)
+            let key = try deserializeUTF8(false)
             guard !key.isEmpty else {
                 position += 1
                 break
@@ -377,7 +377,7 @@ extension AMF0Serializer: AMFSerializer {
             result[key] = try deserialize()
         }
 
-        return try ASTypedObject.decode(typeName: typeName, data: result)
+        return ASTypedObject(typeName: typeName, data: result)
     }
 
     @discardableResult

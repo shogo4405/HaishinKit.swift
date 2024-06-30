@@ -1,32 +1,24 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
 #endif
 
-/// The interface an IOStreamRecorderDelegate uses to inform its delegate.
-public protocol IOStreamRecorderDelegate: AnyObject {
-    /// Tells the receiver to recorder error occured.
-    func recorder(_ recorder: IOStreamRecorder, errorOccured error: IOStreamRecorder.Error)
-    /// Tells the receiver to finish writing.
-    func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter)
-}
-
 // MARK: -
 /// The IOStreamRecorder class represents video and audio recorder.
-public final class IOStreamRecorder {
+public actor IOStreamRecorder {
     /// The IOStreamRecorder error domain codes.
     public enum Error: Swift.Error {
+        case invalidState
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: any Swift.Error)
         /// Failed to create the AVAssetWriterInput.
-        case failedToCreateAssetWriterInput(error: NSException)
+        case failedToCreateAssetWriterInput(error: any Swift.Error)
         /// Failed to append the PixelBuffer or SampleBuffer.
         case failedToAppend(error: (any Swift.Error)?)
         /// Failed to finish writing the AVAssetWriter.
         case failedToFinishWriting(error: (any Swift.Error)?)
     }
-    /// Specifies the delegate.
-    public weak var delegate: (any IOStreamRecorderDelegate)?
+
     /// Specifies the recorder settings.
     public var settings: [AVMediaType: [String: Any]] = [
         .audio: [
@@ -43,14 +35,14 @@ public final class IOStreamRecorder {
     /// Specifies the file name. nil will generate a unique file name.
     public var fileName: String?
     /// The running indicies whether recording or not.
-    public private(set) var isRunning = false
-    private let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOStreamRecorder.lock")
+    public private(set) var isRecording = false
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
         }
         return settings.count == writer.inputs.count
     }
+    private var continuation: AsyncStream<Error>.Continuation?
     private var writer: AVAssetWriter?
     private var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     private var audioPresentationTime: CMTime = .zero
@@ -71,8 +63,38 @@ public final class IOStreamRecorder {
     public init() {
     }
 
-    func append(_ sampleBuffer: CMSampleBuffer) {
-        guard isRunning else {
+    public func startRunning(_ settings: [AVMediaType: [String: Any]]) async throws {
+        guard !isRecording else {
+            throw Error.invalidState
+        }
+        videoPresentationTime = .zero
+        audioPresentationTime = .zero
+        let fileName = fileName ?? UUID().uuidString
+        let url = moviesDirectory.appendingPathComponent(fileName).appendingPathExtension("mp4")
+        writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+        isRecording = true
+    }
+
+    public func stopRecoding() async throws -> AVAssetWriter {
+        guard isRecording else {
+            throw Error.invalidState
+        }
+        guard let writer = writer, writer.status == .writing else {
+            throw Error.failedToFinishWriting(error: writer?.error)
+        }
+        for (_, input) in writerInputs {
+            input.markAsFinished()
+        }
+        await writer.finishWriting()
+        defer {
+            self.writer = nil
+            self.writerInputs.removeAll()
+        }
+        return writer
+    }
+
+    private func append(_ sampleBuffer: CMSampleBuffer) {
+        guard isRecording else {
             return
         }
         let mediaType: AVMediaType = (sampleBuffer.formatDescription?.mediaType == .video) ? .video : .audio
@@ -97,37 +119,18 @@ public final class IOStreamRecorder {
                 if input.append(sampleBuffer) {
                     audioPresentationTime = sampleBuffer.presentationTimeStamp
                 } else {
-                    delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
+                    continuation?.yield(Error.failedToAppend(error: writer.error))
                 }
             case .video:
                 if input.append(sampleBuffer) {
                     videoPresentationTime = sampleBuffer.presentationTimeStamp
                 } else {
-                    delegate?.recorder(self, errorOccured: .failedToAppend(error: writer.error))
+                    continuation?.yield(Error.failedToAppend(error: writer.error))
                 }
             default:
                 break
             }
         }
-    }
-
-    func finishWriting() {
-        guard let writer = writer, writer.status == .writing else {
-            delegate?.recorder(self, errorOccured: .failedToFinishWriting(error: writer?.error))
-            return
-        }
-        let dispatchGroup = DispatchGroup()
-        dispatchGroup.enter()
-        for (_, input) in writerInputs {
-            input.markAsFinished()
-        }
-        writer.finishWriting {
-            self.delegate?.recorder(self, finishWriting: writer)
-            self.writer = nil
-            self.writerInputs.removeAll()
-            dispatchGroup.leave()
-        }
-        dispatchGroup.wait()
     }
 
     private func makeWriterInput(_ mediaType: AVMediaType, sourceFormatHint: CMFormatDescription?) -> AVAssetWriterInput? {
@@ -170,60 +173,31 @@ public final class IOStreamRecorder {
                 break
             }
         }
+
         var input: AVAssetWriterInput?
-        nstry {
+        if writer?.canApply(outputSettings: outputSettings, forMediaType: mediaType) == true {
             input = AVAssetWriterInput(mediaType: mediaType, outputSettings: outputSettings, sourceFormatHint: sourceFormatHint)
             input?.expectsMediaDataInRealTime = true
             self.writerInputs[mediaType] = input
             if let input {
                 self.writer?.add(input)
             }
-        } _: { exception in
-            self.delegate?.recorder(self, errorOccured: .failedToCreateAssetWriterInput(error: exception))
         }
+
         return input
     }
 }
 
 extension IOStreamRecorder: IOStreamObserver {
     // MARK: IOStreamObserver
-    public func stream(_ stream: IOStream, didOutput video: CMSampleBuffer) {
-        append(video)
+    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
+        Task { await append(video) }
     }
 
-    public func stream(_ stream: IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
         guard let sampleBuffer = (audio as? AVAudioPCMBuffer)?.makeSampleBuffer(when) else {
             return
         }
-        append(sampleBuffer)
+        Task { await append(sampleBuffer) }
     }
 }
-
-extension IOStreamRecorder: Runner {
-    // MARK: Running
-    public func startRunning() {
-        guard !isRunning else {
-            return
-        }
-        do {
-            videoPresentationTime = .zero
-            audioPresentationTime = .zero
-            let fileName = fileName ?? UUID().uuidString
-            let url = moviesDirectory.appendingPathComponent(fileName).appendingPathExtension("mp4")
-            writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
-            isRunning = true
-        } catch {
-            delegate?.recorder(self, errorOccured: .failedToCreateAssetWriter(error: error))
-        }
-    }
-
-    public func stopRunning() {
-        guard isRunning else {
-            return
-        }
-        finishWriting()
-        isRunning = false
-    }
-}
-
-extension NSException: @unchecked Sendable {}

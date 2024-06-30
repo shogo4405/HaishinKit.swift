@@ -4,7 +4,7 @@ import Foundation
 public let kASUndefined = ASUndefined()
 
 /// The ASObject typealias represents an object for AcrionScript.
-public typealias ASObject = [String: Any?]
+public typealias ASObject = [String: (any Sendable)?]
 
 /// The ASUndefined structure represents an undefined for ActionScript.
 public struct ASUndefined: Sendable, CustomStringConvertible {
@@ -14,42 +14,16 @@ public struct ASUndefined: Sendable, CustomStringConvertible {
 }
 
 /// The ASTypedObject structure represents a typed object for ActionScript.
-public struct ASTypedObject {
-    public typealias TypedObjectDecoder = (_ type: String, _ data: ASObject) throws -> Any
-
-    public static func register(typeNamed name: String, decoder: @escaping TypedObjectDecoder) {
-        decoders.mutate { $0[name] = decoder }
-    }
-
-    public static func register<T: Decodable>(type: T.Type, named name: String) {
-        decoders.mutate {
-            $0[name] = {
-                let jsonData = try JSONSerialization.data(withJSONObject: $1, options: [])
-                return try JSONDecoder().decode(type, from: jsonData)
-            }
-        }
-    }
-
-    public static func unregister(typeNamed name: String) {
-        decoders.mutate { $0.removeValue(forKey: name) }
-    }
-
-    static nonisolated(unsafe) var decoders: Atomic<[String: TypedObjectDecoder]> = .init([:])
-
-    static func decode(typeName: String, data: ASObject) throws -> Any {
-        let decoder = decoders.value[typeName] ?? { ASTypedObject(typeName: $0, data: $1) }
-        return try decoder(typeName, data)
-    }
-
-    var typeName: String
-    var data: ASObject
+public struct ASTypedObject: Sendable {
+    public let typeName: String
+    public let data: ASObject
 }
 
 // MARK: -
 /// The ASArray structure represents an array value for ActionScript.
-public struct ASArray {
-    private(set) var data: [Any?]
-    private(set) var dict: [String: Any?] = [:]
+public struct ASArray: Sendable {
+    private(set) var data: [(any Sendable)?]
+    private(set) var dict: [String: (any Sendable)?] = [:]
 
     /// The length of an array.
     public var length: Int {
@@ -58,11 +32,11 @@ public struct ASArray {
 
     /// Creates a new instance containing the specified number of a single.
     public init(count: Int) {
-        self.data = [Any?](repeating: kASUndefined, count: count)
+        self.data = [(any Sendable)?](repeating: kASUndefined, count: count)
     }
 
     /// Creates a new instance of data.
-    public init(data: [Any?]) {
+    public init(data: [(any Sendable)?]) {
         self.data = data
     }
 
@@ -74,12 +48,12 @@ public struct ASArray {
 
 extension ASArray: ExpressibleByArrayLiteral {
     // MARK: ExpressibleByArrayLiteral
-    public init (arrayLiteral elements: Any?...) {
+    public init (arrayLiteral elements: (any Sendable)?...) {
         self = ASArray(data: elements)
     }
 
     /// Accesses the element at the specified position.
-    public subscript(i: Any) -> Any? {
+    public subscript(i: Any) -> (any Sendable)? {
         get {
             if let i: Int = i as? Int {
                 return i < data.count ? data[i] : kASUndefined
@@ -88,21 +62,21 @@ extension ASArray: ExpressibleByArrayLiteral {
                 if let i = Int(i) {
                     return i < data.count ? data[i] : kASUndefined
                 }
-                return dict[i] as Any
+                return dict[i] as (any Sendable)
             }
             return nil
         }
         set {
-            if let i: Int = i as? Int {
+            if let i = i as? Int {
                 if data.count <= i {
-                    data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
+                    data += [(any Sendable)?](repeating: kASUndefined, count: i - data.count + 1)
                 }
                 data[i] = newValue
             }
-            if let i: String = i as? String {
+            if let i = i as? String {
                 if let i = Int(i) {
                     if data.count <= i {
-                        data += [Any?](repeating: kASUndefined, count: i - data.count + 1)
+                        data += [(any Sendable)?](repeating: kASUndefined, count: i - data.count + 1)
                     }
                     data[i] = newValue
                     return
@@ -131,7 +105,7 @@ extension ASArray: Equatable {
 /// ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
 /// - seealso: 2.17 XML Document Type (amf0-file-format-specification.pdf)
 /// - seealso: 3.9 XMLDocument type (amf-file-format-spec.pdf)
-public struct ASXMLDocument: CustomStringConvertible {
+public struct ASXMLDocument: Sendable, CustomStringConvertible {
     public var description: String {
         data
     }
@@ -154,7 +128,7 @@ extension ASXMLDocument: Equatable {
 // MARK: -
 /// ActionScript 3.0 introduces a new XML type.
 /// - seealso: 3.13 XML type (amf-file-format-spec.pdf)
-public struct ASXML: CustomStringConvertible {
+public struct ASXML: Sendable, CustomStringConvertible {
     public var description: String {
         data
     }

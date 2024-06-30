@@ -8,5 +8,4 @@ extension AVAudioTime {
     }
 }
 
-extension AVAudioBuffer: @unchecked Sendable {}
 extension AVAudioTime: @unchecked Sendable {}

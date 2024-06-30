@@ -3,25 +3,12 @@ import Foundation
 import HaishinKit
 import SRTHaishinKit
 
-final class NetStreamSwitcher {
-    private static let maxRetryCount: Int = 5
+actor NetStreamSwitcher {
+    static let maxRetryCount: Int = 5
 
     enum Mode {
         case rtmp
         case srt
-
-        func makeStream(_ swithcer: NetStreamSwitcher) async -> any IOStreamConvertible {
-            switch self {
-            case .rtmp:
-                let connection = RTMPConnection()
-                swithcer.connection = connection
-                return RTMPStream(connection: connection)
-            case .srt:
-                let connection = SRTConnection()
-                swithcer.connection = connection
-                return await SRTStream(connection: connection)
-            }
-        }
     }
 
     enum Method {
@@ -29,118 +16,89 @@ final class NetStreamSwitcher {
         case playback
     }
 
-    var uri = "" {
-        didSet {
-            if uri.contains("srt://") {
-                mode = .srt
-                return
-            }
+    private var preference: Preference?
+    private(set) var mode: Mode = .rtmp
+    private var connection: Any?
+    private var method: Method = .ingest
+    private(set) var stream: (any IOStream)?
+
+    func setPreference(_ preference: Preference) async {
+        self.preference = preference
+        if preference.uri?.contains("srt://") == true {
+            let connection = SRTConnection()
+            self.connection = connection
+            stream = await SRTStream(connection: connection)
+            mode = .srt
+        } else {
+            let connection = RTMPConnection()
+            self.connection = connection
+            stream = RTMPStream(connection: connection)
             mode = .rtmp
         }
     }
-    private(set) var mode: Mode = .rtmp {
-        didSet {
-            Task {
-                stream = await mode.makeStream(self)
-            }
-        }
-    }
-    private var retryCount = 0
-    private var connection: Any?
-    private var method: Method = .ingest
-    private(set) var stream: (any IOStreamConvertible)? {
-        didSet {
-            // stream?.delegate = self
-        }
-    }
 
-    func open(_ method: Method) {
+    func open(_ method: Method) async {
+        guard let preference else {
+            return
+        }
         self.method = method
         switch mode {
         case .rtmp:
-            guard let connection = connection as? RTMPConnection else {
+            guard
+                let connection = connection as? RTMPConnection,
+                let stream = stream as? RTMPStream else {
                 return
             }
-            switch method {
-            case .ingest:
-                // Performing operations for FMLE compatibility purposes.
-                (stream as? RTMPStream)?.fcPublishName = Preference.default.streamName
-            case .playback:
-                break
+            do {
+                let response = try await connection.connect(preference.uri ?? "")
+                logger.info(response)
+                switch method {
+                case .ingest:
+                    let response = try await stream.publish(Preference.default.streamName)
+                    logger.info(response)
+                case .playback:
+                    let response = try await stream.play(Preference.default.streamName)
+                    logger.info(response)
+                }
+            } catch RTMPConnection.Error.requestFailed(let response) {
+                logger.warn(response)
+            } catch RTMPStream.Error.requestFailed(let response) {
+                logger.warn(response)
+            } catch {
+                logger.warn(error)
             }
-            connection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-            connection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-            connection.connect(uri)
         case .srt:
             guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
                 return
             }
-            Task {
-                do {
-                    try await connection.open(URL(string: uri))
-                    switch method {
-                    case .playback:
-                        await stream.play()
-                    case .ingest:
-                        await stream.publish()
-                    }
-                } catch {
-                    logger.warn(error)
+            do {
+                try await connection.open(URL(string: preference.uri ?? ""))
+                switch method {
+                case .playback:
+                    await stream.play()
+                case .ingest:
+                    await stream.publish()
                 }
+            } catch {
+                logger.warn(error)
             }
         }
     }
 
-    func close() {
+    func close() async {
         switch mode {
         case .rtmp:
             guard let connection = connection as? RTMPConnection else {
                 return
             }
-            connection.close()
-            connection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-            connection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
+            try? await connection.close()
+            logger.info("conneciton.close")
         case .srt:
             guard let connection = connection as? SRTConnection else {
                 return
             }
-            Task {
-                await connection.close()
-            }
+            await connection.close()
+            logger.info("conneciton.close")
         }
-    }
-
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
-            return
-        }
-        logger.info(code)
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            retryCount = 0
-            switch method {
-            case .playback:
-                (stream as? RTMPStream)?.play(Preference.default.streamName!)
-            case .ingest:
-                (stream as? RTMPStream)?.publish(Preference.default.streamName!)
-            }
-        case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
-            guard retryCount <= NetStreamSwitcher.maxRetryCount else {
-                return
-            }
-            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
-            (connection as? RTMPConnection)?.connect(uri)
-            retryCount += 1
-        default:
-            break
-        }
-    }
-
-    @objc
-    private func rtmpErrorHandler(_ notification: Notification) {
-        logger.error(notification)
-        (connection as? RTMPConnection)?.connect(Preference.default.uri!)
     }
 }

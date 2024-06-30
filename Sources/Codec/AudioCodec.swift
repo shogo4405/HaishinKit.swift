@@ -15,6 +15,16 @@ final class AudioCodec {
         }
     }
 
+    var outputFormat: AVAudioFormat? {
+        return audioConverter?.outputFormat
+    }
+
+    var outputStream: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
+        let (stream, continuation) = AsyncStream.makeStream(of: (AVAudioBuffer, AVAudioTime).self)
+        self.continuation = continuation
+        return stream
+    }
+
     /// This instance is running to process(true) or not(false).
     private(set) var isRunning = false
     private(set) var inputFormat: AVAudioFormat? {
@@ -33,19 +43,11 @@ final class AudioCodec {
             }
         }
     }
-    var outputFormat: AVAudioFormat? {
-        return audioConverter?.outputFormat
-    }
     private var cursor: Int = 0
     private var inputBuffers: [AVAudioBuffer] = []
     private var outputBuffers: [AVAudioBuffer] = []
     private var audioConverter: AVAudioConverter?
-    private(set) lazy var outputStream: AsyncStream<(AVAudioBuffer, AVAudioTime)> = {
-        let (stream, continuation) = AsyncStream.makeStream(of: (AVAudioBuffer, AVAudioTime).self)
-        self.outputContinuation = continuation
-        return stream
-    }()
-    private var outputContinuation: AsyncStream<(AVAudioBuffer, AVAudioTime)>.Continuation?
+    private var continuation: AsyncStream<(AVAudioBuffer, AVAudioTime)>.Continuation?
 
     func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning else {
@@ -102,7 +104,7 @@ final class AudioCodec {
         }
         switch outputStatus {
         case .haveData:
-            outputContinuation?.yield((outputBuffer, when))
+            continuation?.yield((outputBuffer, when))
         case .error:
             break
         default:
@@ -139,13 +141,6 @@ final class AudioCodec {
         }
         let converter = AVAudioConverter(from: inputFormat, to: outputFormat)
         settings.apply(converter, oldValue: nil)
-        /*
-         if converter == nil {
-         delegate?.audioCodec(self, errorOccurred: .failedToCreate(from: inputFormat, to: outputFormat))
-         } else {
-         delegate?.audioCodec(self, didOutput: outputFormat)
-         }
-         */
         return converter
     }
 }
@@ -181,10 +176,7 @@ extension AudioCodec: Runner {
         guard !isRunning else {
             return
         }
-        if let audioConverter {
-            // delegate?.audioCodec(self, didOutput: audioConverter.outputFormat)
-            audioConverter.reset()
-        }
+        audioConverter?.reset()
         isRunning = true
     }
 
@@ -192,6 +184,7 @@ extension AudioCodec: Runner {
         guard isRunning else {
             return
         }
+        continuation?.finish()
         isRunning = false
     }
 }
