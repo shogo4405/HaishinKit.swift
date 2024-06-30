@@ -79,7 +79,7 @@ extension RTMPSharedObjectEvent: CustomDebugStringConvertible {
 
 // MARK: -
 /// The RTMPSharedObject class is used to read and write data on a server.
-public final class RTMPSharedObject: EventDispatcher {
+public actor RTMPSharedObject {
     private static nonisolated(unsafe) var remoteSharedObjects: Atomic<[String: RTMPSharedObject]> = .init([:])
 
     /// Returns a reference to a shared object on a server.
@@ -103,8 +103,10 @@ public final class RTMPSharedObject: EventDispatcher {
             guard succeeded else {
                 return
             }
-            for (key, value) in data {
-                setProperty(key, value)
+            Task {
+                for (key, value) in data {
+                    await setProperty(key, value)
+                }
             }
         }
     }
@@ -114,52 +116,55 @@ public final class RTMPSharedObject: EventDispatcher {
     var timestamp: TimeInterval = 0
     let persistence: Bool
     var currentVersion: UInt32 = 0
-
     private var connection: RTMPConnection?
+    private lazy var dispatcher: EventDispatcher = {
+        return EventDispatcher(target: self)
+    }()
 
     init(name: String, path: String, persistence: Bool) {
         self.name = name
         self.path = path
         self.persistence = persistence
-        super.init()
     }
 
     /// Updates the value of a property in shared object.
-    public func setProperty(_ name: String, _ value: Any?) {
+    public func setProperty(_ name: String, _ value: Any?) async {
         data[name] = value
         guard let connection, succeeded else {
             return
         }
-        connection.doOutput(chunk: createChunk([
+        await connection.doOutput(chunk: createChunk([
             RTMPSharedObjectEvent(type: .requestChange, name: name, data: value)
         ]))
     }
 
     /// Connects to a remove shared object on a server.
-    public func connect(_ rtmpConnection: RTMPConnection) {
+    public func connect(_ rtmpConnection: RTMPConnection) async {
         if self.connection != nil {
             close()
         }
         self.connection = rtmpConnection
-        rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        if rtmpConnection.connected {
-            timestamp = rtmpConnection.timestamp
-            rtmpConnection.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
+        await rtmpConnection.addEventListener(.rtmpStatus, listener: self)
+        if await rtmpConnection.connected {
+            timestamp = await rtmpConnection.timestamp
+            await rtmpConnection.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
         }
     }
 
     /// Purges all of the data.
-    public func clear() {
+    public func clear() async {
         data.removeAll(keepingCapacity: false)
-        connection?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]))
+        await connection?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .clear)]))
     }
 
     /// Closes the connection a server.
     public func close() {
         data.removeAll(keepingCapacity: false)
-        connection?.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        connection?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
-        connection = nil
+        Task {
+            await connection?.removeEventListener(.rtmpStatus, listener: self)
+            await connection?.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .release)]))
+            connection = nil
+        }
     }
 
     final func on(message: RTMPSharedObjectMessage) {
@@ -194,7 +199,9 @@ public final class RTMPSharedObject: EventDispatcher {
             }
             changeList.append(change)
         }
-        dispatch(.sync, bubbles: false, data: changeList)
+        Task { [changeList] in
+            await dispatcher.dispatch(.sync, bubbles: false, data: changeList)
+        }
     }
 
     func createChunk(_ events: [RTMPSharedObjectEvent]) -> RTMPChunk {
@@ -217,26 +224,40 @@ public final class RTMPSharedObject: EventDispatcher {
             )
         )
     }
+}
 
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard let connection, let data = e.data as? ASObject else {
+extension RTMPSharedObject: EventDispatcherConvertible {
+    // MARK: EventDispatcherConvertible
+    public func addEventListener(_ type: Event.Name, listener: some EventListener, useCapture: Bool) async {
+        await dispatcher.addEventListener(type, listener: listener, useCapture: useCapture)
+    }
+
+    public func removeEventListener(_ type: Event.Name, listener: some EventListener, useCapture: Bool) async {
+        await dispatcher.removeEventListener(type, listener: listener, useCapture: useCapture)
+    }
+
+    public func dispatch(event: Event) async {
+        await dispatcher.dispatch(event: event)
+    }
+
+    public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) async {
+        await dispatcher.dispatch(type, bubbles: bubbles, data: data)
+    }
+}
+
+extension RTMPSharedObject: EventListener {
+    // MARK: EventListener
+    public func handleEvent(_ event: Event) async {
+        guard let connection, let data = event.data as? ASObject else {
             return
         }
         switch data["code"] as? String {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            timestamp = connection.timestamp
-            connection.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
+            timestamp = await connection.timestamp
+            await connection.doOutput(chunk: createChunk([RTMPSharedObjectEvent(type: .use)]))
         default:
             break
         }
     }
 }
 
-extension RTMPSharedObject: CustomDebugStringConvertible {
-    // MARK: CustomDebugStringConvertible
-    public var debugDescription: String {
-        data.debugDescription
-    }
-}

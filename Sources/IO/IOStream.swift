@@ -8,7 +8,7 @@ import SwiftPMSupport
 import UIKit
 #endif
 
-public protocol IOStreamConvertible: AnyObject {
+public protocol IOStreamConvertible: AnyActor {
     /// The current state of the stream.
     var readyState: IOStream.ReadyState { get async }
 

@@ -1,15 +1,19 @@
 import Foundation
 
+public protocol EventListener: AnyActor {
+    func handleEvent(_ event: Event) async
+}
+
 /// The EventDispatcherConvertible interface is in implementation which supports the DOM Event Model.
-public protocol EventDispatcherConvertible: AnyObject {
+public protocol EventDispatcherConvertible: AnyActor {
     /// Registers the event listeners on the event target.
-    func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
+    func addEventListener(_ type: Event.Name, listener: some EventListener, useCapture: Bool) async
     /// Unregister the event listeners on the event target.
-    func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject?, useCapture: Bool)
+    func removeEventListener(_ type: Event.Name, listener: some EventListener, useCapture: Bool) async
     /// Dispatches the events into the implementations event model.
-    func dispatch(event: Event)
+    func dispatch(event: Event) async
     /// Dispatches the events into the implementations event model.
-    func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?)
+    func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) async
 }
 
 // MARK: -
@@ -44,15 +48,6 @@ public final class Event {
         }
     }
 
-    public static func from(_ notification: Notification) -> Event {
-        guard
-            let userInfo: [AnyHashable: Any] = notification.userInfo,
-            let event: Event = userInfo["event"] as? Event else {
-            return Event(type: .event)
-        }
-        return event
-    }
-
     /// The type represents the event name.
     public fileprivate(set) var type: Name
 
@@ -84,47 +79,34 @@ extension Event: CustomDebugStringConvertible {
 /**
  * The EventDispatcher interface is in implementation which supports the DOM Event Model.
  */
-public class EventDispatcher: EventDispatcherConvertible {
-    private weak var target: AnyObject?
+public actor EventDispatcher: EventDispatcherConvertible {
+    private weak var target: (any EventListener)?
 
     /// Creates a new event dispatcher.
     public init() {
     }
 
     /// Creates a new event dispatcher to proxy target.
-    public init(target: AnyObject) {
+    public init(target: any EventListener) {
         self.target = target
     }
 
-    deinit {
-        target = nil
-    }
-
     /// Registers the event listeners on the event target.
-    public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
-        NotificationCenter.default.addObserver(
-            observer ?? target ?? self, selector: selector, name: Notification.Name(rawValue: "\(type.rawValue)/\(useCapture)"), object: target ?? self
-        )
+    public func addEventListener(_ type: Event.Name, listener: some EventListener, useCapture: Bool = false) async {
     }
 
     /// Unregister the event listeners on the event target.
-    public func removeEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
-        NotificationCenter.default.removeObserver(
-            observer ?? target ?? self, name: Notification.Name(rawValue: "\(type.rawValue)/\(useCapture)"), object: target ?? self
-        )
+    public func removeEventListener(_ type: Event.Name, listener: some EventListener, useCapture: Bool = false) async {
     }
 
     /// Dispatches the events into the implementations event model.
-    open func dispatch(event: Event) {
+    public func dispatch(event: Event) async {
         event.target = target ?? self
-        NotificationCenter.default.post(
-            name: Notification.Name(rawValue: "\(event.type.rawValue)/false"), object: target ?? self, userInfo: ["event": event]
-        )
         event.target = nil
     }
 
     /// Dispatches the events into the implementations event model.
-    public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) {
-        dispatch(event: Event(type: type, bubbles: bubbles, data: data))
+    public func dispatch(_ type: Event.Name, bubbles: Bool, data: Any?) async {
+        await dispatch(event: Event(type: type, bubbles: bubbles, data: data))
     }
 }
