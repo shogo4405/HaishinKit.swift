@@ -531,19 +531,7 @@ public class RTMPConnection {
                 break
             }
         case let message as RTMPDataMessage:
-            guard let stream = streams.first(where: { $0.id == message.streamId }) else {
-                return
-            }
-            stream.info.byteCount.mutate { $0 += Int64(message.payload.count) }
-            switch message.handlerName {
-            case "onMetaData":
-                stream.metadata = arguments[0] as? [String: Any?] ?? [:]
-            case "|RtmpSampleAccess":
-                stream.audioSampleAccess = arguments[0] as? Bool ?? true
-                stream.videoSampleAccess = arguments[1] as? Bool ?? true
-            default:
-                break
-            }
+            streams.first(where: { $0.id == message.streamId })?.dispatch(message)
         case let message as RTMPSharedObjectMessage:
             guard let remotePath = uri?.absoluteWithoutQueryString else {
                 return
@@ -554,15 +542,9 @@ public class RTMPConnection {
                 remotePath: remotePath,
                 persistence: persistence).on(message: message)
         case let message as RTMPAudioMessage:
-            guard let stream = streams.first(where: { $0.id == message.streamId }) else {
-                return
-            }
-            stream.muxer.append(message, type: type)
+            streams.first(where: { $0.id == message.streamId })?.muxer.append(message, type: type)
         case let message as RTMPVideoMessage:
-            guard let stream = streams.first(where: { $0.id == message.streamId }) else {
-                return
-            }
-            stream.muxer.append(message, type: type)
+            streams.first(where: { $0.id == message.streamId })?.muxer.append(message, type: type)
         case let message as RTMPUserControlMessage:
             switch message.event {
             case .ping:

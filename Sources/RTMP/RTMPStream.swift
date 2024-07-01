@@ -166,15 +166,15 @@ open class RTMPStream: IOStream {
 
     static let defaultID: UInt32 = 0
     /// The RTMPStream metadata.
-    public internal(set) var metadata: [String: Any?] = [:]
+    public private(set) var metadata: [String: Any?] = [:]
     /// The RTMPStreamInfo object whose properties contain data.
     public internal(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
     public private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The boolean value that indicates audio samples allow access or not.
-    public internal(set) var audioSampleAccess = true
+    public private(set) var audioSampleAccess = true
     /// The boolean value that indicates video samples allow access or not.
-    public internal(set) var videoSampleAccess = true
+    public private(set) var videoSampleAccess = true
     /// Incoming audio plays on the stream or not.
     public var receiveAudio = true {
         didSet {
@@ -529,6 +529,19 @@ open class RTMPStream: IOStream {
         currentFPS = frameCount
         frameCount = 0
         info.on(timer: timer)
+    }
+
+    func dispatch(_ message: RTMPDataMessage) {
+        info.byteCount.mutate { $0 += Int64(message.payload.count) }
+        switch message.handlerName {
+        case "onMetaData":
+            metadata = message.arguments[0] as? [String: Any?] ?? [:]
+        case "|RtmpSampleAccess":
+            audioSampleAccess = message.arguments[0] as? Bool ?? true
+            videoSampleAccess = message.arguments[1] as? Bool ?? true
+        default:
+            break
+        }
     }
 
     @objc

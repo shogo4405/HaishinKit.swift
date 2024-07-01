@@ -337,7 +337,7 @@ open class IOStream: NSObject {
     /// You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
     /// ```
     /// stream.isMultiTrackAudioMixingEnabled = true
-    /// 
+    ///
     /// var audios = AVCaptureDevice.devices(for: .audio)
     /// if let device = audios.removeFirst() {
     ///    stream.attachAudio(device, track: 0)
