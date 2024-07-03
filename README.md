@@ -17,6 +17,7 @@
   <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
   <br />
   <br />
+  <br />
 </p>
 
 ## 💬 Communication
@@ -174,12 +175,12 @@ Please contains Info.plist.
 * NSCameraUsageDescription
 
 ## 🔧 Installation
-HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit. SRTHaishinKit supports SPM only.
+HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit.
 |  | HaishinKit | SRTHaishinKit |
 | - | :- | :- |
 | SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
-| CocoaPods | source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>    pod 'HaishinKit', '~> 1.8.2<br>end<br><br>target 'Your Target'  do<br>    platform :ios, '13.0'<br>    import_pods<br>end<br> | Not supported. |
-| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.8.2 | Not supported. |
+| CocoaPods |<pre>source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>  pod 'HaishinKit', '~> 1.9.1<br>end<br><br>target 'Your Target'  do<br>  platform :ios, '13.0'<br>  import_pods<br>end</pre>|<pre>source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>  pod 'SRTHaishinKit', '~> 1.9.1<br>end<br><br>target 'Your Target'  do<br>  platform :ios, '13.0'<br>  import_pods<br>end</pre>|
+| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.9.1 | Not available. |
 
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
