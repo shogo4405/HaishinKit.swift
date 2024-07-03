@@ -518,15 +518,15 @@ public class RTMPConnection {
                     // The specification is undefined, ignores it because it cannot handle it properly.
                     logger.info(message.commandName, message.arguments)
                 default:
-                    dispatch(.rtmpStatus, bubbles: false, data: arguments.first as Any?)
+                    dispatch(.rtmpStatus, bubbles: false, data: message.arguments.first as Any?)
                 }
                 return
             }
             switch message.commandName {
             case "_result":
-                responder.on(result: arguments)
+                responder.on(result: message.arguments)
             case "_error":
-                responder.on(status: arguments)
+                responder.on(status: message.arguments)
             default:
                 break
             }
