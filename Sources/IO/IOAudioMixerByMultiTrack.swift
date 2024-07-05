@@ -27,6 +27,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             for id in tracks.keys {
                 buffers[id] = .init(outputFormat)
                 tracks[id] = .init(id: id, outputFormat: outputFormat)
+                tracks[id]?.delegate = self
             }
         }
     }
