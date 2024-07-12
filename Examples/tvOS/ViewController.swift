@@ -55,7 +55,7 @@ final class ViewController: UIViewController {
             picker.delegate = self
             present(picker, animated: true)
         case .playback:
-            connection.connect(Preference.defaultInstance.uri!)
+            connection.connect(Preference.default.uri!)
         }
     }
 
@@ -73,9 +73,9 @@ final class ViewController: UIViewController {
         case RTMPConnection.Code.connectSuccess.rawValue:
             switch mode {
             case .publish:
-                stream.publish(Preference.defaultInstance.streamName)
+                stream.publish(Preference.default.streamName)
             case .playback:
-                stream.play(Preference.defaultInstance.streamName)
+                stream.play(Preference.default.streamName)
             }
         default:
             break
@@ -97,6 +97,6 @@ extension ViewController: AVContinuityDevicePickerViewControllerDelegate {
             logger.info(camera)
             stream.attachCamera(camera)
         }
-        connection.connect(Preference.defaultInstance.uri!)
+        connection.connect(Preference.default.uri!)
     }
 }
