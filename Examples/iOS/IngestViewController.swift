@@ -38,6 +38,7 @@ final class IngestViewController: UIViewController {
 
         netStreamSwitcher.uri = Preference.default.uri ?? ""
 
+        stream.videoMixerSettings.mode = .offscreen
         stream.screen.size = .init(width: 720, height: 1280)
         stream.screen.backgroundColor = UIColor.white.cgColor
 
