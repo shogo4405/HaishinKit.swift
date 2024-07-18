@@ -191,6 +191,7 @@
 		BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC562DC7295767860048D89A /* AVCaptureDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */; };
 		BC562DCB29576D220048D89A /* AVCaptureSession.Preset+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */; };
+		BC56452C2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */; };
 		BC56765B2AD2AED800524F7E /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC56765A2AD2AED800524F7E /* AudioCapture.swift */; };
 		BC570B4828E9ACC10098A12C /* IOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC570B4728E9ACC10098A12C /* IOUnit.swift */; };
 		BC5A945C2BC2A8D80006F722 /* FLVFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5A945B2BC2A8D80006F722 /* FLVFoundation.swift */; };
@@ -669,6 +670,7 @@
 		BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStreamInfo.swift; sourceTree = "<group>"; };
 		BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureDevice+Extension.swift"; sourceTree = "<group>"; };
 		BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureSession.Preset+Extension.swift"; sourceTree = "<group>"; };
+		BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+ExtensionTests.swift"; sourceTree = "<group>"; };
 		BC56765A2AD2AED800524F7E /* AudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
 		BC570B4728E9ACC10098A12C /* IOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOUnit.swift; sourceTree = "<group>"; };
 		BC5A945B2BC2A8D80006F722 /* FLVFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVFoundation.swift; sourceTree = "<group>"; };
@@ -1247,6 +1249,7 @@
 		BC03945D2AA8AFDD006EDE38 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */,
 				BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */,
 			);
 			path = Extension;
@@ -1980,6 +1983,7 @@
 				290EA8A91DFB61E700053022 /* ByteArrayTests.swift in Sources */,
 				BC0587C12BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift in Sources */,
 				295018221FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift in Sources */,
+				BC56452C2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift in Sources */,
 				BC7C56C329A1F28700C41A9B /* TSReaderTests.swift in Sources */,
 				BC7C56D129A78D4F00C41A9B /* ADTSHeaderTests.swift in Sources */,
 				BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */,
