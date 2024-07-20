@@ -31,6 +31,6 @@ Pod::Spec.new do |s|
 
   s.source_files = "SRTHaishinKit/*.{h,swift}"
   s.vendored_frameworks = "Vendor/SRT/libsrt.xcframework"
-  s.dependency 'HaishinKit', '~> 1.9.2'
+  s.dependency 'HaishinKit', '1.9.2'
 
 end
