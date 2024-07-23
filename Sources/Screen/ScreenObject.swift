@@ -153,22 +153,46 @@ public final class ImageScreenObject: ScreenObject {
             guard cgImage != oldValue else {
                 return
             }
-            if let cgImage {
-                size = cgImage.size
-            }
             invalidateLayout()
         }
     }
 
     override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
-        return cgImage
+        let intersection = bounds.intersection(renderer.bounds)
+
+        guard bounds != intersection else {
+            return cgImage
+        }
+
+        // Handling when the drawing area is exceeded.
+        let x: CGFloat
+        switch horizontalAlignment {
+        case .left:
+            x = bounds.origin.x
+        case .center:
+            x = bounds.origin.x / 2
+        case .right:
+            x = 0.0
+        }
+
+        let y: CGFloat
+        switch verticalAlignment {
+        case .top:
+            y = 0.0
+        case .middle:
+            y = abs(bounds.origin.y) / 2
+        case .bottom:
+            y = abs(bounds.origin.y)
+        }
+
+        return cgImage?.cropping(to: .init(origin: .init(x: x, y: y), size: intersection.size))
     }
 
     override public func makeBounds(_ size: CGSize) -> CGRect {
         guard let cgImage else {
-            return super.makeBounds(self.size)
+            return super.makeBounds(size)
         }
-        return super.makeBounds(cgImage.size)
+        return super.makeBounds(size == .zero ? cgImage.size : size)
     }
 }
 

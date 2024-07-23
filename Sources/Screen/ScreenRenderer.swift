@@ -9,6 +9,8 @@ public protocol ScreenRenderer: AnyObject {
     var context: CIContext { get }
     /// Specifies the backgroundColor for output video.
     var backgroundColor: CGColor { get set }
+    /// The current screen bounds.
+    var bounds: CGRect { get }
     /// Layouts a screen object.
     func layout(_ screenObject: ScreenObject)
     /// Draws a sceen object.
@@ -18,6 +20,8 @@ public protocol ScreenRenderer: AnyObject {
 }
 
 final class ScreenRendererByCPU: ScreenRenderer {
+    var bounds: CGRect = .init(origin: .zero, size: Screen.size)
+
     lazy var context = {
         guard let deive = MTLCreateSystemDefaultDevice() else {
             return CIContext(options: nil)
@@ -142,7 +146,8 @@ final class ScreenRendererByCPU: ScreenRenderer {
         }
 
         let origin = screenObject.bounds.origin
-        let start = Int(origin.y) * canvas.rowBytes + Int(origin.x) * 4
+        let start = Int(max(0, origin.y)) * canvas.rowBytes + Int(max(0, origin.x)) * 4
+
         var destination = vImage_Buffer(
             data: canvas.data.advanced(by: start),
             height: image.height,
