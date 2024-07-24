@@ -21,6 +21,7 @@ protocol ScreenObserver: AnyObject {
 
 /// An object that manages offscreen rendering a foundation.
 public final class Screen: ScreenObjectContainerConvertible {
+    static let size = CGSize(width: 1280, height: 720)
     private static let lockFrags = CVPixelBufferLockFlags(rawValue: 0)
 
     /// The total of child counts.
@@ -42,11 +43,12 @@ public final class Screen: ScreenObjectContainerConvertible {
     }
 
     /// Specifies the video size to use when output a video.
-    public var size: CGSize = .init(width: 1280, height: 720) {
+    public var size: CGSize = Screen.size {
         didSet {
             guard size != oldValue else {
                 return
             }
+            renderer.bounds = .init(origin: .zero, size: size)
             CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
         }
     }
