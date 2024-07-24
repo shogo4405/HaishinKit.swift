@@ -493,32 +493,32 @@ open class RTMPStream: IOStream {
     }
 
     func close(withLockQueue: Bool) {
-        if withLockQueue {
-            lockQueue.sync {
-                self.close(withLockQueue: false)
+            if withLockQueue {
+                lockQueue.sync {
+                    self.close(withLockQueue: false)
+                }
+                return
             }
-            return
-        }
-        guard let connection, ReadyState.open.rawValue < readyState.rawValue else {
-            return
-        }
-        readyState = .open
-        if let fcPublishName {
-            connection.call("FCUnpublish", responder: nil, arguments: fcPublishName)
-        }
-        connection.socket?.doOutput(chunk: RTMPChunk(
-                                        type: .zero,
-                                        streamId: RTMPChunk.StreamID.command.rawValue,
-                                        message: RTMPCommandMessage(
-                                            streamId: 0,
-                                            transactionId: 0,
-                                            objectEncoding: self.objectEncoding,
-                                            commandName: "closeStream",
-                                            commandObject: nil,
-                                            arguments: [self.id]
-                                        )))
+            guard let connection, ReadyState.open.rawValue < readyState.rawValue else {
+                return
+            }
+            readyState = .open
+            if let fcPublishName {
+                connection.call("FCUnpublish", responder: nil, arguments: fcPublishName)
+            }
+            connection.doOutput(chunk: RTMPChunk(
+                                    type: .zero,
+                                    streamId: RTMPChunk.StreamID.command.rawValue,
+                                    message: RTMPCommandMessage(
+                                        streamId: 0,
+                                        transactionId: 0,
+                                        objectEncoding: self.objectEncoding,
+                                        commandName: "closeStream",
+                                        commandObject: nil,
+                                        arguments: [self.id]
+                                    )))
         deleteStream()
-    }
+        }
     
     func deleteStream(withLockQueue: Bool) {
             if withLockQueue {
@@ -531,7 +531,7 @@ open class RTMPStream: IOStream {
                 return
             }
             readyState = .open
-        connection.socket?.doOutput(chunk: RTMPChunk(
+        connection.doOutput(chunk: RTMPChunk(
                                     type: .zero,
                                     streamId: RTMPChunk.StreamID.command.rawValue,
                                     message: RTMPCommandMessage(
