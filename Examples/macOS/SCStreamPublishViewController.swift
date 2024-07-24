@@ -37,8 +37,8 @@ class SCStreamPublishViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        urlField.stringValue = Preference.defaultInstance.uri ?? ""
-        netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
+        urlField.stringValue = Preference.default.uri ?? ""
+        netStreamSwitcher.uri = Preference.default.uri ?? ""
         mthkView?.attachStream(stream)
         if #available(macOS 12.3, *) {
             Task {

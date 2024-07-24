@@ -25,15 +25,17 @@ final class CameraIngestViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        urlField.stringValue = Preference.defaultInstance.uri ?? ""
+        urlField.stringValue = Preference.default.uri ?? ""
         audioPopUpButton?.present(mediaType: .audio)
         cameraPopUpButton?.present(mediaType: .video)
-        netStreamSwitcher.uri = Preference.defaultInstance.uri ?? ""
+        netStreamSwitcher.uri = Preference.default.uri ?? ""
         lfView?.attachStream(stream)
     }
 
     override func viewDidAppear() {
         super.viewDidAppear()
+
+        stream.isMultiTrackAudioMixingEnabled = true
 
         stream.videoMixerSettings.mode = .offscreen
         stream.screen.startRunning()
@@ -80,7 +82,7 @@ final class CameraIngestViewController: NSViewController {
 
         var audios = AVCaptureDevice.devices(for: .audio)
         audios.removeFirst()
-        if let device = audios.first, FeatureUtil.isEnabled(for: .multiTrackAudioMixing) {
+        if let device = audios.first, stream.isMultiTrackAudioMixingEnabled {
             stream.attachAudio(device, track: 1)
         }
 

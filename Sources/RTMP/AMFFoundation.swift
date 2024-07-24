@@ -17,30 +17,32 @@ public struct ASUndefined: Sendable, CustomStringConvertible {
 public struct ASTypedObject {
     public typealias TypedObjectDecoder = (_ type: String, _ data: ASObject) throws -> Any
 
-    static var decoders: [String: TypedObjectDecoder] = [:]
+    public static func register(typeNamed name: String, decoder: @escaping TypedObjectDecoder) {
+        decoders.mutate { $0[name] = decoder }
+    }
+
+    public static func register<T: Decodable>(type: T.Type, named name: String) {
+        decoders.mutate {
+            $0[name] = {
+                let jsonData = try JSONSerialization.data(withJSONObject: $1, options: [])
+                return try JSONDecoder().decode(type, from: jsonData)
+            }
+        }
+    }
+
+    public static func unregister(typeNamed name: String) {
+        decoders.mutate { $0.removeValue(forKey: name) }
+    }
+
+    static nonisolated(unsafe) var decoders: Atomic<[String: TypedObjectDecoder]> = .init([:])
 
     static func decode(typeName: String, data: ASObject) throws -> Any {
-        let decoder = decoders[typeName] ?? { ASTypedObject(typeName: $0, data: $1) }
+        let decoder = decoders.value[typeName] ?? { ASTypedObject(typeName: $0, data: $1) }
         return try decoder(typeName, data)
     }
 
     var typeName: String
     var data: ASObject
-
-    public static func register(typeNamed name: String, decoder: @escaping TypedObjectDecoder) {
-        decoders[name] = decoder
-    }
-
-    public static func register<T: Decodable>(type: T.Type, named name: String) {
-        decoders[name] = {
-            let jsonData = try JSONSerialization.data(withJSONObject: $1, options: [])
-            return try JSONDecoder().decode(type, from: jsonData)
-        }
-    }
-
-    public static func unregister(typeNamed name: String) {
-        decoders.removeValue(forKey: name)
-    }
 }
 
 // MARK: -

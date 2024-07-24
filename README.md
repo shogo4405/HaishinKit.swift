@@ -8,13 +8,14 @@
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
-* [API Documentation](https://shogo4405.github.io/HaishinKit.swift/)
+* [API Documentation](https://docs.haishinkit.com/swift/1.9.2/)
 
 ## 💖 Sponsors
 <p align="center">
   <br />
   <br />
   <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
+  <br />
   <br />
   <br />
 </p>
@@ -174,12 +175,12 @@ Please contains Info.plist.
 * NSCameraUsageDescription
 
 ## 🔧 Installation
-HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit. SRTHaishinKit supports SPM only.
+HaishinKit has a multi-module configuration. If you want to use the SRT protocol, please use SRTHaishinKit.
 |  | HaishinKit | SRTHaishinKit |
 | - | :- | :- |
 | SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
-| CocoaPods | source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>    pod 'HaishinKit', '~> 1.8.2<br>end<br><br>target 'Your Target'  do<br>    platform :ios, '13.0'<br>    import_pods<br>end<br> | Not supported. |
-| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.8.2 | Not supported. |
+| CocoaPods |<pre>source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>  pod 'HaishinKit', '~> 1.9.1<br>end<br><br>target 'Your Target'  do<br>  platform :ios, '13.0'<br>  import_pods<br>end</pre>|Not available. |
+| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.9.1 | Not available. |
 
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
@@ -299,7 +300,7 @@ stream.configuration { session in
 ```
 
 ### 🔊 Audio
-#### [Capture](https://shogo4405.github.io/HaishinKit.swift/Classes/IOAudioCaptureUnit.html)
+#### [Capture](https://docs.haishinkit.com/swift/1.9.2/Classes/IOAudioCaptureUnit.html)
 Specifies the capture capture settings.
 ```swift
 let front = AVCaptureDevice.default(for: .audio)
@@ -307,10 +308,10 @@ stream.attachAudio(front, track: 0) { audioUnit, error in
 }
 ```
 
-#### [AudioMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOAudioMixerSettings.html)
-If you want to mix multiple audio tracks, please enable the Feature flag.
+#### [AudioMixerSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/IOAudioMixerSettings.html)
+If you want to mix multiple audio tracks, please enable the feature flag.
 ```swift
-FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+stream.isMultiTrackAudioMixingEnabled = true
 ```
 
 When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
@@ -332,7 +333,7 @@ stream.audioMixerSettings.tracks = [
 ]
 ```
 
-#### [AudioCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/AudioCodecSettings.html)
+#### [AudioCodecSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/AudioCodecSettings.html)
 ```swift
 /// Specifies the bitRate of audio output.
 stream.audioSettings.bitrate = 64 * 1000
@@ -343,7 +344,7 @@ stream.audioSettings.downmix = true
 ```
 
 ### 🎥 Video
-#### [Capture](https://shogo4405.github.io/HaishinKit.swift/Classes/IOVideoCaptureUnit.html)
+#### [Capture](https://docs.haishinkit.com/swift/1.9.2/Classes/IOVideoCaptureUnit.html)
 Specifies the video capture settings.
 ```swift
 let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
@@ -354,7 +355,7 @@ stream.attachCamera(front, track: 0) { videoUnit, error in
 }
 ```
 
-#### [VideoMixerSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/IOVideoMixerSettings.html)
+#### [VideoMixerSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/IOVideoMixerSettings.html)
 ```swift
 /// Specifies the image rendering mode.
 stream.videoMixerSettings.mode = .passthrough or .offscreen
@@ -364,7 +365,7 @@ stream.videoMixerSettings.isMuted = false
 stream.videoMixerSettings.mainTrack = 0
 ```
 
-#### [VideoCodecSettings](https://shogo4405.github.io/HaishinKit.swift/Structs/VideoCodecSettings.html)
+#### [VideoCodecSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/VideoCodecSettings.html)
 ```swift
 stream.videoSettings = .init(
   videoSize: .init(width: 854, height: 480),

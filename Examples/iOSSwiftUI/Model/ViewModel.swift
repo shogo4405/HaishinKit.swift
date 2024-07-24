@@ -133,11 +133,11 @@ final class ViewModel: ObservableObject {
 
     func startPublish() {
         UIApplication.shared.isIdleTimerDisabled = true
-        logger.info(Preference.defaultInstance.uri!)
+        logger.info(Preference.default.uri!)
 
         rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
         rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-        rtmpConnection.connect(Preference.defaultInstance.uri!)
+        rtmpConnection.connect(Preference.default.uri!)
     }
 
     func stopPublish() {
@@ -211,14 +211,14 @@ final class ViewModel: ObservableObject {
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
             retryCount = 0
-            rtmpStream.publish(Preference.defaultInstance.streamName!)
+            rtmpStream.publish(Preference.default.streamName!)
         // sharedObject!.connect(rtmpConnection)
         case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
             guard retryCount <= maxRetryCount else {
                 return
             }
             Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
-            rtmpConnection.connect(Preference.defaultInstance.uri!)
+            rtmpConnection.connect(Preference.default.uri!)
             retryCount += 1
         default:
             break
@@ -228,7 +228,7 @@ final class ViewModel: ObservableObject {
     @objc
     private func rtmpErrorHandler(_ notification: Notification) {
         logger.error(notification)
-        rtmpConnection.connect(Preference.defaultInstance.uri!)
+        rtmpConnection.connect(Preference.default.uri!)
     }
 }
 

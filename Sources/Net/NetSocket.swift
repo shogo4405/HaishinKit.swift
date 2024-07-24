@@ -21,8 +21,6 @@ open class NetSocket: NSObject {
     public var qualityOfService: DispatchQoS = .userInitiated
     /// Specifies instance determine to use the secure-socket layer (SSL) security level.
     public var securityLevel: StreamSocketSecurityLevel = .none
-    /// Specifies the output buffer size in bytes.
-    public var outputBufferSize: Int = NetSocket.defaultWindowSizeC
     /// Specifies  statistics of total outgoing bytes.
     public private(set) var totalBytesOut: Atomic<Int64> = .init(0)
     /// Specifies  statistics of total outgoing queued bytes.
@@ -57,7 +55,7 @@ open class NetSocket: NSObject {
     lazy var inputQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.NetSocket.input", qos: qualityOfService)
     private var timeoutHandler: DispatchWorkItem?
     private lazy var buffer = [UInt8](repeating: 0, count: windowSizeC)
-    private lazy var outputBuffer: DataBuffer = .init(capacity: outputBufferSize)
+    private lazy var outputBuffer: DataBuffer = .init(capacity: Self.defaultWindowSizeC)
     private lazy var outputQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.NetSocket.output", qos: qualityOfService)
 
     deinit {
@@ -117,11 +115,7 @@ open class NetSocket: NSObject {
         totalBytesOut.mutate { $0 = 0 }
         queueBytesOut.mutate { $0 = 0 }
         inputBuffer.removeAll(keepingCapacity: false)
-        if outputBuffer.capacity < outputBufferSize {
-            outputBuffer = .init(capacity: outputBufferSize)
-        } else {
-            outputBuffer.clear()
-        }
+        outputBuffer.clear()
         inputStream.open()
         outputStream.open()
         if 0 < timeout {

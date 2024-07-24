@@ -15,7 +15,15 @@ open class SampleHandler: RPBroadcastSampleHandler {
         get { _rotator as? VideoRotator }
         set { _rotator = newValue }
     }
-
+    private var isVideoRotationEnabled = false {
+        didSet {
+            if isVideoRotationEnabled, #available(iOS 16.0, tvOS 16.0, macOS 13.0, *) {
+                _rotator = VideoRotator()
+            } else {
+                _rotator = nil
+            }
+        }
+    }
     private lazy var rtmpConnection: RTMPConnection = {
         let conneciton = RTMPConnection()
         conneciton.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusEvent), observer: self)
@@ -24,8 +32,9 @@ open class SampleHandler: RPBroadcastSampleHandler {
     }()
 
     private lazy var rtmpStream: RTMPStream = {
-        FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
-        return RTMPStream(connection: rtmpConnection)
+        let stream = RTMPStream(connection: rtmpConnection)
+        stream.isMultiTrackAudioMixingEnabled = true
+        return stream
     }()
 
     private var needVideoConfiguration = true
@@ -46,7 +55,9 @@ open class SampleHandler: RPBroadcastSampleHandler {
         LBLogger.with(HaishinKitIdentifier).level = .info
         // rtmpStream.audioMixerSettings = .init(sampleRate: 0, channels: 2)
         rtmpStream.audioMixerSettings.tracks[1] = .default
-        rtmpConnection.connect(Preference.defaultInstance.uri!, arguments: nil)
+        rtmpStream.videoSettings.scalingMode = .letterbox
+        isVideoRotationEnabled = true
+        rtmpConnection.connect(Preference.default.uri!, arguments: nil)
         // The volume of the audioApp can be obtained even when muted. A hack to synchronize with the volume.
         DispatchQueue.main.async {
             let volumeView = MPVolumeView(frame: CGRect.zero)
@@ -96,7 +107,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
     @objc
     private func rtmpErrorHandler(_ notification: Notification) {
         logger.info(notification)
-        rtmpConnection.connect(Preference.defaultInstance.uri!)
+        rtmpConnection.connect(Preference.default.uri!)
     }
 
     @objc
@@ -110,7 +121,7 @@ open class SampleHandler: RPBroadcastSampleHandler {
         }
         switch code {
         case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream.publish(Preference.defaultInstance.streamName!)
+            rtmpStream.publish(Preference.default.streamName!)
         default:
             break
         }

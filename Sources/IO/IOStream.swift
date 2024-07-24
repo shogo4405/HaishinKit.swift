@@ -145,6 +145,17 @@ open class IOStream: NSObject {
     }
     #endif
 
+    /// Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
+    /// Warning: If there is a possibility of this feature, please set it to true initially.
+    public var isMultiTrackAudioMixingEnabled: Bool {
+        get {
+            return mixer.audioIO.isMultiTrackAudioMixingEnabled
+        }
+        set {
+            mixer.audioIO.isMultiTrackAudioMixingEnabled = newValue
+        }
+    }
+
     /// Specifies the sessionPreset for the AVCaptureSession.
     @available(tvOS 17.0, *)
     public var sessionPreset: AVCaptureSession.Preset {
@@ -174,10 +185,12 @@ open class IOStream: NSObject {
     /// Specifies the audio mixer settings.
     public var audioMixerSettings: IOAudioMixerSettings {
         get {
-            mixer.audioIO.mixerSettings
+            mixer.audioIO.lockQueue.sync { self.mixer.audioIO.mixerSettings }
         }
         set {
-            mixer.audioIO.mixerSettings = newValue
+            mixer.audioIO.lockQueue.async {
+                self.mixer.audioIO.mixerSettings = newValue
+            }
         }
     }
 
@@ -325,7 +338,8 @@ open class IOStream: NSObject {
     ///
     /// You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
     /// ```
-    /// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+    /// stream.isMultiTrackAudioMixingEnabled = true
+    ///
     /// var audios = AVCaptureDevice.devices(for: .audio)
     /// if let device = audios.removeFirst() {
     ///    stream.attachAudio(device, track: 0)

@@ -25,15 +25,6 @@ protocol IOAudioUnitDelegate: AnyObject {
 final class IOAudioUnit: IOUnit {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
     weak var mixer: IOMixer?
-    var isMonitoringEnabled = false {
-        didSet {
-            if isMonitoringEnabled {
-                monitor.startRunning()
-            } else {
-                monitor.stopRunning()
-            }
-        }
-    }
     var settings: AudioCodecSettings {
         get {
             codec.settings
@@ -50,6 +41,16 @@ final class IOAudioUnit: IOUnit {
             audioMixer.settings = newValue
         }
     }
+    var isMonitoringEnabled = false {
+        didSet {
+            if isMonitoringEnabled {
+                monitor.startRunning()
+            } else {
+                monitor.stopRunning()
+            }
+        }
+    }
+    var isMultiTrackAudioMixingEnabled = false
     var isRunning: Atomic<Bool> {
         return codec.isRunning
     }
@@ -65,7 +66,7 @@ final class IOAudioUnit: IOUnit {
         return codec
     }()
     private lazy var audioMixer: any IOAudioMixerConvertible = {
-        if FeatureUtil.isEnabled(for: .multiTrackAudioMixing) {
+        if isMultiTrackAudioMixingEnabled {
             var audioMixer = IOAudioMixerByMultiTrack()
             audioMixer.delegate = self
             return audioMixer
