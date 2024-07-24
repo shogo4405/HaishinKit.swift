@@ -181,7 +181,6 @@
 		BC4078C42AD5CC7E00BBB4FA /* IOMuxer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */; };
 		BC4231642BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */; };
 		BC42316A2BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */; };
-		BC42316C2BCB7084003A80DC /* FeatureUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC42316B2BCB7084003A80DC /* FeatureUtil.swift */; };
 		BC4914A228DDD33D009E2DF6 /* VTSessionConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */; };
 		BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */; };
 		BC4914AE28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */; };
@@ -192,6 +191,7 @@
 		BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */; };
 		BC562DC7295767860048D89A /* AVCaptureDevice+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */; };
 		BC562DCB29576D220048D89A /* AVCaptureSession.Preset+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */; };
+		BC56452C2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */; };
 		BC56765B2AD2AED800524F7E /* AudioCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC56765A2AD2AED800524F7E /* AudioCapture.swift */; };
 		BC570B4828E9ACC10098A12C /* IOUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC570B4728E9ACC10098A12C /* IOUnit.swift */; };
 		BC5A945C2BC2A8D80006F722 /* FLVFoundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5A945B2BC2A8D80006F722 /* FLVFoundation.swift */; };
@@ -661,7 +661,6 @@
 		BC4078C32AD5CC7E00BBB4FA /* IOMuxer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOMuxer.swift; sourceTree = "<group>"; };
 		BC4231632BCA5F28003A80DC /* IOAudioMixerByMultiTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerByMultiTrack.swift; sourceTree = "<group>"; };
 		BC4231692BCA8BE5003A80DC /* IOAudioMixerBySingleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerBySingleTrack.swift; sourceTree = "<group>"; };
-		BC42316B2BCB7084003A80DC /* FeatureUtil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureUtil.swift; sourceTree = "<group>"; };
 		BC4914A128DDD33D009E2DF6 /* VTSessionConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionConvertible.swift; sourceTree = "<group>"; };
 		BC4914A528DDD367009E2DF6 /* VTSessionOption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VTSessionOption.swift; sourceTree = "<group>"; };
 		BC4914AD28DDF445009E2DF6 /* VTDecompressionSession+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VTDecompressionSession+Extension.swift"; sourceTree = "<group>"; };
@@ -671,6 +670,7 @@
 		BC558267240BB40E00011AC0 /* RTMPStreamInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStreamInfo.swift; sourceTree = "<group>"; };
 		BC562DC6295767860048D89A /* AVCaptureDevice+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureDevice+Extension.swift"; sourceTree = "<group>"; };
 		BC562DCA29576D220048D89A /* AVCaptureSession.Preset+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureSession.Preset+Extension.swift"; sourceTree = "<group>"; };
+		BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMSampleBuffer+ExtensionTests.swift"; sourceTree = "<group>"; };
 		BC56765A2AD2AED800524F7E /* AudioCapture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCapture.swift; sourceTree = "<group>"; };
 		BC570B4728E9ACC10098A12C /* IOUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOUnit.swift; sourceTree = "<group>"; };
 		BC5A945B2BC2A8D80006F722 /* FLVFoundation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FLVFoundation.swift; sourceTree = "<group>"; };
@@ -700,6 +700,7 @@
 		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* IOStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamView.swift; sourceTree = "<group>"; };
 		BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Choreographer.swift; sourceTree = "<group>"; };
+		BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SRTHaishinKit.podspec; sourceTree = "<group>"; };
 		BCA3A5242BC4ED220083BBB1 /* RTMPTimestamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPTimestamp.swift; sourceTree = "<group>"; };
 		BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPTimestampTests.swift; sourceTree = "<group>"; };
 		BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamRecorderTests.swift; sourceTree = "<group>"; };
@@ -877,7 +878,6 @@
 				BC0D236C26331BAB001DDA0C /* DataBuffer.swift */,
 				29B876671CD70AB300FC07DA /* DataConvertible.swift */,
 				2976A4851D4903C300B53EF2 /* DeviceUtil.swift */,
-				BC42316B2BCB7084003A80DC /* FeatureUtil.swift */,
 				BC32E88729C9971100051507 /* InstanceHolder.swift */,
 				2942424C1CF4C01300D65DCB /* MD5.swift */,
 				2942A4F721A9418A004E1BEE /* Running.swift */,
@@ -961,6 +961,7 @@
 				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
 				2997BDD31D50D31B000AF900 /* README.md */,
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
+				BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */,
 				29F39BE72335F8010055F9BB /* Package.swift */,
 				BC0587D02BD2C9C5006751C8 /* DebugDescription */,
 				2968973E1CDB01920074D5F0 /* Examples */,
@@ -1250,6 +1251,7 @@
 		BC03945D2AA8AFDD006EDE38 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */,
 				BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */,
 			);
 			path = Extension;
@@ -1920,7 +1922,6 @@
 				BC0F1FDC2ACC630400C326FF /* NSView+Extension.swift in Sources */,
 				BC16019C2BE0E4750061BD3E /* ScreenObject.swift in Sources */,
 				29EA87E21E79A1E90043A5F8 /* CMVideoFormatDescription+Extension.swift in Sources */,
-				BC42316C2BCB7084003A80DC /* FeatureUtil.swift in Sources */,
 				BC110253292DD6E900D48035 /* vImage_Buffer+Extension.swift in Sources */,
 				BC1DC4A429F4F74F00E928ED /* AVCaptureSession+Extension.swift in Sources */,
 				29EA87D81E79A0090043A5F8 /* URL+Extension.swift in Sources */,
@@ -1984,6 +1985,7 @@
 				290EA8A91DFB61E700053022 /* ByteArrayTests.swift in Sources */,
 				BC0587C12BD2A123006751C8 /* IOAudioMixerBySingleTrackTests.swift in Sources */,
 				295018221FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift in Sources */,
+				BC56452C2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift in Sources */,
 				BC7C56C329A1F28700C41A9B /* TSReaderTests.swift in Sources */,
 				BC7C56D129A78D4F00C41A9B /* ADTSHeaderTests.swift in Sources */,
 				BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */,
@@ -2254,6 +2256,7 @@
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
@@ -2288,6 +2291,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SUPPORTS_MACCATALYST = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
@@ -2446,11 +2450,11 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.8.2;
+				MARKETING_VERSION = 1.9.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny -Xfrontend -warn-concurrency";
+				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
 				PROVISIONING_PROFILE = "";
@@ -2460,6 +2464,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2492,11 +2497,11 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.8.2;
+				MARKETING_VERSION = 1.9.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny -Xfrontend -warn-concurrency";
+				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
 				"OTHER_SWIFT_FLAGS[arch=*]" = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
 				PRODUCT_NAME = HaishinKit;
@@ -2507,6 +2512,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2537,6 +2543,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2566,6 +2573,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2603,6 +2611,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2639,6 +2648,7 @@
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2671,6 +2681,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
@@ -2701,6 +2712,7 @@
 				SUPPORTED_PLATFORMS = macosx;
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
@@ -2737,6 +2749,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 17.0;
@@ -2772,6 +2785,7 @@
 				SUPPORTED_PLATFORMS = "appletvos appletvsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 17.0;
@@ -2814,6 +2828,7 @@
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2854,6 +2869,7 @@
 				SDKROOT = xros;
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2894,12 +2910,12 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.8.2;
+				MARKETING_VERSION = 1.9.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny -Xfrontend -warn-concurrency";
+				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.SRTHaishinKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2911,6 +2927,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -2949,11 +2966,11 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.8.2;
+				MARKETING_VERSION = 1.9.2;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny -Xfrontend -warn-concurrency";
+				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
 				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.SRTHaishinKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2963,6 +2980,7 @@
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,7";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -3015,6 +3033,7 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;
@@ -3064,6 +3083,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = 13.0;

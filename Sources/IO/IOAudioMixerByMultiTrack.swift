@@ -27,6 +27,7 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             for id in tracks.keys {
                 buffers[id] = .init(outputFormat)
                 tracks[id] = .init(id: id, outputFormat: outputFormat)
+                tracks[id]?.delegate = self
             }
         }
     }
@@ -40,7 +41,6 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
     }
     private var tracks: [UInt8: IOAudioMixerTrack<IOAudioMixerByMultiTrack>] = [:] {
         didSet {
-            shouldMix = 1 < tracks.count
             tryToSetupAudioNodes()
         }
     }
@@ -52,7 +52,6 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             }
         }
     }
-    private var shouldMix = false
     private var mixerNode: MixerNode?
     private var sampleTime: AVAudioFramePosition = IOAudioMixerByMultiTrack.defaultSampleTime
     private var outputNode: OutputNode?
@@ -82,9 +81,6 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
     }
 
     private func tryToSetupAudioNodes() {
-        guard shouldMix else {
-            return
-        }
         do {
             try setupAudioNodes()
         } catch {
@@ -183,10 +179,6 @@ extension IOAudioMixerByMultiTrack: IOAudioMixerTrackDelegate {
     // MARK: IOAudioMixerTrackDelegate
     func track(_ track: IOAudioMixerTrack<IOAudioMixerByMultiTrack>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.audioMixer(self, track: track.id, didInput: audioPCMBuffer, when: when)
-        guard shouldMix else {
-            delegate?.audioMixer(self, didOutput: audioPCMBuffer, when: when)
-            return
-        }
         buffers[track.id]?.append(audioPCMBuffer, when: when)
         if settings.mainTrack == track.id {
             if sampleTime == Self.defaultSampleTime {

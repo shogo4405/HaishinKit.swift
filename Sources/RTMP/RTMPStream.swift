@@ -166,15 +166,15 @@ open class RTMPStream: IOStream {
 
     static let defaultID: UInt32 = 0
     /// The RTMPStream metadata.
-    public internal(set) var metadata: [String: Any?] = [:]
+    public private(set) var metadata: [String: Any?] = [:]
     /// The RTMPStreamInfo object whose properties contain data.
     public internal(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
     public private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
     /// The boolean value that indicates audio samples allow access or not.
-    public internal(set) var audioSampleAccess = true
+    public private(set) var audioSampleAccess = true
     /// The boolean value that indicates video samples allow access or not.
-    public internal(set) var videoSampleAccess = true
+    public private(set) var videoSampleAccess = true
     /// Incoming audio plays on the stream or not.
     public var receiveAudio = true {
         didSet {
@@ -182,7 +182,7 @@ open class RTMPStream: IOStream {
                 guard self.readyState == .playing else {
                     return
                 }
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
                     objectEncoding: self.objectEncoding,
@@ -200,7 +200,7 @@ open class RTMPStream: IOStream {
                 guard self.readyState == .playing else {
                     return
                 }
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                     streamId: self.id,
                     transactionId: 0,
                     objectEncoding: self.objectEncoding,
@@ -225,7 +225,7 @@ open class RTMPStream: IOStream {
                         self.pausedStatus.restore(self)
                     }
                 case .play, .playing:
-                    self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+                    self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                         streamId: self.id,
                         transactionId: 0,
                         objectEncoding: self.objectEncoding,
@@ -253,7 +253,9 @@ open class RTMPStream: IOStream {
             dataTimestamps.removeAll()
         }
     }
-    private var dispatcher: (any EventDispatcherConvertible)!
+    private lazy var dispatcher: EventDispatcher = {
+        EventDispatcher(target: self)
+    }()
     private lazy var pausedStatus = PausedStatus(self)
     private var howToPublish: RTMPStream.HowToPublish = .live
     private var dataTimestamps: [String: Date] = .init()
@@ -264,8 +266,7 @@ open class RTMPStream: IOStream {
         self.connection = connection
         super.init()
         self.fcPublishName = fcPublishName
-        dispatcher = EventDispatcher(target: self)
-        connection.streams.append(self)
+        connection.addStream(self)
         addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         connection.addEventListener(.rtmpStatus, selector: #selector(on(status:)), observer: self)
         if connection.connected {
@@ -310,7 +311,7 @@ open class RTMPStream: IOStream {
                 self.messages.append(message)
             default:
                 self.readyState = .play
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: message))
+                self.connection?.doOutput(chunk: RTMPChunk(message: message))
             }
         }
     }
@@ -321,7 +322,7 @@ open class RTMPStream: IOStream {
             guard self.readyState == .playing else {
                 return
             }
-            self.connection?.socket?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
+            self.connection?.doOutput(chunk: RTMPChunk(message: RTMPCommandMessage(
                 streamId: self.id,
                 transactionId: 0,
                 objectEncoding: self.objectEncoding,
@@ -368,7 +369,7 @@ open class RTMPStream: IOStream {
                 self.messages.append(message)
             default:
                 self.readyState = .publish
-                self.connection?.socket?.doOutput(chunk: RTMPChunk(message: message))
+                self.connection?.doOutput(chunk: RTMPChunk(message: message))
             }
         }
     }
@@ -462,9 +463,8 @@ open class RTMPStream: IOStream {
             metadata.removeAll()
             info.clear()
             for message in messages {
-                connection.currentTransactionId += 1
                 message.streamId = id
-                message.transactionId = connection.currentTransactionId
+                message.transactionId = connection.newTransaction
                 switch message.commandName {
                 case "play":
                     self.readyState = .play
@@ -473,7 +473,7 @@ open class RTMPStream: IOStream {
                 default:
                     break
                 }
-                connection.socket?.doOutput(chunk: RTMPChunk(message: message))
+                connection.doOutput(chunk: RTMPChunk(message: message))
             }
             messages.removeAll()
         case .playing:
@@ -545,15 +545,12 @@ open class RTMPStream: IOStream {
         }
 
     func doOutput(_ type: RTMPChunkType, chunkStreamId: UInt16, message: RTMPMessage) {
-        guard let socket = connection?.socket else {
-            return
-        }
         message.streamId = id
-        let length = socket.doOutput(chunk: .init(
+        let length = connection?.doOutput(chunk: .init(
             type: type,
             streamId: chunkStreamId,
             message: message
-        ))
+        )) ?? 0
         info.byteCount.mutate { $0 += Int64(length) }
     }
 
@@ -561,6 +558,19 @@ open class RTMPStream: IOStream {
         currentFPS = frameCount
         frameCount = 0
         info.on(timer: timer)
+    }
+
+    func dispatch(_ message: RTMPDataMessage) {
+        info.byteCount.mutate { $0 += Int64(message.payload.count) }
+        switch message.handlerName {
+        case "onMetaData":
+            metadata = message.arguments[0] as? [String: Any?] ?? [:]
+        case "|RtmpSampleAccess":
+            audioSampleAccess = message.arguments[0] as? Bool ?? true
+            videoSampleAccess = message.arguments[1] as? Bool ?? true
+        default:
+            break
+        }
     }
 
     @objc
@@ -586,7 +596,7 @@ open class RTMPStream: IOStream {
 }
 
 extension RTMPStream: EventDispatcherConvertible {
-    // MARK: IEventDispatcher
+    // MARK: EventDispatcherConvertible
     public func addEventListener(_ type: Event.Name, selector: Selector, observer: AnyObject? = nil, useCapture: Bool = false) {
         dispatcher.addEventListener(type, selector: selector, observer: observer, useCapture: useCapture)
     }

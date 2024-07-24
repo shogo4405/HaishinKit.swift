@@ -7,8 +7,8 @@ final class PreferenceViewController: NSViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        urlField.stringValue = Preference.defaultInstance.uri ?? ""
-        streamNameField.stringValue = Preference.defaultInstance.streamName ?? ""
+        urlField.stringValue = Preference.default.uri ?? ""
+        streamNameField.stringValue = Preference.default.streamName ?? ""
     }
 }
 
@@ -18,10 +18,10 @@ extension PreferenceViewController: NSTextFieldDelegate {
             return
         }
         if textFile == urlField {
-            Preference.defaultInstance.uri = textFile.stringValue
+            Preference.default.uri = textFile.stringValue
         }
         if textFile == streamNameField {
-            Preference.defaultInstance.streamName = textFile.stringValue
+            Preference.default.streamName = textFile.stringValue
         }
     }
 }
