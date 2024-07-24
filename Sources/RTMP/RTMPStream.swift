@@ -377,6 +377,10 @@ open class RTMPStream: IOStream {
     public func close() {
         close(withLockQueue: true)
     }
+    
+    public func deleteStream() {
+           deleteStream(withLockQueue: true)
+       }
 
     /// Sends a message on a published stream to all subscribing clients.
     ///
@@ -513,7 +517,32 @@ open class RTMPStream: IOStream {
                                             commandObject: nil,
                                             arguments: [self.id]
                                         )))
+        deleteStream()
     }
+    
+    func deleteStream(withLockQueue: Bool) {
+            if withLockQueue {
+                lockQueue.sync {
+                    self.deleteStream(withLockQueue: false)
+                }
+                return
+            }
+            guard let connection, ReadyState.open.rawValue < readyState.rawValue else {
+                return
+            }
+            readyState = .open
+        connection.socket?.doOutput(chunk: RTMPChunk(
+                                    type: .zero,
+                                    streamId: RTMPChunk.StreamID.command.rawValue,
+                                    message: RTMPCommandMessage(
+                                        streamId: 0,
+                                        transactionId: 0,
+                                        objectEncoding: self.objectEncoding,
+                                        commandName: "deleteStream",
+                                        commandObject: nil,
+                                        arguments: [self.id]
+                                    )))
+        }
 
     func doOutput(_ type: RTMPChunkType, chunkStreamId: UInt16, message: RTMPMessage) {
         guard let socket = connection?.socket else {
