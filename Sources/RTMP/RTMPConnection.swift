@@ -319,6 +319,9 @@ public class RTMPConnection {
     public func close() {
         close(isDisconnected: false)
     }
+    public func deleteStream() {
+        deleteStream(isDisconnected: false)
+    }
 
     @discardableResult
     func doOutput(chunk: RTMPChunk) -> Int {
@@ -336,6 +339,20 @@ public class RTMPConnection {
         }
         for stream in streams {
             stream.close()
+        }
+        socket?.close(isDisconnected: false)
+    }
+    func deleteStream(isDisconnected: Bool) {
+        guard connected || isDisconnected else {
+            timer = nil
+            return
+        }
+        timer = nil
+        if !isDisconnected {
+            uri = nil
+        }
+        for stream in streams {
+            stream.deleteStream()
         }
         socket?.close(isDisconnected: false)
     }

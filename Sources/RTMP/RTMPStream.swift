@@ -517,7 +517,6 @@ open class RTMPStream: IOStream {
                                         commandObject: nil,
                                         arguments: [self.id]
                                     )))
-        deleteStream()
         }
     
     func deleteStream(withLockQueue: Bool) {
@@ -531,7 +530,10 @@ open class RTMPStream: IOStream {
                 return
             }
             readyState = .open
-        connection.doOutput(chunk: RTMPChunk(
+        if let fcPublishName {
+            connection.call("FCUnpublish", responder: nil, arguments: fcPublishName)
+        }
+            connection.doOutput(chunk: RTMPChunk(
                                     type: .zero,
                                     streamId: RTMPChunk.StreamID.command.rawValue,
                                     message: RTMPCommandMessage(
