@@ -51,9 +51,11 @@ public class PiPHKView: UIView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = Self.defaultBackgroundColor
-        layer.backgroundColor = Self.defaultBackgroundColor.cgColor
-        layer.videoGravity = videoGravity
+        Task { @MainActor in
+            backgroundColor = Self.defaultBackgroundColor
+            layer.backgroundColor = Self.defaultBackgroundColor.cgColor
+            layer.videoGravity = videoGravity
+        }
     }
 }
 #else
@@ -102,10 +104,12 @@ public class PiPHKView: NSView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
-        wantsLayer = true
-        layer = AVSampleBufferDisplayLayer()
-        layer?.backgroundColor = PiPHKView.defaultBackgroundColor.cgColor
-        layer?.setValue(videoGravity, forKey: "videoGravity")
+        Task { @MainActor in
+            wantsLayer = true
+            layer = AVSampleBufferDisplayLayer()
+            layer?.backgroundColor = PiPHKView.defaultBackgroundColor.cgColor
+            layer?.setValue(videoGravity, forKey: "videoGravity")
+        }
     }
 }
 

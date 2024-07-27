@@ -19,6 +19,8 @@ final class CameraIngestViewController: NSViewController {
     @IBOutlet private weak var urlField: NSTextField!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
     private var mixer = IOMixer()
+
+    @ScreenActor
     private var textScreenObject = TextScreenObject()
 
     override func viewDidLoad() {
@@ -28,11 +30,14 @@ final class CameraIngestViewController: NSViewController {
         cameraPopUpButton?.present(mediaType: .video)
 
         Task {
+            var videoMixerSettings = await mixer.videoMixerSettings
+            videoMixerSettings.mode = .offscreen
+            await mixer.setVideoMixerSettings(videoMixerSettings)
             await netStreamSwitcher.setPreference(Preference.default)
             let stream = await netStreamSwitcher.stream
-            await stream?.addObserver(lfView!)
-            stream.map {
-                mixer.addStream($0)
+            if let stream {
+                await stream.addObserver(lfView!)
+                await mixer.addStream(stream)
             }
         }
     }
@@ -40,55 +45,47 @@ final class CameraIngestViewController: NSViewController {
     override func viewDidAppear() {
         super.viewDidAppear()
 
-        mixer.isMultiTrackAudioMixingEnabled = true
+        Task { @ScreenActor in
+            let videoScreenObject = VideoTrackScreenObject()
+            videoScreenObject.cornerRadius = 32.0
+            videoScreenObject.track = 1
+            videoScreenObject.horizontalAlignment = .right
+            videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+            videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+            _ = videoScreenObject.registerVideoEffect(MonochromeEffect())
 
-        mixer.videoMixerSettings.mode = .offscreen
-        mixer.screen.startRunning()
-        textScreenObject.horizontalAlignment = .right
-        textScreenObject.verticalAlignment = .bottom
-        textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
+            let imageScreenObject = ImageScreenObject()
+            let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
+            if let provider = CGDataProvider(url: imageURL as CFURL) {
+                imageScreenObject.verticalAlignment = .bottom
+                imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
+                imageScreenObject.cgImage = CGImage(
+                    pngDataProviderSource: provider,
+                    decode: nil,
+                    shouldInterpolate: false,
+                    intent: .defaultIntent
+                )
+            } else {
+                logger.info("no image")
+            }
 
-        mixer.screen.backgroundColor = NSColor.black.cgColor
+            let assetScreenObject = AssetScreenObject()
+            assetScreenObject.size = .init(width: 180, height: 180)
+            assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
+            try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
 
-        let videoScreenObject = VideoTrackScreenObject()
-        videoScreenObject.cornerRadius = 32.0
-        videoScreenObject.track = 1
-        videoScreenObject.horizontalAlignment = .right
-        videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-        videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-        _ = videoScreenObject.registerVideoEffect(MonochromeEffect())
-
-        let imageScreenObject = ImageScreenObject()
-        let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
-        if let provider = CGDataProvider(url: imageURL as CFURL) {
-            imageScreenObject.verticalAlignment = .bottom
-            imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
-            imageScreenObject.cgImage = CGImage(
-                pngDataProviderSource: provider,
-                decode: nil,
-                shouldInterpolate: false,
-                intent: .defaultIntent
-            )
-        } else {
-            logger.info("no image")
+            try? await mixer.screen.addChild(assetScreenObject)
+            try? await mixer.screen.addChild(videoScreenObject)
+            try? await mixer.screen.addChild(imageScreenObject)
+            try? await mixer.screen.addChild(textScreenObject)
         }
-
-        let assetScreenObject = AssetScreenObject()
-        assetScreenObject.size = .init(width: 180, height: 180)
-        assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
-        try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
-        try? mixer.screen.addChild(assetScreenObject)
-        try? mixer.screen.addChild(videoScreenObject)
-        try? mixer.screen.addChild(imageScreenObject)
-        try? mixer.screen.addChild(textScreenObject)
-        mixer.screen.delegate = self
 
         Task {
             try? await mixer.attachAudio(DeviceUtil.device(withLocalizedName: audioPopUpButton.titleOfSelectedItem!, mediaType: .audio))
 
             var audios = AVCaptureDevice.devices(for: .audio)
             audios.removeFirst()
-            if let device = audios.first, mixer.isMultiTrackAudioMixingEnabled {
+            if let device = audios.first, await mixer.isMultiTrackAudioMixingEnabled {
                 try? await mixer.attachAudio(device, track: 1)
             }
 
@@ -116,12 +113,13 @@ final class CameraIngestViewController: NSViewController {
     }
 
     @IBAction private func orientation(_ sender: AnyObject) {
-        // lfView.rotate(byDegrees: 90)
-        mixer.videoMixerSettings.isMuted.toggle()
+        lfView.rotate(byDegrees: 90)
     }
 
     @IBAction private func mirror(_ sender: AnyObject) {
-        mixer.videoCapture(for: 0)?.isVideoMirrored.toggle()
+        Task {
+            await mixer.videoCapture(for: 0)?.isVideoMirrored.toggle()
+        }
     }
 
     @IBAction private func selectAudio(_ sender: AnyObject) {
@@ -140,7 +138,9 @@ final class CameraIngestViewController: NSViewController {
 }
 
 extension CameraIngestViewController: ScreenDelegate {
-    func screen(_ screen: Screen, willLayout time: CMTime) {
-        textScreenObject.string = Date().description
+    nonisolated func screen(_ screen: Screen, willLayout time: CMTime) {
+        Task { @ScreenActor in
+            textScreenObject.string = Date().description
+        }
     }
 }

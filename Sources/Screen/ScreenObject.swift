@@ -14,6 +14,7 @@ import UIKit
 #endif
 
 /// The ScreenObject class is the abstract class for all objects that are rendered on the screen.
+@ScreenActor
 open class ScreenObject {
     /// The horizontal alignment for the screen object.
     public enum HorizontalAlignment {
@@ -136,11 +137,11 @@ open class ScreenObject {
 
 extension ScreenObject: Hashable {
     // MARK: Hashable
-    public static func == (lhs: ScreenObject, rhs: ScreenObject) -> Bool {
+    nonisolated public static func == (lhs: ScreenObject, rhs: ScreenObject) -> Bool {
         lhs === rhs
     }
 
-    public func hash(into hasher: inout Hasher) {
+    nonisolated public func hash(into hasher: inout Hasher) {
         hasher.combine(ObjectIdentifier(self))
     }
 }
@@ -221,7 +222,7 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessorble {
     }
 
     private var queue: TypedBlockQueue<CMSampleBuffer>?
-    private var effects: [VideoEffect] = .init()
+    private var effects: [any VideoEffect] = .init()
 
     /// Create a screen object.
     override public init() {
@@ -235,7 +236,7 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessorble {
     }
 
     /// Registers a video effect.
-    public func registerVideoEffect(_ effect: VideoEffect) -> Bool {
+    public func registerVideoEffect(_ effect: some VideoEffect) -> Bool {
         if effects.contains(where: { $0 === effect }) {
             return false
         }
@@ -244,7 +245,7 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessorble {
     }
 
     /// Unregisters a video effect.
-    public func unregisterVideoEffect(_ effect: VideoEffect) -> Bool {
+    public func unregisterVideoEffect(_ effect: some VideoEffect) -> Bool {
         if let index = effects.firstIndex(where: { $0 === effect }) {
             effects.remove(at: index)
             return true

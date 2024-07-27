@@ -9,21 +9,12 @@ public enum IOVideoUnitError: Error {
     // case failedToSetOption(status: OSStatus, key: String)
 }
 
-protocol IOVideoUnitDelegate: AnyObject {
-    func videoUnit(_ videoUnit: IOVideoUnit, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
-    func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer)
-}
-
 final class IOVideoUnit: IOUnit {
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
-    weak var mixer: IOMixer?
-    var screen: Screen {
-        return videoMixer.screen
-    }
 
     var mixerSettings: IOVideoMixerSettings {
         get {
@@ -69,7 +60,7 @@ final class IOVideoUnit: IOUnit {
             guard videoOrientation != oldValue else {
                 return
             }
-            mixer?.session.configuration { _ in
+            session.configuration { _ in
                 for capture in captures.values {
                     capture.videoOrientation = videoOrientation
                 }
@@ -78,12 +69,25 @@ final class IOVideoUnit: IOUnit {
     }
     #endif
 
+    var inputs: AsyncStream<(UInt8, CMSampleBuffer)> {
+        let (stream, continutation) = AsyncStream<(UInt8, CMSampleBuffer)>.makeStream()
+        self.inputsContinutation = continutation
+        return stream
+    }
+
+    var output: AsyncStream<CMSampleBuffer> {
+        let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
+        self.continuation = continutation
+        return stream
+    }
+
     private lazy var videoMixer = {
         var videoMixer = IOVideoMixer<IOVideoUnit>()
         videoMixer.delegate = self
         return videoMixer
     }()
-
+    private var continuation: AsyncStream<CMSampleBuffer>.Continuation?
+    private var inputsContinutation: AsyncStream<(UInt8, CMSampleBuffer)>.Continuation?
     #if os(tvOS)
     private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
@@ -93,13 +97,10 @@ final class IOVideoUnit: IOUnit {
     #elseif os(iOS) || os(macOS) || os(visionOS)
     var captures: [UInt8: IOVideoCaptureUnit] = [:]
     #endif
+    private let session: IOCaptureSession
 
-    func registerEffect(_ effect: VideoEffect) -> Bool {
-        return videoMixer.registerEffect(effect)
-    }
-
-    func unregisterEffect(_ effect: VideoEffect) -> Bool {
-        return videoMixer.unregisterEffect(effect)
+    init(_ session: IOCaptureSession) {
+        self.session = session
     }
 
     func append(_ track: UInt8, buffer: CMSampleBuffer) {
@@ -111,20 +112,20 @@ final class IOVideoUnit: IOUnit {
         guard captures[track]?.device != device else {
             return
         }
-        if hasDevice && device != nil && captures[track]?.device == nil && mixer?.session.isMultiCamSessionEnabled == false {
+        if hasDevice && device != nil && captures[track]?.device == nil && session.isMultiCamSessionEnabled == false {
             throw Error.multiCamNotSupported
         }
-        try mixer?.session.configuration { _ in
+        try session.configuration { _ in
             for capture in captures.values where capture.device == device {
-                try? capture.attachDevice(nil, videoUnit: self)
+                try? capture.attachDevice(nil, session: session, videoUnit: self)
             }
             let capture = self.capture(for: track)
             configuration?(capture)
-            try capture?.attachDevice(device, videoUnit: self)
+            try capture?.attachDevice(device, session: session, videoUnit: self)
         }
         if device != nil {
             // Start captureing if not running.
-            mixer?.session.startRunning()
+            session.startRunning()
         }
         if device == nil {
             videoMixer.reset(track)
@@ -142,16 +143,16 @@ final class IOVideoUnit: IOUnit {
 
     @available(tvOS 17.0, *)
     func setBackgroundMode(_ background: Bool) {
-        guard let session = mixer?.session, !session.isMultitaskingCameraAccessEnabled else {
+        guard !session.isMultitaskingCameraAccessEnabled else {
             return
         }
         if background {
             for capture in captures.values {
-                mixer?.session.detachCapture(capture)
+                session.detachCapture(capture)
             }
         } else {
             for capture in captures.values {
-                mixer?.session.attachCapture(capture)
+                session.attachCapture(capture)
             }
         }
     }
@@ -180,10 +181,10 @@ final class IOVideoUnit: IOUnit {
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
-        mixer?.videoUnit(self, track: track, didInput: sampleBuffer)
+        inputsContinutation?.yield((track, sampleBuffer))
     }
 
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
-        mixer?.videoUnit(self, didOutput: sampleBuffer)
+        continuation?.yield(sampleBuffer)
     }
 }

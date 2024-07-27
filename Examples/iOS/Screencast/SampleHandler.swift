@@ -40,12 +40,12 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
          logger.level = .debug
          */
         LBLogger.with(HaishinKitIdentifier).level = .info
-        mixer.audioMixerSettings.tracks[1] = .default
+        // mixer.audioMixerSettings.tracks[1] = .default
         isVideoRotationEnabled = true
         Task {
             await netStreamSwitcher.setPreference(Preference.default)
             if let stream = await netStreamSwitcher.stream {
-                mixer.addStream(stream)
+                await mixer.addStream(stream)
             }
             await netStreamSwitcher.open(.ingest)
         }
@@ -58,7 +58,7 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
         }
     }
 
-    @MainActor override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
+    override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         switch sampleBufferType {
         case .video:
             Task {
@@ -78,23 +78,23 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
             if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *), let rotator {
                 switch rotator.rotate(buffer: sampleBuffer) {
                 case .success(let rotatedBuffer):
-                    mixer.append(rotatedBuffer)
+                    Task { await mixer.append(rotatedBuffer) }
                 case .failure(let error):
                     logger.error(error)
                 }
             } else {
-                mixer.append(sampleBuffer)
+                Task { await mixer.append(sampleBuffer) }
             }
         case .audioMic:
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                mixer.append(sampleBuffer, track: 0)
+                Task { await mixer.append(sampleBuffer, track: 0) }
             }
         case .audioApp:
             if let volume = slider?.value {
-                mixer.audioMixerSettings.tracks[1]?.volume = volume * 0.5
+                // mixer.audioMixerSettings.tracks[1]?.volume = volume * 0.5
             }
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                mixer.append(sampleBuffer, track: 1)
+                Task { await mixer.append(sampleBuffer, track: 1) }
             }
         @unknown default:
             break

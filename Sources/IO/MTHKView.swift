@@ -38,10 +38,12 @@ public class MTHKView: MTKView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override open func awakeFromNib() {
         super.awakeFromNib()
-        framebufferOnly = false
-        enableSetNeedsDisplay = true
-        if let device {
-            context = CIContext(mtlDevice: device)
+        Task { @MainActor in
+            framebufferOnly = false
+            enableSetNeedsDisplay = true
+            if let device {
+                context = CIContext(mtlDevice: device)
+            }
         }
     }
 

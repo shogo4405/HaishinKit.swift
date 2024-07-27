@@ -15,12 +15,9 @@ public protocol ScreenDelegate: AnyObject {
     func screen(_ screen: Screen, willLayout time: CMTime)
 }
 
-protocol ScreenObserver: AnyObject {
-    func screen(_ screen: Screen, didOutput buffer: CMSampleBuffer)
-}
-
 /// An object that manages offscreen rendering a foundation.
 public final class Screen: ScreenObjectContainerConvertible {
+    /// The default screen size.
     public static let size = CGSize(width: 1280, height: 720)
 
     private static let lockFrags = CVPixelBufferLockFlags(rawValue: 0)
@@ -33,16 +30,6 @@ public final class Screen: ScreenObjectContainerConvertible {
     /// Specifies the delegate object.
     public weak var delegate: (any ScreenDelegate)?
 
-    /// Specifies the frame rate to use when output a video.
-    public var frameRate = 30 {
-        didSet {
-            guard frameRate != oldValue else {
-                return
-            }
-            choreographer.preferredFramesPerSecond = frameRate
-        }
-    }
-
     /// Specifies the video size to use when output a video.
     public var size: CGSize = Screen.size {
         didSet {
@@ -52,10 +39,6 @@ public final class Screen: ScreenObjectContainerConvertible {
             renderer.bounds = .init(origin: .zero, size: size)
             CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
         }
-    }
-
-    public var isRunning: Bool {
-        return choreographer.isRunning
     }
 
     #if os(macOS)
@@ -79,14 +62,8 @@ public final class Screen: ScreenObjectContainerConvertible {
         }
     }
     #endif
-    weak var observer: (any ScreenObserver)?
     private var root: ScreenObjectContainer = .init()
     private(set) var renderer = ScreenRendererByCPU()
-    private lazy var choreographer = {
-        var choreographer = DisplayLinkChoreographer()
-        choreographer.delegate = self
-        return choreographer
-    }()
     private var timeStamp: CMTime = .invalid
     private var attributes: [NSString: NSObject] {
         return [
@@ -102,6 +79,13 @@ public final class Screen: ScreenObjectContainerConvertible {
             outputFormat = nil
         }
     }
+    private var videoTrackScreenObject = VideoTrackScreenObject()
+
+    /// Creates a screen object.
+    public init() {
+        try? addChild(videoTrackScreenObject)
+        CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
+    }
 
     /// Adds the specified screen object as a child of the current screen object container.
     public func addChild(_ child: ScreenObject?) throws {
@@ -113,53 +97,28 @@ public final class Screen: ScreenObjectContainerConvertible {
         root.removeChild(child)
     }
 
-    func getScreenObjects<T: ScreenObject>() -> [T] {
-        return root.getScreenObjects()
+    /// Registers a video effect.
+    public func registerVideoEffect(_ effect: some VideoEffect) -> Bool {
+        return videoTrackScreenObject.registerVideoEffect(effect)
     }
 
-    func render(_ sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
-        sampleBuffer.imageBuffer?.lockBaseAddress(Self.lockFrags)
-        defer {
-            sampleBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
-        }
-        renderer.setTarget(sampleBuffer.imageBuffer)
-        if let dimensions = sampleBuffer.formatDescription?.dimensions {
-            root.size = dimensions.size
-        }
-        delegate?.screen(self, willLayout: sampleBuffer.presentationTimeStamp)
-        root.layout(renderer)
-        root.draw(renderer)
-        return sampleBuffer
-    }
-}
-
-extension Screen: Runner {
-    // MARK: Runner
-    public func startRunning() {
-        guard !choreographer.isRunning else {
-            return
-        }
-        CVPixelBufferPoolCreate(nil, nil, attributes as CFDictionary?, &pixelBufferPool)
-        choreographer.preferredFramesPerSecond = frameRate
-        choreographer.startRunning()
-        choreographer.isPaused = false
+    /// Unregisters a video effect.
+    public func unregisterVideoEffect(_ effect: some VideoEffect) -> Bool {
+        return videoTrackScreenObject.unregisterVideoEffect(effect)
     }
 
-    public func stopRunning() {
-        guard choreographer.isRunning else {
-            return
+    func append(_ track: UInt8, buffer: CMSampleBuffer) {
+        let screens: [VideoTrackScreenObject] = root.getScreenObjects()
+        for screen in screens where screen.track == track {
+            screen.enqueue(buffer)
         }
-        choreographer.stopRunning()
     }
-}
 
-extension Screen: ChoreographerDelegate {
-    // MARK: ChoreographerDelegate
-    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double) {
+    func makeSampleBuffer() -> CMSampleBuffer? {
         var pixelBuffer: CVPixelBuffer?
         pixelBufferPool?.createPixelBuffer(&pixelBuffer)
         guard let pixelBuffer else {
-            return
+            return nil
         }
         if outputFormat == nil {
             CMVideoFormatDescriptionCreateForImageBuffer(
@@ -169,7 +128,7 @@ extension Screen: ChoreographerDelegate {
             )
         }
         guard let outputFormat else {
-            return
+            return nil
         }
         if let dictionary = CVBufferGetAttachments(pixelBuffer, .shouldNotPropagate) {
             CVBufferSetAttachments(pixelBuffer, dictionary, .shouldPropagate)
@@ -189,10 +148,27 @@ extension Screen: ChoreographerDelegate {
             sampleTiming: &timingInfo,
             sampleBufferOut: &sampleBuffer
         ) == noErr else {
-            return
+            return nil
         }
         if let sampleBuffer {
-            observer?.screen(self, didOutput: render(sampleBuffer))
+            return render(sampleBuffer)
+        } else {
+            return nil
         }
+    }
+
+    private func render(_ sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
+        sampleBuffer.imageBuffer?.lockBaseAddress(Self.lockFrags)
+        defer {
+            sampleBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
+        }
+        renderer.setTarget(sampleBuffer.imageBuffer)
+        if let dimensions = sampleBuffer.formatDescription?.dimensions {
+            root.size = dimensions.size
+        }
+        delegate?.screen(self, willLayout: sampleBuffer.presentationTimeStamp)
+        root.layout(renderer)
+        root.draw(renderer)
+        return sampleBuffer
     }
 }

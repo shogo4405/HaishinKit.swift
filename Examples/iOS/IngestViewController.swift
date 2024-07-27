@@ -18,48 +18,53 @@ final class IngestViewController: UIViewController {
     @IBOutlet private weak var audioDevicePicker: UIPickerView!
     @IBOutlet private weak var audioMonoStereoSegmentCOntrol: UISegmentedControl!
 
-    private var currentEffect: VideoEffect?
+    @ScreenActor
+    private var currentEffect: (any VideoEffect)?
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
     private var preferedStereo = false
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var mixer = IOMixer()
+    private lazy var mixer = IOMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
         audioCapture.delegate = self
         return audioCapture
     }()
+    @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         Task {
+            // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
+            // mixer.isMultiCamSessionEnabled = true
+            if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
+                await mixer.setVideoOrientation(orientation)
+            }
+            await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
+            var videoMixerSettings = await mixer.videoMixerSettings
+            videoMixerSettings.mode = .offscreen
+            await mixer.setVideoMixerSettings(videoMixerSettings)
             await netStreamSwitcher.setPreference(Preference.default)
             if let stream = await netStreamSwitcher.stream {
-                mixer.addStream(stream)
+                await mixer.addStream(stream)
                 if let view = view as? (any IOStreamObserver) {
                     await stream.addObserver(view)
                 }
             }
         }
 
-        mixer.screen.size = .init(width: 720, height: 1280)
-        mixer.screen.backgroundColor = UIColor.white.cgColor
-
-        videoScreenObject.cornerRadius = 16.0
-        videoScreenObject.track = 1
-        videoScreenObject.horizontalAlignment = .right
-        videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-        videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-        try? mixer.screen.addChild(videoScreenObject)
-
-        // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
-        mixer.isMultiCamSessionEnabled = true
-        if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
-            mixer.videoOrientation = orientation
+        Task { @ScreenActor in
+            videoScreenObject.cornerRadius = 16.0
+            videoScreenObject.track = 1
+            videoScreenObject.horizontalAlignment = .right
+            videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+            videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+            await mixer.screen.size = .init(width: 720, height: 1280)
+            await mixer.screen.backgroundColor = UIColor.white.cgColor
+            try? await mixer.screen.addChild(videoScreenObject)
         }
-        mixer.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
+
         videoBitrateSlider?.value = Float(VideoCodecSettings.default.bitRate) / 1000
         audioBitrateSlider?.value = Float(AudioCodecSettings.default.bitRate) / 1000
     }
@@ -67,10 +72,6 @@ final class IngestViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
-
-        mixer.videoMixerSettings.mode = .offscreen
-        mixer.screen.startRunning()
-
         Task {
             let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
             try? await mixer.attachCamera(back, track: 0)
@@ -92,43 +93,55 @@ final class IngestViewController: UIViewController {
             try? await mixer.attachAudio(nil)
             try? await mixer.attachCamera(nil, track: 0)
             try? await mixer.attachCamera(nil, track: 1)
-            mixer.screen.stopRunning()
         }
         // swiftlint:disable:next notification_center_detachment
         NotificationCenter.default.removeObserver(self)
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
-        if UIDevice.current.orientation.isLandscape {
-            mixer.screen.size = .init(width: 1280, height: 720)
-        } else {
-            mixer.screen.size = .init(width: 720, height: 1280)
+        Task { @ScreenActor in
+            if  await UIDevice.current.orientation.isLandscape {
+                await mixer.screen.size = .init(width: 1280, height: 720)
+            } else {
+                await mixer.screen.size = .init(width: 720, height: 1280)
+            }
         }
     }
 
     @IBAction func rotateCamera(_ sender: UIButton) {
         logger.info("rotateCamera")
-        if mixer.isMultiCamSessionEnabled {
-            if mixer.videoMixerSettings.mainTrack == 0 {
-                mixer.videoMixerSettings.mainTrack = 1
-                videoScreenObject.track = 0
+
+        Task {
+            if await mixer.isMultiCamSessionEnabled {
+                var videoMixerSettings = await mixer.videoMixerSettings
+
+                if videoMixerSettings.mainTrack == 0 {
+                    videoMixerSettings.mainTrack = 1
+                    await mixer.setVideoMixerSettings(videoMixerSettings)
+                    Task { @ScreenActor in
+                        videoScreenObject.track = 0
+                    }
+                } else {
+                    videoMixerSettings.mainTrack = 0
+                    Task { @ScreenActor in
+                        videoScreenObject.track = 1
+                    }
+                }
             } else {
-                mixer.videoMixerSettings.mainTrack = 0
-                videoScreenObject.track = 1
-            }
-        } else {
-            let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-            Task {
+                let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
                 try? await mixer.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { videoUnit in
                     videoUnit?.isVideoMirrored = position == .front
                 }
+                currentPosition = position
             }
-            currentPosition = position
         }
     }
 
     @IBAction func toggleTorch(_ sender: UIButton) {
-        mixer.torch.toggle()
+        Task {
+            let isTorchEnabled = await mixer.isTorchEnabled
+            await mixer.setTorchEnabled(!isTorchEnabled)
+        }
     }
 
     @IBAction func on(slider: UISlider) {
@@ -219,31 +232,35 @@ final class IngestViewController: UIViewController {
     }
 
     @IBAction private func onFPSValueChanged(_ segment: UISegmentedControl) {
-        switch segment.selectedSegmentIndex {
-        case 0:
-            mixer.frameRate = 15
-        case 1:
-            mixer.frameRate = 30
-        case 2:
-            mixer.frameRate = 60
-        default:
-            break
+        Task {
+            switch segment.selectedSegmentIndex {
+            case 0:
+                await mixer.setFrameRate(15)
+            case 1:
+                await mixer.setFrameRate(30)
+            case 2:
+                await mixer.setFrameRate(60)
+            default:
+                break
+            }
         }
     }
 
     @IBAction private func onEffectValueChanged(_ segment: UISegmentedControl) {
-        if let currentEffect: VideoEffect = currentEffect {
-            _ = mixer.unregisterVideoEffect(currentEffect)
-        }
-        switch segment.selectedSegmentIndex {
-        case 1:
-            currentEffect = MonochromeEffect()
-            _ = mixer.registerVideoEffect(currentEffect!)
-        case 2:
-            currentEffect = PronamaEffect()
-            _ = mixer.registerVideoEffect(currentEffect!)
-        default:
-            break
+        Task { @ScreenActor in
+            if let currentEffect {
+                _ = await mixer.screen.unregisterVideoEffect(currentEffect)
+            }
+            switch await segment.selectedSegmentIndex {
+            case 1:
+                currentEffect = MonochromeEffect()
+                _ = await mixer.screen.registerVideoEffect(currentEffect!)
+            case 2:
+                currentEffect = PronamaEffect()
+                _ = await mixer.screen.registerVideoEffect(currentEffect!)
+            default:
+                break
+            }
         }
     }
 
@@ -277,10 +294,12 @@ final class IngestViewController: UIViewController {
             audioDevicePicker.isHidden = false
         }
         audioDevicePicker.reloadAllComponents()
-        if DeviceUtil.isHeadphoneDisconnected(notification) {
-            mixer.isMonitoringEnabled = false
-        } else {
-            mixer.isMonitoringEnabled = DeviceUtil.isHeadphoneConnected()
+        Task {
+            if DeviceUtil.isHeadphoneDisconnected(notification) {
+                await mixer.setMonitoringEnabled(false)
+            } else {
+                await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
+            }
         }
     }
 
@@ -289,7 +308,9 @@ final class IngestViewController: UIViewController {
         guard let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) else {
             return
         }
-        mixer.videoOrientation = orientation
+        Task {
+            await mixer.setVideoOrientation(orientation)
+        }
     }
 }
 

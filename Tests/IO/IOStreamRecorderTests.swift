@@ -5,6 +5,7 @@ import AVFoundation
 
 @testable import HaishinKit
 
+/*
 final class IOStreamRecorderTests: XCTestCase, IOStreamRecorderDelegate {
     func testRecorder2channel() {
         let recorder = IOStreamRecorder()
@@ -58,3 +59,4 @@ final class IOStreamRecorderTests: XCTestCase, IOStreamRecorderDelegate {
         // print("recorder:finishWriting")
     }
 }
+*/

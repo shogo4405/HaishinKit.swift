@@ -21,13 +21,8 @@ import Foundation
 ///     }
 /// }
 /// ```
-open class VideoEffect {
-    /// Creates an object instance.
-    public init() {
-    }
-
+@ScreenActor
+public protocol VideoEffect: AnyObject {
     /// Executes to apply a video effect.
-    open func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
-        image
-    }
+    func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage
 }
