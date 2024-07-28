@@ -501,18 +501,20 @@ open class RTMPStream: IOStream {
         readyState = .open
         if let fcPublishName {
             connection.call("FCUnpublish", responder: nil, arguments: fcPublishName)
+            connection.call("deleteStream", responder: nil, arguments: id)
+        } else {
+            connection.doOutput(chunk: RTMPChunk(
+                                    type: .zero,
+                                    streamId: RTMPChunk.StreamID.command.rawValue,
+                                    message: RTMPCommandMessage(
+                                        streamId: id,
+                                        transactionId: 0,
+                                        objectEncoding: objectEncoding,
+                                        commandName: "closeStream",
+                                        commandObject: nil,
+                                        arguments: []
+                                    )))
         }
-        connection.doOutput(chunk: RTMPChunk(
-                                type: .zero,
-                                streamId: RTMPChunk.StreamID.command.rawValue,
-                                message: RTMPCommandMessage(
-                                    streamId: 0,
-                                    transactionId: 0,
-                                    objectEncoding: self.objectEncoding,
-                                    commandName: "closeStream",
-                                    commandObject: nil,
-                                    arguments: [self.id]
-                                )))
     }
 
     func doOutput(_ type: RTMPChunkType, chunkStreamId: UInt16, message: RTMPMessage) {
