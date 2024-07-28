@@ -3,6 +3,7 @@ import Foundation
 
 final class TypedBlockQueue<T: AnyObject> {
     private let queue: CMBufferQueue
+    private let capacity: CMItemCount
 
     @inlinable @inline(__always) var head: T? {
         guard let head = queue.head else {
@@ -19,8 +20,9 @@ final class TypedBlockQueue<T: AnyObject> {
         queue.duration
     }
 
-    init(_ queue: CMBufferQueue) {
-        self.queue = queue
+    init(capacity: CMItemCount, handlers: CMBufferQueue.Handlers) throws {
+        self.capacity = capacity
+        self.queue = try CMBufferQueue(capacity: capacity, handlers: handlers)
     }
 
     @inlinable

@@ -226,7 +226,7 @@ public final class VideoTrackScreenObject: ScreenObject {
         super.init()
         horizontalAlignment = .center
         do {
-            queue = TypedBlockQueue(try CMBufferQueue(capacity: 1, handlers: .outputPTSSortedSampleBuffers))
+            queue = try TypedBlockQueue(capacity: 1, handlers: .outputPTSSortedSampleBuffers)
         } catch {
             logger.error(error)
         }
