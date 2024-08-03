@@ -179,8 +179,9 @@ HaishinKit has a multi-module configuration. If you want to use the SRT protocol
 |  | HaishinKit | SRTHaishinKit |
 | - | :- | :- |
 | SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
-| CocoaPods |<pre>source 'https://github.com/CocoaPods/Specs.git'<br>use_frameworks!<br><br>def import_pods<br>  pod 'HaishinKit', '~> 1.9.1<br>end<br><br>target 'Your Target'  do<br>  platform :ios, '13.0'<br>  import_pods<br>end</pre>|Not available. |
-| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.9.1 | Not available. |
+| CocoaPods |<pre>def import_pods<br>  pod 'HaishinKit', '~> 1.9.2<br>end</pre>|<pre>def import_pods<br>  pod 'SRTHaishinKit', '~> 1.9.2<br>end</pre>|
+| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.9.2 | Not available. |
+* SRTHaishinKit via CocoaPods supports only iOS and tvOS.
 
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
