@@ -197,7 +197,9 @@ public final class ImageScreenObject: ScreenObject {
 }
 
 /// An object that manages offscreen rendering a video track source.
-public final class VideoTrackScreenObject: ScreenObject {
+public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessorble {
+    public var chromaKeyColor: CGColor?
+
     /// Specifies the track number how the displays the visual content.
     public var track: UInt8 = 0 {
         didSet {
@@ -384,7 +386,9 @@ public final class TextScreenObject: ScreenObject {
 
 #if !os(visionOS)
 /// An object that manages offscreen rendering an asset resource.
-public final class AssetScreenObject: ScreenObject {
+public final class AssetScreenObject: ScreenObject, ChromaKeyProcessorble {
+    public var chromaKeyColor: CGColor?
+
     public var isReading: Bool {
         return reader?.status == .reading
     }

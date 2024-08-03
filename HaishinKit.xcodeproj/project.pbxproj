@@ -237,6 +237,7 @@
 		BC959F0E29705B1B0067BA97 /* SCStreamPublishViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */; };
 		BC959F1229717EDB0067BA97 /* PreferenceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */; };
 		BC9CFA9323BDE8B700917EEF /* IOStreamView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9CFA9223BDE8B700917EEF /* IOStreamView.swift */; };
+		BC9D20442C5E25C400E3D404 /* ChromaKeyProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9D20432C5E25C400E3D404 /* ChromaKeyProcessor.swift */; };
 		BC9F9C7826F8C16600B01ED0 /* Choreographer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */; };
 		BCA3A5252BC4ED220083BBB1 /* RTMPTimestamp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA3A5242BC4ED220083BBB1 /* RTMPTimestamp.swift */; };
 		BCA3A5272BC507880083BBB1 /* RTMPTimestampTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */; };
@@ -699,6 +700,7 @@
 		BC959F0D29705B1B0067BA97 /* SCStreamPublishViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SCStreamPublishViewController.swift; sourceTree = "<group>"; };
 		BC959F1129717EDB0067BA97 /* PreferenceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceViewController.swift; sourceTree = "<group>"; };
 		BC9CFA9223BDE8B700917EEF /* IOStreamView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOStreamView.swift; sourceTree = "<group>"; };
+		BC9D20432C5E25C400E3D404 /* ChromaKeyProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaKeyProcessor.swift; sourceTree = "<group>"; };
 		BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Choreographer.swift; sourceTree = "<group>"; };
 		BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SRTHaishinKit.podspec; sourceTree = "<group>"; };
 		BCA3A5242BC4ED220083BBB1 /* RTMPTimestamp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPTimestamp.swift; sourceTree = "<group>"; };
@@ -1317,6 +1319,7 @@
 			isa = PBXGroup;
 			children = (
 				BC9F9C7726F8C16600B01ED0 /* Choreographer.swift */,
+				BC9D20432C5E25C400E3D404 /* ChromaKeyProcessor.swift */,
 				BCDEB4F92BE442F900EEC6ED /* Screen.swift */,
 				BC16019B2BE0E4750061BD3E /* ScreenObject.swift */,
 				BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */,
@@ -1900,6 +1903,7 @@
 				BCCBCE9729A90D880095B51C /* AVCNALUnit.swift in Sources */,
 				BC37861D2C0F7B9900D79263 /* CMFormatDescription+Extension.swift in Sources */,
 				29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */,
+				BC9D20442C5E25C400E3D404 /* ChromaKeyProcessor.swift in Sources */,
 				BC4914A628DDD367009E2DF6 /* VTSessionOption.swift in Sources */,
 				BC1CCF622BE66C220067198A /* CGImage+Extension.swift in Sources */,
 				BC0F1FDA2ACC4CC100C326FF /* IOCaptureVideoPreview.swift in Sources */,

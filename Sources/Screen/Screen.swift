@@ -21,7 +21,8 @@ protocol ScreenObserver: AnyObject {
 
 /// An object that manages offscreen rendering a foundation.
 public final class Screen: ScreenObjectContainerConvertible {
-    static let size = CGSize(width: 1280, height: 720)
+    public static let size = CGSize(width: 1280, height: 720)
+
     private static let lockFrags = CVPixelBufferLockFlags(rawValue: 0)
 
     /// The total of child counts.
