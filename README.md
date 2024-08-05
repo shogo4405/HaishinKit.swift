@@ -65,9 +65,9 @@ Project name    |Notes       |License
 
 ### Offscreen Rendering.
 Through off-screen rendering capabilities, it is possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
-<p align="center">
-  <img width="732" alt="" src="https://github.com/shogo4405/HaishinKit.swift/assets/810189/43ad08d4-1a4c-4390-97ca-7bba6109e7cf">
-</p>
+|Ingest|Playback|
+|:---:|:---:|
+|<img width="961" alt="スクリーンショット 2024-08-06 1 17 15" src="https://github.com/user-attachments/assets/aaf6c06f-d2de-43c1-a435-90907f370977">|<img width="849" alt="スクリーンショット 2024-08-06 1 17 26" src="https://github.com/user-attachments/assets/0a07b418-aa56-41cb-8e6d-e12596b25ae8">|
 
 <details>
 <summary>Example</summary>
@@ -416,6 +416,9 @@ recorder.settings = [
 recorder.startRunning()
 // recorder.stopRunning()
 ```
+
+## 📜 Known Issues
+- [Xcode15.4+, High CPU Usage and Increse Memory with SPM](https://github.com/shogo4405/HaishinKit.swift/issues/1512)
 
 ## 📜 License
 BSD-3-Clause
