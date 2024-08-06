@@ -519,6 +519,16 @@ extension IOStream: IOMixerDelegate {
         delegate?.stream(self, sessionInterruptionEnded: session)
     }
     #endif
+
+    #if os(iOS) || os(tvOS)
+    @available(tvOS 17.0, *)
+    func mixer(_ mixer: IOMixer, mediaServicesWereReset error: AVError) {
+        lockQueue.async {
+            self.mixer.session.startRunningIfNeeded()
+        }
+    }
+    #endif
+
 }
 
 extension IOStream: IOTellyUnitDelegate {
