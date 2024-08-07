@@ -35,6 +35,12 @@ open class ScreenObject {
         case bottom
     }
 
+    public enum ImageTarget: Int, Equatable {
+        case stream
+        case view
+        case both
+    }
+
     /// The screen object container that contains this screen object
     public internal(set) weak var parent: ScreenObjectContainer?
 
@@ -83,8 +89,8 @@ open class ScreenObject {
     }
 
     /// Makes cgImage for offscreen image.
-    open func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
-        return nil
+    open func makeImage(_ renderer: some ScreenRenderer) -> [(ImageTarget, CGImage?)] {
+        return []
     }
 
     /// Makes screen object bounds for offscreen image.
@@ -157,11 +163,11 @@ public final class ImageScreenObject: ScreenObject {
         }
     }
 
-    override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
+    override public func makeImage(_ renderer: some ScreenRenderer) -> [(ImageTarget, CGImage?)] {
         let intersection = bounds.intersection(renderer.bounds)
 
         guard bounds != intersection else {
-            return cgImage
+            return [(.both, cgImage)]
         }
 
         // Handling when the drawing area is exceeded.
@@ -185,7 +191,8 @@ public final class ImageScreenObject: ScreenObject {
             y = abs(bounds.origin.y)
         }
 
-        return cgImage?.cropping(to: .init(origin: .init(x: x, y: y), size: intersection.size))
+        let image = cgImage?.cropping(to: .init(origin: .init(x: x, y: y), size: intersection.size))
+        return [(.both, image)]
     }
 
     override public func makeBounds(_ size: CGSize) -> CGRect {
@@ -252,9 +259,9 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessorble {
         return false
     }
 
-    override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
+    override public func makeImage(_ renderer: some ScreenRenderer) -> [(ImageTarget, CGImage?)] {
         guard let sampleBuffer = queue?.dequeue(), let pixelBuffer = sampleBuffer.imageBuffer else {
-            return nil
+            return []
         }
         // Resizing before applying the filter for performance optimization.
         var image = CIImage(cvPixelBuffer: pixelBuffer).transformed(by: videoGravity.scale(
@@ -262,12 +269,14 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessorble {
             image: pixelBuffer.size
         ))
         if effects.isEmpty {
-            return renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
+            return [(.both, renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent)))]
         } else {
+            let viewImage = renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
             for effect in effects {
                 image = effect.execute(image, info: sampleBuffer)
             }
-            return renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
+            let streamImage = renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
+            return [(.view, viewImage), (.stream, streamImage)]
         }
     }
 
@@ -372,15 +381,15 @@ public final class TextScreenObject: ScreenObject {
         return super.makeBounds(frameSize)
     }
 
-    override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
+    override public func makeImage(_ renderer: some ScreenRenderer) -> [(ImageTarget, CGImage?)] {
         guard let context, let framesetter else {
-            return nil
+            return []
         }
         let path = CGPath(rect: .init(origin: .zero, size: bounds.size), transform: nil)
         let frame = CTFramesetterCreateFrame(framesetter, .init(), path, nil)
         context.clear(context.boundingBoxOfPath)
         CTFrameDraw(frame, context)
-        return context.makeImage()
+        return [(.both, context.makeImage())]
     }
 }
 
@@ -472,15 +481,15 @@ public final class AssetScreenObject: ScreenObject, ChromaKeyProcessorble {
         }
     }
 
-    override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
+    override public func makeImage(_ renderer: some ScreenRenderer) -> [(ImageTarget, CGImage?)] {
         guard let sampleBuffer, let pixelBuffer = sampleBuffer.imageBuffer else {
-            return nil
+            return []
         }
         let image = CIImage(cvPixelBuffer: pixelBuffer).transformed(by: videoGravity.scale(
             bounds.size,
             image: pixelBuffer.size
         ))
-        return renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
+        return [(.both, renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent)))]
     }
 
     override func draw(_ renderer: some ScreenRenderer) {

@@ -79,6 +79,9 @@ public final class Screen: ScreenObjectContainerConvertible {
         }
     }
     #endif
+
+    public var renderEffectsSeparately = true
+
     weak var observer: (any ScreenObserver)?
     private var root: ScreenObjectContainer = .init()
     private(set) var renderer = ScreenRendererByCPU()
@@ -130,6 +133,23 @@ public final class Screen: ScreenObjectContainerConvertible {
         root.layout(renderer)
         root.draw(renderer)
         return sampleBuffer
+    }
+
+    func render(streamBuffer: CMSampleBuffer, viewBuffer: CMSampleBuffer) {
+        streamBuffer.imageBuffer?.lockBaseAddress(Self.lockFrags)
+        viewBuffer.imageBuffer?.lockBaseAddress(Self.lockFrags)
+        defer {
+            streamBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
+            viewBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
+        }
+        renderer.setTarget(streamBuffer.imageBuffer, .stream)
+        renderer.setTarget(viewBuffer.imageBuffer, .view)
+        if let dimensions = streamBuffer.formatDescription?.dimensions {
+            root.size = dimensions.size
+        }
+        delegate?.screen(self, willLayout: streamBuffer.presentationTimeStamp)
+        root.layout(renderer)
+        root.draw(renderer)
     }
 }
 
@@ -191,7 +211,31 @@ extension Screen: ChoreographerDelegate {
         ) == noErr else {
             return
         }
-        if let sampleBuffer {
+        if renderEffectsSeparately {
+            var viewPixelBuffer: CVPixelBuffer?
+            pixelBufferPool?.createPixelBuffer(&viewPixelBuffer)
+            guard let viewPixelBuffer else {
+                return
+            }
+            var viewSampleBuffer: CMSampleBuffer?
+            guard CMSampleBufferCreateReadyWithImageBuffer(
+                allocator: kCFAllocatorDefault,
+                imageBuffer: viewPixelBuffer,
+                formatDescription: outputFormat,
+                sampleTiming: &timingInfo,
+                sampleBufferOut: &viewSampleBuffer
+            ) == noErr else {
+                return
+            }
+            if let sampleBuffer, let viewSampleBuffer {
+                render(streamBuffer: sampleBuffer, viewBuffer: viewSampleBuffer)
+                sampleBuffer.targetType = .stream
+                viewSampleBuffer.targetType = .view
+                observer?.screen(self, didOutput: sampleBuffer)
+                observer?.screen(self, didOutput: viewSampleBuffer)
+            }
+        } else if let sampleBuffer {
+            sampleBuffer.targetType = .both
             observer?.screen(self, didOutput: render(sampleBuffer))
         }
     }
