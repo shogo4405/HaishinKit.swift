@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/shogo4405/danger-privacymanifest
-  revision: 2e7ff1da994bd1aadb6799a74607fdd9285f46ae
+  revision: dd7d553946189a3bf9d62321a56ef286af7fa270
   specs:
     danger-privacymanifest (0.0.1)
       danger-plugin-api (~> 1.0)
@@ -30,7 +30,7 @@ GEM
     artifactory (3.0.17)
     atomos (0.1.3)
     aws-eventstream (1.3.0)
-    aws-partitions (1.958.0)
+    aws-partitions (1.962.0)
     aws-sdk-core (3.201.3)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.651.0)
@@ -39,11 +39,11 @@ GEM
     aws-sdk-kms (1.88.0)
       aws-sdk-core (~> 3, >= 3.201.0)
       aws-sigv4 (~> 1.5)
-    aws-sdk-s3 (1.156.0)
+    aws-sdk-s3 (1.157.0)
       aws-sdk-core (~> 3, >= 3.201.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
-    aws-sigv4 (1.9.0)
+    aws-sigv4 (1.9.1)
       aws-eventstream (~> 1, >= 1.0.2)
     babosa (1.0.4)
     base64 (0.2.0)
@@ -198,7 +198,6 @@ GEM
       xcpretty (~> 0.3.0)
       xcpretty-travis-formatter (>= 0.0.3, < 2.0.0)
     ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86_64-linux-gnu)
     fourflusher (2.3.1)
     fuzzy_match (2.0.4)
     gh_inspector (1.1.3)
@@ -221,7 +220,7 @@ GEM
       google-apis-core (>= 0.11.0, < 2.a)
     google-apis-storage_v1 (0.31.0)
       google-apis-core (>= 0.11.0, < 2.a)
-    google-cloud-core (1.7.0)
+    google-cloud-core (1.7.1)
       google-cloud-env (>= 1.0, < 3.a)
       google-cloud-errors (~> 1.0)
     google-cloud-env (1.6.0)
@@ -295,7 +294,7 @@ GEM
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
     retriable (3.1.2)
-    rexml (3.2.9)
+    rexml (3.3.4)
       strscan
     rouge (2.0.7)
     ruby-macho (2.5.1)
@@ -316,7 +315,6 @@ GEM
       CFPropertyList
       naturally
     sqlite3 (1.7.3-arm64-darwin)
-    sqlite3 (1.7.3-x86_64-linux)
     strscan (3.1.0)
     synx (0.2.1)
       clamp (~> 0.6)
@@ -339,13 +337,13 @@ GEM
     word_wrap (1.0.0)
     xcinvoke (0.3.0)
       liferaft (~> 0.0.6)
-    xcodeproj (1.24.0)
+    xcodeproj (1.25.0)
       CFPropertyList (>= 2.3.3, < 4.0)
       atomos (~> 0.1.3)
       claide (>= 1.0.2, < 2.0)
       colored2 (~> 3.1)
       nanaimo (~> 0.3.0)
-      rexml (~> 3.2.4)
+      rexml (>= 3.3.2, < 4.0)
     xcpretty (0.3.0)
       rouge (~> 2.0.7)
     xcpretty-travis-formatter (1.0.1)
@@ -353,7 +351,6 @@ GEM
 
 PLATFORMS
   arm64-darwin-23
-  x86_64-linux
 
 DEPENDENCIES
   cocoapods
