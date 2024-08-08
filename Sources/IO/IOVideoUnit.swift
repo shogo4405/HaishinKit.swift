@@ -255,14 +255,28 @@ extension IOVideoUnit: IOVideoMixerDelegate {
     }
 
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
-        if let imageBuffer = sampleBuffer.imageBuffer {
-            codec.append(
-                imageBuffer,
-                presentationTimeStamp: sampleBuffer.presentationTimeStamp,
-                duration: sampleBuffer.duration
-            )
+        func sendToStream() {
+            if let imageBuffer = sampleBuffer.imageBuffer {
+                codec.append(
+                    imageBuffer,
+                    presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+                    duration: sampleBuffer.duration
+                )
+            }
+            mixer?.videoUnit(self, didOutput: sampleBuffer)
         }
-        view?.enqueue(sampleBuffer)
-        mixer?.videoUnit(self, didOutput: sampleBuffer)
+        func sendToView() {
+            view?.enqueue(sampleBuffer)
+        }
+        let targetType = sampleBuffer.targetType ?? .both
+        switch targetType {
+        case .both:
+            sendToStream()
+            sendToView()
+        case .stream:
+            sendToStream()
+        case .view:
+            sendToView()
+        }
     }
 }
