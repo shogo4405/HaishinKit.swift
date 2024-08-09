@@ -4,7 +4,7 @@ import Foundation
 
 /// Configuration calback block for IOAudioCaptureUnit.
 @available(tvOS 17.0, *)
-public typealias IOAudioCaptureConfigurationBlock = (IOAudioCaptureUnit?, IOAudioUnitError?) -> Void
+public typealias IOAudioCaptureConfigurationBlock = (IOAudioCaptureUnit?) -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)

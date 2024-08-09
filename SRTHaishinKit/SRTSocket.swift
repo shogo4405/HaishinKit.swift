@@ -5,19 +5,12 @@ import Logboard
 
 private let kSRTSOcket_payloadSize: Int = 1316
 
-protocol SRTSocketDelegate: AnyObject {
-    func socket(_ socket: SRTSocket<Self>, status: SRT_SOCKSTATUS)
-    func socket(_ socket: SRTSocket<Self>, incomingDataAvailabled data: Data, bytes: Int32)
-    func socket(_ socket: SRTSocket<Self>, didAcceptSocket client: SRTSocket<Self>)
-}
-
-final class SRTSocket<T: SRTSocketDelegate> {
+final class SRTSocket {
     var timeout: Int = 0
     var options: [SRTSocketOption: Any] = [:]
-    weak var delegate: T?
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
-    private(set) var isRunning: Atomic<Bool> = .init(false)
+    private(set) var isRunning = false
     private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
     private(set) var status: SRT_SOCKSTATUS = SRTS_INIT {
         didSet {
@@ -42,20 +35,15 @@ final class SRTSocket<T: SRTSocketDelegate> {
                 logger.trace("SRT Socket Closing")
             case SRTS_CLOSED:
                 logger.info("SRT Socket Closed")
-                stopRunning()
             case SRTS_NONEXIST:
                 logger.warn("SRT Socket Not Exist")
             default:
                 break
             }
-            delegate?.socket(self, status: status)
         }
     }
     private var windowSizeC: Int32 = 1024 * 4
-    private var outgoingBuffer: [Data] = .init()
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
-    private let outgoingQueue: DispatchQueue = .init(label: "com.haishinkit.SRTHaishinKit.SRTSocket.outgoing", qos: .userInitiated)
-    private let incomingQueue: DispatchQueue = .init(label: "com.haishinkit.SRTHaishinKit.SRTSocket.incoming", qos: .userInitiated)
 
     init() {
     }
@@ -109,7 +97,7 @@ final class SRTSocket<T: SRTSocketDelegate> {
                 throw makeSocketError()
             }
         }
-        startRunning()
+        status = srt_getsockstate(socket)
     }
 
     func close() {
@@ -118,30 +106,24 @@ final class SRTSocket<T: SRTSocketDelegate> {
         }
         srt_close(socket)
         socket = SRT_INVALID_SOCK
-        stopRunning()
     }
 
     func doOutput(data: Data) {
-        outgoingQueue.async {
-            self.outgoingBuffer.append(contentsOf: data.chunk(kSRTSOcket_payloadSize))
-            repeat {
-                guard var data = self.outgoingBuffer.first else {
-                    return
-                }
-                _ = self.sendmsg2(&data)
-                self.outgoingBuffer.remove(at: 0)
-            } while !self.outgoingBuffer.isEmpty
+        for data in data.chunk(kSRTSOcket_payloadSize) {
+            _ = sendmsg2(data)
         }
     }
 
-    func doInput() {
-        incomingQueue.async {
+    func makeIncomingStream() -> AsyncStream<Data> {
+        return AsyncStream<Data> { condination in
             repeat {
-                let result = self.recvmsg()
+                let result = recvmsg()
                 if 0 < result {
-                    self.delegate?.socket(self, incomingDataAvailabled: self.incomingBuffer, bytes: result)
+                    condination.yield(incomingBuffer.subdata(in: 0..<Data.Index(result)))
+                } else {
+                    condination.finish()
                 }
-            } while self.isRunning.value
+            } while isRunning
         }
     }
 
@@ -161,15 +143,6 @@ final class SRTSocket<T: SRTSocketDelegate> {
         return srt_bstats(socket, &perf, 1)
     }
 
-    private func accept() {
-        let socket = srt_accept(socket, nil, nil)
-        do {
-            delegate?.socket(self, didAcceptSocket: try SRTSocket(socket: socket))
-        } catch {
-            logger.error(error)
-        }
-    }
-
     private func makeSocketError() -> SRTError {
         let error_message = String(cString: srt_getlasterror_str())
         logger.error(error_message)
@@ -177,7 +150,7 @@ final class SRTSocket<T: SRTSocketDelegate> {
     }
 
     @inline(__always)
-    private func sendmsg2(_ data: inout Data) -> Int32 {
+    private func sendmsg2(_ data: Data) -> Int32 {
         return data.withUnsafeBytes { pointer in
             guard let buffer = pointer.baseAddress?.assumingMemoryBound(to: CChar.self) else {
                 return SRT_ERROR
@@ -194,34 +167,5 @@ final class SRTSocket<T: SRTSocketDelegate> {
             }
             return srt_recvmsg(socket, buffer, windowSizeC)
         }
-    }
-}
-
-extension SRTSocket: Running {
-    // MARK: Running
-    func startRunning() {
-        guard !isRunning.value else {
-            return
-        }
-        isRunning.mutate { $0 = true }
-        DispatchQueue(label: "com.haishkinkit.SRTHaishinKit.SRTSocket.runloop").async {
-            repeat {
-                self.status = srt_getsockstate(self.socket)
-                switch self.mode {
-                case .listener:
-                    self.accept()
-                default:
-                    break
-                }
-                usleep(3 * 10000)
-            } while self.isRunning.value
-        }
-    }
-
-    func stopRunning() {
-        guard isRunning.value else {
-            return
-        }
-        isRunning.mutate { $0 = false }
     }
 }

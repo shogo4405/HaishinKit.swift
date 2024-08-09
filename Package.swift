@@ -29,10 +29,10 @@ let package = Package(
                 path: "Sources",
                 sources: [
                     "Codec",
+                    "Network",
                     "Extension",
                     "IO",
                     "ISO",
-                    "Net",
                     "RTMP",
                     "Screen",
                     "Util"

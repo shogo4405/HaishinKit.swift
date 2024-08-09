@@ -1,13 +1,13 @@
 import HaishinKit
-import Logboard
+@preconcurrency import Logboard
 import MediaPlayer
 import ReplayKit
 import VideoToolbox
 
-let logger = LBLogger.with(HaishinKitIdentifier)
+nonisolated let logger = LBLogger.with(HaishinKitIdentifier)
 
 @available(iOS 10.0, *)
-open class SampleHandler: RPBroadcastSampleHandler {
+final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
     private var slider: UISlider?
     private var _rotator: Any?
     @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
@@ -24,27 +24,14 @@ open class SampleHandler: RPBroadcastSampleHandler {
             }
         }
     }
-    private lazy var rtmpConnection: RTMPConnection = {
-        let conneciton = RTMPConnection()
-        conneciton.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusEvent), observer: self)
-        conneciton.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-        return conneciton
-    }()
-
-    private lazy var rtmpStream: RTMPStream = {
-        let stream = RTMPStream(connection: rtmpConnection)
-        stream.isMultiTrackAudioMixingEnabled = true
-        return stream
-    }()
-
+    private var mixer = IOMixer()
+    private let netStreamSwitcher = NetStreamSwitcher()
     private var needVideoConfiguration = true
 
-    deinit {
-        rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-        rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusEvent), observer: self)
+    override init() {
     }
 
-    override open func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
+    override func broadcastStarted(withSetupInfo setupInfo: [String: NSObject]?) {
         /*
          let socket = SocketAppender()
          socket.connect("192.168.1.9", port: 22222)
@@ -53,11 +40,15 @@ open class SampleHandler: RPBroadcastSampleHandler {
          logger.level = .debug
          */
         LBLogger.with(HaishinKitIdentifier).level = .info
-        // rtmpStream.audioMixerSettings = .init(sampleRate: 0, channels: 2)
-        rtmpStream.audioMixerSettings.tracks[1] = .default
-        rtmpStream.videoSettings.scalingMode = .letterbox
+        // mixer.audioMixerSettings.tracks[1] = .default
         isVideoRotationEnabled = true
-        rtmpConnection.connect(Preference.default.uri!, arguments: nil)
+        Task {
+            await netStreamSwitcher.setPreference(Preference.default)
+            if let stream = await netStreamSwitcher.stream {
+                await mixer.addStream(stream)
+            }
+            await netStreamSwitcher.open(.ingest)
+        }
         // The volume of the audioApp can be obtained even when muted. A hack to synchronize with the volume.
         DispatchQueue.main.async {
             let volumeView = MPVolumeView(frame: CGRect.zero)
@@ -67,62 +58,45 @@ open class SampleHandler: RPBroadcastSampleHandler {
         }
     }
 
-    override open func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
+    override func processSampleBuffer(_ sampleBuffer: CMSampleBuffer, with sampleBufferType: RPSampleBufferType) {
         switch sampleBufferType {
         case .video:
-            if needVideoConfiguration, let dimensions = sampleBuffer.formatDescription?.dimensions {
-                rtmpStream.videoSettings.videoSize = .init(
-                    width: CGFloat(dimensions.width),
-                    height: CGFloat(dimensions.height)
-                )
-                rtmpStream.videoSettings.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
-                needVideoConfiguration = false
+            Task {
+                if needVideoConfiguration, let dimensions = sampleBuffer.formatDescription?.dimensions {
+                    var videoSettings = await netStreamSwitcher.stream?.videoSettings
+                    videoSettings?.videoSize = .init(
+                        width: CGFloat(dimensions.width),
+                        height: CGFloat(dimensions.height)
+                    )
+                    videoSettings?.profileLevel = kVTProfileLevel_H264_Baseline_AutoLevel as String
+                    if let videoSettings {
+                        await netStreamSwitcher.stream?.setVideoSettings(videoSettings)
+                    }
+                    needVideoConfiguration = false
+                }
             }
             if #available(iOS 16.0, tvOS 16.0, macOS 13.0, *), let rotator {
                 switch rotator.rotate(buffer: sampleBuffer) {
                 case .success(let rotatedBuffer):
-                    rtmpStream.append(rotatedBuffer)
+                    Task { await mixer.append(rotatedBuffer) }
                 case .failure(let error):
                     logger.error(error)
                 }
             } else {
-                rtmpStream.append(sampleBuffer)
+                Task { await mixer.append(sampleBuffer) }
             }
         case .audioMic:
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer, track: 0)
+                Task { await mixer.append(sampleBuffer, track: 0) }
             }
         case .audioApp:
             if let volume = slider?.value {
-                rtmpStream.audioMixerSettings.tracks[1]?.volume = volume * 0.5
+                // mixer.audioMixerSettings.tracks[1]?.volume = volume * 0.5
             }
             if CMSampleBufferDataIsReady(sampleBuffer) {
-                rtmpStream.append(sampleBuffer, track: 1)
+                Task { await mixer.append(sampleBuffer, track: 1) }
             }
         @unknown default:
-            break
-        }
-    }
-
-    @objc
-    private func rtmpErrorHandler(_ notification: Notification) {
-        logger.info(notification)
-        rtmpConnection.connect(Preference.default.uri!)
-    }
-
-    @objc
-    private func rtmpStatusEvent(_ status: Notification) {
-        let e = Event.from(status)
-        logger.info(e)
-        guard
-            let data: ASObject = e.data as? ASObject,
-            let code: String = data["code"] as? String else {
-            return
-        }
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            rtmpStream.publish(Preference.default.streamName!)
-        default:
             break
         }
     }

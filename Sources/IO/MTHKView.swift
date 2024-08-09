@@ -16,64 +16,12 @@ public class MTHKView: MTKView {
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
-    #if os(iOS) || os(macOS)
-    /// Specifies the orientation of AVCaptureVideoOrientation.
-    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
-        didSet {
-            (captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
-        }
-    }
-    #endif
-
-    /// Specifies the capture video preview enabled or not.
-    @available(tvOS 17.0, *)
-    public var isCaptureVideoPreviewEnabled: Bool {
-        get {
-            captureVideoPreview != nil
-        }
-        set {
-            guard isCaptureVideoPreviewEnabled != newValue else {
-                return
-            }
-            if Thread.isMainThread {
-                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-            } else {
-                DispatchQueue.main.async {
-                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-                }
-            }
-        }
-    }
-
     private var currentSampleBuffer: CMSampleBuffer?
-
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
-
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
-
     private var context: CIContext?
-
-    private var captureVideoPreview: View? {
-        willSet {
-            captureVideoPreview?.removeFromSuperview()
-        }
-        didSet {
-            captureVideoPreview.map {
-                addSubview($0)
-                sendSubviewToBack($0)
-            }
-        }
-    }
-
-    private weak var currentStream: IOStream? {
-        didSet {
-            currentStream.map {
-                $0.view = self
-            }
-        }
-    }
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     public init(frame: CGRect) {
@@ -90,10 +38,12 @@ public class MTHKView: MTKView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override open func awakeFromNib() {
         super.awakeFromNib()
-        framebufferOnly = false
-        enableSetNeedsDisplay = true
-        if let device {
-            context = CIContext(mtlDevice: device)
+        Task { @MainActor in
+            framebufferOnly = false
+            enableSetNeedsDisplay = true
+            if let device {
+                context = CIContext(mtlDevice: device)
+            }
         }
     }
 
@@ -151,30 +101,18 @@ public class MTHKView: MTKView {
     }
 }
 
-extension MTHKView: IOStreamView {
-    // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
+extension MTHKView: IOStreamObserver {
+    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
+    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
+        Task { @MainActor in
+            currentSampleBuffer = video
             #if os(macOS)
             self.needsDisplay = true
             #else
             self.setNeedsDisplay()
             #endif
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
         }
     }
 }

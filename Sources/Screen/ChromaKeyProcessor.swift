@@ -3,6 +3,7 @@ import Foundation
 import simd
 
 /// A type with a chroma key processorble screen object.
+@ScreenActor
 public protocol ChromaKeyProcessorble {
     /// Specifies the chroma key color.
     var chromaKeyColor: CGColor? { get set }

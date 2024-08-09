@@ -1,62 +1,245 @@
 import AVFoundation
+import Combine
 
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
 #endif
 
-protocol IOMixerDelegate: AnyObject {
-    func mixer(_ mixer: IOMixer, track: UInt8, didInput audio: AVAudioBuffer, when: AVAudioTime)
-    func mixer(_ mixer: IOMixer, track: UInt8, didInput video: CMSampleBuffer)
-    func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime)
-    func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer)
-    func mixer(_ mixer: IOMixer, videoErrorOccurred error: IOVideoUnitError)
-    func mixer(_ mixer: IOMixer, audioErrorOccurred error: IOAudioUnitError)
-    #if os(iOS) || os(tvOS) || os(visionOS)
-    @available(tvOS 17.0, *)
-    func mixer(_ mixer: IOMixer, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
-    @available(tvOS 17.0, *)
-    func mixer(_ mixer: IOMixer, sessionInterruptionEnded session: AVCaptureSession)
-    #endif
-    #if os(iOS) || os(tvOS)
-    @available(tvOS 17.0, *)
-    func mixer(_ mixer: IOMixer, mediaServicesWereReset error: AVError)
-    #endif
-}
+#if canImport(UIKit)
+import UIKit
+#endif
 
 /// An object that mixies audio and video for streaming.
-final class IOMixer {
+public final actor IOMixer {
     static let defaultFrameRate: Float64 = 30
 
-    weak var muxer: (any IOMuxer)?
+    /// The offscreen rendering object.
+    @ScreenActor
+    public private(set) lazy var screen = Screen()
 
-    weak var delegate: (any IOMixerDelegate)?
+    #if os(iOS) || os(tvOS)
+    /// The AVCaptureMultiCamSession enabled.
+    @available(tvOS 17.0, *)
+    public var isMultiCamSessionEnabled: Bool {
+        session.isMultiCamSessionEnabled
+    }
+    #endif
 
-    private(set) var isRunning: Atomic<Bool> = .init(false)
+    #if os(iOS) || os(macOS) || os(tvOS)
+    /// The device torch indicating wheter the turn on(TRUE) or not(FALSE).
+    public var isTorchEnabled: Bool {
+        videoIO.torch
+    }
 
-    private(set) lazy var audioIO = {
-        var audioIO = IOAudioUnit()
-        audioIO.mixer = self
-        return audioIO
-    }()
+    /// The feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
+    public var isMultiTrackAudioMixingEnabled: Bool {
+        audioIO.isMultiTrackAudioMixingEnabled
+    }
 
-    private(set) lazy var videoIO = {
-        var videoIO = IOVideoUnit()
-        videoIO.mixer = self
-        return videoIO
-    }()
+    /// The sessionPreset for the AVCaptureSession.
+    @available(tvOS 17.0, *)
+    public var sessionPreset: AVCaptureSession.Preset {
+        session.sessionPreset
+    }
+    #endif
 
-    private(set) lazy var session = {
-        var session = IOCaptureSession()
-        session.delegate = self
-        return session
-    }()
+    /// The audio monitoring enabled or not.
+    public var isMonitoringEnabled: Bool {
+        audioIO.isMonitoringEnabled
+    }
 
-    private(set) lazy var audioEngine: AVAudioEngine? = {
-        return IOStream.audioEngineHolder.retain()
-    }()
+    /// The audio mixer settings.
+    public var audioMixerSettings: IOAudioMixerSettings {
+        audioIO.mixerSettings
+    }
 
-    deinit {
-        IOStream.audioEngineHolder.release(audioEngine)
+    /// The video mixer settings.
+    public var videoMixerSettings: IOVideoMixerSettings {
+        videoIO.mixerSettings
+    }
+
+    /// The audio input formats.
+    public var audioInputFormats: [UInt8: AVAudioFormat] {
+        audioIO.inputFormats
+    }
+
+    /// The video input formats.
+    public var videoInputFormats: [UInt8: CMFormatDescription] {
+        videoIO.inputFormats
+    }
+
+    /// The frame rate of a device capture.
+    public var frameRate: Float64 {
+        videoIO.frameRate
+    }
+
+    #if os(iOS) || os(macOS)
+    /// Specifies the video orientation for stream.
+    public var videoOrientation: AVCaptureVideoOrientation {
+        videoIO.videoOrientation
+    }
+    #endif
+
+    public private(set) var isRunning = false
+
+    private var streams: [any IOStream] = []
+    private lazy var audioIO = IOAudioUnit(session)
+    private lazy var videoIO = IOVideoUnit(session)
+    private lazy var session = IOCaptureSession()
+    private var cancellables: Set<AnyCancellable> = []
+
+    /// Creates a new instance.
+    public init() {
+        Task {
+            await startRunning()
+        }
+    }
+
+    /// Attaches the camera device.
+    @available(tvOS 17.0, *)
+    public func attachCamera(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOVideoCaptureConfigurationBlock? = nil) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            do {
+                try videoIO.attachCamera(track, device: device, configuration: configuration)
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    /// Returns the IOVideoCaptureUnit by track.
+    @available(tvOS 17.0, *)
+    public func videoCapture(for track: UInt8) -> IOVideoCaptureUnit? {
+        return videoIO.capture(for: track)
+    }
+
+    #if os(iOS) || os(macOS) || os(tvOS)
+    /// Attaches the audio device.
+    ///
+    /// You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
+    /// ```
+    /// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+    /// var audios = AVCaptureDevice.devices(for: .audio)
+    /// if let device = audios.removeFirst() {
+    ///    stream.attachAudio(device, track: 0)
+    /// }
+    /// if let device = audios.removeFirst() {
+    ///    stream.attachAudio(device, track: 1)
+    /// }
+    /// ```
+    @available(tvOS 17.0, *)
+    public func attachAudio(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOAudioCaptureConfigurationBlock? = nil) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            do {
+                try audioIO.attachAudio(track, device: device, configuration: configuration)
+                continuation.resume()
+            } catch {
+                continuation.resume(throwing: error)
+            }
+        }
+    }
+
+    /// Returns the IOAudioCaptureUnit by track.
+    @available(tvOS 17.0, *)
+    public func audioCapture(for track: UInt8) -> IOAudioCaptureUnit? {
+        return audioIO.capture(for: track)
+    }
+
+    /// Specifies the device torch indicating wheter the turn on(TRUE) or not(FALSE).
+    public func setTorchEnabled(_ torchEnabled: Bool) {
+        videoIO.torch = torchEnabled
+    }
+
+    /// Specifies the sessionPreset for the AVCaptureSession.
+    public func setSessionPreset(_ sessionPreset: AVCaptureSession.Preset) {
+        session.sessionPreset = sessionPreset
+    }
+    #endif
+
+    /// Appends a CMSampleBuffer.
+    /// - Parameters:
+    ///   - sampleBuffer:The sample buffer to append.
+    ///   - track: Track number used for mixing
+    public func append(_ sampleBuffer: CMSampleBuffer, track: UInt8 = 0) {
+        switch sampleBuffer.formatDescription?.mediaType {
+        case .audio?:
+            audioIO.append(track, buffer: sampleBuffer)
+        case .video?:
+            videoIO.append(track, buffer: sampleBuffer)
+        default:
+            break
+        }
+    }
+
+    /// Specifies the video orientation for stream.
+    public func setVideoOrientation(_ videoOrientation: AVCaptureVideoOrientation) {
+        videoIO.videoOrientation = videoOrientation
+    }
+
+
+    /// Specifies the video mixier settings.
+    public func setVideoMixerSettings(_ settings: IOVideoMixerSettings) {
+        videoIO.mixerSettings = settings
+    }
+
+    /// Specifies the frame rate of a device capture.
+    public func setFrameRate(_ frameRate: Float64) {
+        videoIO.frameRate = frameRate
+    }
+
+    /// Specifies the audio mixer settings.
+    public func setAudioMixerSettings(_ settings: IOAudioMixerSettings) {
+        audioIO.mixerSettings = settings
+    }
+
+    /// Specifies the audio monitoring enabled or not.
+    public func setMonitoringEnabled(_ monitoringEnabled: Bool) {
+        audioIO.isMonitoringEnabled = monitoringEnabled
+    }
+
+    #if os(iOS) || os(tvOS)
+    /// Specifies the AVCaptureMultiCamSession enabled.
+    /// Warning: If there is a possibility of using multiple cameras, please set it to true initially.
+    public func setMultiCamSessionEnabled(_ multiCamSessionEnabled: Bool) {
+        session.isMultiCamSessionEnabled = multiCamSessionEnabled
+    }
+    #endif
+
+    /// Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
+    /// Warning: If there is a possibility of this feature, please set it to true initially.
+    public func setMultiTrackAudioMixingEnabled(_ multiTrackAudioMixingEnabled: Bool) {
+        audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+    }
+
+    /// Appends an AVAudioBuffer.
+    /// - Parameters:
+    ///   - audioBuffer:The audio buffer to append.
+    ///   - when: The audio time to append.
+    ///   - track: Track number used for mixing.
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime, track: UInt8 = 0) {
+        audioIO.append(track, buffer: audioBuffer, when: when)
+    }
+
+    /// Configurations for the AVCaptureSession.
+    @available(tvOS 17.0, *)
+    public func configuration(_ lambda: (_ session: AVCaptureSession) throws -> Void) rethrows {
+        try session.configuration(lambda)
+    }
+
+    /// Adds a stream.
+    public func addStream(_ stream: some IOStream) {
+        guard !streams.contains(where: { $0 === stream }) else {
+            return
+        }
+        streams.append(stream)
+    }
+
+    /// Removes a stream.
+    public func removeStream(_ stream: some IOStream) {
+        if let index = streams.firstIndex(where: { $0 === stream }) {
+            streams.remove(at: index)
+        }
     }
 
     #if os(iOS) || os(tvOS) || os(visionOS)
@@ -74,145 +257,70 @@ final class IOMixer {
     #endif
 }
 
-extension IOMixer: Running {
-    // MARK: Running
-    func startRunning() {
-        guard !isRunning.value else {
+extension IOMixer: AsyncRunner {
+    // MARK: AsyncRunner
+    public func startRunning() {
+        guard !isRunning else {
             return
         }
-        muxer?.startRunning()
-        audioIO.startRunning()
-        videoIO.startRunning()
-        isRunning.mutate { $0 = true }
-    }
-
-    func stopRunning() {
-        guard isRunning.value else {
-            return
-        }
-        videoIO.stopRunning()
-        audioIO.stopRunning()
-        muxer?.stopRunning()
-        isRunning.mutate { $0 = false }
-    }
-}
-
-extension IOMixer: VideoCodecDelegate {
-    // MARK: VideoCodecDelegate
-    func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput formatDescription: CMFormatDescription?) {
-        muxer?.videoFormat = formatDescription
-    }
-
-    func videoCodec(_ codec: VideoCodec<IOMixer>, didOutput sampleBuffer: CMSampleBuffer) {
-        if sampleBuffer.formatDescription?.isCompressed == false {
-            delegate?.mixer(self, didOutput: sampleBuffer)
-        }
-        muxer?.append(sampleBuffer)
-    }
-
-    func videoCodec(_ codec: VideoCodec<IOMixer>, errorOccurred error: IOVideoUnitError) {
-        delegate?.mixer(self, videoErrorOccurred: error)
-    }
-}
-
-extension IOMixer: AudioCodecDelegate {
-    // MARK: AudioCodecDelegate
-    func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioFormat: AVAudioFormat?) {
-        muxer?.audioFormat = audioFormat
-    }
-
-    func audioCodec(_ codec: AudioCodec<IOMixer>, didOutput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        switch audioBuffer {
-        case let audioBuffer as AVAudioPCMBuffer:
-            delegate?.mixer(self, didOutput: audioBuffer, when: when)
-        default:
-            break
-        }
-        muxer?.append(audioBuffer, when: when)
-        codec.releaseOutputBuffer(audioBuffer)
-    }
-
-    func audioCodec(_ codec: AudioCodec<IOMixer>, errorOccurred error: IOAudioUnitError) {
-        delegate?.mixer(self, audioErrorOccurred: error)
-    }
-}
-
-extension IOMixer: IOCaptureSessionDelegate {
-    // MARK: IOCaptureSessionDelegate
-    @available(tvOS 17.0, *)
-    func captureSession(_ capture: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError) {
-        #if os(iOS) || os(tvOS) || os(macOS)
-        switch error.code {
-        case .unsupportedDeviceActiveFormat:
-            guard let device = error.device, let format = device.videoFormat(
-                width: session.sessionPreset.width ?? Int32(videoIO.settings.videoSize.width),
-                height: session.sessionPreset.height ?? Int32(videoIO.settings.videoSize.height),
-                frameRate: videoIO.frameRate,
-                isMultiCamSupported: capture.isMultiCamSessionEnabled
-            ), device.activeFormat != format else {
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.activeFormat = format
-                if format.isFrameRateSupported(videoIO.frameRate) {
-                    device.activeVideoMinFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
-                    device.activeVideoMaxFrameDuration = CMTime(value: 100, timescale: CMTimeScale(100 * videoIO.frameRate))
+        isRunning = true
+        Task {
+            for await inputs in videoIO.inputs where isRunning {
+                Task { @ScreenActor in
+                    screen.append(inputs.0, buffer: inputs.1)
                 }
-                device.unlockForConfiguration()
-                capture.startRunningIfNeeded()
-            } catch {
-                logger.warn(error)
             }
-        default:
-            break
         }
-        #endif
-        switch error.code {
-        #if os(iOS) || os(tvOS)
-        case .mediaServicesWereReset:
-            delegate?.mixer(self, mediaServicesWereReset: error)
-        #endif
-        default:
-            break
+        Task {
+            for await video in videoIO.output where isRunning {
+                for stream in streams {
+                    await stream.append(video)
+                }
+            }
         }
+        Task {
+            for await audio in audioIO.output where isRunning {
+                for stream in self.streams {
+                    await stream.append(audio.0, when: audio.1)
+                }
+            }
+        }
+        Task { @ScreenActor in
+            for await _ in AsyncDisplayLink.updateFrames where await isRunning {
+                guard let buffer = screen.makeSampleBuffer() else {
+                    return
+                }
+                for stream in await streams {
+                    await stream.append(buffer)
+                }
+            }
+        }
+        #if os(iOS) || os(tvOS) || os(visionOS)
+        NotificationCenter
+            .Publisher(center: .default, name: UIApplication.didEnterBackgroundNotification, object: nil)
+            .sink { _ in
+                Task {
+                    self.setBackgroundMode(true)
+                }
+            }
+            .store(in: &cancellables)
+        NotificationCenter
+            .Publisher(center: .default, name: UIApplication.willEnterForegroundNotification, object: nil)
+            .sink { _ in
+                Task {
+                    self.setBackgroundMode(false)
+                }
+            }
+            .store(in: &cancellables)
+        #endif
     }
 
-    #if os(iOS) || os(tvOS) || os(visionOS)
-    @available(tvOS 17.0, *)
-    func captureSession(_ _: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?) {
-        delegate?.mixer(self, sessionWasInterrupted: session, reason: reason)
-    }
-
-    @available(tvOS 17.0, *)
-    func captureSession(_ _: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession) {
-        delegate?.mixer(self, sessionInterruptionEnded: session)
-    }
-    #endif
-}
-
-extension IOMixer: IOAudioUnitDelegate {
-    // MARK: IOAudioUnitDelegate
-    func audioUnit(_ audioUnit: IOAudioUnit, track: UInt8, didInput audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        delegate?.mixer(self, track: track, didInput: audioBuffer, when: when)
-    }
-
-    func audioUnit(_ audioUnit: IOAudioUnit, errorOccurred error: IOAudioUnitError) {
-        delegate?.mixer(self, audioErrorOccurred: error)
-    }
-
-    func audioUnit(_ audioUnit: IOAudioUnit, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        delegate?.mixer(self, didOutput: audioBuffer, when: when)
-    }
-}
-
-extension IOMixer: IOVideoUnitDelegate {
-    // MARK: IOVideoUnitDelegate
-    func videoUnit(_ videoUnit: IOVideoUnit, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
-        delegate?.mixer(self, track: track, didInput: sampleBuffer)
-    }
-
-    func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer) {
-        delegate?.mixer(self, didOutput: sampleBuffer)
+    public func stopRunning() {
+        guard isRunning else {
+            return
+        }
+        isRunning = false
+        cancellables.forEach { $0.cancel() }
+        cancellables.removeAll()
     }
 }

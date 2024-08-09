@@ -5,19 +5,8 @@ import CoreImage
 public enum IOVideoUnitError: Error {
     /// The IOVideoUnit failed to attach device.
     case failedToAttach(error: (any Error)?)
-    /// The IOVideoUnit failed to create the VTSession.
-    case failedToCreate(status: OSStatus)
-    /// The IOVideoUnit  failed to prepare the VTSession.
-    case failedToPrepare(status: OSStatus)
-    /// The IOVideoUnit failed to encode or decode a flame.
-    case failedToFlame(status: OSStatus)
     /// The IOVideoUnit failed to set an option.
-    case failedToSetOption(status: OSStatus, option: VTSessionOption)
-}
-
-protocol IOVideoUnitDelegate: AnyObject {
-    func videoUnit(_ videoUnit: IOVideoUnit, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
-    func videoUnit(_ videoUnit: IOVideoUnit, didOutput sampleBuffer: CMSampleBuffer)
+    // case failedToSetOption(status: OSStatus, key: String)
 }
 
 final class IOVideoUnit: IOUnit {
@@ -26,19 +15,6 @@ final class IOVideoUnit: IOUnit {
     }
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
-    weak var mixer: IOMixer?
-
-    weak var view: (any IOStreamView)? {
-        didSet {
-            #if os(iOS) || os(macOS)
-            view?.videoOrientation = videoOrientation
-            #endif
-        }
-    }
-
-    var screen: Screen {
-        return videoMixer.screen
-    }
 
     var mixerSettings: IOVideoMixerSettings {
         get {
@@ -48,19 +24,8 @@ final class IOVideoUnit: IOUnit {
             videoMixer.settings = newValue
         }
     }
-    var settings: VideoCodecSettings {
-        get {
-            return codec.settings
-        }
-        set {
-            codec.settings = newValue
-        }
-    }
     var inputFormats: [UInt8: CMFormatDescription] {
         return videoMixer.inputFormats
-    }
-    var outputFormat: CMFormatDescription? {
-        codec.outputFormat
     }
     var frameRate = IOMixer.defaultFrameRate {
         didSet {
@@ -89,44 +54,40 @@ final class IOVideoUnit: IOUnit {
         !captures.lazy.filter { $0.value.device != nil }.isEmpty
     }
 
-    var isRunning: Atomic<Bool> {
-        return codec.isRunning
-    }
-
     #if os(iOS) || os(macOS)
     var videoOrientation: AVCaptureVideoOrientation = .portrait {
         didSet {
             guard videoOrientation != oldValue else {
                 return
             }
-            mixer?.session.configuration { _ in
-                view?.videoOrientation = videoOrientation
+            session.configuration { _ in
                 for capture in captures.values {
                     capture.videoOrientation = videoOrientation
-                }
-            }
-            // https://github.com/shogo4405/HaishinKit.swift/issues/190
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                if self.torch {
-                    self.setTorchMode(.on)
                 }
             }
         }
     }
     #endif
 
+    var inputs: AsyncStream<(UInt8, CMSampleBuffer)> {
+        let (stream, continutation) = AsyncStream<(UInt8, CMSampleBuffer)>.makeStream()
+        self.inputsContinutation = continutation
+        return stream
+    }
+
+    var output: AsyncStream<CMSampleBuffer> {
+        let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
+        self.continuation = continutation
+        return stream
+    }
+
     private lazy var videoMixer = {
         var videoMixer = IOVideoMixer<IOVideoUnit>()
         videoMixer.delegate = self
         return videoMixer
     }()
-
-    private lazy var codec = {
-        var codec = VideoCodec<IOMixer>(lockQueue: lockQueue)
-        codec.delegate = mixer
-        return codec
-    }()
-
+    private var continuation: AsyncStream<CMSampleBuffer>.Continuation?
+    private var inputsContinutation: AsyncStream<(UInt8, CMSampleBuffer)>.Continuation?
     #if os(tvOS)
     private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
@@ -136,52 +97,35 @@ final class IOVideoUnit: IOUnit {
     #elseif os(iOS) || os(macOS) || os(visionOS)
     var captures: [UInt8: IOVideoCaptureUnit] = [:]
     #endif
+    private let session: IOCaptureSession
 
-    deinit {
-        if Thread.isMainThread {
-            self.view?.attachStream(nil)
-        } else {
-            DispatchQueue.main.sync {
-                self.view?.attachStream(nil)
-            }
-        }
-    }
-
-    func registerEffect(_ effect: VideoEffect) -> Bool {
-        return videoMixer.registerEffect(effect)
-    }
-
-    func unregisterEffect(_ effect: VideoEffect) -> Bool {
-        return videoMixer.unregisterEffect(effect)
+    init(_ session: IOCaptureSession) {
+        self.session = session
     }
 
     func append(_ track: UInt8, buffer: CMSampleBuffer) {
-        if buffer.formatDescription?.isCompressed == true {
-            codec.append(buffer)
-        } else {
-            videoMixer.append(track, sampleBuffer: buffer)
-        }
+        videoMixer.append(track, sampleBuffer: buffer)
     }
 
     @available(tvOS 17.0, *)
-    func attachCamera(_ device: AVCaptureDevice?, track: UInt8, configuration: IOVideoCaptureConfigurationBlock?) throws {
+    func attachCamera(_ track: UInt8, device: AVCaptureDevice?, configuration: IOVideoCaptureConfigurationBlock?) throws {
         guard captures[track]?.device != device else {
             return
         }
-        if hasDevice && device != nil && captures[track]?.device == nil && mixer?.session.isMultiCamSessionEnabled == false {
+        if hasDevice && device != nil && captures[track]?.device == nil && session.isMultiCamSessionEnabled == false {
             throw Error.multiCamNotSupported
         }
-        try mixer?.session.configuration { _ in
+        try session.configuration { _ in
             for capture in captures.values where capture.device == device {
-                try? capture.attachDevice(nil, videoUnit: self)
+                try? capture.attachDevice(nil, session: session, videoUnit: self)
             }
             let capture = self.capture(for: track)
-            configuration?(capture, nil)
-            try capture?.attachDevice(device, videoUnit: self)
+            configuration?(capture)
+            try capture?.attachDevice(device, session: session, videoUnit: self)
         }
-        if device != nil && view != nil {
+        if device != nil {
             // Start captureing if not running.
-            mixer?.session.startRunning()
+            session.startRunning()
         }
         if device == nil {
             videoMixer.reset(track)
@@ -199,16 +143,16 @@ final class IOVideoUnit: IOUnit {
 
     @available(tvOS 17.0, *)
     func setBackgroundMode(_ background: Bool) {
-        guard let session = mixer?.session, !session.isMultitaskingCameraAccessEnabled else {
+        guard !session.isMultitaskingCameraAccessEnabled else {
             return
         }
         if background {
             for capture in captures.values {
-                mixer?.session.detachCapture(capture)
+                session.detachCapture(capture)
             }
         } else {
             for capture in captures.values {
-                mixer?.session.attachCapture(capture)
+                session.attachCapture(capture)
             }
         }
     }
@@ -234,35 +178,13 @@ final class IOVideoUnit: IOUnit {
     }
 }
 
-extension IOVideoUnit: Running {
-    // MARK: Running
-    func startRunning() {
-        #if os(iOS)
-        codec.passthrough = captures[0]?.preferredVideoStabilizationMode == .off
-        #endif
-        codec.startRunning()
-    }
-
-    func stopRunning() {
-        codec.stopRunning()
-    }
-}
-
 extension IOVideoUnit: IOVideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
-        mixer?.videoUnit(self, track: track, didInput: sampleBuffer)
+        inputsContinutation?.yield((track, sampleBuffer))
     }
 
     func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
-        if let imageBuffer = sampleBuffer.imageBuffer {
-            codec.append(
-                imageBuffer,
-                presentationTimeStamp: sampleBuffer.presentationTimeStamp,
-                duration: sampleBuffer.duration
-            )
-        }
-        view?.enqueue(sampleBuffer)
-        mixer?.videoUnit(self, didOutput: sampleBuffer)
+        continuation?.yield(sampleBuffer)
     }
 }

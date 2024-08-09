@@ -27,11 +27,11 @@ struct RTMPTimestamp<T: RTMPTimeConvertible> {
                 timedelta += 1
             }
             updatedAt = value.seconds
-            return UInt32(timedelta)
+            return UInt32(abs(timedelta))
         }
     }
 
-    mutating func update(_ message: RTMPMessage, chunkType: RTMPChunkType) {
+    mutating func update(_ message: some RTMPMessage, chunkType: RTMPChunkType) {
         switch chunkType {
         case .zero:
             if startedAt == 0 {

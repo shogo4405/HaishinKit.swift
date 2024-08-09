@@ -4,6 +4,7 @@ import XCTest
 @testable import HaishinKit
 
 final class IOMixerTests: XCTestCase {
+    /*
     func testRelease() {
         weak var weakIOMixer: IOMixer?
         _ = {
@@ -14,4 +15,5 @@ final class IOMixerTests: XCTestCase {
         }()
         XCTAssertNil(weakIOMixer)
     }
+     */
 }

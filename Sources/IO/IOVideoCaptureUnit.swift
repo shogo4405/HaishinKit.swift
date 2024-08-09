@@ -3,7 +3,7 @@ import Foundation
 
 /// Configuration calback block for IOVideoCaptureUnit.
 @available(tvOS 17.0, *)
-public typealias IOVideoCaptureConfigurationBlock = (IOVideoCaptureUnit?, IOVideoUnitError?) -> Void
+public typealias IOVideoCaptureConfigurationBlock = (IOVideoCaptureUnit?) -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
@@ -88,9 +88,9 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         self.track = track
     }
 
-    func attachDevice(_ device: AVCaptureDevice?, videoUnit: IOVideoUnit) throws {
+    func attachDevice(_ device: AVCaptureDevice?, session: IOCaptureSession, videoUnit: IOVideoUnit) throws {
         setSampleBufferDelegate(nil)
-        videoUnit.mixer?.session.detachCapture(self)
+        session.detachCapture(self)
         guard let device else {
             self.device = nil
             input = nil
@@ -114,7 +114,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
             connection = nil
         }
         #endif
-        videoUnit.mixer?.session.attachCapture(self)
+        session.attachCapture(self)
         #if os(iOS) || os(tvOS) || os(macOS)
         output?.connections.forEach {
             if $0.isVideoMirroringSupported {

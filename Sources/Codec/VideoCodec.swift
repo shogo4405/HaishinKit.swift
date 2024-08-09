@@ -5,149 +5,77 @@ import VideoToolbox
 import UIKit
 #endif
 
-/**
- * The interface a VideoCodec uses to inform its delegate.
- */
-protocol VideoCodecDelegate: AnyObject {
-    /// Tells the receiver to set a formatDescription.
-    func videoCodec(_ codec: VideoCodec<Self>, didOutput formatDescription: CMFormatDescription?)
-    /// Tells the receiver to output an encoded or decoded sampleBuffer.
-    func videoCodec(_ codec: VideoCodec<Self>, didOutput sampleBuffer: CMSampleBuffer)
-    /// Tells the receiver to occured an error.
-    func videoCodec(_ codec: VideoCodec<Self>, errorOccurred error: IOVideoUnitError)
-}
-
-private let kVideoCodec_defaultFrameInterval: Double = 0.0
-
 // MARK: -
 /**
  * The VideoCodec class provides methods for encode or decode for video.
  */
-final class VideoCodec<T: VideoCodecDelegate> {
-    let lockQueue: DispatchQueue
+final class VideoCodec {
+    static let frameInterval: Double = 0.0
 
     /// Specifies the settings for a VideoCodec.
     var settings: VideoCodecSettings = .default {
         didSet {
             let invalidateSession = settings.invalidateSession(oldValue)
             if invalidateSession {
-                self.invalidateSession = invalidateSession
+                self.isInvalidateSession = invalidateSession
             } else {
                 settings.apply(self, rhs: oldValue)
             }
         }
     }
-
-    /// The running value indicating whether the VideoCodec is running.
-    private(set) var isRunning: Atomic<Bool> = .init(false)
-    var needsSync: Atomic<Bool> = .init(true)
+    var needsSync = true
     var passthrough = true
-    var frameInterval = kVideoCodec_defaultFrameInterval
+    var frameInterval = VideoCodec.frameInterval
     var expectedFrameRate = IOMixer.defaultFrameRate
-    weak var delegate: T?
-    private var startedAt: CMTime = .zero
+    /// The running value indicating whether the VideoCodec is running.
+    private(set) var isRunning = false
     private(set) var inputFormat: CMFormatDescription? {
         didSet {
             guard inputFormat != oldValue else {
                 return
             }
-            invalidateSession = true
+            isInvalidateSession = true
             outputFormat = nil
-        }
-    }
-    private(set) var outputFormat: CMFormatDescription? {
-        didSet {
-            guard outputFormat != oldValue else {
-                return
-            }
-            delegate?.videoCodec(self, didOutput: outputFormat)
         }
     }
     private(set) var session: (any VTSessionConvertible)? {
         didSet {
             oldValue?.invalidate()
-            invalidateSession = false
+            isInvalidateSession = false
         }
     }
-    private var invalidateSession = true
+    private(set) var outputFormat: CMFormatDescription?
+    var outputStream: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
+        let (stream, continuation) = AsyncThrowingStream<CMSampleBuffer, any Swift.Error>.makeStream()
+        self.continuation = continuation
+        return stream
+    }
+    private var startedAt: CMTime = .zero
+    private var continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?
+    private var isInvalidateSession = true
     private var presentationTimeStamp: CMTime = .invalid
 
-    init(lockQueue: DispatchQueue) {
-        self.lockQueue = lockQueue
-    }
-
-    func append(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime) {
-        guard isRunning.value, !willDropFrame(presentationTimeStamp) else {
-            return
-        }
-        if invalidateSession {
-            session = VTSessionMode.compression.makeSession(self)
-        }
-        _ = session?.encodeFrame(
-            imageBuffer,
-            presentationTimeStamp: presentationTimeStamp,
-            duration: duration
-        ) { [unowned self] status, _, sampleBuffer in
-            guard let sampleBuffer, status == noErr else {
-                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
-                return
-            }
-            self.presentationTimeStamp = sampleBuffer.presentationTimeStamp
-            outputFormat = sampleBuffer.formatDescription
-            delegate?.videoCodec(self, didOutput: sampleBuffer)
-        }
-    }
-
     func append(_ sampleBuffer: CMSampleBuffer) {
-        inputFormat = sampleBuffer.formatDescription
-        guard isRunning.value else {
+        guard isRunning else {
             return
         }
-        if invalidateSession {
-            session = VTSessionMode.decompression.makeSession(self)
-            needsSync.mutate { $0 = true }
-        }
-        if !sampleBuffer.isNotSync {
-            needsSync.mutate { $0 = false }
-        }
-        _ = session?.decodeFrame(sampleBuffer) { [unowned self] status, _, imageBuffer, presentationTimeStamp, duration in
-            guard let imageBuffer, status == noErr else {
-                self.delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
-                return
+        do {
+            inputFormat = sampleBuffer.formatDescription
+            if isInvalidateSession {
+                if sampleBuffer.formatDescription?.isCompressed == true {
+                    session = try VTSessionMode.decompression.makeSession(self)
+                } else {
+                    session = try VTSessionMode.compression.makeSession(self)
+                }
             }
-            var status = noErr
-            if outputFormat == nil {
-                status = CMVideoFormatDescriptionCreateForImageBuffer(
-                    allocator: kCFAllocatorDefault,
-                    imageBuffer: imageBuffer,
-                    formatDescriptionOut: &outputFormat
-                )
+            guard let session else {
+                throw VTSessionError.failedToCreate(status: kVTParameterErr)
             }
-            guard let outputFormat, status == noErr else {
-                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
-                return
+            if let continuation {
+                session.convert(sampleBuffer, continuation: continuation)
             }
-            var timingInfo = CMSampleTimingInfo(
-                duration: duration,
-                presentationTimeStamp: presentationTimeStamp,
-                decodeTimeStamp: sampleBuffer.decodeTimeStamp
-            )
-            var sampleBuffer: CMSampleBuffer?
-            status = CMSampleBufferCreateForImageBuffer(
-                allocator: kCFAllocatorDefault,
-                imageBuffer: imageBuffer,
-                dataReady: true,
-                makeDataReadyCallback: nil,
-                refcon: nil,
-                formatDescription: outputFormat,
-                sampleTiming: &timingInfo,
-                sampleBufferOut: &sampleBuffer
-            )
-            guard let buffer = sampleBuffer, status == noErr else {
-                delegate?.videoCodec(self, errorOccurred: .failedToFlame(status: status))
-                return
-            }
-            delegate?.videoCodec(self, didOutput: buffer)
+        } catch {
+            logger.error(error)
         }
     }
 
@@ -172,7 +100,7 @@ final class VideoCodec<T: VideoCodecDelegate> {
         guard startedAt <= presentationTimeStamp else {
             return true
         }
-        guard kVideoCodec_defaultFrameInterval < frameInterval else {
+        guard Self.frameInterval < frameInterval else {
             return false
         }
         return presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval
@@ -181,7 +109,7 @@ final class VideoCodec<T: VideoCodecDelegate> {
     #if os(iOS) || os(tvOS) || os(visionOS)
     @objc
     private func applicationWillEnterForeground(_ notification: Notification) {
-        invalidateSession = true
+        isInvalidateSession = true
     }
 
     @objc
@@ -194,7 +122,7 @@ final class VideoCodec<T: VideoCodecDelegate> {
         }
         switch type {
         case .ended:
-            invalidateSession = true
+            isInvalidateSession = true
         default:
             break
         }
@@ -202,43 +130,46 @@ final class VideoCodec<T: VideoCodecDelegate> {
     #endif
 }
 
-extension VideoCodec: Running {
+extension VideoCodec: Runner {
     // MARK: Running
     func startRunning() {
-        lockQueue.async {
-            #if os(iOS) || os(tvOS) || os(visionOS)
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.didAudioSessionInterruption),
-                name: AVAudioSession.interruptionNotification,
-                object: nil
-            )
-            NotificationCenter.default.addObserver(
-                self,
-                selector: #selector(self.applicationWillEnterForeground),
-                name: UIApplication.willEnterForegroundNotification,
-                object: nil
-            )
-            #endif
-            self.startedAt = self.passthrough ? .zero : CMClockGetTime(CMClockGetHostTimeClock())
-            self.isRunning.mutate { $0 = true }
+        guard !isRunning else {
+            return
         }
+        #if os(iOS) || os(tvOS) || os(visionOS)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.didAudioSessionInterruption),
+            name: AVAudioSession.interruptionNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.applicationWillEnterForeground),
+            name: UIApplication.willEnterForegroundNotification,
+            object: nil
+        )
+        #endif
+        startedAt = passthrough ? .zero : CMClockGetTime(CMClockGetHostTimeClock())
+        isRunning = true
     }
 
     func stopRunning() {
-        lockQueue.async {
-            self.isRunning.mutate { $0 = false }
-            self.session = nil
-            self.invalidateSession = true
-            self.needsSync.mutate { $0 = true }
-            self.inputFormat = nil
-            self.outputFormat = nil
-            self.presentationTimeStamp = .invalid
-            self.startedAt = .zero
-            #if os(iOS) || os(tvOS) || os(visionOS)
-            NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
-            NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
-            #endif
+        guard isRunning else {
+            return
         }
+        isRunning = false
+        session = nil
+        isInvalidateSession = true
+        needsSync = true
+        inputFormat = nil
+        outputFormat = nil
+        presentationTimeStamp = .invalid
+        continuation?.finish()
+        startedAt = .zero
+        #if os(iOS) || os(tvOS) || os(visionOS)
+        NotificationCenter.default.removeObserver(self, name: AVAudioSession.interruptionNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIApplication.willEnterForegroundNotification, object: nil)
+        #endif
     }
 }

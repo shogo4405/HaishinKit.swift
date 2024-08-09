@@ -8,26 +8,28 @@ extension VTCompressionSession {
 }
 
 extension VTCompressionSession: VTSessionConvertible {
-    // MARK: VTSessionConvertible
-    @discardableResult
     @inline(__always)
-    func encodeFrame(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) -> OSStatus {
+    func convert(_ sampleBuffer: CMSampleBuffer, continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?) {
+        guard let imageBuffer = sampleBuffer.imageBuffer else {
+            continuation?.finish(throwing: VTSessionError.failedToConvert(status: kVTParameterErr))
+            return
+        }
         var flags: VTEncodeInfoFlags = []
-        return VTCompressionSessionEncodeFrame(
+        VTCompressionSessionEncodeFrame(
             self,
             imageBuffer: imageBuffer,
-            presentationTimeStamp: presentationTimeStamp,
-            duration: duration,
+            presentationTimeStamp: sampleBuffer.presentationTimeStamp,
+            duration: sampleBuffer.duration,
             frameProperties: nil,
             infoFlagsOut: &flags,
-            outputHandler: outputHandler
+            outputHandler: { status, _, sampleBuffer in
+                if let sampleBuffer {
+                    continuation?.yield(sampleBuffer)
+                } else {
+                    continuation?.finish(throwing: VTSessionError.failedToConvert(status: status))
+                }
+            }
         )
-    }
-
-    @discardableResult
-    @inline(__always)
-    func decodeFrame(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) -> OSStatus {
-        return noErr
     }
 
     func invalidate() {

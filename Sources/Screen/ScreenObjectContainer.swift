@@ -1,6 +1,7 @@
 import AVFoundation
 import Foundation
 
+@ScreenActor
 protocol ScreenObjectContainerConvertible: AnyObject {
     func addChild(_ child: ScreenObject?) throws
     func removeChild(_ child: ScreenObject?)

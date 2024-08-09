@@ -4,6 +4,7 @@ import CoreImage
 import Foundation
 
 /// A type that renders a screen object.
+@ScreenActor
 public protocol ScreenRenderer: AnyObject {
     /// The CIContext instance.
     var context: CIContext { get }

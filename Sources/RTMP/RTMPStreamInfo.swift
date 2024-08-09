@@ -10,7 +10,7 @@ public struct RTMPStreamInfo {
 
     private var previousByteCount: Int64 = 0
 
-    mutating func on(timer: Timer) {
+    mutating func update() {
         let byteCount: Int64 = self.byteCount.value
         currentBytesPerSecond = Int32(byteCount - previousByteCount)
         previousByteCount = byteCount

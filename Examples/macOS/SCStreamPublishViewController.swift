@@ -2,22 +2,17 @@ import AppKit
 import Foundation
 import HaishinKit
 #if canImport(ScreenCaptureKit)
-import ScreenCaptureKit
+@preconcurrency import ScreenCaptureKit
 #endif
 
 class SCStreamPublishViewController: NSViewController {
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
     @IBOutlet private weak var urlField: NSTextField!
     @IBOutlet private weak var mthkView: MTHKView!
-
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var stream: IOStream {
-        return netStreamSwitcher.stream
-    }
-
     private let lockQueue = DispatchQueue(label: "SCStreamPublishViewController.lock")
-
     private var _scstream: Any?
+
     @available(macOS 12.3, *)
     private var scstream: SCStream? {
         get {
@@ -25,39 +20,42 @@ class SCStreamPublishViewController: NSViewController {
         }
         set {
             _scstream = newValue
-            Task {
-                try? newValue?.addStreamOutput(stream, type: .screen, sampleHandlerQueue: lockQueue)
-                if #available(macOS 13.0, *) {
-                    try? newValue?.addStreamOutput(stream, type: .audio, sampleHandlerQueue: lockQueue)
-                }
-                try await newValue?.startCapture()
-            }
+            /*
+             Task {
+             try? newValue?.addStreamOutput(stream, type: .screen, sampleHandlerQueue: lockQueue)
+             if #available(macOS 13.0, *) {
+             try? newValue?.addStreamOutput(stream, type: .audio, sampleHandlerQueue: lockQueue)
+             }
+             try await newValue?.startCapture()
+             }
+             */
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         urlField.stringValue = Preference.default.uri ?? ""
-        netStreamSwitcher.uri = Preference.default.uri ?? ""
-        mthkView?.attachStream(stream)
-        if #available(macOS 12.3, *) {
-            Task {
-                try await SCShareableContent.current.windows.forEach {
-                    cameraPopUpButton.addItem(withTitle: $0.owningApplication?.applicationName ?? "")
-                }
+        Task {
+            await netStreamSwitcher.setPreference(Preference.default)
+            let stream = await netStreamSwitcher.stream
+            await stream?.addObserver(mthkView!)
+            try await SCShareableContent.current.windows.forEach {
+                cameraPopUpButton.addItem(withTitle: $0.owningApplication?.applicationName ?? "")
             }
         }
     }
 
     @IBAction private func publishOrStop(_ sender: NSButton) {
-        // Publish
-        if sender.title == "Publish" {
-            sender.title = "Stop"
-            netStreamSwitcher.open(.ingest)
-        } else {
-            // Stop
-            sender.title = "Publish"
-            netStreamSwitcher.close()
+        Task {
+            // Publish
+            if sender.title == "Publish" {
+                sender.title = "Stop"
+                await netStreamSwitcher.open(.ingest)
+            } else {
+                // Stop
+                sender.title = "Publish"
+                await netStreamSwitcher.close()
+            }
         }
     }
 
@@ -81,23 +79,7 @@ class SCStreamPublishViewController: NSViewController {
 
 extension SCStreamPublishViewController: SCStreamDelegate {
     // MARK: SCStreamDelegate
-    func stream(_ stream: SCStream, didStopWithError error: any Error) {
+    nonisolated func stream(_ stream: SCStream, didStopWithError error: any Error) {
         print(error)
-    }
-}
-
-extension IOStream: SCStreamOutput {
-    @available(macOS 12.3, *)
-    public func stream(_ stream: SCStream, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, of type: SCStreamOutputType) {
-        if #available(macOS 13.0, *) {
-            switch type {
-            case .screen:
-                append(sampleBuffer)
-            default:
-                append(sampleBuffer)
-            }
-        } else {
-            append(sampleBuffer)
-        }
     }
 }

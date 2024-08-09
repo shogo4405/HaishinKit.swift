@@ -25,51 +25,6 @@ public class PiPHKView: UIView {
         }
     }
 
-    #if os(iOS)
-    /// Specifies the orientation of AVCaptureVideoOrientation.
-    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
-        didSet {
-            if Thread.isMainThread {
-                layer.flushAndRemoveImage()
-                (captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
-            } else {
-                DispatchQueue.main.sync {
-                    layer.flushAndRemoveImage()
-                    (self.captureVideoPreview as? IOCaptureVideoPreview)?.videoOrientation = videoOrientation
-                }
-            }
-        }
-    }
-    #endif
-
-    #if os(iOS) || os(tvOS)
-    /// Specifies the capture video preview enabled or not.
-    @available(tvOS 17.0, *)
-    public var isCaptureVideoPreviewEnabled: Bool {
-        get {
-            captureVideoPreview != nil
-        }
-        set {
-            guard isCaptureVideoPreviewEnabled != newValue else {
-                return
-            }
-            if Thread.isMainThread {
-                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-            } else {
-                DispatchQueue.main.async {
-                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-                }
-            }
-        }
-    }
-    #endif
-
-    private weak var currentStream: IOStream? {
-        didSet {
-            currentStream?.view = self
-        }
-    }
-
     private var captureVideoPreview: UIView? {
         willSet {
             captureVideoPreview?.removeFromSuperview()
@@ -96,33 +51,10 @@ public class PiPHKView: UIView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = Self.defaultBackgroundColor
-        layer.backgroundColor = Self.defaultBackgroundColor.cgColor
-        layer.videoGravity = videoGravity
-    }
-}
-
-extension PiPHKView: IOStreamView {
-    // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
-    }
-
-    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            if let sampleBuffer = sampleBuffer {
-                layer.enqueue(sampleBuffer)
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
+        Task { @MainActor in
+            backgroundColor = Self.defaultBackgroundColor
+            layer.backgroundColor = Self.defaultBackgroundColor.cgColor
+            layer.videoGravity = videoGravity
         }
     }
 }
@@ -156,42 +88,7 @@ public class PiPHKView: NSView {
         }
     }
 
-    /// Specifies the capture video preview enabled or not.
-    public var isCaptureVideoPreviewEnabled: Bool {
-        get {
-            captureVideoPreview != nil
-        }
-        set {
-            guard isCaptureVideoPreviewEnabled != newValue else {
-                return
-            }
-            if Thread.isMainThread {
-                captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-            } else {
-                DispatchQueue.main.async {
-                    self.captureVideoPreview = newValue ? IOCaptureVideoPreview(self) : nil
-                }
-            }
-        }
-    }
-
-    private var captureVideoPreview: NSView? {
-        willSet {
-            captureVideoPreview?.removeFromSuperview()
-        }
-        didSet {
-            captureVideoPreview.map {
-                addSubview($0)
-                sendSubviewToBack($0)
-            }
-        }
-    }
-
-    private weak var currentStream: IOStream? {
-        didSet {
-            currentStream?.view = self
-        }
-    }
+    private var enqueueTask: Task<Void, Never>?
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
@@ -207,34 +104,27 @@ public class PiPHKView: NSView {
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
     override public func awakeFromNib() {
         super.awakeFromNib()
-        wantsLayer = true
-        layer = AVSampleBufferDisplayLayer()
-        layer?.backgroundColor = PiPHKView.defaultBackgroundColor.cgColor
-        layer?.setValue(videoGravity, forKey: "videoGravity")
+        Task { @MainActor in
+            wantsLayer = true
+            layer = AVSampleBufferDisplayLayer()
+            layer?.backgroundColor = PiPHKView.defaultBackgroundColor.cgColor
+            layer?.setValue(videoGravity, forKey: "videoGravity")
+        }
     }
 }
 
-extension PiPHKView: IOStreamView {
-    // MARK: IOStreamView
-    public func attachStream(_ stream: IOStream?) {
-        if Thread.isMainThread {
-            currentStream = stream
-        } else {
-            DispatchQueue.main.async {
-                self.currentStream = stream
-            }
-        }
+extension PiPHKView: IOStreamObserver {
+    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
-        if Thread.isMainThread {
-            if let sampleBuffer = sampleBuffer {
-                (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
-            }
-        } else {
-            DispatchQueue.main.async {
-                self.enqueue(sampleBuffer)
-            }
+    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
+        Task { @MainActor in
+            (layer as? AVSampleBufferDisplayLayer)?.enqueue(video)
+            #if os(macOS)
+            self.needsDisplay = true
+            #else
+            self.setNeedsDisplay()
+            #endif
         }
     }
 }

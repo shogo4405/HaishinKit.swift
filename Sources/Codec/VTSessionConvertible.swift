@@ -2,12 +2,17 @@ import AVFoundation
 import Foundation
 import VideoToolbox
 
+enum VTSessionError: Swift.Error {
+    case failedToCreate(status: OSStatus)
+    case failedToPrepare(status: OSStatus)
+    case failedToConvert(status: OSStatus)
+}
+
 protocol VTSessionConvertible {
     func setOption(_ option: VTSessionOption) -> OSStatus
     func setOptions(_ options: Set<VTSessionOption>) -> OSStatus
     func copySupportedPropertyDictionary() -> [AnyHashable: Any]
-    func encodeFrame(_ imageBuffer: CVImageBuffer, presentationTimeStamp: CMTime, duration: CMTime, outputHandler: @escaping VTCompressionOutputHandler) -> OSStatus
-    func decodeFrame(_ sampleBuffer: CMSampleBuffer, outputHandler: @escaping VTDecompressionOutputHandler) -> OSStatus
+    func convert(_ sampleBuffer: CMSampleBuffer, continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?)
     func invalidate()
 }
 

@@ -11,36 +11,16 @@ private let kIOVideoMixer_lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
 
 final class IOVideoMixer<T: IOVideoMixerDelegate> {
     weak var delegate: T?
-
-    lazy var screen: Screen = {
-        var screen = Screen()
-        screen.observer = self
-        videoTrackScreenObject.track = settings.mainTrack
-        try? screen.addChild(videoTrackScreenObject)
-        return screen
-    }()
-
-    var settings: IOVideoMixerSettings = .default {
-        didSet {
-            if settings.mainTrack != oldValue.mainTrack {
-                videoTrackScreenObject.track = settings.mainTrack
-            }
-        }
-    }
-
+    var settings: IOVideoMixerSettings = .default
     private(set) var inputFormats: [UInt8: CMFormatDescription] = [:]
     private var currentPixelBuffer: CVPixelBuffer?
-    private var videoTrackScreenObject = VideoTrackScreenObject()
 
     func append(_ track: UInt8, sampleBuffer: CMSampleBuffer) {
         inputFormats[track] = sampleBuffer.formatDescription
         delegate?.videoMixer(self, track: track, didInput: sampleBuffer)
         switch settings.mode {
         case .offscreen:
-            let screens: [VideoTrackScreenObject] = screen.getScreenObjects()
-            for screen in screens where screen.track == track {
-                screen.enqueue(sampleBuffer)
-            }
+            break
         case .passthrough:
             if settings.mainTrack == track {
                 outputSampleBuffer(sampleBuffer)
@@ -48,20 +28,8 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         }
     }
 
-    func registerEffect(_ effect: VideoEffect) -> Bool {
-        return videoTrackScreenObject.registerVideoEffect(effect)
-    }
-
-    func unregisterEffect(_ effect: VideoEffect) -> Bool {
-        return videoTrackScreenObject.unregisterVideoEffect(effect)
-    }
-
     func reset(_ track: UInt8) {
         inputFormats[track] = nil
-        let screens: [VideoTrackScreenObject] = screen.getScreenObjects()
-        for screen in screens where screen.track == track {
-            screen.reset()
-        }
     }
 
     @inline(__always)
@@ -81,14 +49,5 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
         } catch {
             logger.warn(error)
         }
-    }
-}
-
-extension IOVideoMixer: ScreenObserver {
-    func screen(_ screen: Screen, didOutput sampleBuffer: CMSampleBuffer) {
-        guard settings.mode == .offscreen else {
-            return
-        }
-        outputSampleBuffer(sampleBuffer)
     }
 }
