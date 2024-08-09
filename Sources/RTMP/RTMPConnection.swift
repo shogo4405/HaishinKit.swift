@@ -264,6 +264,9 @@ public actor RTMPConnection {
             }
             Task {
                 for await event in await networkMoniror.event {
+                    for stream in streams {
+                        await stream.dispatch(event)
+                    }
                     switch event {
                     case .status(let report):
                         if windowSizeS * (sequence + 1) <= report.totalBytesIn {
@@ -459,7 +462,6 @@ public actor RTMPConnection {
         } else {
             for stream in streams where await stream.id == message.streamId {
                 Task { await stream.dispatch(message, type: type) }
-                return
             }
         }
     }

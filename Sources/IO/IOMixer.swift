@@ -177,7 +177,6 @@ public final actor IOMixer {
         videoIO.videoOrientation = videoOrientation
     }
 
-
     /// Specifies the video mixier settings.
     public func setVideoMixerSettings(_ settings: IOVideoMixerSettings) {
         videoIO.mixerSettings = settings

@@ -28,6 +28,8 @@ public protocol IOStream: Actor {
     /// Attaches an AVAudioEngine instance for playback.
     func attachAudioEngine(_ audioEngine: AVAudioEngine?) async
 
+    func setBitrateStorategy(_ bitrateStorategy: (some NetworkBitRateStrategy)?)
+
     /// Appends a CMSampleBuffer.
     /// - Parameters:
     ///   - sampleBuffer:The sample buffer to append.
@@ -43,8 +45,9 @@ public protocol IOStream: Actor {
     func addObserver(_ obserber: some IOStreamObserver) async
 
     func removeObserver(_ observer: some IOStreamObserver) async
-}
 
+    func dispatch(_ event: NetworkMonitorEvent)
+}
 
 /// The enumeration defines the state an IOStream client is in.
 public enum IOStreamReadyState: Int, Sendable, Equatable {
