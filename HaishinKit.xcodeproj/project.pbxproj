@@ -287,6 +287,7 @@
 		BCDEB4FA2BE442F900EEC6ED /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F92BE442F900EEC6ED /* Screen.swift */; };
 		BCDEB4FC2BE4436D00EEC6ED /* ScreenObjectContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */; };
 		BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
+		BCF13C592C666E6400ADDBA9 /* NetworkBitRateStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF13C582C666E6400ADDBA9 /* NetworkBitRateStrategy.swift */; };
 		BCF5ADFC2C56A682000CF54B /* ScreenActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF5ADFB2C56A680000CF54B /* ScreenActor.swift */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
@@ -751,6 +752,7 @@
 		BCDEB4F92BE442F900EEC6ED /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObjectContainer.swift; sourceTree = "<group>"; };
 		BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamSwitcher.swift; sourceTree = "<group>"; };
+		BCF13C582C666E6400ADDBA9 /* NetworkBitRateStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkBitRateStrategy.swift; sourceTree = "<group>"; };
 		BCF5ADFB2C56A680000CF54B /* ScreenActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenActor.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
@@ -1292,6 +1294,7 @@
 		BC18F3E32C5BB3A500B9D78D /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				BCF13C582C666E6400ADDBA9 /* NetworkBitRateStrategy.swift */,
 				BC18F3E42C5BB3BB00B9D78D /* NetworkMonitor.swift */,
 				BC18F3E82C5BC8B300B9D78D /* NetworkTransportReport.swift */,
 				BC18F3EA2C5BCB7C00B9D78D /* NetworkTransportReporter.swift */,
@@ -1889,6 +1892,7 @@
 				BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */,
 				BC37F0B82C4185B7001428F0 /* IOAudioPlayer.swift in Sources */,
 				29B876B61CD70B2800FC07DA /* RTMPStream.swift in Sources */,
+				BCF13C592C666E6400ADDBA9 /* NetworkBitRateStrategy.swift in Sources */,
 				BC5019C12A6D266B0046E02F /* IOAudioRingBuffer.swift in Sources */,
 				BC3004CE296B0A1700119932 /* Shape.swift in Sources */,
 				BC34FA0B286CB90A00EFAF27 /* PiPHKView.swift in Sources */,

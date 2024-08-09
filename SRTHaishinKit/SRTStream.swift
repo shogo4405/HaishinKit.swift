@@ -12,11 +12,12 @@ public actor SRTStream {
     private weak var connection: SRTConnection?
     private lazy var writer = TSWriter()
     private var observers: [any IOStreamObserver] = []
+    private var bitrateStorategy: (any NetworkBitRateStrategy)?
 
     /// Creates a new stream object.
-    public init(connection: SRTConnection) async {
+    public init(connection: SRTConnection) {
         self.connection = connection
-        await self.connection?.addStream(self)
+        Task { await connection.addStream(self) }
     }
 
     /// Sends streaming audio, vidoe and data message from client.
@@ -114,6 +115,10 @@ extension SRTStream: IOStream {
         stream.videoSettings = videoSettings
     }
 
+    public func setBitrateStorategy(_ bitrateStorategy: (some NetworkBitRateStrategy)?) {
+        self.bitrateStorategy = bitrateStorategy
+    }
+
     public func append(_ sampleBuffer: CMSampleBuffer) {
         stream.append(sampleBuffer)
         observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
@@ -138,5 +143,9 @@ extension SRTStream: IOStream {
         if let index = observers.firstIndex(where: { $0 === observer }) {
             observers.remove(at: index)
         }
+    }
+
+    public func dispatch(_ event: NetworkMonitorEvent) {
+        bitrateStorategy?.adjustBitrate(event, stream: self)
     }
 }

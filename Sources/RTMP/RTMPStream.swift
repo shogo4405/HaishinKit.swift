@@ -174,6 +174,7 @@ public actor RTMPStream {
     }
     /// The stream's name used for FMLE-compatible sequences.
     public private(set) var fcPublishName: String?
+
     private var isPaused = false
     private var startedAt = Date() {
         didSet {
@@ -204,6 +205,7 @@ public actor RTMPStream {
     }()
     private weak var connection: RTMPConnection?
     private lazy var audioPlayer = IOAudioPlayer()
+    private var bitrateStorategy: (any NetworkBitRateStrategy)?
 
     private var audioFormat: AVAudioFormat? {
         didSet {
@@ -770,5 +772,13 @@ extension RTMPStream: IOStream {
         if let index = observers.firstIndex(where: { $0 === observer }) {
             observers.remove(at: index)
         }
+    }
+
+    public func setBitrateStorategy(_ bitrateStorategy: (some NetworkBitRateStrategy)?) {
+        self.bitrateStorategy = bitrateStorategy
+    }
+
+    public func dispatch(_ event: NetworkMonitorEvent) {
+        bitrateStorategy?.adjustBitrate(event, stream: self)
     }
 }
