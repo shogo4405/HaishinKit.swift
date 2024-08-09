@@ -45,6 +45,7 @@ public protocol IOStream: Actor {
     func removeObserver(_ observer: some IOStreamObserver) async
 }
 
+
 /// The enumeration defines the state an IOStream client is in.
 public enum IOStreamReadyState: Int, Sendable, Equatable {
     case idle
