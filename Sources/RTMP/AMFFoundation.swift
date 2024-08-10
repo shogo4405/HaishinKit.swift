@@ -1,27 +1,27 @@
 import Foundation
 
-/// The singleton ASUndefined object.
-public let kASUndefined = ASUndefined()
+/// The singleton AMFUndefined object.
+public let kAMFUndefined = AMFUndefined()
 
-/// The ASObject typealias represents an object for AcrionScript.
-public typealias ASObject = [String: (any Sendable)?]
+/// The AMFObject typealias represents an object for AcrionScript.
+public typealias AMFObject = [String: (any Sendable)?]
 
-/// The ASUndefined structure represents an undefined for ActionScript.
-public struct ASUndefined: Sendable, CustomStringConvertible {
+/// The AMFUndefined structure represents an undefined for ActionScript.
+public struct AMFUndefined: Sendable, CustomStringConvertible {
     public var description: String {
         "undefined"
     }
 }
 
-/// The ASTypedObject structure represents a typed object for ActionScript.
-public struct ASTypedObject: Sendable {
+/// The AMFTypedObject structure represents a typed object for ActionScript.
+public struct AMFTypedObject: Sendable {
     public let typeName: String
-    public let data: ASObject
+    public let data: AMFObject
 }
 
 // MARK: -
-/// The ASArray structure represents an array value for ActionScript.
-public struct ASArray: Sendable {
+/// The AMFArray structure represents an array value for ActionScript.
+public struct AMFArray: Sendable {
     private(set) var data: [(any Sendable)?]
     private(set) var dict: [String: (any Sendable)?] = [:]
 
@@ -32,7 +32,7 @@ public struct ASArray: Sendable {
 
     /// Creates a new instance containing the specified number of a single.
     public init(count: Int) {
-        self.data = [(any Sendable)?](repeating: kASUndefined, count: count)
+        self.data = [(any Sendable)?](repeating: kAMFUndefined, count: count)
     }
 
     /// Creates a new instance of data.
@@ -40,27 +40,27 @@ public struct ASArray: Sendable {
         self.data = data
     }
 
-    init(_ dict: ASObject) {
+    init(_ dict: AMFObject) {
         self.dict = dict
         self.data = .init()
     }
 }
 
-extension ASArray: ExpressibleByArrayLiteral {
+extension AMFArray: ExpressibleByArrayLiteral {
     // MARK: ExpressibleByArrayLiteral
     public init (arrayLiteral elements: (any Sendable)?...) {
-        self = ASArray(data: elements)
+        self = AMFArray(data: elements)
     }
 
     /// Accesses the element at the specified position.
     public subscript(i: Any) -> (any Sendable)? {
         get {
             if let i: Int = i as? Int {
-                return i < data.count ? data[i] : kASUndefined
+                return i < data.count ? data[i] : kAMFUndefined
             }
             if let i: String = i as? String {
                 if let i = Int(i) {
-                    return i < data.count ? data[i] : kASUndefined
+                    return i < data.count ? data[i] : kAMFUndefined
                 }
                 return dict[i] as (any Sendable)
             }
@@ -69,14 +69,14 @@ extension ASArray: ExpressibleByArrayLiteral {
         set {
             if let i = i as? Int {
                 if data.count <= i {
-                    data += [(any Sendable)?](repeating: kASUndefined, count: i - data.count + 1)
+                    data += [(any Sendable)?](repeating: kAMFUndefined, count: i - data.count + 1)
                 }
                 data[i] = newValue
             }
             if let i = i as? String {
                 if let i = Int(i) {
                     if data.count <= i {
-                        data += [(any Sendable)?](repeating: kASUndefined, count: i - data.count + 1)
+                        data += [(any Sendable)?](repeating: kAMFUndefined, count: i - data.count + 1)
                     }
                     data[i] = newValue
                     return
@@ -87,16 +87,16 @@ extension ASArray: ExpressibleByArrayLiteral {
     }
 }
 
-extension ASArray: CustomDebugStringConvertible {
+extension AMFArray: CustomDebugStringConvertible {
     // MARK: CustomDebugStringConvertible
     public var debugDescription: String {
         data.debugDescription + ":" + dict.debugDescription
     }
 }
 
-extension ASArray: Equatable {
+extension AMFArray: Equatable {
     // MARK: Equatable
-    public static func == (lhs: ASArray, rhs: ASArray) -> Bool {
+    public static func == (lhs: AMFArray, rhs: AMFArray) -> Bool {
         (lhs.data.description == rhs.data.description) && (lhs.dict.description == rhs.dict.description)
     }
 }
@@ -105,7 +105,7 @@ extension ASArray: Equatable {
 /// ActionScript 1.0 and 2.0 and flash.xml.XMLDocument in ActionScript 3.0
 /// - seealso: 2.17 XML Document Type (amf0-file-format-specification.pdf)
 /// - seealso: 3.9 XMLDocument type (amf-file-format-spec.pdf)
-public struct ASXMLDocument: Sendable, CustomStringConvertible {
+public struct AMFXMLDocument: Sendable, CustomStringConvertible {
     public var description: String {
         data
     }
@@ -118,9 +118,9 @@ public struct ASXMLDocument: Sendable, CustomStringConvertible {
     }
 }
 
-extension ASXMLDocument: Equatable {
+extension AMFXMLDocument: Equatable {
     // MARK: Equatable
-    public static func == (lhs: ASXMLDocument, rhs: ASXMLDocument) -> Bool {
+    public static func == (lhs: AMFXMLDocument, rhs: AMFXMLDocument) -> Bool {
         (lhs.description == rhs.description)
     }
 }
@@ -128,7 +128,7 @@ extension ASXMLDocument: Equatable {
 // MARK: -
 /// ActionScript 3.0 introduces a new XML type.
 /// - seealso: 3.13 XML type (amf-file-format-spec.pdf)
-public struct ASXML: Sendable, CustomStringConvertible {
+public struct AMFXML: Sendable, CustomStringConvertible {
     public var description: String {
         data
     }
@@ -141,9 +141,9 @@ public struct ASXML: Sendable, CustomStringConvertible {
     }
 }
 
-extension ASXML: Equatable {
+extension AMFXML: Equatable {
     // MARK: Equatable
-    public static func == (lhs: ASXML, rhs: ASXML) -> Bool {
+    public static func == (lhs: AMFXML, rhs: AMFXML) -> Bool {
         (lhs.description == rhs.description)
     }
 }

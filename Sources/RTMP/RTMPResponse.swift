@@ -14,6 +14,6 @@ public struct RTMPResponse: Sendable {
 
     init(_ message: RTMPCommandMessage) {
         arguments = message.arguments
-        status = arguments.isEmpty ? nil : .init(arguments.first as? ASObject)
+        status = arguments.isEmpty ? nil : .init(arguments.first as? AMFObject)
     }
 }

@@ -182,7 +182,7 @@ struct RTMPCommandMessage: RTMPMessage {
     let objectEncoding: RTMPObjectEncoding
     let commandName: String
     let transactionId: Int
-    let commandObject: ASObject?
+    let commandObject: AMFObject?
     let arguments: [(any Sendable)?]
 
     init?(_ header: RTMPChunkMessageHeader, objectEncoding: RTMPObjectEncoding) {
@@ -206,7 +206,7 @@ struct RTMPCommandMessage: RTMPMessage {
         }
     }
 
-    init(streamId: UInt32, transactionId: Int, objectEncoding: RTMPObjectEncoding, commandName: String, commandObject: ASObject?, arguments: [(any Sendable)?]) {
+    init(streamId: UInt32, transactionId: Int, objectEncoding: RTMPObjectEncoding, commandName: String, commandObject: AMFObject?, arguments: [(any Sendable)?]) {
         self.transactionId = transactionId
         self.objectEncoding = objectEncoding
         self.commandName = commandName

@@ -64,7 +64,7 @@ final class ViewController: UIViewController {
         let e = Event.from(notification)
 
         guard
-            let data: ASObject = e.data as? ASObject,
+            let data: AMFObject = e.data as? AMFObject,
             let code: String = data["code"] as? String else {
             return
         }

@@ -96,7 +96,7 @@ public actor RTMPSharedObject {
     /// The AMF object encoding type.
     public let objectEncoding = RTMPConnection.defaultObjectEncoding
     /// The current data storage.
-    public private(set) var data = ASObject()
+    public private(set) var data = AMFObject()
 
     private var succeeded = false {
         didSet {
@@ -159,9 +159,9 @@ public actor RTMPSharedObject {
 
     final func on(message: RTMPSharedObjectMessage) {
         currentVersion = message.currentVersion
-        var changeList: [ASObject] = []
+        var changeList: [AMFObject] = []
         for event in message.events {
-            var change: ASObject = [
+            var change: AMFObject = [
                 "code": "",
                 "name": event.name,
                 "oldValue": nil

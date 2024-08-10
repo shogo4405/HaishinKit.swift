@@ -204,7 +204,7 @@ final class ViewModel: ObservableObject {
     @objc
     private func rtmpStatusHandler(_ notification: Notification) {
         let e = Event.from(notification)
-        guard let data: ASObject = e.data as? ASObject, let code: String = data["code"] as? String else {
+        guard let data: AMFObject = e.data as? AMFObject, let code: String = data["code"] as? String else {
             return
         }
         print(code)

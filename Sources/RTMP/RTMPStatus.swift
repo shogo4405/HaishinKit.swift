@@ -8,7 +8,7 @@ public struct RTMPStatus: Sendable {
     /// The string that is code description.
     public let description: String
 
-    init?(_ data: ASObject?) {
+    init?(_ data: AMFObject?) {
         guard
             let data,
             let code = data["code"] as? String,

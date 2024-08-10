@@ -155,7 +155,7 @@ public actor RTMPStream {
 
     static let defaultID: UInt32 = 0
     /// The RTMPStream metadata.
-    public private(set) var metadata: ASArray = .init(count: 0)
+    public private(set) var metadata: AMFArray = .init(count: 0)
     /// The RTMPStreamInfo object whose properties contain data.
     public private(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
@@ -574,7 +574,7 @@ public actor RTMPStream {
         case let message as RTMPDataMessage:
             switch message.handlerName {
             case "onMetaData":
-                metadata = message.arguments[0] as? ASArray ?? .init(count: 0)
+                metadata = message.arguments[0] as? AMFArray ?? .init(count: 0)
             case "|RtmpSampleAccess":
                 audioSampleAccess = message.arguments[0] as? Bool ?? true
                 videoSampleAccess = message.arguments[1] as? Bool ?? true
@@ -684,8 +684,8 @@ public actor RTMPStream {
     }
 
     /// Creates flv metadata for a stream.
-    private func makeMetadata() -> ASArray {
-        var metadata: ASObject = [
+    private func makeMetadata() -> AMFArray {
+        var metadata: AMFObject = [
             "duration": 0
         ]
         if stream.videoInputFormat != nil {
@@ -707,7 +707,7 @@ public actor RTMPStream {
             metadata["audiodatarate"] = stream.audioSettings.bitRate / 1000
             metadata["audiosamplerate"] = audioFormat.sampleRate
         }
-        return ASArray(metadata)
+        return AMFArray(metadata)
     }
 }
 
