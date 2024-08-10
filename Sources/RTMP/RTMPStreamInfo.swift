@@ -1,23 +1,22 @@
 import Foundation
 
-/**
- flash.net.NetStreamInfo for Swift
- */
+/// A structor that provides the statistics related to the RTMPStream.
 public struct RTMPStreamInfo {
-    public internal(set) var byteCount: Atomic<Int64> = .init(0)
+    /// The number of bytes received by the RTMPStream.
+    public internal(set) var byteCount = 0
+    /// The resource name of a stream.
     public internal(set) var resourceName: String?
-    public internal(set) var currentBytesPerSecond: Int32 = 0
-
-    private var previousByteCount: Int64 = 0
+    /// The number of bytes received per second by the RTMPStream.
+    public internal(set) var currentBytesPerSecond = 0
+    private var previousByteCount = 0
 
     mutating func update() {
-        let byteCount: Int64 = self.byteCount.value
-        currentBytesPerSecond = Int32(byteCount - previousByteCount)
+        currentBytesPerSecond = byteCount - previousByteCount
         previousByteCount = byteCount
     }
 
     mutating func clear() {
-        byteCount.mutate { $0 = 0 }
+        byteCount = 0
         currentBytesPerSecond = 0
         previousByteCount = 0
     }

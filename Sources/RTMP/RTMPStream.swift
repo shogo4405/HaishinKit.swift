@@ -164,7 +164,9 @@ public actor RTMPStream {
     public private(set) var audioSampleAccess = true
     /// The boolean value that indicates video samples allow access or not.
     public private(set) var videoSampleAccess = true
+    /// The number of video frames per seconds.
     public private(set) var currentFPS: UInt16 = 0
+    /// The ready state of stream.
     public private(set) var readyState: IOStreamReadyState = .idle
     /// The stream of events you receive RTMP status events from a service.
     public var status: AsyncStream<RTMPStatus> {
@@ -537,12 +539,12 @@ public actor RTMPStream {
     func doOutput(_ type: RTMPChunkType, chunkStreamId: RTMPChunkStreamId, message: some RTMPMessage) {
         Task {
             let length = await connection?.doOutput(type, chunkStreamId: chunkStreamId, message: message) ?? 0
-            info.byteCount.mutate { $0 += Int64(length) }
+            info.byteCount += length
         }
     }
 
     func dispatch(_ message: some RTMPMessage, type: RTMPChunkType) {
-        info.byteCount.mutate { $0 += Int64(message.payload.count) }
+        info.byteCount += message.payload.count
         switch message {
         case let message as RTMPCommandMessage:
             let response = RTMPResponse(message)
@@ -780,5 +782,8 @@ extension RTMPStream: IOStream {
 
     public func dispatch(_ event: NetworkMonitorEvent) {
         bitrateStorategy?.adjustBitrate(event, stream: self)
+        currentFPS = frameCount
+        frameCount = 0
+        info.update()
     }
 }
