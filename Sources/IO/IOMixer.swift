@@ -152,8 +152,16 @@ public final actor IOMixer {
     }
 
     /// Specifies the sessionPreset for the AVCaptureSession.
+    @available(tvOS 17.0, *)
     public func setSessionPreset(_ sessionPreset: AVCaptureSession.Preset) {
         session.sessionPreset = sessionPreset
+    }
+    #endif
+
+    #if os(iOS) || os(macOS)
+    /// Specifies the video orientation for stream.
+    public func setVideoOrientation(_ videoOrientation: AVCaptureVideoOrientation) {
+        videoIO.videoOrientation = videoOrientation
     }
     #endif
 
@@ -170,11 +178,6 @@ public final actor IOMixer {
         default:
             break
         }
-    }
-
-    /// Specifies the video orientation for stream.
-    public func setVideoOrientation(_ videoOrientation: AVCaptureVideoOrientation) {
-        videoIO.videoOrientation = videoOrientation
     }
 
     /// Specifies the video mixier settings.
