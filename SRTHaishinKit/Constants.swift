@@ -1,3 +1,3 @@
-@preconcurrency import Logboard
+import Logboard
 
-let logger = LBLogger.with("com.haishinkit.SRTHaishinKit")
+nonisolated(unsafe) let logger = LBLogger.with("com.haishinkit.SRTHaishinKit")

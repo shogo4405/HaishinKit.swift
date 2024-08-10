@@ -1,7 +1,7 @@
-@preconcurrency import Logboard
+import Logboard
 
 #if canImport(SwiftPMSupport)
 import SwiftPMSupport
 #endif
 
-nonisolated let logger = LBLogger.with(HaishinKitIdentifier)
+nonisolated(unsafe) let logger = LBLogger.with(HaishinKitIdentifier)
