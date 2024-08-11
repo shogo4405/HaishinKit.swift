@@ -131,13 +131,13 @@ public actor RTMPConnection {
     /// The URL of an HTTP referer.
     public let pageUrl: String?
     /// Specifies the time to wait for TCP/IP Handshake done.
-    public var timeout: Int = RTMPConnection.defaultTimeout
+    public var timeout = RTMPConnection.defaultTimeout
     /// Specifies the dispatchQos for socket.
     public var qualityOfService: HKDispatchQoS = .userInitiated
     /// The name of application.
     public let flashVer: String
     /// Specifies theoutgoing RTMPChunkSize.
-    public var chunkSize: Int = RTMPConnection.defaultChunkSizeS
+    public var chunkSize = RTMPConnection.defaultChunkSizeS
     /// The URI passed to the Self.connect() method.
     public private(set) var uri: URL?
     /// The instance connected to server(true) or not(false).
@@ -145,14 +145,14 @@ public actor RTMPConnection {
     /// The object encoding for this RTMPConnection instance.
     public let objectEncoding = RTMPConnection.defaultObjectEncoding
     /// The RTMP request timeout value. Defaul value is 500 msec.
-    public var requestTimeOut: UInt64 = RTMPConnection.defaultRequestTimeout
+    public var requestTimeOut = RTMPConnection.defaultRequestTimeout
 
     var newTransaction: Int {
         currentTransactionId += 1
         return currentTransactionId
     }
 
-    private var socket = RTMPSocket()
+    private var socket: RTMPSocket?
     private var chunks: [UInt16: RTMPChunkMessageHeader] = [:]
     private var streams: [RTMPStream] = []
     private var sequence: Int64 = 0
@@ -180,10 +180,10 @@ public actor RTMPConnection {
             doOutput(.zero, chunkStreamId: .control, message: RTMPWindowAcknowledgementSizeMessage(size: UInt32(windowSizeC)))
         }
     }
-    private var windowSizeS: Int64 = RTMPConnection.defaultWindowSizeS
+    private var windowSizeS = RTMPConnection.defaultWindowSizeS
     private let authenticator = RTMPAuthenticator()
+    private var networkMonitor: NetworkMonitor?
     private var currentTransactionId = RTMPConnection.connectTransactionId
-    private lazy var networkMoniror = NetworkMonitor(socket)
 
     /// Creates a new connection.
     public init(swfUrl: String? = nil, pageUrl: String? = nil, flashVer: String = RTMPConnection.defaultFlashVer) {
@@ -241,6 +241,10 @@ public actor RTMPConnection {
         chunkSizeS = RTMPChunkMessageHeader.chunkSize
         currentTransactionId = Self.connectTransactionId
         socket = RTMPSocket(qualityOfService: qualityOfService, securityLevel: secure ? .negotiatedSSL : .none)
+        networkMonitor = await socket?.makeNetworkMonitor()
+        guard let socket, let networkMonitor else {
+            throw Error.invalidState
+        }
         do {
             let result: RTMPResponse = try await withCheckedThrowingContinuation { continutation in
                 Task {
@@ -263,7 +267,7 @@ public actor RTMPConnection {
                 }
             }
             Task {
-                for await event in await networkMoniror.event {
+                for await event in await networkMonitor.event {
                     for stream in streams {
                         await stream.dispatch(event)
                     }
@@ -329,8 +333,8 @@ public actor RTMPConnection {
                 await stream.deleteStream()
             }
         }
-        await socket.close()
-        await networkMoniror.stopRunning()
+        await socket?.close()
+        await networkMonitor?.stopRunning()
         connected = false
         readyState = .uninitialized
     }
@@ -347,7 +351,7 @@ public actor RTMPConnection {
             .putMessage(type, chunkStreamId: chunkStreamId.rawValue, message: message)
         let data = buffer.flip().payload
         Task {
-            await socket.send(data)
+            await socket?.send(data)
         }
         return data.count
     }
@@ -363,7 +367,7 @@ public actor RTMPConnection {
             guard handshake.hasS0S1Packet else {
                 return
             }
-            await socket.send(handshake.c2packet())
+            await socket?.send(handshake.c2packet())
             readyState = .ackSent
             try await listen(.init())
         case .ackSent:
@@ -376,7 +380,8 @@ public actor RTMPConnection {
                 try await close()
                 break
             }
-            await networkMoniror.startRunning()
+            networkMonitor = await socket?.makeNetworkMonitor()
+            await networkMonitor?.startRunning()
             doOutput(.zero, chunkStreamId: .command, message: message)
         case .handshakeDone:
             inputBuffer.put(data)

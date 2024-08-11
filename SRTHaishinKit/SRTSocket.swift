@@ -5,12 +5,13 @@ import Logboard
 
 private let kSRTSOcket_payloadSize: Int = 1316
 
-final class SRTSocket {
+final actor SRTSocket {
+    static let payloadSize: Int = 1316
+
     var timeout: Int = 0
     var options: [SRTSocketOption: Any] = [:]
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
-    private(set) var isRunning = false
     private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
     private(set) var status: SRT_SOCKSTATUS = SRTS_INIT {
         didSet {
@@ -27,6 +28,16 @@ final class SRTSocket {
             case SRTS_CONNECTING:
                 logger.trace("SRT Socket Connecting")
             case SRTS_CONNECTED:
+                connected = true
+                let (stream, continuation) = AsyncStream<Data>.makeStream()
+                outputs = continuation
+                Task {
+                    for await data in stream where connected {
+                        _ = sendmsg2(data)
+                        totalBytesOut += data.count
+                        queueBytesOut -= data.count
+                    }
+                }
                 logger.info("SRT Socket Connected")
             case SRTS_BROKEN:
                 logger.warn("SRT Socket Broken")
@@ -42,20 +53,15 @@ final class SRTSocket {
             }
         }
     }
+    private(set) var connected = false
+    private var totalBytesIn: Int = 0
+    private var totalBytesOut: Int = 0
+    private var queueBytesOut: Int = 0
     private var windowSizeC: Int32 = 1024 * 4
+    private var outputs: AsyncStream<Data>.Continuation?
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
 
     init() {
-    }
-
-    init(socket: SRTSOCKET) throws {
-        self.socket = socket
-        guard configure(.post) else {
-            throw makeSocketError()
-        }
-        if incomingBuffer.count < windowSizeC {
-            incomingBuffer = .init(count: Int(windowSizeC))
-        }
     }
 
     func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = [:]) throws {
@@ -108,22 +114,25 @@ final class SRTSocket {
         socket = SRT_INVALID_SOCK
     }
 
-    func doOutput(data: Data) {
+    func send(_ data: Data) {
         for data in data.chunk(kSRTSOcket_payloadSize) {
-            _ = sendmsg2(data)
+            queueBytesOut += data.count
+            outputs?.yield(data)
         }
     }
 
-    func makeIncomingStream() -> AsyncStream<Data> {
+    func recv() -> AsyncStream<Data> {
         return AsyncStream<Data> { condination in
-            repeat {
-                let result = recvmsg()
-                if 0 < result {
-                    condination.yield(incomingBuffer.subdata(in: 0..<Data.Index(result)))
-                } else {
-                    condination.finish()
-                }
-            } while isRunning
+            Task {
+                repeat {
+                    let result = recvmsg()
+                    if 0 < result {
+                        condination.yield(incomingBuffer.subdata(in: 0..<Data.Index(result)))
+                    } else {
+                        condination.finish()
+                    }
+                } while connected
+            }
         }
     }
 
@@ -167,5 +176,20 @@ final class SRTSocket {
             }
             return srt_recvmsg(socket, buffer, windowSizeC)
         }
+    }
+}
+
+extension SRTSocket: NetworkTransportReporter {
+    // MARK: NetworkTransportReporter
+    func makeNetworkTransportReport() -> NetworkTransportReport {
+        return .init(
+            queueBytesOut: queueBytesOut,
+            totalBytesIn: totalBytesIn,
+            totalBytesOut: totalBytesOut
+        )
+    }
+
+    func makeNetworkMonitor() -> NetworkMonitor {
+        return .init(self)
     }
 }

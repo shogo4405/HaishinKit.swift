@@ -1,7 +1,9 @@
 @preconcurrency import AVFoundation
 import Foundation
 
-final actor AudioPlayerNode {
+public final actor AudioPlayerNode {
+    public private(set) var isRunning = false
+
     var currentTime: TimeInterval {
         if playerNode.isPlaying {
             guard
@@ -14,7 +16,6 @@ final actor AudioPlayerNode {
         return 0.0
     }
     private(set) var isPaused = false
-    private(set) var isRunning = false
     private let playerNode: AVAudioPlayerNode
     private var audioTime = IOAudioTime()
     private var scheduledAudioBuffers: Int = 0
@@ -22,6 +23,9 @@ final actor AudioPlayerNode {
     private weak var player: AudioPlayer?
     private var format: AVAudioFormat? {
         didSet {
+            guard format != oldValue else {
+                return
+            }
             Task { [format] in
                 await player?.connect(self, format: format)
             }
@@ -29,27 +33,22 @@ final actor AudioPlayerNode {
     }
 
     init(player: AudioPlayer, playerNode: AVAudioPlayerNode) {
+        self.player = player
         self.playerNode = playerNode
     }
 
-    func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer else {
+    public func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) async {
+        format = audioBuffer.format
+        guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer, await player?.isConnected(self) == true else {
             return
         }
-
-        if format != audioBuffer.format {
-            format = audioBuffer.format
-        }
-
         if !audioTime.hasAnchor {
             audioTime.anchor(playerNode.lastRenderTime ?? AVAudioTime(hostTime: 0))
         }
-
         scheduledAudioBuffers += 1
         if !isPaused && !playerNode.isPlaying && 10 <= scheduledAudioBuffers {
             playerNode.play()
         }
-
         Task {
             audioTime.advanced(Int64(audioBuffer.frameLength))
             await playerNode.scheduleBuffer(audioBuffer, at: audioTime.at)
@@ -62,7 +61,8 @@ final actor AudioPlayerNode {
 }
 
 extension AudioPlayerNode: AsyncRunner {
-    func startRunning() {
+    // MARK: AsyncRunner
+    public func startRunning() {
         guard !isRunning else {
             return
         }
@@ -70,7 +70,7 @@ extension AudioPlayerNode: AsyncRunner {
         isRunning = true
     }
 
-    func stopRunning() {
+    public func stopRunning() {
         guard isRunning else {
             return
         }

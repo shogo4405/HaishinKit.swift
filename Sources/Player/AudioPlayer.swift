@@ -2,7 +2,8 @@
 
 /// An object that provides the interface to control audio playback.
 public final actor AudioPlayer {
-    private weak var audioEngine: AVAudioEngine?
+    private var connected: [AudioPlayerNode: Bool] = [:]
+    private var audioEngine: AVAudioEngine?
     private var playerNodes: [AudioPlayerNode: AVAudioPlayerNode] = [:]
 
     /// Create an audio player object.
@@ -10,14 +11,22 @@ public final actor AudioPlayer {
         self.audioEngine = audioEngine
     }
 
-    func connect(_ playerNode: AudioPlayerNode, format: AVAudioFormat?) {
+    public func isConnected(_ playerNode: AudioPlayerNode) -> Bool {
+        return connected[playerNode] == true
+    }
+
+    public func connect(_ playerNode: AudioPlayerNode, format: AVAudioFormat?) {
         guard let audioEngine, let avPlayerNode = playerNodes[playerNode] else {
             return
         }
         audioEngine.connect(avPlayerNode, to: audioEngine.outputNode, format: format)
+        if !audioEngine.isRunning {
+            try? audioEngine.start()
+        }
+        connected[playerNode] = true
     }
 
-    func makePlayerNode() -> AudioPlayerNode {
+    public func makePlayerNode() -> AudioPlayerNode {
         let avAudioPlayerNode = AVAudioPlayerNode()
         audioEngine?.attach(avAudioPlayerNode)
         let playerNode = AudioPlayerNode(player: self, playerNode: avAudioPlayerNode)

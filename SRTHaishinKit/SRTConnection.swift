@@ -1,4 +1,5 @@
 import Foundation
+import HaishinKit
 import libsrt
 
 /// The SRTConnection class create a two-way SRT connection.
@@ -18,17 +19,20 @@ public actor SRTConnection {
     /// This instance connect to server(true) or not(false)
     public private(set) var connected = false
 
+    private var socket: SRTSocket?
     private var streams: [SRTStream] = []
     private var clients: [SRTSocket] = []
-    private var socket: SRTSocket?
+    private var networkMonitor: NetworkMonitor?
 
     /// The SRT's performance data.
     public var performanceData: SRTPerformanceData? {
-        guard let socket else {
-            return nil
+        get async {
+            guard let socket else {
+                return nil
+            }
+            _ = await socket.bstats()
+            return await SRTPerformanceData(mon: socket.perf)
         }
-        _ = socket.bstats()
-        return SRTPerformanceData(mon: socket.perf)
     }
 
     /// Creates an object.
@@ -42,55 +46,73 @@ public actor SRTConnection {
 
     /// Open a two-way connection to an application on SRT Server.
     public func open(_ uri: URL?, mode: SRTMode = .caller) async throws {
-        return try await withCheckedThrowingContinuation { continuation in
-            guard let uri = uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
-                continuation.resume(throwing: Error.notSupportedUri(uri))
-                return
+        guard let uri = uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
+            throw Error.notSupportedUri(uri)
+        }
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                Task {
+                    do {
+                        let options = SRTSocketOption.from(uri: uri)
+                        let addr = sockaddr_in(mode.host(host), port: UInt16(port))
+                        socket = .init()
+                        try await socket?.open(addr, mode: mode, options: options)
+                        self.uri = uri
+                        connected = await socket?.status == SRTS_CONNECTED
+                        networkMonitor = await socket?.makeNetworkMonitor()
+                        await networkMonitor?.startRunning()
+                        continuation.resume()
+                    } catch {
+                        continuation.resume(throwing: error)
+                    }
+                }
             }
-            do {
-                let options = SRTSocketOption.from(uri: uri)
-                let addr = sockaddr_in(mode.host(host), port: UInt16(port))
-                socket = .init()
-                try socket?.open(addr, mode: mode, options: options)
-                self.uri = uri
-                connected = socket?.status == SRTS_CONNECTED
-                continuation.resume()
-            } catch {
-                continuation.resume(throwing: error)
+            Task {
+                guard let networkMonitor else {
+                    return
+                }
+                for await event in await networkMonitor.event {
+                    for stream in streams {
+                        await stream.dispatch(event)
+                    }
+                }
             }
+        } catch {
+            throw error
         }
     }
 
     /// Closes the connection from the server.
     public func close() async {
         for client in clients {
-            client.close()
+            await client.close()
         }
         for stream in streams {
             await stream.close()
         }
-        socket?.close()
+        await socket?.close()
         clients.removeAll()
+        await networkMonitor?.stopRunning()
         connected = false
     }
 
-    func output(_ data: Data) {
-        socket?.doOutput(data: data)
+    func output(_ data: Data) async {
+        await socket?.send(data)
     }
 
     func listen() {
         Task {
-            guard let stream = socket?.makeIncomingStream() else {
+            guard let stream = await socket?.recv() else {
                 return
             }
             for await data in stream {
-                await self.streams.first?.doInput(data)
+                await streams.first?.doInput(data)
             }
         }
     }
 
     func addStream(_ stream: SRTStream) {
-        guard streams.contains(where: { $0 === stream }) else {
+        guard !streams.contains(where: { $0 === stream }) else {
             return
         }
         streams.append(stream)

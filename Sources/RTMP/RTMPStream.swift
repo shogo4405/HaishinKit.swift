@@ -201,8 +201,8 @@ public actor RTMPStream {
     private var expectedResponse: Code?
     private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
     private(set) var id: UInt32 = RTMPStream.defaultID
-    private lazy var stream = MediaCodec()
     private lazy var mediaLink = MediaLink()
+    private lazy var mediaCodec = MediaCodec()
     private weak var connection: RTMPConnection?
     private weak var audioPlayerNode: AudioPlayerNode?
     private var bitrateStorategy: (any HKStreamBitRateStrategy)?
@@ -281,13 +281,13 @@ public actor RTMPStream {
                     }
                     self.continuation = nil
                 }
-                stream.audioSettings.format = .pcm
-                stream.startRunning()
+                mediaCodec.audioSettings.format = .pcm
+                mediaCodec.startRunning()
                 Task {
                     await mediaLink.startRunning()
-                    while stream.isRunning {
+                    while mediaCodec.isRunning {
                         do {
-                            for try await video in stream.video where stream.isRunning {
+                            for try await video in mediaCodec.video where mediaCodec.isRunning {
                                 await mediaLink.enqueue(video)
                             }
                         } catch {
@@ -300,12 +300,12 @@ public actor RTMPStream {
                         return
                     }
                     await audioPlayerNode.startRunning()
-                    for await audio in stream.audio where stream.isRunning {
+                    for await audio in mediaCodec.audio where mediaCodec.isRunning {
                         await audioPlayerNode.enqueue(audio.0, when: audio.1)
                     }
                 }
                 Task {
-                    for await video in await mediaLink.dequeue where stream.isRunning {
+                    for await video in await mediaLink.dequeue where mediaCodec.isRunning {
                         observers.forEach { $0.stream(self, didOutput: video) }
                     }
                 }
@@ -325,7 +325,7 @@ public actor RTMPStream {
         } catch {
             await mediaLink.stopRunning()
             await audioPlayerNode?.stopRunning()
-            stream.stopRunning()
+            mediaCodec.stopRunning()
             readyState = .idle
             throw error
         }
@@ -379,17 +379,17 @@ public actor RTMPStream {
             }
             info.resourceName = name
             howToPublish = type
-            stream.startRunning()
+            mediaCodec.startRunning()
             startedAt = .init()
             metadata = makeMetadata()
             try? send("@setDataFrame", arguments: "onMetaData", metadata)
             Task {
-                for await audio in stream.audio where stream.isRunning {
+                for await audio in mediaCodec.audio where mediaCodec.isRunning {
                     append(audio.0, when: audio.1)
                 }
             }
             Task {
-                for try await video in stream.video where stream.isRunning {
+                for try await video in mediaCodec.video where mediaCodec.isRunning {
                     append(video)
                 }
             }
@@ -406,7 +406,7 @@ public actor RTMPStream {
         guard readyState == .playing || readyState == .publishing else {
             throw Error.invalidState
         }
-        stream.stopRunning()
+        mediaCodec.stopRunning()
         await mediaLink.stopRunning()
         await audioPlayerNode?.stopRunning()
         return try await withCheckedThrowingContinuation { continutation in
@@ -618,7 +618,7 @@ public actor RTMPStream {
         guard let fcPublishName, readyState == .publishing else {
             return
         }
-        stream.stopRunning()
+        mediaCodec.stopRunning()
         await mediaLink.stopRunning()
         await audioPlayerNode?.stopRunning()
         async let _ = try? connection?.call("FCUnpublish", arguments: fcPublishName)
@@ -642,7 +642,7 @@ public actor RTMPStream {
             }
             if let audioBuffer {
                 message.copyMemory(audioBuffer)
-                stream.append(audioBuffer, when: audioTimestamp.value)
+                mediaCodec.append(audioBuffer, when: audioTimestamp.value)
             }
         default:
             break
@@ -661,11 +661,11 @@ public actor RTMPStream {
                 videoFormat = message.makeFormatDescription()
             case FLVVideoPacketType.codedFrames.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.append(sampleBuffer)
+                    mediaCodec.append(sampleBuffer)
                 }
             case FLVVideoPacketType.codedFramesX.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.append(sampleBuffer)
+                    mediaCodec.append(sampleBuffer)
                 }
             default:
                 break
@@ -676,7 +676,7 @@ public actor RTMPStream {
                 videoFormat = message.makeFormatDescription()
             case FLVAVCPacketType.nal.rawValue:
                 if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    stream.append(sampleBuffer)
+                    mediaCodec.append(sampleBuffer)
                 }
             default:
                 break
@@ -689,23 +689,23 @@ public actor RTMPStream {
         var metadata: AMFObject = [
             "duration": 0
         ]
-        if stream.videoInputFormat != nil {
-            metadata["width"] = stream.videoSettings.videoSize.width
-            metadata["height"] = stream.videoSettings.videoSize.height
+        if mediaCodec.videoInputFormat != nil {
+            metadata["width"] = mediaCodec.videoSettings.videoSize.width
+            metadata["height"] = mediaCodec.videoSettings.videoSize.height
             #if os(iOS) || os(macOS) || os(tvOS)
             // metadata["framerate"] = stream.frameRate
             #endif
-            switch stream.videoSettings.format {
+            switch mediaCodec.videoSettings.format {
             case .h264:
                 metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
             case .hevc:
                 metadata["videocodecid"] = FLVVideoFourCC.hevc.rawValue
             }
-            metadata["videodatarate"] = stream.videoSettings.bitRate / 1000
+            metadata["videodatarate"] = mediaCodec.videoSettings.bitRate / 1000
         }
-        if let audioFormat = stream.audioInputFormat {
+        if let audioFormat = mediaCodec.audioInputFormat {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
-            metadata["audiodatarate"] = stream.audioSettings.bitRate / 1000
+            metadata["audiodatarate"] = mediaCodec.audioSettings.bitRate / 1000
             metadata["audiosamplerate"] = audioFormat.sampleRate
         }
         return AMFArray(metadata)
@@ -715,35 +715,40 @@ public actor RTMPStream {
 extension RTMPStream: HKStream {
     // MARK: IOStreamConvertible
     public var audioSettings: AudioCodecSettings {
-        stream.audioSettings
+        mediaCodec.audioSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        stream.audioSettings = audioSettings
+        mediaCodec.audioSettings = audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        stream.videoSettings
+        mediaCodec.videoSettings
     }
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        stream.videoSettings = videoSettings
+        mediaCodec.videoSettings = videoSettings
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
-        if sampleBuffer.formatDescription?.isCompressed == true {
-            let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
-            let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
-            let timedelta = videoTimestamp.update(decodeTimeStamp)
-            frameCount += 1
-            videoFormat = sampleBuffer.formatDescription
-            guard let message = RTMPVideoMessage(streamId: id, timestamp: timedelta, compositionTime: compositionTime, sampleBuffer: sampleBuffer) else {
-                return
+        switch sampleBuffer.formatDescription?.mediaType {
+        case .video:
+            if sampleBuffer.formatDescription?.isCompressed == true {
+                let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
+                let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
+                let timedelta = videoTimestamp.update(decodeTimeStamp)
+                frameCount += 1
+                videoFormat = sampleBuffer.formatDescription
+                guard let message = RTMPVideoMessage(streamId: id, timestamp: timedelta, compositionTime: compositionTime, sampleBuffer: sampleBuffer) else {
+                    return
+                }
+                doOutput(.one, chunkStreamId: .video, message: message)
+            } else {
+                mediaCodec.append(sampleBuffer)
+                observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
-            doOutput(.one, chunkStreamId: .video, message: message)
-        } else {
-            stream.append(sampleBuffer)
-            observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+        default:
+            break
         }
     }
 
@@ -756,12 +761,13 @@ extension RTMPStream: HKStream {
             }
             doOutput(.one, chunkStreamId: .audio, message: message)
         default:
-            stream.append(audioBuffer, when: when)
+            mediaCodec.append(audioBuffer, when: when)
         }
     }
 
     public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
         audioPlayerNode = await audioPlayer?.makePlayerNode()
+        await mediaLink.setAudioPlayer(audioPlayerNode)
     }
 
     public func addObserver(_ observer: some HKStreamObserver) {

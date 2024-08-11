@@ -2,7 +2,7 @@ import CoreImage
 import CoreMedia
 
 extension CMVideoFormatDescription {
-    var isCompressed: Bool {
+    public var isCompressed: Bool {
         switch CMFormatDescriptionGetMediaSubType(self) {
         case kCVPixelFormatType_1Monochrome,
              kCVPixelFormatType_2Indexed,

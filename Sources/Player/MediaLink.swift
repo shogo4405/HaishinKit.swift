@@ -1,13 +1,13 @@
 import CoreMedia
 import Foundation
 
-final actor MediaLink {
-    var dequeue: AsyncStream<CMSampleBuffer> {
+public final actor MediaLink {
+    public var dequeue: AsyncStream<CMSampleBuffer> {
         let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
         self.continutation = continutation
         return stream
     }
-    private(set) var isRunning = false
+    public private(set) var isRunning = false
     private var storage: TypedBlockQueue<CMSampleBuffer>?
     private var continutation: AsyncStream<CMSampleBuffer>.Continuation? {
         didSet {
@@ -17,7 +17,8 @@ final actor MediaLink {
     private var presentationTimeStampOrigin: CMTime = .invalid
     private weak var audioPlayer: AudioPlayerNode?
 
-    init() {
+    /// Creates a new instance.
+    public init() {
         do {
             storage = try .init(capacity: 90, handlers: .outputPTSSortedSampleBuffers)
         } catch {
@@ -25,7 +26,7 @@ final actor MediaLink {
         }
     }
 
-    func enqueue(_ sampleBuffer: CMSampleBuffer) {
+    public func enqueue(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning else {
             return
         }
@@ -39,13 +40,14 @@ final actor MediaLink {
         }
     }
 
-    func setAudioPlayer(_ audioPlayer: AudioPlayerNode?) {
+    public func setAudioPlayer(_ audioPlayer: AudioPlayerNode?) {
         self.audioPlayer = audioPlayer
     }
 }
 
 extension MediaLink: AsyncRunner {
-    func startRunning() {
+    // MARK: AsyncRunner
+    public func startRunning() {
         guard !isRunning else {
             return
         }
@@ -69,14 +71,14 @@ extension MediaLink: AsyncRunner {
                         if 2 < frameCount {
                             logger.info("droppedFrame: \(frameCount)")
                         }
-                        return
+                        break
                     }
                 }
             }
         }
     }
 
-    func stopRunning() {
+    public func stopRunning() {
         guard isRunning else {
             return
         }

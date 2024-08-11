@@ -8,4 +8,11 @@ public struct NetworkTransportReport: Sendable {
     public let totalBytesIn: Int
     /// The statistics of outgoing bytes per second.
     public let totalBytesOut: Int
+
+    /// Creates a new instance.
+    public init(queueBytesOut: Int, totalBytesIn: Int, totalBytesOut: Int) {
+        self.queueBytesOut = queueBytesOut
+        self.totalBytesIn = totalBytesIn
+        self.totalBytesOut = totalBytesOut
+    }
 }

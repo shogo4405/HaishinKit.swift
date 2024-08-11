@@ -8,11 +8,14 @@ public actor SRTStream {
     public private(set) var readyState: HKStreamReadyState = .idle
     private var name: String?
     private var action: (() async -> Void)?
-    private lazy var stream = MediaCodec()
     private weak var connection: SRTConnection?
     private lazy var writer = TSWriter()
+    private lazy var reader = TSReader()
+    private lazy var mediaLink = MediaLink()
+    private lazy var mediaCodec = MediaCodec()
     private var observers: [any HKStreamObserver] = []
     private var bitrateStorategy: (any HKStreamBitRateStrategy)?
+    private var audioPlayerNode: AudioPlayerNode?
 
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
@@ -33,28 +36,28 @@ public actor SRTStream {
         }
         if await connection?.connected == true {
             writer.expectedMedias.removeAll()
-            if stream.videoInputFormat != nil {
-                writer.videoFormat = stream.videoInputFormat
+            if mediaCodec.videoInputFormat != nil {
+                writer.videoFormat = mediaCodec.videoInputFormat
                 writer.expectedMedias.insert(.video)
             }
-            if stream.audioInputFormat != nil {
-                writer.audioFormat = stream.audioInputFormat
+            if mediaCodec.audioInputFormat != nil {
+                writer.audioFormat = mediaCodec.audioInputFormat
                 writer.expectedMedias.insert(.audio)
             }
             readyState = .publishing
-            stream.startRunning()
+            mediaCodec.startRunning()
             Task {
-                for try await buffer in stream.video where stream.isRunning {
+                for try await buffer in mediaCodec.video where mediaCodec.isRunning {
                     writer.append(buffer)
                 }
             }
             Task {
-                for await buffer in stream.audio where stream.isRunning {
+                for await buffer in mediaCodec.audio where mediaCodec.isRunning {
                     writer.append(buffer.0, when: buffer.1)
                 }
             }
             Task {
-                for await data in writer.output where stream.isRunning {
+                for await data in writer.output where mediaCodec.isRunning {
                     await connection?.output(data)
                 }
             }
@@ -75,7 +78,38 @@ public actor SRTStream {
             return
         }
         if await connection?.connected == true {
-            stream.startRunning()
+            mediaCodec.startRunning()
+            Task {
+                await mediaLink.startRunning()
+                while mediaCodec.isRunning {
+                    do {
+                        for try await video in mediaCodec.video where mediaCodec.isRunning {
+                            await mediaLink.enqueue(video)
+                        }
+                    } catch {
+                        logger.error(error)
+                    }
+                }
+            }
+            Task {
+                guard let audioPlayerNode else {
+                    return
+                }
+                await audioPlayerNode.startRunning()
+                for await audio in mediaCodec.audio where mediaCodec.isRunning {
+                    await audioPlayerNode.enqueue(audio.0, when: audio.1)
+                }
+            }
+            Task {
+                for try await buffer in reader.output where mediaCodec.isRunning {
+                    mediaCodec.append(buffer.1)
+                }
+            }
+            Task {
+                for await video in await mediaLink.dequeue where mediaCodec.isRunning {
+                    observers.forEach { $0.stream(self, didOutput: video) }
+                }
+            }
             await connection?.listen()
             readyState = .playing
         } else {
@@ -88,31 +122,31 @@ public actor SRTStream {
         if readyState == .idle {
             return
         }
-        stream.stopRunning()
+        mediaCodec.stopRunning()
         readyState = .idle
     }
 
     func doInput(_ data: Data) {
-        // muxer.read(data)
+        _ = reader.read(data)
     }
 }
 
 extension SRTStream: HKStream {
     // MARK: IOStreamConvertible
     public var audioSettings: AudioCodecSettings {
-        stream.audioSettings
+        mediaCodec.audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        stream.videoSettings
+        mediaCodec.videoSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        stream.audioSettings = audioSettings
+        mediaCodec.audioSettings = audioSettings
     }
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        stream.videoSettings = videoSettings
+        mediaCodec.videoSettings = videoSettings
     }
 
     public func setBitrateStorategy(_ bitrateStorategy: (some HKStreamBitRateStrategy)?) {
@@ -120,15 +154,28 @@ extension SRTStream: HKStream {
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
-        stream.append(sampleBuffer)
-        observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+        switch sampleBuffer.formatDescription?.mediaType {
+        case .video?:
+            if sampleBuffer.formatDescription?.isCompressed == true {
+            } else {
+                mediaCodec.append(sampleBuffer)
+                observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+            }
+        default:
+            break
+        }
     }
 
-    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
+        audioPlayerNode = await audioPlayer?.makePlayerNode()
+        await mediaLink.setAudioPlayer(audioPlayerNode)
     }
 
     public func append(_ buffer: AVAudioBuffer, when: AVAudioTime) {
-        stream.append(buffer, when: when)
+        guard buffer is AVAudioPCMBuffer else {
+            return
+        }
+        mediaCodec.append(buffer, when: when)
         observers.forEach { $0.stream(self, didOutput: buffer, when: when) }
     }
 

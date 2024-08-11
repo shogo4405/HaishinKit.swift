@@ -2,17 +2,13 @@ import AVFoundation
 import Foundation
 import Logboard
 
-/// The interface an MPEG-2 TS (Transport Stream) reader uses to inform its delegates.
-public protocol TSReaderDelegate: AnyObject {
-    func reader(_ reader: TSReader<Self>, id: UInt16, didRead formatDescription: CMFormatDescription)
-    func reader(_ reader: TSReader<Self>, id: UInt16, didRead sampleBuffer: CMSampleBuffer)
-}
-
 /// The TSReader class represents read MPEG-2 transport stream data.
-public class TSReader<T: TSReaderDelegate> {
-    /// Specifies the delegate object.
-    public weak var delegate: T?
-
+public final class TSReader {
+    public var output: AsyncStream<(UInt16, CMSampleBuffer)> {
+        return AsyncStream<(UInt16, CMSampleBuffer)> { continuation in
+            self.continuation = continuation
+        }
+    }
     private var pat: TSProgramAssociation? {
         didSet {
             guard let pat else {
@@ -40,6 +36,7 @@ public class TSReader<T: TSReaderDelegate> {
     }
     private var programs: [UInt16: UInt16] = [:]
     private var esSpecData: [UInt16: ESSpecificData] = [:]
+    private var continuation: AsyncStream<(UInt16, CMSampleBuffer)>.Continuation?
     private var nalUnitReader = NALUnitReader()
     private var formatDescriptions: [UInt16: CMFormatDescription] = [:]
     private var packetizedElementaryStreams: [UInt16: PacketizedElementaryStream] = [:]
@@ -83,14 +80,14 @@ public class TSReader<T: TSReaderDelegate> {
     private func readPacketizedElementaryStream(_ packet: TSPacket) {
         if packet.payloadUnitStartIndicator {
             if let sampleBuffer = makeSampleBuffer(packet.pid, forUpdate: true) {
-                delegate?.reader(self, id: packet.pid, didRead: sampleBuffer)
+                continuation?.yield((packet.pid, sampleBuffer))
             }
             packetizedElementaryStreams[packet.pid] = PacketizedElementaryStream(packet.payload)
             return
         }
         _ = packetizedElementaryStreams[packet.pid]?.append(packet.payload)
         if let sampleBuffer = makeSampleBuffer(packet.pid) {
-            delegate?.reader(self, id: packet.pid, didRead: sampleBuffer)
+            continuation?.yield((packet.pid, sampleBuffer))
         }
     }
 
@@ -106,7 +103,6 @@ public class TSReader<T: TSReaderDelegate> {
         let formatDescription = makeFormatDescription(data, pes: &pes)
         if let formatDescription, formatDescriptions[id] != formatDescription {
             formatDescriptions[id] = formatDescription
-            delegate?.reader(self, id: id, didRead: formatDescription)
         }
         var isNotSync = true
         switch data.streamType {
