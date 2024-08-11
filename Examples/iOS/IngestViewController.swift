@@ -48,7 +48,7 @@ final class IngestViewController: UIViewController {
             await netStreamSwitcher.setPreference(Preference.default)
             if let stream = await netStreamSwitcher.stream {
                 await mixer.addStream(stream)
-                if let view = view as? (any IOStreamObserver) {
+                if let view = view as? (any HKStreamObserver) {
                     await stream.addObserver(view)
                 }
             }

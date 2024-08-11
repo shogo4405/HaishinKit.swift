@@ -167,7 +167,7 @@ public actor RTMPStream {
     /// The number of video frames per seconds.
     public private(set) var currentFPS: UInt16 = 0
     /// The ready state of stream.
-    public private(set) var readyState: IOStreamReadyState = .idle
+    public private(set) var readyState: HKStreamReadyState = .idle
     /// The stream of events you receive RTMP status events from a service.
     public var status: AsyncStream<RTMPStatus> {
         let (stream, continutation) = AsyncStream<RTMPStatus>.makeStream()
@@ -183,7 +183,7 @@ public actor RTMPStream {
             dataTimestamps.removeAll()
         }
     }
-    private var observers: [any IOStreamObserver] = []
+    private var observers: [any HKStreamObserver] = []
     private var frameCount: UInt16 = 0
     private var audioBuffer: AVAudioCompressedBuffer?
     private var howToPublish: RTMPStream.HowToPublish = .live
@@ -201,13 +201,11 @@ public actor RTMPStream {
     private var expectedResponse: Code?
     private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
     private(set) var id: UInt32 = RTMPStream.defaultID
-    private lazy var stream = IOMediaConverter()
-    private lazy var mediaLink = {
-        return MediaLink(audioPlayer)
-    }()
+    private lazy var stream = MediaCodec()
+    private lazy var mediaLink = MediaLink()
     private weak var connection: RTMPConnection?
-    private lazy var audioPlayer = IOAudioPlayer()
-    private var bitrateStorategy: (any NetworkBitRateStrategy)?
+    private weak var audioPlayerNode: AudioPlayerNode?
+    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
     private var audioFormat: AVAudioFormat? {
         didSet {
@@ -298,9 +296,12 @@ public actor RTMPStream {
                     }
                 }
                 Task {
-                    await audioPlayer.startRunning()
+                    guard let audioPlayerNode else {
+                        return
+                    }
+                    await audioPlayerNode.startRunning()
                     for await audio in stream.audio where stream.isRunning {
-                        await audioPlayer.enqueue(audio.0, when: audio.1)
+                        await audioPlayerNode.enqueue(audio.0, when: audio.1)
                     }
                 }
                 Task {
@@ -323,7 +324,7 @@ public actor RTMPStream {
             return response
         } catch {
             await mediaLink.stopRunning()
-            await audioPlayer.stopRunning()
+            await audioPlayerNode?.stopRunning()
             stream.stopRunning()
             readyState = .idle
             throw error
@@ -407,7 +408,7 @@ public actor RTMPStream {
         }
         stream.stopRunning()
         await mediaLink.stopRunning()
-        await audioPlayer.stopRunning()
+        await audioPlayerNode?.stopRunning()
         return try await withCheckedThrowingContinuation { continutation in
             self.continuation = continutation
             switch readyState {
@@ -619,7 +620,7 @@ public actor RTMPStream {
         }
         stream.stopRunning()
         await mediaLink.stopRunning()
-        await audioPlayer.stopRunning()
+        await audioPlayerNode?.stopRunning()
         async let _ = try? connection?.call("FCUnpublish", arguments: fcPublishName)
         async let _ = try? connection?.call("deleteStream", arguments: id)
     }
@@ -711,7 +712,7 @@ public actor RTMPStream {
     }
 }
 
-extension RTMPStream: IOStream {
+extension RTMPStream: HKStream {
     // MARK: IOStreamConvertible
     public var audioSettings: AudioCodecSettings {
         stream.audioSettings
@@ -759,24 +760,24 @@ extension RTMPStream: IOStream {
         }
     }
 
-    public func attachAudioEngine(_ audioEngine: AVAudioEngine?) async {
-        await audioPlayer.attachAudioEngine(audioEngine)
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
+        audioPlayerNode = await audioPlayer?.makePlayerNode()
     }
 
-    public func addObserver(_ observer: some IOStreamObserver) {
+    public func addObserver(_ observer: some HKStreamObserver) {
         guard !observers.contains(where: { $0 === observer }) else {
             return
         }
         observers.append(observer)
     }
 
-    public func removeObserver(_ observer: some IOStreamObserver) {
+    public func removeObserver(_ observer: some HKStreamObserver) {
         if let index = observers.firstIndex(where: { $0 === observer }) {
             observers.remove(at: index)
         }
     }
 
-    public func setBitrateStorategy(_ bitrateStorategy: (some NetworkBitRateStrategy)?) {
+    public func setBitrateStorategy(_ bitrateStorategy: (some HKStreamBitRateStrategy)?) {
         self.bitrateStorategy = bitrateStorategy
     }
 

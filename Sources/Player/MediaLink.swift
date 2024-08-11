@@ -15,10 +15,9 @@ final actor MediaLink {
         }
     }
     private var presentationTimeStampOrigin: CMTime = .invalid
-    private weak var audioPlayer: IOAudioPlayer?
+    private weak var audioPlayer: AudioPlayerNode?
 
-    init(_ audioPlayer: IOAudioPlayer) {
-        self.audioPlayer = audioPlayer
+    init() {
         do {
             storage = try .init(capacity: 90, handlers: .outputPTSSortedSampleBuffers)
         } catch {
@@ -38,6 +37,10 @@ final actor MediaLink {
         } catch {
             logger.error(error)
         }
+    }
+
+    func setAudioPlayer(_ audioPlayer: AudioPlayerNode?) {
+        self.audioPlayer = audioPlayer
     }
 }
 

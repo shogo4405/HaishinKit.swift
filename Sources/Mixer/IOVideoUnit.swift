@@ -5,8 +5,6 @@ import CoreImage
 public enum IOVideoUnitError: Error {
     /// The IOVideoUnit failed to attach device.
     case failedToAttach(error: (any Error)?)
-    /// The IOVideoUnit failed to set an option.
-    // case failedToSetOption(status: OSStatus, key: String)
 }
 
 final class IOVideoUnit: IOUnit {

@@ -113,11 +113,11 @@ public class PiPHKView: NSView {
     }
 }
 
-extension PiPHKView: IOStreamObserver {
-    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+extension PiPHKView: HKStreamObserver {
+    nonisolated public func stream(_ stream: some HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
+    nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { @MainActor in
             (layer as? AVSampleBufferDisplayLayer)?.enqueue(video)
             #if os(macOS)

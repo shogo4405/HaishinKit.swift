@@ -82,7 +82,7 @@ public final actor IOMixer {
 
     public private(set) var isRunning = false
 
-    private var streams: [any IOStream] = []
+    private var streams: [any HKStream] = []
     private lazy var audioIO = IOAudioUnit(session)
     private lazy var videoIO = IOVideoUnit(session)
     private lazy var session = IOCaptureSession()
@@ -230,7 +230,7 @@ public final actor IOMixer {
     }
 
     /// Adds a stream.
-    public func addStream(_ stream: some IOStream) {
+    public func addStream(_ stream: some HKStream) {
         guard !streams.contains(where: { $0 === stream }) else {
             return
         }
@@ -238,7 +238,7 @@ public final actor IOMixer {
     }
 
     /// Removes a stream.
-    public func removeStream(_ stream: some IOStream) {
+    public func removeStream(_ stream: some HKStream) {
         if let index = streams.firstIndex(where: { $0 === stream }) {
             streams.remove(at: index)
         }

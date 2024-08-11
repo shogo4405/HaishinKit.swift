@@ -1,7 +1,7 @@
 @preconcurrency import AVFoundation
 import Foundation
 
-final actor IOAudioPlayer {
+final actor AudioPlayerNode {
     var currentTime: TimeInterval {
         if playerNode.isPlaying {
             guard
@@ -19,26 +19,17 @@ final actor IOAudioPlayer {
     private var audioTime = IOAudioTime()
     private var scheduledAudioBuffers: Int = 0
     private var isBuffering = true
-    private var audioEngine: AVAudioEngine?
+    private weak var player: AudioPlayer?
     private var format: AVAudioFormat? {
         didSet {
-            guard let audioEngine else {
-                return
-            }
-            audioEngine.connect(playerNode, to: audioEngine.outputNode, format: format)
-            if !audioEngine.isRunning {
-                try? audioEngine.start()
+            Task { [format] in
+                await player?.connect(self, format: format)
             }
         }
     }
 
-    init() {
-        self.playerNode = AVAudioPlayerNode()
-    }
-
-    func attachAudioEngine(_ audioEngine: AVAudioEngine?) {
-        audioEngine?.attach(playerNode)
-        self.audioEngine = audioEngine
+    init(player: AudioPlayer, playerNode: AVAudioPlayerNode) {
+        self.playerNode = playerNode
     }
 
     func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
@@ -70,7 +61,7 @@ final actor IOAudioPlayer {
     }
 }
 
-extension IOAudioPlayer: AsyncRunner {
+extension AudioPlayerNode: AsyncRunner {
     func startRunning() {
         guard !isRunning else {
             return
@@ -91,5 +82,16 @@ extension IOAudioPlayer: AsyncRunner {
         audioTime.reset()
         format = nil
         isRunning = false
+    }
+}
+
+extension AudioPlayerNode: Hashable {
+    // MARK: Hashable
+    nonisolated public static func == (lhs: AudioPlayerNode, rhs: AudioPlayerNode) -> Bool {
+        lhs === rhs
+    }
+
+    nonisolated public func hash(into hasher: inout Hasher) {
+        hasher.combine(ObjectIdentifier(self))
     }
 }

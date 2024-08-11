@@ -9,9 +9,9 @@ import SwiftPMSupport
 import UIKit
 #endif
 
-public protocol IOStream: Actor {
+public protocol HKStream: Actor {
     /// The current state of the stream.
-    var readyState: IOStreamReadyState { get async }
+    var readyState: HKStreamReadyState { get async }
 
     /// Specifies the audio compression properties.
     var audioSettings: AudioCodecSettings { get async }
@@ -25,10 +25,10 @@ public protocol IOStream: Actor {
     /// Sets the video compression properties.
     func setVideoSettings(_ videoSettings: VideoCodecSettings) async
 
-    /// Attaches an AVAudioEngine instance for playback.
-    func attachAudioEngine(_ audioEngine: AVAudioEngine?) async
+    /// Attaches an audio player instance for playback.
+    func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async
 
-    func setBitrateStorategy(_ bitrateStorategy: (some NetworkBitRateStrategy)?)
+    func setBitrateStorategy(_ bitrateStorategy: (some HKStreamBitRateStrategy)?)
 
     /// Appends a CMSampleBuffer.
     /// - Parameters:
@@ -42,15 +42,15 @@ public protocol IOStream: Actor {
     ///   - track: Track number used for mixing.
     func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) async
 
-    func addObserver(_ obserber: some IOStreamObserver) async
+    func addObserver(_ obserber: some HKStreamObserver) async
 
-    func removeObserver(_ observer: some IOStreamObserver) async
+    func removeObserver(_ observer: some HKStreamObserver) async
 
     func dispatch(_ event: NetworkMonitorEvent)
 }
 
 /// The enumeration defines the state an IOStream client is in.
-public enum IOStreamReadyState: Int, Sendable, Equatable {
+public enum HKStreamReadyState: Int, Sendable {
     case idle
     case play
     case playing

@@ -18,7 +18,7 @@ final class PlaybackViewController: UIViewController {
         Task {
             await netStreamSwitcher.setPreference(Preference.default)
             if let stream = await netStreamSwitcher.stream {
-                if let view = view as? (any IOStreamObserver) {
+                if let view = view as? (any HKStreamObserver) {
                     await stream.addObserver(view)
                 }
             }

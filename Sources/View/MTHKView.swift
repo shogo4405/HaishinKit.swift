@@ -101,11 +101,11 @@ public class MTHKView: MTKView {
     }
 }
 
-extension MTHKView: IOStreamObserver {
-    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+extension MTHKView: HKStreamObserver {
+    nonisolated public func stream(_ stream: some HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 
-    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
+    nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { @MainActor in
             currentSampleBuffer = video
             #if os(macOS)

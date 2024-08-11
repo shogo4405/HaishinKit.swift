@@ -5,14 +5,14 @@ import libsrt
 
 /// An object that provides the interface to control a one-way channel over a SRTConnection.
 public actor SRTStream {
-    public private(set) var readyState: IOStreamReadyState = .idle
+    public private(set) var readyState: HKStreamReadyState = .idle
     private var name: String?
     private var action: (() async -> Void)?
-    private lazy var stream = IOMediaConverter()
+    private lazy var stream = MediaCodec()
     private weak var connection: SRTConnection?
     private lazy var writer = TSWriter()
-    private var observers: [any IOStreamObserver] = []
-    private var bitrateStorategy: (any NetworkBitRateStrategy)?
+    private var observers: [any HKStreamObserver] = []
+    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
@@ -97,7 +97,7 @@ public actor SRTStream {
     }
 }
 
-extension SRTStream: IOStream {
+extension SRTStream: HKStream {
     // MARK: IOStreamConvertible
     public var audioSettings: AudioCodecSettings {
         stream.audioSettings
@@ -115,7 +115,7 @@ extension SRTStream: IOStream {
         stream.videoSettings = videoSettings
     }
 
-    public func setBitrateStorategy(_ bitrateStorategy: (some NetworkBitRateStrategy)?) {
+    public func setBitrateStorategy(_ bitrateStorategy: (some HKStreamBitRateStrategy)?) {
         self.bitrateStorategy = bitrateStorategy
     }
 
@@ -124,7 +124,7 @@ extension SRTStream: IOStream {
         observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
     }
 
-    public func attachAudioEngine(_ audioEngine: AVAudioEngine?) {
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
     }
 
     public func append(_ buffer: AVAudioBuffer, when: AVAudioTime) {
@@ -132,14 +132,14 @@ extension SRTStream: IOStream {
         observers.forEach { $0.stream(self, didOutput: buffer, when: when) }
     }
 
-    public func addObserver(_ observer: some IOStreamObserver) {
+    public func addObserver(_ observer: some HKStreamObserver) {
         guard !observers.contains(where: { $0 === observer }) else {
             return
         }
         observers.append(observer)
     }
 
-    public func removeObserver(_ observer: some IOStreamObserver) {
+    public func removeObserver(_ observer: some HKStreamObserver) {
         if let index = observers.firstIndex(where: { $0 === observer }) {
             observers.remove(at: index)
         }

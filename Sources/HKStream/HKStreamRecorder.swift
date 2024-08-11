@@ -5,7 +5,7 @@ import SwiftPMSupport
 
 // MARK: -
 /// The IOStreamRecorder class represents video and audio recorder.
-public actor IOStreamRecorder {
+public actor HKStreamRecorder {
     /// The IOStreamRecorder error domain codes.
     public enum Error: Swift.Error {
         case invalidState
@@ -188,13 +188,13 @@ public actor IOStreamRecorder {
     }
 }
 
-extension IOStreamRecorder: IOStreamObserver {
+extension HKStreamRecorder: HKStreamObserver {
     // MARK: IOStreamObserver
-    nonisolated public func stream(_ stream: some IOStream, didOutput video: CMSampleBuffer) {
+    nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { await append(video) }
     }
 
-    nonisolated public func stream(_ stream: some IOStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
+    nonisolated public func stream(_ stream: some HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
         guard let sampleBuffer = (audio as? AVAudioPCMBuffer)?.makeSampleBuffer(when) else {
             return
         }

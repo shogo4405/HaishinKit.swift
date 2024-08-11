@@ -20,14 +20,14 @@ actor NetStreamSwitcher {
     private(set) var mode: Mode = .rtmp
     private var connection: Any?
     private var method: Method = .ingest
-    private(set) var stream: (any IOStream)?
+    private(set) var stream: (any HKStream)?
 
     func setPreference(_ preference: Preference) async {
         self.preference = preference
         if preference.uri?.contains("srt://") == true {
             let connection = SRTConnection()
             self.connection = connection
-            stream = await SRTStream(connection: connection)
+            stream = SRTStream(connection: connection)
             mode = .srt
         } else {
             let connection = RTMPConnection()

@@ -1,8 +1,7 @@
 import AVFoundation
 import Foundation
 
-/// The `IOStream` class is the foundation of a RTMPStream.
-public final class IOMediaConverter {
+public final class MediaCodec {
     public private(set) var isRunning = false
 
     public var audio: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
@@ -67,7 +66,7 @@ public final class IOMediaConverter {
     }
 }
 
-extension IOMediaConverter: Runner {
+extension MediaCodec: Runner {
     // MARK: Runner
     public func startRunning() {
         guard !isRunning else {

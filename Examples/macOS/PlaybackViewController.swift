@@ -5,14 +5,14 @@ import HaishinKit
 
 final class PlaybackViewController: NSViewController {
     @IBOutlet private weak var lfView: MTHKView!
-    private let audioEngine = AVAudioEngine()
     private let netStreamSwitcher: NetStreamSwitcher = .init()
+    private let audioPlayer = AudioPlayer(audioEngine: AVAudioEngine())
 
     override func viewDidLoad() {
         super.viewDidLoad()
         Task { @MainActor in
             await netStreamSwitcher.setPreference(Preference.default)
-            await netStreamSwitcher.stream?.attachAudioEngine(audioEngine)
+            await netStreamSwitcher.stream?.attachAudioPlayer(audioPlayer)
             await netStreamSwitcher.stream?.addObserver(lfView)
         }
     }

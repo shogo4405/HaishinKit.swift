@@ -234,11 +234,11 @@ final class ViewModel: ObservableObject {
 
 extension ViewModel: IOStreamRecorderDelegate {
     // MARK: IOStreamRecorderDelegate
-    func recorder(_ recorder: IOStreamRecorder, errorOccured error: IOStreamRecorder.Error) {
+    func recorder(_ recorder: HKStreamRecorder, errorOccured error: HKStreamRecorder.Error) {
         logger.error(error)
     }
 
-    func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter) {
+    func recorder(_ recorder: HKStreamRecorder, finishWriting writer: AVAssetWriter) {
         PHPhotoLibrary.shared().performChanges({() -> Void in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
         }, completionHandler: { _, error -> Void in
