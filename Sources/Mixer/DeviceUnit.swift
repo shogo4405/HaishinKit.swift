@@ -2,7 +2,7 @@ import AVFoundation
 import Foundation
 
 @available(tvOS 17.0, *)
-protocol IOCaptureUnit {
+protocol DeviceUnit {
     associatedtype Output: AVCaptureOutput
 
     var track: UInt8 { get }

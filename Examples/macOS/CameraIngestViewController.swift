@@ -18,7 +18,7 @@ final class CameraIngestViewController: NSViewController {
     @IBOutlet private weak var cameraPopUpButton: NSPopUpButton!
     @IBOutlet private weak var urlField: NSTextField!
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private var mixer = IOMixer()
+    private var mixer = MediaMixer()
 
     @ScreenActor
     private var textScreenObject = TextScreenObject()

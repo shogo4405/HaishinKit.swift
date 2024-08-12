@@ -1,6 +1,6 @@
 import AVFAudio
 import Foundation
 
-protocol IOUnit {
+protocol CaptureUnit {
     var lockQueue: DispatchQueue { get }
 }

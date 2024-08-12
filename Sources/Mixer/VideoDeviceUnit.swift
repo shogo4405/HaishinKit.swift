@@ -3,11 +3,11 @@ import Foundation
 
 /// Configuration calback block for IOVideoCaptureUnit.
 @available(tvOS 17.0, *)
-public typealias IOVideoCaptureConfigurationBlock = (IOVideoCaptureUnit?) -> Void
+public typealias VideoDeviceConfigurationBlock = (VideoDeviceUnit?) -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
-public final class IOVideoCaptureUnit: IOCaptureUnit {
+public final class VideoDeviceUnit: DeviceUnit {
     public typealias Output = AVCaptureVideoDataOutput
 
     #if os(iOS) || os(macOS)
@@ -23,7 +23,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
 
     /// Specifies the video capture color format.
     /// - Warning: If a format other than kCVPixelFormatType_32ARGB is set, the multi-camera feature will become unavailable. We intend to support this in the future.
-    public var colorFormat = IOVideoCaptureUnit.colorFormat
+    public var colorFormat = VideoDeviceUnit.colorFormat
 
     /// The track number.
     public let track: UInt8
@@ -88,7 +88,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
         self.track = track
     }
 
-    func attachDevice(_ device: AVCaptureDevice?, session: IOCaptureSession, videoUnit: IOVideoUnit) throws {
+    func attachDevice(_ device: AVCaptureDevice?, session: CaptureSession, videoUnit: VideoCaptureUnit) throws {
         setSampleBufferDelegate(nil)
         session.detachCapture(self)
         guard let device else {
@@ -177,7 +177,7 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
     }
     #endif
 
-    func setSampleBufferDelegate(_ videoUnit: IOVideoUnit?) {
+    func setSampleBufferDelegate(_ videoUnit: VideoCaptureUnit?) {
         if let videoUnit {
             #if os(iOS) || os(macOS)
             videoOrientation = videoUnit.videoOrientation
@@ -192,9 +192,9 @@ public final class IOVideoCaptureUnit: IOCaptureUnit {
 @available(tvOS 17.0, *)
 final class IOVideoCaptureUnitDataOutput: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
     private let track: UInt8
-    private let videoMixer: IOVideoMixer<IOVideoUnit>
+    private let videoMixer: VideoMixer<VideoCaptureUnit>
 
-    init(track: UInt8, videoMixer: IOVideoMixer<IOVideoUnit>) {
+    init(track: UInt8, videoMixer: VideoMixer<VideoCaptureUnit>) {
         self.track = track
         self.videoMixer = videoMixer
     }

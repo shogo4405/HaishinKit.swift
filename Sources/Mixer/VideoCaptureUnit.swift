@@ -1,20 +1,14 @@
 import AVFoundation
 import CoreImage
 
-/// The IOVideoUnit error domain codes.
-public enum IOVideoUnitError: Error {
-    /// The IOVideoUnit failed to attach device.
-    case failedToAttach(error: (any Error)?)
-}
-
-final class IOVideoUnit: IOUnit {
+final class VideoCaptureUnit: CaptureUnit {
     enum Error: Swift.Error {
         case multiCamNotSupported
     }
 
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
 
-    var mixerSettings: IOVideoMixerSettings {
+    var mixerSettings: VideoMixerSettings {
         get {
             return videoMixer.settings
         }
@@ -25,7 +19,7 @@ final class IOVideoUnit: IOUnit {
     var inputFormats: [UInt8: CMFormatDescription] {
         return videoMixer.inputFormats
     }
-    var frameRate = IOMixer.defaultFrameRate {
+    var frameRate = MediaMixer.defaultFrameRate {
         didSet {
             guard #available(tvOS 17.0, *) else {
                 return
@@ -80,7 +74,7 @@ final class IOVideoUnit: IOUnit {
     }
 
     private lazy var videoMixer = {
-        var videoMixer = IOVideoMixer<IOVideoUnit>()
+        var videoMixer = VideoMixer<VideoCaptureUnit>()
         videoMixer.delegate = self
         return videoMixer
     }()
@@ -93,11 +87,11 @@ final class IOVideoUnit: IOUnit {
         return _captures as! [UInt8: IOVideoCaptureUnit]
     }
     #elseif os(iOS) || os(macOS) || os(visionOS)
-    var captures: [UInt8: IOVideoCaptureUnit] = [:]
+    var captures: [UInt8: VideoDeviceUnit] = [:]
     #endif
-    private let session: IOCaptureSession
+    private let session: CaptureSession
 
-    init(_ session: IOCaptureSession) {
+    init(_ session: CaptureSession) {
         self.session = session
     }
 
@@ -106,7 +100,7 @@ final class IOVideoUnit: IOUnit {
     }
 
     @available(tvOS 17.0, *)
-    func attachCamera(_ track: UInt8, device: AVCaptureDevice?, configuration: IOVideoCaptureConfigurationBlock?) throws {
+    func attachCamera(_ track: UInt8, device: AVCaptureDevice?, configuration: VideoDeviceConfigurationBlock?) throws {
         guard captures[track]?.device != device else {
             return
         }
@@ -161,7 +155,7 @@ final class IOVideoUnit: IOUnit {
     }
 
     @available(tvOS 17.0, *)
-    func capture(for track: UInt8) -> IOVideoCaptureUnit? {
+    func capture(for track: UInt8) -> VideoDeviceUnit? {
         #if os(tvOS)
         if _captures[track] == nil {
             _captures[track] = .init(track)
@@ -176,13 +170,13 @@ final class IOVideoUnit: IOUnit {
     }
 }
 
-extension IOVideoUnit: IOVideoMixerDelegate {
+extension VideoCaptureUnit: VideoMixerDelegate {
     // MARK: IOVideoMixerDelegate
-    func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
+    func videoMixer(_ videoMixer: VideoMixer<VideoCaptureUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
         inputsContinutation?.yield((track, sampleBuffer))
     }
 
-    func videoMixer(_ videoMixer: IOVideoMixer<IOVideoUnit>, didOutput sampleBuffer: CMSampleBuffer) {
+    func videoMixer(_ videoMixer: VideoMixer<VideoCaptureUnit>, didOutput sampleBuffer: CMSampleBuffer) {
         continuation?.yield(sampleBuffer)
     }
 }

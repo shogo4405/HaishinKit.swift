@@ -26,7 +26,7 @@ final class VideoCodec {
     var needsSync = true
     var passthrough = true
     var frameInterval = VideoCodec.frameInterval
-    var expectedFrameRate = IOMixer.defaultFrameRate
+    var expectedFrameRate = MediaMixer.defaultFrameRate
     /// The running value indicating whether the VideoCodec is running.
     private(set) var isRunning = false
     private(set) var inputFormat: CMFormatDescription? {

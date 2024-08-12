@@ -3,7 +3,7 @@ import Foundation
 
 /// A helper class for interoperating between AVAudioTime and CMTime.
 /// Conversion fails without hostTime on the AVAudioTime side, and cannot be saved with AVAssetWriter.
-final class IOAudioTime {
+final class AudioTime {
     var at: AVAudioTime {
         let now = AVAudioTime(sampleTime: sampleTime, atRate: sampleRate)
         guard let anchorTime else {

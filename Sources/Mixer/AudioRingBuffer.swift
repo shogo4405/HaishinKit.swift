@@ -3,7 +3,7 @@ import AVFoundation
 import CoreMedia
 import Foundation
 
-final class IOAudioRingBuffer {
+final class AudioRingBuffer {
     private static let bufferCounts: UInt32 = 16
     private static let numSamples: UInt32 = 1024
 
@@ -22,7 +22,7 @@ final class IOAudioRingBuffer {
     private var inputBuffer: AVAudioPCMBuffer
     private var outputBuffer: AVAudioPCMBuffer
 
-    init?(_ inputFormat: AVAudioFormat, bufferCounts: UInt32 = IOAudioRingBuffer.bufferCounts) {
+    init?(_ inputFormat: AVAudioFormat, bufferCounts: UInt32 = AudioRingBuffer.bufferCounts) {
         guard
             let inputBuffer = AVAudioPCMBuffer(pcmFormat: inputFormat, frameCapacity: Self.numSamples) else {
             return nil

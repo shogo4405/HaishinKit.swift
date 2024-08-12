@@ -17,7 +17,7 @@ public final actor AudioPlayerNode {
     }
     private(set) var isPaused = false
     private let playerNode: AVAudioPlayerNode
-    private var audioTime = IOAudioTime()
+    private var audioTime = AudioTime()
     private var scheduledAudioBuffers: Int = 0
     private var isBuffering = true
     private weak var player: AudioPlayer?

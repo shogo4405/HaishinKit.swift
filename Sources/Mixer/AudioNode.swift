@@ -1,15 +1,15 @@
 import AVFoundation
 
-enum AudioNodeError: Error {
-    case unableToFindAudioComponent
-    case unableToCreateAudioUnit(_ status: OSStatus)
-    case unableToInitializeAudioUnit(_ status: OSStatus)
-    case unableToUpdateBus(_ status: OSStatus)
-    case unableToRetrieveValue(_ status: OSStatus)
-    case unableToConnectToNode(_ status: OSStatus)
-}
-
 class AudioNode {
+    enum Error: Swift.Error {
+        case unableToFindAudioComponent
+        case unableToCreateAudioUnit(_ status: OSStatus)
+        case unableToInitializeAudioUnit(_ status: OSStatus)
+        case unableToUpdateBus(_ status: OSStatus)
+        case unableToRetrieveValue(_ status: OSStatus)
+        case unableToConnectToNode(_ status: OSStatus)
+    }
+
     enum BusScope: String, CaseIterable {
         case input
         case output
@@ -28,12 +28,12 @@ class AudioNode {
 
     init(description: inout AudioComponentDescription) throws {
         guard let audioComponent = AudioComponentFindNext(nil, &description) else {
-            throw AudioNodeError.unableToFindAudioComponent
+            throw Error.unableToFindAudioComponent
         }
         var audioUnit: AudioUnit?
         let status = AudioComponentInstanceNew(audioComponent, &audioUnit)
         guard status == noErr, let audioUnit else {
-            throw AudioNodeError.unableToCreateAudioUnit(status)
+            throw Error.unableToCreateAudioUnit(status)
         }
         self.audioUnit = audioUnit
     }
@@ -47,7 +47,7 @@ class AudioNode {
     func initializeAudioUnit() throws {
         let status = AudioUnitInitialize(audioUnit)
         guard status == noErr else {
-            throw AudioNodeError.unableToInitializeAudioUnit(status)
+            throw Error.unableToInitializeAudioUnit(status)
         }
     }
 
@@ -63,7 +63,7 @@ class AudioNode {
                                           &connection,
                                           UInt32(MemoryLayout<AudioUnitConnection>.size))
         guard status == noErr else {
-            throw AudioNodeError.unableToConnectToNode(status)
+            throw Error.unableToConnectToNode(status)
         }
         return connection
     }
@@ -77,7 +77,7 @@ class AudioNode {
                                           &asbd,
                                           UInt32(MemoryLayout<AudioStreamBasicDescription>.size))
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
     }
 
@@ -91,7 +91,7 @@ class AudioNode {
                                           &asbd,
                                           &propertySize)
         guard status == noErr else {
-            throw AudioNodeError.unableToRetrieveValue(status)
+            throw Error.unableToRetrieveValue(status)
         }
         return asbd
     }
@@ -106,7 +106,7 @@ class AudioNode {
                                           &busCount,
                                           UInt32(MemoryLayout<UInt32>.size))
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
     }
 
@@ -120,7 +120,7 @@ class AudioNode {
                                           &busCount,
                                           &propertySize)
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
         return Int(busCount)
     }
@@ -146,7 +146,7 @@ final class MixerNode: AudioNode {
                                           &inputCallback,
                                           UInt32(MemoryLayout<AURenderCallbackStruct>.size))
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
     }
 
@@ -159,7 +159,7 @@ final class MixerNode: AudioNode {
                                            value,
                                            0)
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
     }
 
@@ -171,7 +171,7 @@ final class MixerNode: AudioNode {
                                            UInt32(bus),
                                            &value)
         guard status == noErr else {
-            throw AudioNodeError.unableToRetrieveValue(status)
+            throw Error.unableToRetrieveValue(status)
         }
         return value != 0
     }
@@ -185,7 +185,7 @@ final class MixerNode: AudioNode {
                                            value,
                                            0)
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
     }
 
@@ -197,18 +197,18 @@ final class MixerNode: AudioNode {
                                            UInt32(bus),
                                            &value)
         guard status == noErr else {
-            throw AudioNodeError.unableToUpdateBus(status)
+            throw Error.unableToUpdateBus(status)
         }
         return value
     }
 }
 
-enum OutputNodeError: Error {
-    case unableToRenderFrames
-    case unableToAllocateBuffer
-}
-
 final class OutputNode: AudioNode {
+    enum Error: Swift.Error {
+        case unableToRenderFrames
+        case unableToAllocateBuffer
+    }
+
     private var outputComponentDescription = AudioComponentDescription(
         componentType: kAudioUnitType_Output,
         componentSubType: kAudioUnitSubType_GenericOutput,
@@ -228,7 +228,7 @@ final class OutputNode: AudioNode {
 
     init(format: AVAudioFormat) throws {
         guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 1024) else {
-            throw OutputNodeError.unableToAllocateBuffer
+            throw Error.unableToAllocateBuffer
         }
         self.buffer = buffer
         try super.init(description: &outputComponentDescription)
@@ -245,7 +245,7 @@ final class OutputNode: AudioNode {
                                      numberOfFrames,
                                      buffer.mutableAudioBufferList)
         guard status == noErr else {
-            throw OutputNodeError.unableToRenderFrames
+            throw Error.unableToRenderFrames
         }
         return buffer
     }

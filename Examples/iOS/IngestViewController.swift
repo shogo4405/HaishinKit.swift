@@ -24,7 +24,7 @@ final class IngestViewController: UIViewController {
     private var retryCount: Int = 0
     private var preferedStereo = false
     private let netStreamSwitcher: NetStreamSwitcher = .init()
-    private lazy var mixer = IOMixer()
+    private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
         audioCapture.delegate = self

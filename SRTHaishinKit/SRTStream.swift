@@ -203,16 +203,16 @@ extension SRTStream: HKStream {
     }
 }
 
-extension SRTStream: IOMixerOutput {
+extension SRTStream: MediaMixerOutput {
     // MARK: IOMixerOutput
-    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
         guard track == UInt8.max else {
             return
         }
         Task { await append(sampleBuffer) }
     }
 
-    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard track == UInt8.max else {
             return
         }

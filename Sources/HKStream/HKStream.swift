@@ -4,7 +4,7 @@ import CoreImage
 import CoreMedia
 
 /// The interface is the foundation of the RTMPStream and SRTStream.
-public protocol HKStream: Actor, IOMixerOutput {
+public protocol HKStream: Actor, MediaMixerOutput {
     /// The current state of the stream.
     var readyState: HKStreamReadyState { get }
 

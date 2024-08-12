@@ -1,17 +1,17 @@
 import AVFoundation
 
-protocol IOCaptureSessionDelegate: AnyObject {
+protocol CaptureSessionDelegate: AnyObject {
     @available(tvOS 17.0, *)
-    func captureSession(_ session: IOCaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError)
+    func captureSession(_ session: CaptureSession, sessionRuntimeError session: AVCaptureSession, error: AVError)
     #if os(iOS) || os(tvOS) || os(visionOS)
     @available(tvOS 17.0, *)
-    func captureSession(_ session: IOCaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
+    func captureSession(_ session: CaptureSession, sessionWasInterrupted session: AVCaptureSession, reason: AVCaptureSession.InterruptionReason?)
     @available(tvOS 17.0, *)
-    func captureSession(_ session: IOCaptureSession, sessionInterruptionEnded session: AVCaptureSession)
+    func captureSession(_ session: CaptureSession, sessionInterruptionEnded session: AVCaptureSession)
     #endif
 }
 
-final class IOCaptureSession {
+final class CaptureSession {
     #if os(iOS) || os(tvOS)
     static var isMultiCamSupported: Bool {
         if #available(tvOS 17.0, *) {
@@ -48,7 +48,7 @@ final class IOCaptureSession {
     let isMultitaskingCameraAccessEnabled = false
     #endif
 
-    weak var delegate: (any IOCaptureSessionDelegate)?
+    weak var delegate: (any CaptureSessionDelegate)?
     private(set) var isRunning = false
 
     #if os(tvOS)
@@ -127,7 +127,7 @@ final class IOCaptureSession {
     }
 
     @available(tvOS 17.0, *)
-    func attachCapture(_ capture: (any IOCaptureUnit)?) {
+    func attachCapture(_ capture: (any DeviceUnit)?) {
         guard let capture else {
             return
         }
@@ -154,7 +154,7 @@ final class IOCaptureSession {
     }
 
     @available(tvOS 17.0, *)
-    func detachCapture(_ capture: (any IOCaptureUnit)?) {
+    func detachCapture(_ capture: (any DeviceUnit)?) {
         guard let capture else {
             return
         }
@@ -263,7 +263,7 @@ final class IOCaptureSession {
     #endif
 }
 
-extension IOCaptureSession: Runner {
+extension CaptureSession: Runner {
     // MARK: Running
     func startRunning() {
         guard !isRunning else {

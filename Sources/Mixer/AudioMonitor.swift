@@ -3,7 +3,7 @@ import AVFoundation
 import CoreMedia
 import Foundation
 
-final class IOAudioMonitor {
+final class AudioMonitor {
     var inputFormat: AVAudioFormat? {
         didSet {
             if let inputFormat {
@@ -29,10 +29,10 @@ final class IOAudioMonitor {
             }
         }
     }
-    private var ringBuffer: IOAudioRingBuffer?
+    private var ringBuffer: AudioRingBuffer?
 
     private let callback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, _: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
-        let monitor = Unmanaged<IOAudioMonitor>.fromOpaque(inRefCon).takeUnretainedValue()
+        let monitor = Unmanaged<AudioMonitor>.fromOpaque(inRefCon).takeUnretainedValue()
         return monitor.render(inNumberFrames, ioData: ioData)
     }
 
@@ -95,7 +95,7 @@ final class IOAudioMonitor {
     }
 }
 
-extension IOAudioMonitor: Runner {
+extension AudioMonitor: Runner {
     // MARK: Running
     func startRunning() {
         guard !isRunning else {

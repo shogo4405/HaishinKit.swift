@@ -3,9 +3,9 @@ import CoreMedia
 import Foundation
 
 /// Constraints on the audio mixier settings.
-public struct IOVideoMixerSettings: Codable, Sendable {
+public struct VideoMixerSettings: Codable, Sendable {
     /// The default setting for the stream.
-    public static let `default`: IOVideoMixerSettings = .init()
+    public static let `default`: VideoMixerSettings = .init()
 
     /// The type of image rendering mode.
     public enum Mode: String, Codable, Sendable {

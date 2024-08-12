@@ -24,7 +24,7 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
             }
         }
     }
-    private var mixer = IOMixer()
+    private var mixer = MediaMixer()
     private let netStreamSwitcher = NetStreamSwitcher()
     private var needVideoConfiguration = true
 

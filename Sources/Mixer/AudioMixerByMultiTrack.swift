@@ -1,11 +1,11 @@
 import AVFoundation
 import Foundation
 
-final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
+final class AudioMixerByMultiTrack: AudioMixer {
     private static let defaultSampleTime: AVAudioFramePosition = 0
 
-    weak var delegate: (any IOAudioMixerDelegate)?
-    var settings = IOAudioMixerSettings.default {
+    weak var delegate: (any AudioMixerDelegate)?
+    var settings = AudioMixerSettings.default {
         didSet {
             if let inSourceFormat, settings.invalidateOutputFormat(oldValue) {
                 outputFormat = settings.makeOutputFormat(inSourceFormat)
@@ -39,13 +39,13 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
             outputFormat = settings.makeOutputFormat(inSourceFormat)
         }
     }
-    private var tracks: [UInt8: IOAudioMixerTrack<IOAudioMixerByMultiTrack>] = [:] {
+    private var tracks: [UInt8: AudioMixerTrack<AudioMixerByMultiTrack>] = [:] {
         didSet {
             tryToSetupAudioNodes()
         }
     }
     private var anchor: AVAudioTime?
-    private var buffers: [UInt8: IOAudioRingBuffer] = [:] {
+    private var buffers: [UInt8: AudioRingBuffer] = [:] {
         didSet {
             if logger.isEnabledFor(level: .trace) {
                 logger.trace(buffers)
@@ -53,14 +53,14 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
         }
     }
     private var mixerNode: MixerNode?
-    private var sampleTime: AVAudioFramePosition = IOAudioMixerByMultiTrack.defaultSampleTime
+    private var sampleTime: AVAudioFramePosition = AudioMixerByMultiTrack.defaultSampleTime
     private var outputNode: OutputNode?
 
     private let inputRenderCallback: AURenderCallback = { (inRefCon: UnsafeMutableRawPointer, _: UnsafeMutablePointer<AudioUnitRenderActionFlags>, _: UnsafePointer<AudioTimeStamp>, inBusNumber: UInt32, inNumberFrames: UInt32, ioData: UnsafeMutablePointer<AudioBufferList>?) in
-        let audioMixer = Unmanaged<IOAudioMixerByMultiTrack>.fromOpaque(inRefCon).takeUnretainedValue()
+        let audioMixer = Unmanaged<AudioMixerByMultiTrack>.fromOpaque(inRefCon).takeUnretainedValue()
         let status = audioMixer.render(UInt8(inBusNumber), inNumberFrames: inNumberFrames, ioData: ioData)
         guard status == noErr else {
-            audioMixer.delegate?.audioMixer(audioMixer, errorOccurred: .failedToMix(error: IOAudioMixerError.unableToProvideInputData))
+            audioMixer.delegate?.audioMixer(audioMixer, errorOccurred: .failedToMix(error: AudioMixerError.unableToProvideInputData))
             return noErr
         }
         return status
@@ -157,14 +157,14 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
         }
     }
 
-    private func track(for id: UInt8) -> IOAudioMixerTrack<IOAudioMixerByMultiTrack>? {
+    private func track(for id: UInt8) -> AudioMixerTrack<AudioMixerByMultiTrack>? {
         if let track = tracks[id] {
             return track
         }
         guard let outputFormat else {
             return nil
         }
-        let track = IOAudioMixerTrack<IOAudioMixerByMultiTrack>(id: id, outputFormat: outputFormat)
+        let track = AudioMixerTrack<AudioMixerByMultiTrack>(id: id, outputFormat: outputFormat)
         track.delegate = self
         if let trackSettings = settings.tracks[id] {
             track.settings = trackSettings
@@ -175,9 +175,9 @@ final class IOAudioMixerByMultiTrack: IOAudioMixerConvertible {
     }
 }
 
-extension IOAudioMixerByMultiTrack: IOAudioMixerTrackDelegate {
+extension AudioMixerByMultiTrack: AudioMixerTrackDelegate {
     // MARK: IOAudioMixerTrackDelegate
-    func track(_ track: IOAudioMixerTrack<IOAudioMixerByMultiTrack>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func track(_ track: AudioMixerTrack<AudioMixerByMultiTrack>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.audioMixer(self, track: track.id, didInput: audioPCMBuffer, when: when)
         buffers[track.id]?.append(audioPCMBuffer, when: when)
         if settings.mainTrack == track.id {
@@ -189,7 +189,7 @@ extension IOAudioMixerByMultiTrack: IOAudioMixerTrackDelegate {
         }
     }
 
-    func track(_ track: IOAudioMixerTrack<IOAudioMixerByMultiTrack>, errorOccurred error: IOAudioUnitError) {
+    func track(_ track: AudioMixerTrack<AudioMixerByMultiTrack>, errorOccurred error: IOAudioUnitError) {
         delegate?.audioMixer(self, errorOccurred: error)
     }
 }

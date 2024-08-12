@@ -10,7 +10,7 @@ import UIKit
 #endif
 
 /// An object that mixies audio and video for streaming.
-public final actor IOMixer {
+public final actor MediaMixer {
     static let defaultFrameRate: Float64 = 30
 
     /// The offscreen rendering object.
@@ -49,12 +49,12 @@ public final actor IOMixer {
     }
 
     /// The audio mixer settings.
-    public var audioMixerSettings: IOAudioMixerSettings {
+    public var audioMixerSettings: AudioMixerSettings {
         audioIO.mixerSettings
     }
 
     /// The video mixer settings.
-    public var videoMixerSettings: IOVideoMixerSettings {
+    public var videoMixerSettings: VideoMixerSettings {
         videoIO.mixerSettings
     }
 
@@ -82,10 +82,10 @@ public final actor IOMixer {
 
     public private(set) var isRunning = false
 
-    private var outputs: [any IOMixerOutput] = []
-    private lazy var audioIO = IOAudioUnit(session)
-    private lazy var videoIO = IOVideoUnit(session)
-    private lazy var session = IOCaptureSession()
+    private var outputs: [any MediaMixerOutput] = []
+    private lazy var audioIO = AudioCaptureUnit(session)
+    private lazy var videoIO = VideoCaptureUnit(session)
+    private lazy var session = CaptureSession()
     private var cancellables: Set<AnyCancellable> = []
 
     /// Creates a new instance.
@@ -97,7 +97,7 @@ public final actor IOMixer {
 
     /// Attaches the camera device.
     @available(tvOS 17.0, *)
-    public func attachCamera(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOVideoCaptureConfigurationBlock? = nil) async throws {
+    public func attachCamera(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: VideoDeviceConfigurationBlock? = nil) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             do {
                 try videoIO.attachCamera(track, device: device, configuration: configuration)
@@ -110,7 +110,7 @@ public final actor IOMixer {
 
     /// Returns the IOVideoCaptureUnit by track.
     @available(tvOS 17.0, *)
-    public func videoCapture(for track: UInt8) -> IOVideoCaptureUnit? {
+    public func videoCapture(for track: UInt8) -> VideoDeviceUnit? {
         return videoIO.capture(for: track)
     }
 
@@ -129,7 +129,7 @@ public final actor IOMixer {
     /// }
     /// ```
     @available(tvOS 17.0, *)
-    public func attachAudio(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: IOAudioCaptureConfigurationBlock? = nil) async throws {
+    public func attachAudio(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: AudioDeviceConfigurationBlock? = nil) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             do {
                 try audioIO.attachAudio(track, device: device, configuration: configuration)
@@ -142,7 +142,7 @@ public final actor IOMixer {
 
     /// Returns the IOAudioCaptureUnit by track.
     @available(tvOS 17.0, *)
-    public func audioCapture(for track: UInt8) -> IOAudioCaptureUnit? {
+    public func audioCapture(for track: UInt8) -> AudioDeviceUnit? {
         return audioIO.capture(for: track)
     }
 
@@ -181,7 +181,7 @@ public final actor IOMixer {
     }
 
     /// Specifies the video mixier settings.
-    public func setVideoMixerSettings(_ settings: IOVideoMixerSettings) {
+    public func setVideoMixerSettings(_ settings: VideoMixerSettings) {
         videoIO.mixerSettings = settings
     }
 
@@ -191,7 +191,7 @@ public final actor IOMixer {
     }
 
     /// Specifies the audio mixer settings.
-    public func setAudioMixerSettings(_ settings: IOAudioMixerSettings) {
+    public func setAudioMixerSettings(_ settings: AudioMixerSettings) {
         audioIO.mixerSettings = settings
     }
 
@@ -230,7 +230,7 @@ public final actor IOMixer {
     }
 
     /// Adds an output observer.
-    public func addOutput(_ output: some IOMixerOutput) {
+    public func addOutput(_ output: some MediaMixerOutput) {
         guard !outputs.contains(where: { $0 === output }) else {
             return
         }
@@ -238,7 +238,7 @@ public final actor IOMixer {
     }
 
     /// Removes an output observer.
-    public func removeOutput(_ output: some IOMixerOutput) {
+    public func removeOutput(_ output: some MediaMixerOutput) {
         if let index = outputs.firstIndex(where: { $0 === output }) {
             outputs.remove(at: index)
         }
@@ -259,7 +259,7 @@ public final actor IOMixer {
     #endif
 }
 
-extension IOMixer: AsyncRunner {
+extension MediaMixer: AsyncRunner {
     // MARK: AsyncRunner
     public func startRunning() {
         guard !isRunning else {

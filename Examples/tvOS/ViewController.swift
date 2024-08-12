@@ -23,7 +23,7 @@ final class ViewController: UIViewController {
             logger.info(mode)
         }
     }
-    private var mixer = IOMixer()
+    private var mixer = MediaMixer()
     private let netStreamSwitcher: NetStreamSwitcher = .init()
 
     override func viewWillAppear(_ animated: Bool) {

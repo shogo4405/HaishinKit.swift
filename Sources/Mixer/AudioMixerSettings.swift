@@ -2,9 +2,9 @@ import AVFoundation
 import Foundation
 
 /// Constraints on the audio mixier settings.
-public struct IOAudioMixerSettings: Sendable {
+public struct AudioMixerSettings: Sendable {
     /// The default value.
-    public static let `default` = IOAudioMixerSettings()
+    public static let `default` = AudioMixerSettings()
     /// Maximum sampleRate supported by the system
     public static let maximumSampleRate: Float64 = 48000.0
 
@@ -28,7 +28,7 @@ public struct IOAudioMixerSettings: Sendable {
     public var mainTrack: UInt8 = 0
 
     /// Specifies the track settings.
-    public var tracks: [UInt8: IOAudioMixerTrackSettings] = .init()
+    public var tracks: [UInt8: AudioMixerTrackSettings] = .init()
 
     /// Specifies the maximum number of channels supported by the system
     /// - Description: The maximum number of channels to be used when the number of channels is 0 (not set). More than 2 channels are not supported by the service. It is defined to prevent audio issues since recording does not support more than 2 channels.

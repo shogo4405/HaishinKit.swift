@@ -89,12 +89,12 @@ public class PiPHKView: NSView {
     }
 }
 
-extension PiPHKView: IOMixerOutput {
+extension PiPHKView: MediaMixerOutput {
     // MARK: IOMixerOutput
-    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
         Task { @MainActor in
             guard self.track == track else {
                 return

@@ -4,11 +4,11 @@ import Foundation
 
 /// Configuration calback block for IOAudioCaptureUnit.
 @available(tvOS 17.0, *)
-public typealias IOAudioCaptureConfigurationBlock = (IOAudioCaptureUnit?) -> Void
+public typealias AudioDeviceConfigurationBlock = (AudioDeviceUnit?) -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
-public final class IOAudioCaptureUnit: IOCaptureUnit {
+public final class AudioDeviceUnit: DeviceUnit {
     public typealias Output = AVCaptureAudioDataOutput
 
     /// The track number.
@@ -25,7 +25,7 @@ public final class IOAudioCaptureUnit: IOCaptureUnit {
     }
     /// The connection from a capture input to a capture output.
     public private(set) var connection: AVCaptureConnection?
-    private var dataOutput: IOAudioCaptureUnitDataOutput?
+    private var dataOutput: AudioDeviceUnitDataOutput?
 
     init(_ track: UInt8) {
         self.track = track
@@ -46,18 +46,18 @@ public final class IOAudioCaptureUnit: IOCaptureUnit {
         }
     }
 
-    func setSampleBufferDelegate(_ audioUnit: IOAudioUnit?) {
+    func setSampleBufferDelegate(_ audioUnit: AudioCaptureUnit?) {
         dataOutput = audioUnit?.makeDataOutput(track)
         output?.setSampleBufferDelegate(dataOutput, queue: audioUnit?.lockQueue)
     }
 }
 
 @available(tvOS 17.0, *)
-final class IOAudioCaptureUnitDataOutput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
+final class AudioDeviceUnitDataOutput: NSObject, AVCaptureAudioDataOutputSampleBufferDelegate {
     private let track: UInt8
-    private let audioMixer: any IOAudioMixerConvertible
+    private let audioMixer: any AudioMixer
 
-    init(track: UInt8, audioMixer: any IOAudioMixerConvertible) {
+    init(track: UInt8, audioMixer: any AudioMixer) {
         self.track = track
         self.audioMixer = audioMixer
     }

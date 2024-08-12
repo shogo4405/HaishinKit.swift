@@ -16,9 +16,9 @@ public enum IOAudioUnitError: Swift.Error {
     case failedToMix(error: any Error)
 }
 
-final class IOAudioUnit: IOUnit {
+final class AudioCaptureUnit: CaptureUnit {
     let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
-    var mixerSettings: IOAudioMixerSettings {
+    var mixerSettings: AudioMixerSettings {
         get {
             audioMixer.settings
         }
@@ -44,18 +44,18 @@ final class IOAudioUnit: IOUnit {
         self.continutation = continutation
         return stream
     }
-    private lazy var audioMixer: any IOAudioMixerConvertible = {
+    private lazy var audioMixer: any AudioMixer = {
         if isMultiTrackAudioMixingEnabled {
-            var mixer = IOAudioMixerByMultiTrack()
+            var mixer = AudioMixerByMultiTrack()
             mixer.delegate = self
             return mixer
         } else {
-            var mixer = IOAudioMixerBySingleTrack()
+            var mixer = AudioMixerBySingleTrack()
             mixer.delegate = self
             return mixer
         }
     }()
-    private var monitor: IOAudioMonitor = .init()
+    private var monitor: AudioMonitor = .init()
     #if os(tvOS)
     private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
@@ -63,18 +63,18 @@ final class IOAudioUnit: IOUnit {
         return _captures as! [UInt8: IOAudioCaptureUnit]
     }
     #elseif os(iOS) || os(macOS)
-    var captures: [UInt8: IOAudioCaptureUnit] = [:]
+    var captures: [UInt8: AudioDeviceUnit] = [:]
     #endif
-    private let session: IOCaptureSession
+    private let session: CaptureSession
     private var continutation: AsyncStream<(AVAudioPCMBuffer, AVAudioTime)>.Continuation?
 
-    init(_ session: IOCaptureSession) {
+    init(_ session: CaptureSession) {
         self.session = session
     }
 
     #if os(iOS) || os(macOS) || os(tvOS)
     @available(tvOS 17.0, *)
-    func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: IOAudioCaptureConfigurationBlock?) throws {
+    func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: AudioDeviceConfigurationBlock?) throws {
         try session.configuration { _ in
             session.detachCapture(captures[track])
             guard let device else {
@@ -90,12 +90,12 @@ final class IOAudioUnit: IOUnit {
     }
 
     @available(tvOS 17.0, *)
-    func makeDataOutput(_ track: UInt8) -> IOAudioCaptureUnitDataOutput {
+    func makeDataOutput(_ track: UInt8) -> AudioDeviceUnitDataOutput {
         return .init(track: track, audioMixer: audioMixer)
     }
 
     @available(tvOS 17.0, *)
-    func capture(for track: UInt8) -> IOAudioCaptureUnit? {
+    func capture(for track: UInt8) -> AudioDeviceUnit? {
         #if os(tvOS)
         if _captures[track] == nil {
             _captures[track] = .init(track)
@@ -124,19 +124,19 @@ final class IOAudioUnit: IOUnit {
     }
 }
 
-extension IOAudioUnit: IOAudioMixerDelegate {
+extension AudioCaptureUnit: AudioMixerDelegate {
     // MARK: IOAudioMixerDelegate
-    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func audioMixer(_ audioMixer: some AudioMixer, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
+    func audioMixer(_ audioMixer: some AudioMixer, errorOccurred error: IOAudioUnitError) {
     }
 
-    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
+    func audioMixer(_ audioMixer: some AudioMixer, didOutput audioFormat: AVAudioFormat) {
         monitor.inputFormat = audioFormat
     }
 
-    func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func audioMixer(_ audioMixer: some AudioMixer, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         continutation?.yield((audioBuffer, when))
         monitor.append(audioBuffer, when: when)
     }

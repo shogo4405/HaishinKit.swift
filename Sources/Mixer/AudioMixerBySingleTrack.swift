@@ -1,9 +1,9 @@
 import AVFoundation
 import Foundation
 
-final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
-    weak var delegate: (any IOAudioMixerDelegate)?
-    var settings = IOAudioMixerSettings.default {
+final class AudioMixerBySingleTrack: AudioMixer {
+    weak var delegate: (any AudioMixerDelegate)?
+    var settings = AudioMixerSettings.default {
         didSet {
             if let trackSettings = settings.tracks[settings.mainTrack] {
                 track?.settings = trackSettings
@@ -22,7 +22,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             guard let outputFormat, outputFormat != oldValue else {
                 return
             }
-            let track = IOAudioMixerTrack<IOAudioMixerBySingleTrack>(id: settings.mainTrack, outputFormat: outputFormat)
+            let track = AudioMixerTrack<AudioMixerBySingleTrack>(id: settings.mainTrack, outputFormat: outputFormat)
             track.delegate = self
             self.track = track
         }
@@ -35,7 +35,7 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
             outputFormat = settings.makeOutputFormat(inSourceFormat)
         }
     }
-    private var track: IOAudioMixerTrack<IOAudioMixerBySingleTrack>?
+    private var track: AudioMixerTrack<AudioMixerBySingleTrack>?
 
     func append(_ track: UInt8, buffer: CMSampleBuffer) {
         guard settings.mainTrack == track else {
@@ -54,14 +54,14 @@ final class IOAudioMixerBySingleTrack: IOAudioMixerConvertible {
     }
 }
 
-extension IOAudioMixerBySingleTrack: IOAudioMixerTrackDelegate {
+extension AudioMixerBySingleTrack: AudioMixerTrackDelegate {
     // MARK: IOAudioMixerTrackDelegate
-    func track(_ track: IOAudioMixerTrack<IOAudioMixerBySingleTrack>, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    func track(_ track: AudioMixerTrack<AudioMixerBySingleTrack>, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.audioMixer(self, track: track.id, didInput: buffer, when: when)
         delegate?.audioMixer(self, didOutput: buffer.muted(settings.isMuted), when: when)
     }
 
-    func track(_ rtrack: IOAudioMixerTrack<IOAudioMixerBySingleTrack>, errorOccurred error: IOAudioUnitError) {
+    func track(_ rtrack: AudioMixerTrack<AudioMixerBySingleTrack>, errorOccurred error: IOAudioUnitError) {
         delegate?.audioMixer(self, errorOccurred: error)
     }
 }

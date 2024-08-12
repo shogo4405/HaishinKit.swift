@@ -3,15 +3,15 @@ import AVFoundation
 
 private let kIOAudioMixerTrack_frameCapacity: AVAudioFrameCount = 1024
 
-protocol IOAudioMixerTrackDelegate: AnyObject {
-    func track(_ track: IOAudioMixerTrack<Self>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime)
-    func track(_ track: IOAudioMixerTrack<Self>, errorOccurred error: IOAudioUnitError)
+protocol AudioMixerTrackDelegate: AnyObject {
+    func track(_ track: AudioMixerTrack<Self>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime)
+    func track(_ track: AudioMixerTrack<Self>, errorOccurred error: IOAudioUnitError)
 }
 
 /// Constraints on the audio mixier track's settings.
-public struct IOAudioMixerTrackSettings: Codable, Sendable {
+public struct AudioMixerTrackSettings: Codable, Sendable {
     /// The default value.
-    public static let `default` = IOAudioMixerTrackSettings()
+    public static let `default` = AudioMixerTrackSettings()
 
     /// Specifies the volume for output.
     public var volume: Float = 1.0
@@ -30,7 +30,7 @@ public struct IOAudioMixerTrackSettings: Codable, Sendable {
     /// ```
     public var channelMap: [Int]?
 
-    func apply(_ converter: AVAudioConverter?, oldValue: IOAudioMixerTrackSettings?) {
+    func apply(_ converter: AVAudioConverter?, oldValue: AudioMixerTrackSettings?) {
         guard let converter else {
             return
         }
@@ -62,11 +62,11 @@ public struct IOAudioMixerTrackSettings: Codable, Sendable {
     }
 }
 
-final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
+final class AudioMixerTrack<T: AudioMixerTrackDelegate> {
     let id: UInt8
     let outputFormat: AVAudioFormat
 
-    var settings: IOAudioMixerTrackSettings = .init() {
+    var settings: AudioMixerTrackSettings = .init() {
         didSet {
             settings.apply(audioConverter, oldValue: oldValue)
         }
@@ -84,8 +84,8 @@ final class IOAudioMixerTrack<T: IOAudioMixerTrackDelegate> {
             setUp(inSourceFormat)
         }
     }
-    private var audioTime = IOAudioTime()
-    private var ringBuffer: IOAudioRingBuffer?
+    private var audioTime = AudioTime()
+    private var ringBuffer: AudioRingBuffer?
     private var inputBuffer: AVAudioPCMBuffer?
     private var outputBuffer: AVAudioPCMBuffer?
     private var audioConverter: AVAudioConverter? {

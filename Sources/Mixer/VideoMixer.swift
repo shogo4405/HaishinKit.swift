@@ -2,16 +2,16 @@ import CoreImage
 import CoreMedia
 import Foundation
 
-protocol IOVideoMixerDelegate: AnyObject {
-    func videoMixer(_ videoMixer: IOVideoMixer<Self>, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
-    func videoMixer(_ videoMixer: IOVideoMixer<Self>, didOutput sampleBuffer: CMSampleBuffer)
+protocol VideoMixerDelegate: AnyObject {
+    func videoMixer(_ videoMixer: VideoMixer<Self>, track: UInt8, didInput sampleBuffer: CMSampleBuffer)
+    func videoMixer(_ videoMixer: VideoMixer<Self>, didOutput sampleBuffer: CMSampleBuffer)
 }
 
-private let kIOVideoMixer_lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
+private let kVideoMixer_lockFlags = CVPixelBufferLockFlags(rawValue: .zero)
 
-final class IOVideoMixer<T: IOVideoMixerDelegate> {
+final class VideoMixer<T: VideoMixerDelegate> {
     weak var delegate: T?
-    var settings: IOVideoMixerSettings = .default
+    var settings: VideoMixerSettings = .default
     private(set) var inputFormats: [UInt8: CMFormatDescription] = [:]
     private var currentPixelBuffer: CVPixelBuffer?
 
@@ -42,7 +42,7 @@ final class IOVideoMixer<T: IOVideoMixerDelegate> {
             return
         }
         do {
-            try sampleBuffer.imageBuffer?.mutate(kIOVideoMixer_lockFlags) { imageBuffer in
+            try sampleBuffer.imageBuffer?.mutate(kVideoMixer_lockFlags) { imageBuffer in
                 try imageBuffer.copy(currentPixelBuffer)
             }
             delegate?.videoMixer(self, didOutput: sampleBuffer)

@@ -68,7 +68,7 @@ extension AudioNode: CustomStringConvertible {
                                               parameterIds,
                                               &parameterListSize)
                 guard status == noErr else {
-                    throw AudioNodeError.unableToRetrieveValue(status)
+                    throw Error.unableToRetrieveValue(status)
                 }
             }
 
@@ -84,7 +84,7 @@ extension AudioNode: CustomStringConvertible {
                                               &info,
                                               &infoSize)
                 guard status == noErr else {
-                    throw AudioNodeError.unableToRetrieveValue(status)
+                    throw Error.unableToRetrieveValue(status)
                 }
                 result.append(AudioUnitParameter(info, id: id))
             }
