@@ -3,25 +3,25 @@ import Foundation
 import ReplayKit
 import VideoToolbox
 
-/// VideoRotator domain errors
-public enum VideoRotatorError: Error {
-    /// Provided buffer does not contain image buffer
-    case noImageBuffer
-    /// Provided buffer does not contain orientation attachment
-    case noOrientationInfo
-    /// Provided orientation is not supported
-    case unsupportedOrientation
-    /// Pixel buffer cannot be allocated
-    case cannotAllocatePixelBuffer(CVReturn)
-    /// Rotation session fails to rotate the image buffer
-    case rotationFailure(OSStatus)
-}
-
 /// This class allows to rotate image buffers that are provided by ReplayKit.
 /// The buffers arrive in portrait orientation and contain buffer-level attachment
 /// that allow to determine the target resolution and rotate the buffer accordingly.
 @available(iOS 16.0, tvOS 16.0, macOS 13.0, *)
-public class VideoRotator {
+public final class VideoRotator {
+    /// VideoRotator domain errors
+    public enum Error: Swift.Error {
+        /// Provided buffer does not contain image buffer
+        case noImageBuffer
+        /// Provided buffer does not contain orientation attachment
+        case noOrientationInfo
+        /// Provided orientation is not supported
+        case unsupportedOrientation
+        /// Pixel buffer cannot be allocated
+        case cannotAllocatePixelBuffer(CVReturn)
+        /// Rotation session fails to rotate the image buffer
+        case rotationFailure(OSStatus)
+    }
+
     private var pixelInfo = PixelInfo.zero {
         didSet {
             guard pixelInfo != oldValue else {
@@ -51,7 +51,7 @@ public class VideoRotator {
         self.session = session
     }
 
-    public func rotate(buffer sampleBuffer: CMSampleBuffer) -> Result<CMSampleBuffer, VideoRotatorError> {
+    public func rotate(buffer sampleBuffer: CMSampleBuffer) -> Result<CMSampleBuffer, Error> {
         guard let buffer = sampleBuffer.imageBuffer else {
             return .failure(.noImageBuffer)
         }

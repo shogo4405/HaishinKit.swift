@@ -3,18 +3,13 @@
 import AVFoundation
 import MetalKit
 
-#if os(macOS)
-private typealias View = NSView
-#else
-private typealias View = UIView
-#endif
-
-/**
- * A view that displays a video content of a NetStream object which uses Metal api.
- */
+/// A view that displays a video content of a NetStream object which uses Metal api.
 public class MTHKView: MTKView {
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
+
+    /// Specifies how the video is displayed with in track.
+    public var track = UInt8.max
 
     private var currentSampleBuffer: CMSampleBuffer?
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -36,7 +31,7 @@ public class MTHKView: MTKView {
     }
 
     /// Prepares the receiver for service after it has been loaded from an Interface Builder archive, or nib file.
-    override open func awakeFromNib() {
+    override public func awakeFromNib() {
         super.awakeFromNib()
         Task { @MainActor in
             framebufferOnly = false
@@ -47,7 +42,7 @@ public class MTHKView: MTKView {
         }
     }
 
-    override open func draw(_ rect: CGRect) {
+    override public func draw(_ rect: CGRect) {
         guard
             let context,
             let currentDrawable = currentDrawable,
@@ -101,7 +96,28 @@ public class MTHKView: MTKView {
     }
 }
 
-extension MTHKView: HKStreamObserver {
+extension MTHKView: IOMixerOutput {
+    // MARK: IOMixerOutput
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    }
+
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+        Task { @MainActor in
+            guard self.track == track else {
+                return
+            }
+            currentSampleBuffer = sampleBuffer
+            #if os(macOS)
+            self.needsDisplay = true
+            #else
+            self.setNeedsDisplay()
+            #endif
+        }
+    }
+}
+
+extension MTHKView: HKStreamOutput {
+    // MARK: HKStreamOutput
     nonisolated public func stream(_ stream: some HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 

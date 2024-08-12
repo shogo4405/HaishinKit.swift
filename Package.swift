@@ -34,7 +34,6 @@ let package = Package(
                     "ISO",
                     "Mixer",
                     "Network",
-                    "Player",
                     "RTMP",
                     "Screen",
                     "Util",

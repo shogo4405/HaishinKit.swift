@@ -3,12 +3,12 @@ import AVKit
 import HaishinKit
 import UIKit
 
-enum Mode {
-    case publish
-    case playback
-}
-
 final class ViewController: UIViewController {
+    enum Mode {
+        case publish
+        case playback
+    }
+
     @IBOutlet private weak var lfView: MTHKView!
     @IBOutlet private weak var playbackOrPublishSegment: UISegmentedControl! {
         didSet {
@@ -23,18 +23,23 @@ final class ViewController: UIViewController {
             logger.info(mode)
         }
     }
-    private var connection = RTMPConnection()
-    private var stream: RTMPStream!
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        stream = RTMPStream(connection: connection)
-        connection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-    }
+    private var mixer = IOMixer()
+    private let netStreamSwitcher: NetStreamSwitcher = .init()
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        lfView?.attachStream(stream)
+        Task { @MainActor in
+            var videoMixerSettings = await mixer.videoMixerSettings
+            videoMixerSettings.mode = .offscreen
+            await mixer.setVideoMixerSettings(videoMixerSettings)
+            await netStreamSwitcher.setPreference(Preference.default)
+            if let stream = await netStreamSwitcher.stream {
+                await mixer.addOutput(stream)
+                if let view = view as? (any HKStreamOutput) {
+                    await stream.addOutput(view)
+                }
+            }
+        }
     }
 
     @IBAction func segmentedControl(_ sender: UISegmentedControl) {
@@ -55,48 +60,30 @@ final class ViewController: UIViewController {
             picker.delegate = self
             present(picker, animated: true)
         case .playback:
-            connection.connect(Preference.default.uri!)
-        }
-    }
-
-    @objc
-    func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-
-        guard
-            let data: AMFObject = e.data as? AMFObject,
-            let code: String = data["code"] as? String else {
-            return
-        }
-
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            switch mode {
-            case .publish:
-                stream.publish(Preference.default.streamName)
-            case .playback:
-                stream.play(Preference.default.streamName)
+            Task {
+                await netStreamSwitcher.open(.playback)
             }
-        default:
-            break
         }
     }
 }
 
 extension ViewController: AVContinuityDevicePickerViewControllerDelegate {
     // MARK: AVContinuityDevicePickerViewControllerDelegate
-    func continuityDevicePicker( _ pickerViewController: AVContinuityDevicePickerViewController, didConnect device: AVContinuityDevice) {
+    nonisolated func continuityDevicePicker( _ pickerViewController: AVContinuityDevicePickerViewController, didConnect device: AVContinuityDevice) {
         do {
             try AVAudioSession.sharedInstance().setCategory(.playAndRecord, mode: .voiceChat, options: [])
             try AVAudioSession.sharedInstance().setActive(true)
-            stream.attachAudio(AVCaptureDevice.default(for: .audio))
+            Task {
+                try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            }
         } catch {
             logger.error(error)
         }
         if let camera = device.videoDevices.first {
-            logger.info(camera)
-            stream.attachCamera(camera)
+            Task {
+                logger.info(camera)
+                try await mixer.attachCamera(camera)
+            }
         }
-        connection.connect(Preference.default.uri!)
     }
 }

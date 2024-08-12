@@ -13,7 +13,7 @@ public actor SRTStream {
     private lazy var reader = TSReader()
     private lazy var mediaLink = MediaLink()
     private lazy var mediaCodec = MediaCodec()
-    private var observers: [any HKStreamObserver] = []
+    private var outputs: [any HKStreamOutput] = []
     private var bitrateStorategy: (any HKStreamBitRateStrategy)?
     private var audioPlayerNode: AudioPlayerNode?
 
@@ -21,6 +21,10 @@ public actor SRTStream {
     public init(connection: SRTConnection) {
         self.connection = connection
         Task { await connection.addStream(self) }
+    }
+
+    deinit {
+        outputs.removeAll()
     }
 
     /// Sends streaming audio, vidoe and data message from client.
@@ -107,7 +111,7 @@ public actor SRTStream {
             }
             Task {
                 for await video in await mediaLink.dequeue where mediaCodec.isRunning {
-                    observers.forEach { $0.stream(self, didOutput: video) }
+                    outputs.forEach { $0.stream(self, didOutput: video) }
                 }
             }
             await connection?.listen()
@@ -159,16 +163,18 @@ extension SRTStream: HKStream {
             if sampleBuffer.formatDescription?.isCompressed == true {
             } else {
                 mediaCodec.append(sampleBuffer)
-                observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+                outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
         default:
             break
         }
     }
 
-    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
-        audioPlayerNode = await audioPlayer?.makePlayerNode()
-        await mediaLink.setAudioPlayer(audioPlayerNode)
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
+        Task {
+            audioPlayerNode = await audioPlayer?.makePlayerNode()
+            await mediaLink.setAudioPlayer(audioPlayerNode)
+        }
     }
 
     public func append(_ buffer: AVAudioBuffer, when: AVAudioTime) {
@@ -176,23 +182,40 @@ extension SRTStream: HKStream {
             return
         }
         mediaCodec.append(buffer, when: when)
-        observers.forEach { $0.stream(self, didOutput: buffer, when: when) }
+        outputs.forEach { $0.stream(self, didOutput: buffer, when: when) }
     }
 
-    public func addObserver(_ observer: some HKStreamObserver) {
-        guard !observers.contains(where: { $0 === observer }) else {
+    public func addOutput(_ observer: some HKStreamOutput) {
+        guard !outputs.contains(where: { $0 === observer }) else {
             return
         }
-        observers.append(observer)
+        outputs.append(observer)
     }
 
-    public func removeObserver(_ observer: some HKStreamObserver) {
-        if let index = observers.firstIndex(where: { $0 === observer }) {
-            observers.remove(at: index)
+    public func removeOutput(_ observer: some HKStreamOutput) {
+        if let index = outputs.firstIndex(where: { $0 === observer }) {
+            outputs.remove(at: index)
         }
     }
 
     public func dispatch(_ event: NetworkMonitorEvent) {
         bitrateStorategy?.adjustBitrate(event, stream: self)
+    }
+}
+
+extension SRTStream: IOMixerOutput {
+    // MARK: IOMixerOutput
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+        guard track == UInt8.max else {
+            return
+        }
+        Task { await append(sampleBuffer) }
+    }
+
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        guard track == UInt8.max else {
+            return
+        }
+        Task { await append(buffer, when: when) }
     }
 }

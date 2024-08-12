@@ -25,18 +25,6 @@ public class PiPHKView: UIView {
         }
     }
 
-    private var captureVideoPreview: UIView? {
-        willSet {
-            captureVideoPreview?.removeFromSuperview()
-        }
-        didSet {
-            captureVideoPreview.map {
-                addSubview($0)
-                sendSubviewToBack($0)
-            }
-        }
-    }
-
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,20 +63,8 @@ public class PiPHKView: NSView {
         }
     }
 
-    /// Specifies the orientation of AVCaptureVideoOrientation.
-    public var videoOrientation: AVCaptureVideoOrientation = .portrait {
-        didSet {
-            if Thread.isMainThread {
-                (layer as? AVSampleBufferDisplayLayer)?.flushAndRemoveImage()
-            } else {
-                DispatchQueue.main.sync {
-                    (layer as? AVSampleBufferDisplayLayer)?.flushAndRemoveImage()
-                }
-            }
-        }
-    }
-
-    private var enqueueTask: Task<Void, Never>?
+    /// Specifies how the video is displayed with in track.
+    public var track = UInt8.max
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
@@ -113,7 +89,28 @@ public class PiPHKView: NSView {
     }
 }
 
-extension PiPHKView: HKStreamObserver {
+extension PiPHKView: IOMixerOutput {
+    // MARK: IOMixerOutput
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    }
+
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+        Task { @MainActor in
+            guard self.track == track else {
+                return
+            }
+            (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
+            #if os(macOS)
+            self.needsDisplay = true
+            #else
+            self.setNeedsDisplay()
+            #endif
+        }
+    }
+}
+
+extension PiPHKView: HKStreamOutput {
+    // MARK: HKStreamOutput
     nonisolated public func stream(_ stream: some HKStream, didOutput audio: AVAudioBuffer, when: AVAudioTime) {
     }
 

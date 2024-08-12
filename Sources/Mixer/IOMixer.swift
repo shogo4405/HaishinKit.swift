@@ -82,7 +82,7 @@ public final actor IOMixer {
 
     public private(set) var isRunning = false
 
-    private var streams: [any HKStream] = []
+    private var outputs: [any IOMixerOutput] = []
     private lazy var audioIO = IOAudioUnit(session)
     private lazy var videoIO = IOVideoUnit(session)
     private lazy var session = IOCaptureSession()
@@ -229,18 +229,18 @@ public final actor IOMixer {
         try session.configuration(lambda)
     }
 
-    /// Adds a stream.
-    public func addStream(_ stream: some HKStream) {
-        guard !streams.contains(where: { $0 === stream }) else {
+    /// Adds an output observer.
+    public func addOutput(_ output: some IOMixerOutput) {
+        guard !outputs.contains(where: { $0 === output }) else {
             return
         }
-        streams.append(stream)
+        outputs.append(output)
     }
 
-    /// Removes a stream.
-    public func removeStream(_ stream: some HKStream) {
-        if let index = streams.firstIndex(where: { $0 === stream }) {
-            streams.remove(at: index)
+    /// Removes an output observer.
+    public func removeOutput(_ output: some IOMixerOutput) {
+        if let index = outputs.firstIndex(where: { $0 === output }) {
+            outputs.remove(at: index)
         }
     }
 
@@ -275,15 +275,15 @@ extension IOMixer: AsyncRunner {
         }
         Task {
             for await video in videoIO.output where isRunning {
-                for stream in streams {
-                    await stream.append(video)
+                for output in outputs {
+                    output.mixer(self, track: UInt8.max, didOutput: video)
                 }
             }
         }
         Task {
             for await audio in audioIO.output where isRunning {
-                for stream in self.streams {
-                    await stream.append(audio.0, when: audio.1)
+                for output in outputs {
+                    output.mixer(self, track: UInt8.max, didOutput: audio.0, when: audio.1)
                 }
             }
         }
@@ -292,8 +292,8 @@ extension IOMixer: AsyncRunner {
                 guard let buffer = screen.makeSampleBuffer() else {
                     return
                 }
-                for stream in await streams {
-                    await stream.append(buffer)
+                for output in await outputs {
+                    output.mixer(self, track: UInt8.max, didOutput: buffer)
                 }
             }
         }

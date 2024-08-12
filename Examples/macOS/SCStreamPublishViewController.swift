@@ -38,7 +38,7 @@ class SCStreamPublishViewController: NSViewController {
         Task {
             await netStreamSwitcher.setPreference(Preference.default)
             let stream = await netStreamSwitcher.stream
-            await stream?.addObserver(mthkView!)
+            await stream?.addOutput(mthkView!)
             try await SCShareableContent.current.windows.forEach {
                 cameraPopUpButton.addItem(withTitle: $0.owningApplication?.applicationName ?? "")
             }

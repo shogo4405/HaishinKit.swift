@@ -183,7 +183,7 @@ public actor RTMPStream {
             dataTimestamps.removeAll()
         }
     }
-    private var observers: [any HKStreamObserver] = []
+    private var outputs: [any HKStreamOutput] = []
     private var frameCount: UInt16 = 0
     private var audioBuffer: AVAudioCompressedBuffer?
     private var howToPublish: RTMPStream.HowToPublish = .live
@@ -258,6 +258,10 @@ public actor RTMPStream {
         }
     }
 
+    deinit {
+        outputs.removeAll()
+    }
+
     /// Plays a live stream from a server.
     public func play(_ arguments: (any Sendable)?...) async throws -> RTMPResponse {
         guard let name = arguments.first as? String else {
@@ -306,7 +310,7 @@ public actor RTMPStream {
                 }
                 Task {
                     for await video in await mediaLink.dequeue where mediaCodec.isRunning {
-                        observers.forEach { $0.stream(self, didOutput: video) }
+                        outputs.forEach { $0.stream(self, didOutput: video) }
                     }
                 }
                 doOutput(.zero, chunkStreamId: .command, message: RTMPCommandMessage(
@@ -745,7 +749,7 @@ extension RTMPStream: HKStream {
                 doOutput(.one, chunkStreamId: .video, message: message)
             } else {
                 mediaCodec.append(sampleBuffer)
-                observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+                outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
         default:
             break
@@ -765,21 +769,23 @@ extension RTMPStream: HKStream {
         }
     }
 
-    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
-        audioPlayerNode = await audioPlayer?.makePlayerNode()
-        await mediaLink.setAudioPlayer(audioPlayerNode)
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
+        Task {
+            audioPlayerNode = await audioPlayer?.makePlayerNode()
+            await mediaLink.setAudioPlayer(audioPlayerNode)
+        }
     }
 
-    public func addObserver(_ observer: some HKStreamObserver) {
-        guard !observers.contains(where: { $0 === observer }) else {
+    public func addOutput(_ observer: some HKStreamOutput) {
+        guard !outputs.contains(where: { $0 === observer }) else {
             return
         }
-        observers.append(observer)
+        outputs.append(observer)
     }
 
-    public func removeObserver(_ observer: some HKStreamObserver) {
-        if let index = observers.firstIndex(where: { $0 === observer }) {
-            observers.remove(at: index)
+    public func removeOutput(_ observer: some HKStreamOutput) {
+        if let index = outputs.firstIndex(where: { $0 === observer }) {
+            outputs.remove(at: index)
         }
     }
 
@@ -792,5 +798,22 @@ extension RTMPStream: HKStream {
         currentFPS = frameCount
         frameCount = 0
         info.update()
+    }
+}
+
+extension RTMPStream: IOMixerOutput {
+    // MARK: IOMixerOutput
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+        guard track == UInt8.max else {
+            return
+        }
+        Task { await append(sampleBuffer) }
+    }
+
+    nonisolated public func mixer(_ mixer: IOMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        guard track == UInt8.max else {
+            return
+        }
+        Task { await append(buffer, when: when) }
     }
 }

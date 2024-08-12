@@ -4,9 +4,9 @@ import SwiftPMSupport
 #endif
 
 // MARK: -
-/// The IOStreamRecorder class represents video and audio recorder.
-public actor HKStreamRecorder {
-    /// The IOStreamRecorder error domain codes.
+/// The MediaRecorder class represents video and audio recorder.
+public actor MediaRecorder {
+    /// The MediaRecorder error domain codes.
     public enum Error: Swift.Error {
         case invalidState
         /// Failed to create the AVAssetWriter.
@@ -188,7 +188,7 @@ public actor HKStreamRecorder {
     }
 }
 
-extension HKStreamRecorder: HKStreamObserver {
+extension MediaRecorder: HKStreamOutput {
     // MARK: IOStreamObserver
     nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { await append(video) }

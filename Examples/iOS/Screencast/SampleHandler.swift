@@ -45,7 +45,7 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
         Task {
             await netStreamSwitcher.setPreference(Preference.default)
             if let stream = await netStreamSwitcher.stream {
-                await mixer.addStream(stream)
+                await mixer.addOutput(stream)
             }
             await netStreamSwitcher.open(.ingest)
         }

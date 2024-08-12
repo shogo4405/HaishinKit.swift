@@ -13,7 +13,7 @@ final class PlaybackViewController: NSViewController {
         Task { @MainActor in
             await netStreamSwitcher.setPreference(Preference.default)
             await netStreamSwitcher.stream?.attachAudioPlayer(audioPlayer)
-            await netStreamSwitcher.stream?.addObserver(lfView)
+            await netStreamSwitcher.stream?.addOutput(lfView)
         }
     }
 
