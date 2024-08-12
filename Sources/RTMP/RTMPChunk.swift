@@ -1,5 +1,7 @@
 import Foundation
 
+private let kRTMPExtendTimestampSize = 4
+
 enum RTMPChunkError: Swift.Error {
     case bufferUnderflow
     case unknowChunkType(value: UInt8)
@@ -122,7 +124,7 @@ final class RTMPChunkBuffer {
         return data[position..<length]
     }
 
-    var chunkSize: Int = RTMPChunkMessageHeader.chunkSize
+    var chunkSize = RTMPChunkMessageHeader.chunkSize
 
     var remaining: Int {
         return length - position
@@ -179,28 +181,34 @@ final class RTMPChunkBuffer {
     }
 
     func getMessageHeader(_ type: RTMPChunkType, messageHeader: RTMPChunkMessageHeader) throws {
+        if remaining < type.headerSize {
+            throw RTMPChunkError.bufferUnderflow
+        }
         switch type {
         case .zero:
             messageHeader.timestamp = UInt32(data: data[position..<position + 3]).bigEndian
             messageHeader.messageLength = Int(Int32(data: data[position + 3..<position + 6]).bigEndian)
             messageHeader.messageTypeId = data[position + 6]
             messageHeader.messageStreamId = UInt32(data: data[position + 7..<position + 11])
-            position += 11
+            position += type.headerSize
         case .one:
             messageHeader.timestamp = UInt32(data: data[position..<position + 3]).bigEndian
             messageHeader.messageLength = Int(Int32(data: data[position + 3..<position + 6]).bigEndian)
             messageHeader.messageTypeId = data[position + 6]
-            position += 7
+            position += type.headerSize
         case .two:
             messageHeader.timestamp = UInt32(data: data[position..<position + 3]).bigEndian
-            position += 3
+            position += type.headerSize
         case .three:
             break
         }
 
         if messageHeader.timestamp == RTMPChunkMessageHeader.maxTimestamp {
+            if remaining < kRTMPExtendTimestampSize {
+                throw RTMPChunkError.bufferUnderflow
+            }
             messageHeader.timestamp = UInt32(data: data[position..<position + 4]).bigEndian
-            position += 4
+            position += kRTMPExtendTimestampSize
         }
 
         try messageHeader.put(self, chunkSize: chunkSize)

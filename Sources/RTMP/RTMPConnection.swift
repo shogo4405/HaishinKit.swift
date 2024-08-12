@@ -130,22 +130,22 @@ public actor RTMPConnection {
     public let swfUrl: String?
     /// The URL of an HTTP referer.
     public let pageUrl: String?
-    /// Specifies the time to wait for TCP/IP Handshake done.
-    public var timeout = RTMPConnection.defaultTimeout
-    /// Specifies the dispatchQos for socket.
-    public var qualityOfService: HKDispatchQoS = .userInitiated
     /// The name of application.
     public let flashVer: String
-    /// Specifies theoutgoing RTMPChunkSize.
-    public var chunkSize = RTMPConnection.defaultChunkSizeS
+    /// The time to wait for TCP/IP Handshake done.
+    public let timeout: Int
+    /// The RTMP request timeout value. Defaul value is 500 msec.
+    public let requestTimeout: UInt64
+    /// The outgoing RTMPChunkSize.
+    public let chunkSize: Int
+    /// The dispatchQos for socket.
+    public let qualityOfService: HKDispatchQoS
     /// The URI passed to the Self.connect() method.
     public private(set) var uri: URL?
     /// The instance connected to server(true) or not(false).
     public private(set) var connected = false
     /// The object encoding for this RTMPConnection instance.
     public let objectEncoding = RTMPConnection.defaultObjectEncoding
-    /// The RTMP request timeout value. Defaul value is 500 msec.
-    public var requestTimeOut = RTMPConnection.defaultRequestTimeout
 
     var newTransaction: Int {
         currentTransactionId += 1
@@ -186,10 +186,21 @@ public actor RTMPConnection {
     private var currentTransactionId = RTMPConnection.connectTransactionId
 
     /// Creates a new connection.
-    public init(swfUrl: String? = nil, pageUrl: String? = nil, flashVer: String = RTMPConnection.defaultFlashVer) {
+    public init(
+        swfUrl: String? = nil,
+        pageUrl: String? = nil,
+        flashVer: String = RTMPConnection.defaultFlashVer,
+        timeout: Int = RTMPConnection.defaultTimeout,
+        requestTimeout: UInt64 = RTMPConnection.defaultRequestTimeout,
+        chunkSize: Int = RTMPConnection.defaultChunkSizeS,
+        qualityOfService: HKDispatchQoS = .userInitiated) {
         self.swfUrl = swfUrl
         self.pageUrl = pageUrl
         self.flashVer = flashVer
+        self.timeout = timeout
+        self.requestTimeout = requestTimeout
+        self.chunkSize = chunkSize
+        self.qualityOfService = qualityOfService
     }
 
     deinit {
@@ -211,7 +222,7 @@ public actor RTMPConnection {
                 arguments: arguments
             )
             Task {
-                try? await Task.sleep(nanoseconds: requestTimeOut * 1_000_000)
+                try? await Task.sleep(nanoseconds: requestTimeout * 1_000_000)
                 guard let operation = operations.removeValue(forKey: message.transactionId) else {
                     return
                 }
@@ -268,18 +279,7 @@ public actor RTMPConnection {
             }
             Task {
                 for await event in await networkMonitor.event {
-                    for stream in streams {
-                        await stream.dispatch(event)
-                    }
-                    switch event {
-                    case .status(let report):
-                        if windowSizeS * (sequence + 1) <= report.totalBytesIn {
-                            doOutput(sequence == 0 ? .zero : .one, chunkStreamId: .control, message: RTMPAcknowledgementMessage(sequence: UInt32(report.totalBytesIn)))
-                            sequence += 1
-                        }
-                    default:
-                        break
-                    }
+                    dispatch(event)
                 }
             }
             for stream in streams {
@@ -409,6 +409,19 @@ public actor RTMPConnection {
             }
         default:
             break
+        }
+    }
+
+    private func dispatch(_ event: NetworkMonitorEvent) {
+        switch event {
+        case .status(let report), .publishInsufficientBWOccured(let report), .publishSufficientBWOccured(let report):
+            if windowSizeS * (sequence + 1) <= report.totalBytesIn {
+                doOutput(sequence == 0 ? .zero : .one, chunkStreamId: .control, message: RTMPAcknowledgementMessage(sequence: UInt32(report.totalBytesIn)))
+                sequence += 1
+            }
+        }
+        for stream in streams {
+            Task { await stream.dispatch(event) }
         }
     }
 

@@ -252,6 +252,8 @@
 		BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
 		BCCB42642C689CA7003B1168 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB42632C689C88003B1168 /* AudioPlayer.swift */; };
+		BCCB426C2C6A565E003B1168 /* NetworkMonitorReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB426B2C6A5651003B1168 /* NetworkMonitorReport.swift */; };
+		BCCB426E2C6A568C003B1168 /* NetworkMonitorEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB426D2C6A5682003B1168 /* NetworkMonitorEvent.swift */; };
 		BCCBCE9529A7C9C90095B51C /* ISOTypeBufferUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9429A7C9C90095B51C /* ISOTypeBufferUtilTests.swift */; };
 		BCCBCE9729A90D880095B51C /* AVCNALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9629A90D880095B51C /* AVCNALUnit.swift */; };
 		BCCBCE9B29A9D96A0095B51C /* NALUnitReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9A29A9D96A0095B51C /* NALUnitReaderTests.swift */; };
@@ -720,6 +722,8 @@
 		BCBEAE262C4445F000EB2E9E /* AVAudioBuffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVAudioBuffer+Extension.swift"; sourceTree = "<group>"; };
 		BCC1A72A264FAC1800661156 /* ESSpecificData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ESSpecificData.swift; sourceTree = "<group>"; };
 		BCCB42632C689C88003B1168 /* AudioPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayer.swift; sourceTree = "<group>"; };
+		BCCB426B2C6A5651003B1168 /* NetworkMonitorReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorReport.swift; sourceTree = "<group>"; };
+		BCCB426D2C6A5682003B1168 /* NetworkMonitorEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitorEvent.swift; sourceTree = "<group>"; };
 		BCCBCE9429A7C9C90095B51C /* ISOTypeBufferUtilTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ISOTypeBufferUtilTests.swift; sourceTree = "<group>"; };
 		BCCBCE9629A90D880095B51C /* AVCNALUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCNALUnit.swift; sourceTree = "<group>"; };
 		BCCBCE9A29A9D96A0095B51C /* NALUnitReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NALUnitReaderTests.swift; sourceTree = "<group>"; };
@@ -1347,6 +1351,8 @@
 			isa = PBXGroup;
 			children = (
 				BC18F3E42C5BB3BB00B9D78D /* NetworkMonitor.swift */,
+				BCCB426D2C6A5682003B1168 /* NetworkMonitorEvent.swift */,
+				BCCB426B2C6A5651003B1168 /* NetworkMonitorReport.swift */,
 				BC18F3E82C5BC8B300B9D78D /* NetworkTransportReport.swift */,
 				BC18F3EA2C5BCB7C00B9D78D /* NetworkTransportReporter.swift */,
 			);
@@ -1947,6 +1953,7 @@
 				29EA87D51E799F670043A5F8 /* Mirror+Extension.swift in Sources */,
 				2942A4F821A9418A004E1BEE /* Runner.swift in Sources */,
 				BC0B5B142BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift in Sources */,
+				BCCB426C2C6A565E003B1168 /* NetworkMonitorReport.swift in Sources */,
 				29F6F4851DFB83E200920A3A /* RTMPHandshake.swift in Sources */,
 				BCABED212BDE23C600CC7E73 /* AudioNode+DebugExtension.swift in Sources */,
 				29EA87DF1E79A0810043A5F8 /* CMSampleBuffer+Extension.swift in Sources */,
@@ -2001,6 +2008,7 @@
 				BCB976DF26107B5600C9A649 /* TSField.swift in Sources */,
 				BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* IOMixer.swift in Sources */,
+				BCCB426E2C6A568C003B1168 /* NetworkMonitorEvent.swift in Sources */,
 				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
 				BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
