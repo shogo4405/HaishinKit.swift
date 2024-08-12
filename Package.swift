@@ -29,13 +29,16 @@ let package = Package(
                 path: "Sources",
                 sources: [
                     "Codec",
-                    "Network",
                     "Extension",
-                    "IO",
+                    "HKStream",
                     "ISO",
+                    "Mixer",
+                    "Network",
+                    "Player",
                     "RTMP",
                     "Screen",
-                    "Util"
+                    "Util",
+                    "View"
                 ]),
         .target(name: "SRTHaishinKit",
                 dependencies: [

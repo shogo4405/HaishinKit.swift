@@ -37,7 +37,6 @@
 		2942A4F821A9418A004E1BEE /* Runner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2942A4F721A9418A004E1BEE /* Runner.swift */; };
 		2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		294637A81EC89BC9008EEC71 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 294637A71EC89BC9008EEC71 /* Config.swift */; };
 		294637AA1EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv in Resources */ = {isa = PBXBuildFile; fileRef = 294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */; };
 		295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2950181F1FFA1BD700358E10 /* AudioCodecTests.swift */; };
 		295018221FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 295018211FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift */; };
@@ -525,7 +524,6 @@
 		2942424C1CF4C01300D65DCB /* MD5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MD5.swift; sourceTree = "<group>"; };
 		2942A4F721A9418A004E1BEE /* Runner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Runner.swift; sourceTree = "<group>"; };
 		2945CBBD1B4BE66000104112 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		294637A71EC89BC9008EEC71 /* Config.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		294637A91EC8A79F008EEC71 /* SampleVideo_360x240_5mb.flv */ = {isa = PBXFileReference; lastKnownFileType = file; path = SampleVideo_360x240_5mb.flv; sourceTree = "<group>"; };
 		2950181F1FFA1BD700358E10 /* AudioCodecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioCodecTests.swift; sourceTree = "<group>"; };
 		295018211FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMAudioSampleBufferFactory.swift; sourceTree = "<group>"; };
@@ -956,15 +954,6 @@
 			path = Asset;
 			sourceTree = "<group>";
 		};
-		291C2AD21CE9FF48006F042B /* Core */ = {
-			isa = PBXGroup;
-			children = (
-				290EA88E1DFB616000053022 /* Foundation+ExtensionTests.swift */,
-				290EA88F1DFB616000053022 /* SwiftCore+ExtensionTests.swift */,
-			);
-			path = Core;
-			sourceTree = "<group>";
-		};
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
@@ -1095,12 +1084,11 @@
 				295018211FFA1C9D00358E10 /* CMAudioSampleBufferFactory.swift */,
 				BC0B5B1D2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift */,
 				295018191FFA196800358E10 /* Codec */,
-				294637A71EC89BC9008EEC71 /* Config.swift */,
-				291C2AD21CE9FF48006F042B /* Core */,
 				BC03945D2AA8AFDD006EDE38 /* Extension */,
+				BCCB426A2C6A2D1D003B1168 /* HKStream */,
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
-				BC0BF4F329866FB700D72CB4 /* IO */,
 				291C2ACF1CE9FF2B006F042B /* ISO */,
+				BC0BF4F329866FB700D72CB4 /* Mixer */,
 				291C2ACE1CE9FF25006F042B /* RTMP */,
 				BC0B5B152BE919B700D83F8E /* Screen */,
 				291C2AD01CE9FF33006F042B /* Util */,
@@ -1245,6 +1233,8 @@
 			children = (
 				BC56452B2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift */,
 				BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */,
+				290EA88E1DFB616000053022 /* Foundation+ExtensionTests.swift */,
+				290EA88F1DFB616000053022 /* SwiftCore+ExtensionTests.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -1269,7 +1259,7 @@
 			path = Screen;
 			sourceTree = "<group>";
 		};
-		BC0BF4F329866FB700D72CB4 /* IO */ = {
+		BC0BF4F329866FB700D72CB4 /* Mixer */ = {
 			isa = PBXGroup;
 			children = (
 				BC0587C22BD2A5E8006751C8 /* IOAudioMixerByMultiTrackTests.swift */,
@@ -1277,9 +1267,8 @@
 				BC3802182AB6AD79001AE399 /* IOAudioMixerTrackTests.swift */,
 				BCD91C0C2A700FF50033F9E1 /* IOAudioRingBufferTests.swift */,
 				BC0BF4F429866FDE00D72CB4 /* IOMixerTests.swift */,
-				BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */,
 			);
-			path = IO;
+			path = Mixer;
 			sourceTree = "<group>";
 		};
 		BC3004FA296C3FC400119932 /* Extension */ = {
@@ -1362,6 +1351,14 @@
 				BC18F3EA2C5BCB7C00B9D78D /* NetworkTransportReporter.swift */,
 			);
 			path = Network;
+			sourceTree = "<group>";
+		};
+		BCCB426A2C6A2D1D003B1168 /* HKStream */ = {
+			isa = PBXGroup;
+			children = (
+				BCA7C24E2A91AA0500882D85 /* IOStreamRecorderTests.swift */,
+			);
+			path = HKStream;
 			sourceTree = "<group>";
 		};
 		BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */ = {
@@ -2027,7 +2024,6 @@
 				BC7C56D129A78D4F00C41A9B /* ADTSHeaderTests.swift in Sources */,
 				BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */,
 				BC1720A92C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift in Sources */,
-				294637A81EC89BC9008EEC71 /* Config.swift in Sources */,
 				295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */,
 				290EA8AC1DFB61E700053022 /* MD5Tests.swift in Sources */,
 				290EA8A01DFB61B100053022 /* AMFFoundationTests.swift in Sources */,
