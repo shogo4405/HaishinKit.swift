@@ -1,9 +1,9 @@
 import AVFoundation
 import Foundation
 
-/// Configuration calback block for IOVideoCaptureUnit.
+/// Configuration calback block for a VideoDeviceUnit.
 @available(tvOS 17.0, *)
-public typealias VideoDeviceConfigurationBlock = (VideoDeviceUnit?) -> Void
+public typealias VideoDeviceConfigurationBlock = @Sendable (VideoDeviceUnit) throws -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
@@ -177,7 +177,7 @@ public final class VideoDeviceUnit: DeviceUnit {
     }
     #endif
 
-    func setSampleBufferDelegate(_ videoUnit: VideoCaptureUnit?) {
+    private func setSampleBufferDelegate(_ videoUnit: VideoCaptureUnit?) {
         if let videoUnit {
             #if os(iOS) || os(macOS)
             videoOrientation = videoUnit.videoOrientation

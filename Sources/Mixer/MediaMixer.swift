@@ -1,10 +1,6 @@
 import AVFoundation
 import Combine
 
-#if canImport(SwiftPMSupport)
-import SwiftPMSupport
-#endif
-
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -12,6 +8,14 @@ import UIKit
 /// An object that mixies audio and video for streaming.
 public final actor MediaMixer {
     static let defaultFrameRate: Float64 = 30
+
+    /// The MediaMixer error domain codes.
+    public enum Error: Swift.Error {
+        /// The mixer failed to failed to attach device.
+        case failedToAttach(_ error: any Swift.Error)
+        /// The mixer missing a device of track.
+        case deviceNotFound
+    }
 
     /// The offscreen rendering object.
     @ScreenActor
@@ -95,37 +99,40 @@ public final actor MediaMixer {
         }
     }
 
-    /// Attaches the camera device.
+    /// Attaches a video device.
     @available(tvOS 17.0, *)
-    public func attachCamera(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: VideoDeviceConfigurationBlock? = nil) async throws {
+    public func attachVideo(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: VideoDeviceConfigurationBlock? = nil) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             do {
                 try videoIO.attachCamera(track, device: device, configuration: configuration)
                 continuation.resume()
             } catch {
-                continuation.resume(throwing: error)
+                continuation.resume(throwing: Error.failedToAttach(error))
             }
         }
     }
 
-    /// Returns the IOVideoCaptureUnit by track.
+    /// Configurations for a video device.
     @available(tvOS 17.0, *)
-    public func videoCapture(for track: UInt8) -> VideoDeviceUnit? {
-        return videoIO.capture(for: track)
+    public func configuration(video track: UInt8, configuration: VideoDeviceConfigurationBlock) throws {
+        guard let unit = videoIO.captures[track] else {
+            throw Error.deviceNotFound
+        }
+        try configuration(unit)
     }
 
     #if os(iOS) || os(macOS) || os(tvOS)
-    /// Attaches the audio device.
+    /// Attaches an audio device.
     ///
     /// You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
     /// ```
-    /// FeatureUtil.setEnabled(for: .multiTrackAudioMixing, isEnabled: true)
+    /// mixer.setMultiTrackAudioMixingEnabled(true)
     /// var audios = AVCaptureDevice.devices(for: .audio)
     /// if let device = audios.removeFirst() {
-    ///    stream.attachAudio(device, track: 0)
+    ///    mixer.attachAudio(device, track: 0)
     /// }
     /// if let device = audios.removeFirst() {
-    ///    stream.attachAudio(device, track: 1)
+    ///    mixer.attachAudio(device, track: 1)
     /// }
     /// ```
     @available(tvOS 17.0, *)
@@ -135,15 +142,18 @@ public final actor MediaMixer {
                 try audioIO.attachAudio(track, device: device, configuration: configuration)
                 continuation.resume()
             } catch {
-                continuation.resume(throwing: error)
+                continuation.resume(throwing: Error.failedToAttach(error))
             }
         }
     }
 
-    /// Returns the IOAudioCaptureUnit by track.
+    /// Configurations for an audio device.
     @available(tvOS 17.0, *)
-    public func audioCapture(for track: UInt8) -> AudioDeviceUnit? {
-        return audioIO.capture(for: track)
+    public func configuration(audio track: UInt8, configuration: AudioDeviceConfigurationBlock) throws {
+        guard let unit = audioIO.captures[track] else {
+            throw Error.deviceNotFound
+        }
+        try configuration(unit)
     }
 
     /// Specifies the device torch indicating wheter the turn on(TRUE) or not(FALSE).
@@ -225,7 +235,7 @@ public final actor MediaMixer {
 
     /// Configurations for the AVCaptureSession.
     @available(tvOS 17.0, *)
-    public func configuration(_ lambda: (_ session: AVCaptureSession) throws -> Void) rethrows {
+    public func configuration(_ lambda: @Sendable (_ session: AVCaptureSession) throws -> Void) rethrows {
         try session.configuration(lambda)
     }
 

@@ -136,7 +136,7 @@ public actor SRTStream {
 }
 
 extension SRTStream: HKStream {
-    // MARK: IOStreamConvertible
+    // MARK: HKStream
     public var audioSettings: AudioCodecSettings {
         mediaCodec.audioSettings
     }
@@ -204,7 +204,7 @@ extension SRTStream: HKStream {
 }
 
 extension SRTStream: MediaMixerOutput {
-    // MARK: IOMixerOutput
+    // MARK: MediaMixerOutput
     nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
         guard track == UInt8.max else {
             return

@@ -6,7 +6,7 @@ final class VideoCaptureUnit: CaptureUnit {
         case multiCamNotSupported
     }
 
-    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOVideoUnit.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.VideoCaptureUnit.lock")
 
     var mixerSettings: VideoMixerSettings {
         get {
@@ -83,8 +83,8 @@ final class VideoCaptureUnit: CaptureUnit {
     #if os(tvOS)
     private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
-    var captures: [UInt8: IOVideoCaptureUnit] {
-        return _captures as! [UInt8: IOVideoCaptureUnit]
+    var captures: [UInt8: VideoDeviceUnit] {
+        return _captures as! [UInt8: VideoDeviceUnit]
     }
     #elseif os(iOS) || os(macOS) || os(visionOS)
     var captures: [UInt8: VideoDeviceUnit] = [:]
@@ -111,9 +111,11 @@ final class VideoCaptureUnit: CaptureUnit {
             for capture in captures.values where capture.device == device {
                 try? capture.attachDevice(nil, session: session, videoUnit: self)
             }
-            let capture = self.capture(for: track)
-            configuration?(capture)
-            try capture?.attachDevice(device, session: session, videoUnit: self)
+            guard let capture = self.capture(for: track) else {
+                return
+            }
+            try? configuration?(capture)
+            try capture.attachDevice(device, session: session, videoUnit: self)
         }
         if device != nil {
             // Start captureing if not running.
@@ -155,12 +157,12 @@ final class VideoCaptureUnit: CaptureUnit {
     }
 
     @available(tvOS 17.0, *)
-    func capture(for track: UInt8) -> VideoDeviceUnit? {
+    private func capture(for track: UInt8) -> VideoDeviceUnit? {
         #if os(tvOS)
         if _captures[track] == nil {
             _captures[track] = .init(track)
         }
-        return _captures[track] as? IOVideoCaptureUnit
+        return _captures[track] as? VideoDeviceUnit
         #else
         if captures[track] == nil {
             captures[track] = .init(track)
@@ -171,7 +173,7 @@ final class VideoCaptureUnit: CaptureUnit {
 }
 
 extension VideoCaptureUnit: VideoMixerDelegate {
-    // MARK: IOVideoMixerDelegate
+    // MARK: VideoMixerDelegate
     func videoMixer(_ videoMixer: VideoMixer<VideoCaptureUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
         inputsContinutation?.yield((track, sampleBuffer))
     }

@@ -60,7 +60,7 @@ final class AudioMixerByMultiTrack: AudioMixer {
         let audioMixer = Unmanaged<AudioMixerByMultiTrack>.fromOpaque(inRefCon).takeUnretainedValue()
         let status = audioMixer.render(UInt8(inBusNumber), inNumberFrames: inNumberFrames, ioData: ioData)
         guard status == noErr else {
-            audioMixer.delegate?.audioMixer(audioMixer, errorOccurred: .failedToMix(error: AudioMixerError.unableToProvideInputData))
+            audioMixer.delegate?.audioMixer(audioMixer, errorOccurred: .unableToProvideInputData)
             return noErr
         }
         return status
@@ -176,7 +176,7 @@ final class AudioMixerByMultiTrack: AudioMixer {
 }
 
 extension AudioMixerByMultiTrack: AudioMixerTrackDelegate {
-    // MARK: IOAudioMixerTrackDelegate
+    // MARK: AudioMixerTrackDelegate
     func track(_ track: AudioMixerTrack<AudioMixerByMultiTrack>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.audioMixer(self, track: track.id, didInput: audioPCMBuffer, when: when)
         buffers[track.id]?.append(audioPCMBuffer, when: when)
@@ -189,7 +189,7 @@ extension AudioMixerByMultiTrack: AudioMixerTrackDelegate {
         }
     }
 
-    func track(_ track: AudioMixerTrack<AudioMixerByMultiTrack>, errorOccurred error: IOAudioUnitError) {
+    func track(_ track: AudioMixerTrack<AudioMixerByMultiTrack>, errorOccurred error: AudioMixerError) {
         delegate?.audioMixer(self, errorOccurred: error)
     }
 }

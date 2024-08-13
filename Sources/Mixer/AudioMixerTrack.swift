@@ -5,7 +5,7 @@ private let kIOAudioMixerTrack_frameCapacity: AVAudioFrameCount = 1024
 
 protocol AudioMixerTrackDelegate: AnyObject {
     func track(_ track: AudioMixerTrack<Self>, didOutput audioPCMBuffer: AVAudioPCMBuffer, when: AVAudioTime)
-    func track(_ track: AudioMixerTrack<Self>, errorOccurred error: IOAudioUnitError)
+    func track(_ track: AudioMixerTrack<Self>, errorOccurred error: AudioMixerError)
 }
 
 /// Constraints on the audio mixier track's settings.

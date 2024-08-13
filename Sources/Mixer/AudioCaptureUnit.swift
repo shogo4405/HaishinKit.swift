@@ -1,23 +1,7 @@
-@preconcurrency import AVFoundation
-
-#if canImport(SwiftPMSupport)
-import SwiftPMSupport
-#endif
-
-/// The IOAudioUnit  error domain codes.
-public enum IOAudioUnitError: Swift.Error {
-    /// The IOAudioUnit failed to attach device.
-    case failedToAttach(error: (any Error)?)
-    /// The IOAudioUnit  failed to create the AVAudioConverter.
-    case failedToCreate(from: AVAudioFormat?, to: AVAudioFormat?)
-    /// The IOAudioUnit  faild to convert the an audio buffer.
-    case failedToConvert(error: NSError)
-    /// The IOAudioUnit  failed to mix the audio buffers.
-    case failedToMix(error: any Error)
-}
+import AVFoundation
 
 final class AudioCaptureUnit: CaptureUnit {
-    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.IOAudioUnit.lock")
+    let lockQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.AudioCaptureUnit.lock")
     var mixerSettings: AudioMixerSettings {
         get {
             audioMixer.settings
@@ -59,8 +43,8 @@ final class AudioCaptureUnit: CaptureUnit {
     #if os(tvOS)
     private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
-    var captures: [UInt8: IOAudioCaptureUnit] {
-        return _captures as! [UInt8: IOAudioCaptureUnit]
+    var captures: [UInt8: AudioCaptureUnit] {
+        return _captures as! [UInt8: AudioCaptureUnit]
     }
     #elseif os(iOS) || os(macOS)
     var captures: [UInt8: AudioDeviceUnit] = [:]
@@ -76,16 +60,14 @@ final class AudioCaptureUnit: CaptureUnit {
     @available(tvOS 17.0, *)
     func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: AudioDeviceConfigurationBlock?) throws {
         try session.configuration { _ in
-            session.detachCapture(captures[track])
-            guard let device else {
-                try captures[track]?.attachDevice(nil)
+            for capture in captures.values where capture.device == device {
+                try? capture.attachDevice(nil, session: session, audioUnit: self)
+            }
+            guard let capture = self.capture(for: track) else {
                 return
             }
-            let capture = capture(for: track)
-            try capture?.attachDevice(device)
-            configuration?(capture)
-            capture?.setSampleBufferDelegate(self)
-            session.attachCapture(capture)
+            try? configuration?(capture)
+            try capture.attachDevice(device, session: session, audioUnit: self)
         }
     }
 
@@ -95,12 +77,12 @@ final class AudioCaptureUnit: CaptureUnit {
     }
 
     @available(tvOS 17.0, *)
-    func capture(for track: UInt8) -> AudioDeviceUnit? {
+    private func capture(for track: UInt8) -> AudioDeviceUnit? {
         #if os(tvOS)
         if _captures[track] == nil {
             _captures[track] = .init(track)
         }
-        return _captures[track] as? IOAudioCaptureUnit
+        return _captures[track] as? AudioDeviceUnit
         #else
         if captures[track] == nil {
             captures[track] = .init(track)
@@ -125,11 +107,11 @@ final class AudioCaptureUnit: CaptureUnit {
 }
 
 extension AudioCaptureUnit: AudioMixerDelegate {
-    // MARK: IOAudioMixerDelegate
+    // MARK: AudioMixerDelegate
     func audioMixer(_ audioMixer: some AudioMixer, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    func audioMixer(_ audioMixer: some AudioMixer, errorOccurred error: IOAudioUnitError) {
+    func audioMixer(_ audioMixer: some AudioMixer, errorOccurred error: AudioMixerError) {
     }
 
     func audioMixer(_ audioMixer: some AudioMixer, didOutput audioFormat: AVAudioFormat) {

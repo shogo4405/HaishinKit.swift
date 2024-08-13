@@ -717,7 +717,7 @@ public actor RTMPStream {
 }
 
 extension RTMPStream: HKStream {
-    // MARK: IOStreamConvertible
+    // MARK: HKStream
     public var audioSettings: AudioCodecSettings {
         mediaCodec.audioSettings
     }
@@ -802,7 +802,7 @@ extension RTMPStream: HKStream {
 }
 
 extension RTMPStream: MediaMixerOutput {
-    // MARK: IOMixerOutput
+    // MARK: MediaMixerOutput
     nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
         guard track == UInt8.max else {
             return

@@ -189,7 +189,7 @@ public actor MediaRecorder {
 }
 
 extension MediaRecorder: HKStreamOutput {
-    // MARK: IOStreamObserver
+    // MARK: HKStreamOutput
     nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { await append(video) }
     }

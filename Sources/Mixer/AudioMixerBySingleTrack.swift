@@ -55,13 +55,13 @@ final class AudioMixerBySingleTrack: AudioMixer {
 }
 
 extension AudioMixerBySingleTrack: AudioMixerTrackDelegate {
-    // MARK: IOAudioMixerTrackDelegate
+    // MARK: AudioMixerTrackDelegate
     func track(_ track: AudioMixerTrack<AudioMixerBySingleTrack>, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         delegate?.audioMixer(self, track: track.id, didInput: buffer, when: when)
         delegate?.audioMixer(self, didOutput: buffer.muted(settings.isMuted), when: when)
     }
 
-    func track(_ rtrack: AudioMixerTrack<AudioMixerBySingleTrack>, errorOccurred error: IOAudioUnitError) {
+    func track(_ rtrack: AudioMixerTrack<AudioMixerBySingleTrack>, errorOccurred error: AudioMixerError) {
         delegate?.audioMixer(self, errorOccurred: error)
     }
 }

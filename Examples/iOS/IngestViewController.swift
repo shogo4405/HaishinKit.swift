@@ -74,11 +74,11 @@ final class IngestViewController: UIViewController {
         super.viewWillAppear(animated)
         Task {
             let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-            try? await mixer.attachCamera(back, track: 0)
+            try? await mixer.attachVideo(back, track: 0)
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            try? await mixer.attachCamera(front, track: 1) { videoUnit in
-                videoUnit?.isVideoMirrored = true
+            try? await mixer.attachVideo(front, track: 1) { videoUnit in
+                videoUnit.isVideoMirrored = true
             }
         }
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
@@ -91,8 +91,8 @@ final class IngestViewController: UIViewController {
         Task {
             await netStreamSwitcher.close()
             try? await mixer.attachAudio(nil)
-            try? await mixer.attachCamera(nil, track: 0)
-            try? await mixer.attachCamera(nil, track: 1)
+            try? await mixer.attachVideo(nil, track: 0)
+            try? await mixer.attachVideo(nil, track: 1)
         }
         // swiftlint:disable:next notification_center_detachment
         NotificationCenter.default.removeObserver(self)
@@ -129,8 +129,8 @@ final class IngestViewController: UIViewController {
                 }
             } else {
                 let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-                try? await mixer.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { videoUnit in
-                    videoUnit?.isVideoMirrored = position == .front
+                try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { videoUnit in
+                    videoUnit.isVideoMirrored = position == .front
                 }
                 currentPosition = position
             }
@@ -155,15 +155,15 @@ final class IngestViewController: UIViewController {
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)
-            guard let device = mixer.videoCapture(for: 0)?.device, 1 <= zoomFactor && zoomFactor < device.activeFormat.videoMaxZoomFactor else {
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.ramp(toVideoZoomFactor: zoomFactor, withRate: 5.0)
-                device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for ramp: \(error)")
+            Task {
+                try await mixer.configuration(video: 0) { unit in
+                    guard let device = unit.device else {
+                        return
+                    }
+                    try device.lockForConfiguration()
+                    device.ramp(toVideoZoomFactor: zoomFactor, withRate: 5.0)
+                    device.unlockForConfiguration()
+                }
             }
         }
     }
@@ -199,17 +199,16 @@ final class IngestViewController: UIViewController {
         if let gestureView = gesture.view, gesture.state == .ended {
             let touchPoint: CGPoint = gesture.location(in: gestureView)
             let pointOfInterest = CGPoint(x: touchPoint.x / gestureView.bounds.size.width, y: touchPoint.y / gestureView.bounds.size.height)
-            guard
-                let device = mixer.videoCapture(for: 0)?.device, device.isFocusPointOfInterestSupported else {
-                return
-            }
-            do {
-                try device.lockForConfiguration()
-                device.focusPointOfInterest = pointOfInterest
-                device.focusMode = .continuousAutoFocus
-                device.unlockForConfiguration()
-            } catch let error as NSError {
-                logger.error("while locking device for focusPointOfInterest: \(error)")
+            Task {
+                try await mixer.configuration(video: 0) { unit in
+                    guard let device = unit.device else {
+                        return
+                    }
+                    try device.lockForConfiguration()
+                    device.focusPointOfInterest = pointOfInterest
+                    device.focusMode = .continuousAutoFocus
+                    device.unlockForConfiguration()
+                }
             }
         }
     }
@@ -316,8 +315,8 @@ final class IngestViewController: UIViewController {
 
 extension IngestViewController: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
-    func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
-        mixer.append(buffer, when: time)
+    nonisolated func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
+        Task { await mixer.append(buffer, when: time) }
     }
 }
 

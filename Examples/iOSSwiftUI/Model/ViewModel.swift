@@ -231,22 +231,3 @@ final class ViewModel: ObservableObject {
         rtmpConnection.connect(Preference.default.uri!)
     }
 }
-
-extension ViewModel: IOStreamRecorderDelegate {
-    // MARK: IOStreamRecorderDelegate
-    func recorder(_ recorder: MediaRecorder, errorOccured error: MediaRecorder.Error) {
-        logger.error(error)
-    }
-
-    func recorder(_ recorder: MediaRecorder, finishWriting writer: AVAssetWriter) {
-        PHPhotoLibrary.shared().performChanges({() -> Void in
-            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { _, error -> Void in
-            do {
-                try FileManager.default.removeItem(at: writer.outputURL)
-            } catch {
-                print(error)
-            }
-        })
-    }
-}

@@ -89,11 +89,11 @@ final class CameraIngestViewController: NSViewController {
                 try? await mixer.attachAudio(device, track: 1)
             }
 
-            try? await mixer.attachCamera(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video), track: 0)
+            try? await mixer.attachVideo(DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video), track: 0)
             var videos = AVCaptureDevice.devices(for: .video)
             videos.removeFirst()
             if let device = videos.first {
-                try? await mixer.attachCamera(device, track: 1)
+                try? await mixer.attachVideo(device, track: 1)
             }
         }
     }
@@ -118,7 +118,9 @@ final class CameraIngestViewController: NSViewController {
 
     @IBAction private func mirror(_ sender: AnyObject) {
         Task {
-            await mixer.videoCapture(for: 0)?.isVideoMirrored.toggle()
+            try await mixer.configuration(video: 0) { unit in
+                unit.isVideoMirrored.toggle()
+            }
         }
     }
 
@@ -132,7 +134,7 @@ final class CameraIngestViewController: NSViewController {
     @IBAction private func selectCamera(_ sender: AnyObject) {
         Task {
             let device = DeviceUtil.device(withLocalizedName: cameraPopUpButton.titleOfSelectedItem!, mediaType: .video)
-            try? await mixer.attachCamera(device, track: 0)
+            try? await mixer.attachVideo(device, track: 0)
         }
     }
 }

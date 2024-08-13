@@ -2,9 +2,9 @@
 import AVFoundation
 import Foundation
 
-/// Configuration calback block for IOAudioCaptureUnit.
+/// Configuration calback block for an AudioDeviceUnit
 @available(tvOS 17.0, *)
-public typealias AudioDeviceConfigurationBlock = (AudioDeviceUnit?) -> Void
+public typealias AudioDeviceConfigurationBlock = @Sendable (AudioDeviceUnit) throws -> Void
 
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
@@ -31,11 +31,14 @@ public final class AudioDeviceUnit: DeviceUnit {
         self.track = track
     }
 
-    func attachDevice(_ device: AVCaptureDevice?) throws {
+    func attachDevice(_ device: AVCaptureDevice?, session: CaptureSession, audioUnit: AudioCaptureUnit) throws {
+        setSampleBufferDelegate(nil)
+        session.detachCapture(self)
         guard let device else {
             self.device = nil
             input = nil
             output = nil
+            connection = nil
             return
         }
         self.device = device
@@ -44,9 +47,11 @@ public final class AudioDeviceUnit: DeviceUnit {
         if let input, let output {
             connection = AVCaptureConnection(inputPorts: input.ports, output: output)
         }
+        session.attachCapture(self)
+        setSampleBufferDelegate(audioUnit)
     }
 
-    func setSampleBufferDelegate(_ audioUnit: AudioCaptureUnit?) {
+    private func setSampleBufferDelegate(_ audioUnit: AudioCaptureUnit?) {
         dataOutput = audioUnit?.makeDataOutput(track)
         output?.setSampleBufferDelegate(dataOutput, queue: audioUnit?.lockQueue)
     }

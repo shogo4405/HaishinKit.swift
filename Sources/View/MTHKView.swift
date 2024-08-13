@@ -97,7 +97,7 @@ public class MTHKView: MTKView {
 }
 
 extension MTHKView: MediaMixerOutput {
-    // MARK: IOMixerOutput
+    // MARK: MediaMixerOutput
     nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
