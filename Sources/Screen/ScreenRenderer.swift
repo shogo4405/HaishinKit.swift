@@ -136,7 +136,7 @@ final class ScreenRendererByCPU: ScreenRenderer {
                         vImageOverwriteChannels_ARGB8888(&mask, &buffer, &buffer, 0x8, Self.noFlags)
                     }
                 } else {
-                    if let screenObject = screenObject as? (any ChromaKeyProcessorble),
+                    if let screenObject = screenObject as? (any ChromaKeyProcessable),
                        let chromaKeyColor = screenObject.chromaKeyColor,
                        var mask = try choromaKeyProcessor?.makeMask(&buffer, chromeKeyColor: chromaKeyColor) {
                         vImageOverwriteChannels_ARGB8888(&mask, &buffer, &buffer, 0x8, Self.noFlags)
