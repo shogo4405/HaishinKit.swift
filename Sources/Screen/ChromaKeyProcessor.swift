@@ -2,9 +2,9 @@ import Accelerate
 import Foundation
 import simd
 
-/// A type with a chroma key processorble screen object.
+/// A marker type with a chroma key processable screen object.
 @ScreenActor
-public protocol ChromaKeyProcessorble {
+public protocol ChromaKeyProcessable {
     /// Specifies the chroma key color.
     var chromaKeyColor: CGColor? { get set }
 }
