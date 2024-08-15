@@ -303,11 +303,9 @@ extension MediaMixer: AsyncRunner {
         Task { @ScreenActor in
             for await _ in AsyncDisplayLink.updateFrames where await isRunning {
                 guard let buffer = screen.makeSampleBuffer() else {
-                    return
+                    continue
                 }
-                for output in await outputs {
-                    output.mixer(self, track: UInt8.max, didOutput: buffer)
-                }
+                await outputs.forEach { $0.mixer(self, track: UInt8.max, didOutput: buffer) }
             }
         }
         #if os(iOS) || os(tvOS) || os(visionOS)
