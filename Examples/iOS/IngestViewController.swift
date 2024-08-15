@@ -36,6 +36,7 @@ final class IngestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Task {
+            await mixer.setMultiCamSessionEnabled(true)
             // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
             // mixer.isMultiCamSessionEnabled = true
             if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
@@ -61,7 +62,7 @@ final class IngestViewController: UIViewController {
             videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
             videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
             await mixer.screen.size = .init(width: 720, height: 1280)
-            await mixer.screen.backgroundColor = UIColor.white.cgColor
+            await mixer.screen.backgroundColor = UIColor.black.cgColor
             try? await mixer.screen.addChild(videoScreenObject)
         }
 
@@ -99,6 +100,7 @@ final class IngestViewController: UIViewController {
     }
 
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
         Task { @ScreenActor in
             if  await UIDevice.current.orientation.isLandscape {
                 await mixer.screen.size = .init(width: 1280, height: 720)
@@ -114,7 +116,6 @@ final class IngestViewController: UIViewController {
         Task {
             if await mixer.isMultiCamSessionEnabled {
                 var videoMixerSettings = await mixer.videoMixerSettings
-
                 if videoMixerSettings.mainTrack == 0 {
                     videoMixerSettings.mainTrack = 1
                     await mixer.setVideoMixerSettings(videoMixerSettings)
@@ -123,6 +124,7 @@ final class IngestViewController: UIViewController {
                     }
                 } else {
                     videoMixerSettings.mainTrack = 0
+                    await mixer.setVideoMixerSettings(videoMixerSettings)
                     Task { @ScreenActor in
                         videoScreenObject.track = 1
                     }

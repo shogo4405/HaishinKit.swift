@@ -41,13 +41,13 @@ final class AudioCaptureUnit: CaptureUnit {
     }()
     private var monitor: AudioMonitor = .init()
     #if os(tvOS)
-    private var _captures: [UInt8: Any] = [:]
+    private var _devices: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
-    var captures: [UInt8: AudioDeviceUnit] {
-        return _captures as! [UInt8: AudioDeviceUnit]
+    var devices: [UInt8: AudioDeviceUnit] {
+        return _devices as! [UInt8: AudioDeviceUnit]
     }
     #elseif os(iOS) || os(macOS)
-    var captures: [UInt8: AudioDeviceUnit] = [:]
+    var devices: [UInt8: AudioDeviceUnit] = [:]
     #endif
     private let session: CaptureSession
     private var continutation: AsyncStream<(AVAudioPCMBuffer, AVAudioTime)>.Continuation?
@@ -60,10 +60,10 @@ final class AudioCaptureUnit: CaptureUnit {
     @available(tvOS 17.0, *)
     func attachAudio(_ track: UInt8, device: AVCaptureDevice?, configuration: AudioDeviceConfigurationBlock?) throws {
         try session.configuration { _ in
-            for capture in captures.values where capture.device == device {
+            for capture in devices.values where capture.device == device {
                 try? capture.attachDevice(nil, session: session, audioUnit: self)
             }
-            guard let capture = self.capture(for: track) else {
+            guard let capture = self.device(for: track) else {
                 return
             }
             try? configuration?(capture)
@@ -77,17 +77,17 @@ final class AudioCaptureUnit: CaptureUnit {
     }
 
     @available(tvOS 17.0, *)
-    private func capture(for track: UInt8) -> AudioDeviceUnit? {
+    private func device(for track: UInt8) -> AudioDeviceUnit? {
         #if os(tvOS)
-        if _captures[track] == nil {
-            _captures[track] = .init(track)
+        if _devices[track] == nil {
+            _devices[track] = .init(track)
         }
-        return _captures[track] as? AudioDeviceUnit
+        return _devices[track] as? AudioDeviceUnit
         #else
-        if captures[track] == nil {
-            captures[track] = .init(track)
+        if devices[track] == nil {
+            devices[track] = .init(track)
         }
-        return captures[track]
+        return devices[track]
         #endif
     }
     #endif

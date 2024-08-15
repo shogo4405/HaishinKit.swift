@@ -62,6 +62,8 @@ public final class Screen: ScreenObjectContainerConvertible {
         }
     }
     #endif
+
+    var videoTrackScreenObject = VideoTrackScreenObject()
     private var root: ScreenObjectContainer = .init()
     private(set) var renderer = ScreenRendererByCPU()
     private var timeStamp: CMTime = .invalid
@@ -79,7 +81,6 @@ public final class Screen: ScreenObjectContainerConvertible {
             outputFormat = nil
         }
     }
-    private var videoTrackScreenObject = VideoTrackScreenObject()
 
     /// Creates a screen object.
     public init() {

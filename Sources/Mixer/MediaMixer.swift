@@ -115,7 +115,7 @@ public final actor MediaMixer {
     /// Configurations for a video device.
     @available(tvOS 17.0, *)
     public func configuration(video track: UInt8, configuration: VideoDeviceConfigurationBlock) throws {
-        guard let unit = videoIO.captures[track] else {
+        guard let unit = videoIO.devices[track] else {
             throw Error.deviceNotFound
         }
         try configuration(unit)
@@ -150,7 +150,7 @@ public final actor MediaMixer {
     /// Configurations for an audio device.
     @available(tvOS 17.0, *)
     public func configuration(audio track: UInt8, configuration: AudioDeviceConfigurationBlock) throws {
-        guard let unit = audioIO.captures[track] else {
+        guard let unit = audioIO.devices[track] else {
             throw Error.deviceNotFound
         }
         try configuration(unit)
@@ -193,6 +193,9 @@ public final actor MediaMixer {
     /// Specifies the video mixier settings.
     public func setVideoMixerSettings(_ settings: VideoMixerSettings) {
         videoIO.mixerSettings = settings
+        Task { @ScreenActor in
+            screen.videoTrackScreenObject.track = settings.mainTrack
+        }
     }
 
     /// Specifies the frame rate of a device capture.

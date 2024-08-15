@@ -24,7 +24,7 @@ final class VideoCaptureUnit: CaptureUnit {
             guard #available(tvOS 17.0, *) else {
                 return
             }
-            for capture in captures.values {
+            for capture in devices.values {
                 capture.setFrameRate(frameRate)
             }
         }
@@ -43,7 +43,7 @@ final class VideoCaptureUnit: CaptureUnit {
 
     @available(tvOS 17.0, *)
     var hasDevice: Bool {
-        !captures.lazy.filter { $0.value.device != nil }.isEmpty
+        !devices.lazy.filter { $0.value.device != nil }.isEmpty
     }
 
     #if os(iOS) || os(macOS)
@@ -53,7 +53,7 @@ final class VideoCaptureUnit: CaptureUnit {
                 return
             }
             session.configuration { _ in
-                for capture in captures.values {
+                for capture in devices.values {
                     capture.videoOrientation = videoOrientation
                 }
             }
@@ -63,13 +63,13 @@ final class VideoCaptureUnit: CaptureUnit {
 
     var inputs: AsyncStream<(UInt8, CMSampleBuffer)> {
         let (stream, continutation) = AsyncStream<(UInt8, CMSampleBuffer)>.makeStream()
-        self.inputsContinutation = continutation
+        self.inputsContinuation = continutation
         return stream
     }
 
     var output: AsyncStream<CMSampleBuffer> {
         let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
-        self.continuation = continutation
+        self.outputContinuation = continutation
         return stream
     }
 
@@ -78,16 +78,17 @@ final class VideoCaptureUnit: CaptureUnit {
         videoMixer.delegate = self
         return videoMixer
     }()
-    private var continuation: AsyncStream<CMSampleBuffer>.Continuation?
-    private var inputsContinutation: AsyncStream<(UInt8, CMSampleBuffer)>.Continuation?
+
+    private var outputContinuation: AsyncStream<CMSampleBuffer>.Continuation?
+    private var inputsContinuation: AsyncStream<(UInt8, CMSampleBuffer)>.Continuation?
     #if os(tvOS)
-    private var _captures: [UInt8: Any] = [:]
+    private var _devices: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
-    var captures: [UInt8: VideoDeviceUnit] {
-        return _captures as! [UInt8: VideoDeviceUnit]
+    var devices: [UInt8: VideoDeviceUnit] {
+        return _devices as! [UInt8: VideoDeviceUnit]
     }
     #elseif os(iOS) || os(macOS) || os(visionOS)
-    var captures: [UInt8: VideoDeviceUnit] = [:]
+    var devices: [UInt8: VideoDeviceUnit] = [:]
     #endif
     private let session: CaptureSession
 
@@ -101,17 +102,17 @@ final class VideoCaptureUnit: CaptureUnit {
 
     @available(tvOS 17.0, *)
     func attachCamera(_ track: UInt8, device: AVCaptureDevice?, configuration: VideoDeviceConfigurationBlock?) throws {
-        guard captures[track]?.device != device else {
+        guard devices[track]?.device != device else {
             return
         }
-        if hasDevice && device != nil && captures[track]?.device == nil && session.isMultiCamSessionEnabled == false {
+        if hasDevice && device != nil && devices[track]?.device == nil && session.isMultiCamSessionEnabled == false {
             throw Error.multiCamNotSupported
         }
         try session.configuration { _ in
-            for capture in captures.values where capture.device == device {
+            for capture in devices.values where capture.device == device {
                 try? capture.attachDevice(nil, session: session, videoUnit: self)
             }
-            guard let capture = self.capture(for: track) else {
+            guard let capture = self.device(for: track) else {
                 return
             }
             try? configuration?(capture)
@@ -129,7 +130,7 @@ final class VideoCaptureUnit: CaptureUnit {
     #if os(iOS) || os(tvOS) || os(macOS)
     @available(tvOS 17.0, *)
     func setTorchMode(_ torchMode: AVCaptureDevice.TorchMode) {
-        for capture in captures.values {
+        for capture in devices.values {
             capture.setTorchMode(torchMode)
         }
     }
@@ -141,11 +142,11 @@ final class VideoCaptureUnit: CaptureUnit {
             return
         }
         if background {
-            for capture in captures.values {
+            for capture in devices.values {
                 session.detachCapture(capture)
             }
         } else {
-            for capture in captures.values {
+            for capture in devices.values {
                 session.attachCapture(capture)
             }
         }
@@ -157,17 +158,17 @@ final class VideoCaptureUnit: CaptureUnit {
     }
 
     @available(tvOS 17.0, *)
-    private func capture(for track: UInt8) -> VideoDeviceUnit? {
+    private func device(for track: UInt8) -> VideoDeviceUnit? {
         #if os(tvOS)
-        if _captures[track] == nil {
-            _captures[track] = .init(track)
+        if _devices[track] == nil {
+            _devices[track] = .init(track)
         }
-        return _captures[track] as? VideoDeviceUnit
+        return _devices[track] as? VideoDeviceUnit
         #else
-        if captures[track] == nil {
-            captures[track] = .init(track)
+        if devices[track] == nil {
+            devices[track] = .init(track)
         }
-        return captures[track]
+        return devices[track]
         #endif
     }
 }
@@ -175,10 +176,10 @@ final class VideoCaptureUnit: CaptureUnit {
 extension VideoCaptureUnit: VideoMixerDelegate {
     // MARK: VideoMixerDelegate
     func videoMixer(_ videoMixer: VideoMixer<VideoCaptureUnit>, track: UInt8, didInput sampleBuffer: CMSampleBuffer) {
-        inputsContinutation?.yield((track, sampleBuffer))
+        inputsContinuation?.yield((track, sampleBuffer))
     }
 
     func videoMixer(_ videoMixer: VideoMixer<VideoCaptureUnit>, didOutput sampleBuffer: CMSampleBuffer) {
-        continuation?.yield(sampleBuffer)
+        outputContinuation?.yield(sampleBuffer)
     }
 }
