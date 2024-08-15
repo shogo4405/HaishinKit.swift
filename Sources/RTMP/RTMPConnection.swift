@@ -4,12 +4,16 @@ import Foundation
 // MARK: -
 /// The RTMPConneciton class create a two-way RTMP connection.
 public actor RTMPConnection {
-    /// The RTMPConnection error domain code.
+    /// The error domain code.
     public enum Error: Swift.Error {
+        /// An invalid internal stare.
         case invalidState
+        /// The command isn’t supported.
         case unsupportedCommand(_ command: String)
         case socketErrorOccurred(_ error: any Swift.Error)
+        /// The requested operation timed out.
         case requestTimedOut
+        /// A request fails.
         case requestFailed(response: RTMPResponse)
     }
 

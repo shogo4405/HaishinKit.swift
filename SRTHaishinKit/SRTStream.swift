@@ -14,8 +14,8 @@ public actor SRTStream {
     private lazy var mediaLink = MediaLink()
     private lazy var mediaCodec = MediaCodec()
     private var outputs: [any HKStreamOutput] = []
-    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
     private var audioPlayerNode: AudioPlayerNode?
+    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
@@ -52,12 +52,12 @@ public actor SRTStream {
             mediaCodec.startRunning()
             Task {
                 for try await buffer in mediaCodec.video where mediaCodec.isRunning {
-                    writer.append(buffer)
+                    append(buffer)
                 }
             }
             Task {
                 for await buffer in mediaCodec.audio where mediaCodec.isRunning {
-                    writer.append(buffer.0, when: buffer.1)
+                    append(buffer.0, when: buffer.1)
                 }
             }
             Task {
@@ -96,22 +96,19 @@ public actor SRTStream {
                 }
             }
             Task {
-                guard let audioPlayerNode else {
-                    return
-                }
-                await audioPlayerNode.startRunning()
+                await audioPlayerNode?.startRunning()
                 for await audio in mediaCodec.audio where mediaCodec.isRunning {
-                    await audioPlayerNode.enqueue(audio.0, when: audio.1)
+                    append(audio.0, when: audio.1)
                 }
             }
             Task {
                 for try await buffer in reader.output where mediaCodec.isRunning {
-                    mediaCodec.append(buffer.1)
+                    append(buffer.1)
                 }
             }
             Task {
                 for await video in await mediaLink.dequeue where mediaCodec.isRunning {
-                    outputs.forEach { $0.stream(self, didOutput: video) }
+                    append(video)
                 }
             }
             await connection?.listen()
@@ -158,15 +155,47 @@ extension SRTStream: HKStream {
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
-        switch sampleBuffer.formatDescription?.mediaType {
-        case .video?:
+        guard sampleBuffer.formatDescription?.mediaType == .video else {
+            return
+        }
+        switch readyState {
+        case .publishing:
             if sampleBuffer.formatDescription?.isCompressed == true {
+                writer.append(sampleBuffer)
             } else {
                 mediaCodec.append(sampleBuffer)
-                outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
         default:
             break
+        }
+        if sampleBuffer.formatDescription?.isCompressed == false {
+            outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
+        }
+    }
+
+    public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        switch readyState {
+        case .playing:
+            switch audioBuffer {
+            case let audioBuffer as AVAudioPCMBuffer:
+                Task { await audioPlayerNode?.enqueue(audioBuffer, when: when) }
+            default:
+                break
+            }
+        case .publishing:
+            switch audioBuffer {
+            case let audioBuffer as AVAudioPCMBuffer:
+                mediaCodec.append(audioBuffer, when: when)
+            case let audioBuffer as AVAudioCompressedBuffer:
+                writer.append(audioBuffer, when: when)
+            default:
+                break
+            }
+        default:
+            break
+        }
+        if audioBuffer is AVAudioPCMBuffer {
+            outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
         }
     }
 
@@ -175,14 +204,6 @@ extension SRTStream: HKStream {
             audioPlayerNode = await audioPlayer?.makePlayerNode()
             await mediaLink.setAudioPlayer(audioPlayerNode)
         }
-    }
-
-    public func append(_ buffer: AVAudioBuffer, when: AVAudioTime) {
-        guard buffer is AVAudioPCMBuffer else {
-            return
-        }
-        mediaCodec.append(buffer, when: when)
-        outputs.forEach { $0.stream(self, didOutput: buffer, when: when) }
     }
 
     public func addOutput(_ observer: some HKStreamOutput) {

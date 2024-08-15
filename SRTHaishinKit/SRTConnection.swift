@@ -6,9 +6,9 @@ import libsrt
 public actor SRTConnection {
     /// The error comain codes.
     public enum Error: Swift.Error {
-        // The uri isn’t supported.
-        case notSupportedUri(_ uri: URL?)
-        // The fail to connect.
+        /// The uri isn’t supported.
+        case unsupportedUri(_ uri: URL?)
+        /// The fail to connect.
         case failedToConnect(_ message: String, reson: Int32)
     }
 
@@ -47,7 +47,7 @@ public actor SRTConnection {
     /// Open a two-way connection to an application on SRT Server.
     public func open(_ uri: URL?, mode: SRTMode = .caller) async throws {
         guard let uri = uri, let scheme = uri.scheme, let host = uri.host, let port = uri.port, scheme == "srt" else {
-            throw Error.notSupportedUri(uri)
+            throw Error.unsupportedUri(uri)
         }
         do {
             try await withCheckedThrowingContinuation { continuation in

@@ -93,7 +93,7 @@ enum FLVAudioCodec: UInt8 {
         }
     }
 
-    func audioStreamBasicDescription(_ payload: inout Data) -> AudioStreamBasicDescription? {
+    func audioStreamBasicDescription(_ payload: Data) -> AudioStreamBasicDescription? {
         guard isSupported, !payload.isEmpty else {
             return nil
         }

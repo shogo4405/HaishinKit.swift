@@ -418,11 +418,18 @@ struct RTMPAudioMessage: RTMPMessage {
     }
 
     func makeAudioFormat() -> AVAudioFormat? {
-        var payload = self.payload
-        guard var audioStreamBasicDescription = codec.audioStreamBasicDescription(&payload) else {
+        switch payload[1] {
+        case FLVAACPacketType.seq.rawValue:
+            let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
+            return config?.makeAudioFormat()
+        case FLVAACPacketType.raw.rawValue:
+            guard var audioStreamBasicDescription = codec.audioStreamBasicDescription(payload) else {
+                return nil
+            }
+            return AVAudioFormat(streamDescription: &audioStreamBasicDescription)
+        default:
             return nil
         }
-        return AVAudioFormat(streamDescription: &audioStreamBasicDescription)
     }
 }
 

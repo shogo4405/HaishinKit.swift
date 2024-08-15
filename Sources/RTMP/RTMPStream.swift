@@ -3,10 +3,13 @@ import AVFoundation
 
 /// An object that provides the interface to control a one-way channel over an RTMPConnection.
 public actor RTMPStream {
-    // The RTMPStream error domain code.
+    /// The error domain code.
     public enum Error: Swift.Error {
+        /// An invalid internal stare.
         case invalidState
+        /// The requested operation timed out.
         case requestTimedOut
+        /// A request fails.
         case requestFailed(response: RTMPResponse)
     }
 
@@ -289,28 +292,23 @@ public actor RTMPStream {
                 mediaCodec.startRunning()
                 Task {
                     await mediaLink.startRunning()
-                    while mediaCodec.isRunning {
-                        do {
-                            for try await video in mediaCodec.video where mediaCodec.isRunning {
-                                await mediaLink.enqueue(video)
-                            }
-                        } catch {
-                            logger.error(error)
+                    for await video in await mediaLink.dequeue where await mediaLink.isRunning {
+                        append(video)
+                    }
+                }
+                Task {
+                    do {
+                        for try await video in mediaCodec.video where mediaCodec.isRunning {
+                            await mediaLink.enqueue(video)
                         }
+                    } catch {
+                        logger.error(error)
                     }
                 }
                 Task {
-                    guard let audioPlayerNode else {
-                        return
-                    }
-                    await audioPlayerNode.startRunning()
+                    await audioPlayerNode?.startRunning()
                     for await audio in mediaCodec.audio where mediaCodec.isRunning {
-                        await audioPlayerNode.enqueue(audio.0, when: audio.1)
-                    }
-                }
-                Task {
-                    for await video in await mediaLink.dequeue where mediaCodec.isRunning {
-                        outputs.forEach { $0.stream(self, didOutput: video) }
+                        append(audio.0, when: audio.1)
                     }
                 }
                 doOutput(.zero, chunkStreamId: .command, message: RTMPCommandMessage(
@@ -630,16 +628,13 @@ public actor RTMPStream {
     }
 
     private func append(_ message: RTMPAudioMessage, type: RTMPChunkType) {
-        let payload = message.payload
-        let codec = message.codec
         audioTimestamp.update(message, chunkType: type)
         guard message.codec.isSupported else {
             return
         }
-        switch payload[1] {
+        switch message.payload[1] {
         case FLVAACPacketType.seq.rawValue:
-            let config = AudioSpecificConfig(bytes: [UInt8](payload[codec.headerSize..<payload.count]))
-            audioFormat = config?.makeAudioFormat()
+            audioFormat = message.makeAudioFormat()
         case FLVAACPacketType.raw.rawValue:
             if audioFormat == nil {
                 audioFormat = message.makeAudioFormat()
@@ -735,8 +730,11 @@ extension RTMPStream: HKStream {
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
-        switch sampleBuffer.formatDescription?.mediaType {
-        case .video:
+        guard sampleBuffer.formatDescription?.mediaType == .video else {
+            return
+        }
+        switch readyState {
+        case .publishing:
             if sampleBuffer.formatDescription?.isCompressed == true {
                 let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
                 let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
@@ -749,23 +747,40 @@ extension RTMPStream: HKStream {
                 doOutput(.one, chunkStreamId: .video, message: message)
             } else {
                 mediaCodec.append(sampleBuffer)
-                outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
         default:
             break
         }
+        if sampleBuffer.formatDescription?.isCompressed == false {
+            outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
+        }
     }
 
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        switch audioBuffer {
-        case let audioBuffer as AVAudioCompressedBuffer:
-            let timedelta = audioTimestamp.update(when)
-            guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
-                return
+        switch readyState {
+        case .playing:
+            switch audioBuffer {
+            case let audioBuffer as AVAudioPCMBuffer:
+                Task { await audioPlayerNode?.enqueue(audioBuffer, when: when) }
+            default:
+                break
             }
-            doOutput(.one, chunkStreamId: .audio, message: message)
+        case .publishing:
+            switch audioBuffer {
+            case let audioBuffer as AVAudioCompressedBuffer:
+                let timedelta = audioTimestamp.update(when)
+                guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
+                    return
+                }
+                doOutput(.one, chunkStreamId: .audio, message: message)
+            default:
+                mediaCodec.append(audioBuffer, when: when)
+            }
         default:
-            mediaCodec.append(audioBuffer, when: when)
+            break
+        }
+        if audioBuffer is AVAudioPCMBuffer {
+            outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
         }
     }
 
