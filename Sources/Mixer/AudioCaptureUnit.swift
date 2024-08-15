@@ -43,8 +43,8 @@ final class AudioCaptureUnit: CaptureUnit {
     #if os(tvOS)
     private var _captures: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
-    var captures: [UInt8: AudioCaptureUnit] {
-        return _captures as! [UInt8: AudioCaptureUnit]
+    var captures: [UInt8: AudioDeviceUnit] {
+        return _captures as! [UInt8: AudioDeviceUnit]
     }
     #elseif os(iOS) || os(macOS)
     var captures: [UInt8: AudioDeviceUnit] = [:]

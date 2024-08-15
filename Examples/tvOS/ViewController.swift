@@ -80,9 +80,9 @@ extension ViewController: AVContinuityDevicePickerViewControllerDelegate {
             logger.error(error)
         }
         if let camera = device.videoDevices.first {
+            logger.info(camera)
             Task {
-                logger.info(camera)
-                try await mixer.attachCamera(camera)
+                try await mixer.attachVideo(camera)
             }
         }
     }
