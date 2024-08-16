@@ -8,7 +8,7 @@ final actor RTMPSocket {
         case invalidState
         case endOfStream
         case connectionTimedOut
-        case connectionNotEstablished
+        case connectionNotEstablished(_ error: NWError?)
     }
 
     private var timeout: UInt64 = 15
@@ -63,6 +63,8 @@ final actor RTMPSocket {
                 Task {
                     try? await Task.sleep(nanoseconds: timeout * 1_000_000_000)
                     self.continuation?.resume(throwing: Error.connectionTimedOut)
+                    self.continuation = nil
+                    close()
                 }
                 connection.stateUpdateHandler = { state in
                     Task { await self.stateDidChange(to: state) }
@@ -101,12 +103,12 @@ final actor RTMPSocket {
         }
     }
 
-    func close() {
+    func close(_ error: NWError? = nil) {
         guard connection != nil else {
             return
         }
         if let continuation {
-            continuation.resume(throwing: Error.connectionNotEstablished)
+            continuation.resume(throwing: Error.connectionNotEstablished(error))
             self.continuation = nil
         }
         connected = false
@@ -133,14 +135,14 @@ final actor RTMPSocket {
             self.continuation = nil
         case .waiting(let error):
             logger.warn("Connection waiting:", error)
-            close()
+            close(error)
         case .setup:
             logger.debug("Connection is setting up.")
         case .preparing:
             logger.debug("Connection is preparing.")
         case .failed(let error):
             logger.warn("Connection failed:", error)
-            close()
+            close(error)
         case .cancelled:
             logger.info("Connection cancelled.")
             close()

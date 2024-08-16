@@ -10,6 +10,9 @@ public actor RTMPConnection {
         case invalidState
         /// The command isn’t supported.
         case unsupportedCommand(_ command: String)
+        /// The connected operation timed out.
+        case connectionTimedOut
+        /// The general socket error.
         case socketErrorOccurred(_ error: any Swift.Error)
         /// The requested operation timed out.
         case requestTimedOut
@@ -267,6 +270,7 @@ public actor RTMPConnection {
                         try await socket.connect(host, port: uri.port ?? (secure ? Self.defaultSecurePort : Self.defaultPort))
                     } catch {
                         continutation.resume(throwing: error)
+                        return
                     }
                     do {
                         readyState = .versionSent
@@ -291,7 +295,12 @@ public actor RTMPConnection {
             }
             return result
         } catch let error as RTMPSocket.Error {
-            throw Error.socketErrorOccurred(error)
+            switch error {
+            case .connectionTimedOut:
+                throw Error.connectionTimedOut
+            default:
+                throw Error.socketErrorOccurred(error)
+            }
         } catch let error as Error {
             switch error {
             case .requestFailed(let response):
