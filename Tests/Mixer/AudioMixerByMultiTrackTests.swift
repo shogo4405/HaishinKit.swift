@@ -4,29 +4,29 @@ import XCTest
 
 @testable import HaishinKit
 
-final class IOAudioMixerByMultiTrackTests: XCTestCase {
-    final class Result: IOAudioMixerDelegate {
+final class AudioMixerByMultiTrackTests: XCTestCase {
+    final class Result: AudioMixerDelegate {
         var outputs: [AVAudioPCMBuffer] = []
-        var error: IOAudioUnitError?
+        var error: AudioMixerError?
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        func audioMixer(_ audioMixer: some AudioMixer, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         }
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
+        func audioMixer(_ audioMixer: some AudioMixer, didOutput audioFormat: AVAudioFormat) {
         }
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        func audioMixer(_ audioMixer: some AudioMixer, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
             outputs.append(audioBuffer)
         }
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
+        func audioMixer(_ audioMixer: some AudioMixer, errorOccurred error: AudioMixerError) {
             self.error = error
         }
     }
 
     func testKeep44100() {
         let result = Result()
-        let mixer = IOAudioMixerByMultiTrack()
+        let mixer = AudioMixerByMultiTrack()
         mixer.delegate = result
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
@@ -40,7 +40,7 @@ final class IOAudioMixerByMultiTrackTests: XCTestCase {
     }
 
     func test44100to48000() {
-        let mixer = IOAudioMixerByMultiTrack()
+        let mixer = AudioMixerByMultiTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
         )
@@ -55,7 +55,7 @@ final class IOAudioMixerByMultiTrackTests: XCTestCase {
 
     func test48000_2ch() {
         let result = Result()
-        let mixer = IOAudioMixerByMultiTrack()
+        let mixer = AudioMixerByMultiTrack()
         mixer.delegate = result
         mixer.settings = .init(
             sampleRate: 48000, channels: 2
@@ -71,7 +71,7 @@ final class IOAudioMixerByMultiTrackTests: XCTestCase {
     }
 
     func testInputFormats() {
-        let mixer = IOAudioMixerByMultiTrack()
+        let mixer = AudioMixerByMultiTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
         )

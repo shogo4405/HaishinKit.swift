@@ -3,7 +3,7 @@ import XCTest
 
 @testable import HaishinKit
 
-final class IOMixerTests: XCTestCase {
+final class MediaMixerTests: XCTestCase {
     /*
     func testRelease() {
         weak var weakIOMixer: IOMixer?

@@ -4,7 +4,7 @@ import AVFoundation
 
 @testable import HaishinKit
 
-final class IOAudioRingBufferTests: XCTestCase {
+final class AudioRingBufferTests: XCTestCase {
     func testMonoAppendSampleBuffer_920() {
         appendSampleBuffer(920, channels: 1)
     }
@@ -34,7 +34,7 @@ final class IOAudioRingBufferTests: XCTestCase {
             mReserved: 0
         )
         let format = AVAudioFormat(streamDescription: &asbd)
-        let buffer = IOAudioRingBuffer(format!, bufferCounts: 3)
+        let buffer = AudioRingBuffer(format!, bufferCounts: 3)
         guard
             let readBuffer = AVAudioPCMBuffer(pcmFormat: AVAudioFormat(streamDescription: &asbd)!, frameCapacity: AVAudioFrameCount(numSamples)),
             let sinWave = CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: numSamples, channels: channels) else {

@@ -4,26 +4,26 @@ import XCTest
 
 @testable import HaishinKit
 
-final class IOAudioMixerBySingleTrackTests: XCTestCase {
-    final class Result: IOAudioMixerDelegate {
+final class AudioMixerBySingleTrackTests: XCTestCase {
+    final class Result: AudioMixerDelegate {
         var outputs: [AVAudioPCMBuffer] = []
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        func audioMixer(_ audioMixer: some AudioMixer, track: UInt8, didInput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         }
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioFormat: AVAudioFormat) {
+        func audioMixer(_ audioMixer: some AudioMixer, didOutput audioFormat: AVAudioFormat) {
         }
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        func audioMixer(_ audioMixer: some AudioMixer, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
             outputs.append(audioBuffer)
         }
 
-        func audioMixer(_ audioMixer: some IOAudioMixerConvertible, errorOccurred error: IOAudioUnitError) {
+        func audioMixer(_ audioMixer: some AudioMixer, errorOccurred error: AudioMixerError) {
         }
     }
 
     func testKeep44100_1ch() {
-        let mixer = IOAudioMixerBySingleTrack()
+        let mixer = AudioMixerBySingleTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
         )
@@ -34,7 +34,7 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     }
 
     func test44100to48000_1ch() {
-        let mixer = IOAudioMixerBySingleTrack()
+        let mixer = AudioMixerBySingleTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
         )
@@ -49,7 +49,7 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
 
     func test44100to48000_4ch_2ch() {
         let result = Result()
-        let mixer = IOAudioMixerBySingleTrack()
+        let mixer = AudioMixerBySingleTrack()
         mixer.delegate = result
         mixer.settings = .init(
             sampleRate: 44100, channels: 0
@@ -69,7 +69,7 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
 
     func test44100to48000_4ch() {
         let result = Result()
-        let mixer = IOAudioMixerBySingleTrack()
+        let mixer = AudioMixerBySingleTrack()
         mixer.delegate = result
         mixer.settings = .init(
             sampleRate: 44100, channels: 0
@@ -90,7 +90,7 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     }
 
     func testpPassthrough16000_48000() {
-        let mixer = IOAudioMixerBySingleTrack()
+        let mixer = AudioMixerBySingleTrack()
         mixer.settings = .init(
             sampleRate: 0, channels: 1
         )
@@ -101,7 +101,7 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
     }
 
     func testInputFormats() {
-        let mixer = IOAudioMixerBySingleTrack()
+        let mixer = AudioMixerBySingleTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
         )
@@ -110,3 +110,4 @@ final class IOAudioMixerBySingleTrackTests: XCTestCase {
         XCTAssertEqual(inputFormats[0]?.sampleRate, 48000)
     }
 }
+

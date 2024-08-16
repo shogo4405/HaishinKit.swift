@@ -10,9 +10,6 @@ final class AMFFoundationTests: XCTestCase {
     func testASArray() {
         var array = AMFArray()
         array[5] = "hoge"
-        if let array_0: AMFUndefined = array[0] as? AMFUndefined {
-            // XCTAssertEqual(array_0, kASUndefined)
-        }
         if let array_5: String = array[5] as? String {
             XCTAssertEqual(array_5, "hoge")
         }
