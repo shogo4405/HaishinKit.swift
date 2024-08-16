@@ -96,6 +96,14 @@ open class IOStream: NSObject {
         }
     }
 
+    /// The capture session is in a running state or not.
+    @available(tvOS 17.0, *)
+    public var isCapturing: Bool {
+        lockQueue.sync {
+            mixer.session.isRunning.value
+        }
+    }
+
     /// Specifies the audio monitoring enabled or not.
     public var isMonitoringEnabled: Bool {
         get {
@@ -107,7 +115,7 @@ open class IOStream: NSObject {
     }
 
     #if os(iOS) || os(macOS) || os(tvOS)
-    /// Specifiet the device torch indicating wheter the turn on(TRUE) or not(FALSE).
+    /// Specifies the device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public var torch: Bool {
         get {
             return lockQueue.sync { self.mixer.videoIO.torch }
@@ -463,6 +471,24 @@ open class IOStream: NSObject {
             mixer.startRunning()
         default:
             break
+        }
+    }
+
+    /// Starts capturing from input devices.
+    ///
+    /// Internally, it is called either when the view is attached or just before publishing. In other cases, please call this method if you want to manually start the capture.
+    @available(tvOS 17.0, *)
+    public func startCapturing() {
+        lockQueue.async {
+            self.mixer.session.startRunning()
+        }
+    }
+
+    /// Stops capturing from input devices.
+    @available(tvOS 17.0, *)
+    public func stopCapturing() {
+        lockQueue.async {
+            self.mixer.session.stopRunning()
         }
     }
 
