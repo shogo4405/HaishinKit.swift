@@ -13,6 +13,9 @@ public class PiPHKView: UIView {
         AVSampleBufferDisplayLayer.self
     }
 
+    /// Specifies how the video is displayed with in track.
+    public var track = UInt8.max
+
     /// The view’s Core Animation layer used for rendering.
     override public var layer: AVSampleBufferDisplayLayer {
         super.layer as! AVSampleBufferDisplayLayer
@@ -89,6 +92,8 @@ public class PiPHKView: NSView {
     }
 }
 
+#endif
+
 extension PiPHKView: MediaMixerOutput {
     // MARK: MediaMixerOutput
     nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
@@ -125,5 +130,3 @@ extension PiPHKView: HKStreamOutput {
         }
     }
 }
-
-#endif

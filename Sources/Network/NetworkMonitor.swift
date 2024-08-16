@@ -1,10 +1,14 @@
 import Foundation
 
+/// An objec thatt provides the RTMPConnection, SRTConnection's monitoring events.
 public final actor NetworkMonitor {
+    /// The error domain codes.
     public enum Error: Swift.Error {
+        /// An invalid internal stare.
         case invalidState
     }
 
+    /// An asynchronous sequence for network monitoring  event.
     public var event: AsyncStream<NetworkMonitorEvent> {
         let (stream, continuation) = AsyncStream<NetworkMonitorEvent>.makeStream()
         self.continuation = continuation
@@ -21,11 +25,12 @@ public final actor NetworkMonitor {
     private var continuation: AsyncStream<NetworkMonitorEvent>.Continuation?
     private weak var reporter: (any NetworkTransportReporter)?
 
+    /// Creates a new instance.
     public init(_ reporter: some NetworkTransportReporter) {
         self.reporter = reporter
     }
 
-    public func collect() async throws -> NetworkMonitorEvent {
+    private func collect() async throws -> NetworkMonitorEvent {
         guard let report = await reporter?.makeNetworkTransportReport() else {
             throw Error.invalidState
         }

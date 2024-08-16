@@ -119,7 +119,9 @@ extension AudioCaptureUnit: AudioMixerDelegate {
     }
 
     func audioMixer(_ audioMixer: some AudioMixer, didOutput audioBuffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        continutation?.yield((audioBuffer, when))
+        if let audioBuffer = audioBuffer.clone() {
+            continutation?.yield((audioBuffer, when))
+        }
         monitor.append(audioBuffer, when: when)
     }
 }

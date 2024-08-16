@@ -212,6 +212,9 @@ public actor RTMPStream {
 
     private var audioFormat: AVAudioFormat? {
         didSet {
+            guard audioFormat != oldValue else {
+                return
+            }
             switch readyState {
             case .publishing:
                 guard let message = RTMPAudioMessage(streamId: id, timestamp: 0, formatDescription: audioFormat?.formatDescription) else {
@@ -241,8 +244,6 @@ public actor RTMPStream {
                     return
                 }
                 doOutput(oldValue == nil ? .zero : .one, chunkStreamId: .video, message: message)
-            case .playing:
-                break
             default:
                 break
             }
@@ -277,6 +278,8 @@ public actor RTMPStream {
             }
         }
         do {
+            audioFormat = nil
+            videoFormat = nil
             let response = try await withCheckedThrowingContinuation { continuation in
                 readyState = .play
                 expectedResponse = Code.playStart
@@ -359,6 +362,8 @@ public actor RTMPStream {
             }
         }
         do {
+            audioFormat = nil
+            videoFormat = nil
             let response = try await withCheckedThrowingContinuation { continuation in
                 readyState = .publish
                 expectedResponse = Code.publishStart
@@ -385,6 +390,7 @@ public actor RTMPStream {
             startedAt = .init()
             metadata = makeMetadata()
             try? send("@setDataFrame", arguments: "onMetaData", metadata)
+            readyState = .publishing
             Task {
                 for await audio in mediaCodec.audio where mediaCodec.isRunning {
                     append(audio.0, when: audio.1)
@@ -395,7 +401,6 @@ public actor RTMPStream {
                     append(video)
                 }
             }
-            readyState = .publishing
             return response
         } catch {
             readyState = .idle
@@ -769,6 +774,7 @@ extension RTMPStream: HKStream {
             switch audioBuffer {
             case let audioBuffer as AVAudioCompressedBuffer:
                 let timedelta = audioTimestamp.update(when)
+                audioFormat = audioBuffer.format
                 guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
                     return
                 }

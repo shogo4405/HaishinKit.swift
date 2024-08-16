@@ -7,7 +7,7 @@ struct ContentView: View {
 
     init() {
         viewModel.config()
-        lfView = PiPHKSwiftUiView(rtmpStream: $viewModel.rtmpStream)
+        lfView = PiPHKSwiftUiView(rtmpStream: $viewModel.stream)
     }
 
     var body: some View {

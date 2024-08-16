@@ -70,6 +70,15 @@ extension AVAudioPCMBuffer {
         return true
     }
 
+    final func clone() -> AVAudioPCMBuffer? {
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCapacity) else {
+            return nil
+        }
+        buffer.frameLength = frameLength
+        buffer.copy(self)
+        return buffer
+    }
+
     @discardableResult
     @inlinable
     final func muted(_ isMuted: Bool) -> AVAudioPCMBuffer {

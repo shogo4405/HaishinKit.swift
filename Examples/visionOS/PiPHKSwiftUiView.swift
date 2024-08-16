@@ -12,6 +12,8 @@ struct PiPHKSwiftUiView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: PiPHKView, context: Context) {
-        piphkView.attachStream(rtmpStream)
+        Task { @MainActor in
+            await rtmpStream.addOutput(piphkView)
+        }
     }
 }

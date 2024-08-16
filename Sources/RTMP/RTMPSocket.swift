@@ -36,14 +36,14 @@ final actor RTMPSocket {
         }
     }
     private var outputs: AsyncStream<Data>.Continuation?
-    private var qualityOfService: HKDispatchQoS = .userInitiated
+    private var qualityOfService: DispatchQoS = .userInitiated
     private var continuation: CheckedContinuation<Void, any Swift.Error>?
-    private lazy var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPSocket.network", qos: qualityOfService.dispatchOos)
+    private lazy var networkQueue = DispatchQueue(label: "com.haishinkit.HaishinKit.RTMPSocket.network", qos: qualityOfService)
 
     init() {
     }
 
-    init(qualityOfService: HKDispatchQoS, securityLevel: StreamSocketSecurityLevel) {
+    init(qualityOfService: DispatchQoS, securityLevel: StreamSocketSecurityLevel) {
         self.qualityOfService = qualityOfService
         self.securityLevel = securityLevel
     }
@@ -58,11 +58,14 @@ final actor RTMPSocket {
         do {
             let connection = NWConnection(to: NWEndpoint.hostPort(host: .init(name), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
             self.connection = connection
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) -> Void in
-                self.continuation = continuation
+            try await withCheckedThrowingContinuation { (checkedContinuation: CheckedContinuation<Void, Swift.Error>) -> Void in
+                self.continuation = checkedContinuation
                 Task {
                     try? await Task.sleep(nanoseconds: timeout * 1_000_000_000)
-                    self.continuation?.resume(throwing: Error.connectionTimedOut)
+                    guard let continuation else {
+                        return
+                    }
+                    continuation.resume(throwing: Error.connectionTimedOut)
                     self.continuation = nil
                     close()
                 }
@@ -180,7 +183,7 @@ final actor RTMPSocket {
                 continuation.resume(throwing: Error.invalidState)
                 return
             }
-            connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC, completion: { content, _, _, error in
+            connection.receive(minimumIncompleteLength: 0, maximumLength: windowSizeC) { content, _, _, error in
                 if let error {
                     continuation.resume(throwing: error)
                     return
@@ -190,7 +193,7 @@ final actor RTMPSocket {
                 } else {
                     continuation.resume(throwing: Error.endOfStream)
                 }
-            })
+            }
         }
     }
 }

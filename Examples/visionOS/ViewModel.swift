@@ -4,58 +4,38 @@ import HaishinKit
 final class ViewModel: ObservableObject {
     let maxRetryCount: Int = 5
 
-    private var rtmpConnection = RTMPConnection()
-    @Published var rtmpStream: RTMPStream!
+    private var connection = RTMPConnection()
+    @Published var stream: RTMPStream!
     private var retryCount = 0
 
     func config() {
-        rtmpStream = RTMPStream(connection: rtmpConnection)
+        stream = RTMPStream(connection: connection)
     }
 
     func unregisterForPublishEvent() {
-        rtmpStream.close()
+        Task {
+            try await stream.close()
+        }
     }
 
     func startPlaying() {
-        logger.info(Preference.default.uri!)
-        rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-        rtmpConnection.connect(Preference.default.uri!)
+        Task {
+            do {
+                let response = try await connection.connect(Preference.default.uri ?? "")
+                try await stream.play(Preference.default.streamName)
+            } catch RTMPConnection.Error.requestFailed(let response) {
+                logger.warn(response)
+            } catch RTMPStream.Error.requestFailed(let response) {
+                logger.warn(response)
+            } catch {
+                logger.warn(error)
+            }
+        }
     }
 
     func stopPlaying() {
-        rtmpConnection.close()
-        rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-    }
-
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard let data: AMFObject = e.data as? AMFObject, let code: String = data["code"] as? String else {
-            return
+        Task {
+            try await connection.close()
         }
-        print(code)
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            retryCount = 0
-            rtmpStream.play(Preference.default.streamName!)
-        // sharedObject!.connect(rtmpConnection)
-        case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
-            guard retryCount <= maxRetryCount else {
-                return
-            }
-            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
-            rtmpConnection.connect(Preference.default.uri!)
-            retryCount += 1
-        default:
-            break
-        }
-    }
-
-    @objc
-    private func rtmpErrorHandler(_ notification: Notification) {
-        logger.error(notification)
-        rtmpConnection.connect(Preference.default.uri!)
     }
 }

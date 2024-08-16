@@ -296,7 +296,6 @@
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFC51FE2AAB420700014428 /* AudioMixerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* AudioMixerTrack.swift */; };
 		BCFC607E2C3166BA00E938C3 /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC607D2C3166BA00E938C3 /* RTMPSocket.swift */; };
-		BCFC60A32C35302A00E938C3 /* HKDispatchQoS.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC60A22C35302A00E938C3 /* HKDispatchQoS.swift */; };
 		BCFD4FC12C62471300119874 /* ChromaKeyProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFD4FC02C62471300119874 /* ChromaKeyProcessor.swift */; };
 		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
@@ -761,7 +760,6 @@
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
 		BCFC51FD2AAB420700014428 /* AudioMixerTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerTrack.swift; sourceTree = "<group>"; };
 		BCFC607D2C3166BA00E938C3 /* RTMPSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPSocket.swift; sourceTree = "<group>"; };
-		BCFC60A22C35302A00E938C3 /* HKDispatchQoS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKDispatchQoS.swift; sourceTree = "<group>"; };
 		BCFD4FC02C62471300119874 /* ChromaKeyProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChromaKeyProcessor.swift; sourceTree = "<group>"; };
 		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -898,7 +896,6 @@
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				29B876671CD70AB300FC07DA /* DataConvertible.swift */,
 				2976A4851D4903C300B53EF2 /* DeviceUtil.swift */,
-				BCFC60A22C35302A00E938C3 /* HKDispatchQoS.swift */,
 				2942424C1CF4C01300D65DCB /* MD5.swift */,
 				2942A4F721A9418A004E1BEE /* Runner.swift */,
 				BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */,
@@ -1901,7 +1898,6 @@
 				29B876841CD70AE800FC07DA /* AVCDecoderConfigurationRecord.swift in Sources */,
 				296242621D8DB86500C451A3 /* TSWriter.swift in Sources */,
 				BCABED102BDAA3AB00CC7E73 /* AVAudioUtil.swift in Sources */,
-				BCFC60A32C35302A00E938C3 /* HKDispatchQoS.swift in Sources */,
 				29B876871CD70AE800FC07DA /* TSProgram.swift in Sources */,
 				BC0B5B122BE8CFA800D83F8E /* CMVideoDimention+Extension.swift in Sources */,
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,

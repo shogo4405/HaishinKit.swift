@@ -146,7 +146,7 @@ public actor RTMPConnection {
     /// The outgoing RTMPChunkSize.
     public let chunkSize: Int
     /// The dispatchQos for socket.
-    public let qualityOfService: HKDispatchQoS
+    public let qualityOfService: DispatchQoS
     /// The URI passed to the Self.connect() method.
     public private(set) var uri: URL?
     /// The instance connected to server(true) or not(false).
@@ -200,7 +200,7 @@ public actor RTMPConnection {
         timeout: Int = RTMPConnection.defaultTimeout,
         requestTimeout: UInt64 = RTMPConnection.defaultRequestTimeout,
         chunkSize: Int = RTMPConnection.defaultChunkSizeS,
-        qualityOfService: HKDispatchQoS = .userInitiated) {
+        qualityOfService: DispatchQoS = .userInitiated) {
         self.swfUrl = swfUrl
         self.pageUrl = pageUrl
         self.flashVer = flashVer
@@ -393,7 +393,6 @@ public actor RTMPConnection {
                 try await close()
                 break
             }
-            networkMonitor = await socket?.makeNetworkMonitor()
             await networkMonitor?.startRunning()
             doOutput(.zero, chunkStreamId: .command, message: message)
         case .handshakeDone:
