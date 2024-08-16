@@ -54,12 +54,12 @@ public class MTHKView: MTKView {
             let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) {
             renderCommandEncoder.endEncoding()
         }
-        guard let imageBuffer = currentSampleBuffer?.imageBuffer else {
+        guard let displayImage = try? currentSampleBuffer?.imageBuffer?.makeCIImage() else {
             commandBuffer.present(currentDrawable)
             commandBuffer.commit()
             return
         }
-        let displayImage = CIImage(cvPixelBuffer: imageBuffer)
+
         var scaleX: CGFloat = 0
         var scaleY: CGFloat = 0
         var translationX: CGFloat = 0

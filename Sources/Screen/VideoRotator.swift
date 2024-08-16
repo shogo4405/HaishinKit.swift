@@ -55,9 +55,9 @@ public final class VideoRotator {
         guard let buffer = sampleBuffer.imageBuffer else {
             return .failure(.noImageBuffer)
         }
-        buffer.lockBaseAddress()
+        try? buffer.lockBaseAddress()
         defer {
-            buffer.unlockBaseAddress()
+            try? buffer.unlockBaseAddress()
         }
         var orientation: CGImagePropertyOrientation?
         orientation = sampleBuffer.orientation

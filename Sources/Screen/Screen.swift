@@ -159,9 +159,9 @@ public final class Screen: ScreenObjectContainerConvertible {
     }
 
     private func render(_ sampleBuffer: CMSampleBuffer) -> CMSampleBuffer {
-        sampleBuffer.imageBuffer?.lockBaseAddress(Self.lockFrags)
+        try? sampleBuffer.imageBuffer?.lockBaseAddress(Self.lockFrags)
         defer {
-            sampleBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
+            try? sampleBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
         }
         renderer.setTarget(sampleBuffer.imageBuffer)
         if let dimensions = sampleBuffer.formatDescription?.dimensions {

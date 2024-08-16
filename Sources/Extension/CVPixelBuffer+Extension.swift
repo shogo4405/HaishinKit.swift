@@ -1,10 +1,12 @@
 import Accelerate
+import CoreImage
 import CoreVideo
 import Foundation
 
 extension CVPixelBuffer {
-    enum Error: Swift.Error {
+    public enum Error: Swift.Error {
         case failedToLock(_ status: CVReturn)
+        case failedToUnlock(_ status: CVReturn)
         case unsupportedFormat(_ format: OSType)
     }
 
@@ -98,6 +100,31 @@ extension CVPixelBuffer {
         }
     }
 
+    @inlinable
+    @inline(__always)
+    func lockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) throws {
+        let status = CVPixelBufferLockBaseAddress(self, lockFlags)
+        guard status == kCVReturnSuccess else {
+            throw Error.failedToLock(status)
+        }
+    }
+
+    @inlinable
+    @inline(__always)
+    func unlockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) throws {
+        let status = CVPixelBufferUnlockBaseAddress(self, lockFlags)
+        guard status == kCVReturnSuccess else {
+            throw Error.failedToUnlock(status)
+        }
+    }
+
+    func makeCIImage() throws -> CIImage {
+        try lockBaseAddress(.readOnly)
+        let result = CIImage(cvPixelBuffer: self)
+        try unlockBaseAddress(.readOnly)
+        return result
+    }
+
     @inline(__always)
     func mutate(_ lockFlags: CVPixelBufferLockFlags, lambda: (CVPixelBuffer) throws -> Void) throws {
         let status = CVPixelBufferLockBaseAddress(self, lockFlags)
@@ -108,20 +135,6 @@ extension CVPixelBuffer {
             CVPixelBufferUnlockBaseAddress(self, lockFlags)
         }
         try lambda(self)
-    }
-
-    @inlinable
-    @inline(__always)
-    @discardableResult
-    func lockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) -> CVReturn {
-        return CVPixelBufferLockBaseAddress(self, lockFlags)
-    }
-
-    @inlinable
-    @inline(__always)
-    @discardableResult
-    func unlockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) -> CVReturn {
-        return CVPixelBufferUnlockBaseAddress(self, lockFlags)
     }
 
     @inlinable
