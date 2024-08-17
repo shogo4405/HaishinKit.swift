@@ -10,7 +10,7 @@ import Foundation
 /// final class MonochromeEffect: VideoEffect {
 ///     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
 ///
-///     override func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
+///     func execute(_ image: CIImage) -> CIImage {
 ///         guard let filter: CIFilter = filter else {
 ///             return image
 ///         }
@@ -21,8 +21,7 @@ import Foundation
 ///     }
 /// }
 /// ```
-@ScreenActor
 public protocol VideoEffect: AnyObject {
     /// Executes to apply a video effect.
-    func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage
+    func execute(_ image: CIImage) -> CIImage
 }

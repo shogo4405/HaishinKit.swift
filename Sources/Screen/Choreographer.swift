@@ -107,92 +107,56 @@ protocol Choreographer: Runner {
     func clear()
 }
 
-final class DisplayLinkChoreographer: NSObject, Choreographer {
-    private static let duration = 0.0
+final class DisplayLinkChoreographer: NSObject {
+    private static let currentTime = 0.0
     private static let preferredFramesPerSecond = 0
 
-    var isPaused: Bool {
-        get {
-            displayLink?.isPaused ?? true
-        }
-        set {
-            displayLink?.isPaused = newValue
+    var updateFrames: AsyncStream<TimeInterval> {
+        AsyncStream { continuation in
+            self.continutation = continuation
         }
     }
-    weak var delegate: (any ChoreographerDelegate)?
-    private(set) var isRunning = false
-    var preferredFramesPerSecond = DisplayLinkChoreographer.preferredFramesPerSecond
-    private var duration: Double = DisplayLinkChoreographer.duration
-    private var displayLink: DisplayLink? {
+    var preferredFramesPerSecond = DisplayLinkChoreographer.preferredFramesPerSecond {
         didSet {
-            oldValue?.invalidate()
-            guard let displayLink = displayLink else {
+            guard preferredFramesPerSecond != oldValue else {
                 return
             }
-            displayLink.isPaused = true
-            displayLink.preferredFramesPerSecond = preferredFramesPerSecond
-            displayLink.add(to: .main, forMode: .common)
+            displayLink?.preferredFramesPerSecond = preferredFramesPerSecond
         }
     }
-
-    func clear() {
-        duration = Self.duration
+    private(set) var isRunning = false
+    private var displayLink: DisplayLink? {
+        didSet {
+            displayLink?.preferredFramesPerSecond = preferredFramesPerSecond
+            displayLink?.isPaused = false
+            displayLink?.add(to: .main, forMode: .common)
+        }
     }
+    private var currentTime: TimeInterval = DisplayLinkChoreographer.currentTime
+    private var continutation: AsyncStream<TimeInterval>.Continuation?
 
     @objc
     private func update(displayLink: DisplayLink) {
-        delegate?.choreographer(self, didFrame: duration)
-        duration += displayLink.duration
+        continutation?.yield(currentTime)
+        currentTime += displayLink.duration
     }
 }
 
 extension DisplayLinkChoreographer: Runner {
     func startRunning() {
+        guard !isRunning else {
+            return
+        }
         displayLink = DisplayLink(target: self, selector: #selector(self.update(displayLink:)))
         isRunning = true
     }
 
     func stopRunning() {
-        displayLink = nil
-        duration = DisplayLinkChoreographer.duration
-        isRunning = false
-    }
-}
-
-final class AsyncDisplayLink: NSObject, @unchecked Sendable {
-    private var displayLink: DisplayLink?
-    private let handler: (TimeInterval) -> Void
-    private var currentTime: TimeInterval = 0.0
-
-    init(_ handler: @escaping (TimeInterval) -> Void) {
-        self.handler = handler
-        super.init()
-        self.displayLink = DisplayLink(target: self, selector: #selector(update(displayLink:)))
-        displayLink?.isPaused = false
-        displayLink?.add(to: .main, forMode: .common)
-    }
-
-    func stop() {
-        currentTime = 0.0
-        displayLink?.invalidate()
-    }
-
-    @objc
-    private func update(displayLink: DisplayLink) {
-        handler(currentTime)
-        currentTime += displayLink.duration
-    }
-}
-
-extension AsyncDisplayLink {
-    static var updateFrames: AsyncStream<TimeInterval> {
-        AsyncStream { continuation in
-            let displayLink = AsyncDisplayLink { currentTime in
-                continuation.yield(currentTime)
-            }
-            continuation.onTermination = { _ in
-                displayLink.stop()
-            }
+        guard isRunning else {
+            return
         }
+        displayLink = nil
+        currentTime = DisplayLinkChoreographer.currentTime
+        isRunning = false
     }
 }

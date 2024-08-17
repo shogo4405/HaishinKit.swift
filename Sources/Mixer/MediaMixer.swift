@@ -91,6 +91,8 @@ public final actor MediaMixer {
     private lazy var videoIO = VideoCaptureUnit(session)
     private lazy var session = CaptureSession()
     private var cancellables: Set<AnyCancellable> = []
+    @ScreenActor
+    private lazy var displayLink = DisplayLinkChoreographer()
 
     /// Creates a new instance.
     public init() {
@@ -201,6 +203,9 @@ public final actor MediaMixer {
     /// Specifies the frame rate of a device capture.
     public func setFrameRate(_ frameRate: Float64) {
         videoIO.frameRate = frameRate
+        Task { @ScreenActor in
+            displayLink.preferredFramesPerSecond = Int(frameRate)
+        }
     }
 
     /// Specifies the audio mixer settings.
@@ -301,7 +306,9 @@ extension MediaMixer: AsyncRunner {
             }
         }
         Task { @ScreenActor in
-            for await _ in AsyncDisplayLink.updateFrames where await isRunning {
+            displayLink.preferredFramesPerSecond = await Int(frameRate)
+            displayLink.startRunning()
+            for await _ in displayLink.updateFrames where await isRunning {
                 guard let buffer = screen.makeSampleBuffer() else {
                     continue
                 }
@@ -335,5 +342,8 @@ extension MediaMixer: AsyncRunner {
         isRunning = false
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
+        Task { @ScreenActor in
+            displayLink.stopRunning()
+        }
     }
 }

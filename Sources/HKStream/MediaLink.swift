@@ -15,6 +15,7 @@ public final actor MediaLink {
         }
     }
     private var presentationTimeStampOrigin: CMTime = .invalid
+    private lazy var displayLink = DisplayLinkChoreographer()
     private weak var audioPlayer: AudioPlayerNode?
 
     /// Creates a new instance.
@@ -52,8 +53,9 @@ extension MediaLink: AsyncRunner {
             return
         }
         isRunning = true
+        displayLink.startRunning()
         Task {
-            for await currentTime in AsyncDisplayLink.updateFrames where isRunning {
+            for await currentTime in displayLink.updateFrames where isRunning {
                 guard let storage else {
                     continue
                 }
@@ -83,6 +85,7 @@ extension MediaLink: AsyncRunner {
             return
         }
         continutation = nil
+        displayLink.stopRunning()
         presentationTimeStampOrigin = .invalid
         try? storage?.reset()
         isRunning = false

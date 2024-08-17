@@ -27,7 +27,7 @@ struct RTMPTimestamp<T: RTMPTimeConvertible> {
                 timedelta += 1
             }
             updatedAt = value.seconds
-            return UInt32(abs(timedelta))
+            return 0.0 <= timedelta ? UInt32(timedelta) : UInt32.min
         }
     }
 

@@ -11,7 +11,7 @@ public class MTHKView: MTKView {
     /// Specifies how the video is displayed with in track.
     public var track = UInt8.max
 
-    private var currentSampleBuffer: CMSampleBuffer?
+    private var displayImage: CIImage?
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
@@ -54,7 +54,7 @@ public class MTHKView: MTKView {
             let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) {
             renderCommandEncoder.endEncoding()
         }
-        guard let displayImage = try? currentSampleBuffer?.imageBuffer?.makeCIImage() else {
+        guard let displayImage else {
             commandBuffer.present(currentDrawable)
             commandBuffer.commit()
             return
@@ -106,7 +106,7 @@ extension MTHKView: MediaMixerOutput {
             guard self.track == track else {
                 return
             }
-            currentSampleBuffer = sampleBuffer
+            displayImage = try? sampleBuffer.imageBuffer?.makeCIImage()
             #if os(macOS)
             self.needsDisplay = true
             #else
@@ -123,7 +123,7 @@ extension MTHKView: HKStreamOutput {
 
     nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { @MainActor in
-            currentSampleBuffer = video
+            displayImage = try? video.imageBuffer?.makeCIImage()
             #if os(macOS)
             self.needsDisplay = true
             #else

@@ -266,7 +266,7 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
             return renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
         } else {
             for effect in effects {
-                image = effect.execute(image, info: sampleBuffer)
+                image = effect.execute(image)
             }
             return renderer.context.createCGImage(image, from: videoGravity.region(bounds, image: image.extent))
         }

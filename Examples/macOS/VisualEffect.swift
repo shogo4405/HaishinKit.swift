@@ -6,8 +6,8 @@ import HaishinKit
 final class MonochromeEffect: VideoEffect {
     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
 
-    func execute(_ image: CIImage, info: CMSampleBuffer?) -> CIImage {
-        guard let filter: CIFilter = filter else {
+    func execute(_ image: CIImage) -> CIImage {
+        guard let filter else {
             return image
         }
         filter.setValue(image, forKey: "inputImage")

@@ -104,10 +104,11 @@ extension PiPHKView: MediaMixerOutput {
             guard self.track == track else {
                 return
             }
-            (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
             #if os(macOS)
+            (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
             self.needsDisplay = true
             #else
+            (layer as AVSampleBufferDisplayLayer).enqueue(sampleBuffer)
             self.setNeedsDisplay()
             #endif
         }
@@ -121,10 +122,11 @@ extension PiPHKView: HKStreamOutput {
 
     nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { @MainActor in
-            (layer as? AVSampleBufferDisplayLayer)?.enqueue(video)
             #if os(macOS)
+            (layer as? AVSampleBufferDisplayLayer)?.enqueue(video)
             self.needsDisplay = true
             #else
+            (layer as AVSampleBufferDisplayLayer).enqueue(video)
             self.setNeedsDisplay()
             #endif
         }
