@@ -126,7 +126,8 @@ public final actor MediaMixer {
     #if os(iOS) || os(macOS) || os(tvOS)
     /// Attaches an audio device.
     ///
-    /// You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
+    /// - Attention: You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
+    ///
     /// ```
     /// mixer.setMultiTrackAudioMixingEnabled(true)
     /// var audios = AVCaptureDevice.devices(for: .audio)
@@ -158,12 +159,12 @@ public final actor MediaMixer {
         try configuration(unit)
     }
 
-    /// Specifies the device torch indicating wheter the turn on(TRUE) or not(FALSE).
+    /// Sets the device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public func setTorchEnabled(_ torchEnabled: Bool) {
         videoIO.torch = torchEnabled
     }
 
-    /// Specifies the sessionPreset for the AVCaptureSession.
+    /// Sets the sessionPreset for the AVCaptureSession.
     @available(tvOS 17.0, *)
     public func setSessionPreset(_ sessionPreset: AVCaptureSession.Preset) {
         session.sessionPreset = sessionPreset
@@ -171,7 +172,7 @@ public final actor MediaMixer {
     #endif
 
     #if os(iOS) || os(macOS)
-    /// Specifies the video orientation for stream.
+    /// Sets the video orientation for stream.
     public func setVideoOrientation(_ videoOrientation: AVCaptureVideoOrientation) {
         videoIO.videoOrientation = videoOrientation
     }
@@ -192,7 +193,7 @@ public final actor MediaMixer {
         }
     }
 
-    /// Specifies the video mixier settings.
+    /// Sets the video mixier settings.
     public func setVideoMixerSettings(_ settings: VideoMixerSettings) {
         videoIO.mixerSettings = settings
         Task { @ScreenActor in
@@ -200,7 +201,7 @@ public final actor MediaMixer {
         }
     }
 
-    /// Specifies the frame rate of a device capture.
+    /// Sets the frame rate of a device capture.
     public func setFrameRate(_ frameRate: Float64) {
         videoIO.frameRate = frameRate
         Task { @ScreenActor in
@@ -208,26 +209,26 @@ public final actor MediaMixer {
         }
     }
 
-    /// Specifies the audio mixer settings.
+    /// Sets the audio mixer settings.
     public func setAudioMixerSettings(_ settings: AudioMixerSettings) {
         audioIO.mixerSettings = settings
     }
 
-    /// Specifies the audio monitoring enabled or not.
+    /// Sets the audio monitoring enabled or not.
     public func setMonitoringEnabled(_ monitoringEnabled: Bool) {
         audioIO.isMonitoringEnabled = monitoringEnabled
     }
 
     #if os(iOS) || os(tvOS)
     /// Specifies the AVCaptureMultiCamSession enabled.
-    /// Warning: If there is a possibility of using multiple cameras, please set it to true initially.
+    /// - Attention: If there is a possibility of using multiple cameras, please set it to true initially.
     public func setMultiCamSessionEnabled(_ multiCamSessionEnabled: Bool) {
         session.isMultiCamSessionEnabled = multiCamSessionEnabled
     }
     #endif
 
     /// Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
-    /// Warning: If there is a possibility of this feature, please set it to true initially.
+    /// - Attention: If there is a possibility of this feature, please set it to true initially.
     public func setMultiTrackAudioMixingEnabled(_ multiTrackAudioMixingEnabled: Bool) {
         audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
     }
@@ -242,6 +243,7 @@ public final actor MediaMixer {
     }
 
     /// Configurations for the AVCaptureSession.
+    /// - Attention: Internally, there is no need for developers to call beginConfiguration() and func commitConfiguration() as they are called automatically.
     @available(tvOS 17.0, *)
     public func configuration(_ lambda: @Sendable (_ session: AVCaptureSession) throws -> Void) rethrows {
         try session.configuration(lambda)

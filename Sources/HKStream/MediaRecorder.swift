@@ -8,6 +8,7 @@ import SwiftPMSupport
 public actor MediaRecorder {
     /// The MediaRecorder error domain codes.
     public enum Error: Swift.Error {
+        /// An invalid internal stare.
         case invalidState
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: any Swift.Error)
@@ -32,8 +33,8 @@ public actor MediaRecorder {
             AVVideoWidthKey: 0
         ]
     ]
-    /// Specifies the file name. nil will generate a unique file name.
-    public var fileName: String?
+    /// The recording file name.
+    public private(set) var fileName: String?
     /// The running indicies whether recording or not.
     public private(set) var isRecording = false
     private var isReadyForStartWriting: Bool {
@@ -63,7 +64,8 @@ public actor MediaRecorder {
     public init() {
     }
 
-    public func startRunning(_ settings: [AVMediaType: [String: Any]]) async throws {
+    /// Starts a recording.
+    public func startRecording(_ filaName: String?, settings: [AVMediaType: [String: Any]]) async throws {
         guard !isRecording else {
             throw Error.invalidState
         }
@@ -75,7 +77,8 @@ public actor MediaRecorder {
         isRecording = true
     }
 
-    public func stopRecoding() async throws -> AVAssetWriter {
+    /// Stops a recording.
+    public func stopRecording() async throws -> AVAssetWriter {
         guard isRecording else {
             throw Error.invalidState
         }
