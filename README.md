@@ -8,7 +8,7 @@
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
-* [API Documentation](https://docs.haishinkit.com/swift/1.9.2/)
+* [API Documentation](https://docs.haishinkit.com/swift/latest/)
 
 ## 💖 Sponsors
 <p align="center">
@@ -301,7 +301,7 @@ stream.configuration { session in
 ```
 
 ### 🔊 Audio
-#### [Capture](https://docs.haishinkit.com/swift/1.9.2/Classes/IOAudioCaptureUnit.html)
+#### [Capture](https://docs.haishinkit.com/swift/latest/Classes/IOAudioCaptureUnit.html)
 Specifies the capture capture settings.
 ```swift
 let front = AVCaptureDevice.default(for: .audio)
@@ -309,7 +309,7 @@ stream.attachAudio(front, track: 0) { audioUnit, error in
 }
 ```
 
-#### [AudioMixerSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/IOAudioMixerSettings.html)
+#### [AudioMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/IOAudioMixerSettings.html)
 If you want to mix multiple audio tracks, please enable the feature flag.
 ```swift
 stream.isMultiTrackAudioMixingEnabled = true
@@ -334,7 +334,7 @@ stream.audioMixerSettings.tracks = [
 ]
 ```
 
-#### [AudioCodecSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/AudioCodecSettings.html)
+#### [AudioCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/AudioCodecSettings.html)
 ```swift
 /// Specifies the bitRate of audio output.
 stream.audioSettings.bitrate = 64 * 1000
@@ -345,7 +345,7 @@ stream.audioSettings.downmix = true
 ```
 
 ### 🎥 Video
-#### [Capture](https://docs.haishinkit.com/swift/1.9.2/Classes/IOVideoCaptureUnit.html)
+#### [Capture](https://docs.haishinkit.com/swift/latest/Classes/IOVideoCaptureUnit.html)
 Specifies the video capture settings.
 ```swift
 let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
@@ -356,7 +356,7 @@ stream.attachCamera(front, track: 0) { videoUnit, error in
 }
 ```
 
-#### [VideoMixerSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/IOVideoMixerSettings.html)
+#### [VideoMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/IOVideoMixerSettings.html)
 ```swift
 /// Specifies the image rendering mode.
 stream.videoMixerSettings.mode = .passthrough or .offscreen
@@ -366,7 +366,7 @@ stream.videoMixerSettings.isMuted = false
 stream.videoMixerSettings.mainTrack = 0
 ```
 
-#### [VideoCodecSettings](https://docs.haishinkit.com/swift/1.9.2/Structs/VideoCodecSettings.html)
+#### [VideoCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/VideoCodecSettings.html)
 ```swift
 stream.videoSettings = .init(
   videoSize: .init(width: 854, height: 480),
