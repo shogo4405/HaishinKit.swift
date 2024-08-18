@@ -1,8 +1,8 @@
 @preconcurrency import AVFoundation
 import Foundation
 
-public final actor AudioPlayerNode {
-    public private(set) var isRunning = false
+final actor AudioPlayerNode {
+    private(set) var isRunning = false
 
     var currentTime: TimeInterval {
         if playerNode.isPlaying {
@@ -37,7 +37,7 @@ public final actor AudioPlayerNode {
         self.playerNode = playerNode
     }
 
-    public func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) async {
+    func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) async {
         format = audioBuffer.format
         guard let audioBuffer = audioBuffer as? AVAudioPCMBuffer, await player?.isConnected(self) == true else {
             return
@@ -62,7 +62,7 @@ public final actor AudioPlayerNode {
 
 extension AudioPlayerNode: AsyncRunner {
     // MARK: AsyncRunner
-    public func startRunning() {
+    func startRunning() {
         guard !isRunning else {
             return
         }
@@ -70,7 +70,7 @@ extension AudioPlayerNode: AsyncRunner {
         isRunning = true
     }
 
-    public func stopRunning() {
+    func stopRunning() {
         guard isRunning else {
             return
         }

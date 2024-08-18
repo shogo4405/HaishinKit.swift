@@ -50,17 +50,16 @@ public actor SRTConnection {
             throw Error.unsupportedUri(uri)
         }
         do {
-            try await withCheckedThrowingContinuation { continuation in
+            let options = SRTSocketOption.from(uri: uri)
+            let addr = sockaddr_in(mode.host(host), port: UInt16(port))
+            let socket = SRTSocket()
+            self.socket = socket
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Swift.Error>) in
                 Task {
                     do {
-                        let options = SRTSocketOption.from(uri: uri)
-                        let addr = sockaddr_in(mode.host(host), port: UInt16(port))
-                        socket = .init()
-                        try await socket?.open(addr, mode: mode, options: options)
+                        try await socket.open(addr, mode: mode, options: options)
                         self.uri = uri
-                        connected = await socket?.status == SRTS_CONNECTED
-                        networkMonitor = await socket?.makeNetworkMonitor()
-                        await networkMonitor?.startRunning()
+                        connected = await socket.status == SRTS_CONNECTED
                         continuation.resume()
                     } catch {
                         continuation.resume(throwing: error)
@@ -68,9 +67,9 @@ public actor SRTConnection {
                 }
             }
             Task {
-                guard let networkMonitor else {
-                    return
-                }
+                let networkMonitor = await socket.makeNetworkMonitor()
+                self.networkMonitor = networkMonitor
+                await networkMonitor.startRunning()
                 for await event in await networkMonitor.event {
                     for stream in streams {
                         await stream.dispatch(event)

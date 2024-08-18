@@ -204,10 +204,9 @@ public actor RTMPStream {
     private var expectedResponse: Code?
     private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
     private(set) var id: UInt32 = RTMPStream.defaultID
-    private lazy var mediaLink = MediaLink()
-    private lazy var mediaCodec = MediaCodec()
+    private lazy var player = HKStreamPlayer(self)
+    private lazy var publisher = HKStreamPublisher()
     private weak var connection: RTMPConnection?
-    private weak var audioPlayerNode: AudioPlayerNode?
     private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
     private var audioFormat: AVAudioFormat? {
@@ -285,34 +284,12 @@ public actor RTMPStream {
                 expectedResponse = Code.playStart
                 self.continuation = continuation
                 Task {
+                    await player.startRunning()
                     try? await Task.sleep(nanoseconds: requestTimeout * 1_000_000)
                     self.continuation.map {
                         $0.resume(throwing: Error.requestTimedOut)
                     }
                     self.continuation = nil
-                }
-                mediaCodec.audioSettings.format = .pcm
-                mediaCodec.startRunning()
-                Task {
-                    await mediaLink.startRunning()
-                    for await video in await mediaLink.dequeue where await mediaLink.isRunning {
-                        append(video)
-                    }
-                }
-                Task {
-                    do {
-                        for try await video in mediaCodec.video where mediaCodec.isRunning {
-                            await mediaLink.enqueue(video)
-                        }
-                    } catch {
-                        logger.error(error)
-                    }
-                }
-                Task {
-                    await audioPlayerNode?.startRunning()
-                    for await audio in mediaCodec.audio where mediaCodec.isRunning {
-                        append(audio.0, when: audio.1)
-                    }
                 }
                 doOutput(.zero, chunkStreamId: .command, message: RTMPCommandMessage(
                     streamId: id,
@@ -328,9 +305,8 @@ public actor RTMPStream {
             info.resourceName = name
             return response
         } catch {
-            await mediaLink.stopRunning()
-            await audioPlayerNode?.stopRunning()
-            mediaCodec.stopRunning()
+            Task { await player.stopRunning() }
+            publisher.stopRunning()
             readyState = .idle
             throw error
         }
@@ -386,18 +362,18 @@ public actor RTMPStream {
             }
             info.resourceName = name
             howToPublish = type
-            mediaCodec.startRunning()
+            publisher.startRunning()
             startedAt = .init()
             metadata = makeMetadata()
             try? send("@setDataFrame", arguments: "onMetaData", metadata)
             readyState = .publishing
             Task {
-                for await audio in mediaCodec.audio where mediaCodec.isRunning {
+                for await audio in publisher.audio where publisher.isRunning {
                     append(audio.0, when: audio.1)
                 }
             }
             Task {
-                for try await video in mediaCodec.video where mediaCodec.isRunning {
+                for try await video in publisher.video where publisher.isRunning {
                     append(video)
                 }
             }
@@ -413,9 +389,7 @@ public actor RTMPStream {
         guard readyState == .playing || readyState == .publishing else {
             throw Error.invalidState
         }
-        mediaCodec.stopRunning()
-        await mediaLink.stopRunning()
-        await audioPlayerNode?.stopRunning()
+        publisher.stopRunning()
         return try await withCheckedThrowingContinuation { continutation in
             self.continuation = continutation
             switch readyState {
@@ -427,6 +401,7 @@ public actor RTMPStream {
                 break
             }
             Task {
+                await player.stopRunning()
                 try? await Task.sleep(nanoseconds: requestTimeout * 1_000_000)
                 self.continuation.map {
                     $0.resume(throwing: Error.requestTimedOut)
@@ -625,9 +600,7 @@ public actor RTMPStream {
         guard let fcPublishName, readyState == .publishing else {
             return
         }
-        mediaCodec.stopRunning()
-        await mediaLink.stopRunning()
-        await audioPlayerNode?.stopRunning()
+        publisher.stopRunning()
         async let _ = try? connection?.call("FCUnpublish", arguments: fcPublishName)
         async let _ = try? connection?.call("deleteStream", arguments: id)
     }
@@ -646,7 +619,7 @@ public actor RTMPStream {
             }
             if let audioBuffer {
                 message.copyMemory(audioBuffer)
-                mediaCodec.append(audioBuffer, when: audioTimestamp.value)
+                Task { await player.append(audioBuffer, when: audioTimestamp.value) }
             }
         default:
             break
@@ -664,13 +637,9 @@ public actor RTMPStream {
             case FLVVideoPacketType.sequenceStart.rawValue:
                 videoFormat = message.makeFormatDescription()
             case FLVVideoPacketType.codedFrames.rawValue:
-                if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    mediaCodec.append(sampleBuffer)
-                }
+                Task { await player.append(message, presentationTimeStamp: videoTimestamp.value, formatDesciption: videoFormat) }
             case FLVVideoPacketType.codedFramesX.rawValue:
-                if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    mediaCodec.append(sampleBuffer)
-                }
+                Task { await player.append(message, presentationTimeStamp: videoTimestamp.value, formatDesciption: videoFormat) }
             default:
                 break
             }
@@ -679,9 +648,7 @@ public actor RTMPStream {
             case FLVAVCPacketType.seq.rawValue:
                 videoFormat = message.makeFormatDescription()
             case FLVAVCPacketType.nal.rawValue:
-                if let sampleBuffer = message.makeSampleBuffer(videoTimestamp.value, formatDesciption: videoFormat) {
-                    mediaCodec.append(sampleBuffer)
-                }
+                Task { await player.append(message, presentationTimeStamp: videoTimestamp.value, formatDesciption: videoFormat) }
             default:
                 break
             }
@@ -693,23 +660,23 @@ public actor RTMPStream {
         var metadata: AMFObject = [
             "duration": 0
         ]
-        if mediaCodec.videoInputFormat != nil {
-            metadata["width"] = mediaCodec.videoSettings.videoSize.width
-            metadata["height"] = mediaCodec.videoSettings.videoSize.height
+        if videoFormat != nil {
+            metadata["width"] = publisher.videoSettings.videoSize.width
+            metadata["height"] = publisher.videoSettings.videoSize.height
             #if os(iOS) || os(macOS) || os(tvOS)
             // metadata["framerate"] = stream.frameRate
             #endif
-            switch mediaCodec.videoSettings.format {
+            switch publisher.videoSettings.format {
             case .h264:
                 metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
             case .hevc:
                 metadata["videocodecid"] = FLVVideoFourCC.hevc.rawValue
             }
-            metadata["videodatarate"] = mediaCodec.videoSettings.bitRate / 1000
+            metadata["videodatarate"] = publisher.videoSettings.bitRate / 1000
         }
-        if let audioFormat = mediaCodec.audioInputFormat {
+        if let audioFormat {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
-            metadata["audiodatarate"] = mediaCodec.audioSettings.bitRate / 1000
+            metadata["audiodatarate"] = publisher.audioSettings.bitRate / 1000
             metadata["audiosamplerate"] = audioFormat.sampleRate
         }
         return AMFArray(metadata)
@@ -719,19 +686,19 @@ public actor RTMPStream {
 extension RTMPStream: HKStream {
     // MARK: HKStream
     public var audioSettings: AudioCodecSettings {
-        mediaCodec.audioSettings
+        publisher.audioSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        mediaCodec.audioSettings = audioSettings
+        publisher.audioSettings = audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        mediaCodec.videoSettings
+        publisher.videoSettings
     }
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        mediaCodec.videoSettings = videoSettings
+        publisher.videoSettings = videoSettings
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
@@ -751,7 +718,7 @@ extension RTMPStream: HKStream {
                 }
                 doOutput(.one, chunkStreamId: .video, message: message)
             } else {
-                mediaCodec.append(sampleBuffer)
+                publisher.append(sampleBuffer)
             }
         default:
             break
@@ -763,13 +730,6 @@ extension RTMPStream: HKStream {
 
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         switch readyState {
-        case .playing:
-            switch audioBuffer {
-            case let audioBuffer as AVAudioPCMBuffer:
-                Task { await audioPlayerNode?.enqueue(audioBuffer, when: when) }
-            default:
-                break
-            }
         case .publishing:
             switch audioBuffer {
             case let audioBuffer as AVAudioCompressedBuffer:
@@ -780,7 +740,7 @@ extension RTMPStream: HKStream {
                 }
                 doOutput(.one, chunkStreamId: .audio, message: message)
             default:
-                mediaCodec.append(audioBuffer, when: when)
+                publisher.append(audioBuffer, when: when)
             }
         default:
             break
@@ -791,10 +751,7 @@ extension RTMPStream: HKStream {
     }
 
     public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
-        Task {
-            audioPlayerNode = await audioPlayer?.makePlayerNode()
-            await mediaLink.setAudioPlayer(audioPlayerNode)
-        }
+        Task { await player.attachAudioPlayer(audioPlayer) }
     }
 
     public func addOutput(_ observer: some HKStreamOutput) {

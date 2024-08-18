@@ -1,13 +1,13 @@
 import CoreMedia
 import Foundation
 
-public final actor MediaLink {
-    public var dequeue: AsyncStream<CMSampleBuffer> {
+final actor MediaLink {
+    var dequeue: AsyncStream<CMSampleBuffer> {
         let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
         self.continutation = continutation
         return stream
     }
-    public private(set) var isRunning = false
+    private(set) var isRunning = false
     private var storage: TypedBlockQueue<CMSampleBuffer>?
     private var continutation: AsyncStream<CMSampleBuffer>.Continuation? {
         didSet {
@@ -18,8 +18,7 @@ public final actor MediaLink {
     private lazy var displayLink = DisplayLinkChoreographer()
     private weak var audioPlayer: AudioPlayerNode?
 
-    /// Creates a new instance.
-    public init() {
+    init() {
         do {
             storage = try .init(capacity: 90, handlers: .outputPTSSortedSampleBuffers)
         } catch {
@@ -27,7 +26,7 @@ public final actor MediaLink {
         }
     }
 
-    public func enqueue(_ sampleBuffer: CMSampleBuffer) {
+    func enqueue(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning else {
             return
         }
@@ -41,14 +40,14 @@ public final actor MediaLink {
         }
     }
 
-    public func setAudioPlayer(_ audioPlayer: AudioPlayerNode?) {
+    func setAudioPlayer(_ audioPlayer: AudioPlayerNode?) {
         self.audioPlayer = audioPlayer
     }
 }
 
 extension MediaLink: AsyncRunner {
     // MARK: AsyncRunner
-    public func startRunning() {
+    func startRunning() {
         guard !isRunning else {
             return
         }
@@ -80,7 +79,7 @@ extension MediaLink: AsyncRunner {
         }
     }
 
-    public func stopRunning() {
+    func stopRunning() {
         guard isRunning else {
             return
         }

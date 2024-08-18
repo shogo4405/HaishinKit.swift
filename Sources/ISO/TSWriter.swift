@@ -2,7 +2,7 @@ import AVFoundation
 import CoreMedia
 import Foundation
 
-/// The TSWriter class represents writes MPEG-2 transport stream data.
+/// An object that represents writes MPEG-2 transport stream data.
 public final class TSWriter {
     static let defaultPATPID: UInt16 = 0
     static let defaultPMTPID: UInt16 = 4095
@@ -110,7 +110,7 @@ public final class TSWriter {
             return
         }
         switch sampleBuffer.formatDescription?.mediaType {
-        case .video?:
+        case .video:
             if videoTimeStamp == .invalid {
                 videoTimeStamp = sampleBuffer.presentationTimeStamp
                 if pcrPID == Self.defaultVideoPID {

@@ -5,7 +5,7 @@ import SwiftPMSupport
 
 // MARK: -
 /// The MediaRecorder class represents video and audio recorder.
-public actor MediaRecorder {
+public actor HKStreamRecorder {
     /// The MediaRecorder error domain codes.
     public enum Error: Swift.Error {
         /// An invalid internal stare.
@@ -191,7 +191,7 @@ public actor MediaRecorder {
     }
 }
 
-extension MediaRecorder: HKStreamOutput {
+extension HKStreamRecorder: HKStreamOutput {
     // MARK: HKStreamOutput
     nonisolated public func stream(_ stream: some HKStream, didOutput video: CMSampleBuffer) {
         Task { await append(video) }

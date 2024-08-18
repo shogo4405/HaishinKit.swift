@@ -11,11 +11,11 @@ public final actor AudioPlayer {
         self.audioEngine = audioEngine
     }
 
-    public func isConnected(_ playerNode: AudioPlayerNode) -> Bool {
+    func isConnected(_ playerNode: AudioPlayerNode) -> Bool {
         return connected[playerNode] == true
     }
 
-    public func connect(_ playerNode: AudioPlayerNode, format: AVAudioFormat?) {
+    func connect(_ playerNode: AudioPlayerNode, format: AVAudioFormat?) {
         guard let audioEngine, let avPlayerNode = playerNodes[playerNode] else {
             return
         }
@@ -26,7 +26,7 @@ public final actor AudioPlayer {
         connected[playerNode] = true
     }
 
-    public func makePlayerNode() -> AudioPlayerNode {
+    func makePlayerNode() -> AudioPlayerNode {
         let avAudioPlayerNode = AVAudioPlayerNode()
         audioEngine?.attach(avAudioPlayerNode)
         let playerNode = AudioPlayerNode(player: self, playerNode: avAudioPlayerNode)

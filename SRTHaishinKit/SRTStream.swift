@@ -3,7 +3,7 @@ import Foundation
 import HaishinKit
 import libsrt
 
-/// An object that provides the interface to control a one-way channel over a SRTConnection.
+/// An actor that provides the interface to control a one-way channel over a SRTConnection.
 public actor SRTStream {
     public private(set) var readyState: HKStreamReadyState = .idle
     private var name: String?
@@ -11,10 +11,11 @@ public actor SRTStream {
     private weak var connection: SRTConnection?
     private lazy var writer = TSWriter()
     private lazy var reader = TSReader()
-    private lazy var mediaLink = MediaLink()
-    private lazy var mediaCodec = MediaCodec()
+    private lazy var player = HKStreamPlayer(self)
+    private lazy var publisher = HKStreamPublisher()
     private var outputs: [any HKStreamOutput] = []
-    private var audioPlayerNode: AudioPlayerNode?
+    private var videoFormat: CMFormatDescription?
+    private var audioFormat: CMFormatDescription?
     private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
     /// Creates a new stream object.
@@ -39,29 +40,27 @@ public actor SRTStream {
             return
         }
         if await connection?.connected == true {
+            readyState = .publishing
+            publisher.startRunning()
             writer.expectedMedias.removeAll()
-            if mediaCodec.videoInputFormat != nil {
-                writer.videoFormat = mediaCodec.videoInputFormat
+            if let videoFormat {
                 writer.expectedMedias.insert(.video)
             }
-            if mediaCodec.audioInputFormat != nil {
-                writer.audioFormat = mediaCodec.audioInputFormat
+            if let audioFormat {
                 writer.expectedMedias.insert(.audio)
             }
-            readyState = .publishing
-            mediaCodec.startRunning()
             Task {
-                for try await buffer in mediaCodec.video where mediaCodec.isRunning {
+                for try await buffer in publisher.video where publisher.isRunning {
                     append(buffer)
                 }
             }
             Task {
-                for await buffer in mediaCodec.audio where mediaCodec.isRunning {
+                for await buffer in publisher.audio where publisher.isRunning {
                     append(buffer.0, when: buffer.1)
                 }
             }
             Task {
-                for await data in writer.output where mediaCodec.isRunning {
+                for await data in writer.output where publisher.isRunning {
                     await connection?.output(data)
                 }
             }
@@ -82,36 +81,13 @@ public actor SRTStream {
             return
         }
         if await connection?.connected == true {
-            mediaCodec.startRunning()
-            Task {
-                await mediaLink.startRunning()
-                while mediaCodec.isRunning {
-                    do {
-                        for try await video in mediaCodec.video where mediaCodec.isRunning {
-                            await mediaLink.enqueue(video)
-                        }
-                    } catch {
-                        logger.error(error)
-                    }
-                }
-            }
-            Task {
-                await audioPlayerNode?.startRunning()
-                for await audio in mediaCodec.audio where mediaCodec.isRunning {
-                    append(audio.0, when: audio.1)
-                }
-            }
-            Task {
-                for try await buffer in reader.output where mediaCodec.isRunning {
-                    append(buffer.1)
-                }
-            }
-            Task {
-                for await video in await mediaLink.dequeue where mediaCodec.isRunning {
-                    append(video)
-                }
-            }
+            await player.startRunning()
             await connection?.listen()
+            Task {
+                for try await buffer in reader.output where await player.isRunning {
+                    await player.append(buffer.1)
+                }
+            }
             readyState = .playing
         } else {
             action = { [weak self] in await self?.play(name) }
@@ -123,7 +99,8 @@ public actor SRTStream {
         if readyState == .idle {
             return
         }
-        mediaCodec.stopRunning()
+        publisher.stopRunning()
+        Task { await player.stopRunning() }
         readyState = .idle
     }
 
@@ -135,19 +112,19 @@ public actor SRTStream {
 extension SRTStream: HKStream {
     // MARK: HKStream
     public var audioSettings: AudioCodecSettings {
-        mediaCodec.audioSettings
+        publisher.audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        mediaCodec.videoSettings
+        publisher.videoSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        mediaCodec.audioSettings = audioSettings
+        publisher.audioSettings = audioSettings
     }
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        mediaCodec.videoSettings = videoSettings
+        publisher.videoSettings = videoSettings
     }
 
     public func setBitrateStorategy(_ bitrateStorategy: (some HKStreamBitRateStrategy)?) {
@@ -155,38 +132,36 @@ extension SRTStream: HKStream {
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
-        guard sampleBuffer.formatDescription?.mediaType == .video else {
-            return
-        }
-        switch readyState {
-        case .publishing:
-            if sampleBuffer.formatDescription?.isCompressed == true {
-                writer.append(sampleBuffer)
-            } else {
-                mediaCodec.append(sampleBuffer)
+        switch sampleBuffer.formatDescription?.mediaType {
+        case .video:
+            switch readyState {
+            case .publishing:
+                writer.videoFormat = sampleBuffer.formatDescription
+                if sampleBuffer.formatDescription?.isCompressed == true {
+                    writer.append(sampleBuffer)
+                } else {
+                    publisher.append(sampleBuffer)
+                }
+            default:
+                break
+            }
+            if sampleBuffer.formatDescription?.isCompressed == false {
+                videoFormat = sampleBuffer.formatDescription
+                outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
         default:
             break
-        }
-        if sampleBuffer.formatDescription?.isCompressed == false {
-            outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
         }
     }
 
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         switch readyState {
-        case .playing:
-            switch audioBuffer {
-            case let audioBuffer as AVAudioPCMBuffer:
-                Task { await audioPlayerNode?.enqueue(audioBuffer, when: when) }
-            default:
-                break
-            }
         case .publishing:
             switch audioBuffer {
             case let audioBuffer as AVAudioPCMBuffer:
-                mediaCodec.append(audioBuffer, when: when)
+                publisher.append(audioBuffer, when: when)
             case let audioBuffer as AVAudioCompressedBuffer:
+                writer.audioFormat = audioBuffer.format
                 writer.append(audioBuffer, when: when)
             default:
                 break
@@ -195,14 +170,14 @@ extension SRTStream: HKStream {
             break
         }
         if audioBuffer is AVAudioPCMBuffer {
+            audioFormat = audioBuffer.format.formatDescription
             outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
         }
     }
 
     public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
         Task {
-            audioPlayerNode = await audioPlayer?.makePlayerNode()
-            await mediaLink.setAudioPlayer(audioPlayerNode)
+            await player.attachAudioPlayer(audioPlayer)
         }
     }
 

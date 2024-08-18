@@ -1,7 +1,8 @@
 import AVFoundation
 import Foundation
 
-public final class MediaCodec {
+/// An object that provides a stream publish feature.
+public final class HKStreamPublisher {
     public private(set) var isRunning = false
 
     public var audio: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
@@ -18,8 +19,6 @@ public final class MediaCodec {
         }
     }
 
-    public private(set) var audioInputFormat: AVAudioFormat?
-
     public var video: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
         return videoCodec.outputStream
     }
@@ -34,39 +33,32 @@ public final class MediaCodec {
         }
     }
 
-    public private(set) var videoInputFormat: CMFormatDescription?
-
     private var audioCodec = AudioCodec()
     private var videoCodec = VideoCodec()
 
+    /// Create a new instance.
     public init() {
     }
 
+    /// Appends a sample buffer for publish.
     public func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.mediaType {
-        case .audio:
-            break
-        case .video:
-            if videoInputFormat != sampleBuffer.formatDescription {
-                videoInputFormat = sampleBuffer.formatDescription
-            }
+        case .audio?:
+            audioCodec.append(sampleBuffer)
+        case .video?:
             videoCodec.append(sampleBuffer)
         default:
             break
         }
     }
 
+    /// Appends a sample buffer for publish.
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        if audioInputFormat != audioBuffer.format {
-            audioInputFormat = audioBuffer.format
-        }
-        if audioCodec.isRunning {
-            audioCodec.append(audioBuffer, when: when)
-        }
+        audioCodec.append(audioBuffer, when: when)
     }
 }
 
-extension MediaCodec: Runner {
+extension HKStreamPublisher: Runner {
     // MARK: Runner
     public func startRunning() {
         guard !isRunning else {
