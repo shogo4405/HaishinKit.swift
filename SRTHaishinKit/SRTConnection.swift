@@ -2,10 +2,12 @@ import Foundation
 import HaishinKit
 import libsrt
 
-/// The SRTConnection class create a two-way SRT connection.
+/// An actor that provides the interface to control a two-way SRT connection.
 public actor SRTConnection {
-    /// The error comain codes.
+    /// The error domain codes.
     public enum Error: Swift.Error {
+        /// An invalid internal stare.
+        case invalidState
         /// The uri isn’t supported.
         case unsupportedUri(_ uri: URL?)
         /// The fail to connect.
@@ -82,29 +84,32 @@ public actor SRTConnection {
     }
 
     /// Closes the connection from the server.
-    public func close() async {
+    public func close() async throws {
+        guard connected else {
+            throw Error.invalidState
+        }
+        await networkMonitor?.stopRunning()
         for client in clients {
             await client.close()
         }
+        clients.removeAll()
         for stream in streams {
             await stream.close()
         }
         await socket?.close()
-        clients.removeAll()
-        await networkMonitor?.stopRunning()
         connected = false
     }
 
-    func output(_ data: Data) async {
+    func send(_ data: Data) async {
         await socket?.send(data)
     }
 
-    func listen() {
+    func recv() {
         Task {
-            guard let stream = await socket?.recv() else {
+            guard let socket else {
                 return
             }
-            for await data in stream {
+            for await data in await socket.inputs {
                 await streams.first?.doInput(data)
             }
         }

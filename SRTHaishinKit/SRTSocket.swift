@@ -8,8 +8,22 @@ private let kSRTSOcket_payloadSize: Int = 1316
 final actor SRTSocket {
     static let payloadSize: Int = 1316
 
-    var timeout: Int = 0
-    var options: [SRTSocketOption: Any] = [:]
+    var inputs: AsyncStream<Data> {
+        AsyncStream<Data> { condination in
+            // If Task.detached is not used, closing will result in a deadlock.
+            Task.detached {
+                while await self.connected {
+                    let result = await self.recvmsg()
+                    if 0 < result {
+                        condination.yield(await self.incomingBuffer.subdata(in: 0..<Data.Index(result)))
+                    } else {
+                        condination.finish()
+                    }
+                }
+            }
+        }
+    }
+
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
     private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
@@ -53,6 +67,7 @@ final actor SRTSocket {
             }
         }
     }
+    private(set) var options: [SRTSocketOption: Any] = [:]
     private(set) var connected = false
     private var totalBytesIn: Int = 0
     private var totalBytesOut: Int = 0
@@ -121,21 +136,6 @@ final actor SRTSocket {
         }
     }
 
-    func recv() -> AsyncStream<Data> {
-        return AsyncStream<Data> { condination in
-            Task {
-                repeat {
-                    let result = recvmsg()
-                    if 0 < result {
-                        condination.yield(incomingBuffer.subdata(in: 0..<Data.Index(result)))
-                    } else {
-                        condination.finish()
-                    }
-                } while connected
-            }
-        }
-    }
-
     func configure(_ binding: SRTSocketOption.Binding) -> Bool {
         let failures = SRTSocketOption.configure(socket, binding: binding, options: options)
         guard failures.isEmpty else {
@@ -170,12 +170,14 @@ final actor SRTSocket {
 
     @inline(__always)
     private func recvmsg() -> Int32 {
-        return incomingBuffer.withUnsafeMutableBytes { pointer in
+        let result = incomingBuffer.withUnsafeMutableBytes { pointer in
             guard let buffer = pointer.baseAddress?.assumingMemoryBound(to: CChar.self) else {
                 return SRT_ERROR
             }
             return srt_recvmsg(socket, buffer, windowSizeC)
         }
+        totalBytesIn += Int(result)
+        return result
     }
 }
 

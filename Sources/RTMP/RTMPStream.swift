@@ -205,7 +205,7 @@ public actor RTMPStream {
     private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
     private(set) var id: UInt32 = RTMPStream.defaultID
     private lazy var player = HKStreamPlayer(self)
-    private lazy var publisher = HKStreamPublisher()
+    private lazy var ingestor = HKStreamIngestor()
     private weak var connection: RTMPConnection?
     private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
@@ -306,7 +306,7 @@ public actor RTMPStream {
             return response
         } catch {
             Task { await player.stopRunning() }
-            publisher.stopRunning()
+            ingestor.stopRunning()
             readyState = .idle
             throw error
         }
@@ -362,18 +362,18 @@ public actor RTMPStream {
             }
             info.resourceName = name
             howToPublish = type
-            publisher.startRunning()
+            ingestor.startRunning()
             startedAt = .init()
             metadata = makeMetadata()
             try? send("@setDataFrame", arguments: "onMetaData", metadata)
             readyState = .publishing
             Task {
-                for await audio in publisher.audio where publisher.isRunning {
+                for await audio in ingestor.audio where ingestor.isRunning {
                     append(audio.0, when: audio.1)
                 }
             }
             Task {
-                for try await video in publisher.video where publisher.isRunning {
+                for try await video in ingestor.video where ingestor.isRunning {
                     append(video)
                 }
             }
@@ -389,7 +389,7 @@ public actor RTMPStream {
         guard readyState == .playing || readyState == .publishing else {
             throw Error.invalidState
         }
-        publisher.stopRunning()
+        ingestor.stopRunning()
         return try await withCheckedThrowingContinuation { continutation in
             self.continuation = continutation
             switch readyState {
@@ -600,7 +600,7 @@ public actor RTMPStream {
         guard let fcPublishName, readyState == .publishing else {
             return
         }
-        publisher.stopRunning()
+        ingestor.stopRunning()
         async let _ = try? connection?.call("FCUnpublish", arguments: fcPublishName)
         async let _ = try? connection?.call("deleteStream", arguments: id)
     }
@@ -660,24 +660,24 @@ public actor RTMPStream {
         var metadata: AMFObject = [
             "duration": 0
         ]
-        if videoFormat != nil {
-            metadata["width"] = publisher.videoSettings.videoSize.width
-            metadata["height"] = publisher.videoSettings.videoSize.height
+        if ingestor.videoInputFormat != nil {
+            metadata["width"] = ingestor.videoSettings.videoSize.width
+            metadata["height"] = ingestor.videoSettings.videoSize.height
             #if os(iOS) || os(macOS) || os(tvOS)
             // metadata["framerate"] = stream.frameRate
             #endif
-            switch publisher.videoSettings.format {
+            switch ingestor.videoSettings.format {
             case .h264:
                 metadata["videocodecid"] = FLVVideoCodec.avc.rawValue
             case .hevc:
                 metadata["videocodecid"] = FLVVideoFourCC.hevc.rawValue
             }
-            metadata["videodatarate"] = publisher.videoSettings.bitRate / 1000
+            metadata["videodatarate"] = ingestor.videoSettings.bitRate / 1000
         }
-        if let audioFormat {
+        if let audioFormat = ingestor.audioInputFormat?.audioStreamBasicDescription {
             metadata["audiocodecid"] = FLVAudioCodec.aac.rawValue
-            metadata["audiodatarate"] = publisher.audioSettings.bitRate / 1000
-            metadata["audiosamplerate"] = audioFormat.sampleRate
+            metadata["audiodatarate"] = ingestor.audioSettings.bitRate / 1000
+            metadata["audiosamplerate"] = audioFormat.mSampleRate
         }
         return AMFArray(metadata)
     }
@@ -686,27 +686,24 @@ public actor RTMPStream {
 extension RTMPStream: HKStream {
     // MARK: HKStream
     public var audioSettings: AudioCodecSettings {
-        publisher.audioSettings
+        ingestor.audioSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        publisher.audioSettings = audioSettings
+        ingestor.audioSettings = audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        publisher.videoSettings
+        ingestor.videoSettings
     }
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        publisher.videoSettings = videoSettings
+        ingestor.videoSettings = videoSettings
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {
-        guard sampleBuffer.formatDescription?.mediaType == .video else {
-            return
-        }
-        switch readyState {
-        case .publishing:
+        switch sampleBuffer.formatDescription?.mediaType {
+        case .video:
             if sampleBuffer.formatDescription?.isCompressed == true {
                 let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
                 let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
@@ -718,35 +715,30 @@ extension RTMPStream: HKStream {
                 }
                 doOutput(.one, chunkStreamId: .video, message: message)
             } else {
-                publisher.append(sampleBuffer)
+                ingestor.append(sampleBuffer)
+                if sampleBuffer.formatDescription?.isCompressed == false {
+                    outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
+                }
             }
         default:
             break
-        }
-        if sampleBuffer.formatDescription?.isCompressed == false {
-            outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
         }
     }
 
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        switch readyState {
-        case .publishing:
-            switch audioBuffer {
-            case let audioBuffer as AVAudioCompressedBuffer:
-                let timedelta = audioTimestamp.update(when)
-                audioFormat = audioBuffer.format
-                guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
-                    return
-                }
-                doOutput(.one, chunkStreamId: .audio, message: message)
-            default:
-                publisher.append(audioBuffer, when: when)
+        switch audioBuffer {
+        case let audioBuffer as AVAudioCompressedBuffer:
+            let timedelta = audioTimestamp.update(when)
+            audioFormat = audioBuffer.format
+            guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
+                return
             }
+            doOutput(.one, chunkStreamId: .audio, message: message)
         default:
-            break
-        }
-        if audioBuffer is AVAudioPCMBuffer {
-            outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
+            ingestor.append(audioBuffer, when: when)
+            if audioBuffer is AVAudioPCMBuffer {
+                outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
+            }
         }
     }
 

@@ -97,7 +97,7 @@ actor NetStreamSwitcher {
             guard let connection = connection as? SRTConnection else {
                 return
             }
-            await connection.close()
+            try? await connection.close()
             logger.info("conneciton.close")
         }
     }

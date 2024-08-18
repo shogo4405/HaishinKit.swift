@@ -1,8 +1,8 @@
 import AVFoundation
 import Foundation
 
-/// An object that provides a stream publish feature.
-public final class HKStreamPublisher {
+/// An object that provides a stream ingest feature.
+public final class HKStreamIngestor {
     public private(set) var isRunning = false
 
     public var audio: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
@@ -19,6 +19,8 @@ public final class HKStreamPublisher {
         }
     }
 
+    public private(set) var audioInputFormat: CMFormatDescription?
+
     public var video: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
         return videoCodec.outputStream
     }
@@ -33,6 +35,8 @@ public final class HKStreamPublisher {
         }
     }
 
+    public private(set) var videoInputFormat: CMFormatDescription?
+
     private var audioCodec = AudioCodec()
     private var videoCodec = VideoCodec()
 
@@ -43,9 +47,11 @@ public final class HKStreamPublisher {
     /// Appends a sample buffer for publish.
     public func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.mediaType {
-        case .audio?:
+        case .audio:
+            audioInputFormat = sampleBuffer.formatDescription
             audioCodec.append(sampleBuffer)
-        case .video?:
+        case .video:
+            videoInputFormat = sampleBuffer.formatDescription
             videoCodec.append(sampleBuffer)
         default:
             break
@@ -54,11 +60,12 @@ public final class HKStreamPublisher {
 
     /// Appends a sample buffer for publish.
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
+        audioInputFormat = audioBuffer.format.formatDescription
         audioCodec.append(audioBuffer, when: when)
     }
 }
 
-extension HKStreamPublisher: Runner {
+extension HKStreamIngestor: Runner {
     // MARK: Runner
     public func startRunning() {
         guard !isRunning else {

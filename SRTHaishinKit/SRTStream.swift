@@ -8,15 +8,13 @@ public actor SRTStream {
     public private(set) var readyState: HKStreamReadyState = .idle
     private var name: String?
     private var action: (() async -> Void)?
-    private weak var connection: SRTConnection?
+    private var outputs: [any HKStreamOutput] = []
+    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
     private lazy var writer = TSWriter()
     private lazy var reader = TSReader()
     private lazy var player = HKStreamPlayer(self)
-    private lazy var publisher = HKStreamPublisher()
-    private var outputs: [any HKStreamOutput] = []
-    private var videoFormat: CMFormatDescription?
-    private var audioFormat: CMFormatDescription?
-    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
+    private lazy var ingestor = HKStreamIngestor()
+    private weak var connection: SRTConnection?
 
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
@@ -33,7 +31,7 @@ public actor SRTStream {
         guard let name else {
             switch readyState {
             case .publishing:
-                readyState = .idle
+                await close()
             default:
                 break
             }
@@ -41,27 +39,27 @@ public actor SRTStream {
         }
         if await connection?.connected == true {
             readyState = .publishing
-            publisher.startRunning()
+            ingestor.startRunning()
             writer.expectedMedias.removeAll()
-            if let videoFormat {
+            if ingestor.videoInputFormat != nil {
                 writer.expectedMedias.insert(.video)
             }
-            if let audioFormat {
+            if ingestor.audioInputFormat != nil {
                 writer.expectedMedias.insert(.audio)
             }
             Task {
-                for try await buffer in publisher.video where publisher.isRunning {
+                for try await buffer in ingestor.video where ingestor.isRunning {
                     append(buffer)
                 }
             }
             Task {
-                for await buffer in publisher.audio where publisher.isRunning {
+                for await buffer in ingestor.audio where ingestor.isRunning {
                     append(buffer.0, when: buffer.1)
                 }
             }
             Task {
-                for await data in writer.output where publisher.isRunning {
-                    await connection?.output(data)
+                for await data in writer.output where ingestor.isRunning {
+                    await connection?.send(data)
                 }
             }
         } else {
@@ -74,7 +72,7 @@ public actor SRTStream {
         guard let name else {
             switch readyState {
             case .playing:
-                readyState = .idle
+                await close()
             default:
                 break
             }
@@ -82,7 +80,7 @@ public actor SRTStream {
         }
         if await connection?.connected == true {
             await player.startRunning()
-            await connection?.listen()
+            await connection?.recv()
             Task {
                 for try await buffer in reader.output where await player.isRunning {
                     await player.append(buffer.1)
@@ -99,7 +97,7 @@ public actor SRTStream {
         if readyState == .idle {
             return
         }
-        publisher.stopRunning()
+        ingestor.stopRunning()
         Task { await player.stopRunning() }
         readyState = .idle
     }
@@ -112,19 +110,19 @@ public actor SRTStream {
 extension SRTStream: HKStream {
     // MARK: HKStream
     public var audioSettings: AudioCodecSettings {
-        publisher.audioSettings
+        ingestor.audioSettings
     }
 
     public var videoSettings: VideoCodecSettings {
-        publisher.videoSettings
+        ingestor.videoSettings
     }
 
     public func setAudioSettings(_ audioSettings: AudioCodecSettings) {
-        publisher.audioSettings = audioSettings
+        ingestor.audioSettings = audioSettings
     }
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
-        publisher.videoSettings = videoSettings
+        ingestor.videoSettings = videoSettings
     }
 
     public func setBitrateStorategy(_ bitrateStorategy: (some HKStreamBitRateStrategy)?) {
@@ -134,19 +132,11 @@ extension SRTStream: HKStream {
     public func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.mediaType {
         case .video:
-            switch readyState {
-            case .publishing:
+            if sampleBuffer.formatDescription?.isCompressed == true {
                 writer.videoFormat = sampleBuffer.formatDescription
-                if sampleBuffer.formatDescription?.isCompressed == true {
-                    writer.append(sampleBuffer)
-                } else {
-                    publisher.append(sampleBuffer)
-                }
-            default:
-                break
-            }
-            if sampleBuffer.formatDescription?.isCompressed == false {
-                videoFormat = sampleBuffer.formatDescription
+                writer.append(sampleBuffer)
+            } else {
+                ingestor.append(sampleBuffer)
                 outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
             }
         default:
@@ -155,23 +145,15 @@ extension SRTStream: HKStream {
     }
 
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
-        switch readyState {
-        case .publishing:
-            switch audioBuffer {
-            case let audioBuffer as AVAudioPCMBuffer:
-                publisher.append(audioBuffer, when: when)
-            case let audioBuffer as AVAudioCompressedBuffer:
-                writer.audioFormat = audioBuffer.format
-                writer.append(audioBuffer, when: when)
-            default:
-                break
-            }
+        switch audioBuffer {
+        case let audioBuffer as AVAudioPCMBuffer:
+            ingestor.append(audioBuffer, when: when)
+            outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
+        case let audioBuffer as AVAudioCompressedBuffer:
+            writer.audioFormat = audioBuffer.format
+            writer.append(audioBuffer, when: when)
         default:
             break
-        }
-        if audioBuffer is AVAudioPCMBuffer {
-            audioFormat = audioBuffer.format.formatDescription
-            outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
         }
     }
 
