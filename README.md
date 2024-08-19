@@ -8,7 +8,7 @@
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
-* [API Documentation](https://docs.haishinkit.com/swift/latest/)
+* [API Documentation](https://docs.haishinkit.com/swift/2.0.0/)
 
 ## 💖 Sponsors
 <p align="center">
@@ -63,6 +63,26 @@ Project name    |Notes       |License
   - [ ] listener
   - [ ] rendezvous
 
+
+### 📹 Multi Service Streaming
+Starting from version 2.0.0, multiple streams are supported, allowing live streaming to separate services. Views also support this, enabling the verification of raw video data
+```swift
+let mixer = MediaMixer()
+let stream0 = RTMPStream() // for Y Service.
+let stream1 = RTMPStream() // for F Service.
+
+let view = MTHKView()
+view.track = 0 // Video Track Number 0 or 1, UInt8.max.
+
+mixer.addOutput(stream0)
+mixer.addOutput(stream1)
+mixer.addOutput(view)
+
+let view2 = MTHKView()
+stream0.addOutput(view2)
+```
+
+
 ### Offscreen Rendering.
 Through off-screen rendering capabilities, it is possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
 |Ingest|Playback|
@@ -73,46 +93,50 @@ Through off-screen rendering capabilities, it is possible to display any text or
 <summary>Example</summary>
   
 ```swift
-stream.videoMixerSettings.mode = .offscreen
-stream.screen.startRunning()
-textScreenObject.horizontalAlignment = .right
-textScreenObject.verticalAlignment = .bottom
-textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
+Task { ScreenActor in
+  var videoMixerSettings = VideoMixerSettings()
+  videoMixerSettings.mode = .offscreen
+  await mixer.setVideoMixerSettings(videoMixerSettings)
 
-stream.screen.backgroundColor = UIColor.black.cgColor
+  textScreenObject.horizontalAlignment = .right
+  textScreenObject.verticalAlignment = .bottom
+  textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
 
-let videoScreenObject = VideoTrackScreenObject()
-videoScreenObject.cornerRadius = 32.0
-videoScreenObject.track = 1
-videoScreenObject.horizontalAlignment = .right
-videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-_ = videoScreenObject.registerVideoEffect(MonochromeEffect())
+  await stream.screen.backgroundColor = UIColor.black.cgColor
 
-let imageScreenObject = ImageScreenObject()
-let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
-if let provider = CGDataProvider(url: imageURL as CFURL) {
-    imageScreenObject.verticalAlignment = .bottom
-    imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
-    imageScreenObject.cgImage = CGImage(
-        pngDataProviderSource: provider,
-        decode: nil,
-        shouldInterpolate: false,
-    intent: .defaultIntent
-    )
-} else {
+  let videoScreenObject = VideoTrackScreenObject()
+  videoScreenObject.cornerRadius = 32.0
+  videoScreenObject.track = 1
+  videoScreenObject.horizontalAlignment = .right
+  videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+  videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+  _ = videoScreenObject.registerVideoEffect(MonochromeEffect())
+
+  let imageScreenObject = ImageScreenObject()
+  let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
+  if let provider = CGDataProvider(url: imageURL as CFURL) {
+      imageScreenObject.verticalAlignment = .bottom
+      imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
+      imageScreenObject.cgImage = CGImage(
+          pngDataProviderSource: provider,
+          decode: nil,
+          shouldInterpolate: false,
+          intent: .defaultIntent
+      )
+  } else {
     logger.info("no image")
-}
+  }
 
-let assetScreenObject = AssetScreenObject()
-assetScreenObject.size = .init(width: 180, height: 180)
-assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
-try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
-try? stream.screen.addChild(assetScreenObject)
-try? stream.screen.addChild(videoScreenObject)
-try? stream.screen.addChild(imageScreenObject)
-try? stream.screen.addChild(textScreenObject)
-stream.screen.delegate = self
+  let assetScreenObject = AssetScreenObject()
+  assetScreenObject.size = .init(width: 180, height: 180)
+  assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
+  try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
+  try? mixer.screen.addChild(assetScreenObject)
+  try? mixer.screen.addChild(videoScreenObject)
+  try? mixer.screen.addChild(imageScreenObject)
+  try? mixer.screen.addChild(textScreenObject)
+  stream.screen.delegate = self
+}
 ```
 
 </details>
@@ -131,6 +155,7 @@ stream.screen.delegate = self
 - [x] tvOS 17.0 for AVCaptureSession.
 - [x] [Support multitasking camera access.](https://developer.apple.com/documentation/avfoundation/capture_setup/accessing_the_camera_while_multitasking)
 - [x] Support "Allow app extension API only" option
+- [x] Strict Concurrency 
 
 ## 🐾 Examples
 Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS. Example macOS requires Apple Silicon mac.
@@ -148,10 +173,8 @@ open HaishinKit.xcodeproj
 ### Development
 |Version|Xcode|Swift|
 |:----:|:----:|:----:|
+|2.0.0+|15.4+|5.10+|
 |1.9.0+|15.4+|5.10+|
-|1.8.0+|15.3+|5.9+|
-|1.7.0+|15.0+|5.9+|
-|1.6.0+|15.0+|5.8+|
 
 ### OS
 |-|iOS|tvOS|macOS|visionOS|watchOS|
@@ -187,6 +210,7 @@ HaishinKit has a multi-module configuration. If you want to use the SRT protocol
 Make sure you setup and activate your AVAudioSession iOS.
 ```swift
 import AVFoundation
+
 let session = AVAudioSession.sharedInstance()
 do {
     try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])
@@ -199,46 +223,74 @@ do {
 ## 📓 RTMP Usage
 ### Ingest
 ```swift
+let mixer = MediaMixer()
 let connection = RTMPConnection()
 let stream = RTMPStream(connection: connection)
-
-stream.attachAudio(AVCaptureDevice.default(for: .audio)) { _, error in
-  if let error {
-    logger.warn(error)
-  }
-}
-
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), track: 0) { _, error in
-  if let error {
-    logger.warn(error)
-  }
-}
-
 let hkView = MTHKView(frame: view.bounds)
-hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-hkView.attachStream(stream)
 
-// add ViewController#view
-view.addSubview(hkView)
+Task {
+  do {
+    try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+  } catch {
+    print(error)
+  }
 
-connection.connect("rtmp://localhost/appName/instanceName")
-stream.publish("streamName")
+  do {
+    try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
+  } catch {
+    print(error)
+  }
+
+  await mixer.addOutput(stream)
+}
+
+Task { MainActor in
+  await stream.addOutput(hkView)
+  // add ViewController#view
+  view.addSubview(hkView)
+}
+
+Task {
+  do {
+    try await connection.connect("rtmp://localhost/appName/instanceName")
+    try await stream.publish(streamName)
+  } catch RTMPConnection.Error.requestFailed(let response) {
+    print(response)
+  } catch RTMPStream.Error.requestFailed(let response) {
+    print(response)
+  } catch {
+    print(error)
+  }
+}
 ```
 
 ### Playback
 ```swift
 let connection = RTMPConnection()
 let stream = RTMPStream(connection: connection)
+let audioPlayer = AudioPlayer(AVAudioEngine())
 
 let hkView = MTHKView(frame: view.bounds)
-hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-hkView.attachStream(stream)
 
-// add ViewController#view
-view.addSubview(hkView)
+Task { MainActor in
+  await stream.addOutput(hkView)
+}
 
-connection.connect("rtmp://localhost/appName/instanceName")
-stream.play("streamName")
+Task {
+  // requires attachAudioPlayer
+  await stream.attachAudioPlayer(audioPlayer)
+
+  do {
+    try await connection.connect("rtmp://localhost/appName/instanceName")
+    try await stream.play(streamName)
+  } catch RTMPConnection.Error.requestFailed(let response) {
+    print(response)
+  } catch RTMPStream.Error.requestFailed(let response) {
+    print(response)
+  } catch {
+    print(error)
+  }
+}
 ```
 
 ### Authentication
@@ -250,125 +302,163 @@ connection.connect("rtmp://username:password@localhost/appName/instanceName")
 ## 📓 SRT Usage
 ### Ingest
 ```swift
+let mixer = MediaMixer()
 let connection = SRTConnection()
 let stream = SRTStream(connection: connection)
-stream.attachAudio(AVCaptureDevice.default(for: .audio)) { error in
-    // print(error)
+let hkView = MTHKView(frame: view.bounds)
+
+Task {
+  do {
+    try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+  } catch {
+    print(error)
+  }
+
+  do {
+    try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
+  } catch {
+    print(error)
+  }
+
+  await mixer.addOutput(stream)
 }
-stream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back), track: 0) { _, error in
-  if let error {
-    logger.warn(error)
+
+Task { MainActor in
+  await stream.addOutput(hkView)
+  // add ViewController#view
+  view.addSubview(hkView)
+}
+
+Task {
+  stream.attachAudioPlayer(audioPlayer)
+  do {
+    try await connection.connect("rtmp://localhost/appName/instanceName")
+    try await stream.publish(streamName)
+  } catch {
+    print(error)
   }
 }
-
-let hkView = HKView(frame: view.bounds)
-hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-hkView.attachStream(rtmpStream)
-
-// add ViewController#view
-view.addSubview(hkView)
-
-connection.connect("srt://host:port?option=foo")
-stream.publish()
 ```
 
 ### Playback
 ```swift
 let connection = SRTConnection()
 let stream = SRTStream(connection: connection)
-
 let hkView = MTHKView(frame: view.bounds)
-hkView.videoGravity = AVLayerVideoGravity.resizeAspectFill
-hkView.attachStream(rtmpStream)
+let audioPlayer = AudioPlayer(AVAudioEngine())
 
-// add ViewController#view
-view.addSubview(hkView)
+Task { MainActor in
+  await stream.addOutput(hkView)
+  // add ViewController#view
+  view.addSubview(hkView)
+}
 
-connection.connect("srt://host:port?option=foo")
-stream.play()
+Task {
+  // requires attachAudioPlayer
+  await stream.attachAudioPlayer(audioPlayer)
+
+  do {
+    try await connection.connect("srt://host:port?option=foo")
+    try await stream.play()
+  } catch {
+    print(error)
+  }
+}
 ```
 
 ## 📓 Settings
 ### 📹 AVCaptureSession
 ```swift
-stream.frameRate = 30
-stream.sessionPreset = AVCaptureSession.Preset.medium
+let mixer = MediaMixer()
+
+await mixer.setFrameRate(30)
+await mixer.setSessionPreset(AVCaptureSession.Preset.medium)
 
 // Do not call beginConfiguration() and commitConfiguration() internally within the scope of the method, as they are called internally.
-stream.configuration { session in
+await mixer.configuration { session in
   session.automaticallyConfiguresApplicationAudioSession = true
 }
 ```
 
 ### 🔊 Audio
-#### [Capture](https://docs.haishinkit.com/swift/latest/Classes/IOAudioCaptureUnit.html)
-Specifies the capture capture settings.
+#### [Device](https://docs.haishinkit.com/swift/2.0.0/Classes/AudioDeviceUnit.html)
+Specifies the audio device settings.
 ```swift
 let front = AVCaptureDevice.default(for: .audio)
-stream.attachAudio(front, track: 0) { audioUnit, error in
-}
+
+try? await mixer.attachAudio(front, track: 0) { audioDeviceUnit in }
 ```
 
-#### [AudioMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/IOAudioMixerSettings.html)
+#### [AudioMixerSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/AudioMixerSettings.html)
 If you want to mix multiple audio tracks, please enable the feature flag.
 ```swift
-stream.isMultiTrackAudioMixingEnabled = true
+await mixer.setMultiTrackAudioMixingEnabled(true)
 ```
 
 When you specify the sampling rate, it will perform resampling. Additionally, in the case of multiple channels, downsampling can be applied.
 ```swift
 // Setting the value to 0 will be the same as the value specified in mainTrack.
-stream.audioMixerSettings = IOAudioMixerSettings(
+var settings = AudioMixerSettings(
   sampleRate: Float64 = 44100,
   channels: UInt32 = 0,
 )
-
-stream.audioMixerSettings.isMuted = false
-stream.audioMixerSettings.mainTrack = 0
-stream.audioMixerSettings.tracks = [
+settings.tracks = [
   0: .init(
     isMuted: Bool = false,
     downmix: Bool = true,
     channelMap: [Int]? = nil
   )
 ]
+
+async mixer.setAudioMixerSettings(settings)
 ```
 
-#### [AudioCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/AudioCodecSettings.html)
+#### [AudioCodecSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/AudioCodecSettings.html)
 ```swift
+var audioSettings = AudioCodecSettings()
 /// Specifies the bitRate of audio output.
-stream.audioSettings.bitrate = 64 * 1000
+audioSettings.bitrate = 64 * 1000
 /// Specifies the mixes the channels or not. Currently, it supports input sources with 4, 5, 6, and 8 channels.
-stream.audioSettings.downmix = true
+audioSettings.downmix = true
 /// Specifies the map of the output to input channels.
- stream.audioSettings.channelMap: [Int]? = nil
+audioSettings.channelMap: [Int]? = nil
+
+await stream.setAudioSettings(audioSettings)
 ```
 
 ### 🎥 Video
-#### [Capture](https://docs.haishinkit.com/swift/latest/Classes/IOVideoCaptureUnit.html)
+#### [Device](https://docs.haishinkit.com/swift/2.0.0/Classes/VideoDeviceUnit.html)
 Specifies the video capture settings.
 ```swift
+
 let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-stream.attachCamera(front, track: 0) { videoUnit, error in
-  videoUnit?.isVideoMirrored = true
-  videoUnit?.preferredVideoStabilizationMode = .standard
-  videoUnit?.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+do {
+  try await mixer.attachCamera(front, track: 0) { videoUnit in
+    videoUnit.isVideoMirrored = true
+    videoUnit.preferredVideoStabilizationMode = .standard
+    videoUnit.colorFormat = kCVPixelFormatType_420YpCbCr8BiPlanarVideoRange
+  }
+} catch {
+  print(error)
 }
 ```
 
-#### [VideoMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/IOVideoMixerSettings.html)
+#### [VideoMixerSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/VideoMixerSettings.html)
 ```swift
+var videoMixerSettings = VideoMixerSettings()
 /// Specifies the image rendering mode.
-stream.videoMixerSettings.mode = .passthrough or .offscreen
+videoMixerSettings.mode = .passthrough or .offscreen
 /// Specifies the muted indicies whether freeze video signal or not.
-stream.videoMixerSettings.isMuted = false
+videoMixerSettings.isMuted = false
 /// Specifies the main track number.
-stream.videoMixerSettings.mainTrack = 0
+videoMixerSettings.mainTrack = 0
+
+await mixer.setVideoMixerSettings(videoMixerSettings)
 ```
 
-#### [VideoCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/VideoCodecSettings.html)
+#### [VideoCodecSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/VideoCodecSettings.html)
 ```swift
-stream.videoSettings = .init(
+var videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),
   profileLevel: kVTProfileLevel_H264_Baseline_3_1 as String,
   bitRate: 640 * 1000,
@@ -378,21 +468,17 @@ stream.videoSettings = .init(
   allowFrameReordering: nil,
   isHardwareEncoderEnabled: true
 )
+
+await stream.setVideoSettings(videoSettings)
 ```
 
 ### ⏺️ Recording
-Internally, I am now handling data with more than 3 channels. If you encounter audio issues with IOStreamRecorder, it is recommended to set it back to a maximum of 2 channels when saving locally.
-```swift
-let channels = max(stream.audioInputFormats[0].channels ?? 1, 2)
-stream.audioMixerSettings = .init(sampleRate: 0, channels: channels)
-```
-
 ```swift
 // Specifies the recording settings. 0" means the same of input.
-var recorder = IOStreamRecorder()
-stream.addObserver(recorder)
+let recorder = HKStreamRecorder()
+stream.addOutput(recorder)
 
-recorder.settings = [
+try await recorder.startRecording(fileName, settings: [
   AVMediaType.audio: [
     AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
     AVSampleRateKey: 0,
@@ -411,14 +497,10 @@ recorder.settings = [
     ]
     */
   ]
-]
+])
 
-recorder.startRunning()
-// recorder.stopRunning()
+try await recorder.stopRecording()
 ```
-
-## 📜 Known Issues
-- [Xcode15.4+, High CPU Usage and Increse Memory with SPM](https://github.com/shogo4405/HaishinKit.swift/issues/1512)
 
 ## 📜 License
 BSD-3-Clause
