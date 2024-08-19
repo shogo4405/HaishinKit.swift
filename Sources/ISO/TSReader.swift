@@ -2,10 +2,11 @@ import AVFoundation
 import Foundation
 import Logboard
 
-/// The TSReader class represents read MPEG-2 transport stream data.
+/// A class represents that reads MPEG-2 transport stream data.
 public final class TSReader {
+    /// An asynchronous sequence for reading data.
     public var output: AsyncStream<(UInt16, CMSampleBuffer)> {
-        return AsyncStream<(UInt16, CMSampleBuffer)> { continuation in
+        AsyncStream<(UInt16, CMSampleBuffer)> { continuation in
             self.continuation = continuation
         }
     }
@@ -36,13 +37,17 @@ public final class TSReader {
     }
     private var programs: [UInt16: UInt16] = [:]
     private var esSpecData: [UInt16: ESSpecificData] = [:]
-    private var continuation: AsyncStream<(UInt16, CMSampleBuffer)>.Continuation?
+    private var continuation: AsyncStream<(UInt16, CMSampleBuffer)>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
     private var nalUnitReader = NALUnitReader()
     private var formatDescriptions: [UInt16: CMFormatDescription] = [:]
     private var packetizedElementaryStreams: [UInt16: PacketizedElementaryStream] = [:]
     private var previousPresentationTimeStamps: [UInt16: CMTime] = [:]
 
-    /// Create a  new TSReader instance.
+    /// Create a  new instance.
     public init() {
     }
 
@@ -75,6 +80,7 @@ public final class TSReader {
         formatDescriptions.removeAll()
         packetizedElementaryStreams.removeAll()
         previousPresentationTimeStamps.removeAll()
+        continuation = nil
     }
 
     private func readPacketizedElementaryStream(_ packet: TSPacket) {

@@ -40,7 +40,7 @@ public actor SRTStream {
         if await connection?.connected == true {
             readyState = .publishing
             ingestor.startRunning()
-            writer.expectedMedias.removeAll()
+            writer.clear()
             if ingestor.videoInputFormat != nil {
                 writer.expectedMedias.insert(.video)
             }
@@ -79,10 +79,11 @@ public actor SRTStream {
             return
         }
         if await connection?.connected == true {
-            await player.startRunning()
+            reader.clear()
             await connection?.recv()
             Task {
-                for try await buffer in reader.output where await player.isRunning {
+                await player.startRunning()
+                for await buffer in reader.output where await player.isRunning {
                     await player.append(buffer.1)
                 }
             }
@@ -94,7 +95,7 @@ public actor SRTStream {
 
     /// Stops playing or publishing and makes available other uses.
     public func close() async {
-        if readyState == .idle {
+        guard readyState != .idle else {
             return
         }
         ingestor.stopRunning()

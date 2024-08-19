@@ -2,6 +2,8 @@ import CoreMedia
 import Foundation
 
 final actor MediaLink {
+    static let capacity = 90
+
     var dequeue: AsyncStream<CMSampleBuffer> {
         let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
         self.continutation = continutation
@@ -20,7 +22,7 @@ final actor MediaLink {
 
     init() {
         do {
-            storage = try .init(capacity: 90, handlers: .outputPTSSortedSampleBuffers)
+            storage = try .init(capacity: Self.capacity, handlers: .outputPTSSortedSampleBuffers)
         } catch {
             logger.error(error)
         }

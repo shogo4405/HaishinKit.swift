@@ -9,7 +9,7 @@ public final class TSWriter {
     static let defaultVideoPID: UInt16 = 256
     static let defaultAudioPID: UInt16 = 257
     static let defaultSegmentDuration: Double = 2
-
+    /// An asynchronous sequence for writing data.
     public var output: AsyncStream<Data> {
         return AsyncStream<Data> { continuation in
             self.continuation = continuation
@@ -75,7 +75,11 @@ public final class TSWriter {
     private var rotatedTimeStamp: CMTime = .zero
     private var audioContinuityCounter: UInt8 = 0
     private var videoContinuityCounter: UInt8 = 0
-    private var continuation: AsyncStream<Data>.Continuation?
+    private var continuation: AsyncStream<Data>.Continuation? {
+        didSet {
+            oldValue?.finish()
+        }
+    }
 
     /// Creates a new instance with segument duration.
     public init(segmentDuration: Double = 2.0) {
@@ -147,6 +151,7 @@ public final class TSWriter {
         audioTimeStamp = .invalid
         clockTimeStamp = .zero
         rotatedTimeStamp = .zero
+        expectedMedias.removeAll()
     }
 
     private func writePacketizedElementaryStream(_ PID: UInt16, PES: PacketizedElementaryStream, timeStamp: CMTime, randomAccessIndicator: Bool) {
