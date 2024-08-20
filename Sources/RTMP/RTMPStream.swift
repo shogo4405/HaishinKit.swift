@@ -763,8 +763,8 @@ extension RTMPStream: HKStream {
         self.bitrateStorategy = bitrateStorategy
     }
 
-    public func dispatch(_ event: NetworkMonitorEvent) {
-        bitrateStorategy?.adjustBitrate(event, stream: self)
+    public func dispatch(_ event: NetworkMonitorEvent) async {
+        await bitrateStorategy?.adjustBitrate(event, stream: self)
         currentFPS = frameCount
         frameCount = 0
         info.update()

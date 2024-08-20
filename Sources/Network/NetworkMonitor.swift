@@ -43,10 +43,11 @@ public final actor NetworkMonitor {
         previousTotalBytesOut = totalBytesOut
         previousQueueBytesOut.append(queueBytesOut)
         let eventReport = NetworkMonitorReport(
+            totalBytesIn: totalBytesIn,
+            totalBytesOut: totalBytesOut,
             currentQueueBytesOut: queueBytesOut,
             currentBytesInPerSecond: currentBytesInPerSecond,
-            currentBytesOutPerSecond: currentBytesOutPerSecond,
-            totalBytesIn: totalBytesIn
+            currentBytesOutPerSecond: currentBytesOutPerSecond
         )
         defer {
             previousQueueBytesOut.removeFirst()
@@ -59,7 +60,7 @@ public final actor NetworkMonitor {
             if total == measureInterval - 1 {
                 return .publishInsufficientBWOccured(report: eventReport)
             } else if total == 0 {
-                return .publishSufficientBWOccured(report: eventReport)
+                return .status(report: eventReport)
             }
         }
         return .status(report: eventReport)

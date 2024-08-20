@@ -44,5 +44,5 @@ public protocol HKStream: Actor, MediaMixerOutput {
     func attachAudioPlayer(_ audioPlayer: AudioPlayer?)
 
     /// Dispatch a network monitor event.
-    func dispatch(_ event: NetworkMonitorEvent)
+    func dispatch(_ event: NetworkMonitorEvent) async
 }

@@ -291,6 +291,7 @@ public actor RTMPConnection {
                 }
             }
             for stream in streams {
+                await stream.dispatch(.reset)
                 await stream.createStream()
             }
             return result
@@ -426,11 +427,14 @@ public actor RTMPConnection {
 
     private func dispatch(_ event: NetworkMonitorEvent) {
         switch event {
-        case .status(let report), .publishInsufficientBWOccured(let report), .publishSufficientBWOccured(let report):
+        case .status(let report), .publishInsufficientBWOccured(let report):
             if windowSizeS * (sequence + 1) <= report.totalBytesIn {
                 doOutput(sequence == 0 ? .zero : .one, chunkStreamId: .control, message: RTMPAcknowledgementMessage(sequence: UInt32(report.totalBytesIn)))
                 sequence += 1
             }
+        case .reset:
+            // noop
+            break
         }
         for stream in streams {
             Task { await stream.dispatch(event) }
