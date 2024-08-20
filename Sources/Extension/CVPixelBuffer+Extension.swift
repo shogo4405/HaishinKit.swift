@@ -4,7 +4,7 @@ import CoreVideo
 import Foundation
 
 extension CVPixelBuffer {
-    public enum Error: Swift.Error {
+    enum Error: Swift.Error {
         case failedToLock(_ status: CVReturn)
         case failedToUnlock(_ status: CVReturn)
         case unsupportedFormat(_ format: OSType)
@@ -100,7 +100,6 @@ extension CVPixelBuffer {
         }
     }
 
-    @inlinable
     @inline(__always)
     func lockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) throws {
         let status = CVPixelBufferLockBaseAddress(self, lockFlags)
@@ -109,7 +108,6 @@ extension CVPixelBuffer {
         }
     }
 
-    @inlinable
     @inline(__always)
     func unlockBaseAddress(_ lockFlags: CVPixelBufferLockFlags = CVPixelBufferLockFlags.readOnly) throws {
         let status = CVPixelBufferUnlockBaseAddress(self, lockFlags)
