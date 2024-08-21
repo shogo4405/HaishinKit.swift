@@ -5,11 +5,11 @@ import Combine
 import UIKit
 #endif
 
-/// An object that mixies audio and video for streaming.
+/// An actor that mixies audio and video for streaming.
 public final actor MediaMixer {
     static let defaultFrameRate: Float64 = 30
 
-    /// The MediaMixer error domain codes.
+    /// The error domain codes.
     public enum Error: Swift.Error {
         /// The mixer failed to failed to attach device.
         case failedToAttach(_ error: any Swift.Error)
@@ -77,15 +77,20 @@ public final actor MediaMixer {
         videoIO.frameRate
     }
 
+    /// The capture session is in a running state or not.
+    @available(tvOS 17.0, *)
+    public var isCapturing: Bool {
+        session.isRunning
+    }
+
     #if os(iOS) || os(macOS)
-    /// Specifies the video orientation for stream.
+    /// The video orientation for stream.
     public var videoOrientation: AVCaptureVideoOrientation {
         videoIO.videoOrientation
     }
     #endif
 
     public private(set) var isRunning = false
-
     private var outputs: [any MediaMixerOutput] = []
     private lazy var audioIO = AudioCaptureUnit(session)
     private lazy var videoIO = VideoCaptureUnit(session)
@@ -217,6 +222,20 @@ public final actor MediaMixer {
     /// Sets the audio monitoring enabled or not.
     public func setMonitoringEnabled(_ monitoringEnabled: Bool) {
         audioIO.isMonitoringEnabled = monitoringEnabled
+    }
+
+    /// Starts capturing from input devices.
+    ///
+    /// Internally, it is called either when the view is attached or just before publishing. In other cases, please call this method if you want to manually start the capture.
+    @available(tvOS 17.0, *)
+    public func startCapturing() {
+        session.startRunning()
+    }
+
+    /// Stops capturing from input devices.
+    @available(tvOS 17.0, *)
+    public func stopCapturing() {
+        session.stopRunning()
     }
 
     #if os(iOS) || os(tvOS)
