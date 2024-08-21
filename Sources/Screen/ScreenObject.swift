@@ -390,11 +390,12 @@ public final class TextScreenObject: ScreenObject {
 public final class AssetScreenObject: ScreenObject, ChromaKeyProcessable {
     public var chromaKeyColor: CGColor?
 
+    /// The reading incidies whether assets reading or not.
     public var isReading: Bool {
         return reader?.status == .reading
     }
 
-    /// A value that specifies how the video is displayed within a player layer’s bounds.
+    /// The video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
         didSet {
             guard videoGravity != oldValue else {

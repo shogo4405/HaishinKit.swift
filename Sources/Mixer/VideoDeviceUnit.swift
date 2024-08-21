@@ -8,6 +8,7 @@ public typealias VideoDeviceConfigurationBlock = @Sendable (VideoDeviceUnit) thr
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
 public final class VideoDeviceUnit: DeviceUnit {
+    /// The output type that this capture video data output..
     public typealias Output = AVCaptureVideoDataOutput
 
     #if os(iOS) || os(macOS)

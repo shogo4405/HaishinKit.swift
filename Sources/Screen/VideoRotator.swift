@@ -42,6 +42,7 @@ public final class VideoRotator {
     private var pixelBufferStatus: CVReturn = kCVReturnSuccess
     private let session: VTPixelRotationSession
 
+    /// Creates a new instance.
     public init?() {
         var session: VTPixelRotationSession?
         let status = VTPixelRotationSessionCreate(kCFAllocatorDefault, &session)
@@ -51,6 +52,7 @@ public final class VideoRotator {
         self.session = session
     }
 
+    /// Rotates a sample buffer.
     public func rotate(buffer sampleBuffer: CMSampleBuffer) -> Result<CMSampleBuffer, Error> {
         guard let buffer = sampleBuffer.imageBuffer else {
             return .failure(.noImageBuffer)

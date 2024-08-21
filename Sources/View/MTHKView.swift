@@ -42,6 +42,7 @@ public class MTHKView: MTKView {
         }
     }
 
+    /// Redraws the view’s contents.
     override public func draw(_ rect: CGRect) {
         guard
             let context,

@@ -9,6 +9,7 @@ public typealias AudioDeviceConfigurationBlock = @Sendable (AudioDeviceUnit) thr
 /// An object that provides the interface to control the AVCaptureDevice's transport behavior.
 @available(tvOS 17.0, *)
 public final class AudioDeviceUnit: DeviceUnit {
+    /// The output type that this capture audio data output..
     public typealias Output = AVCaptureAudioDataOutput
 
     /// The track number.
