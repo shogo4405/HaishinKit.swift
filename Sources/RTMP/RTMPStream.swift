@@ -685,6 +685,12 @@ public actor RTMPStream {
 
 extension RTMPStream: HKStream {
     // MARK: HKStream
+    public var soundTransform: SoundTransform? {
+        get async {
+            await player.soundTransfrom
+        }
+    }
+
     public var audioSettings: AudioCodecSettings {
         ingestor.audioSettings
     }
@@ -699,6 +705,10 @@ extension RTMPStream: HKStream {
 
     public func setVideoSettings(_ videoSettings: VideoCodecSettings) {
         ingestor.videoSettings = videoSettings
+    }
+
+    public func setSoundTransform(_ soundTransform: SoundTransform) async {
+        await player.setSoundTransform(soundTransform)
     }
 
     public func append(_ sampleBuffer: CMSampleBuffer) {

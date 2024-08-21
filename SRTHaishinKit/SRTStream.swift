@@ -110,6 +110,16 @@ public actor SRTStream {
 
 extension SRTStream: HKStream {
     // MARK: HKStream
+    public var soundTransform: SoundTransform? {
+        get async {
+            await player.soundTransfrom
+        }
+    }
+
+    public func setSoundTransform(_ soundTransform: SoundTransform) async {
+        await player.setSoundTransform(soundTransform)
+    }
+
     public var audioSettings: AudioCodecSettings {
         ingestor.audioSettings
     }
@@ -158,10 +168,8 @@ extension SRTStream: HKStream {
         }
     }
 
-    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
-        Task {
-            await player.attachAudioPlayer(audioPlayer)
-        }
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
+        await player.attachAudioPlayer(audioPlayer)
     }
 
     public func addOutput(_ observer: some HKStreamOutput) {

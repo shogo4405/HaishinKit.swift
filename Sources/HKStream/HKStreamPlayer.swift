@@ -4,6 +4,12 @@ import Foundation
 /// An actor that provides a stream playback feature.
 public final actor HKStreamPlayer {
     public private(set) var isRunning = false
+    /// The sound transform value control.
+    public var soundTransfrom: SoundTransform? {
+        get async {
+            return await audioPlayerNode?.soundTransfrom
+        }
+    }
     private lazy var mediaLink = MediaLink()
     private lazy var audioCodec = AudioCodec()
     private lazy var videoCodec = VideoCodec()
@@ -13,6 +19,11 @@ public final actor HKStreamPlayer {
     /// Creates a new instance.
     public init(_ stream: some HKStream) {
         self.stream = stream
+    }
+
+    /// Sets the sound transform value control.
+    public func setSoundTransform(_ soundTransfrom: SoundTransform) async {
+        await audioPlayerNode?.setSoundTransfrom(soundTransfrom)
     }
 
     /// Appends a sample buffer for playback.
@@ -33,11 +44,9 @@ public final actor HKStreamPlayer {
     }
 
     /// Attaches an audio player.
-    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
-        Task {
-            audioPlayerNode = await audioPlayer?.makePlayerNode()
-            await mediaLink.setAudioPlayer(audioPlayerNode)
-        }
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
+        audioPlayerNode = await audioPlayer?.makePlayerNode()
+        await mediaLink.setAudioPlayer(audioPlayerNode)
     }
 }
 

@@ -15,6 +15,7 @@ final actor AudioPlayerNode {
         }
         return 0.0
     }
+    private(set) var soundTransfrom = SoundTransform()
     private(set) var isPaused = false
     private let playerNode: AVAudioPlayerNode
     private var audioTime = AudioTime()
@@ -35,6 +36,10 @@ final actor AudioPlayerNode {
     init(player: AudioPlayer, playerNode: AVAudioPlayerNode) {
         self.player = player
         self.playerNode = playerNode
+    }
+
+    func setSoundTransfrom(_ soundTransfrom: SoundTransform) {
+        soundTransfrom.apply(playerNode)
     }
 
     func enqueue(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) async {
