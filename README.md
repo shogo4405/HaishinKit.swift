@@ -164,7 +164,6 @@ Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and t
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
-carthage bootstrap --platform iOS,macOS,tvOS --use-xcframeworks
 open HaishinKit.xcodeproj
 ```
 
@@ -203,8 +202,8 @@ HaishinKit has a multi-module configuration. If you want to use the SRT protocol
 | - | :- | :- |
 | SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
 | CocoaPods |<pre>def import_pods<br>  pod 'HaishinKit', '~> 1.9'<br>end</pre>|<pre>def import_pods<br>  pod 'SRTHaishinKit', '~> 1.9'<br>end</pre>|
-| Carthage | github "shogo4405/HaishinKit.swift" ~> 1.9.2 | Not available. |
 * SRTHaishinKit via CocoaPods supports only iOS and tvOS.
+* Discontinued support for Carthage. #1542
 
 ## 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
