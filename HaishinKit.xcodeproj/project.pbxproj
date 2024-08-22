@@ -107,7 +107,6 @@
 		B31723602C0940D800C7AED0 /* VideoRotator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B317235F2C0940D800C7AED0 /* VideoRotator.swift */; };
 		B31723622C0948E300C7AED0 /* VTRotationSessionOption+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31723612C0948E300C7AED0 /* VTRotationSessionOption+Extension.swift */; };
 		B34239852B9FD3E30068C3FB /* AudioNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = B34239842B9FD3E30068C3FB /* AudioNode.swift */; };
-		BC0394562AA8A384006EDE38 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC03945F2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC03945E2AA8AFF5006EDE38 /* ExpressibleByIntegerLiteral+ExtensionTests.swift */; };
 		BC04A2D42AD2D1D700C87A3E /* AVAudioTime+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC04A2D32AD2D1D700C87A3E /* AVAudioTime+Extension.swift */; };
 		BC04A2D62AD2D95500C87A3E /* CMTime+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC04A2D52AD2D95500C87A3E /* CMTime+Extension.swift */; };
@@ -157,8 +156,6 @@
 		BC3004F9296C351D00119932 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3004F8296C351D00119932 /* PlaybackViewController.swift */; };
 		BC31DBD22A653D1600C4DEA3 /* AudioMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC31DBD12A653D1600C4DEA3 /* AudioMonitor.swift */; };
 		BC34836A2AC56F3A002926F1 /* VideoMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3483692AC56F3A002926F1 /* VideoMixer.swift */; };
-		BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC34E00225EBB59C005F975A /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BC34FA0B286CB90A00EFAF27 /* PiPHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC34FA0A286CB90A00EFAF27 /* PiPHKView.swift */; };
 		BC37861D2C0F7B9900D79263 /* CMFormatDescription+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC37861C2C0F7B9900D79263 /* CMFormatDescription+Extension.swift */; };
 		BC3786232C10CA9B00D79263 /* NALUnitReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3786222C10CA9B00D79263 /* NALUnitReader.swift */; };
@@ -202,19 +199,12 @@
 		BC701F342AAD808F00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC701F372AAD809D00C4BEFE /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
 		BC701F382AAD809D00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC72EF1025F24DF80068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC72EF1125F24DF80068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC72EF2C25F24E480068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC72EF3225F24E500068F040 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC77ED6A2C7261880003427A /* HKStreamReadyState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC77ED692C7261800003427A /* HKStreamReadyState.swift */; };
+		BC77ED6D2C77C61C0003427A /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC77ED6C2C77C61C0003427A /* Logboard */; };
 		BC7A0E442B088FA7005FB2F7 /* Example_visionOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E432B088FA7005FB2F7 /* Example_visionOSApp.swift */; };
 		BC7A0E462B088FA7005FB2F7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E452B088FA7005FB2F7 /* ContentView.swift */; };
 		BC7A0E552B0894B9005FB2F7 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC7A0E562B0894B9005FB2F7 /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC7A0E5A2B0894CE005FB2F7 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BC7A0E5B2B0894CE005FB2F7 /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC7A0E5C2B089851005FB2F7 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		BC7A0E5E2B089A08005FB2F7 /* PiPHKSwiftUiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7A0E5D2B089A08005FB2F7 /* PiPHKSwiftUiView.swift */; };
 		BC7C56B7299E579F00C41A9B /* AudioCodecSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7C56B6299E579F00C41A9B /* AudioCodecSettings.swift */; };
@@ -276,7 +266,6 @@
 		BCCC45B22AA28A7D0016EFE8 /* SRTError.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCC45AA2AA28A7D0016EFE8 /* SRTError.swift */; };
 		BCCC45B42AA28AAD0016EFE8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCC45B32AA28AAD0016EFE8 /* Constants.swift */; };
 		BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		BCCC45BA2AA28BBE0016EFE8 /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
 		BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45C02AA28BF40016EFE8 /* libc++.tbd */; };
 		BCD63AB526FDF1250084842D /* iOSSwiftUIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB426FDF1250084842D /* iOSSwiftUIApp.swift */; };
 		BCD63AB726FDF1250084842D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD63AB626FDF1250084842D /* ContentView.swift */; };
@@ -284,8 +273,6 @@
 		BCD63ABC26FDF12A0084842D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCD63ABB26FDF12A0084842D /* Preview Assets.xcassets */; };
 		BCD63ADC26FDF34C0084842D /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; platformFilter = ios; };
 		BCD63ADD26FDF34C0084842D /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCD63AE126FDF3500084842D /* Logboard.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; };
-		BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BC34DFD125EBB12C005F975A /* Logboard.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BCD8702B2BC266CD009E495B /* HKStreamOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD8702A2BC266CD009E495B /* HKStreamOutput.swift */; };
 		BCD91C0D2A700FF50033F9E1 /* AudioRingBufferTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCD91C0C2A700FF50033F9E1 /* AudioRingBufferTests.swift */; };
 		BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */; };
@@ -420,7 +407,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */,
-				BC72EF3325F24E500068F040 /* Logboard.xcframework in Embed Frameworks */,
 				BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -433,7 +419,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */,
-				BC72EF2C25F24E480068F040 /* Logboard.xcframework in Embed Frameworks */,
 				BC701F342AAD808F00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -446,7 +431,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */,
-				BC72EF1125F24DF80068F040 /* Logboard.xcframework in Embed Frameworks */,
 				BCCC459D2AA289FA0016EFE8 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -481,7 +465,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BC7A0E562B0894B9005FB2F7 /* HaishinKit.framework in Embed Frameworks */,
-				BC7A0E5B2B0894CE005FB2F7 /* Logboard.xcframework in Embed Frameworks */,
 				BCC2237F2C1468C700F5F234 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -494,7 +477,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				BCD63ADD26FDF34C0084842D /* HaishinKit.framework in Embed Frameworks */,
-				BCD63AE226FDF3500084842D /* Logboard.xcframework in Embed Frameworks */,
 				BC701F382AAD809D00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -551,7 +533,6 @@
 		2976A4851D4903C300B53EF2 /* DeviceUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtil.swift; sourceTree = "<group>"; };
 		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29798E5D1CE60E5300F5CBD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2981E1301D646E3F00E8F7CA /* Cartfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Cartfile; sourceTree = "<group>"; };
 		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
@@ -774,7 +755,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC3E49D22C45617100A9C5B6 /* SRTHaishinKit.framework in Frameworks */,
-				BC34DFF025EBB53F005F975A /* Logboard.xcframework in Frameworks */,
 				29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */,
 				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
 			);
@@ -785,7 +765,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC0BF4F22985FA9000D72CB4 /* HaishinKit.framework in Frameworks */,
-				BC0394562AA8A384006EDE38 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -794,7 +773,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */,
-				BC72EF1025F24DF80068F040 /* Logboard.xcframework in Frameworks */,
 				BCCC459C2AA289FA0016EFE8 /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -804,7 +782,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */,
-				BC72EF2B25F24E480068F040 /* Logboard.xcframework in Frameworks */,
 				BC701F332AAD808F00C4BEFE /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -814,7 +791,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */,
-				BC72EF3225F24E500068F040 /* Logboard.xcframework in Frameworks */,
 				BCC223882C15212E00F5F234 /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -823,7 +799,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC34E00225EBB59C005F975A /* Logboard.xcframework in Frameworks */,
+				BC77ED6D2C77C61C0003427A /* Logboard in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -832,7 +808,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC7A0E552B0894B9005FB2F7 /* HaishinKit.framework in Frameworks */,
-				BC7A0E5A2B0894CE005FB2F7 /* Logboard.xcframework in Frameworks */,
 				BCC2237E2C1468C700F5F234 /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -844,7 +819,6 @@
 				BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */,
 				BCC223852C146ADA00F5F234 /* libsrt.xcframework in Frameworks */,
 				BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */,
-				BCCC45BA2AA28BBE0016EFE8 /* Logboard.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -853,7 +827,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCD63ADC26FDF34C0084842D /* HaishinKit.framework in Frameworks */,
-				BCD63AE126FDF3500084842D /* Logboard.xcframework in Frameworks */,
 				BC701F372AAD809D00C4BEFE /* SRTHaishinKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -964,7 +937,6 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
-				2981E1301D646E3F00E8F7CA /* Cartfile */,
 				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
 				2997BDD31D50D31B000AF900 /* README.md */,
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
@@ -1696,6 +1668,9 @@
 				Base,
 			);
 			mainGroup = 2945CBB31B4BE66000104112;
+			packageReferences = (
+				BC77ED6B2C77C5BB0003427A /* XCRemoteSwiftPackageReference "Logboard" */,
+			);
 			productRefGroup = 2945CBBE1B4BE66000104112 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -2494,7 +2469,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.9.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				ONLY_ACTIVE_ARCH = YES;
@@ -2541,7 +2516,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 1.9.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
 				ONLY_ACTIVE_ARCH = NO;
@@ -2954,7 +2929,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.9.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -3010,7 +2985,7 @@
 					"@loader_path/Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 1.9.2;
+				MARKETING_VERSION = 2.0.0;
 				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
 				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
 				MTL_FAST_MATH = YES;
@@ -3228,6 +3203,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		BC77ED6B2C77C5BB0003427A /* XCRemoteSwiftPackageReference "Logboard" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/shogo4405/Logboard";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 2.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		BC77ED6C2C77C61C0003427A /* Logboard */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC77ED6B2C77C5BB0003427A /* XCRemoteSwiftPackageReference "Logboard" */;
+			productName = Logboard;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2945CBB41B4BE66000104112 /* Project object */;
 }

@@ -1,6 +1,5 @@
 import AVFoundation
 import Foundation
-import Logboard
 
 /// A class represents that reads MPEG-2 transport stream data.
 public final class TSReader {
