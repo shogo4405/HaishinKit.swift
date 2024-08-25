@@ -24,7 +24,7 @@ final class ViewController: UIViewController {
         }
     }
     private var mixer = MediaMixer()
-    private let netStreamSwitcher: NetStreamSwitcher = .init()
+    private let netStreamSwitcher: HKStreamSwitcher = .init()
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)

@@ -6,7 +6,7 @@ import UIKit
 
 final class PlaybackViewController: UIViewController {
     @IBOutlet private weak var playbackButton: UIButton!
-    private let netStreamSwitcher: NetStreamSwitcher = .init()
+    private let netStreamSwitcher: HKStreamSwitcher = .init()
     private var pictureInPictureController: AVPictureInPictureController?
 
     override func viewWillAppear(_ animated: Bool) {

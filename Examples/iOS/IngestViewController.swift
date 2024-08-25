@@ -23,7 +23,7 @@ final class IngestViewController: UIViewController {
     private var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
     private var preferedStereo = false
-    private let netStreamSwitcher: NetStreamSwitcher = .init()
+    private let netStreamSwitcher: HKStreamSwitcher = .init()
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
