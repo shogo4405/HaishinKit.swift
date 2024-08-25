@@ -13,6 +13,8 @@ struct MTHKSwiftUiView: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: MTHKView, context: Context) {
-        mthkView.attachStream(rtmpStream)
+        Task {
+            await rtmpStream.addOutput(mthkView)
+        }
     }
 }

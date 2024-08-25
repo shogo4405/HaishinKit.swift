@@ -9,10 +9,11 @@ import VideoToolbox
 final class ViewModel: ObservableObject {
     let maxRetryCount: Int = 5
 
+    private var mixer = MediaMixer()
     private var rtmpConnection = RTMPConnection()
     @Published var rtmpStream: RTMPStream!
     private var sharedObject: RTMPSharedObject!
-    private var currentEffect: VideoEffect?
+    private var currentEffect: (any VideoEffect)?
     @Published var currentPosition: AVCaptureDevice.Position = .back
     private var retryCount: Int = 0
     @Published var published = false
@@ -26,29 +27,33 @@ final class ViewModel: ObservableObject {
 
     var frameRate: String = "30.0" {
         willSet {
-            rtmpStream.frameRate = Float64(newValue) ?? 30.0
+            Task {
+                await mixer.setFrameRate(Float64(newValue) ?? 30.0)
+            }
             objectWillChange.send()
         }
     }
 
     var videoEffect: String = "None" {
         willSet {
-            if let currentEffect: VideoEffect = currentEffect {
-                _ = rtmpStream.unregisterVideoEffect(currentEffect)
-            }
+            Task {
+                if let currentEffect {
+                    _ = await mixer.screen.unregisterVideoEffect(currentEffect)
+                }
 
-            switch newValue {
-            case "Monochrome":
-                currentEffect = MonochromeEffect()
-                _ = rtmpStream.registerVideoEffect(currentEffect!)
+                switch newValue {
+                case "Monochrome":
+                    currentEffect = MonochromeEffect()
+                    _ = await mixer.screen.registerVideoEffect(currentEffect!)
 
-            case "Pronoma":
-                print("case Pronoma")
-                currentEffect = PronamaEffect()
-                _ = rtmpStream.registerVideoEffect(currentEffect!)
+                case "Pronoma":
+                    print("case Pronoma")
+                    currentEffect = PronamaEffect()
+                    _ = await mixer.screen.registerVideoEffect(currentEffect!)
 
-            default:
-                break
+                default:
+                    break
+                }
             }
 
             objectWillChange.send()
@@ -61,21 +66,17 @@ final class ViewModel: ObservableObject {
 
     func config() {
         rtmpStream = RTMPStream(connection: rtmpConnection)
-        if let orientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
-            rtmpStream.videoOrientation = orientation
-        }
-        rtmpStream.sessionPreset = .hd1280x720
-        rtmpStream.videoSettings.videoSize = .init(width: 1280, height: 720)
-        nc.publisher(for: UIDevice.orientationDidChangeNotification, object: nil)
-            .sink { [weak self] _ in
-                guard let orientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation), let self = self else {
-                    return
-                }
-                self.rtmpStream.videoOrientation = orientation
+        Task {
+            // rtmpStream = RTMPStream(connection: rtmpConnection)
+            if let orientation = await DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
+                await mixer.setVideoOrientation(orientation)
             }
-            .store(in: &subscriptions)
-
-        checkDeviceAuthorization()
+            
+            await mixer.addOutput(rtmpStream)
+            
+            await mixer.setSessionPreset(.hd1280x720)
+            checkDeviceAuthorization()
+        }
     }
 
     func checkDeviceAuthorization() {
@@ -93,141 +94,92 @@ final class ViewModel: ObservableObject {
     }
 
     func registerForPublishEvent() {
-        rtmpStream.attachAudio(AVCaptureDevice.default(for: .audio)) { _, error in
-            if let error {
-                logger.error(error)
-            }
+        Task {
+            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition))
         }
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)) { _, error  in
-            if let error {
-                logger.error(error)
-            }
-        }
-        rtmpStream.publisher(for: \.currentFPS)
-            .sink { [weak self] currentFPS in
-                guard let self = self else {
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.fps = self.published == true ? "\(currentFPS)" : "FPS"
-                }
-            }
-            .store(in: &subscriptions)
-
-        nc.publisher(for: AVAudioSession.interruptionNotification, object: nil)
-            .sink { notification in
-                logger.info(notification)
-            }
-            .store(in: &subscriptions)
-
-        nc.publisher(for: AVAudioSession.routeChangeNotification, object: nil)
-            .sink { notification in
-                logger.info(notification)
-            }
-            .store(in: &subscriptions)
     }
 
     func unregisterForPublishEvent() {
-        rtmpStream.close()
+        Task {
+            try? await rtmpStream.close()
+        }
     }
 
     func startPublish() {
-        UIApplication.shared.isIdleTimerDisabled = true
-        logger.info(Preference.default.uri!)
-
-        rtmpConnection.addEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        rtmpConnection.addEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
-        rtmpConnection.connect(Preference.default.uri!)
+        Task { @MainActor in
+            UIApplication.shared.isIdleTimerDisabled = true
+            logger.info(Preference.default.uri!)
+            try? await rtmpConnection.connect(Preference.default.uri!)
+        }
     }
 
     func stopPublish() {
-        UIApplication.shared.isIdleTimerDisabled = false
-        rtmpConnection.close()
-        rtmpConnection.removeEventListener(.rtmpStatus, selector: #selector(rtmpStatusHandler), observer: self)
-        rtmpConnection.removeEventListener(.ioError, selector: #selector(rtmpErrorHandler), observer: self)
+        Task { @MainActor in
+            UIApplication.shared.isIdleTimerDisabled = false
+            try? await rtmpConnection.close()
+        }
     }
 
     func toggleTorch() {
-        rtmpStream.torch.toggle()
+        Task {
+            await mixer.setTorchEnabled(await !mixer.isTorchEnabled)
+        }
     }
 
     func pausePublish() {
-        rtmpStream.paused.toggle()
     }
 
     func tapScreen(touchPoint: CGPoint) {
-        let pointOfInterest = CGPoint(x: touchPoint.x / UIScreen.main.bounds.size.width, y: touchPoint.y / UIScreen.main.bounds.size.height)
-        logger.info("pointOfInterest: \(pointOfInterest)")
-        guard
-            let device = rtmpStream.videoCapture(for: 0)?.device, device.isFocusPointOfInterestSupported else {
-            return
-        }
-        do {
-            try device.lockForConfiguration()
-            device.focusPointOfInterest = pointOfInterest
-            device.focusMode = .continuousAutoFocus
-            device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while locking device for focusPointOfInterest: \(error)")
+        Task {
+            let pointOfInterest = await CGPoint(x: touchPoint.x / UIScreen.main.bounds.size.width, y: touchPoint.y / UIScreen.main.bounds.size.height)
+            logger.info("pointOfInterest: \(pointOfInterest)")
+            try? await mixer.configuration(video: 0) { unit in
+                guard let device = unit.device, device.isFocusPointOfInterestSupported else {
+                    return
+                }
+                try device.lockForConfiguration()
+                device.focusPointOfInterest = pointOfInterest
+                device.focusMode = .continuousAutoFocus
+                device.unlockForConfiguration()
+            }
         }
     }
 
     func rotateCamera() {
-        let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
-        rtmpStream.attachCamera(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) { _, error  in
-            logger.error(error)
+        Task {
+            let position: AVCaptureDevice.Position = currentPosition == .back ? .front : .back
+            try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position))
+            currentPosition = position
         }
-        currentPosition = position
     }
 
     func changeZoomLevel(level: CGFloat) {
-        guard let device = rtmpStream.videoCapture(for: 0)?.device, 1 <= level && level < device.activeFormat.videoMaxZoomFactor else {
-            return
-        }
-        do {
-            try device.lockForConfiguration()
-            device.ramp(toVideoZoomFactor: level, withRate: 5.0)
-            device.unlockForConfiguration()
-        } catch let error as NSError {
-            logger.error("while locking device for ramp: \(error)")
+        Task {
+            try? await mixer.configuration(video: 0) { unit in
+                guard let device = unit.device, 1 <= level && level < device.activeFormat.videoMaxZoomFactor else {
+                    return
+                }
+                try device.lockForConfiguration()
+                device.ramp(toVideoZoomFactor: level, withRate: 5.0)
+                device.unlockForConfiguration()
+            }
         }
     }
 
     func changeVideoRate(level: CGFloat) {
-        rtmpStream.videoSettings.bitRate = Int(level * 1000)
+        Task {
+            var videoSettings = await rtmpStream.videoSettings
+            videoSettings.bitRate = Int(level * 1000)
+            await rtmpStream.setVideoSettings(videoSettings)
+        }
     }
 
     func changeAudioRate(level: CGFloat) {
-        rtmpStream.audioSettings.bitRate = Int(level * 1000)
-    }
-
-    @objc
-    private func rtmpStatusHandler(_ notification: Notification) {
-        let e = Event.from(notification)
-        guard let data: AMFObject = e.data as? AMFObject, let code: String = data["code"] as? String else {
-            return
+        Task {
+            var audioSettings = await rtmpStream.audioSettings
+            audioSettings.bitRate = Int(level * 1000)
+            await rtmpStream.setAudioSettings(audioSettings)
         }
-        print(code)
-        switch code {
-        case RTMPConnection.Code.connectSuccess.rawValue:
-            retryCount = 0
-            rtmpStream.publish(Preference.default.streamName!)
-        // sharedObject!.connect(rtmpConnection)
-        case RTMPConnection.Code.connectFailed.rawValue, RTMPConnection.Code.connectClosed.rawValue:
-            guard retryCount <= maxRetryCount else {
-                return
-            }
-            Thread.sleep(forTimeInterval: pow(2.0, Double(retryCount)))
-            rtmpConnection.connect(Preference.default.uri!)
-            retryCount += 1
-        default:
-            break
-        }
-    }
-
-    @objc
-    private func rtmpErrorHandler(_ notification: Notification) {
-        logger.error(notification)
-        rtmpConnection.connect(Preference.default.uri!)
     }
 }

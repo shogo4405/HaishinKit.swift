@@ -166,7 +166,7 @@
 		BC3C56712C3F75B200C83107 /* RTMPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3C56702C3F75B200C83107 /* RTMPStatus.swift */; };
 		BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */; };
 		BC3E49D02C45520B00A9C5B6 /* HKStreamIngestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E49CF2C45520B00A9C5B6 /* HKStreamIngestor.swift */; };
-		BC3E49D12C455A1B00A9C5B6 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
+		BC3E49D12C455A1B00A9C5B6 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
 		BC3E49D22C45617100A9C5B6 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
 		BC3E49D32C45617100A9C5B6 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		BC3E49D82C466B5E00A9C5B6 /* RTMPAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E49D72C466B5D00A9C5B6 /* RTMPAuthenticator.swift */; };
@@ -241,14 +241,14 @@
 		BCC223852C146ADA00F5F234 /* libsrt.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */; };
 		BCC223882C15212E00F5F234 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
 		BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
+		BCC4F43D2ADB966800954EF5 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
 		BCCB42642C689CA7003B1168 /* AudioPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB42632C689C88003B1168 /* AudioPlayer.swift */; };
 		BCCB426C2C6A565E003B1168 /* NetworkMonitorReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB426B2C6A5651003B1168 /* NetworkMonitorReport.swift */; };
 		BCCB426E2C6A568C003B1168 /* NetworkMonitorEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB426D2C6A5682003B1168 /* NetworkMonitorEvent.swift */; };
 		BCCB42752C6A76BF003B1168 /* MediaMixerOutput.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCB42742C6A76B7003B1168 /* MediaMixerOutput.swift */; };
-		BCCB42762C6A8F47003B1168 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
-		BCCB42772C6A8F47003B1168 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
-		BCCB42782C6A8F47003B1168 /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
+		BCCB42762C6A8F47003B1168 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
+		BCCB42772C6A8F47003B1168 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
+		BCCB42782C6A8F47003B1168 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
 		BCCBCE9529A7C9C90095B51C /* ISOTypeBufferUtilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9429A7C9C90095B51C /* ISOTypeBufferUtilTests.swift */; };
 		BCCBCE9729A90D880095B51C /* AVCNALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9629A90D880095B51C /* AVCNALUnit.swift */; };
 		BCCBCE9B29A9D96A0095B51C /* NALUnitReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCCBCE9A29A9D96A0095B51C /* NALUnitReaderTests.swift */; };
@@ -278,7 +278,7 @@
 		BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */; };
 		BCDEB4FA2BE442F900EEC6ED /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F92BE442F900EEC6ED /* Screen.swift */; };
 		BCDEB4FC2BE4436D00EEC6ED /* ScreenObjectContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */; };
-		BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
+		BCE0E33D2AD369550082C16F /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
 		BCF13C592C666E6400ADDBA9 /* HKStreamBitRateStrategy.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF13C582C666E6400ADDBA9 /* HKStreamBitRateStrategy.swift */; };
 		BCF5ADFC2C56A682000CF54B /* ScreenActor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF5ADFB2C56A680000CF54B /* ScreenActor.swift */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
@@ -738,7 +738,7 @@
 		BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenRenderer.swift; sourceTree = "<group>"; };
 		BCDEB4F92BE442F900EEC6ED /* Screen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Screen.swift; sourceTree = "<group>"; };
 		BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObjectContainer.swift; sourceTree = "<group>"; };
-		BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetStreamSwitcher.swift; sourceTree = "<group>"; };
+		BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKStreamSwitcher.swift; sourceTree = "<group>"; };
 		BCF13C582C666E6400ADDBA9 /* HKStreamBitRateStrategy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKStreamBitRateStrategy.swift; sourceTree = "<group>"; };
 		BCF5ADFB2C56A680000CF54B /* ScreenActor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenActor.swift; sourceTree = "<group>"; };
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
@@ -1023,7 +1023,7 @@
 		2968973E1CDB01920074D5F0 /* Examples */ = {
 			isa = PBXGroup;
 			children = (
-				BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */,
+				BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */,
 				291468161E581C7D00E619BA /* Preference.swift */,
 				2968973F1CDB01AD0074D5F0 /* iOS */,
 				BCD63AB326FDF1250084842D /* iOSSwiftUI */,
@@ -1849,7 +1849,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC3E49D12C455A1B00A9C5B6 /* NetStreamSwitcher.swift in Sources */,
+				BC3E49D12C455A1B00A9C5B6 /* HKStreamSwitcher.swift in Sources */,
 				2930D0411E12D35400DA2DC5 /* SampleHandler.swift in Sources */,
 				BC4C9EAC23F00F3A004A14F2 /* Preference.swift in Sources */,
 			);
@@ -2047,7 +2047,7 @@
 				BC0F1FD52ACBD39600C326FF /* MemoryUsage.swift in Sources */,
 				296897671CDB02940074D5F0 /* AppDelegate.swift in Sources */,
 				296897681CDB02940074D5F0 /* IngestViewController.swift in Sources */,
-				BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */,
+				BCE0E33D2AD369550082C16F /* HKStreamSwitcher.swift in Sources */,
 				BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */,
 				2955F51F1D09EBAD004CC995 /* VisualEffect.swift in Sources */,
 				295074311E462105007F15A4 /* PreferenceViewController.swift in Sources */,
@@ -2068,7 +2068,7 @@
 				BC6436552BC41F2D00C725D7 /* DnDDelegate.swift in Sources */,
 				BC6436512BC41B1400C725D7 /* FLVAnalyzerViewController.swift in Sources */,
 				BC3004F1296C0C7400119932 /* MenuViewController.swift in Sources */,
-				BCC4F43D2ADB966800954EF5 /* NetStreamSwitcher.swift in Sources */,
+				BCC4F43D2ADB966800954EF5 /* HKStreamSwitcher.swift in Sources */,
 				BC6436532BC41F1100C725D7 /* DnDableView.swift in Sources */,
 				BC6436572BC41FE200C725D7 /* Data+Extension.swift in Sources */,
 				BC64364F2BC4184A00C725D7 /* FLVReader.swift in Sources */,
@@ -2086,7 +2086,7 @@
 			files = (
 				29EB3DEB1ED055B0001CAE8B /* ViewController.swift in Sources */,
 				29E7968D1ED18C5300D75C6C /* Preference.swift in Sources */,
-				BCCB42772C6A8F47003B1168 /* NetStreamSwitcher.swift in Sources */,
+				BCCB42772C6A8F47003B1168 /* HKStreamSwitcher.swift in Sources */,
 				29EB3DE91ED055A5001CAE8B /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2095,7 +2095,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCCB42782C6A8F47003B1168 /* NetStreamSwitcher.swift in Sources */,
+				BCCB42782C6A8F47003B1168 /* HKStreamSwitcher.swift in Sources */,
 				BC7A0E5E2B089A08005FB2F7 /* PiPHKSwiftUiView.swift in Sources */,
 				BC7A0E462B088FA7005FB2F7 /* ContentView.swift in Sources */,
 				BC603E492B08933F00C8386E /* ViewModel.swift in Sources */,
@@ -2131,7 +2131,7 @@
 				BCD63AB726FDF1250084842D /* ContentView.swift in Sources */,
 				2EC97B7327880FF400D8BE32 /* Views.swift in Sources */,
 				2EC97B7227880FF400D8BE32 /* OnTapGestureView.swift in Sources */,
-				BCCB42762C6A8F47003B1168 /* NetStreamSwitcher.swift in Sources */,
+				BCCB42762C6A8F47003B1168 /* HKStreamSwitcher.swift in Sources */,
 				2EC97B6A27880E9C00D8BE32 /* Preference.swift in Sources */,
 				BCD63AB526FDF1250084842D /* iOSSwiftUIApp.swift in Sources */,
 			);
