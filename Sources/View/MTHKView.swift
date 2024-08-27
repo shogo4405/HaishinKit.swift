@@ -17,6 +17,7 @@ public class MTHKView: MTKView {
         return device?.makeCommandQueue()
     }()
     private var context: CIContext?
+    private var effects: [any VideoEffect] = .init()
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     public init(frame: CGRect) {
@@ -86,7 +87,9 @@ public class MTHKView: MTKView {
         }
         let bounds = CGRect(origin: .zero, size: drawableSize)
         var scaledImage: CIImage = displayImage
-
+        for effect in effects {
+            scaledImage = effect.execute(scaledImage)
+        }
         scaledImage = scaledImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
@@ -94,6 +97,24 @@ public class MTHKView: MTKView {
         context.render(scaledImage, to: currentDrawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
+    }
+
+    /// Registers a video effect.
+    public func registerVideoEffect(_ effect: some VideoEffect) -> Bool {
+        if effects.contains(where: { $0 === effect }) {
+            return false
+        }
+        effects.append(effect)
+        return true
+    }
+
+    /// Unregisters a video effect.
+    public func unregisterVideoEffect(_ effect: some VideoEffect) -> Bool {
+        if let index = effects.firstIndex(where: { $0 === effect }) {
+            effects.remove(at: index)
+            return true
+        }
+        return false
     }
 }
 
