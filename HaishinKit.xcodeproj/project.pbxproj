@@ -81,7 +81,7 @@
 		29B876BC1CD70B3900FC07DA /* ByteArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876B81CD70B3900FC07DA /* ByteArray.swift */; };
 		29B876BD1CD70B3900FC07DA /* CRC32.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876B91CD70B3900FC07DA /* CRC32.swift */; };
 		29C2631C1D0083B50098D4EF /* VideoCaptureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B8768E1CD70AFE00FC07DA /* VideoCaptureUnit.swift */; };
-		29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* Atomic.swift */; };
+		29DC17B321D0CC0600E26CED /* HKAtomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29DC17B221D0CC0600E26CED /* HKAtomic.swift */; };
 		29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		29E7968D1ED18C5300D75C6C /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291468161E581C7D00E619BA /* Preference.swift */; };
 		29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */; };
@@ -575,7 +575,7 @@
 		29D3D5031ED053C000DD4AA6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		29D3D5041ED053C000DD4AA6 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		29D3D5051ED053C000DD4AA6 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		29DC17B221D0CC0600E26CED /* Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Atomic.swift; sourceTree = "<group>"; };
+		29DC17B221D0CC0600E26CED /* HKAtomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKAtomic.swift; sourceTree = "<group>"; };
 		29EA87D21E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ExpressibleByIntegerLiteral+Extension.swift"; sourceTree = "<group>"; };
 		29EA87D41E799F670043A5F8 /* Mirror+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Mirror+Extension.swift"; sourceTree = "<group>"; };
 		29EA87D71E79A0090043A5F8 /* URL+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "URL+Extension.swift"; sourceTree = "<group>"; };
@@ -865,13 +865,13 @@
 			isa = PBXGroup;
 			children = (
 				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
-				29DC17B221D0CC0600E26CED /* Atomic.swift */,
 				BC1CCF5F2BE53FE70067198A /* AudioTime.swift */,
 				BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
 				29B876631CD70AB300FC07DA /* Constants.swift */,
 				29B876671CD70AB300FC07DA /* DataConvertible.swift */,
 				2976A4851D4903C300B53EF2 /* DeviceUtil.swift */,
+				29DC17B221D0CC0600E26CED /* HKAtomic.swift */,
 				2942424C1CF4C01300D65DCB /* MD5.swift */,
 				2942A4F721A9418A004E1BEE /* Runner.swift */,
 				BC1720B52C08C59B00F65941 /* TypedBlockQueue.swift */,
@@ -1984,7 +1984,7 @@
 				BC11024A2925147300D48035 /* DeviceUnit.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* MediaMixer.swift in Sources */,
 				BCCB426E2C6A568C003B1168 /* NetworkMonitorEvent.swift in Sources */,
-				29DC17B321D0CC0600E26CED /* Atomic.swift in Sources */,
+				29DC17B321D0CC0600E26CED /* HKAtomic.swift in Sources */,
 				BCDEB4F82BE441D300EEC6ED /* ScreenRenderer.swift in Sources */,
 				2942424D1CF4C01300D65DCB /* MD5.swift in Sources */,
 				29EA87D31E799F360043A5F8 /* ExpressibleByIntegerLiteral+Extension.swift in Sources */,

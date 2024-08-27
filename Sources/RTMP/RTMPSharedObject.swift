@@ -80,7 +80,7 @@ extension RTMPSharedObjectEvent: CustomDebugStringConvertible {
 // MARK: -
 /// The RTMPSharedObject class is used to read and write data on a server.
 public actor RTMPSharedObject {
-    private static nonisolated(unsafe) var remoteSharedObjects: Atomic<[String: RTMPSharedObject]> = .init([:])
+    private static nonisolated(unsafe) var remoteSharedObjects: HKAtomic<[String: RTMPSharedObject]> = .init([:])
 
     /// Returns a reference to a shared object on a server.
     public static func getRemote(withName: String, remotePath: String, persistence: Bool) -> RTMPSharedObject {
