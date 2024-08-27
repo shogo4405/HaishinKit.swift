@@ -15,7 +15,9 @@ public struct AMFUndefined: Sendable, CustomStringConvertible {
 
 /// The AMFTypedObject structure represents a typed object for ActionScript.
 public struct AMFTypedObject: Sendable {
+    /// The type name.
     public let typeName: String
+    /// The data of object contents.
     public let data: AMFObject
 }
 

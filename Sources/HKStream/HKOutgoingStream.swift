@@ -2,9 +2,10 @@ import AVFoundation
 import Foundation
 
 /// An object that provides a stream ingest feature.
-public final class HKStreamIngestor {
+public final class HKOutgoingStream {
     public private(set) var isRunning = false
 
+    /// The asynchronous sequence for audio output.
     public var audio: AsyncStream<(AVAudioBuffer, AVAudioTime)> {
         return audioCodec.outputStream
     }
@@ -19,8 +20,10 @@ public final class HKStreamIngestor {
         }
     }
 
+    /// The audio input format.
     public private(set) var audioInputFormat: CMFormatDescription?
 
+    /// The asynchronous sequence for video output.
     public var video: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
         return videoCodec.outputStream
     }
@@ -35,6 +38,7 @@ public final class HKStreamIngestor {
         }
     }
 
+    /// The video input format.
     public private(set) var videoInputFormat: CMFormatDescription?
 
     private var audioCodec = AudioCodec()
@@ -65,7 +69,7 @@ public final class HKStreamIngestor {
     }
 }
 
-extension HKStreamIngestor: Runner {
+extension HKOutgoingStream: Runner {
     // MARK: Runner
     public func startRunning() {
         guard !isRunning else {

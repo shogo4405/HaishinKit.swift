@@ -141,7 +141,7 @@
 		BC1DC50A2A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */; };
 		BC1DC5122A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5112A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift */; };
 		BC1DC5142A05428800E928ED /* HEVCNALUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1DC5132A05428800E928ED /* HEVCNALUnit.swift */; };
-		BC2170682C72103C007CF0BF /* HKStreamPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2170672C721034007CF0BF /* HKStreamPlayer.swift */; };
+		BC2170682C72103C007CF0BF /* HKIncomingStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2170672C721034007CF0BF /* HKIncomingStream.swift */; };
 		BC22EEEE2AAF50F200E3406D /* Codec.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC22EEED2AAF50F200E3406D /* Codec.swift */; };
 		BC22EEF22AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC22EEF12AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift */; };
 		BC2828AD2AA3225100741013 /* AVCaptureDevice.Format+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2828AC2AA3225100741013 /* AVCaptureDevice.Format+Extension.swift */; };
@@ -165,7 +165,7 @@
 		BC3802192AB6AD79001AE399 /* AudioMixerTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802182AB6AD79001AE399 /* AudioMixerTrackTests.swift */; };
 		BC3C56712C3F75B200C83107 /* RTMPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3C56702C3F75B200C83107 /* RTMPStatus.swift */; };
 		BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */; };
-		BC3E49D02C45520B00A9C5B6 /* HKStreamIngestor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E49CF2C45520B00A9C5B6 /* HKStreamIngestor.swift */; };
+		BC3E49D02C45520B00A9C5B6 /* HKOutgoingStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E49CF2C45520B00A9C5B6 /* HKOutgoingStream.swift */; };
 		BC3E49D12C455A1B00A9C5B6 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
 		BC3E49D22C45617100A9C5B6 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
 		BC3E49D32C45617100A9C5B6 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -627,7 +627,7 @@
 		BC1DC5092A039B4400E928ED /* HEVCDecoderConfigurationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HEVCDecoderConfigurationRecord.swift; sourceTree = "<group>"; };
 		BC1DC5112A04E46E00E928ED /* HEVCDecoderConfigurationRecordTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HEVCDecoderConfigurationRecordTests.swift; sourceTree = "<group>"; };
 		BC1DC5132A05428800E928ED /* HEVCNALUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HEVCNALUnit.swift; sourceTree = "<group>"; };
-		BC2170672C721034007CF0BF /* HKStreamPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKStreamPlayer.swift; sourceTree = "<group>"; };
+		BC2170672C721034007CF0BF /* HKIncomingStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKIncomingStream.swift; sourceTree = "<group>"; };
 		BC22EEED2AAF50F200E3406D /* Codec.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Codec.swift; sourceTree = "<group>"; };
 		BC22EEF12AAF5D6300E3406D /* AVAudioPCMBuffer+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVAudioPCMBuffer+Extension.swift"; sourceTree = "<group>"; };
 		BC2828AC2AA3225100741013 /* AVCaptureDevice.Format+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVCaptureDevice.Format+Extension.swift"; sourceTree = "<group>"; };
@@ -651,7 +651,7 @@
 		BC3802182AB6AD79001AE399 /* AudioMixerTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerTrackTests.swift; sourceTree = "<group>"; };
 		BC3C56702C3F75B200C83107 /* RTMPStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStatus.swift; sourceTree = "<group>"; };
 		BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSReaderTests.swift; sourceTree = "<group>"; };
-		BC3E49CF2C45520B00A9C5B6 /* HKStreamIngestor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKStreamIngestor.swift; sourceTree = "<group>"; };
+		BC3E49CF2C45520B00A9C5B6 /* HKOutgoingStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKOutgoingStream.swift; sourceTree = "<group>"; };
 		BC3E49D72C466B5D00A9C5B6 /* RTMPAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPAuthenticator.swift; sourceTree = "<group>"; };
 		BC4231632BCA5F28003A80DC /* AudioMixerByMultiTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerByMultiTrack.swift; sourceTree = "<group>"; };
 		BC4231692BCA8BE5003A80DC /* AudioMixerBySingleTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerBySingleTrack.swift; sourceTree = "<group>"; };
@@ -1305,11 +1305,11 @@
 			children = (
 				BCCB42632C689C88003B1168 /* AudioPlayer.swift */,
 				BC37F0B72C4185B7001428F0 /* AudioPlayerNode.swift */,
+				BC2170672C721034007CF0BF /* HKIncomingStream.swift */,
+				BC3E49CF2C45520B00A9C5B6 /* HKOutgoingStream.swift */,
 				29AF3FCE1D7C744C00E41212 /* HKStream.swift */,
 				BCF13C582C666E6400ADDBA9 /* HKStreamBitRateStrategy.swift */,
-				BC3E49CF2C45520B00A9C5B6 /* HKStreamIngestor.swift */,
 				BCD8702A2BC266CD009E495B /* HKStreamOutput.swift */,
-				BC2170672C721034007CF0BF /* HKStreamPlayer.swift */,
 				BC77ED692C7261800003427A /* HKStreamReadyState.swift */,
 				2976A47D1D48C5C700B53EF2 /* HKStreamRecorder.swift */,
 				BCA604D02C4FC43C00C25989 /* MediaLink.swift */,
@@ -1919,8 +1919,8 @@
 				BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */,
 				BC42316A2BCA8BE5003A80DC /* AudioMixerBySingleTrack.swift in Sources */,
 				BC562DCB29576D220048D89A /* AVCaptureSession.Preset+Extension.swift in Sources */,
-				BC2170682C72103C007CF0BF /* HKStreamPlayer.swift in Sources */,
-				BC3E49D02C45520B00A9C5B6 /* HKStreamIngestor.swift in Sources */,
+				BC2170682C72103C007CF0BF /* HKIncomingStream.swift in Sources */,
+				BC3E49D02C45520B00A9C5B6 /* HKOutgoingStream.swift in Sources */,
 				29B876AB1CD70B2800FC07DA /* AMF0Serializer.swift in Sources */,
 				BC4231642BCA5F28003A80DC /* AudioMixerByMultiTrack.swift in Sources */,
 				29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */,

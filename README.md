@@ -64,7 +64,7 @@ Project name    |Notes       |License
   - [ ] rendezvous
 
 
-### 📹 Multi Service Streaming
+### 📹 Multi Streaming.
 Starting from version 2.0.0, multiple streams are supported, allowing live streaming to separate services. Views also support this, enabling the verification of raw video data
 ```swift
 let mixer = MediaMixer()

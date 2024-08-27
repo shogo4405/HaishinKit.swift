@@ -1,5 +1,6 @@
 import Foundation
 
+/// A struct that represents a it reports its rtmp status.
 public struct RTMPStatus: Sendable {
     /// The string that represents a specific event.
     public let code: String
