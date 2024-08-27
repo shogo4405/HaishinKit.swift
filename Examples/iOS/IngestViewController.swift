@@ -73,6 +73,7 @@ final class IngestViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         logger.info("viewWillAppear")
         super.viewWillAppear(animated)
+
         Task {
             let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
             try? await mixer.attachVideo(back, track: 0)
@@ -82,6 +83,7 @@ final class IngestViewController: UIViewController {
                 videoUnit.isVideoMirrored = true
             }
         }
+        NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
@@ -102,7 +104,7 @@ final class IngestViewController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: any UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         Task { @ScreenActor in
-            if  await UIDevice.current.orientation.isLandscape {
+            if await UIDevice.current.orientation.isLandscape {
                 await mixer.screen.size = .init(width: 1280, height: 720)
             } else {
                 await mixer.screen.size = .init(width: 720, height: 1280)
@@ -148,12 +150,26 @@ final class IngestViewController: UIViewController {
 
     @IBAction func on(slider: UISlider) {
         if slider == audioBitrateSlider {
-            audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
-            // stream?.audioSettings.bitRate = Int(slider.value * 1000)
+            Task {
+                guard let stream = await netStreamSwitcher.stream else {
+                    return
+                }
+                audioBitrateLabel?.text = "audio \(Int(slider.value))/kbps"
+                var audioSettings = await stream.audioSettings
+                audioSettings.bitRate = Int(slider.value * 1000)
+                await stream.setAudioSettings(audioSettings)
+            }
         }
         if slider == videoBitrateSlider {
-            videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
-            // stream?.bitrateStrategy = IOStreamVideoAdaptiveBitRateStrategy(mamimumVideoBitrate: Int(slider.value * 1000))
+            Task {
+                guard let stream = await netStreamSwitcher.stream else {
+                    return
+                }
+                videoBitrateLabel?.text = "video \(Int(slider.value))/kbps"
+                var videoSettings = await stream.videoSettings
+                videoSettings.bitRate = Int(slider.value * 1000)
+                await stream.setVideoSettings(videoSettings)
+            }
         }
         if slider == zoomSlider {
             let zoomFactor = CGFloat(slider.value)

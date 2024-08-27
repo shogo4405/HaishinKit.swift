@@ -31,12 +31,12 @@ final class VideoCaptureUnit: CaptureUnit {
     }
 
     #if os(iOS) || os(tvOS) || os(macOS)
-    var torch = false {
+    var isTorchEnabled = false {
         didSet {
-            guard #available(tvOS 17.0, *), torch != oldValue else {
+            guard #available(tvOS 17.0, *) else {
                 return
             }
-            setTorchMode(torch ? .on : .off)
+            setTorchMode(isTorchEnabled ? .on : .off)
         }
     }
     #endif

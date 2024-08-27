@@ -32,7 +32,7 @@ public final actor MediaMixer {
     #if os(iOS) || os(macOS) || os(tvOS)
     /// The device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public var isTorchEnabled: Bool {
-        videoIO.torch
+        videoIO.isTorchEnabled
     }
 
     /// The feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
@@ -166,7 +166,7 @@ public final actor MediaMixer {
 
     /// Sets the device torch indicating wheter the turn on(TRUE) or not(FALSE).
     public func setTorchEnabled(_ torchEnabled: Bool) {
-        videoIO.torch = torchEnabled
+        videoIO.isTorchEnabled = torchEnabled
     }
 
     /// Sets the sessionPreset for the AVCaptureSession.
@@ -180,6 +180,10 @@ public final actor MediaMixer {
     /// Sets the video orientation for stream.
     public func setVideoOrientation(_ videoOrientation: AVCaptureVideoOrientation) {
         videoIO.videoOrientation = videoOrientation
+        // https://github.com/shogo4405/HaishinKit.swift/issues/190
+        if videoIO.isTorchEnabled {
+            videoIO.isTorchEnabled = true
+        }
     }
     #endif
 
