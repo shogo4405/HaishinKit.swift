@@ -71,9 +71,9 @@ final class ViewModel: ObservableObject {
             if let orientation = await DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
                 await mixer.setVideoOrientation(orientation)
             }
-            
+
             await mixer.addOutput(rtmpStream)
-            
+
             await mixer.setSessionPreset(.hd1280x720)
             checkDeviceAuthorization()
         }

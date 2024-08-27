@@ -1,4 +1,4 @@
-import AVFAudio
+@preconcurrency import AVFAudio
 import AVFoundation
 
 /// An object that provides the interface to control a one-way channel over an RTMPConnection.
