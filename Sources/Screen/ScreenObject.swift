@@ -299,6 +299,45 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
     }
 }
 
+/// An object that manages effects rendering.
+public final class EffectScreenObject: ScreenObject {
+    private var effects: [VideoEffect] = .init()
+
+    /// Registers a video effect.
+    public func registerVideoEffect(_ effect: VideoEffect) -> Bool {
+        if effects.contains(where: { $0 === effect }) {
+            return false
+        }
+        effects.append(effect)
+        return true
+    }
+
+    /// Unregisters a video effect.
+    public func unregisterVideoEffect(_ effect: VideoEffect) -> Bool {
+        if let index = effects.firstIndex(where: { $0 === effect }) {
+            effects.remove(at: index)
+            return true
+        }
+        return false
+    }
+
+    override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
+        guard !effects.isEmpty else {
+            return nil
+        }
+        var image = CIImage(color: .clear).cropped(to: renderer.bounds)
+        for effect in effects {
+            image = effect.execute(image, info: nil)
+        }
+        return renderer.context.createCGImage(image, from: image.extent)
+    }
+
+    override func draw(_ renderer: some ScreenRenderer) {
+        super.draw(renderer)
+        invalidateLayout()
+    }
+}
+
 /// An object that manages offscreen rendering a text source.
 public final class TextScreenObject: ScreenObject {
     /// Specifies the text value.
