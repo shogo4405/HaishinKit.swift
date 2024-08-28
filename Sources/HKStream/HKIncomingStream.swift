@@ -45,6 +45,7 @@ public final actor HKIncomingStream {
 
     /// Attaches an audio player.
     public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
+        await audioPlayerNode?.detach()
         audioPlayerNode = await audioPlayer?.makePlayerNode()
         await mediaLink.setAudioPlayer(audioPlayerNode)
     }

@@ -19,11 +19,26 @@ public final actor AudioPlayer {
         guard let audioEngine, let avPlayerNode = playerNodes[playerNode] else {
             return
         }
-        audioEngine.connect(avPlayerNode, to: audioEngine.outputNode, format: format)
-        if !audioEngine.isRunning {
-            try? audioEngine.start()
+        if let format {
+            audioEngine.connect(avPlayerNode, to: audioEngine.outputNode, format: format)
+            if !audioEngine.isRunning {
+                try? audioEngine.start()
+            }
+            connected[playerNode] = true
+        } else {
+            if audioEngine.isRunning {
+                audioEngine.stop()
+            }
+            audioEngine.disconnectNodeOutput(avPlayerNode)
+            connected[playerNode] = nil
         }
-        connected[playerNode] = true
+    }
+
+    func detach(_ playerNode: AudioPlayerNode) {
+        if let playerNode = playerNodes[playerNode] {
+            audioEngine?.detach(playerNode)
+        }
+        playerNodes[playerNode] = nil
     }
 
     func makePlayerNode() -> AudioPlayerNode {

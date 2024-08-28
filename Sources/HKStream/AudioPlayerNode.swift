@@ -2,7 +2,7 @@
 import Foundation
 
 final actor AudioPlayerNode {
-    private(set) var isRunning = false
+    static let bufferCounts: Int = 10
 
     var currentTime: TimeInterval {
         if playerNode.isPlaying {
@@ -15,8 +15,9 @@ final actor AudioPlayerNode {
         }
         return 0.0
     }
-    private(set) var soundTransfrom = SoundTransform()
     private(set) var isPaused = false
+    private(set) var isRunning = false
+    private(set) var soundTransfrom = SoundTransform()
     private let playerNode: AVAudioPlayerNode
     private var audioTime = AudioTime()
     private var scheduledAudioBuffers: Int = 0
@@ -51,7 +52,7 @@ final actor AudioPlayerNode {
             audioTime.anchor(playerNode.lastRenderTime ?? AVAudioTime(hostTime: 0))
         }
         scheduledAudioBuffers += 1
-        if !isPaused && !playerNode.isPlaying && 10 <= scheduledAudioBuffers {
+        if !isPaused && !playerNode.isPlaying && Self.bufferCounts <= scheduledAudioBuffers {
             playerNode.play()
         }
         Task {
@@ -62,6 +63,11 @@ final actor AudioPlayerNode {
                 isBuffering = true
             }
         }
+    }
+
+    func detach() async {
+        stopRunning()
+        await player?.detach(self)
     }
 }
 
@@ -83,7 +89,6 @@ extension AudioPlayerNode: AsyncRunner {
             playerNode.stop()
             playerNode.reset()
         }
-        playerNode.stop()
         audioTime.reset()
         format = nil
         isRunning = false

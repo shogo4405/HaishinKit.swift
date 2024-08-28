@@ -7,6 +7,7 @@ import UIKit
 final class PlaybackViewController: UIViewController {
     @IBOutlet private weak var playbackButton: UIButton!
     private let netStreamSwitcher: HKStreamSwitcher = .init()
+    private let audioPlayer = AudioPlayer(audioEngine: AVAudioEngine())
     private var pictureInPictureController: AVPictureInPictureController?
 
     override func viewWillAppear(_ animated: Bool) {
@@ -22,6 +23,7 @@ final class PlaybackViewController: UIViewController {
                     await stream.addOutput(view)
                 }
             }
+            await netStreamSwitcher.stream?.attachAudioPlayer(audioPlayer)
         }
     }
 
