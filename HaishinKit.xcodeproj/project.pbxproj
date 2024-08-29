@@ -54,7 +54,6 @@
 		29798E751CE614FE00F5CBD0 /* SampleVideo_360x240_5mb in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D71CD70CE700FC07DA /* SampleVideo_360x240_5mb */; };
 		29798E761CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.m3u8 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D81CD70CE700FC07DA /* SampleVideo_360x240_5mb.m3u8 */; };
 		29798E771CE614FE00F5CBD0 /* SampleVideo_360x240_5mb.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 29B876D91CD70CE700FC07DA /* SampleVideo_360x240_5mb.mp4 */; };
-		298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */ = {isa = PBXBuildFile; fileRef = 298BCF321DD4C44A007FF86A /* AnyUtil.swift */; };
 		2999C3752071138F00892E55 /* MTHKView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2999C3742071138F00892E55 /* MTHKView.swift */; };
 		29AF3FCF1D7C744C00E41212 /* HKStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29AF3FCE1D7C744C00E41212 /* HKStream.swift */; };
 		29B8765B1CD70A7900FC07DA /* AudioCodec.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B876571CD70A7900FC07DA /* AudioCodec.swift */; };
@@ -533,7 +532,6 @@
 		2976A4851D4903C300B53EF2 /* DeviceUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtil.swift; sourceTree = "<group>"; };
 		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29798E5D1CE60E5300F5CBD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		298BCF321DD4C44A007FF86A /* AnyUtil.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AnyUtil.swift; sourceTree = "<group>"; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		2999C3742071138F00892E55 /* MTHKView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTHKView.swift; sourceTree = "<group>"; };
 		299F7E3A1CD71A97001E7272 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -864,7 +862,6 @@
 		290907CE1C3961BC00F2E80C /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				298BCF321DD4C44A007FF86A /* AnyUtil.swift */,
 				BC1CCF5F2BE53FE70067198A /* AudioTime.swift */,
 				BCABED0F2BDAA3AB00CC7E73 /* AVAudioUtil.swift */,
 				29B876B81CD70B3900FC07DA /* ByteArray.swift */,
@@ -1884,7 +1881,6 @@
 				BC0B5B122BE8CFA800D83F8E /* CMVideoDimention+Extension.swift in Sources */,
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
 				BC3802122AB5E770001AE399 /* VideoDeviceUnit.swift in Sources */,
-				298BCF331DD4C44A007FF86A /* AnyUtil.swift in Sources */,
 				29B876B01CD70B2800FC07DA /* RTMPConnection.swift in Sources */,
 				BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */,
 				BC37F0B82C4185B7001428F0 /* AudioPlayerNode.swift in Sources */,

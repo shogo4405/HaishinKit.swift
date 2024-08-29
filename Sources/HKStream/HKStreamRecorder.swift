@@ -4,9 +4,26 @@ import SwiftPMSupport
 #endif
 
 // MARK: -
-/// The MediaRecorder class represents video and audio recorder.
+/// An actor represents video and audio recorder.
+///
+/// This actor is compatible with both HKStreamOutput and MediaMixerOutput. This means it can record the output from MediaMixer in addition to HKStream.
+///
+/// ```
+///  // An example of recording MediaMixer.
+///  let recorder = HKStreamRecorder()
+///  let mixer = MediaMixer()
+///  mixer.addOutput(recorder)
+/// ```
+/// ```
+///  // An example of recording streaming.
+///  let recorder = HKStreamRecorder()
+///  let mixer = MediaMixer()
+///  let stream = RTMPStream()
+///  mixer.addOutput(stream)
+///  stream.addOutput(recorder)
+/// ```
 public actor HKStreamRecorder {
-    /// The MediaRecorder error domain codes.
+    /// The error domain codes.
     public enum Error: Swift.Error {
         /// An invalid internal stare.
         case invalidState
@@ -20,8 +37,8 @@ public actor HKStreamRecorder {
         case failedToFinishWriting(error: (any Swift.Error)?)
     }
 
-    /// Specifies the recorder settings.
-    public var settings: [AVMediaType: [String: Any]] = [
+    /// The default recording settings.
+    public static let defaultSettings: [AVMediaType: [String: any Sendable]] = [
         .audio: [
             AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
             AVSampleRateKey: 0,
@@ -33,9 +50,23 @@ public actor HKStreamRecorder {
             AVVideoWidthKey: 0
         ]
     ]
+
+    private static func isZero(_ value: any Sendable) -> Bool {
+        switch value {
+        case let value as Int:
+            return value == 0
+        case let value as Double:
+            return value == 0
+        default:
+            return false
+        }
+    }
+
+    /// The recorder settings.
+    public private(set) var settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings
     /// The recording file name.
     public private(set) var fileName: String?
-    /// The running indicies whether recording or not.
+    /// The recording or not.
     public private(set) var isRecording = false
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
@@ -43,8 +74,9 @@ public actor HKStreamRecorder {
         }
         return settings.count == writer.inputs.count
     }
-    private var continuation: AsyncStream<Error>.Continuation?
     private var writer: AVAssetWriter?
+    private var trackId: UInt8 = 0
+    private var continuation: AsyncStream<Error>.Continuation?
     private var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     private var audioPresentationTime: CMTime = .zero
     private var videoPresentationTime: CMTime = .zero
@@ -64,8 +96,16 @@ public actor HKStreamRecorder {
     public init() {
     }
 
-    /// Starts a recording.
-    public func startRecording(_ filaName: String?, settings: [AVMediaType: [String: Any]]) async throws {
+    /// Sets the video track id for recording.
+    public func setTrackId(_ trackId: UInt8) throws {
+        guard isRecording else {
+            throw Error.invalidState
+        }
+        self.trackId = trackId
+    }
+
+    /// Starts recording.
+    public func startRecording(_ filaName: String? = nil, settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings) async throws {
         guard !isRecording else {
             throw Error.invalidState
         }
@@ -77,8 +117,22 @@ public actor HKStreamRecorder {
         isRecording = true
     }
 
-    /// Stops a recording.
-    public func stopRecording() async throws -> AVAssetWriter {
+    /// Stops recording.
+    ///
+    /// ## Example of saving to the Photos app.
+    /// ```
+    ///  do {
+    ///    let outputURL = try await recorder.stopRecording()
+    ///    PHPhotoLibrary.shared().performChanges({() -> Void in
+    ///      PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: outputURL)
+    ///    }, completionHandler: { _, error -> Void in
+    ///      try? FileManager.default.removeItem(at: outputURL)
+    ///    }
+    ///  } catch {
+    ///     print(error)
+    ///  }
+    /// ```
+    public func stopRecording() async throws -> URL {
         guard isRecording else {
             throw Error.invalidState
         }
@@ -90,10 +144,11 @@ public actor HKStreamRecorder {
         }
         await writer.finishWriting()
         defer {
+            isRecording = false
             self.writer = nil
             self.writerInputs.removeAll()
         }
-        return writer
+        return writer.outputURL
     }
 
     private func append(_ sampleBuffer: CMSampleBuffer) {
@@ -153,9 +208,9 @@ public actor HKStreamRecorder {
                 for (key, value) in settings {
                     switch key {
                     case AVSampleRateKey:
-                        outputSettings[key] = AnyUtil.isZero(value) ? inSourceFormat.mSampleRate : value
+                        outputSettings[key] = Self.isZero(value) ? inSourceFormat.mSampleRate : value
                     case AVNumberOfChannelsKey:
-                        outputSettings[key] = AnyUtil.isZero(value) ? Int(inSourceFormat.mChannelsPerFrame) : value
+                        outputSettings[key] = Self.isZero(value) ? Int(inSourceFormat.mChannelsPerFrame) : value
                     default:
                         outputSettings[key] = value
                     }
@@ -165,9 +220,9 @@ public actor HKStreamRecorder {
                 for (key, value) in settings {
                     switch key {
                     case AVVideoHeightKey:
-                        outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.height) : value
+                        outputSettings[key] = Self.isZero(value) ? Int(dimensions.height) : value
                     case AVVideoWidthKey:
-                        outputSettings[key] = AnyUtil.isZero(value) ? Int(dimensions.width) : value
+                        outputSettings[key] = Self.isZero(value) ? Int(dimensions.width) : value
                     default:
                         outputSettings[key] = value
                     }
@@ -202,5 +257,26 @@ extension HKStreamRecorder: HKStreamOutput {
             return
         }
         Task { await append(sampleBuffer) }
+    }
+}
+
+extension HKStreamRecorder: MediaMixerOutput {
+    // MARK: MediaMixerOutput
+    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+        Task {
+            guard await trackId == track else {
+                return
+            }
+            await append(sampleBuffer)
+        }
+    }
+
+    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+        guard let sampleBuffer = buffer.makeSampleBuffer(when) else {
+            return
+        }
+        Task {
+            await append(sampleBuffer)
+        }
     }
 }
