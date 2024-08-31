@@ -285,6 +285,7 @@
 		BCFC51FE2AAB420700014428 /* AudioMixerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* AudioMixerTrack.swift */; };
 		BCFC607E2C3166BA00E938C3 /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC607D2C3166BA00E938C3 /* RTMPSocket.swift */; };
 		BCFD4FC12C62471300119874 /* ChromaKeyProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFD4FC02C62471300119874 /* ChromaKeyProcessor.swift */; };
+		BCFDF6342C82F35700BA9024 /* StreamScreenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFDF6332C82F35700BA9024 /* StreamScreenObject.swift */; };
 		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
 
@@ -744,6 +745,7 @@
 		BCFC51FD2AAB420700014428 /* AudioMixerTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerTrack.swift; sourceTree = "<group>"; };
 		BCFC607D2C3166BA00E938C3 /* RTMPSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPSocket.swift; sourceTree = "<group>"; };
 		BCFD4FC02C62471300119874 /* ChromaKeyProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChromaKeyProcessor.swift; sourceTree = "<group>"; };
+		BCFDF6332C82F35700BA9024 /* StreamScreenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamScreenObject.swift; sourceTree = "<group>"; };
 		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1282,6 +1284,7 @@
 				BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */,
 				BC3004CD296B0A1700119932 /* Shape.swift */,
 				BC6FC91D29609A6800A746EE /* ShapeFactory.swift */,
+				BCFDF6332C82F35700BA9024 /* StreamScreenObject.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
 				B317235F2C0940D800C7AED0 /* VideoRotator.swift */,
 			);
@@ -1882,6 +1885,7 @@
 				BC558268240BB40E00011AC0 /* RTMPStreamInfo.swift in Sources */,
 				BC3802122AB5E770001AE399 /* VideoDeviceUnit.swift in Sources */,
 				29B876B01CD70B2800FC07DA /* RTMPConnection.swift in Sources */,
+				BCFDF6342C82F35700BA9024 /* StreamScreenObject.swift in Sources */,
 				BCC1A72B264FAC1800661156 /* ESSpecificData.swift in Sources */,
 				BC37F0B82C4185B7001428F0 /* AudioPlayerNode.swift in Sources */,
 				29B876B61CD70B2800FC07DA /* RTMPStream.swift in Sources */,
