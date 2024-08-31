@@ -554,7 +554,6 @@ extension IOStream: IOMixerDelegate {
         }
     }
     #endif
-
 }
 
 extension IOStream: IOTellyUnitDelegate {

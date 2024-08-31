@@ -296,6 +296,7 @@
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFC51FE2AAB420700014428 /* IOAudioMixerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */; };
+		BCFDF6322C82E50600BA9024 /* StreamScreenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFDF6312C82E50600BA9024 /* StreamScreenObject.swift */; };
 		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
 
@@ -747,6 +748,7 @@
 		BCFB355324FA275600DC5108 /* PlaybackViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackViewController.swift; sourceTree = "<group>"; };
 		BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackContainerViewController.swift; sourceTree = "<group>"; };
 		BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOAudioMixerTrack.swift; sourceTree = "<group>"; };
+		BCFDF6312C82E50600BA9024 /* StreamScreenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamScreenObject.swift; sourceTree = "<group>"; };
 		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -1326,6 +1328,7 @@
 				BCDEB4F72BE441D300EEC6ED /* ScreenRenderer.swift */,
 				BC3004CD296B0A1700119932 /* Shape.swift */,
 				BC6FC91D29609A6800A746EE /* ShapeFactory.swift */,
+				BCFDF6312C82E50600BA9024 /* StreamScreenObject.swift */,
 				29B8768F1CD70AFE00FC07DA /* VideoEffect.swift */,
 				B317235F2C0940D800C7AED0 /* VideoRotator.swift */,
 			);
@@ -1968,6 +1971,7 @@
 				29B876AC1CD70B2800FC07DA /* AMF3Serializer.swift in Sources */,
 				BC31DBD22A653D1600C4DEA3 /* IOAudioMonitor.swift in Sources */,
 				B31723622C0948E300C7AED0 /* VTRotationSessionOption+Extension.swift in Sources */,
+				BCFDF6322C82E50600BA9024 /* StreamScreenObject.swift in Sources */,
 				BCB976DF26107B5600C9A649 /* TSField.swift in Sources */,
 				BC11024A2925147300D48035 /* IOCaptureUnit.swift in Sources */,
 				29B876921CD70AFE00FC07DA /* IOMixer.swift in Sources */,
