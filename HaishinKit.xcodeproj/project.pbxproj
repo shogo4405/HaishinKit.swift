@@ -286,6 +286,7 @@
 		BCFC607E2C3166BA00E938C3 /* RTMPSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC607D2C3166BA00E938C3 /* RTMPSocket.swift */; };
 		BCFD4FC12C62471300119874 /* ChromaKeyProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFD4FC02C62471300119874 /* ChromaKeyProcessor.swift */; };
 		BCFDF6342C82F35700BA9024 /* StreamScreenObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFDF6332C82F35700BA9024 /* StreamScreenObject.swift */; };
+		BCFDF6362C848D8400BA9024 /* RTMPStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFDF6352C848D8400BA9024 /* RTMPStatusTests.swift */; };
 		BCFF640B29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts in Resources */ = {isa = PBXBuildFile; fileRef = BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */; };
 /* End PBXBuildFile section */
 
@@ -746,6 +747,7 @@
 		BCFC607D2C3166BA00E938C3 /* RTMPSocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPSocket.swift; sourceTree = "<group>"; };
 		BCFD4FC02C62471300119874 /* ChromaKeyProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChromaKeyProcessor.swift; sourceTree = "<group>"; };
 		BCFDF6332C82F35700BA9024 /* StreamScreenObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamScreenObject.swift; sourceTree = "<group>"; };
+		BCFDF6352C848D8400BA9024 /* RTMPStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStatusTests.swift; sourceTree = "<group>"; };
 		BCFF640A29C0C44B004EFF2F /* SampleVideo_360x240_5mb_2ch.ts */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.typescript; path = SampleVideo_360x240_5mb_2ch.ts; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -886,6 +888,7 @@
 				BC1DC5032A02894D00E928ED /* FLVVideoFourCCTests.swift */,
 				290EA89E1DFB61B100053022 /* RTMPChunkBufferTests.swift */,
 				290686021DFDB7A6008EB7ED /* RTMPConnectionTests.swift */,
+				BCFDF6352C848D8400BA9024 /* RTMPStatusTests.swift */,
 				BCA3A5262BC507880083BBB1 /* RTMPTimestampTests.swift */,
 			);
 			path = RTMP;
@@ -2023,6 +2026,7 @@
 				BCA7C24F2A91AA0500882D85 /* MediaRecorderTests.swift in Sources */,
 				BCD91C0D2A700FF50033F9E1 /* AudioRingBufferTests.swift in Sources */,
 				BC7C56C729A7701F00C41A9B /* ESSpecificDataTests.swift in Sources */,
+				BCFDF6362C848D8400BA9024 /* RTMPStatusTests.swift in Sources */,
 				BCCBCE9B29A9D96A0095B51C /* NALUnitReaderTests.swift in Sources */,
 				BC0587C32BD2A5E8006751C8 /* AudioMixerByMultiTrackTests.swift in Sources */,
 				290EA8A11DFB61B100053022 /* RTMPChunkBufferTests.swift in Sources */,
