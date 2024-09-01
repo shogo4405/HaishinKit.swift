@@ -2,12 +2,12 @@ import Foundation
 import libsrt
 
 public enum SRTSocketOption: String, Sendable {
-    static func from(uri: URL?) -> [SRTSocketOption: Any] {
+    static func from(uri: URL?) -> [SRTSocketOption: any Sendable] {
         guard let uri = uri else {
             return [:]
         }
         let queryItems = getQueryItems(uri: uri)
-        var options: [SRTSocketOption: Any] = [:]
+        var options: [SRTSocketOption: any Sendable] = [:]
         for item in queryItems {
             guard let option = SRTSocketOption(rawValue: item.key) else { continue }
             options[option] = item.value

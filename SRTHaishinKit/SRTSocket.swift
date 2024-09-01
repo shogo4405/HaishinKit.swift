@@ -79,7 +79,7 @@ final actor SRTSocket {
     init() {
     }
 
-    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: Any] = [:]) throws {
+    func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: any Sendable] = [:]) throws {
         guard socket == SRT_INVALID_SOCK else {
             return
         }

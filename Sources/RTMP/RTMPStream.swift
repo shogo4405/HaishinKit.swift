@@ -752,8 +752,8 @@ extension RTMPStream: HKStream {
         }
     }
 
-    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) {
-        Task { await incoming.attachAudioPlayer(audioPlayer) }
+    public func attachAudioPlayer(_ audioPlayer: AudioPlayer?) async {
+        await incoming.attachAudioPlayer(audioPlayer)
     }
 
     public func addOutput(_ observer: some HKStreamOutput) {
