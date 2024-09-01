@@ -151,6 +151,12 @@ public actor RTMPConnection {
     public private(set) var uri: URL?
     /// The instance connected to server(true) or not(false).
     public private(set) var connected = false
+    /// The stream of events you receive RTMP status events from a service.
+    public var status: AsyncStream<RTMPStatus> {
+        AsyncStream { continuation in
+            statusContinuation = continuation
+        }
+    }
     /// The object encoding for this RTMPConnection instance.
     public let objectEncoding = RTMPConnection.defaultObjectEncoding
 
@@ -190,6 +196,7 @@ public actor RTMPConnection {
     private var windowSizeS = RTMPConnection.defaultWindowSizeS
     private let authenticator = RTMPAuthenticator()
     private var networkMonitor: NetworkMonitor?
+    private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
     private var currentTransactionId = RTMPConnection.connectTransactionId
 
     /// Creates a new connection.
@@ -455,6 +462,12 @@ public actor RTMPConnection {
             case let message as RTMPSetPeerBandwidthMessage:
                 bandWidth = message.size
             case let message as RTMPCommandMessage:
+                let response = RTMPResponse(message)
+                defer {
+                    if let status = response.status {
+                        statusContinutation?.yield(status)
+                    }
+                }
                 guard let responder = operations.removeValue(forKey: message.transactionId) else {
                     switch message.commandName {
                     case "close":
@@ -471,9 +484,9 @@ public actor RTMPConnection {
                         chunkSizeS = chunkSize
                         doOutput(.zero, chunkStreamId: .control, message: RTMPSetChunkSizeMessage(size: UInt32(chunkSizeS)))
                     }
-                    responder.resume(returning: .init(message))
+                    responder.resume(returning: response)
                 default:
-                    responder.resume(throwing: Error.requestFailed(response: .init(message)))
+                    responder.resume(throwing: Error.requestFailed(response: response))
                 }
             case let message as RTMPSharedObjectMessage:
                 guard let remotePath = uri?.absoluteWithoutQueryString else {

@@ -173,9 +173,9 @@ public actor RTMPStream {
     public private(set) var readyState: HKStreamReadyState = .idle
     /// The stream of events you receive RTMP status events from a service.
     public var status: AsyncStream<RTMPStatus> {
-        let (stream, continutation) = AsyncStream<RTMPStatus>.makeStream()
-        statusContinuation = continutation
-        return stream
+        AsyncStream { continuation in
+            statusContinuation = continuation
+        }
     }
     /// The stream's name used for FMLE-compatible sequences.
     public private(set) var fcPublishName: String?
