@@ -465,7 +465,7 @@ public actor RTMPConnection {
                 let response = RTMPResponse(message)
                 defer {
                     if let status = response.status {
-                        statusContinutation?.yield(status)
+                        statusContinuation?.yield(status)
                     }
                 }
                 guard let responder = operations.removeValue(forKey: message.transactionId) else {
