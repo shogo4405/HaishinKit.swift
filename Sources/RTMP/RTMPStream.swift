@@ -379,13 +379,18 @@ public actor RTMPStream {
             try? send("@setDataFrame", arguments: "onMetaData", metadata)
             readyState = .publishing
             Task {
-                for await audio in outgoing.audio where outgoing.isRunning {
+                for await audio in outgoing.audioOutputStream where outgoing.isRunning {
                     append(audio.0, when: audio.1)
                 }
             }
             Task {
-                for try await video in outgoing.video where outgoing.isRunning {
+                for try await video in outgoing.videoOutputStream where outgoing.isRunning {
                     append(video)
+                }
+            }
+            Task {
+                for await video in outgoing.videoInputStream where outgoing.isRunning {
+                    outgoing.append(video: video)
                 }
             }
             return response
