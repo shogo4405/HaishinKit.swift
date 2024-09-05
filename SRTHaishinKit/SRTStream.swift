@@ -1,11 +1,12 @@
 @preconcurrency import AVFoundation
+import Combine
 import Foundation
 import HaishinKit
 import libsrt
 
 /// An actor that provides the interface to control a one-way channel over a SRTConnection.
 public actor SRTStream {
-    public private(set) var readyState: HKStreamReadyState = .idle
+    @Published public private(set) var readyState: HKStreamReadyState = .idle
     private var name: String?
     private var action: (() async -> Void)?
     private var outputs: [any HKStreamOutput] = []

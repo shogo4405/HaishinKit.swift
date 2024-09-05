@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import HaishinKit
 import libsrt
@@ -19,7 +20,7 @@ public actor SRTConnection {
     /// The URI passed to the SRTConnection.connect() method.
     public private(set) var uri: URL?
     /// This instance connect to server(true) or not(false)
-    public private(set) var connected = false
+    @Published public private(set) var connected = false
 
     private var socket: SRTSocket?
     private var streams: [SRTStream] = []

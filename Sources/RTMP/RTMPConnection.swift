@@ -1,4 +1,5 @@
 import AVFoundation
+import Combine
 import Foundation
 
 // MARK: -
@@ -150,7 +151,7 @@ public actor RTMPConnection {
     /// The URI passed to the Self.connect() method.
     public private(set) var uri: URL?
     /// The instance connected to server(true) or not(false).
-    public private(set) var connected = false
+    @Published public private(set) var connected = false
     /// The stream of events you receive RTMP status events from a service.
     public var status: AsyncStream<RTMPStatus> {
         AsyncStream { continuation in

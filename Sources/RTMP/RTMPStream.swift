@@ -1,5 +1,6 @@
 @preconcurrency import AVFAudio
 import AVFoundation
+import Combine
 
 /// An object that provides the interface to control a one-way channel over an RTMPConnection.
 public actor RTMPStream {
@@ -162,15 +163,15 @@ public actor RTMPStream {
     /// The RTMPStreamInfo object whose properties contain data.
     public private(set) var info = RTMPStreamInfo()
     /// The object encoding (AMF). Framework supports AMF0 only.
-    public private(set) var objectEncoding: RTMPObjectEncoding = RTMPConnection.defaultObjectEncoding
+    public private(set) var objectEncoding = RTMPConnection.defaultObjectEncoding
     /// The boolean value that indicates audio samples allow access or not.
     public private(set) var audioSampleAccess = true
     /// The boolean value that indicates video samples allow access or not.
     public private(set) var videoSampleAccess = true
     /// The number of video frames per seconds.
-    public private(set) var currentFPS: UInt16 = 0
+    @Published public private(set) var currentFPS: UInt16 = 0
     /// The ready state of stream.
-    public private(set) var readyState: HKStreamReadyState = .idle
+    @Published public private(set) var readyState: HKStreamReadyState = .idle
     /// The stream of events you receive RTMP status events from a service.
     public var status: AsyncStream<RTMPStatus> {
         AsyncStream { continuation in
