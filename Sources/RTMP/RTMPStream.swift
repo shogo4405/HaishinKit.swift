@@ -548,7 +548,7 @@ public actor RTMPStream {
                 }
             default:
                 continuation?.resume(throwing: Error.requestFailed(response: response))
-                connection = nil
+                continuation = nil
             }
         case let message as RTMPAudioMessage:
             append(message, type: type)
