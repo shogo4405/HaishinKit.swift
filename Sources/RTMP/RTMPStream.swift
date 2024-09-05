@@ -2,6 +2,16 @@
 import AVFoundation
 import Combine
 
+#if canImport(UIKit)
+import UIKit
+typealias View = UIView
+#endif
+
+#if canImport(AppKit)
+import AppKit
+typealias View = NSView
+#endif
+
 /// An object that provides the interface to control a one-way channel over an RTMPConnection.
 public actor RTMPStream {
     /// The error domain code.
@@ -728,7 +738,20 @@ extension RTMPStream: HKStream {
             } else {
                 outgoing.append(sampleBuffer)
                 if sampleBuffer.formatDescription?.isCompressed == false {
-                    outputs.forEach { $0.stream(self, didOutput: sampleBuffer) }
+                    outputs.forEach {
+                        switch sampleBuffer.formatDescription?.mediaType {
+                        case .audio:
+                            if audioSampleAccess {
+                                $0.stream(self, didOutput: sampleBuffer)
+                            }
+                        case .video:
+                            if videoSampleAccess || ($0 is View) {
+                                $0.stream(self, didOutput: sampleBuffer)
+                            }
+                        default:
+                            $0.stream(self, didOutput: sampleBuffer)
+                        }
+                    }
                 }
             }
         default:
@@ -747,7 +770,7 @@ extension RTMPStream: HKStream {
             doOutput(.one, chunkStreamId: .audio, message: message)
         default:
             outgoing.append(audioBuffer, when: when)
-            if audioBuffer is AVAudioPCMBuffer {
+            if audioBuffer is AVAudioPCMBuffer && audioSampleAccess {
                 outputs.forEach { $0.stream(self, didOutput: audioBuffer, when: when) }
             }
         }
