@@ -300,8 +300,13 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
 }
 
 /// An object that manages effects rendering.
-public final class EffectScreenObject: ScreenObject {
+public final class CIImageScreenObject: ScreenObject {
     private var effects: [VideoEffect] = .init()
+    private var image: CIImage?
+
+    public var hasEffects: Bool {
+        !effects.isEmpty
+    }
 
     /// Registers a video effect.
     public func registerVideoEffect(_ effect: VideoEffect) -> Bool {
@@ -322,10 +327,7 @@ public final class EffectScreenObject: ScreenObject {
     }
 
     override public func makeImage(_ renderer: some ScreenRenderer) -> CGImage? {
-        guard !effects.isEmpty else {
-            return nil
-        }
-        var image = CIImage(color: .clear).cropped(to: renderer.bounds)
+        var image = (image ?? CIImage(color: .clear)).cropped(to: renderer.bounds)
         for effect in effects {
             image = effect.execute(image, info: nil)
         }
