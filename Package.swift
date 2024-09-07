@@ -23,9 +23,8 @@ let package = Package(
             name: "libsrt",
             path: "Vendor/SRT/libsrt.xcframework"
         ),
-        .target(name: "SwiftPMSupport"),
         .target(name: "HaishinKit",
-                dependencies: ["Logboard", "SwiftPMSupport"],
+                dependencies: ["Logboard"],
                 path: "Sources",
                 sources: [
                     "Codec",

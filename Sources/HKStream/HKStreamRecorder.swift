@@ -1,7 +1,4 @@
 @preconcurrency import AVFoundation
-#if canImport(SwiftPMSupport)
-import SwiftPMSupport
-#endif
 
 // MARK: -
 /// An actor represents video and audio recorder.
