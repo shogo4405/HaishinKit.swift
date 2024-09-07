@@ -83,6 +83,11 @@ open class IOStream: NSObject {
     /// The lockQueue.
     public let lockQueue: DispatchQueue = .init(label: "com.haishinkit.HaishinKit.IOStream.lock", qos: .userInitiated)
 
+    /// The boolean value that indicates audio samples allow access or not.
+    public internal(set) var audioSampleAccess = true
+    /// The boolean value that indicates video samples allow access or not.
+    public internal(set) var videoSampleAccess = true
+
     /// The offscreen rendering object.
     public var screen: Screen {
         return mixer.videoIO.screen
@@ -560,6 +565,9 @@ extension IOStream: IOTellyUnitDelegate {
     // MARK: IOTellyUnitDelegate
     func tellyUnit(_ tellyUnit: IOTellyUnit, dequeue sampleBuffer: CMSampleBuffer) {
         mixer.videoIO.view?.enqueue(sampleBuffer)
+        if videoSampleAccess {
+            observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+        }
     }
 
     func tellyUnit(_ tellyUnit: IOTellyUnit, didBufferingChanged: Bool) {
