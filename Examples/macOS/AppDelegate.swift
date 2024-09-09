@@ -9,6 +9,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var window: NSWindow!
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
-        LBLogger.with(HaishinKitIdentifier).level = .info
+        LBLogger.with(kHaishinKitIdentifier).level = .info
     }
 }

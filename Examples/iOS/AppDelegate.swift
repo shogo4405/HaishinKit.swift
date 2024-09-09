@@ -10,7 +10,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        // LBLogger.with(HaishinKitIdentifier).level = .trace
+        // LBLogger.with(kHaishinKitIdentifier).level = .trace
         let session = AVAudioSession.sharedInstance()
         do {
             // If you set the "mode" parameter, stereo capture is not possible, so it is left unspecified.

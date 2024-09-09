@@ -20,7 +20,7 @@ struct iOSSwiftUIApp: App {
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        // Logboard.with(HaishinKitIdentifier).level = .trace
+        // Logboard.with(kHaishinKitIdentifier).level = .trace
         let session = AVAudioSession.sharedInstance()
         do {
             try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker, .allowBluetooth])

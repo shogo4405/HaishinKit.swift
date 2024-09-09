@@ -24,7 +24,7 @@
 * If you need help with making LiveStreaming requests using HaishinKit, use a [GitHub Discussions](https://github.com/shogo4405/HaishinKit.swift/discussions) with **Q&A**.
 * If you'd like to discuss a feature request, use a [GitHub Discussions](https://github.com/shogo4405/HaishinKit.swift/discussions) with **Idea**
 * If you met a HaishinKit's bug🐛, use a [GitHub Issue](https://github.com/shogo4405/HaishinKit.swift/issues) with **Bug report template**
-  - The trace level log is very useful. Please set `LBLogger.with(HaishinKitIdentifier).level = .trace`. 
+  - The trace level log is very useful. Please set `LBLogger.with(kHaishinKitIdentifier).level = .trace`. 
   - If you don't use an issue template. I will immediately close the your issue without a comment.
 * If you **want to contribute**, submit a pull request with a pr template.
 * If you want to support e-mail based communication without GitHub.

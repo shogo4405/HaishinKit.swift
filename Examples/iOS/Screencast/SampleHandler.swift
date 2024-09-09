@@ -4,7 +4,7 @@ import MediaPlayer
 import ReplayKit
 import VideoToolbox
 
-nonisolated let logger = LBLogger.with(HaishinKitIdentifier)
+nonisolated let logger = LBLogger.with(kHaishinKitIdentifier)
 
 @available(iOS 10.0, *)
 final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
@@ -39,7 +39,7 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
          logger.appender = socket
          logger.level = .debug
          */
-        LBLogger.with(HaishinKitIdentifier).level = .info
+        LBLogger.with(kHaishinKitIdentifier).level = .info
         // mixer.audioMixerSettings.tracks[1] = .default
         isVideoRotationEnabled = true
         Task {
