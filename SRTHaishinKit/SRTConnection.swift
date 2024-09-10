@@ -22,6 +22,7 @@ public actor SRTConnection {
     /// This instance connect to server(true) or not(false)
     @Published public private(set) var connected = false
 
+    private var mode: SRTMode = .caller
     private var socket: SRTSocket?
     private var streams: [SRTStream] = []
     private var clients: [SRTSocket] = []
@@ -69,13 +70,24 @@ public actor SRTConnection {
                     }
                 }
             }
-            Task {
-                let networkMonitor = await socket.makeNetworkMonitor()
-                self.networkMonitor = networkMonitor
-                await networkMonitor.startRunning()
-                for await event in await networkMonitor.event {
-                    for stream in streams {
-                        await stream.dispatch(event)
+            self.mode = mode
+            switch mode {
+            case .caller:
+                Task {
+                    let networkMonitor = await socket.makeNetworkMonitor()
+                    self.networkMonitor = networkMonitor
+                    await networkMonitor.startRunning()
+                    for await event in await networkMonitor.event {
+                        for stream in streams {
+                            await stream.dispatch(event)
+                        }
+                    }
+                }
+            case .listener:
+                Task {
+                    for await client in await socket.accept {
+                        connected = true
+                        clients.append(client)
                     }
                 }
             }
@@ -107,11 +119,21 @@ public actor SRTConnection {
 
     func recv() {
         Task {
-            guard let socket else {
-                return
-            }
-            for await data in await socket.inputs {
-                await streams.first?.doInput(data)
+            switch mode {
+            case .caller:
+                guard let socket else {
+                    return
+                }
+                for await data in await socket.inputs {
+                    await streams.first?.doInput(data)
+                }
+            case .listener:
+                guard let socket = clients.first else {
+                    return
+                }
+                for await data in await socket.inputs {
+                    await streams.first?.doInput(data)
+                }
             }
         }
     }

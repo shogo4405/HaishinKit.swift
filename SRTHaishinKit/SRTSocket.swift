@@ -24,6 +24,22 @@ final actor SRTSocket {
         }
     }
 
+    var accept: AsyncStream<SRTSocket> {
+        AsyncStream<SRTSocket> { condination in
+            Task.detached {
+                repeat {
+                    do {
+                        let client = try await self.accept()
+                        condination.yield(client)
+                        try await Task.sleep(nanoseconds: 1_000_000_000)
+                    } catch {
+                        condination.finish()
+                    }
+                } while await self.connected
+            }
+        }
+    }
+
     private(set) var mode: SRTMode = .caller
     private(set) var perf: CBytePerfMon = .init()
     private(set) var socket: SRTSOCKET = SRT_INVALID_SOCK
@@ -77,6 +93,23 @@ final actor SRTSocket {
     private lazy var incomingBuffer: Data = .init(count: Int(windowSizeC))
 
     init() {
+    }
+
+    init(socket: SRTSOCKET) async throws {
+        self.socket = socket
+        guard configure(.post) else {
+            throw makeSocketError()
+        }
+        if incomingBuffer.count < windowSizeC {
+            incomingBuffer = .init(count: Int(windowSizeC))
+        }
+        status = srt_getsockstate(socket)
+        switch status {
+        case SRTS_CONNECTED:
+            connected = true
+        default:
+            break
+        }
     }
 
     func open(_ addr: sockaddr_in, mode: SRTMode, options: [SRTSocketOption: any Sendable] = [:]) throws {
@@ -156,6 +189,11 @@ final actor SRTSocket {
         let error_message = String(cString: srt_getlasterror_str())
         logger.error(error_message)
         return SRTError.illegalState(message: error_message)
+    }
+
+    private func accept() async throws -> SRTSocket {
+        let accept = srt_accept(socket, nil, nil)
+        return try await SRTSocket(socket: accept)
     }
 
     @inline(__always)
