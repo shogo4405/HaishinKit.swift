@@ -9,7 +9,8 @@ public class MTHKView: MTKView {
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
 
     /// Specifies how the video is displayed with in track.
-    public var track = UInt8.max
+    public var videoTrackId: UInt8? = UInt8.max
+    public var audioTrackId: UInt8?
 
     private var displayImage: CIImage?
     private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
@@ -120,14 +121,11 @@ public class MTHKView: MTKView {
 
 extension MTHKView: MediaMixerOutput {
     // MARK: MediaMixerOutput
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task { @MainActor in
-            guard self.track == track else {
-                return
-            }
             displayImage = try? sampleBuffer.imageBuffer?.makeCIImage()
             #if os(macOS)
             self.needsDisplay = true

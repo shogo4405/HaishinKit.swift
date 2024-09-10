@@ -67,6 +67,8 @@ public actor HKStreamRecorder {
     public private(set) var isRecording = false
     /// The the movie fragment interval in sec.
     public private(set) var movieFragmentInterval: Double?
+    public private(set) var videoTrackId: UInt8? = UInt8.max
+    public private(set) var audioTrackId: UInt8? = UInt8.max
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
@@ -74,7 +76,6 @@ public actor HKStreamRecorder {
         return settings.count == writer.inputs.count
     }
     private var writer: AVAssetWriter?
-    private var trackId: UInt8 = 0
     private var continuation: AsyncStream<Error>.Continuation?
     private var writerInputs: [AVMediaType: AVAssetWriterInput] = [:]
     private var audioPresentationTime: CMTime = .zero
@@ -93,14 +94,6 @@ public actor HKStreamRecorder {
 
     /// Creates a new recorder.
     public init() {
-    }
-
-    /// Sets the video track id for recording.
-    public func setTrackId(_ trackId: UInt8) throws {
-        guard isRecording else {
-            throw Error.invalidState
-        }
-        self.trackId = trackId
     }
 
     /// Sets the movie fragment interval in sec.
@@ -160,6 +153,17 @@ public actor HKStreamRecorder {
             self.writerInputs.removeAll()
         }
         return writer.outputURL
+    }
+
+    public func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) {
+        switch mediaType {
+        case .audio:
+            audioTrackId = id
+        case .video:
+            videoTrackId = id
+        default:
+            break
+        }
     }
 
     private func append(_ sampleBuffer: CMSampleBuffer) {
@@ -273,16 +277,13 @@ extension HKStreamRecorder: HKStreamOutput {
 
 extension HKStreamRecorder: MediaMixerOutput {
     // MARK: MediaMixerOutput
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task {
-            guard await trackId == track else {
-                return
-            }
             await append(sampleBuffer)
         }
     }
 
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         guard let sampleBuffer = buffer.makeSampleBuffer(when) else {
             return
         }

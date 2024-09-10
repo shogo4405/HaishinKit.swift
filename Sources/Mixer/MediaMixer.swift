@@ -314,19 +314,22 @@ extension MediaMixer: AsyncRunner {
                 Task { @ScreenActor in
                     screen.append(inputs.0, buffer: inputs.1)
                 }
+                for output in outputs where await output.videoTrackId == inputs.0 {
+                    output.mixer(self, didOutput: inputs.1)
+                }
             }
         }
         Task {
             for await video in videoIO.output where isRunning {
-                for output in outputs {
-                    output.mixer(self, track: UInt8.max, didOutput: video)
+                for output in outputs where await output.videoTrackId == UInt8.max {
+                    output.mixer(self, didOutput: video)
                 }
             }
         }
         Task {
             for await audio in audioIO.output where isRunning {
-                for output in outputs {
-                    output.mixer(self, track: UInt8.max, didOutput: audio.0, when: audio.1)
+                for output in outputs where await output.audioTrackId == UInt8.max {
+                    output.mixer(self, didOutput: audio.0, when: audio.1)
                 }
             }
         }
@@ -337,7 +340,9 @@ extension MediaMixer: AsyncRunner {
                 guard let buffer = screen.makeSampleBuffer() else {
                     continue
                 }
-                await outputs.forEach { $0.mixer(self, track: UInt8.max, didOutput: buffer) }
+                for output in await self.outputs where await output.videoTrackId == UInt8.max {
+                    output.mixer(self, didOutput: buffer)
+                }
             }
         }
         #if os(iOS) || os(tvOS) || os(visionOS)

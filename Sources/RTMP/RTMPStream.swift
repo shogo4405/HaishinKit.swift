@@ -191,6 +191,9 @@ public actor RTMPStream {
     /// The stream's name used for FMLE-compatible sequences.
     public private(set) var fcPublishName: String?
 
+    public private(set) var videoTrackId: UInt8? = UInt8.max
+    public private(set) var audioTrackId: UInt8? = UInt8.max
+
     private var isPaused = false
     private var startedAt = Date() {
         didSet {
@@ -802,6 +805,17 @@ extension RTMPStream: HKStream {
         self.bitrateStorategy = bitrateStorategy
     }
 
+    public func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) {
+        switch mediaType {
+        case .audio:
+            audioTrackId = id
+        case .video:
+            videoTrackId = id
+        default:
+            break
+        }
+    }
+
     public func dispatch(_ event: NetworkMonitorEvent) async {
         await bitrateStorategy?.adjustBitrate(event, stream: self)
         currentFPS = frameCount
@@ -812,17 +826,11 @@ extension RTMPStream: HKStream {
 
 extension RTMPStream: MediaMixerOutput {
     // MARK: MediaMixerOutput
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
-        guard track == UInt8.max else {
-            return
-        }
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task { await append(sampleBuffer) }
     }
 
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        guard track == UInt8.max else {
-            return
-        }
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         Task { await append(buffer, when: when) }
     }
 }

@@ -13,13 +13,13 @@ public class PiPHKView: UIView {
         AVSampleBufferDisplayLayer.self
     }
 
-    /// Specifies how the video is displayed with in track.
-    public var track = UInt8.max
-
     /// The view’s Core Animation layer used for rendering.
     override public var layer: AVSampleBufferDisplayLayer {
         super.layer as! AVSampleBufferDisplayLayer
     }
+
+    public var videoTrackId: UInt8? = UInt8.max
+    public var audioTrackId: UInt8?
 
     /// A value that specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect {
@@ -67,7 +67,8 @@ public class PiPHKView: NSView {
     }
 
     /// Specifies how the video is displayed with in track.
-    public var track = UInt8.max
+    public var videoTrackId: UInt8? = UInt8.max
+    public var audioTrackId: UInt8?
 
     /// Initializes and returns a newly allocated view object with the specified frame rectangle.
     override public init(frame: CGRect) {
@@ -96,14 +97,11 @@ public class PiPHKView: NSView {
 
 extension PiPHKView: MediaMixerOutput {
     // MARK: MediaMixerOutput
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task { @MainActor in
-            guard self.track == track else {
-                return
-            }
             #if os(macOS)
             (layer as? AVSampleBufferDisplayLayer)?.enqueue(sampleBuffer)
             self.needsDisplay = true

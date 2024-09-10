@@ -7,6 +7,8 @@ import libsrt
 /// An actor that provides the interface to control a one-way channel over a SRTConnection.
 public actor SRTStream {
     @Published public private(set) var readyState: HKStreamReadyState = .idle
+    public private(set) var videoTrackId: UInt8? = UInt8.max
+    public private(set) var audioTrackId: UInt8? = UInt8.max
     private var name: String?
     private var action: (() async -> Void)?
     private var outputs: [any HKStreamOutput] = []
@@ -191,6 +193,17 @@ extension SRTStream: HKStream {
         }
     }
 
+    public func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) {
+        switch mediaType {
+        case .audio:
+            audioTrackId = id
+        case .video:
+            videoTrackId = id
+        default:
+            break
+        }
+    }
+
     public func dispatch(_ event: NetworkMonitorEvent) async {
         await bitrateStorategy?.adjustBitrate(event, stream: self)
     }
@@ -198,17 +211,11 @@ extension SRTStream: HKStream {
 
 extension SRTStream: MediaMixerOutput {
     // MARK: MediaMixerOutput
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput sampleBuffer: CMSampleBuffer) {
-        guard track == UInt8.max else {
-            return
-        }
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task { await append(sampleBuffer) }
     }
 
-    nonisolated public func mixer(_ mixer: MediaMixer, track: UInt8, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
-        guard track == UInt8.max else {
-            return
-        }
+    nonisolated public func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
         Task { await append(buffer, when: when) }
     }
 }

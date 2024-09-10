@@ -46,6 +46,9 @@ public protocol HKStream: Actor, MediaMixerOutput {
     /// Removes an output observer.
     func removeOutput(_ observer: some HKStreamOutput)
 
+    /// Selects track id for streaming.
+    func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType)
+
     /// Dispatch a network monitor event.
     func dispatch(_ event: NetworkMonitorEvent) async
 }
