@@ -3,6 +3,7 @@ import HaishinKit
 import Photos
 import UIKit
 import VideoToolbox
+import SRTHaishinKit
 
 final class IngestViewController: UIViewController {
     @IBOutlet private weak var currentFPSLabel: UILabel!
@@ -32,22 +33,47 @@ final class IngestViewController: UIViewController {
         return audioCapture
     }()
     private var videoScreenObject = VideoTrackScreenObject()
+    private var streamScreenObject = StreamScreenObject()
+
+    private var service = SRTConnection()
+    private var srtstream: SRTStream!
+    private var keyValueObservations: [NSKeyValueObservation] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         netStreamSwitcher.uri = Preference.default.uri ?? ""
+        
+        srtstream = SRTStream(connection: service)
 
         stream.videoMixerSettings.mode = .offscreen
         stream.screen.size = .init(width: 720, height: 1280)
+        stream.videoSettings.bitRate = 4500 * 1000
+        stream.videoSettings.profileLevel = kVTProfileLevel_H264_High_AutoLevel as String
         stream.screen.backgroundColor = UIColor.white.cgColor
 
-        videoScreenObject.cornerRadius = 16.0
-        videoScreenObject.track = 1
-        videoScreenObject.horizontalAlignment = .right
-        videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-        videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-        try? stream.screen.addChild(videoScreenObject)
+        Task {
+            try? await service.open(URL(string: "srt://0.0.0.0:9998")!, mode: .listener)
+        }
+
+        let keyValueObservation = service.observe(\.connected, options: [.new, .old]) { [weak self] _, _ in
+            guard let self = self else {
+                return
+            }
+            if service.connected {
+                srtstream.play()
+            } else {
+                srtstream.close()
+            }
+        }
+        keyValueObservations.append(keyValueObservation)
+
+        streamScreenObject.cornerRadius = 16.0
+        streamScreenObject.horizontalAlignment = .right
+        streamScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+        streamScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+        srtstream.addObserver(streamScreenObject)
+        try? stream.screen.addChild(streamScreenObject)
 
         // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
         stream.isMultiCamSessionEnabled = true
@@ -364,3 +390,4 @@ extension IngestViewController: UIPickerViewDataSource {
         return AVAudioSession.sharedInstance().preferredInput?.dataSources?[row].dataSourceName ?? ""
     }
 }
+
