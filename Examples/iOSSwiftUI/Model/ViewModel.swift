@@ -61,6 +61,8 @@ final class ViewModel: ObservableObject {
 
     func config() {
         rtmpStream = RTMPStream(connection: rtmpConnection)
+        rtmpStream.videoMixerSettings.mode = .offscreen
+        rtmpStream.screen.startRunning()
         if let orientation = DeviceUtil.videoOrientation(by: UIDevice.current.orientation) {
             rtmpStream.videoOrientation = orientation
         }
