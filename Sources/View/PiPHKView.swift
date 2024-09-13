@@ -97,6 +97,17 @@ public class PiPHKView: NSView {
 
 extension PiPHKView: MediaMixerOutput {
     // MARK: MediaMixerOutput
+    public func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) async {
+        switch mediaType {
+        case .audio:
+            break
+        case .video:
+            videoTrackId = id
+        default:
+            break
+        }
+    }
+
     nonisolated public func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime) {
     }
 

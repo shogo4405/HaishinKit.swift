@@ -805,6 +805,16 @@ extension RTMPStream: HKStream {
         self.bitrateStorategy = bitrateStorategy
     }
 
+    public func dispatch(_ event: NetworkMonitorEvent) async {
+        await bitrateStorategy?.adjustBitrate(event, stream: self)
+        currentFPS = frameCount
+        frameCount = 0
+        info.update()
+    }
+}
+
+extension RTMPStream: MediaMixerOutput {
+    // MARK: MediaMixerOutput
     public func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) {
         switch mediaType {
         case .audio:
@@ -816,16 +826,6 @@ extension RTMPStream: HKStream {
         }
     }
 
-    public func dispatch(_ event: NetworkMonitorEvent) async {
-        await bitrateStorategy?.adjustBitrate(event, stream: self)
-        currentFPS = frameCount
-        frameCount = 0
-        info.update()
-    }
-}
-
-extension RTMPStream: MediaMixerOutput {
-    // MARK: MediaMixerOutput
     nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task { await append(sampleBuffer) }
     }

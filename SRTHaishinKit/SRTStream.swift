@@ -193,6 +193,13 @@ extension SRTStream: HKStream {
         }
     }
 
+    public func dispatch(_ event: NetworkMonitorEvent) async {
+        await bitrateStorategy?.adjustBitrate(event, stream: self)
+    }
+}
+
+extension SRTStream: MediaMixerOutput {
+    // MARK: MediaMixerOutput
     public func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) {
         switch mediaType {
         case .audio:
@@ -204,13 +211,6 @@ extension SRTStream: HKStream {
         }
     }
 
-    public func dispatch(_ event: NetworkMonitorEvent) async {
-        await bitrateStorategy?.adjustBitrate(event, stream: self)
-    }
-}
-
-extension SRTStream: MediaMixerOutput {
-    // MARK: MediaMixerOutput
     nonisolated public func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer) {
         Task { await append(sampleBuffer) }
     }

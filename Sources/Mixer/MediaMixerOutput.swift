@@ -10,4 +10,6 @@ public protocol MediaMixerOutput: AnyObject, Sendable {
     func mixer(_ mixer: MediaMixer, didOutput sampleBuffer: CMSampleBuffer)
     /// Tells the receiver to an audio buffer incoming.
     func mixer(_ mixer: MediaMixer, didOutput buffer: AVAudioPCMBuffer, when: AVAudioTime)
+    /// Selects track id for streaming.
+    func selectTrack(_ id: UInt8?, mediaType: CMFormatDescription.MediaType) async
 }
