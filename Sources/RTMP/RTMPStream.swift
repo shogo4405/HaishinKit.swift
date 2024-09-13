@@ -730,6 +730,10 @@ extension RTMPStream: HKStream {
         await incoming.setSoundTransform(soundTransform)
     }
 
+    public func setVideoInputBufferCounts(_ videoInputBufferCounts: Int) {
+        outgoing.videoInputBufferCounts = videoInputBufferCounts
+    }
+
     public func append(_ sampleBuffer: CMSampleBuffer) {
         switch sampleBuffer.formatDescription?.mediaType {
         case .video:

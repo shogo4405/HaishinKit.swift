@@ -26,6 +26,9 @@ public protocol HKStream: Actor, MediaMixerOutput {
     /// Sets the sound transform value control.
     func setSoundTransform(_ soundTransfrom: SoundTransform) async
 
+    /// Sets the video input buffer counts.
+    func setVideoInputBufferCounts(_ videoInputBufferCounts: Int)
+
     /// Appends a CMSampleBuffer.
     /// - Parameters:
     ///   - sampleBuffer:The sample buffer to append.
