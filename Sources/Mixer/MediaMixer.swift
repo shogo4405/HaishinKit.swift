@@ -204,6 +204,10 @@ public final actor MediaMixer {
 
     /// Sets the video mixier settings.
     public func setVideoMixerSettings(_ settings: VideoMixerSettings) {
+        let mode = self.videoMixerSettings.mode
+        if mode != settings.mode {
+            setVideoRenderingMode(settings.mode)
+        }
         videoIO.mixerSettings = settings
         Task { @ScreenActor in
             screen.videoTrackScreenObject.track = settings.mainTrack
@@ -287,6 +291,28 @@ public final actor MediaMixer {
         }
     }
 
+    func setVideoRenderingMode(_ mode: VideoMixerSettings.Mode) {
+        switch mode {
+        case .passthrough:
+            Task { @ScreenActor in
+                displayLink.stopRunning()
+            }
+        case .offscreen:
+            Task { @ScreenActor in
+                displayLink.preferredFramesPerSecond = await Int(frameRate)
+                displayLink.startRunning()
+                for await _ in displayLink.updateFrames where displayLink.isRunning {
+                    guard let buffer = screen.makeSampleBuffer() else {
+                        continue
+                    }
+                    for output in await self.outputs where await output.videoTrackId == UInt8.max {
+                        output.mixer(self, didOutput: buffer)
+                    }
+                }
+            }
+        }
+    }
+
     #if os(iOS) || os(tvOS) || os(visionOS)
     func setBackgroundMode(_ background: Bool) {
         guard #available(tvOS 17.0, *) else {
@@ -333,18 +359,7 @@ extension MediaMixer: AsyncRunner {
                 }
             }
         }
-        Task { @ScreenActor in
-            displayLink.preferredFramesPerSecond = await Int(frameRate)
-            displayLink.startRunning()
-            for await _ in displayLink.updateFrames where await isRunning {
-                guard let buffer = screen.makeSampleBuffer() else {
-                    continue
-                }
-                for output in await self.outputs where await output.videoTrackId == UInt8.max {
-                    output.mixer(self, didOutput: buffer)
-                }
-            }
-        }
+        setVideoRenderingMode(videoMixerSettings.mode)
         #if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter
             .Publisher(center: .default, name: UIApplication.didEnterBackgroundNotification, object: nil)
