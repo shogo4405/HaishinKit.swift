@@ -376,11 +376,11 @@ public actor RTMPStream {
             }
             info.resourceName = name
             howToPublish = type
-            outgoing.startRunning()
             startedAt = .init()
             metadata = makeMetadata()
-            try? send("@setDataFrame", arguments: "onMetaData", metadata)
             readyState = .publishing
+            try? send("@setDataFrame", arguments: "onMetaData", metadata)
+            outgoing.startRunning()
             Task {
                 for await audio in outgoing.audioOutputStream where outgoing.isRunning {
                     append(audio.0, when: audio.1)
