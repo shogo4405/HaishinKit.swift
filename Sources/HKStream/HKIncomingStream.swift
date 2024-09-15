@@ -68,12 +68,8 @@ extension HKIncomingStream: AsyncRunner {
             }
         }
         Task {
-            do {
-                for try await video in videoCodec.outputStream where videoCodec.isRunning {
-                    await mediaLink.enqueue(video)
-                }
-            } catch {
-                logger.error(error)
+            for await video in videoCodec.outputStream where videoCodec.isRunning {
+                await mediaLink.enqueue(video)
             }
         }
         Task {
