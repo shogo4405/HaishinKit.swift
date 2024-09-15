@@ -24,7 +24,7 @@ public final class HKOutgoingStream {
     public private(set) var audioInputFormat: CMFormatDescription?
 
     /// The asynchronous sequence for video output.
-    public var videoOutputStream: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
+    public var videoOutputStream: AsyncStream<CMSampleBuffer> {
         return videoCodec.outputStream
     }
 

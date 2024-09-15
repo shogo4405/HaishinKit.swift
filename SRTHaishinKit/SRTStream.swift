@@ -51,7 +51,7 @@ public actor SRTStream {
                 writer.expectedMedias.insert(.audio)
             }
             Task {
-                for try await buffer in outgoing.videoOutputStream where outgoing.isRunning {
+                for await buffer in outgoing.videoOutputStream where outgoing.isRunning {
                     append(buffer)
                 }
             }

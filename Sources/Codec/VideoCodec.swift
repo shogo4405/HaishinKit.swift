@@ -45,13 +45,13 @@ final class VideoCodec {
         }
     }
     private(set) var outputFormat: CMFormatDescription?
-    var outputStream: AsyncThrowingStream<CMSampleBuffer, any Swift.Error> {
-        let (stream, continuation) = AsyncThrowingStream<CMSampleBuffer, any Swift.Error>.makeStream()
-        self.continuation = continuation
-        return stream
+    var outputStream: AsyncStream<CMSampleBuffer> {
+        AsyncStream<CMSampleBuffer> { continuation in
+            self.continuation = continuation
+        }
     }
     private var startedAt: CMTime = .zero
-    private var continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?
+    private var continuation: AsyncStream<CMSampleBuffer>.Continuation?
     private var isInvalidateSession = true
     private var presentationTimeStamp: CMTime = .invalid
 
@@ -69,10 +69,10 @@ final class VideoCodec {
                 }
             }
             guard let session else {
-                throw VTSessionError.failedToCreate(status: kVTParameterErr)
+                return
             }
             if let continuation {
-                session.convert(sampleBuffer, continuation: continuation)
+                try session.convert(sampleBuffer, continuation: continuation)
             }
         } catch {
             logger.error(error)

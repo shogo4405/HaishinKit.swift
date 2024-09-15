@@ -12,7 +12,7 @@ protocol VTSessionConvertible {
     func setOption(_ option: VTSessionOption) -> OSStatus
     func setOptions(_ options: Set<VTSessionOption>) -> OSStatus
     func copySupportedPropertyDictionary() -> [AnyHashable: Any]
-    func convert(_ sampleBuffer: CMSampleBuffer, continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?)
+    func convert(_ sampleBuffer: CMSampleBuffer, continuation: AsyncStream<CMSampleBuffer>.Continuation?) throws
     func invalidate()
 }
 

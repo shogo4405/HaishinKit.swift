@@ -387,7 +387,7 @@ public actor RTMPStream {
                 }
             }
             Task {
-                for try await video in outgoing.videoOutputStream where outgoing.isRunning {
+                for await video in outgoing.videoOutputStream where outgoing.isRunning {
                     append(video)
                 }
             }

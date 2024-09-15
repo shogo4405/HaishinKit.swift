@@ -8,17 +8,16 @@ extension VTDecompressionSession: VTSessionConvertible {
     ]
 
     @inline(__always)
-    func convert(_ sampleBuffer: CMSampleBuffer, continuation: AsyncThrowingStream<CMSampleBuffer, any Error>.Continuation?) {
+    func convert(_ sampleBuffer: CMSampleBuffer, continuation: AsyncStream<CMSampleBuffer>.Continuation?) throws {
         var flagsOut: VTDecodeInfoFlags = []
         var _: VTEncodeInfoFlags = []
-        VTDecompressionSessionDecodeFrame(
+        let status = VTDecompressionSessionDecodeFrame(
             self,
             sampleBuffer: sampleBuffer,
             flags: Self.defaultDecodeFlags,
             infoFlagsOut: &flagsOut,
             outputHandler: { status, _, imageBuffer, presentationTimeStamp, duration in
                 guard let imageBuffer else {
-                    continuation?.finish(throwing: VTSessionError.failedToConvert(status: status))
                     return
                 }
                 var status = noErr
@@ -29,7 +28,6 @@ extension VTDecompressionSession: VTSessionConvertible {
                     formatDescriptionOut: &outputFormat
                 )
                 guard let outputFormat, status == noErr else {
-                    continuation?.finish(throwing: VTSessionError.failedToConvert(status: status))
                     return
                 }
                 var timingInfo = CMSampleTimingInfo(
@@ -50,11 +48,12 @@ extension VTDecompressionSession: VTSessionConvertible {
                 )
                 if let sampleBuffer {
                     continuation?.yield(sampleBuffer)
-                } else {
-                    continuation?.finish(throwing: VTSessionError.failedToConvert(status: status))
                 }
             }
         )
+        if status != noErr {
+            throw VTSessionError.failedToConvert(status: status)
+        }
     }
 
     func invalidate() {
