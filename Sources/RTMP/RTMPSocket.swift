@@ -14,16 +14,7 @@ final actor RTMPSocket {
     private var timeout: UInt64 = 15
     private var connected = false
     private var windowSizeC = RTMPSocket.defaultWindowSizeC
-    private var securityLevel: StreamSocketSecurityLevel = .none {
-        didSet {
-            switch securityLevel {
-            case .ssLv2, .ssLv3, .tlSv1, .negotiatedSSL:
-                parameters = .tls
-            default:
-                parameters = .tcp
-            }
-        }
-    }
+    private var securityLevel: StreamSocketSecurityLevel = .none
     private var totalBytesIn = 0
     private var queueBytesOut = 0
     private var totalBytesOut = 0
@@ -45,7 +36,12 @@ final actor RTMPSocket {
 
     init(qualityOfService: DispatchQoS, securityLevel: StreamSocketSecurityLevel) {
         self.qualityOfService = qualityOfService
-        self.securityLevel = securityLevel
+        switch securityLevel {
+        case .ssLv2, .ssLv3, .tlSv1, .negotiatedSSL:
+            parameters = .tls
+        default:
+            parameters = .tcp
+        }
     }
 
     func connect(_ name: String, port: Int) async throws {
