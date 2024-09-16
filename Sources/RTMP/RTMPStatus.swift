@@ -16,14 +16,13 @@ public struct RTMPStatus: Sendable {
         guard
             let data,
             let code = data["code"] as? String,
-            let level = data["level"] as? String,
-            let description = data["description"] as? String else {
+            let level = data["level"] as? String else {
             return nil
         }
         self.data = data
         self.code = code
         self.level = level
-        self.description = description
+        self.description = (data["description"] as? String) ?? ""
     }
 
     init(code: String, level: String, description: String) {
