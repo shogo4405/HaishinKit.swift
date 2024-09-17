@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name          = "SRTHaishinKit"
-  s.version       = "1.9.3"
+  s.version       = "1.9.4"
   s.summary       = "Camera and Microphone streaming library via SRT for iOS, macOS, tvOS and visionOS."
   s.swift_version = "5.10"
 
@@ -31,6 +31,6 @@ Pod::Spec.new do |s|
 
   s.source_files = "SRTHaishinKit/*.{h,swift}"
   s.vendored_frameworks = "Vendor/SRT/libsrt.xcframework"
-  s.dependency 'HaishinKit', '1.9.3'
+  s.dependency 'HaishinKit', '1.9.4'
 
 end
