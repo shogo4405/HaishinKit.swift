@@ -29,6 +29,13 @@ public final class StreamScreenObject: ScreenObject, ChromaKeyProcessable {
         }
     }
 
+    override var blendMode: ScreenObject.BlendMode {
+        if 0.0 < cornerRadius || chromaKeyColor != nil {
+            return .alpha
+        }
+        return .normal
+    }
+
     override public func makeBounds(_ size: CGSize) -> CGRect {
         guard parent != nil, let image = sampleBuffer?.formatDescription?.dimensions.size else {
             return super.makeBounds(size)

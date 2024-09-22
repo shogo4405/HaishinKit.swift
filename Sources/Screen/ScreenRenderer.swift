@@ -22,6 +22,7 @@ public protocol ScreenRenderer: AnyObject {
 
 final class ScreenRendererByCPU: ScreenRenderer {
     static let noFlags = vImage_Flags(kvImageNoFlags)
+    static let doNotTile = vImage_Flags(kvImageDoNotTile)
 
     var bounds: CGRect = .init(origin: .zero, size: Screen.size)
 
@@ -166,12 +167,22 @@ final class ScreenRendererByCPU: ScreenRenderer {
 
         switch pixelFormatType {
         case kCVPixelFormatType_32ARGB:
-            vImageAlphaBlend_ARGB8888(
-                &image,
-                &destination,
-                &destination,
-                vImage_Flags(kvImageDoNotTile)
-            )
+            switch screenObject.blendMode {
+            case .normal:
+                vImageCopyBuffer(
+                    &image,
+                    &destination,
+                    4,
+                    Self.doNotTile
+                )
+            case .alpha:
+                vImageAlphaBlend_ARGB8888(
+                    &image,
+                    &destination,
+                    &destination,
+                    Self.doNotTile
+                )
+            }
         default:
             break
         }
