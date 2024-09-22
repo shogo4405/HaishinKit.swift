@@ -35,6 +35,11 @@ open class ScreenObject {
         case bottom
     }
 
+    enum BlendMode {
+        case normal
+        case alpha
+    }
+
     /// The screen object container that contains this screen object
     public internal(set) weak var parent: ScreenObjectContainer?
 
@@ -70,6 +75,10 @@ open class ScreenObject {
 
     /// Specifies the alignment position along the horizontal axis.
     public var horizontalAlignment: HorizontalAlignment = .left
+
+    var blendMode: BlendMode {
+        .alpha
+    }
 
     var shouldInvalidateLayout = true
 
@@ -218,6 +227,13 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
             }
             invalidateLayout()
         }
+    }
+
+    override var blendMode: ScreenObject.BlendMode {
+        if 0.0 < cornerRadius || chromaKeyColor != nil {
+            return .alpha
+        }
+        return .normal
     }
 
     private var queue: TypedBlockQueue<CMSampleBuffer>?
