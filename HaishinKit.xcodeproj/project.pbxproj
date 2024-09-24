@@ -293,6 +293,7 @@
 		BCDEB4FA2BE442F900EEC6ED /* Screen.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4F92BE442F900EEC6ED /* Screen.swift */; };
 		BCDEB4FC2BE4436D00EEC6ED /* ScreenObjectContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDEB4FB2BE4436D00EEC6ED /* ScreenObjectContainer.swift */; };
 		BCE0E33D2AD369550082C16F /* NetStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* NetStreamSwitcher.swift */; };
+		BCE63A242CA2FEE400012081 /* game_jikkyou.png in Resources */ = {isa = PBXBuildFile; fileRef = BC1CCF572BE4D5150067198A /* game_jikkyou.png */; };
 		BCFB355524FA27EA00DC5108 /* PlaybackViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355324FA275600DC5108 /* PlaybackViewController.swift */; };
 		BCFB355A24FA40DD00DC5108 /* PlaybackContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFB355924FA40DD00DC5108 /* PlaybackContainerViewController.swift */; };
 		BCFC51FE2AAB420700014428 /* IOAudioMixerTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFC51FD2AAB420700014428 /* IOAudioMixerTrack.swift */; };
@@ -1714,6 +1715,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BCE63A242CA2FEE400012081 /* game_jikkyou.png in Resources */,
 				291F4E381CF206E600F59C51 /* Icon.png in Resources */,
 				296897651CDB028C0074D5F0 /* Assets.xcassets in Resources */,
 				296897661CDB028C0074D5F0 /* LaunchScreen.storyboard in Resources */,
@@ -2598,6 +2600,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_BITCODE = NO;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -2637,6 +2640,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_BITCODE = NO;
 				ENABLE_HARDENED_RUNTIME = YES;

@@ -32,6 +32,7 @@ final class IngestViewController: UIViewController {
         return audioCapture
     }()
     private var videoScreenObject = VideoTrackScreenObject()
+    private var imageObject = ImageScreenObject()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,12 +43,29 @@ final class IngestViewController: UIViewController {
         stream.screen.size = .init(width: 720, height: 1280)
         stream.screen.backgroundColor = UIColor.white.cgColor
 
+        let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
+        if let provider = CGDataProvider(url: imageURL as CFURL) {
+            imageObject.horizontalAlignment = .right
+            imageObject.verticalAlignment = .top
+            imageObject.layoutMargin = .init(top: 36, left: 0, bottom: 0, right: 20)
+            imageObject.isVisible = true
+            imageObject.cgImage = CGImage(
+                pngDataProviderSource: provider,
+                decode: nil,
+                shouldInterpolate: false,
+                intent: .defaultIntent
+            )
+            try? stream.screen.addChild(imageObject)
+        } else {
+            logger.info("no image")
+        }
+
         videoScreenObject.cornerRadius = 16.0
         videoScreenObject.track = 1
         videoScreenObject.horizontalAlignment = .right
         videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
         videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-        try? stream.screen.addChild(videoScreenObject)
+        // try? stream.screen.addChild(videoScreenObject)
 
         // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
         stream.isMultiCamSessionEnabled = true
@@ -134,9 +152,34 @@ final class IngestViewController: UIViewController {
             currentPosition = position
         }
     }
+    
+    var visibleImage: Bool = true
 
     @IBAction func toggleTorch(_ sender: UIButton) {
-        stream.torch.toggle()
+        if visibleImage {
+            imageObject.isVisible = false
+            imageObject.parent?.removeChild(imageObject)
+            imageObject.cgImage = nil
+            visibleImage = false
+        } else {
+            let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
+            if let provider = CGDataProvider(url: imageURL as CFURL) {
+                imageObject.horizontalAlignment = .right
+                imageObject.verticalAlignment = .top
+                imageObject.layoutMargin = .init(top: 36, left: 0, bottom: 0, right: 20)
+                imageObject.isVisible = true
+                imageObject.cgImage = CGImage(
+                    pngDataProviderSource: provider,
+                    decode: nil,
+                    shouldInterpolate: false,
+                    intent: .defaultIntent
+                )
+                try? stream.screen.addChild(imageObject)
+            } else {
+                logger.info("no image")
+            }
+            visibleImage = true
+        }
     }
 
     @IBAction func on(slider: UISlider) {
