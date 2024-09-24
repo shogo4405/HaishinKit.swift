@@ -45,10 +45,7 @@ public class MTHKView: MTKView {
         }
     }
 
-    private var currentSampleBuffer: CMSampleBuffer?
-
-    private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
-
+    private var displayImage: CIImage?
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
@@ -93,7 +90,7 @@ public class MTHKView: MTKView {
         framebufferOnly = false
         enableSetNeedsDisplay = true
         if let device {
-            context = CIContext(mtlDevice: device)
+            context = CIContext(mtlDevice: device, options: [.cacheIntermediates: false, .name: "MTHKView"])
         }
     }
 
@@ -109,12 +106,11 @@ public class MTHKView: MTKView {
             let renderCommandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: currentRenderPassDescriptor) {
             renderCommandEncoder.endEncoding()
         }
-        guard let imageBuffer = currentSampleBuffer?.imageBuffer else {
+        guard let displayImage else {
             commandBuffer.present(currentDrawable)
             commandBuffer.commit()
             return
         }
-        let displayImage = CIImage(cvPixelBuffer: imageBuffer)
         var scaleX: CGFloat = 0
         var scaleY: CGFloat = 0
         var translationX: CGFloat = 0
@@ -138,14 +134,22 @@ public class MTHKView: MTKView {
         default:
             break
         }
-        let bounds = CGRect(origin: .zero, size: drawableSize)
-        var scaledImage: CIImage = displayImage
 
-        scaledImage = scaledImage
+        var scaledImage = displayImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
-        context.render(scaledImage, to: currentDrawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
+        let destination = CIRenderDestination(
+            width: Int(drawableSize.width),
+            height: Int(drawableSize.height),
+            pixelFormat: colorPixelFormat,
+            commandBuffer: commandBuffer,
+            mtlTextureProvider: { () -> (any MTLTexture) in
+                return currentDrawable.texture
+            })
+
+        _ = try? context.startTask(toRender: scaledImage, to: destination)
+
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
@@ -165,7 +169,7 @@ extension MTHKView: IOStreamView {
 
     public func enqueue(_ sampleBuffer: CMSampleBuffer?) {
         if Thread.isMainThread {
-            currentSampleBuffer = sampleBuffer
+            displayImage = sampleBuffer?.imageBuffer?.makeCIImage()
             #if os(macOS)
             self.needsDisplay = true
             #else
