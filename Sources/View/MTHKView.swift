@@ -7,13 +7,9 @@ import MetalKit
 public class MTHKView: MTKView {
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
-
-    /// Specifies how the video is displayed with in track.
     public var videoTrackId: UInt8? = UInt8.max
     public var audioTrackId: UInt8?
-
     private var displayImage: CIImage?
-    private let colorSpace: CGColorSpace = CGColorSpaceCreateDeviceRGB()
     private lazy var commandQueue: (any MTLCommandQueue)? = {
         return device?.makeCommandQueue()
     }()
@@ -39,7 +35,7 @@ public class MTHKView: MTKView {
             framebufferOnly = false
             enableSetNeedsDisplay = true
             if let device {
-                context = CIContext(mtlDevice: device)
+                context = CIContext(mtlDevice: device, options: [.cacheIntermediates: false, .name: "MTHKView"])
             }
         }
     }
@@ -86,16 +82,27 @@ public class MTHKView: MTKView {
         default:
             break
         }
-        let bounds = CGRect(origin: .zero, size: drawableSize)
+
         var scaledImage: CIImage = displayImage
         for effect in effects {
             scaledImage = effect.execute(scaledImage)
         }
+
         scaledImage = scaledImage
             .transformed(by: CGAffineTransform(translationX: translationX, y: translationY))
             .transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
 
-        context.render(scaledImage, to: currentDrawable.texture, commandBuffer: commandBuffer, bounds: bounds, colorSpace: colorSpace)
+        let destination = CIRenderDestination(
+            width: Int(drawableSize.width),
+            height: Int(drawableSize.height),
+            pixelFormat: colorPixelFormat,
+            commandBuffer: commandBuffer,
+            mtlTextureProvider: { () -> (any MTLTexture) in
+                return currentDrawable.texture
+            })
+
+        _ = try? context.startTask(toRender: scaledImage, to: destination)
+
         commandBuffer.present(currentDrawable)
         commandBuffer.commit()
     }
