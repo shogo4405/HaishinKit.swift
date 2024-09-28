@@ -282,6 +282,9 @@ public final actor MediaMixer {
             return
         }
         outputs.append(output)
+        if !isCapturing {
+            startCapturing()
+        }
     }
 
     /// Removes an output observer.

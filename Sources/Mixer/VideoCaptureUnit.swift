@@ -118,10 +118,6 @@ final class VideoCaptureUnit: CaptureUnit {
             try? configuration?(capture)
             try capture.attachDevice(device, session: session, videoUnit: self)
         }
-        if device != nil {
-            // Start captureing if not running.
-            session.startRunning()
-        }
         if device == nil {
             videoMixer.reset(track)
         }
