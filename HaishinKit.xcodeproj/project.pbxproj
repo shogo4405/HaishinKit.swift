@@ -163,6 +163,7 @@
 		BC3802142AB5E7CC001AE399 /* AudioDeviceUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802132AB5E7CC001AE399 /* AudioDeviceUnit.swift */; };
 		BC3802192AB6AD79001AE399 /* AudioMixerTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3802182AB6AD79001AE399 /* AudioMixerTrackTests.swift */; };
 		BC3C56712C3F75B200C83107 /* RTMPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3C56702C3F75B200C83107 /* RTMPStatus.swift */; };
+		BC3C897F2CA9B67A0002F1F3 /* NetworkConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3C897E2CA9B67A0002F1F3 /* NetworkConnection.swift */; };
 		BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */; };
 		BC3E49D02C45520B00A9C5B6 /* HKOutgoingStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC3E49CF2C45520B00A9C5B6 /* HKOutgoingStream.swift */; };
 		BC3E49D12C455A1B00A9C5B6 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE0E33B2AD369410082C16F /* HKStreamSwitcher.swift */; };
@@ -650,6 +651,7 @@
 		BC3802132AB5E7CC001AE399 /* AudioDeviceUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioDeviceUnit.swift; sourceTree = "<group>"; };
 		BC3802182AB6AD79001AE399 /* AudioMixerTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerTrackTests.swift; sourceTree = "<group>"; };
 		BC3C56702C3F75B200C83107 /* RTMPStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPStatus.swift; sourceTree = "<group>"; };
+		BC3C897E2CA9B67A0002F1F3 /* NetworkConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkConnection.swift; sourceTree = "<group>"; };
 		BC3E384329C216BB007CD972 /* ADTSReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ADTSReaderTests.swift; sourceTree = "<group>"; };
 		BC3E49CF2C45520B00A9C5B6 /* HKOutgoingStream.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKOutgoingStream.swift; sourceTree = "<group>"; };
 		BC3E49D72C466B5D00A9C5B6 /* RTMPAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RTMPAuthenticator.swift; sourceTree = "<group>"; };
@@ -1324,6 +1326,7 @@
 		BCCB42692C68C697003B1168 /* Network */ = {
 			isa = PBXGroup;
 			children = (
+				BC3C897E2CA9B67A0002F1F3 /* NetworkConnection.swift */,
 				BC18F3E42C5BB3BB00B9D78D /* NetworkMonitor.swift */,
 				BCCB426D2C6A5682003B1168 /* NetworkMonitorEvent.swift */,
 				BCCB426B2C6A5651003B1168 /* NetworkMonitorReport.swift */,
@@ -1918,6 +1921,7 @@
 				BC1CCF622BE66C220067198A /* CGImage+Extension.swift in Sources */,
 				BC4914B228DDFE31009E2DF6 /* VTSessionOptionKey.swift in Sources */,
 				BCDEB4FA2BE442F900EEC6ED /* Screen.swift in Sources */,
+				BC3C897F2CA9B67A0002F1F3 /* NetworkConnection.swift in Sources */,
 				BC3C56712C3F75B200C83107 /* RTMPStatus.swift in Sources */,
 				BC7C56CD29A786AE00C41A9B /* ADTS.swift in Sources */,
 				BC42316A2BCA8BE5003A80DC /* AudioMixerBySingleTrack.swift in Sources */,

@@ -4,7 +4,7 @@ import HaishinKit
 import libsrt
 
 /// An actor that provides the interface to control a two-way SRT connection.
-public actor SRTConnection {
+public actor SRTConnection: NetworkConnection {
     /// The error domain codes.
     public enum Error: Swift.Error {
         /// An invalid internal stare.

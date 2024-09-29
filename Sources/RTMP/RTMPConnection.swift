@@ -4,7 +4,7 @@ import Foundation
 
 // MARK: -
 /// The RTMPConneciton class create a two-way RTMP connection.
-public actor RTMPConnection {
+public actor RTMPConnection: NetworkConnection {
     /// The error domain code.
     public enum Error: Swift.Error {
         /// An invalid internal stare.
