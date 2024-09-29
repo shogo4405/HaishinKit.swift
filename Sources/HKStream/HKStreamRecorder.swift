@@ -140,6 +140,11 @@ public actor HKStreamRecorder {
         guard isRecording else {
             throw Error.invalidState
         }
+        defer {
+            isRecording = false
+            self.writer = nil
+            self.writerInputs.removeAll()
+        }
         guard let writer = writer, writer.status == .writing else {
             throw Error.failedToFinishWriting(error: writer?.error)
         }
@@ -147,11 +152,6 @@ public actor HKStreamRecorder {
             input.markAsFinished()
         }
         await writer.finishWriting()
-        defer {
-            isRecording = false
-            self.writer = nil
-            self.writerInputs.removeAll()
-        }
         return writer.outputURL
     }
 
