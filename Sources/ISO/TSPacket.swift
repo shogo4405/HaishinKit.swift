@@ -21,7 +21,7 @@ struct TSPacket {
 
     private var remain: Int {
         var adaptationFieldSize = 0
-        if let adaptationField: TSAdaptationField = adaptationField, adaptationFieldFlag {
+        if let adaptationField, adaptationFieldFlag {
             adaptationField.compute()
             adaptationFieldSize = Int(adaptationField.length) + 1
         }
@@ -42,18 +42,21 @@ struct TSPacket {
     }
 
     mutating func fill(_ data: Data?, useAdaptationField: Bool) -> Int {
-        guard let data: Data = data else {
+        guard let data else {
             payload.append(Data(repeating: 0xff, count: remain))
             return 0
         }
         payloadFlag = true
-        let length: Int = min(data.count, remain, 182)
+        let length = min(data.count, remain, 183)
         payload.append(data[0..<length])
         if remain == 0 {
             return length
         }
         if useAdaptationField {
             adaptationFieldFlag = true
+            if length == 183 {
+                return length
+            }
             if adaptationField == nil {
                 adaptationField = TSAdaptationField()
             }
@@ -82,14 +85,14 @@ extension TSPacket: DataConvertible {
             bytes[3] |= continuityCounter
             return ByteArray()
                 .writeBytes(bytes)
-                .writeBytes(adaptationFieldFlag ? adaptationField!.data : Data())
+                .writeBytes(adaptationFieldFlag ? adaptationField?.data ?? Data([0]) : Data())
                 .writeBytes(payload)
                 .data
         }
         set {
             let buffer = ByteArray(data: newValue)
             do {
-                let data: Data = try buffer.readBytes(4)
+                let data = try buffer.readBytes(4)
                 syncByte = data[0]
                 transportErrorIndicator = (data[1] & 0x80) == 0x80
                 payloadUnitStartIndicator = (data[1] & 0x40) == 0x40
@@ -101,8 +104,10 @@ extension TSPacket: DataConvertible {
                 continuityCounter = UInt8(data[3] & 0xf)
                 if adaptationFieldFlag {
                     let length = Int(try buffer.readUInt8())
-                    buffer.position -= 1
-                    adaptationField = TSAdaptationField(data: try buffer.readBytes(length + 1))
+                    if 0 < length {
+                        buffer.position -= 1
+                        adaptationField = TSAdaptationField(data: try buffer.readBytes(length + 1))
+                    }
                 }
                 if payloadFlag {
                     payload = try buffer.readBytes(buffer.bytesAvailable)

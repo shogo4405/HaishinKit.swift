@@ -33,7 +33,7 @@ class TSAdaptationField {
         length += UInt8(truncatingIfNeeded: pcr.count)
         length += UInt8(truncatingIfNeeded: opcr.count)
         length += UInt8(truncatingIfNeeded: transportPrivateData.count)
-        if let adaptationExtension: TSAdaptationExtensionField = adaptationExtension {
+        if let adaptationExtension {
             length += adaptationExtension.length + 1
         }
         length += UInt8(truncatingIfNeeded: stuffingBytes.count)
