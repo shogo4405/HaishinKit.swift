@@ -341,12 +341,7 @@ public actor RTMPConnection: NetworkConnection {
         guard readyState != .uninitialized else {
             throw Error.invalidState
         }
-        if let operation = operations.removeValue(forKey: Self.connectTransactionId) {
-            let response = readyState == .handshakeDone ?
-                RTMPResponse(status: Code.connectClosed.status("")) :
-                RTMPResponse(status: Code.connectFailed.status(""))
-            operation.resume(throwing: Error.requestFailed(response: response))
-        }
+
         uri = nil
         for stream in streams {
             if await stream.fcPublishName == nil {
@@ -357,8 +352,19 @@ public actor RTMPConnection: NetworkConnection {
         }
         await socket?.close()
         await networkMonitor?.stopRunning()
+
+        let status = readyState == .handshakeDone ?
+            Code.connectClosed.status("") :
+            Code.connectFailed.status("")
+
         connected = false
         readyState = .uninitialized
+
+        if let operation = operations.removeValue(forKey: Self.connectTransactionId) {
+            operation.resume(throwing: Error.requestFailed(response: .init(status: status)))
+        } else {
+            statusContinuation?.yield(status)
+        }
     }
 
     @discardableResult
