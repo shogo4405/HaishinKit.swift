@@ -19,4 +19,8 @@ extension CMSampleBuffer {
     }
 }
 
+#if hasAttribute(retroactive)
+extension CMSampleBuffer: @retroactive @unchecked Sendable {}
+#else
 extension CMSampleBuffer: @unchecked Sendable {}
+#endif
