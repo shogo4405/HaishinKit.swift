@@ -524,7 +524,9 @@ extension IOStream: IOMixerDelegate {
 
     // MARK: IOMixerDelegate
     func mixer(_ mixer: IOMixer, didOutput video: CMSampleBuffer) {
-        observers.forEach { $0.stream(self, didOutput: video) }
+        if readyState != .playing {
+            observers.forEach { $0.stream(self, didOutput: video) }
+        }
     }
 
     func mixer(_ mixer: IOMixer, didOutput audio: AVAudioPCMBuffer, when: AVAudioTime) {
@@ -565,6 +567,9 @@ extension IOStream: IOTellyUnitDelegate {
     // MARK: IOTellyUnitDelegate
     func tellyUnit(_ tellyUnit: IOTellyUnit, dequeue sampleBuffer: CMSampleBuffer) {
         mixer.videoIO.view?.enqueue(sampleBuffer)
+        if videoSampleAccess {
+            observers.forEach { $0.stream(self, didOutput: sampleBuffer) }
+        }
     }
 
     func tellyUnit(_ tellyUnit: IOTellyUnit, didBufferingChanged: Bool) {

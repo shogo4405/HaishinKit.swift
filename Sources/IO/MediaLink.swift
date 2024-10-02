@@ -68,7 +68,7 @@ final class MediaLink<T: MediaLinkDelegate> {
         }
         try? bufferQueue?.enqueue(buffer)
         if isBuffering {
-            bufferingTime += bufferQueue?.duration.seconds ?? 0
+            bufferingTime = bufferQueue?.duration.seconds ?? 0
             if bufferTime <= bufferingTime {
                 bufferTime += 0.1
                 isBuffering = false
