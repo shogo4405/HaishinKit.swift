@@ -282,8 +282,10 @@ public final actor MediaMixer {
             return
         }
         outputs.append(output)
-        if !isCapturing {
-            startCapturing()
+        if #available(tvOS 17.0, *) {
+            if !isCapturing {
+                startCapturing()
+            }
         }
     }
 
