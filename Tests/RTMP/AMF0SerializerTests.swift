@@ -1,9 +1,9 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class AMF0SerializerTests: XCTestCase {
+@Suite struct AMF0SerializerTests {
 
     static let connectionChunk: AMFObject = [
         "tcUrl": "rtmp://localhost:1935/live",
@@ -20,7 +20,7 @@ final class AMF0SerializerTests: XCTestCase {
         "objectEncoding": Double(0)
     ]
 
-    func testConnectionChunk() {
+    @Test func connectionChunk() {
         var amf: any AMFSerializer = AMF0Serializer()
         amf.serialize(AMF0SerializerTests.connectionChunk)
         amf.position = 0
@@ -29,36 +29,36 @@ final class AMF0SerializerTests: XCTestCase {
             let value: Any? = result[key]! as Any?
             switch key {
             case "tcUrl":
-                XCTAssertEqual(value as? String, "rtmp://localhost:1935/live")
+                #expect(value as? String == "rtmp://localhost:1935/live")
             case "flashVer":
-                XCTAssertEqual(value as? String, "FMLE/3.0 (compatible; FMSc/1.0)")
+                #expect(value as? String == "FMLE/3.0 (compatible; FMSc/1.0)")
             case "swfUrl":
-                XCTAssertNil(value)
+                #expect(value == nil)
             case "app":
-                XCTAssertEqual(value as? String, "live")
+                #expect(value as? String == "live")
             case "fpad":
-                XCTAssertEqual(value as? Bool, false)
+                #expect(value as? Bool == false)
             case "audioCodecs":
-                XCTAssertEqual(value as? Double, Double(1024))
+                #expect(value as? Double == Double(1024))
             case "videoCodecs":
-                XCTAssertEqual(value as? Double, Double(128))
+                #expect(value as? Double == Double(128))
             case "videoFunction":
-                XCTAssertEqual(value as? Double, Double(1))
+                #expect(value as? Double == Double(1))
             case "capabilities":
-                XCTAssertEqual(value as? Double, Double(239))
+                #expect(value as? Double == Double(239))
             case "pageUrl":
-                XCTAssertNil(value)
+                #expect(value == nil)
             case "fourCcList":
-                XCTAssertEqual(value as? [String], ["av01", "vp09", "hvc1"])
+                #expect(value as? [String] == ["av01", "vp09", "hvc1"])
             case "objectEncoding":
-                XCTAssertEqual(value as? Double, Double(0))
+                #expect(value as? Double == Double(0))
             default:
-                XCTFail(key.debugDescription)
+                Issue.record(key.debugDescription as! Error)
             }
         }
     }
 
-    func testASArray() {
+    @Test func aSArray() {
         var array = AMFArray()
         array["hello"] = "world"
         array["world"] = "hello"
@@ -66,7 +66,7 @@ final class AMF0SerializerTests: XCTestCase {
         amf.serialize(array)
         amf.position = 0
         let result: AMFArray = try! amf.deserialize()
-        XCTAssertEqual(array["hello"] as? String, result["hello"] as? String)
-        XCTAssertEqual(array["world"] as? String, result["world"] as? String)
+        #expect(array["hello"] as? String == result["hello"] as? String)
+        #expect(array["world"] as? String == result["world"] as? String)
     }
 }

@@ -1,9 +1,9 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class RTMPConnectionTests: XCTestCase {
+@Suite struct RTMPConnectionTests {
     /*
     func publish() {
         let connection = RTMPConnection()

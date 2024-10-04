@@ -1,11 +1,11 @@
 import Foundation
-import XCTest
+import Testing
 import AVFoundation
 
 @testable import HaishinKit
 
-final class AudioCodecTests: XCTestCase {
-    func testEncoderCMSampleBuffer44100_1024() {
+@Suite struct AudioCodecTests {
+    @Test func encoderCMSampleBuffer44100_1024() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -15,7 +15,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer48000_1024() {
+    @Test func encoderCMSampleBuffer48000_1024() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -25,7 +25,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer24000_1024() {
+    @Test func encoderCMSampleBuffer24000_1024() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -35,7 +35,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer16000_1024() {
+    @Test func encoderCMSampleBuffer16000_1024() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -45,7 +45,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer8000_256() {
+    @Test func encoderCMSampleBuffer8000_256() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -55,7 +55,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer8000_960() {
+    @Test func encoderCMSampleBuffer8000_960() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -65,7 +65,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer8000_1224() {
+    @Test func encoderCMSampleBuffer8000_1224() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         for _ in 0..<10 {
@@ -75,7 +75,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func testEncoderCMSampleBuffer8000_numSamples() {
+    @Test func encoderCMSampleBuffer8000_numSamples() {
         let numSamples: [Int] = [1024, 1024, 1028, 1024, 1028, 1028, 962, 962, 960, 2237, 2236]
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
@@ -86,7 +86,7 @@ final class AudioCodecTests: XCTestCase {
         }
     }
 
-    func test3Channel_withoutCrash() {
+    @Test func test3Channel_withoutCrash() {
         let encoder = HaishinKit.AudioCodec()
         encoder.startRunning()
         if let sampleBuffer = CMAudioSampleBufferFactory.makeSilence(44100, numSamples: 256, channels: 3) {

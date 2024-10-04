@@ -1,9 +1,9 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class CRC32Tests: XCTestCase {
+@Suite struct CRC32Tests {
     static let tableOfMpeg2: [UInt32] = [
         0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9,
         0x130476dc, 0x17c56b6b, 0x1a864db2, 0x1e475005,
@@ -71,8 +71,8 @@ final class CRC32Tests: XCTestCase {
         0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4
     ]
 
-    func testMPEG2() {
-        XCTAssertEqual(CRC32.mpeg2.table, CRC32Tests.tableOfMpeg2)
-        XCTAssertEqual(716244146, CRC32.mpeg2.calculate(Data([0, 176, 13, 0, 1, 193, 0, 0, 0, 1, 240, 0])))
+    @Test func mPEG2() {
+        #expect(CRC32.mpeg2.table == CRC32Tests.tableOfMpeg2)
+        #expect(716244146 == CRC32.mpeg2.calculate(Data([0, 176, 13, 0, 1, 193, 0, 0, 0, 1, 240, 0])))
     }
 }

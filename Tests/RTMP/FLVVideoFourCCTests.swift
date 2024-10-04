@@ -1,14 +1,14 @@
 import Foundation
-import XCTest
+import Testing
 import AVFoundation
 
 @testable import HaishinKit
 
-final class FLVVideoFourCCTests: XCTestCase {
-    func testMain() {
-        XCTAssertEqual("av01", str4(n: Int(FLVVideoFourCC.av1.rawValue)))
-        XCTAssertEqual("hvc1", str4(n: Int(FLVVideoFourCC.hevc.rawValue)))
-        XCTAssertEqual("vp09", str4(n: Int(FLVVideoFourCC.vp9.rawValue)))
+@Suite struct FLVVideoFourCCTests {
+    @Test func main() {
+        #expect("av01" == str4(n: Int(FLVVideoFourCC.av1.rawValue)))
+        #expect("hvc1" == str4(n: Int(FLVVideoFourCC.hevc.rawValue)))
+        #expect("vp09" == str4(n: Int(FLVVideoFourCC.vp9.rawValue)))
     }
 
     func str4(n: Int) -> String {

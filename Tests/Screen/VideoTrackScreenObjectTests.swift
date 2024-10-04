@@ -1,10 +1,10 @@
 import Foundation
-import XCTest
+import Testing
 import AVFoundation
 
 @testable import HaishinKit
 
-final class VideoTrackObjectContainerTests: XCTestCase {
+@Suite struct VideoTrackObjectContainerTests {
     /*
     func testHorizontalAlignmentBounds() {
         let screen = Screen()

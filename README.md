@@ -172,7 +172,7 @@ open HaishinKit.xcodeproj
 ### Development
 |Version|Xcode|Swift|
 |:----:|:----:|:----:|
-|2.0.0+|15.4+|5.10+|
+|2.0.0+|16.0+|5.10+|
 |1.9.0+|15.4+|5.10+|
 
 ### OS
