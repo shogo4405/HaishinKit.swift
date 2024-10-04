@@ -1,30 +1,30 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class ExpressibleByIntegerLiteralTests: XCTestCase {
-    func testInt32() {
-        XCTAssertEqual(Int32.min.bigEndian.data, Data([128, 0, 0, 0]))
-        XCTAssertEqual(Int32(32).bigEndian.data, Data([0, 0, 0, 32]))
-        XCTAssertEqual(Int32.max.bigEndian.data, Data([127, 255, 255, 255]))
+@Suite struct ExpressibleByIntegerLiteralTests {
+    @Test func int32() {
+        #expect(Int32.min.bigEndian.data == Data([128, 0, 0, 0]))
+        #expect(Int32(32).bigEndian.data == Data([0, 0, 0, 32]))
+        #expect(Int32.max.bigEndian.data == Data([127, 255, 255, 255]))
     }
 
-    func testUInt32() {
-        XCTAssertEqual(UInt32.min.bigEndian.data, Data([0, 0, 0, 0]))
-        XCTAssertEqual(UInt32(32).bigEndian.data, Data([0, 0, 0, 32]))
-        XCTAssertEqual(UInt32.max.bigEndian.data, Data([255, 255, 255, 255]))
+    @Test func uInt32() {
+        #expect(UInt32.min.bigEndian.data == Data([0, 0, 0, 0]))
+        #expect(UInt32(32).bigEndian.data == Data([0, 0, 0, 32]))
+        #expect(UInt32.max.bigEndian.data == Data([255, 255, 255, 255]))
     }
     
-    func testInt64() {
-        XCTAssertEqual(Int64.min.bigEndian.data, Data([128, 0, 0, 0, 0, 0, 0, 0]))
-        XCTAssertEqual(Int64(32).bigEndian.data, Data([0, 0, 0, 0, 0, 0, 0, 32]))
-        XCTAssertEqual(Int64.max.bigEndian.data, Data([127,255,255, 255, 255, 255, 255, 255]))
+    @Test func int64() {
+        #expect(Int64.min.bigEndian.data == Data([128, 0, 0, 0, 0, 0, 0, 0]))
+        #expect(Int64(32).bigEndian.data == Data([0, 0, 0, 0, 0, 0, 0, 32]))
+        #expect(Int64.max.bigEndian.data == Data([127,255,255, 255, 255, 255, 255, 255]))
     }
 
-    func testUInt64() {
-        XCTAssertEqual(UInt64.min.bigEndian.data, Data([0, 0, 0, 0, 0, 0, 0, 0]))
-        XCTAssertEqual(UInt64(32).bigEndian.data, Data([0, 0, 0, 0, 0, 0, 0, 32]))
-        XCTAssertEqual(UInt64.max.bigEndian.data, Data([255, 255, 255, 255, 255, 255, 255, 255]))
+    @Test func uInt64() {
+        #expect(UInt64.min.bigEndian.data == Data([0, 0, 0, 0, 0, 0, 0, 0]))
+        #expect(UInt64(32).bigEndian.data == Data([0, 0, 0, 0, 0, 0, 0, 32]))
+        #expect(UInt64.max.bigEndian.data == Data([255, 255, 255, 255, 255, 255, 255, 255]))
     }
 }

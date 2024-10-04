@@ -1,13 +1,13 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class FoundationExtensionTest: XCTestCase {
-    func testNSURL() {
+@Suite struct FoundationExtensionTest {
+    @Test func nSURL() {
         let url = URL(string: "http://localhost/foo/bar?hello=world!!&foo=bar")!
         let dictionary: [String: String] = url.dictionaryFromQuery()
-        XCTAssertEqual(dictionary["hello"], "world!!")
-        XCTAssertEqual(dictionary["foo"], "bar")
+        #expect(dictionary["hello"] == "world!!")
+        #expect(dictionary["foo"] == "bar")
     }
 }

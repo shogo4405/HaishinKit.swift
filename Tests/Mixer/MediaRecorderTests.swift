@@ -1,5 +1,5 @@
 import Foundation
-import XCTest
+import Testing
 import CoreMedia
 import AVFoundation
 

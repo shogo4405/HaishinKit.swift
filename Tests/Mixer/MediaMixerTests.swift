@@ -1,9 +1,9 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class MediaMixerTests: XCTestCase {
+@Suite struct MediaMixerTests {
     /*
     func testRelease() {
         weak var weakIOMixer: IOMixer?

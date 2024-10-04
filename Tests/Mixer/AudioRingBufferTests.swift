@@ -1,23 +1,23 @@
 import Foundation
-import XCTest
+import Testing
 import AVFoundation
 
 @testable import HaishinKit
 
-final class AudioRingBufferTests: XCTestCase {
-    func testMonoAppendSampleBuffer_920() {
+@Suite struct AudioRingBufferTests {
+    @Test func monoAppendSampleBuffer_920() {
         appendSampleBuffer(920, channels: 1)
     }
 
-    func testMonoAppendSampleBuffer_1024() {
+    @Test func monoAppendSampleBuffer_1024() {
         appendSampleBuffer(1024, channels: 1)
     }
 
-    func testStereoAppendSampleBuffer_920() {
+    @Test func stereoAppendSampleBuffer_920() {
         appendSampleBuffer(920, channels: 2)
     }
 
-    func testStereoAppendSampleBuffer_1024() {
+    @Test func stereoAppendSampleBuffer_1024() {
         appendSampleBuffer(1024, channels: 2)
     }
 
@@ -46,7 +46,7 @@ final class AudioRingBufferTests: XCTestCase {
             buffer?.append(sinWave)
             readBuffer.int16ChannelData?[0].update(repeating: 0, count: numSamples)
             _ = buffer?.render(UInt32(numSamples), ioData: readBuffer.mutableAudioBufferList)
-            XCTAssertEqual(try? sinWave.dataBuffer?.dataBytes().bytes, Data(bytes: bufferList[0].mData!, count: numSamples * Int(channels) * 2).bytes)
+            #expect(try! sinWave.dataBuffer?.dataBytes().bytes == Data(bytes: bufferList[0].mData!, count: numSamples * Int(channels) * 2).bytes)
         }
     }
 }

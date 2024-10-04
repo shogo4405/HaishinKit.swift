@@ -1,10 +1,10 @@
 import Foundation
 import AVFoundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class AudioMixerByMultiTrackTests: XCTestCase {
+@Suite struct AudioMixerByMultiTrackTests {
     final class Result: AudioMixerDelegate {
         var outputs: [AVAudioPCMBuffer] = []
         var error: AudioMixerError?
@@ -24,7 +24,7 @@ final class AudioMixerByMultiTrackTests: XCTestCase {
         }
     }
 
-    func testKeep44100() {
+    @Test func keep44100() {
         let result = Result()
         let mixer = AudioMixerByMultiTrack()
         mixer.delegate = result
@@ -33,27 +33,27 @@ final class AudioMixerByMultiTrackTests: XCTestCase {
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
-        XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
+        #expect(mixer.outputFormat?.sampleRate == 44100)
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
-        XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
-        XCTAssertEqual(result.outputs.count, 2)
+        #expect(mixer.outputFormat?.sampleRate == 44100)
+        #expect(result.outputs.count == 2)
     }
 
-    func test44100to48000() {
+    @Test func test44100to48000() {
         let mixer = AudioMixerByMultiTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
-        XCTAssertEqual(mixer.outputFormat?.sampleRate, 44100)
+        #expect(mixer.outputFormat?.sampleRate == 44100)
         mixer.settings = .init(
             sampleRate: 48000, channels: 1
         )
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
-        XCTAssertEqual(mixer.outputFormat?.sampleRate, 48000)
+        #expect(mixer.outputFormat?.sampleRate == 48000)
     }
 
-    func test48000_2ch() {
+    @Test func test48000_2ch() {
         let result = Result()
         let mixer = AudioMixerByMultiTrack()
         mixer.delegate = result
@@ -62,15 +62,15 @@ final class AudioMixerByMultiTrackTests: XCTestCase {
         )
         mixer.append(1, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 2)!)
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 2)!)
-        XCTAssertEqual(mixer.outputFormat?.channelCount, 2)
-        XCTAssertEqual(mixer.outputFormat?.sampleRate, 48000)
+        #expect(mixer.outputFormat?.channelCount == 2)
+        #expect(mixer.outputFormat?.sampleRate == 48000)
         mixer.append(1, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 2)!)
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 2)!)
-        XCTAssertEqual(result.outputs.count, 2)
-        XCTAssertNil(result.error)
+        #expect(result.outputs.count == 2)
+        #expect(result.error == nil)
     }
 
-    func testInputFormats() {
+    @Test func inputFormats() {
         let mixer = AudioMixerByMultiTrack()
         mixer.settings = .init(
             sampleRate: 44100, channels: 1
@@ -78,7 +78,7 @@ final class AudioMixerByMultiTrackTests: XCTestCase {
         mixer.append(0, buffer: CMAudioSampleBufferFactory.makeSinWave(48000, numSamples: 1024, channels: 1)!)
         mixer.append(1, buffer: CMAudioSampleBufferFactory.makeSinWave(44100, numSamples: 1024, channels: 1)!)
         let inputFormats = mixer.inputFormats
-        XCTAssertEqual(inputFormats[0]?.sampleRate, 48000)
-        XCTAssertEqual(inputFormats[1]?.sampleRate, 44100)
+        #expect(inputFormats[0]?.sampleRate == 48000)
+        #expect(inputFormats[1]?.sampleRate == 44100)
     }
 }

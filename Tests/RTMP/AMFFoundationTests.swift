@@ -1,27 +1,27 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class AMFFoundationTests: XCTestCase {
+@Suite struct AMFFoundationTests {
 
     static let hello: String = "<a>hello</a>"
 
-    func testASArray() {
+    @Test func aSArray() {
         var array = AMFArray()
         array[5] = "hoge"
         if let array_5: String = array[5] as? String {
-            XCTAssertEqual(array_5, "hoge")
+            #expect(array_5 == "hoge")
         }
     }
 
-    func testASXMLDocument() {
+    @Test func aSXMLDocument() {
         let xml = AMFXMLDocument(data: AMFFoundationTests.hello)
-        XCTAssertEqual(xml.description, AMFFoundationTests.hello)
+        #expect(xml.description == AMFFoundationTests.hello)
     }
 
-    func testASXML() {
+    @Test func aSXML() {
         let xml = AMFXML(data: AMFFoundationTests.hello)
-        XCTAssertEqual(xml.description, AMFFoundationTests.hello)
+        #expect(xml.description == AMFFoundationTests.hello)
     }
 }

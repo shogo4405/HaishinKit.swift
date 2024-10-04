@@ -1,11 +1,11 @@
 import Foundation
-import XCTest
+import Testing
 import AVFoundation
 
 @testable import HaishinKit
 
-final class ScreenObjectContainerTests: XCTestCase {
-    func testLookUpVideoTrackScreenObject() {
+@Suite struct ScreenObjectContainerTests {
+    @Test func lookUpVideoTrackScreenObject() {
         Task { @ScreenActor in
             let container1 = ScreenObjectContainer()
             
@@ -16,7 +16,7 @@ final class ScreenObjectContainerTests: XCTestCase {
             try? container1.addChild(videoTrack2)
             
             let videoTracks1 = container1.getScreenObjects() as [VideoTrackScreenObject]
-            XCTAssertEqual(videoTracks1.count, 2)
+            #expect(videoTracks1.count == 2)
             
             let container2 = ScreenObjectContainer()
             let videoTrack3 = VideoTrackScreenObject()
@@ -24,7 +24,7 @@ final class ScreenObjectContainerTests: XCTestCase {
             try? container1.addChild(container2)
             
             let videoTracks2 = container1.getScreenObjects() as [VideoTrackScreenObject]
-            XCTAssertEqual(videoTracks2.count, 3)
+            #expect(videoTracks2.count == 3)
         }
     }
 }

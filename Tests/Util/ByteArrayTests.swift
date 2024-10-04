@@ -1,117 +1,117 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class ByteArrayTests: XCTestCase {
+@Suite struct ByteArrayTests {
 
-    func testInt8() {
+    @Test func int8() {
         let bytes = ByteArray()
         bytes.writeInt8(Int8.min)
         bytes.writeInt8(0)
         bytes.writeInt8(Int8.max)
-        XCTAssertEqual(bytes.position, ByteArray.sizeOfInt8 * 3)
+        #expect(bytes.position == ByteArray.sizeOfInt8 * 3)
         bytes.position = 0
-        XCTAssertEqual(Int8.min, try! bytes.readInt8())
-        XCTAssertEqual(0, try! bytes.readInt8())
-        XCTAssertEqual(Int8.max, try! bytes.readInt8())
+        #expect(try! bytes.readInt8() == Int8.min)
+        #expect(try! bytes.readInt8() == 0 )
+        #expect(try! bytes.readInt8() == Int8.max)
     }
 
-    func testUInt8() {
+    @Test func uInt8() {
         let bytes = ByteArray()
         bytes.writeUInt8(UInt8.min)
         bytes.writeUInt8(0)
         bytes.writeUInt8(UInt8.max)
-        XCTAssertEqual(bytes.position, ByteArray.sizeOfInt8 * 3)
+        #expect(bytes.position == ByteArray.sizeOfInt8 * 3)
         bytes.position = 0
-        XCTAssertEqual(UInt8.min, try! bytes.readUInt8())
-        XCTAssertEqual(0, try! bytes.readUInt8())
-        XCTAssertEqual(UInt8.max, try! bytes.readUInt8())
+        #expect(try! bytes.readUInt8() == UInt8.min)
+        #expect(try! bytes.readUInt8() == 0)
+        #expect(try! bytes.readUInt8() == UInt8.max)
     }
 
-    func testInt16() {
+    @Test func int16() {
         let bytes = ByteArray()
         bytes.writeInt16(Int16.min)
         bytes.writeInt16(0)
         bytes.writeInt16(Int16.max)
         print(bytes)
         bytes.position = 0
-        XCTAssertEqual(Int16.min, try! bytes.readInt16())
-        XCTAssertEqual(0, try! bytes.readInt16())
-        XCTAssertEqual(Int16.max, try! bytes.readInt16())
+        #expect(try! bytes.readInt16() == Int16.min)
+        #expect(try! bytes.readInt16() == 0)
+        #expect(try! bytes.readInt16() == Int16.max)
     }
 
-    func testUInt16() {
+    @Test func uInt16() {
         let bytes = ByteArray()
         bytes.writeUInt16(UInt16.min)
         bytes.writeUInt16(0)
         bytes.writeUInt16(UInt16.max)
         bytes.position = 0
-        XCTAssertEqual(UInt16.min, try! bytes.readUInt16())
-        XCTAssertEqual(0, try! bytes.readUInt16())
-        XCTAssertEqual(UInt16.max, try! bytes.readUInt16())
+        #expect(try! bytes.readUInt16() == UInt16.min)
+        #expect(try! bytes.readUInt16() == 0)
+        #expect(try! bytes.readUInt16() == UInt16.max)
     }
 
-    func testUInt24() {
+    @Test func uInt24() {
         let bytes = ByteArray()
         bytes.writeUInt24(0xFFFFFF)
         bytes.position = 0
-        XCTAssertEqual(0xFFFFFF, try! bytes.readUInt24())
+        #expect(try! bytes.readUInt24() == 0xFFFFFF)
     }
 
-    func testUInt32() {
+    @Test func uInt32() {
         let bytes = ByteArray()
         bytes.writeUInt32(UInt32.min)
         bytes.writeUInt32(0)
         bytes.writeUInt32(UInt32.max)
         bytes.position = 0
-        XCTAssertEqual(UInt32.min, try! bytes.readUInt32())
-        XCTAssertEqual(0, try! bytes.readUInt32())
-        XCTAssertEqual(UInt32.max, try! bytes.readUInt32())
+        #expect(try! bytes.readUInt32() == UInt32.min)
+        #expect(try! bytes.readUInt32() == 0)
+        #expect(try! bytes.readUInt32() == UInt32.max)
     }
 
-    func testInt32() {
+    @Test func int32() {
         let bytes = ByteArray()
         bytes.writeInt32(Int32.min)
         bytes.writeInt32(0)
         bytes.writeInt32(Int32.max)
         bytes.position = 0
-        XCTAssertEqual(Int32.min, try! bytes.readInt32())
-        XCTAssertEqual(0, try! bytes.readInt32())
-        XCTAssertEqual(Int32.max, try! bytes.readInt32())
+        #expect(try! bytes.readInt32() == Int32.min)
+        #expect(try! bytes.readInt32() == 0)
+        #expect(try! bytes.readInt32() == Int32.max)
     }
 
-    func testFloat() {
+    @Test func float() {
         let bytes = ByteArray()
         bytes.writeFloat(Float.infinity)
-        XCTAssertEqual(bytes.position, ByteArray.sizeOfFloat)
+        #expect(bytes.position == ByteArray.sizeOfFloat)
         bytes.position = 0
-        XCTAssertEqual(Float.infinity, try! bytes.readFloat())
+        #expect(try! bytes.readFloat() == Float.infinity)
     }
 
-    func testDouble() {
+    @Test func double() {
         let bytes = ByteArray()
         bytes.writeDouble(.pi)
-        XCTAssertEqual(bytes.position, ByteArray.sizeOfDouble)
+        #expect(bytes.position == ByteArray.sizeOfDouble)
         bytes.position = 0
-        XCTAssertEqual(Double.pi, try! bytes.readDouble())
+        #expect(try! bytes.readDouble() == Double.pi)
         bytes.clear()
         bytes.writeDouble(Double.infinity)
         bytes.position = 0
-        XCTAssertEqual(Double.infinity, try! bytes.readDouble())
+        #expect(try! bytes.readDouble() == Double.infinity)
     }
 
-    func testUTF8() {
+    @Test func uTF8() {
         let bytes = ByteArray()
         do {
             try bytes.writeUTF8("hello world!!")
         } catch {
-            XCTFail()
+            Issue.record()
         }
 
         let length: Int = bytes.position
         bytes.position = 0
-        XCTAssertEqual("hello world!!", try! bytes.readUTF8())
+        #expect(try! bytes.readUTF8() == "hello world!!")
         bytes.position = 0
 
         var raiseError = false
@@ -121,6 +121,6 @@ final class ByteArrayTests: XCTestCase {
             raiseError = true
         }
 
-        XCTAssertTrue(raiseError)
+        #expect(raiseError)
     }
 }

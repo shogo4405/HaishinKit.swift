@@ -1,10 +1,10 @@
 import Foundation
-import XCTest
+import Testing
 
 @testable import HaishinKit
 
-final class RTMPStatusTests: XCTestCase {
-    func testDynamicMemeberLookup() {
+@Suite struct RTMPStatusTests {
+    @Test func dynamicMemeberLookup() {
         let data: AMFObject = [
             "level": "status",
             "code": "NetConnection.Connect.Success",
@@ -15,7 +15,7 @@ final class RTMPStatusTests: XCTestCase {
         guard let status = RTMPStatus(data) else {
             return
         }
-        XCTAssertEqual("world!!", status.hello)
-        XCTAssertEqual(0.0, status.objectEncoding)
+        #expect("world!!" == status.hello)
+        #expect(0.0 == status.objectEncoding)
     }
 }
