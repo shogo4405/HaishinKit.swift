@@ -54,7 +54,7 @@ final actor RTMPSocket {
         do {
             let connection = NWConnection(to: NWEndpoint.hostPort(host: .init(name), port: .init(integerLiteral: NWEndpoint.Port.IntegerLiteralType(port))), using: parameters)
             self.connection = connection
-            try await withCheckedThrowingContinuation { (checkedContinuation: CheckedContinuation<Void, Swift.Error>) -> Void in
+            try await withCheckedThrowingContinuation { (checkedContinuation: CheckedContinuation<Void, Swift.Error>) in
                 self.continuation = checkedContinuation
                 Task {
                     try? await Task.sleep(nanoseconds: timeout * 1_000_000_000)

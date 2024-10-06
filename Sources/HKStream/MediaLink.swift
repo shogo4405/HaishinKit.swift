@@ -5,9 +5,9 @@ final actor MediaLink {
     static let capacity = 90
 
     var dequeue: AsyncStream<CMSampleBuffer> {
-        let (stream, continutation) = AsyncStream<CMSampleBuffer>.makeStream()
-        self.continutation = continutation
-        return stream
+        AsyncStream<CMSampleBuffer> { continutation in
+            self.continutation = continutation
+        }
     }
     private(set) var isRunning = false
     private var storage: TypedBlockQueue<CMSampleBuffer>?

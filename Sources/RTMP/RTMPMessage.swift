@@ -405,7 +405,7 @@ struct RTMPAudioMessage: RTMPMessage {
     }
 
     func copyMemory(_ audioBuffer: AVAudioCompressedBuffer?) {
-        payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
+        payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
             guard let baseAddress = buffer.baseAddress, let audioBuffer else {
                 return
             }
