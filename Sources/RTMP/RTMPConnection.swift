@@ -49,7 +49,7 @@ public actor RTMPConnection: NetworkConnection {
     /// The default object encoding for RTMPConnection class.
     public static let defaultObjectEncoding: RTMPObjectEncoding = .amf0
     /// The default an rtmp request time out value (ms).
-    public static let defaultRequestTimeout: UInt64 = 500
+    public static let defaultRequestTimeout: UInt64 = 3000
 
     private static let connectTransactionId = 1
 
