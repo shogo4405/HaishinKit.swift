@@ -241,9 +241,9 @@ extension ViewModel: IOStreamRecorderDelegate {
     }
 
     func recorder(_ recorder: IOStreamRecorder, finishWriting writer: AVAssetWriter) {
-        PHPhotoLibrary.shared().performChanges({() -> Void in
+        PHPhotoLibrary.shared().performChanges({() in
             PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: writer.outputURL)
-        }, completionHandler: { _, error -> Void in
+        }, completionHandler: { _, error in
             do {
                 try FileManager.default.removeItem(at: writer.outputURL)
             } catch {

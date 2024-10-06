@@ -94,7 +94,7 @@ final class RTMPMuxer {
             if audioFormat == nil {
                 audioFormat = message.makeAudioFormat()
             }
-            payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) -> Void in
+            payload.withUnsafeBytes { (buffer: UnsafeRawBufferPointer) in
                 guard let baseAddress = buffer.baseAddress, let audioBuffer else {
                     return
                 }

@@ -93,6 +93,16 @@ open class IOStream: NSObject {
         return mixer.videoIO.screen
     }
 
+    /// Specifies the buffer time before starting to display the stream.
+    public var bufferTime: Double {
+        get {
+            telly.bufferTime
+        }
+        set {
+            telly.bufferTime = newValue
+        }
+    }
+
     /// Specifies the adaptibe bitrate strategy.
     public var bitrateStrategy: any IOStreamBitRateStrategyConvertible = IOStreamBitRateStrategy() {
         didSet {
