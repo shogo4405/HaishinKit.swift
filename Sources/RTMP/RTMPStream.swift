@@ -214,14 +214,14 @@ public actor RTMPStream {
     private var dataTimestamps: [String: Date] = .init()
     private var audioTimestamp: RTMPTimestamp<AVAudioTime> = .init()
     private var videoTimestamp: RTMPTimestamp<CMTime> = .init()
-    private var requestTimeout: UInt64 = RTMPConnection.defaultRequestTimeout
+    private var requestTimeout = RTMPConnection.defaultRequestTimeout
     private var expectedResponse: Code?
+    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
     private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
     private(set) var id: UInt32 = RTMPStream.defaultID
     private lazy var incoming = HKIncomingStream(self)
     private lazy var outgoing = HKOutgoingStream()
     private weak var connection: RTMPConnection?
-    private var bitrateStorategy: (any HKStreamBitRateStrategy)?
 
     private var audioFormat: AVAudioFormat? {
         didSet {
@@ -267,6 +267,7 @@ public actor RTMPStream {
     public init(connection: RTMPConnection, fcPublishName: String? = nil) {
         self.connection = connection
         self.fcPublishName = fcPublishName
+        self.requestTimeout = connection.requestTimeout
         Task {
             await connection.addStream(self)
             if await connection.connected {
