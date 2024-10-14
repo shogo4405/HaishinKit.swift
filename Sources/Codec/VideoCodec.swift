@@ -178,7 +178,7 @@ final class VideoCodec<T: VideoCodecDelegate> {
         guard kVideoCodec_defaultFrameInterval < frameInterval else {
             return true
         }
-        return frameInterval < presentationTimeStamp.seconds - self.presentationTimeStamp.seconds
+        return frameInterval <= presentationTimeStamp.seconds - self.presentationTimeStamp.seconds
     }
 
     #if os(iOS) || os(tvOS) || os(visionOS)
