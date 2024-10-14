@@ -15,7 +15,7 @@ enum VTSessionMode {
                 height: Int32(videoCodec.settings.videoSize.height),
                 codecType: videoCodec.settings.format.codecType,
                 encoderSpecification: nil,
-                imageBufferAttributes: videoCodec.imageBufferAttributes(.compression) as CFDictionary?,
+                imageBufferAttributes: videoCodec.makeImageBufferAttributes(.compression) as CFDictionary?,
                 compressedDataAllocator: nil,
                 outputCallback: nil,
                 refcon: nil,
@@ -43,7 +43,7 @@ enum VTSessionMode {
                 allocator: kCFAllocatorDefault,
                 formatDescription: formatDescription,
                 decoderSpecification: nil,
-                imageBufferAttributes: videoCodec.imageBufferAttributes(.decompression) as CFDictionary?,
+                imageBufferAttributes: videoCodec.makeImageBufferAttributes(.decompression) as CFDictionary?,
                 outputCallback: nil,
                 decompressionSessionOut: &session
             )

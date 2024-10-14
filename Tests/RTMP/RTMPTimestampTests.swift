@@ -4,7 +4,7 @@ import AVFoundation
 @testable import HaishinKit
 
 @Suite struct RTMPTimestampTests {
-    @Test func cMTime() {
+    @Test func updateCMTime() {
         let times: [CMTime] = [
             CMTime(value: 286340171565869, timescale: 1000000000),
             CMTime(value: 286340204889958, timescale: 1000000000),
@@ -15,15 +15,15 @@ import AVFoundation
             CMTime(value: 286340338232723, timescale: 1000000000),
         ]
         var timestamp = RTMPTimestamp<CMTime>()
-        #expect(0 == timestamp.update(times[0]))
-        #expect(33 == timestamp.update(times[1]))
-        #expect(33 == timestamp.update(times[2]))
-        #expect(33 == timestamp.update(times[3]))
-        #expect(34 == timestamp.update(times[4]))
-        #expect(33 == timestamp.update(times[5]))
+        #expect(try! timestamp.update(times[0]) == 0)
+        #expect(try! timestamp.update(times[1]) == 33)
+        #expect(try! timestamp.update(times[2]) == 33)
+        #expect(try! timestamp.update(times[3]) == 33)
+        #expect(try! timestamp.update(times[4]) == 34)
+        #expect(try! timestamp.update(times[5]) == 33)
     }
 
-    @Test func aVAudioTime() {
+    @Test func updateAVAudioTime() {
         let times: [AVAudioTime] = [
             .init(hostTime: 6901294874500, sampleTime: 13802589749, atRate: 48000),
             .init(hostTime: 6901295386500, sampleTime: 13802590773, atRate: 48000),
@@ -33,11 +33,11 @@ import AVFoundation
             .init(hostTime: 6901297434500, sampleTime: 13802594869, atRate: 48000),
         ]
         var timestamp = RTMPTimestamp<AVAudioTime>()
-        #expect(0 == timestamp.update(times[0]))
-        #expect(21 == timestamp.update(times[1]))
-        #expect(21 == timestamp.update(times[2]))
-        #expect(22 == timestamp.update(times[3]))
-        #expect(21 == timestamp.update(times[4]))
-        #expect(21 == timestamp.update(times[5]))
+        #expect(try! timestamp.update(times[0]) == 0)
+        #expect(try! timestamp.update(times[1]) == 21)
+        #expect(try! timestamp.update(times[2]) == 21)
+        #expect(try! timestamp.update(times[3]) == 22)
+        #expect(try! timestamp.update(times[4]) == 21)
+        #expect(try! timestamp.update(times[5]) == 21)
     }
 }

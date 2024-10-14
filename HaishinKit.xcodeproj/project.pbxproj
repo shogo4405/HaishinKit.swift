@@ -1005,7 +1005,6 @@
 				BC0B5B1D2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift */,
 				295018191FFA196800358E10 /* Codec */,
 				BC03945D2AA8AFDD006EDE38 /* Extension */,
-				BCCB426A2C6A2D1D003B1168 /* HKStream */,
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				291C2ACF1CE9FF2B006F042B /* ISO */,
 				BC0BF4F329866FB700D72CB4 /* Mixer */,
@@ -1254,13 +1253,6 @@
 				BC18F3EA2C5BCB7C00B9D78D /* NetworkTransportReporter.swift */,
 			);
 			path = Network;
-			sourceTree = "<group>";
-		};
-		BCCB426A2C6A2D1D003B1168 /* HKStream */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = HKStream;
 			sourceTree = "<group>";
 		};
 		BCCC45972AA289FA0016EFE8 /* SRTHaishinKit */ = {

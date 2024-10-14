@@ -25,9 +25,17 @@ final class VideoCodec {
     }
     var needsSync = true
     var passthrough = true
+    var outputStream: AsyncStream<CMSampleBuffer> {
+        AsyncStream<CMSampleBuffer> { continuation in
+            self.continuation = continuation
+        }
+    }
     var frameInterval = VideoCodec.frameInterval
     var expectedFrameRate = MediaMixer.defaultFrameRate
-    /// The running value indicating whether the VideoCodec is running.
+    private var startedAt: CMTime = .zero
+    private var continuation: AsyncStream<CMSampleBuffer>.Continuation?
+    private var isInvalidateSession = true
+    private var presentationTimeStamp: CMTime = .zero
     private(set) var isRunning = false
     private(set) var inputFormat: CMFormatDescription? {
         didSet {
@@ -45,15 +53,6 @@ final class VideoCodec {
         }
     }
     private(set) var outputFormat: CMFormatDescription?
-    var outputStream: AsyncStream<CMSampleBuffer> {
-        AsyncStream<CMSampleBuffer> { continuation in
-            self.continuation = continuation
-        }
-    }
-    private var startedAt: CMTime = .zero
-    private var continuation: AsyncStream<CMSampleBuffer>.Continuation?
-    private var isInvalidateSession = true
-    private var presentationTimeStamp: CMTime = .invalid
 
     func append(_ sampleBuffer: CMSampleBuffer) {
         guard isRunning else {
@@ -68,18 +67,22 @@ final class VideoCodec {
                     session = try VTSessionMode.compression.makeSession(self)
                 }
             }
-            guard let session else {
+            guard let session, let continuation else {
                 return
             }
-            if let continuation {
+            if sampleBuffer.formatDescription?.isCompressed == true {
                 try session.convert(sampleBuffer, continuation: continuation)
+            } else {
+                if useFrame(sampleBuffer.presentationTimeStamp) {
+                    try session.convert(sampleBuffer, continuation: continuation)
+                }
             }
         } catch {
             logger.error(error)
         }
     }
 
-    func imageBufferAttributes(_ mode: VTSessionMode) -> [NSString: AnyObject]? {
+    func makeImageBufferAttributes(_ mode: VTSessionMode) -> [NSString: AnyObject]? {
         switch mode {
         case .compression:
             var attributes: [NSString: AnyObject] = [:]
@@ -96,14 +99,17 @@ final class VideoCodec {
         }
     }
 
-    private func willDropFrame(_ presentationTimeStamp: CMTime) -> Bool {
+    private func useFrame(_ presentationTimeStamp: CMTime) -> Bool {
         guard startedAt <= presentationTimeStamp else {
-            return true
-        }
-        guard Self.frameInterval < frameInterval else {
             return false
         }
-        return presentationTimeStamp.seconds - self.presentationTimeStamp.seconds <= frameInterval
+        guard self.presentationTimeStamp < presentationTimeStamp else {
+            return false
+        }
+        guard Self.frameInterval < frameInterval else {
+            return true
+        }
+        return frameInterval <= presentationTimeStamp.seconds - self.presentationTimeStamp.seconds
     }
 
     #if os(iOS) || os(tvOS) || os(visionOS)
@@ -164,7 +170,7 @@ extension VideoCodec: Runner {
         needsSync = true
         inputFormat = nil
         outputFormat = nil
-        presentationTimeStamp = .invalid
+        presentationTimeStamp = .zero
         continuation?.finish()
         startedAt = .zero
         #if os(iOS) || os(tvOS) || os(visionOS)

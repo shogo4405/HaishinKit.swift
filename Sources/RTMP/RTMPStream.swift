@@ -739,15 +739,19 @@ extension RTMPStream: HKStream {
         switch sampleBuffer.formatDescription?.mediaType {
         case .video:
             if sampleBuffer.formatDescription?.isCompressed == true {
-                let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
-                let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
-                let timedelta = videoTimestamp.update(decodeTimeStamp)
-                frameCount += 1
-                videoFormat = sampleBuffer.formatDescription
-                guard let message = RTMPVideoMessage(streamId: id, timestamp: timedelta, compositionTime: compositionTime, sampleBuffer: sampleBuffer) else {
-                    return
+                do {
+                    let decodeTimeStamp = sampleBuffer.decodeTimeStamp.isValid ? sampleBuffer.decodeTimeStamp : sampleBuffer.presentationTimeStamp
+                    let compositionTime = videoTimestamp.getCompositionTime(sampleBuffer)
+                    let timedelta = try videoTimestamp.update(decodeTimeStamp)
+                    frameCount += 1
+                    videoFormat = sampleBuffer.formatDescription
+                    guard let message = RTMPVideoMessage(streamId: id, timestamp: timedelta, compositionTime: compositionTime, sampleBuffer: sampleBuffer) else {
+                        return
+                    }
+                    doOutput(.one, chunkStreamId: .video, message: message)
+                } catch {
+                    logger.warn(error)
                 }
-                doOutput(.one, chunkStreamId: .video, message: message)
             } else {
                 outgoing.append(sampleBuffer)
                 if sampleBuffer.formatDescription?.isCompressed == false {
@@ -775,12 +779,16 @@ extension RTMPStream: HKStream {
     public func append(_ audioBuffer: AVAudioBuffer, when: AVAudioTime) {
         switch audioBuffer {
         case let audioBuffer as AVAudioCompressedBuffer:
-            let timedelta = audioTimestamp.update(when)
-            audioFormat = audioBuffer.format
-            guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
-                return
+            do {
+                let timedelta = try audioTimestamp.update(when)
+                audioFormat = audioBuffer.format
+                guard let message = RTMPAudioMessage(streamId: id, timestamp: timedelta, audioBuffer: audioBuffer) else {
+                    return
+                }
+                doOutput(.one, chunkStreamId: .audio, message: message)
+            } catch {
+                logger.warn(error)
             }
-            doOutput(.one, chunkStreamId: .audio, message: message)
         default:
             outgoing.append(audioBuffer, when: when)
             if audioBuffer is AVAudioPCMBuffer && audioSampleAccess {
