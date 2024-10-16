@@ -109,13 +109,19 @@ public actor HKStreamRecorder {
     }
 
     /// Starts recording.
-    public func startRecording(_ filaName: String? = nil, settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings) async throws {
+    public func startRecording(_ fileName: String? = nil, settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings) async throws {
         guard !isRecording else {
             throw Error.invalidState
         }
+
+        self.fileName = fileName ?? UUID().uuidString
+        self.settings = settings
+
+        guard let fileName = self.fileName else { throw Error.invalidState }
+
         videoPresentationTime = .zero
         audioPresentationTime = .zero
-        let fileName = fileName ?? UUID().uuidString
+
         let url = moviesDirectory.appendingPathComponent(fileName).appendingPathExtension("mp4")
         writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         isRecording = true
