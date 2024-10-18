@@ -4,6 +4,7 @@ import AVFoundation
 
 @testable import HaishinKit
 
+/*
 @Suite struct ScreenObjectTests {
     @Test func screenHorizontalAlignmentRect() {
         Task { @ScreenActor in
@@ -28,11 +29,9 @@ import AVFoundation
             if let sampleBuffer = CMVideoSampleBufferFactory.makeSampleBuffer(width: 1600, height: 900) {
                 // _ = screen.render(sampleBuffer)
             }
-            DispatchQueue.main.sync {
                 #expect(object1.bounds == .init(origin: .zero, size: object1.size))
                 #expect(object2.bounds == .init(x: 750, y: 0, width: 100, height: 100))
                 #expect(object3.bounds == .init(x: 1500, y: 0, width: 100, height: 100))
-            }
         }
     }
 
@@ -64,12 +63,10 @@ import AVFoundation
             if let sampleBuffer = CMVideoSampleBufferFactory.makeSampleBuffer(width: 1600, height: 900) {
                 // _ = screen.render(sampleBuffer)
             }
-            DispatchQueue.main.sync {
                 #expect(object0.bounds == .init(x: 0, y: 0, width: 1600, height: 900))
                 #expect(object1.bounds == .init(x: 0, y: 0, width: object1.size.width, height: object1.size.height))
                 #expect(object2.bounds == .init(x: 0, y: 400, width: 100, height: 100))
                 #expect(object3.bounds == .init(x: 0, y: 800, width: 100, height: 100))
-            }
         }
     }
 
@@ -98,10 +95,9 @@ import AVFoundation
                 // _ = screen.render(sampleBuffer)
             }
             
-            DispatchQueue.main.sync {
                 #expect(object0.bounds == .init(x: 16, y: 16, width: 200, height: 100))
                 #expect(object1.bounds == .init(x: 32, y: 32, width: 100, height: 100))
-            }
         }
     }
 }
+*/

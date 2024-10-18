@@ -180,12 +180,22 @@ public actor RTMPConnection: NetworkConnection {
     }
     private var chunkSizeC = RTMPChunkMessageHeader.chunkSize {
         didSet {
+            guard chunkSizeC != oldValue else {
+                return
+            }
             inputBuffer.chunkSize = chunkSizeC
         }
     }
-    private var chunkSizeS = RTMPChunkMessageHeader.chunkSize
+    private var chunkSizeS = RTMPChunkMessageHeader.chunkSize {
+        didSet {
+            guard chunkSizeS != oldValue else {
+                return
+            }
+            outputBuffer.chunkSize = chunkSizeS
+        }
+    }
     private var operations: [Int: CheckedContinuation<RTMPResponse, any Swift.Error>] = [:]
-    private var inputBuffer = RTMPChunkBuffer(.init())
+    private var inputBuffer = RTMPChunkBuffer()
     private var windowSizeC = RTMPConnection.defaultWindowSizeS {
         didSet {
             guard connected else {
@@ -195,6 +205,7 @@ public actor RTMPConnection: NetworkConnection {
         }
     }
     private var windowSizeS = RTMPConnection.defaultWindowSizeS
+    private var outputBuffer = RTMPChunkBuffer()
     private let authenticator = RTMPAuthenticator()
     private var networkMonitor: NetworkMonitor?
     private var statusContinuation: AsyncStream<RTMPStatus>.Continuation?
@@ -372,16 +383,11 @@ public actor RTMPConnection: NetworkConnection {
         if logger.isEnabledFor(level: .trace) {
             logger.trace("<<", message)
         }
-        let buffer = RTMPChunkBuffer(.init(count: 1024 * 100))
-        buffer.chunkSize = chunkSizeS
-        _ = buffer
-            .putBasicHeader(type, chunkStreamId: chunkStreamId.rawValue)
-            .putMessage(type, chunkStreamId: chunkStreamId.rawValue, message: message)
-        let data = buffer.flip().payload
+        let iterator = outputBuffer.putMessage(type, chunkStreamId: chunkStreamId.rawValue, message: message)
         Task {
-            await socket?.send(data)
+            await socket?.send(iterator)
         }
-        return data.count
+        return message.payload.count
     }
 
     func addStream(_ stream: RTMPStream) {
