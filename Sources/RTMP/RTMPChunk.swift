@@ -120,11 +120,21 @@ final class RTMPChunkMessageHeader {
 }
 
 final class RTMPChunkBuffer {
+    static let headerSize = 3 + 11 + 4
+
     var payload: Data {
-        return data[position..<length]
+        data[position..<length]
     }
 
-    var chunkSize = RTMPChunkMessageHeader.chunkSize
+    var chunkSize = RTMPChunkMessageHeader.chunkSize {
+        didSet {
+            guard oldValue < chunkSize else {
+                return
+            }
+            let length = chunkSize - data.count
+            data += Data(count: length + Self.headerSize)
+        }
+    }
 
     var remaining: Int {
         return length - position
@@ -139,8 +149,9 @@ final class RTMPChunkBuffer {
     private var data: Data
     private var length = 0
 
-    init(_ data: Data) {
-        self.data = data
+    init(chunkSize: Int = RTMPChunkMessageHeader.chunkSize) {
+        self.data = Data(count: chunkSize + Self.headerSize)
+        self.chunkSize = chunkSize
     }
 
     func flip() -> Self {
@@ -226,43 +237,65 @@ final class RTMPChunkBuffer {
         self.length = length + data.count
     }
 
-    func putBasicHeader(_ chunkType: RTMPChunkType, chunkStreamId: UInt16) -> Self {
+    func putMessage(_ chunkType: RTMPChunkType, chunkStreamId: UInt16, message: some RTMPMessage) -> AnyIterator<Data> {
+        let payload = message.payload
+        let length = payload.count
+        var offset = 0
+        var remaining = min(chunkSize, length)
+        return AnyIterator { () -> Data? in
+            guard 0 < remaining else {
+                return nil
+            }
+            defer {
+                self.position = 0
+                offset += remaining
+                remaining = min(self.chunkSize, length - offset)
+            }
+            if offset == 0 {
+                self.putBasicHeader(chunkType, chunkStreamId: chunkStreamId)
+                self.putMessageHeader(chunkType, length: length, message: message)
+            } else {
+                self.putBasicHeader(.three, chunkStreamId: chunkStreamId)
+            }
+            self.data.replaceSubrange(self.position..<self.position + remaining, with: payload[offset..<offset + remaining])
+            return self.data.subdata(in: 0..<self.position + remaining)
+        }
+    }
+
+    private func putBasicHeader(_ chunkType: RTMPChunkType, chunkStreamId: UInt16) {
         if chunkStreamId <= 63 {
             data[position] = chunkType.rawValue << 6 | UInt8(chunkStreamId)
             position += 1
-            return self
+            return
         }
         if chunkStreamId <= 319 {
             data[position + 0] = chunkType.rawValue << 6 | 0b0000000
             data[position + 1] = UInt8(chunkStreamId - 64)
             position += 2
-            return self
+            return
         }
         data[position + 0] = chunkType.rawValue << 6 | 0b00000001
         let streamId = (chunkStreamId - 64).bigEndian.data
         data[position + 1] = streamId[0]
         data[position + 2] = streamId[1]
         position += 3
-        return self
     }
 
-    func putMessage(_ chunkType: RTMPChunkType, chunkStreamId: UInt16, message: some RTMPMessage) -> Self {
-        let length = message.payload.count
-
+    private func putMessageHeader(_ chunkType: RTMPChunkType, length: Int, message: some RTMPMessage) {
         switch chunkType {
         case .zero:
-            data.replaceSubrange(position...position + 3, with: message.timestamp.bigEndian.data[1...3])
+            data.replaceSubrange(position..<position + 3, with: message.timestamp.bigEndian.data[1...3])
             position += 3
-            data.replaceSubrange(position...position + 3, with: UInt32(length).bigEndian.data[1...3])
+            data.replaceSubrange(position..<position + 3, with: UInt32(length).bigEndian.data[1...3])
             position += 3
             data[position] = message.type.rawValue
             position += 1
-            data.replaceSubrange(position...position + 4, with: message.streamId.littleEndian.data)
+            data.replaceSubrange(position..<position + 4, with: message.streamId.littleEndian.data)
             position += 4
         case .one:
-            data.replaceSubrange(position...position + 3, with: message.timestamp.bigEndian.data[1...3])
+            data.replaceSubrange(position..<position + 3, with: message.timestamp.bigEndian.data[1...3])
             position += 3
-            data.replaceSubrange(position...position + 3, with: UInt32(length).bigEndian.data[1...3])
+            data.replaceSubrange(position..<position + 3, with: UInt32(length).bigEndian.data[1...3])
             position += 3
             data[position] = message.type.rawValue
             position += 1
@@ -272,21 +305,6 @@ final class RTMPChunkBuffer {
         case .three:
             break
         }
-
-        var offset = 0
-        var remaining = min(chunkSize, length)
-        let payload = message.payload
-        repeat {
-            if 0 < offset {
-                _ = putBasicHeader(.three, chunkStreamId: chunkStreamId)
-            }
-            data.replaceSubrange(position..<position + remaining, with: payload[offset..<offset + remaining])
-            position += remaining
-            offset += remaining
-            remaining = min(chunkSize, length - offset)
-        } while (0 < remaining)
-
-        return self
     }
 }
 
