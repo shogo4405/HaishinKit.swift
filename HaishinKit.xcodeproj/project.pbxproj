@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
+		BC0C81EF2CE8868E00DEA9E6 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC0C81EE2CE8868E00DEA9E6 /* HaishinKit */; };
+		BC0C81F12CE8868E00DEA9E6 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC0C81F02CE8868E00DEA9E6 /* MoQTHaishinKit */; };
+		BC0C81F32CE8868E00DEA9E6 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC0C81F22CE8868E00DEA9E6 /* SRTHaishinKit */; };
 		BC2902352AA0E66A004821D2 /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BC33A1192CDF523E0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1182CDF523E0016EEA0 /* HaishinKit */; };
 		BC33A11B2CDF523E0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11A2CDF523E0016EEA0 /* SRTHaishinKit */; };
@@ -19,6 +22,7 @@
 		BC33A1272CDF52630016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1262CDF52630016EEA0 /* SRTHaishinKit */; };
 		BC33A1292CDF526C0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1282CDF526C0016EEA0 /* HaishinKit */; };
 		BC33A12B2CDF526C0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A12A2CDF526C0016EEA0 /* SRTHaishinKit */; };
+		BC47FA352CE61FCF002900AE /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC47FA342CE61FCF002900AE /* MoQTHaishinKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +134,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BC0C81EC2CE8856000DEA9E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Tests/MoQTPayLoadTests.swift,
+				Tests/MoQTStreamHeaderSubgroupTests.swift,
+			);
+			target = BCB798882CE06AEC0059DFE9 /* Tests */;
+		};
 		BC82CA7F2CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -170,6 +182,7 @@
 				macOS/MainSplitViewController.swift,
 				macOS/MainWindowController.swift,
 				macOS/MenuViewController.swift,
+				macOS/MoxygenChatClient.swift,
 				macOS/PlaybackViewController.swift,
 				macOS/PreferenceViewController.swift,
 				macOS/SCStreamPublishViewController.swift,
@@ -263,6 +276,7 @@
 		BC82C98F2CD76325003F99C9 /* SRTHaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SRTHaishinKit; sourceTree = "<group>"; };
 		BC82CA0E2CD76338003F99C9 /* DebugDescription */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DebugDescription; sourceTree = "<group>"; };
 		BC82CA4B2CD763F4003F99C9 /* Examples */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC82CA7F2CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA802CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA812CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA822CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA832CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Examples; sourceTree = "<group>"; };
+		BCB79DBF2CE070C90059DFE9 /* MoQTHaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC0C81EC2CE8856000DEA9E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MoQTHaishinKit; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +303,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC47FA352CE61FCF002900AE /* MoQTHaishinKit in Frameworks */,
 				BC33A11F2CDF52550016EEA0 /* SRTHaishinKit in Frameworks */,
 				BC33A11D2CDF52550016EEA0 /* HaishinKit in Frameworks */,
 			);
@@ -316,6 +331,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC0C81EF2CE8868E00DEA9E6 /* HaishinKit in Frameworks */,
+				BC0C81F12CE8868E00DEA9E6 /* MoQTHaishinKit in Frameworks */,
+				BC0C81F32CE8868E00DEA9E6 /* SRTHaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +360,7 @@
 				BC33A1452CDF55040016EEA0 /* HaishinKit */,
 				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
 				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
+				BCB79DBF2CE070C90059DFE9 /* MoQTHaishinKit */,
 				29F39BE72335F8010055F9BB /* Package.swift */,
 				2945CBBE1B4BE66000104112 /* Products */,
 				2997BDD31D50D31B000AF900 /* README.md */,
@@ -482,6 +501,9 @@
 			);
 			name = Tests;
 			packageProductDependencies = (
+				BC0C81EE2CE8868E00DEA9E6 /* HaishinKit */,
+				BC0C81F02CE8868E00DEA9E6 /* MoQTHaishinKit */,
+				BC0C81F22CE8868E00DEA9E6 /* SRTHaishinKit */,
 			);
 			productName = Tests;
 			productReference = BCB798892CE06AEC0059DFE9 /* Tests.xctest */;
@@ -1348,6 +1370,21 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BC0C81EE2CE8868E00DEA9E6 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC0C81F02CE8868E00DEA9E6 /* MoQTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = MoQTHaishinKit;
+		};
+		BC0C81F22CE8868E00DEA9E6 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
+		};
 		BC33A1182CDF523E0016EEA0 /* HaishinKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
@@ -1397,6 +1434,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
 			productName = SRTHaishinKit;
+		};
+		BC47FA342CE61FCF002900AE /* MoQTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = MoQTHaishinKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

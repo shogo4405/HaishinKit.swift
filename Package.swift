@@ -23,7 +23,8 @@ let package = Package(
     ],
     products: [
         .library(name: "HaishinKit", targets: ["HaishinKit"]),
-        .library(name: "SRTHaishinKit", targets: ["SRTHaishinKit"])
+        .library(name: "SRTHaishinKit", targets: ["SRTHaishinKit"]),
+        .library(name: "MoQTHaishinKit", targets: ["MoQTHaishinKit"])
     ],
     dependencies: [
         .package(url: "https://github.com/shogo4405/Logboard.git", "2.5.0"..<"2.6.0")
@@ -43,6 +44,12 @@ let package = Package(
             name: "SRTHaishinKit",
             dependencies: ["libsrt", "HaishinKit"],
             path: "SRTHaishinKit/Sources",
+            swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "MoQTHaishinKit",
+            dependencies: ["HaishinKit"],
+            path: "MoQTHaishinKit/Sources",
             swiftSettings: swiftSettings
         ),
         .testTarget(

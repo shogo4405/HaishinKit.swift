@@ -39,7 +39,7 @@ Project name    |Notes       |License
 [HaishinKit for Flutter.](https://github.com/shogo4405/HaishinKit.dart)|Camera and Microphone streaming library via RTMP for Flutter.|[BSD 3-Clause "New" or "Revised" License](https://github.com/shogo4405/HaishinKit.dart/blob/master/LICENSE.md)
 
 ## 🎨 Features
-### RTMP
+### ✏️ RTMP
 - [x] Authentication
 - [x] Publish and Recording
 - [x] _Playback (Beta)_
@@ -55,14 +55,13 @@ Project name    |Notes       |License
 - [x] ReplayKit Live as a Broadcast Upload Extension
 - [x] [Enhanced RTMP](https://github.com/veovera/enhanced-rtmp)
 
-### SRT(beta)
+### ✏️ SRT(beta)
 - [x] Publish and Recording (H264/HEVC/AAC)
 - [x] Playback(beta)
 - [ ] mode
   - [x] caller
   - [x] listener
   - [ ] rendezvous
-
 
 ### 📹 Multi Streaming.
 Starting from version 2.0.0, multiple streams are supported, allowing live streaming to separate services. Views also support this, enabling the verification of raw video data
