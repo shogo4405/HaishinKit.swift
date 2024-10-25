@@ -201,7 +201,7 @@ HaishinKit has a multi-module configuration. If you want to use the SRT protocol
 |  | HaishinKit | SRTHaishinKit |
 | - | :- | :- |
 | SPM | https://github.com/shogo4405/HaishinKit.swift | https://github.com/shogo4405/HaishinKit.swift |
-| CocoaPods |<pre>def import_pods<br>  pod 'HaishinKit', '~> 2.0.0-beta.3'<br>end</pre>|<pre>def import_pods<br>  pod 'SRTHaishinKit', '~> 2.0.0-beta.3'<br>end</pre>|
+| CocoaPods |<pre>def import_pods<br>  pod 'HaishinKit', '~> 2.0.0-rc.2'<br>end</pre>|<pre>def import_pods<br>  pod 'SRTHaishinKit', '~> 2.0.0-rc.2'<br>end</pre>|
 * SRTHaishinKit via CocoaPods supports only iOS and tvOS.
 * Discontinued support for Carthage. #1542
 
