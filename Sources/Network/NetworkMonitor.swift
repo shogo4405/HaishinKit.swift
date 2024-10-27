@@ -49,10 +49,10 @@ public final actor NetworkMonitor {
             currentBytesInPerSecond: currentBytesInPerSecond,
             currentBytesOutPerSecond: currentBytesOutPerSecond
         )
-        defer {
-            previousQueueBytesOut.removeFirst()
-        }
         if measureInterval <= previousQueueBytesOut.count {
+            defer {
+                previousQueueBytesOut.removeFirst()
+            }
             var total = 0
             for i in 0..<previousQueueBytesOut.count - 1 where previousQueueBytesOut[i] < previousQueueBytesOut[i + 1] {
                 total += 1
