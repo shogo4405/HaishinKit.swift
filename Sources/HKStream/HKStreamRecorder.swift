@@ -123,6 +123,9 @@ public actor HKStreamRecorder {
         audioPresentationTime = .zero
 
         let url = moviesDirectory.appendingPathComponent(fileName).appendingPathExtension("mp4")
+        if FileManager.default.fileExists(atPath: url.path) {
+            try? FileManager.default.removeItem(at: url)
+        }
         writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         isRecording = true
     }
