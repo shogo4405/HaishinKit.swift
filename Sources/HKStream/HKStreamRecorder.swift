@@ -20,10 +20,16 @@
 ///  stream.addOutput(recorder)
 /// ```
 public actor HKStreamRecorder {
+    static let defaultPathExtension = "mp4"
+
     /// The error domain codes.
     public enum Error: Swift.Error {
         /// An invalid internal stare.
         case invalidState
+        /// The specified file already exists.
+        case fileAlreadyExists(outputURL: URL)
+        /// The specifiled file type is not supported.
+        case notSupportedFileType(pathExtension: String)
         /// Failed to create the AVAssetWriter.
         case failedToCreateAssetWriter(error: any Swift.Error)
         /// Failed to create the AVAssetWriterInput.
@@ -59,16 +65,41 @@ public actor HKStreamRecorder {
         }
     }
 
+    enum SupportedFileType: String {
+        case mp4
+        case mov
+
+        var fileType: AVFileType {
+            switch self {
+            case .mp4:
+                return .mp4
+            case .mov:
+                return .mov
+            }
+        }
+    }
+
     /// The recorder settings.
     public private(set) var settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings
-    /// The recording file name.
-    public private(set) var fileName: String?
+    /// The recording output url.
+    public var outputURL: URL? {
+        return writer?.outputURL
+    }
     /// The recording or not.
     public private(set) var isRecording = false
     /// The the movie fragment interval in sec.
     public private(set) var movieFragmentInterval: Double?
     public private(set) var videoTrackId: UInt8? = UInt8.max
     public private(set) var audioTrackId: UInt8? = UInt8.max
+    #if os(iOS)
+    public private(set) lazy var moviesDirectory: URL = {
+        URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+    }()
+    #else
+    public private(set) var moviesDirectory: URL = {
+        URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
+    }()
+    #endif
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
@@ -81,16 +112,6 @@ public actor HKStreamRecorder {
     private var audioPresentationTime: CMTime = .zero
     private var videoPresentationTime: CMTime = .zero
     private var dimensions: CMVideoDimensions = .init(width: 0, height: 0)
-
-    #if os(iOS)
-    private lazy var moviesDirectory: URL = {
-        URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
-    }()
-    #else
-    private lazy var moviesDirectory: URL = {
-        URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.moviesDirectory, .userDomainMask, true)[0])
-    }()
-    #endif
 
     /// Creates a new recorder.
     public init() {
@@ -109,21 +130,44 @@ public actor HKStreamRecorder {
     }
 
     /// Starts recording.
-    public func startRecording(_ fileName: String? = nil, settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings) async throws {
+    /// - Parameters:
+    ///   - file: The file path for recording. If nil is specified, a unique file path will be returned automatically.
+    ///   - settings: Settings for recording.
+    public func startRecording(_ file: URL? = nil, settings: [AVMediaType: [String: any Sendable]] = HKStreamRecorder.defaultSettings) async throws {
         guard !isRecording else {
             throw Error.invalidState
         }
 
-        self.fileName = fileName ?? UUID().uuidString
-        self.settings = settings
+        var outputURL: URL
+        if let file {
+            if file.hasDirectoryPath {
+                outputURL = file
+            } else {
+                outputURL = moviesDirectory.appendingPathComponent(file.absoluteString)
+            }
+            if file.pathExtension == "" {
+                outputURL = outputURL.appendingPathExtension(Self.defaultPathExtension)
+            }
+        } else {
+            outputURL = moviesDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension(Self.defaultPathExtension)
+        }
 
-        guard let fileName = self.fileName else { throw Error.invalidState }
+        if FileManager.default.fileExists(atPath: outputURL.absoluteString) {
+            throw Error.fileAlreadyExists(outputURL: outputURL)
+        }
 
+        var fileType: AVFileType = .mp4
+        if let supportedFileType = SupportedFileType(rawValue: outputURL.pathExtension) {
+            fileType = supportedFileType.fileType
+        } else {
+            throw Error.notSupportedFileType(pathExtension: outputURL.pathExtension)
+        }
+
+        writer = try AVAssetWriter(outputURL: outputURL, fileType: fileType)
         videoPresentationTime = .zero
         audioPresentationTime = .zero
+        self.settings = settings
 
-        let url = moviesDirectory.appendingPathComponent(fileName).appendingPathExtension("mp4")
-        writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
         isRecording = true
     }
 
