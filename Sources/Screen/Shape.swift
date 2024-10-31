@@ -26,7 +26,7 @@ final class RoundedSquareShape: Shape {
             return nil
         }
         let path = CGPath(roundedRect: rect, cornerWidth: cornerRadius, cornerHeight: cornerRadius, transform: nil)
-        #if canImport(AppKit)
+        #if canImport(AppKit) && !targetEnvironment(macCatalyst)
         context.setFillColor(NSColor.white.cgColor)
         #endif
         #if canImport(UIKit)
