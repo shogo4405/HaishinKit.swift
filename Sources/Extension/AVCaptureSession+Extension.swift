@@ -17,7 +17,7 @@ extension AVCaptureSession {
         }
     }
 }
-#endif
+#else
 
 @available(tvOS 17.0, *)
 extension AVCaptureSession {
@@ -36,4 +36,5 @@ extension AVCaptureSession {
         }
     }
 }
+#endif
 // swiftlint:enable unused_setter_value
