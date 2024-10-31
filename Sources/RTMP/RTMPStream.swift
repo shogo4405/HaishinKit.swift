@@ -7,7 +7,7 @@ import UIKit
 typealias View = UIView
 #endif
 
-#if canImport(AppKit)
+#if canImport(AppKit) && !targetEnvironment(macCatalyst)
 import AppKit
 typealias View = NSView
 #endif
