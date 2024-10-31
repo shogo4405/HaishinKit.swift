@@ -1,8 +1,8 @@
 import AudioUnit
 import AVFoundation
+import CoreAudio
 import CoreMedia
 import Foundation
-import CoreAudio
 
 final class AudioMonitor {
     var inputFormat: AVAudioFormat? {

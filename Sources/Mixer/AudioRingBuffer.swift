@@ -1,8 +1,8 @@
 import Accelerate
 import AVFoundation
+import CoreAudio
 import CoreMedia
 import Foundation
-import CoreAudio
 
 final class AudioRingBuffer {
     private static let bufferCounts: UInt32 = 16

@@ -1,6 +1,6 @@
 import AVFoundation
-import Foundation
 import CoreAudio
+import Foundation
 
 final class AudioMixerByMultiTrack: AudioMixer {
     private static let defaultSampleTime: AVAudioFramePosition = 0
