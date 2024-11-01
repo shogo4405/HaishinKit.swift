@@ -105,6 +105,7 @@
 		BC0587C12BD2A123006751C8 /* AudioMixerBySingleTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587C02BD2A123006751C8 /* AudioMixerBySingleTrackTests.swift */; };
 		BC0587C32BD2A5E8006751C8 /* AudioMixerByMultiTrackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587C22BD2A5E8006751C8 /* AudioMixerByMultiTrackTests.swift */; };
 		BC0587D22BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */; };
+		BC0628352CD25466005EB88E /* HKStreamRecorderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0628342CD2545E005EB88E /* HKStreamRecorderTests.swift */; };
 		BC0B5B122BE8CFA800D83F8E /* CMVideoDimention+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B112BE8CFA800D83F8E /* CMVideoDimention+Extension.swift */; };
 		BC0B5B142BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B132BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift */; };
 		BC0B5B172BE919D000D83F8E /* ScreenObjectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0B5B162BE919D000D83F8E /* ScreenObjectTests.swift */; };
@@ -555,6 +556,7 @@
 		BC0587C02BD2A123006751C8 /* AudioMixerBySingleTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerBySingleTrackTests.swift; sourceTree = "<group>"; };
 		BC0587C22BD2A5E8006751C8 /* AudioMixerByMultiTrackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioMixerByMultiTrackTests.swift; sourceTree = "<group>"; };
 		BC0587D12BD2CA7F006751C8 /* AudioStreamBasicDescription+DebugExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AudioStreamBasicDescription+DebugExtension.swift"; sourceTree = "<group>"; };
+		BC0628342CD2545E005EB88E /* HKStreamRecorderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKStreamRecorderTests.swift; sourceTree = "<group>"; };
 		BC0B5B112BE8CFA800D83F8E /* CMVideoDimention+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CMVideoDimention+Extension.swift"; sourceTree = "<group>"; };
 		BC0B5B132BE8DFE300D83F8E /* AVLayerVideoGravity+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AVLayerVideoGravity+Extension.swift"; sourceTree = "<group>"; };
 		BC0B5B162BE919D000D83F8E /* ScreenObjectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenObjectTests.swift; sourceTree = "<group>"; };
@@ -1005,6 +1007,7 @@
 				BC0B5B1D2BE9310800D83F8E /* CMVideoSampleBufferFactory.swift */,
 				295018191FFA196800358E10 /* Codec */,
 				BC03945D2AA8AFDD006EDE38 /* Extension */,
+				BC0628332CD2544E005EB88E /* HKStream */,
 				29798E5D1CE60E5300F5CBD0 /* Info.plist */,
 				291C2ACF1CE9FF2B006F042B /* ISO */,
 				BC0BF4F329866FB700D72CB4 /* Mixer */,
@@ -1148,6 +1151,14 @@
 				1A2166D3A449D813866FE9D9 /* AVAudioFormat+DebugExtension.swift */,
 			);
 			path = DebugDescription;
+			sourceTree = "<group>";
+		};
+		BC0628332CD2544E005EB88E /* HKStream */ = {
+			isa = PBXGroup;
+			children = (
+				BC0628342CD2545E005EB88E /* HKStreamRecorderTests.swift */,
+			);
+			path = HKStream;
 			sourceTree = "<group>";
 		};
 		BC0B5B152BE919B700D83F8E /* Screen */ = {
@@ -1850,6 +1861,7 @@
 				BC56452C2C4972BD00CC79C5 /* CMSampleBuffer+ExtensionTests.swift in Sources */,
 				BC7C56C329A1F28700C41A9B /* TSReaderTests.swift in Sources */,
 				BC7C56D129A78D4F00C41A9B /* ADTSHeaderTests.swift in Sources */,
+				BC0628352CD25466005EB88E /* HKStreamRecorderTests.swift in Sources */,
 				BC3E384429C216BB007CD972 /* ADTSReaderTests.swift in Sources */,
 				BC1720A92C03473200F65941 /* AVCDecoderConfigurationRecordTests.swift in Sources */,
 				295018201FFA1BD700358E10 /* AudioCodecTests.swift in Sources */,

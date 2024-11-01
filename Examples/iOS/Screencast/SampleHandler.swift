@@ -105,6 +105,7 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
             Task { @MainActor in
                 if let volume = slider?.value {
                     var audioMixerSettings = await mixer.audioMixerSettings
+                    audioMixerSettings.isMuted = true
                     audioMixerSettings.tracks[1] = .default
                     audioMixerSettings.tracks[1]?.volume = volume * 0.5
                     await mixer.setAudioMixerSettings(audioMixerSettings)
