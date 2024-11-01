@@ -30,7 +30,7 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
             }
         }
     }
-    private var mixer = MediaMixer()
+    private var mixer = MediaMixer(multiCamSessionEnabled: false, multiTrackAudioMixingEnabled: true)
     private let netStreamSwitcher = HKStreamSwitcher()
     private var needVideoConfiguration = true
 
@@ -49,7 +49,6 @@ final class SampleHandler: RPBroadcastSampleHandler, @unchecked Sendable {
         // mixer.audioMixerSettings.tracks[1] = .default
         isVideoRotationEnabled = false
         Task {
-            await mixer.setMultiTrackAudioMixingEnabled(true)
             await netStreamSwitcher.setPreference(Preference.default)
             // ReplayKit is sensitive to memory, so we limit the queue to a maximum of five items.
             if let stream = await netStreamSwitcher.stream {

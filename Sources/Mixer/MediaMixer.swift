@@ -99,12 +99,31 @@ public final actor MediaMixer {
     @ScreenActor
     private lazy var displayLink = DisplayLinkChoreographer()
 
+    #if os(iOS) || os(tvOS)
     /// Creates a new instance.
-    public init() {
+    ///
+    /// - Parameters:
+    ///   - multiCamSessionEnabled: Specifies the AVCaptureMultiCamSession enabled.
+    ///   - multiTrackAudioMixingEnabled: Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
+    public init(multiCamSessionEnabled: Bool = true, multiTrackAudioMixingEnabled: Bool = false) {
         Task {
+            await setMultiCamSessionEnabled(multiCamSessionEnabled)
+            await setMultiTrackAudioMixingEnabled(multiTrackAudioMixingEnabled)
             await startRunning()
         }
     }
+    #else
+    /// Creates a new instance.
+    ///
+    /// - Parameters:
+    ///   - multiTrackAudioMixingEnabled: Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
+    public init(multiTrackAudioMixingEnabled: Bool = false) {
+        Task {
+            await setMultiTrackAudioMixingEnabled(multiTrackAudioMixingEnabled)
+            await startRunning()
+        }
+    }
+    #endif
 
     /// Attaches a video device.
     @available(tvOS 17.0, *)
@@ -246,20 +265,6 @@ public final actor MediaMixer {
         session.stopRunning()
     }
 
-    #if os(iOS) || os(tvOS)
-    /// Specifies the AVCaptureMultiCamSession enabled.
-    /// - Attention: If there is a possibility of using multiple cameras, please set it to true initially.
-    public func setMultiCamSessionEnabled(_ multiCamSessionEnabled: Bool) {
-        session.isMultiCamSessionEnabled = multiCamSessionEnabled
-    }
-    #endif
-
-    /// Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
-    /// - Attention: If there is a possibility of this feature, please set it to true initially.
-    public func setMultiTrackAudioMixingEnabled(_ multiTrackAudioMixingEnabled: Bool) {
-        audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
-    }
-
     /// Appends an AVAudioBuffer.
     /// - Parameters:
     ///   - audioBuffer:The audio buffer to append.
@@ -294,6 +299,16 @@ public final actor MediaMixer {
         if let index = outputs.firstIndex(where: { $0 === output }) {
             outputs.remove(at: index)
         }
+    }
+
+    #if os(iOS) || os(tvOS)
+    func setMultiCamSessionEnabled(_ multiCamSessionEnabled: Bool) {
+        session.isMultiCamSessionEnabled = multiCamSessionEnabled
+    }
+    #endif
+
+    func setMultiTrackAudioMixingEnabled(_ multiTrackAudioMixingEnabled: Bool) {
+        audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
     }
 
     func setVideoRenderingMode(_ mode: VideoMixerSettings.Mode) {
