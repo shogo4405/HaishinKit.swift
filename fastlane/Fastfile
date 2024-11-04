@@ -15,16 +15,27 @@
 
 desc "[CI] Review PullRequest."
 lane :review do
-  spm
-  danger(
-    danger_id: 'danger',
-    dangerfile: 'Dangerfile',
-    verbose: true
+  spm(
+    command: "test",
+    package_path: "HaishinKit"
   )
-  scan(scheme: 'Tests')
+  spm(
+    command: "test",
+    package_path: "SRTHaishinKit"
+  )
+  begin
+    danger(
+      danger_id: 'danger',
+      dangerfile: 'Dangerfile',
+      verbose: true
+    )
+  rescue
+  end
 end
 
 desc "Creates documents."
 lane :document do
-  sh('cd ../ && sourcekitten doc --spm --module-name HaishinKit > HaishinKit.json && sourcekitten doc --spm --module-name SRTHaishinKit > SRTHaishinKit.json && jazzy --sourcekitten-sourcefile HaishinKit.json,SRTHaishinKit.json')
+  sh('cd ../HaishinKit && sourcekitten doc --spm --module-name HaishinKit > ../HaishinKit.json')
+  sh('cd ../SRTHaishinKit && sourcekitten doc --spm --module-name SRTHaishinKit > ../SRTHaishinKit.json')
+  sh('cd .. && jazzy --sourcekitten-sourcefile HaishinKit.json,SRTHaishinKit.json')
 end

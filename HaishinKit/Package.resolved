@@ -1,0 +1,15 @@
+{
+  "originHash" : "f0433a32d23a021b38373f06621571fae23bad3db6b5c0b1d0800f6003fc19fe",
+  "pins" : [
+    {
+      "identity" : "logboard",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/shogo4405/Logboard.git",
+      "state" : {
+        "revision" : "272976e1f3e8873e60ffe4b08fe50df48a93751b",
+        "version" : "2.5.0"
+      }
+    }
+  ],
+  "version" : 3
+}

@@ -1,4 +1,5 @@
 {
+  "originHash" : "7ca72a24d629e4929669016660ee8ce04b0d1bfd8b1c81d1b54d70ff64b7b9a6",
   "pins" : [
     {
       "identity" : "logboard",
@@ -10,5 +11,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

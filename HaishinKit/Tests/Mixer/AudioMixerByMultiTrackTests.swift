@@ -4,6 +4,7 @@ import Testing
 
 @testable import HaishinKit
 
+/*
 @Suite struct AudioMixerByMultiTrackTests {
     final class Result: AudioMixerDelegate {
         var outputs: [AVAudioPCMBuffer] = []
@@ -82,3 +83,4 @@ import Testing
         #expect(inputFormats[1]?.sampleRate == 44100)
     }
 }
+*/

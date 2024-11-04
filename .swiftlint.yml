@@ -11,10 +11,8 @@ analyzer_rules:
   - unused_declaration
   - unused_import
 excluded:
-  - Carthage
-  - Pods
-  - Tests
-  - Vendor
+  - HaishinKit/Tests
+  - SRTHaishinKit/Vendor
   - .build
 opt_in_rules:
 #  - anyobject_protocol
