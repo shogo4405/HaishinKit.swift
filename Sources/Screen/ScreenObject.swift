@@ -243,11 +243,13 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
     /// Create a screen object.
     override public init() {
         super.init()
-        horizontalAlignment = .center
         do {
             queue = try TypedBlockQueue(capacity: 1, handlers: .outputPTSSortedSampleBuffers)
         } catch {
             logger.error(error)
+        }
+        Task {
+            horizontalAlignment = .center
         }
     }
 
