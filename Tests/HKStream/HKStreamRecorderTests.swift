@@ -4,15 +4,15 @@ import Testing
 @testable import HaishinKit
 
 @Suite struct HKStreamRecorderTests {
-    @Test func startRunning_nil() async {
+    @Test func startRunning_nil() async throws {
         let recorder = HKStreamRecorder()
-        try! await recorder.startRecording(nil)
+        try await recorder.startRecording(nil)
         let moviesDirectory = await recorder.moviesDirectory
         // $moviesDirectory/B644F60F-0959-4F54-9D14-7F9949E02AD8.mp4
         #expect(((await recorder.outputURL?.path.contains(moviesDirectory.path())) != nil))
     }
 
-    @Test func startRunning_fileName() async {
+    @Test func startRunning_fileName() async throws {
         let recorder = HKStreamRecorder()
         try? await recorder.startRecording(URL(string: "dir/sample.mp4"))
         let moviesDirectory = await recorder.moviesDirectory

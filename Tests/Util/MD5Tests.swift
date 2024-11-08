@@ -4,11 +4,10 @@ import Testing
 @testable import HaishinKit
 
 @Suite struct MD5Tests {
-
     func hex(_ data: Data) -> String {
         var hash = ""
         for i in 0..<data.count {
-            hash +=  String(format: "%02x", data[i])
+            hash += String(format: "%02x", data[i])
         }
         return hash
     }

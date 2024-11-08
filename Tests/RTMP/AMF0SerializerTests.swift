@@ -4,7 +4,6 @@ import Testing
 @testable import HaishinKit
 
 @Suite struct AMF0SerializerTests {
-
     static let connectionChunk: AMFObject = [
         "tcUrl": "rtmp://localhost:1935/live",
         "flashVer": "FMLE/3.0 (compatible; FMSc/1.0)",
@@ -20,11 +19,11 @@ import Testing
         "objectEncoding": Double(0)
     ]
 
-    @Test func connectionChunk() {
+    @Test func connectionChunk() throws {
         var amf: any AMFSerializer = AMF0Serializer()
         amf.serialize(AMF0SerializerTests.connectionChunk)
         amf.position = 0
-        let result: AMFObject = try! amf.deserialize()
+        let result: AMFObject = try amf.deserialize()
         for key in AMF0SerializerTests.connectionChunk.keys {
             let value: Any? = result[key]! as Any?
             switch key {
@@ -58,14 +57,14 @@ import Testing
         }
     }
 
-    @Test func aSArray() {
+    @Test func asarray() throws {
         var array = AMFArray()
         array["hello"] = "world"
         array["world"] = "hello"
         var amf: any AMFSerializer = AMF0Serializer()
         amf.serialize(array)
         amf.position = 0
-        let result: AMFArray = try! amf.deserialize()
+        let result: AMFArray = try amf.deserialize()
         #expect(array["hello"] as? String == result["hello"] as? String)
         #expect(array["world"] as? String == result["world"] as? String)
     }

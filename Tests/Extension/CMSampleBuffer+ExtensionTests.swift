@@ -1,6 +1,6 @@
+import CoreMedia
 import Foundation
 import Testing
-import CoreMedia
 
 @testable import HaishinKit
 

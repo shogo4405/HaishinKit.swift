@@ -4,7 +4,6 @@ import Testing
 @testable import HaishinKit
 
 @Suite struct AMFFoundationTests {
-
     static let hello: String = "<a>hello</a>"
 
     @Test func aSArray() {

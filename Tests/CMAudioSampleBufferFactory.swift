@@ -14,7 +14,7 @@ enum CMAudioSampleBufferFactory {
             mBitsPerChannel: 16,
             mReserved: 0
         )
-        var formatDescription: CMAudioFormatDescription? = nil
+        var formatDescription: CMAudioFormatDescription?
         var status: OSStatus = noErr
         var blockBuffer: CMBlockBuffer?
         let blockSize = numSamples * Int(asbd.mBytesPerPacket)

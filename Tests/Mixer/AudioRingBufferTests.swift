@@ -1,27 +1,27 @@
+import AVFoundation
 import Foundation
 import Testing
-import AVFoundation
 
 @testable import HaishinKit
 
 @Suite struct AudioRingBufferTests {
-    @Test func monoAppendSampleBuffer_920() {
-        appendSampleBuffer(920, channels: 1)
+    @Test func monoAppendSampleBuffer_920() throws {
+        try appendSampleBuffer(920, channels: 1)
     }
 
-    @Test func monoAppendSampleBuffer_1024() {
-        appendSampleBuffer(1024, channels: 1)
+    @Test func monoAppendSampleBuffer_1024() throws {
+        try appendSampleBuffer(1024, channels: 1)
     }
 
-    @Test func stereoAppendSampleBuffer_920() {
-        appendSampleBuffer(920, channels: 2)
+    @Test func stereoAppendSampleBuffer_920() throws {
+        try appendSampleBuffer(920, channels: 2)
     }
 
-    @Test func stereoAppendSampleBuffer_1024() {
-        appendSampleBuffer(1024, channels: 2)
+    @Test func stereoAppendSampleBuffer_1024() throws {
+        try appendSampleBuffer(1024, channels: 2)
     }
 
-    private func appendSampleBuffer(_ numSamples: Int, channels: UInt32) {
+    private func appendSampleBuffer(_ numSamples: Int, channels: UInt32) throws {
         var asbd = AudioStreamBasicDescription(
             mSampleRate: 44100,
             mFormatID: kAudioFormatLinearPCM,
@@ -46,7 +46,7 @@ import AVFoundation
             buffer?.append(sinWave)
             readBuffer.int16ChannelData?[0].update(repeating: 0, count: numSamples)
             _ = buffer?.render(UInt32(numSamples), ioData: readBuffer.mutableAudioBufferList)
-            #expect(try! sinWave.dataBuffer?.dataBytes().bytes == Data(bytes: bufferList[0].mData!, count: numSamples * Int(channels) * 2).bytes)
+            #expect(try sinWave.dataBuffer?.dataBytes().bytes == Data(bytes: bufferList[0].mData!, count: numSamples * Int(channels) * 2).bytes)
         }
     }
 }

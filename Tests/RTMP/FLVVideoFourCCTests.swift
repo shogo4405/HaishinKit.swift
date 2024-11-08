@@ -1,6 +1,6 @@
+import AVFoundation
 import Foundation
 import Testing
-import AVFoundation
 
 @testable import HaishinKit
 
@@ -19,4 +19,3 @@ import AVFoundation
         return result
     }
 }
-

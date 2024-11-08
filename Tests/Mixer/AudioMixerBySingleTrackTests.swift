@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 import Testing
 
 @testable import HaishinKit
@@ -110,4 +110,3 @@ import Testing
         #expect(inputFormats[0]?.sampleRate == 48000)
     }
 }
-

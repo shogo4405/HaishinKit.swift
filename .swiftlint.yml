@@ -13,7 +13,6 @@ analyzer_rules:
 excluded:
   - Carthage
   - Pods
-  - Tests
   - Vendor
   - .build
 opt_in_rules:

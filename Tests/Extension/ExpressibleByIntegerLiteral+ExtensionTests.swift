@@ -15,11 +15,11 @@ import Testing
         #expect(UInt32(32).bigEndian.data == Data([0, 0, 0, 32]))
         #expect(UInt32.max.bigEndian.data == Data([255, 255, 255, 255]))
     }
-    
+
     @Test func int64() {
         #expect(Int64.min.bigEndian.data == Data([128, 0, 0, 0, 0, 0, 0, 0]))
         #expect(Int64(32).bigEndian.data == Data([0, 0, 0, 0, 0, 0, 0, 32]))
-        #expect(Int64.max.bigEndian.data == Data([127,255,255, 255, 255, 255, 255, 255]))
+        #expect(Int64.max.bigEndian.data == Data([127, 255, 255, 255, 255, 255, 255, 255]))
     }
 
     @Test func uInt64() {

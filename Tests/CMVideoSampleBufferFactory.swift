@@ -1,5 +1,5 @@
-import Foundation
 import AVFoundation
+import Foundation
 
 enum CMVideoSampleBufferFactory {
     static func makeSampleBuffer(width: Int, height: Int) -> CMSampleBuffer? {
