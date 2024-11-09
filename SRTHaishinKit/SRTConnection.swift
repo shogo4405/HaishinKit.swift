@@ -118,7 +118,6 @@ public actor SRTConnection: NetworkConnection {
         switch mode {
         case .caller:
             toSocket = socket
-            return
         case .listener:
             toSocket = clients.first
         }
