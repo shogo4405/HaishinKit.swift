@@ -114,7 +114,15 @@ public actor SRTConnection: NetworkConnection {
     }
 
     func send(_ data: Data) async {
-        await socket?.send(data)
+        let toSocket: SRTSocket?
+        switch mode {
+        case .caller:
+            toSocket = socket
+            return
+        case .listener:
+            toSocket = clients.first
+        }
+        await toSocket?.send(data)
     }
 
     func recv() {
