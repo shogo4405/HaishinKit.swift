@@ -8,48 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
-		2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		BC0BF4F22985FA9000D72CB4 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
 		BC2902352AA0E66A004821D2 /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		BC3E49D22C45617100A9C5B6 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
-		BC3E49D32C45617100A9C5B6 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC701F332AAD808F00C4BEFE /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
-		BC701F342AAD808F00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC77ED6D2C77C61C0003427A /* Logboard in Frameworks */ = {isa = PBXBuildFile; productRef = BC77ED6C2C77C61C0003427A /* Logboard */; };
-		BC7A0E552B0894B9005FB2F7 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		BC7A0E562B0894B9005FB2F7 /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCC2237E2C1468C700F5F234 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
-		BCC2237F2C1468C700F5F234 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCC223852C146ADA00F5F234 /* libsrt.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */; };
-		BCC223882C15212E00F5F234 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
-		BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCCC459C2AA289FA0016EFE8 /* SRTHaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; };
-		BCCC459D2AA289FA0016EFE8 /* SRTHaishinKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */; };
-		BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BCCC45C02AA28BF40016EFE8 /* libc++.tbd */; };
+		BC33A1192CDF523E0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1182CDF523E0016EEA0 /* HaishinKit */; };
+		BC33A11B2CDF523E0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11A2CDF523E0016EEA0 /* SRTHaishinKit */; };
+		BC33A11D2CDF52550016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11C2CDF52550016EEA0 /* HaishinKit */; };
+		BC33A11F2CDF52550016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11E2CDF52550016EEA0 /* SRTHaishinKit */; };
+		BC33A1212CDF525B0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1202CDF525B0016EEA0 /* HaishinKit */; };
+		BC33A1232CDF525B0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1222CDF525B0016EEA0 /* SRTHaishinKit */; };
+		BC33A1252CDF52600016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1242CDF52600016EEA0 /* HaishinKit */; };
+		BC33A1272CDF52630016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1262CDF52630016EEA0 /* SRTHaishinKit */; };
+		BC33A1292CDF526C0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1282CDF526C0016EEA0 /* HaishinKit */; };
+		BC33A12B2CDF526C0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A12A2CDF526C0016EEA0 /* SRTHaishinKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		29C932A81CD78B5500283FC5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = iOS;
-		};
-		BC0BF4F02985FA5800D72CB4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = "HaishinKit iOS";
-		};
 		BC2902362AA0E66A004821D2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
@@ -57,68 +29,12 @@
 			remoteGlobalIDString = 2915EC511D85BDF100621092;
 			remoteInfo = Screencast;
 		};
-		BC3E49D42C45617100A9C5B6 /* PBXContainerItemProxy */ = {
+		BCB7988D2CE06AEC0059DFE9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
-			remoteInfo = SRTHaishinKit;
-		};
-		BC701F352AAD808F00C4BEFE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
-			remoteInfo = SRTHaishinKit;
-		};
-		BC7A0E572B0894B9005FB2F7 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = HaishinKit;
-		};
-		BC8A29922AA63D9E00F6D27F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = HaishinKit;
-		};
-		BC8A29962AA63DA300F6D27F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = HaishinKit;
-		};
-		BCC223802C1468C700F5F234 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
-			remoteInfo = SRTHaishinKit;
-		};
-		BCC2238A2C15212E00F5F234 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
-			remoteInfo = SRTHaishinKit;
-		};
-		BCCC459A2AA289FA0016EFE8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = BCCC45952AA289FA0016EFE8;
-			remoteInfo = SRTHaishinKit;
-		};
-		BCCC45B72AA28BB90016EFE8 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2945CBB41B4BE66000104112 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 2945CBBC1B4BE66000104112;
-			remoteInfo = HaishinKit;
+			remoteGlobalIDString = 29C9327D1CD76FB800283FC5;
+			remoteInfo = "Example iOS";
 		};
 /* End PBXContainerItemProxy section */
 
@@ -138,8 +54,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BC8A29952AA63DA300F6D27F /* HaishinKit.framework in Embed Frameworks */,
-				BCC223892C15212E00F5F234 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,8 +64,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BC8A29912AA63D9E00F6D27F /* HaishinKit.framework in Embed Frameworks */,
-				BC701F342AAD808F00C4BEFE /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,8 +74,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2942EF861DFF4D3C008E620C /* HaishinKit.framework in Embed Frameworks */,
-				BCCC459D2AA289FA0016EFE8 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -185,7 +95,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BC3E49D32C45617100A9C5B6 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -196,8 +105,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				BC7A0E562B0894B9005FB2F7 /* HaishinKit.framework in Embed Frameworks */,
-				BCC2237F2C1468C700F5F234 /* SRTHaishinKit.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -208,8 +115,6 @@
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
 		2927A2991E7ED2D70044AF91 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
-		2945CBBD1B4BE66000104112 /* HaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		29798E591CE60E5300F5CBD0 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -219,43 +124,12 @@
 		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SRTHaishinKit.podspec; sourceTree = "<group>"; };
-		BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SRTHaishinKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCB798892CE06AEC0059DFE9 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libsrt.xcframework; path = Vendor/SRT/libsrt.xcframework; sourceTree = "<group>"; };
 		BCCC45C02AA28BF40016EFE8 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BC82C99B2CD76325003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			publicHeaders = (
-				SRTHaishinKit.h,
-			);
-			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
-		};
-		BC82CA032CD76328003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Asset/SampleVideo_360x240_5mb.mp4,
-			);
-			target = 29C932931CD76FD300283FC5 /* Example macOS */;
-		};
-		BC82CA042CD76328003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 29798E581CE60E5300F5CBD0 /* Tests */;
-		};
-		BC82CA0A2CD7632F003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				HaishinKit.h,
-			);
-			publicHeaders = (
-				HaishinKit.h,
-			);
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-		};
 		BC82CA7F2CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -337,23 +211,56 @@
 			);
 			target = 2915EC511D85BDF100621092 /* Screencast */;
 		};
+		BCB798932CE06B370059DFE9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Tests/CMAudioSampleBufferFactory.swift,
+				Tests/CMVideoSampleBufferFactory.swift,
+				Tests/Codec/AudioCodecTests.swift,
+				"Tests/Extension/CMSampleBuffer+ExtensionTests.swift",
+				"Tests/Extension/ExpressibleByIntegerLiteral+ExtensionTests.swift",
+				"Tests/Extension/Foundation+ExtensionTests.swift",
+				"Tests/Extension/SwiftCore+ExtensionTests.swift",
+				Tests/HKStream/HKStreamRecorderTests.swift,
+				Tests/ISO/ADTSHeaderTests.swift,
+				Tests/ISO/ADTSReaderTests.swift,
+				Tests/ISO/AudioSpecificConfigTests.swift,
+				Tests/ISO/AVCDecoderConfigurationRecordTests.swift,
+				Tests/ISO/ESSpecificDataTests.swift,
+				Tests/ISO/HEVCDecoderConfigurationRecordTests.swift,
+				Tests/ISO/ISOTypeBufferUtilTests.swift,
+				Tests/ISO/NALUnitReaderTests.swift,
+				Tests/ISO/PacketizedElementaryStreamTests.swift,
+				Tests/ISO/TSPacketTests.swift,
+				Tests/ISO/TSProgramTests.swift,
+				Tests/ISO/TSReaderTests.swift,
+				Tests/Mixer/AudioMixerByMultiTrackTests.swift,
+				Tests/Mixer/AudioMixerBySingleTrackTests.swift,
+				Tests/Mixer/AudioMixerTrackTests.swift,
+				Tests/Mixer/AudioRingBufferTests.swift,
+				Tests/Mixer/MediaMixerTests.swift,
+				Tests/Mixer/MediaRecorderTests.swift,
+				Tests/RTMP/AMF0SerializerTests.swift,
+				Tests/RTMP/AMFFoundationTests.swift,
+				Tests/RTMP/FLVVideoFourCCTests.swift,
+				Tests/RTMP/RTMPChunkBufferTests.swift,
+				Tests/RTMP/RTMPConnectionTests.swift,
+				Tests/RTMP/RTMPStatusTests.swift,
+				Tests/RTMP/RTMPTimestampTests.swift,
+				Tests/Screen/ScreenObjectContainerTests.swift,
+				Tests/Screen/ScreenObjectTests.swift,
+				Tests/Screen/VideoTrackScreenObjectTests.swift,
+				Tests/Util/ByteArrayTests.swift,
+				Tests/Util/CRC32Tests.swift,
+				Tests/Util/MD5Tests.swift,
+			);
+			target = BCB798882CE06AEC0059DFE9 /* Tests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		BC82CA052CD76328003F99C9 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 29798E571CE60E5300F5CBD0 /* Resources */;
-			membershipExceptions = (
-				Asset/SampleVideo_360x240_5mb_2ch.ts,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BC82C9022CD76321003F99C9 /* Sources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Sources; sourceTree = "<group>"; };
-		BC82C98F2CD76325003F99C9 /* SRTHaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC82C99B2CD76325003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SRTHaishinKit; sourceTree = "<group>"; };
-		BC82C9D32CD76328003F99C9 /* Tests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC82CA032CD76328003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA042CD76328003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA052CD76328003F99C9 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {Asset/change_video_resolution.ts = video.quicktime; }; explicitFolders = (Asset/SampleVideo_360x240_5mb, ); path = Tests; sourceTree = "<group>"; };
-		BC82CA082CD7632F003F99C9 /* Platforms */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC82CA0A2CD7632F003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Platforms; sourceTree = "<group>"; };
+		BC33A1452CDF55040016EEA0 /* HaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BCB798932CE06B370059DFE9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = HaishinKit; sourceTree = "<group>"; };
+		BC82C98F2CD76325003F99C9 /* SRTHaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SRTHaishinKit; sourceTree = "<group>"; };
 		BC82CA0E2CD76338003F99C9 /* DebugDescription */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DebugDescription; sourceTree = "<group>"; };
 		BC82CA4B2CD763F4003F99C9 /* Examples */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC82CA7F2CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA802CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA812CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA822CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA832CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Examples; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -363,17 +270,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC3E49D22C45617100A9C5B6 /* SRTHaishinKit.framework in Frameworks */,
-				29DC67051E00477900A7DC71 /* HaishinKit.framework in Frameworks */,
+				BC33A1292CDF526C0016EEA0 /* HaishinKit in Frameworks */,
 				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		29798E561CE60E5300F5CBD0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BC0BF4F22985FA9000D72CB4 /* HaishinKit.framework in Frameworks */,
+				BC33A12B2CDF526C0016EEA0 /* SRTHaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -381,8 +280,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2942EF841DFF4D06008E620C /* HaishinKit.framework in Frameworks */,
-				BCCC459C2AA289FA0016EFE8 /* SRTHaishinKit.framework in Frameworks */,
+				BC33A11B2CDF523E0016EEA0 /* SRTHaishinKit in Frameworks */,
+				BC33A1192CDF523E0016EEA0 /* HaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -390,8 +289,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC8A29902AA63D9E00F6D27F /* HaishinKit.framework in Frameworks */,
-				BC701F332AAD808F00C4BEFE /* SRTHaishinKit.framework in Frameworks */,
+				BC33A11F2CDF52550016EEA0 /* SRTHaishinKit in Frameworks */,
+				BC33A11D2CDF52550016EEA0 /* HaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -399,16 +298,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC8A29942AA63DA300F6D27F /* HaishinKit.framework in Frameworks */,
-				BCC223882C15212E00F5F234 /* SRTHaishinKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		4B380712EE7FC2FF39421F1D /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				BC77ED6D2C77C61C0003427A /* Logboard in Frameworks */,
+				BC33A1232CDF525B0016EEA0 /* SRTHaishinKit in Frameworks */,
+				BC33A1212CDF525B0016EEA0 /* HaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,18 +307,15 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC7A0E552B0894B9005FB2F7 /* HaishinKit.framework in Frameworks */,
-				BCC2237E2C1468C700F5F234 /* SRTHaishinKit.framework in Frameworks */,
+				BC33A1272CDF52630016EEA0 /* SRTHaishinKit in Frameworks */,
+				BC33A1252CDF52600016EEA0 /* HaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCCC45932AA289FA0016EFE8 /* Frameworks */ = {
+		BCB798862CE06AEC0059DFE9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BCCC45B52AA28BB90016EFE8 /* HaishinKit.framework in Frameworks */,
-				BCC223852C146ADA00F5F234 /* libsrt.xcframework in Frameworks */,
-				BCCC45C12AA28BFC0016EFE8 /* libc++.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -448,19 +336,17 @@
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
-				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
-				2997BDD31D50D31B000AF900 /* README.md */,
-				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
-				BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */,
-				29F39BE72335F8010055F9BB /* Package.swift */,
 				BC82CA0E2CD76338003F99C9 /* DebugDescription */,
 				BC82CA4B2CD763F4003F99C9 /* Examples */,
 				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
-				BC82CA082CD7632F003F99C9 /* Platforms */,
+				BC33A1452CDF55040016EEA0 /* HaishinKit */,
+				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
+				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
+				29F39BE72335F8010055F9BB /* Package.swift */,
 				2945CBBE1B4BE66000104112 /* Products */,
-				BC82C9022CD76321003F99C9 /* Sources */,
+				2997BDD31D50D31B000AF900 /* README.md */,
 				BC82C98F2CD76325003F99C9 /* SRTHaishinKit */,
-				BC82C9D32CD76328003F99C9 /* Tests */,
+				BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */,
 			);
 			sourceTree = "<group>";
 			wrapsLines = 0;
@@ -468,36 +354,17 @@
 		2945CBBE1B4BE66000104112 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2945CBBD1B4BE66000104112 /* HaishinKit.framework */,
 				29C9327E1CD76FB800283FC5 /* Example iOS.app */,
 				29C932941CD76FD300283FC5 /* Example macOS.app */,
-				29798E591CE60E5300F5CBD0 /* Tests.xctest */,
 				2915EC521D85BDF100621092 /* Screencast.appex */,
 				29D3D4EF1ED0531500DD4AA6 /* Example tvOS.app */,
-				BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */,
 				BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */,
+				BCB798892CE06AEC0059DFE9 /* Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
-
-/* Begin PBXHeadersBuildPhase section */
-		2945CBBA1B4BE66000104112 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		BCCC45912AA289FA0016EFE8 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		2915EC511D85BDF100621092 /* Screencast */ = {
@@ -512,55 +379,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				BC3E49D52C45617100A9C5B6 /* PBXTargetDependency */,
 			);
 			name = Screencast;
 			productName = Screencast;
 			productReference = 2915EC521D85BDF100621092 /* Screencast.appex */;
 			productType = "com.apple.product-type.app-extension";
-		};
-		2945CBBC1B4BE66000104112 /* HaishinKit */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "HaishinKit" */;
-			buildPhases = (
-				2945CBBA1B4BE66000104112 /* Headers */,
-				2945CBB81B4BE66000104112 /* Sources */,
-				2945CBBB1B4BE66000104112 /* Resources */,
-				4B380712EE7FC2FF39421F1D /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				BC82C9022CD76321003F99C9 /* Sources */,
-				BC82CA0E2CD76338003F99C9 /* DebugDescription */,
-			);
-			name = HaishinKit;
-			productName = lf;
-			productReference = 2945CBBD1B4BE66000104112 /* HaishinKit.framework */;
-			productType = "com.apple.product-type.framework";
-		};
-		29798E581CE60E5300F5CBD0 /* Tests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 29798E611CE60E5300F5CBD0 /* Build configuration list for PBXNativeTarget "Tests" */;
-			buildPhases = (
-				29798E561CE60E5300F5CBD0 /* Frameworks */,
-				29798E571CE60E5300F5CBD0 /* Resources */,
-				29798E551CE60E5300F5CBD0 /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				BC0BF4F12985FA5800D72CB4 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				BC82C9D32CD76328003F99C9 /* Tests */,
-			);
-			name = Tests;
-			productName = Tests;
-			productReference = 29798E591CE60E5300F5CBD0 /* Tests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		29C9327D1CD76FB800283FC5 /* Example iOS */ = {
 			isa = PBXNativeTarget;
@@ -577,9 +400,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				29C932A91CD78B5500283FC5 /* PBXTargetDependency */,
 				BC2902372AA0E66A004821D2 /* PBXTargetDependency */,
-				BCCC459B2AA289FA0016EFE8 /* PBXTargetDependency */,
 			);
 			name = "Example iOS";
 			productName = "Example iOS";
@@ -599,8 +420,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				BC8A29932AA63D9E00F6D27F /* PBXTargetDependency */,
-				BC701F362AAD808F00C4BEFE /* PBXTargetDependency */,
 			);
 			name = "Example macOS";
 			productName = "Example MacOS";
@@ -620,8 +439,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				BC8A29972AA63DA300F6D27F /* PBXTargetDependency */,
-				BCC2238B2C15212E00F5F234 /* PBXTargetDependency */,
 			);
 			name = "Example tvOS";
 			productName = "Example tvOS";
@@ -640,37 +457,35 @@
 			buildRules = (
 			);
 			dependencies = (
-				BC7A0E582B0894B9005FB2F7 /* PBXTargetDependency */,
-				BCC223812C1468C700F5F234 /* PBXTargetDependency */,
 			);
 			name = "Example visionOS";
 			packageProductDependencies = (
+				BC33A1242CDF52600016EEA0 /* HaishinKit */,
+				BC33A1262CDF52630016EEA0 /* SRTHaishinKit */,
 			);
 			productName = "Example visionOS";
 			productReference = BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */;
 			productType = "com.apple.product-type.application";
 		};
-		BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */ = {
+		BCB798882CE06AEC0059DFE9 /* Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = BCCC459E2AA289FA0016EFE8 /* Build configuration list for PBXNativeTarget "SRTHaishinKit" */;
+			buildConfigurationList = BCB798912CE06AEC0059DFE9 /* Build configuration list for PBXNativeTarget "Tests" */;
 			buildPhases = (
-				BCCC45912AA289FA0016EFE8 /* Headers */,
-				BCCC45922AA289FA0016EFE8 /* Sources */,
-				BCCC45932AA289FA0016EFE8 /* Frameworks */,
-				BCCC45942AA289FA0016EFE8 /* Resources */,
+				BCB798852CE06AEC0059DFE9 /* Sources */,
+				BCB798862CE06AEC0059DFE9 /* Frameworks */,
+				BCB798872CE06AEC0059DFE9 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				BCCC45B82AA28BB90016EFE8 /* PBXTargetDependency */,
+				BCB7988E2CE06AEC0059DFE9 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				BC82C98F2CD76325003F99C9 /* SRTHaishinKit */,
+			name = Tests;
+			packageProductDependencies = (
 			);
-			name = SRTHaishinKit;
-			productName = SRTHaishinKit;
-			productReference = BCCC45962AA289FA0016EFE8 /* SRTHaishinKit.framework */;
-			productType = "com.apple.product-type.framework";
+			productName = Tests;
+			productReference = BCB798892CE06AEC0059DFE9 /* Tests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -680,7 +495,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 1510;
+				LastSwiftUpdateCheck = 1610;
 				LastUpgradeCheck = 1540;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
@@ -688,15 +503,6 @@
 						CreatedOnToolsVersion = 8.0;
 						LastSwiftMigration = 1020;
 						ProvisioningStyle = Automatic;
-					};
-					2945CBBC1B4BE66000104112 = {
-						CreatedOnToolsVersion = 6.4;
-						DevelopmentTeam = SUEQ2SZ2L5;
-						LastSwiftMigration = 1020;
-					};
-					29798E581CE60E5300F5CBD0 = {
-						CreatedOnToolsVersion = 7.3.1;
-						LastSwiftMigration = 1020;
 					};
 					29C9327D1CD76FB800283FC5 = {
 						CreatedOnToolsVersion = 7.3;
@@ -718,9 +524,9 @@
 					BC7A0E3C2B088FA7005FB2F7 = {
 						CreatedOnToolsVersion = 15.1;
 					};
-					BCCC45952AA289FA0016EFE8 = {
-						CreatedOnToolsVersion = 14.3;
-						LastSwiftMigration = 1430;
+					BCB798882CE06AEC0059DFE9 = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = 29C9327D1CD76FB800283FC5;
 					};
 				};
 			};
@@ -733,41 +539,25 @@
 			);
 			mainGroup = 2945CBB31B4BE66000104112;
 			packageReferences = (
-				BC77ED6B2C77C5BB0003427A /* XCRemoteSwiftPackageReference "Logboard" */,
+				BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */,
 			);
 			preferredProjectObjectVersion = 55;
 			productRefGroup = 2945CBBE1B4BE66000104112 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2945CBBC1B4BE66000104112 /* HaishinKit */,
-				BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */,
 				29C9327D1CD76FB800283FC5 /* Example iOS */,
 				29C932931CD76FD300283FC5 /* Example macOS */,
 				29D3D4EE1ED0531500DD4AA6 /* Example tvOS */,
 				BC7A0E3C2B088FA7005FB2F7 /* Example visionOS */,
 				2915EC511D85BDF100621092 /* Screencast */,
-				29798E581CE60E5300F5CBD0 /* Tests */,
+				BCB798882CE06AEC0059DFE9 /* Tests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		2915EC501D85BDF100621092 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2945CBBB1B4BE66000104112 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		29798E571CE60E5300F5CBD0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -802,7 +592,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCCC45942AA289FA0016EFE8 /* Resources */ = {
+		BCB798872CE06AEC0059DFE9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -872,20 +662,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		2945CBB81B4BE66000104112 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		29798E551CE60E5300F5CBD0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		29C9327A1CD76FB800283FC5 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -914,7 +690,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		BCCC45922AA289FA0016EFE8 /* Sources */ = {
+		BCB798852CE06AEC0059DFE9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -924,65 +700,15 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		29C932A91CD78B5500283FC5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-			targetProxy = 29C932A81CD78B5500283FC5 /* PBXContainerItemProxy */;
-		};
-		BC0BF4F12985FA5800D72CB4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-			targetProxy = BC0BF4F02985FA5800D72CB4 /* PBXContainerItemProxy */;
-		};
 		BC2902372AA0E66A004821D2 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2915EC511D85BDF100621092 /* Screencast */;
 			targetProxy = BC2902362AA0E66A004821D2 /* PBXContainerItemProxy */;
 		};
-		BC3E49D52C45617100A9C5B6 /* PBXTargetDependency */ = {
+		BCB7988E2CE06AEC0059DFE9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
-			targetProxy = BC3E49D42C45617100A9C5B6 /* PBXContainerItemProxy */;
-		};
-		BC701F362AAD808F00C4BEFE /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
-			targetProxy = BC701F352AAD808F00C4BEFE /* PBXContainerItemProxy */;
-		};
-		BC7A0E582B0894B9005FB2F7 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-			targetProxy = BC7A0E572B0894B9005FB2F7 /* PBXContainerItemProxy */;
-		};
-		BC8A29932AA63D9E00F6D27F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-			targetProxy = BC8A29922AA63D9E00F6D27F /* PBXContainerItemProxy */;
-		};
-		BC8A29972AA63DA300F6D27F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-			targetProxy = BC8A29962AA63DA300F6D27F /* PBXContainerItemProxy */;
-		};
-		BCC223812C1468C700F5F234 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
-			targetProxy = BCC223802C1468C700F5F234 /* PBXContainerItemProxy */;
-		};
-		BCC2238B2C15212E00F5F234 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
-			targetProxy = BCC2238A2C15212E00F5F234 /* PBXContainerItemProxy */;
-		};
-		BCCC459B2AA289FA0016EFE8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = BCCC45952AA289FA0016EFE8 /* SRTHaishinKit */;
-			targetProxy = BCCC459A2AA289FA0016EFE8 /* PBXContainerItemProxy */;
-		};
-		BCCC45B82AA28BB90016EFE8 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 2945CBBC1B4BE66000104112 /* HaishinKit */;
-			targetProxy = BCCC45B72AA28BB90016EFE8 /* PBXContainerItemProxy */;
+			target = 29C9327D1CD76FB800283FC5 /* Example iOS */;
+			targetProxy = BCB7988D2CE06AEC0059DFE9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1183,162 +909,6 @@
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 				XROS_DEPLOYMENT_TARGET = 1.0;
-			};
-			name = Release;
-		};
-		2945CBD41B4BE66000104112 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Platforms/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 2.0.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
-				ONLY_ACTIVE_ARCH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
-				PRODUCT_NAME = HaishinKit;
-				PROVISIONING_PROFILE = "";
-				SDKROOT = "";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_INCLUDE_PATHS = "";
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,7";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
-			};
-			name = Debug;
-		};
-		2945CBD51B4BE66000104112 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
-				APPLICATION_EXTENSION_API_ONLY = YES;
-				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
-				CODE_SIGN_IDENTITY = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Platforms/Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MARKETING_VERSION = 2.0.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++11";
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
-				"OTHER_SWIFT_FLAGS[arch=*]" = "-enable-upcoming-feature ExistentialAny";
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit;
-				PRODUCT_NAME = HaishinKit;
-				PROVISIONING_PROFILE = "";
-				SDKROOT = "";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_INCLUDE_PATHS = "";
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,7";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
-			};
-			name = Release;
-		};
-		29798E621CE60E5300F5CBD0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = YES;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.Tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
-			};
-			name = Debug;
-		};
-		29798E631CE60E5300F5CBD0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ANALYZER_NONNULL = YES;
-				CODE_SIGN_IDENTITY = "-";
-				COMBINE_HIDPI_IMAGES = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = Tests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-					"@loader_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.Tests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				SUPPORTS_MACCATALYST = NO;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
 			};
 			name = Release;
 		};
@@ -1633,113 +1203,72 @@
 			};
 			name = Release;
 		};
-		BCCC459F2AA289FA0016EFE8 /* Debug */ = {
+		BCB7988F2CE06AEC0059DFE9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Shogo Endo. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.0.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.SRTHaishinKit;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = "";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_STRICT_CONCURRENCY = complete;
+				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,7";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example iOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Example iOS";
+				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Debug;
 		};
-		BCCC45A02AA289FA0016EFE8 /* Release */ = {
+		BCB798902CE06AEC0059DFE9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEAD_CODE_STRIPPING = YES;
-				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = "";
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_MODULE_VERIFIER = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
+				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2023 Shogo Endo. All rights reserved.";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 13.0;
-				MARKETING_VERSION = 2.0.0;
-				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
-				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu11 gnu++20";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.5;
+				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				OTHER_SWIFT_FLAGS = "-enable-upcoming-feature ExistentialAny";
-				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.HaishinKit.SRTHaishinKit;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = "";
-				SKIP_INSTALL = YES;
-				SUPPORTED_PLATFORMS = "appletvos appletvsimulator iphoneos iphonesimulator macosx xros xrsimulator";
-				SUPPORTS_MACCATALYST = YES;
-				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
+				PRODUCT_BUNDLE_IDENTIFIER = com.haishinkit.Tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,3,7";
-				TVOS_DEPLOYMENT_TARGET = 13.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example iOS.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Example iOS";
+				XROS_DEPLOYMENT_TARGET = 2.1;
 			};
 			name = Release;
 		};
@@ -1760,24 +1289,6 @@
 			buildConfigurations = (
 				2945CBD11B4BE66000104112 /* Debug */,
 				2945CBD21B4BE66000104112 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		2945CBD31B4BE66000104112 /* Build configuration list for PBXNativeTarget "HaishinKit" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2945CBD41B4BE66000104112 /* Debug */,
-				2945CBD51B4BE66000104112 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		29798E611CE60E5300F5CBD0 /* Build configuration list for PBXNativeTarget "Tests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				29798E621CE60E5300F5CBD0 /* Debug */,
-				29798E631CE60E5300F5CBD0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1818,33 +1329,74 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		BCCC459E2AA289FA0016EFE8 /* Build configuration list for PBXNativeTarget "SRTHaishinKit" */ = {
+		BCB798912CE06AEC0059DFE9 /* Build configuration list for PBXNativeTarget "Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BCCC459F2AA289FA0016EFE8 /* Debug */,
-				BCCC45A02AA289FA0016EFE8 /* Release */,
+				BCB7988F2CE06AEC0059DFE9 /* Debug */,
+				BCB798902CE06AEC0059DFE9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		BC77ED6B2C77C5BB0003427A /* XCRemoteSwiftPackageReference "Logboard" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/shogo4405/Logboard";
-			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 2.5.0;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../HaishinKit.swift;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BC77ED6C2C77C61C0003427A /* Logboard */ = {
+		BC33A1182CDF523E0016EEA0 /* HaishinKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = BC77ED6B2C77C5BB0003427A /* XCRemoteSwiftPackageReference "Logboard" */;
-			productName = Logboard;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC33A11A2CDF523E0016EEA0 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
+		};
+		BC33A11C2CDF52550016EEA0 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC33A11E2CDF52550016EEA0 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
+		};
+		BC33A1202CDF525B0016EEA0 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC33A1222CDF525B0016EEA0 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
+		};
+		BC33A1242CDF52600016EEA0 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC33A1262CDF52630016EEA0 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
+		};
+		BC33A1282CDF526C0016EEA0 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC33A12A2CDF526C0016EEA0 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

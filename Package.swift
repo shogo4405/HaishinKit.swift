@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
@@ -21,29 +21,24 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "libsrt",
-            path: "Vendor/SRT/libsrt.xcframework"
+            path: "SRTHaishinKit/Vendor/SRT/libsrt.xcframework"
         ),
-        .target(name: "HaishinKit",
-                dependencies: ["Logboard"],
-                path: "Sources",
-                sources: [
-                    "Codec",
-                    "Extension",
-                    "HKStream",
-                    "ISO",
-                    "Mixer",
-                    "Network",
-                    "RTMP",
-                    "Screen",
-                    "Util",
-                    "View"
-                ]),
-        .target(name: "SRTHaishinKit",
-                dependencies: [
-                    "libsrt",
-                    "HaishinKit"
-                ],
-                path: "SRTHaishinKit"
+        .target(
+            name: "HaishinKit",
+            dependencies: ["Logboard"],
+            path: "HaishinKit/Sources"),
+        .target(
+            name: "SRTHaishinKit",
+            dependencies: ["libsrt", "HaishinKit"],
+            path: "SRTHaishinKit/Sources"
+        ),
+        .testTarget(
+            name: "HaishinKitTests",
+            dependencies: ["HaishinKit"],
+            path: "HaishinKit/Tests",
+            resources: [
+                .process("Asset")
+            ]
         )
     ]
 )
