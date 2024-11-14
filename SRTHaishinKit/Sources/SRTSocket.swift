@@ -58,17 +58,8 @@ final actor SRTSocket {
             case SRTS_CONNECTING:
                 logger.trace("SRT Socket Connecting")
             case SRTS_CONNECTED:
-                connected = true
-                let (stream, continuation) = AsyncStream<Data>.makeStream()
-                outputs = continuation
-                Task {
-                    for await data in stream where connected {
-                        _ = sendmsg2(data)
-                        totalBytesOut += data.count
-                        queueBytesOut -= data.count
-                    }
-                }
                 logger.info("SRT Socket Connected")
+                didConnected()
             case SRTS_BROKEN:
                 logger.warn("SRT Socket Broken")
                 close()
@@ -106,7 +97,7 @@ final actor SRTSocket {
         status = srt_getsockstate(socket)
         switch status {
         case SRTS_CONNECTED:
-            connected = true
+            didConnected()
         default:
             break
         }
@@ -183,6 +174,19 @@ final actor SRTSocket {
             return SRT_ERROR
         }
         return srt_bstats(socket, &perf, 1)
+    }
+
+    private func didConnected() {
+        connected = true
+        let (stream, continuation) = AsyncStream<Data>.makeStream()
+        outputs = continuation
+        Task {
+            for await data in stream where connected {
+                _ = sendmsg2(data)
+                totalBytesOut += data.count
+                queueBytesOut -= data.count
+            }
+        }
     }
 
     private func makeSocketError() -> SRTError {
