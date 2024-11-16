@@ -3,6 +3,7 @@ import Foundation
 
 final actor MediaLink {
     static let capacity = 90
+    static let startedAt: TimeInterval = 0.0
 
     var dequeue: AsyncStream<CMSampleBuffer> {
         AsyncStream<CMSampleBuffer> { continutation in
@@ -16,6 +17,7 @@ final actor MediaLink {
             oldValue?.finish()
         }
     }
+    private var startedAt: TimeInterval = MediaLink.startedAt
     private var presentationTimeStampOrigin: CMTime = .invalid
     private lazy var displayLink = DisplayLinkChoreographer()
     private weak var audioPlayer: AudioPlayerNode?
@@ -45,6 +47,13 @@ final actor MediaLink {
     func setAudioPlayer(_ audioPlayer: AudioPlayerNode?) {
         self.audioPlayer = audioPlayer
     }
+
+    private func getCurrentTime(_ currentTime: TimeInterval) async -> TimeInterval {
+        if startedAt == 0 {
+            startedAt = currentTime
+        }
+        return await audioPlayer?.currentTime ?? (currentTime - startedAt)
+    }
 }
 
 extension MediaLink: AsyncRunner {
@@ -56,11 +65,12 @@ extension MediaLink: AsyncRunner {
         isRunning = true
         displayLink.startRunning()
         Task {
+            startedAt = MediaLink.startedAt
             for await currentTime in displayLink.updateFrames where isRunning {
                 guard let storage else {
                     continue
                 }
-                let currentTime = await audioPlayer?.currentTime ?? currentTime
+                let currentTime = await getCurrentTime(currentTime)
                 var frameCount = 0
                 while !storage.isEmpty {
                     guard let first = storage.head else {
