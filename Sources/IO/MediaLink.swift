@@ -54,6 +54,7 @@ final class MediaLink<T: MediaLinkDelegate> {
     private var scheduledAudioBuffers: Atomic<Int> = .init(0)
     private var presentationTimeStampOrigin: CMTime = .invalid
     private var audioTime = IOAudioTime()
+    private var duration: TimeInterval = 0.0
 
     func enqueue(_ buffer: CMSampleBuffer) {
         guard buffer.presentationTimeStamp != .invalid else {
@@ -102,14 +103,17 @@ final class MediaLink<T: MediaLinkDelegate> {
         })
     }
 
-    private func duration(_ duraiton: Double) -> Double {
+    private func duration(_ timestamp: Double) -> Double {
+        defer {
+            duration += timestamp
+        }
         if playerNode.isPlaying {
             guard let nodeTime = playerNode.lastRenderTime, let playerTime = playerNode.playerTime(forNodeTime: nodeTime) else {
                 return 0.0
             }
             return TimeInterval(playerTime.sampleTime) / playerTime.sampleRate
         }
-        return duraiton
+        return duration
     }
 
     private func makeBufferkQueue() {
@@ -123,11 +127,11 @@ final class MediaLink<T: MediaLinkDelegate> {
 
 extension MediaLink: ChoreographerDelegate {
     // MARK: ChoreographerDelegate
-    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double) {
+    func choreographer(_ choreographer: some Choreographer, didFrame timestamp: TimeInterval, targetTimestamp: TimeInterval) {
         guard let bufferQueue else {
             return
         }
-        let duration = self.duration(duration)
+        let duration = self.duration(targetTimestamp - timestamp)
         var frameCount = 0
         while !bufferQueue.isEmpty {
             guard let first = bufferQueue.head else {
@@ -158,6 +162,7 @@ extension MediaLink: Running {
         hasVideo = false
         bufferingTime = kMediaLink_bufferingTime
         isBuffering = true
+        duration = 0.0
         choreographer.startRunning()
         makeBufferkQueue()
         isRunning.mutate { $0 = true }
