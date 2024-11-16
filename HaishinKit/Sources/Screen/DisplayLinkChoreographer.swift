@@ -1,9 +1,7 @@
 import Foundation
 
 #if os(macOS)
-
 import CoreVideo
-import Foundation
 
 // swiftlint:disable attributes
 // CADisplayLink is deprecated, I've given up on making it conform to Sendable.
@@ -12,7 +10,7 @@ final class DisplayLink: NSObject, @unchecked Sendable {
 
     var isPaused = false {
         didSet {
-            guard let displayLink = displayLink, oldValue != isPaused else {
+            guard let displayLink, oldValue != isPaused else {
                 return
             }
             if isPaused {
@@ -64,14 +62,14 @@ final class DisplayLink: NSObject, @unchecked Sendable {
     }
 
     func add(to runloop: RunLoop, forMode mode: RunLoop.Mode) {
-        guard let displayLink = displayLink, !isPaused else {
+        guard let displayLink, !isPaused else {
             return
         }
         CVDisplayLinkStart(displayLink)
     }
 
     func invalidate() {
-        guard let displayLink = displayLink, isPaused else {
+        guard let displayLink, isPaused else {
             return
         }
         CVDisplayLinkStop(displayLink)
@@ -96,19 +94,7 @@ import QuartzCore
 typealias DisplayLink = CADisplayLink
 #endif
 
-protocol ChoreographerDelegate: AnyObject {
-    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double)
-}
-
-protocol Choreographer: Runner {
-    var isPaused: Bool { get set }
-    var delegate: (any ChoreographerDelegate)? { get set }
-
-    func clear()
-}
-
 final class DisplayLinkChoreographer: NSObject {
-    private static let currentTime = 0.0
     private static let preferredFramesPerSecond = 0
 
     var updateFrames: AsyncStream<TimeInterval> {
@@ -127,18 +113,20 @@ final class DisplayLinkChoreographer: NSObject {
     private(set) var isRunning = false
     private var displayLink: DisplayLink? {
         didSet {
+            guard displayLink != oldValue else {
+                return
+            }
             displayLink?.preferredFramesPerSecond = preferredFramesPerSecond
             displayLink?.isPaused = false
             displayLink?.add(to: .main, forMode: .common)
+            oldValue?.invalidate()
         }
     }
-    private var currentTime: TimeInterval = DisplayLinkChoreographer.currentTime
     private var continutation: AsyncStream<TimeInterval>.Continuation?
 
     @objc
     private func update(displayLink: DisplayLink) {
-        continutation?.yield(currentTime)
-        currentTime += displayLink.duration
+        continutation?.yield(displayLink.timestamp)
     }
 }
 
@@ -156,7 +144,6 @@ extension DisplayLinkChoreographer: Runner {
             return
         }
         displayLink = nil
-        currentTime = DisplayLinkChoreographer.currentTime
         isRunning = false
     }
 }
