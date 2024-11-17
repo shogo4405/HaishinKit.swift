@@ -155,7 +155,7 @@ extension Screen: Running {
 
 extension Screen: ChoreographerDelegate {
     // MARK: ChoreographerDelegate
-    func choreographer(_ choreographer: some Choreographer, didFrame duration: Double) {
+    func choreographer(_ choreographer: some Choreographer, didFrame timestamp: TimeInterval, targetTimestamp: TimeInterval) {
         var pixelBuffer: CVPixelBuffer?
         pixelBufferPool?.createPixelBuffer(&pixelBuffer)
         guard let pixelBuffer else {
