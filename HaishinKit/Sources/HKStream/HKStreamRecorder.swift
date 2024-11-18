@@ -173,6 +173,9 @@ public actor HKStreamRecorder {
         }
 
         writer = try AVAssetWriter(outputURL: outputURL, fileType: fileType)
+        if let movieFragmentInterval {
+            writer?.movieFragmentInterval = CMTime(seconds: movieFragmentInterval, preferredTimescale: 1)
+        }
         videoPresentationTime = .zero
         audioPresentationTime = .zero
         self.settings = settings
