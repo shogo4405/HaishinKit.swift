@@ -91,6 +91,7 @@ public actor HKStreamRecorder {
     public private(set) var movieFragmentInterval: Double?
     public private(set) var videoTrackId: UInt8? = UInt8.max
     public private(set) var audioTrackId: UInt8? = UInt8.max
+
     #if os(macOS) && !targetEnvironment(macCatalyst)
     /// The default file save location.
     public private(set) var moviesDirectory: URL = {
@@ -102,6 +103,7 @@ public actor HKStreamRecorder {
         URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
     }()
     #endif
+
     private var isReadyForStartWriting: Bool {
         guard let writer = writer else {
             return false
@@ -234,11 +236,11 @@ public actor HKStreamRecorder {
         }
         // AVAssetWriter requires a isFileURL condition.
         guard url.isFileURL else {
-            return url.pathExtension != "" ?
-                moviesDirectory.appendingPathComponent(url.path) :
-                moviesDirectory.appendingPathComponent(url.path).appendingPathComponent(UUID().uuidString).appendingPathExtension(Self.defaultPathExtension)
+            return url.pathExtension.isEmpty ?
+                moviesDirectory.appendingPathComponent(url.path).appendingPathComponent(UUID().uuidString).appendingPathExtension(Self.defaultPathExtension) :
+                moviesDirectory.appendingPathComponent(url.path)
         }
-        return url.pathExtension != "" ? url : url.appendingPathComponent(UUID().uuidString).appendingPathExtension(Self.defaultPathExtension)
+        return url.pathExtension.isEmpty ? url.appendingPathComponent(UUID().uuidString).appendingPathExtension(Self.defaultPathExtension) : url
     }
 
     private func append(_ sampleBuffer: CMSampleBuffer) {

@@ -81,6 +81,7 @@ final class VideoCaptureUnit: CaptureUnit {
 
     private var outputContinuation: AsyncStream<CMSampleBuffer>.Continuation?
     private var inputsContinuation: AsyncStream<(UInt8, CMSampleBuffer)>.Continuation?
+
     #if os(tvOS)
     private var _devices: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
@@ -90,6 +91,7 @@ final class VideoCaptureUnit: CaptureUnit {
     #elseif os(iOS) || os(macOS) || os(visionOS)
     var devices: [UInt8: VideoDeviceUnit] = [:]
     #endif
+
     private let session: CaptureSession
 
     init(_ session: CaptureSession) {

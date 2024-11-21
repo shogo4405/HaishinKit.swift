@@ -27,11 +27,13 @@ struct VTSessionOptionKey: RawRepresentable {
     static let allowTemporalCompression = VTSessionOptionKey(rawValue: kVTCompressionPropertyKey_AllowTemporalCompression as String)
     static let maxKeyFrameInterval = VTSessionOptionKey(rawValue: kVTCompressionPropertyKey_MaxKeyFrameInterval as String)
     static let maxKeyFrameIntervalDuration = VTSessionOptionKey(rawValue: kVTCompressionPropertyKey_MaxKeyFrameIntervalDuration as String)
+
     #if os(macOS)
     static let usingHardwareAcceleratedVideoEncoder = VTSessionOptionKey(rawValue: kVTCompressionPropertyKey_UsingHardwareAcceleratedVideoEncoder as String)
     static let requireHardwareAcceleratedVideoEncoder = VTSessionOptionKey(rawValue: kVTVideoEncoderSpecification_RequireHardwareAcceleratedVideoEncoder as String)
     static let enableHardwareAcceleratedVideoEncoder = VTSessionOptionKey(rawValue: kVTVideoEncoderSpecification_EnableHardwareAcceleratedVideoEncoder as String)
     #endif
+
     static let multiPassStorage = VTSessionOptionKey(rawValue: kVTCompressionPropertyKey_MultiPassStorage as String)
     static let forceKeyFrame = VTSessionOptionKey(rawValue: kVTEncodeFrameOptionKey_ForceKeyFrame as String)
     static let pixelTransferProperties = VTSessionOptionKey(rawValue: kVTCompressionPropertyKey_PixelTransferProperties as String)

@@ -40,6 +40,7 @@ final class AudioCaptureUnit: CaptureUnit {
         }
     }()
     private var monitor: AudioMonitor = .init()
+
     #if os(tvOS)
     private var _devices: [UInt8: Any] = [:]
     @available(tvOS 17.0, *)
@@ -49,6 +50,7 @@ final class AudioCaptureUnit: CaptureUnit {
     #elseif os(iOS) || os(macOS)
     var devices: [UInt8: AudioDeviceUnit] = [:]
     #endif
+
     private let session: CaptureSession
     private var continutation: AsyncStream<(AVAudioPCMBuffer, AVAudioTime)>.Continuation?
 
