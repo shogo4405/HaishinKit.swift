@@ -2,6 +2,16 @@
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 import PackageDescription
 
+#if swift(<6)
+let swiftSettings: [SwiftSetting] = [
+    .enableExperimentalFeature("StrictConcurrency")
+]
+#else
+let swiftSettings: [SwiftSetting] = [
+    .enableUpcomingFeature("StrictConcurrency")
+]
+#endif
+
 let package = Package(
     name: "HaishinKit",
     platforms: [
@@ -26,11 +36,14 @@ let package = Package(
         .target(
             name: "HaishinKit",
             dependencies: ["Logboard"],
-            path: "HaishinKit/Sources"),
+            path: "HaishinKit/Sources",
+            swiftSettings: swiftSettings
+        ),
         .target(
             name: "SRTHaishinKit",
             dependencies: ["libsrt", "HaishinKit"],
-            path: "SRTHaishinKit/Sources"
+            path: "SRTHaishinKit/Sources",
+            swiftSettings: swiftSettings
         ),
         .testTarget(
             name: "HaishinKitTests",
@@ -38,7 +51,9 @@ let package = Package(
             path: "HaishinKit/Tests",
             resources: [
                 .process("Asset")
-            ]
+            ],
+            swiftSettings: swiftSettings
         )
-    ]
+    ],
+    swiftLanguageModes: [.v5]
 )
