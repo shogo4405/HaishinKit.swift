@@ -24,6 +24,7 @@ public final class Screen: ScreenObjectContainerConvertible {
     public static let size = CGSize(width: 1280, height: 720)
 
     private static let lockFrags = CVPixelBufferLockFlags(rawValue: 0)
+    private static let preferredTimescale: CMTimeScale = 1000000000
 
     /// The total of child counts.
     public var childCounts: Int {
@@ -79,6 +80,10 @@ public final class Screen: ScreenObjectContainerConvertible {
         }
     }
     #endif
+
+    var videoCaptureLatency: Atomic<TimeInterval> = .init(0)
+    private(set) var targetTimestamp: Atomic<TimeInterval> = .init(0)
+
     weak var observer: (any ScreenObserver)?
     private var root: ScreenObjectContainer = .init()
     private(set) var renderer = ScreenRendererByCPU()
@@ -87,7 +92,6 @@ public final class Screen: ScreenObjectContainerConvertible {
         choreographer.delegate = self
         return choreographer
     }()
-    private var timeStamp: CMTime = .invalid
     private var attributes: [NSString: NSObject] {
         return [
             kCVPixelBufferPixelFormatTypeKey: NSNumber(value: kCVPixelFormatType_32ARGB),
@@ -102,6 +106,7 @@ public final class Screen: ScreenObjectContainerConvertible {
             outputFormat = nil
         }
     }
+    private var presentationTimeStamp: CMTime = .zero
 
     /// Adds the specified screen object as a child of the current screen object container.
     public func addChild(_ child: ScreenObject?) throws {
@@ -122,6 +127,7 @@ public final class Screen: ScreenObjectContainerConvertible {
         defer {
             sampleBuffer.imageBuffer?.unlockBaseAddress(Self.lockFrags)
         }
+        renderer.presentationTimeStamp = sampleBuffer.presentationTimeStamp
         renderer.setTarget(sampleBuffer.imageBuffer)
         if let dimensions = sampleBuffer.formatDescription?.dimensions {
             root.size = dimensions.size
@@ -156,6 +162,9 @@ extension Screen: Running {
 extension Screen: ChoreographerDelegate {
     // MARK: ChoreographerDelegate
     func choreographer(_ choreographer: some Choreographer, didFrame timestamp: TimeInterval, targetTimestamp: TimeInterval) {
+        defer {
+            self.targetTimestamp.mutate { $0 = targetTimestamp }
+        }
         var pixelBuffer: CVPixelBuffer?
         pixelBufferPool?.createPixelBuffer(&pixelBuffer)
         guard let pixelBuffer else {
@@ -174,13 +183,16 @@ extension Screen: ChoreographerDelegate {
         if let dictionary = CVBufferGetAttachments(pixelBuffer, .shouldNotPropagate) {
             CVBufferSetAttachments(pixelBuffer, dictionary, .shouldPropagate)
         }
-        let now = CMClock.hostTimeClock.time
+        let presentationTimeStamp = CMTime(seconds: timestamp - videoCaptureLatency.value, preferredTimescale: Self.preferredTimescale)
+        guard self.presentationTimeStamp <= presentationTimeStamp else {
+            return
+        }
+        self.presentationTimeStamp = presentationTimeStamp
         var timingInfo = CMSampleTimingInfo(
-            duration: timeStamp == .invalid ? .zero : now - timeStamp,
-            presentationTimeStamp: now,
+            duration: CMTime(seconds: targetTimestamp - timestamp, preferredTimescale: Self.preferredTimescale),
+            presentationTimeStamp: presentationTimeStamp,
             decodeTimeStamp: .invalid
         )
-        timeStamp = now
         var sampleBuffer: CMSampleBuffer?
         guard CMSampleBufferCreateReadyWithImageBuffer(
             allocator: kCFAllocatorDefault,
