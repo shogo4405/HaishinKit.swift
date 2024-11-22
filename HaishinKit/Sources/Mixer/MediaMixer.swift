@@ -384,16 +384,16 @@ extension MediaMixer: AsyncRunner {
         NotificationCenter
             .Publisher(center: .default, name: UIApplication.didEnterBackgroundNotification, object: nil)
             .sink { _ in
-                Task {
-                    self.setBackgroundMode(true)
+                Task { @MainActor in
+                    await self.setBackgroundMode(true)
                 }
             }
             .store(in: &cancellables)
         NotificationCenter
             .Publisher(center: .default, name: UIApplication.willEnterForegroundNotification, object: nil)
             .sink { _ in
-                Task {
-                    self.setBackgroundMode(false)
+                Task { @MainActor in
+                    await self.setBackgroundMode(false)
                 }
             }
             .store(in: &cancellables)
