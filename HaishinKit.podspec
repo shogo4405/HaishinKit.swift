@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.15"
   s.tvos.deployment_target = "13.0"
   s.visionos.deployment_target = "1.0"
-  s.source_files = "HaishinKit/Sources/**/*.swift"
+  s.source_files = "HaishinKit/HaishinKit.h", "HaishinKit/Sources/**/*.swift"
   s.dependency 'Logboard', '~> 2.5.0'
 
 end

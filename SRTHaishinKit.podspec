@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   # s.visionos.deployment_target = "1.0"
 
-  s.source_files = "SRTHaishinKit/Sources/*.swift"
+  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift"
   s.vendored_frameworks = "SRTHaishinKit/Vendor/SRT/libsrt.xcframework"
   s.dependency 'HaishinKit', '2.0.0'
 
