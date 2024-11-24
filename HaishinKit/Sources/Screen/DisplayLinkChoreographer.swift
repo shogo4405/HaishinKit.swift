@@ -30,6 +30,7 @@ final class DisplayLink: NSObject, @unchecked Sendable {
     }
     private(set) var duration = 0.0
     private(set) var timestamp: CFTimeInterval = 0
+    private(set) var targetTimestamp: CFTimeInterval = 0
     private var selector: Selector?
     private var displayLink: CVDisplayLink?
     private var frameInterval = 0.0
@@ -51,11 +52,10 @@ final class DisplayLink: NSObject, @unchecked Sendable {
             guard let self else {
                 return kCVReturnSuccess
             }
-            self.duration += inNow.pointee.duration
-            if frameInterval == 0 || frameInterval < inNow.pointee.timestamp - self.timestamp {
-                self.timestamp = inNow.pointee.timestamp
+            if frameInterval == 0 || frameInterval <= inNow.pointee.timestamp - self.timestamp {
+                self.timestamp = Double(inNow.pointee.timestamp)
+                self.targetTimestamp = self.timestamp + frameInterval
                 _ = self.delegate?.perform(self.selector, with: self)
-                self.duration = 0.0
             }
             return kCVReturnSuccess
         }
@@ -79,11 +79,7 @@ final class DisplayLink: NSObject, @unchecked Sendable {
 extension CVTimeStamp {
     @inlinable @inline(__always)
     var timestamp: Double {
-        Double(self.videoTime) / Double(self.videoTimeScale)
-    }
-
-    @inlinable @inline(__always) var duration: Double {
-        Double(self.videoRefreshPeriod) / Double(self.videoTimeScale)
+        Double(self.hostTime) / Double(self.videoTimeScale)
     }
 }
 
@@ -94,10 +90,15 @@ import QuartzCore
 typealias DisplayLink = CADisplayLink
 #endif
 
+struct DisplayLinkTime {
+    let timestamp: TimeInterval
+    let targetTimestamp: TimeInterval
+}
+
 final class DisplayLinkChoreographer: NSObject {
     private static let preferredFramesPerSecond = 0
 
-    var updateFrames: AsyncStream<TimeInterval> {
+    var updateFrames: AsyncStream<DisplayLinkTime> {
         AsyncStream { continuation in
             self.continutation = continuation
         }
@@ -113,20 +114,17 @@ final class DisplayLinkChoreographer: NSObject {
     private(set) var isRunning = false
     private var displayLink: DisplayLink? {
         didSet {
-            guard displayLink != oldValue else {
-                return
-            }
+            oldValue?.invalidate()
             displayLink?.preferredFramesPerSecond = preferredFramesPerSecond
             displayLink?.isPaused = false
             displayLink?.add(to: .main, forMode: .common)
-            oldValue?.invalidate()
         }
     }
-    private var continutation: AsyncStream<TimeInterval>.Continuation?
+    private var continutation: AsyncStream<DisplayLinkTime>.Continuation?
 
     @objc
     private func update(displayLink: DisplayLink) {
-        continutation?.yield(displayLink.timestamp)
+        continutation?.yield(.init(timestamp: displayLink.timestamp, targetTimestamp: displayLink.targetTimestamp))
     }
 }
 
