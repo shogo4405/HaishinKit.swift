@@ -11,7 +11,6 @@ final class FLVAnalyzerViewController: NSViewController {
 
     private var tags: [any FLVTag] = []
     private var reader: FLVReader?
-    private var client: MoxygenChatClient = .init("moqt://localhost:4433/moq-chat")
 
     override func viewDidLoad() {
         super.viewDidLoad()

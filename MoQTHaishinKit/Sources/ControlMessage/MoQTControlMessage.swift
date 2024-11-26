@@ -21,22 +21,22 @@ public enum MoQTMessageType: Int, Sendable {
     case clientSetup = 0x40
     case serverSetup = 0x41
 
-    func makeMessage(_ payload: inout MoQTPayload) throws -> (any MoQTMessage)? {
+    func makeMessage(_ payload: inout MoQTPayload) throws -> (any MoQTControlMessage)? {
         switch self {
         case .subscribeUpdate:
             return nil
         case .subscribe:
-            return nil
+            return try MoQTSubscribe(&payload)
         case .subscribeOk:
-            return try MoQTSubscribe.Ok(&payload)
+            return try MoQTSubscribeOk(&payload)
         case .subscribeError:
-            return try MoQTSubscribe.Error(&payload)
+            return try MoQTSubscribeError(&payload)
         case .announce:
             return nil
         case .announceOk:
-            return try MoQTAnnounce.Ok(&payload)
+            return try MoQTAnnounceOk(&payload)
         case .announceError:
-            return try MoQTAnnounce.Error(&payload)
+            return try MoQTAnnounceError(&payload)
         case .unannounce:
             return nil
         case .unsubscribe:
@@ -54,9 +54,9 @@ public enum MoQTMessageType: Int, Sendable {
         case .subscribeAnnounuces:
             return nil
         case .subscribeAnnounucesOk:
-            return try MoQTSubscribeAnnounces.Ok(&payload)
+            return try MoQTSubscribeAnnouncesOk(&payload)
         case .subscribeAnnounucesError:
-            return try MoQTSubscribeAnnounces.Error(&payload)
+            return try MoQTSubscribeAnnouncesError(&payload)
         case .clientSetup:
             return nil
         case .serverSetup:
@@ -65,11 +65,11 @@ public enum MoQTMessageType: Int, Sendable {
     }
 }
 
-enum MoQTMessageError: Swift.Error {
+enum MoQTControlMessageError: Swift.Error {
     case notImplemented
 }
 
-public protocol MoQTMessage: Sendable {
+public protocol MoQTControlMessage: Sendable {
     var type: MoQTMessageType { get }
     var payload: Data { get throws }
 }

@@ -39,7 +39,7 @@ public actor MoQTConnection {
     private var inputBuffer = MoQTPayload()
     private var outputBuffer = MoQTPayload()
     private var datagramBuffer = MoQTPayload()
-    private var continuation: CheckedContinuation<any MoQTMessage, any Swift.Error>?
+    private var continuation: CheckedContinuation<any MoQTControlMessage, any Swift.Error>?
     private var currentTrackAlias = 0
     private var currentSubscribeId = 0
     private var objectStreamContinuation: AsyncStream<MoQTObject>.Continuation?
@@ -63,7 +63,7 @@ public actor MoQTConnection {
             try await socket.connect(host, port: uri.port ?? Self.defaultPort)
             Task {
                 for await data in await socket.incoming {
-                    try? await didReceiveMessage(data)
+                    try? await didReceiveControlMessage(data)
                 }
             }
             Task {
@@ -81,23 +81,23 @@ public actor MoQTConnection {
         }
     }
 
-    public func annouce(_ namespace: [String], authInfo: String?) async throws -> Result<MoQTAnnounce.Ok, MoQTAnnounce.Error> {
+    public func annouce(_ namespace: [String], authInfo: String?) async throws -> Result<MoQTAnnounceOk, MoQTAnnounceError> {
         var subscribeParameters: [MoQTVersionSpecificParameter] = .init()
         if let authInfo {
             subscribeParameters.append(.init(key: .authorizationInfo, value: authInfo))
         }
         let message = MoQTAnnounce(trackNamespace: namespace, subscribeParameters: subscribeParameters)
         switch try await send(message) {
-        case let result as MoQTAnnounce.Ok:
+        case let result as MoQTAnnounceOk:
             return .success(result)
-        case let result as MoQTAnnounce.Error:
+        case let result as MoQTAnnounceError:
             return .failure(result)
         default:
             throw Error.unknownResponse
         }
     }
 
-    public func subscribe(_ namespace: [String], name: String, authInfo: String? = nil) async throws -> Result<MoQTSubscribe.Ok, MoQTSubscribe.Error> {
+    public func subscribe(_ namespace: [String], name: String, authInfo: String? = nil) async throws -> Result<MoQTSubscribeOk, MoQTSubscribeError> {
         defer {
             currentTrackAlias += 1
             currentSubscribeId += 1
@@ -121,16 +121,16 @@ public actor MoQTConnection {
             subscribeParameters: subscribeParameters
         )
         switch try await send(message) {
-        case let result as MoQTSubscribe.Ok:
+        case let result as MoQTSubscribeOk:
             return .success(result)
-        case let result as MoQTSubscribe.Error:
+        case let result as MoQTSubscribeError:
             return .failure(result)
         default:
             throw Error.unknownResponse
         }
     }
 
-    public func subscribeAnnouces(_ namespace: [String], authInfo: String? = nil) async throws -> Result<MoQTSubscribeAnnounces.Ok, MoQTSubscribeAnnounces.Error> {
+    public func subscribeAnnouces(_ namespace: [String], authInfo: String? = nil) async throws -> Result<MoQTSubscribeAnnouncesOk, MoQTSubscribeAnnouncesError> {
         var subscribeParameters: [MoQTVersionSpecificParameter] = .init()
         if let authInfo {
             subscribeParameters.append(.init(key: .authorizationInfo, value: authInfo))
@@ -140,9 +140,9 @@ public actor MoQTConnection {
             parameters: subscribeParameters
         )
         switch try await send(message) {
-        case let result as MoQTSubscribeAnnounces.Ok:
+        case let result as MoQTSubscribeAnnouncesOk:
             return .success(result)
-        case let result as MoQTSubscribeAnnounces.Error:
+        case let result as MoQTSubscribeAnnouncesError:
             return .failure(result)
         default:
             throw Error.unknownResponse
@@ -164,7 +164,7 @@ public actor MoQTConnection {
         await socket?.sendDatagram(buffer.data)
     }
 
-    private func send(_ message: some MoQTMessage) async throws -> any MoQTMessage {
+    private func send(_ message: some MoQTControlMessage) async throws -> any MoQTControlMessage {
         let content = try message.payload
         outputBuffer.position = 0
         outputBuffer.putInt(message.type.rawValue)
@@ -185,23 +185,37 @@ public actor MoQTConnection {
         }
     }
 
-    private func didReceiveMessage(_ data: Data) async throws {
-        print(data.bytes)
-        logger.trace(data)
-        inputBuffer.position = 0
-        inputBuffer.putData(data)
-        inputBuffer.position = 0
-        let type = try inputBuffer.getInt()
-        let length = try inputBuffer.getInt()
-        let message = try MoQTMessageType(rawValue: type)?.makeMessage(&inputBuffer)
-        if let message {
-            logger.info(message)
-            continuation?.resume(returning: message)
-        } else {
-            try inputBuffer.getData(length)
-            continuation?.resume(throwing: MoQTMessageError.notImplemented)
+    private func didReceiveControlMessage(_ data: Data) async {
+        do {
+            inputBuffer.position = 0
+            inputBuffer.putData(data)
+            inputBuffer.position = 0
+            let type = try inputBuffer.getInt()
+            let length = try inputBuffer.getInt()
+            guard let message = try MoQTMessageType(rawValue: type)?.makeMessage(&inputBuffer) else {
+                try? inputBuffer.getData(length)
+                continuation?.resume(throwing: MoQTControlMessageError.notImplemented)
+                continuation = nil
+                return
+            }
+            switch message {
+            case let message as MoQTSubscribe:
+                let ok = MoQTSubscribeOk(
+                    subscribeId: currentSubscribeId,
+                    expires: 0,
+                    groupOrder: message.groupOrder,
+                    contentExists: true,
+                    largestGroupId: 0,
+                    largestObjectId: 0,
+                    subscribeParameters: message.subscribeParameters)
+                let result = try? await send(ok)
+            default:
+                continuation?.resume(returning: message)
+                continuation = nil
+            }
+        } catch {
+            logger.warn(error, data.bytes)
         }
-        continuation = nil
     }
 
     private func didReceiveDataStream(_ data: Data) async {

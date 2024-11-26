@@ -182,7 +182,6 @@
 				macOS/MainSplitViewController.swift,
 				macOS/MainWindowController.swift,
 				macOS/MenuViewController.swift,
-				macOS/MoxygenChatClient.swift,
 				macOS/PlaybackViewController.swift,
 				macOS/PreferenceViewController.swift,
 				macOS/SCStreamPublishViewController.swift,

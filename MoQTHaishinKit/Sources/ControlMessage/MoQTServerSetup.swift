@@ -1,16 +1,18 @@
 import Foundation
 
-public struct MoQTServerSetup: MoQTMessage {
+public struct MoQTServerSetup: MoQTControlMessage {
     public let type: MoQTMessageType = .serverSetup
     public let selectedVersion: Int
     public let setupParameters: [MoQTSetupParameter]
 
     public var payload: Data {
         get throws {
-            throw MoQTMessageError.notImplemented
+            throw MoQTControlMessageError.notImplemented
         }
     }
+}
 
+extension MoQTServerSetup {
     init(_ payload: inout MoQTPayload) throws {
         selectedVersion = try payload.getInt()
         let setupParametersCounts = try payload.getInt()

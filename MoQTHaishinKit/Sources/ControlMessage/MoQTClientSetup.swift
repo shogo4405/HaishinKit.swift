@@ -1,7 +1,7 @@
 import Foundation
 
 /// 6.2.  CLIENT_SETUP and SERVER_SETUP
-struct MoQTClientSetup: MoQTMessage {
+struct MoQTClientSetup: MoQTControlMessage {
     let type: MoQTMessageType = .clientSetup
     let supprtedVersions: [MoQTVersion]
     let setupParameters: [MoQTSetupParameter]
@@ -20,7 +20,9 @@ struct MoQTClientSetup: MoQTMessage {
             return payload.data
         }
     }
+}
 
+extension MoQTClientSetup {
     init(supportedVersions: [MoQTVersion], role: MoQTSetupRole, path: String?) {
         self.supprtedVersions = supportedVersions
         var setupParameters: [MoQTSetupParameter] = .init()

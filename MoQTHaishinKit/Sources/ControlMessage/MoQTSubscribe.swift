@@ -1,7 +1,7 @@
 import Foundation
 import Logboard
 
-public struct MoQTSubscribe: MoQTMessage {
+public struct MoQTSubscribe: MoQTControlMessage {
     public enum GroupOrder: Int, Sendable {
         case original = 0x0
         case ascending = 0x1
@@ -77,61 +77,47 @@ public struct MoQTSubscribe: MoQTMessage {
             return payload.data
         }
     }
+}
 
-    public struct Ok: MoQTMessage {
-        public let type = MoQTMessageType.subscribeOk
-        public let subscribeId: Int
-        public let expires: Int
-        public let groupOrder: GroupOrder
-        public let contentExists: Bool
-        public let largestGroupId: Int?
-        public let largestObjectId: Int?
-        public let subscribeParameters: [MoQTVersionSpecificParameter]
-
-        public var payload: Data {
-            get throws {
-                throw MoQTMessageError.notImplemented
-            }
+extension MoQTSubscribe {
+    init(_ payload: inout MoQTPayload) throws {
+        subscribeId = try payload.getInt()
+        trackAlias = try payload.getInt()
+        var trackNamespace: [String] = []
+        for i in 0..<(try payload.getInt()) {
+            trackNamespace.append(try payload.getString())
         }
-
-        init(_ payload: inout MoQTPayload) throws {
-            subscribeId = try payload.getInt()
-            expires = try payload.getInt()
-            if let groupOrder = GroupOrder(rawValue: try payload.getInt()) {
-                self.groupOrder = groupOrder
-            } else {
-                throw MoQTMessageError.notImplemented
-            }
-            contentExists = try payload.getBool()
-            largestGroupId = contentExists ? try payload.getInt() : nil
-            largestObjectId = contentExists ? try payload.getInt() : nil
-            var subscribeParameters: [MoQTVersionSpecificParameter] = []
-            var numberOfParameters = try payload.getInt()
-            for i in 0..<numberOfParameters {
-                subscribeParameters.append(try .init(&payload))
-            }
-            self.subscribeParameters = subscribeParameters
+        self.trackNamespace = trackNamespace
+        trackName = try payload.getString()
+        subscribePriority = try payload.getInt()
+        groupOrder = GroupOrder(rawValue: try payload.getInt()) ?? .original
+        filterType = FilterType(rawValue: try payload.getInt()) ?? .absoluteRange
+        switch filterType {
+        case .latestGroup:
+            startGroup = nil
+            startObject = nil
+            endGroup = nil
+            endObject = nil
+        case .latestObject:
+            startGroup = nil
+            startObject = nil
+            endGroup = nil
+            endObject = nil
+        case .absoluteStart:
+            startGroup = try payload.getInt()
+            startObject = try payload.getInt()
+            endGroup = nil
+            endObject = nil
+        case .absoluteRange:
+            startGroup = try payload.getInt()
+            startObject = try payload.getInt()
+            endGroup = try payload.getInt()
+            endObject = try payload.getInt()
         }
-    }
-
-    public struct Error: MoQTMessage, Swift.Error {
-        public let type = MoQTMessageType.subscribeError
-        public let subscribeId: Int
-        public let code: Int
-        public let reasonPhrase: String
-        public let trackAlias: Int
-
-        public var payload: Data {
-            get throws {
-                throw MoQTMessageError.notImplemented
-            }
+        var subscribeParameters: [MoQTVersionSpecificParameter] = []
+        for i in 0..<(try payload.getInt()) {
+            subscribeParameters.append(try .init(&payload))
         }
-
-        init(_ payload: inout MoQTPayload) throws {
-            subscribeId = try payload.getInt()
-            code = try payload.getInt()
-            reasonPhrase = try payload.getString()
-            trackAlias = try payload.getInt()
-        }
+        self.subscribeParameters = subscribeParameters
     }
 }

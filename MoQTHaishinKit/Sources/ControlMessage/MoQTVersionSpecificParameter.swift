@@ -29,16 +29,13 @@ public struct MoQTVersionSpecificParameter {
                 payload.putInt(value.rawValue)
                 return payload.data
             default:
-                throw MoQTMessageError.notImplemented
+                throw MoQTControlMessageError.notImplemented
             }
         }
     }
+}
 
-    public init(key: MoQTVersionSpecificType, value: (any Sendable)) {
-        self.key = key
-        self.value = value
-    }
-
+extension MoQTVersionSpecificParameter {
     init(_ payload: inout MoQTPayload) throws {
         let type = try payload.getInt()
         let length = try payload.getInt()
