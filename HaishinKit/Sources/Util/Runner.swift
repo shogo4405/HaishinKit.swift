@@ -15,7 +15,7 @@ public protocol AsyncRunner: Actor {
     /// Indicates whether the receiver is running.
     var isRunning: Bool { get }
     /// Tells the receiver to start running.
-    func startRunning()
+    func startRunning() async
     /// Tells the receiver to stop running.
-    func stopRunning()
+    func stopRunning() async
 }
