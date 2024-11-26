@@ -118,10 +118,8 @@ final class VideoCaptureUnit: CaptureUnit {
                 return
             }
             try? configuration?(capture)
-            try capture.attachDevice(device, session: session, videoUnit: self)
-        }
-        if device == nil {
             videoMixer.reset(track)
+            try capture.attachDevice(device, session: session, videoUnit: self)
         }
     }
 
