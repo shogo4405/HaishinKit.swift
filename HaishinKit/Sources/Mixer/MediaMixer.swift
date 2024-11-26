@@ -321,8 +321,8 @@ public final actor MediaMixer {
             Task { @ScreenActor in
                 displayLink.preferredFramesPerSecond = await Int(frameRate)
                 displayLink.startRunning()
-                for await _ in displayLink.updateFrames where displayLink.isRunning {
-                    guard let buffer = screen.makeSampleBuffer() else {
+                for await updateFrame in displayLink.updateFrames where displayLink.isRunning {
+                    guard let buffer = screen.makeSampleBuffer(updateFrame) else {
                         continue
                     }
                     for output in await self.outputs where await output.videoTrackId == UInt8.max {
@@ -358,7 +358,12 @@ extension MediaMixer: AsyncRunner {
         Task {
             for await inputs in videoIO.inputs where isRunning {
                 Task { @ScreenActor in
-                    screen.append(inputs.0, buffer: inputs.1)
+                    var sampleBuffer = inputs.1
+                    screen.append(inputs.0, buffer: sampleBuffer)
+                    if await videoMixerSettings.mainTrack == inputs.0 {
+                        let diff = ceil((screen.targetTimestamp - sampleBuffer.presentationTimeStamp.seconds) * 10000) / 10000
+                        screen.videoCaptureLatency = diff
+                    }
                 }
                 for output in outputs where await output.videoTrackId == inputs.0 {
                     output.mixer(self, didOutput: inputs.1)
