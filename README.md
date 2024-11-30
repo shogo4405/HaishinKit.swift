@@ -50,8 +50,6 @@ Project name    |Notes       |License
 - [x] SharedObject
 - [x] RTMPS
   - [x] Native (RTMP over SSL/TLS)
-  - [x] _Tunneled (RTMPT over SSL/TLS) (Technical Preview)_
-- [x] _RTMPT (Technical Preview)_
 - [x] ReplayKit Live as a Broadcast Upload Extension
 - [x] [Enhanced RTMP](https://github.com/veovera/enhanced-rtmp)
 
