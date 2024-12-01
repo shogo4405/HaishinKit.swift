@@ -126,11 +126,16 @@ public final actor MediaMixer {
     #endif
 
     /// Attaches a video device.
+    ///
+    /// If you want to use the multi-camera feature, please make create a MediaMixer with a multiCamSession mode for iOS.
+    /// ```
+    /// let mixer = MediaMixer(multiCamSessionEnabled: true, multiTrackAudioMixingEnabled: false)
+    /// ```
     @available(tvOS 17.0, *)
     public func attachVideo(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: VideoDeviceConfigurationBlock? = nil) async throws {
         return try await withCheckedThrowingContinuation { continuation in
             do {
-                try videoIO.attachCamera(track, device: device, configuration: configuration)
+                try videoIO.attachVideo(track, device: device, configuration: configuration)
                 continuation.resume()
             } catch {
                 continuation.resume(throwing: Error.failedToAttach(error))
@@ -153,7 +158,8 @@ public final actor MediaMixer {
     /// - Attention: You can perform multi-microphone capture by specifying as follows on macOS. Unfortunately, it seems that only one microphone is available on iOS.
     ///
     /// ```
-    /// mixer.setMultiTrackAudioMixingEnabled(true)
+    /// let mixer = MediaMixer(multiCamSessionEnabled: false, multiTrackAudioMixingEnabled: true)
+    ///
     /// var audios = AVCaptureDevice.devices(for: .audio)
     /// if let device = audios.removeFirst() {
     ///    mixer.attachAudio(device, track: 0)

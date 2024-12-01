@@ -103,7 +103,7 @@ final class VideoCaptureUnit: CaptureUnit {
     }
 
     @available(tvOS 17.0, *)
-    func attachCamera(_ track: UInt8, device: AVCaptureDevice?, configuration: VideoDeviceConfigurationBlock?) throws {
+    func attachVideo(_ track: UInt8, device: AVCaptureDevice?, configuration: VideoDeviceConfigurationBlock?) throws {
         guard devices[track]?.device != device else {
             return
         }

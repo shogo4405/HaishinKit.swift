@@ -36,8 +36,10 @@ final class IngestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         Task {
-            // If you want to use the multi-camera feature, please make sure stream.isMultiCamSessionEnabled = true. Before attachCamera or attachAudio.
-            // mixer.isMultiCamSessionEnabled = true
+            // If you want to use the multi-camera feature, please make create a MediaMixer with a multiCamSession mode.
+            // ```
+            // let mixer = MediaMixer(multiCamSessionEnabled: true, multiTrackAudioMixingEnabled: false)
+            // ```
             if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
                 await mixer.setVideoOrientation(orientation)
             }
