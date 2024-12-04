@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   # s.visionos.deployment_target = "1.0"
 
-  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift" , "Examples/Preference.swift" ,"SRTHaishinKit/Sources/SRT/*.swift" ,"TFSDK/*.swift" , "Examples/iOS/AudioCapture.swift"
+  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift" ,"SRTHaishinKit/Sources/SRT/*.swift" ,"TFSDK/*.swift" , "Examples/iOS/AudioCapture.swift"
 
 
 

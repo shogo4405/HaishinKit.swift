@@ -112,14 +112,12 @@ public class TFIngest: NSObject {
         logger.info(notification)
         if AVAudioSession.sharedInstance().inputDataSources?.isEmpty == true {
             setEnabledPreferredInputBuiltInMic(false)
-//            audioMonoStereoSegmentCOntrol.isHidden = true
-//            audioDevicePicker.isHidden = true
+
         } else {
             setEnabledPreferredInputBuiltInMic(true)
-//            audioMonoStereoSegmentCOntrol.isHidden = false
-//            audioDevicePicker.isHidden = false
+
         }
-//        audioDevicePicker.reloadAllComponents()
+
         Task {
             if DeviceUtil.isHeadphoneDisconnected(notification) {
                 await mixer.setMonitoringEnabled(false)
