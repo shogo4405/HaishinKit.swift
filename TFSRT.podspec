@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 
-  s.name          = "SRTHaishinKit"
+  s.name          = "TFSRT"
   s.version       = "2.0.1"
   s.summary       = "Camera and Microphone streaming library via SRT for iOS, macOS, tvOS and visionOS."
   s.swift_version = "5.10"
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
 
   # s.visionos.deployment_target = "1.0"
 
-  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift", "Examples/HKStreamSwitcher.swift" , "Examples/Preference.swift" ,"SRTHaishinKit/Sources/SRT/*.swift" ,"TFSDK/*.swift" , "Examples/iOS/AudioCapture.swift"
+  s.source_files = "SRTHaishinKit/SRTHaishinKit.h", "HaishinKit/Sources/**/*.swift" , "Examples/Preference.swift" ,"SRTHaishinKit/Sources/SRT/*.swift" ,"TFSDK/*.swift" , "Examples/iOS/AudioCapture.swift"
 
 
 

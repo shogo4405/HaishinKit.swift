@@ -18,7 +18,6 @@ public class TFIngest: NSObject {
     private var currentPosition: AVCaptureDevice.Position = .front
     private var retryCount: Int = 0
     private var preferedStereo = false
-    private let netStreamSwitcher: HKStreamSwitcher = .init()
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
@@ -28,28 +27,10 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-    @objc public func disappear()
-    {
-//        logger.info("viewWillDisappear")
-        Task {
-            audioCapture.stopRunning()
-            await netStreamSwitcher.close()
-         
-            try? await mixer.attachAudio(nil)
-            try? await mixer.attachVideo(nil, track: 0)
-            try? await mixer.attachVideo(nil, track: 1)
-        }
- 
-        NotificationCenter.default.removeObserver(self)
-    }
-    @objc public func setSrtUrl(url:String)
-    {
-        Task { @ScreenActor in
-            var model = Preference.default
-            model.uri = url
-            await netStreamSwitcher.setPreference(Preference.default)
-        }
-    }
+    var srtUrl:String = ""
+    let connection = SRTConnection()
+    let stream = SRTStream(connection: SRTConnection())
+   
     @objc public func setSDK(view:UIView)
     {
          /**
@@ -70,12 +51,10 @@ public class TFIngest: NSObject {
             var videoMixerSettings = await mixer.videoMixerSettings
             videoMixerSettings.mode = .offscreen
             await mixer.setVideoMixerSettings(videoMixerSettings)
-            await netStreamSwitcher.setPreference(Preference.default)
-            if let stream = await netStreamSwitcher.stream {
-                await mixer.addOutput(stream)
-                if let view = view as? (any HKStreamOutput) {
-                    await stream.addOutput(view)
-                }
+
+            await mixer.addOutput(stream)
+            if let view = view as? (any HKStreamOutput) {
+                await stream.addOutput(view)
             }
 
             videoScreenObject.cornerRadius = 16.0
@@ -165,6 +144,50 @@ public class TFIngest: NSObject {
             }
         } catch {
         }
+    }
+    @objc public func closeSrt()
+    {
+        UIApplication.shared.isIdleTimerDisabled = true
+        Task {
+            //结束推流
+            try? await connection.close()
+            logger.info("conneciton.close")
+        }
+    }
+    
+    @objc public func openSrt()
+    {
+      
+        UIApplication.shared.isIdleTimerDisabled = false
+        Task {
+           
+            //设置url
+            try await connection.open(URL(string: srtUrl))
+            //开始推流
+            await stream.publish()
+        }
+    }
+    
+    @objc public func disappear()
+    {
+
+        Task {
+            audioCapture.stopRunning()
+            
+            try? await connection.close()
+            logger.info("conneciton.close")
+         
+            try? await mixer.attachAudio(nil)
+            try? await mixer.attachVideo(nil, track: 0)
+            try? await mixer.attachVideo(nil, track: 1)
+        }
+ 
+        NotificationCenter.default.removeObserver(self)
+    }
+    @objc public func setSrtUrl(url:String)
+    {
+        srtUrl = url
+
     }
 }
 extension TFIngest: AudioCaptureDelegate {
