@@ -12,13 +12,15 @@ import UIKit
 import VideoToolbox
 
 public class TFIngest: NSObject {
+    //前摄像 or 后摄像头
+    var position = AVCaptureDevice.Position.front
+    
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
     @ScreenActor
     private var currentEffect: (any VideoEffect)?
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
     let connection = SRTConnection()
     var stream: SRTStream?
-    //默认前置摄像头开启镜像
     var isVideoMirrored:Bool = true
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
@@ -29,19 +31,16 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-    //前摄像 or 后摄像头
-    var position = AVCaptureDevice.Position.front
-
     @objc public func setSDK(view:UIView)
     {
-        Task { @ScreenActor in
-//        Task {
+
+        Task {  @ScreenActor in
             if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 let orientation = await windowScene.interfaceOrientation
                 if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
                     await mixer.setVideoOrientation(videoOrientation)
                 }
-//            }
+            }
             await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
             var videoMixerSettings = await mixer.videoMixerSettings
             videoMixerSettings.mode = .offscreen
@@ -54,10 +53,8 @@ public class TFIngest: NSObject {
             if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
             }
-         
         }
-        
-//        Task { @ScreenActor in
+        Task { @ScreenActor in
             videoScreenObject.cornerRadius = 16.0
             videoScreenObject.track = 1
             videoScreenObject.horizontalAlignment = .right
@@ -66,9 +63,8 @@ public class TFIngest: NSObject {
              mixer.screen.size = .init(width: 720, height: 1280)
              mixer.screen.backgroundColor = UIColor.black.cgColor
             try?  mixer.screen.addChild(videoScreenObject)
-//        }
-        
-//        Task {
+        }
+        Task { @ScreenActor in
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
             //track 是多个摄像头的下标
             try? await mixer.attachVideo(front, track: 0){videoUnit in
