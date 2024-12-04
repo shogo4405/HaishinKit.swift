@@ -30,7 +30,7 @@ public class TFIngest: NSObject {
     
     @objc public func disappear()
     {
-        logger.info("viewWillDisappear")
+//        logger.info("viewWillDisappear")
         Task {
             audioCapture.stopRunning()
             await netStreamSwitcher.close()
@@ -42,7 +42,14 @@ public class TFIngest: NSObject {
  
         NotificationCenter.default.removeObserver(self)
     }
-    
+    @objc public func setSrtUrl(url:String)
+    {
+        Task { @ScreenActor in
+            var model = Preference.default
+            model.uri = url
+            await netStreamSwitcher.setPreference(Preference.default)
+        }
+    }
     @objc public func setSDK(view:UIView)
     {
          /**
@@ -89,19 +96,17 @@ public class TFIngest: NSObject {
                 videoUnit.isVideoMirrored = true
             }
             
-            //捕捉设备方向的变化
+            //TODO: 捕捉设备方向的变化
             NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
-            //NotificationCenter 监听 AVAudioSession 的中断通知
+            //TODO: 监听 AVAudioSession 的中断通知
             NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
-            //AVAudioSession.routeChangeNotification，用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
+            //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
             NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
         }
 
-
-
     }
 
-    
+    //捕捉设备方向的变化
     @objc
     private func on(_ notification: Notification) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
