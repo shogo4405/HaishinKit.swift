@@ -27,10 +27,9 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-    var srtUrl:String = ""
     let connection = SRTConnection()
-    let stream = SRTStream(connection: SRTConnection())
-   
+    var stream: SRTStream?
+  
     @objc public func setSDK(view:UIView)
     {
          /**
@@ -51,6 +50,12 @@ public class TFIngest: NSObject {
             var videoMixerSettings = await mixer.videoMixerSettings
             videoMixerSettings.mode = .offscreen
             await mixer.setVideoMixerSettings(videoMixerSettings)
+            
+            self.stream = SRTStream(connection: self.connection)
+            
+            guard let stream = self.stream else {
+                return
+            }
 
             await mixer.addOutput(stream)
             if let view = view as? (any HKStreamOutput) {
@@ -146,6 +151,10 @@ public class TFIngest: NSObject {
     @objc public func closeSrt()
     {
         UIApplication.shared.isIdleTimerDisabled = true
+        self.closeSDK()
+    }
+    func closeSDK()
+    {
         Task {
             //结束推流
             try? await connection.close()
@@ -155,26 +164,22 @@ public class TFIngest: NSObject {
     
     @objc public func openSrt()
     {
-      
         UIApplication.shared.isIdleTimerDisabled = false
         Task {
-           
-            //设置url
-            try await connection.open(URL(string: srtUrl))
+            
+            guard let stream = self.stream else {
+                return
+            }
             //开始推流
             await stream.publish()
+            logger.info("conneciton.open")
         }
     }
     
-    @objc public func disappear()
+    @objc public func shutdown()
     {
-
         Task {
-            audioCapture.stopRunning()
-            
-            try? await connection.close()
-            logger.info("conneciton.close")
-         
+            self.closeSDK()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
             try? await mixer.attachVideo(nil, track: 1)
@@ -184,8 +189,9 @@ public class TFIngest: NSObject {
     }
     @objc public func setSrtUrl(url:String)
     {
-        srtUrl = url
-
+        Task {
+            try await connection.open(URL(string: url))
+        }
     }
 }
 extension TFIngest: AudioCaptureDelegate {
