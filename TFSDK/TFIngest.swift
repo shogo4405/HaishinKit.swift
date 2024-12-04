@@ -15,7 +15,7 @@ public class TFIngest: NSObject {
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。
     @ScreenActor
     private var currentEffect: (any VideoEffect)?
-    private var currentPosition: AVCaptureDevice.Position = .front
+
     private var retryCount: Int = 0
     private var preferedStereo = false
     private lazy var mixer = MediaMixer()
@@ -29,7 +29,14 @@ public class TFIngest: NSObject {
     
     let connection = SRTConnection()
     var stream: SRTStream?
-  
+    
+    //前摄像 or 后摄像头
+    var position = AVCaptureDevice.Position.front
+    let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+    //默认前置摄像头开启镜像
+    var isVideoMirrored:Bool = true
+    
+    
     @objc public func setSDK(view:UIView)
     {
          /**
@@ -71,15 +78,17 @@ public class TFIngest: NSObject {
             
              mixer.screen.backgroundColor = UIColor.black.cgColor
             try? mixer.screen.addChild(videoScreenObject)
-   
-            let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: currentPosition)
-            try? await mixer.attachVideo(back, track: 0)
-            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            try? await mixer.attachVideo(front, track: 1) { videoUnit in
-                videoUnit.isVideoMirrored = true
-            }
             
+            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            
+
+            //track 是多个摄像头的下标
+            try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
+                guard let `self` = self else { return }
+                videoUnit.isVideoMirrored = isVideoMirrored
+          
+            }
+
             //TODO: 捕捉设备方向的变化
             NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
             //TODO: 监听 AVAudioSession 的中断通知
@@ -182,15 +191,75 @@ public class TFIngest: NSObject {
             self.closeSDK()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
-            try? await mixer.attachVideo(nil, track: 1)
         }
  
         NotificationCenter.default.removeObserver(self)
     }
+    /**
+      配置推流URL
+     */
     @objc public func setSrtUrl(url:String)
     {
         Task {
             try await connection.open(URL(string: url))
+        }
+    }
+    /**
+       切换前后摄像头
+     */
+    @objc public func attachVideo(position: AVCaptureDevice.Position)
+    {
+        Task {
+            
+        try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
+            guard let `self` = self else { return }
+            self.position = position
+            if(position == .front)
+            {
+                videoUnit.isVideoMirrored = isVideoMirrored
+            }
+            
+         }
+       }
+    }
+    /**摄像头镜像开关
+     */
+    @objc public func isVideoMirrored(_ isVideoMirrored: Bool)
+    {
+        Task {
+            if self.position == .front
+            {
+                let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                do {
+                    //先切换到后摄像头, 再切换到前摄像头
+                  try await mixer.attachVideo(back, track: 0) { backVideoUnit in
+                   
+                      self.attachVideo(isVideoMirrored)
+                      
+                  }
+                } catch {
+                  print(error)
+                }
+                
+            }else{
+                
+                self.isVideoMirrored = isVideoMirrored
+                
+                
+            }
+        
+        }
+    }
+    
+    func attachVideo(_ isVideoMirrored:Bool)
+    {
+        Task {
+            //track 是多个摄像头的下标
+            try? await mixer.attachVideo(front, track: 0){ videoUnit in
+                videoUnit.isVideoMirrored = isVideoMirrored
+                
+            }
+            
         }
     }
 }
