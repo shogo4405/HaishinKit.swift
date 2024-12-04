@@ -217,6 +217,8 @@ public class TFIngest: NSObject {
             if(position == .front)
             {
                 videoUnit.isVideoMirrored = isVideoMirrored
+            }else{
+                videoUnit.isVideoMirrored = false
             }
             
          }
@@ -262,6 +264,28 @@ public class TFIngest: NSObject {
             
         }
     }
+    /**设置 近  中 远 摄像头*/
+    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType)
+    {
+        Task {
+            
+            if self.position == .back
+                
+            {
+                // .builtInWideAngleCamera
+                let back = AVCaptureDevice.default(cameraType, for: .video, position: .back)
+                //track 是多个摄像头的下标
+                try? await mixer.attachVideo(back, track: 0){ videoUnit in
+                    
+                    videoUnit.isVideoMirrored = false
+                }
+
+            }
+         
+        }
+        
+    }
+
 }
 extension TFIngest: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
