@@ -34,7 +34,10 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-    @objc public func setSDK(view:UIView)
+    @objc public func setSDK(view:UIView,
+                             videoSize:CGSize,
+                             videoFrameRate:CGFloat,
+                             videoBitRate:Int)
     {
 
         Task {  @ScreenActor in
@@ -48,6 +51,7 @@ public class TFIngest: NSObject {
             var videoMixerSettings = await mixer.videoMixerSettings
             videoMixerSettings.mode = .offscreen
             await mixer.setVideoMixerSettings(videoMixerSettings)
+            
             self.stream = SRTStream(connection: self.connection)
             //录制管理者
             self.recorder = HKStreamRecorder()
@@ -59,26 +63,38 @@ public class TFIngest: NSObject {
                 return
             }
             await stream.addOutput(recorder)
-            // $moviesDirectory/dir/sample.mp4
-            
+        
             await mixer.addOutput(stream)
             if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
             }
+            
+            var videoSettings = await stream.videoSettings
+            ///// 视频的码率，单位是 bps
+            videoSettings.bitRate = videoBitRate
+            ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
+            videoSettings.videoSize = videoSize
+            await stream.setVideoSettings(videoSettings)
+            
         }
         Task { @ScreenActor in
+             //screen 离屏渲染对象。
+             mixer.screen.size = videoSize
+             mixer.screen.backgroundColor = UIColor.black.cgColor
+            // 视频的帧率，即 fps
+            await mixer.setFrameRate(videoFrameRate)
+            
             videoScreenObject.cornerRadius = 16.0
             videoScreenObject.track = 1
             videoScreenObject.horizontalAlignment = .right
             videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
             videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-             mixer.screen.size = .init(width: 720, height: 1280)
-             mixer.screen.backgroundColor = UIColor.black.cgColor
-            try?  mixer.screen.addChild(videoScreenObject)
+            //本地显示的渲染配置
+            try? mixer.screen.addChild(videoScreenObject)
+ 
         }
         Task { @ScreenActor in
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-            //track 是多个摄像头的下标
             try? await mixer.attachVideo(front, track: 0){videoUnit in
                 videoUnit.isVideoMirrored = true
             }
