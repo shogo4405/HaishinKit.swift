@@ -14,6 +14,8 @@ import VideoToolbox
 public class TFIngest: NSObject {
     //前摄像 or 后摄像头
     var position = AVCaptureDevice.Position.front
+    //是否已经在录制
+    var isRecording:Bool = false
     
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
     @ScreenActor
@@ -21,6 +23,7 @@ public class TFIngest: NSObject {
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
     let connection = SRTConnection()
     var stream: SRTStream?
+    var recorder: HKStreamRecorder?
     var isVideoMirrored:Bool = true
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
@@ -46,9 +49,18 @@ public class TFIngest: NSObject {
             videoMixerSettings.mode = .offscreen
             await mixer.setVideoMixerSettings(videoMixerSettings)
             self.stream = SRTStream(connection: self.connection)
+            //录制管理者
+            self.recorder = HKStreamRecorder()
+            
             guard let stream = self.stream else {
                 return
             }
+            guard let recorder = self.recorder else {
+                return
+            }
+            await stream.addOutput(recorder)
+            // $moviesDirectory/dir/sample.mp4
+            
             await mixer.addOutput(stream)
             if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
@@ -139,11 +151,11 @@ public class TFIngest: NSObject {
     @objc public func closeSrt()
     {
         UIApplication.shared.isIdleTimerDisabled = true
-        self.closeSDK()
+        self.closePush()
     }
-    func closeSDK()
+    func closePush()
     {
-        Task {
+        Task {  @ScreenActor in
             //结束推流
             try? await connection.close()
             logger.info("conneciton.close")
@@ -153,7 +165,7 @@ public class TFIngest: NSObject {
     @objc public func openSrt()
     {
         UIApplication.shared.isIdleTimerDisabled = false
-        Task {
+        Task {  @ScreenActor in
             
             guard let stream = self.stream else {
                 return
@@ -166,8 +178,15 @@ public class TFIngest: NSObject {
     
     @objc public func shutdown()
     {
-        Task {
-            self.closeSDK()
+        Task {  @ScreenActor in
+            
+            if(self.isRecording)
+            {
+                self.recording(false)
+            }
+            
+            //结束推流
+            self.closePush()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
         }
@@ -179,7 +198,7 @@ public class TFIngest: NSObject {
      */
     @objc public func setSrtUrl(url:String)
     {
-        Task {
+        Task {  @ScreenActor in
             try await connection.open(URL(string: url))
         }
     }
@@ -188,7 +207,7 @@ public class TFIngest: NSObject {
      */
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
-        Task {
+        Task {  @ScreenActor in
             
         try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
             guard let `self` = self else { return }
@@ -207,7 +226,7 @@ public class TFIngest: NSObject {
      */
     @objc public func isVideoMirrored(_ isVideoMirrored: Bool)
     {
-        Task {
+        Task {  @ScreenActor in
             if self.position == .front
             {
                 let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
@@ -233,7 +252,7 @@ public class TFIngest: NSObject {
     
     func attachVideo(_ isVideoMirrored:Bool)
     {
-        Task {
+        Task {  @ScreenActor in
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             //track 是多个摄像头的下标
             try? await mixer.attachVideo(front, track: 0){ videoUnit in
@@ -244,7 +263,7 @@ public class TFIngest: NSObject {
     /**设置 近  中 远 摄像头*/
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType)
     {
-        Task {
+        Task {  @ScreenActor in
             if self.position == .back
             {
                 // .builtInWideAngleCamera
@@ -257,6 +276,50 @@ public class TFIngest: NSObject {
 
             }
          
+        }
+        
+    }
+    /**录制视频**/
+    @objc public func recording(_ isRecording:Bool)
+    {
+        Task {  @ScreenActor in
+            guard let recorder = self.recorder else {
+                return
+            }
+            self.isRecording = isRecording
+            if isRecording {
+                print("startRecording")
+                try await recorder.startRecording(nil)
+             
+                
+//                try await recorder.startRecording(URL(string: "dir/sample.mp4"), settings: [
+//                    AVMediaType.audio: [
+//                        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+//                        AVSampleRateKey: 0,
+//                        AVNumberOfChannelsKey: 0,
+//                    ],
+//                    AVMediaType.video: [
+//                        AVVideoCodecKey: AVVideoCodecType.h264,
+//                        AVVideoHeightKey: 0,
+//                        AVVideoWidthKey: 0,
+//                    
+//                    ]
+//                ])
+            }else{
+                
+                do {
+                    let recordingURL = try await recorder.stopRecording()
+                    // 处理录制文件的 URL
+                    print("Recording saved at: \(recordingURL)")
+                } catch {
+                    
+                    print("error: \(error)")
+                }
+
+
+                
+            }
+            
         }
         
     }
