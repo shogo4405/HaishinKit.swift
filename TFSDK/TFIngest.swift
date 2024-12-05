@@ -16,12 +16,7 @@ public class TFIngest: NSObject {
     var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
-    //加有水印
-    let pronamaEffect = TFPronamaEffect()
-    //黑白
-    let monochromeEffect = TFMonochromeEffect()
-    
-    
+
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
     @ScreenActor
     private var currentEffect: (any VideoEffect)?
@@ -344,24 +339,47 @@ public class TFIngest: NSObject {
         }
         
     }
-
+    
+    //-----------------------------------------------
+    
+    var effectsList: [TFEffect] = []
+    
     @objc public func registerVideoEffect(_ state:NSInteger)  {
         Task {
             
             //默认
             if state == 0 {
-                  //清空所有滤层
-                _ = await mixer.screen.unregisterVideoEffect(pronamaEffect)
-                _ = await mixer.screen.unregisterVideoEffect(monochromeEffect)
                 
+                for effect in effectsList {
+                    //清空所有滤层
+                  _ = await mixer.screen.unregisterVideoEffect(effect)
+                }
+
+                effectsList.removeAll()
             } else if (state == 1)
             {
-                //黑白
-                _ = await mixer.screen.registerVideoEffect(pronamaEffect)
+                for effect in effectsList {
+                    if effect.state == state {
+                        return
+                    }
+                }
+                //加有水印
+                let effect = TFPronamaEffect()
+                effect.state = state
+                effectsList.append(effect)
+             _ = await mixer.screen.registerVideoEffect(effect)
       
             }else{
-               //水印
-             _ = await mixer.screen.registerVideoEffect(monochromeEffect)
+                for effect in effectsList {
+                    if effect.state == state {
+                        return
+                    }
+                }
+                //黑白
+                let effect = TFMonochromeEffect()
+                effect.state = state
+                effectsList.append(effect)
+                _ = await mixer.screen.registerVideoEffect(effect)
             }
             
         }
@@ -373,23 +391,35 @@ extension TFIngest: AudioCaptureDelegate {
         Task { await mixer.append(buffer, when: time) }
     }
 }
+ class TFEffect: VideoEffect {
+    var state:NSInteger = -1
+    func execute(_ image: CIImage) -> CIImage {
+      
+        return image
+    }
+}
 //黑白
-final class TFMonochromeEffect: VideoEffect {
+final class TFMonochromeEffect: TFEffect {
     let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
 
-    func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage) -> CIImage {
         guard let filter: CIFilter = filter else {
             return image
         }
         filter.setValue(image, forKey: "inputImage")
         filter.setValue(CIColor(red: 0.75, green: 0.75, blue: 0.75), forKey: "inputColor")
         filter.setValue(1.0, forKey: "inputIntensity")
-        return filter.outputImage!
+        
+        guard let outputImage = filter.outputImage else {
+            return image
+        }
+        return outputImage
     }
 }
 
 //加水印
-final class TFPronamaEffect: VideoEffect {
+final class TFPronamaEffect: TFEffect {
+    
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
 
     var extent = CGRect.zero {
@@ -406,13 +436,17 @@ final class TFPronamaEffect: VideoEffect {
     }
     var pronama: CIImage?
 
-    func execute(_ image: CIImage) -> CIImage {
+    override func execute(_ image: CIImage) -> CIImage {
         guard let filter: CIFilter = filter else {
             return image
         }
         extent = image.extent
         filter.setValue(pronama!, forKey: "inputImage")
         filter.setValue(image, forKey: "inputBackgroundImage")
-        return filter.outputImage!
+        
+        guard let outputImage = filter.outputImage else {
+            return image
+        }
+        return outputImage
     }
 }
