@@ -363,23 +363,25 @@ public class TFIngest: NSObject {
                         return
                     }
                 }
-                //加有水印
-                let effect = TFPronamaEffect()
-                effect.state = state
-                effectsList.append(effect)
-             _ = await mixer.screen.registerVideoEffect(effect)
-      
-            }else{
-                for effect in effectsList {
-                    if effect.state == state {
-                        return
-                    }
-                }
                 //黑白
                 let effect = TFMonochromeEffect()
                 effect.state = state
                 effectsList.append(effect)
                 _ = await mixer.screen.registerVideoEffect(effect)
+      
+            }else{
+   
+                
+                for effect in effectsList {
+                    if effect.state == state {
+                        return
+                    }
+                }
+                //加有水印
+                let effect = TFPronamaEffect()
+                effect.state = state
+                effectsList.append(effect)
+             _ = await mixer.screen.registerVideoEffect(effect)
             }
             
         }
