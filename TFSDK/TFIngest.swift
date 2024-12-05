@@ -16,6 +16,11 @@ public class TFIngest: NSObject {
     var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
+    //加有水印
+    let pronamaEffect = TFPronamaEffect()
+    //黑白
+    let monochromeEffect = TFMonochromeEffect()
+    
     
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
     @ScreenActor
@@ -340,10 +345,74 @@ public class TFIngest: NSObject {
         
     }
 
+    @objc public func registerVideoEffect(_ state:NSInteger)  {
+        Task {
+            
+            //默认
+            if state == 0 {
+                  //清空所有滤层
+                _ = await mixer.screen.unregisterVideoEffect(pronamaEffect)
+                _ = await mixer.screen.unregisterVideoEffect(monochromeEffect)
+                
+            } else if (state == 1)
+            {
+                //黑白
+                _ = await mixer.screen.registerVideoEffect(pronamaEffect)
+      
+            }else{
+               //水印
+             _ = await mixer.screen.registerVideoEffect(monochromeEffect)
+            }
+            
+        }
+    }
 }
 extension TFIngest: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
     nonisolated func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
         Task { await mixer.append(buffer, when: time) }
+    }
+}
+
+final class TFMonochromeEffect: VideoEffect {
+    let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
+
+    func execute(_ image: CIImage) -> CIImage {
+        guard let filter: CIFilter = filter else {
+            return image
+        }
+        filter.setValue(image, forKey: "inputImage")
+        filter.setValue(CIColor(red: 0.75, green: 0.75, blue: 0.75), forKey: "inputColor")
+        filter.setValue(1.0, forKey: "inputIntensity")
+        return filter.outputImage!
+    }
+}
+
+//加水印
+final class TFPronamaEffect: VideoEffect {
+    let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
+
+    var extent = CGRect.zero {
+        didSet {
+            if extent == oldValue {
+                return
+            }
+            UIGraphicsBeginImageContext(extent.size)
+            let image = UIImage(named: "Icon.png")!
+            image.draw(at: CGPoint(x: 50, y: 50))
+            pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
+            UIGraphicsEndImageContext()
+        }
+    }
+    var pronama: CIImage?
+
+    func execute(_ image: CIImage) -> CIImage {
+        guard let filter: CIFilter = filter else {
+            return image
+        }
+        extent = image.extent
+        filter.setValue(pronama!, forKey: "inputImage")
+        filter.setValue(image, forKey: "inputBackgroundImage")
+        return filter.outputImage!
     }
 }
