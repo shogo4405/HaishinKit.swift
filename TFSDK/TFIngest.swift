@@ -16,6 +16,7 @@ public class TFIngest: NSObject {
     var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
+    var srtUrl:String = ""
 
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
     @ScreenActor
@@ -187,6 +188,7 @@ public class TFIngest: NSObject {
             guard let stream = self.stream else {
                 return
             }
+            try await connection.open(URL(string: srtUrl))
             //开始推流
             await stream.publish()
             logger.info("conneciton.open")
@@ -215,9 +217,8 @@ public class TFIngest: NSObject {
      */
     @objc public func setSrtUrl(url:String)
     {
-        Task {  @ScreenActor in
-            try await connection.open(URL(string: url))
-        }
+        srtUrl = url
+     
     }
     /**
        切换前后摄像头
