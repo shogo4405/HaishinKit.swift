@@ -164,21 +164,22 @@ public class TFIngest: NSObject {
         } catch {
         }
     }
-    @objc public func closeSrt()
-    {
-        UIApplication.shared.isIdleTimerDisabled = true
-        self.closePush()
-    }
     func closePush()
     {
         Task {  @ScreenActor in
-            //结束推流
+            //结束srt链接
             try? await connection.close()
             logger.info("conneciton.close")
         }
     }
-    
-    @objc public func openSrt()
+    /**结束推流**/
+    @objc public func stopLive()
+    {
+        UIApplication.shared.isIdleTimerDisabled = true
+        self.closePush()
+    }
+    /**开始推流**/
+    @objc public func startLive()
     {
         UIApplication.shared.isIdleTimerDisabled = false
         Task {  @ScreenActor in
