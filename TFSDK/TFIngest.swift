@@ -188,10 +188,32 @@ public class TFIngest: NSObject {
             guard let stream = self.stream else {
                 return
             }
-            try await connection.open(URL(string: srtUrl))
-            //开始推流
-            await stream.publish()
-            logger.info("conneciton.open")
+            do {
+                try await connection.open(URL(string: srtUrl))
+                //开始推流
+                await stream.publish()
+                logger.info("conneciton.open")
+            } catch {
+                
+                //打印错误原因
+                if let srtError = error as? SRTError {
+                    
+                    switch srtError {
+                        
+                    case .illegalState(let message):
+                        
+                        print("Illegal state error: \(message)")
+                        
+                    case .invalidArgument(let message):
+                        
+                        print("Invalid argument error: \(message)")
+                        
+                        
+                    }
+                    
+                }
+                
+            }
         }
     }
     
