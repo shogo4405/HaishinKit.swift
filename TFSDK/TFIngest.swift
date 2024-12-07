@@ -180,7 +180,7 @@ public class TFIngest: NSObject {
         self.closePush()
     }
     /**开始推流**/
-    @objc public func startLive()
+    @objc public func startLive(callback: ((Int, String?) -> Void)?)
     {
         UIApplication.shared.isIdleTimerDisabled = false
         Task {  @ScreenActor in
@@ -193,24 +193,33 @@ public class TFIngest: NSObject {
                 //开始推流
                 await stream.publish()
                 logger.info("conneciton.open")
+                
+                
+                if let callback = callback {
+                    callback(0,"")
+                }
             } catch {
                 
                 //打印错误原因
                 if let srtError = error as? SRTError {
                     
+                    var msg:String = ""
                     switch srtError {
                         
                     case .illegalState(let message):
-                        
-                        print("Illegal state error: \(message)")
+                        msg = message
+//                        print("Illegal state error: \(message)")
                         
                     case .invalidArgument(let message):
-                        
-                        print("Invalid argument error: \(message)")
+                        msg = message
+//                        print("Invalid argument error: \(message)")
                         
                         
                     }
                     
+                    if let callback = callback {
+                        callback(-1,msg)
+                    }
                 }
                 
             }
