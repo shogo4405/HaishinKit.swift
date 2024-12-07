@@ -180,7 +180,7 @@ public class TFIngest: NSObject {
         self.closePush()
     }
     /**开始推流**/
-    @objc public func startLive(callback: ((Int, String?) -> Void)?)
+    @objc public func startLive(callback: ((Int, String) -> Void)?)
     {
         UIApplication.shared.isIdleTimerDisabled = false
         Task {  @ScreenActor in
