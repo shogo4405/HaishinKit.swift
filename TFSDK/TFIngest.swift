@@ -328,6 +328,21 @@ public class TFIngest: NSObject {
         }
         
     }
+    /**摄像头倍放**/
+    @objc public func zoomScale(_ scale:CGFloat)
+    {
+        Task {
+            try await mixer.configuration(video: 0) { unit in
+                guard let device = unit.device else {
+                    return
+                }
+                try device.lockForConfiguration()
+                device.ramp(toVideoZoomFactor: scale, withRate: 5.0)
+                device.unlockForConfiguration()
+            }
+        }
+        
+    }
     /**录制视频**/
     @objc public func recording(_ isRecording:Bool)
     {
