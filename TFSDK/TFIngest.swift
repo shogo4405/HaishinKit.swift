@@ -507,6 +507,57 @@ public class TFIngest: NSObject {
             
         }
     }
+    //设置焦点
+    @objc public func setFocusBoxPoint(_ point: CGPoint) {
+          
+        
+//        self.getCurrentCamera(session:  mixer.sessionPreset)
+       
+    }
+    //获取当前正在使用的 AVCaptureDevice
+    func getCurrentCamera(session: AVCaptureSession) -> AVCaptureDevice? {
+        // 获取 AVCaptureSession 的所有输入设备
+        for input in session.inputs {
+            // 确保输入是 AVCaptureDeviceInput 类型
+            guard let deviceInput = input as? AVCaptureDeviceInput else { continue }
+            
+            // 检查设备类型是否为摄像头
+            if deviceInput.device.deviceType == .builtInWideAngleCamera {
+                return deviceInput.device
+            }
+        }
+        return nil
+    }
+    
+     func focusPoint(_ focusPoint: CGPoint,
+                              focusMode: AVCaptureDevice.FocusMode,
+                              exposureMode: AVCaptureDevice.ExposureMode,
+                              device: AVCaptureDevice?) {
+           guard let device = device else { return }
+           
+           do {
+               try device.lockForConfiguration()
+               
+               // 先进行判断是否支持控制对焦模式
+               // 对焦模式和对焦点
+               if device.isFocusModeSupported(focusMode) {
+                   device.focusPointOfInterest = focusPoint
+                   device.focusMode = focusMode
+               }
+               
+               // 先进行判断是否支持曝光模式
+               // 曝光模式和曝光点
+               if device.isExposureModeSupported(exposureMode) {
+                   device.exposurePointOfInterest = focusPoint
+                   device.exposureMode = exposureMode
+               }
+               
+               device.unlockForConfiguration()
+           } catch {
+               // 处理错误，例如打印或者显示错误信息
+               print("Could not lock device for configuration: \(error)")
+           }
+       }
 }
 extension TFIngest: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
