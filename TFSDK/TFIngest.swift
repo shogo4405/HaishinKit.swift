@@ -406,8 +406,7 @@ public class TFIngest: NSObject {
             effect.type = .watermark
             effect.watermark = watermark
             effect.watermarkFrame = frame
-            
-            effectsList.insert(effect, at: 0)
+            effectsList.append(effect)
             _ = await mixer.screen.registerVideoEffect(effect)
             
         }
@@ -437,7 +436,7 @@ public class TFIngest: NSObject {
     @objc public var beauty: Bool = false {
         didSet {
             // 当 beauty 属性的值发生变化时执行的代码
-            Task {
+            Task {  @ScreenActor in
                 
                 if(beauty==false)
                 {
@@ -449,7 +448,7 @@ public class TFIngest: NSObject {
                         //清空所有滤层,留下水印
                         if effect.type == .filters {
                             effectsList.remove(at: i)
-                            _ = await mixer.screen.unregisterVideoEffect(effect)
+                            _ = mixer.screen.unregisterVideoEffect(effect)
                         }
                        
                     }
@@ -478,7 +477,7 @@ public class TFIngest: NSObject {
                                     effectsList.remove(at: i)
                                     watermark_list.append(effect)
                                     
-                                    _ = await mixer.screen.unregisterVideoEffect(effect)
+                                    _ = mixer.screen.unregisterVideoEffect(effect)
                                 }
                             }
                          //------------------
@@ -486,7 +485,7 @@ public class TFIngest: NSObject {
                             let effect = TFFilter()
                             effect.type = .filters
                             effectsList.append(effect)
-                            _ = await mixer.screen.registerVideoEffect(effect)
+                            _ =  mixer.screen.registerVideoEffect(effect)
                         //------------------
                         //设置水印在最前面
                         if(watermark_list.count>0){
@@ -494,7 +493,7 @@ public class TFIngest: NSObject {
                             for i in 0..<watermark_list.count {
                                 let effect = watermark_list[i]
                                 effectsList.append(effect)
-                                _ = await mixer.screen.registerVideoEffect(effect)
+                                _ = mixer.screen.registerVideoEffect(effect)
                           
                             }
                             
