@@ -6,66 +6,20 @@
 //
 
 import UIKit
-
+enum TFFilterType {
+    case watermark //水印
+    case filters  //滤镜
+}
 class TFFilter: VideoEffect {
-    var state:NSInteger = -1
-    func execute(_ image: CIImage) -> CIImage {
-      
-        return image
-    }
-}
-//黑白
-final class TFMonochromeEffect: TFFilter {
-    let filter: CIFilter? = CIFilter(name: "CIColorMonochrome")
-
-    override func execute(_ image: CIImage) -> CIImage {
-        guard let filter: CIFilter = filter else {
-            return image
-        }
-        filter.setValue(image, forKey: "inputImage")
-        filter.setValue(CIColor(red: 1.0, green: 0.75, blue: 0.8), forKey: "inputColor")
-        filter.setValue(1.0, forKey: "inputIntensity")
-        
-        guard let outputImage = filter.outputImage else {
-            return image
-        }
-        return outputImage
-    }
-}
-//对比度
-//final class TFMonochromeEffect: TFFilter {
-//    let filter: CIFilter? = CIFilter(name: "CIColorControls")
-//
-//    override func execute(_ image: CIImage) -> CIImage {
-//        guard let filter = filter else {
-//            return image
-//        }
-//        
-//        // 设置输入图像
-//        filter.setValue(image, forKey: kCIInputImageKey)
-//        
-//        // 调整亮度（0.0 到 1.0，1.0 表示原始亮度）
-//        filter.setValue(0.5, forKey: kCIInputBrightnessKey) // 增加亮度
-//        
-//        // 调整对比度（0.0 到 4.0，1.0 表示原始对比度）
-//        filter.setValue(1.5, forKey: kCIInputContrastKey) // 增加对比度
-//        
-//        // 调整饱和度（0.0 到 2.0，1.0 表示原始饱和度）
-//        filter.setValue(1.2, forKey: kCIInputSaturationKey) // 增加饱和度
-//        
-//        guard let outputImage = filter.outputImage else {
-//            return image
-//        }
-//        
-//        return outputImage
-//    }
-//}
-
-//加水印
-final class TFPronamaEffect: TFFilter {
+    var type:TFFilterType = .filters
+    /**美颜的配置*/
+    var options:TFFilterOptions?
     
+    //水印图片
+    var watermark:UIImage?
+    //水印图片位置
+    var watermarkFrame:CGRect = .zero
     let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
-
     var extent = CGRect.zero {
         didSet {
             if extent == oldValue {
@@ -79,18 +33,76 @@ final class TFPronamaEffect: TFFilter {
         }
     }
     var pronama: CIImage?
-
-    override func execute(_ image: CIImage) -> CIImage {
-        guard let filter: CIFilter = filter else {
-            return image
+    
+    func execute(_ image: CIImage) -> CIImage {
+      //水印
+        if(type == .watermark)
+        {
+            guard let filter: CIFilter = filter else {
+                return image
+            }
+            extent = image.extent
+            filter.setValue(pronama!, forKey: "inputImage")
+            filter.setValue(image, forKey: "inputBackgroundImage")
+            
+            guard let outputImage = filter.outputImage else {
+                return image
+            }
+            return outputImage
         }
-        extent = image.extent
-        filter.setValue(pronama!, forKey: "inputImage")
-        filter.setValue(image, forKey: "inputBackgroundImage")
-        
-        guard let outputImage = filter.outputImage else {
-            return image
+        //过滤层
+        if let options = self.options {
+            return  self.applyFilter(with: image, options: options)
         }
-        return outputImage
+        return image
     }
+
+    func applyFilter(with sourceImage: CIImage, options: TFFilterOptions) -> CIImage {
+        guard let ciFilterName = options.ciFilterName else {
+            return sourceImage
+        }
+
+        let filter = CIFilter(name: ciFilterName)
+        filter?.setDefaults()
+        filter?.setValue(sourceImage, forKey: kCIInputImageKey)
+
+        guard let ciFilterName = filter?.outputImage else {
+            return sourceImage
+        }
+        return ciFilterName
+    }
+}
+
+import CoreImage
+public struct TFFilterOptions {
+    let name: String
+    let ciFilterName: String?
+
+    public init(name: String, ciFilterName: String?) {
+        self.name = name
+        self.ciFilterName = ciFilterName
+    }
+}
+
+extension TFFilterOptions: Equatable {
+    public static func ==(lhs: TFFilterOptions, rhs: TFFilterOptions) -> Bool {
+        return lhs.name == rhs.name
+    }
+}
+
+extension TFFilterOptions {
+    static var all: [TFFilterOptions] = [
+        TFFilterOptions(name: "Normal", ciFilterName: nil),
+        TFFilterOptions(name: "Chrome", ciFilterName: "CIPhotoEffectChrome"),
+        TFFilterOptions(name: "Fade", ciFilterName: "CIPhotoEffectFade"),
+        TFFilterOptions(name: "Instant", ciFilterName: "CIPhotoEffectInstant"),
+        TFFilterOptions(name: "Mono", ciFilterName: "CIPhotoEffectMono"),
+        TFFilterOptions(name: "Noir", ciFilterName: "CIPhotoEffectNoir"),
+        TFFilterOptions(name: "Process", ciFilterName: "CIPhotoEffectProcess"),
+        TFFilterOptions(name: "Tonal", ciFilterName: "CIPhotoEffectTonal"),
+        TFFilterOptions(name: "Transfer", ciFilterName: "CIPhotoEffectTransfer"),
+        TFFilterOptions(name: "Tone", ciFilterName: "CILinearToSRGBToneCurve"),
+        TFFilterOptions(name: "Linear", ciFilterName: "CISRGBToneCurveToLinear"),
+        TFFilterOptions(name: "Sepia", ciFilterName: "CISepiaTone"),
+    ]
 }

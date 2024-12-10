@@ -391,49 +391,126 @@ public class TFIngest: NSObject {
     //-----------------------------------------------
     
     var effectsList: [TFFilter] = []
-    
-    @objc public func registerVideoEffect(_ state:NSInteger)  {
+    /**水印*/
+    @objc public func addWatermark(_ watermark:UIImage,frame:CGRect)
+    {
         Task {
             
-            //默认
-            if state == 0 {
-                
-                for effect in effectsList {
-                    //清空所有滤层
-                  _ = await mixer.screen.unregisterVideoEffect(effect)
+            for effect in effectsList {
+                if effect.type == .watermark {
+                    return
                 }
-
-                effectsList.removeAll()
-            } else if (state == 1)
-            {
-                for effect in effectsList {
-                    if effect.state == state {
-                        return
-                    }
-                }
-                //黑白
-                let effect = TFMonochromeEffect()
-                effect.state = state
-                effectsList.append(effect)
-                _ = await mixer.screen.registerVideoEffect(effect)
-      
-            }else{
-   
-                
-                for effect in effectsList {
-                    if effect.state == state {
-                        return
-                    }
-                }
-                //加有水印
-                let effect = TFPronamaEffect()
-                effect.state = state
-                effectsList.append(effect)
-             _ = await mixer.screen.registerVideoEffect(effect)
             }
+            //加有水印
+            let effect = TFFilter()
+            effect.type = .watermark
+            effect.watermark = watermark
+            effect.watermarkFrame = frame
+            
+            effectsList.insert(effect, at: 0)
+            _ = await mixer.screen.registerVideoEffect(effect)
             
         }
     }
+    /**清空水印*/
+    @objc public func clearWatermark()
+    
+    {
+        Task {
+       
+            var new_effectsList: [TFFilter] = []
+            new_effectsList += effectsList
+            
+            for i in 0..<new_effectsList.count {
+                let effect = new_effectsList[i]
+                //清空所有滤层,留下水印
+                if effect.type == .watermark {
+                    effectsList.remove(at: i)
+                    
+                    _ = await mixer.screen.unregisterVideoEffect(effect)
+                }
+            }
+
+        }
+    }
+
+    //添加过滤层
+    @objc public func addEffect(_ state:NSInteger)  {
+        Task {
+            
+                var new_effectsList: [TFFilter] = []
+                new_effectsList += effectsList
+            
+                for i in 0..<new_effectsList.count {
+                    let effect = new_effectsList[i]
+                    //清空所有滤层,留下水印
+                    if effect.type == .filters {
+                        effectsList.remove(at: i)
+                        _ = await mixer.screen.unregisterVideoEffect(effect)
+                    }
+                   
+                }
+            //------------------
+              var watermark_list: [TFFilter] = []
+
+                for i in 0..<effectsList.count {
+                    let effect = effectsList[i]
+                    //清空所有滤层,留下水印
+
+                    if effect.type == .watermark {
+                        
+                        effectsList.remove(at: i)
+                        watermark_list.append(effect)
+                        
+                        _ = await mixer.screen.unregisterVideoEffect(effect)
+                    }
+                }
+             //------------------
+                //美颜
+                let effect = TFFilter()
+                effect.type = .filters
+                effect.options = TFFilterOptions.all[state]
+               effectsList.append(effect)
+            
+                _ = await mixer.screen.registerVideoEffect(effect)
+            
+            //设置水印在最前面
+            if(watermark_list.count>0){
+                
+                for i in 0..<watermark_list.count {
+                    let effect = watermark_list[i]
+                    effectsList.append(effect)
+                    _ = await mixer.screen.registerVideoEffect(effect)
+              
+                }
+                
+            }
+         
+            
+        }
+    }
+    
+    /**清空美颜层**/
+//    @objc public func clearFilter()
+//    {
+//        Task {
+//            var new_effectsList: [TFFilter] = []
+//            new_effectsList += effectsList
+//
+//            for i in 0..<new_effectsList.count {
+//                let effect = new_effectsList[i]
+//                //清空所有滤层,留下水印
+//                if effect.type == .filters {
+//                    effectsList.remove(at: i)
+//
+//                    _ = await mixer.screen.unregisterVideoEffect(effect)
+//                }
+//            }
+//
+//
+//        }
+//
+//    }
 }
 extension TFIngest: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
