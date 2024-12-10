@@ -19,7 +19,7 @@ class TFFilter: VideoEffect {
     var watermark:UIImage?
     //水印图片位置
     var watermarkFrame:CGRect = .zero
-    let filter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
+//
     var extent = CGRect.zero {
         didSet {
             if extent == oldValue {
@@ -33,12 +33,12 @@ class TFFilter: VideoEffect {
         }
     }
     var pronama: CIImage?
-    
+    let watermarkFilter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
     func execute(_ image: CIImage) -> CIImage {
       //水印
         if(type == .watermark)
         {
-            guard let filter: CIFilter = filter else {
+            guard let filter: CIFilter = watermarkFilter else {
                 return image
             }
             extent = image.extent
@@ -52,24 +52,32 @@ class TFFilter: VideoEffect {
         }
         //过滤层
         if let options = self.options {
-            return  self.applyFilter(with: image, options: options)
+            return self.applyFilter(with: image, options: options)
         }
         return image
     }
 
+    var filter:CIFilter?
     func applyFilter(with sourceImage: CIImage, options: TFFilterOptions) -> CIImage {
         guard let ciFilterName = options.ciFilterName else {
             return sourceImage
         }
 
-        let filter = CIFilter(name: ciFilterName)
-        filter?.setDefaults()
-        filter?.setValue(sourceImage, forKey: kCIInputImageKey)
-
-        guard let ciFilterName = filter?.outputImage else {
-            return sourceImage
+        if filter==nil {
+            filter = CIFilter(name: ciFilterName)
         }
-        return ciFilterName
+      
+        if let filter = filter {
+            filter.setDefaults()
+            filter.setValue(sourceImage, forKey: kCIInputImageKey)
+
+            guard let ciFilterName = filter.outputImage else {
+                return sourceImage
+            }
+            return ciFilterName
+        }
+        //原数据
+        return sourceImage
     }
 }
 
