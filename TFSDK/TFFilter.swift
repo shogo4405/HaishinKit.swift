@@ -19,23 +19,9 @@ class TFFilter: VideoEffect {
     //水印图片位置
     var watermarkFrame:CGRect = .zero
 
-
-    var pronama: CIImage?
     let watermarkFilter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
     let mageBeautifyFilter = TFUImageBeautifyFilter()
     
-    var extent = CGRect.zero {
-        didSet {
-            if extent == oldValue {
-                return
-            }
-            UIGraphicsBeginImageContext(extent.size)
-            let image = UIImage(named: "Icon.png")!
-            image.draw(at: CGPoint(x: 50, y: 50))
-            pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
-            UIGraphicsEndImageContext()
-        }
-    }
     func execute(_ image: CIImage) -> CIImage {
       //水印
         if(type == .watermark)
@@ -43,7 +29,15 @@ class TFFilter: VideoEffect {
             guard let filter: CIFilter = watermarkFilter else {
                 return image
             }
-            self.extent = image.extent
+
+            // 假设 watermark 和 watermarkFrame 已定义
+            guard let watermark = watermark else { return image }
+
+            UIGraphicsBeginImageContext(image.extent.size)
+            watermark.draw(in: watermarkFrame)
+
+            let pronama = CIImage(image: UIGraphicsGetImageFromCurrentImageContext()!, options: nil)
+            UIGraphicsEndImageContext()
             filter.setValue(pronama!, forKey: "inputImage")
             filter.setValue(image, forKey: "inputBackgroundImage")
             
