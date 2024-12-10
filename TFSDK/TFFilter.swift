@@ -13,14 +13,17 @@ enum TFFilterType {
 }
 class TFFilter: VideoEffect {
     var type:TFFilterType = .filters
-    /**美颜的配置*/
-//    var options:TFFilterOptions?
-    
+
     //水印图片
     var watermark:UIImage?
     //水印图片位置
     var watermarkFrame:CGRect = .zero
-//
+
+
+    var pronama: CIImage?
+    let watermarkFilter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
+    let mageBeautifyFilter = TFUImageBeautifyFilter()
+    
     var extent = CGRect.zero {
         didSet {
             if extent == oldValue {
@@ -33,9 +36,6 @@ class TFFilter: VideoEffect {
             UIGraphicsEndImageContext()
         }
     }
-    var pronama: CIImage?
-    let watermarkFilter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
-    let mageBeautifyFilter = TFUImageBeautifyFilter()
     func execute(_ image: CIImage) -> CIImage {
       //水印
         if(type == .watermark)
@@ -43,7 +43,7 @@ class TFFilter: VideoEffect {
             guard let filter: CIFilter = watermarkFilter else {
                 return image
             }
-            extent = image.extent
+            self.extent = image.extent
             filter.setValue(pronama!, forKey: "inputImage")
             filter.setValue(image, forKey: "inputBackgroundImage")
             
@@ -52,14 +52,14 @@ class TFFilter: VideoEffect {
             }
             return outputImage
         }
+        
+        return mageBeautifyFilter.apply(image)!
         //过滤层
 //        if let options = self.options {
 //            //默认
 //            if options.ciFilterName==nil {
 //                return image
 //            }
-            return mageBeautifyFilter.apply(image)!
-            
 //            return self.applyFilter(with: image, options: options)
 //        }
 //        return image
