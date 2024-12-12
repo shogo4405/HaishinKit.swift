@@ -35,6 +35,7 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
+    var view2:UIView?
     @objc public func setSDK(view:UIView,
                              videoSize:CGSize,
                              videoFrameRate:CGFloat,
@@ -42,6 +43,8 @@ public class TFIngest: NSObject {
     {
 
         Task {  @ScreenActor in
+            
+            view2 = view
             if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 let orientation = await windowScene.interfaceOrientation
                 if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
@@ -509,8 +512,29 @@ public class TFIngest: NSObject {
     }
     //设置焦点
     @objc public func setFocusBoxPoint(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
-          //AVCaptureDevice.FocusMode.autoFocus 1 手动
-        //AVCaptureDevice.ExposureMode.autoExpose 1 手动
+      
+        if focusMode == AVCaptureDevice.FocusMode.autoFocus && exposureMode == AVCaptureDevice.ExposureMode.autoExpose  {
+            //AVCaptureDevice.FocusMode.autoFocus 1 手动
+          //AVCaptureDevice.ExposureMode.autoExpose 1 手动
+            if let view2 = view2
+            {
+                let size = view2.bounds.size
+                let focusPoint = CGPoint(
+                    x: CGFloat(point.y) / CGFloat(size.height),
+                    y: 1.0 - (CGFloat(point.x) / CGFloat(size.width)))
+                    
+                self.setFocusBoxPoint2(focusPoint, focusMode: focusMode, exposureMode: exposureMode)
+            }else
+            {
+                //自动焦点
+                self.setFocusBoxPoint2(point, focusMode: focusMode, exposureMode: exposureMode)
+            }
+
+        }
+       
+    }
+    private func setFocusBoxPoint2(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
+        
         Task {
             try await mixer.configuration(video: 0) { unit in
                 guard let device = unit.device else {
@@ -519,7 +543,6 @@ public class TFIngest: NSObject {
                 self.focusPoint(point, focusMode: focusMode, exposureMode: exposureMode, device: device)
             }
         }
-
     }
      func focusPoint(_ focusPoint: CGPoint,
                               focusMode: AVCaptureDevice.FocusMode,
