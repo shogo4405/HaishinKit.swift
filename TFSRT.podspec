@@ -36,5 +36,5 @@ Pod::Spec.new do |s|
 
   s.vendored_frameworks = "SRTHaishinKit/Vendor/SRT/libsrt.xcframework"
   s.dependency 'HaishinKit', '2.0.1'
-  s.dependency 'GPUImageBeautifyFilter', '1.0.0'
+  s.dependency 'TFGPUImage', '1.0.0'
 end

@@ -7,8 +7,8 @@
 
 import UIKit
 import CoreImage
-import GPUImage
-import GPUImageBeautifyFilter
+import TFGPUImage
+//import GPUImageBeautifyFilter
 enum TFFilterType {
     case watermark //水印
     case filters  //滤镜
