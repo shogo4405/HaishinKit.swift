@@ -310,20 +310,20 @@ public class TFIngest: NSObject {
         }
     }
     /**设置 近  中 远 摄像头*/
-    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType)
+    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)
     {
         Task {  @ScreenActor in
-            if self.position == .back
-            {
+//            if self.position == .back
+//            {
                 // .builtInWideAngleCamera
-                let back = AVCaptureDevice.default(cameraType, for: .video, position: .back)
+                let back = AVCaptureDevice.default(cameraType, for: .video, position:position)
                 //track 是多个摄像头的下标
                 try? await mixer.attachVideo(back, track: 0){ videoUnit in
                     
                     videoUnit.isVideoMirrored = false
                 }
 
-            }
+//            }
          
         }
         
@@ -508,27 +508,19 @@ public class TFIngest: NSObject {
         }
     }
     //设置焦点
-    @objc public func setFocusBoxPoint(_ point: CGPoint) {
-          
-        
-//        self.getCurrentCamera(session:  mixer.sessionPreset)
-       
-    }
-    //获取当前正在使用的 AVCaptureDevice
-    func getCurrentCamera(session: AVCaptureSession) -> AVCaptureDevice? {
-        // 获取 AVCaptureSession 的所有输入设备
-        for input in session.inputs {
-            // 确保输入是 AVCaptureDeviceInput 类型
-            guard let deviceInput = input as? AVCaptureDeviceInput else { continue }
-            
-            // 检查设备类型是否为摄像头
-            if deviceInput.device.deviceType == .builtInWideAngleCamera {
-                return deviceInput.device
+    @objc public func setFocusBoxPoint(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
+          //AVCaptureDevice.FocusMode.autoFocus 1 手动
+        //AVCaptureDevice.ExposureMode.autoExpose 1 手动
+        Task {
+            try await mixer.configuration(video: 0) { unit in
+                guard let device = unit.device else {
+                    return
+                }
+                self.focusPoint(point, focusMode: focusMode, exposureMode: exposureMode, device: device)
             }
         }
-        return nil
+
     }
-    
      func focusPoint(_ focusPoint: CGPoint,
                               focusMode: AVCaptureDevice.FocusMode,
                               exposureMode: AVCaptureDevice.ExposureMode,
