@@ -316,8 +316,7 @@ public class TFIngest: NSObject {
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)
     {
         Task {  @ScreenActor in
-//            if self.position == .back
-//            {
+
                 // .builtInWideAngleCamera
                 let back = AVCaptureDevice.default(cameraType, for: .video, position:position)
                 //track 是多个摄像头的下标
@@ -326,8 +325,6 @@ public class TFIngest: NSObject {
                     videoUnit.isVideoMirrored = false
                 }
 
-//            }
-         
         }
         
     }
@@ -513,9 +510,9 @@ public class TFIngest: NSObject {
     //设置焦点
     @objc public func setFocusBoxPoint(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
       
-        if focusMode == AVCaptureDevice.FocusMode.autoFocus && exposureMode == AVCaptureDevice.ExposureMode.autoExpose  {
-            //AVCaptureDevice.FocusMode.autoFocus 1 手动
-          //AVCaptureDevice.ExposureMode.autoExpose 1 手动
+        if focusMode == .autoFocus && exposureMode == .autoExpose  {
+            //.autoFocus 1 手动
+          //.autoExpose 1 手动
             if let view2 = view2
             {
                 let size = view2.bounds.size
@@ -523,17 +520,17 @@ public class TFIngest: NSObject {
                     x: CGFloat(point.y) / CGFloat(size.height),
                     y: 1.0 - (CGFloat(point.x) / CGFloat(size.width)))
                     
-                self.setFocusBoxPoint2(focusPoint, focusMode: focusMode, exposureMode: exposureMode)
+                self.setFocusBoxPointInternal(focusPoint, focusMode: focusMode, exposureMode: exposureMode)
             }else
             {
                 //自动焦点
-                self.setFocusBoxPoint2(point, focusMode: focusMode, exposureMode: exposureMode)
+                self.setFocusBoxPointInternal(point, focusMode: focusMode, exposureMode: exposureMode)
             }
 
         }
        
     }
-    private func setFocusBoxPoint2(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
+    private func setFocusBoxPointInternal(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
         
         Task {
             try await mixer.configuration(video: 0) { unit in
