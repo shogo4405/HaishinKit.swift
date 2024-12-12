@@ -22,8 +22,6 @@ class TFFilter: VideoEffect {
     var watermarkFrame:CGRect = .zero
     let watermarkFilter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
     
-//    let mageBeautifyFilter = TFUImageBeautifyFilter()
-
     func calculateNewWatermarkFrame(originalFrame: CGRect, imageExtent: CGSize, screenBounds: CGRect) -> CGRect {
         // 计算缩放因子
         let scaleFactorWidth = imageExtent.width / screenBounds.width
@@ -120,5 +118,21 @@ class TFFilter: VideoEffect {
         
         // 将 CGImage 转换为 UIImage
         return UIImage(cgImage: cgImage)
+    }
+}
+extension Data {
+    func chunk(_ size: Int) -> [Data] {
+        if count < size {
+            return [self]
+        }
+        var chunks: [Data] = []
+        let length = count
+        var offset = 0
+        repeat {
+            let thisChunkSize = ((length - offset) > size) ? size : (length - offset)
+            chunks.append(subdata(in: offset..<offset + thisChunkSize))
+            offset += thisChunkSize
+        } while offset < length
+        return chunks
     }
 }
