@@ -4,8 +4,8 @@ platform :ios, '13.0'
 
 target 'newVideo' do
     use_frameworks! #SDK依赖
-#    pod 'GPUImage','~> 0.1.7'
-    pod 'TFGPUImage', :path => '/Users/mo/Documents/IOS/TFGPUImage/TFGPUImage.podspec'
+
+    pod 'TFGPUImage', :path => '../../TFGPUImage/TFGPUImage.podspec'
     pod 'TFSRT', :path => '../../HaishinKit.swift/TFSRT.podspec'
     
 end

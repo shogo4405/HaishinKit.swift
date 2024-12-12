@@ -8,7 +8,7 @@ PODS:
     - TFGPUImage (= 1.0.0)
 
 DEPENDENCIES:
-  - TFGPUImage (from `/Users/mo/Documents/IOS/TFGPUImage/TFGPUImage.podspec`)
+  - TFGPUImage (from `../../TFGPUImage/TFGPUImage.podspec`)
   - TFSRT (from `../../HaishinKit.swift/TFSRT.podspec`)
 
 SPEC REPOS:
@@ -18,7 +18,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   TFGPUImage:
-    :path: "/Users/mo/Documents/IOS/TFGPUImage/TFGPUImage.podspec"
+    :path: "../../TFGPUImage/TFGPUImage.podspec"
   TFSRT:
     :path: "../../HaishinKit.swift/TFSRT.podspec"
 
@@ -28,6 +28,6 @@ SPEC CHECKSUMS:
   TFGPUImage: 647ad3bbd9de77a0ba5a4b447edbc34ed880deeb
   TFSRT: 85c07f35b008527b3fb8f25f1672bf791adb5fb5
 
-PODFILE CHECKSUM: 145f2e8bee9cab01e365adc5ac5ce9c47faabd3d
+PODFILE CHECKSUM: bf7bad76132189f4f4aa5f3dcf391d71c936277b
 
 COCOAPODS: 1.16.2
