@@ -1,0 +1,292 @@
+//
+//  TFVideoViewController.m
+//  newVideo
+//
+//  Created by moRui on 2024/12/3.
+//
+
+#import "TFVideoViewController.h"
+#import <AVFoundation/AVFoundation.h>
+
+@import TFSRT;
+@interface TFVideoViewController ()
+@property (nonatomic, strong) MTHKView *view2;
+@property (nonatomic, strong) TFIngest *ingest;
+@property (nonatomic, strong) UISlider *zoomSlider;
+@property (nonatomic, strong)UIImageView *focusCursorImageView;
+@end
+
+@implementation TFVideoViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    
+    //符合 HKStreamOutput 协议的视图
+    self.view2 = [[MTHKView alloc]init];
+    self.view2.frame = self.view.frame;
+    [self.view addSubview:self.view2];
+    
+    
+    self.ingest = [[TFIngest alloc]init];
+    [self.ingest setSDKWithView:self.view2
+                      videoSize:CGSizeMake(720, 1280)
+                 videoFrameRate:30
+                   videoBitRate:600*1024];
+    
+    CGFloat rightX = self.view.frame.size.width-100;
+    
+    [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) tag:0];
+    
+    [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) tag:0];
+    
+    [self view:self.view addButton:CGRectMake(rightX, 100, 100, 30) title:@"停止推流" action:@selector(srtClick:) tag:1];
+    
+    [self view:self.view addButton:CGRectMake(0, 140, 100, 30) title:@"后摄像头" action:@selector(attachVideoClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(rightX, 140, 100, 30) title:@"前摄像头" action:@selector(attachVideoClick:) tag:1];
+    
+    [self view:self.view addButton:CGRectMake(0, 180, 100, 30) title:@"镜像关" action:@selector(mirrorClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(rightX, 180, 100, 30) title:@"镜像开" action:@selector(mirrorClick:) tag:1];
+    
+    if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInUltraWideCamera position:AVCaptureDevicePositionBack]) {
+        [self view:self.view addButton:CGRectMake(0, 220, 100, 30) title:@"近摄像头" action:@selector(switchToStandardCamera) tag:0];
+    }
+    if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionBack]) {
+        [self view:self.view addButton:CGRectMake((self.view.frame.size.width-100)/2, 220, 100, 30) title:@"中摄像头" action:@selector(switchToWideAngleCamera) tag:1];
+    }
+    if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInTelephotoCamera position:AVCaptureDevicePositionBack]) {
+        [self view:self.view addButton:CGRectMake(rightX, 220, 100, 30) title:@"远摄像头" action:@selector(switchToTelephotoCamera) tag:0];
+    }
+    
+    [self view:self.view addButton:CGRectMake(0, 260, 100, 30) title:@"开始录制" action:@selector(recordingClick:) tag:1];
+    [self view:self.view addButton:CGRectMake(rightX, 260, 100, 30) title:@"停止录制" action:@selector(recordingClick:) tag:0];
+    
+    [self view:self.view addButton:CGRectMake(0, 300, 100, 30) title:@"删除水印" action:@selector(clearWatermark:) tag:0];
+    [self view:self.view addButton:CGRectMake(rightX, 300, 100, 30) title:@"添加水印" action:@selector(addWatermark:) tag:0];
+    
+    // 创建 Slider
+    self.zoomSlider = [[UISlider alloc] init];
+    self.zoomSlider.minimumValue = 1.0; // 最小缩放倍数
+    self.zoomSlider.maximumValue = 3.0; // 最大缩放倍数
+    self.zoomSlider.value = 1.0;        // 初始缩放倍数
+    self.zoomSlider.translatesAutoresizingMaskIntoConstraints = NO;
+    [self.view addSubview:self.zoomSlider];
+    self.zoomSlider.backgroundColor = [UIColor blackColor];
+    self.zoomSlider.frame = CGRectMake(0, 340, self.view.frame.size.width, 20);
+    [self.zoomSlider addTarget:self action:@selector(zoomSliderChanged:) forControlEvents:UIControlEventValueChanged];
+    
+    
+    [self view:self.view addButton:CGRectMake(0, 380, 100, 30) title:@"关 美颜" action:@selector(videoEffectClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(self.view.frame.size.width-100, 380, 100, 30) title:@"开 美颜" action:@selector(videoEffectClick:) tag:1];
+
+
+    [self view:self.view addButton:CGRectMake((self.view.frame.size.width-100)/2, 420, 100, 100) title:@"默认焦点" action:@selector(focusBoxPointClick:) tag:1];
+    [self.ingest setSrtUrlWithUrl:@"srt://qq-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLi8vJStAEA,txSecret=a8dee9a1fd41cd96a8d2abe48e5fa00d,txTime=6753EDF5"];
+}
+
+
+- (void)zoomSliderChanged:(UISlider *)sender {
+    CGFloat scale = sender.value;
+    [self.ingest zoomScale:scale];
+//    NSLog(@"缩放====>%f",scale);
+}
+//添加水印
+- (void)addWatermark:(UIButton*)recording {
+    
+    UIImageView *imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"66"] ];
+    imageView.backgroundColor = [UIColor blackColor];
+    imageView.contentMode = UIViewContentModeScaleAspectFit;
+    imageView.frame = CGRectMake(0, 50, self.view.frame.size.width/2, 100);
+    
+    [self.ingest addWatermark: [self highQualitySnapshot:imageView] frame:CGRectMake(0, 50, self.view.frame.size.width/2, 100)];
+}
+
+- (UIImage *)highQualitySnapshot:(UIImageView *)view {
+    // 确保传入的 view 不为 nil
+    if (!view) {
+        return [[UIImage alloc]init];
+    }
+
+    // 确保视图已经布局完成
+    [view layoutIfNeeded];
+
+    // 获取视图的内容尺寸和比例尺
+    CGSize viewSize = view.bounds.size;
+    CGFloat scale = [UIScreen mainScreen].scale;
+
+    // 创建一个与视图大小相同且具有相同比例尺的图像上下文
+    UIGraphicsBeginImageContextWithOptions(viewSize, NO, scale);
+    if (UIGraphicsGetCurrentContext() != nil) {
+        // 将视图的内容绘制到上下文中
+        [view drawViewHierarchyInRect:view.bounds afterScreenUpdates:YES];
+
+        // 从上下文中获取图像
+        UIImage *snapshotImage = UIGraphicsGetImageFromCurrentImageContext();
+
+        // 结束图像上下文
+        UIGraphicsEndImageContext();
+
+        return snapshotImage;
+    } else {
+        // 如果无法创建上下文，则返回 nil
+        return [[UIImage alloc]init];
+    }
+}
+//删除水印
+- (void)clearWatermark:(UIButton*)recording {
+    [self.ingest clearWatermark];
+}
+
+//美颜开关
+- (void)videoEffectClick:(UIButton*)recording {
+    self.ingest.beauty = recording.tag;
+}
+- (void)recordingClick:(UIButton*)recording {
+    
+    if (recording.tag==1) {
+        [self.ingest recording:true];
+    }else{
+        [self.ingest recording:false];
+    }
+    
+}
+
+- (void)switchToStandardCamera {
+    //超广角摄像头  近距离
+    [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInUltraWideCamera position:AVCaptureDevicePositionBack ];
+}
+- (void)switchToWideAngleCamera {
+    // 主摄像头（广角镜头）中距离 这是大多数摄影和视频应用中使用的默认摄像头。
+    [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionBack];
+}
+
+- (void)switchToTelephotoCamera {
+    //长焦摄像头（远摄摄像头）
+    [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInTelephotoCamera position:AVCaptureDevicePositionBack];
+
+}
+/**
+ AVCaptureDeviceTypeBuiltInUltraWideCamera  超广角摄像头  (近距离)
+ AVCaptureDeviceTypeBuiltInWideAngleCamera 中距离 (这是大多数摄影和视频应用中使用的默认摄像头)
+ AVCaptureDeviceTypeBuiltInTelephotoCamera  长焦摄像头（远摄摄像头）
+ 
+ position:
+    AVCaptureDevicePositionBack后摄像头
+    AVCaptureDevicePositionFront前摄像头
+ 摄像头是否支持**/
+- (BOOL)cameraAvailable:(AVCaptureDeviceType)cameraType position:(AVCaptureDevicePosition)position
+{
+    NSArray<AVCaptureDevice *> *devices = nil;
+
+    if (@available(iOS 13.0, *)) {
+        AVCaptureDeviceDiscoverySession *discoverySession =
+            [AVCaptureDeviceDiscoverySession discoverySessionWithDeviceTypes:@[cameraType]
+                                                                  mediaType:AVMediaTypeVideo
+                                                                   position:position];
+        
+        devices = discoverySession.devices;
+    }
+    return devices != nil && devices.count > 0;
+}
+- (void)view:(UIView*)view addButton:(CGRect)rect title:(NSString*)title action:(SEL)action tag:(NSInteger)tag
+{
+    UIButton *btn = [[UIButton alloc]init];
+    btn.backgroundColor = [UIColor blackColor];
+    btn.frame = rect;
+    [btn setTitle:title forState:UIControlStateNormal];
+    btn.tag = tag;
+    [view addSubview:btn];
+    btn.alpha = 0.5;
+    [btn addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
+    
+}
+- (void)exitBtnClick:(UIButton*)btn
+{
+    [self.ingest shutdown];
+    self.ingest = nil;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+- (void)srtClick:(UIButton*)btn
+{
+    //开始推流
+    if (btn.tag ==0 ) {
+        [self.ingest startLiveWithCallback:^(NSInteger code, NSString * msg) {
+            
+            if (code==0) {
+                
+            }else{
+                
+            }
+        }];
+    } else {
+    //停止推流
+        [self.ingest stopLive];
+   }
+    
+}
+//前后摄像开关
+- (void)attachVideoClick:(UIButton*)btn
+{
+    if (btn.tag ==0 ) {
+        [self.ingest attachVideoWithPosition:AVCaptureDevicePositionBack];
+    }else
+    {
+        [self.ingest attachVideoWithPosition:AVCaptureDevicePositionFront];
+    }
+}
+//镜像开关
+- (void)mirrorClick:(UIButton*)btn
+{
+    if (btn.tag ==0 ) {
+        
+        [self.ingest isVideoMirrored:false];
+        
+    }else{
+        [self.ingest isVideoMirrored:true];
+    }
+}
+- (UIImageView *)focusCursorImageView {
+    if (!_focusCursorImageView) {
+        _focusCursorImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed: @"focus"]];
+        [self.view addSubview:_focusCursorImageView];
+    }
+    return _focusCursorImageView;
+}
+// 设置聚集光标的位置
+- (void)setFocusCursorWithPoint: (CGPoint)point {
+   self.focusCursorImageView.center = point;
+   self.focusCursorImageView.transform = CGAffineTransformMakeScale(1.5, 1.5);
+   self.focusCursorImageView.alpha = 1.0f;
+   [UIView animateWithDuration:1.0 animations:^{
+       self.focusCursorImageView.transform = CGAffineTransformIdentity;
+   } completion:^(BOOL finished) {
+       self.focusCursorImageView.alpha = 0.0f;
+   }];
+}
+#pragma mark - 聚集光标
+- (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
+    // 获取点击位置
+    UITouch *touch= [touches anyObject];
+    CGPoint point = [touch locationInView:self.view];
+    // 设置聚集光标的位置
+    [self setFocusCursorWithPoint:point];
+    // 把当前位置转换为摄像头点上的位置
+//    CGPoint cameraPoint = [_previewdLayer captureDevicePointOfInterestForPoint:point];
+//
+//    // 设置聚焦
+//    [self focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
+    //手动
+    [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose];
+}
+//默认自动
+- (void)focusBoxPointClick:(UIButton*)btn
+{
+    CGPoint point = CGPointMake(0.5, 0.5);
+    [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeContinuousAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure];
+}
+
+- (void)dealloc{
+    NSLog(@"控制器销毁==========>");
+}
+@end
