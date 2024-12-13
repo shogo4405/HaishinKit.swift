@@ -123,6 +123,7 @@ public class TFIngest: NSObject {
         }
         Task { @ScreenActor in
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            //设置默认是前置 然后设置镜像
             try? await mixer.attachVideo(front, track: 0){videoUnit in
                 videoUnit.isVideoMirrored = true
             }
@@ -322,20 +323,22 @@ public class TFIngest: NSObject {
     @objc public func setSrtUrl(url:String)
     {
         srtUrl = url
-        let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
-        if(streamMode != streamMode2)
-        {
-            Task {  @ScreenActor in
-               
-                    self.configurationSDK(view: view2,
-                                          videoSize: videoSize2,
-                                          videoFrameRate: videoFrameRate2,
-                                          videoBitRate: videoBitRate2,
-                                          streamMode: streamMode)
-                
-               
-            }
-        }
+
+//            Task {  @ScreenActor in
+//                let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
+//                if(streamMode != streamMode2)
+//                {
+//                    self.configurationSDK(view: view2,
+//                                          videoSize: videoSize2,
+//                                          videoFrameRate: videoFrameRate2,
+//                                          videoBitRate: videoBitRate2,
+//                                          streamMode: streamMode)
+//                }
+//                    
+//                
+//               
+//            }
+      
 
      
     }

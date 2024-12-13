@@ -80,15 +80,19 @@
     self.focusBoxPoint.selected = true;
     
     
-     self.ingest = [[TFIngest alloc]init];
-    [self.ingest setSDKWithView:self.view2
-                      videoSize:CGSizeMake(540, 960)
-                 videoFrameRate:30
-                   videoBitRate:600*1024
-                     streamMode:TFStreamModeRtmp];
+
     
     self.streamBtn = [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 490, 100, 30) title:@"RTMP推流" action:@selector(streamClick:) tag:1];
     self.streamBtn.selected = true;
+    
+    
+    self.ingest = [[TFIngest alloc]init];
+   [self.ingest setSDKWithView:self.view2
+                     videoSize:CGSizeMake(540, 960)
+                videoFrameRate:30
+                  videoBitRate:600*1024
+                    streamMode:TFStreamModeRtmp];
+    
     //设置URL
     [self setStreamMode:TFStreamModeRtmp];
 }
@@ -120,7 +124,7 @@
     btn.selected = !btn.selected;
     if(btn.selected==true)
     {
-        [self setStreamMode:TFStreamModeRtmp];
+        [self setStreamMode:TFStreamModeRtmp];   
     }else{
      
         [self setStreamMode:TFStreamModeSrt];
