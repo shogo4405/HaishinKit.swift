@@ -68,26 +68,13 @@ public class TFIngest: NSObject {
                           again:Bool)
     
     {
-        if(view2 != view)
-        {
+       
             view2 = view
-        }
-        if(videoSize2 != videoSize)
-        {
             videoSize2 = videoSize
-        }
-        if(videoBitRate2 != videoBitRate)
-        {
             videoBitRate2 = videoBitRate
-        }
-        if(videoFrameRate2 != videoFrameRate)
-        {
             videoFrameRate2 = videoFrameRate
-        }
-        if(streamMode2 != streamMode)
-        {
             streamMode2 = streamMode
-        }
+        
      
         Task {  @ScreenActor in
             
@@ -350,38 +337,36 @@ public class TFIngest: NSObject {
     {
         srtUrl = url
         
-        
-
             Task {
-                
-                
-                switch streamMode2 {
-                case .rtmp:
-                    guard
-                        let connection = connection as? RTMPConnection,
-                        let stream = stream as? RTMPStream else {
-                        return
-                    }
-                    try? await connection.close()
-                    try? await stream.close()
-                    self.connection = nil
-                    self.stream = nil
-//                    logger.info("conneciton.close")
-                case .srt:
-                    guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
-                        return
-                    }
-                    try? await connection.close()
-                    try? await stream.close()
-                    
-                    self.connection = nil
-                    self.stream = nil
-//                    logger.info("conneciton.close")
-                }
-                
+               
                 let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
                 if(streamMode != streamMode2)
                 {
+                    
+                    switch streamMode2 {
+                    case .rtmp:
+                        guard
+                            let connection = connection as? RTMPConnection,
+                            let stream = stream as? RTMPStream else {
+                            return
+                        }
+                        try? await connection.close()
+                        try? await stream.close()
+                        self.connection = nil
+                        self.stream = nil
+    //                    logger.info("conneciton.close")
+                    case .srt:
+                        guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                            return
+                        }
+                        try? await connection.close()
+                        try? await stream.close()
+                        
+                        self.connection = nil
+                        self.stream = nil
+    //                    logger.info("conneciton.close")
+                    }
+                    
                     self.configurationSDK(view: view2,
                                           videoSize: videoSize2,
                                           videoFrameRate: videoFrameRate2,
