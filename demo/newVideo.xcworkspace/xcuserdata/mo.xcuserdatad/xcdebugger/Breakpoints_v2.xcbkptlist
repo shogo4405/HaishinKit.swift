@@ -3,4 +3,144 @@
    uuid = "3714D0A6-8C98-4333-84C8-F7B432D75561"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D4426281-3E44-4A03-86BC-61EDD9ED40A6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../TFSDK/TFIngest.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "276"
+            endingLineNumber = "276"
+            landmarkName = "startLive(callback:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D4426281-3E44-4A03-86BC-61EDD9ED40A6 - d3059529eb8b0531"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(10) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.startLive(callback: Swift.Optional&lt;(Swift.Int, Swift.String) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "276"
+                  endingLineNumber = "276">
+               </Location>
+               <Location
+                  uuid = "D4426281-3E44-4A03-86BC-61EDD9ED40A6 - 8138078d6441662e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(11) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.startLive(callback: Swift.Optional&lt;(Swift.Int, Swift.String) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "276"
+                  endingLineNumber = "276">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CC9CD7EB-5A88-4FB9-97CC-6CF2BA0C76FC"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../TFSDK/TFIngest.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "281"
+            endingLineNumber = "281"
+            landmarkName = "startLive(callback:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "CC9CD7EB-5A88-4FB9-97CC-6CF2BA0C76FC - d3059529eb8b06dc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(10) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.startLive(callback: Swift.Optional&lt;(Swift.Int, Swift.String) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "281"
+                  endingLineNumber = "281">
+               </Location>
+               <Location
+                  uuid = "CC9CD7EB-5A88-4FB9-97CC-6CF2BA0C76FC - 8138078d644165c3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(11) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.startLive(callback: Swift.Optional&lt;(Swift.Int, Swift.String) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "281"
+                  endingLineNumber = "281">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "517794DE-1EEB-4C25-A1C1-2E9CB6B8F14B"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../TFSDK/TFIngest.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
+            landmarkName = "startLive(callback:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "517794DE-1EEB-4C25-A1C1-2E9CB6B8F14B - d3059529eb8b0667"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(10) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.startLive(callback: Swift.Optional&lt;(Swift.Int, Swift.String) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "286"
+                  endingLineNumber = "286">
+               </Location>
+               <Location
+                  uuid = "517794DE-1EEB-4C25-A1C1-2E9CB6B8F14B - 8138078d64416578"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(11) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.startLive(callback: Swift.Optional&lt;(Swift.Int, Swift.String) -&gt; ()&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "286"
+                  endingLineNumber = "286">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

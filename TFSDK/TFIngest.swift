@@ -264,8 +264,10 @@ public class TFIngest: NSObject {
                         return
                     }
                     
-                    _ = try await connection.connect(srtUrl)
-                    let response2 = try await stream.publish(nil)
+                    let response3 = try await connection.connect(srtUrl)
+                    logger.info(response3)
+                        
+                    let response2 = try await stream.publish("live")
                     logger.info(response2)
                     if let callback = callback {
                         callback(0,"")
