@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UISlider *zoomSlider;
 @property (nonatomic, strong)UIImageView *focusCursorImageView;
 @property (nonatomic, strong)UIButton *focusBoxPoint;
-//@property (nonatomic, strong)UIButton *stream;
+
 @end
 
 @implementation TFVideoViewController
@@ -42,33 +42,32 @@
     [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) tag:0];
     
     [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) tag:0];
-    
     [self view:self.view addButton:CGRectMake(rightX, 100, 100, 30) title:@"停止推流" action:@selector(srtClick:) tag:1];
     
-    [self view:self.view addButton:CGRectMake(0, 140, 100, 30) title:@"后摄像头" action:@selector(attachVideoClick:) tag:0];
-    [self view:self.view addButton:CGRectMake(rightX, 140, 100, 30) title:@"前摄像头" action:@selector(attachVideoClick:) tag:1];
+    [self view:self.view addButton:CGRectMake(0, 150, 100, 30) title:@"后摄像头" action:@selector(attachVideoClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(rightX, 150, 100, 30) title:@"前摄像头" action:@selector(attachVideoClick:) tag:1];
     
-    [self view:self.view addButton:CGRectMake(0, 180, 100, 30) title:@"镜像关" action:@selector(mirrorClick:) tag:0];
-    [self view:self.view addButton:CGRectMake(rightX, 180, 100, 30) title:@"镜像开" action:@selector(mirrorClick:) tag:1];
+    [self view:self.view addButton:CGRectMake(0, 200, 100, 30) title:@"镜像关" action:@selector(mirrorClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(rightX, 200, 100, 30) title:@"镜像开" action:@selector(mirrorClick:) tag:1];
     
     if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInUltraWideCamera position:AVCaptureDevicePositionBack]) {
-        [self view:self.view addButton:CGRectMake(0, 220, 100, 30) title:@"近摄像头" action:@selector(switchToStandardCamera) tag:0];
+        [self view:self.view addButton:CGRectMake(0, 240, 100, 30) title:@"近摄像头" action:@selector(switchToStandardCamera) tag:0];
     }
     if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionBack]) {
-        [self view:self.view addButton:CGRectMake((self.view.frame.size.width-100)/2, 220, 100, 30) title:@"中摄像头" action:@selector(switchToWideAngleCamera) tag:1];
+        [self view:self.view addButton:CGRectMake((self.view.frame.size.width-100)/2, 240, 100, 30) title:@"中摄像头" action:@selector(switchToWideAngleCamera) tag:1];
     }
     if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInTelephotoCamera position:AVCaptureDevicePositionBack]) {
-        [self view:self.view addButton:CGRectMake(rightX, 220, 100, 30) title:@"远摄像头" action:@selector(switchToTelephotoCamera) tag:0];
+        [self view:self.view addButton:CGRectMake(rightX, 240, 100, 30) title:@"远摄像头" action:@selector(switchToTelephotoCamera) tag:0];
     }
     
-    [self view:self.view addButton:CGRectMake(0, 260, 100, 30) title:@"开始录制" action:@selector(recordingClick:) tag:1];
-    [self view:self.view addButton:CGRectMake(rightX, 260, 100, 30) title:@"停止录制" action:@selector(recordingClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(0, 290, 100, 30) title:@"开始录制" action:@selector(recordingClick:) tag:1];
+    [self view:self.view addButton:CGRectMake(rightX, 290, 100, 30) title:@"停止录制" action:@selector(recordingClick:) tag:0];
     
-    [self view:self.view addButton:CGRectMake(0, 300, 100, 30) title:@"删除水印" action:@selector(clearWatermark:) tag:0];
-    [self view:self.view addButton:CGRectMake(rightX, 300, 100, 30) title:@"添加水印" action:@selector(addWatermark:) tag:0];
+    [self view:self.view addButton:CGRectMake(0, 340, 100, 30) title:@"删除水印" action:@selector(clearWatermark:) tag:0];
+    [self view:self.view addButton:CGRectMake(rightX, 340, 100, 30) title:@"添加水印" action:@selector(addWatermark:) tag:0];
     
     //---------------
-    [self view:self.view addButton:CGRectMake(10, 340, 80, 30) title:@"倍放" action:@selector(clearWatermark:) tag:0];
+    [self view:self.view addButton:CGRectMake(0, 390, 100, 30) title:@"倍放" action:@selector(clearWatermark:) tag:0];
     // 创建 Slider
     self.zoomSlider = [[UISlider alloc] init];
     self.zoomSlider.minimumValue = 1.0; // 最小缩放倍数
@@ -77,20 +76,20 @@
     self.zoomSlider.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.zoomSlider];
     self.zoomSlider.backgroundColor = [UIColor blackColor];
-    self.zoomSlider.frame = CGRectMake(100, 340, self.view.frame.size.width-110, 30);
+    self.zoomSlider.frame = CGRectMake(110, 390, self.view.frame.size.width-110, 30);
     [self.zoomSlider addTarget:self action:@selector(zoomSliderChanged:) forControlEvents:UIControlEventValueChanged];
     self.zoomSlider.alpha = 0.5;
     //---------------
     
-    [self view:self.view addButton:CGRectMake(0, 380, 100, 30) title:@"关 美颜" action:@selector(videoEffectClick:) tag:0];
-    [self view:self.view addButton:CGRectMake(self.view.frame.size.width-100, 380, 100, 30) title:@"开 美颜" action:@selector(videoEffectClick:) tag:1];
+    [self view:self.view addButton:CGRectMake(0, 440, 100, 30) title:@"关 美颜" action:@selector(videoEffectClick:) tag:0];
+    [self view:self.view addButton:CGRectMake(self.view.frame.size.width-100, 440, 100, 30) title:@"开 美颜" action:@selector(videoEffectClick:) tag:1];
 
 
-    self.focusBoxPoint = [self view:self.view addButton:CGRectMake(0, 420, 90, 60) title:@"自动焦点" action:@selector(focusBoxPointClick:) tag:1];
+    self.focusBoxPoint = [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"自动焦点" action:@selector(focusBoxPointClick:) tag:1];
     self.focusBoxPoint.selected = true;
     
     
-   [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 420, 90, 60) title:@"SRT推流" action:@selector(streamClick:) tag:1];
+   [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 490, 100, 30) title:@"SRT推流" action:@selector(streamClick:) tag:1];
     
     [self.ingest setSrtUrlWithUrl:@"srt://qq-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLi8vJStAEA,txSecret=a8dee9a1fd41cd96a8d2abe48e5fa00d,txTime=6753EDF5"];
 }
