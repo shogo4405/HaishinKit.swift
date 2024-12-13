@@ -82,7 +82,7 @@
     
      self.ingest = [[TFIngest alloc]init];
     [self.ingest setSDKWithView:self.view2
-                      videoSize:CGSizeMake(720, 1280)
+                      videoSize:CGSizeMake(540, 960)
                  videoFrameRate:30
                    videoBitRate:600*1024
                      streamMode:TFStreamModeRtmp];
