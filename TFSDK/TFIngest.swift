@@ -281,16 +281,23 @@ public class TFIngest: NSObject {
         Task {  @ScreenActor in
             if self.position == .front
             {
-                let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-                do {
-                    //先切换到后摄像头, 再切换到前摄像头
-                  try await mixer.attachVideo(back, track: 0) { backVideoUnit in
-                   
-                      self.attachVideo(isVideoMirrored)
-                      
-                  }
-                } catch {
-                  print(error)
+//                let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+//                do {
+//                    //先切换到后摄像头, 再切换到前摄像头
+//                  try await mixer.attachVideo(back, track: 0) { backVideoUnit in
+//                   
+//                      self.attachVideo(isVideoMirrored)
+//                      
+//                  }
+//                } catch {
+//                  print(error)
+//                }
+                
+                try await mixer.configuration(video: 0) { unit in
+                    guard let device = unit.device else {
+                        return
+                    }
+                    unit.isVideoMirrored = isVideoMirrored
                 }
                 
             }else{
@@ -302,16 +309,17 @@ public class TFIngest: NSObject {
         }
     }
     
-    func attachVideo(_ isVideoMirrored:Bool)
-    {
-        Task {  @ScreenActor in
-            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-            //track 是多个摄像头的下标
-            try? await mixer.attachVideo(front, track: 0){ videoUnit in
-                videoUnit.isVideoMirrored = isVideoMirrored
-            }
-        }
-    }
+//    func attachVideo(_ isVideoMirrored:Bool)
+//    {
+//        Task {  @ScreenActor in
+//            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+//
+//            try? await mixer.attachVideo(front, track: 0){ videoUnit in
+//                videoUnit.isVideoMirrored = isVideoMirrored
+//            }
+//        }
+//        
+//    }
     /**设置 近  中 远 摄像头*/
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)
     {
@@ -530,6 +538,7 @@ public class TFIngest: NSObject {
         }
        
     }
+    /**摄像头焦点设置**/
     private func setFocusBoxPointInternal(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
         
         Task {
@@ -540,6 +549,7 @@ public class TFIngest: NSObject {
                 self.focusPoint(point, focusMode: focusMode, exposureMode: exposureMode, device: device)
             }
         }
+        
     }
      func focusPoint(_ focusPoint: CGPoint,
                               focusMode: AVCaptureDevice.FocusMode,

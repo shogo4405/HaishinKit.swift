@@ -3,4 +3,98 @@
    uuid = "3714D0A6-8C98-4333-84C8-F7B432D75561"
    type = "0"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "3B1E3DEF-DF36-4240-8420-07A972FEB371"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../TFSDK/TFIngest.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "552"
+            endingLineNumber = "552"
+            landmarkName = "setFocusBoxPointInternal(_:focusMode:exposureMode:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "3B1E3DEF-DF36-4240-8420-07A972FEB371 - 7ba8506e7784942f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TFSRT.TFIngest.focusPoint(_: __C.CGPoint, focusMode: __C.AVCaptureFocusMode, exposureMode: __C.AVCaptureExposureMode, device: Swift.Optional&lt;__C.AVCaptureDevice&gt;) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "555"
+                  endingLineNumber = "555">
+               </Location>
+               <Location
+                  uuid = "3B1E3DEF-DF36-4240-8420-07A972FEB371 - f1ea496d79316df4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TFSRT.TFIngest.setFocusBoxPointInternal(_: __C.CGPoint, focusMode: __C.AVCaptureFocusMode, exposureMode: __C.AVCaptureExposureMode) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "553"
+                  endingLineNumber = "553">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "D4939AEE-B294-41A5-AC2D-6AD3CF2DF83A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../TFSDK/TFIngest.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "352"
+            endingLineNumber = "352"
+            landmarkName = "zoomScale(_:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "D4939AEE-B294-41A5-AC2D-6AD3CF2DF83A - e7cc130c695c8c6d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async throws -&gt; () in TFSRT.TFIngest.recording(Swift.Bool) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "353"
+                  endingLineNumber = "353">
+               </Location>
+               <Location
+                  uuid = "D4939AEE-B294-41A5-AC2D-6AD3CF2DF83A - e68d56be503d0a82"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TFSRT.TFIngest.zoomScale(CoreGraphics.CGFloat) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "353"
+                  endingLineNumber = "353">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>
