@@ -11,6 +11,10 @@ import Photos
 import UIKit
 import VideoToolbox
 
+@objc public enum TFStreamMode: Int {
+    case rtmp = 0
+    case srt = 1
+}
 public class TFIngest: NSObject {
     //前摄像 or 后摄像头
     var position = AVCaptureDevice.Position.front
@@ -22,10 +26,11 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var currentEffect: (any VideoEffect)?
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-    let connection = SRTConnection()
-    var stream: SRTStream?
-    var recorder: HKStreamRecorder?
+    private(set) var streamMode: TFStreamMode = .rtmp
+    private var connection: Any?
+    private(set) var stream: (any HKStream)?
     var isVideoMirrored:Bool = true
+    let recorder = HKStreamRecorder()
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
@@ -35,16 +40,41 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-    var view2:UIView?
-    @objc public func setSDK(view:UIView,
-                             videoSize:CGSize,
-                             videoFrameRate:CGFloat,
-                             videoBitRate:Int)
-    {
+    var view2:UIView = UIView()
+    /// Specifies the video size of encoding video.
+    public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
+    /// Specifies the bitrate.
+     var videoBitRate2: Int = 0
+     var videoFrameRate2: CGFloat = 0
+    
+    func setPreference(url: String)async {
+        if url.contains("srt://") == true {
+            let connection = SRTConnection()
+            self.connection = connection
+            stream = SRTStream(connection: connection)
+            streamMode = .srt
+        } else {
+            let connection = RTMPConnection()
+            self.connection = connection
+            stream = RTMPStream(connection: connection)
+            streamMode = .rtmp
+        }
 
+    }
+    func configurationSDK(view:UIView,
+                          videoSize:CGSize,
+                          videoFrameRate:CGFloat,
+                          videoBitRate:Int,
+                          url:String
+    )
+    {
+        view2 = view
+        videoSize2 = videoSize
+        videoBitRate2 = videoBitRate
+        videoFrameRate2 = videoFrameRate
+        srtUrl = url
+        
         Task {  @ScreenActor in
-            
-            view2 = view
             if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 let orientation = await windowScene.interfaceOrientation
                 if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
@@ -55,31 +85,26 @@ public class TFIngest: NSObject {
             var videoMixerSettings = await mixer.videoMixerSettings
             videoMixerSettings.mode = .offscreen
             await mixer.setVideoMixerSettings(videoMixerSettings)
-            
-            self.stream = SRTStream(connection: self.connection)
-            //录制管理者
-            self.recorder = HKStreamRecorder()
-            
+           //配置推流类型
+            await self.setPreference(url: url)
+
             guard let stream = self.stream else {
                 return
             }
-            guard let recorder = self.recorder else {
-                return
-            }
+            //配置录制
             await stream.addOutput(recorder)
-        
-            await mixer.addOutput(stream)
+            
             if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
             }
-            
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
             videoSettings.bitRate = videoBitRate
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
-            
+            await mixer.addOutput(stream)
+     
         }
         Task { @ScreenActor in
              //screen 离屏渲染对象。
@@ -103,6 +128,20 @@ public class TFIngest: NSObject {
                 videoUnit.isVideoMirrored = true
             }
         }
+
+    }
+    @objc public func setSDK(view:UIView,
+                             videoSize:CGSize,
+                             videoFrameRate:CGFloat,
+                             videoBitRate:Int,
+                             url:String)
+    {
+
+        self.configurationSDK(view: view,
+                              videoSize: videoSize,
+                              videoFrameRate: videoFrameRate,
+                              videoBitRate: videoBitRate,
+                              url: url)
         //TODO: 捕捉设备方向的变化
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         //TODO: 监听 AVAudioSession 的中断通知
@@ -171,9 +210,20 @@ public class TFIngest: NSObject {
     func closePush()
     {
         Task {  @ScreenActor in
-            //结束srt链接
-            try? await connection.close()
-            logger.info("conneciton.close")
+            switch streamMode {
+            case .rtmp:
+                guard let connection = connection as? RTMPConnection else {
+                    return
+                }
+                try? await connection.close()
+                logger.info("conneciton.close")
+            case .srt:
+                guard let connection = connection as? SRTConnection else {
+                    return
+                }
+                try? await connection.close()
+                logger.info("conneciton.close")
+            }
         }
     }
     /**结束推流**/
@@ -191,44 +241,100 @@ public class TFIngest: NSObject {
             guard let stream = self.stream else {
                 return
             }
-            do {
-                try await connection.open(URL(string: srtUrl))
-                //开始推流
-                await stream.publish()
-                logger.info("conneciton.open")
-                
-                
-                if let callback = callback {
-                    callback(0,"")
-                }
-            } catch {
-                
-                //打印错误原因
-                if let srtError = error as? SRTError {
-                    
-                    var msg:String = ""
-                    switch srtError {
-                        
-                    case .illegalState(let message):
-                        msg = message
-//                        print("Illegal state error: \(message)")
-                        
-                    case .invalidArgument(let message):
-                        msg = message
-//                        print("Invalid argument error: \(message)")
-                        
-                        
+          
+                if  streamMode == .rtmp {
+                 
+                    do {
+                    guard
+                        let connection = connection as? RTMPConnection,
+                        let stream = stream as? RTMPStream else {
+                        return
                     }
                     
+                    _ = try await connection.connect(srtUrl)
+                    let response2 = try await stream.publish(nil)
+                    logger.info(response2)
                     if let callback = callback {
-                        callback(-1,msg)
+                        callback(0,"")
                     }
+                    } catch RTMPConnection.Error.requestFailed(let response) {
+                        logger.warn(response)
+                        if let callback = callback {
+                            callback(-1,"")
+                        }
+                    } catch RTMPStream.Error.requestFailed(let response) {
+                        logger.warn(response)
+                        if let callback = callback {
+                            callback(-1,"")
+                        }
+                    } catch {
+                        logger.warn(error)
+                        if let callback = callback {
+                            callback(-1,"")
+                        }
+                    }
+                }else  if streamMode == .srt {
+                    do {
+                        guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                            return
+                        }
+                        try await connection.open(URL(string: srtUrl))
+                        //开始推流
+                        await stream.publish()
+                        logger.info("conneciton.open")
+                    
+                        if let callback = callback {
+                            callback(0,"")
+                        }
+                    } catch {
+                    
+                        //打印错误原因
+                        if let srtError = error as? SRTError {
+                            
+                            var msg:String = ""
+                            switch srtError {
+                                
+                            case .illegalState(let message):
+                                msg = message
+        //                        print("Illegal state error: \(message)")
+                                
+                            case .invalidArgument(let message):
+                                msg = message
+        //                        print("Invalid argument error: \(message)")
+                                
+                                
+                            }
+                            
+                            if let callback = callback {
+                                callback(-1,msg)
+                            }
+                        }
+                        
+                    }
+                   
                 }
-                
-            }
+              
+         
         }
     }
-    
+    /**
+      配置推流URL
+     */
+    @objc public func setSrtUrl(url:String)
+    {
+        srtUrl = url
+        
+        Task {  @ScreenActor in
+           
+            self.configurationSDK(view: view2,
+                                  videoSize: videoSize2,
+                                  videoFrameRate: videoFrameRate2,
+                                  videoBitRate: videoBitRate2,
+                                  url: url)
+      
+        }
+     
+    }
     @objc public func shutdown()
     {
         Task {  @ScreenActor in
@@ -246,14 +352,7 @@ public class TFIngest: NSObject {
  
         NotificationCenter.default.removeObserver(self)
     }
-    /**
-      配置推流URL
-     */
-    @objc public func setSrtUrl(url:String)
-    {
-        srtUrl = url
-     
-    }
+
     /**
        切换前后摄像头
      */
@@ -347,9 +446,7 @@ public class TFIngest: NSObject {
     @objc public func recording(_ isRecording:Bool)
     {
         Task {  @ScreenActor in
-            guard let recorder = self.recorder else {
-                return
-            }
+            
             self.isRecording = isRecording
             if isRecording {
                 print("startRecording")
@@ -513,19 +610,13 @@ public class TFIngest: NSObject {
         if focusMode == .autoFocus && exposureMode == .autoExpose  {
             //.autoFocus 1 手动
           //.autoExpose 1 手动
-            if let view2 = view2
-            {
+
                 let size = view2.bounds.size
                 let focusPoint = CGPoint(
                     x: CGFloat(point.y) / CGFloat(size.height),
                     y: 1.0 - (CGFloat(point.x) / CGFloat(size.width)))
                     
                 self.setFocusBoxPointInternal(focusPoint, focusMode: focusMode, exposureMode: exposureMode)
-            }else
-            {
-                //自动焦点
-                self.setFocusBoxPointInternal(point, focusMode: focusMode, exposureMode: exposureMode)
-            }
 
         }
        

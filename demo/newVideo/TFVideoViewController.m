@@ -15,7 +15,7 @@
 @property (nonatomic, strong) UISlider *zoomSlider;
 @property (nonatomic, strong)UIImageView *focusCursorImageView;
 @property (nonatomic, strong)UIButton *focusBoxPoint;
-
+@property (nonatomic, strong)UIButton *streamBtn;
 @end
 
 @implementation TFVideoViewController
@@ -31,11 +31,7 @@
     [self.view addSubview:self.view2];
     
     
-    self.ingest = [[TFIngest alloc]init];
-    [self.ingest setSDKWithView:self.view2
-                      videoSize:CGSizeMake(720, 1280)
-                 videoFrameRate:30
-                   videoBitRate:600*1024];
+
     
     CGFloat rightX = self.view.frame.size.width-100;
     
@@ -80,21 +76,49 @@
     [self.zoomSlider addTarget:self action:@selector(zoomSliderChanged:) forControlEvents:UIControlEventValueChanged];
     self.zoomSlider.alpha = 0.5;
     //---------------
-    
     [self view:self.view addButton:CGRectMake(0, 440, 100, 30) title:@"关 美颜" action:@selector(videoEffectClick:) tag:0];
     [self view:self.view addButton:CGRectMake(self.view.frame.size.width-100, 440, 100, 30) title:@"开 美颜" action:@selector(videoEffectClick:) tag:1];
-
 
     self.focusBoxPoint = [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"自动焦点" action:@selector(focusBoxPointClick:) tag:1];
     self.focusBoxPoint.selected = true;
     
     
-   [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 490, 100, 30) title:@"SRT推流" action:@selector(streamClick:) tag:1];
+     self.ingest = [[TFIngest alloc]init];
+    [self.ingest setSDKWithView:self.view2
+                      videoSize:CGSizeMake(720, 1280)
+                 videoFrameRate:30
+                   videoBitRate:600*1024
+                            url:@"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLyslJClAEA?txSecret=6780bf0a91cb99a650f25cf3e132db98&txTime=675D3070"];
     
-    [self.ingest setSrtUrlWithUrl:@"srt://qq-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLi8vJStAEA,txSecret=a8dee9a1fd41cd96a8d2abe48e5fa00d,txTime=6753EDF5"];
+    self.streamBtn = [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 490, 100, 30) title:@"RTMP推流" action:@selector(streamClick:) tag:1];
+    self.streamBtn.selected = true;
 }
 
-
+- (void)setStreamMode:(TFStreamMode)model
+{
+    if(model==TFStreamModeRtmp)
+    {
+        [self.streamBtn setTitle:@"RTMP推流" forState:UIControlStateNormal];
+        [self.ingest setSrtUrlWithUrl:@"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLyslJClAEA?txSecret=6780bf0a91cb99a650f25cf3e132db98&txTime=675D3070"];
+    }else{
+     
+        [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
+        [self.ingest setSrtUrlWithUrl:@"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLyslJClAEA,txSecret=2e7543ede6135728b431a56cb2ebdd32,txTime=675CFAB4"];
+    }
+    
+}
+- (void)streamClick:(UIButton*)btn
+{
+    btn.selected = !btn.selected;
+    if(btn.selected==true)
+    {
+        [self setStreamMode:TFStreamModeRtmp];
+    }else{
+     
+        [self setStreamMode:TFStreamModeSrt];
+    }
+    
+}
 - (void)zoomSliderChanged:(UISlider *)sender {
     CGFloat scale = sender.value;
     [self.ingest zoomScale:scale];
@@ -224,8 +248,10 @@
             
             if (code==0) {
                 
-            }else{
+                NSLog(@"推流成功=======>");
                 
+            }else{
+                NSLog(@"推流失败=======>");
             }
         }];
     } else {
@@ -282,28 +308,15 @@
         CGPoint point = [touch locationInView:self.view];
         // 设置聚集光标的位置
         [self setFocusCursorWithPoint:point];
-        // 把当前位置转换为摄像头点上的位置
-    //    CGPoint cameraPoint = [_previewdLayer captureDevicePointOfInterestForPoint:point];
-    //
-    //    // 设置聚焦
-    //    [self focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
+
         //手动
         [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose];
     }
 
 }
-- (void)streamClick:(UIButton*)btn
-{
-    btn.selected = !btn.selected;
-    if(btn.selected==true)
-    {
-        [btn setTitle:@"RTMP推流" forState:UIControlStateNormal];
-    }else{
-     
-        [btn setTitle:@"SRT推流" forState:UIControlStateNormal];
-    }
-    
-}
+
+
+
 //默认自动对焦
 - (void)focusBoxPointClick:(UIButton*)btn
 {
