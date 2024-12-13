@@ -25,7 +25,7 @@ public class TFIngest: NSObject {
     let connection = SRTConnection()
     var stream: SRTStream?
     var recorder: HKStreamRecorder?
-    var isVideoMirrored:Bool = true
+//    var isVideoMirrored:Bool = true
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
@@ -264,12 +264,12 @@ public class TFIngest: NSObject {
         try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
             guard let `self` = self else { return }
             self.position = position
-            if(position == .front)
-            {
-                videoUnit.isVideoMirrored = isVideoMirrored
-            }else{
-                videoUnit.isVideoMirrored = false
-            }
+//            if(position == .front)
+//            {
+//                videoUnit.isVideoMirrored = isVideoMirrored
+//            }else{
+//                videoUnit.isVideoMirrored = false
+//            }
             
          }
        }
@@ -294,15 +294,15 @@ public class TFIngest: NSObject {
 //                }
                 
                 try await mixer.configuration(video: 0) { unit in
-                    guard let device = unit.device else {
-                        return
-                    }
+//                    guard let device = unit.device else {
+//                        return
+//                    }
                     unit.isVideoMirrored = isVideoMirrored
                 }
                 
             }else{
                 
-                self.isVideoMirrored = isVideoMirrored
+//                self.isVideoMirrored = isVideoMirrored
               
             }
         
