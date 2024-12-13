@@ -30,9 +30,6 @@
     self.view2.frame = self.view.frame;
     [self.view addSubview:self.view2];
     
-    
-
-    
     CGFloat rightX = self.view.frame.size.width-100;
     
     [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) tag:0];
@@ -88,10 +85,12 @@
                       videoSize:CGSizeMake(720, 1280)
                  videoFrameRate:30
                    videoBitRate:600*1024
-                            url:@"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLyslJClAEA?txSecret=6780bf0a91cb99a650f25cf3e132db98&txTime=675D3070"];
+                     streamMode:TFStreamModeRtmp];
     
     self.streamBtn = [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 490, 100, 30) title:@"RTMP推流" action:@selector(streamClick:) tag:1];
     self.streamBtn.selected = true;
+    //设置URL
+    [self setStreamMode:TFStreamModeRtmp];
 }
 
 - (void)setStreamMode:(TFStreamMode)model
@@ -99,13 +98,22 @@
     if(model==TFStreamModeRtmp)
     {
         [self.streamBtn setTitle:@"RTMP推流" forState:UIControlStateNormal];
-        [self.ingest setSrtUrlWithUrl:@"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLyslJClAEA?txSecret=6780bf0a91cb99a650f25cf3e132db98&txTime=675D3070"];
+        [self.ingest setSrtUrlWithUrl:[self RTMP_URL]];
     }else{
      
         [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
-        [self.ingest setSrtUrlWithUrl:@"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLyslJClAEA,txSecret=2e7543ede6135728b431a56cb2ebdd32,txTime=675CFAB4"];
+        [self.ingest setSrtUrlWithUrl:[self SRT_URL]];
     }
     
+}
+
+- (NSString*)RTMP_URL
+{
+ return @"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLyslJClAEA?txSecret=6780bf0a91cb99a650f25cf3e132db98&txTime=675D3070";
+}
+- (NSString*)SRT_URL
+{
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLyslJClAEA,txSecret=2e7543ede6135728b431a56cb2ebdd32,txTime=675CFAB4";
 }
 - (void)streamClick:(UIButton*)btn
 {

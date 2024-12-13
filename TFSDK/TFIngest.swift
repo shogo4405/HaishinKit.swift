@@ -20,13 +20,12 @@ public class TFIngest: NSObject {
     var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
-    var srtUrl:String = ""
 
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
     @ScreenActor
     private var currentEffect: (any VideoEffect)?
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-    private(set) var streamMode: TFStreamMode = .rtmp
+    private(set) var streamMode2: TFStreamMode = .rtmp
     private var connection: Any?
     private(set) var stream: (any HKStream)?
     var isVideoMirrored:Bool = true
@@ -40,24 +39,24 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-    var view2:UIView = UIView()
+     var view2:UIView = UIView()
     /// Specifies the video size of encoding video.
-    public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
+     public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
     /// Specifies the bitrate.
      var videoBitRate2: Int = 0
      var videoFrameRate2: CGFloat = 0
-    
-    func setPreference(url: String)async {
-        if url.contains("srt://") == true {
+     var srtUrl:String = ""
+    func setPreference()async {
+        if streamMode2 == .srt {
             let connection = SRTConnection()
             self.connection = connection
             stream = SRTStream(connection: connection)
-            streamMode = .srt
+       
         } else {
             let connection = RTMPConnection()
             self.connection = connection
             stream = RTMPStream(connection: connection)
-            streamMode = .rtmp
+           
         }
 
     }
@@ -65,14 +64,14 @@ public class TFIngest: NSObject {
                           videoSize:CGSize,
                           videoFrameRate:CGFloat,
                           videoBitRate:Int,
-                          url:String
-    )
+                          streamMode:TFStreamMode)
+    
     {
         view2 = view
         videoSize2 = videoSize
         videoBitRate2 = videoBitRate
         videoFrameRate2 = videoFrameRate
-        srtUrl = url
+        streamMode2 = streamMode
         
         Task {  @ScreenActor in
             if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
@@ -86,14 +85,13 @@ public class TFIngest: NSObject {
             videoMixerSettings.mode = .offscreen
             await mixer.setVideoMixerSettings(videoMixerSettings)
            //配置推流类型
-            await self.setPreference(url: url)
-
+            await self.setPreference()
+            //----------------
             guard let stream = self.stream else {
                 return
             }
             //配置录制
             await stream.addOutput(recorder)
-            
             if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
             }
@@ -103,6 +101,7 @@ public class TFIngest: NSObject {
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
+            //----------------
             await mixer.addOutput(stream)
      
         }
@@ -134,14 +133,14 @@ public class TFIngest: NSObject {
                              videoSize:CGSize,
                              videoFrameRate:CGFloat,
                              videoBitRate:Int,
-                             url:String)
+                             streamMode:TFStreamMode)
     {
 
         self.configurationSDK(view: view,
                               videoSize: videoSize,
                               videoFrameRate: videoFrameRate,
                               videoBitRate: videoBitRate,
-                              url: url)
+                              streamMode: streamMode)
         //TODO: 捕捉设备方向的变化
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         //TODO: 监听 AVAudioSession 的中断通知
@@ -210,7 +209,7 @@ public class TFIngest: NSObject {
     func closePush()
     {
         Task {  @ScreenActor in
-            switch streamMode {
+            switch streamMode2 {
             case .rtmp:
                 guard let connection = connection as? RTMPConnection else {
                     return
@@ -242,7 +241,7 @@ public class TFIngest: NSObject {
                 return
             }
           
-                if  streamMode == .rtmp {
+                if  streamMode2 == .rtmp {
                  
                     do {
                     guard
@@ -273,7 +272,7 @@ public class TFIngest: NSObject {
                             callback(-1,"")
                         }
                     }
-                }else  if streamMode == .srt {
+                }else  if streamMode2 == .srt {
                     do {
                         guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
                             return
@@ -323,16 +322,21 @@ public class TFIngest: NSObject {
     @objc public func setSrtUrl(url:String)
     {
         srtUrl = url
-        
-        Task {  @ScreenActor in
-           
-            self.configurationSDK(view: view2,
-                                  videoSize: videoSize2,
-                                  videoFrameRate: videoFrameRate2,
-                                  videoBitRate: videoBitRate2,
-                                  url: url)
-      
+        let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
+        if(streamMode != streamMode2)
+        {
+            Task {  @ScreenActor in
+               
+                    self.configurationSDK(view: view2,
+                                          videoSize: videoSize2,
+                                          videoFrameRate: videoFrameRate2,
+                                          videoBitRate: videoBitRate2,
+                                          streamMode: streamMode)
+                
+               
+            }
         }
+
      
     }
     @objc public func shutdown()
