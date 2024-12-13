@@ -64,7 +64,8 @@ public class TFIngest: NSObject {
                           videoSize:CGSize,
                           videoFrameRate:CGFloat,
                           videoBitRate:Int,
-                          streamMode:TFStreamMode)
+                          streamMode:TFStreamMode,
+                          again:Bool)
     
     {
         if(view2 != view)
@@ -89,16 +90,20 @@ public class TFIngest: NSObject {
         }
      
         Task {  @ScreenActor in
-            if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
-                let orientation = await windowScene.interfaceOrientation
-                if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
-                    await mixer.setVideoOrientation(videoOrientation)
+            
+            if again==false {
+                if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                    let orientation = await windowScene.interfaceOrientation
+                    if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
+                        await mixer.setVideoOrientation(videoOrientation)
+                    }
                 }
+                await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
+                var videoMixerSettings = await mixer.videoMixerSettings
+                videoMixerSettings.mode = .offscreen
+                await mixer.setVideoMixerSettings(videoMixerSettings)
             }
-            await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
-            var videoMixerSettings = await mixer.videoMixerSettings
-            videoMixerSettings.mode = .offscreen
-            await mixer.setVideoMixerSettings(videoMixerSettings)
+     
            //配置推流类型
             await self.setPreference()
             //----------------
@@ -112,15 +117,18 @@ public class TFIngest: NSObject {
             if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
             }
+
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
             videoSettings.bitRate = videoBitRate
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
+                
 
-     
         }
+        if again==false {
+            
         Task { @ScreenActor in
              //screen 离屏渲染对象。
              mixer.screen.size = videoSize
@@ -135,14 +143,17 @@ public class TFIngest: NSObject {
             //本地显示的渲染配置
             try? mixer.screen.addChild(videoScreenObject)
  
-        }
-        Task { @ScreenActor in
-            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-            //设置默认是前置 然后设置镜像
-            try? await mixer.attachVideo(front, track: 0){videoUnit in
-                videoUnit.isVideoMirrored = true
+           }
+       
+            Task { @ScreenActor in
+                try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+                //设置默认是前置 然后设置镜像
+                try? await mixer.attachVideo(front, track: 0){videoUnit in
+                    videoUnit.isVideoMirrored = true
+                }
             }
         }
+        
 
     }
     @objc public func setSDK(view:UIView,
@@ -156,7 +167,7 @@ public class TFIngest: NSObject {
                               videoSize: videoSize,
                               videoFrameRate: videoFrameRate,
                               videoBitRate: videoBitRate,
-                              streamMode: streamMode)
+                              streamMode: streamMode,again:false)
         //TODO: 捕捉设备方向的变化
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         //TODO: 监听 AVAudioSession 的中断通知
@@ -355,7 +366,7 @@ public class TFIngest: NSObject {
                     try? await stream.close()
                     self.connection = nil
                     self.stream = nil
-                    logger.info("conneciton.close")
+//                    logger.info("conneciton.close")
                 case .srt:
                     guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
                         return
@@ -365,7 +376,7 @@ public class TFIngest: NSObject {
                     
                     self.connection = nil
                     self.stream = nil
-                    logger.info("conneciton.close")
+//                    logger.info("conneciton.close")
                 }
                 
                 let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
@@ -375,7 +386,8 @@ public class TFIngest: NSObject {
                                           videoSize: videoSize2,
                                           videoFrameRate: videoFrameRate2,
                                           videoBitRate: videoBitRate2,
-                                          streamMode: streamMode)
+                                          streamMode: streamMode,
+                                          again:true)
                 }
                     
                 
