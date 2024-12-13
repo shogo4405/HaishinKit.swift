@@ -25,7 +25,7 @@ public class TFIngest: NSObject {
     let connection = SRTConnection()
     var stream: SRTStream?
     var recorder: HKStreamRecorder?
-//    var isVideoMirrored:Bool = true
+    var isVideoMirrored:Bool = true
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
@@ -264,12 +264,12 @@ public class TFIngest: NSObject {
         try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
             guard let `self` = self else { return }
             self.position = position
-//            if(position == .front)
-//            {
-//                videoUnit.isVideoMirrored = isVideoMirrored
-//            }else{
-//                videoUnit.isVideoMirrored = false
-//            }
+            if(position == .front)
+            {
+                videoUnit.isVideoMirrored = isVideoMirrored
+            }else{
+                videoUnit.isVideoMirrored = false
+            }
             
          }
        }
@@ -281,45 +281,37 @@ public class TFIngest: NSObject {
         Task {  @ScreenActor in
             if self.position == .front
             {
-//                let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-//                do {
-//                    //先切换到后摄像头, 再切换到前摄像头
-//                  try await mixer.attachVideo(back, track: 0) { backVideoUnit in
-//                   
-//                      self.attachVideo(isVideoMirrored)
-//                      
-//                  }
-//                } catch {
-//                  print(error)
-//                }
-                
-                try await mixer.configuration(video: 0) { unit in
-//                    guard let device = unit.device else {
-//                        return
-//                    }
-                    unit.isVideoMirrored = isVideoMirrored
+                let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+                do {
+                    //先切换到后摄像头, 再切换到前摄像头
+                  try await mixer.attachVideo(back, track: 0) { backVideoUnit in
+                   
+                      self.attachVideo(isVideoMirrored)
+                      
+                  }
+                } catch {
+                  print(error)
                 }
                 
             }else{
                 
-//                self.isVideoMirrored = isVideoMirrored
+                self.isVideoMirrored = isVideoMirrored
               
             }
         
         }
     }
     
-//    func attachVideo(_ isVideoMirrored:Bool)
-//    {
-//        Task {  @ScreenActor in
-//            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-//
-//            try? await mixer.attachVideo(front, track: 0){ videoUnit in
-//                videoUnit.isVideoMirrored = isVideoMirrored
-//            }
-//        }
-//        
-//    }
+    func attachVideo(_ isVideoMirrored:Bool)
+    {
+        Task {  @ScreenActor in
+            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+            //track 是多个摄像头的下标
+            try? await mixer.attachVideo(front, track: 0){ videoUnit in
+                videoUnit.isVideoMirrored = isVideoMirrored
+            }
+        }
+    }
     /**设置 近  中 远 摄像头*/
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)
     {
@@ -549,7 +541,6 @@ public class TFIngest: NSObject {
                 self.focusPoint(point, focusMode: focusMode, exposureMode: exposureMode, device: device)
             }
         }
-        
     }
      func focusPoint(_ focusPoint: CGPoint,
                               focusMode: AVCaptureDevice.FocusMode,
