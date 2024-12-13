@@ -124,7 +124,7 @@
     btn.selected = !btn.selected;
     if(btn.selected==true)
     {
-        [self setStreamMode:TFStreamModeRtmp];   
+        [self setStreamMode:TFStreamModeRtmp];
     }else{
      
         [self setStreamMode:TFStreamModeSrt];

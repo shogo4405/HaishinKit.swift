@@ -67,12 +67,27 @@ public class TFIngest: NSObject {
                           streamMode:TFStreamMode)
     
     {
-        view2 = view
-        videoSize2 = videoSize
-        videoBitRate2 = videoBitRate
-        videoFrameRate2 = videoFrameRate
-        streamMode2 = streamMode
-        
+        if(view2 != view)
+        {
+            view2 = view
+        }
+        if(videoSize2 != videoSize)
+        {
+            videoSize2 = videoSize
+        }
+        if(videoBitRate2 != videoBitRate)
+        {
+            videoBitRate2 = videoBitRate
+        }
+        if(videoFrameRate2 != videoFrameRate)
+        {
+            videoFrameRate2 = videoFrameRate
+        }
+        if(streamMode2 != streamMode)
+        {
+            streamMode2 = streamMode
+        }
+     
         Task {  @ScreenActor in
             if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
                 let orientation = await windowScene.interfaceOrientation
@@ -90,6 +105,8 @@ public class TFIngest: NSObject {
             guard let stream = self.stream else {
                 return
             }
+            await mixer.addOutput(stream)
+            
             //配置录制
             await stream.addOutput(recorder)
             if let view = view as? (any HKStreamOutput) {
@@ -101,8 +118,7 @@ public class TFIngest: NSObject {
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
-            //----------------
-            await mixer.addOutput(stream)
+
      
         }
         Task { @ScreenActor in
@@ -111,7 +127,6 @@ public class TFIngest: NSObject {
              mixer.screen.backgroundColor = UIColor.black.cgColor
             // 视频的帧率，即 fps
             await mixer.setFrameRate(videoFrameRate)
-            
             videoScreenObject.cornerRadius = 16.0
             videoScreenObject.track = 1
             videoScreenObject.horizontalAlignment = .right
@@ -323,21 +338,49 @@ public class TFIngest: NSObject {
     @objc public func setSrtUrl(url:String)
     {
         srtUrl = url
+        
+        
 
-//            Task {  @ScreenActor in
-//                let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
-//                if(streamMode != streamMode2)
-//                {
-//                    self.configurationSDK(view: view2,
-//                                          videoSize: videoSize2,
-//                                          videoFrameRate: videoFrameRate2,
-//                                          videoBitRate: videoBitRate2,
-//                                          streamMode: streamMode)
-//                }
-//                    
-//                
-//               
-//            }
+            Task {
+                
+                
+                switch streamMode2 {
+                case .rtmp:
+                    guard
+                        let connection = connection as? RTMPConnection,
+                        let stream = stream as? RTMPStream else {
+                        return
+                    }
+                    try? await connection.close()
+                    try? await stream.close()
+                    self.connection = nil
+                    self.stream = nil
+                    logger.info("conneciton.close")
+                case .srt:
+                    guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                        return
+                    }
+                    try? await connection.close()
+                    try? await stream.close()
+                    
+                    self.connection = nil
+                    self.stream = nil
+                    logger.info("conneciton.close")
+                }
+                
+                let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
+                if(streamMode != streamMode2)
+                {
+                    self.configurationSDK(view: view2,
+                                          videoSize: videoSize2,
+                                          videoFrameRate: videoFrameRate2,
+                                          videoBitRate: videoBitRate2,
+                                          streamMode: streamMode)
+                }
+                    
+                
+               
+            }
       
 
      
