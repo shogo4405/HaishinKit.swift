@@ -14,6 +14,8 @@
 @property (nonatomic, strong) TFIngest *ingest;
 @property (nonatomic, strong) UISlider *zoomSlider;
 @property (nonatomic, strong)UIImageView *focusCursorImageView;
+@property (nonatomic, strong)UIButton *focusBoxPoint;
+//@property (nonatomic, strong)UIButton *stream;
 @end
 
 @implementation TFVideoViewController
@@ -65,6 +67,8 @@
     [self view:self.view addButton:CGRectMake(0, 300, 100, 30) title:@"删除水印" action:@selector(clearWatermark:) tag:0];
     [self view:self.view addButton:CGRectMake(rightX, 300, 100, 30) title:@"添加水印" action:@selector(addWatermark:) tag:0];
     
+    //---------------
+    [self view:self.view addButton:CGRectMake(10, 340, 80, 30) title:@"倍放" action:@selector(clearWatermark:) tag:0];
     // 创建 Slider
     self.zoomSlider = [[UISlider alloc] init];
     self.zoomSlider.minimumValue = 1.0; // 最小缩放倍数
@@ -73,15 +77,21 @@
     self.zoomSlider.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.zoomSlider];
     self.zoomSlider.backgroundColor = [UIColor blackColor];
-    self.zoomSlider.frame = CGRectMake(0, 340, self.view.frame.size.width, 20);
+    self.zoomSlider.frame = CGRectMake(100, 340, self.view.frame.size.width-110, 30);
     [self.zoomSlider addTarget:self action:@selector(zoomSliderChanged:) forControlEvents:UIControlEventValueChanged];
-    
+    self.zoomSlider.alpha = 0.5;
+    //---------------
     
     [self view:self.view addButton:CGRectMake(0, 380, 100, 30) title:@"关 美颜" action:@selector(videoEffectClick:) tag:0];
     [self view:self.view addButton:CGRectMake(self.view.frame.size.width-100, 380, 100, 30) title:@"开 美颜" action:@selector(videoEffectClick:) tag:1];
 
 
-    [self view:self.view addButton:CGRectMake((self.view.frame.size.width-100)/2, 420, 100, 100) title:@"默认焦点" action:@selector(focusBoxPointClick:) tag:1];
+    self.focusBoxPoint = [self view:self.view addButton:CGRectMake(0, 420, 90, 60) title:@"自动焦点" action:@selector(focusBoxPointClick:) tag:1];
+    self.focusBoxPoint.selected = true;
+    
+    
+   [self view:self.view addButton:CGRectMake(self.view.frame.size.width-90, 420, 90, 60) title:@"SRT推流" action:@selector(streamClick:) tag:1];
+    
     [self.ingest setSrtUrlWithUrl:@"srt://qq-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLi8vJStAEA,txSecret=a8dee9a1fd41cd96a8d2abe48e5fa00d,txTime=6753EDF5"];
 }
 
@@ -189,7 +199,7 @@
     }
     return devices != nil && devices.count > 0;
 }
-- (void)view:(UIView*)view addButton:(CGRect)rect title:(NSString*)title action:(SEL)action tag:(NSInteger)tag
+- (UIButton*)view:(UIView*)view addButton:(CGRect)rect title:(NSString*)title action:(SEL)action tag:(NSInteger)tag
 {
     UIButton *btn = [[UIButton alloc]init];
     btn.backgroundColor = [UIColor blackColor];
@@ -199,7 +209,7 @@
     [view addSubview:btn];
     btn.alpha = 0.5;
     [btn addTarget:self action:action forControlEvents:UIControlEventTouchUpInside];
-    
+    return btn;
 }
 - (void)exitBtnClick:(UIButton*)btn
 {
@@ -266,24 +276,50 @@
 }
 #pragma mark - 聚集光标
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
-    // 获取点击位置
-    UITouch *touch= [touches anyObject];
-    CGPoint point = [touch locationInView:self.view];
-    // 设置聚集光标的位置
-    [self setFocusCursorWithPoint:point];
-    // 把当前位置转换为摄像头点上的位置
-//    CGPoint cameraPoint = [_previewdLayer captureDevicePointOfInterestForPoint:point];
-//
-//    // 设置聚焦
-//    [self focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
-    //手动
-    [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose];
+    if(self.focusBoxPoint.selected==false)
+    {
+        // 获取点击位置
+        UITouch *touch= [touches anyObject];
+        CGPoint point = [touch locationInView:self.view];
+        // 设置聚集光标的位置
+        [self setFocusCursorWithPoint:point];
+        // 把当前位置转换为摄像头点上的位置
+    //    CGPoint cameraPoint = [_previewdLayer captureDevicePointOfInterestForPoint:point];
+    //
+    //    // 设置聚焦
+    //    [self focusWithMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose atPoint:cameraPoint];
+        //手动
+        [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose];
+    }
+
 }
-//默认自动
+- (void)streamClick:(UIButton*)btn
+{
+    btn.selected = !btn.selected;
+    if(btn.selected==true)
+    {
+        [btn setTitle:@"RTMP推流" forState:UIControlStateNormal];
+    }else{
+     
+        [btn setTitle:@"SRT推流" forState:UIControlStateNormal];
+    }
+    
+}
+//默认自动对焦
 - (void)focusBoxPointClick:(UIButton*)btn
 {
-    CGPoint point = CGPointMake(0.5, 0.5);
-    [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeContinuousAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure];
+    btn.selected = !btn.selected;
+    //自动对焦
+    if(btn.selected==true)
+    {
+      
+        CGPoint point = CGPointMake(0.5, 0.5);
+        [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeContinuousAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure];
+        [btn setTitle:@"自动对焦" forState:UIControlStateNormal];
+    }else{
+        [btn setTitle:@"手动对焦" forState:UIControlStateNormal];
+    }
+  
 }
 
 - (void)dealloc{
