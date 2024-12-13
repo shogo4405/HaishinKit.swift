@@ -332,16 +332,26 @@ public class TFIngest: NSObject {
          
         }
     }
+//    func urlEncode(_ string: String) -> String {
+//        // 设置允许的字符集，这里允许的字符集是URL的保留字符和字母数字字符
+//        let allowedCharacters = CharacterSet.alphanumerics.union(.punctuationCharacters).union(.whitespaces)
+//        
+//        // 如果转码成功返回编码后的字符串，否则返回空字符串
+//        return string.addingPercentEncoding(withAllowedCharacters: allowedCharacters) ?? ""
+//    }
+
     /**
       配置推流URL
      */
     @objc public func setSrtUrl(url:String)
     {
+//        urlEncode会造成闪退
         srtUrl = url
-        
+
+
             Task {
                
-                let streamMode = url.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
+                let streamMode = srtUrl.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
                 if(streamMode != streamMode2)
                 {
                     
