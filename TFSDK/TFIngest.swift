@@ -241,7 +241,7 @@ public class TFIngest: NSObject {
                 return
             }
           
-                if  streamMode2 == .rtmp {
+                if streamMode2 == .rtmp {
                  
                     do {
                     guard

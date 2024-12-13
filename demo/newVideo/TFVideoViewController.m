@@ -127,12 +127,13 @@
     }
     
 }
+//TODO: 倍放
 - (void)zoomSliderChanged:(UISlider *)sender {
     CGFloat scale = sender.value;
     [self.ingest zoomScale:scale];
-//    NSLog(@"缩放====>%f",scale);
+//    NSLog(@"倍放====>%f",scale);
 }
-//添加水印
+//TODO: 添加水印
 - (void)addWatermark:(UIButton*)recording {
     
     UIImageView *imageView = [[UIImageView alloc]initWithImage:[UIImage imageNamed:@"66"] ];
@@ -174,12 +175,12 @@
         return [[UIImage alloc]init];
     }
 }
-//删除水印
+//TODO: 删除水印
 - (void)clearWatermark:(UIButton*)recording {
     [self.ingest clearWatermark];
 }
 
-//美颜开关
+//TODO: 美颜开关
 - (void)videoEffectClick:(UIButton*)recording {
     self.ingest.beauty = recording.tag;
 }
@@ -192,18 +193,16 @@
     }
     
 }
-
+//TODO: 超广角摄像头  近距离
 - (void)switchToStandardCamera {
-    //超广角摄像头  近距离
     [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInUltraWideCamera position:AVCaptureDevicePositionBack ];
 }
+//TODO: 主摄像头（广角镜头）中距离 这是大多数摄影和视频应用中使用的默认摄像头。
 - (void)switchToWideAngleCamera {
-    // 主摄像头（广角镜头）中距离 这是大多数摄影和视频应用中使用的默认摄像头。
     [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionBack];
 }
-
+//TODO: 长焦摄像头（远摄摄像头）
 - (void)switchToTelephotoCamera {
-    //长焦摄像头（远摄摄像头）
     [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInTelephotoCamera position:AVCaptureDevicePositionBack];
 
 }
@@ -248,9 +247,9 @@
     self.ingest = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
+//TODO: 开始推流-------------------
 - (void)srtClick:(UIButton*)btn
 {
-    //开始推流
     if (btn.tag ==0 ) {
         [self.ingest startLiveWithCallback:^(NSInteger code, NSString * msg) {
             
@@ -268,7 +267,7 @@
    }
     
 }
-//前后摄像开关
+//TODO: 前后摄像开关
 - (void)attachVideoClick:(UIButton*)btn
 {
     if (btn.tag ==0 ) {
@@ -278,7 +277,7 @@
         [self.ingest attachVideoWithPosition:AVCaptureDevicePositionFront];
     }
 }
-//镜像开关
+//TODO: 镜像开关
 - (void)mirrorClick:(UIButton*)btn
 {
     if (btn.tag ==0 ) {
@@ -322,10 +321,7 @@
     }
 
 }
-
-
-
-//默认自动对焦
+//TODO: 默认自动对焦
 - (void)focusBoxPointClick:(UIButton*)btn
 {
     btn.selected = !btn.selected;
