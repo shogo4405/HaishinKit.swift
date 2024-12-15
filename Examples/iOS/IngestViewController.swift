@@ -24,7 +24,7 @@ final class IngestViewController: UIViewController {
     private var retryCount: Int = 0
     private var preferedStereo = false
     private let netStreamSwitcher: HKStreamSwitcher = .init()
-    private lazy var mixer = MediaMixer()
+    private lazy var mixer = MediaMixer(multiCamSessionEnabled: true, multiTrackAudioMixingEnabled: false, useManualCapture: true)
     private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
         audioCapture.delegate = self
@@ -37,9 +37,7 @@ final class IngestViewController: UIViewController {
         super.viewDidLoad()
         Task {
             // If you want to use the multi-camera feature, please make create a MediaMixer with a multiCamSession mode.
-            // ```
-            // let mixer = MediaMixer(multiCamSessionEnabled: true, multiTrackAudioMixingEnabled: false)
-            // ```
+            // let mixer = MediaMixer(multiCamSessionEnabled: true)
             if let orientation = DeviceUtil.videoOrientation(by: UIApplication.shared.statusBarOrientation) {
                 await mixer.setVideoOrientation(orientation)
             }
@@ -83,6 +81,7 @@ final class IngestViewController: UIViewController {
             try? await mixer.attachVideo(front, track: 1) { videoUnit in
                 videoUnit.isVideoMirrored = true
             }
+            await mixer.startRunning()
         }
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(didInterruptionNotification(_:)), name: AVAudioSession.interruptionNotification, object: nil)
@@ -94,6 +93,7 @@ final class IngestViewController: UIViewController {
         super.viewWillDisappear(animated)
         Task {
             await netStreamSwitcher.close()
+            await mixer.stopRunning()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
             try? await mixer.attachVideo(nil, track: 1)
