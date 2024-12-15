@@ -9,8 +9,7 @@ let swiftSettings: [SwiftSetting] = [
 ]
 #else
 let swiftSettings: [SwiftSetting] = [
-    .enableUpcomingFeature("ExistentialAny"),
-    .enableUpcomingFeature("StrictConcurrency")
+    .enableUpcomingFeature("ExistentialAny")
 ]
 #endif
 

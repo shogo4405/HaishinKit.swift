@@ -23,6 +23,7 @@
 		BC33A1292CDF526C0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1282CDF526C0016EEA0 /* HaishinKit */; };
 		BC33A12B2CDF526C0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A12A2CDF526C0016EEA0 /* SRTHaishinKit */; };
 		BC47FA352CE61FCF002900AE /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC47FA342CE61FCF002900AE /* MoQTHaishinKit */; };
+		BC9B74422D0F2808006CC351 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC9B74412D0F27FA006CC351 /* libc++.1.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -127,6 +128,8 @@
 		29F39BE72335F8010055F9BB /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BC9B74402D0F27CA006CC351 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		BC9B74412D0F27FA006CC351 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.1.tbd"; sourceTree = DEVELOPER_DIR; };
 		BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SRTHaishinKit.podspec; sourceTree = "<group>"; };
 		BCB798892CE06AEC0059DFE9 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libsrt.xcframework; path = Vendor/SRT/libsrt.xcframework; sourceTree = "<group>"; };
@@ -323,6 +326,7 @@
 			files = (
 				BC33A1272CDF52630016EEA0 /* SRTHaishinKit in Frameworks */,
 				BC33A1252CDF52600016EEA0 /* HaishinKit in Frameworks */,
+				BC9B74422D0F2808006CC351 /* libc++.1.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,7 +346,9 @@
 		0ACC00B98D6DB33B5BE87B87 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BC9B74412D0F27FA006CC351 /* libc++.1.tbd */,
 				BCCC45C02AA28BF40016EFE8 /* libc++.tbd */,
+				BC9B74402D0F27CA006CC351 /* libc++.tbd */,
 				BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */,
 				BC34DFD125EBB12C005F975A /* Logboard.xcframework */,
 				2915EC531D85BDF100621092 /* ReplayKit.framework */,

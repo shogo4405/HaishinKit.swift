@@ -114,11 +114,23 @@ public final actor MediaMixer {
     ) {
         self.useManualCapture = useManualCapture
         Task {
-            await session.isMultiCamSessionEnabled = multiCamSessionEnabled
-            await audioIO.isMultiTrackAudioMixingEnabled = multiCamSessionEnabled
-            if !useManualCapture {
-                await startRunning()
-            }
+            await _init(
+                multiCamSessionEnabled: multiCamSessionEnabled,
+                multiTrackAudioMixingEnabled: multiTrackAudioMixingEnabled,
+                useManualCapture: useManualCapture
+            )
+        }
+    }
+
+    private func _init(
+        multiCamSessionEnabled: Bool,
+        multiTrackAudioMixingEnabled: Bool,
+        useManualCapture: Bool
+    ) async {
+        await session.isMultiCamSessionEnabled = multiCamSessionEnabled
+        await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+        if !useManualCapture {
+            await startRunning()
         }
     }
 
@@ -134,7 +146,19 @@ public final actor MediaMixer {
     ) {
         self.useManualCapture = useManualCapture
         Task {
-            await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+            await _init(
+                multiTrackAudioMixingEnabled: multiTrackAudioMixingEnabled,
+                useManualCapture: useManualCapture
+            )
+        }
+    }
+
+    private func _init(
+        multiTrackAudioMixingEnabled: Bool,
+        useManualCapture: Bool
+    ) async {
+        await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+        if !useManualCapture {
             await startRunning()
         }
     }

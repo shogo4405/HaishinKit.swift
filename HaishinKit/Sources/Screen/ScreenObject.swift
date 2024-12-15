@@ -244,7 +244,7 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
     }
 
     private var queue: TypedBlockQueue<CMSampleBuffer>?
-    private var effects: [VideoEffect] = .init()
+    private var effects: [any VideoEffect] = .init()
     private var frameTracker = FrameTracker()
 
     /// Create a screen object.
