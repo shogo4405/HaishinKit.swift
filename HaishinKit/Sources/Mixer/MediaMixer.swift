@@ -114,7 +114,7 @@ public final actor MediaMixer {
     ) {
         self.useManualCapture = useManualCapture
         Task {
-            await session.isMultiCamSessionEnabled = true
+            await session.isMultiCamSessionEnabled = multiCamSessionEnabled
             await audioIO.isMultiTrackAudioMixingEnabled = multiCamSessionEnabled
             if !useManualCapture {
                 await startRunning()
