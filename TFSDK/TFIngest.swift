@@ -106,9 +106,8 @@ public class TFIngest: NSObject {
             
             //配置录制
             await stream.addOutput(recorder)
-//            if let view = view as? (any HKStreamOutput) {
-                await stream.addOutput(view)
-//            }
+            //配置视频预览容器
+            await stream.addOutput(view)
 
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
