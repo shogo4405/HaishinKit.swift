@@ -471,7 +471,7 @@ public class TFIngest: NSObject {
         }
     }
     /**设置 近  中 远 摄像头*/
-    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)
+    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
         Task {  @ScreenActor in
 
@@ -481,10 +481,12 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(back, track: 0){ videoUnit in
                     
                     videoUnit.isVideoMirrored = false
+                    
+                   
                 }
 
         }
-        
+        return true
     }
     /**摄像头倍放**/
     @objc public func zoomScale(_ scale:CGFloat)
