@@ -536,7 +536,6 @@ public class TFIngest: NSObject {
             }else{
                  await mixer.stopCapturing()
             }
-            
         }
         
         

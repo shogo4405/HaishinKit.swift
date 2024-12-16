@@ -77,7 +77,7 @@
     
     
     [self view:self.view addButton:CGRectMake(rightX, 540, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
-    [self view:self.view addButton:CGRectMake(0, 590, 100, 30) title:@"摄像 开" action:@selector(cameraClick:) selected:1];
+    [self view:self.view addButton:CGRectMake(0, 590, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
     
     
@@ -102,11 +102,13 @@
     [self.ingest setCamera:btn.selected];
 
     if (btn.selected) {
-        [btn setTitle:@"摄像 开" forState:UIControlStateNormal];
+        [btn setTitle:@"摄像头 开" forState:UIControlStateNormal];
+        NSLog(@"摄像头 开");
     }else{
-        [btn setTitle:@"摄像 关" forState:UIControlStateNormal];
+        [btn setTitle:@"摄像头 关" forState:UIControlStateNormal];
+        NSLog(@"摄像头 关");
     }
-    NSLog(@"摄像头开关====>%ld",(long)btn.selected);
+    
 }
 - (void)mutedClick:(UIButton*)btn
 {
