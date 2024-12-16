@@ -39,7 +39,7 @@ public class TFIngest: NSObject {
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
-     var view2:UIView = UIView()
+    var view2 = MTHKView(frame: .zero)
     /// Specifies the video size of encoding video.
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
     /// Specifies the bitrate.
@@ -60,7 +60,11 @@ public class TFIngest: NSObject {
         }
 
     }
-    func configurationSDK(view:UIView,
+//    @objc public func setVideoGravity(_ videoGravity:AVLayerVideoGravity)
+//    {
+//        view2.videoGravity = videoGravity
+//    }
+    func configurationSDK(view:MTHKView,
                           videoSize:CGSize,
                           videoFrameRate:CGFloat,
                           videoBitRate:Int,
@@ -74,7 +78,7 @@ public class TFIngest: NSObject {
             videoBitRate2 = videoBitRate
             videoFrameRate2 = videoFrameRate
             streamMode2 = streamMode
-        
+            view2.videoGravity = .resizeAspectFill
      
         Task {  @ScreenActor in
             
@@ -86,6 +90,7 @@ public class TFIngest: NSObject {
                     }
                 }
                 await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())
+                
                 var videoMixerSettings = await mixer.videoMixerSettings
                 videoMixerSettings.mode = .offscreen
                 await mixer.setVideoMixerSettings(videoMixerSettings)
@@ -101,9 +106,9 @@ public class TFIngest: NSObject {
             
             //配置录制
             await stream.addOutput(recorder)
-            if let view = view as? (any HKStreamOutput) {
+//            if let view = view as? (any HKStreamOutput) {
                 await stream.addOutput(view)
-            }
+//            }
 
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
@@ -143,7 +148,7 @@ public class TFIngest: NSObject {
         
 
     }
-    @objc public func setSDK(view:UIView,
+    @objc public func setSDK(view:MTHKView,
                              videoSize:CGSize,
                              videoFrameRate:CGFloat,
                              videoBitRate:Int,
@@ -269,25 +274,44 @@ public class TFIngest: NSObject {
                         
                     let response2 = try await stream.publish("live")
                     logger.info(response2)
-                    if let callback = callback {
-                        callback(0,"")
-                    }
-                    } catch RTMPConnection.Error.requestFailed(let response) {
-                        logger.warn(response)
-                        if let callback = callback {
-                            callback(-1,"")
-                        }
-                    } catch RTMPStream.Error.requestFailed(let response) {
-                        logger.warn(response)
-                        if let callback = callback {
-                            callback(-1,"")
-                        }
-                    } catch {
-                        logger.warn(error)
-                        if let callback = callback {
-                            callback(-1,"")
-                        }
-                    }
+                        
+                        
+                            // 这里放需要在主线程中执行的代码
+                         
+                        
+                                DispatchQueue.main.async {
+                                    if let callback = callback {
+                                        callback(0,"")
+                                    }
+                                }
+                                
+                            } catch RTMPConnection.Error.requestFailed(let response) {
+                                logger.warn(response)
+                                DispatchQueue.main.async {
+                                    if let callback = callback {
+                                        callback(-1,"")
+                                    }
+                                }
+                                
+                            } catch RTMPStream.Error.requestFailed(let response) {
+                                logger.warn(response)
+                                DispatchQueue.main.async {
+                                    if let callback = callback {
+                                        callback(-1,"")
+                                    }
+                                }
+                                
+                            } catch {
+                                logger.warn(error)
+                                DispatchQueue.main.async {
+                                    if let callback = callback {
+                                        callback(-1,"")
+                                    }
+                                }
+                                
+                            }
+                   
+              
                 }else  if streamMode2 == .srt {
                     do {
                         guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
@@ -297,9 +321,10 @@ public class TFIngest: NSObject {
                         //开始推流
                         await stream.publish()
                         logger.info("conneciton.open")
-                    
-                        if let callback = callback {
-                            callback(0,"")
+                        DispatchQueue.main.async {
+                            if let callback = callback {
+                                callback(0,"")
+                            }
                         }
                     } catch {
                     
@@ -319,9 +344,11 @@ public class TFIngest: NSObject {
                                 
                                 
                             }
-                            
-                            if let callback = callback {
-                                callback(-1,msg)
+                            DispatchQueue.main.async {
+                                if let callback = callback {
+                                    callback(-1,msg)
+                                }
+                                
                             }
                         }
                         
@@ -345,51 +372,50 @@ public class TFIngest: NSObject {
      */
     @objc public func setSrtUrl(url:String)
     {
-//        urlEncode会造成闪退
         srtUrl = url
 
+        /**
+         Task {
+            
+             let streamMode = srtUrl.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
+             if(streamMode != streamMode2)
+             {
+                 
+                 switch streamMode2 {
+                 case .rtmp:
+                     guard
+                         let connection = connection as? RTMPConnection,
+                         let stream = stream as? RTMPStream else {
+                         return
+                     }
+                     try? await connection.close()
+                     try? await stream.close()
+                     self.connection = nil
+                     self.stream = nil
 
-            Task {
-               
-                let streamMode = srtUrl.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
-                if(streamMode != streamMode2)
-                {
-                    
-                    switch streamMode2 {
-                    case .rtmp:
-                        guard
-                            let connection = connection as? RTMPConnection,
-                            let stream = stream as? RTMPStream else {
-                            return
-                        }
-                        try? await connection.close()
-                        try? await stream.close()
-                        self.connection = nil
-                        self.stream = nil
-    //                    logger.info("conneciton.close")
-                    case .srt:
-                        guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
-                            return
-                        }
-                        try? await connection.close()
-                        try? await stream.close()
-                        
-                        self.connection = nil
-                        self.stream = nil
-    //                    logger.info("conneciton.close")
-                    }
-                    
-                    self.configurationSDK(view: view2,
-                                          videoSize: videoSize2,
-                                          videoFrameRate: videoFrameRate2,
-                                          videoBitRate: videoBitRate2,
-                                          streamMode: streamMode,
-                                          again:true)
-                }
-                    
-                
-               
-            }
+                 case .srt:
+                     guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                         return
+                     }
+                     try? await connection.close()
+                     try? await stream.close()
+                     
+                     self.connection = nil
+                     self.stream = nil
+
+                 }
+                 
+                 self.configurationSDK(view: view2,
+                                       videoSize: videoSize2,
+                                       videoFrameRate: videoFrameRate2,
+                                       videoBitRate: videoBitRate2,
+                                       streamMode: streamMode,
+                                       again:true)
+             }
+          
+         }
+         */
+           
       
 
      
@@ -488,6 +514,52 @@ public class TFIngest: NSObject {
         }
         return true
     }
+    /**静音**/
+    @objc public func setMuted(_ muted:Bool)
+    {
+        Task {
+            var audioMixerSettings = await mixer.audioMixerSettings
+            audioMixerSettings.isMuted = muted
+            await mixer.setAudioMixerSettings(audioMixerSettings)
+        }
+        
+        
+    }
+    /**摄像头开关**/
+    @objc public func setCamera(_ muted:Bool)
+    
+    {
+        Task {
+            if(muted)
+            {
+                 await mixer.startCapturing()
+            }else{
+                 await mixer.stopCapturing()
+            }
+            
+        }
+        
+        
+    }
+    //重新配置视频
+    @objc public func setVideoMixerSettings(_ videoSize:CGSize)
+    
+    {
+        Task {
+            guard let stream = self.stream else {
+                return
+            }
+            var videoSettings = await stream.videoSettings
+            
+            ///// 视频的码率，单位是 bps
+//            videoSettings.bitRate = videoBitRate
+            ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
+            videoSettings.videoSize = videoSize
+            await stream.setVideoSettings(videoSettings)
+            
+        }
+    }
+    
     /**摄像头倍放**/
     @objc public func zoomScale(_ scale:CGFloat)
     {
