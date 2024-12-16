@@ -284,11 +284,13 @@
 //TODO: 镜像开关
 - (void)mirrorClick:(UIButton*)btn
 {
+    //镜像关
     if (btn.tag ==0 ) {
         
         [self.ingest isVideoMirrored:false];
         
     }else{
+        //镜像开
         [self.ingest isVideoMirrored:true];
     }
 }
