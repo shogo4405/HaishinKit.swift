@@ -16,10 +16,7 @@ import VideoToolbox
     case srt = 1
 }
 public class TFIngest: NSObject {
-
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。
-    @ScreenActor
-    private var currentEffect: (any VideoEffect)?
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     
@@ -40,12 +37,10 @@ public class TFIngest: NSObject {
         audioCapture.delegate = self
         return audioCapture
     }()
-    /// Specifies the video size of encoding video.
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
-    /// Specifies the bitrate.
-     var videoBitRate2: Int = 0
-     var videoFrameRate2: CGFloat = 0
-     var srtUrl:String = ""
+     public var videoBitRate2: Int = 0
+     public var videoFrameRate2: CGFloat = 0
+     public var srtUrl:String = ""
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:MTHKView,
                           videoSize:CGSize,
@@ -86,7 +81,6 @@ public class TFIngest: NSObject {
                 return
             }
             await mixer.addOutput(stream)
-            
             //配置录制
             await stream.addOutput(recorder)
             //配置视频预览容器
@@ -120,6 +114,7 @@ public class TFIngest: NSObject {
             try? await mixer.attachVideo(front, track: 0){videoUnit in
                 videoUnit.isVideoMirrored = true
             }
+            await mixer.startRunning()
            }
         }
         
@@ -158,7 +153,7 @@ public class TFIngest: NSObject {
         }
 
     }
-    //捕捉设备方向的变化
+    //TODO: 捕捉设备方向的变化
     @objc
     private func on(_ notification: Notification) {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else {
@@ -173,12 +168,12 @@ public class TFIngest: NSObject {
             await mixer.setVideoOrientation(videoOrientation)
         }
     }
-    //监听 AVAudioSession 的中断通知
+    //TODO: 监听 AVAudioSession 的中断通知
     @objc
     private func didInterruptionNotification(_ notification: Notification) {
         logger.info(notification)
     }
-   //用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
+    //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
     @objc
     private func didRouteChangeNotification(_ notification: Notification) {
         logger.info(notification)
@@ -234,13 +229,13 @@ public class TFIngest: NSObject {
             }
         }
     }
-    /**结束推流**/
+    //TODO: 结束推流
     @objc public func stopLive()
     {
         UIApplication.shared.isIdleTimerDisabled = true
         self.closePush()
     }
-    /**开始推流**/
+    //TODO: 开始推流
     @objc public func startLive(callback: ((Int, String) -> Void)?)
     {
         UIApplication.shared.isIdleTimerDisabled = false
@@ -330,17 +325,7 @@ public class TFIngest: NSObject {
             
         }
     }
-//    func urlEncode(_ string: String) -> String {
-//        // 设置允许的字符集，这里允许的字符集是URL的保留字符和字母数字字符
-//        let allowedCharacters = CharacterSet.alphanumerics.union(.punctuationCharacters).union(.whitespaces)
-//        
-//        // 如果转码成功返回编码后的字符串，否则返回空字符串
-//        return string.addingPercentEncoding(withAllowedCharacters: allowedCharacters) ?? ""
-//    }
-
-    /**
-      配置推流URL
-     */
+    //TODO: 配置推流URL
     @objc public func setSrtUrl(url:String)
     {
         srtUrl = url
@@ -386,32 +371,8 @@ public class TFIngest: NSObject {
           
          }
          */
-           
-      
-
-     
     }
-    @objc public func shutdown()
-    {
-        Task {  @ScreenActor in
-            
-            if(self.isRecording)
-            {
-                self.recording(false)
-            }
-            
-            //结束推流
-            self.closePush()
-            try? await mixer.attachAudio(nil)
-            try? await mixer.attachVideo(nil, track: 0)
-        }
- 
-        NotificationCenter.default.removeObserver(self)
-    }
-
-    /**
-       切换前后摄像头
-     */
+    //TODO: 切换前后摄像头
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
         Task {  @ScreenActor in
@@ -429,8 +390,7 @@ public class TFIngest: NSObject {
          }
        }
     }
-    /**摄像头镜像开关
-     */
+    //TODO: 摄像头镜像 开关
     @objc public func isVideoMirrored(_ isVideoMirrored: Bool)
     {
         Task {  @ScreenActor in
@@ -467,7 +427,7 @@ public class TFIngest: NSObject {
             }
         }
     }
-    /**设置 近  中 远 摄像头*/
+    //TODO: 设置 近  中 远 摄像头
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
         Task {  @ScreenActor in
@@ -485,7 +445,7 @@ public class TFIngest: NSObject {
         }
         return true
     }
-    /**静音**/
+    //TODO: 静音
     @objc public func setMuted(_ muted:Bool)
     {
         Task {
@@ -496,7 +456,7 @@ public class TFIngest: NSObject {
         
         
     }
-    /**摄像头开关**/
+    //TODO:  摄像头开关
     @objc public func setCamera(_ muted:Bool)
     
     {
@@ -511,7 +471,7 @@ public class TFIngest: NSObject {
         
         
     }
-    //重新配置视频
+    //TODO: 重新配置视频
     @objc public func setVideoMixerSettings(_ videoSize:CGSize)
     
     {
@@ -529,8 +489,7 @@ public class TFIngest: NSObject {
             
         }
     }
-    
-    /**摄像头倍放**/
+    //TODO: 摄像头倍放
     @objc public func zoomScale(_ scale:CGFloat)
     {
         Task {
@@ -545,7 +504,7 @@ public class TFIngest: NSObject {
         }
         
     }
-    /**录制视频**/
+    //TODO: 录制视频 开关
     @objc public func recording(_ isRecording:Bool)
     {
         Task {  @ScreenActor in
@@ -591,7 +550,7 @@ public class TFIngest: NSObject {
     //-----------------------------------------------
     
     var effectsList: [TFFilter] = []
-    /**水印*/
+    //TODO: 添加水印
     @objc public func addWatermark(_ watermark:UIImage,frame:CGRect)
     {
         Task {
@@ -611,9 +570,8 @@ public class TFIngest: NSObject {
             
         }
     }
-    /**清空水印*/
+    //TODO: 清空水印
     @objc public func clearWatermark()
-    
     {
         Task {
        
@@ -632,7 +590,7 @@ public class TFIngest: NSObject {
 
         }
     }
-    /**美颜开关*/
+    //TODO: 美颜开关
     @objc public var beauty: Bool = false {
         didSet {
             // 当 beauty 属性的值发生变化时执行的代码
@@ -707,7 +665,7 @@ public class TFIngest: NSObject {
             
         }
     }
-    //设置焦点
+    //TODO: 设置焦点
     @objc public func setFocusBoxPoint(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
       
         if focusMode == .autoFocus && exposureMode == .autoExpose  {
@@ -759,6 +717,24 @@ public class TFIngest: NSObject {
                print("Could not lock device for configuration: \(error)")
            }
        }
+    //TODO: 关闭SDK
+    @objc public func shutdown()
+    {
+        Task {  @ScreenActor in
+            
+            if(self.isRecording)
+            {
+                self.recording(false)
+            }
+            
+            //结束推流
+            self.closePush()
+            try? await mixer.attachAudio(nil)
+            try? await mixer.attachVideo(nil, track: 0)
+        }
+ 
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 extension TFIngest: AudioCaptureDelegate {
     // MARK: AudioCaptureDelegate
