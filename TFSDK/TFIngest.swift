@@ -19,6 +19,8 @@ public class TFIngest: NSObject {
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
+    //推流已经连接
+    @objc public var isConnected:Bool = false
     
     //前摄像 or 后摄像头
     var position = AVCaptureDevice.Position.front
@@ -232,8 +234,11 @@ public class TFIngest: NSObject {
     //TODO: 结束推流
     @objc public func stopLive()
     {
-        UIApplication.shared.isIdleTimerDisabled = true
-        self.closePush()
+        if self.isConnected {
+            UIApplication.shared.isIdleTimerDisabled = true
+            self.closePush()
+        }
+   
     }
     //TODO: 开始推流
     @objc public func startLive(callback: ((Int, String) -> Void)?)
@@ -246,7 +251,8 @@ public class TFIngest: NSObject {
             }
           
                 if streamMode2 == .rtmp {
-                 
+                    self.isConnected = false
+                    
                     do {
                     guard
                         let connection = connection as? RTMPConnection,
@@ -258,8 +264,10 @@ public class TFIngest: NSObject {
 
                     let response2 = try await stream.publish("live")
 
-        
+                        self.isConnected = true
                         self.callback(callback,code:0,msg: "")
+                        
+                        
                             } catch RTMPConnection.Error.requestFailed(let response) {
                                 logger.warn(response)
                                 self.callback(callback,code: -1,msg: "")
@@ -275,7 +283,9 @@ public class TFIngest: NSObject {
                             }
                    
               
-                }else  if streamMode2 == .srt {
+                }
+            else  if streamMode2 == .srt {
+                self.isConnected = false
                     do {
                         guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
                             return
@@ -283,7 +293,7 @@ public class TFIngest: NSObject {
                         try await connection.open(URL(string: srtUrl))
                         //开始推流
                         await stream.publish()
-                   
+                        self.isConnected = true
                         self.callback(callback,code: 0,msg: "")
                     } catch {
                     
