@@ -38,8 +38,8 @@ public class TFIngest: NSObject {
     }()
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
-    
     var view2 = MTHKView(frame: .zero)
+
     /// Specifies the video size of encoding video.
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
     /// Specifies the bitrate.
@@ -60,10 +60,6 @@ public class TFIngest: NSObject {
         }
 
     }
-//    @objc public func setVideoGravity(_ videoGravity:AVLayerVideoGravity)
-//    {
-//        view2.videoGravity = videoGravity
-//    }
     func configurationSDK(view:MTHKView,
                           videoSize:CGSize,
                           videoFrameRate:CGFloat,
@@ -115,8 +111,6 @@ public class TFIngest: NSObject {
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
-                
-
         }
         if again==false {
             
@@ -134,15 +128,12 @@ public class TFIngest: NSObject {
             //本地显示的渲染配置
             try? mixer.screen.addChild(videoScreenObject)
  
-           }
-       
-            Task { @ScreenActor in
-                try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-                //设置默认是前置 然后设置镜像
-                try? await mixer.attachVideo(front, track: 0){videoUnit in
-                    videoUnit.isVideoMirrored = true
-                }
+            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            //设置默认是前置 然后设置镜像
+            try? await mixer.attachVideo(front, track: 0){videoUnit in
+                videoUnit.isVideoMirrored = true
             }
+           }
         }
         
 
@@ -273,41 +264,20 @@ public class TFIngest: NSObject {
                         
                     let response2 = try await stream.publish("live")
                     logger.info(response2)
-                        
-                        
-                            // 这里放需要在主线程中执行的代码
-                         
-                        
-                                DispatchQueue.main.async {
-                                    if let callback = callback {
-                                        callback(0,"")
-                                    }
-                                }
-                                
+                    
+                        self.callback(callback,code:0,msg: "")
                             } catch RTMPConnection.Error.requestFailed(let response) {
                                 logger.warn(response)
-                                DispatchQueue.main.async {
-                                    if let callback = callback {
-                                        callback(-1,"")
-                                    }
-                                }
+                                self.callback(callback,code: -1,msg: "")
                                 
                             } catch RTMPStream.Error.requestFailed(let response) {
                                 logger.warn(response)
-                                DispatchQueue.main.async {
-                                    if let callback = callback {
-                                        callback(-1,"")
-                                    }
-                                }
+                                self.callback(callback,code: -1,msg: "")
                                 
                             } catch {
                                 logger.warn(error)
-                                DispatchQueue.main.async {
-                                    if let callback = callback {
-                                        callback(-1,"")
-                                    }
-                                }
-                                
+                               
+                                self.callback(callback,code: -1,msg: "")
                             }
                    
               
@@ -320,11 +290,8 @@ public class TFIngest: NSObject {
                         //开始推流
                         await stream.publish()
                         logger.info("conneciton.open")
-                        DispatchQueue.main.async {
-                            if let callback = callback {
-                                callback(0,"")
-                            }
-                        }
+                      
+                        self.callback(callback,code: 0,msg: "")
                     } catch {
                     
                         //打印错误原因
@@ -343,12 +310,7 @@ public class TFIngest: NSObject {
                                 
                                 
                             }
-                            DispatchQueue.main.async {
-                                if let callback = callback {
-                                    callback(-1,msg)
-                                }
-                                
-                            }
+                            self.callback(callback,code: -1,msg: "")
                         }
                         
                     }
@@ -356,6 +318,16 @@ public class TFIngest: NSObject {
                 }
               
          
+        }
+    }
+    
+    func callback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
+    {
+        DispatchQueue.main.async {
+            if let callback = callback {
+                callback(code,msg)
+            }
+            
         }
     }
 //    func urlEncode(_ string: String) -> String {
