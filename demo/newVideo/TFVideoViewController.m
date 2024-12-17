@@ -403,7 +403,7 @@
 }
 - (NSString*)SRT_URL
 {
-    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCYnSCshLyguKSdAEA,txSecret=1d2d9ed692bc63e88a4c17803a001180,txTime=6761422B";
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCEnSCshLy8sKytAEA,txSecret=105de351cdbba2f648029d64a91f0675,txTime=676225D4";
 }
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");

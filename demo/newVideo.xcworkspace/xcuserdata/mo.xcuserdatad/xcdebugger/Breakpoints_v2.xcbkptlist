@@ -34,6 +34,36 @@
             endingLineNumber = "536"
             landmarkName = "setCamera(_:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "59070026-C089-4EEA-8967-88B727D826A5 - 4ba524083fa6293a"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.setCamera(Swift.Bool) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "536"
+                  endingLineNumber = "536">
+               </Location>
+               <Location
+                  uuid = "59070026-C089-4EEA-8967-88B727D826A5 - 111a7f72f7cfe538"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for closure #1 () async -&gt; () in TFSRT.TFIngest.setCamera(Swift.Bool) -&gt; ()"
+                  moduleName = "TFSRT"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/TFSDK/TFIngest.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "536"
+                  endingLineNumber = "536">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>
