@@ -74,14 +74,11 @@
     self.focusBoxPoint.selected = true;
     
 
-    
-    
     [self view:self.view addButton:CGRectMake(rightX, 540, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
     [self view:self.view addButton:CGRectMake(0, 590, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
     
-    
-    self.streamBtn = [self view:self.view addButton:CGRectMake(rightX, 630, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:0];
+    self.streamBtn = [self view:self.view addButton:CGRectMake(rightX, 630, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:1];
     self.streamBtn.selected = true;
     
     
@@ -282,29 +279,7 @@
     self.ingest = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-//TODO: 开始推流-------------------
-- (void)srtClick:(UIButton*)btn
-{
-    if (btn.selected == false ) {
-        [self.ingest startLiveWithCallback:^(NSInteger code, NSString * msg) {
-            
-            if (code==0) {
-                [btn setTitle:@"停止推流" forState:UIControlStateNormal];
-                btn.selected = true;
-                NSLog(@"推流成功=======>");
-            }else{
-                NSLog(@"推流失败=======>");
-            }
-        }];
-    } else {
-    //停止推流
-        [self.ingest stopLive];
-        [btn setTitle:@"开始推流" forState:UIControlStateNormal];
-        btn.selected = false;
-        NSLog(@"停止推流=======>");
-   }
-    
-}
+
 //TODO: 前后摄像开关
 - (void)attachVideoClick:(UIButton*)btn
 {
@@ -361,9 +336,6 @@
         // 设置聚集光标的位置
         [self setFocusCursorWithPoint:point];
 
-        
-        
-        
         CGSize size = self.view2.bounds.size;
         CGPoint focusPoint = CGPointMake( point.y /size.height ,1-point.x/size.width );
         
@@ -379,7 +351,6 @@
     //自动对焦
     if(btn.selected==true)
     {
-      
         CGPoint point = CGPointMake(0.5, 0.5);
         [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeContinuousAutoFocus exposureMode:AVCaptureExposureModeContinuousAutoExposure];
         [btn setTitle:@"自动对焦" forState:UIControlStateNormal];
@@ -388,24 +359,47 @@
     }
   
 }
-
 - (void)setStreamMode:(TFStreamMode)model
 {
     if(model==TFStreamModeRtmp)
     {
         [self.streamBtn setTitle:@"RTMP推流" forState:UIControlStateNormal];
-        [self.ingest setSrtUrlWithUrl:[self RTMP_URL]];
+        [self.ingest setSrtUrlWithUrl:[self RTMP_URL] streamMode:model];
+
     }else{
         
         [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
-        [self.ingest setSrtUrlWithUrl:[self SRT_URL]];
+        [self.ingest setSrtUrlWithUrl:[self SRT_URL] streamMode:model];
+
     }
     
 }
-
+//TODO: 开始推流-------------------
+- (void)srtClick:(UIButton*)btn
+{
+    if (btn.selected == false ) {
+        [self.ingest startLiveWithCallback:^(NSInteger code, NSString * msg) {
+            
+            if (code==0) {
+                [btn setTitle:@"停止推流" forState:UIControlStateNormal];
+                btn.selected = true;
+                NSLog(@"推流成功=======>");
+            }else{
+                NSLog(@"推流失败=======>");
+            }
+        }];
+    } else {
+    //停止推流
+        [self.ingest stopLive];
+        [btn setTitle:@"开始推流" forState:UIControlStateNormal];
+        btn.selected = false;
+        NSLog(@"停止推流=======>");
+   }
+    
+}
 - (NSString*)RTMP_URL
 {
-    return @"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLyslJClAEA?txSecret=6780bf0a91cb99a650f25cf3e132db98&txTime=675D3070";
+    return @"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLy8sKytAEA?txSecret=3cdf27dbbd5bfa8a6f1258adc00896da&txTime=676271F5";
 }
 - (NSString*)SRT_URL
 {

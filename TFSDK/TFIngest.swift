@@ -255,11 +255,10 @@ public class TFIngest: NSObject {
                     }
                     
                     let response3 = try await connection.connect(srtUrl)
-                    logger.info(response3)
-                        
+
                     let response2 = try await stream.publish("live")
-                    logger.info(response2)
-                    
+
+        
                         self.callback(callback,code:0,msg: "")
                             } catch RTMPConnection.Error.requestFailed(let response) {
                                 logger.warn(response)
@@ -284,8 +283,7 @@ public class TFIngest: NSObject {
                         try await connection.open(URL(string: srtUrl))
                         //开始推流
                         await stream.publish()
-                        logger.info("conneciton.open")
-                      
+                   
                         self.callback(callback,code: 0,msg: "")
                     } catch {
                     
@@ -297,13 +295,10 @@ public class TFIngest: NSObject {
                                 
                             case .illegalState(let message):
                                 msg = message
-        //                        print("Illegal state error: \(message)")
-                                
+
                             case .invalidArgument(let message):
                                 msg = message
-        //                        print("Invalid argument error: \(message)")
-                                
-                                
+                    
                             }
                             self.callback(callback,code: -1,msg: msg)
                         }
@@ -315,26 +310,13 @@ public class TFIngest: NSObject {
          
         }
     }
-    
-    func callback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
-    {
-        DispatchQueue.main.async {
-            if let callback = callback {
-                callback(code,msg)
-            }
-            
-        }
-    }
     //TODO: 配置推流URL
-    @objc public func setSrtUrl(url:String)
+    @objc public func setSrtUrl(url:String,streamMode:TFStreamMode)
     {
-        srtUrl = url
-
-        /**
+     
          Task {
             
-             let streamMode = srtUrl.contains("srt://") ? TFStreamMode.srt : TFStreamMode.rtmp
-             if(streamMode != streamMode2)
+             if(streamMode != streamMode2 && srtUrl != url)
              {
                  
                  switch streamMode2 {
@@ -370,8 +352,18 @@ public class TFIngest: NSObject {
              }
           
          }
-         */
+        srtUrl = url
     }
+    func callback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
+    {
+        DispatchQueue.main.async {
+            if let callback = callback {
+                callback(code,msg)
+            }
+            
+        }
+    }
+
     //TODO: 切换前后摄像头
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
