@@ -310,7 +310,7 @@ public class TFIngest: NSObject {
                                 
                                 
                             }
-                            self.callback(callback,code: -1,msg: "")
+                            self.callback(callback,code: -1,msg: msg)
                         }
                         
                     }
