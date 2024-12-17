@@ -29,7 +29,6 @@
 * If you **want to contribute**, submit a pull request with a pr template.
 * If you want to support e-mail based communication without GitHub.
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
-* [Discord chatroom](https://discord.com/invite/8nkshPnanr).
 * 日本語が分かる方は、日本語でのコミニケーションをお願いします！
 
 ## 🌏 Related projects
