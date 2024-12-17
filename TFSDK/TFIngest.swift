@@ -16,14 +16,18 @@ import VideoToolbox
     case srt = 1
 }
 public class TFIngest: NSObject {
+
+    //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。
+    @ScreenActor
+    private var currentEffect: (any VideoEffect)?
+    @ScreenActor
+    private var videoScreenObject = VideoTrackScreenObject()
+    
     //前摄像 or 后摄像头
     var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
-
-    //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。如果你在两个属性之间插入空格或其他属性包装器，那么下一个属性将不受前一个包装器的影响
-    @ScreenActor
-    private var currentEffect: (any VideoEffect)?
+    var view2 = MTHKView(frame: .zero)
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
     private(set) var streamMode2: TFStreamMode = .rtmp
     private var connection: Any?
@@ -36,30 +40,13 @@ public class TFIngest: NSObject {
         audioCapture.delegate = self
         return audioCapture
     }()
-    @ScreenActor
-    private var videoScreenObject = VideoTrackScreenObject()
-    var view2 = MTHKView(frame: .zero)
-
     /// Specifies the video size of encoding video.
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
     /// Specifies the bitrate.
      var videoBitRate2: Int = 0
      var videoFrameRate2: CGFloat = 0
      var srtUrl:String = ""
-    func setPreference()async {
-        if streamMode2 == .srt {
-            let connection = SRTConnection()
-            self.connection = connection
-            stream = SRTStream(connection: connection)
-       
-        } else {
-            let connection = RTMPConnection()
-            self.connection = connection
-            stream = RTMPStream(connection: connection)
-           
-        }
-
-    }
+    //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:MTHKView,
                           videoSize:CGSize,
                           videoFrameRate:CGFloat,
@@ -157,7 +144,20 @@ public class TFIngest: NSObject {
         //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
+    func setPreference()async {
+        if streamMode2 == .srt {
+            let connection = SRTConnection()
+            self.connection = connection
+            stream = SRTStream(connection: connection)
+       
+        } else {
+            let connection = RTMPConnection()
+            self.connection = connection
+            stream = RTMPStream(connection: connection)
+           
+        }
 
+    }
     //捕捉设备方向的变化
     @objc
     private func on(_ notification: Notification) {
