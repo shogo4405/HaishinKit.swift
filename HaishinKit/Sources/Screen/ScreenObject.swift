@@ -244,17 +244,19 @@ public final class VideoTrackScreenObject: ScreenObject, ChromaKeyProcessable {
     }
 
     private var queue: TypedBlockQueue<CMSampleBuffer>?
-    private var effects: [VideoEffect] = .init()
+    private var effects: [any VideoEffect] = .init()
     private var frameTracker = FrameTracker()
 
     /// Create a screen object.
     override public init() {
         super.init()
-        horizontalAlignment = .center
         do {
             queue = try TypedBlockQueue(capacity: Self.capacity, handlers: .outputPTSSortedSampleBuffers)
         } catch {
             logger.error(error)
+        }
+        Task {
+            horizontalAlignment = .center
         }
     }
 

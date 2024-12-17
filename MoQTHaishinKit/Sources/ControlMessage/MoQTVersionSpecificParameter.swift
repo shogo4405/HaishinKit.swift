@@ -7,7 +7,7 @@ public enum MoQTVersionSpecificType: Int, Sendable {
 }
 
 /// 6.1.1.  Version Specific Parameters
-public struct MoQTVersionSpecificParameter {
+public struct MoQTVersionSpecificParameter: Sendable {
     enum Error: Swift.Error {
         case missionSetupParameterType
     }

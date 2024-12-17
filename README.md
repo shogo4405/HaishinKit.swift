@@ -61,6 +61,10 @@ Project name    |Notes       |License
   - [x] listener
   - [ ] rendezvous
 
+### ✏️ [MOQT(alpha)](https://github.com/shogo4405/HaishinKit.swift/tree/main/MoQTHaishinKit)
+> [!NOTE]
+> I am working on a preliminary implementation of MOQT for research purposes. If you're interested, please check out the repository.
+
 ### 📹 Multi Streaming.
 Starting from version 2.0.0, multiple streams are supported, allowing live streaming to separate services. Views also support this, enabling the verification of raw video data
 ```swift

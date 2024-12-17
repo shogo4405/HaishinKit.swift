@@ -92,10 +92,11 @@ public final actor MediaMixer {
 
     public private(set) var isRunning = false
     private var outputs: [any MediaMixerOutput] = []
+    private var cancellables: Set<AnyCancellable> = []
+    private let useManualCapture: Bool
     private lazy var audioIO = AudioCaptureUnit(session)
     private lazy var videoIO = VideoCaptureUnit(session)
     private lazy var session = CaptureSession()
-    private var cancellables: Set<AnyCancellable> = []
     @ScreenActor
     private lazy var displayLink = DisplayLinkChoreographer()
 
@@ -105,21 +106,59 @@ public final actor MediaMixer {
     /// - Parameters:
     ///   - multiCamSessionEnabled: Specifies the AVCaptureMultiCamSession enabled.
     ///   - multiTrackAudioMixingEnabled: Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
-    public init(multiCamSessionEnabled: Bool = true, multiTrackAudioMixingEnabled: Bool = false) {
+    ///   - useManualCapture: Specifies whether to start capturing manually. #1642
+    public init(
+        multiCamSessionEnabled: Bool = true,
+        multiTrackAudioMixingEnabled: Bool = false,
+        useManualCapture: Bool = false
+    ) {
+        self.useManualCapture = useManualCapture
         Task {
-            await setMultiCamSessionEnabled(multiCamSessionEnabled)
-            await setMultiTrackAudioMixingEnabled(multiTrackAudioMixingEnabled)
+            await _init(
+                multiCamSessionEnabled: multiCamSessionEnabled,
+                multiTrackAudioMixingEnabled: multiTrackAudioMixingEnabled,
+                useManualCapture: useManualCapture
+            )
+        }
+    }
+
+    private func _init(
+        multiCamSessionEnabled: Bool,
+        multiTrackAudioMixingEnabled: Bool,
+        useManualCapture: Bool
+    ) async {
+        await session.isMultiCamSessionEnabled = multiCamSessionEnabled
+        await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+        if !useManualCapture {
             await startRunning()
         }
     }
+
     #else
     /// Creates a new instance.
     ///
     /// - Parameters:
     ///   - multiTrackAudioMixingEnabled: Specifies the feature to mix multiple audio tracks. For example, it is possible to mix .appAudio and .micAudio from ReplayKit.
-    public init(multiTrackAudioMixingEnabled: Bool = false) {
+    ///   - useManualCapture: Specifies whether to start capturing manually. #1642
+    public init(
+        multiTrackAudioMixingEnabled: Bool = false,
+        useManualCapture: Bool = false
+    ) {
+        self.useManualCapture = useManualCapture
         Task {
-            await setMultiTrackAudioMixingEnabled(multiTrackAudioMixingEnabled)
+            await _init(
+                multiTrackAudioMixingEnabled: multiTrackAudioMixingEnabled,
+                useManualCapture: useManualCapture
+            )
+        }
+    }
+
+    private func _init(
+        multiTrackAudioMixingEnabled: Bool,
+        useManualCapture: Bool
+    ) async {
+        await audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
+        if !useManualCapture {
             await startRunning()
         }
     }
@@ -128,9 +167,8 @@ public final actor MediaMixer {
     /// Attaches a video device.
     ///
     /// If you want to use the multi-camera feature, please make create a MediaMixer with a multiCamSession mode for iOS.
-    /// ```
     /// let mixer = MediaMixer(multiCamSessionEnabled: true, multiTrackAudioMixingEnabled: false)
-    /// ```
+    ///
     @available(tvOS 17.0, *)
     public func attachVideo(_ device: AVCaptureDevice?, track: UInt8 = 0, configuration: VideoDeviceConfigurationBlock? = nil) async throws {
         return try await withCheckedThrowingContinuation { continuation in
@@ -294,7 +332,7 @@ public final actor MediaMixer {
         }
         outputs.append(output)
         if #available(tvOS 17.0, *) {
-            if !isCapturing {
+            if !isCapturing && !useManualCapture {
                 startCapturing()
             }
         }
@@ -305,16 +343,6 @@ public final actor MediaMixer {
         if let index = outputs.firstIndex(where: { $0 === output }) {
             outputs.remove(at: index)
         }
-    }
-
-    #if os(iOS) || os(tvOS)
-    func setMultiCamSessionEnabled(_ multiCamSessionEnabled: Bool) {
-        session.isMultiCamSessionEnabled = multiCamSessionEnabled
-    }
-    #endif
-
-    func setMultiTrackAudioMixingEnabled(_ multiTrackAudioMixingEnabled: Bool) {
-        audioIO.isMultiTrackAudioMixingEnabled = multiTrackAudioMixingEnabled
     }
 
     func setVideoRenderingMode(_ mode: VideoMixerSettings.Mode) {
@@ -391,6 +419,9 @@ extension MediaMixer: AsyncRunner {
             }
         }
         setVideoRenderingMode(videoMixerSettings.mode)
+        if useManualCapture {
+            session.startRunning()
+        }
         #if os(iOS) || os(tvOS) || os(visionOS)
         NotificationCenter
             .Publisher(center: .default, name: UIApplication.didEnterBackgroundNotification, object: nil)
@@ -416,6 +447,9 @@ extension MediaMixer: AsyncRunner {
             return
         }
         isRunning = false
+        if useManualCapture {
+            session.stopRunning()
+        }
         cancellables.forEach { $0.cancel() }
         cancellables.removeAll()
         Task { @ScreenActor in

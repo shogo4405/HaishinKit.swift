@@ -4,11 +4,12 @@ import PackageDescription
 
 #if swift(<6)
 let swiftSettings: [SwiftSetting] = [
+    .enableExperimentalFeature("ExistentialAny"),
     .enableExperimentalFeature("StrictConcurrency")
 ]
 #else
 let swiftSettings: [SwiftSetting] = [
-    .enableUpcomingFeature("StrictConcurrency")
+    .enableUpcomingFeature("ExistentialAny")
 ]
 #endif
 
@@ -62,5 +63,5 @@ let package = Package(
             swiftSettings: swiftSettings
         )
     ],
-    swiftLanguageModes: [.v5]
+    swiftLanguageModes: [.v6, .v5]
 )
