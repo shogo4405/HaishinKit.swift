@@ -16,8 +16,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "533"
             endingLineNumber = "533"
-            landmarkName = "setCamera(_:)"
-            landmarkType = "7">
+            landmarkName = "TFIngest"
+            landmarkType = "3">
             <Locations>
                <Location
                   uuid = "EB31586A-FFC4-4D0C-9060-CA8815D3F5F5 - 39f2b5e4efb3709b"
@@ -62,7 +62,7 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "536"
             endingLineNumber = "536"
-            landmarkName = "setCamera(_:)"
+            landmarkName = "zoomScale(_:)"
             landmarkType = "7">
             <Locations>
                <Location
@@ -94,6 +94,22 @@
                   endingLineNumber = "536">
                </Location>
             </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "49F554FA-779E-4B04-A715-BE3F169A2D63"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "newVideo/TFVideoViewController.m"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "370"
+            endingLineNumber = "370"
+            landmarkName = "-touchesBegan:withEvent:"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

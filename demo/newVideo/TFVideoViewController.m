@@ -361,8 +361,14 @@
         // 设置聚集光标的位置
         [self setFocusCursorWithPoint:point];
 
+        
+        
+        
+        CGSize size = self.view2.bounds.size;
+        CGPoint focusPoint = CGPointMake( point.y /size.height ,1-point.x/size.width );
+        
         //手动
-        [self.ingest setFocusBoxPoint:point focusMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose];
+        [self.ingest setFocusBoxPoint:focusPoint focusMode:AVCaptureFocusModeAutoFocus exposureMode:AVCaptureExposureModeAutoExpose];
     }
 
 }

@@ -713,13 +713,7 @@ public class TFIngest: NSObject {
         if focusMode == .autoFocus && exposureMode == .autoExpose  {
             //.autoFocus 1 手动
           //.autoExpose 1 手动
-
-                let size = view2.bounds.size
-                let focusPoint = CGPoint(
-                    x: CGFloat(point.y) / CGFloat(size.height),
-                    y: 1.0 - (CGFloat(point.x) / CGFloat(size.width)))
-                    
-                self.setFocusBoxPointInternal(focusPoint, focusMode: focusMode, exposureMode: exposureMode)
+          self.setFocusBoxPointInternal(point, focusMode: focusMode, exposureMode: exposureMode)
 
         }
        
