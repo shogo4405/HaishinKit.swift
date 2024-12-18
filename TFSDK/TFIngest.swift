@@ -506,8 +506,9 @@ public class TFIngest: NSObject {
     @objc public func zoomScale(_ scale:CGFloat)
     {
         Task {
-            try await mixer.configuration(video: 0) {[weak self] unit in
-                guard let `self` = self else { return }
+            //[weak self]
+            try await mixer.configuration(video: 0) { unit in
+//                guard let `self` = self else { return }
                 guard let device = unit.device else {
                     return
                 }
