@@ -470,8 +470,7 @@ public class TFIngest: NSObject {
             audioMixerSettings.isMuted = muted
             await mixer.setAudioMixerSettings(audioMixerSettings)
         }
-        
-        
+   
     }
     //TODO:  摄像头开关
     @objc public func setCamera(_ muted:Bool)
@@ -531,22 +530,25 @@ public class TFIngest: NSObject {
                     print("srt录制视频路径=======>",saveLocalVideoPath)
                 }
     
-                try await recorder.startRecording(saveLocalVideoPath)
-             
+//               try await recorder.startRecording(saveLocalVideoPath)
+            //TalkfunPublisherAudioSampleRate
+     
                 
-//                try await recorder.startRecording(URL(string: "dir/sample.mp4"), settings: [
-//                    AVMediaType.audio: [
-//                        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-//                        AVSampleRateKey: 0,
-//                        AVNumberOfChannelsKey: 0,
-//                    ],
-//                    AVMediaType.video: [
-//                        AVVideoCodecKey: AVVideoCodecType.h264,
-//                        AVVideoHeightKey: 0,
-//                        AVVideoWidthKey: 0,
-//                    
-//                    ]
-//                ])
+//                AVSampleRateKey = 44.1KHz 采样率,
+                /// AVNumberOfChannelsKey 声道数目(default 2)
+                try await recorder.startRecording(URL(string: "dir/sample.mp4"), settings: [
+                    AVMediaType.audio: [
+                        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                        AVSampleRateKey: 44100,
+                        AVNumberOfChannelsKey: 2,
+                    ],
+                    AVMediaType.video: [
+                        AVVideoCodecKey: AVVideoCodecType.h264,
+                        AVVideoHeightKey: self.videoSize2.height,
+                        AVVideoWidthKey: self.videoSize2.width,
+                    
+                    ]
+                ])
             }else{
                 
                 do {
