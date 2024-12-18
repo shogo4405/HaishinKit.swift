@@ -104,7 +104,7 @@ public class TFIngest: NSObject {
             await stream.setVideoSettings(videoSettings)
             
             //是否设置美颜
-            self.beauty = beauty;
+//            self.beauty = beauty;
             
           
             
