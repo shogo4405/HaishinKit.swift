@@ -60,7 +60,8 @@ public class TFIngest: NSObject {
             streamMode2 = streamMode
             view2.videoGravity = .resizeAspectFill
      
-        Task {  @ScreenActor in
+        //again 是重新配置了url
+        Task { @ScreenActor in
             
             if again==false {
                 if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
@@ -101,8 +102,6 @@ public class TFIngest: NSObject {
              //screen 离屏渲染对象。
              mixer.screen.size = videoSize
              mixer.screen.backgroundColor = UIColor.black.cgColor
-            // 视频的帧率，即 fps
-            await mixer.setFrameRate(videoFrameRate)
             videoScreenObject.cornerRadius = 16.0
             videoScreenObject.track = 1
             videoScreenObject.horizontalAlignment = .right
@@ -110,17 +109,25 @@ public class TFIngest: NSObject {
             videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
             //本地显示的渲染配置
             try? mixer.screen.addChild(videoScreenObject)
- 
-            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-            //设置默认是前置 然后设置镜像
-            try? await mixer.attachVideo(front, track: 0){videoUnit in
-                videoUnit.isVideoMirrored = true
-            }
             await mixer.startRunning()
            }
+            Task {
+                try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+                //设置默认是前置 然后设置镜像
+                try? await mixer.attachVideo(front, track: 0){videoUnit in
+                    videoUnit.isVideoMirrored = true
+                }
+            }
+//            self.setFrameRate(videoFrameRate)
         }
         
 
+    }
+    //TODO: 视频的帧率，即 fps  @ScreenActor 线程的, 要等sdk初始化好才能调用
+    @objc public func setFrameRate(_ videoFrameRate: Float64) {
+        Task {
+            await mixer.setFrameRate(videoFrameRate)
+        }
     }
     @objc public func setSDK(view:MTHKView,
                              videoSize:CGSize,
@@ -214,7 +221,7 @@ public class TFIngest: NSObject {
     }
     func closePush()
     {
-        Task {  @ScreenActor in
+        Task {
             switch streamMode2 {
             case .rtmp:
                 guard let connection = connection as? RTMPConnection else {
@@ -244,7 +251,7 @@ public class TFIngest: NSObject {
     @objc public func startLive(callback: ((Int, String) -> Void)?)
     {
         UIApplication.shared.isIdleTimerDisabled = false
-        Task {  @ScreenActor in
+        Task {
             
             guard let stream = self.stream else {
                 return
@@ -377,7 +384,7 @@ public class TFIngest: NSObject {
     //TODO: 切换前后摄像头
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
-        Task {  @ScreenActor in
+        Task {
             
         try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
             guard let `self` = self else { return }
@@ -395,7 +402,7 @@ public class TFIngest: NSObject {
     //TODO: 摄像头镜像 开关
     @objc public func isVideoMirrored(_ isVideoMirrored: Bool)
     {
-        Task {  @ScreenActor in
+        Task {
             if self.position == .front
             {
                 let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
@@ -421,7 +428,7 @@ public class TFIngest: NSObject {
     
     func attachVideo(_ isVideoMirrored:Bool)
     {
-        Task {  @ScreenActor in
+        Task {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             //track 是多个摄像头的下标
             try? await mixer.attachVideo(front, track: 0){ videoUnit in
@@ -432,7 +439,7 @@ public class TFIngest: NSObject {
     //TODO: 设置 近  中 远 摄像头
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
-        Task {  @ScreenActor in
+        Task {
 
                 // .builtInWideAngleCamera
                 let back = AVCaptureDevice.default(cameraType, for: .video, position:position)
@@ -460,7 +467,6 @@ public class TFIngest: NSObject {
     }
     //TODO:  摄像头开关
     @objc public func setCamera(_ muted:Bool)
-    
     {
         Task {
             if(muted)
@@ -470,8 +476,6 @@ public class TFIngest: NSObject {
                  await mixer.stopCapturing()
             }
         }
-        
-        
     }
     //TODO: 重新配置视频
     @objc public func setVideoMixerSettings(_ videoSize:CGSize)
@@ -509,7 +513,7 @@ public class TFIngest: NSObject {
     //TODO: 录制视频 开关
     @objc public func recording(_ isRecording:Bool)
     {
-        Task {  @ScreenActor in
+        Task {
             
             self.isRecording = isRecording
             if isRecording {
@@ -596,7 +600,7 @@ public class TFIngest: NSObject {
     @objc public var beauty: Bool = false {
         didSet {
             // 当 beauty 属性的值发生变化时执行的代码
-            Task {  @ScreenActor in
+            Task {
                 
                 if(beauty==false)
                 {
@@ -608,7 +612,7 @@ public class TFIngest: NSObject {
                         //清空所有滤层,留下水印
                         if effect.type == .filters {
                             effectsList.remove(at: i)
-                            _ = mixer.screen.unregisterVideoEffect(effect)
+                            _ = await mixer.screen.unregisterVideoEffect(effect)
                         }
                        
                     }
@@ -637,7 +641,7 @@ public class TFIngest: NSObject {
                                     effectsList.remove(at: i)
                                     watermark_list.append(effect)
                                     
-                                    _ = mixer.screen.unregisterVideoEffect(effect)
+                                    _ = await mixer.screen.unregisterVideoEffect(effect)
                                 }
                             }
                          //------------------
@@ -645,7 +649,7 @@ public class TFIngest: NSObject {
                             let effect = TFFilter()
                             effect.type = .filters
                             effectsList.append(effect)
-                            _ =  mixer.screen.registerVideoEffect(effect)
+                            _ =  await mixer.screen.registerVideoEffect(effect)
                         //------------------
                         //设置水印在最前面
                         if(watermark_list.count>0){
@@ -653,7 +657,7 @@ public class TFIngest: NSObject {
                             for i in 0..<watermark_list.count {
                                 let effect = watermark_list[i]
                                 effectsList.append(effect)
-                                _ = mixer.screen.registerVideoEffect(effect)
+                                _ = await mixer.screen.registerVideoEffect(effect)
                           
                             }
                             
@@ -722,7 +726,7 @@ public class TFIngest: NSObject {
     //TODO: 关闭SDK
     @objc public func shutdown()
     {
-        Task {  @ScreenActor in
+        Task {
             
             if(self.isRecording)
             {
@@ -731,8 +735,10 @@ public class TFIngest: NSObject {
             
             //结束推流
             self.closePush()
+            await mixer.stopRunning()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
+            try? await mixer.attachVideo(nil, track: 1)
         }
  
         NotificationCenter.default.removeObserver(self)

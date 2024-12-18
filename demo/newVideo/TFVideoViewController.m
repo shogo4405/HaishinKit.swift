@@ -276,7 +276,7 @@
 - (void)exitBtnClick:(UIButton*)btn
 {
     [self.ingest shutdown];
-    self.ingest = nil;
+
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
