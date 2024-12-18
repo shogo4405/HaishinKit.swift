@@ -78,58 +78,6 @@ Through off-screen rendering capabilities, it is possible to display any text or
 |:---:|:---:|
 |<img width="961" alt="" src="https://github.com/user-attachments/assets/aaf6c06f-d2de-43c1-a435-90907f370977">|<img width="849" alt="" src="https://github.com/user-attachments/assets/0a07b418-aa56-41cb-8e6d-e12596b25ae8">|
 
-<details>
-<summary>Example</summary>
-  
-```swift
-Task { ScreenActor in
-  var videoMixerSettings = VideoMixerSettings()
-  videoMixerSettings.mode = .offscreen
-  await mixer.setVideoMixerSettings(videoMixerSettings)
-
-  textScreenObject.horizontalAlignment = .right
-  textScreenObject.verticalAlignment = .bottom
-  textScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 16)
-
-  await stream.screen.backgroundColor = UIColor.black.cgColor
-
-  let videoScreenObject = VideoTrackScreenObject()
-  videoScreenObject.cornerRadius = 32.0
-  videoScreenObject.track = 1
-  videoScreenObject.horizontalAlignment = .right
-  videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-  videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-  _ = videoScreenObject.registerVideoEffect(MonochromeEffect())
-
-  let imageScreenObject = ImageScreenObject()
-  let imageURL = URL(fileURLWithPath: Bundle.main.path(forResource: "game_jikkyou", ofType: "png") ?? "")
-  if let provider = CGDataProvider(url: imageURL as CFURL) {
-      imageScreenObject.verticalAlignment = .bottom
-      imageScreenObject.layoutMargin = .init(top: 0, left: 0, bottom: 16, right: 0)
-      imageScreenObject.cgImage = CGImage(
-          pngDataProviderSource: provider,
-          decode: nil,
-          shouldInterpolate: false,
-          intent: .defaultIntent
-      )
-  } else {
-    logger.info("no image")
-  }
-
-  let assetScreenObject = AssetScreenObject()
-  assetScreenObject.size = .init(width: 180, height: 180)
-  assetScreenObject.layoutMargin = .init(top: 16, left: 16, bottom: 0, right: 0)
-  try? assetScreenObject.startReading(AVAsset(url: URL(fileURLWithPath: Bundle.main.path(forResource: "SampleVideo_360x240_5mb", ofType: "mp4") ?? "")))
-  try? mixer.screen.addChild(assetScreenObject)
-  try? mixer.screen.addChild(videoScreenObject)
-  try? mixer.screen.addChild(imageScreenObject)
-  try? mixer.screen.addChild(textScreenObject)
-  stream.screen.delegate = self
-}
-```
-
-</details>
-
 ### Rendering
 |Features|[PiPHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/PiPHKView.html)|[MTHKView](https://shogo4405.github.io/HaishinKit.swift/Classes/MTHKView.html)|
 |-|:---:|:---:|
@@ -198,7 +146,8 @@ HaishinKit has a multi-module configuration. If you want to use the SRT protocol
 * SRTHaishinKit via CocoaPods supports only iOS and tvOS.
 * Discontinued support for Carthage. #1542
 
-## 🔧 Prerequisites
+## 📓 Settings
+### 🔧 Prerequisites
 Make sure you setup and activate your AVAudioSession iOS.
 ```swift
 import AVFoundation
@@ -212,153 +161,6 @@ do {
 }
 ```
 
-## 📓 RTMP Usage
-### Ingest
-```swift
-let mixer = MediaMixer()
-let connection = RTMPConnection()
-let stream = RTMPStream(connection: connection)
-let hkView = MTHKView(frame: view.bounds)
-
-Task {
-  do {
-    try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-  } catch {
-    print(error)
-  }
-
-  do {
-    try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
-  } catch {
-    print(error)
-  }
-
-  await mixer.addOutput(stream)
-}
-
-Task { MainActor in
-  await stream.addOutput(hkView)
-  // add ViewController#view
-  view.addSubview(hkView)
-}
-
-Task {
-  do {
-    try await connection.connect("rtmp://localhost/appName/instanceName")
-    try await stream.publish(streamName)
-  } catch RTMPConnection.Error.requestFailed(let response) {
-    print(response)
-  } catch RTMPStream.Error.requestFailed(let response) {
-    print(response)
-  } catch {
-    print(error)
-  }
-}
-```
-
-### Playback
-```swift
-let connection = RTMPConnection()
-let stream = RTMPStream(connection: connection)
-let audioPlayer = AudioPlayer(AVAudioEngine())
-
-let hkView = MTHKView(frame: view.bounds)
-
-Task { MainActor in
-  await stream.addOutput(hkView)
-}
-
-Task {
-  // requires attachAudioPlayer
-  await stream.attachAudioPlayer(audioPlayer)
-
-  do {
-    try await connection.connect("rtmp://localhost/appName/instanceName")
-    try await stream.play(streamName)
-  } catch RTMPConnection.Error.requestFailed(let response) {
-    print(response)
-  } catch RTMPStream.Error.requestFailed(let response) {
-    print(response)
-  } catch {
-    print(error)
-  }
-}
-```
-
-### Authentication
-```swift
-var connection = RTMPConnection()
-connection.connect("rtmp://username:password@localhost/appName/instanceName")
-```
-
-## 📓 SRT Usage
-### Ingest
-```swift
-let mixer = MediaMixer()
-let connection = SRTConnection()
-let stream = SRTStream(connection: connection)
-let hkView = MTHKView(frame: view.bounds)
-
-Task {
-  do {
-    try await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-  } catch {
-    print(error)
-  }
-
-  do {
-    try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back))
-  } catch {
-    print(error)
-  }
-
-  await mixer.addOutput(stream)
-}
-
-Task { MainActor in
-  await stream.addOutput(hkView)
-  // add ViewController#view
-  view.addSubview(hkView)
-}
-
-Task {
-  stream.attachAudioPlayer(audioPlayer)
-  do {
-    try await connection.connect("rtmp://localhost/appName/instanceName")
-    try await stream.publish(streamName)
-  } catch {
-    print(error)
-  }
-}
-```
-
-### Playback
-```swift
-let connection = SRTConnection()
-let stream = SRTStream(connection: connection)
-let hkView = MTHKView(frame: view.bounds)
-let audioPlayer = AudioPlayer(AVAudioEngine())
-
-Task { MainActor in
-  await stream.addOutput(hkView)
-  // add ViewController#view
-  view.addSubview(hkView)
-}
-
-Task {
-  // requires attachAudioPlayer
-  await stream.attachAudioPlayer(audioPlayer)
-
-  do {
-    try await connection.connect("srt://host:port?option=foo")
-    try await stream.play()
-  } catch {
-    print(error)
-  }
-}
-```
-
-## 📓 Settings
 ### 📹 AVCaptureSession
 ```swift
 let mixer = MediaMixer()
@@ -373,7 +175,7 @@ await mixer.configuration { session in
 ```
 
 ### 🔊 Audio
-#### [Device](https://docs.haishinkit.com/swift/2.0.0/Classes/AudioDeviceUnit.html)
+#### [Device](https://docs.haishinkit.com/swift/latest/Classes/AudioDeviceUnit.html)
 Specifies the audio device settings.
 ```swift
 let front = AVCaptureDevice.default(for: .audio)
@@ -381,7 +183,7 @@ let front = AVCaptureDevice.default(for: .audio)
 try? await mixer.attachAudio(front, track: 0) { audioDeviceUnit in }
 ```
 
-#### [AudioMixerSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/AudioMixerSettings.html)
+#### [AudioMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/AudioMixerSettings.html)
 If you want to mix multiple audio tracks, please enable the feature flag.
 ```swift
 await mixer.setMultiTrackAudioMixingEnabled(true)
@@ -405,7 +207,7 @@ settings.tracks = [
 async mixer.setAudioMixerSettings(settings)
 ```
 
-#### [AudioCodecSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/AudioCodecSettings.html)
+#### [AudioCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/AudioCodecSettings.html)
 ```swift
 var audioSettings = AudioCodecSettings()
 /// Specifies the bitRate of audio output.
@@ -419,7 +221,7 @@ await stream.setAudioSettings(audioSettings)
 ```
 
 ### 🎥 Video
-#### [Device](https://docs.haishinkit.com/swift/2.0.0/Classes/VideoDeviceUnit.html)
+#### [Device](https://docs.haishinkit.com/swift/latest/Classes/VideoDeviceUnit.html)
 Specifies the video capture settings.
 ```swift
 
@@ -435,7 +237,7 @@ do {
 }
 ```
 
-#### [VideoMixerSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/VideoMixerSettings.html)
+#### [VideoMixerSettings](https://docs.haishinkit.com/swift/latest/Structs/VideoMixerSettings.html)
 ```swift
 var videoMixerSettings = VideoMixerSettings()
 /// Specifies the image rendering mode.
@@ -448,7 +250,7 @@ videoMixerSettings.mainTrack = 0
 await mixer.setVideoMixerSettings(videoMixerSettings)
 ```
 
-#### [VideoCodecSettings](https://docs.haishinkit.com/swift/2.0.0/Structs/VideoCodecSettings.html)
+#### [VideoCodecSettings](https://docs.haishinkit.com/swift/latest/Structs/VideoCodecSettings.html)
 ```swift
 var videoSettings = VideoCodecSettings(
   videoSize: .init(width: 854, height: 480),
