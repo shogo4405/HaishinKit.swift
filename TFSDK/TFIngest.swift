@@ -46,7 +46,6 @@ public class TFIngest: NSObject {
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
      public var videoBitRate2: Int = 0
      public var videoFrameRate2: CGFloat = 0
-     public var beauty2: Bool = false
      public var srtUrl:String = ""
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:MTHKView,
@@ -54,7 +53,6 @@ public class TFIngest: NSObject {
                           videoFrameRate:CGFloat,
                           videoBitRate:Int,
                           streamMode:TFStreamMode,
-                          beauty:Bool,
                           again:Bool)
     
     {
@@ -64,7 +62,6 @@ public class TFIngest: NSObject {
             videoBitRate2 = videoBitRate
             videoFrameRate2 = videoFrameRate
             streamMode2 = streamMode
-            beauty2 = beauty
             view2.videoGravity = .resizeAspectFill
      
         //again 是重新配置了url  @ScreenActor in
@@ -102,12 +99,7 @@ public class TFIngest: NSObject {
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
-            
-            //是否设置美颜
-//            self.beauty = beauty;
-            
-          
-            
+
         }
         if again==false {
             
@@ -146,8 +138,7 @@ public class TFIngest: NSObject {
                              videoSize:CGSize,
                              videoFrameRate:CGFloat,
                              videoBitRate:Int,
-                             streamMode:TFStreamMode,
-                             beauty:Bool)
+                             streamMode:TFStreamMode)
     {
 
         self.configurationSDK(view: view,
@@ -155,7 +146,6 @@ public class TFIngest: NSObject {
                               videoFrameRate: videoFrameRate,
                               videoBitRate: videoBitRate,
                               streamMode: streamMode,
-                              beauty:beauty,
                               again:false)
         //TODO: 捕捉设备方向的变化
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -381,7 +371,6 @@ public class TFIngest: NSObject {
                                        videoFrameRate: videoFrameRate2,
                                        videoBitRate: videoBitRate2,
                                        streamMode: streamMode,
-                                       beauty:beauty2 ,
                                        again:true)
              }
           
