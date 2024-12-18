@@ -141,7 +141,7 @@
 - (void)zoomSliderChanged:(UISlider *)sender {
     CGFloat scale = sender.value;
     [self.ingest zoomScale:scale];
-    NSLog(@"倍放====>%f",scale);
+//    NSLog(@"倍放====>%f",scale);
 }
 //TODO: 添加水印
 - (void)addWatermarkClick:(UIButton*)btn {
