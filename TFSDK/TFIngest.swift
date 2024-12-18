@@ -123,10 +123,7 @@ public class TFIngest: NSObject {
                     videoUnit.isVideoMirrored = true
                 }
             }
-//            self.setFrameRate(videoFrameRate)
         }
-        
-
     }
     //TODO: 视频的帧率，即 fps  @ScreenActor 线程的, 要等sdk初始化好才能调用
     @objc public func setFrameRate(_ videoFrameRate: Float64) {
@@ -411,8 +408,9 @@ public class TFIngest: NSObject {
         Task {
             if self.position == .front
             {
-                let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+          
                 do {
+                    let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
                     //先切换到后摄像头, 再切换到前摄像头
                   try await mixer.attachVideo(back, track: 0) { backVideoUnit in
                    
