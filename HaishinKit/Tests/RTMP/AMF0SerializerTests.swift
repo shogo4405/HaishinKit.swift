@@ -52,7 +52,7 @@ import Testing
             case "objectEncoding":
                 #expect(value as? Double == Double(0))
             default:
-                Issue.record(key.debugDescription as! Error)
+                Issue.record(key.debugDescription as! (any Error))
             }
         }
     }
