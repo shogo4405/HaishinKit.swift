@@ -412,18 +412,18 @@ public class TFIngest: NSObject {
                 do {
                     let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
                     //先切换到后摄像头, 再切换到前摄像头
-                  try await mixer.attachVideo(back, track: 0) { backVideoUnit in
-                   
+                  try await mixer.attachVideo(back, track: 0) {[weak self] backVideoUnit in
+                      guard let `self` = self else { return }
                       self.attachVideo(isVideoMirrored)
                       
                   }
                 } catch {
                   print(error)
                 }
-                
+                self.isVideoMirrored = isVideoMirrored
             }else{
                 
-                self.isVideoMirrored = isVideoMirrored
+               
               
             }
         
@@ -448,11 +448,15 @@ public class TFIngest: NSObject {
                 // .builtInWideAngleCamera
                 let back = AVCaptureDevice.default(cameraType, for: .video, position:position)
                 //track 是多个摄像头的下标
-                try? await mixer.attachVideo(back, track: 0){ videoUnit in
-                    
-                    videoUnit.isVideoMirrored = false
-                    
-                   
+                try? await mixer.attachVideo(back, track: 0){[weak self] videoUnit in
+                    guard let `self` = self else { return }
+                    if position == .front
+                    {
+                        videoUnit.isVideoMirrored = self.isVideoMirrored
+                    }else
+                    {
+                        videoUnit.isVideoMirrored = false
+                    }
                 }
 
         }
@@ -503,7 +507,8 @@ public class TFIngest: NSObject {
     @objc public func zoomScale(_ scale:CGFloat)
     {
         Task {
-            try await mixer.configuration(video: 0) { unit in
+            try await mixer.configuration(video: 0) {[weak self] unit in
+                guard let `self` = self else { return }
                 guard let device = unit.device else {
                     return
                 }
@@ -692,7 +697,8 @@ public class TFIngest: NSObject {
     private func setFocusBoxPointInternal(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
         
         Task {
-            try await mixer.configuration(video: 0) { unit in
+            try await mixer.configuration(video: 0) {[weak self] unit in
+                guard let `self` = self else { return }
                 guard let device = unit.device else {
                     return
                 }
