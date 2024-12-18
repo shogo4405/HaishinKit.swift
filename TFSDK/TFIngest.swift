@@ -26,6 +26,10 @@ public class TFIngest: NSObject {
     var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
+    //录制视频保存的路径
+    @objc public var saveLocalVideoPath:URL?
+    
+    
     var view2 = MTHKView(frame: .zero)
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
     private(set) var streamMode2: TFStreamMode = .rtmp
@@ -530,8 +534,12 @@ public class TFIngest: NSObject {
             
             self.isRecording = isRecording
             if isRecording {
-                print("startRecording")
-                try await recorder.startRecording(nil)
+                if let saveLocalVideoPath = saveLocalVideoPath
+                {
+                    print("srt录制视频路径=======>",saveLocalVideoPath)
+                }
+    
+                try await recorder.startRecording(saveLocalVideoPath)
              
                 
 //                try await recorder.startRecording(URL(string: "dir/sample.mp4"), settings: [
@@ -558,8 +566,6 @@ public class TFIngest: NSObject {
                     print("error: \(error)")
                 }
 
-
-                
             }
             
         }
