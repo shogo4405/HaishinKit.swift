@@ -28,6 +28,7 @@ let package = Package(
         .library(name: "MoQTHaishinKit", targets: ["MoQTHaishinKit"])
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-docc-plugin", from: "1.4.3"),
         .package(url: "https://github.com/shogo4405/Logboard.git", "2.5.0"..<"2.6.0")
     ],
     targets: [
