@@ -280,7 +280,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-//TODO: 前后摄像开关
+//TODO: 前后摄像头切换
 - (void)attachVideoClick:(UIButton*)btn
 {
     btn.selected = !btn.selected;
