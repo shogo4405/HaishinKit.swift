@@ -22,7 +22,7 @@
                BlueprintIdentifier = "BCB798882CE06AEC0059DFE9"
                BuildableName = "Tests.xctest"
                BlueprintName = "Tests"
-               ReferencedContainer = "container:HaishinKit.xcodeproj">
+               ReferencedContainer = "container:Examples.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

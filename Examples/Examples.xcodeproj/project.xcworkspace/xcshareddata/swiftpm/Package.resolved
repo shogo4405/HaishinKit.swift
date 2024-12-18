@@ -4,7 +4,7 @@
     {
       "identity" : "logboard",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/shogo4405/Logboard",
+      "location" : "https://github.com/shogo4405/Logboard.git",
       "state" : {
         "revision" : "272976e1f3e8873e60ffe4b08fe50df48a93751b",
         "version" : "2.5.0"

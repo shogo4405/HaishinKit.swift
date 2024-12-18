@@ -1,5 +1,6 @@
 name: Bug Report
-description: File a bug report
+description: |
+  Before posting, confirm whether the issue can be reproduced in the Example project(https://github.com/shogo4405/HaishinKit.swift?tab=readme-ov-file#-examples) as well.
 body:
   - type: textarea
     id: describe-the-bug

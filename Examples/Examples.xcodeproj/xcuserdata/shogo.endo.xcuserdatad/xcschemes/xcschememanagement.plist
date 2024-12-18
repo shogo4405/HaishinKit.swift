@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>Example iOS+SwiftUI.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
+		<key>Example iOS.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>3</integer>
+		</dict>
+		<key>Example macOS.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>Example tvOS.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>5</integer>
+		</dict>
+		<key>Example visionOS.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>6</integer>
+		</dict>
+		<key>HaishinKit.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>4</integer>
+		</dict>
+		<key>MoQTHaishinKit.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
+		<key>SRTHaishinKit.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>Screencast.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>7</integer>
+		</dict>
+		<key>Tests.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>8</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>2915EC511D85BDF100621092</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>29798E581CE60E5300F5CBD0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>29C9327D1CD76FB800283FC5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>29C932931CD76FD300283FC5</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>29D3D4EE1ED0531500DD4AA6</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BC7A0E3C2B088FA7005FB2F7</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BCB7967E2CE06A430059DFE9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BCB798882CE06AEC0059DFE9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>BCB98E832CDF62A80088458D</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>

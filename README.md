@@ -82,7 +82,6 @@ let view2 = MTHKView()
 stream0.addOutput(view2)
 ```
 
-
 ### Offscreen Rendering.
 Through off-screen rendering capabilities, it is possible to display any text or bitmap on a video during broadcasting or viewing. This allows for various applications such as watermarking and time display.
 |Ingest|Playback|
@@ -158,13 +157,17 @@ Task { ScreenActor in
 - [x] Strict Concurrency 
 
 ## 🐾 Examples
-Examples project are available for iOS with UIKit, iOS with SwiftUI, macOS and tvOS. Example macOS requires Apple Silicon mac.
-- [x] Camera and microphone publish.
-- [x] Playback
+Examples project are available for iOS, macOS(ARM), tvOS and visionOS.
+> [!IMPORTANT]
+> Please check if the same issue occurs with the latest Examples before posting it on GitHub Issues.
+
+### Usage
+You can verify by changing the URL of the following file.
+https://github.com/shogo4405/HaishinKit.swift/blob/abf1883d25d0ba29e1d1d67ea9e3a3b5be61a196/Examples/Preference.swift#L1-L7
 ```sh
 git clone https://github.com/shogo4405/HaishinKit.swift.git
 cd HaishinKit.swift
-open HaishinKit.xcodeproj
+open Examples/Examples.xcodeproj
 ```
 
 ## 🌏 Requirements
