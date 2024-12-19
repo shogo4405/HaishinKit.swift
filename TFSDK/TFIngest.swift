@@ -36,6 +36,7 @@ public class TFIngest: NSObject {
     private var connection: Any?
     private(set) var stream: (any HKStream)?
     var isVideoMirrored:Bool = true
+    var mirror2:Bool = true
     let recorder = HKStreamRecorder()
     private lazy var mixer = MediaMixer()
     private lazy var audioCapture: AudioCapture = {
@@ -53,6 +54,7 @@ public class TFIngest: NSObject {
                           videoFrameRate:CGFloat,
                           videoBitRate:Int,
                           streamMode:TFStreamMode,
+                          mirror:Bool,
                           again:Bool)
     
     {
@@ -63,9 +65,10 @@ public class TFIngest: NSObject {
             videoFrameRate2 = videoFrameRate
             streamMode2 = streamMode
             view2.videoGravity = .resizeAspectFill
-     
+            mirror2 = mirror
+        
         //again 是重新配置了url  @ScreenActor in
-        Task {
+        Task {@ScreenActor in
             
             if again==false {
                 if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
@@ -116,11 +119,12 @@ public class TFIngest: NSObject {
             try? mixer.screen.addChild(videoScreenObject)
             await mixer.startRunning()
            }
-            Task {
+            
+         Task {
                 try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                 //设置默认是前置 然后设置镜像
                 try? await mixer.attachVideo(front, track: 0){videoUnit in
-                    videoUnit.isVideoMirrored = true
+                    videoUnit.isVideoMirrored = mirror
                 }
             }
         }
@@ -135,7 +139,8 @@ public class TFIngest: NSObject {
                              videoSize:CGSize,
                              videoFrameRate:CGFloat,
                              videoBitRate:Int,
-                             streamMode:TFStreamMode)
+                             streamMode:TFStreamMode,
+                             mirror:Bool)
     {
 
         self.configurationSDK(view: view,
@@ -143,6 +148,7 @@ public class TFIngest: NSObject {
                               videoFrameRate: videoFrameRate,
                               videoBitRate: videoBitRate,
                               streamMode: streamMode,
+                              mirror:mirror,
                               again:false)
         //TODO: 捕捉设备方向的变化
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -368,6 +374,7 @@ public class TFIngest: NSObject {
                                        videoFrameRate: videoFrameRate2,
                                        videoBitRate: videoBitRate2,
                                        streamMode: streamMode,
+                                       mirror:self.mirror2,
                                        again:true)
              }
           
@@ -402,7 +409,7 @@ public class TFIngest: NSObject {
          }
        }
     }
-    //TODO: 摄像头镜像 开关
+    //TODO: 镜像 开关
     @objc public func isVideoMirrored(_ isVideoMirrored: Bool)
     {
         Task {
@@ -435,8 +442,10 @@ public class TFIngest: NSObject {
         Task {
             let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
             //track 是多个摄像头的下标
-            try? await mixer.attachVideo(front, track: 0){ videoUnit in
+            try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
+                guard let `self` = self else { return }
                 videoUnit.isVideoMirrored = isVideoMirrored
+                self.mirror2 = isVideoMirrored
             }
         }
     }

@@ -87,7 +87,9 @@
                       videoSize:CGSizeMake(540, 960)
                  videoFrameRate:30
                    videoBitRate:600*1024
-                     streamMode:TFStreamModeSrt];
+                     streamMode:TFStreamModeSrt
+                         mirror:true
+    ];
     
     //设置URL
     [self setStreamMode:TFStreamModeSrt];
