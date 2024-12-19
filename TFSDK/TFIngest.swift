@@ -130,7 +130,7 @@ public class TFIngest: NSObject {
              
              
             }
-            
+            //帧率
             self.setFrameRate(videoFrameRate)
         }
     }
@@ -420,30 +420,14 @@ public class TFIngest: NSObject {
         Task {
             if self.position == .front
             {
-          
-//                do {
-//                    let back = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
-//                    //先切换到后摄像头, 再切换到前摄像头
-//                  try await mixer.attachVideo(back, track: 0) {[weak self] backVideoUnit in
-//                      guard let `self` = self else { return }
-//                      self.attachVideo(isVideoMirrored)
-//                      
-//                  }
-//                } catch {
-//                  print(error)
-//                }
-//                
+        
+            try await mixer.configuration(video: 0) {[weak self] unit in
+                guard let `self` = self else { return }
+                unit.isVideoMirrored = isVideoMirrored
                 
+                self.isVideoMirrored = isVideoMirrored
+            }
 
-                    try await mixer.configuration(video: 0) {[weak self] unit in
-                        guard let `self` = self else { return }
-                        unit.isVideoMirrored = isVideoMirrored
-                        
-                        self.isVideoMirrored = isVideoMirrored
-                    }
-
-                
-              
             }else{
                 
                
@@ -452,19 +436,6 @@ public class TFIngest: NSObject {
         
         }
     }
-    
-//    func attachVideo(_ isVideoMirrored:Bool)
-//    {
-//        Task {
-//            let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-//            //track 是多个摄像头的下标
-//            try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
-//                guard let `self` = self else { return }
-//                videoUnit.isVideoMirrored = isVideoMirrored
-//                self.mirror2 = isVideoMirrored
-//            }
-//        }
-//    }
     //TODO: 设置 近  中 远 摄像头
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
