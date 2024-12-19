@@ -29,7 +29,6 @@ public class TFIngest: NSObject {
     //录制视频保存的路径
     @objc public var saveLocalVideoPath:URL?
     
-    
     var view2 = MTHKView(frame: .zero)
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
     private(set) var streamMode2: TFStreamMode = .rtmp
@@ -37,18 +36,18 @@ public class TFIngest: NSObject {
     private(set) var stream: (any HKStream)?
     var isVideoMirrored:Bool = true
     //镜像
-    var mirror2:Bool = true
-    let recorder = HKStreamRecorder()
-    private lazy var mixer = MediaMixer()
-    private lazy var audioCapture: AudioCapture = {
-        let audioCapture = AudioCapture()
-        audioCapture.delegate = self
-        return audioCapture
-    }()
+     var mirror2:Bool = true
+     let recorder = HKStreamRecorder()
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
      public var videoBitRate2: Int = 0
      public var videoFrameRate2: CGFloat = 0
      public var srtUrl:String = ""
+     private lazy var mixer = MediaMixer()
+     private lazy var audioCapture: AudioCapture = {
+        let audioCapture = AudioCapture()
+        audioCapture.delegate = self
+        return audioCapture
+    }()
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:MTHKView,
                           videoSize:CGSize,
