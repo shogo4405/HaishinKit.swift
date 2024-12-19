@@ -346,45 +346,56 @@ public class TFIngest: NSObject {
     {
      
          Task {
-            
-             if(streamMode != streamMode2 && srtUrl != url)
+             srtUrl = url
+             if( streamMode2 != streamMode)
              {
-                 
-                 switch streamMode2 {
-                 case .rtmp:
-                     guard
-                         let connection = connection as? RTMPConnection,
-                         let stream = stream as? RTMPStream else {
-                         return
-                     }
-                     try? await connection.close()
-                     try? await stream.close()
-                     self.connection = nil
-                     self.stream = nil
-
-                 case .srt:
-                     guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
-                         return
-                     }
-                     try? await connection.close()
-                     try? await stream.close()
+             
+                     streamMode2 = streamMode
+                  
                      
-                     self.connection = nil
-                     self.stream = nil
-
-                 }
+                     switch streamMode2 {
+                     case .rtmp:
+                         
+                        if let connection = connection as? SRTConnection, let stream = stream as? SRTStream
+                         {
+                            try? await connection.close()
+                            try? await stream.close()
+                            
+                            self.connection = nil
+                            self.stream = nil
+                        }
+                   
+                     case .srt:
+                    
+                        if let connection = connection as? RTMPConnection,
+                           let stream = stream as? RTMPStream
+                         {
+                            try? await connection.close()
+                            try? await stream.close()
+                            self.connection = nil
+                            self.stream = nil
+                        }
+                         
+                     }
+                     
+                     
+                     self.configurationSDK(view: view2,
+                                           videoSize: videoSize2,
+                                           videoFrameRate: videoFrameRate2,
+                                           videoBitRate: videoBitRate2,
+                                           streamMode: streamMode,
+                                           mirror:self.mirror2,
+                                           again:true)
+                     
                  
-                 self.configurationSDK(view: view2,
-                                       videoSize: videoSize2,
-                                       videoFrameRate: videoFrameRate2,
-                                       videoBitRate: videoBitRate2,
-                                       streamMode: streamMode,
-                                       mirror:self.mirror2,
-                                       again:true)
+                
+                 
+               
+                 
              }
-          
+             
          }
-        srtUrl = url
+      
     }
     func callback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
     {
