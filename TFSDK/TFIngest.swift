@@ -730,6 +730,11 @@ public class TFIngest: NSObject {
                print("Could not lock device for configuration: \(error)")
            }
        }
+    //TODO:  前置摄像头的本地预览锁定为水平翻转  默认 true
+    @objc public func frontCameraPreviewLockedToFlipHorizontally(_ frontCameraPreviewLockedToFlipHorizontally:Bool)
+    {
+        
+    }
     //TODO: 关闭SDK
     @objc public func shutdown()
     {
