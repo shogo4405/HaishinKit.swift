@@ -3,14 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 76;
+	objectVersion = 74;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2915EC531D85BDF100621092 /* ReplayKit.framework */; };
-		BC0C81EF2CE8868E00DEA9E6 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC0C81EE2CE8868E00DEA9E6 /* HaishinKit */; };
-		BC0C81F12CE8868E00DEA9E6 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC0C81F02CE8868E00DEA9E6 /* MoQTHaishinKit */; };
-		BC0C81F32CE8868E00DEA9E6 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC0C81F22CE8868E00DEA9E6 /* SRTHaishinKit */; };
 		BC2902352AA0E66A004821D2 /* Screencast.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2915EC521D85BDF100621092 /* Screencast.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BC33A1192CDF523E0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1182CDF523E0016EEA0 /* HaishinKit */; };
 		BC33A11B2CDF523E0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11A2CDF523E0016EEA0 /* SRTHaishinKit */; };
@@ -18,12 +14,23 @@
 		BC33A11F2CDF52550016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A11E2CDF52550016EEA0 /* SRTHaishinKit */; };
 		BC33A1212CDF525B0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1202CDF525B0016EEA0 /* HaishinKit */; };
 		BC33A1232CDF525B0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1222CDF525B0016EEA0 /* SRTHaishinKit */; };
-		BC33A1252CDF52600016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1242CDF52600016EEA0 /* HaishinKit */; };
-		BC33A1272CDF52630016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1262CDF52630016EEA0 /* SRTHaishinKit */; };
 		BC33A1292CDF526C0016EEA0 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A1282CDF526C0016EEA0 /* HaishinKit */; };
 		BC33A12B2CDF526C0016EEA0 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC33A12A2CDF526C0016EEA0 /* SRTHaishinKit */; };
 		BC47FA352CE61FCF002900AE /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC47FA342CE61FCF002900AE /* MoQTHaishinKit */; };
-		BC9B74422D0F2808006CC351 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC9B74412D0F27FA006CC351 /* libc++.1.tbd */; };
+		BC9129852D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */; };
+		BC9129862D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */; };
+		BC9129872D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */; };
+		BC9129882D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */; };
+		BC9129892D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
+		BC91298A2D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
+		BC91298B2D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
+		BC91298C2D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
+		BC91298D2D12EB5E0077EFF3 /* Preference.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129382D12EA820077EFF3 /* Preference.swift */; };
+		BC9129D22D12EBCE0077EFF3 /* HKStreamSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */; };
+		BC912A782D12F0600077EFF3 /* HaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A772D12F0600077EFF3 /* HaishinKit */; };
+		BC912A7A2D12F0600077EFF3 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A792D12F0600077EFF3 /* MoQTHaishinKit */; };
+		BC912A7E2D12F06F0077EFF3 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */; };
+		BC912A812D12F10C0077EFF3 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC912A802D12F0900077EFF3 /* libc++.1.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -118,167 +125,98 @@
 
 /* Begin PBXFileReference section */
 		2915EC521D85BDF100621092 /* Screencast.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Screencast.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		2915EC531D85BDF100621092 /* ReplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReplayKit.framework; path = System/Library/Frameworks/ReplayKit.framework; sourceTree = SDKROOT; };
-		2927A2991E7ED2D70044AF91 /* LICENSE.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = LICENSE.md; sourceTree = "<group>"; };
-		2997BDD31D50D31B000AF900 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		29C9327E1CD76FB800283FC5 /* Example iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29C932941CD76FD300283FC5 /* Example macOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example macOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		29D3D4EF1ED0531500DD4AA6 /* Example tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		29F04FF21F3388B000172706 /* HaishinKit.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = HaishinKit.podspec; sourceTree = "<group>"; };
-		29F39BE72335F8010055F9BB /* Package.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
-		BC34DFD125EBB12C005F975A /* Logboard.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Logboard.xcframework; path = Carthage/Build/Logboard.xcframework; sourceTree = "<group>"; };
 		BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example visionOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		BC9B74402D0F27CA006CC351 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
-		BC9B74412D0F27FA006CC351 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.1.tbd"; sourceTree = DEVELOPER_DIR; };
-		BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */ = {isa = PBXFileReference; lastKnownFileType = text; path = SRTHaishinKit.podspec; sourceTree = "<group>"; };
+		BC91287D2D12E7540077EFF3 /* Examples.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Examples.xcodeproj; sourceTree = "<group>"; };
+		BC9128F82D12E9970077EFF3 /* Examples.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = Examples.xcodeproj; sourceTree = "<group>"; };
+		BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HKStreamSwitcher.swift; sourceTree = "<group>"; };
+		BC9129382D12EA820077EFF3 /* Preference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preference.swift; sourceTree = "<group>"; };
+		BC912A7F2D12F0830077EFF3 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		BC912A802D12F0900077EFF3 /* libc++.1.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.1.tbd"; path = "Platforms/XROS.platform/Developer/SDKs/XROS2.1.sdk/usr/lib/libc++.1.tbd"; sourceTree = DEVELOPER_DIR; };
 		BCB798892CE06AEC0059DFE9 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libsrt.xcframework; path = Vendor/SRT/libsrt.xcframework; sourceTree = "<group>"; };
-		BCCC45C02AA28BF40016EFE8 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.4.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BC0C81EC2CE8856000DEA9E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		BC9129762D12EADB0077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Tests/MoQTPayLoadTests.swift,
-				Tests/MoQTStreamHeaderSubgroupTests.swift,
-			);
-			target = BCB798882CE06AEC0059DFE9 /* Tests */;
-		};
-		BC82CA7F2CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				/Localized/iOS/LaunchScreen.storyboard,
-				HKStreamSwitcher.swift,
-				iOS/AppDelegate.swift,
-				iOS/Assets.xcassets,
-				iOS/AudioCapture.swift,
-				iOS/Icon.png,
-				iOS/IngestViewController.swift,
-				iOS/Main.storyboard,
-				iOS/MemoryUsage.swift,
-				iOS/PlaybackContainerViewController.swift,
-				iOS/PlaybackViewController.swift,
-				iOS/PreferenceViewController.swift,
-				iOS/VisualEffect.swift,
-				Preference.swift,
+				/Localized/LaunchScreen.storyboard,
+				AppDelegate.swift,
+				Assets.xcassets,
+				AudioCapture.swift,
+				Icon.png,
+				IngestViewController.swift,
+				Main.storyboard,
+				MemoryUsage.swift,
+				PlaybackContainerViewController.swift,
+				PlaybackViewController.swift,
+				PreferenceViewController.swift,
+				VisualEffect.swift,
 			);
 			target = 29C9327D1CD76FB800283FC5 /* Example iOS */;
 		};
-		BC82CA802CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		BC91298F2D12EB960077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				/Localized/macOS/Main.storyboard,
-				HKStreamSwitcher.swift,
-				macOS/AppDelegate.swift,
-				macOS/Assets.xcassets,
-				macOS/CameraIngestViewController.swift,
-				macOS/DnDableView.swift,
-				macOS/DnDDelegate.swift,
-				"macOS/Extension/Data+Extension.swift",
-				"macOS/Extension/NSObject+Extension.swift",
-				"macOS/Extension/NSStoryboard.Name+Extension.swift",
-				"macOS/Extension/NSViewController+Extension.swift",
-				macOS/FLVAnalyzerViewController.swift,
-				macOS/FLVReader.swift,
-				macOS/game_jikkyou.png,
-				macOS/MainSplitViewController.swift,
-				macOS/MainWindowController.swift,
-				macOS/MenuViewController.swift,
-				macOS/PlaybackViewController.swift,
-				macOS/PreferenceViewController.swift,
-				macOS/SCStreamPublishViewController.swift,
-				macOS/VisualEffect.swift,
-				Preference.swift,
-			);
-			target = 29C932931CD76FD300283FC5 /* Example macOS */;
-		};
-		BC82CA812CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				/Localized/tvOS/Main.storyboard,
-				HKStreamSwitcher.swift,
-				Preference.swift,
-				tvOS/AppDelegate.swift,
-				tvOS/Assets.xcassets,
-				tvOS/ViewController.swift,
-			);
-			target = 29D3D4EE1ED0531500DD4AA6 /* Example tvOS */;
-		};
-		BC82CA822CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				HKStreamSwitcher.swift,
-				Preference.swift,
-				visionOS/ContentView.swift,
-				visionOS/Example_visionOSApp.swift,
-				visionOS/PiPHKSwiftUiView.swift,
-				visionOS/ViewModel.swift,
-			);
-			target = BC7A0E3C2B088FA7005FB2F7 /* Example visionOS */;
-		};
-		BC82CA832CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				HKStreamSwitcher.swift,
-				iOS/Screencast/SampleHandler.swift,
-				Preference.swift,
+				Screencast/SampleHandler.swift,
 			);
 			target = 2915EC511D85BDF100621092 /* Screencast */;
 		};
-		BCB798932CE06B370059DFE9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		BC912A582D12EE6C0077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Tests/CMAudioSampleBufferFactory.swift,
-				Tests/CMVideoSampleBufferFactory.swift,
-				Tests/Codec/AudioCodecTests.swift,
-				"Tests/Extension/CMSampleBuffer+ExtensionTests.swift",
-				"Tests/Extension/ExpressibleByIntegerLiteral+ExtensionTests.swift",
-				"Tests/Extension/Foundation+ExtensionTests.swift",
-				"Tests/Extension/SwiftCore+ExtensionTests.swift",
-				Tests/HKStream/HKStreamRecorderTests.swift,
-				Tests/ISO/ADTSHeaderTests.swift,
-				Tests/ISO/ADTSReaderTests.swift,
-				Tests/ISO/AudioSpecificConfigTests.swift,
-				Tests/ISO/AVCDecoderConfigurationRecordTests.swift,
-				Tests/ISO/ESSpecificDataTests.swift,
-				Tests/ISO/HEVCDecoderConfigurationRecordTests.swift,
-				Tests/ISO/ISOTypeBufferUtilTests.swift,
-				Tests/ISO/NALUnitReaderTests.swift,
-				Tests/ISO/PacketizedElementaryStreamTests.swift,
-				Tests/ISO/TSPacketTests.swift,
-				Tests/ISO/TSProgramTests.swift,
-				Tests/ISO/TSReaderTests.swift,
-				Tests/Mixer/AudioMixerByMultiTrackTests.swift,
-				Tests/Mixer/AudioMixerBySingleTrackTests.swift,
-				Tests/Mixer/AudioMixerTrackTests.swift,
-				Tests/Mixer/AudioRingBufferTests.swift,
-				Tests/Mixer/MediaMixerTests.swift,
-				Tests/Mixer/MediaRecorderTests.swift,
-				Tests/RTMP/AMF0SerializerTests.swift,
-				Tests/RTMP/AMFFoundationTests.swift,
-				Tests/RTMP/FLVVideoFourCCTests.swift,
-				Tests/RTMP/RTMPChunkBufferTests.swift,
-				Tests/RTMP/RTMPConnectionTests.swift,
-				Tests/RTMP/RTMPStatusTests.swift,
-				Tests/RTMP/RTMPTimestampTests.swift,
-				Tests/Screen/ScreenObjectContainerTests.swift,
-				Tests/Screen/ScreenObjectTests.swift,
-				Tests/Screen/VideoTrackScreenObjectTests.swift,
-				Tests/Util/ByteArrayTests.swift,
-				Tests/Util/CRC32Tests.swift,
-				Tests/Util/MD5Tests.swift,
+				/Localized/Main.storyboard,
+				AppDelegate.swift,
+				Assets.xcassets,
+				CameraIngestViewController.swift,
+				DnDableView.swift,
+				DnDDelegate.swift,
+				"Extension/Data+Extension.swift",
+				"Extension/NSObject+Extension.swift",
+				"Extension/NSStoryboard.Name+Extension.swift",
+				"Extension/NSViewController+Extension.swift",
+				FLVAnalyzerViewController.swift,
+				FLVReader.swift,
+				game_jikkyou.png,
+				MainSplitViewController.swift,
+				MainWindowController.swift,
+				MenuViewController.swift,
+				PlaybackViewController.swift,
+				PreferenceViewController.swift,
+				SCStreamPublishViewController.swift,
+				VisualEffect.swift,
 			);
-			target = BCB798882CE06AEC0059DFE9 /* Tests */;
+			target = 29C932931CD76FD300283FC5 /* Example macOS */;
+		};
+		BC912A6D2D12EFB10077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				/Localized/Main.storyboard,
+				AppDelegate.swift,
+				Assets.xcassets,
+				ViewController.swift,
+			);
+			target = 29D3D4EE1ED0531500DD4AA6 /* Example tvOS */;
+		};
+		BC912A722D12F0100077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ContentView.swift,
+				Example_visionOSApp.swift,
+				PiPHKSwiftUiView.swift,
+				ViewModel.swift,
+			);
+			target = BC7A0E3C2B088FA7005FB2F7 /* Example visionOS */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		BC33A1452CDF55040016EEA0 /* HaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BCB798932CE06B370059DFE9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = HaishinKit; sourceTree = "<group>"; };
-		BC82C98F2CD76325003F99C9 /* SRTHaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SRTHaishinKit; sourceTree = "<group>"; };
-		BC82CA0E2CD76338003F99C9 /* DebugDescription */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = DebugDescription; sourceTree = "<group>"; };
-		BC82CA4B2CD763F4003F99C9 /* Examples */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC82CA7F2CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA802CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA812CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA822CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC82CA832CD763F4003F99C9 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = Examples; sourceTree = "<group>"; };
-		BCB79DBF2CE070C90059DFE9 /* MoQTHaishinKit */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC0C81EC2CE8856000DEA9E6 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MoQTHaishinKit; sourceTree = "<group>"; };
+		BC91294C2D12EA8A0077EFF3 /* iOS */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC9129762D12EADB0077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, BC91298F2D12EB960077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = iOS; sourceTree = "<group>"; };
+		BC9129642D12EA8E0077EFF3 /* macOS */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC912A582D12EE6C0077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = macOS; sourceTree = "<group>"; };
+		BC91296B2D12EA910077EFF3 /* tvOS */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC912A6D2D12EFB10077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = tvOS; sourceTree = "<group>"; };
+		BC9129712D12EA930077EFF3 /* visionOS */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (BC912A722D12F0100077EFF3 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = visionOS; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -287,7 +225,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC33A1292CDF526C0016EEA0 /* HaishinKit in Frameworks */,
-				2915EC541D85BDF100621092 /* ReplayKit.framework in Frameworks */,
 				BC33A12B2CDF526C0016EEA0 /* SRTHaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -324,9 +261,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC33A1272CDF52630016EEA0 /* SRTHaishinKit in Frameworks */,
-				BC33A1252CDF52600016EEA0 /* HaishinKit in Frameworks */,
-				BC9B74422D0F2808006CC351 /* libc++.1.tbd in Frameworks */,
+				BC912A782D12F0600077EFF3 /* HaishinKit in Frameworks */,
+				BC912A7A2D12F0600077EFF3 /* MoQTHaishinKit in Frameworks */,
+				BC912A7E2D12F06F0077EFF3 /* SRTHaishinKit in Frameworks */,
+				BC912A812D12F10C0077EFF3 /* libc++.1.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -334,43 +272,23 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BC0C81EF2CE8868E00DEA9E6 /* HaishinKit in Frameworks */,
-				BC0C81F12CE8868E00DEA9E6 /* MoQTHaishinKit in Frameworks */,
-				BC0C81F32CE8868E00DEA9E6 /* SRTHaishinKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0ACC00B98D6DB33B5BE87B87 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				BC9B74412D0F27FA006CC351 /* libc++.1.tbd */,
-				BCCC45C02AA28BF40016EFE8 /* libc++.tbd */,
-				BC9B74402D0F27CA006CC351 /* libc++.tbd */,
-				BCCC45BC2AA28BDB0016EFE8 /* libsrt.xcframework */,
-				BC34DFD125EBB12C005F975A /* Logboard.xcframework */,
-				2915EC531D85BDF100621092 /* ReplayKit.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		2945CBB31B4BE66000104112 = {
 			isa = PBXGroup;
 			children = (
-				BC82CA0E2CD76338003F99C9 /* DebugDescription */,
-				BC82CA4B2CD763F4003F99C9 /* Examples */,
-				0ACC00B98D6DB33B5BE87B87 /* Frameworks */,
-				BC33A1452CDF55040016EEA0 /* HaishinKit */,
-				29F04FF21F3388B000172706 /* HaishinKit.podspec */,
-				2927A2991E7ED2D70044AF91 /* LICENSE.md */,
-				BCB79DBF2CE070C90059DFE9 /* MoQTHaishinKit */,
-				29F39BE72335F8010055F9BB /* Package.swift */,
+				BC9129372D12EA820077EFF3 /* HKStreamSwitcher.swift */,
+				BC9129382D12EA820077EFF3 /* Preference.swift */,
+				BC91294C2D12EA8A0077EFF3 /* iOS */,
+				BC9129642D12EA8E0077EFF3 /* macOS */,
+				BC91296B2D12EA910077EFF3 /* tvOS */,
+				BC9129712D12EA930077EFF3 /* visionOS */,
+				BC912A762D12F0600077EFF3 /* Frameworks */,
 				2945CBBE1B4BE66000104112 /* Products */,
-				2997BDD31D50D31B000AF900 /* README.md */,
-				BC82C98F2CD76325003F99C9 /* SRTHaishinKit */,
-				BCA2E7F32C4B6C7E0012F2D4 /* SRTHaishinKit.podspec */,
 			);
 			sourceTree = "<group>";
 			wrapsLines = 0;
@@ -386,6 +304,25 @@
 				BCB798892CE06AEC0059DFE9 /* Tests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		BC9128802D12E7540077EFF3 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BC9128FB2D12E9970077EFF3 /* Products */ = {
+			isa = PBXGroup;
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BC912A762D12F0600077EFF3 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BC912A802D12F0900077EFF3 /* libc++.1.tbd */,
+				BC912A7F2D12F0830077EFF3 /* libc++.tbd */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -484,8 +421,9 @@
 			);
 			name = "Example visionOS";
 			packageProductDependencies = (
-				BC33A1242CDF52600016EEA0 /* HaishinKit */,
-				BC33A1262CDF52630016EEA0 /* SRTHaishinKit */,
+				BC912A772D12F0600077EFF3 /* HaishinKit */,
+				BC912A792D12F0600077EFF3 /* MoQTHaishinKit */,
+				BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */,
 			);
 			productName = "Example visionOS";
 			productReference = BC7A0E3D2B088FA7005FB2F7 /* Example visionOS.app */;
@@ -506,9 +444,6 @@
 			);
 			name = Tests;
 			packageProductDependencies = (
-				BC0C81EE2CE8868E00DEA9E6 /* HaishinKit */,
-				BC0C81F02CE8868E00DEA9E6 /* MoQTHaishinKit */,
-				BC0C81F22CE8868E00DEA9E6 /* SRTHaishinKit */,
 			);
 			productName = Tests;
 			productReference = BCB798892CE06AEC0059DFE9 /* Tests.xctest */;
@@ -557,7 +492,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 2945CBB71B4BE66000104112 /* Build configuration list for PBXProject "HaishinKit" */;
+			buildConfigurationList = 2945CBB71B4BE66000104112 /* Build configuration list for PBXProject "Examples" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -566,11 +501,21 @@
 			);
 			mainGroup = 2945CBB31B4BE66000104112;
 			packageReferences = (
-				BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */,
+				BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */,
 			);
 			preferredProjectObjectVersion = 55;
 			productRefGroup = 2945CBBE1B4BE66000104112 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BC9128FB2D12E9970077EFF3 /* Products */;
+					ProjectRef = BC9128F82D12E9970077EFF3 /* Examples.xcodeproj */;
+				},
+				{
+					ProductGroup = BC9128802D12E7540077EFF3 /* Products */;
+					ProjectRef = BC91287D2D12E7540077EFF3 /* Examples.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				29C9327D1CD76FB800283FC5 /* Example iOS */,
@@ -686,6 +631,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC9129D22D12EBCE0077EFF3 /* HKStreamSwitcher.swift in Sources */,
+				BC91298D2D12EB5E0077EFF3 /* Preference.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,6 +640,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC9129892D12EB5E0077EFF3 /* Preference.swift in Sources */,
+				BC9129852D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -700,6 +649,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC91298A2D12EB5E0077EFF3 /* Preference.swift in Sources */,
+				BC9129862D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -707,6 +658,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC91298B2D12EB5E0077EFF3 /* Preference.swift in Sources */,
+				BC9129872D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -714,6 +667,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC91298C2D12EB5E0077EFF3 /* Preference.swift in Sources */,
+				BC9129882D12EB570077EFF3 /* HKStreamSwitcher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,7 +709,7 @@
 				DEVELOPMENT_TEAM = V6U495P36C;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Screencast/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/iOS/Screencast/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -954,7 +909,7 @@
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_OPTIMIZATION_LEVEL = 0;
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -991,7 +946,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/iOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1023,7 +978,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/macOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/macOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1053,7 +1008,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/macOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/macOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1087,7 +1042,7 @@
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/tvOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/tvOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1123,7 +1078,7 @@
 				DEVELOPMENT_TEAM = SUEQ2SZ2L5;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
-				INFOPLIST_FILE = "$(SRCROOT)/Examples/tvOS/Info.plist";
+				INFOPLIST_FILE = "$(SRCROOT)/tvOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1164,7 +1119,7 @@
 				ENABLE_PREVIEWS = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Examples/visionOS/Info.plist;
+				INFOPLIST_FILE = visionOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1311,7 +1266,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		2945CBB71B4BE66000104112 /* Build configuration list for PBXProject "HaishinKit" */ = {
+		2945CBB71B4BE66000104112 /* Build configuration list for PBXProject "Examples" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2945CBD11B4BE66000104112 /* Debug */,
@@ -1372,24 +1327,13 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../HaishinKit.swift;
 		};
+		BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../../HaishinKit.swift;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		BC0C81EE2CE8868E00DEA9E6 /* HaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = HaishinKit;
-		};
-		BC0C81F02CE8868E00DEA9E6 /* MoQTHaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = MoQTHaishinKit;
-		};
-		BC0C81F22CE8868E00DEA9E6 /* SRTHaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = SRTHaishinKit;
-		};
 		BC33A1182CDF523E0016EEA0 /* HaishinKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
@@ -1420,16 +1364,6 @@
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
 			productName = SRTHaishinKit;
 		};
-		BC33A1242CDF52600016EEA0 /* HaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = HaishinKit;
-		};
-		BC33A1262CDF52630016EEA0 /* SRTHaishinKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
-			productName = SRTHaishinKit;
-		};
 		BC33A1282CDF526C0016EEA0 /* HaishinKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
@@ -1444,6 +1378,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC33A1172CDF51620016EEA0 /* XCLocalSwiftPackageReference "../HaishinKit.swift" */;
 			productName = MoQTHaishinKit;
+		};
+		BC912A772D12F0600077EFF3 /* HaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
+			productName = HaishinKit;
+		};
+		BC912A792D12F0600077EFF3 /* MoQTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
+			productName = MoQTHaishinKit;
+		};
+		BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
+			productName = SRTHaishinKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

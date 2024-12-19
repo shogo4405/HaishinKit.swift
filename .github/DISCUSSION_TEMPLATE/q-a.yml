@@ -1,0 +1,20 @@
+body:
+  - type: markdown
+    attributes:
+      value: |
+        - Feature requests and documentation requests are better suited for [Idea](https://github.com/shogo4405/HaishinKit.swift/discussions/new?category=idea).
+        - Frequently asked questions and answers are also here. Please take a look [FAQ](https://github.com/shogo4405/HaishinKit.swift/wiki/Frequently-Asked-Questions-and-Answers).
+  - type: textarea
+    id: questions
+    attributes:
+      label: Please describe your question
+      description: "Please describe your question. It would be better if you can attach some logs."
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        ## Tips for Getting Good Answers
+        1. Have you set an icon for your GitHub profile? Is your profile information filled out?
+        1. Asking good questions leads to better answers. Refer to the following site for tips on how to ask: https://stackoverflow.com/help/how-to-ask
+        1. Do you absolutely need an answer? If you want personal support from the author, you need to become a contributor to HaishinKit.
