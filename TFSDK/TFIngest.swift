@@ -522,15 +522,11 @@ public class TFIngest: NSObject {
             
             self.isRecording = isRecording
             if isRecording {
-                if let saveLocalVideoPath = saveLocalVideoPath
-                {
-                    print("srt录制视频路径=======>",saveLocalVideoPath)
-                }
-    
-//               try await recorder.startRecording(saveLocalVideoPath)
-            //TalkfunPublisherAudioSampleRate
+//                if let saveLocalVideoPath = saveLocalVideoPath
+//                {
+//                    print("srt录制视频路径=======>",saveLocalVideoPath)
+//                }
      
-                
 //                AVSampleRateKey = 44.1KHz 采样率,
                 /// AVNumberOfChannelsKey 声道数目(default 2)
                 try await recorder.startRecording(saveLocalVideoPath, settings: [
@@ -551,10 +547,10 @@ public class TFIngest: NSObject {
                 do {
                     let recordingURL = try await recorder.stopRecording()
                     // 处理录制文件的 URL
-                    print("Recording saved at: \(recordingURL)")
+                    print("srt保存录制视频成功: \(recordingURL)")
                 } catch {
                     
-                    print("error: \(error)")
+                    print("srt保存录制视频失败: \(error)")
                 }
 
             }
@@ -737,21 +733,18 @@ public class TFIngest: NSObject {
     //TODO: 关闭SDK
     @objc public func shutdown()
     {
-        Task {
-            
-            if(self.isRecording)
-            {
-                self.recording(false)
-            }
-            
+        Task { @ScreenActor in
+    
+            self.recording(false)
+
             //结束推流
             self.closePush()
             await mixer.stopRunning()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
             try? await mixer.attachVideo(nil, track: 1)
+            
         }
- 
         NotificationCenter.default.removeObserver(self)
     }
 }

@@ -401,7 +401,7 @@
 }
 - (NSString*)RTMP_URL
 {
-    return @"rtmp://live-push-15.talk-fun.com/live/11306_IyIhLCEnSCshLy8sKytAEA?txSecret=3cdf27dbbd5bfa8a6f1258adc00896da&txTime=676271F5";
+    return @"rtmp://live-push-15.talk-fun.com/live/11306_IiYiISNKJS8tLykuLUIu?txSecret=ed01ebd547275e80f404b11066d353c8&txTime=67651C44";
 }
 - (NSString*)SRT_URL
 {
