@@ -554,8 +554,8 @@ public class TFIngest: NSObject {
                     ],
                     AVMediaType.video: [
                         AVVideoCodecKey: AVVideoCodecType.h264,
-                        AVVideoHeightKey: self.videoSize2.height,
-                        AVVideoWidthKey: self.videoSize2.width,
+                        AVVideoHeightKey: 0,
+                        AVVideoWidthKey: 0,
                     
                     ]
                 ])
