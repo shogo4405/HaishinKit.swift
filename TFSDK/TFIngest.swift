@@ -546,7 +546,7 @@ public class TFIngest: NSObject {
                 
 //                AVSampleRateKey = 44.1KHz 采样率,
                 /// AVNumberOfChannelsKey 声道数目(default 2)
-                try await recorder.startRecording(URL(string: "dir/sample.mp4"), settings: [
+                try await recorder.startRecording(saveLocalVideoPath, settings: [
                     AVMediaType.audio: [
                         AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
                         AVSampleRateKey: 44100,
