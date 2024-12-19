@@ -36,6 +36,7 @@ public class TFIngest: NSObject {
     private var connection: Any?
     private(set) var stream: (any HKStream)?
     var isVideoMirrored:Bool = true
+    //镜像
     var mirror2:Bool = true
     let recorder = HKStreamRecorder()
     private lazy var mixer = MediaMixer()
@@ -62,6 +63,7 @@ public class TFIngest: NSObject {
             view2 = view
             videoSize2 = videoSize
             videoBitRate2 = videoBitRate
+        /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
             videoFrameRate2 = videoFrameRate
             streamMode2 = streamMode
             view2.videoGravity = .resizeAspectFill
@@ -126,7 +128,11 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(front, track: 0){videoUnit in
                     videoUnit.isVideoMirrored = mirror
                 }
+             
+             
             }
+            
+            self.setFrameRate(videoFrameRate)
         }
     }
     //TODO: 视频的帧率，即 fps  @ScreenActor 线程的, 要等sdk初始化好才能调用
