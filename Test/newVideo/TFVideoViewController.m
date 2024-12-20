@@ -16,6 +16,7 @@
 @property (nonatomic, strong)UIImageView *focusCursorImageView;
 @property (nonatomic, strong)UIButton *focusBoxPoint;
 @property (nonatomic, strong)UIButton *streamBtn;
+@property (nonatomic, strong)NSString *pushUrl;
 @end
 
 @implementation TFVideoViewController
@@ -93,6 +94,7 @@
     
     //设置URL
     [self setStreamMode:TFStreamModeSrt];
+
 }
 //摄像头开关
 - (void)cameraClick:(UIButton*)btn
@@ -122,6 +124,7 @@
         [btn setTitle:@"有音" forState:UIControlStateNormal];
         NSLog(@"有音");
     }
+
 }
 
 //RTMP推流  SRT推流
@@ -363,16 +366,15 @@
 }
 - (void)setStreamMode:(TFStreamMode)model
 {
+    [self.ingest renewWithStreamMode:model];
     if(model==TFStreamModeRtmp)
     {
         [self.streamBtn setTitle:@"RTMP推流" forState:UIControlStateNormal];
-        [self.ingest setSrtUrlWithUrl:[self RTMP_URL] streamMode:model];
-
+        self.pushUrl = [self RTMP_URL];
     }else{
         
         [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
-        [self.ingest setSrtUrlWithUrl:[self SRT_URL] streamMode:model];
-
+        self.pushUrl = [self SRT_URL];
     }
     
 }
@@ -380,8 +382,8 @@
 - (void)srtClick:(UIButton*)btn
 {
     if (btn.selected == false ) {
-        [self.ingest startLiveWithCallback:^(NSInteger code, NSString * msg) {
-            
+        [self.ingest startLiveWithUrl:self.pushUrl callback:^(NSInteger code, NSString * msg) {
+
             if (code==0) {
                 [btn setTitle:@"停止推流" forState:UIControlStateNormal];
                 btn.selected = true;

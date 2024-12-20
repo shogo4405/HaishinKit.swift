@@ -381,17 +381,15 @@ public class TFIngest: NSObject {
          
         }
     }
-    //TODO: 配置推流URL
+    //TODO: 切换推流类型
     @objc public func renew(streamMode:TFStreamMode)
     {
      
          Task {
              if( streamMode2 != streamMode)
              {
-             
-                     streamMode2 = streamMode
+                    streamMode2 = streamMode
                   
-                     
                      switch streamMode2 {
                      case .rtmp:
                          
