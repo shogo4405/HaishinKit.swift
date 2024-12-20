@@ -573,27 +573,37 @@ public class TFIngest: NSObject {
             
           
             if isRecording {
-//                if let saveLocalVideoPath = saveLocalVideoPath
-//                {
-//                    print("srt录制视频路径=======>",saveLocalVideoPath)
-//                }
-     
-//                AVSampleRateKey = 44.1KHz 采样率,
-                /// AVNumberOfChannelsKey 声道数目(default 2)
-                try await recorder.startRecording(saveLocalVideoPath, settings: [
-                    AVMediaType.audio: [
-                        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                        AVSampleRateKey: 44100,
-                        AVNumberOfChannelsKey: 2,
-                    ],
-                    AVMediaType.video: [
-                        AVVideoCodecKey: AVVideoCodecType.h264,
-                        AVVideoHeightKey: 0,
-                        AVVideoWidthKey: 0,
+                
+
+                if self.isRecording == false {
                     
-                    ]
-                ])
+                    if let saveLocalVideoPath = saveLocalVideoPath
+                    {
+                        print("srt录制的视频存放地址为=======>",saveLocalVideoPath)
+                        //                AVSampleRateKey = 44.1KHz 采样率,
+                        /// AVNumberOfChannelsKey 声道数目(default 2)
+                        try await recorder.startRecording(saveLocalVideoPath, settings: [
+                            AVMediaType.audio: [
+                                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                                AVSampleRateKey: 44100,
+                                AVNumberOfChannelsKey: 2,
+                            ],
+                            AVMediaType.video: [
+                                AVVideoCodecKey: AVVideoCodecType.h264,
+                                AVVideoHeightKey: 0,
+                                AVVideoWidthKey: 0,
+                                
+                            ]
+                        ])
+                        
+                    }
+                    
+                }
+                
+                
             }else{
+                
+                
                 if self.isRecording {
                     do {
                         let recordingURL = try await recorder.stopRecording()
