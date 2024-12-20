@@ -121,7 +121,7 @@ public class TFIngest: NSObject {
             await mixer.startRunning()
            }
             
-         Task {
+         Task {  @ScreenActor in
                 try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                 //设置默认是前置 然后设置镜像
                 try? await mixer.attachVideo(front, track: 0){videoUnit in
@@ -747,6 +747,32 @@ public class TFIngest: NSObject {
     @objc public func frontCameraPreviewLockedToFlipHorizontally(_ frontCameraPreviewLockedToFlipHorizontally:Bool)
     {
         
+    }
+    //TODO:  推送图像
+    @objc public func pushVideo(_ pixelBuffer:CVPixelBuffer)
+    {
+        Task {
+            var timingInfo = CMSampleTimingInfo()
+            timingInfo.duration = CMTime(value: 1, timescale: 30)
+            timingInfo.presentationTimeStamp = CMTime(value: 0, timescale: 30)
+            timingInfo.decodeTimeStamp = CMTime.invalid
+
+            var videoInfo: CMVideoFormatDescription?
+            CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, formatDescriptionOut: &videoInfo)
+
+            var sampleBuffer: CMSampleBuffer?
+            CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: videoInfo!, sampleTiming: &timingInfo, sampleBufferOut: &sampleBuffer)
+
+            guard let stream = self.stream else {
+                return
+            }
+            
+            if let buffer = sampleBuffer {
+                print("srt推送图像=====>")
+//                await stream.append(buffer)
+            }
+            
+        }
     }
     //TODO: 关闭SDK
     @objc public func shutdown()
