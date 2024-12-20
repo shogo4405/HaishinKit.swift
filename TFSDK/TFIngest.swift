@@ -127,11 +127,10 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(front, track: 0){videoUnit in
                     videoUnit.isVideoMirrored = mirror
                 }
-             
-             
+                 //帧率
+                  await mixer.setFrameRate(videoFrameRate)
             }
-            //帧率
-            self.setFrameRate(videoFrameRate)
+
         }
     }
     //TODO: 视频的帧率，即 fps  @ScreenActor 线程的, 要等sdk初始化好才能调用
@@ -485,9 +484,12 @@ public class TFIngest: NSObject {
         Task {
             if(muted)
             {
-                 await mixer.startCapturing()
+//                await mixer.startCapturing()
+                 try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.position))
+
             }else{
-                 await mixer.stopCapturing()
+//                 await mixer.stopCapturing()
+                try? await mixer.attachVideo(nil, track: 0)
             }
         }
     }
