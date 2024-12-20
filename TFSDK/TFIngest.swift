@@ -166,12 +166,19 @@ public class TFIngest: NSObject {
             let connection = SRTConnection()
             self.connection = connection
             stream = SRTStream(connection: connection)
-       
+         
+//            guard let stream = stream as? SRTStream else {
+//                return
+//            }
+
         } else {
             let connection = RTMPConnection()
             self.connection = connection
             stream = RTMPStream(connection: connection)
-           
+            
+//            guard let stream = stream as? RTMPConnection else {
+//                return
+//            }
         }
 
     }
@@ -797,4 +804,6 @@ extension TFIngest: AudioCaptureDelegate {
     nonisolated func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
         Task { await mixer.append(buffer, when: time) }
     }
+    
+
 }
