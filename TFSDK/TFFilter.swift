@@ -68,11 +68,11 @@ class TFFilter: VideoEffect {
             UIGraphicsEndImageContext()
         }
         
-        return self.applyFilter(to: image)!
+        return self.applyFilter(to: image)
     }
-    func applyFilter(to ciImage: CIImage) -> CIImage? {
+    func applyFilter(to ciImage: CIImage) -> CIImage{
         // 将 CIImage 转换为 UIImage
-        guard let oldImage = convertCIImageToUIImage(ciImage) else { return nil }
+        guard let oldImage = convertCIImageToUIImage(ciImage) else { return ciImage }
         
         // 使用美颜效果的滤镜 GPUImageBeautifyFilter
         let beautifyFilter = GPUImageBeautifyFilter()
@@ -93,10 +93,10 @@ class TFFilter: VideoEffect {
         stillImageSource?.processImage()
         
         // 获取渲染后的图片
-        guard let filteredImage = beautifyFilter.imageFromCurrentFramebuffer() else { return nil }
+        guard let filteredImage = beautifyFilter.imageFromCurrentFramebuffer() else { return ciImage }
         
         // 将 UIImage 转换回 CIImage
-        guard let convertedCIImage = convertUIImageToCIImage(filteredImage) else { return nil }
+        guard let convertedCIImage = convertUIImageToCIImage(filteredImage) else { return ciImage }
         
         return convertedCIImage
     }
