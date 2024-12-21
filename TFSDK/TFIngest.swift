@@ -107,6 +107,21 @@ public class TFIngest: NSObject {
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
 
+            //-----------------------------------------------------------------
+            
+            try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+            //设置默认是前置 然后设置镜像
+            try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
+                guard let `self` = self else { return }
+                self.position = .front
+                videoUnit.isVideoMirrored = mirror
+                self.myVideoMirrored = mirror
+//                    //锁定前置是镜像
+//                  self.frontMirror(mirror)
+    
+            }
+             //帧率
+              await mixer.setFrameRate(videoFrameRate)
         }
         if again==false {
             
@@ -124,21 +139,7 @@ public class TFIngest: NSObject {
             await mixer.startRunning()
            }
             
-         Task {  @ScreenActor in
-                try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-                //设置默认是前置 然后设置镜像
-                try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
-                    guard let `self` = self else { return }
-                    self.position = .front
-                    videoUnit.isVideoMirrored = mirror
-                    self.myVideoMirrored = mirror
-//                    //锁定前置是镜像
-//                    self.frontMirror(mirror)
-        
-                }
-                 //帧率
-                  await mixer.setFrameRate(videoFrameRate)
-            }
+         
 
         }
     }
