@@ -49,7 +49,7 @@ public class TFIngest: NSObject {
         audioCapture.delegate = self
         return audioCapture
     }()
-
+    private var myVideoMirrored:Bool = false
 
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:MTHKView,
@@ -129,10 +129,11 @@ public class TFIngest: NSObject {
                 //设置默认是前置 然后设置镜像
                 try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
-                    videoUnit.isVideoMirrored = mirror
-                    
                     self.position = .front
-                    
+                    videoUnit.isVideoMirrored = mirror
+                    self.myVideoMirrored = mirror
+//                    //锁定前置是镜像
+//                    self.frontMirror(mirror)
         
                 }
                  //帧率
@@ -461,7 +462,7 @@ public class TFIngest: NSObject {
             self.position = position
             if(position == .front)
             {
-                videoUnit.isVideoMirrored = isVideoMirrored
+                videoUnit.isVideoMirrored = self.myVideoMirrored
             }else{
                 videoUnit.isVideoMirrored = false
             }
@@ -469,49 +470,53 @@ public class TFIngest: NSObject {
          }
        }
     }
-    let mirror_effect = MirrorEffect()
+//    let mirror_effect = MirrorEffect()
     //TODO:  前置摄像头的本地预览锁定为水平翻转  默认 true
     @objc public var frontCameraPreviewLockedToFlipHorizontally: Bool = true {
         didSet {
             //锁定前置是镜像
-            self.frontMirror(isVideoMirrored)
+//            self.frontMirror(myVideoMirrored)
         }
     }
-    func frontMirror(_ isVideoMirrored: Bool)
+    func frontMirror(_ mirrored:Bool)
     {
-//        Task {
-//            
-//            if self.position == .front && isVideoMirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
+//      DispatchQueue.main.async {
+
+            
+//          if self.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
 //                
-//                _ =  await mixer.screen.registerVideoEffect(self.mirror_effect)
+//
+//                // 在预览视图上直接应用变换
+//                self.view2.transform = CGAffineTransform(scaleX: -1, y: 1)
 //                
 //            }else
 //            {
 //                // 后置摄像头时移除镜像效果
-//                _ = await mixer.screen.unregisterVideoEffect(mirror_effect)
+//                self.view2.transform = CGAffineTransform(scaleX: 1, y: 1)
+//
+//
 //            }
 //        }
     }
     //TODO: 镜像 开关
-    @objc public var isVideoMirrored: Bool = true {
-        didSet {
-       
-                if self.position == .front
-                {  //前置
-                    Task {
-                        try await mixer.configuration(video: 0) { [weak self] unit in
-                            guard let `self` = self else { return }
-                            unit.isVideoMirrored = isVideoMirrored
-                                                        
-                            //锁定前置是镜像
-                            self.frontMirror(isVideoMirrored)
-                            
-                        }
+    @objc public func configuration(isVideoMirrored:Bool) {
+        
+            if self.position == .front
+            {  //前置
+                Task {
+                    try await mixer.configuration(video: 0) { [weak self] unit in
+                        guard let `self` = self else { return }
+                        unit.isVideoMirrored = isVideoMirrored
+                        self.myVideoMirrored = isVideoMirrored
+                        //锁定前置是镜像
+//                        self.frontMirror(isVideoMirrored)
+                        
                     }
-                    
                 }
+                
+            }
 
-        }
+        
     }
     //TODO: 设置 近  中 远 摄像头
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
@@ -525,7 +530,7 @@ public class TFIngest: NSObject {
                     guard let `self` = self else { return }
                     if position == .front
                     {
-                        videoUnit.isVideoMirrored = self.isVideoMirrored
+                        videoUnit.isVideoMirrored = self.myVideoMirrored
                     }else
                     {
                         videoUnit.isVideoMirrored = false

@@ -139,20 +139,20 @@ extension Data {
 
 
 
-final class MirrorEffect: VideoEffect {
-    let filter = CIFilter(name: "CIAffineTransform")
-    
-    func execute(_ image: CIImage) -> CIImage {
-        guard let filter = filter else {
-            return image
-        }
-        
-        // 创建水平翻转的变换
-        let transform = CGAffineTransform(scaleX: -1, y: 1)
-        
-        filter.setValue(image, forKey: kCIInputImageKey)
-        filter.setValue(NSValue(cgAffineTransform: transform), forKey: kCIInputTransformKey)
-        
-        return filter.outputImage ?? image
-    }
-}
+//final class MirrorEffect: VideoEffect {
+//    let filter = CIFilter(name: "CIAffineTransform")
+//    
+//    func execute(_ image: CIImage) -> CIImage {
+//        guard let filter = filter else {
+//            return image
+//        }
+//        
+//        // 创建水平翻转的变换
+//        let transform = CGAffineTransform(scaleX: -1, y: 1)
+//        
+//        filter.setValue(image, forKey: kCIInputImageKey)
+//        filter.setValue(NSValue(cgAffineTransform: transform), forKey: kCIInputTransformKey)
+//        
+//        return filter.outputImage ?? image
+//    }
+//}
