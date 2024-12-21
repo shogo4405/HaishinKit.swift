@@ -35,7 +35,7 @@ public class TFIngest: NSObject {
     private(set) var streamMode2: TFStreamMode = .rtmp
     private var connection: Any?
     private(set) var stream: (any HKStream)?
-    var isVideoMirrored:Bool = true
+
     //镜像
      var mirror2:Bool = true
      let recorder = HKStreamRecorder()
@@ -49,6 +49,8 @@ public class TFIngest: NSObject {
         audioCapture.delegate = self
         return audioCapture
     }()
+
+
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:MTHKView,
                           videoSize:CGSize,
@@ -125,8 +127,13 @@ public class TFIngest: NSObject {
          Task {  @ScreenActor in
                 try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                 //设置默认是前置 然后设置镜像
-                try? await mixer.attachVideo(front, track: 0){videoUnit in
+                try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
+                    guard let `self` = self else { return }
                     videoUnit.isVideoMirrored = mirror
+                    
+                    self.position = .front
+                    
+        
                 }
                  //帧率
                   await mixer.setFrameRate(videoFrameRate)
@@ -444,7 +451,7 @@ public class TFIngest: NSObject {
         }
     }
 
-    //TODO: 切换前后摄像头
+    //TODO: 前置or后置 摄像头
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
         Task {
@@ -462,26 +469,48 @@ public class TFIngest: NSObject {
          }
        }
     }
-    //TODO: 镜像 开关
-    @objc public func isVideoMirrored(_ isVideoMirrored: Bool)
+    let mirror_effect = MirrorEffect()
+    //TODO:  前置摄像头的本地预览锁定为水平翻转  默认 true
+    @objc public var frontCameraPreviewLockedToFlipHorizontally: Bool = true {
+        didSet {
+            //锁定前置是镜像
+            self.frontMirror(isVideoMirrored)
+        }
+    }
+    func frontMirror(_ isVideoMirrored: Bool)
     {
-        Task {
-            if self.position == .front
-            {
-        
-            try await mixer.configuration(video: 0) {[weak self] unit in
-                guard let `self` = self else { return }
-                unit.isVideoMirrored = isVideoMirrored
-                
-                self.isVideoMirrored = isVideoMirrored
-            }
+//        Task {
+//            
+//            if self.position == .front && isVideoMirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
+//                
+//                _ =  await mixer.screen.registerVideoEffect(self.mirror_effect)
+//                
+//            }else
+//            {
+//                // 后置摄像头时移除镜像效果
+//                _ = await mixer.screen.unregisterVideoEffect(mirror_effect)
+//            }
+//        }
+    }
+    //TODO: 镜像 开关
+    @objc public var isVideoMirrored: Bool = true {
+        didSet {
+       
+                if self.position == .front
+                {  //前置
+                    Task {
+                        try await mixer.configuration(video: 0) { [weak self] unit in
+                            guard let `self` = self else { return }
+                            unit.isVideoMirrored = isVideoMirrored
+                                                        
+                            //锁定前置是镜像
+                            self.frontMirror(isVideoMirrored)
+                            
+                        }
+                    }
+                    
+                }
 
-            }else{
-                
-               
-              
-            }
-        
         }
     }
     //TODO: 设置 近  中 远 摄像头
@@ -794,11 +823,7 @@ public class TFIngest: NSObject {
                print("Could not lock device for configuration: \(error)")
            }
        }
-    //TODO:  前置摄像头的本地预览锁定为水平翻转  默认 true
-    @objc public func frontCameraPreviewLockedToFlipHorizontally(_ frontCameraPreviewLockedToFlipHorizontally:Bool)
-    {
-        
-    }
+
     //TODO:  推送图像
     @objc public func pushVideo(_ pixelBuffer:CVPixelBuffer)
     {
