@@ -311,7 +311,7 @@
     }
 
     //镜像开关
-    [self.ingest isVideoMirrored:btn.selected];
+    [self.ingest configurationWithIsVideoMirrored:btn.selected];
 }
 - (UIImageView *)focusCursorImageView {
     if (!_focusCursorImageView) {
