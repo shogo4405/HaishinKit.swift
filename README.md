@@ -8,28 +8,19 @@
 
 * Camera and Microphone streaming library via RTMP and SRT for iOS, macOS, tvOS and visionOS.
 * README.md contains unreleased content, which can be tested on the main branch.
-* [API Documentation](https://docs.haishinkit.com/swift/2.0.0/)
+* [API Documentation](https://docs.haishinkit.com/swift/latest/)
 
 ## 💖 Sponsors
-<p align="center">
-  <br />
-  <br />
-  <a href="https://github.com/sponsors/shogo4405">Sponsorship</a>
-  <br />
-  <br />
-  <br />
-</p>
+Do you need additional support? Technical support on Issues and Discussions is provided only to contributors and academic researchers of HaishinKit. By becoming a sponsor, we can provide the support you need.
 
-## 💬 Communication
-* If you need help with making LiveStreaming requests using HaishinKit, use a [GitHub Discussions](https://github.com/shogo4405/HaishinKit.swift/discussions) with **Q&A**.
-* If you'd like to discuss a feature request, use a [GitHub Discussions](https://github.com/shogo4405/HaishinKit.swift/discussions) with **Idea**
-* If you met a HaishinKit's bug🐛, use a [GitHub Issue](https://github.com/shogo4405/HaishinKit.swift/issues) with **Bug report template**
-  - The trace level log is very useful. Please set `LBLogger.with(kHaishinKitIdentifier).level = .trace`. 
-  - If you don't use an issue template. I will immediately close the your issue without a comment.
-* If you **want to contribute**, submit a pull request with a pr template.
+Sponsor: $50 per month: Technical support via GitHub Issues with priority response.
 * If you want to support e-mail based communication without GitHub.
   - Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
-* 日本語が分かる方は、日本語でのコミニケーションをお願いします！
+
+## 💬 Communication
+* GitHub Issues and Discussions are open spaces for communication among users and are available to everyone as long as [the code of conduct](https://github.com/shogo4405/HaishinKit.swift?tab=coc-ov-file) is followed.
+  * The author focuses on responding to contributors and academic researchers of HaishinKit, so please do not expect a reply.
+* Whether someone is a contributor to HaishinKit is mainly determined by their GitHub profile icon. If you are using the default icon, there is a chance your input might be overlooked, so please consider setting a custom one. It could be a picture of your pet, for example. Personally, I like cats.
 
 ## 🌏 Related projects
 Project name    |Notes       |License
