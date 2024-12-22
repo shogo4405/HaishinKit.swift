@@ -46,33 +46,19 @@ public class TFDisplays: MTKView {
             }
         }
     }
-
+    private let imageProcessor = ImageProcessor()
     /// Redraws the view’s contents.
     override public func draw(_ rect: CGRect) {
         
-        guard let displayImage2 = displayImage else {
-              super.draw(rect)
-              return
-          }
-          
-          if isMirrorDisplay {
-              // 创建 CIContext
-              let context = CIContext(options: nil)
-              
-              // 获取图像的边界
-              let bounds = displayImage2.extent
-              
-              // 创建水平翻转变换
-              let transform = CGAffineTransform(translationX: bounds.width, y: 0).scaledBy(x: -1, y: 1)
-              
-              // 创建新的变换后的图像
-            if let cgImage = context.createCGImage(displayImage2, from: bounds) {
-                // 直接创建并变换图像，不需要可选绑定
-                let newImage = CIImage(cgImage: cgImage).transformed(by: transform)
-                displayImage = newImage
-            }
-          } else {
-              displayImage = displayImage2
+        if let displayImage2 = displayImage , isMirrorDisplay  {
+             
+  
+           // 使用优化后的方法
+           if let mirrored = imageProcessor.mirrorImage(displayImage2) {
+               displayImage = mirrored
+           }
+                   
+            
           }
         
         
@@ -202,6 +188,41 @@ extension TFDisplays: HKStreamOutput {
             self.setNeedsDisplay()
             #endif
         }
+    }
+}
+
+class ImageProcessor {
+    // 保存复用的对象
+    private let context: CIContext
+    
+    init() {
+        // CIContext 创建成本较高，应该复用
+        context = CIContext(options: [
+            .useSoftwareRenderer: false,  // 使用GPU渲染
+        ])
+    }
+    
+    func mirrorImage(_ inputImage: CIImage) -> CIImage? {
+        // 获取图像边界
+        let bounds = inputImage.extent
+        
+        // 创建变换矩阵（可以考虑缓存这个transform如果都是相同尺寸图片）
+        let transform = CGAffineTransform(translationX: bounds.width, y: 0).scaledBy(x: -1, y: 1)
+        
+        // 直接对 CIImage 进行变换，避免 CGImage 转换
+        return inputImage.transformed(by: transform)
+    }
+    
+    // 如果必须使用 CGImage 路径的版本
+    func mirrorImageWithCG(_ inputImage: CIImage) -> CIImage? {
+        let bounds = inputImage.extent
+        
+        guard let cgImage = context.createCGImage(inputImage, from: bounds) else {
+            return nil
+        }
+        
+        let transform = CGAffineTransform(translationX: bounds.width, y: 0).scaledBy(x: -1, y: 1)
+        return CIImage(cgImage: cgImage).transformed(by: transform)
     }
 }
 

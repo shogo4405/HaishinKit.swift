@@ -481,19 +481,14 @@ public class TFIngest: NSObject {
     }
     func frontMirror(_ mirrored:Bool)
     {
-//      DispatchQueue.main.async {
 
-            
           if self.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
-//                
-//
+
 //                // 在预览视图上直接应用变换
                 self.view2.isMirrorDisplay = true
 //
             }else
             {
-//                // 后置摄像头时移除镜像效果
-//                self.view2.transform = CGAffineTransform(scaleX: 1, y: 1)
                 self.view2.isMirrorDisplay = false
         }
     }
