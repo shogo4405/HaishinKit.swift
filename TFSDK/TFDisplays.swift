@@ -42,7 +42,7 @@ public class TFDisplays: MTKView {
             framebufferOnly = false
             enableSetNeedsDisplay = true
             if let device {
-                context = CIContext(mtlDevice: device, options: [.cacheIntermediates: false, .name: "MTHKView"])
+                context = CIContext(mtlDevice: device, options: [.cacheIntermediates: false, .name: "TFDisplays"])
             }
         }
     }
