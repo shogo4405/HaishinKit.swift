@@ -23,8 +23,6 @@ public class TFIngest: NSObject {
     //推流已经连接
     @objc public var isConnected:Bool = false
     
-    //前摄像 or 后摄像头
-    var position = AVCaptureDevice.Position.front
     //是否已经在录制
     var isRecording:Bool = false
     //录制视频保存的路径
@@ -42,7 +40,7 @@ public class TFIngest: NSObject {
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
      public var videoBitRate2: Int = 0
      public var videoFrameRate2: CGFloat = 0
-//     public var srtUrl:String = ""
+
      private lazy var mixer = MediaMixer()
      private lazy var audioCapture: AudioCapture = {
         let audioCapture = AudioCapture()
@@ -113,7 +111,7 @@ public class TFIngest: NSObject {
             //设置默认是前置 然后设置镜像
             try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
                 guard let `self` = self else { return }
-                self.position = .front
+                self.setPosition(position: .front)
                 videoUnit.isVideoMirrored = mirror
                 self.myVideoMirrored = mirror
 //                    //锁定前置是镜像
@@ -405,7 +403,7 @@ public class TFIngest: NSObject {
                         if let connection = connection as? SRTConnection, let stream = stream as? SRTStream
                          {
                             try? await connection.close()
-                            try? await stream.close()
+                           
                             
                             self.connection = nil
                             self.stream = nil
@@ -417,7 +415,7 @@ public class TFIngest: NSObject {
                            let stream = stream as? RTMPStream
                          {
                             try? await connection.close()
-                            try? await stream.close()
+                           
                             self.connection = nil
                             self.stream = nil
                         }
@@ -460,7 +458,7 @@ public class TFIngest: NSObject {
             
         try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
             guard let `self` = self else { return }
-            self.position = position
+            self.setPosition(position: position)
             if(position == .front)
             {
                 videoUnit.isVideoMirrored = self.myVideoMirrored
@@ -470,6 +468,14 @@ public class TFIngest: NSObject {
             
          }
        }
+    }
+    func setPosition(position: AVCaptureDevice.Position)
+    {
+        DispatchQueue.main.async {
+
+            // 在闭包中使用 position，而不是捕获 self
+            self.view2.position = position
+        }
     }
 //    let mirror_effect = MirrorEffect()
     //TODO:  前置摄像头的本地预览锁定为水平翻转  默认 true
@@ -482,7 +488,7 @@ public class TFIngest: NSObject {
     func frontMirror(_ mirrored:Bool)
     {
 
-          if self.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
+        if self.view2.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
 
 //                // 在预览视图上直接应用变换
                 self.view2.isMirrorDisplay = true
@@ -495,7 +501,7 @@ public class TFIngest: NSObject {
     //TODO: 镜像 开关
     @objc public func configuration(isVideoMirrored:Bool) {
         
-            if self.position == .front
+        if self.view2.position == .front
             {  //前置
                 Task {
                     try await mixer.configuration(video: 0) { [weak self] unit in
@@ -551,7 +557,7 @@ public class TFIngest: NSObject {
             if(muted)
             {
 //                await mixer.startCapturing()
-                 try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.position))
+                try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.view2.position))
 
             }else{
 //                 await mixer.stopCapturing()

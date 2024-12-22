@@ -5,7 +5,8 @@ import MetalKit
 
 /// A view that displays a video content of a NetStream object which uses Metal api.
 public class TFDisplays: MTKView {
-    
+    //前摄像 or 后摄像头
+    var position = AVCaptureDevice.Position.front
     // 添加镜像显示控制属性
       public var isMirrorDisplay: Bool = false {
           didSet {
@@ -51,12 +52,14 @@ public class TFDisplays: MTKView {
     override public func draw(_ rect: CGRect) {
         
         if let displayImage2 = displayImage , isMirrorDisplay  {
-             
-  
-           // 使用优化后的方法
-           if let mirrored = imageProcessor.mirrorImage(displayImage2) {
-               displayImage = mirrored
-           }
+             //前置
+            if position == .front {
+                // 使用优化后的方法
+                if let mirrored = imageProcessor.mirrorImage(displayImage2) {
+                    displayImage = mirrored
+                }
+            }
+          
                    
             
           }
