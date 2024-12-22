@@ -1,6 +1,6 @@
 import Foundation
 
-@available(iOS 16.0, macOS 13.0, *)
+@available(iOS 16.0, macOS 13.0, tvOS 16.0, *)
 public actor MoQTConnection {
     public static let defaultPort = 4433
     /// The supported protocols are moqt.

@@ -31,6 +31,7 @@
 		BC912A7A2D12F0600077EFF3 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A792D12F0600077EFF3 /* MoQTHaishinKit */; };
 		BC912A7E2D12F06F0077EFF3 /* SRTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912A7D2D12F06F0077EFF3 /* SRTHaishinKit */; };
 		BC912A812D12F10C0077EFF3 /* libc++.1.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = BC912A802D12F0900077EFF3 /* libc++.1.tbd */; };
+		BC912DDD2D185D360077EFF3 /* MoQTHaishinKit in Frameworks */ = {isa = PBXBuildFile; productRef = BC912DDC2D185D360077EFF3 /* MoQTHaishinKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -252,6 +253,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BC912DDD2D185D360077EFF3 /* MoQTHaishinKit in Frameworks */,
 				BC33A1232CDF525B0016EEA0 /* SRTHaishinKit in Frameworks */,
 				BC33A1212CDF525B0016EEA0 /* HaishinKit in Frameworks */,
 			);
@@ -1393,6 +1395,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
 			productName = SRTHaishinKit;
+		};
+		BC912DDC2D185D360077EFF3 /* MoQTHaishinKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC9128822D12E7AD0077EFF3 /* XCLocalSwiftPackageReference "../../HaishinKit.swift" */;
+			productName = MoQTHaishinKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
