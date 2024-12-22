@@ -10,7 +10,7 @@
 
 @import TFSRT;
 @interface TFVideoViewController ()
-@property (nonatomic, strong) MTHKView *view2;
+@property (nonatomic, strong) TFDisplays *view2;
 @property (nonatomic, strong) TFIngest *ingest;
 @property (nonatomic, strong) UISlider *zoomSlider;
 @property (nonatomic, strong)UIImageView *focusCursorImageView;
@@ -27,7 +27,7 @@
     self.view.backgroundColor = [UIColor whiteColor];
     
     //符合 HKStreamOutput 协议的视图
-    self.view2 = [[MTHKView alloc]init];
+    self.view2 = [[TFDisplays alloc]init];
     self.view2.frame = self.view.frame;
     [self.view addSubview:self.view2];
     
