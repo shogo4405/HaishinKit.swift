@@ -2,7 +2,7 @@ import Foundation
 import HaishinKit
 import Network
 
-@available(iOS 16.0, macOS 13.0, *)
+@available(iOS 16.0, macOS 13.0, tvOS 16.0, *)
 final actor MoQTSocket {
     static let alpn = ["moq-00"]
     static let defaultWindowSizeC = Int(UInt8.max)
@@ -199,7 +199,7 @@ final actor MoQTSocket {
     }
 }
 
-@available(iOS 16.0, macOS 13.0, *)
+@available(iOS 16.0, macOS 13.0, tvOS 16.0, *)
 extension MoQTSocket: NetworkTransportReporter {
     // MARK: NetworkTransportReporter
     func makeNetworkMonitor() async -> NetworkMonitor {

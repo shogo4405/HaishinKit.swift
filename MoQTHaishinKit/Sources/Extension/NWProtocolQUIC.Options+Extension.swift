@@ -1,6 +1,6 @@
 import Network
 
-@available(iOS 16.0, macOS 13.0, *)
+@available(iOS 16.0, macOS 13.0, tvOS 16.0, *)
 extension NWProtocolQUIC.Options {
     func verifySelfCert() -> NWProtocolQUIC.Options {
         let securityProtocolOptions: sec_protocol_options_t = self.securityProtocolOptions
