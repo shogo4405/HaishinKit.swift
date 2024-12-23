@@ -8,11 +8,7 @@ public class TFDisplays: MTKView {
     //前摄像 or 后摄像头
     var position = AVCaptureDevice.Position.front
     // 添加镜像显示控制属性
-      public var isMirrorDisplay: Bool = false {
-          didSet {
-             
-          }
-      }
+    public var isMirrorDisplay: Bool = false
     /// Specifies how the video is displayed within a player layer’s bounds.
     public var videoGravity: AVLayerVideoGravity = .resizeAspect
     public var videoTrackId: UInt8? = UInt8.max

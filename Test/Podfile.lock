@@ -2,10 +2,10 @@ PODS:
   - HaishinKit (2.0.1):
     - Logboard (~> 2.5.0)
   - Logboard (2.5.0)
-  - TFGPUImage (1.0.0)
+  - TFGPUImage (1.0.1)
   - TFSRT (2.0.1):
     - HaishinKit (= 2.0.1)
-    - TFGPUImage (= 1.0.0)
+    - TFGPUImage
 
 DEPENDENCIES:
   - TFGPUImage (from `../../TFGPUImage/TFGPUImage.podspec`)
@@ -25,9 +25,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   HaishinKit: 0f45d773a56f0a9b1054b02809cb8b5ed5ac0a83
   Logboard: 4674a3d86681539a0ad1fca528d888b90871e268
-  TFGPUImage: 4a0a3bcfa9e0b2cd17cce3c342085235c2b70e0b
-  TFSRT: 85c07f35b008527b3fb8f25f1672bf791adb5fb5
+  TFGPUImage: 58bd42a77d72867dd61ac695e4d8f04289461cb0
+  TFSRT: 826f8353636d677bc1fa078649bbbfef4e9df5ec
 
 PODFILE CHECKSUM: 8576a3fa5bf1c6d0681631a0d5cf41ad01594832
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

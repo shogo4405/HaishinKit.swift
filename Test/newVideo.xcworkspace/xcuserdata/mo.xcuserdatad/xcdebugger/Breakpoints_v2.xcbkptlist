@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D0C53800-36DB-457D-9312-853ED5EAB113"
+            uuid = "1F18FE90-F5F6-42CE-9A4F-8CE93B75D7E1"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/View/MTHKView.swift"
+            filePath = "../TFSDK/TFIngest.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "151"
-            endingLineNumber = "151"
-            landmarkName = "mixer(_:didOutput:)"
+            startingLineNumber = "115"
+            endingLineNumber = "115"
+            landmarkName = "configurationSDK(view:videoSize:videoFrameRate:videoBitRate:streamMode:mirror:again:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

@@ -830,30 +830,83 @@ public class TFIngest: NSObject {
        }
 
     //TODO:  推送图像
-    @objc public func pushVideo(_ pixelBuffer:CVPixelBuffer)
-    {
-        Task {
-            var timingInfo = CMSampleTimingInfo()
-            timingInfo.duration = CMTime(value: 1, timescale: 30)
-            timingInfo.presentationTimeStamp = CMTime(value: 0, timescale: 30)
-            timingInfo.decodeTimeStamp = CMTime.invalid
-
-            var videoInfo: CMVideoFormatDescription?
-            CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, formatDescriptionOut: &videoInfo)
-
-            var sampleBuffer: CMSampleBuffer?
-            CMSampleBufferCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, dataReady: true, makeDataReadyCallback: nil, refcon: nil, formatDescription: videoInfo!, sampleTiming: &timingInfo, sampleBufferOut: &sampleBuffer)
-
-            guard let stream = self.stream else {
-                return
-            }
-            
-            if let buffer = sampleBuffer {
-                print("srt推送图像=====>")
-//                await stream.append(buffer)
-            }
-            
+    @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
+        // 1. 检查 stream 是否存在，避免进入 Task 后再检查
+        guard let stream = self.stream else {
+            print("Stream not available")
+            return
         }
+        
+        Task {
+            do {
+                // 2. 使用结构化的错误处理
+                let buffer = try await createSampleBuffer(from: pixelBuffer)
+                await stream.append(buffer)
+            } catch {
+                print("Failed to push video: \(error)")
+            }
+        }
+    }
+
+    // 3. 将 SampleBuffer 创建逻辑分离到独立函数
+    private func createSampleBuffer(from pixelBuffer: CVPixelBuffer) async throws -> CMSampleBuffer {
+        // 4. 使用精确的时间戳计算
+        let timestamp = CACurrentMediaTime()
+        var timingInfo = CMSampleTimingInfo(
+            duration: CMTime(value: 1, timescale: 30),
+            presentationTimeStamp: CMTime(seconds: timestamp, preferredTimescale: 30),
+            decodeTimeStamp: .invalid
+        )
+        
+        // 5. 创建 video format description
+        var videoInfo: CMFormatDescription?
+        let formatStatus = CMVideoFormatDescriptionCreateForImageBuffer(
+            allocator: kCFAllocatorDefault,
+            imageBuffer: pixelBuffer,
+            formatDescriptionOut: &videoInfo
+        )
+        
+        guard formatStatus == noErr, let videoInfo = videoInfo else {
+            throw NSError(domain: "VideoProcessing", code: Int(formatStatus))
+        }
+        
+        // 6. 创建 sample buffer
+        var sampleBuffer: CMSampleBuffer?
+        let createStatus = CMSampleBufferCreateForImageBuffer(
+            allocator: kCFAllocatorDefault,
+            imageBuffer: pixelBuffer,
+            dataReady: true,
+            makeDataReadyCallback: nil,
+            refcon: nil,
+            formatDescription: videoInfo,
+            sampleTiming: &timingInfo,
+            sampleBufferOut: &sampleBuffer
+        )
+        
+        guard createStatus == noErr, let buffer = sampleBuffer else {
+            throw NSError(domain: "VideoProcessing", code: Int(createStatus))
+        }
+        
+        return buffer
+    }
+
+    // 7. 添加自定义错误类型
+    enum VideoProcessingError: Error {
+        case streamNotAvailable
+        case formatDescriptionCreationFailed
+        case sampleBufferCreationFailed
+    }
+
+    // 8. 可选：添加性能监控
+    private var lastFrameTime: CFTimeInterval = 0
+    private func logFrameRate() {
+        let currentTime = CACurrentMediaTime()
+        let elapsed = currentTime - lastFrameTime
+        lastFrameTime = currentTime
+        
+        #if DEBUG
+        print("Frame interval: \(elapsed * 1000)ms (~ \(1.0 / elapsed) fps)")
+        #endif
     }
     //TODO: 关闭SDK
     @objc public func shutdown()
