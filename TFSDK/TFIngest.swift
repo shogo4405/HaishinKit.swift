@@ -186,19 +186,23 @@ public class TFIngest: NSObject {
                 cancellable = await stream.$readyState.sink { newState in
                     
                     var status = TFIngestStreamReadyState.idle
-                    switch newState {
-                    case .idle:
-                        print("srt流处于空闲状态。")
-                    case .publishing:
-                        print("srt流正在发布中")
+                    if newState == .play {
                         status = .play
-                    case .playing:
-                        print("srt流正在播放。")
-                    case .play:
-                        print("srt该流已发送播放请求，正在等待服务器批准。")
-                    case .publish:
-                        print("srt该流已发送发布请求并正在等待服务器的批准。")
                     }
+                    
+//                    switch newState {
+//                    case .idle:
+//                        print("srt流处于空闲状态。")
+//                    case .publishing:
+//                        print("srt流正在发布中")
+//                        status = .play
+//                    case .playing:
+//                        print("srt流正在播放。")
+//                    case .play:
+//                        print("srt该流已发送播放请求，正在等待服务器批准。")
+//                    case .publish:
+//                        print("srt该流已发送发布请求并正在等待服务器的批准。")
+//                    }
                     
                     DispatchQueue.main.async {
                         if self.delegate != nil {
@@ -220,20 +224,22 @@ public class TFIngest: NSObject {
                 cancellable = await stream.$readyState.sink { newState in
                     
                     var status = TFIngestStreamReadyState.idle
-                    
-                    switch newState {
-                    case .idle:
-                        print("rtmp流处于空闲状态。")
-                    case .publishing:
-                        print("rtmp流正在发布中")
+                    if newState == .play {
                         status = .play
-                    case .playing:
-                        print("rtmp流正在播放。")
-                    case .play:
-                        print("rtmp该流已发送播放请求，正在等待服务器批准。")
-                    case .publish:
-                        print("rtmp该流已发送发布请求并正在等待服务器的批准。")
                     }
+//                    switch newState {
+//                    case .idle:
+//                        print("rtmp流处于空闲状态。")
+//                    case .publishing:
+//                        print("rtmp流正在发布中")
+//                        status = .play
+//                    case .playing:
+//                        print("rtmp流正在播放。")
+//                    case .play:
+//                        print("rtmp该流已发送播放请求，正在等待服务器批准。")
+//                    case .publish:
+//                        print("rtmp该流已发送发布请求并正在等待服务器的批准。")
+//                    }
                     DispatchQueue.main.async {
                         if self.delegate != nil {
                             self.delegate!.haishinKitStatusChanged(status:status )
