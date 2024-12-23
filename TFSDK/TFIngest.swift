@@ -278,7 +278,7 @@ public class TFIngest: NSObject {
     //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
     @objc
     private func didRouteChangeNotification(_ notification: Notification) {
-        logger.info(notification)
+//        logger.info(notification)
         if AVAudioSession.sharedInstance().inputDataSources?.isEmpty == true {
             setEnabledPreferredInputBuiltInMic(false)
 
