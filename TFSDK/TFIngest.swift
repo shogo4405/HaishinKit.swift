@@ -828,8 +828,13 @@ public class TFIngest: NSObject {
                print("Could not lock device for configuration: \(error)")
            }
        }
-
-    //TODO:  推送图像
+    // MARK: - 视频的时间戳数据
+    @objc public func sendData(_ text: String)
+    {
+//        NSString *time = [NSString stringWithFormat:@"disposeTime:%0.1f",self.disposeTime] ;
+        
+    }
+    //TODO:  推送自定义图像
     @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
         // 1. 检查 stream 是否存在，避免进入 Task 后再检查
         guard let stream = self.stream else {
