@@ -186,16 +186,16 @@ public class TFIngest: NSObject {
                 cancellable = await stream.$readyState.sink { newState in
                     
                     var status = TFIngestStreamReadyState.idle
-                    if newState == .play {
-                        status = .play
+                    if newState == .publishing {
+                        status = .publishing
                     }
-                    
+                    self.statusChanged(status: status)
 //                    switch newState {
 //                    case .idle:
 //                        print("srt流处于空闲状态。")
 //                    case .publishing:
 //                        print("srt流正在发布中")
-//                        status = .play
+//                         status = .publishing
 //                    case .playing:
 //                        print("srt流正在播放。")
 //                    case .play:
@@ -204,11 +204,6 @@ public class TFIngest: NSObject {
 //                        print("srt该流已发送发布请求并正在等待服务器的批准。")
 //                    }
                     
-                    DispatchQueue.main.async {
-                        if self.delegate != nil {
-                            self.delegate!.haishinKitStatusChanged(status:status )
-                        }
-                    }
                 }
             }
 
@@ -224,15 +219,16 @@ public class TFIngest: NSObject {
                 cancellable = await stream.$readyState.sink { newState in
                     
                     var status = TFIngestStreamReadyState.idle
-                    if newState == .play {
-                        status = .play
+                    if newState == .publishing {
+                        status = .publishing
                     }
+                    self.statusChanged(status: status)
 //                    switch newState {
 //                    case .idle:
 //                        print("rtmp流处于空闲状态。")
 //                    case .publishing:
 //                        print("rtmp流正在发布中")
-//                        status = .play
+//                        status = .publishing
 //                    case .playing:
 //                        print("rtmp流正在播放。")
 //                    case .play:
@@ -240,17 +236,24 @@ public class TFIngest: NSObject {
 //                    case .publish:
 //                        print("rtmp该流已发送发布请求并正在等待服务器的批准。")
 //                    }
-                    DispatchQueue.main.async {
-                        if self.delegate != nil {
-                            self.delegate!.haishinKitStatusChanged(status:status )
-                        }
-                    }
+                  
                 }
                 
                 
             }
         }
 
+    }
+    
+    func statusChanged(status:TFIngestStreamReadyState)
+    {
+        
+        DispatchQueue.main.async {
+            if self.delegate != nil {
+                self.delegate!.haishinKitStatusChanged(status:status )
+            }
+        }
+        
     }
     //TODO: 捕捉设备方向的变化
     @objc
@@ -975,6 +978,6 @@ extension TFIngest: AudioCaptureDelegate {
     /// 空闲
     case idle
     /// 连接中
-    case play
+    case publishing
     
 }
