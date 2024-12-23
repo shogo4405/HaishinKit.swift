@@ -403,11 +403,11 @@
 }
 - (NSString*)RTMP_URL
 {
-    return @"rtmp://live-push-15.talk-fun.com/live/11306_IiYiISNKJS8tLykuLUIu?txSecret=ed01ebd547275e80f404b11066d353c8&txTime=67651C44";
+    return @"rtmp://live-push-15.talk-fun.com/live/11306_IiYiISNKJS8tICkrKUIu?txSecret=5a62f8178a6a8d7c873628a6fff0364d&txTime=676A6D5";
 }
 - (NSString*)SRT_URL
 {
-    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IyIhLCYnSCshLyIsKS9AEA,txSecret=03524f61ee1dce8749031c3a1d38c4ff,txTime=6769284C";
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IiYiISNKJS8tICkrKUIu,txSecret=168bbe9e2c2d0c4b21ac44aa2b8fa9ea,txTime=676A6D8A";
 }
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");

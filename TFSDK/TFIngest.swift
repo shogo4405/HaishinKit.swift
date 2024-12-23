@@ -17,6 +17,9 @@ import Combine
     case srt = 1
 }
 public class TFIngest: NSObject {
+    
+    @objc public weak var delegate: (any TFIngestDelegate)?
+    
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
@@ -114,7 +117,7 @@ public class TFIngest: NSObject {
                 self.setPosition(position: .front)
                 videoUnit.isVideoMirrored = mirror
                 self.myVideoMirrored = mirror
-//                    //锁定前置是镜像
+                   //锁定前置是镜像
                   self.frontMirror(mirror)
     
             }
@@ -181,17 +184,26 @@ public class TFIngest: NSObject {
             }
             Task {
                 cancellable = await stream.$readyState.sink { newState in
+                    
+                    var status = TFIngestStreamReadyState.idle
                     switch newState {
                     case .idle:
                         print("srt流处于空闲状态。")
                     case .publishing:
                         print("srt流正在发布中")
+                        status = .play
                     case .playing:
                         print("srt流正在播放。")
                     case .play:
                         print("srt该流已发送播放请求，正在等待服务器批准。")
                     case .publish:
                         print("srt该流已发送发布请求并正在等待服务器的批准。")
+                    }
+                    
+                    DispatchQueue.main.async {
+                        if self.delegate != nil {
+                            self.delegate!.haishinKitStatusChanged(status:status )
+                        }
                     }
                 }
             }
@@ -206,11 +218,15 @@ public class TFIngest: NSObject {
             }
             Task {
                 cancellable = await stream.$readyState.sink { newState in
+                    
+                    var status = TFIngestStreamReadyState.idle
+                    
                     switch newState {
                     case .idle:
                         print("rtmp流处于空闲状态。")
                     case .publishing:
                         print("rtmp流正在发布中")
+                        status = .play
                     case .playing:
                         print("rtmp流正在播放。")
                     case .play:
@@ -218,7 +234,14 @@ public class TFIngest: NSObject {
                     case .publish:
                         print("rtmp该流已发送发布请求并正在等待服务器的批准。")
                     }
+                    DispatchQueue.main.async {
+                        if self.delegate != nil {
+                            self.delegate!.haishinKitStatusChanged(status:status )
+                        }
+                    }
                 }
+                
+                
             }
         }
 
@@ -938,4 +961,14 @@ extension TFIngest: AudioCaptureDelegate {
     }
     
 
+}
+@objc public protocol TFIngestDelegate: AnyObject {
+    func haishinKitStatusChanged(status:TFIngestStreamReadyState)
+}
+@objc public enum TFIngestStreamReadyState: Int, Sendable {
+    /// 空闲
+    case idle
+    /// 连接中
+    case play
+    
 }
