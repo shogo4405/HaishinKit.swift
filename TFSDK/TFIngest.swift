@@ -20,7 +20,7 @@ public class TFIngest: NSObject {
     
     @objc public weak var delegate: (any TFIngestDelegate)?
     
-    //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性。具体来说，它确保被标记的属性或方法在屏幕渲染上下文中执行（通常是主线程），避免因线程切换或并发访问导致的 UI 不一致或崩溃。 只会影响紧接其后的属性。
+    //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性
     @ScreenActor
     private var videoScreenObject = VideoTrackScreenObject()
     //推流已经连接
@@ -138,13 +138,14 @@ public class TFIngest: NSObject {
              //screen 离屏渲染对象。
              mixer.screen.size = videoSize
              mixer.screen.backgroundColor = UIColor.black.cgColor
-            videoScreenObject.cornerRadius = 16.0
-            videoScreenObject.track = 1
-            videoScreenObject.horizontalAlignment = .right
-            videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-            videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-            //本地显示的渲染配置
-            try? mixer.screen.addChild(videoScreenObject)
+            
+//            videoScreenObject.cornerRadius = 16.0
+//            videoScreenObject.track = 0
+//            videoScreenObject.horizontalAlignment = .right
+//            videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
+//            videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
+//            //本地显示的渲染配置
+//            try? mixer.screen.addChild(videoScreenObject)
             await mixer.startRunning()
            }
    
@@ -607,17 +608,17 @@ public class TFIngest: NSObject {
             }
         }
     }
-    //TODO: 重新配置视频
+    //TODO: 重新配置视频分辨率
     @objc public func setVideoMixerSettings(videoSize:CGSize,
                                             videoFrameRate:CGFloat,
                                             videoBitRate:Int)
     
     {
-        Task {
-            guard let stream = self.stream else {
-                return
-            }
-         
+        Task {  @ScreenActor in
+                guard let stream = self.stream else {
+                    return
+                }
+            
                 var videoSettings = await stream.videoSettings
                 ///// 视频的码率，单位是 bps
                 videoSettings.bitRate = videoBitRate
@@ -628,6 +629,7 @@ public class TFIngest: NSObject {
                 //视频的帧率
                 await mixer.setFrameRate(videoFrameRate)
                 
+               mixer.screen.size = videoSize
             
         }
     }
@@ -975,7 +977,7 @@ public class TFIngest: NSObject {
             await mixer.stopRunning()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
-            try? await mixer.attachVideo(nil, track: 1)
+//            try? await mixer.attachVideo(nil, track: 1)
             
         }
         NotificationCenter.default.removeObserver(self)
