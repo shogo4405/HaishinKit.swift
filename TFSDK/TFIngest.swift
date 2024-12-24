@@ -65,19 +65,17 @@ public class TFIngest: NSObject {
                       cameraType:AVCaptureDevice.DeviceType,
                           position:AVCaptureDevice.Position,
                           again:Bool)
-    
     {
-       
-            view2 = view
-            videoSize2 = videoSize
-            videoBitRate2 = videoBitRate
-        /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
-            videoFrameRate2 = videoFrameRate
-            streamMode2 = streamMode
-            view2.videoGravity = .resizeAspectFill
-            mirror2 = mirror
-        cameraType2 = cameraType
-        position2 = position
+                    view2 = view
+                    videoSize2 = videoSize
+                    videoBitRate2 = videoBitRate
+                    /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
+                    videoFrameRate2 = videoFrameRate
+                    streamMode2 = streamMode
+                    view2.videoGravity = .resizeAspectFill
+                    mirror2 = mirror
+                    cameraType2 = cameraType
+                    position2 = position
         
         //again 是重新配置了url  @ScreenActor in
         Task {@ScreenActor in
@@ -111,10 +109,9 @@ public class TFIngest: NSObject {
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
             videoSettings.bitRate = videoBitRate
-            ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
+            ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
-
             //-----------------------------------------------------------------
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
       
@@ -132,7 +129,7 @@ public class TFIngest: NSObject {
                 self.frontMirror(mirror)
     
             }
-             //帧率
+             //视频的帧率
               await mixer.setFrameRate(videoFrameRate)
         }
         if again==false {
@@ -497,9 +494,9 @@ public class TFIngest: NSObject {
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
         Task {
-            
         try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
             guard let `self` = self else { return }
+            position2 = position
             self.setPosition(position: position)
             if(position == .front)
             {
@@ -564,16 +561,15 @@ public class TFIngest: NSObject {
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
         Task {
-
-                // .builtInWideAngleCamera
+     
                 let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
-            
+
                 //track 是多个摄像头的下标
                 try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
                     
                     cameraType2 = cameraType
-                    position2 = position
+                     position2 = position
                     if position == .front
                     {
                         videoUnit.isVideoMirrored = self.myVideoMirrored
@@ -621,14 +617,18 @@ public class TFIngest: NSObject {
             guard let stream = self.stream else {
                 return
             }
-            var videoSettings = await stream.videoSettings
-            ///// 视频的码率，单位是 bps
-            videoSettings.bitRate = videoBitRate
-            ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
-            videoSettings.videoSize = videoSize
-            await stream.setVideoSettings(videoSettings)
+         
+                var videoSettings = await stream.videoSettings
+                ///// 视频的码率，单位是 bps
+                videoSettings.bitRate = videoBitRate
+                ///// /// 视频的分辨率，宽高务必设定为 2 的倍数
+                videoSettings.videoSize = videoSize
+                await stream.setVideoSettings(videoSettings)
+                //-----------------------------------------------------------------
+                //视频的帧率
+                await mixer.setFrameRate(videoFrameRate)
+                
             
-            await mixer.setFrameRate(videoFrameRate)
         }
     }
     //TODO: 摄像头倍放
@@ -824,7 +824,9 @@ public class TFIngest: NSObject {
         }
     }
     //TODO: 设置焦点
-    @objc public func setFocusBoxPoint(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
+    @objc public func setFocusBoxPoint(_ point: CGPoint,
+                                       focusMode: AVCaptureDevice.FocusMode,
+                                       exposureMode: AVCaptureDevice.ExposureMode) {
       
         if focusMode == .autoFocus && exposureMode == .autoExpose  {
             //.autoFocus 1 手动
