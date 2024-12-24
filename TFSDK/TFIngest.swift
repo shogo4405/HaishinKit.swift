@@ -51,7 +51,10 @@ public class TFIngest: NSObject {
         return audioCapture
     }()
     private var myVideoMirrored:Bool = false
-
+    //中间
+    var cameraType2:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
+    var position2: AVCaptureDevice.Position = .front
+    
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:TFDisplays,
                           videoSize:CGSize,
@@ -59,6 +62,8 @@ public class TFIngest: NSObject {
                           videoBitRate:Int,
                           streamMode:TFStreamMode,
                           mirror:Bool,
+                      cameraType:AVCaptureDevice.DeviceType,
+                          position:AVCaptureDevice.Position,
                           again:Bool)
     
     {
@@ -71,6 +76,8 @@ public class TFIngest: NSObject {
             streamMode2 = streamMode
             view2.videoGravity = .resizeAspectFill
             mirror2 = mirror
+        cameraType2 = cameraType
+        position2 = position
         
         //again 是重新配置了url  @ScreenActor in
         Task {@ScreenActor in
@@ -109,16 +116,20 @@ public class TFIngest: NSObject {
             await stream.setVideoSettings(videoSettings)
 
             //-----------------------------------------------------------------
-            
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
-            //设置默认是前置 然后设置镜像
-            try? await mixer.attachVideo(front, track: 0){[weak self] videoUnit in
+      
+            let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
+    
+            //track 是多个摄像头的下标
+            try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                 guard let `self` = self else { return }
-                self.setPosition(position: .front)
                 videoUnit.isVideoMirrored = mirror
                 self.myVideoMirrored = mirror
-                   //锁定前置是镜像
-                  self.frontMirror(mirror)
+                
+                //记住  前摄像 or 后摄像头
+                self.setPosition(position: position)
+                //酵预览 镜像显示控制属性
+                self.frontMirror(mirror)
     
             }
              //帧率
@@ -139,9 +150,7 @@ public class TFIngest: NSObject {
             try? mixer.screen.addChild(videoScreenObject)
             await mixer.startRunning()
            }
-            
-         
-
+   
         }
     }
     //TODO: 视频的帧率，即 fps  @ScreenActor 线程的, 要等sdk初始化好才能调用
@@ -155,7 +164,9 @@ public class TFIngest: NSObject {
                              videoFrameRate:CGFloat,
                              videoBitRate:Int,
                              streamMode:TFStreamMode,
-                             mirror:Bool)
+                             mirror:Bool,
+                             cameraType:AVCaptureDevice.DeviceType,
+                             position: AVCaptureDevice.Position)
     {
 
         self.configurationSDK(view: view,
@@ -164,6 +175,8 @@ public class TFIngest: NSObject {
                               videoBitRate: videoBitRate,
                               streamMode: streamMode,
                               mirror:mirror,
+                              cameraType:cameraType,
+                              position:position,
                               again:false)
         //TODO: 捕捉设备方向的变化
         NotificationCenter.default.addObserver(self, selector: #selector(on(_:)), name: UIDevice.orientationDidChangeNotification, object: nil)
@@ -461,13 +474,10 @@ public class TFIngest: NSObject {
                                            videoBitRate: videoBitRate2,
                                            streamMode: streamMode,
                                            mirror:self.mirror2,
+                                           cameraType: self.cameraType2,
+                                           position: self.position2,
                                            again:true)
-                     
-                 
-                
-                 
-               
-                 
+   
              }
              
          }
@@ -501,11 +511,11 @@ public class TFIngest: NSObject {
          }
        }
     }
+    
+    ////记住  前摄像 or 后摄像头
     func setPosition(position: AVCaptureDevice.Position)
     {
         DispatchQueue.main.async {
-
-            // 在闭包中使用 position，而不是捕获 self
             self.view2.position = position
         }
     }
@@ -522,9 +532,9 @@ public class TFIngest: NSObject {
 
         if self.view2.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
 
-//                // 在预览视图上直接应用变换
+                  // 在预览视图上直接应用变换
                 self.view2.isMirrorDisplay = true
-//
+
             }else
             {
                 self.view2.isMirrorDisplay = false
@@ -556,10 +566,14 @@ public class TFIngest: NSObject {
         Task {
 
                 // .builtInWideAngleCamera
-                let back = AVCaptureDevice.default(cameraType, for: .video, position:position)
+                let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
+            
                 //track 是多个摄像头的下标
-                try? await mixer.attachVideo(back, track: 0){[weak self] videoUnit in
+                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
+                    
+                    cameraType2 = cameraType
+                    position2 = position
                     if position == .front
                     {
                         videoUnit.isVideoMirrored = self.myVideoMirrored
@@ -598,7 +612,9 @@ public class TFIngest: NSObject {
         }
     }
     //TODO: 重新配置视频
-    @objc public func setVideoMixerSettings(_ videoSize:CGSize)
+    @objc public func setVideoMixerSettings(videoSize:CGSize,
+                                            videoFrameRate:CGFloat,
+                                            videoBitRate:Int)
     
     {
         Task {
@@ -606,13 +622,13 @@ public class TFIngest: NSObject {
                 return
             }
             var videoSettings = await stream.videoSettings
-            
             ///// 视频的码率，单位是 bps
-//            videoSettings.bitRate = videoBitRate
+            videoSettings.bitRate = videoBitRate
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，否则解码播放时可能出现绿边(这个videoSizeRespectingAspectRatio设置为YES则可能会改变)
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
             
+            await mixer.setFrameRate(videoFrameRate)
         }
     }
     //TODO: 摄像头倍放
