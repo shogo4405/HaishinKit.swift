@@ -291,11 +291,18 @@
 {
     btn.selected = !btn.selected;
     if (btn.selected==false) {
-        [self.ingest attachVideoWithPosition:AVCaptureDevicePositionBack];
+//        [self.ingest attachVideoWithPosition:AVCaptureDevicePositionBack];
+        
+        [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionBack];
+        
+        
         [btn setTitle:@"后摄像头" forState:UIControlStateNormal];
     }else
     {
-        [self.ingest attachVideoWithPosition:AVCaptureDevicePositionFront];
+//        [self.ingest attachVideoWithPosition:AVCaptureDevicePositionFront];
+        
+        [self.ingest switchCameraToTypeWithCameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionFront];
+        
         [btn setTitle:@"前摄像头" forState:UIControlStateNormal];
     }
 }

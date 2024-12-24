@@ -21,8 +21,8 @@ public class TFIngest: NSObject {
     @objc public weak var delegate: (any TFIngestDelegate)?
     
     //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性
-    @ScreenActor
-    private var videoScreenObject = VideoTrackScreenObject()
+//    @ScreenActor
+//    private var videoScreenObject = VideoTrackScreenObject()
     //推流已经连接
     @objc public var isConnected:Bool = false
     
@@ -494,9 +494,20 @@ public class TFIngest: NSObject {
     //TODO: 前置or后置 摄像头
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
+       
         Task {
-        try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
-            guard let `self` = self else { return }
+            
+            
+            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:position)
+            
+            try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
+                guard let `self` = self else { return }
+//                
+//            }
+//            
+//            
+//        try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
+//            guard let `self` = self else { return }
             position2 = position
             self.setPosition(position: position)
             if(position == .front)
@@ -517,7 +528,7 @@ public class TFIngest: NSObject {
             self.view2.position = position
         }
     }
-//    let mirror_effect = MirrorEffect()
+
     //TODO:  前置摄像头的本地预览锁定为水平翻转  默认 true
     @objc public var frontCameraPreviewLockedToFlipHorizontally: Bool = true {
         didSet {
@@ -571,6 +582,9 @@ public class TFIngest: NSObject {
                     
                     cameraType2 = cameraType
                      position2 = position
+                    
+                    self.setPosition(position: position)
+                    
                     if position == .front
                     {
                         videoUnit.isVideoMirrored = self.myVideoMirrored
@@ -593,18 +607,35 @@ public class TFIngest: NSObject {
         }
    
     }
-    //TODO:  摄像头开关
-    @objc public func setCamera(_ muted:Bool)
-    {
-        Task {
-            if(muted)
-            {
-//                await mixer.startCapturing()
-                try await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: self.view2.position))
 
+    //TODO:  摄像头开关
+    @objc public func setCamera(_ camera:Bool)
+    {
+
+        Task {
+            if(camera)
+            { print("摄像头开=======>")
+
+                let device = AVCaptureDevice.default(cameraType2, for: .video, position:position2)
+                
+                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
+                    guard let `self` = self else { return }
+                    
+                }
+                
             }else{
-//                 await mixer.stopCapturing()
                 try? await mixer.attachVideo(nil, track: 0)
+//                try await mixer.configuration(video: 0) {[weak self] unit in
+//                    guard let `self` = self else { return }
+//
+//                    if((unit.device) != nil)
+//                    {
+//                        self.screenVideoSize(videoSize: videoSize)
+//                    }
+//                    unit.input
+//                    
+//                }
+                print("摄像头关=======>")
             }
         }
     }
@@ -614,23 +645,39 @@ public class TFIngest: NSObject {
                                             videoBitRate:Int)
     
     {
-        Task {  @ScreenActor in
+        Task {@ScreenActor in
                 guard let stream = self.stream else {
                     return
                 }
+            var videoSettings = await stream.videoSettings
+            ///// 视频的码率，单位是 bps
+            videoSettings.bitRate = videoBitRate
+            ///// /// 视频的分辨率，宽高务必设定为 2 的倍数
+            videoSettings.videoSize = videoSize
             
-                var videoSettings = await stream.videoSettings
-                ///// 视频的码率，单位是 bps
-                videoSettings.bitRate = videoBitRate
-                ///// /// 视频的分辨率，宽高务必设定为 2 的倍数
-                videoSettings.videoSize = videoSize
-                await stream.setVideoSettings(videoSettings)
-                //-----------------------------------------------------------------
-                //视频的帧率
-                await mixer.setFrameRate(videoFrameRate)
-                
-               mixer.screen.size = videoSize
+            await stream.setVideoSettings(videoSettings)
+            //-----------------------------------------------------------------
+            //视频的帧率
+            await mixer.setFrameRate(videoFrameRate)
+           
+            try await mixer.configuration(video: 0) {[weak self] unit in
+                guard let `self` = self else { return }
+
+                if((unit.device) != nil)
+                {
+                    self.screenVideoSize(videoSize: videoSize)
+                }
+               
+            }
             
+
+            
+        }
+    }
+    func screenVideoSize(videoSize:CGSize)
+    {
+        Task {@ScreenActor in
+            self.screenVideoSize(videoSize: videoSize)
         }
     }
     //TODO: 摄像头倍放
@@ -898,6 +945,8 @@ public class TFIngest: NSObject {
             do {
                 // 2. 使用结构化的错误处理
                 let buffer = try await createSampleBuffer(from: pixelBuffer)
+                
+                print("推送自定义图像=======>")
                 await stream.append(buffer)
             } catch {
                 print("Failed to push video: \(error)")
