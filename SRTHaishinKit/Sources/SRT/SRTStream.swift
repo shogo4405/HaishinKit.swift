@@ -18,13 +18,17 @@ public actor SRTStream {
     private lazy var incoming = HKIncomingStream(self)
     private lazy var outgoing = HKOutgoingStream()
     private weak var connection: SRTConnection?
-
+    //正在发送自定义数据
+    public var pushCustomData:Bool = false
     /// Creates a new stream object.
     public init(connection: SRTConnection) {
         self.connection = connection
         Task { await connection.addStream(self) }
     }
-
+    // 添加一个方法来修改属性
+    public func setPushCustomData(_ value: Bool) {
+        pushCustomData = value
+    }
     deinit {
         outputs.removeAll()
     }
@@ -52,7 +56,10 @@ public actor SRTStream {
             }
             Task {
                 for await buffer in outgoing.videoOutputStream where outgoing.isRunning {
-                    append(buffer)
+                    if pushCustomData==false {
+                        append(buffer)
+                    }
+                    
                 }
             }
             Task {

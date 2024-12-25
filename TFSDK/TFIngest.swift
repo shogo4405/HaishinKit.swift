@@ -638,7 +638,7 @@ public class TFIngest: NSObject {
                 let buffer = try await createSampleBuffer(from: pixelBuffer)
                 
                 print("推送自定义图像=======>")
-                await stream.append(buffer)
+//                await stream.append(buffer)
             } catch {
                 print("Failed to push video: \(error)")
             }
