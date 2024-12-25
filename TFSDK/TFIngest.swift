@@ -454,7 +454,7 @@ public class TFIngest: NSObject {
     @objc public func attachVideo(position: AVCaptureDevice.Position)
     {
        
-        Task {
+        Task {@ScreenActor in
             
             let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:position)
             
@@ -476,7 +476,7 @@ public class TFIngest: NSObject {
     //TODO: 设置前置与后置 的 近中 远 摄像头
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
-        Task {
+        Task {@ScreenActor in
      
                 let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
 
