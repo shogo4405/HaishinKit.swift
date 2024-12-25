@@ -651,9 +651,10 @@ public class TFIngest: NSObject {
     
     {
         Task {
-                guard let stream = self.stream else {
-                    return
-                }
+            
+            guard let stream = self.stream else {
+                return
+            }
             var videoSettings = await stream.videoSettings
             ///// 视频的码率，单位是 bps
             videoSettings.bitRate = videoBitRate
@@ -682,7 +683,7 @@ public class TFIngest: NSObject {
     func screenVideoSize(videoSize:CGSize)
     {
         Task {@ScreenActor in
-            self.screenVideoSize(videoSize: videoSize)
+            mixer.screen.size = videoSize
         }
     }
     //TODO: 摄像头倍放
