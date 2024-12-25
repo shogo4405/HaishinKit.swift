@@ -20,9 +20,6 @@ public class TFIngest: NSObject {
     
     @objc public weak var delegate: (any TFIngestDelegate)?
     
-    //它的作用是为与屏幕相关的操作提供线程安全性和一致性
-//    @ScreenActor
-//    private var videoScreenObject = VideoTrackScreenObject()
     //推流已经连接
     @objc public var isConnected:Bool = false
     
@@ -45,11 +42,7 @@ public class TFIngest: NSObject {
      public var videoFrameRate2: CGFloat = 0
 
      private lazy var mixer = MediaMixer()
-     private lazy var audioCapture: AudioCapture = {
-        let audioCapture = AudioCapture()
-        audioCapture.delegate = self
-        return audioCapture
-    }()
+
     private var myVideoMirrored:Bool = false
     //中间
     var cameraType2:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
@@ -138,15 +131,8 @@ public class TFIngest: NSObject {
              //screen 离屏渲染对象。
              mixer.screen.size = videoSize
              mixer.screen.backgroundColor = UIColor.black.cgColor
-            
-//            videoScreenObject.cornerRadius = 16.0
-//            videoScreenObject.track = 0
-//            videoScreenObject.horizontalAlignment = .right
-//            videoScreenObject.layoutMargin = .init(top: 16, left: 0, bottom: 0, right: 16)
-//            videoScreenObject.size = .init(width: 160 * 2, height: 90 * 2)
-//            //本地显示的渲染配置
-//            try? mixer.screen.addChild(videoScreenObject)
             await mixer.startRunning()
+
            }
    
         }
@@ -201,19 +187,7 @@ public class TFIngest: NSObject {
                         status = .publishing
                     }
                     self.statusChanged(status: status)
-//                    switch newState {
-//                    case .idle:
-//                        print("srt流处于空闲状态。")
-//                    case .publishing:
-//                        print("srt流正在发布中")
-//                         status = .publishing
-//                    case .playing:
-//                        print("srt流正在播放。")
-//                    case .play:
-//                        print("srt该流已发送播放请求，正在等待服务器批准。")
-//                    case .publish:
-//                        print("srt该流已发送发布请求并正在等待服务器的批准。")
-//                    }
+
                     
                 }
             }
@@ -234,23 +208,8 @@ public class TFIngest: NSObject {
                         status = .publishing
                     }
                     self.statusChanged(status: status)
-//                    switch newState {
-//                    case .idle:
-//                        print("rtmp流处于空闲状态。")
-//                    case .publishing:
-//                        print("rtmp流正在发布中")
-//                        status = .publishing
-//                    case .playing:
-//                        print("rtmp流正在播放。")
-//                    case .play:
-//                        print("rtmp该流已发送播放请求，正在等待服务器批准。")
-//                    case .publish:
-//                        print("rtmp该流已发送发布请求并正在等待服务器的批准。")
-//                    }
-                  
                 }
-                
-                
+  
             }
         }
 
@@ -289,7 +248,7 @@ public class TFIngest: NSObject {
     //TODO: 用于捕捉音频路由变化（如耳机插入、蓝牙设备连接等）
     @objc
     private func didRouteChangeNotification(_ notification: Notification) {
-//        logger.info(notification)
+
         if AVAudioSession.sharedInstance().inputDataSources?.isEmpty == true {
             setEnabledPreferredInputBuiltInMic(false)
 
@@ -446,8 +405,7 @@ public class TFIngest: NSObject {
                         if let connection = connection as? SRTConnection, let stream = stream as? SRTStream
                          {
                             try? await connection.close()
-                           
-                            
+                        
                             self.connection = nil
                             self.stream = nil
                         }
@@ -588,9 +546,7 @@ public class TFIngest: NSObject {
                 
             }
 
-        
     }
-
     //TODO: 静音
     @objc public func setMuted(_ muted:Bool)
     {
@@ -601,17 +557,13 @@ public class TFIngest: NSObject {
         }
    
     }
-
     //TODO:  摄像头开关
     @objc public func setCamera(_ camera:Bool)
     {
-
         Task {
             if(camera)
-            { print("摄像头开=======>")
-
+            {
                 let device = AVCaptureDevice.default(cameraType2, for: .video, position:position2)
-                
                 try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
                     
@@ -620,24 +572,22 @@ public class TFIngest: NSObject {
             }else{
                 try? await mixer.attachVideo(nil, track: 0)
 
-                print("摄像头关=======>")
             }
         }
     }
     //TODO:  --------------------推送自定义图像--------------------
     @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
         // 1. 检查 stream 是否存在，避免进入 Task 后再检查
-        guard let stream = self.stream else {
-            print("Stream not available")
-            return
-        }
-        
         Task {
             do {
                 // 2. 使用结构化的错误处理
                 let buffer = try await createSampleBuffer(from: pixelBuffer)
                 
                 print("推送自定义图像=======>")
+//                guard let stream = self.stream else {
+//                    print("Stream not available")
+//                    return
+//                }
 //                await stream.append(buffer)
             } catch {
                 print("Failed to push video: \(error)")
@@ -675,9 +625,6 @@ public class TFIngest: NSObject {
                 }
                
             }
-            
-
-            
         }
     }
     func screenVideoSize(videoSize:CGSize)
@@ -737,17 +684,16 @@ public class TFIngest: NSObject {
                         }
                     }
                 }
+                
             } else {
                 if self.isRecording {
                     do {
                         let recordingURL = try await recorder.stopRecording()
-//                        print("srt保存录制视频成功: \(recordingURL)")
                         // 停止录制成功回调
                         await MainActor.run {
                             completion?(true, recordingURL, nil)
                         }
                     } catch {
-//                        print("srt保存录制视频失败: \(error)")
                         // 停止录制失败回调
                         await MainActor.run {
                             completion?(false, nil, error)
@@ -759,9 +705,6 @@ public class TFIngest: NSObject {
             self.isRecording = isRecording
         }
     }
-    
-    //-----------------------------------------------
-    
     var effectsList: [TFFilter] = []
     //TODO: 添加水印
     @objc public func addWatermark(_ watermark:UIImage,frame:CGRect)
@@ -981,25 +924,6 @@ public class TFIngest: NSObject {
         
         return buffer
     }
-
-    // 7. 添加自定义错误类型
-    enum VideoProcessingError: Error {
-        case streamNotAvailable
-        case formatDescriptionCreationFailed
-        case sampleBufferCreationFailed
-    }
-
-    // 8. 可选：添加性能监控
-    private var lastFrameTime: CFTimeInterval = 0
-    private func logFrameRate() {
-        let currentTime = CACurrentMediaTime()
-        let elapsed = currentTime - lastFrameTime
-        lastFrameTime = currentTime
-        
-        #if DEBUG
-        print("Frame interval: \(elapsed * 1000)ms (~ \(1.0 / elapsed) fps)")
-        #endif
-    }
     //TODO: 关闭SDK
     @objc public func shutdown()
     {
@@ -1012,18 +936,10 @@ public class TFIngest: NSObject {
             await mixer.stopRunning()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
-//            try? await mixer.attachVideo(nil, track: 1)
             
         }
         NotificationCenter.default.removeObserver(self)
     }
-}
-extension TFIngest: AudioCaptureDelegate {
-    // MARK: AudioCaptureDelegate
-    nonisolated func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
-        Task { await mixer.append(buffer, when: time) }
-    }
-
 }
 @objc public protocol TFIngestDelegate: AnyObject {
     func haishinKitStatusChanged(status:TFIngestStreamReadyState)

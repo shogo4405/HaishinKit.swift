@@ -275,9 +275,13 @@
 - (void)recordingClick:(UIButton*)btn {
     btn.selected = !btn.selected;
     if (btn.selected) {
-        [self.ingest recording:true];
+        [self.ingest recording:true completion:^(BOOL success, NSURL * _Nullable url , NSError * _Nullable error) {
+            
+        }];
     }else{
-        [self.ingest recording:false];
+        [self.ingest recording:false completion:^(BOOL success, NSURL * _Nullable url, NSError * _Nullable error) {
+            
+        }];
     }
    
     if (btn.selected) {
