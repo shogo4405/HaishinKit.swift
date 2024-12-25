@@ -105,6 +105,18 @@ public class TFIngest: NSObject {
             ///// /// 视频的分辨率，宽高务必设定为 2 的倍数，
             videoSettings.videoSize = videoSize
             await stream.setVideoSettings(videoSettings)
+            
+            if again==false {
+                //screen 离屏渲染对象。
+                mixer.screen.size = videoSize
+                mixer.screen.backgroundColor = UIColor.black.cgColor
+       
+            }
+            //视频的帧率
+             await mixer.setFrameRate(videoFrameRate)
+        }
+        Task {@ScreenActor in
+  
             //-----------------------------------------------------------------
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
       
@@ -122,20 +134,9 @@ public class TFIngest: NSObject {
                 self.frontMirror(mirror)
     
             }
-             //视频的帧率
-              await mixer.setFrameRate(videoFrameRate)
+ 
         }
-        if again==false {
-            
-        Task { @ScreenActor in
-             //screen 离屏渲染对象。
-             mixer.screen.size = videoSize
-             mixer.screen.backgroundColor = UIColor.black.cgColor
-            await mixer.startRunning()
-
-           }
-   
-        }
+        
     }
     //TODO: 视频的帧率，即 fps
     @objc public func setFrameRate(_ videoFrameRate: Float64) {
