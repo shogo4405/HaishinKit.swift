@@ -7,7 +7,7 @@
 
 #import "TFVideoViewController.h"
 #import <AVFoundation/AVFoundation.h>
-
+#import "TFVideoViewTool.h"
 @import TFSRT;
 @interface TFVideoViewController ()
 @property (nonatomic, strong) TFDisplays *view2;
@@ -17,6 +17,10 @@
 @property (nonatomic, strong)UIButton *focusBoxPoint;
 @property (nonatomic, strong)UIButton *streamBtn;
 @property (nonatomic, strong)NSString *pushUrl;
+
+@property (nonatomic, assign)CGSize videoSizeMak;
+@property (nonatomic) CVPixelBufferRef cameraPicture;
+@property (nonatomic,strong) NSTimer *cameraTimer;
 @end
 
 @implementation TFVideoViewController
@@ -82,6 +86,7 @@
     self.streamBtn = [self view:self.view addButton:CGRectMake(rightX, 630, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:1];
     self.streamBtn.selected = true;
     
+    self.videoSizeMak = CGSizeMake(540, 960);
     
     self.ingest = [[TFIngest alloc]init];
     
@@ -106,12 +111,62 @@
     if (btn.selected) {
         [btn setTitle:@"摄像头 开" forState:UIControlStateNormal];
         NSLog(@"摄像头 开");
+//        [self stopCameraPictureTimer];
     }else{
         [btn setTitle:@"摄像头 关" forState:UIControlStateNormal];
         NSLog(@"摄像头 关");
+//        [self startCameraPicutreTimer];
     }
     
 }
+- (void)stopCameraPictureTimer {
+    if(_cameraTimer){
+        [_cameraTimer invalidate];
+        _cameraTimer = nil;
+    }
+}
+- (void)startCameraPicutreTimer {
+    if(!_cameraTimer){
+        //推送背景图
+        _cameraTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(cameraPictureHandler) userInfo:nil repeats:YES];
+        [[NSRunLoop mainRunLoop] addTimer:_cameraTimer forMode:NSRunLoopCommonModes];
+    }
+}
+- (void)cameraPictureHandler
+{
+    [self.ingest pushVideo:[self cameraPicture] ];
+}
+- (CVPixelBufferRef)cameraPicture {
+    if(_cameraPicture == nil){
+        NSString *pictureFile = [NSString stringWithFormat:@"TalkfunLive.bundle/camera_%ldx%ld.png",(long)self.videoSizeMak.width,(long)self.videoSizeMak.height];
+        
+        if(![[NSFileManager defaultManager]fileExistsAtPath:pictureFile]){
+            pictureFile = [NSString stringWithFormat:@"TalkfunLive.bundle/camera_%dx%d.png",320,240];
+        }
+        
+        UIImage* myImage = [UIImage imageNamed:pictureFile];
+        
+        if(myImage ==nil){
+        
+            NSString *pictureFile = [NSString stringWithFormat:@"CloudLiveSDKFramework.bundle/camera_%ldx%ld.png",(long)self.videoSizeMak.width,(long)self.videoSizeMak.height];
+            
+            if(![[NSFileManager defaultManager]fileExistsAtPath:pictureFile]){
+                pictureFile = [NSString stringWithFormat:@"CloudLiveSDKFramework.bundle/camera_%dx%d.png",320,240];
+                myImage = [UIImage imageNamed:pictureFile];
+                
+    
+            }
+
+        }
+        if (myImage) {
+            CGImageRef imageRef = [myImage CGImage];
+            _cameraPicture = [TFVideoViewTool pixelBufferFromCGImage:imageRef];
+        }
+       
+    }
+    return _cameraPicture;
+}
+
 - (void)mutedClick:(UIButton*)btn
 {
     btn.selected = !btn.selected;
@@ -282,6 +337,9 @@
 - (void)exitBtnClick:(UIButton*)btn
 {
     [self.ingest shutdown];
+    
+    [self.cameraTimer invalidate];
+    self.cameraTimer = nil;
 
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -415,7 +473,7 @@
 }
 - (NSString*)SRT_URL
 {
-    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/11306_IiYiISNKJS8tICkrKUIu,txSecret=168bbe9e2c2d0c4b21ac44aa2b8fa9ea,txTime=676A6D8A";
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSEvSCshLCooKC9AEA,txSecret=0efd7e2a7519005abd298fbf8769cde0,txTime=676CB4C6";
 }
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");

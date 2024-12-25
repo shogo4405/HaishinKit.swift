@@ -20,7 +20,7 @@ public class TFIngest: NSObject {
     
     @objc public weak var delegate: (any TFIngestDelegate)?
     
-    //@ScreenActor它的作用是为与屏幕相关的操作提供线程安全性和一致性
+    //它的作用是为与屏幕相关的操作提供线程安全性和一致性
 //    @ScreenActor
 //    private var videoScreenObject = VideoTrackScreenObject()
     //推流已经连接
@@ -77,7 +77,7 @@ public class TFIngest: NSObject {
                     cameraType2 = cameraType
                     position2 = position
         
-        //again 是重新配置了url  @ScreenActor in
+        //again 是重新配置了url
         Task {@ScreenActor in
             
             if again==false {
@@ -151,7 +151,7 @@ public class TFIngest: NSObject {
    
         }
     }
-    //TODO: 视频的帧率，即 fps  @ScreenActor 线程的, 要等sdk初始化好才能调用
+    //TODO: 视频的帧率，即 fps
     @objc public func setFrameRate(_ videoFrameRate: Float64) {
         Task {
             await mixer.setFrameRate(videoFrameRate)
@@ -497,17 +497,11 @@ public class TFIngest: NSObject {
        
         Task {
             
-            
             let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:position)
             
             try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                 guard let `self` = self else { return }
-//                
-//            }
-//            
-//            
-//        try? await mixer.attachVideo(AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: position)) {[weak self] videoUnit in
-//            guard let `self` = self else { return }
+
             position2 = position
             self.setPosition(position: position)
             if(position == .front)
@@ -520,7 +514,34 @@ public class TFIngest: NSObject {
          }
        }
     }
-    
+    //TODO: 设置前置与后置 的 近中 远 摄像头
+    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
+    {
+        Task {
+     
+                let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
+
+                //track 是多个摄像头的下标
+                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
+                    guard let `self` = self else { return }
+                    
+                    cameraType2 = cameraType
+                     position2 = position
+                    
+                    self.setPosition(position: position)
+                    
+                    if position == .front
+                    {
+                        videoUnit.isVideoMirrored = self.myVideoMirrored
+                    }else
+                    {
+                        videoUnit.isVideoMirrored = false
+                    }
+                }
+
+        }
+        return true
+    }
     ////记住  前摄像 or 后摄像头
     func setPosition(position: AVCaptureDevice.Position)
     {
@@ -569,34 +590,7 @@ public class TFIngest: NSObject {
 
         
     }
-    //TODO: 设置 近  中 远 摄像头
-    @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
-    {
-        Task {
-     
-                let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
 
-                //track 是多个摄像头的下标
-                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
-                    guard let `self` = self else { return }
-                    
-                    cameraType2 = cameraType
-                     position2 = position
-                    
-                    self.setPosition(position: position)
-                    
-                    if position == .front
-                    {
-                        videoUnit.isVideoMirrored = self.myVideoMirrored
-                    }else
-                    {
-                        videoUnit.isVideoMirrored = false
-                    }
-                }
-
-        }
-        return true
-    }
     //TODO: 静音
     @objc public func setMuted(_ muted:Bool)
     {
@@ -645,7 +639,7 @@ public class TFIngest: NSObject {
                                             videoBitRate:Int)
     
     {
-        Task {@ScreenActor in
+        Task {
                 guard let stream = self.stream else {
                     return
                 }

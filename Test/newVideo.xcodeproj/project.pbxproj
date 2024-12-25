@@ -21,6 +21,8 @@
 		CD824D972D0825EA00838077 /* 66.png in Resources */ = {isa = PBXBuildFile; fileRef = CD824D962D0825EA00838077 /* 66.png */; };
 		CDA197932CFEE98900E0AFA8 /* TFVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CDA197922CFEE98900E0AFA8 /* TFVideoViewController.m */; };
 		CDA1A2FC2D01981900E0AFA8 /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = CDA1A2FB2D01981900E0AFA8 /* Icon.png */; };
+		CDB4A3162D1B9F7F00F37068 /* CloudLiveSDKFramework.bundle in Resources */ = {isa = PBXBuildFile; fileRef = CDB4A3152D1B9F7F00F37068 /* CloudLiveSDKFramework.bundle */; };
+		CDB4A31B2D1BA0FE00F37068 /* TFVideoViewTool.m in Sources */ = {isa = PBXBuildFile; fileRef = CDB4A31A2D1BA0FE00F37068 /* TFVideoViewTool.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +66,9 @@
 		CDA197912CFEE98900E0AFA8 /* TFVideoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TFVideoViewController.h; sourceTree = "<group>"; };
 		CDA197922CFEE98900E0AFA8 /* TFVideoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TFVideoViewController.m; sourceTree = "<group>"; };
 		CDA1A2FB2D01981900E0AFA8 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		CDB4A3152D1B9F7F00F37068 /* CloudLiveSDKFramework.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = CloudLiveSDKFramework.bundle; sourceTree = "<group>"; };
+		CDB4A3192D1BA0FE00F37068 /* TFVideoViewTool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TFVideoViewTool.h; sourceTree = "<group>"; };
+		CDB4A31A2D1BA0FE00F37068 /* TFVideoViewTool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TFVideoViewTool.m; sourceTree = "<group>"; };
 		D70AD43EAD2010FA8F8618C5 /* Pods_newVideo.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_newVideo.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FFE3CC6FE1F4CF6DB9798150 /* Pods-newVideo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-newVideo.debug.xcconfig"; path = "Target Support Files/Pods-newVideo/Pods-newVideo.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -144,6 +149,9 @@
 				BA96C44D2B5FEF5D0065D40A /* ViewController.m */,
 				CDA197912CFEE98900E0AFA8 /* TFVideoViewController.h */,
 				CDA197922CFEE98900E0AFA8 /* TFVideoViewController.m */,
+				CDB4A3192D1BA0FE00F37068 /* TFVideoViewTool.h */,
+				CDB4A31A2D1BA0FE00F37068 /* TFVideoViewTool.m */,
+				CDB4A3152D1B9F7F00F37068 /* CloudLiveSDKFramework.bundle */,
 				CD824D962D0825EA00838077 /* 66.png */,
 				CDA1A2FB2D01981900E0AFA8 /* Icon.png */,
 				BA96C44F2B5FEF5D0065D40A /* Main.storyboard */,
@@ -284,6 +292,7 @@
 				BA96C4562B5FEF600065D40A /* LaunchScreen.storyboard in Resources */,
 				BA96C4532B5FEF600065D40A /* Assets.xcassets in Resources */,
 				BA96C4512B5FEF5D0065D40A /* Main.storyboard in Resources */,
+				CDB4A3162D1B9F7F00F37068 /* CloudLiveSDKFramework.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -354,6 +363,7 @@
 				BA96C4482B5FEF5D0065D40A /* AppDelegate.m in Sources */,
 				BA96C4592B5FEF600065D40A /* main.m in Sources */,
 				CDA197932CFEE98900E0AFA8 /* TFVideoViewController.m in Sources */,
+				CDB4A31B2D1BA0FE00F37068 /* TFVideoViewTool.m in Sources */,
 				BA96C44B2B5FEF5D0065D40A /* SceneDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
