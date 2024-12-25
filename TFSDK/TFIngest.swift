@@ -692,7 +692,6 @@ public class TFIngest: NSObject {
         Task {
             //[weak self]
             try await mixer.configuration(video: 0) { unit in
-//                guard let `self` = self else { return }
                 guard let device = unit.device else {
                     return
                 }
@@ -703,61 +702,62 @@ public class TFIngest: NSObject {
         }
         
     }
-    //TODO: 录制视频 开关
-    @objc public func recording(_ isRecording:Bool)
-    {
-        Task {
-            
-          
-            if isRecording {
-                
+    // 1. 首先定义回调的类型
+    public typealias RecordingCompletionHandler = (_ success: Bool, _ url: URL?, _ error: Error?) -> Void
 
+    //TODO: 录制视频 开关
+    @objc public func recording(_ isRecording: Bool, completion: RecordingCompletionHandler? = nil) {
+        Task {
+            if isRecording {
                 if self.isRecording == false {
+                    if let saveLocalVideoPath = saveLocalVideoPath {
                     
-                    if let saveLocalVideoPath = saveLocalVideoPath
-                    {
-                        print("srt录制的视频存放地址为=======>",saveLocalVideoPath)
-                        //                AVSampleRateKey = 44.1KHz 采样率,
-                        /// AVNumberOfChannelsKey 声道数目(default 2)
-                        try await recorder.startRecording(saveLocalVideoPath, settings: [
-                            AVMediaType.audio: [
-                                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                                AVSampleRateKey: 44100,
-                                AVNumberOfChannelsKey: 2,
-                            ],
-                            AVMediaType.video: [
-                                AVVideoCodecKey: AVVideoCodecType.h264,
-                                AVVideoHeightKey: 0,
-                                AVVideoWidthKey: 0,
-                                
-                            ]
-                        ])
-                        
+                        do {
+                            try await recorder.startRecording(saveLocalVideoPath, settings: [
+                                AVMediaType.audio: [
+                                    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                                    AVSampleRateKey: 44100,
+                                    AVNumberOfChannelsKey: 2,
+                                ],
+                                AVMediaType.video: [
+                                    AVVideoCodecKey: AVVideoCodecType.h264,
+                                    AVVideoHeightKey: 0,
+                                    AVVideoWidthKey: 0,
+                                ]
+                            ])
+                            // 开始录制成功回调
+                            await MainActor.run {
+                                completion?(true, saveLocalVideoPath, nil)
+                            }
+                        } catch {
+                            // 开始录制失败回调
+                            await MainActor.run {
+                                completion?(false, nil, error)
+                            }
+                        }
                     }
-                    
                 }
-                
-                
-            }else{
-                
-                
+            } else {
                 if self.isRecording {
                     do {
                         let recordingURL = try await recorder.stopRecording()
-                        // 处理录制文件的 URL
-                        print("srt保存录制视频成功: \(recordingURL)")
+//                        print("srt保存录制视频成功: \(recordingURL)")
+                        // 停止录制成功回调
+                        await MainActor.run {
+                            completion?(true, recordingURL, nil)
+                        }
                     } catch {
-                        
-                        print("srt保存录制视频失败: \(error)")
+//                        print("srt保存录制视频失败: \(error)")
+                        // 停止录制失败回调
+                        await MainActor.run {
+                            completion?(false, nil, error)
+                        }
                     }
                 }
-             
             }
             
             self.isRecording = isRecording
-            
         }
-        
     }
     
     //-----------------------------------------------
@@ -940,7 +940,6 @@ public class TFIngest: NSObject {
         
     }
 
-
     // 3. 将 SampleBuffer 创建逻辑分离到独立函数
     private func createSampleBuffer(from pixelBuffer: CVPixelBuffer) async throws -> CMSampleBuffer {
         // 4. 使用精确的时间戳计算
@@ -1024,7 +1023,6 @@ extension TFIngest: AudioCaptureDelegate {
     nonisolated func audioCapture(_ audioCapture: AudioCapture, buffer: AVAudioBuffer, time: AVAudioTime) {
         Task { await mixer.append(buffer, when: time) }
     }
-    
 
 }
 @objc public protocol TFIngestDelegate: AnyObject {
