@@ -716,37 +716,47 @@ public class TFIngest: NSObject {
     // 1. 首先定义回调的类型
     public typealias RecordingCompletionHandler = (_ success: Bool, _ url: URL?, _ error: Error?) -> Void
 
+    func getvideoPath()->URL?
+    {
+        var videoPath:URL?
+         if let saveLocalVideoPath = saveLocalVideoPath {
+             videoPath = saveLocalVideoPath
+         }
+        
+        return videoPath
+    }
     //TODO: 录制视频 开关
     @objc public func recording(_ isRecording: Bool, completion: RecordingCompletionHandler? = nil) {
         Task {
             if isRecording {
                 if self.isRecording == false {
-                    if let saveLocalVideoPath = saveLocalVideoPath {
                     
-                        do {
-                            try await recorder.startRecording(saveLocalVideoPath, settings: [
-                                AVMediaType.audio: [
-                                    AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                                    AVSampleRateKey: 44100,
-                                    AVNumberOfChannelsKey: 2,
-                                ],
-                                AVMediaType.video: [
-                                    AVVideoCodecKey: AVVideoCodecType.h264,
-                                    AVVideoHeightKey: 0,
-                                    AVVideoWidthKey: 0,
-                                ]
-                            ])
-                            // 开始录制成功回调
-                            await MainActor.run {
-                                completion?(true, saveLocalVideoPath, nil)
-                            }
-                        } catch {
-                            // 开始录制失败回调
-                            await MainActor.run {
-                                completion?(false, nil, error)
-                            }
+                    do {
+                        try await recorder.startRecording(self.getvideoPath(), settings: [
+                            AVMediaType.audio: [
+                                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                                AVSampleRateKey: 44100,
+                                AVNumberOfChannelsKey: 2,
+                            ],
+                            AVMediaType.video: [
+                                AVVideoCodecKey: AVVideoCodecType.h264,
+                                AVVideoHeightKey: 0,
+                                AVVideoWidthKey: 0,
+                            ]
+                        ])
+                        // 开始录制成功回调
+                        await MainActor.run {
+                            completion?(true, self.getvideoPath(), nil)
                         }
+                    } catch {
+                        // 开始录制失败回调
+                        await MainActor.run {
+                            completion?(false, nil, error)
+                        }
+                    
+                        
                     }
+                    
                 }
                 
             } else {

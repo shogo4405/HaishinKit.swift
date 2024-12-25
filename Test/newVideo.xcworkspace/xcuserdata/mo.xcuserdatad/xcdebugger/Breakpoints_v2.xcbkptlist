@@ -7,395 +7,137 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "4FE7E744-5981-40E9-8AB9-F8ECF5D27259"
+            uuid = "82E5DDBC-2273-452E-B648-5ABD100894CE"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/Mixer/MediaMixer.swift"
+            filePath = "../HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "262"
-            endingLineNumber = "262"
-            landmarkName = "append(_:track:)"
+            startingLineNumber = "205"
+            endingLineNumber = "205"
+            landmarkName = "stopRecording()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D296109D-AEEE-4E7B-85DE-2F4908115251"
+            uuid = "23B3B134-439B-4313-9DBA-AA5074F7111E"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/View/MTHKView.swift"
+            filePath = "../HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "165"
-            endingLineNumber = "165"
-            landmarkName = "stream(_:didOutput:)"
+            startingLineNumber = "208"
+            endingLineNumber = "208"
+            landmarkName = "stopRecording()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "EBE79975-E22A-42CC-B6BD-DE03B1119E51"
+            uuid = "0FE54422-1170-4FD8-AB57-AFEA785A0352"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/Screen/StreamScreenObject.swift"
+            filePath = "../HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "74"
-            endingLineNumber = "74"
-            landmarkName = "stream(_:didOutput:)"
+            startingLineNumber = "213"
+            endingLineNumber = "213"
+            landmarkName = "stopRecording()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "CC0E6080-5C78-4AC7-92E1-0B5DF4088ED2"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "216"
+            endingLineNumber = "216"
+            landmarkName = "stopRecording()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "91CA0891-3B20-49A4-A922-B99DA8686B72"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "218"
+            endingLineNumber = "218"
+            landmarkName = "stopRecording()"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "EBE79975-E22A-42CC-B6BD-DE03B1119E51 - 1a1ed63964f07953"
+                  uuid = "91CA0891-3B20-49A4-A922-B99DA8686B72 - 2f365e34b783bf9e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "TFSRT.StreamScreenObject.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: TFSRT.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
+                  symbolName = "(1) suspend resume partial function for TFSRT.HKStreamRecorder.stopRecording() async throws -&gt; Foundation.URL"
                   moduleName = "TFSRT"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/Screen/StreamScreenObject.swift"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "74"
-                  endingLineNumber = "74">
+                  startingLineNumber = "218"
+                  endingLineNumber = "218">
                </Location>
                <Location
-                  uuid = "EBE79975-E22A-42CC-B6BD-DE03B1119E51 - 17a976328ab703f5"
+                  uuid = "91CA0891-3B20-49A4-A922-B99DA8686B72 - 33628187f12bfdb6"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @TFSRT.ScreenActor () async -&gt; () in TFSRT.StreamScreenObject.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: TFSRT.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
+                  symbolName = "(2) await resume partial function for TFSRT.HKStreamRecorder.stopRecording() async throws -&gt; Foundation.URL"
                   moduleName = "TFSRT"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/Screen/StreamScreenObject.swift"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "74"
-                  endingLineNumber = "74">
+                  startingLineNumber = "218"
+                  endingLineNumber = "218">
                </Location>
                <Location
-                  uuid = "EBE79975-E22A-42CC-B6BD-DE03B1119E51 - ece23fc1155410de"
+                  uuid = "91CA0891-3B20-49A4-A922-B99DA8686B72 - e7e326ad663a82ca"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for closure #1 @TFSRT.ScreenActor () async -&gt; () in TFSRT.StreamScreenObject.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: TFSRT.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
+                  symbolName = "(3) suspend resume partial function for TFSRT.HKStreamRecorder.stopRecording() async throws -&gt; Foundation.URL"
                   moduleName = "TFSRT"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/Screen/StreamScreenObject.swift"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "74"
-                  endingLineNumber = "74">
+                  startingLineNumber = "212"
+                  endingLineNumber = "212">
                </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "ADB40BF0-E5D9-4F02-859D-8B86B7912149"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/HaishinKit/HaishinKit/Sources/Screen/StreamScreenObject.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
-            landmarkName = "stream(_:didOutput:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "E5E05D83-9F00-48A6-A642-82A58AC388ED"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/HaishinKit/HaishinKit/Sources/View/PiPHKView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "stream(_:didOutput:)"
-            landmarkType = "7">
-            <Locations>
                <Location
-                  uuid = "E5E05D83-9F00-48A6-A642-82A58AC388ED - a7c216414e17bd2"
+                  uuid = "91CA0891-3B20-49A4-A922-B99DA8686B72 - e7e326ad663a8390"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "HaishinKit.PiPHKView.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/View/PiPHKView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133">
-               </Location>
-               <Location
-                  uuid = "E5E05D83-9F00-48A6-A642-82A58AC388ED - cb669d3d0b36ce1a"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Swift.MainActor () async -&gt; () in HaishinKit.PiPHKView.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/View/PiPHKView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133">
-               </Location>
-               <Location
-                  uuid = "E5E05D83-9F00-48A6-A642-82A58AC388ED - 5d98b07901ebb5e7"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for closure #1 @Swift.MainActor () async -&gt; () in HaishinKit.PiPHKView.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/View/PiPHKView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "4F93657A-B951-4A77-810F-B8EDDC9FE1C0"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pods/HaishinKit/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "344"
-            endingLineNumber = "344"
-            landmarkName = "stream(_:didOutput:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "4F93657A-B951-4A77-810F-B8EDDC9FE1C0 - 5a68c7451180b41d"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HaishinKit.HKStreamRecorder.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "344"
-                  endingLineNumber = "344">
-               </Location>
-               <Location
-                  uuid = "4F93657A-B951-4A77-810F-B8EDDC9FE1C0 - 7cf1ddad05107e68"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () async -&gt; () in HaishinKit.HKStreamRecorder.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "344"
-                  endingLineNumber = "344">
-               </Location>
-               <Location
-                  uuid = "4F93657A-B951-4A77-810F-B8EDDC9FE1C0 - f8897f1d73936c1b"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for closure #1 () async -&gt; () in HaishinKit.HKStreamRecorder.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "344"
-                  endingLineNumber = "344">
-               </Location>
-               <Location
-                  uuid = "4F93657A-B951-4A77-810F-B8EDDC9FE1C0 - 3d1ef94a4a555606"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(2) suspend resume partial function for closure #1 () async -&gt; () in HaishinKit.HKStreamRecorder.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: HaishinKit.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "HaishinKit"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/Test/Pods/HaishinKit/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "344"
-                  endingLineNumber = "344">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "5F18EEDD-2141-4626-9C9B-E852E752A2AF"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/View/PiPHKView.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "133"
-            endingLineNumber = "133"
-            landmarkName = "stream(_:didOutput:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "5F18EEDD-2141-4626-9C9B-E852E752A2AF - 74faf3ad0bca36db"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "TFSRT.PiPHKView.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: TFSRT.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
+                  symbolName = "(3) suspend resume partial function for TFSRT.HKStreamRecorder.stopRecording() async throws -&gt; Foundation.URL"
                   moduleName = "TFSRT"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/View/PiPHKView.swift"
+                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/HKStream/HKStreamRecorder.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133">
-               </Location>
-               <Location
-                  uuid = "5F18EEDD-2141-4626-9C9B-E852E752A2AF - 6d2286fa162b00c8"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 @Swift.MainActor () async -&gt; () in TFSRT.PiPHKView.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: TFSRT.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "TFSRT"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/View/PiPHKView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133">
-               </Location>
-               <Location
-                  uuid = "5F18EEDD-2141-4626-9C9B-E852E752A2AF - d93fd1ecd3e0f9d6"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "(1) suspend resume partial function for closure #1 @Swift.MainActor () async -&gt; () in TFSRT.PiPHKView.stream&lt;&#x3c4;_0_0 where &#x3c4;_0_0: TFSRT.HKStream&gt;(_: &#x3c4;_0_0, didOutput: __C.CMSampleBufferRef) -&gt; ()"
-                  moduleName = "TFSRT"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/View/PiPHKView.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "133"
-                  endingLineNumber = "133">
-               </Location>
-            </Locations>
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "0EBD9F0B-8595-4D11-AAB1-8E58605509DC"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/RTMP/RTMPStream.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "769"
-            endingLineNumber = "769"
-            landmarkName = "append(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9086319F-EE5E-468E-800A-E8022AC2B5D4"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/RTMP/RTMPStream.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "766"
-            endingLineNumber = "766"
-            landmarkName = "append(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "1D2BC0E2-D0F8-4465-B149-EE94DC46E0CB"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/RTMP/RTMPStream.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "762"
-            endingLineNumber = "762"
-            landmarkName = "append(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "6410BD69-D91D-413C-86D7-8D0264777ADB"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../HaishinKit/Sources/RTMP/RTMPStream.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "795"
-            endingLineNumber = "795"
-            landmarkName = "append(_:when:)"
-            landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "6410BD69-D91D-413C-86D7-8D0264777ADB - 474d7c28366d2ae"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "TFSRT.RTMPStream.append(_: __C.AVAudioBuffer, when: __C.AVAudioTime) -&gt; ()"
-                  moduleName = "TFSRT"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/RTMP/RTMPStream.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "795"
-                  endingLineNumber = "795">
-               </Location>
-               <Location
-                  uuid = "6410BD69-D91D-413C-86D7-8D0264777ADB - 7b4d7a9eebb8d1d9"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "closure #1 (TFSRT.HKStreamOutput) -&gt; () in TFSRT.RTMPStream.append(_: __C.AVAudioBuffer, when: __C.AVAudioTime) -&gt; ()"
-                  moduleName = "TFSRT"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/mo/Documents/IOS/HaishinKit.swift/HaishinKit/Sources/RTMP/RTMPStream.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "795"
-                  endingLineNumber = "795">
+                  startingLineNumber = "218"
+                  endingLineNumber = "218">
                </Location>
             </Locations>
          </BreakpointContent>

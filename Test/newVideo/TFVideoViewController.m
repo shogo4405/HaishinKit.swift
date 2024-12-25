@@ -37,30 +37,30 @@
     
     CGFloat rightX = self.view.frame.size.width-100;
     
-    [self view:self.view addButton:CGRectMake(rightX, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) selected:0];
+    [self view:self.view addButton:CGRectMake(rightX, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) selected:false];
     
-    [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) selected:0];
+    [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) selected:false];
     
-    [self view:self.view addButton:CGRectMake(rightX, 150, 100, 30) title:@"前摄像头" action:@selector(attachVideoClick:) selected:1];
+    [self view:self.view addButton:CGRectMake(rightX, 150, 100, 30) title:@"前摄像头" action:@selector(attachVideoClick:) selected:true];
     
-    [self view:self.view addButton:CGRectMake(0, 200, 100, 30) title:@"镜像开" action:@selector(mirrorClick:) selected:1];
+    [self view:self.view addButton:CGRectMake(0, 200, 100, 30) title:@"镜像开" action:@selector(mirrorClick:) selected:true];
     
     if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInUltraWideCamera position:AVCaptureDevicePositionBack]) {
-        [self view:self.view addButton:CGRectMake(0, 240, 100, 30) title:@"近摄像头" action:@selector(switchToStandardCamera) selected:0];
+        [self view:self.view addButton:CGRectMake(0, 240, 100, 30) title:@"近摄像头" action:@selector(switchToStandardCamera) selected:false];
     }
     if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInWideAngleCamera position:AVCaptureDevicePositionBack]) {
         [self view:self.view addButton:CGRectMake((self.view.frame.size.width-100)/2, 240, 100, 30) title:@"中摄像头" action:@selector(switchToWideAngleCamera) selected:1];
     }
     if ([self cameraAvailable:AVCaptureDeviceTypeBuiltInTelephotoCamera position:AVCaptureDevicePositionBack]) {
-        [self view:self.view addButton:CGRectMake(rightX, 240, 100, 30) title:@"远摄像头" action:@selector(switchToTelephotoCamera) selected:0];
+        [self view:self.view addButton:CGRectMake(rightX, 240, 100, 30) title:@"远摄像头" action:@selector(switchToTelephotoCamera) selected:false];
     }
     
-    [self view:self.view addButton:CGRectMake(0, 290, 100, 30) title:@"开始录制" action:@selector(recordingClick:) selected:0];
+    [self view:self.view addButton:CGRectMake(0, 290, 100, 30) title:@"开始录制" action:@selector(recordingClick:) selected:false];
 
-    [self view:self.view addButton:CGRectMake(rightX, 340, 100, 30) title:@"添加水印" action:@selector(addWatermarkClick:) selected:0];
+    [self view:self.view addButton:CGRectMake(rightX, 340, 100, 30) title:@"添加水印" action:@selector(addWatermarkClick:) selected:false];
     
     //---------------
-    [self view:self.view addButton:CGRectMake(0, 390, 100, 30) title:@"倍放" action:@selector(zoomScaleClick:) selected:0];
+    [self view:self.view addButton:CGRectMake(0, 390, 100, 30) title:@"倍放" action:@selector(zoomScaleClick:) selected:false];
     // 创建 Slider
     self.zoomSlider = [[UISlider alloc] init];
     self.zoomSlider.minimumValue = 1.0; // 最小缩放倍数
@@ -274,22 +274,34 @@
     NSLog(@"美颜开关====>%ld",(long)btn.tag);
 }
 - (void)recordingClick:(UIButton*)btn {
-    btn.selected = !btn.selected;
-    if (btn.selected) {
+    
+
+    if (btn.selected==false) {
+       
         [self.ingest recording:true completion:^(BOOL success, NSURL * _Nullable url , NSError * _Nullable error) {
-            
+            if (success==true) {
+                NSLog(@"srt设置录制的视频路径=======>%@", url);
+                [btn setTitle:@"停止录制" forState:UIControlStateNormal];
+                btn.selected = true;
+            }else{
+                NSLog(@"srt设置录制失败=======>%@", error);
+            }
         }];
     }else{
         [self.ingest recording:false completion:^(BOOL success, NSURL * _Nullable url, NSError * _Nullable error) {
-            
+            if (success==true) {
+                NSLog(@"srt停止视频录制路径=======>%@", url);
+                [btn setTitle:@"开始录制" forState:UIControlStateNormal];
+                btn.selected = false;
+            }else{
+                NSLog(@"srt停止视频录制失败=====>%@", error);
+            }
         }];
+        
+        
     }
    
-    if (btn.selected) {
-        [btn setTitle:@"开始录制" forState:UIControlStateNormal];
-    }else{
-        [btn setTitle:@"停止录制" forState:UIControlStateNormal];
-    }
+   
 }
 //TODO: 超广角摄像头  近距离
 - (void)switchToStandardCamera {
@@ -327,7 +339,7 @@
     }
     return devices != nil && devices.count > 0;
 }
-- (UIButton*)view:(UIView*)view addButton:(CGRect)rect title:(NSString*)title action:(SEL)action selected:(NSInteger)selected
+- (UIButton*)view:(UIView*)view addButton:(CGRect)rect title:(NSString*)title action:(SEL)action selected:(BOOL)selected
 {
     UIButton *btn = [[UIButton alloc]init];
     btn.backgroundColor = [UIColor blackColor];
