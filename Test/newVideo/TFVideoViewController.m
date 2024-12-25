@@ -128,7 +128,7 @@
 - (void)startCameraPicutreTimer {
     if(!_cameraTimer){
         //推送背景图
-        _cameraTimer = [NSTimer timerWithTimeInterval:0.2 target:self selector:@selector(cameraPictureHandler) userInfo:nil repeats:YES];
+        _cameraTimer = [NSTimer timerWithTimeInterval:1 target:self selector:@selector(cameraPictureHandler) userInfo:nil repeats:YES];
         [[NSRunLoop mainRunLoop] addTimer:_cameraTimer forMode:NSRunLoopCommonModes];
     }
 }

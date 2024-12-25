@@ -95,7 +95,7 @@ public class TFIngest: NSObject {
             }
      
            //配置推流类型
-            await self.setPreference()
+            await self.setPreference(streamMode: streamMode)
             //----------------
             guard let stream = self.stream else {
                 return
@@ -185,8 +185,8 @@ public class TFIngest: NSObject {
     }
     private var cancellable: AnyCancellable?
 
-    func setPreference()async {
-        if streamMode2 == .srt {
+    func setPreference(streamMode:TFStreamMode)async {
+        if streamMode == .srt {
             let connection = SRTConnection()
             self.connection = connection
             stream = SRTStream(connection: connection)
@@ -619,17 +619,28 @@ public class TFIngest: NSObject {
                 
             }else{
                 try? await mixer.attachVideo(nil, track: 0)
-//                try await mixer.configuration(video: 0) {[weak self] unit in
-//                    guard let `self` = self else { return }
-//
-//                    if((unit.device) != nil)
-//                    {
-//                        self.screenVideoSize(videoSize: videoSize)
-//                    }
-//                    unit.input
-//                    
-//                }
+
                 print("摄像头关=======>")
+            }
+        }
+    }
+    //TODO:  --------------------推送自定义图像--------------------
+    @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
+        // 1. 检查 stream 是否存在，避免进入 Task 后再检查
+        guard let stream = self.stream else {
+            print("Stream not available")
+            return
+        }
+        
+        Task {
+            do {
+                // 2. 使用结构化的错误处理
+                let buffer = try await createSampleBuffer(from: pixelBuffer)
+                
+                print("推送自定义图像=======>")
+                await stream.append(buffer)
+            } catch {
+                print("Failed to push video: \(error)")
             }
         }
     }
@@ -927,26 +938,7 @@ public class TFIngest: NSObject {
 //        NSString *time = [NSString stringWithFormat:@"disposeTime:%0.1f",self.disposeTime] ;
         
     }
-    //TODO:  推送自定义图像
-    @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
-        // 1. 检查 stream 是否存在，避免进入 Task 后再检查
-        guard let stream = self.stream else {
-            print("Stream not available")
-            return
-        }
-        
-        Task {
-            do {
-                // 2. 使用结构化的错误处理
-                let buffer = try await createSampleBuffer(from: pixelBuffer)
-                
-                print("推送自定义图像=======>")
-                await stream.append(buffer)
-            } catch {
-                print("Failed to push video: \(error)")
-            }
-        }
-    }
+
 
     // 3. 将 SampleBuffer 创建逻辑分离到独立函数
     private func createSampleBuffer(from pixelBuffer: CVPixelBuffer) async throws -> CMSampleBuffer {
