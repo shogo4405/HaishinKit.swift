@@ -120,20 +120,32 @@ public class TFIngest: NSObject {
             //-----------------------------------------------------------------
             try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
       
-            let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
-    
-            //track 是多个摄像头的下标
-            try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
-                guard let `self` = self else { return }
-                videoUnit.isVideoMirrored = mirror
-                self.myVideoMirrored = mirror
-                
-                //记住  前摄像 or 后摄像头
-                self.setPosition(position: position)
-                //酵预览 镜像显示控制属性
-                self.frontMirror(mirror)
-    
+            if(self.isCamera)
+            {
+                let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
+        
+                //track 是多个摄像头的下标
+                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
+                    guard let `self` = self else { return }
+                    videoUnit.isVideoMirrored = mirror
+                    self.myVideoMirrored = mirror
+                    
+                    //记住  前摄像 or 后摄像头
+                    self.setPosition(position: position)
+                    //酵预览 镜像显示控制属性
+                    self.frontMirror(mirror)
+        
+                    //倍放
+                    guard let device = videoUnit.device else {
+                        return
+                    }
+                    try device.lockForConfiguration()
+                    device.ramp(toVideoZoomFactor: self.zoom, withRate: 5.0)
+                    device.unlockForConfiguration()
+                    
+                }
             }
+        
  
         }
         
@@ -455,22 +467,28 @@ public class TFIngest: NSObject {
     {
        
         Task {@ScreenActor in
-            
-            let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:position)
-            
-            try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
-                guard let `self` = self else { return }
-
-            position2 = position
-            self.setPosition(position: position)
-            if(position == .front)
+            if (isCamera)
             {
-                videoUnit.isVideoMirrored = self.myVideoMirrored
-            }else{
-                videoUnit.isVideoMirrored = false
+                let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:position)
+                
+                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
+                    guard let `self` = self else { return }
+
+                position2 = position
+                self.setPosition(position: position)
+                if(position == .front)
+                {
+                    videoUnit.isVideoMirrored = self.myVideoMirrored
+                }else{
+                    videoUnit.isVideoMirrored = false
+                }
+                
+             }
+            }else
+            {
+                position2 = position
             }
-            
-         }
+       
        }
     }
     //TODO: 设置前置与后置 的 近中 远 摄像头
@@ -478,6 +496,8 @@ public class TFIngest: NSObject {
     {
         Task {@ScreenActor in
      
+            if (isCamera)
+            {
                 let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
 
                 //track 是多个摄像头的下标
@@ -497,6 +517,14 @@ public class TFIngest: NSObject {
                         videoUnit.isVideoMirrored = false
                     }
                 }
+            }else
+            {
+                
+                cameraType2 = cameraType
+                 position2 = position
+                
+            }
+           
 
         }
         return true
@@ -518,32 +546,46 @@ public class TFIngest: NSObject {
     }
     func frontMirror(_ mirrored:Bool)
     {
-
         if self.view2.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
 
-                  // 在预览视图上直接应用变换
-                self.view2.isMirrorDisplay = true
+            // 在预览视图上直接应用变换
+            self.view2.isMirrorDisplay = true
 
             }else
             {
                 self.view2.isMirrorDisplay = false
-        }
+            }
     }
     //TODO: 镜像 开关
     @objc public func configuration(isVideoMirrored:Bool) {
         
         if self.view2.position == .front
-            {  //前置
-                Task {
-                    try await mixer.configuration(video: 0) { [weak self] unit in
-                        guard let `self` = self else { return }
-                        unit.isVideoMirrored = isVideoMirrored
-                        self.myVideoMirrored = isVideoMirrored
-                        //锁定前置是镜像
-                        self.frontMirror(isVideoMirrored)
-                        
+            {
+            
+            if (isCamera)
+            {
+                //前置
+                    Task {
+                        try await mixer.configuration(video: 0) { [weak self] unit in
+                            guard let `self` = self else { return }
+                            unit.isVideoMirrored = isVideoMirrored
+                            self.myVideoMirrored = isVideoMirrored
+                            //锁定前置是镜像
+                            self.frontMirror(isVideoMirrored)
+                            
+                            
+                            //倍放
+                            guard let device = unit.device else {
+                                return
+                            }
+                            try device.lockForConfiguration()
+                            device.ramp(toVideoZoomFactor:self.zoom, withRate: 5.0)
+                            device.unlockForConfiguration()
+                            
+                        }
                     }
-                }
+            }
+            
                 
             }
 
@@ -558,6 +600,8 @@ public class TFIngest: NSObject {
         }
    
     }
+    //默认的摄像头是打开的
+    var isCamera:Bool = true;
     //TODO:  摄像头开关
     @objc public func setCamera(_ camera:Bool)
     {
@@ -565,15 +609,18 @@ public class TFIngest: NSObject {
             if(camera)
             {
                 let device = AVCaptureDevice.default(cameraType2, for: .video, position:position2)
-                try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
-                    guard let `self` = self else { return }
+                try? await mixer.attachVideo(device, track: 0){ videoUnit in
                     
                 }
-                
+                //视频的帧率
+                await mixer.setFrameRate(videoFrameRate2)
             }else{
                 try? await mixer.attachVideo(nil, track: 0)
-
+                //视频的帧率
+                await mixer.setFrameRate(0)
             }
+            
+            isCamera = camera
         }
     }
     //TODO:  --------------------推送自定义图像--------------------
@@ -581,15 +628,16 @@ public class TFIngest: NSObject {
         // 1. 检查 stream 是否存在，避免进入 Task 后再检查
         Task {
             do {
+                
                 // 2. 使用结构化的错误处理
                 let buffer = try await createSampleBuffer(from: pixelBuffer)
                 
                 print("推送自定义图像=======>")
-//                guard let stream = self.stream else {
-//                    print("Stream not available")
-//                    return
-//                }
-//                await stream.append(buffer)
+                guard let stream = self.stream else {
+                    print("Stream not available")
+                    return
+                }
+                await stream.append(buffer)
             } catch {
                 print("Failed to push video: \(error)")
             }
@@ -614,6 +662,11 @@ public class TFIngest: NSObject {
             
             await stream.setVideoSettings(videoSettings)
             //-----------------------------------------------------------------
+            
+            videoFrameRate2 = videoFrameRate
+            videoBitRate2 = videoBitRate
+            videoSize2 = videoSize
+            
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
            
@@ -634,19 +687,29 @@ public class TFIngest: NSObject {
             mixer.screen.size = videoSize
         }
     }
+    //默认倍放
+    var zoom:CGFloat = 1.0
     //TODO: 摄像头倍放
     @objc public func zoomScale(_ scale:CGFloat)
     {
         Task {
-            //[weak self]
-            try await mixer.configuration(video: 0) { unit in
-                guard let device = unit.device else {
-                    return
+            if(isCamera)
+            {
+                try await mixer.configuration(video: 0) { unit in
+                    guard let device = unit.device else {
+                        return
+                    }
+                    try device.lockForConfiguration()
+                    device.ramp(toVideoZoomFactor: scale, withRate: 5.0)
+                    device.unlockForConfiguration()
                 }
-                try device.lockForConfiguration()
-                device.ramp(toVideoZoomFactor: scale, withRate: 5.0)
-                device.unlockForConfiguration()
+            }else
+            {
+                
+                zoom = scale
+                
             }
+          
         }
         
     }

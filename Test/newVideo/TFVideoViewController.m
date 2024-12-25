@@ -89,7 +89,8 @@
     self.videoSizeMak = CGSizeMake(540, 960);
     
     self.ingest = [[TFIngest alloc]init];
-    
+    //前置摄像头的本地预览锁定为水平翻转  默认 true
+    self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
     [self.ingest setSDKWithView:self.view2
                       videoSize:CGSizeMake(540, 960)
                  videoFrameRate:30
