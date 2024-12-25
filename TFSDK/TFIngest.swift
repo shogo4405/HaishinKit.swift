@@ -183,7 +183,7 @@ public class TFIngest: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
     private var cancellable: AnyCancellable?
-
+    var push_status = TFIngestStreamReadyState.idle
     func setPreference(streamMode:TFStreamMode)async {
         if streamMode == .srt {
             let connection = SRTConnection()
@@ -199,6 +199,8 @@ public class TFIngest: NSObject {
                     if newState == .publishing {
                         status = .publishing
                     }
+                    self.push_status = status
+                    
                     self.statusChanged(status: status)
 
                     
@@ -220,6 +222,8 @@ public class TFIngest: NSObject {
                     if newState == .publishing {
                         status = .publishing
                     }
+                    self.push_status = status
+                    
                     self.statusChanged(status: status)
                 }
   
@@ -626,22 +630,25 @@ public class TFIngest: NSObject {
     //TODO:  --------------------推送自定义图像--------------------
     @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
         // 1. 检查 stream 是否存在，避免进入 Task 后再检查
-        Task {
-            do {
-                
-                // 2. 使用结构化的错误处理
-                let buffer = try await createSampleBuffer(from: pixelBuffer)
-                
-                print("推送自定义图像=======>")
-                guard let stream = self.stream else {
-                    print("Stream not available")
-                    return
+        if self.push_status == .publishing {
+            Task {
+                do {
+                    
+                    // 2. 使用结构化的错误处理
+                    let buffer = try await createSampleBuffer(from: pixelBuffer)
+                    
+                    print("推送自定义图像=======>")
+                    guard let stream = self.stream else {
+                        print("Stream not available")
+                        return
+                    }
+                    await stream.append(buffer)
+                } catch {
+                    print("Failed to push video: \(error)")
                 }
-                await stream.append(buffer)
-            } catch {
-                print("Failed to push video: \(error)")
             }
         }
+
     }
     //TODO: 重新配置视频分辨率
     @objc public func setVideoMixerSettings(videoSize:CGSize,
@@ -771,6 +778,7 @@ public class TFIngest: NSObject {
                         // 停止录制失败回调
                         await MainActor.run {
                             completion?(false, nil, error)
+                            self.isRecording = true
                         }
                     }
                 }
