@@ -5,8 +5,7 @@ body:
   - type: markdown
     attributes:
       value: | 
-        A good bug report must meet the following criteria. We consider a well-crafted bug report to be a valuable asset to the community, and we welcome submissions from everyone.
-        Please note that reports that do not meet the [standards](https://github.com/shogo4405/HaishinKit.swift/wiki/BugReport-Standard) for bug reporting will be closed, so be sure to review them before posting.
+        There are [standards for bug reports](https://github.com/shogo4405/HaishinKit.swift/wiki/BugReport-Standard) expected by the community. If you are posting for the first time, please read them carefully. Reports that do not meet these standards will be closed.
   - type: textarea
     id: observed-behavior
     attributes:
