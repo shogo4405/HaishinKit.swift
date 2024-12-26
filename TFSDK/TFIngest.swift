@@ -117,9 +117,32 @@ public class TFIngest: NSObject {
             //切换了推流类型
             if(temp_connected)
             {
+                if self.pushUrl.count>0 {
+                    
+                    
+                    if streamMode == .rtmp {
+                        print("rtmp模式,并重新推流=================>>>>")
+                    }else{
+                        print("srt模式,并重新推流=================>>>>")
+                    }
+                   
+                    self.startLive(url: self.pushUrl, callback: nil)
+                }else{
+                 
+                    if streamMode == .rtmp {
+                        print("rtmp模式,不用推流=================>>>>")
+                    }else{
+                        print("srt模式,不用推流=================>>>>")
+                    }
+                }
+             
                 
-                self.startLive(url: self.pushUrl, callback: nil)
-                
+            }else{
+                if streamMode == .rtmp {
+                    print("rtmp2模式,不用推流=================>>>>")
+                }else{
+                    print("srt2模式,不用推流=================>>>>")
+                }
             }
         }
         if again==false {
@@ -202,7 +225,7 @@ public class TFIngest: NSObject {
         if streamMode == .srt {
             let connection = SRTConnection()
             self.connection = connection
-            stream = SRTStream(connection: connection)
+            self.stream = SRTStream(connection: connection)
             guard let stream = stream as? SRTStream else {
                 return
             }
@@ -466,55 +489,61 @@ public class TFIngest: NSObject {
          cancellable?.cancel()
          cancellable = nil
      }
+    
     //TODO: 切换推流类型
     @objc public func renew(streamMode:TFStreamMode,pushUrl:String)
     {
         self.pushUrl = pushUrl
          Task {
-             if( streamMode2 != streamMode)
+             
+             if streamMode != streamMode2
              {
-                    streamMode2 = streamMode
+                 let new_Connected = self.isConnected
+         
+                 switch streamMode2 {
+                 case .rtmp:
+                     
+                     if let connection = connection as? RTMPConnection ,let stream = self.stream as? RTMPStream
+                      {
+                         self.stopListening()
+                         try? await connection.close()
+                         await mixer.removeOutput(stream)
                   
-                     let new_Connected = self.isConnected
-                     switch streamMode2 {
-                     case .rtmp:
-                         
-                        if let connection = connection as? SRTConnection
-                         {
-                            self.stopListening()
-
-                            try? await connection.close()
                         
-                            self.connection = nil
-                            self.stream = nil
-                        }
-                   
-                     case .srt:
-                    
-                        if let connection = connection as? RTMPConnection
-                         {
-                            self.stopListening()
-                            try? await connection.close()
-                           
-                            self.connection = nil
-                            self.stream = nil
-                        }
-                         
+                         self.connection = nil
+                         self.stream = nil
                      }
-                    
-                     self.configurationSDK(view: view2,
-                                           videoSize: videoSize2,
-                                           videoFrameRate: videoFrameRate2,
-                                           videoBitRate: videoBitRate2,
-                                           streamMode: streamMode,
-                                           mirror:self.mirror2,
-                                           cameraType: self.cameraType2,
-                                           position: self.position2,
-                                           again:true,
-                                           temp_connected:new_Connected)
-   
+               
+                 case .srt:
+                
+               
+                     if let connection = connection as? SRTConnection,let stream = self.stream as? SRTStream
+                      {
+                         self.stopListening()
+                         try? await connection.close()
+                         await mixer.removeOutput(stream)
+                        
+                         self.connection = nil
+                         self.stream = nil
+                     }
+                 }
+                
+                 self.configurationSDK(view: view2,
+                                       videoSize: videoSize2,
+                                       videoFrameRate: videoFrameRate2,
+                                       videoBitRate: videoBitRate2,
+                                       streamMode: streamMode,
+                                       mirror:self.mirror2,
+                                       cameraType: self.cameraType2,
+                                       position: self.position2,
+                                       again:true,
+                                       temp_connected:new_Connected)
              }
              
+              
+   
+             
+            
          }
       
     }
