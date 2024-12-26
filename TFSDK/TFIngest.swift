@@ -203,7 +203,19 @@ public class TFIngest: NSObject {
                     
                     self.statusChanged(status: status)
 
-                    
+                    switch newState {
+                    case .idle:
+                        print("srt流处于空闲状态。")
+                    case .publishing:
+                        print("srt流正在发布中")
+                         status = .publishing
+                    case .playing:
+                        print("srt流正在播放。")
+                    case .play:
+                        print("srt该流已发送播放请求，正在等待服务器批准。")
+                    case .publish:
+                        print("srt该流已发送发布请求并正在等待服务器的批准。")
+                    }
                 }
             }
 
@@ -225,6 +237,19 @@ public class TFIngest: NSObject {
                     self.push_status = status
                     
                     self.statusChanged(status: status)
+                    switch newState {
+                    case .idle:
+                        print("rtmp流处于空闲状态。")
+                    case .publishing:
+                        print("rtmp流正在发布中")
+                         status = .publishing
+                    case .playing:
+                        print("rtmp流正在播放。")
+                    case .play:
+                        print("rtmp该流已发送播放请求，正在等待服务器批准。")
+                    case .publish:
+                        print("rtmp该流已发送发布请求并正在等待服务器的批准。")
+                    }
                 }
   
             }
