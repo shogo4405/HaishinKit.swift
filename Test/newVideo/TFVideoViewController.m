@@ -449,7 +449,7 @@
 }
 - (void)setStreamMode:(TFStreamMode)model
 {
-    [self.ingest renewWithStreamMode:model];
+   
     if(model==TFStreamModeRtmp)
     {
         [self.streamBtn setTitle:@"RTMP推流" forState:UIControlStateNormal];
@@ -459,7 +459,7 @@
         [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
         self.pushUrl = [self SRT_URL];
     }
-    
+    [self.ingest renewWithStreamMode:model pushUrl:self.pushUrl];
 }
 //TODO: 开始推流-------------------
 - (void)srtClick:(UIButton*)btn
