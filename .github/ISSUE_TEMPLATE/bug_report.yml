@@ -2,11 +2,23 @@ name: Bug Report
 description: |
   Before posting, confirm whether the issue can be reproduced in the Example project(https://github.com/shogo4405/HaishinKit.swift?tab=readme-ov-file#-examples) as well.
 body:
-  - type: textarea
-    id: describe-the-bug
+  - type: markdown
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of what the bug is.
+      value: | 
+        A good bug report must meet the following criteria. We consider a well-crafted bug report to be a valuable asset to the community, and we welcome submissions from everyone.
+        Please note that reports that do not meet the [standards](https://github.com/shogo4405/HaishinKit.swift/wiki/BugReport-Standard) for bug reporting will be closed, so be sure to review them before posting.
+  - type: textarea
+    id: observed-behavior
+    attributes:
+      label: Observed behavior
+      description: Explain what happened.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: Explain what you expect.
     validations:
       required: true
   - type: textarea
@@ -22,17 +34,10 @@ body:
     validations:
       required: true
   - type: textarea
-    id: expected-behavior
-    attributes:
-      label: Expected behavior
-      description: Steps to reproduce the behavior
-    validations:
-      required: true
-  - type: textarea
     id: version
     attributes:
       label: Version
-      description: What version of our software are you running?
+      description: What version of our software are you running? 
     validations:
       required: true
   - type: textarea
@@ -41,13 +46,17 @@ body:
       label: Smartphone info.
       description: please complete the following information
       placeholder: |
-       - Device: [e.g. iPhone6]
-       - OS: [e.g. iOS8.1]
+       - Device: [e.g. iPhone 15 Pro]
+       - OS: [e.g. iOS 18.1]
   - type: textarea
     id: addditional-context
     attributes:
       label: Additional context
-      description: Add any other context about the problem here.
+      description: Add any other context about the problem here. If you encounter issues while using HaishinKit for streaming or viewing, please provide the server name as well as the name of the software you are using for streaming or viewing.
+      placeholder: |
+       - Server: [e.g. nginx + rtmp module, YouTube]
+       - Ingest software: [e.g. OBS RTMP H264(main) AAC]
+       - Playback software: [e.g. iOS AVAudioPlayer(via HLS)]
   - type: textarea
     id: screenshot
     attributes:
