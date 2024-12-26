@@ -111,7 +111,7 @@ public class TFIngest: NSObject {
                     }
                 }
             }
-            print("推流链接================>>>>",self.pushUrl)
+//            print("推流链接================>>>>",self.pushUrl)
         }
         if again==false {
             
