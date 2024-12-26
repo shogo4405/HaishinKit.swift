@@ -37,45 +37,45 @@ class TFIngestTool: NSObject {
     }
     // 3. 将 SampleBuffer 创建逻辑分离到独立函数
     class func createSampleBuffer(from pixelBuffer: CVPixelBuffer) async throws -> CMSampleBuffer {
-        // 4. 使用精确的时间戳计算
-        let timestamp = CACurrentMediaTime()
-        var timingInfo = CMSampleTimingInfo(
-            duration: CMTime(value: 1, timescale: 30),
-            presentationTimeStamp: CMTime(seconds: timestamp, preferredTimescale: 30),
-            decodeTimeStamp: .invalid
-        )
-        
-        // 5. 创建 video format description
-        var videoInfo: CMFormatDescription?
-        let formatStatus = CMVideoFormatDescriptionCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            formatDescriptionOut: &videoInfo
-        )
-        
-        guard formatStatus == noErr, let videoInfo = videoInfo else {
-            throw NSError(domain: "VideoProcessing", code: Int(formatStatus))
+            // 4. 使用精确的时间戳计算
+            let timestamp = CACurrentMediaTime()
+            var timingInfo = CMSampleTimingInfo(
+                duration: CMTime(value: 1, timescale: 30),
+                presentationTimeStamp: CMTime(seconds: timestamp, preferredTimescale: 600),
+                decodeTimeStamp: .invalid
+            )
+            
+            // 5. 创建 video format description
+            var videoInfo: CMFormatDescription?
+            let formatStatus = CMVideoFormatDescriptionCreateForImageBuffer(
+                allocator: kCFAllocatorDefault,
+                imageBuffer: pixelBuffer,
+                formatDescriptionOut: &videoInfo
+            )
+            
+            guard formatStatus == noErr, let videoInfo = videoInfo else {
+                throw NSError(domain: "VideoProcessing", code: Int(formatStatus), userInfo: nil)
+            }
+            
+            // 6. 创建 sample buffer
+            var sampleBuffer: CMSampleBuffer?
+            let createStatus = CMSampleBufferCreateForImageBuffer(
+                allocator: kCFAllocatorDefault,
+                imageBuffer: pixelBuffer,
+                dataReady: true,
+                makeDataReadyCallback: nil,
+                refcon: nil,
+                formatDescription: videoInfo,
+                sampleTiming: &timingInfo,
+                sampleBufferOut: &sampleBuffer
+            )
+            
+            guard createStatus == noErr, let buffer = sampleBuffer else {
+                throw NSError(domain: "VideoProcessing", code: Int(createStatus), userInfo: nil)
+            }
+            
+            return buffer
         }
-        
-        // 6. 创建 sample buffer
-        var sampleBuffer: CMSampleBuffer?
-        let createStatus = CMSampleBufferCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            dataReady: true,
-            makeDataReadyCallback: nil,
-            refcon: nil,
-            formatDescription: videoInfo,
-            sampleTiming: &timingInfo,
-            sampleBufferOut: &sampleBuffer
-        )
-        
-        guard createStatus == noErr, let buffer = sampleBuffer else {
-            throw NSError(domain: "VideoProcessing", code: Int(createStatus))
-        }
-        
-        return buffer
-    }
     
     
     class func focusPoint(_ focusPoint: CGPoint,
