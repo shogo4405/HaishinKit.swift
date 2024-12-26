@@ -117,7 +117,7 @@ public class TFIngest: NSObject {
             
             Task {@ScreenActor in
 
-                    try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
+                  _ = try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                     
                     if(self.isCamera)
                     {
@@ -166,7 +166,6 @@ public class TFIngest: NSObject {
                              cameraType:AVCaptureDevice.DeviceType,
                              position: AVCaptureDevice.Position)
     {
-
         self.configurationSDK(view: view,
                               videoSize: videoSize,
                               videoFrameRate: videoFrameRate,
@@ -211,10 +210,10 @@ public class TFIngest: NSObject {
     private func didRouteChangeNotification(_ notification: Notification) {
 
         if AVAudioSession.sharedInstance().inputDataSources?.isEmpty == true {
-            setEnabledPreferredInputBuiltInMic(false)
+            TFIngestTool.setEnabledPreferredInputBuiltInMic(false)
 
         } else {
-            setEnabledPreferredInputBuiltInMic(true)
+            TFIngestTool.setEnabledPreferredInputBuiltInMic(true)
 
         }
 
@@ -227,22 +226,6 @@ public class TFIngest: NSObject {
         }
     }
     
-    private func setEnabledPreferredInputBuiltInMic(_ isEnabled: Bool) {
-        let session = AVAudioSession.sharedInstance()
-        do {
-            if isEnabled {
-                guard
-                    let availableInputs = session.availableInputs,
-                    let builtInMicInput = availableInputs.first(where: { $0.portType == .builtInMic }) else {
-                    return
-                }
-                try session.setPreferredInput(builtInMicInput)
-            } else {
-                try session.setPreferredInput(nil)
-            }
-        } catch {
-        }
-    }
     //TODO: 结束推流
     @objc public func stopLive()
     {
@@ -254,13 +237,7 @@ public class TFIngest: NSObject {
         }
    
     }
-    func extractLastPathComponent(from urlString: String) -> String? {
-        if let urlComponents = URLComponents(string: urlString),
-           let path = urlComponents.path.split(separator: "/").last {
-            return String(path)
-        }
-        return nil
-    }
+
     //TODO: 开始推流
     @objc public func startLive(url:String,callback: ((Int, String) -> Void)?)
     {
@@ -282,25 +259,25 @@ public class TFIngest: NSObject {
                         
                     let connect_response3 = try await connection.connect(url)
                     logger.info(connect_response3)
-                    let publish_response = try await stream.publish(self.extractLastPathComponent(from: url))
+                    let publish_response = try await stream.publish(TFIngestTool.extractLastPathComponent(from: url))
                     logger.info(publish_response)
                         
                        
-                        self.callback(callback,code:0,msg: "")
+                           TFIngestTool.callback(callback,code:0,msg: "")
                         
                         
                             } catch RTMPConnection.Error.requestFailed(let response) {
                                 logger.warn(response)
-                                self.callback(callback,code: -1,msg: "")
+                                TFIngestTool.callback(callback,code: -1,msg: "")
                                 
                             } catch RTMPStream.Error.requestFailed(let response) {
                                 logger.warn(response)
-                                self.callback(callback,code: -1,msg: "")
+                                TFIngestTool.callback(callback,code: -1,msg: "")
                                 
                             } catch {
                                 logger.warn(error)
                                
-                                self.callback(callback,code: -1,msg: "")
+                                TFIngestTool.callback(callback,code: -1,msg: "")
                             }
                    
               
@@ -317,7 +294,7 @@ public class TFIngest: NSObject {
                         //开始推流
                         await stream.publish()
 
-                        self.callback(callback,code: 0,msg: "")
+                        TFIngestTool.callback(callback,code: 0,msg: "")
                     } catch {
                     
                         //打印错误原因
@@ -333,7 +310,7 @@ public class TFIngest: NSObject {
                                 msg = message
                     
                             }
-                            self.callback(callback,code: -1,msg: msg)
+                            TFIngestTool.callback(callback,code: -1,msg: msg)
                         }
                         
                     }
@@ -343,13 +320,10 @@ public class TFIngest: NSObject {
          
         }
     }
-
-    
     //TODO: 切换推流类型
     @objc public func renew(streamMode:TFStreamMode,pushUrl:String)
     {
         self.pushUrl = pushUrl
-//        print("切换推流类型================================")
          Task { @ScreenActor in
              
              if streamMode != preference.streamMode2
@@ -360,7 +334,6 @@ public class TFIngest: NSObject {
          
                  preference.rtmpCancellable?.cancel()
                  preference.srtCancellable?.cancel()
-                 
                  
                  _ = try? await self.preference.rtmpConnection.close()
                  if let rtmpStream = preference.rtmpStream
@@ -387,23 +360,11 @@ public class TFIngest: NSObject {
                                        again:true,
                                        temp_connected:new_Connected)
              }
-             
-              
-   
-             
-            
+        
          }
       
     }
-    func callback(_ callback: ((Int, String) -> Void)?,code:NSInteger,msg:String)
-    {
-        DispatchQueue.main.async {
-            if let callback = callback {
-                callback(code,msg)
-            }
-            
-        }
-    }
+
 
     //TODO: 前置or后置 摄像头
     @objc public func attachVideo(position: AVCaptureDevice.Position)
@@ -468,7 +429,6 @@ public class TFIngest: NSObject {
                 
             }
            
-
         }
         return true
     }
@@ -574,7 +534,7 @@ public class TFIngest: NSObject {
                 do {
                     
                     // 2. 使用结构化的错误处理
-                    let buffer = try await createSampleBuffer(from: pixelBuffer)
+                    let buffer = try await TFIngestTool.createSampleBuffer(from: pixelBuffer)
                     
                     print("推送自定义图像=======>")
                     guard let stream = self.preference.stream() else {
@@ -853,7 +813,6 @@ public class TFIngest: NSObject {
           self.setFocusBoxPointInternal(point, focusMode: focusMode, exposureMode: exposureMode)
 
         }
-       
     }
     /**摄像头焦点设置**/
     private func setFocusBoxPointInternal(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
@@ -864,94 +823,22 @@ public class TFIngest: NSObject {
                 guard let device = unit.device else {
                     return
                 }
-                self.focusPoint(point, focusMode: focusMode, exposureMode: exposureMode, device: device)
+                TFIngestTool.focusPoint(point, focusMode: focusMode, exposureMode: exposureMode, device: device)
             }
         }
     }
-     func focusPoint(_ focusPoint: CGPoint,
-                              focusMode: AVCaptureDevice.FocusMode,
-                              exposureMode: AVCaptureDevice.ExposureMode,
-                              device: AVCaptureDevice?) {
-           guard let device = device else { return }
-           
-           do {
-               try device.lockForConfiguration()
-               
-               // 先进行判断是否支持控制对焦模式
-               // 对焦模式和对焦点
-               if device.isFocusModeSupported(focusMode) {
-                   device.focusPointOfInterest = focusPoint
-                   device.focusMode = focusMode
-               }
-               
-               // 先进行判断是否支持曝光模式
-               // 曝光模式和曝光点
-               if device.isExposureModeSupported(exposureMode) {
-                   device.exposurePointOfInterest = focusPoint
-                   device.exposureMode = exposureMode
-               }
-               
-               device.unlockForConfiguration()
-           } catch {
-               // 处理错误，例如打印或者显示错误信息
-               print("Could not lock device for configuration: \(error)")
-           }
-       }
+
     // MARK: - 视频的时间戳数据
     @objc public func sendData(_ text: String)
     {
-//        NSString *time = [NSString stringWithFormat:@"disposeTime:%0.1f",self.disposeTime] ;
+//        NSString *time = [NSString stringWithFormat:@"disposeTime:%0.1f",self.disposeTime];
         
-    }
-
-    // 3. 将 SampleBuffer 创建逻辑分离到独立函数
-    private func createSampleBuffer(from pixelBuffer: CVPixelBuffer) async throws -> CMSampleBuffer {
-        // 4. 使用精确的时间戳计算
-        let timestamp = CACurrentMediaTime()
-        var timingInfo = CMSampleTimingInfo(
-            duration: CMTime(value: 1, timescale: 30),
-            presentationTimeStamp: CMTime(seconds: timestamp, preferredTimescale: 30),
-            decodeTimeStamp: .invalid
-        )
-        
-        // 5. 创建 video format description
-        var videoInfo: CMFormatDescription?
-        let formatStatus = CMVideoFormatDescriptionCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            formatDescriptionOut: &videoInfo
-        )
-        
-        guard formatStatus == noErr, let videoInfo = videoInfo else {
-            throw NSError(domain: "VideoProcessing", code: Int(formatStatus))
-        }
-        
-        // 6. 创建 sample buffer
-        var sampleBuffer: CMSampleBuffer?
-        let createStatus = CMSampleBufferCreateForImageBuffer(
-            allocator: kCFAllocatorDefault,
-            imageBuffer: pixelBuffer,
-            dataReady: true,
-            makeDataReadyCallback: nil,
-            refcon: nil,
-            formatDescription: videoInfo,
-            sampleTiming: &timingInfo,
-            sampleBufferOut: &sampleBuffer
-        )
-        
-        guard createStatus == noErr, let buffer = sampleBuffer else {
-            throw NSError(domain: "VideoProcessing", code: Int(createStatus))
-        }
-        
-        return buffer
     }
     //TODO: 关闭SDK
     @objc public func shutdown()
     {
         Task { @ScreenActor in
-    
             self.recording(false)
-
             //结束推流
             preference.shutdown()
             await mixer.stopRunning()
