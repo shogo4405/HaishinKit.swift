@@ -444,7 +444,7 @@ public class TFIngest: NSObject {
                      switch streamMode2 {
                      case .rtmp:
                          
-                        if let connection = connection as? SRTConnection, let stream = stream as? SRTStream
+                        if let connection = connection as? SRTConnection
                          {
                             try? await connection.close()
                         
@@ -454,8 +454,7 @@ public class TFIngest: NSObject {
                    
                      case .srt:
                     
-                        if let connection = connection as? RTMPConnection,
-                           let stream = stream as? RTMPStream
+                        if let connection = connection as? RTMPConnection
                          {
                             try? await connection.close()
                            
