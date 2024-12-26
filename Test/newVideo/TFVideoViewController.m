@@ -112,11 +112,11 @@
     if (btn.selected) {
         [btn setTitle:@"摄像头 开" forState:UIControlStateNormal];
         NSLog(@"摄像头 开");
-//        [self stopCameraPictureTimer];
+        [self stopCameraPictureTimer];
     }else{
         [btn setTitle:@"摄像头 关" forState:UIControlStateNormal];
         NSLog(@"摄像头 关");
-//        [self startCameraPicutreTimer];
+        [self startCameraPicutreTimer];
     }
     
 }

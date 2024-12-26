@@ -541,7 +541,7 @@ public class TFIngest: NSObject {
                         print("Stream not available")
                         return
                     }
-                    await stream.append(buffer)
+//                    await stream.append(buffer)
                 } catch {
                     print("Failed to push video: \(error)")
                 }
