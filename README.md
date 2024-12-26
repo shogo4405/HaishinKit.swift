@@ -17,7 +17,6 @@ Sponsor: $50 per month: Technical support via GitHub Issues with priority respon
 
 ## 💬 Communication
 * GitHub Issues and Discussions are open spaces for communication among users and are available to everyone as long as [the code of conduct](https://github.com/shogo4405/HaishinKit.swift?tab=coc-ov-file) is followed.
-  * The author focuses on responding to contributors and academic researchers of HaishinKit, so please do not expect a reply.
 * Whether someone is a contributor to HaishinKit is mainly determined by their GitHub profile icon. If you are using the default icon, there is a chance your input might be overlooked, so please consider setting a custom one. It could be a picture of your pet, for example. Personally, I like cats.
 * If you want to support e-mail based communication without GitHub.
   * Consulting fee is [$50](https://www.paypal.me/shogo4405/50USD)/1 incident. I'm able to response a few days.
