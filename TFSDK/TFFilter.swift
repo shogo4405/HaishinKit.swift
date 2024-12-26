@@ -15,7 +15,6 @@ enum TFFilterType {
 }
 class TFFilter: VideoEffect {
     var type:TFFilterType = .filters
-
     //水印图片
     var watermark:UIImage?
     //水印图片位置

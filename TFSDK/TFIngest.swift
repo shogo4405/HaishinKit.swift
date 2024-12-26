@@ -12,43 +12,29 @@ import UIKit
 import VideoToolbox
 import Combine
 
-@objc public enum TFStreamMode: Int {
-    case rtmp = 0
-    case srt = 1
-}
+
 public class TFIngest: NSObject {
-    
-    @objc public weak var delegate: (any TFIngestDelegate)?
-    
-    //推流已经连接
-    @objc public var isConnected:Bool = false
-    
     //是否已经在录制
     var isRecording:Bool = false
     //录制视频保存的路径
     @objc public var saveLocalVideoPath:URL?
-    
     var view2 = TFDisplays(frame: .zero)
     let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
-    private(set) var streamMode2: TFStreamMode = .rtmp
-    private var connection: Any?
-    private(set) var stream: (any HKStream)?
-
     //镜像
      var mirror2:Bool = true
      let recorder = HKStreamRecorder()
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
      public var videoBitRate2: Int = 0
      public var videoFrameRate2: CGFloat = 0
-
      private lazy var mixer = MediaMixer()
-
-    private var myVideoMirrored:Bool = false
+     private var myVideoMirrored:Bool = false
     //中间
     var cameraType2:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
     var position2: AVCaptureDevice.Position = .front
     
     var pushUrl:String = ""
+    @objc public let preference = TFStreamPreference()
+    
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:TFDisplays,
                           videoSize:CGSize,
@@ -66,12 +52,12 @@ public class TFIngest: NSObject {
                     videoBitRate2 = videoBitRate
                     /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
                     videoFrameRate2 = videoFrameRate
-                    streamMode2 = streamMode
+              preference.streamMode2 = streamMode
                     view2.videoGravity = .resizeAspectFill
                     mirror2 = mirror
                     cameraType2 = cameraType
                     position2 = position
-        
+
         //again 是重新配置了url
         Task {@ScreenActor in
             
@@ -92,11 +78,9 @@ public class TFIngest: NSObject {
                 mixer.screen.size = videoSize
                 mixer.screen.backgroundColor = UIColor.black.cgColor
             }
-     
-           //配置推流类型
-            await self.setPreference(streamMode: streamMode)
+            
             //----------------
-            guard let stream = self.stream else {
+            guard let stream = self.preference.stream() else {
                 return
             }
             await mixer.addOutput(stream)
@@ -118,39 +102,21 @@ public class TFIngest: NSObject {
             if(temp_connected)
             {
                 if self.pushUrl.count>0 {
-                    
-                    
-                    if streamMode == .rtmp {
-                        print("rtmp模式,并重新推流=================>>>>")
-                    }else{
-                        print("srt模式,并重新推流=================>>>>")
+        
+                    self.startLive(url: self.pushUrl) {[weak self] code, msg in
+                        guard let `self` = self else { return }
+                        self.preference.pause = false
+                        
+                        self.preference.statusChanged(status: self.preference.push_status)
                     }
-                   
-                    self.startLive(url: self.pushUrl, callback: nil)
-                }else{
-                 
-                    if streamMode == .rtmp {
-                        print("rtmp模式,不用推流=================>>>>")
-                    }else{
-                        print("srt模式,不用推流=================>>>>")
-                    }
-                }
-             
-                
-            }else{
-                if streamMode == .rtmp {
-                    print("rtmp2模式,不用推流=================>>>>")
-                }else{
-                    print("srt2模式,不用推流=================>>>>")
                 }
             }
+            print("推流链接================>>>>",self.pushUrl)
         }
         if again==false {
             
             Task {@ScreenActor in
-                
-      
-                    //-----------------------------------------------------------------
+
                     try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                     
                     if(self.isCamera)
@@ -219,95 +185,7 @@ public class TFIngest: NSObject {
         NotificationCenter.default.addObserver(self, selector: #selector(didRouteChangeNotification(_:)), name: AVAudioSession.routeChangeNotification, object: nil)
     }
     private var cancellable: AnyCancellable?
-    var push_status = TFIngestStreamReadyState.idle
-    
-    func setPreference(streamMode:TFStreamMode)async {
-        if streamMode == .srt {
-            let connection = SRTConnection()
-            self.connection = connection
-            self.stream = SRTStream(connection: connection)
-            guard let stream = stream as? SRTStream else {
-                return
-            }
-            Task {
-                cancellable = await stream.$readyState.sink { newState in
-                    
-                    var status = TFIngestStreamReadyState.idle
-                    if newState == .publishing {
-                        status = .publishing
-                    }
-                    self.push_status = status
-                    
-                    self.statusChanged(status: status)
 
-                    switch newState {
-                    case .idle:
-                        print("srt流处于空闲状态。")
-                        self.isConnected = false
-                    case .publishing:
-                        print("srt流正在发布中")
-                         status = .publishing
-                        self.isConnected = true
-                    case .playing:
-                        print("srt流正在播放。")
-                    case .play:
-                        print("srt该流已发送播放请求，正在等待服务器批准。")
-                    case .publish:
-                        print("srt该流已发送发布请求并正在等待服务器的批准。")
-                    }
-                }
-            }
-
-        } else {
-            let connection = RTMPConnection()
-            self.connection = connection
-            stream = RTMPStream(connection: connection)
-            
-            guard let stream = stream as? RTMPStream else {
-                return
-            }
-            Task {
-                cancellable = await stream.$readyState.sink { newState in
-                    
-                    var status = TFIngestStreamReadyState.idle
-                    if newState == .publishing {
-                        status = .publishing
-                    }
-                    self.push_status = status
-                    
-                    self.statusChanged(status: status)
-                    switch newState {
-                    case .idle:
-                        print("rtmp流处于空闲状态。")
-                        self.isConnected = false
-                    case .publishing:
-                        print("rtmp流正在发布中")
-                         status = .publishing
-                        self.isConnected = true
-                    case .playing:
-                        print("rtmp流正在播放。")
-                    case .play:
-                        print("rtmp该流已发送播放请求，正在等待服务器批准。")
-                    case .publish:
-                        print("rtmp该流已发送发布请求并正在等待服务器的批准。")
-                    }
-                }
-  
-            }
-        }
-
-    }
-    
-    func statusChanged(status:TFIngestStreamReadyState)
-    {
-        
-        DispatchQueue.main.async {
-            if self.delegate != nil {
-                self.delegate!.haishinKitStatusChanged(status:status )
-            }
-        }
-        
-    }
     //TODO: 捕捉设备方向的变化
     @objc
     private func on(_ notification: Notification) {
@@ -365,33 +243,14 @@ public class TFIngest: NSObject {
         } catch {
         }
     }
-    func closePush()
-    {
-        Task {
-            switch streamMode2 {
-            case .rtmp:
-                guard let connection = connection as? RTMPConnection else {
-                    return
-                }
-                try? await connection.close()
-                logger.info("conneciton.close")
-            case .srt:
-                guard let connection = connection as? SRTConnection else {
-                    return
-                }
-                try? await connection.close()
-                logger.info("conneciton.close")
-            }
-        }
-    }
     //TODO: 结束推流
     @objc public func stopLive()
     {
-        if self.isConnected {
+        if self.preference.isConnected {
             DispatchQueue.main.async {
                 UIApplication.shared.isIdleTimerDisabled = true
             }
-            self.closePush()
+            preference.close()
         }
    
     }
@@ -411,21 +270,19 @@ public class TFIngest: NSObject {
         self.pushUrl = url
         Task {
             
-            guard let stream = self.stream else {
-                return
-            }
-                if streamMode2 == .rtmp {
+            if preference.streamMode2 == .rtmp {
                   
                     do {
                     guard
-                        let connection = connection as? RTMPConnection,
-                        let stream = stream as? RTMPStream else {
+                      
+                        let stream = preference.stream() as? RTMPStream else {
                         return
                     }
-                    
+                    let connection = preference.rtmpConnection
+                        
                     let connect_response3 = try await connection.connect(url)
                     logger.info(connect_response3)
-                        let publish_response = try await stream.publish(self.extractLastPathComponent(from: url))
+                    let publish_response = try await stream.publish(self.extractLastPathComponent(from: url))
                     logger.info(publish_response)
                         
                        
@@ -448,12 +305,14 @@ public class TFIngest: NSObject {
                    
               
                 }
-            else  if streamMode2 == .srt {
+            else  if preference.streamMode2 == .srt {
               
                     do {
-                        guard let connection = connection as? SRTConnection, let stream = stream as? SRTStream else {
+                        guard let stream = preference.stream() as? SRTStream else {
                             return
                         }
+                        let connection = preference.srtConnection
+                        
                         try await connection.open(URL(string: url))
                         //开始推流
                         await stream.publish()
@@ -484,50 +343,39 @@ public class TFIngest: NSObject {
          
         }
     }
-    // 在需要取消监听的时候调用这个方法
-     func stopListening() {
-         cancellable?.cancel()
-         cancellable = nil
-     }
+
     
     //TODO: 切换推流类型
     @objc public func renew(streamMode:TFStreamMode,pushUrl:String)
     {
         self.pushUrl = pushUrl
-         Task {
+//        print("切换推流类型================================")
+         Task { @ScreenActor in
              
-             if streamMode != streamMode2
+             if streamMode != preference.streamMode2
              {
-                 let new_Connected = self.isConnected
+                 //暂时暂停回调直播状态
+                 preference.pause = true
+                 let new_Connected = self.preference.isConnected
          
-                 switch streamMode2 {
-                 case .rtmp:
-                     
-                     if let connection = connection as? RTMPConnection ,let stream = self.stream as? RTMPStream
-                      {
-                         self.stopListening()
-                         try? await connection.close()
-                         await mixer.removeOutput(stream)
-                  
-                        
-                         self.connection = nil
-                         self.stream = nil
-                     }
-               
-                 case .srt:
-                
-               
-                     if let connection = connection as? SRTConnection,let stream = self.stream as? SRTStream
-                      {
-                         self.stopListening()
-                         try? await connection.close()
-                         await mixer.removeOutput(stream)
-                        
-                         self.connection = nil
-                         self.stream = nil
-                     }
+                 preference.rtmpCancellable?.cancel()
+                 preference.srtCancellable?.cancel()
+                 
+                 
+                 _ = try? await self.preference.rtmpConnection.close()
+                 if let rtmpStream = preference.rtmpStream
+                 {
+                     _ = try? await rtmpStream.close()
+                     await mixer.removeOutput(rtmpStream)
                  }
-                
+                 //-------------
+                 _ = try? await preference.srtConnection.close()
+                  if let srtStream = preference.srtStream
+                  {
+                      await srtStream.close()
+                      await mixer.removeOutput(srtStream)
+                  }
+                 
                  self.configurationSDK(view: view2,
                                        videoSize: videoSize2,
                                        videoFrameRate: videoFrameRate2,
@@ -721,7 +569,7 @@ public class TFIngest: NSObject {
     //TODO:  --------------------推送自定义图像--------------------
     @objc public func pushVideo(_ pixelBuffer: CVPixelBuffer) {
         // 1. 检查 stream 是否存在，避免进入 Task 后再检查
-        if self.push_status == .publishing {
+        if self.preference.push_status == .publishing {
             Task {
                 do {
                     
@@ -729,7 +577,7 @@ public class TFIngest: NSObject {
                     let buffer = try await createSampleBuffer(from: pixelBuffer)
                     
                     print("推送自定义图像=======>")
-                    guard let stream = self.stream else {
+                    guard let stream = self.preference.stream() else {
                         print("Stream not available")
                         return
                     }
@@ -749,7 +597,7 @@ public class TFIngest: NSObject {
     {
         Task {
             
-            guard let stream = self.stream else {
+            guard let stream = self.preference.stream() else {
                 return
             }
             var videoSettings = await stream.videoSettings
@@ -1105,7 +953,7 @@ public class TFIngest: NSObject {
             self.recording(false)
 
             //结束推流
-            self.closePush()
+            preference.shutdown()
             await mixer.stopRunning()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
@@ -1113,14 +961,4 @@ public class TFIngest: NSObject {
         }
         NotificationCenter.default.removeObserver(self)
     }
-}
-@objc public protocol TFIngestDelegate: AnyObject {
-    func haishinKitStatusChanged(status:TFIngestStreamReadyState)
-}
-@objc public enum TFIngestStreamReadyState: Int, Sendable {
-    /// 空闲
-    case idle
-    /// 连接中
-    case publishing
-    
 }
