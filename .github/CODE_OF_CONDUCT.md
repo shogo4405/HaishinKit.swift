@@ -35,6 +35,7 @@ Examples of unacceptable behavior include:
   address, without their explicit permission
 * Other conduct which could reasonably be considered inappropriate in a
   professional setting
+* Posting duplicate comments with the same or nearly identical content.
 
 ## Enforcement Responsibilities
 
