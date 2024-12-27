@@ -288,7 +288,7 @@ public class TFIngest: NSObject {
                         let connection = preference.srtConnection
                         
                         try await connection.open(URL(string: url))
-                        //开始推流
+                    
                         await stream.publish()
 
                         TFIngestTool.callback(callback,code: 0,msg: "")

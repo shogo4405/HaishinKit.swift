@@ -94,12 +94,12 @@
                       videoSize:self.videoSizeMak
                  videoFrameRate:30
                    videoBitRate:900*1024
-                     streamMode:TFStreamModeSrt mirror:true
+                     streamMode:TFStreamModeRtmp mirror:true
                      cameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera
                        position:AVCaptureDevicePositionFront];
     
     //设置URL
-    self.pushUrl = [self SRT_URL];
+    self.pushUrl = [self RTMP_URL];
 
 }
 - (void)sizeMakeClick:(UIButton*)btn
