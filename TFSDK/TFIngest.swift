@@ -90,7 +90,7 @@ public class TFIngest: NSObject {
             }
             await mixer.addOutput(stream)
             //配置录制
-            await stream.addOutput(recorder)
+            await stream.addOutput(self.recorder)
             //配置视频预览容器
             await stream.addOutput(view)
 
