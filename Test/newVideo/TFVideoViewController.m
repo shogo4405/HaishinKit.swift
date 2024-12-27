@@ -84,14 +84,14 @@
     [self view:self.view addButton:CGRectMake(rightX, 490, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
     [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
-    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(180, 320)" action:@selector(sizeMakeClick:) selected:0];
-    self.videoSizeMak = CGSizeMake(180, 320);
+    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(540, 960)" action:@selector(sizeMakeClick:) selected:1];
+    self.videoSizeMak = CGSizeMake(540, 960);
     
     self.ingest = [[TFIngest alloc]init];
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
     [self.ingest setSDKWithView:self.view2
-                      videoSize:CGSizeMake(540, 960)
+                      videoSize:self.videoSizeMak
                  videoFrameRate:30
                    videoBitRate:900*1024
                      streamMode:TFStreamModeSrt mirror:true
@@ -99,7 +99,7 @@
                        position:AVCaptureDevicePositionFront];
     
     //设置URL
-    [self setStreamMode:TFStreamModeSrt];
+    self.pushUrl = [self SRT_URL];
 
 }
 - (void)sizeMakeClick:(UIButton*)btn
@@ -485,6 +485,7 @@
 - (void)srtClick:(UIButton*)btn
 {
     if (btn.selected == false ) {
+        NSLog(@"开始推流self.pushUrl=====>%@",self.pushUrl);
         [self.ingest startLiveWithUrl:self.pushUrl callback:^(NSInteger code, NSString * msg) {
 
             if (code==0) {
@@ -506,11 +507,11 @@
 }
 - (NSString*)RTMP_URL
 {
-    return @"rtmp://live-push-15.talk-fun.com/live/24827_JCMnJSEvSCshLCkoLilAEA?txSecret=2f88e3d7191b540e3334ef45a826cbb9&txTime=676E06C5";
+    return @"rtmp://live-push-15.talk-fun.com/live/24827_JCMnJSAnSCshLCgoKSdAEA?txSecret=c648aab450dd620f549751f423e7a933&txTime=676F7236";
 }
 - (NSString*)SRT_URL
 {
-    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSEvSCshLCkoLilAEA,txSecret=5c835b82b3071c53a313acc7b3e5d62d,txTime=676E06B3";
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLCgoKSdAEA,txSecret=4635b89d7c92d8d0eeaf988c54d63e41,txTime=676F7F01";
 }
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");

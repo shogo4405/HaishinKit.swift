@@ -87,11 +87,11 @@ public class TFStreamPreference: NSObject {
      
             Task {
        
-                    guard let stream = srtStream else {
+                    guard let srtStream = srtStream else {
                         return
                     }
                     
-                    srtCancellable = await stream.$readyState.sink {[weak self] newState in
+                    srtCancellable = await srtStream.$readyState.sink {[weak self] newState in
                         guard let `self` = self else { return }
                         if self.pause == false && self.streamMode2 == .srt  {
                             var status = TFIngestStreamReadyState.idle
@@ -175,7 +175,6 @@ public class TFStreamPreference: NSObject {
     case idle
     /// 连接中
     case publishing
-    
 }
 @objc public enum TFStreamMode: Int {
     case rtmp = 0
