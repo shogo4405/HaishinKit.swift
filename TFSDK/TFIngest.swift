@@ -17,8 +17,8 @@ public class TFIngest: NSObject {
     var isRecording:Bool = false
     //录制视频保存的路径
     @objc public var saveLocalVideoPath:URL?
-    var view2 = TFDisplays(frame: .zero)
-    let front = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+    //预览视频
+    var preview = TFDisplays(frame: .zero)
     //镜像
      var mirror2:Bool = true
      let recorder = HKStreamRecorder()
@@ -46,13 +46,13 @@ public class TFIngest: NSObject {
                           again:Bool,
                           temp_connected:Bool)
     {
-                    view2 = view
+                    preview = view
                     videoSize2 = videoSize
                     videoBitRate2 = videoBitRate
                     /// 最大关键帧间隔，可设定为 fps 的2倍，影响一个 gop 的大小
                     videoFrameRate2 = videoFrameRate
               preference.streamMode2 = streamMode
-                    view2.videoGravity = .resizeAspectFill
+                    preview.videoGravity = .resizeAspectFill
                     mirror2 = mirror
                     currentDeviceType = cameraType
                     currentPosition = position
@@ -346,7 +346,7 @@ public class TFIngest: NSObject {
                       await mixer.removeOutput(srtStream)
                   }
                  
-                 self.configurationSDK(view: view2,
+                 self.configurationSDK(view: preview,
                                        videoSize: videoSize2,
                                        videoFrameRate: videoFrameRate2,
                                        videoBitRate: videoBitRate2,
@@ -433,7 +433,7 @@ public class TFIngest: NSObject {
     func setPosition(position: AVCaptureDevice.Position)
     {
         DispatchQueue.main.async {
-            self.view2.position = position
+            self.preview.position = position
         }
     }
 
@@ -446,20 +446,20 @@ public class TFIngest: NSObject {
     }
     func frontMirror(_ mirrored:Bool)
     {
-        if self.view2.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
+        if self.preview.position == .front && mirrored == false && self.frontCameraPreviewLockedToFlipHorizontally {
 
             // 在预览视图上直接应用变换
-            self.view2.isMirrorDisplay = true
+            self.preview.isMirrorDisplay = true
 
             }else
             {
-                self.view2.isMirrorDisplay = false
+                self.preview.isMirrorDisplay = false
             }
     }
     //TODO: 镜像 开关
     @objc public func configuration(isVideoMirrored:Bool) {
         
-        if self.view2.position == .front
+        if self.preview.position == .front
             {
             
             if (isCamera)
