@@ -38,6 +38,8 @@
     CGFloat rightX = self.view.frame.size.width-100;
     
     [self view:self.view addButton:CGRectMake(rightX, 50, 100, 30) title:@"退出" action:@selector(exitBtnClick:) selected:false];
+    self.streamBtn = [self view:self.view addButton:CGRectMake(0, 50, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:1];
+    self.streamBtn.selected = true;
     
     [self view:self.view addButton:CGRectMake(0, 100, 100, 30) title:@"开始推流" action:@selector(srtClick:) selected:false];
     
@@ -75,18 +77,15 @@
     //---------------
     [self view:self.view addButton:CGRectMake(rightX, 440, 100, 30) title:@"美颜 关" action:@selector(videoEffectClick:) selected:0];
  
-    self.focusBoxPoint = [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"自动焦点" action:@selector(focusBoxPointClick:) selected:1];
+    self.focusBoxPoint = [self view:self.view addButton:CGRectMake(0, 440, 100, 30) title:@"自动焦点" action:@selector(focusBoxPointClick:) selected:1];
     self.focusBoxPoint.selected = true;
     
 
-    [self view:self.view addButton:CGRectMake(rightX, 540, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
-    [self view:self.view addButton:CGRectMake(0, 590, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
+    [self view:self.view addButton:CGRectMake(rightX, 490, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
+    [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
-    
-    self.streamBtn = [self view:self.view addButton:CGRectMake(rightX, 630, 100, 30) title:@"SRT推流" action:@selector(streamClick:) selected:1];
-    self.streamBtn.selected = true;
-    
-    self.videoSizeMak = CGSizeMake(540, 960);
+    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(180, 320)" action:@selector(sizeMakeClick:) selected:0];
+    self.videoSizeMak = CGSizeMake(180, 320);
     
     self.ingest = [[TFIngest alloc]init];
     //前置摄像头的本地预览锁定为水平翻转  默认 true
@@ -94,7 +93,7 @@
     [self.ingest setSDKWithView:self.view2
                       videoSize:CGSizeMake(540, 960)
                  videoFrameRate:30
-                   videoBitRate:600*1024
+                   videoBitRate:900*1024
                      streamMode:TFStreamModeSrt mirror:true
                      cameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera
                        position:AVCaptureDevicePositionFront];
@@ -102,6 +101,27 @@
     //设置URL
     [self setStreamMode:TFStreamModeSrt];
 
+}
+- (void)sizeMakeClick:(UIButton*)btn
+{
+    btn.selected = !btn.selected;
+    
+    if (btn.selected) {
+        self.videoSizeMak = CGSizeMake(540, 960);
+        [btn setTitle:@"CGSizeMake(540, 960)" forState:UIControlStateNormal];
+        [_ingest setVideoMixerSettingsWithVideoSize:CGSizeMake(540, 960)
+                                         videoFrameRate:30
+                                           videoBitRate:900*1024];
+    }else{
+        self.videoSizeMak = CGSizeMake(180, 320);
+        [btn setTitle:@"CGSizeMake(180, 320)" forState:UIControlStateNormal];
+     
+        [_ingest setVideoMixerSettingsWithVideoSize:CGSizeMake(180, 320)
+                                         videoFrameRate:30
+                                           videoBitRate:600*1024];
+    }
+    
+    NSLog(@"当前分辨率%@",NSStringFromCGSize(self.videoSizeMak));
 }
 //摄像头开关
 - (void)cameraClick:(UIButton*)btn
