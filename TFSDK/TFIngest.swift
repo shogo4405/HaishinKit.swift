@@ -25,7 +25,7 @@ public class TFIngest: NSObject {
      public var videoSize2:CGSize = CGSize(width: 0, height: 0 )
      public var videoBitRate2: Int = 0
      public var videoFrameRate2: CGFloat = 0
-     private lazy var mixer = MediaMixer()
+     private var mixer:MediaMixer? = nil
      private var myVideoMirrored:Bool = false
     //中间
     var currentDeviceType:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
@@ -57,10 +57,15 @@ public class TFIngest: NSObject {
                     mirror2 = mirror
                     currentDeviceType = cameraType
                     currentPosition = position
-
+        if self.mixer == nil {
+            mixer = MediaMixer()
+        }
         //again 是重新配置了url
         Task {@ScreenActor in
             
+            guard let mixer = self.mixer else {
+                return
+            }
             if again==false {
                 if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
                     let orientation = await windowScene.interfaceOrientation
@@ -133,7 +138,9 @@ public class TFIngest: NSObject {
         if again==false {
             
             Task {
-
+                guard let mixer = self.mixer else {
+                    return
+                }
                   _ = try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                     
                     if(self.isCamera)
@@ -170,6 +177,9 @@ public class TFIngest: NSObject {
     //TODO: 视频的帧率，即 fps
     @objc public func setFrameRate(_ videoFrameRate: Float64) {
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             await mixer.setFrameRate(videoFrameRate)
         }
     }
@@ -213,6 +223,9 @@ public class TFIngest: NSObject {
             return
         }
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             await mixer.setVideoOrientation(videoOrientation)
         }
     }
@@ -234,6 +247,9 @@ public class TFIngest: NSObject {
         }
 
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             if DeviceUtil.isHeadphoneDisconnected(notification) {
                 await mixer.setMonitoringEnabled(false)
             } else {
@@ -341,7 +357,9 @@ public class TFIngest: NSObject {
     {
         self.pushUrl = pushUrl
          Task {
-             
+             guard let mixer = self.mixer else {
+                 return
+             }
              if streamMode != preference.streamMode2
              {
                  //暂时暂停回调直播状态
@@ -397,6 +415,9 @@ public class TFIngest: NSObject {
     {
        
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             if (isCamera)
             {
                 let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position:position)
@@ -425,7 +446,9 @@ public class TFIngest: NSObject {
     @objc public func switchCameraToType(cameraType:AVCaptureDevice.DeviceType,position: AVCaptureDevice.Position)->Bool
     {
         Task {
-     
+            guard let mixer = self.mixer else {
+                return
+            }
             if (isCamera)
             {
                 let device = AVCaptureDevice.default(cameraType, for: .video, position:position)
@@ -490,7 +513,9 @@ public class TFIngest: NSObject {
         
         if self.preview.position == .front
             {
-            
+            guard let mixer = self.mixer else {
+                return
+            }
             if (isCamera)
             {
                 //前置
@@ -523,6 +548,9 @@ public class TFIngest: NSObject {
     @objc public func setMuted(_ muted:Bool)
     {
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             var audioMixerSettings = await mixer.audioMixerSettings
             audioMixerSettings.isMuted = muted
             await mixer.setAudioMixerSettings(audioMixerSettings)
@@ -535,6 +563,9 @@ public class TFIngest: NSObject {
     @objc public func setCamera(_ camera:Bool)
     {
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             if(camera)
             {
                 let device = AVCaptureDevice.default(currentDeviceType, for: .video, position:currentPosition)
@@ -582,7 +613,9 @@ public class TFIngest: NSObject {
     
     {
         Task {
-            
+            guard let mixer = self.mixer else {
+                return
+            }
             guard let stream = self.preference.stream() else {
                 return
             }
@@ -615,6 +648,9 @@ public class TFIngest: NSObject {
     }
     func screenVideoSize(videoSize:CGSize)
     {
+        guard let mixer = self.mixer else {
+            return
+        }
         Task {@ScreenActor in
             mixer.screen.size = videoSize
         }
@@ -625,6 +661,9 @@ public class TFIngest: NSObject {
     @objc public func zoomScale(_ scale:CGFloat)
     {
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             if(isCamera)
             {
                 try await mixer.configuration(video: 0) { unit in
@@ -717,7 +756,9 @@ public class TFIngest: NSObject {
     @objc public func addWatermark(_ watermark:UIImage,frame:CGRect)
     {
         Task {
-            
+            guard let mixer = self.mixer else {
+                return
+            }
             for effect in effectsList {
                 if effect.type == .watermark {
                     return
@@ -737,7 +778,9 @@ public class TFIngest: NSObject {
     @objc public func clearWatermark()
     {
         Task {
-       
+            guard let mixer = self.mixer else {
+                return
+            }
             var new_effectsList: [TFFilter] = []
             new_effectsList += effectsList
             
@@ -758,7 +801,9 @@ public class TFIngest: NSObject {
         didSet {
             // 当 beauty 属性的值发生变化时执行的代码
             Task {
-                
+                guard let mixer = self.mixer else {
+                    return
+                }
                 if(beauty==false)
                 {
                     var new_effectsList: [TFFilter] = []
@@ -844,6 +889,9 @@ public class TFIngest: NSObject {
     private func setFocusBoxPointInternal(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
         
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             try await mixer.configuration(video: 0) {[weak self] unit in
                 guard let `self` = self else { return }
                 guard let device = unit.device else {
@@ -864,11 +912,15 @@ public class TFIngest: NSObject {
     @objc public func shutdown()
     {
         Task {
+            guard let mixer = self.mixer else {
+                return
+            }
             //结束录制
             self.recording(false)
             //结束推流
             preference.shutdown()
             await mixer.stopRunning()
+            await mixer.stopCapturing()
             try? await mixer.attachAudio(nil)
             try? await mixer.attachVideo(nil, track: 0)
             
@@ -876,6 +928,8 @@ public class TFIngest: NSObject {
             {
                 await mixer.removeOutput(stream)
             }
+            self.mixer = nil
+         
             NotificationCenter.default.removeObserver(self)
         }
        
