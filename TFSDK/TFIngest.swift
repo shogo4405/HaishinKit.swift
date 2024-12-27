@@ -12,7 +12,6 @@ import UIKit
 import VideoToolbox
 import Combine
 
-
 public class TFIngest: NSObject {
     //是否已经在录制
     var isRecording:Bool = false
@@ -29,8 +28,8 @@ public class TFIngest: NSObject {
      private lazy var mixer = MediaMixer()
      private var myVideoMirrored:Bool = false
     //中间
-    var cameraType2:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
-    var position2: AVCaptureDevice.Position = .front
+    var currentDeviceType:AVCaptureDevice.DeviceType = .builtInWideAngleCamera
+    var currentPosition: AVCaptureDevice.Position = .front
     
     var pushUrl:String = ""
     @objc public let preference = TFStreamPreference()
@@ -55,8 +54,8 @@ public class TFIngest: NSObject {
               preference.streamMode2 = streamMode
                     view2.videoGravity = .resizeAspectFill
                     mirror2 = mirror
-                    cameraType2 = cameraType
-                    position2 = position
+                    currentDeviceType = cameraType
+                    currentPosition = position
 
         //again 是重新配置了url
         Task {@ScreenActor in
@@ -149,7 +148,6 @@ public class TFIngest: NSObject {
             }
         }
 
-        
     }
     //TODO: 视频的帧率，即 fps
     @objc public func setFrameRate(_ videoFrameRate: Float64) {
@@ -237,7 +235,6 @@ public class TFIngest: NSObject {
         }
    
     }
-
     //TODO: 开始推流
     @objc public func startLive(url:String,callback: ((Int, String) -> Void)?)
     {
@@ -355,8 +352,8 @@ public class TFIngest: NSObject {
                                        videoBitRate: videoBitRate2,
                                        streamMode: streamMode,
                                        mirror:self.mirror2,
-                                       cameraType: self.cameraType2,
-                                       position: self.position2,
+                                       cameraType: self.currentDeviceType,
+                                       position: self.currentPosition,
                                        again:true,
                                        temp_connected:new_Connected)
              }
@@ -378,7 +375,7 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
 
-                position2 = position
+                currentPosition = position
                 self.setPosition(position: position)
                 if(position == .front)
                 {
@@ -390,7 +387,7 @@ public class TFIngest: NSObject {
              }
             }else
             {
-                position2 = position
+                currentPosition = position
             }
        
        }
@@ -408,8 +405,8 @@ public class TFIngest: NSObject {
                 try? await mixer.attachVideo(device, track: 0){[weak self] videoUnit in
                     guard let `self` = self else { return }
                     
-                    cameraType2 = cameraType
-                     position2 = position
+                    currentDeviceType = cameraType
+                     currentPosition = position
                     
                     self.setPosition(position: position)
                     
@@ -424,8 +421,8 @@ public class TFIngest: NSObject {
             }else
             {
                 
-                cameraType2 = cameraType
-                 position2 = position
+                currentDeviceType = cameraType
+                 currentPosition = position
                 
             }
            
@@ -511,7 +508,7 @@ public class TFIngest: NSObject {
         Task {
             if(camera)
             {
-                let device = AVCaptureDevice.default(cameraType2, for: .video, position:position2)
+                let device = AVCaptureDevice.default(currentDeviceType, for: .video, position:currentPosition)
                 try? await mixer.attachVideo(device, track: 0){ videoUnit in
                     
                 }
@@ -555,7 +552,7 @@ public class TFIngest: NSObject {
                                             videoBitRate:Int)
     
     {
-        Task {
+        Task {@ScreenActor in
             
             guard let stream = self.preference.stream() else {
                 return
