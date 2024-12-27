@@ -479,7 +479,9 @@
         [self.streamBtn setTitle:@"SRT推流" forState:UIControlStateNormal];
         self.pushUrl = [self SRT_URL];
     }
-    [self.ingest renewWithStreamMode:model pushUrl:self.pushUrl];
+    [self.ingest renewWithStreamMode:model pushUrl:self.pushUrl callback:^(NSInteger code, NSString * _Nonnull msg) {
+        
+    }];
 }
 //TODO: 开始推流-------------------
 - (void)srtClick:(UIButton*)btn
