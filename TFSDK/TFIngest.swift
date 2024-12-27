@@ -44,7 +44,8 @@ public class TFIngest: NSObject {
                       cameraType:AVCaptureDevice.DeviceType,
                           position:AVCaptureDevice.Position,
                           again:Bool,
-                          temp_connected:Bool)
+                          temp_connected:Bool,
+                          callback: ((_ code: Int, _ msg: String) -> Void)? = nil)
     {
                     preview = view
                     videoSize2 = videoSize
@@ -107,10 +108,27 @@ public class TFIngest: NSObject {
                         self.preference.pause = false
                         
                         self.preference.statusChanged(status: self.preference.push_status)
+                        
+                        if callback != nil {
+                            
+                            callback!(code, msg)
+                            
+                        }
+                    }
+                    
+                    
+                }else{
+                    
+                    if callback != nil {
+                        callback!(0, "")
                     }
                 }
+            }else{
+                if callback != nil {
+                    callback!(0, "")
+                }
             }
-//            print("推流链接================>>>>",self.pushUrl)
+
         }
         if again==false {
             
@@ -242,7 +260,7 @@ public class TFIngest: NSObject {
             UIApplication.shared.isIdleTimerDisabled = false
         }
         self.pushUrl = url
-        Task {
+        Task {@ScreenActor in
             
             if preference.streamMode2 == .rtmp {
                   
@@ -318,7 +336,8 @@ public class TFIngest: NSObject {
         }
     }
     //TODO: 切换推流类型
-    @objc public func renew(streamMode:TFStreamMode,pushUrl:String)
+    @objc public func renew(streamMode: TFStreamMode, pushUrl: String, callback: @escaping (_ code: Int, _ msg: String) -> Void)
+
     {
         self.pushUrl = pushUrl
          Task { @ScreenActor in
@@ -345,7 +364,8 @@ public class TFIngest: NSObject {
                       await srtStream.close()
                       await mixer.removeOutput(srtStream)
                   }
-                 
+                 let startTime = DispatchTime.now()
+
                  self.configurationSDK(view: preview,
                                        videoSize: videoSize2,
                                        videoFrameRate: videoFrameRate2,
@@ -355,7 +375,16 @@ public class TFIngest: NSObject {
                                        cameraType: self.currentDeviceType,
                                        position: self.currentPosition,
                                        again:true,
-                                       temp_connected:new_Connected)
+                                       temp_connected:new_Connected) { code, msg in
+                         let elapsedTime = DispatchTime.now().uptimeNanoseconds - startTime.uptimeNanoseconds
+                         let elapsedSeconds = Double(elapsedTime) / 1_000_000_000.0
+                         let delay = max(0.5 - elapsedSeconds, 0)
+                         
+                         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                             callback(code, msg)
+                         }
+                     
+                 }
              }
         
          }
@@ -465,7 +494,7 @@ public class TFIngest: NSObject {
             if (isCamera)
             {
                 //前置
-                    Task {
+                    Task {@ScreenActor in
                         try await mixer.configuration(video: 0) { [weak self] unit in
                             guard let `self` = self else { return }
                             unit.isVideoMirrored = isVideoMirrored
@@ -493,7 +522,7 @@ public class TFIngest: NSObject {
     //TODO: 静音
     @objc public func setMuted(_ muted:Bool)
     {
-        Task {
+        Task {@ScreenActor in
             var audioMixerSettings = await mixer.audioMixerSettings
             audioMixerSettings.isMuted = muted
             await mixer.setAudioMixerSettings(audioMixerSettings)
@@ -505,7 +534,7 @@ public class TFIngest: NSObject {
     //TODO:  摄像头开关
     @objc public func setCamera(_ camera:Bool)
     {
-        Task {
+        Task {@ScreenActor in
             if(camera)
             {
                 let device = AVCaptureDevice.default(currentDeviceType, for: .video, position:currentPosition)
@@ -595,7 +624,7 @@ public class TFIngest: NSObject {
     //TODO: 摄像头倍放
     @objc public func zoomScale(_ scale:CGFloat)
     {
-        Task {
+        Task {@ScreenActor in
             if(isCamera)
             {
                 try await mixer.configuration(video: 0) { unit in
@@ -630,7 +659,7 @@ public class TFIngest: NSObject {
     }
     //TODO: 录制视频 开关
     @objc public func recording(_ isRecording: Bool, completion: RecordingCompletionHandler? = nil) {
-        Task {
+        Task {@ScreenActor in
             if isRecording {
                 if self.isRecording == false {
                     
@@ -687,7 +716,7 @@ public class TFIngest: NSObject {
     //TODO: 添加水印
     @objc public func addWatermark(_ watermark:UIImage,frame:CGRect)
     {
-        Task {
+        Task {@ScreenActor in
             
             for effect in effectsList {
                 if effect.type == .watermark {
@@ -707,7 +736,7 @@ public class TFIngest: NSObject {
     //TODO: 清空水印
     @objc public func clearWatermark()
     {
-        Task {
+        Task {@ScreenActor in
        
             var new_effectsList: [TFFilter] = []
             new_effectsList += effectsList
@@ -728,7 +757,7 @@ public class TFIngest: NSObject {
     @objc public var beauty: Bool = false {
         didSet {
             // 当 beauty 属性的值发生变化时执行的代码
-            Task {
+            Task {@ScreenActor in
                 
                 if(beauty==false)
                 {
@@ -814,7 +843,7 @@ public class TFIngest: NSObject {
     /**摄像头焦点设置**/
     private func setFocusBoxPointInternal(_ point: CGPoint, focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode) {
         
-        Task {
+        Task {@ScreenActor in
             try await mixer.configuration(video: 0) {[weak self] unit in
                 guard let `self` = self else { return }
                 guard let device = unit.device else {
