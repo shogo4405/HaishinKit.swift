@@ -84,22 +84,22 @@
     [self view:self.view addButton:CGRectMake(rightX, 490, 100, 30) title:@"有音" action:@selector(mutedClick:) selected:0];
     [self view:self.view addButton:CGRectMake(0, 490, 100, 30) title:@"摄像头 开" action:@selector(cameraClick:) selected:1];
 
-    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(540, 960)" action:@selector(sizeMakeClick:) selected:1];
-    self.videoSizeMak = CGSizeMake(540, 960);
+    [self view:self.view addButton:CGRectMake(0, 540, 200, 30) title:@"CGSizeMake(240, 320)" action:@selector(sizeMakeClick:) selected:1];
+    self.videoSizeMak = CGSizeMake(240, 320);
     
     self.ingest = [[TFIngest alloc]init];
     //前置摄像头的本地预览锁定为水平翻转  默认 true
     self.ingest.frontCameraPreviewLockedToFlipHorizontally = false;
     [self.ingest setSDKWithView:self.view2
                       videoSize:self.videoSizeMak
-                 videoFrameRate:30
-                   videoBitRate:900*1024
-                     streamMode:TFStreamModeRtmp mirror:true
+                 videoFrameRate:24
+                   videoBitRate:600*1024
+                     streamMode:TFStreamModeSrt mirror:true
                      cameraType:AVCaptureDeviceTypeBuiltInWideAngleCamera
                        position:AVCaptureDevicePositionFront];
     
     //设置URL
-    self.pushUrl = [self RTMP_URL];
+    self.pushUrl = [self SRT_URL];
 
 }
 - (void)sizeMakeClick:(UIButton*)btn
@@ -113,11 +113,11 @@
                                          videoFrameRate:30
                                            videoBitRate:900*1024];
     }else{
-        self.videoSizeMak = CGSizeMake(180, 320);
-        [btn setTitle:@"CGSizeMake(180, 320)" forState:UIControlStateNormal];
+        self.videoSizeMak = CGSizeMake(240, 320);
+        [btn setTitle:@"CGSizeMake(240, 320)" forState:UIControlStateNormal];
      
-        [_ingest setVideoMixerSettingsWithVideoSize:CGSizeMake(180, 320)
-                                         videoFrameRate:30
+        [_ingest setVideoMixerSettingsWithVideoSize:CGSizeMake(240, 320)
+                                         videoFrameRate:24
                                            videoBitRate:600*1024];
     }
     
@@ -513,7 +513,7 @@
 }
 - (NSString*)SRT_URL
 {
-    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLCgoKSdAEA,txSecret=4635b89d7c92d8d0eeaf988c54d63e41,txTime=676F7F01";
+    return @"srt://live-push-15.talk-fun.com:9000?streamid=#!::h=live-push-15.talk-fun.com,r=live/24827_JCMnJSAnSCshLC8vKStAEA,txSecret=eac9aeb761ca718469cdaa0d29ce060d,txTime=6770B018";
 }
 - (void)dealloc{
     NSLog(@"控制器销毁==========>");
