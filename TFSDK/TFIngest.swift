@@ -81,8 +81,8 @@ public class TFIngest: NSObject {
                 
                 //裁剪
                 _ = await mixer.screen.registerVideoEffect(cropRectFilter)
-
-            
+                cropRectFilter.isAvailable = true
+                cropRectFilter.videoSize = videoSize
             }
         }
         //again 是重新配置了url
@@ -658,6 +658,7 @@ public class TFIngest: NSObject {
             videoFrameRate2 = videoFrameRate
             videoBitRate2 = videoBitRate
             videoSize2 = videoSize
+            cropRectFilter.videoSize = videoSize
             
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
