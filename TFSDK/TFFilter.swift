@@ -22,7 +22,7 @@ class TFWatermarkFilter: TFFilter {
             guard let filter: CIFilter = watermarkFilter else { return image }
             
             // 使用新方法计算水印帧
-            let newWatermarkFrame = calculateNewWatermarkFrame(
+            let newWatermarkFrame = TFIngestTool.calculateNewWatermarkFrame(
                 originalFrame: watermarkFrame,
                 imageExtent: image.extent.size,
                 screenBounds: UIScreen.main.bounds
@@ -47,21 +47,7 @@ class TFWatermarkFilter: TFFilter {
         return image
     }
     
-    func calculateNewWatermarkFrame(originalFrame: CGRect, imageExtent: CGSize, screenBounds: CGRect) -> CGRect {
-        // 计算缩放因子
-        let scaleFactorWidth = imageExtent.width / screenBounds.width
-        let scaleFactorHeight = imageExtent.height / screenBounds.height
-        let scaleFactor = min(scaleFactorWidth, scaleFactorHeight)
-        
-        // 调整水印帧的位置和大小
-        var newFrame = originalFrame
-        newFrame.origin.x *= scaleFactor
-        newFrame.origin.y *= scaleFactor
-        newFrame.size.width *= scaleFactor
-        newFrame.size.height *= scaleFactor
-        
-        return newFrame
-    }
+ 
 }
 //美颜
 class TFTFBeautyFilter: TFFilter {
@@ -138,6 +124,49 @@ class TFCropRectFilter: TFFilter {
         return image
     }
 }
+//格挡
+class TFCameraPictureFilter: TFFilter {
+    public var videoSize: CGSize = .zero
+    var imageRef:CIImage? = nil
+    override init() {
+        super.init()
+        
+        let pictureFile = "CloudLiveSDKFramework.bundle/camera_\(Int(self.videoSize.width))x\(Int(self.videoSize.height)).png"
+
+        if !FileManager.default.fileExists(atPath: pictureFile) {
+            let fallbackPictureFile = "CloudLiveSDKFramework.bundle/camera_320x240.png"
+            let myImage = UIImage(named: fallbackPictureFile)
+            // 尝试直接获取 CIImage
+            imageRef = myImage?.ciImage
+
+            // 如果 ciImage 属性为 nil，则通过 CIImage(image:) 创建
+            if imageRef == nil {
+                if let cgImage = myImage?.cgImage {
+                    imageRef = CIImage(cgImage: cgImage)
+                }
+            }
+
+        }
+    }
+
+    override func execute(_ image: CIImage) -> CIImage {
+        if isAvailable{
+            if let imageRef2 = imageRef
+            {
+              let targetSize = image.extent.size
+              
+                if let resizedCIImage = TFIngestTool.resizeCIImage(image: imageRef2, to: targetSize, mode: UIView.ContentMode.scaleAspectFit) {
+                       print("成功调整 CIImage 的大小: \(resizedCIImage)")
+    
+                       return resizedCIImage
+                   }
+             
+            }
+        }
+        return image
+    }
+}
+
 class TFFilter: VideoEffect {
     //是否启用
     var isAvailable:Bool = false
@@ -149,20 +178,5 @@ class TFFilter: VideoEffect {
     }
 
 }
-extension Data {
-    func chunk(_ size: Int) -> [Data] {
-        if count < size {
-            return [self]
-        }
-        var chunks: [Data] = []
-        let length = count
-        var offset = 0
-        repeat {
-            let thisChunkSize = ((length - offset) > size) ? size : (length - offset)
-            chunks.append(subdata(in: offset..<offset + thisChunkSize))
-            offset += thisChunkSize
-        } while offset < length
-        return chunks
-    }
-}
+
 

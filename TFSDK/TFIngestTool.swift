@@ -11,6 +11,9 @@ import Photos
 import UIKit
 import VideoToolbox
 import Combine
+import CoreVideo
+import CoreGraphics
+
 class TFIngestTool: NSObject {
     class func setEnabledPreferredInputBuiltInMic(_ isEnabled: Bool) {
         let session = AVAudioSession.sharedInstance()
@@ -36,7 +39,7 @@ class TFIngestTool: NSObject {
         return nil
     }
     // 3. 将 SampleBuffer 创建逻辑分离到独立函数
-    class func createSampleBuffer(from pixelBuffer: CVPixelBuffer) async throws -> CMSampleBuffer {
+    class func createSampleBuffer(from pixelBuffer: CVPixelBuffer) -> CMSampleBuffer? {
             // 4. 使用精确的时间戳计算
             let timestamp = CACurrentMediaTime()
             var timingInfo = CMSampleTimingInfo(
@@ -54,7 +57,7 @@ class TFIngestTool: NSObject {
             )
             
             guard formatStatus == noErr, let videoInfo = videoInfo else {
-                throw NSError(domain: "VideoProcessing", code: Int(formatStatus), userInfo: nil)
+                return nil
             }
             
             // 6. 创建 sample buffer
@@ -71,7 +74,7 @@ class TFIngestTool: NSObject {
             )
             
             guard createStatus == noErr, let buffer = sampleBuffer else {
-                throw NSError(domain: "VideoProcessing", code: Int(createStatus), userInfo: nil)
+                return nil
             }
             
             return buffer
@@ -116,5 +119,129 @@ class TFIngestTool: NSObject {
             }
             
         }
+    }
+    
+    
+ 
+
+    class func pixelBufferFromCGImage(_ image: CGImage) -> CVPixelBuffer? {
+        let options: [String: Any] = [
+            kCVPixelBufferCGImageCompatibilityKey as String: true,
+            kCVPixelBufferCGBitmapContextCompatibilityKey as String: true
+        ]
+        
+        var pxbuffer: CVPixelBuffer?
+        let status = CVPixelBufferCreate(kCFAllocatorDefault,
+                                         image.width,
+                                         image.height,
+                                         kCVPixelFormatType_32ARGB,
+                                         options as CFDictionary,
+                                         &pxbuffer)
+        
+        guard status == kCVReturnSuccess, let buffer = pxbuffer else {
+            // print("Operation failed")
+            return nil
+        }
+        
+        CVPixelBufferLockBaseAddress(buffer, CVPixelBufferLockFlags(rawValue: 0))
+        defer {
+            CVPixelBufferUnlockBaseAddress(buffer, CVPixelBufferLockFlags(rawValue: 0))
+        }
+        
+        guard let pxdata = CVPixelBufferGetBaseAddress(buffer) else {
+            return nil
+        }
+        
+        let rgbColorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let context = CGContext(data: pxdata,
+                                      width: image.width,
+                                      height: image.height,
+                                      bitsPerComponent: 8,
+                                      bytesPerRow: 4 * image.width,
+                                      space: rgbColorSpace,
+                                      bitmapInfo: CGImageAlphaInfo.noneSkipFirst.rawValue) else {
+            return nil
+        }
+        
+        // Apply transformations
+        context.concatenate(CGAffineTransform(rotationAngle: 0))
+        
+        // Flip vertically
+        let flipVertical = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: CGFloat(image.height))
+        context.concatenate(flipVertical)
+        
+        // Flip horizontally
+        let flipHorizontal = CGAffineTransform(scaleX: -1, y: 1).translatedBy(x: CGFloat(image.width), y: 0)
+        context.concatenate(flipHorizontal)
+        
+        // Draw the image
+        context.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+        
+        return buffer
+    }
+    /// 调整 CIImage 的大小
+    /// - Parameters:
+    ///   - image: 需要调整大小的 CIImage
+    ///   - targetSize: 目标大小（宽度和高度）
+    /// - Returns: 调整后的 CIImage
+    class  func resizeCIImage(image: CIImage, to targetSize: CGSize, mode: UIView.ContentMode) -> CIImage? {
+        let originalSize = image.extent.size
+        
+        // 计算缩放比例
+        let scaleX = targetSize.width / originalSize.width
+        let scaleY = targetSize.height / originalSize.height
+        
+        let scale: CGFloat
+        switch mode {
+        case .scaleAspectFit:
+            // 取较小的缩放比例，确保图片完全显示在目标尺寸内
+            scale = min(scaleX, scaleY)
+        case .scaleAspectFill:
+            // 取较大的缩放比例，确保图片填满目标尺寸
+            scale = max(scaleX, scaleY)
+        case .scaleToFill:
+            // 直接使用目标尺寸的缩放比例，可能会拉伸图片
+            return image.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+        default:
+            // 默认使用 Aspect Fit
+            scale = min(scaleX, scaleY)
+        }
+        
+        // 应用缩放
+        let transform = CGAffineTransform(scaleX: scale, y: scale)
+        let resizedImage = image.transformed(by: transform)
+        
+        return resizedImage
+    }
+   class func calculateNewWatermarkFrame(originalFrame: CGRect, imageExtent: CGSize, screenBounds: CGRect) -> CGRect {
+        // 计算缩放因子
+        let scaleFactorWidth = imageExtent.width / screenBounds.width
+        let scaleFactorHeight = imageExtent.height / screenBounds.height
+        let scaleFactor = min(scaleFactorWidth, scaleFactorHeight)
+        
+        // 调整水印帧的位置和大小
+        var newFrame = originalFrame
+        newFrame.origin.x *= scaleFactor
+        newFrame.origin.y *= scaleFactor
+        newFrame.size.width *= scaleFactor
+        newFrame.size.height *= scaleFactor
+        
+        return newFrame
+    }
+}
+extension Data {
+    func chunk(_ size: Int) -> [Data] {
+        if count < size {
+            return [self]
+        }
+        var chunks: [Data] = []
+        let length = count
+        var offset = 0
+        repeat {
+            let thisChunkSize = ((length - offset) > size) ? size : (length - offset)
+            chunks.append(subdata(in: offset..<offset + thisChunkSize))
+            offset += thisChunkSize
+        } while offset < length
+        return chunks
     }
 }
