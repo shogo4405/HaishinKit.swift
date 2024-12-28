@@ -113,17 +113,47 @@ class TFTFBeautyFilter: TFFilter {
 }
 //裁剪
 class TFCropRectFilter: TFFilter {
+    
     public var videoSize: CGSize = .zero
 
     override func execute(_ image: CIImage) -> CIImage {
         
         if  isAvailable{
+            let originalSize = image.extent.size
+            
+            if videoSize.width/videoSize.height>originalSize.width/originalSize.height {
+                
+                
+                let height = originalSize.width*(videoSize.width/videoSize.height)
+                let cropRectY =  (originalSize.height-height)/2
+                let cropRect = CGRect(
+                    x: 0,
+                    y: 0,
+                    width: originalSize.width,
+                    height:height
+                )
+                
+                
+                let new_image = image.cropped(to: cropRect)
+                
+//             if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, targetSize: originalSize)
+                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit) 
+                {
+                 return resizedCIImage
+                    
+                }
+                
+            }
+            
             
         }
-    
+       
         return image
     }
+  
 }
+
+
 //格挡
 class TFCameraPictureFilter: TFFilter {
     public var videoSize: CGSize = .zero
@@ -151,13 +181,16 @@ class TFCameraPictureFilter: TFFilter {
 
     override func execute(_ image: CIImage) -> CIImage {
         if isAvailable{
-            if let imageRef2 = imageRef
+            if let new_image = imageRef
             {
-              let targetSize = image.extent.size
+              let originalSize = image.extent.size
               
-                if let resizedCIImage = TFIngestTool.resizeCIImage(image: imageRef2, to: targetSize, mode: UIView.ContentMode.scaleAspectFit) {
-                       print("成功调整 CIImage 的大小: \(resizedCIImage)")
+                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit) {
+                    
     
+                    
+//                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, targetSize: originalSize){
+                    
                        return resizedCIImage
                    }
              

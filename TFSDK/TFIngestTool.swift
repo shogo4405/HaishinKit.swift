@@ -179,6 +179,35 @@ class TFIngestTool: NSObject {
         
         return buffer
     }
+    
+    class func resizeCIImage(image: CIImage,targetSize: CGSize) -> CIImage? {
+        let originalSize = image.extent.size
+        
+        // 计算缩放比例
+        let scaleX = targetSize.width / originalSize.width
+        let scaleY = targetSize.height / originalSize.height
+        let scale = min(scaleX, scaleY) // 保持宽高比
+        
+        // 应用缩放
+        let transform = CGAffineTransform(scaleX: scale, y: scale)
+        let resizedImage = image.transformed(by: transform)
+        
+        // 计算居中偏移量
+        let scaledSize = resizedImage.extent.size
+        let offsetX = (targetSize.width - scaledSize.width) / 2
+        let offsetY = (targetSize.height - scaledSize.height) / 2
+        
+        // 创建一个新的 CIImage，大小为 targetSize
+        let newImage = CIImage(color: CIColor.clear).cropped(to: CGRect(origin: .zero, size: targetSize))
+        
+        // 将缩放后的图像居中绘制到新图像上
+        let centeredImage = resizedImage.transformed(by: CGAffineTransform(translationX: offsetX, y: offsetY))
+        
+        // 将居中后的图像合成到新图像上
+        let finalImage = centeredImage.composited(over: newImage)
+        
+        return finalImage
+    }
     /// 调整 CIImage 的大小
     /// - Parameters:
     ///   - image: 需要调整大小的 CIImage
