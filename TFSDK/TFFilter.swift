@@ -8,38 +8,16 @@
 import UIKit
 import CoreImage
 import TFGPUImage
-//import GPUImageBeautifyFilter
-enum TFFilterType {
-    case watermark //水印
-    case filters  //滤镜
-}
-class TFFilter: VideoEffect {
-    var type:TFFilterType = .filters
+//水印
+class TFWatermarkFilter: TFFilter {
     //水印图片
     var watermark:UIImage?
     //水印图片位置
     var watermarkFrame:CGRect = .zero
     let watermarkFilter: CIFilter? = CIFilter(name: "CISourceOverCompositing")
-    
-    func calculateNewWatermarkFrame(originalFrame: CGRect, imageExtent: CGSize, screenBounds: CGRect) -> CGRect {
-        // 计算缩放因子
-        let scaleFactorWidth = imageExtent.width / screenBounds.width
-        let scaleFactorHeight = imageExtent.height / screenBounds.height
-        let scaleFactor = min(scaleFactorWidth, scaleFactorHeight)
+    override func execute(_ image: CIImage) -> CIImage {
         
-        // 调整水印帧的位置和大小
-        var newFrame = originalFrame
-        newFrame.origin.x *= scaleFactor
-        newFrame.origin.y *= scaleFactor
-        newFrame.size.width *= scaleFactor
-        newFrame.size.height *= scaleFactor
-        
-        return newFrame
-    }
-
-    // 在你的 execute 方法中使用
-    func execute(_ image: CIImage) -> CIImage {
-        if type == .watermark {
+        if  isAvailable{
             guard let watermark = watermark else { return image }
             guard let filter: CIFilter = watermarkFilter else { return image }
             
@@ -66,8 +44,36 @@ class TFFilter: VideoEffect {
             }
             UIGraphicsEndImageContext()
         }
+        return image
+    }
+    
+    func calculateNewWatermarkFrame(originalFrame: CGRect, imageExtent: CGSize, screenBounds: CGRect) -> CGRect {
+        // 计算缩放因子
+        let scaleFactorWidth = imageExtent.width / screenBounds.width
+        let scaleFactorHeight = imageExtent.height / screenBounds.height
+        let scaleFactor = min(scaleFactorWidth, scaleFactorHeight)
         
-        return self.applyFilter(to: image)
+        // 调整水印帧的位置和大小
+        var newFrame = originalFrame
+        newFrame.origin.x *= scaleFactor
+        newFrame.origin.y *= scaleFactor
+        newFrame.size.width *= scaleFactor
+        newFrame.size.height *= scaleFactor
+        
+        return newFrame
+    }
+}
+//美颜
+class TFTFBeautyFilter: TFFilter {
+    // 在你的 execute 方法中使用
+    override func execute(_ image: CIImage) -> CIImage {
+
+       if  isAvailable {
+           //滤镜
+            return self.applyFilter(to: image)
+        }
+        
+        return image
     }
     func applyFilter(to ciImage: CIImage) -> CIImage{
         // 将 CIImage 转换为 UIImage
@@ -118,6 +124,29 @@ class TFFilter: VideoEffect {
         // 将 CGImage 转换为 UIImage
         return UIImage(cgImage: cgImage)
     }
+}
+//裁剪
+class TFCropRectFilter: TFFilter {
+
+    override func execute(_ image: CIImage) -> CIImage {
+        
+        if  isAvailable{
+            
+        }
+    
+        return image
+    }
+}
+class TFFilter: VideoEffect {
+    //是否启用
+    var isAvailable:Bool = false
+
+    // 在你的 execute 方法中使用
+    func execute(_ image: CIImage) -> CIImage {
+
+        return image
+    }
+
 }
 extension Data {
     func chunk(_ size: Int) -> [Data] {

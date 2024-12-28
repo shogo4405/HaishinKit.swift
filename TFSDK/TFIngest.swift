@@ -34,6 +34,13 @@ public class TFIngest: NSObject {
     var pushUrl:String = ""
     @objc public let preference = TFStreamPreference()
     
+    //美颜
+    let beauty_effect = TFTFBeautyFilter()
+    //水印
+    let watermark_effect = TFWatermarkFilter()
+    //裁剪
+    let cropRectFilter = TFCropRectFilter()
+    
     //TODO: 根据配置初始化SDK-------------
     func configurationSDK(view:TFDisplays,
                           videoSize:CGSize,
@@ -59,6 +66,24 @@ public class TFIngest: NSObject {
                     currentPosition = position
         if self.mixer == nil {
             mixer = MediaMixer()
+            
+            Task {
+                
+                guard let mixer = self.mixer else {
+                    return
+                }
+                
+                //美颜
+                _ =  await mixer.screen.registerVideoEffect(beauty_effect)
+                
+                //水印
+                _ = await mixer.screen.registerVideoEffect(watermark_effect)
+                
+                //裁剪
+                _ = await mixer.screen.registerVideoEffect(cropRectFilter)
+
+            
+            }
         }
         //again 是重新配置了url
         Task {@ScreenActor in
@@ -138,9 +163,11 @@ public class TFIngest: NSObject {
         if again==false {
             
             Task {
+               
                 guard let mixer = self.mixer else {
                     return
                 }
+ 
                   _ = try? await mixer.attachAudio(AVCaptureDevice.default(for: .audio))
                     
                     if(self.isCamera)
@@ -753,123 +780,27 @@ public class TFIngest: NSObject {
     }
     var effectsList: [TFFilter] = []
     //TODO: 添加水印
-    @objc public func addWatermark(_ watermark:UIImage,frame:CGRect)
+    @objc public func addWatermark(_ image:UIImage,frame:CGRect)
     {
-        Task {
-            guard let mixer = self.mixer else {
-                return
-            }
-            for effect in effectsList {
-                if effect.type == .watermark {
-                    return
-                }
-            }
-            //加有水印
-            let effect = TFFilter()
-            effect.type = .watermark
-            effect.watermark = watermark
-            effect.watermarkFrame = frame
-            effectsList.append(effect)
-            _ = await mixer.screen.registerVideoEffect(effect)
+       
+          //启动
+            watermark_effect.isAvailable = true
             
-        }
+            watermark_effect.watermarkFrame = frame
+            watermark_effect.watermark = image
+            
+        
     }
     //TODO: 清空水印
     @objc public func clearWatermark()
     {
-        Task {
-            guard let mixer = self.mixer else {
-                return
-            }
-            var new_effectsList: [TFFilter] = []
-            new_effectsList += effectsList
-            
-            for i in 0..<new_effectsList.count {
-                let effect = new_effectsList[i]
-                //清空所有滤层,留下水印
-                if effect.type == .watermark {
-                    effectsList.remove(at: i)
-                    
-                    _ = await mixer.screen.unregisterVideoEffect(effect)
-                }
-            }
-
-        }
+            watermark_effect.isAvailable = false
     }
     //TODO: 美颜开关
     @objc public var beauty: Bool = false {
         didSet {
-            // 当 beauty 属性的值发生变化时执行的代码
-            Task {
-                guard let mixer = self.mixer else {
-                    return
-                }
-                if(beauty==false)
-                {
-                    var new_effectsList: [TFFilter] = []
-                    new_effectsList += effectsList
-                
-                    for i in 0..<new_effectsList.count {
-                        let effect = new_effectsList[i]
-                        //清空所有滤层,留下水印
-                        if effect.type == .filters {
-                            effectsList.remove(at: i)
-                            _ = await mixer.screen.unregisterVideoEffect(effect)
-                        }
-                       
-                    }
-                    
-                }else{
-                    var exist:Bool = false
-                    for i in 0..<effectsList.count {
-                        let effect = effectsList[i]
-                        //清空所有滤层,留下水印
-                        if effect.type == .filters {
-                            exist = true
-                        }
-                       
-                    }
-                    
-                    if exist==false {
-                        //------------------
-                          var watermark_list: [TFFilter] = []
-
-                            for i in 0..<effectsList.count {
-                                let effect = effectsList[i]
-                                //清空所有滤层,留下水印
-
-                                if effect.type == .watermark {
-                                    
-                                    effectsList.remove(at: i)
-                                    watermark_list.append(effect)
-                                    
-                                    _ = await mixer.screen.unregisterVideoEffect(effect)
-                                }
-                            }
-                         //------------------
-                            //美颜
-                            let effect = TFFilter()
-                            effect.type = .filters
-                            effectsList.append(effect)
-                            _ =  await mixer.screen.registerVideoEffect(effect)
-                        //------------------
-                        //设置水印在最前面
-                        if(watermark_list.count>0){
-                            
-                            for i in 0..<watermark_list.count {
-                                let effect = watermark_list[i]
-                                effectsList.append(effect)
-                                _ = await mixer.screen.registerVideoEffect(effect)
-                          
-                            }
-                            
-                        }
-                    }
-                   
-                }
-    
-            }
-            
+           
+            beauty_effect.isAvailable = beauty
             
         }
     }
@@ -892,8 +823,7 @@ public class TFIngest: NSObject {
             guard let mixer = self.mixer else {
                 return
             }
-            try await mixer.configuration(video: 0) {[weak self] unit in
-                guard let `self` = self else { return }
+            try await mixer.configuration(video: 0) {unit in
                 guard let device = unit.device else {
                     return
                 }
