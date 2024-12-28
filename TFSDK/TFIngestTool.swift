@@ -13,7 +13,11 @@ import VideoToolbox
 import Combine
 import CoreVideo
 import CoreGraphics
-
+enum ScaleMode {
+    case fitWidth    // 适应宽度（宽度铺满）
+    case fitHeight   // 适应高度（高度铺满）
+    case fitBoth     // 同时适应宽高（可能会有空白）
+}
 class TFIngestTool: NSObject {
     class func setEnabledPreferredInputBuiltInMic(_ isEnabled: Bool) {
         let session = AVAudioSession.sharedInstance()
@@ -180,30 +184,41 @@ class TFIngestTool: NSObject {
         return buffer
     }
     
-    class func resizeCIImage(image: CIImage,targetSize: CGSize) -> CIImage? {
+    class func resizeCIImage(image: CIImage, targetSize: CGSize, mode: ScaleMode = .fitBoth) -> CIImage? {
         let originalSize = image.extent.size
         
-        // 计算缩放比例
-        let scaleX = targetSize.width / originalSize.width
-        let scaleY = targetSize.height / originalSize.height
-        let scale = min(scaleX, scaleY) // 保持宽高比
+        // 根据缩放模式计算缩放比例
+        let scale: CGFloat
+        switch mode {
+        case .fitWidth:
+            scale = targetSize.width / originalSize.width
+        case .fitHeight:
+            scale = targetSize.height / originalSize.height
+        case .fitBoth:
+            let scaleX = targetSize.width / originalSize.width
+            let scaleY = targetSize.height / originalSize.height
+            scale = min(scaleX, scaleY)
+        }
         
         // 应用缩放
         let transform = CGAffineTransform(scaleX: scale, y: scale)
         let resizedImage = image.transformed(by: transform)
         
-        // 计算居中偏移量
+        // 计算缩放后的尺寸
         let scaledSize = resizedImage.extent.size
+        
+        // 计算偏移量
         let offsetX = (targetSize.width - scaledSize.width) / 2
         let offsetY = (targetSize.height - scaledSize.height) / 2
         
-        // 创建一个新的 CIImage，大小为 targetSize
-        let newImage = CIImage(color: CIColor.clear).cropped(to: CGRect(origin: .zero, size: targetSize))
+        // 创建背景
+        let newImage = CIImage(color: CIColor.clear)
+            .cropped(to: CGRect(origin: .zero, size: targetSize))
         
-        // 将缩放后的图像居中绘制到新图像上
+        // 居中图像
         let centeredImage = resizedImage.transformed(by: CGAffineTransform(translationX: offsetX, y: offsetY))
         
-        // 将居中后的图像合成到新图像上
+        // 合成最终图像
         let finalImage = centeredImage.composited(over: newImage)
         
         return finalImage

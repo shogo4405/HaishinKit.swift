@@ -136,8 +136,8 @@ class TFCropRectFilter: TFFilter {
                 
                 let new_image = image.cropped(to: cropRect)
                 
-//             if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, targetSize: originalSize)
-                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit) 
+               if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, targetSize: originalSize)
+//                if let resizedCIImage = TFIngestTool.resizeCIImage(image: new_image, to: originalSize, mode: UIView.ContentMode.scaleAspectFit)
                 {
                  return resizedCIImage
                     
