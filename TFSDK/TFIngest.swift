@@ -665,7 +665,11 @@ public class TFIngest: NSObject {
             videoFrameRate2 = videoFrameRate
             videoBitRate2 = videoBitRate
             videoSize2 = videoSize
+            //裁剪
             cropRectFilter.videoSize = videoSize
+            //格挡
+            cameraPicture.videoSize = videoSize
+           
             
             //视频的帧率
             await mixer.setFrameRate(videoFrameRate)
