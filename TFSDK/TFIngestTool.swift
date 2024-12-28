@@ -184,35 +184,49 @@ class TFIngestTool: NSObject {
     ///   - image: 需要调整大小的 CIImage
     ///   - targetSize: 目标大小（宽度和高度）
     /// - Returns: 调整后的 CIImage
-    class  func resizeCIImage(image: CIImage, to targetSize: CGSize, mode: UIView.ContentMode) -> CIImage? {
-        let originalSize = image.extent.size
-        
-        // 计算缩放比例
-        let scaleX = targetSize.width / originalSize.width
-        let scaleY = targetSize.height / originalSize.height
-        
-        let scale: CGFloat
-        switch mode {
-        case .scaleAspectFit:
-            // 取较小的缩放比例，确保图片完全显示在目标尺寸内
-            scale = min(scaleX, scaleY)
-        case .scaleAspectFill:
-            // 取较大的缩放比例，确保图片填满目标尺寸
-            scale = max(scaleX, scaleY)
-        case .scaleToFill:
-            // 直接使用目标尺寸的缩放比例，可能会拉伸图片
-            return image.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
-        default:
-            // 默认使用 Aspect Fit
-            scale = min(scaleX, scaleY)
-        }
-        
-        // 应用缩放
-        let transform = CGAffineTransform(scaleX: scale, y: scale)
-        let resizedImage = image.transformed(by: transform)
-        
-        return resizedImage
-    }
+    class func resizeCIImage(image: CIImage, to targetSize: CGSize, mode: UIView.ContentMode) -> CIImage? {
+           let originalSize = image.extent.size
+           
+           // 计算缩放比例
+           let scaleX = targetSize.width / originalSize.width
+           let scaleY = targetSize.height / originalSize.height
+           
+           let scale: CGFloat
+           switch mode {
+           case .scaleAspectFit:
+               // 取较小的缩放比例，确保图片完全显示在目标尺寸内
+               scale = min(scaleX, scaleY)
+           case .scaleAspectFill:
+               // 取较大的缩放比例，确保图片填满目标尺寸
+               scale = max(scaleX, scaleY)
+           case .scaleToFill:
+               // 直接使用目标尺寸的缩放比例，可能会拉伸图片
+               return image.transformed(by: CGAffineTransform(scaleX: scaleX, y: scaleY))
+           default:
+               // 默认使用 Aspect Fit
+               scale = min(scaleX, scaleY)
+           }
+           
+           // 应用缩放
+           let transform = CGAffineTransform(scaleX: scale, y: scale)
+           let resizedImage = image.transformed(by: transform)
+           
+           // 计算居中偏移量
+           let scaledSize = resizedImage.extent.size
+           let offsetX = (targetSize.width - scaledSize.width) / 2
+           let offsetY = (targetSize.height - scaledSize.height) / 2
+           
+           // 创建一个新的 CIImage，尺寸为目标尺寸
+           let newImage = CIImage(color: CIColor.clear).cropped(to: CGRect(origin: .zero, size: targetSize))
+           
+           // 将缩放后的图像居中绘制到新图像上
+           let centeredImage = resizedImage.transformed(by: CGAffineTransform(translationX: offsetX, y: offsetY))
+           
+           // 将居中后的图像合成到新图像上
+           let finalImage = centeredImage.composited(over: newImage)
+           
+           return finalImage
+       }
    class func calculateNewWatermarkFrame(originalFrame: CGRect, imageExtent: CGSize, screenBounds: CGRect) -> CGRect {
         // 计算缩放因子
         let scaleFactorWidth = imageExtent.width / screenBounds.width
