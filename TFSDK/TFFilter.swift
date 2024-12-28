@@ -127,6 +127,7 @@ class TFTFBeautyFilter: TFFilter {
 }
 //裁剪
 class TFCropRectFilter: TFFilter {
+    public var videoSize: CGSize = .zero
 
     override func execute(_ image: CIImage) -> CIImage {
         
