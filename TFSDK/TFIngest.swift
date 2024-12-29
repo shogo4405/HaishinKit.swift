@@ -101,7 +101,7 @@ public class TFIngest: NSObject {
 //                if let windowScene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
 //                    let orientation = await windowScene.interfaceOrientation
 //                    if let videoOrientation = DeviceUtil.videoOrientation(by: orientation) {
-                await mixer.setVideoOrientation(configuration.videoOrientation)
+                await mixer.setVideoOrientation(configuration.outputImageOrientation)
 //                    }
 //                }
                 await mixer.setMonitoringEnabled(DeviceUtil.isHeadphoneConnected())

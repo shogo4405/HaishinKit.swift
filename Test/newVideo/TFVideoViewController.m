@@ -94,7 +94,6 @@
     model.videoFrameRate = 24;
     model.videoBitRate = 600*1024;
     model.mirror = true;
-    model.videoSize = self.videoSizeMak;
     model.currentDeviceType = AVCaptureDeviceTypeBuiltInWideAngleCamera;
     model.currentPosition = AVCaptureDevicePositionFront;
     model.videoOrientation = AVCaptureVideoOrientationPortrait;
